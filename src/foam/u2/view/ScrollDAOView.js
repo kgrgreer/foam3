@@ -216,7 +216,7 @@ foam.CLASS({
           'font-size': '1px',
           position: 'absolute',
           transform: this.sentinelTransform_$
-        }).entity('nbsp');
+        }).nbsp();
       },
       transient: true
     },

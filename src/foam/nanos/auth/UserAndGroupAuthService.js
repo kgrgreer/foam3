@@ -113,55 +113,43 @@ foam.CLASS({
         if ( user == null ) {
           throw new UserNotFoundException();
         }
-
         // check that the user is active
         assertUserIsActive(user);
-
         // check if user enabled
         if ( ! user.getEnabled() ) {
           throw new AccessDeniedException();
         }
-
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
           throw new AccessDeniedException();
         }
-
         // check if group enabled
         X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
         Group group = user.findGroup(userX);
         if ( group != null && ! group.getEnabled() ) {
           throw new AccessDeniedException();
         }
-
         if ( ! Password.verify(password, user.getPassword()) ) {
           throw new InvalidPasswordException();
         }
-
         try {
           group.validateCidrWhiteList(x);
         } catch (foam.core.ValidationException e) {
           throw new AccessDeniedException(e);
         }
-
         Session session = x.get(Session.class);
-
         // Re use the session context if the current session context's user id matches the id of the user trying to log in
         if ( session.getUserId() == user.getId() ) {
           return user;
         }
-
         // Freeze user
         user = (User) user.fclone();
         user.freeze();
-        
         session.setUserId(user.getId());
-
         if ( check(userX, "*") ) {
           String msg = "Admin login for " + user.getId() + " succeeded on " + System.getProperty("hostname", "localhost");
           ((foam.nanos.logger.Logger) x.get("logger")).warning(msg);
         }
-
         ((DAO) getLocalSessionDAO()).inX(x).put(session);
         session.setContext(session.applyTo(session.getContext()));
         return user;
@@ -180,20 +168,9 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        User user = (User) ((DAO) getLocalUserDAO())
-          .inX(x)
-          .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              CLASS_OF(User.class)
-            )
-          );
-
+        User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);
         if ( user == null ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
         return loginHelper(x, user, password);
       `
@@ -201,32 +178,31 @@ foam.CLASS({
     {
       name: 'checkUser',
       documentation: `Checks if the user passed into the method has the passed
-        in permission attributed to it by checking their group. No check on User
-        and group enabled flags.`,
+      in permission attributed to it by checking their group. No check on User
+      and group enabled flags.`,
       javaCode: `
-        // check whether user has permission to check user permissions
-        if ( ! check(x, CHECK_USER_PERMISSION) ) throw new AuthorizationException();
-
         if ( user == null || permission == null ) return false;
-
+        String groupId = (String) user.getGroup();
+        return checkGroup(x, groupId, permission);
+      `
+    },
+    {
+      name: 'checkGroup',
+      javaCode: `
+        // check whether user has permission to check group permissions
+        if ( ! check(x, CHECK_USER_PERMISSION) ) throw new AuthorizationException();
         try {
-          String groupId = (String) user.getGroup();
-
           while ( ! SafetyUtil.isEmpty(groupId) ) {
             Group group = (Group) ((DAO) getLocalGroupDAO()).find(groupId);
-
             // if group is null break
             if ( group == null ) break;
-
             // check permission
             if ( group.implies(x, new AuthPermission(permission)) ) return true;
-
             // check parent group
             groupId = group.getParent();
           }
         } catch (Throwable t) {
         }
-
         return false;
       `
     },
@@ -236,17 +212,12 @@ foam.CLASS({
         permission.`,
       javaCode: `
         if ( x == null || permission == null ) return false;
-
         Permission p = new AuthPermission(permission);
-
         try {
           Group group = getCurrentGroup(x);
-
           while ( group != null ) {
-
             // check permission
             if ( group.implies(x, p) ) return true;
-
             // check parent group
             group = (Group) ((DAO) getLocalGroupDAO()).find(group.getParent());
           }
@@ -255,7 +226,6 @@ foam.CLASS({
           logger.error("check", p, e);
         } catch (Throwable t) {
         }
-
         return false;
       `
     },
@@ -264,22 +234,18 @@ foam.CLASS({
       javaCode: `
         // Password policy to validate against
         PasswordPolicy passwordPolicy = null;
-
         // Retrieve the logger
         Logger logger = (Logger) x.get("logger");
-
         // Retrieve the password policy from theme.
         Theme theme = ((Themes) x.get("themes")).findTheme(x);
         passwordPolicy = theme.getPasswordPolicy();
         passwordPolicy.setX(x);
-
         // Use the default password policy if nothing is found
         if ( passwordPolicy == null || ! passwordPolicy.getEnabled() ) {
           passwordPolicy = new PasswordPolicy();
           passwordPolicy.setEnabled(true);
           passwordPolicy.setX(x);
         }
-
         // Validate the password against the password policy
         passwordPolicy.validate(user, potentialPassword);
       `
@@ -308,49 +274,39 @@ foam.CLASS({
         if ( x == null || SafetyUtil.isEmpty(oldPassword) || SafetyUtil.isEmpty(newPassword) ) {
           throw new RuntimeException("Password fields cannot be blank");
         }
-
         Session session = x.get(Session.class);
         if ( session == null || session.getUserId() == 0 ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
-
         User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
         if ( user == null ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
-
         // check that the user is active
         assertUserIsActive(user);
-
         // check if user enabled
         if ( ! user.getEnabled() ) {
           throw new AuthenticationException("User disabled");
         }
-
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
           throw new AuthenticationException("Login disabled");
         }
-
         // check if group enabled
         Group group = user.findGroup(x);
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("Group disabled");
         }
-
         // check if password is valid per validatePassword method
         validatePassword(x, user, newPassword);
-
         // old password does not match
         if ( ! Password.verify(oldPassword, user.getPassword()) ) {
           throw new RuntimeException("Old password is incorrect");
         }
-
         // new password is the same
         if ( Password.verify(newPassword, user.getPassword()) ) {
           throw new RuntimeException("New password must be different");
         }
-
         // store new password in DAO and put in context
         user = (User) user.fclone();
         user.setPasswordLastModified(Calendar.getInstance().getTime());
@@ -373,27 +329,21 @@ foam.CLASS({
         if ( user == null ) {
           throw new AuthenticationException("Invalid User");
         }
-
         if ( SafetyUtil.isEmpty(user.getEmail()) ) {
           throw new AuthenticationException("Email is required for creating a user");
         }
-
         if ( ! Email.isValid(user.getEmail()) ) {
           throw new AuthenticationException("Email format is invalid");
         }
-
         if ( SafetyUtil.isEmpty(user.getFirstName()) ) {
           throw new AuthenticationException("First Name is required for creating a user");
         }
-
         if ( SafetyUtil.isEmpty(user.getLastName()) ) {
           throw new AuthenticationException("Last Name is required for creating a user");
         }
-
         if ( SafetyUtil.isEmpty(user.getPassword()) ) {
           throw new AuthenticationException("Password is required for creating a user");
         }
-
         validatePassword(x, user, user.getPassword());
       `
     },
@@ -416,13 +366,10 @@ foam.CLASS({
         // Highest precedence: Just return the group from the context if it's already
         // been set.
         Group group = (Group) x.get("group");
-
         if ( group != null ) return group;
-
         Subject subject = (Subject) x.get("subject");
         User user = subject.getUser();
         User agent = subject.getRealUser();
-
         // Second highest precedence: If one user is acting as another, return the
         // group on the junction between them.
         if ( user != null ) {
@@ -434,20 +381,16 @@ foam.CLASS({
                 EQ(UserUserJunction.TARGET_ID, user.getId())
               )
             );
-
             if ( junction == null ) {
               ((foam.nanos.logger.Logger) x.get("logger")).warning("There was a user and an agent in the context, but a junction between them was not found.", "user", user.getId(), "agent", agent.getId());
               throw new RuntimeException("There was a user and an agent in the context, but a junction between them was not found.");
             }
-
             return (Group) ((DAO) getLocalGroupDAO()).inX(x).find(junction.getGroup());
           }
-
           // Third highest precedence: If a user is logged in but not acting as
           // another user, return their group.
           return (Group) ((DAO) getLocalGroupDAO()).inX(x).find(user.getGroup());
         }
-
         // If none of the cases above match, return null.
         // TODO: Should this throw an error instead?
         return null;
@@ -455,4 +398,3 @@ foam.CLASS({
     }
   ]
 });
-

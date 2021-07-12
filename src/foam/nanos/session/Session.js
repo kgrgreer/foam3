@@ -231,9 +231,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       // Do not allow IP to change if not in whitelist
       if ( ! SafetyUtil.isEmpty(getRemoteHost()) &&
            ! SafetyUtil.equals(getRemoteHost(), remoteIp) ) {
+        ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "IP change detected", getRemoteHost(), remoteIp, getUserId());
         throw new foam.core.ValidationException("IP changed");
       }
 
+      ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "Restricted IP address not allowed", getRemoteHost(), remoteIp, getUserId());
       throw new foam.core.ValidationException("Restricted IP");
       `
     },
@@ -294,6 +296,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
           Theme theme = ((Themes) x.get("themes")).findTheme(x);
           rtn = rtn.put("theme", theme);
+
+          // if there is no user, set spid to the theme spid so that spid restrictions can be applied
+          rtn = rtn.put("spid", theme.getSpid());
 
           AppConfig themeAppConfig = theme.getAppConfig();
           if ( themeAppConfig != null ) {
@@ -360,16 +365,18 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getAgentId() < 0 ) {
-          throw new IllegalStateException("Agent id is invalid.");
-        }
-
         if ( getUserId() > 0 ) {
           checkUserEnabled(x, getUserId());
         }
 
-        if ( getAgentId() > 0 ) {
-          checkUserEnabled(x, getAgentId());
+        if ( getUserId() != getAgentId() ) {
+          if ( getAgentId() < 0  ) {
+            throw new IllegalStateException("Agent id is invalid.");
+          }
+
+          if ( getAgentId() > 0 ) {
+            checkUserEnabled(x, getAgentId());
+          }
         }
       `
     },
@@ -382,15 +389,17 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       javaCode: `
         User user = (User) ((DAO) x.get("localUserDAO")).find(userId);
 
-        if ( user == null
-         || (user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE)
-       ) {
+        if ( user == null ) {
           ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
+          throw new foam.nanos.auth.UserNotFoundException();
+        }
+        if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
+          ((Logger) x.get("logger")).warning("Session", "User not active", userId);
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
         if ( ! user.getEnabled() ) {
-          throw new foam.nanos.auth.AuthenticationException(String.format("The user with id '%d' has been disabled.", userId));
+          throw new foam.nanos.auth.AccountDisabledException();
         }
       `
     }

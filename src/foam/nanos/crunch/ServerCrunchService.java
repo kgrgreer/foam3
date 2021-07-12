@@ -176,7 +176,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
-  public synchronized List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
+  public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
     if ( ucj != null ) x = x.put("subject", ucj.getSubject(x));
     Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
     if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
@@ -187,7 +187,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
   public Map initCache(X x, boolean cache) {
-    
+
     if ( cache ) {
       Sink purgeSink = new Sink() {
         public void put(Object obj, Detachable sub) {
@@ -208,7 +208,6 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Map map = new ConcurrentHashMap<String, List<String>>();
     var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
     var sink = (GroupBy) dao.
-      orderBy(CapabilityCapabilityJunction.PRIORITY).
       select(
         GROUP_BY(
           CapabilityCapabilityJunction.SOURCE_ID,
@@ -232,7 +231,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   // returns a getPrereqs result directly from prerequisitecapabilityjunctiondao
-  public synchronized List<String> getPrereqs_(X x, String capId) {
+  public List<String> getPrereqs_(X x, String capId) {
     return ((ArraySink) ((foam.mlang.sink.Map) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
       .inX(x)
       .where(EQ(CapabilityCapabilityJunction.SOURCE_ID, capId))
@@ -276,7 +275,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   protected Map<String, List<String>> getPrereqsCache(X x) {
     Session session = x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null || user.getId() == User.SYSTEM_USER_ID ) {
+    if ( user == null || session == null ) {
       return initCache(x, false);
     }
     Long userId = user.getId();
@@ -486,7 +485,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     var subjectX = x.put("subject", subject);
-    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
+    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(subjectX).put(ucj);
   }
 
   public UserCapabilityJunction buildAssociatedUCJ(

@@ -52,9 +52,9 @@ foam.CLASS({
     {
       name: 'swiftInitializer',
       args: [],
-      template: function() {/*
+      template: `
 return (x ?? __subContext__).create(<%=this.swiftType%>.self, args: args)!
-      */},
+      `,
     },
   ],
 });

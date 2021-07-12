@@ -42,6 +42,8 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) x.get("NEW");
 
         Session session = (Session) x.get(Session.class);
+        if ( session == null ) return false;
+
         Long userId = session.getUserId();
         Long agentId = session.getAgentId();
         if ( userId == 1 ) return false;

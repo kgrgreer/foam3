@@ -22,7 +22,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets'
   ],
 
-  tableColumns: ['id', 'name', 'group', 'locale'],
+  tableColumns: ['id', 'name', 'group', 'locale', 'spid'],
 
   properties: [
     {

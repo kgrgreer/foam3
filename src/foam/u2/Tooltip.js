@@ -77,7 +77,7 @@ foam.CLASS({
       }
       this.timer = setTimeout(() => {
         this.setTooltip(evt);
-      }, 100);
+      }, 500);
       this.target.on('mousemove', evt => {
         this.close();
         this.setTooltip(evt);
@@ -96,16 +96,14 @@ foam.CLASS({
         console.error('Target not found');
         return;
       }
+
       var el = await this.target.el();
-      if ( ! el) {
-        console.error('Target not found');
-        return;
-      }
+
       this.target.on('mouseover',  this.onMouseOver);
       this.target.on('mousedown',  this.close);
       this.target.on('mouseleave', this.close);
       this.target.on('mouseout',   this.close);
-      this.target.on('touchstart', this.close);
+      this.target.on('touchstart', this.close, {passive: true});
       this.target.on('unload',     this.close);
       this.onMouseOver(evt);
     }

@@ -109,16 +109,16 @@ onDAOUpdate()
     {
       name: 'onDAOUpdate',
       isMerged: true,
-      swiftCode: function() {/*
+      swiftCode: `
 let sink = try? dao!.select(ArraySink_create()) as? foam_dao_ArraySink
 daoContents = sink?.array ?? []
 tableView?.reloadData()
-      */},
+     `,
     },
   ],
   methods: [
   ],
-  swiftCode: function() {/*
+  swiftCode: `
 public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
   return daoContents.count
 }
@@ -155,5 +155,5 @@ class SimpleRowView: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
 }
-  */},
+  `,
 });

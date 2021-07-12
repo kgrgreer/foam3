@@ -325,3 +325,58 @@ foam.CLASS({
 });
 
 add(Test.create());
+
+##  Q10
+What method of determining a property's value takes precedence?
+<br><br><b>A.</b> The order of precedence is:
+<ol>
+ <li>the value returned by <code>getter:</code>, if specified
+ <li>the value the property has been set to, if it has been set, ex. <code>t.p2 = 2;</code>
+ <li>the value returned by the <code>factory:</code>, if specified
+ <li>the value returned by the <code>expression:</code>, if specified
+ <li>the value specified by <code>value:</code>, if specified
+ <li>undefined
+</ol>
+
+--
+foam.CLASS({
+  name: 'Test',
+
+  properties: [
+    { name: 'value', value: 4 },
+    {
+      name: 'p1',
+      getter: function() { return 1; },
+      factory: function() { return 3; },
+      expression: function(value) { return value; },
+      value: 5
+    },
+    {
+      name: 'p2',
+      factory: function() { return 3; },
+      expression: function(value) { return value; },
+      value: 5
+    },
+    {
+      name: 'p3',
+      factory: function() { return 3; },
+      expression: function(value) { return value; },
+      value: 5
+    },
+    {
+      name: 'p4',
+      expression: function(value) { return value; },
+      value: 5
+    },
+    {
+      name: 'p5',
+      value: 5
+    },
+    {
+      name: 'p6'
+    }
+  ]
+});
+
+var t = Test.create({p1: 2, p2: 2});
+log(`p1: ${t.p1}, p2: ${t.p2}, p3: ${t.p3}, p4: ${t.p4}, p5: ${t.p5}, p6: ${t.p6}`);

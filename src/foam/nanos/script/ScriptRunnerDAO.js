@@ -32,26 +32,6 @@ foam.CLASS({
     }
   ],
 
-  properties: [
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        Logger logger = (Logger) getX().get("logger");
-        if ( logger == null ) {
-          logger = new StdoutLogger();
-        }
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, logger);
-      `
-    }
-  ],
-  
   methods: [
     {
       name: 'put_',
@@ -79,20 +59,28 @@ foam.CLASS({
           ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
             @Override
             public void execute(X y) {
+              Logger logger = (Logger) y.get("logger");
+              if ( logger == null ) {
+                logger = new StdoutLogger();
+              }
+              logger = new PrefixLogger(new Object[] {
+                this.getClass().getSimpleName()
+              }, logger);
+    
               Script s = (Script) script.fclone();
               try {
                 s.setStatus(ScriptStatus.RUNNING);
                 s = (Script) getDelegate().put_(x, s).fclone();
-                getLogger().debug("agency", s.getId(), "start");
+                logger.debug("agency", s.getId(), "start");
                 s.runScript(x);
-                getLogger().debug("agency", s.getId(), "end");
+                logger.debug("agency", s.getId(), "end");
                 s.setStatus(ScriptStatus.UNSCHEDULED);
                 getDelegate().put_(x, s);
               } catch(Throwable t) {
                 t.printStackTrace();
                 s.setStatus(ScriptStatus.ERROR);
                 getDelegate().put_(x, s);
-                getLogger().error("agency", s.getId(), t);
+                logger.error("agency", s.getId(), t);
               }
             }
           }, "Run script: " + script.getId());

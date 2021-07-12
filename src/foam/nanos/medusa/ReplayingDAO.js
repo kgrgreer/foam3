@@ -52,7 +52,7 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-      getLogger().debug("find");
+      // getLogger().debug("find");
       blockOnReplay(x);
       return getDelegate().find_(x, id);
       `
@@ -60,7 +60,7 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-      getLogger().debug("select");
+      // getLogger().debug("select");
       blockOnReplay(x);
       return getDelegate().select_(x, sink, skip, limit, order, predicate);
       `
@@ -68,7 +68,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      getLogger().debug("put");
+      // getLogger().debug("put");
       blockOnReplay(x);
       return getDelegate().put_(x, obj);
       `
@@ -76,7 +76,7 @@ foam.CLASS({
     {
       name: 'remove_',
       javaCode: `
-      getLogger().debug("remove");
+      // getLogger().debug("remove");
       blockOnReplay(x);
       return getDelegate().remove_(x, obj);
       `
@@ -84,7 +84,7 @@ foam.CLASS({
     {
       name: 'removeAll_',
       javaCode: `
-      getLogger().debug("removeAll");
+      // getLogger().debug("removeAll");
       blockOnReplay(x);
       getDelegate().removeAll_(x, skip, limit, order, predicate);
       `

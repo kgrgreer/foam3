@@ -23,15 +23,20 @@ foam.CLASS({
 
   css: `
     ^ {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      border-radius: 4px;
-      text-align: center;
-      display: inline-flex;
-      justify-content: center;
+      font: inherit;
       align-items: center;
-      outline: none;
       border: 1px solid transparent;
+      border-radius: 4px;
       box-sizing: border-box;
+      display: inline-flex;
+      gap: 8px;
+      justify-content: center;
+      outline: none;
+      text-align: center;
+    }
+
+    ^iconAfter {
+      flex-direction: row-reverse;
     }
 
     ^ + ^ {
@@ -200,10 +205,10 @@ foam.CLASS({
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #a61414;   
+      color: /*%DESTRUCTIVE3%*/ #D9170E;   
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #a61414; }
+    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
@@ -247,9 +252,11 @@ foam.CLASS({
 
     ^medium {
       padding: 8px 12px;
+      max-height: 34px;
     }
 
     ^large {
+      min-width: 100px;
       padding: 12px 12px;
     }
 
@@ -263,6 +270,14 @@ foam.CLASS({
       padding-left: 0;
       padding-right: 0;
     }
+
+    ^link > .foam-u2-HTMLView{
+      height: 1em;
+    }
+    // TODO: Find a better selector for this
+    ^link > .foam-u2-HTMLView > *{
+      height: 100%
+    }
   `,
 
   properties: [
@@ -274,6 +289,10 @@ foam.CLASS({
     {
       class: 'URL',
       name: 'icon'
+    },
+    {
+      class: 'Boolean',
+      name: 'isIconAfter'
     },
     {
       class: 'String',
@@ -342,6 +361,7 @@ foam.CLASS({
 
       this.addClass(this.myClass(this.size.label.toLowerCase()));
       this.enableClass(this.myClass('iconOnly'), ! (this.contents || this.label));
+      this.enableClass(this.myClass('iconAfter'), this.isIconAfter$);
     },
 
     function initCls() {
@@ -352,7 +372,7 @@ foam.CLASS({
       /** Add text or icon to button. **/
       var self = this;
       var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
-      var iconStyle = { 'max-width': size, 'margin-right': this.label ? '4px' : '', 'object-fit': 'contain' };
+      var iconStyle = { 'max-width': size, 'object-fit': 'contain' };
       
       if ( this.themeIcon && this.theme ) {
         var indicator = this.themeIcon.clone(this).expandSVG();

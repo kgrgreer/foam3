@@ -110,7 +110,7 @@ foam.CLASS({
             .append(size)
             .append("] ")
             .append(t.getClass().getSimpleName())
-            .append(":")
+            .append(':')
             .append(t.getMessage());
 
           while ( t.getCause() != null ) {

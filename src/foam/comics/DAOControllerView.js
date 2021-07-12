@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics',
   name: 'DAOControllerView',
   extends: 'foam.u2.View',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -22,17 +23,14 @@ foam.CLASS({
   imports: [
     'createControllerView? as importedCreateControllerView',
     'data? as importedData',
-    'memento',
     'stack',
     'summaryView? as importedSummaryView',
     'updateView? as importedUpdateView',
-    'window',
     'translationService'
   ],
 
   exports: [
     'as controllerView',
-    'currentMemento_ as memento',
     'data.selection as selection',
     'data.data as dao',
     'data.filteredTableColumns as filteredTableColumns',
@@ -133,8 +131,7 @@ foam.CLASS({
           class: 'foam.comics.DAOUpdateControllerView'
         };
       }
-    },
-    'currentMemento_'
+    }
   ],
 
   reactions: [
@@ -148,11 +145,12 @@ foam.CLASS({
     function initE() {
       var self = this;
       var summaryViewParent;
+      this.initMemento();
 
       var reciprocalSearch = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.ReciprocalSearch',
         data$: this.data.predicate$
-      }, {}, self, self.__subContext__.createSubContext({ memento: this.memento }));
+      }, {}, self, self.__subContext__.createSubContext({ memento: this.currentMemento_ }));
 
       var searchView = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.SimpleSearch',
@@ -171,8 +169,6 @@ foam.CLASS({
         multiSelectEnabled: !! this.data.relationship,
         selectedObjects$: this.data.selectedObjects$
       }, {}, summaryViewParent);
-
-      this.currentMemento_ = summaryView.memento;
 
       this.data.border.add(
         this.E()
@@ -238,7 +234,7 @@ foam.CLASS({
 
     function isIframe() {
       try {
-        return window.self !== window.top;
+        return globalThis.self !== globalThis.top;
       } catch (e) {
         return true;
       }

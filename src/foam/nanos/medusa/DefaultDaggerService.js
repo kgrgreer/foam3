@@ -199,13 +199,13 @@ foam.CLASS({
       name: 'hash',
       javaCode: `
       PM pm = PM.create(x, DefaultDaggerService.getOwnClassInfo(), "hash");
-      try {
-        if ( ! getHashingEnabled() ) {
-          entry.setHash(byte2Hex(Long.toString(entry.getIndex()).getBytes(StandardCharsets.UTF_8)));
-          entry.setAlgorithm("NONE");
-          return entry;
-        }
+      if ( ! getHashingEnabled() ) {
+        entry.setHash(byte2Hex(Long.toString(entry.getIndex()).getBytes(StandardCharsets.UTF_8)));
+        entry.setAlgorithm("NONE");
+        return entry;
+      }
 
+      try {
         MessageDigest md = MessageDigest.getInstance(getAlgorithm());
         md.update(Long.toString(entry.getIndex1()).getBytes(StandardCharsets.UTF_8));
         md.update(entry.getHash1().getBytes(StandardCharsets.UTF_8));
@@ -243,8 +243,8 @@ foam.CLASS({
             getLogger().info("verify", "bootstrap", entry.getIndex());
             return;
           }
-          getLogger().error("Hash Verification Failed", "verify", entry.getIndex(), "parent not found", entry.getIndex1(), "entry", entry.toSummary(), entry.getNode());
-          throw new DaggerException("Hash Verification Failed on: "+entry.toSummary()+" from: "+entry.getNode());
+          getLogger().error("Hash Verification Failed", "verify", entry.getIndex(), "parent1 not found", entry.getIndex1(), "entry", entry.toSummary(), entry.getNode());
+          throw new DaggerException("Hash Verification Failed, parent not found on: "+entry.toSummary()+" from: "+entry.getNode());
         }
         MedusaEntry parent2 = (MedusaEntry) dao.find(EQ(MedusaEntry.INDEX, entry.getIndex2()));
         if ( parent2 == null ) {
@@ -255,8 +255,8 @@ foam.CLASS({
             getLogger().info("verify", "bootstrap", entry.getIndex());
             return;
           }
-          getLogger().error("Hash verification failed", "verify", entry.getIndex(), "parent not found", entry.getIndex2(), "entry", entry.toSummary(), entry.getNode());
-          throw new DaggerException("Hash verification failed on: "+entry.toSummary()+" from: "+entry.getNode());
+          getLogger().error("Hash Verification Failed", "verify", entry.getIndex(), "parent2 not found", entry.getIndex2(), "entry", entry.toSummary(), entry.getNode());
+          throw new DaggerException("Hash Verification Failed, parent not found on: "+entry.toSummary()+" from: "+entry.getNode());
         }
 
         try {

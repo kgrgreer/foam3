@@ -31,8 +31,12 @@ foam.CLASS({
       super(message);
     }
 
-    public ValidationException(String message, java.lang.Exception cause) {
+    public ValidationException(String message, Throwable cause) {
       super(message, cause);
+    }
+
+    public ValidationException(Throwable cause) {
+      super(cause);
     }
             `
         }));

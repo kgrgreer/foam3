@@ -583,11 +583,9 @@ foam.CLASS({
                   .add(this.slot(function(action, actionData) {
                     if ( action && actionData) {
                       return this.E()
-                        .startContext({ data: actionData })
-                        .start(self.DefaultActionView, { action: action })
+                        .start(self.DefaultActionView, { action: action, data: actionData })
                           .addClass(self.myClass('action'))
-                        .end()
-                        .endContext();
+                        .end();
                     }
                     if ( action ) {
                       return this.E()
@@ -751,6 +749,7 @@ foam.CLASS({
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
           font-size: 12px;
+          justify-content: flex-start;
           text-align: left;
           width: 100%;
         }

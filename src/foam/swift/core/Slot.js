@@ -44,7 +44,7 @@ foam.CLASS({
         },
       ],
       swiftType: 'Subscription',
-      swiftCode: function() {/*
+      swiftCode: `
 let s1 = self
 let s2 = s2!
 var feedback1 = false
@@ -83,7 +83,7 @@ return Subscription {
   sub1 = nil
   sub2 = nil
 }
-      */},
+      `,
     },
     {
       name: 'linkTo',
@@ -94,9 +94,9 @@ return Subscription {
         },
       ],
       swiftType: 'Subscription',
-      swiftCode: function() {/*
+      swiftCode: `
 return other!.linkFrom(self)
-      */},
+      `,
     },
     {
       name: 'follow',
@@ -107,7 +107,7 @@ return other!.linkFrom(self)
         },
       ],
       swiftType: 'Subscription',
-      swiftCode: function() {/*
+      swiftCode: `
 let other = other!
 let l = { () -> Void in
   if !FOAM_utils.equals(self.swiftGet(), other.swiftGet()) {
@@ -116,7 +116,7 @@ let l = { () -> Void in
 }
 l()
 return other.swiftSub { (_, _) in l() }
-      */},
+      `,
     },
     {
       name: 'mapFrom',
@@ -132,14 +132,14 @@ return other.swiftSub { (_, _) in l() }
         },
       ],
       swiftType: 'Subscription',
-      swiftCode: function() {/*
+      swiftCode: `
 let other = other!
 let l = { () -> Void in
   self.swiftSet(f(other.swiftGet()))
 }
 l()
 return other.swiftSub { (_, _) in l() }
-      */},
+      `,
     },
     {
       name: 'mapTo',
@@ -155,9 +155,9 @@ return other.swiftSub { (_, _) in l() }
         },
       ],
       swiftType: 'Subscription',
-      swiftCode: function() {/*
+      swiftCode: `
 return other!.mapFrom(self, f)
-      */},
+     `,
     },
     {
       name: 'map',
@@ -169,12 +169,12 @@ return other!.mapFrom(self, f)
         },
       ],
       type: 'foam.swift.core.ExpressionSlot',
-      swiftCode: function() {/*
+      swiftCode: `
 return foam_swift_core_ExpressionSlot([
   "code": { (args: [Any?]) -> Any? in f(args[0]) },
   "args": [self]
 ])
-      */},
+      `,
     },
     {
       name: 'dot',
@@ -185,7 +185,7 @@ return foam_swift_core_ExpressionSlot([
         },
       ],
       type: 'foam.swift.core.SubSlot',
-      swiftCode: function() {/*
+      swiftCode: `
 let s = foam_swift_core_SubSlot([
   "parentSlot": self,
   "name": name,
@@ -194,7 +194,7 @@ onDetach(Subscription(detach: {
   s.detach()
 }))
 return s
-      */},
+      `,
     },
   ]
 });

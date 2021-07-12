@@ -25,6 +25,7 @@ foam.INTERFACE({
 
       * check
       * checkUser
+      * checkGroup
   `,
 
   methods: [
@@ -140,6 +141,30 @@ foam.INTERFACE({
         {
           name: 'user',
           type: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'permission',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'checkGroup',
+      documentation: `
+        Like the 'check' method, but allows you to provide a group to check as
+        an argument instead of depending on a user within the context or a provided user.
+      `,
+      type: 'Boolean',
+      async: true,
+      swiftThrows: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'groupId',
+          type: 'String'
         },
         {
           name: 'permission',

@@ -52,13 +52,13 @@ foam.CLASS({
 
         throw this.NoSuchNameException.create({ name: name });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let name = name!
 if let exportBox = registry_[name] as? foam_box_ExportBox {
   return exportBox
 }
 throw NoSuchNameException_create(["name": name])
-      */},
+      `,
       javaCode: `
 Object registration = getRegistry_().get(name);
 if ( registration == null ) {

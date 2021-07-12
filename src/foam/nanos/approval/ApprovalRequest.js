@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
-  plural: 'ApprovalRequests',
+  plural: 'Approval Requests',
   documentation: 'Approval requests are stored in approvalRequestDAO and' +
   'represent a single approval request for a single user.',
 
@@ -56,6 +56,12 @@
     'stack',
     'subject',
     'summaryView?'
+  ],
+
+  searchColumns: [
+    'id',
+    'classificationEnum',
+    'status'
   ],
 
   tableColumns: [
@@ -111,7 +117,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Approved',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.APPROVED
         );
@@ -121,7 +127,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Rejected',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.REJECTED
         );
@@ -159,15 +165,14 @@
           this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
             let referenceSummaryString = `ID:${obj.objId}`;
 
-            if ( requestObj ){
-              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
-                if ( requestObjSummary ){
-                  referenceSummaryString = requestObjSummary;
-                }
+            if ( ! requestObj ) return self.add(referenceSummaryString);
+            
+            // need to use a  Promise resolve because toSummary doesn't always return a promise
+            Promise.resolve(requestObj.toSummary()).then(requestObjSummary => {
+              if ( requestObjSummary ) referenceSummaryString = requestObjSummary;
 
-                self.add(referenceSummaryString);
-              })
-            }
+              self.add(referenceSummaryString);
+            })
           });
         } catch (x) {}
       },
@@ -224,16 +229,6 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 30,
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'description',
-      documentation: `Approval request description.`,
-      includeInDigest: false,
-      tableWidth: 200,
-      section: 'approvalRequestInformation',
-      order: 40,
       gridColumns: 6
     },
     {
@@ -927,7 +922,6 @@
         if ( obj.propertiesToUpdate ) {
           if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
             summaryData = obj.of.create({}, X);
-            daoKey = obj.daoKey;
             of = summaryData.cls_;
 
             Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
@@ -935,6 +929,14 @@
               .forEach(p => {
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
+            if ( obj.isUsingNestedJournal ) {
+              X.stack.push({
+                class: 'foam.u2.view.ViewReferenceFObjectView',
+                data: summaryData,
+                of: of
+              });
+              return;
+            }
           } else {
             of = obj.of;
 
@@ -980,7 +982,7 @@
       ],
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,
@@ -988,7 +990,7 @@
           propertyData$: X.data.assignedTo$,
           title: this.ASSIGN_TITLE,
           onExecute: this.assignRequest.bind(this, X)
-        }));
+        });
       }
     },
     {
@@ -1138,6 +1140,20 @@
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'RefineEasyCrunchWizard',
+  refines: 'foam.u2.crunch.EasyCrunchWizard',
+
+  properties: [
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
     }
   ]
 });

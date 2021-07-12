@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.ruler.predicate.IsInstancePredicate',
     'foam.nanos.ruler.predicate.PropertyEQValue',
     'foam.nanos.ruler.predicate.PropertyIsSetPredicate',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*'
   ],
 
@@ -54,8 +55,12 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'propValue',
-      section: 'basicInfo',
-      required: true
+      section: 'basicInfo'
+    },
+    {
+      class: 'String',
+      name: 'propValueFrom',
+      section: 'basicInfo'
     },
     {
       name: 'predicate',
@@ -125,7 +130,11 @@ foam.CLASS({
               @Override
               public void execute(X x) {
                 var clone = obj.fclone();
-                clone.setProperty(propertyRule.getPropName(), propertyRule.getPropValue());
+                if ( ! SafetyUtil.isEmpty(propertyRule.getPropValueFrom()) ) {
+                  clone.setProperty(propertyRule.getPropName(), clone.getProperty(propertyRule.getPropValueFrom()));
+                } else {
+                  clone.setProperty(propertyRule.getPropName(), propertyRule.getPropValue());
+                }
                 ruler.getDelegate().put(clone);
               }
             }, "Update " + propertyRule.getTargetClass().getId() + " property:" + propertyRule.getPropName());

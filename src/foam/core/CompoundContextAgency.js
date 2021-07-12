@@ -32,17 +32,18 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'X' }
       ],
-      javaCode: `CompoundException e = new CompoundException();
+      javaCode: `CompoundException e = null;
 Logger logger = (Logger) x.get("logger");
 for ( Runnable agent : getAgents() ) {
   try {
     agent.run();
   } catch (Throwable t) {
     logger.error(t.getMessage(), t);
+	if ( e == null ) e = new CompoundException();
     e.add(t);
   }
 }
-e.maybeThrow();`
+if ( e != null ) e.maybeThrow();`
     },
     {
       name: 'submit',

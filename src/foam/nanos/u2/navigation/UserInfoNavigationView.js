@@ -40,12 +40,13 @@ foam.CLASS({
     }
     ^name-container {
       max-width: 90px;
+      line-height: normal;
+      display: flex;
+    }
+    ^name-container > *{
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      line-height: normal;
-      display: flex;
-      padding:
     }
   `,
 

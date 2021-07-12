@@ -50,6 +50,10 @@ public class Repeat
     this(parser, Literal.create(delimiter), minimum);
   }
 
+  public Repeat(Parser parser, int minimum, int maximum) {
+    this(parser, null, minimum, maximum);
+  }
+
   public Repeat(Parser parser, Parser delimiter, int minimum, int maximum) {
     p     = parser;
     delim = delimiter;

@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'UnstyledTabs',
   extends: 'foam.u2.Element',
+  mixins: ['foam.nanos.controller.MementoMixin'],
+
   documentation: 'An unstyled tab.',
   requires: [ 'foam.u2.Tab' ],
 
@@ -35,9 +37,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-
-      if ( this.memento )
-        this.currentMemento_$ = this.memento.tail$;
+      this.initMemento();
 
       this.
         addClass(this.myClass()).
@@ -74,9 +74,7 @@ foam.CLASS({
       if ( ! this.updateMemento )
         return;
       if ( this.memento ) {
-        if ( ! this.currentMemento_ )
-          this.currentMemento_ = foam.nanos.controller.Memento.create();
-        this.currentMemento_.head = this.selected.label;
+        this.memento.head = this.selected.label;
       }
     }
   ]

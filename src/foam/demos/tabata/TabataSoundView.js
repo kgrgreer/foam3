@@ -50,10 +50,10 @@ foam.CLASS({
         this.SUPER();
         this.onDetach(this.data.remaining$.sub(this.onTick));
       },
-      swiftCode: function() {/*
+      swiftCode: `
 super.__foamInit__()
 onDetach(data.remaining$.swiftSub(onTick_listener))
-      */}
+      `
     }
   ],
 
@@ -67,13 +67,13 @@ onDetach(data.remaining$.swiftSub(onTick_listener))
           this.shortBeep.play();
         }
       },
-      swiftCode: function() {/*
+      swiftCode: `
         if data.remaining == 0 {
           longBeep.play()
         } else if data.remaining < 4 {
           shortBeep.play()
         }
-      */}
+      `
     }
   ]
 });

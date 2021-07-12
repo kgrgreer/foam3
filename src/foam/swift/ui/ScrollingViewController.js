@@ -20,9 +20,9 @@ foam.CLASS({
       class: 'String',
       name: 'title',
       swiftExpressionArgs: ['view$title'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 return view$title as? String ?? ""
-      */},
+      `,
     },
     {
       swiftType: 'UIColor',
@@ -33,16 +33,16 @@ return view$title as? String ?? ""
       swiftType: 'UIViewController',
       name: 'vc',
       swiftExpressionArgs: ['view$view', 'title', 'backgroundColor'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 let vc = VC_()
 vc.innerView = view$view as? UIView
 vc.title = title
 vc.backgroundColor = backgroundColor
 return vc
-      */},
+      `,
     },
   ],
-  swiftCode: function() {/*
+  swiftCode: `
 class VC_: UIViewController {
   let scrollView: UIScrollView = {
     let scrollView = UIScrollView()
@@ -144,6 +144,6 @@ class VC_: UIViewController {
     }
   }
 }
-  */},
+  `,
 });
 

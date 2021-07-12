@@ -171,7 +171,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
-          getLogger().debug("send", "replyBox.setDelegate");
+          // getLogger().debug("send", "replyBox.setDelegate");
         } else {
           msg.getAttributes().put("replyBox", box);
         }
