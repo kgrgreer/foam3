@@ -18,9 +18,9 @@ import java.util.concurrent.Semaphore;
 public class AsyncAssemblyLine
   extends SyncAssemblyLine
 {
-  protected Agency pool_;
-  protected String agencyName_ = null;
-  protected boolean  shutdown_  = false;
+  protected Agency  pool_;
+  protected String  agencyName_ = null;
+  protected boolean shutdown_   = false;
 
   public AsyncAssemblyLine(X x) {
     this(x, null);
@@ -32,7 +32,7 @@ public class AsyncAssemblyLine
 
   public AsyncAssemblyLine(X x, String agencyName, String threadPool) {
     super(x);
-    pool_  = (Agency) x.get(threadPool);
+    pool_ = (Agency) x.get(threadPool);
     agencyName_ = "AsyncAssemblyLine:";
     if ( agencyName != null ) {
       agencyName_ += agencyName;
