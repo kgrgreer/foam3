@@ -25,8 +25,7 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.u2.DisplayMode',
-    'foam.u2.ControllerMode',
+    'foam.u2.ControllerMode'
   ],
 
   properties: [
