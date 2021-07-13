@@ -310,7 +310,7 @@ foam.CLASS({
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
-            code: function(x) { return `Filters (${x})`; }});
+            code: function(x) { if ( x > 0 ) return `Filters (${x})`; return `Filters` }});
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()
