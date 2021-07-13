@@ -164,8 +164,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'synchronized',
-      value: false
+      name: 'synchronized'
     },
     {
       class: 'String',
@@ -226,11 +225,6 @@ foam.CLASS({
       expression: function(value) {
         return foam.java.asJavaValue(value);
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'synchronized',
-      value: false
     },
     {
       class: 'String',
