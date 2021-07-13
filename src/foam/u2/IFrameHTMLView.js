@@ -21,7 +21,7 @@ foam.CLASS({
   methods: [    
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.start('iframe')
         .attrs({ srcdoc: this.data })

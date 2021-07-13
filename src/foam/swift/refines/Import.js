@@ -22,7 +22,7 @@ foam.CLASS({
       class: 'String',
       name: 'swiftType',
       expression: function(of) {
-        of = foam.String.isInstance(of) ? foam.lookup(of, true) : of;
+        of = foam.String.isInstance(of) ? foam.maybeLookup(of) : of;
         return  of ? of.model_.swiftName : 'Any?';
       }
     },

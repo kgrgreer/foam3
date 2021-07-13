@@ -28,6 +28,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      padding: 32px 24px;
+    }
     ^group-title {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 35px;
@@ -71,7 +74,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.update();
       this.data$proxy.on.sub(this.update)

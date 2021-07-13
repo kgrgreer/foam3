@@ -30,7 +30,7 @@
 
   methods: [
     function initCls() {
-      this.addClass(this.myClass());
+      this.addClass();
       this.addClass(this.myClass('icon'));
     }
   ]

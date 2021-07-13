@@ -31,7 +31,7 @@ foam.CLASS({
     'hoverSelection',
     'selection',
     'subStack as stack',
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   imports: [
@@ -255,7 +255,8 @@ foam.CLASS({
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
-    }
+    },
+    'currentMemento_'
   ],
 
   methods: [
@@ -340,6 +341,10 @@ foam.CLASS({
           this.memento.head = this.columns_.map(c => {
             return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
           }).join(',');
+        }
+        if ( ! this.memento.tail ) {
+          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento});
+          this.currentMemento_ = this.memento.tail;
         }
       }
 
@@ -671,9 +676,12 @@ foam.CLASS({
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
                     var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
-                    callOn(prop.tableCellFormatter, 'format', [
-                      prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
-                    ]);
+                    call(function() { prop.tableCellFormatter.format(
+                      this,
+                      prop.f ? prop.f(objForCurrentProperty) : null,
+                      objForCurrentProperty,
+                      prop
+                    )});
                     tableRowElement.add(elmt);
                   }
 
@@ -727,9 +735,9 @@ foam.CLASS({
       },
       async function filterUnpermitted(arr) {
         if ( this.auth ) {
-          const results = await Promise.all(arr.map( async p => 
-            p.hidden ? false : 
-            ! p.columnPermissionRequired || 
+          const results = await Promise.all(arr.map( async p =>
+            p.hidden ? false :
+            ! p.columnPermissionRequired ||
             await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
           return arr.filter((_v, index) => results[index]);
         }

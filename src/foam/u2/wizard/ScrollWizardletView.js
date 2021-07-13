@@ -62,7 +62,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass());
+      this.addClass();
       this.start('h1').add(this.title).end()
         .start()
         .add(this.slot(

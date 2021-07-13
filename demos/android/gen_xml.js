@@ -3,7 +3,7 @@
 var dir = __dirname;
 var root = dir + '/../..';
 
-global.FOAM_FLAGS = {
+globalThis.FOAM_FLAGS = {
   'android': true
 };
 

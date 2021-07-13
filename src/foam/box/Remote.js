@@ -20,7 +20,7 @@ foam.CLASS({
       cls.installAxiom(foam.core.Method.create({
         name: 'outputJSON',
         code: function(outputter) {
-          var cls = this.__context__.lookup(clientClass, true);
+          var cls = this.__context__.maybeLookup(clientClass);
 
           if ( ! cls ) {
             throw new Error('Could not find ' + clientClass + ' to serialize ' + this.cls_.id);

@@ -37,7 +37,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
       if ( this.min != undefined ) this.setAttribute('min', this.min);
       if ( this.max != undefined ) this.setAttribute('max', this.max);
       if ( this.step != undefined ) this.setAttribute('step', this.step);

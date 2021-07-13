@@ -64,7 +64,7 @@ foam.CLASS({
         self.prop && this.fromProperty && this.fromProperty(self.prop);
       };
       this.SUPER();
-      this.addClass(this.myClass()).add(this.slot(function(mode) {
+      this.addClass().add(this.slot(function(mode) {
         switch ( mode ) {
           case self.DisplayMode.RW:
           case self.DisplayMode.DISABLED:

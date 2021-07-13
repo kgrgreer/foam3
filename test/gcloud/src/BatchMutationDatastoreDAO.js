@@ -33,7 +33,7 @@ describe('BatchMutationDatastoreDAO', function() {
   }
 
   // From helpers/generic_dao.js.
-  global.genericDAOTestBattery(daoFactory);
+  globalThis.genericDAOTestBattery(daoFactory);
 
   it('should handle multiple batches', function(done) {
     // Class of things to put into DAO.

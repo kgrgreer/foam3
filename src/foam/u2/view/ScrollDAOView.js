@@ -216,7 +216,7 @@ foam.CLASS({
           'font-size': '1px',
           position: 'absolute',
           transform: this.sentinelTransform_$
-        }).entity('nbsp');
+        }).nbsp();
       },
       transient: true
     },
@@ -328,7 +328,7 @@ foam.CLASS({
         },
         function initE() {
           var self = this;
-          this.addClass(this.myClass());
+          this.addClass();
           this.enableClass(this.myClass('selectable'), this.selectionEnabled$);
           this.enableClass(
               this.myClass('selected'),
@@ -404,6 +404,7 @@ foam.CLASS({
       ],
 
       properties: [
+        [ 'nodeName', 'ul' ],
         {
           class: 'Int',
           name: 'negativeBuffer',
@@ -592,7 +593,6 @@ foam.CLASS({
     function initE() {
       this.addEventListener('scroll', this.onScroll);
       this.
-        setNodeName('ul').
         add(this.sentinel_).
         addClass(this.myClass()).
         forEach(this.rows_, function(row, idx) {

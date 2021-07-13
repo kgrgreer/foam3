@@ -178,7 +178,7 @@ foam.CLASS({
       name: 'Cell',
       extends: 'foam.u2.ReadWriteView',
 
-      requires: [ 'foam.u2.tag.Input', 'foam.u2.HTMLElement' ],
+      requires: [ 'foam.u2.tag.Input', 'foam.u2.HTMLView' ],
 
       documentation: `
         Doesn't build inner views until value is set or user clicks on view.
@@ -224,7 +224,7 @@ foam.CLASS({
       methods: [
         function initE() {
           this.SUPER();
-          this.addClass(this.myClass());
+          this.addClass();
         },
 
         function isLoaded() { return true; },
@@ -232,9 +232,9 @@ foam.CLASS({
         // function isLoaded() { return this.value; },
         // function listenForLoad() { this.value$.sub(this.onDataLoad); },
         function toReadE() {
-          return this.HTMLElement.create(
-            {nodeName: 'span'},
-            this).add(this.data$);
+          return this.HTMLView.create(
+            {nodeName: 'span', data$: this.data$},
+            this);
         },
 
         function toWriteE() {
@@ -273,6 +273,7 @@ foam.CLASS({
   `,
 
   properties: [
+    [ 'nodeName', 'table' ],
 //    [ 'rows',    99 ],
 //    [ 'columns', 26 ],
     [ 'rows',    10 ],
@@ -305,7 +306,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.setNodeName('table').addClass(this.myClass()).attrs({cellspacing: 0}).
+      this.addClass().attrs({cellspacing: 0}).
         start('tr').
           tag('th').
           repeat(0, this.columns-1, function (i) {

@@ -246,7 +246,7 @@ foam.SCRIPT({
   // Change 'false' to 'true' to enable error reporting for setting
   // non-Properties on FObjects.
   // TODO: add 'Did you mean...' support.
-  if ( false && global.Proxy ) {
+  if ( false && globalThis.Proxy ) {
     (function() {
 
       var IGNORE = {

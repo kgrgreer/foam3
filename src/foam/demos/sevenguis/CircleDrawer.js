@@ -160,9 +160,9 @@ foam.CLASS({
 
       // If the size is changed with the dialog, then create an updated memento
       var oldRadius = this.selected.radius;
-      p.onunload.sub(function() {
+      p.onDetach(() => {
         if ( this.selected.radius !== oldRadius ) this.updateMemento();
-      }.bind(this));
+      });
     }
   ]
 });

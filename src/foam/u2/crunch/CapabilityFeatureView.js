@@ -18,8 +18,7 @@ foam.CLASS({
     'crunchService',
     'ctrl',
     'subject',
-    'userCapabilityJunctionDAO',
-    'window'
+    'userCapabilityJunctionDAO'
   ],
 
   requires: [
@@ -100,7 +99,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.addClass(this.myClass());
+      this.addClass();
 
       // Methods of Style all return the first argument for chaining
       var style = self.Style.create();

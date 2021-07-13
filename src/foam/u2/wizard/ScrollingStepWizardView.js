@@ -198,7 +198,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      window.testing_ = self;
+      globalThis.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {
         if ( ! this.scrollWizardPosition ) return; // TEMP
         this.data.wizardPosition = this.scrollWizardPosition;
@@ -246,7 +246,7 @@ foam.CLASS({
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))
-              .add(this.slot(function (data$wizardlets) {
+              .add(this.slot(function (data$wizardlets, data$wizardPosition) {
                 return self.renderWizardlets(this.E(), data$wizardlets);
               }))
             .end()

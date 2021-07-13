@@ -31,9 +31,6 @@ foam.CLASS({
     'foam.u2.search.FilterController'
   ],
 
-  imports: [
-    'window'
-  ],
 
   properties: [
     {
@@ -94,7 +91,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass());
+      this.addClass();
       this.start(this.filterController, { data: this.data }).end();
     }
   ],

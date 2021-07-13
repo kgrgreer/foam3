@@ -86,9 +86,9 @@ describe('ArrayDAO', function() {
 function idbAvailable() {
   if ( ! foam.dao.IDBDAO ) return false;
 
-  if ( global.indexedDB !== undefined
-    || global.webkitIndexedDB !== undefined
-    || global.mozIndexedDB !== undefined
+  if ( globalThis.indexedDB !== undefined
+    || globalThis.webkitIndexedDB !== undefined
+    || globalThis.mozIndexedDB !== undefined
   ) {
     return true;
   }

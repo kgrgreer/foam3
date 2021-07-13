@@ -212,7 +212,7 @@ foam.CLASS({
 
       var classToData = (c) => {
         if ( ! c ) return undefined;
-        var m = c && this.__context__.lookup(c, true);
+        var m = c && this.__context__.maybeLookup(c);
         return m.create(this.data ? this.copyOldData(this.data) : null, this);
       };
 

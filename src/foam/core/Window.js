@@ -249,7 +249,7 @@ foam.SCRIPT({
   ],
   code: function() {
     foam.__context__ = foam.core.Window.create(
-      { window: global },
+      { window: globalThis },
       foam.__context__
     ).__subContext__;
   }

@@ -175,8 +175,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       expression: function(flags) {
-        var enabledFlags = Object.keys(global.FOAM_FLAGS)
-          .filter(f => global.FOAM_FLAGS[f]);
+        var enabledFlags = Object.keys(globalThis.FOAM_FLAGS)
+          .filter(f => globalThis.FOAM_FLAGS[f]);
         return foam.util.flagFilter(enabledFlags)(this);
       }
     },
@@ -198,6 +198,16 @@ foam.CLASS({
       // before value.
       factory: function() {
         return ['sourceId', 'targetId'];
+      }
+    },
+    {
+      class: 'String',
+      name: 'junctionModelPlural',
+      documentation: 'Plural of the junction model.',
+      factory: function(junctionModel) {
+        var name = this.junctionModel.substring(
+          this.junctionModel.lastIndexOf('.') + 1);
+        return foam.String.labelize(foam.String.pluralize(name));
       }
     }
     /* FUTURE:
@@ -318,6 +328,7 @@ foam.CLASS({
         name: name,
         extends: this.extends,
         ids: this.ids,
+        plural: this.junctionModelPlural,
         properties: [
           {
             class: 'Reference',

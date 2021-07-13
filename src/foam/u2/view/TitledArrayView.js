@@ -36,7 +36,7 @@ foam.CLASS({
 
       this.onDetach(this.data$.sub(() => { if ( ! this.feedback_ ) this.data2_ = this.data; }));
       this.data2_ = this.data;
-      this.addClass(this.myClass());
+      this.addClass();
 
       this
         .add(this.slot(function(data2_, valueView) {

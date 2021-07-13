@@ -28,7 +28,7 @@ foam.CLASS({
       this.SUPER();
       this.add(this.slot(function(data, prop) {
         if ( ! prop ) return;
-        return this.E().callOn(prop.tableCellFormatter, 'format', [ data, self.parentObj, prop ]);
+        return this.E().call(function() { prop.tableCellFormatter.format(this, data, self.parentObj, prop); });
       }));
     },
 
