@@ -19,7 +19,7 @@
  * Top-Level of foam package
  */
 foam = {
-  ...(foam || {}),
+  ...(globalThis.foam || {}),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   language: typeof navigator === 'undefined' ? 'en' : navigator.language,
