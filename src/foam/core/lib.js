@@ -19,7 +19,7 @@
  * Top-Level of foam package
  */
 foam = {
-  ...(globalThis.foam || {}),
+  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   language: typeof navigator === 'undefined' ? 'en' : navigator.language,
