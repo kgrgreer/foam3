@@ -79,6 +79,11 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'totalCount'
+    },
+    {
+      class: 'Int',
+      name: 'activeFilterCount',
+      defaultValue: 0
     }
   ],
 
@@ -317,6 +322,7 @@ foam.CLASS({
       });
       // Readd blank 1st criteria
       if ( remove ) this.addCriteria();
+      this.activeFilterCount = 0;
     }
   ],
 
