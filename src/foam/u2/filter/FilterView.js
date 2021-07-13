@@ -61,7 +61,6 @@ foam.CLASS({
 
     ^container-drawer-open {
       align-items: center;
-      border: 1px solid #cbcfd4;
       max-height: -webkit-fill-available;
       max-height: -moz-available;
       overflow: auto;
