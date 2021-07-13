@@ -1859,12 +1859,6 @@ foam.CLASS({
       return this;
     },
 
-    function callOn(obj, f, args) {
-      /** Call the method named f on obj with the supplied args. **/
-      obj[f].apply(obj, [this].concat(args));
-      return this;
-    },
-
     function callIf(bool, f, args) {
       if ( bool ) f.apply(this, args);
 
