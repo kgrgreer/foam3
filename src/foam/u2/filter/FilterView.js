@@ -163,11 +163,10 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'LABEL_RESULTS', message: 'Filter results: ' },
     { name: 'LINK_ADVANCED', message: 'Advanced filters' },
     { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
     { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
-    { name: 'RESULTS', message: 'result(s) found' },
+    { name: 'LABEL_FILTER', message: 'Filters' }
   ],
 
   properties: [
@@ -310,7 +309,7 @@ foam.CLASS({
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
-            code: function(x) { if ( x > 0 ) return `Filters (${x})`; return `Filters` }});
+            code: function(x) { return x > 0 ? `${self.LABEL_FILTER} (${x})` : self.LABEL_FILTER; }});
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()
