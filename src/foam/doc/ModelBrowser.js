@@ -119,7 +119,7 @@ foam.CLASS({
         return null;
       }
       var clsName = cls.of ? cls.of : cls.class;
-      return foam.lookup(clsName, true);
+      return foam.maybeLookup(clsName);
     }
   ],
 

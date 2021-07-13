@@ -56,6 +56,7 @@ foam.SCRIPT({
      **/
     lookup: function(id, opt_suppress) {
       if ( opt_suppress ) {
+        debugger;
         console.warn('Deprecated use of lookup(, opt_suppress). Use maybeLookup instead.');
       }
       var ret = typeof id === 'string' && this.__cache__[id];

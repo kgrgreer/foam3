@@ -260,7 +260,7 @@ function getServiceMethods(service, pkg) {
           // can't use it for path/{replacement}/ or query params
           if ( foam.core.FObjectProperty.isInstance(subProp)
               || foam.core.FObjectArray.isInstance(subProp) ) {
-            var subSubType = foam.lookup(subProp.of, true);
+            var subSubType = foam.maybeLookup(subProp.of);
             if ( subSubType &&
                  ! foam.core.EnumModel.isInstance(subSubType.model_) ) {
               return;

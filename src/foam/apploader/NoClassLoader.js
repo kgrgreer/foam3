@@ -18,7 +18,7 @@ foam.CLASS({
       factory: function() {
         return {
           load: function(id) {
-            var cls = foam.lookup(id, true);
+            var cls = foam.maybeLookup(id);
             return cls ? Promise.resolve(cls) : Promise.reject('No classloader enabled.');
           },
           addClassPath: function(){},
