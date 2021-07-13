@@ -33,6 +33,7 @@ PORTING U2 to U3:
   -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
   - remove cssClass() (use addClass() instead
   -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - callOn removed
   - remove entity() support
   - remove addBefore()
   - remove insertAt_()
@@ -54,7 +55,6 @@ becomes:
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
-  - remove callOn
 */
 
 foam.ENUM({
@@ -489,6 +489,8 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Element',
   extends: 'foam.u2.Node',
+
+  mixins: [ 'foam.core.Fluent' ],
 
   documentation: `
     DOM API Element. Root model for all U3 UI components.
@@ -1494,21 +1496,6 @@ foam.CLASS({
     },
 
     /**
-     * Call the given function on each element in the array. In the function,
-     * `this` will refer to the element.
-     * @param {Array} array An array to loop over.
-     * @param {Function} fn A function to call for each item in the given array.
-     */
-    function forEach(array, fn) {
-      if ( foam.core.Slot.isInstance(array) ) {
-        this.add(array.map(a => this.E().forEach(a, fn)));
-      } else {
-        array.forEach(fn.bind(this));
-      }
-      return this;
-    },
-
-    /**
      * Given a DAO and a function that maps from a record in that DAO to an
      * Element, call the function with each record as an argument and add the
      * returned elements to the view.
@@ -1525,31 +1512,6 @@ foam.CLASS({
         dao: dao,
         code: f
       }));
-      return this;
-    },
-
-    function call(f, args) {
-      f.apply(this, args);
-
-      return this;
-    },
-
-    function callOn(obj, f, args) {
-      // TODO: remove
-      /** Call the method named f on obj with the supplied args. **/
-      obj[f].apply(obj, [this].concat(args));
-      return this;
-    },
-
-    function callIf(bool, f, args) {
-      if ( bool ) f.apply(this, args);
-
-      return this;
-    },
-
-    function callIfElse(bool, iff, elsef, args) {
-      (bool ? iff : elsef).apply(this, args);
-
       return this;
     },
 
