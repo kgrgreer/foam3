@@ -789,12 +789,6 @@ foam.CLASS({
       return this.element_.getBoundingClientRect();
     },
 
-
-    function init() {
-      // TODO: better if children just do this themselves
-      this.onDetach(this.visitChildren.bind(this, 'detach'));
-    },
-
     function render() {
     },
 
@@ -1125,12 +1119,9 @@ foam.CLASS({
 
     function appendChild_(c) {
       this.element_.appendChild(c);
-//      debugger;
-//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
-      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -1179,12 +1170,6 @@ foam.CLASS({
           return;
         }
       }
-    },
-
-    function setNodeName(name) {
-      console.warn('Deprecated use of setNodeName. Set the nodeName property instead. CLASS: ', this.cls_.name);
-      this.nodeName = name;
-      return this;
     },
 
     function setID(id) {
@@ -2485,7 +2470,7 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
-        TODO: add validation
+        // TODO: add validation
         this.element_.innerHTML = this.data;
       }
     }
