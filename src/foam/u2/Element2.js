@@ -284,7 +284,7 @@ foam.CLASS({
   methods: [
     function load() {
       this.SUPER();
-      this.onDetach(dao.listen(this));
+      this.onDetach(this.dao.listen(this));
 
       this.update();
     },
