@@ -269,7 +269,7 @@ foam.CLASS({
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
-        cls = foam.lookup(cls.model_.extends, true);
+        cls = foam.maybeLookup(cls.model_.extends);
         if ( i ) this.add(' : ');
         this.start(this.ClassLink, {data: cls}).end();
         if ( cls === foam.core.FObject ) break;
@@ -331,7 +331,7 @@ foam.CLASS({
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
-        cls = foam.lookup(cls.model_.extends, true);
+        cls = foam.maybeLookup(cls.model_.extends);
         if ( i ) this.add(' : ');
         this.start(this.ClassLink, {data: cls}).end();
         if ( cls === foam.core.FObject ) break;
@@ -478,7 +478,7 @@ foam.CLASS({
     {
       name: 'selectedClass',
       expression: function (path) {
-        return foam.lookup(path, true);
+        return foam.maybeLookup(path);
       }
     },
     {
@@ -1166,7 +1166,7 @@ foam.CLASS({
       var cls   = this.data;
 
       for ( var i = 0; cls; i++ ) {
-        cls = foam.lookup( cls.model_.extends, true );
+        cls = foam.maybeLookup( cls.model_.extends);
         if ( cls === foam.core.FObject ) break;
         var extendsBox = this.Box.create({
           x: x,

@@ -143,7 +143,7 @@ foam.LIB({
       for ( var i = 0 ; i < axs.length ; i++ ) {
       // Convert JSON axioms to real instances as late as possible
         if ( foam.String.isInstance(axs[i].class) ) {
-          var axsCls = foam.lookup(axs[i].class, true);
+          var axsCls = foam.maybeLookup(axs[i].class);
           if ( axsCls ) axs[i] = axsCls.create(axs[i]);
         }
 
@@ -395,7 +395,7 @@ foam.LIB({
             m.properties[i] = a = { name: a };
           }
 
-          var type = foam.lookup(a.class, true) || foam.core.Property;
+          var type = foam.maybeLookup(a.class) || foam.core.Property;
           foam.assert(
             type !== a.cls_,
             'Property', a.name, 'on', m.name,

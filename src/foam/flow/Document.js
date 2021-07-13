@@ -369,13 +369,11 @@ foam.CLASS({
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls  = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
@@ -406,13 +404,11 @@ foam.CLASS({
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls  = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
