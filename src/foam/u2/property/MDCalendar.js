@@ -77,7 +77,7 @@ foam.CLASS({
           day === this.data.getDate();
     },
     function initE() {
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.start()
           .addClass(this.myClass('heading'))

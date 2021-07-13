@@ -14,6 +14,8 @@ TODO:
 /*
 PORTING U2 to U3:
   - rename initE to render()
+  - when setting nodeName value, set to lower-case
+    ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
@@ -24,13 +26,14 @@ PORTING U2 to U3:
   - innerHTML and outerHTML have been removed
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
-  - this.addClass() is the same as this.addClass(this.myClass())
+  - this.addClass() is the same as this.addClass()
   - automatic ID generation has been removed
   - replace use of slots that return elements with functions that add them
   - remove daoSlot() method
   -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
   - remove cssClass() (use addClass() instead
   -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - remove entity() support
   - remove addBefore()
   - remove insertAt_()
   - remove insertBefore()
@@ -143,37 +146,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'Entity',
-  extends: 'foam.u2.Node',
-
-  documentation: 'U3 Entity Reference',
-
-  properties: [
-    {
-      name: 'name',
-      documentation: `
-        // parser: seq(alphaChar, repeat0(wordChar)),
-        // TODO(adamvy): This should be 'pattern' or 'regex', if those are ever
-        // added.
-      `,
-      assertValue: function(nu) {
-        if ( ! nu.match(/^[a-z#]\w*$/i) ) {
-          throw new Error('Invalid Entity name: ' + nu);
-        }
-      }
-    },
-    {
-      name: 'element_',
-      factory: function() {
-        return this.document.createTextNode('&' + this.name + ';');
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'Text',
   extends: 'foam.u2.Node',
 
@@ -223,8 +195,11 @@ foam.CLASS({
           e = foam.u2.Text.create({}, this);
         } else if ( this.isLiteral(val) ) {
           e = foam.u2.Text.create({text: val}, this);
+        } else if ( foam.u2.Element.isInstance(val) ) {
+          e = val;
         } else {
-          debugger;
+          console.log('Unknown slot type: ', typeof val);
+//          debugger;
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
@@ -551,6 +526,10 @@ foam.CLASS({
     'translationService?'
   ],
 
+  exports: [
+    'isSVG_ as isSVG' // maybe better to export a namespace
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -609,8 +588,10 @@ foam.CLASS({
   properties: [
     {
       name: 'element_',
-      expression: function(nodeName) {
-        return this.document.createElement(this.nodeName);
+      factory: function() {
+        return this.isSVG_ ?
+          this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
+          this.document.createElement(this.nodeName);
       }
     },
     {
@@ -672,8 +653,14 @@ foam.CLASS({
     },
     {
       name: 'nodeName',
-      adapt: function(_, v) { return foam.String.toUpperCase(v); },
-      value: 'DIV'
+      adapt: function(_, v) { return foam.String.toLowerCase(v); },
+      value: 'div'
+    },
+    {
+      name: 'isSVG_',
+      factory: function() {
+        return this.nodeName === 'svg' || this.__context__.isSVG;
+      }
     },
     {
       name: 'attributeMap',
@@ -767,7 +754,7 @@ foam.CLASS({
       this.initKeyboardShortcuts();
       this.render();
       if ( this.initE != foam.u2.Element.prototype.initE ) {
-        console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
+        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
         this.initE();
       }
       this.add = foam.u2.Element.prototype.add;
@@ -1193,7 +1180,7 @@ foam.CLASS({
     },
 
     function setNodeName(name) {
-      console.warn('Deprecated use of setNodeName. Set the nodeName property instead.');
+      console.warn('Deprecated use of setNodeName. Set the nodeName property instead. CLASS: ', this.cls_.name);
       this.nodeName = name;
       return this;
     },
@@ -1205,14 +1192,8 @@ foam.CLASS({
       return this;
     },
 
-    function entity(name) {
-      /* Create and add a named entity. Ex. .entity('gt') */
-      this.addChild_(this.Entity.create({name: name}));
-      return this;
-    },
-
     function nbsp() {
-      return this.entity('nbsp');
+      return this.add('\xa0');
     },
 
     function addClass(cls) { /* Slot | String */
@@ -1621,7 +1602,7 @@ foam.CLASS({
       if ( oldClass ) this.removeClass(oldClass);
       if ( newClass ) {
         if ( ! this.CSS_CLASSNAME_PATTERN.test(newClass) ) {
-          console.log('!!!!!!!!!!!!!!!!!!! Invalid CSS ClassName: ', newClass);
+          console.log('Invalid CSS ClassName: ', newClass);
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
@@ -1653,8 +1634,7 @@ foam.CLASS({
     },
 
     function addEventListener_(topic, listener, opt_args) {
-      var el = this.el_();
-      el && el.addEventListener(topic, listener, opt_args || false);
+      this.element_.addEventListener(topic, listener, opt_args || false);
     },
 
     function removeEventListener_(topic, listener) {
@@ -1712,7 +1692,7 @@ foam.CLASS({
       class: 'foam.core.ContextMethod',
       name: 'E',
       code: function E(ctx, opt_nodeName) {
-        var nodeName = (opt_nodeName || 'DIV').toUpperCase();
+        var nodeName = (opt_nodeName || 'div').toLowerCase();
 
         // Check if a class has been registered for the specified nodeName
         return (ctx.elementForName(nodeName) || foam.u2.Element).

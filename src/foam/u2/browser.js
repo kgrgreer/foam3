@@ -187,7 +187,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass());
+      this.addClass();
 
       // TODO(braden): This isn't quite dynamic enough - should handle model
       // changing.

@@ -98,7 +98,7 @@ foam.CLASS({
     ^container-handle:hover {
       cursor: pointer;
     }
-    
+
     ^filter-button svg{
       fill: initial;
       transform: rotate(0deg);
@@ -210,7 +210,7 @@ foam.CLASS({
           var a = of.getAxiomByName(c);
 
           if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-          
+
           return a
             && ! a.storageTransient
             && ! a.networkTransient
@@ -223,7 +223,7 @@ foam.CLASS({
           .filter((p) => {
             return ! p.storageTransient
             && ! p.networkTransient
-            && p.searchView 
+            && p.searchView
             && ! p.hidden
           })
           .map(foam.core.Property.NAME.f);
@@ -310,6 +310,8 @@ foam.CLASS({
           self.show(filters.length);
 
           var e = this.E();
+          var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
+            code: function(x) { return `Filters (${x})`; }});
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()
@@ -318,7 +320,7 @@ foam.CLASS({
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { buttonStyle: 'SECONDARY', isIconAfter: true })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true })
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -326,10 +328,6 @@ foam.CLASS({
             .end()
             .start()
             .style({ overflow: 'hidden', 'align-self': 'center' })
-            //TODO: remove when filter button gets a badge
-            .add(this.filterController.slot(function (totalCount, resultsCount) {
-              return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} ${self.RESULTS} `);
-            }))
             .end()
           .end();
           self.filtersContainer = this.E().add(self.filterController.slot(function (criterias) {

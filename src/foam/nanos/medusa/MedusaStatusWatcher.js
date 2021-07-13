@@ -117,7 +117,7 @@ foam.CLASS({
       } catch (IOException e) {
         logger.error("exit", e);
       } catch (InterruptedException e) {
-        logger.error("exit", e);
+        // noop
       }
       `
     }

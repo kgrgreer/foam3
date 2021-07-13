@@ -224,7 +224,7 @@ foam.CLASS({
       methods: [
         function initE() {
           this.SUPER();
-          this.addClass(this.myClass());
+          this.addClass();
         },
 
         function isLoaded() { return true; },
@@ -273,6 +273,7 @@ foam.CLASS({
   `,
 
   properties: [
+    [ 'nodeName', 'table' ],
 //    [ 'rows',    99 ],
 //    [ 'columns', 26 ],
     [ 'rows',    10 ],
@@ -305,7 +306,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.setNodeName('table').addClass(this.myClass()).attrs({cellspacing: 0}).
+      this.addClass().attrs({cellspacing: 0}).
         start('tr').
           tag('th').
           repeat(0, this.columns-1, function (i) {

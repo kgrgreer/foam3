@@ -99,7 +99,7 @@ foam.CLASS({
         .execute();
 
         //add back button and 'View Reference' title
-        this.addClass(this.myClass())
+        this.addClass()
           .startContext({ data: this })
             .tag(this.BACK, {
               buttonStyle: foam.u2.ButtonStyle.LINK,

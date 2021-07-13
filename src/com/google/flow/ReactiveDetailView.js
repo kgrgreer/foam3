@@ -153,7 +153,7 @@ foam.CLASS({
       this.data$.sub(this.onDataChange);
       this.onDataChange();
 
-      this.addClass(this.myClass()).
+      this.addClass().
           start('td').addClass(this.myClass('label')).add(prop.label).end().
           start('td').
             addClass(this.myClass('switch')).

@@ -425,7 +425,7 @@ foam.CLASS({
       var self = this;
       var isFirstSet = false;
 
-      this.addClass(this.myClass()).
+      this.addClass().
         select(dao, function(obj) {
           if ( ! isFirstSet && ! self.selection ) {
             self.selection = obj;

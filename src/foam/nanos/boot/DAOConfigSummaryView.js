@@ -223,7 +223,7 @@ foam.CLASS({
       if ( self.memento )
         this.currentMemento_$ = self.memento.tail$;
 
-      this.addClass(this.myClass()).
+      this.addClass().
       start().
         style({ 'height': '56px'}).
         start().

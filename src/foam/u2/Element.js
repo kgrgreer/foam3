@@ -176,19 +176,19 @@ foam.CLASS({
           // X so that objects aren't created with lastClassToInstallCSSFor
           // in their contexts.
           var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-  
+
           if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
             // Install CSS if not already installed in this document for this cls
             axiom.maybeInstallInDocument(X, this);
           }
-  
+
           if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
             X = X.createSubContext({
               lastClassToInstallCSSFor: this,
               originalX: X
             });
           }
-  
+
           if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
         }
       };
@@ -1492,13 +1492,16 @@ foam.CLASS({
     },
 
     function cssClass(cls) {
+      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
       return this.addClass(cls);
     },
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
       var self = this;
-      if ( foam.core.Slot.isInstance(cls) ) {
+      if ( cls === undefined ) {
+        this.addClass_(null, this.myClass());
+      } else if ( foam.core.Slot.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();

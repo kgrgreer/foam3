@@ -126,7 +126,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start(this.ChoiceView, {
               data$: this.qualifier$,
               choices: [

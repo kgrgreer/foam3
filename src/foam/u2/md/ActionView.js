@@ -44,7 +44,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.nodeName = 'paper-button';
-      this.addClass(this.myClass())
+      this.addClass()
           .attrs({ raised: this.raised$ })
           .on('click', this.click)
           .add(this.label$);

@@ -117,7 +117,7 @@ foam.CLASS({
             capability.id == this.capabilityId
         ) :
         undefined;
-      this.addClass(this.myClass()).addClass('start')
+      this.addClass().addClass('start')
         // center icon image
         .start().callIf(mainCapability, function() {
           return this.addClass('circle-center')

@@ -27,7 +27,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.add(this.data$.map(data => {
         if ( data.length && data.substring(0, 6) == '<html>' ) {

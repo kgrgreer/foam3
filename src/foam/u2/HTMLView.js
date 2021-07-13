@@ -39,7 +39,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.add(this.data$);
     }

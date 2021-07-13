@@ -82,14 +82,13 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     protected JSONFObjectFormatter initialValue() {
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
           new foam.lib.StoragePropertyPredicate(),
           new foam.lib.ClusterPropertyPredicate()
         }));
-      formatter.setCalculateDeltaForNestedFObjects(false);
+      formatter.setCalculateDeltaForNestedFObjects(true);
       return formatter;
     }
 
@@ -106,9 +105,8 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     protected MedusaTransientJSONFObjectFormatter initialValue() {
       MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
-      formatter.setCalculateDeltaForNestedFObjects(false);
+      formatter.setCalculateDeltaForNestedFObjects(true);
       return formatter;
     }
 

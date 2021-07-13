@@ -60,7 +60,7 @@ foam.CLASS({
       var self = this;
       var dao = this.menuDAO
         .where(this.EQ(this.Menu.PARENT, this.menuName));
-      this.addClass(this.myClass())
+      this.addClass()
         .start()
           .addClass(this.myClass('side-nav'))
           .select(dao, function(menu) {
