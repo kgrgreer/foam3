@@ -327,7 +327,12 @@ foam.CLASS({
           this.self.appendChild_ = c => {
             this.self.element_.insertBefore(c, this.element_);
           };
-          this.code.call(this.self, d);
+          var e = this.code.call(this.self, d);
+          if ( e ) {
+            // TODO: remove after port from U2 to U3
+            console.log('Deprecated use of select({return E}). Just do self.start() instead.');
+            this.self.tag(e);
+          }
           this.self.appendChild_ = foam.u2.Element.prototype.appendChild_;
 
           var newSize = this.self.childNodes.length;
@@ -522,7 +527,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'elementValidator',
+    //'elementValidator',
     'framed',
     'getElementById',
     'translationService?'
@@ -618,6 +623,7 @@ foam.CLASS({
       name: 'tooltip',
       postSet: function(o, n) {
         if ( n && ! o ) {
+          debugger;
           this.Tooltip.create({target: this, text$: this.tooltip$});
         }
         return n;
@@ -643,6 +649,7 @@ foam.CLASS({
         }
       }
     },
+    /*
     {
       class: 'Proxy',
       of: 'foam.u2.DefaultValidator',
@@ -653,6 +660,7 @@ foam.CLASS({
         return this.elementValidator$ ? this.elementValidator : this.DEFAULT_VALIDATOR;
       }
     },
+    */
     {
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
@@ -738,11 +746,20 @@ foam.CLASS({
         Defaults to __subContext__ unless in a nested startContext().`,
       factory: function() { return this.__subContext__; }
     },
-    'keyMap_'
+    'keyMap_',
+    {
+      // TODO: remove after port from U2 to U3
+      name: 'onload',
+      factory: function() {
+        return { sub: function(f) {
+          console.warn('Deprecated us of ELement.onload.sub().');
+          window.setTimeout(f, 16);
+        } };
+      }
+    }
   ],
 
   methods: [
-
     // from state
 
     // TODO: remove
@@ -1009,7 +1026,7 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip ) {
+      if ( name === 'title' && ! this.tooltip && value ) {
         this.Tooltip.create({target: this, text$: this.attrSlot('title')});
       }
 
