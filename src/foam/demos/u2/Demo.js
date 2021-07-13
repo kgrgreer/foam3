@@ -101,11 +101,7 @@ E().
   add('Entities: ').
   add('foo').
   nbsp().
-  entity('amp').
   add(' bar ').
-  entity('lt').
-  entity('quot').
-  entity("#039").
   add("&quot;").
   tag('br').
   br().

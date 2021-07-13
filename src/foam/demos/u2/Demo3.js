@@ -46,7 +46,6 @@ for ( let i = 8 ; i < 18 ; i++ ) {
 
 foam.u2.Element.create().add('children').write();
 foam.u2.Element.create().write().add('children');
-foam.u2.Element.create().add('entities: ').add('<','here').entity('#xb6').entity('#182').entity('#x2691').entity('#x2699').entity('lt').entity('#x2691').entity('#x2699').add('start').nbsp().add('end').write();
 foam.u2.Element.create({nodeName: 'b'}).add('children').write();
 foam.u2.Element.create({nodeName: 'b'}).write().add('children');
 foam.u2.Element.create().style({color: 'red'}).add('children').write();
@@ -75,7 +74,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.add('child1', 'child2').br().start('b').add('bold').end().br().entity('lt').add('>').add('end');
+      this.add('child1', 'child2').br().start('b').add('bold').end().br().add('>').add('end');
     }
   ]
 });

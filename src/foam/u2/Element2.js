@@ -146,51 +146,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'Entity',
-  extends: 'foam.u2.Node',
-
-  documentation: 'U3 Entity Reference',
-
-  constants: {
-    MAP: {
-      lt: '<',
-      gt: '>',
-      amp: '&',
-      nbsp: '\xa0',
-      quot: '"'
-    }
-  },
-
-  properties: [
-    {
-      name: 'name',
-      documentation: `
-        // parser: seq(alphaChar, repeat0(wordChar)),
-        // TODO(adamvy): This should be 'pattern' or 'regex', if those are ever
-        // added.
-      `,
-      assertValue: function(nu) {
-        if ( ! nu.match(/^[a-z#]\w*$/i) ) {
-          throw new Error('Invalid Entity name: ' + nu);
-        }
-      }
-    },
-    {
-      name: 'element_',
-      factory: function() {
-        var char = this.MAP[this.name];
-        if ( char ) return this.document.createTextNode(char);
-        if ( this.name.startsWith('#x') ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(2), 16)));
-        if ( this.name.startsWith('#')  ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(1))));
-        return this.document.createTextNode('&' + this.name + ';');
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'Text',
   extends: 'foam.u2.Node',
 
@@ -1234,12 +1189,6 @@ foam.CLASS({
       /* Explicitly set Element's id. */
       this.id = id;
       this.element_.id = id;
-      return this;
-    },
-
-    function entity(name) {
-      /* Create and add a named entity. Ex. .entity('gt') */
-      this.addChild_(this.Entity.create({name: name}));
       return this;
     },
 
