@@ -544,7 +544,7 @@ foam.LIB({
           return Math.min(value, max);
         if ( min == null && max == null )
           return value;
-        return Math.min(Math.max(value, min), max);
+        return Math.max(Math.min(value, max), min);
       }
     }
   ]
