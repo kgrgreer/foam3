@@ -25,7 +25,7 @@ foam.CLASS({
 
   methods: [
     function installInClass(cls) {
-      var m = this.__context__.lookup(this.path, true);
+      var m = this.__context__.maybeLookup(this.path);
       if ( m ) {
         cls.installAxioms(m.getOwnAxioms());
       } else {
