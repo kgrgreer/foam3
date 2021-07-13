@@ -392,9 +392,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate  = cls.create;
-      var axiom      = this;
-      var isFirstCSS = ! cls.private_.hasCSS;
+      var oldCreate   = cls.create;
+      var axiom       = this;
+      var isFirstCSS  = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -403,30 +403,32 @@ foam.CLASS({
           ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
           foam.__context__;
 
-        // if a class has inheritCSS: false then finish installing its other
-        // CSS axioms, but prevent any parent classes from installing theirs
-        // We put this in the context to communicate to other CSSAxioms
-        // down the chain. The last/first one will revert back to the original
-        // X so that objects aren't created with lastClassToInstallCSSFor
-        // in their contexts.
-        var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-        if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-          // Install CSS if not already installed in this document for this cls
-          axiom.maybeInstallInDocument(X, this);
-        }
-
-        if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-          X = X.createSubContext({
-            lastClassToInstallCSSFor: this,
-            originalX: X
-          });
-        }
-
-        if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-
         // Now call through to the original create
-        return oldCreate.call(this, args, X);
+        try {
+          return oldCreate.call(this, args, X);
+        } finally {
+          // if a class has inheritCSS: false then finish installing its other
+          // CSS axioms, but prevent any parent classes from installing theirs
+          // We put this in the context to communicate to other CSSAxioms
+          // down the chain. The last/first one will revert back to the original
+          // X so that objects aren't created with lastClassToInstallCSSFor
+          // in their contexts.
+          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
+
+          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
+            // Install CSS if not already installed in this document for this cls
+            axiom.maybeInstallInDocument(X, this);
+          }
+
+          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
+            X = X.createSubContext({
+              lastClassToInstallCSSFor: this,
+              originalX: X
+            });
+          }
+
+          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
+        }
       };
     },
 
@@ -623,7 +625,6 @@ foam.CLASS({
       name: 'tooltip',
       postSet: function(o, n) {
         if ( n && ! o ) {
-          debugger;
           this.Tooltip.create({target: this, text$: this.tooltip$});
         }
         return n;
