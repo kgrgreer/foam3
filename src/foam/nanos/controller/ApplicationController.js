@@ -624,8 +624,11 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      let idCheck = menu && menu.id ? menu.id : menu;
+      if ( this.lastMenuLaunched && this.lastMenuLaunched.id == idCheck
+        && ! opt_forceReload) return;
+
       var dao;
-      var menu;
       if ( this.client ) {
         dao = this.client.menuDAO;
         menu = await dao.find(menu);
@@ -643,9 +646,7 @@ foam.CLASS({
       // Do it this way so as to not reset mementoTail if set
       // NOTE: if pushMenu is called from code the memento changes here cause memento.head !== menu
       //       and this then changes the memento.value which then triggers ApplicationController.mementoChange
-      //       which then trigger pushMenu again.
-      //       however it only does one duplicate call and think a feedback check isn't worth it.
-      //       noneTheLess leaving topic for future consideration
+      //       which then trigger pushMenu again. Stopped with idCheck
       if ( menu.id ) menu = menu.id;
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.value = menu;
