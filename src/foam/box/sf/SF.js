@@ -19,7 +19,6 @@ foam.CLASS({
   package: 'foam.box.sf',
   name: 'SF',
   abstract: true,
-  extends: 'foam.dao.CompositeJournal',
 
   javaImports: [
     'foam.core.X',
@@ -34,6 +33,7 @@ foam.CLASS({
     'foam.nanos.fs.FileSystemStorage',
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.mlang.MLang',
+    'foam.mlang.predicate.Predicate',
     'java.nio.file.*',
     'java.nio.file.attribute.*',
     'java.io.IOException',
@@ -112,8 +112,14 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'timeWindow',
-      documentation: 'In second.',
+      documentation: 'In second. if -1, replay everything',
       value: 240
+    },
+    {
+      class: 'Boolean',
+      name: 'replayFailEntry',
+      documentation: 'only reforward unsuccessful entires when system comes up',
+      value: false
     },
     {
       class: 'Object',
@@ -171,6 +177,7 @@ foam.CLASS({
       name: 'store',
       args: 'FObject fobject',
       javaType: 'SFEntry',
+      documentation: 'Persist SFEntry into Journal.',
       javaCode: `
         SFEntry entry = new SFEntry.Builder(getX())
                               .setObject(fobject)
@@ -179,8 +186,7 @@ foam.CLASS({
         entry.setCreated(new Date());
         long index = entryIndex_.	incrementAndGet();
         long fileIndex = index / ((long) getFileCapability());
-        long entryIndex = index % ((long) getFileCapability());
-        entry.setIndex(entryIndex);
+        entry.setIndex(index);
         String filename = getFileName() + fileIndex;
         Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
         
@@ -190,6 +196,7 @@ foam.CLASS({
     {
       name: 'forward',
       args: 'SFEntry e',
+      documentation: 'Add the entry into process queue.',
       javaCode: `
         /* Assign initial time and enqueue. */
         e.setScheduledTime(System.currentTimeMillis());
@@ -199,8 +206,16 @@ foam.CLASS({
     {
       name: 'successForward',
       args: 'SFEntry e',
+      documentation: 'mark entry send successfully when needed',
       javaCode: `
-        /* Update journal for success - depends on strategy. */
+        if ( getReplayFailEntry() == true ) {
+          e.setStatus(SFStatus.COMPLETED);
+          long index = e.getIndex();
+          long fileIndex = index / ((long) getFileCapability());
+          String filename = getFileName() + fileIndex;
+          Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+          journal.put(getX(), "", (DAO) getNullDao(), e);
+        }
       `
     },
     {
@@ -212,7 +227,14 @@ foam.CLASS({
               e.getRetryAttempt() >= getMaxRetryAttempts() )  {
           getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
 
-          //TODO: update journal when exceed max retry? - on stratepgy
+          if ( getReplayFailEntry() == true ) {
+            e.setStatus(SFStatus.CANCELLED);
+            long index = e.getIndex();
+            long fileIndex = index / ((long) getFileCapability());
+            String filename = getFileName() + fileIndex;
+            Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+            journal.put(getX(), "", (DAO) getNullDao(), e);
+          }
 
         } else {
           updateNextScheduledTime(e);
@@ -221,19 +243,18 @@ foam.CLASS({
         }
       `
     },
-    // {
-    //   name: 'submit',
-    //   args: 'Context x, SFEntry entry',
-    //   abstract: true,
-    //   javaCode: `
-    //     throw new RuntimeException("Do not implement");
-    //     // Object delegate = getDelegateObject();
-    //     // if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
-    //     // else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
-    //     // else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
-    //     // else throw new RuntimeException("DelegateObject do not support"); 
-    //   `
-    // },
+    {
+      name: 'submit',
+      args: 'Context x, SFEntry entry',
+      javaCode: `
+        throw new RuntimeException("Do not implement");
+        // Object delegate = getDelegateObject();
+        // if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
+        // else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
+        // else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
+        // else throw new RuntimeException("DelegateObject do not support"); 
+      `
+    },
     {
       name: 'initForwarder',
       args: 'Context x',
@@ -243,7 +264,7 @@ foam.CLASS({
         // Do nothing if no file
         if ( filenames.size() == 0 ) return;
 
-        List<String> availableFilenames = new ArrayList<>();
+        List<String> availableFilenames = null;
         //Sort file from high index to low.
         filenames.sort((f1, f2) -> {
           int l1 = Integer.parseInt(f1.split("\\\\.")[1]);
@@ -251,23 +272,50 @@ foam.CLASS({
           return l1 > l2 ? -1 : 1;
         });
 
-        Calendar rightNow = Calendar.getInstance();
-        rightNow.add(Calendar.SECOND, -getTimeWindow());
-        Date timeWindow = rightNow.getTime();
+        ArraySink sink = new ArraySink(x);
+        Date timeWindow = null;
 
-        for ( String filename : filenames ) {
-          BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
-          Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
-          if ( fileLastModifiedDate.before(timeWindow) ) break;
-          availableFilenames.add(0, filename);
+        if ( getTimeWindow() == -1 ) {
+          Collections.reverse(filenames);
+          availableFilenames = filenames;
+        } else {
+          availableFilenames = new ArrayList<>();
+          Calendar rightNow = Calendar.getInstance();
+          rightNow.add(Calendar.SECOND, -getTimeWindow());
+          timeWindow = rightNow.getTime();
+  
+          for ( String filename : filenames ) {
+            BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
+            Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
+            if ( fileLastModifiedDate.before(timeWindow) ) break;
+            availableFilenames.add(0, filename);
+          }
+
+          if ( availableFilenames.size() == 0 ) {
+            availableFilenames.add(filenames.get(filenames.size() - 1));
+          }
+        
         }
 
-        if ( availableFilenames.size() == 0 ) {
-          availableFilenames.add(filenames.get(filenames.size() - 1));
+        //Create predicate depends on condition.
+        Predicate predicate = null;
+        if ( getTimeWindow() == -1 ) {
+          if ( getReplayFailEntry() == true ) {
+            predicate = MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE);
+          } else {
+            predicate = MLang.TRUE;
+          }
+        } else {
+          if ( getReplayFailEntry() == true ) {
+            predicate = MLang.AND(
+              MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE),
+              MLang.GTE(SFEntry.CREATED, timeWindow)
+            );
+          } else {
+            predicate = MLang.GTE(SFEntry.CREATED, timeWindow);
+          }
         }
 
-        // Find re forward entry.
-        long latestIndex = -1;
         MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
         for ( String filename : availableFilenames ) {
 
@@ -278,17 +326,15 @@ foam.CLASS({
                               .build();
           journal.replay(x, tempDAO);
         }
-        ArraySink sink = new ArraySink(x);
-        tempDAO.where(
-          MLang.GTE(SFEntry.CREATED, timeWindow)
-        ).select(sink);
-        List<SFEntry> sfEntryList = sink.getArray();
-        //TODO: enqueue.
+
+        //Find entry index;
         Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
         entryIndex_.set((Long)max.getValue());
 
+        tempDAO.where(predicate).select(sink);
+        List<SFEntry> sfEntryList = sink.getArray();
         for ( SFEntry entry : sfEntryList ) {
-          forward(entry);
+          forward((SFEntry) entry.fclone());
         }
       `
     },
@@ -324,8 +370,6 @@ foam.CLASS({
           data: `
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
-
-            public abstract void submit(X x, SFEntry entry);
 
             //Make to public because beanshell do not support.
             static public interface StepFunction {
