@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   properties: [
+    ['nodeName', 'img'],
     {
       name: 'displayWidth',
       attribute: true
@@ -29,8 +30,7 @@ foam.CLASS({
       name: 'displayHeight',
       attribute: true
     },
-    ['alpha', 1.0],
-    ['nodeName', 'img']
+    ['alpha', 1.0]
   ],
 
   methods: [
@@ -46,6 +46,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.SCRIPT({
   package: 'foam.u2.tag',
   name: 'ImageScript',
@@ -55,6 +56,6 @@ foam.SCRIPT({
   ],
   flags: ['web'],
   code: function() {
-foam.__context__.registerElement(foam.u2.tag.Image);
+    foam.__context__.registerElement(foam.u2.tag.Image);
   }
 });
