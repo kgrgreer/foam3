@@ -58,7 +58,12 @@ foam.CLASS({
             this.WARNING_ICON : this.SUCCESS_ICON;
       }
     },
-    'message'
+    'message',
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'customView',
+      documentation: `enable to custom the view`
+    },
   ],
 
   constants: {
@@ -112,6 +117,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this
       this
         .hide(this.isEmpty$)
         .addClass(this.myClass())
@@ -127,7 +133,12 @@ foam.CLASS({
             .end()
             .startContext({ controllerMode: this.ControllerMode.VIEW })
               .addClass(this.myClass('message'))
-              .tag(this.message$)
+              .callIf(this.customView, function() {
+                this.tag(self.customView,{ data$: self.message$})
+              })
+              .callIf(! this.customView, function() {
+                this.tag(self.message$)
+              })
             .endContext()
           .end()
         .end();
