@@ -275,7 +275,7 @@ foam.CLASS({
         if ( cls === foam.core.FObject ) break;
       }
       this.br();
-      this.start(foam.u2.HTMLElement).add(data.model_.documentation).end();
+      this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
       this.add( this.slot(function () {
         var axs = [];
@@ -337,7 +337,7 @@ foam.CLASS({
         if ( cls === foam.core.FObject ) break;
       }
       this.br();
-      this.start(foam.u2.HTMLElement).add(data.model_.documentation).end();
+      this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
       this.add( this.slot(function (showInherited, showOnlyProperties) {
         // TODO: hide 'Source Class' column if showInherited is false

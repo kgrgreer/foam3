@@ -284,7 +284,7 @@ foam.CLASS({
   methods: [
     function load() {
       this.SUPER();
-      this.onDetach(dao.listen(this));
+      this.onDetach(this.dao.listen(this));
 
       this.update();
     },
@@ -789,12 +789,6 @@ foam.CLASS({
       return this.element_.getBoundingClientRect();
     },
 
-
-    function init() {
-      // TODO: better if children just do this themselves
-      this.onDetach(this.visitChildren.bind(this, 'detach'));
-    },
-
     function render() {
     },
 
@@ -1125,12 +1119,9 @@ foam.CLASS({
 
     function appendChild_(c) {
       this.element_.appendChild(c);
-//      debugger;
-//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
-      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -1179,12 +1170,6 @@ foam.CLASS({
           return;
         }
       }
-    },
-
-    function setNodeName(name) {
-      console.warn('Deprecated use of setNodeName. Set the nodeName property instead. CLASS: ', this.cls_.name);
-      this.nodeName = name;
-      return this;
     },
 
     function setID(id) {
@@ -2458,36 +2443,8 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'HTMLValidator',
-  extends: 'foam.u2.DefaultValidator',
-
-  axioms: [ foam.pattern.Singleton.create() ],
-
-  methods: [
-    function sanitizeText(text) {
-      // TODO: validate text
-      return text;
-    }
-  ]
-});
-
-
-// An Element which does not escape HTML content
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'HTMLElement',
-  extends: 'foam.u2.Element',
-
-  requires: [ 'foam.u2.HTMLValidator' ],
-
-  exports: [ 'validator as elementValidator' ],
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'HTMLView',
-  extends: 'foam.u2.HTMLElement',
+  extends: 'foam.u2.Element',
 
   documentation: 'View for safely displaying HTML content.',
 
@@ -2503,7 +2460,6 @@ foam.CLASS({
   methods: [
     function render() {
       this.addClass();
-      this.add('htmlview');
       this.update();
       this.onDetach(this.data$.sub(this.update()));
     }
@@ -2514,6 +2470,7 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
+        // TODO: add validation
         this.element_.innerHTML = this.data;
       }
     }
