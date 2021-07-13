@@ -24,6 +24,11 @@ foam.CLASS({
     Inline notification message container.
   `,
 
+  requires: [
+    'foam.u2.DisplayMode',
+    'foam.u2.ControllerMode',
+  ],
+
   properties: [
     {
       class: 'String',
@@ -54,10 +59,7 @@ foam.CLASS({
             this.WARNING_ICON : this.SUCCESS_ICON;
       }
     },
-    {
-      class: 'String',
-      name: 'message'
-    }
+    'message'
   ],
 
   constants: {
@@ -124,10 +126,10 @@ foam.CLASS({
                 .attrs({ src: this.iconImage$ })
               .end()
             .end()
-            .start()
+            .startContext({ controllerMode: this.ControllerMode.VIEW })
               .addClass(this.myClass('message'))
-              .add(this.message$)
-            .end()
+              .tag(this.message$)
+            .endContext()
           .end()
         .end();
     }
