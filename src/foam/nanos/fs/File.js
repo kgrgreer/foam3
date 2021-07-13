@@ -155,6 +155,15 @@ foam.CLASS({
       adapt: function(oldObj, newObj) {
         return newObj;
       }
+    },
+    {
+      name: 'labels',
+      class: 'StringArray',
+      documentation: 'List of labels applied to this file',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'fileLabelDAO'
+      }
     }
   ],
   methods: [
