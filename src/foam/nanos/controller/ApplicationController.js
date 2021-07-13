@@ -625,7 +625,7 @@ foam.CLASS({
 
     async function pushMenu(menu, opt_forceReload) {
       let idCheck = menu && menu.id ? menu.id : menu;
-      if ( this.lastMenuLaunched && this.lastMenuLaunched.id == idCheck
+      if ( this.currentMenu && this.currentMenu.id == idCheck
         && ! opt_forceReload) return;
 
       var dao;
