@@ -181,6 +181,8 @@ foam.CLASS({
               return self.Element.create({nodeName: opt_nodeName});
             },
             log: function() {
+              for ( var i = 0 ; i < arguments.length ; i++ )
+                if ( arguments[i] == false ) arguments[i] = 'false';
               self.dom.add.apply(self.dom, arguments);
               self.dom.br();
             },
@@ -330,6 +332,7 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
+/*
       this.testData = await fetch('validation').then(function(response) {
         return response.text();
       });
@@ -345,7 +348,7 @@ foam.CLASS({
       this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
-
+*/
       this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
