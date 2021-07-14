@@ -28,6 +28,8 @@ foam.CLASS({
     'foam.box.Box',
     'foam.box.ReplyBox',
     'foam.core.Agency',
+    'foam.dao.AbstractSink',
+    'foam.core.Detachable',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.logger.PrefixLogger',
@@ -61,13 +63,6 @@ foam.CLASS({
       name: 'threadPoolName',
       value: 'threadPool'
     },
-    // {
-    //   class: 'Map',
-    //   name: 'boxes',
-    //   javaFactory: `
-    //     return java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
-    //   `
-    // },
     {
       name: 'logger',
       class: 'FObjectProperty',
@@ -84,66 +79,6 @@ foam.CLASS({
   ],
   
   methods: [
-    // {
-    //   name: 'add',
-    //   args: [
-    //     {
-    //       name: 'id',
-    //       type: 'String'
-    //     },
-    //     {
-    //       name: 'object',
-    //       type: 'Object'
-    //     }
-    //   ],
-    //   javaCode: `
-    //     getBoxes().put(id, object);
-    //   `
-    // },
-    // {
-    //   name: 'get',
-    //   synchronized: true,
-    //   type: 'Object',
-    //   args: [
-    //     {
-    //       name: 'x',
-    //       type: 'X'
-    //     },
-    //     {
-    //       name: 'sfId',
-    //       type: 'String'
-    //     },
-    //     {
-    //       name: 'delegate',
-    //       type: 'Object'
-    //     }
-    //   ],
-    //   javaCode: `
-    //     Object obj = getBoxes().get(sfId);
-    //     if ( obj != null ) {
-    //       throw new RuntimeException("SF can not be used more than once");
-    //     }
-
-    //     DAO sfDAO = (DAO) x.get("sfDAO");
-    //     SF sf = (SF) sfDAO.find(sfId);
-    //     if ( sf == null ) throw new RuntimeException("No SF in the DAO associated with id: " + sfId);
-
-
-    //     //TODO: check type of delegate then assign
-    //     Object ret = null;
-    //     if ( delegate instanceof Box) {
-    //       Box box = (new SFBOX.Builder(getX()))
-    //                   .setSf(sf)
-    //                   .build();
-    //       ret = box;
-    //     } else {
-    //       throw new RuntimeException("Unsupport type");
-    //     }
-
-    //     add(sfId, ret);
-    //     return ret;
-    //   `
-    // },
     {
       name: 'enqueue',
       args: 'SFEntry e',
@@ -218,8 +153,14 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-        
-        return;
+        DAO sfDAO = (DAO) getX().get("SFDAO");
+        sfDAO.select(new AbstractSink() {
+          @Override
+          public void put(Object obj, Detachable sub) {
+            SF sf = (SF) obj;
+            sf.initForwarder(getX());
+          }
+        });
       `
     }
   ],

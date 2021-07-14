@@ -342,6 +342,7 @@ foam.CLASS({
 
         tempDAO.where(predicate).select(sink);
         List<SFEntry> sfEntryList = sink.getArray();
+        getLogger().log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
         for ( SFEntry entry : sfEntryList ) {
           forward((SFEntry) entry.fclone());
         }
