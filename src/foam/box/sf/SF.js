@@ -75,7 +75,7 @@ foam.CLASS({
       name: 'retryStrategy',
       class: 'Enum',
       of: 'foam.box.sf.RetryStrategy',
-      value: 'CONST_FOUR_SECOND_RETRY'
+      value: 'CONST_FOUR_SECOND'
     },
     {
       class: 'Int',

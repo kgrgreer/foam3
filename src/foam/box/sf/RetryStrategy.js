@@ -21,8 +21,12 @@ foam.ENUM({
 	
 	values: [
 		{
-			name: 'CONST_FOUR_SECOND_RETRY',
+			name: 'CONST_FOUR_SECOND',
 			ordinal: 0,
+		},
+		{
+			name: 'INCREMENT_ONE_SECOND',
+			ordinal: 1,
 		}
 	],
 
@@ -34,8 +38,10 @@ foam.ENUM({
           data: `
 						public long next(long cur) {
 							switch ( this ) {
-								case CONST_FOUR_SECOND_RETRY:
-										return 4000;
+								case CONST_FOUR_SECOND:
+									return 4000;
+								case INCREMENT_ONE_SECOND:
+									return cur + 1000;
 								default:
 									throw new RuntimeException("unsupport operation");
 							}
