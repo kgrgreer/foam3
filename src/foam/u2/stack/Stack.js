@@ -24,7 +24,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.controller.Memento'
+    'foam.nanos.controller.Memento',
+    'foam.u2.stack.StackBlock'
   ],
 
   constants: [
@@ -55,7 +56,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'FObjectProperty',
+      of: 'foam.u2.stack.StackBlock',
       name: 'top',
       hidden: true,
       expression: function(pos) {
@@ -95,17 +97,17 @@ foam.CLASS({
     },
 
     function push(/*v, parent, opt_id, opt_hint*/ block) {
-      block = {
+      block = this.StackBlock.create({
         view: arguments[0],
         parent: arguments[1],
         id: arguments[2],
         isMenuItem: arguments[3] && arguments[3].menuItem,
         popup: arguments[3] && arguments[3].popup,
         breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
-      };
+      });
 
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
-      if ( this.top && block.id && this.top.id === block.id ) return;
+      if ( this.top && block.id && this.top.id == block.id ) return;
 
       if ( foam.u2.Element.isInstance(block.view) ) {
         console.warn("Views are not recommended to be pushed to a stack. Please use a viewSpec.");
@@ -165,13 +167,7 @@ foam.CLASS({
       //if so we need to set last not-null memento in the memento chain to null as we're going back
 
       while ( this.pos > jumpPos ) {
-        var isMementoSetWithView = false;
         if ( this.stack_[this.pos].parent.memento.params == this.BCRMB_ID ) {
-          isMementoSetWithView = true;
-        }
-
-        if ( isMementoSetWithView ) {
-          debugger;
           this.deleteMemento(this.stack_[this.pos].parent.memento.head);
         }
 
