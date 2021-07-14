@@ -171,6 +171,7 @@ foam.CLASS({
     {
       name: 'createWriteJournal',
       args: 'String fileName',
+      documentation: 'help function for create a journal',
       javaType: 'Journal',
       javaCode: `
         return new foam.dao.WriteOnlyF3FileJournal.Builder(getX())
@@ -216,7 +217,7 @@ foam.CLASS({
     {
       name: 'successForward',
       args: 'SFEntry e',
-      documentation: 'mark entry send successfully when needed',
+      documentation: 'handle entry when retry success',
       javaCode: `
         if ( getReplayFailEntry() == true ) {
           e.setStatus(SFStatus.COMPLETED);
@@ -231,6 +232,7 @@ foam.CLASS({
     {
       name: 'failForward',
       args: 'SFEntry e',
+      documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
         if ( getMaxRetryAttempts() > -1 && 
@@ -267,6 +269,7 @@ foam.CLASS({
     {
       name: 'initForwarder',
       args: 'Context x',
+      documentation: 'when system start, SFManager will call this service to initial re-forward',
       javaCode: `
         FileSystemStorage fileSystemStorage = (FileSystemStorage) x.get(Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
