@@ -82,6 +82,7 @@ foam.CLASS({
     {
       name: 'enqueue',
       args: 'SFEntry e',
+      documentation: 'add entry into process queue, initForwarder method will take over the rest of job',
       javaCode: `
         PriorityQueue<SFEntry> queue = (PriorityQueue) getProrityQueue();
         lock_.lock();
@@ -97,10 +98,12 @@ foam.CLASS({
       name: 'initForwarder',
       args: 'Context x',
       javaThrows: [],
+      documentation: 'processor that polling entries from queue and try delegate.put when there are available entries',
       javaCode: `
         PriorityQueue<SFEntry> queue = (PriorityQueue) getProrityQueue();
         Agency pool = (Agency) x.get(getThreadPoolName());
 
+        //TODO: use below code after finish testing.
         // final AssemblyLine assemblyLine = x.get("threadPool") == null ?
         //   new foam.util.concurrent.SyncAssemblyLine()   :
         //   new foam.util.concurrent.AsyncAssemblyLine(x) ;
@@ -152,6 +155,7 @@ foam.CLASS({
     },
     {
       name: 'start',
+      documentation: 'Initial each SF',
       javaCode: `
         DAO sfDAO = (DAO) getX().get("SFDAO");
         sfDAO.select(new AbstractSink() {
