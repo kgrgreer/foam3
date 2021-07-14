@@ -405,3 +405,51 @@ they should refresh. If however data is updated on the server by a different use
 clients won't know to update.
 WebSocket connections are more expensive to support, so are rarely used.
 --
+
+##  Q13
+Q. Q4. How “values” property works and what's the difference of between “properties” and “values?
+
+foam.ENUM() creates an enumeration, not a regular class. The same as the following code
+which is both valid C and Java:
+
+enum DayOfWeek
+{
+   Sunday,
+   Monday,
+   Tuesday,
+   Wednesday,
+   Thursday,
+   Friday,
+   Saturday
+};
+
+Unlike classes, you can't create new instances of enums, every instance is already
+pre-created and stored as a constant on the enum. Ex.: DayOfWeek.MONDAY, DayOfWeek.TUESDAY...
+
+Because there is only one instance of each enum value (they're essentially singletons),
+you can compare equality with == in Java.
+
+
+--
+foam.ENUM({
+ name: 'DayOfWeek',
+ values: [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+ ]
+});
+
+var e = DayOfWeek.MONDAY;
+log(e.name + ' ' + e.label + ' ' + e.ordinal + ' ' + e.toString());
+log(DayOfWeek.forOrdinal(3).name);
+for ( var day of DayOfWeek.VALUES ) {
+  log(day.ordinal + " " + day.name);
+}
+
+log(DayOfWeek.isInstance(DayOfWeek.MONDAY));
+log(DayOfWeek.isInstance('Sunday'));
