@@ -331,7 +331,7 @@
             return showPagination ?
              this.E().start(self.Cols).
               addClass(self.myClass('nav')).
-              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
+              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later.
               startContext({ data: self }).
                 start(self.Cols).
                   style({ gap: '4px', 'box-sizing': 'border-box' }).
@@ -456,7 +456,7 @@
         for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++) {
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
-          var dao = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
+          var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
           var tbody = this.table_.slotE_(this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight));
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;
