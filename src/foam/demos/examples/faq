@@ -390,3 +390,18 @@ immediately after outputting them, so the way this normally happens is that an e
 an exception when being loaded (in its initE() method). To solve this problem add a try-catch block
 to your offending element and see if it is throwing an unexpected exception.
 A2. U3, U2's replacement, does away with states and this error is not possible.
+--
+
+##  Q12
+Q. What is remote listener support?
+A. The JS EasyDAO has a boolean property called remoteListenerSupport which defaults to false.
+When set to false, the client DAO communicates with the server over the HTTPBox, which communicates requests and responses
+over the HTTP protocol.
+When set to true, the client DAO communicates with the server over the WebSocket protocol. WebSockets have the advantage
+that they're persistent connections, unlike HTTP, which is only temporary. The persistent nature of the WebSocket protocol
+enables the Client DAO to propagate DAO update events back to the client, something that can't be done over HTTP.
+DAO's normally generate update events when their data is mutated, this lets views know that the data has changed and that
+they should refresh. If however data is updated on the server by a different user, without remoteListenerSupport enabled,
+clients won't know to update.
+WebSocket connections are more expensive to support, so are rarely used.
+--
