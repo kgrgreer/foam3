@@ -64,7 +64,7 @@ foam.CLASS({
       max-height: -webkit-fill-available;
       max-height: -moz-available;
       overflow: auto;
-      padding: 24px;
+      padding: 24 0px;
     }
 
     ^container-filters {
