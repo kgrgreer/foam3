@@ -429,8 +429,7 @@ foam.CLASS({
       factory: function() {
         return this.RichChoiceViewI18NComparator.create();
       }
-    },
-    'summarize'
+    }
   ],
 
   methods: [
@@ -510,7 +509,7 @@ foam.CLASS({
                   .addClass(this.myClass('custom-selection-view'))
                   .add(this.slot((data) => {
                     return this.E().tag(self.selectionView, {
-                      data: self.summarize ? Object.assign(data, { toSummary: self.summarize }) : data,
+                      data: data,
                       fullObject$: this.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
@@ -565,7 +564,6 @@ foam.CLASS({
                           .end()
                           .start()
                             .select(section.filteredDAO$proxy, obj => {
-                              if ( self.summarize ) Object.assign(obj, { toSummary: self.summarize });
                               return this.E()
                                 .start(self.rowView, { data: obj })
                                   .enableClass('disabled', section.disabled)
@@ -599,8 +597,7 @@ foam.CLASS({
                   }));
               }))
           } else {
-            if ( self.summarize ) Object.assign(fullObject_, { toSummary: self.summarize });
-            return self.E().add(fullObject_ ? self.summarize(fullObject_) : '');
+            return self.E().add(fullObject_ ? fullObject_.toSummary() : '');
           }
         }))
     },
@@ -623,7 +620,7 @@ foam.CLASS({
       code: function() {
         if ( this.data ) {
           this.sections[0].dao.find(this.data).then((result) => {
-            this.fullObject_ = this.summarize ? Object.assign(result, { toSummary: this.summarize}) : result;
+            this.fullObject_ = result;
           });
         }
       }
