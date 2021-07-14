@@ -63,11 +63,6 @@ foam.CLASS({
       value: 1024
     },
     {
-      class: 'Boolean',
-      name: 'enable',
-      value: true
-    },
-    {
       class: 'Int',
       name: 'initialValue',
       documentation: 'Unit in Millisecond',
@@ -92,24 +87,6 @@ foam.CLASS({
       class: 'Int',
       documentation: 'Set to -1 to infinitely retry.',
       value: 20
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.dao.Journal',
-      name: 'delegates'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.dao.Journal',
-      name: 'storeJournal',
-      javaFactory: `
-        return new foam.dao.WriteOnlyF3FileJournal.Builder(getX())
-                .setFilename(getFileName() + "." + getFileSuffix())
-                .setCreateFile(true)
-                .setDao(new foam.dao.NullDAO())
-                .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", getFileName() }, new foam.nanos.logger.StdoutLogger()))
-                .build();
-      `
     },
     {
       class: 'Int',
