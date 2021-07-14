@@ -58,7 +58,7 @@ foam.CLASS({
   ],
   methods: [
     async function initE() {
-      this.initMemento();
+      this.currentMemento_ = this.memento;
       if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
         this.openFullTable();
       } else {
@@ -87,7 +87,7 @@ foam.CLASS({
         class: this.DAOBrowseControllerView,
         data$: this.data$,
         config$: this.config$
-      }, this, undefined, { navStackTitle: navStackTitle, mementoHead: `&${this.data.of.name}` });
+      }, this, undefined, { navStackTitle: navStackTitle });
     }
   ],
   actions: [

@@ -221,8 +221,7 @@
             data: obj,
             config: this.config,
             idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
-          //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+          }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }), undefined, { navStackTitle: title });
         }
       }
     },
@@ -392,8 +391,7 @@
               data: null,
               config: this.config,
               idOfRecord: id
-            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
-            //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+            }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }), undefined, { navStackTitle: v.toSummary() });
           });
         }
       }

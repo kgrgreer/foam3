@@ -9,7 +9,11 @@ foam.CLASS({
   name: 'AbstractMenu',
   abstract: true,
 
-  imports: [ 'menuListener?', 'pushMenu', 'translationService' ],
+  imports: [ 
+    'menuListener?',
+    'pushMenu',
+    'translationService' 
+  ],
 
   methods: [
     function launch(X, menu) {

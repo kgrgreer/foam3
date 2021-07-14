@@ -150,7 +150,7 @@ foam.CLASS({
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
-          return 'view::' + id;
+          return id;
         }
       }
     },
@@ -191,16 +191,12 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        // setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
-        if ( this.memento && this.memento.tail ) {
-          this.memento.tail.head = 'edit';
-        }
         this.stack.push({
           class:  'foam.comics.v2.DAOUpdateView',
           data:   this.data,
           config: this.config,
           of:     this.config.of
-        }, this.__subContext__);
+        }, this.__subContext__.createSubContext({ memento: this.memento }));
       }
     },
     {
@@ -304,15 +300,15 @@ foam.CLASS({
       // to this view from the edit view on the stack.
       promise.then(d => {
         if ( d ) self.data = d;
-        if ( self.memento && self.memento.tail && self.memento.tail.head.toLowerCase() === 'edit' ) {
+        if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
           self.edit();
         } else {
-          if ( this.memento && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
-            var m = foam.nanos.controller.Memento.create({ value: this.mementoHead, parent: this.memento, replaceHistoryState: false });
-            this.memento.tail = m;
-            if ( ! m.tail ) 
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
-            this.currentMemento_ = m.tail;
+          if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+            this.memento.head = 'view';
+            this.memento.tail.head = this.mementoHead;
+            if ( ! this.memento.tail.tail ) 
+              this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
+            this.currentMemento_ = this.memento.tail.tail;
           }
           this
           .addClass(this.myClass())
