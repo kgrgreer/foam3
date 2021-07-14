@@ -24,8 +24,6 @@ foam.CLASS({
 
   exports: ['currentMemento_ as memento'],
 
-  requires: ['foam.nanos.controller.Memento'],
-
   css: `
     ^ {
       padding: 32px
