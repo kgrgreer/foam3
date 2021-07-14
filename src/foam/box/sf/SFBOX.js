@@ -20,53 +20,53 @@ foam.CLASS({
   name: 'SFBOX',
   extends: 'foam.box.ProxyBox',
 
-  javaImports: [
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.box.Message',
-  ],
+  // javaImports: [
+  //   'foam.nanos.logger.PrefixLogger',
+  //   'foam.nanos.logger.Logger',
+  //   'foam.box.Message',
+  // ],
   
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'foam.box.sf.SF',
-      name: 'sf'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
-    }
-  ],
+  // properties: [
+  //   {
+  //     class: 'FObjectProperty',
+  //     of: 'foam.box.sf.SF',
+  //     name: 'sf'
+  //   },
+  //   {
+  //     name: 'logger',
+  //     class: 'FObjectProperty',
+  //     of: 'foam.nanos.logger.Logger',
+  //     visibility: 'HIDDEN',
+  //     transient: true,
+  //     javaCloneProperty: '//noop',
+  //     javaFactory: `
+  //       return new PrefixLogger(new Object[] {
+  //         this.getClass().getSimpleName()
+  //       }, (Logger) getX().get("logger"));
+  //     `
+  //   }
+  // ],
 
-  methods: [
-    {
-      name: 'send',
-      javaCode: `
-        // Store and Forward.
-        SFEntry e = getSf().store((Message)msg);
-        getSf().forward(e);
-      `
-    }
-  ],
+  // methods: [
+  //   {
+  //     name: 'send',
+  //     javaCode: `
+  //       // Store and Forward.
+  //       SFEntry e = getSf().store((Message)msg);
+  //       getSf().forward(e);
+  //     `
+  //   }
+  // ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-          `
-        }));
-      }
-    }
-  ]
+  // axioms: [
+  //   {
+  //     name: 'javaExtras',
+  //     buildJavaClass: function(cls) {
+  //       cls.extras.push(foam.java.Code.create({
+  //         data: `
+  //         `
+  //       }));
+  //     }
+  //   }
+  // ]
 });

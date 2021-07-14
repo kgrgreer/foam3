@@ -70,6 +70,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'initialValue',
+      documentation: 'Unit in Millisecond',
       value: 1000
     },
     {
@@ -83,6 +84,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'maxRetryDelayMS',
+      documentation: 'Unit in Millisecond',
       value: 20000
     },
     {

@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.concurrent.AssemblyLine',
     'java.util.PriorityQueue',
+    'java.util.concurrent.TimeUnit',
     'java.util.concurrent.locks.ReentrantLock',
     'java.util.concurrent.locks.Condition',
   ],
@@ -60,13 +61,13 @@ foam.CLASS({
       name: 'threadPoolName',
       value: 'threadPool'
     },
-    {
-      class: 'Map',
-      name: 'boxes',
-      javaFactory: `
-        return java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
-      `
-    },
+    // {
+    //   class: 'Map',
+    //   name: 'boxes',
+    //   javaFactory: `
+    //     return java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
+    //   `
+    // },
     {
       name: 'logger',
       class: 'FObjectProperty',
@@ -83,66 +84,66 @@ foam.CLASS({
   ],
   
   methods: [
-    {
-      name: 'add',
-      args: [
-        {
-          name: 'id',
-          type: 'String'
-        },
-        {
-          name: 'object',
-          type: 'Object'
-        }
-      ],
-      javaCode: `
-        getBoxes().put(id, object);
-      `
-    },
-    {
-      name: 'get',
-      synchronized: true,
-      type: 'Object',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'sfId',
-          type: 'String'
-        },
-        {
-          name: 'delegate',
-          type: 'Object'
-        }
-      ],
-      javaCode: `
-        Object obj = getBoxes().get(sfId);
-        if ( obj != null ) {
-          throw new RuntimeException("SF can not be used more than once");
-        }
+    // {
+    //   name: 'add',
+    //   args: [
+    //     {
+    //       name: 'id',
+    //       type: 'String'
+    //     },
+    //     {
+    //       name: 'object',
+    //       type: 'Object'
+    //     }
+    //   ],
+    //   javaCode: `
+    //     getBoxes().put(id, object);
+    //   `
+    // },
+    // {
+    //   name: 'get',
+    //   synchronized: true,
+    //   type: 'Object',
+    //   args: [
+    //     {
+    //       name: 'x',
+    //       type: 'X'
+    //     },
+    //     {
+    //       name: 'sfId',
+    //       type: 'String'
+    //     },
+    //     {
+    //       name: 'delegate',
+    //       type: 'Object'
+    //     }
+    //   ],
+    //   javaCode: `
+    //     Object obj = getBoxes().get(sfId);
+    //     if ( obj != null ) {
+    //       throw new RuntimeException("SF can not be used more than once");
+    //     }
 
-        DAO sfDAO = (DAO) x.get("sfDAO");
-        SF sf = (SF) sfDAO.find(sfId);
-        if ( sf == null ) throw new RuntimeException("No SF in the DAO associated with id: " + sfId);
+    //     DAO sfDAO = (DAO) x.get("sfDAO");
+    //     SF sf = (SF) sfDAO.find(sfId);
+    //     if ( sf == null ) throw new RuntimeException("No SF in the DAO associated with id: " + sfId);
 
 
-        //TODO: check type of delegate then assign
-        Object ret = null;
-        if ( delegate instanceof Box) {
-          Box box = (new SFBOX.Builder(getX()))
-                      .setSf(sf)
-                      .build();
-          ret = box;
-        } else {
-          throw new RuntimeException("Unsupport type");
-        }
+    //     //TODO: check type of delegate then assign
+    //     Object ret = null;
+    //     if ( delegate instanceof Box) {
+    //       Box box = (new SFBOX.Builder(getX()))
+    //                   .setSf(sf)
+    //                   .build();
+    //       ret = box;
+    //     } else {
+    //       throw new RuntimeException("Unsupport type");
+    //     }
 
-        add(sfId, ret);
-        return ret;
-      `
-    },
+    //     add(sfId, ret);
+    //     return ret;
+    //   `
+    // },
     {
       name: 'enqueue',
       args: 'SFEntry e',
@@ -151,7 +152,7 @@ foam.CLASS({
         lock_.lock();
         try {
           queue.offer(e);
-          notEmpty_.signal();
+          notAvailable_.signal();
         } finally {
           lock_.unlock();
         }
@@ -183,8 +184,6 @@ foam.CLASS({
                   SFEntry e = queue.poll();
                   assemblyLine.enqueue(new foam.util.concurrent.AbstractAssembly() { 
                     public void executeJob() {
-                      //TODO: think
-                      //e.getSf()
                       try {
                         e.getSf().submit(x, e);
                         e.getSf().successForward(e);
@@ -194,10 +193,19 @@ foam.CLASS({
                       }
                     }
                   });
+                } 
+
+                long waitTime = queue.peek().getScheduledTime() - System.currentTimeMillis();
+                if ( waitTime > 0 ) {
+                  try {
+                    notAvailable_.await(waitTime, TimeUnit.MILLISECONDS);
+                  } catch ( InterruptedException e ) {
+                    
+                  }
                 }
               } else {
                 try {
-                  notEmpty_.await();
+                  notAvailable_.await();
                 } catch ( InterruptedException e ) {
                   
                 }
@@ -210,6 +218,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+        
         return;
       `
     }
@@ -222,7 +231,7 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             private final ReentrantLock lock_ = new ReentrantLock();
-            private final Condition notEmpty_ = lock_.newCondition();
+            private final Condition notAvailable_ = lock_.newCondition();
         
           `
         }));

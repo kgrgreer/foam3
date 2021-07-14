@@ -6,3 +6,28 @@ p({
     "class": "foam.box.sf.SFBoxManager"
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SFDAO",
+  "description": "A read-only database of business sectors.",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setReadOnly(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("storeAndForwards")
+      .setOf(foam.box.sf.SF.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.box.sf.SF"
+    }
+  """
+})
