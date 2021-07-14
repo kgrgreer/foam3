@@ -18,6 +18,7 @@ FOAM_FILES([
   { name: "foam/nanos/logger/StdoutLoggerDAO" },
   { name: 'foam/nanos/logger/benchmark/LoggerBenchmark' },
   { name: 'foam/nanos/fs/File' },
+  { name: 'foam/nanos/fs/FileLabel' },
   { name: 'foam/nanos/fs/FileType' },
   { name: 'foam/nanos/fs/FileProperty' },
   { name: 'foam/nanos/fs/FileDAODecorator' },
