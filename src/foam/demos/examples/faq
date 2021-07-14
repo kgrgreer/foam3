@@ -666,3 +666,81 @@ remote services.
 <p>
 2. The second example doesn't supply the 'class' of the Stub, because this service implements
 the DAO interface, which is the default, so class defaults to foa.dao.ClientDAO in this case.
+
+##  Q18
+Q. What are the differences and when to use:<br>
+Slot Vs. Simple slot Vs. Expression slot
+<p>
+A. For review, recall that a Slot is an object with three main methods:
+<pre>
+  void set(value) - set the Slot's value
+  Object get() - get the Slot's value
+  sub(listener) - subscribe to be notified when the value changes
+<pre>
+The most common type of Slot in FOAM is a PropertySlot, which is accessed when you
+suffix the '$' character to a property name.
+<p>
+Ex.:
+--
+foam.CLASS({
+  name: 'Person',
+  properties: [
+    'firstName',
+    'lastName'
+  ]
+});
+
+var p1 = Person.create({firstName: 'Kevin', lastName: 'Greer'});
+log(p1.firstName, p1.firstName$.cls_.name, p1.firstName$.get());
+
+// now, I could update firstName directly:
+
+p1.firstName = 'Logan';
+log(p1.firstName);
+
+// But I could also use the slot:
+p1.firstName$.set('Mark');
+log(p1.firstName);
+
+// And I can subscribe to changes to firstName:
+p1.firstName$.sub(function() {
+  log('firstName change: ', p1.firstName);
+});
+
+// Which will be called if I update the property directly:
+p1.firstName = 'Logan'
+
+// Or through the slot:
+p1.firstName$.set('Kevin');
+
+
+// In the above example firstName$ is a PropertySlot, ie. a Slot bound to a Property value.
+
+// However, if you ever need a Slot not bound to a Property, you can use a SimpleSlot:
+
+var slot = foam.core.SimpleSlot.create({value: 'Tala'});
+log(slot.get());
+slot.set('Janet');
+log(slot.get());
+
+// Normally SimpleSlots are only used by FOAM internals, and as an application developer,
+// you would rarely need to use them. Instead of using SimpleSlot's, you can just declare an extra
+// property on your model and then access it as property$.
+
+// PropertySlot's and SimpleSlot's only access one value, but an ExpressionSlot lets you combine
+// multiple property values into a single Slot.
+
+// Ex.:
+var fullName = p1.slot(function(firstName, lastName) { return firstName + ' ' + lastName; });
+log('fullName', fullName.get());
+
+fullName.sub(function() {
+  log('full name: ', fullName.get());
+});
+
+p1.firstName = 'John';
+p1.lastName = 'Doe';
+
+// Note that ExpressionSlots aren't set()-able:
+fullName.set('Jane Smith');
+log(fullName.get()); // Is still John Doe
