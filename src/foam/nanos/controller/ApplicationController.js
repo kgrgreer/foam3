@@ -394,18 +394,18 @@ foam.CLASS({
         self.installLanguage();
 
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.memento.value ) {
-          var menu = await self.__subContext__.menuDAO.find(self.memento.value);
-          // explicitly check that the menu is unauthenticated
-          // since if there is a user session on refresh, this would also 
-          // find authenticated menus to try to push before fetching subject
-          if ( menu && menu.authenticate === false ) {
-            self.pushMenu(menu);
-            await self.maybeReinstallLanguage(client);
-            self.languageInstalled.resolve();
-            return;
-          }
-        }
+        // if ( self.memento.value ) {
+        //   var menu = await client.menuDAO.find(self.memento.value);
+        //   // explicitly check that the menu is unauthenticated
+        //   // since if there is a user session on refresh, this would also 
+        //   // find authenticated menus to try to push before fetching subject
+        //   if ( menu && menu.authenticate === false ) {
+        //     self.pushMenu(menu);
+            // await self.maybeReinstallLanguage(client);
+            // self.languageInstalled.resolve();
+            // return;
+         // }
+        //}
 
         await self.fetchSubject();
 
@@ -627,9 +627,11 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      
       let idCheck = menu && menu.id ? menu.id : menu;
-      if ( this.currentMenu && this.currentMenu.id == idCheck
-        && ! opt_forceReload) return;
+      let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
+      console.log(`********************menu: ${idCheck}, currentMenuCheck ${currentMenuCheck}, resulting Push ${currentMenuCheck == idCheck}`);
+      if ( currentMenuCheck == idCheck && ! opt_forceReload ) return;
 
       var dao;
       if ( this.client ) {
