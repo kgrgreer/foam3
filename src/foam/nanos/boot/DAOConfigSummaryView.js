@@ -105,11 +105,11 @@ foam.CLASS({
           class: 'foam.u2.ViewSpec',
           name: 'inner'
         },
+        'currentMemento_',
         {
-          name: 'mementoHead',
-          expression: function(title) { return title; }
-        },
-        'currentMemento_'
+          name: 'breadcrumbTitle',
+          factory: function() { return this.title; }
+        }
       ],
 
       methods: [
@@ -174,7 +174,7 @@ foam.CLASS({
 
 
   exports: [
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   messages: [
@@ -209,7 +209,8 @@ foam.CLASS({
     },
     {
       name: 'currentMemento_'
-    }
+    },
+    ['breadcrumbTitle', 'Data Management']
   ],
 
   methods: [
@@ -331,7 +332,7 @@ foam.CLASS({
         if ( ! isInitializing && ! m.tail ) this.stack.back();
         return;
       }
-      var x = this.__subContext__.createSubContext({ memento: this.memento });
+      var x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
@@ -359,7 +360,8 @@ foam.CLASS({
               },
               this.CONTROLLER2
             ]
-          ]
+          ],
+          selectedView: this.CONTROLLER2
         }
       }, x);
     }

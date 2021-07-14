@@ -68,7 +68,7 @@ foam.CLASS({
 
       var v = foam.u2.ViewSpec.createView(view, null, this, X);
 
-      if ( ( v.breadcrumbTitle$ || v.children[0].breadcrumbTitle$ /*need to do this for menu with border*/) && X.memento ) {
+      if ( ( v.breadcrumbTitle$ || v.children[0]?.breadcrumbTitle$ /*need to do this for menu with border*/) && X.memento ) {
         if ( X.memento.params != this.data.BCRMB_ID )
           X.memento.params = this.data.BCRMB_ID;
         this.data.top.breadcrumbTitle$.follow(v.breadcrumbTitle$ || v.children[0].breadcrumbTitle$);
