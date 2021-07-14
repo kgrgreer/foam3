@@ -511,3 +511,47 @@ add(foam.util.Timer.create());
 // Keep in mind that .tag() is the same as .start().end(), so the following are equivalent:
 add(E().start('input').end());
 add(E().tag('input'));
+
+##  Q14
+Q. When to use callIf()?
+A. call, callIf, callIfElse, and forEach are defined in foam.core.Fluent, and
+are used for creating "fluent interfaces". This is where methods can be chained
+without ever storing intermediate values in variables. U2/U3 are fluent interfaces.
+Ex.:
+--
+add(E().start('div')
+  .style({border: '2px solid red', background: 'pink'})
+  .on('click', function() { log('click') })
+  .start('b').add('bold text').end()
+  .br()
+  .start('i').add('italic text').end()
+  .start('blockquote')
+    .add('inside')
+    .start('blockquote')
+      .style({background: 'white'})
+      .add('in inside')
+    .end()
+  .end()
+.end());
+
+// notice that despite many different elements being created, none were ever
+// stored in variables, and instead the whole structure was created in one
+// chained statement, with each method returning the appropriate object to
+// continue the composition.
+
+// So, callIf(), and the other Fluent methods, provide a convenient way of having
+// 'if' statements without having to break out of the fluent interface.
+
+// Consider:
+
+function sign(isHoliday) {
+  add(E().tag('hr').start()
+    .start('b').add('Acme Widget Store').end()
+    .callIf(isHoliday, function() {
+      this.br().start('b').add("Sorry, we're closed today!").end();
+    })
+  .end());
+}
+
+sign(true);
+sign(false);
