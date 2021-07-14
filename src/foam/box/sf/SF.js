@@ -121,6 +121,13 @@ foam.CLASS({
       documentation: 'only reforward unsuccessful entires when system comes up',
       value: false
     },
+    //TODO: todo feature.
+    {
+      class: 'Boolean',
+      name: 'storeAfterFirstFail',
+      documentation: 'The SF presist entry only after first time fail',
+      value: false
+    },
     {
       class: 'Object',
       name: 'delegateObject',
@@ -187,8 +194,8 @@ foam.CLASS({
         long index = entryIndex_.	incrementAndGet();
         long fileIndex = index / ((long) getFileCapability());
         entry.setIndex(index);
-        String filename = getFileName() + fileIndex;
-        Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+        String filename = getFileName() + "." + fileIndex;
+        Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
         
         return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
       `
@@ -200,6 +207,7 @@ foam.CLASS({
       javaCode: `
         /* Assign initial time and enqueue. */
         e.setScheduledTime(System.currentTimeMillis());
+        e.setSf(this);
         ((SFManager) getManager()).enqueue(e);
       `
     },
@@ -212,8 +220,8 @@ foam.CLASS({
           e.setStatus(SFStatus.COMPLETED);
           long index = e.getIndex();
           long fileIndex = index / ((long) getFileCapability());
-          String filename = getFileName() + fileIndex;
-          Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+          String filename = getFileName() + "." + fileIndex;
+          Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
           journal.put(getX(), "", (DAO) getNullDao(), e);
         }
       `
@@ -231,8 +239,8 @@ foam.CLASS({
             e.setStatus(SFStatus.CANCELLED);
             long index = e.getIndex();
             long fileIndex = index / ((long) getFileCapability());
-            String filename = getFileName() + fileIndex;
-            Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+            String filename = getFileName() + "." + fileIndex;
+            Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
             journal.put(getX(), "", (DAO) getNullDao(), e);
           }
 
@@ -247,12 +255,11 @@ foam.CLASS({
       name: 'submit',
       args: 'Context x, SFEntry entry',
       javaCode: `
-        throw new RuntimeException("Do not implement");
-        // Object delegate = getDelegateObject();
-        // if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
-        // else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
-        // else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
-        // else throw new RuntimeException("DelegateObject do not support"); 
+        Object delegate = getDelegateObject();
+        if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
+        else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
+        else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
+        else throw new RuntimeException("DelegateObject do not support"); 
       `
     },
     {

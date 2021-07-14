@@ -20,6 +20,17 @@ foam.CLASS({
 	name: 'HttpSFSink',
 	extends: 'foam.box.sf.SF',
 	implements: [ 'foam.dao.Sink' ],
+
+	properties: [
+		{
+      class: 'Object',
+      name: 'delegateObject',
+      transient: true,
+			javaFactory: `
+				return null;
+			`
+    },
+	],
 	
   methods: [
     {
