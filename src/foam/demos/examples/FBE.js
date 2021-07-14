@@ -181,9 +181,16 @@ foam.CLASS({
               return self.Element.create({nodeName: opt_nodeName});
             },
             log: function() {
-              for ( var i = 0 ; i < arguments.length ; i++ )
-                if ( arguments[i] == false ) arguments[i] = 'false';
-              self.dom.add.apply(self.dom, arguments);
+              var args = [];
+              for ( var i = 0 ; i < arguments.length ; i++ ) {
+                if ( i ) args.push(' ');
+                if ( arguments[i] == false )
+                  args.push('false');
+                else
+                  args.push(arguments[i]);
+              }
+
+              self.dom.add.apply(self.dom, args);
               self.dom.br();
             },
             print: function() {
