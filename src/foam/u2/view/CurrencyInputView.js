@@ -133,7 +133,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .add(this.slot(function(mode, currency) {
           if ( mode === foam.u2.DisplayMode.RW ) {
             return this.E().style({ 'display': 'flex' }).start().addClass(self.myClass('container-selection'))

@@ -19,7 +19,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
     }
   ]
 });
@@ -38,7 +38,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
     }
   ]
 });

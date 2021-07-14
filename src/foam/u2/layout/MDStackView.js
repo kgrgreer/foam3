@@ -29,8 +29,7 @@ foam.CLASS({
       name: 'curPos',
       value: 0
     },
-    'curView',
-
+    'curView'
   ],
 
   css: '%CUSTOMCSS%',
@@ -41,8 +40,7 @@ foam.CLASS({
     this.curView$.sub(this.onViewUpdate);
 
     var self = this;
-      this.setNodeName('div');
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.start('div').addClass('primary-stack')
         .add(this.slot(function(data) {

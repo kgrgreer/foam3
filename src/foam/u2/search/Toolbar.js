@@ -40,7 +40,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass())
+      this.addClass()
         .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
           .tag({
             class: 'foam.u2.detail.SectionedDetailPropertyView',

@@ -74,7 +74,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.update();
       this.data$proxy.on.sub(this.update)

@@ -574,7 +574,7 @@ foam.CLASS({
 
       var adapt = function(value) {
         if ( foam.String.isInstance(value) ) {
-          var cls = this.__context__.lookup(value, true);
+          var cls = this.__context__.maybeLookup(value);
           if ( ! cls ) { // if the model is not available, it will be set on each get()
             console.error(`Property '${name}' of type '${this.model_.name}' was set to '${value}', which isn't a valid class.`);
             return null;
@@ -595,7 +595,7 @@ foam.CLASS({
         get: function classGetter() {
           console.warn("Deprecated use of 'cls.$cls'. Just use 'cls' instead.");
           return typeof this[name] !== 'string' ? this[name] :
-            this.__context__.lookup(this[name], true);
+            this.__context__.maybeLookup(this[name]);
         },
         configurable: true
       });

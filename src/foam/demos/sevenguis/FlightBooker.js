@@ -76,7 +76,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.
-        setNodeName('div').
         addClass(this.myClass()).
         start('div').addClass(this.myClass('title')).add('Book Flight').end().
         add(this.IS_RETURN).

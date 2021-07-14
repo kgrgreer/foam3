@@ -53,7 +53,7 @@ foam.CLASS({
       this.SUPER();
       var content;
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start()
           .addClass(this.myClass('background'))
           .on('click', this.close)

@@ -192,6 +192,15 @@ foam.CLASS({
       }
     },
     {
+      name: 'labels',
+      class: 'StringArray',
+      documentation: 'List of labels applied to this file',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'fileLabelDAO'
+      }
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',

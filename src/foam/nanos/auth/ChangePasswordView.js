@@ -121,7 +121,7 @@ foam.CLASS({
       const self = this;
       const logo = this.theme.largeLogo || this.theme.logo;
 
-      this.addClass(this.myClass())
+      this.addClass()
         // header
         .callIf(this.showHeader, function() {
           this.start().addClass(self.myClass('top-bar'))

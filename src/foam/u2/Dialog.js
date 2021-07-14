@@ -64,7 +64,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.addClass(this.myClass());
+      this.addClass();
       if ( this.title ) {
         this.start()
           .addClass(this.myClass('header'))

@@ -100,7 +100,7 @@ foam.CLASS({
         
     methods:[
       function initE(){
-        this.addClass(this.myClass())
+        this.addClass()
         this
         .tag(this.ModalHeader.create({
           title: 'New Email'

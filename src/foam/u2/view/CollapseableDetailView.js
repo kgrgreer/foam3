@@ -72,7 +72,7 @@ foam.CLASS({
       var self = this;
       self.SUPER();
 
-      this.addClass(this.myClass());
+      this.addClass();
       this.enableClass('expanded', this.isCollapsed$, true);
 
       self

@@ -48,6 +48,7 @@ foam.CLASS({
   `,
 
   properties: [
+    [ 'nodeName', 'SPAN' ],
     'x',
     'y',
     {
@@ -87,15 +88,14 @@ foam.CLASS({
       if ( ! this.mined ) this.unminedCount++;
 
       this.
-        setNodeName('span').
         addClass(this.myClass()).
         addClass(this.stateClass$).
         on('click',       this.sweep).
         on('contextmenu', this.mark).
-        start('span').addClass(this.myClass('flag')).entity('#x2691').end();
+        start('span').addClass(this.myClass('flag')).add('\u2691').end();
 
       if ( this.mined ) {
-        this.start('font').style({'padding-left':'4px'}).entity('#x2699').end();
+        this.start('font').style({'padding-left':'4px'}).add('\u2699').end();
       }
 
       if ( ! this.mined && this.mineCount ) {

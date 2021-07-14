@@ -37,7 +37,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.initMemento();
+      this.initMemento && this.initMemento();
 
       this.
         addClass(this.myClass()).

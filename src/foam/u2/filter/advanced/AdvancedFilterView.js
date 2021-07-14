@@ -209,7 +209,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start(this.ModalHeader, { title: this.TITLE_HEADER }).end()
         .add(this.filterController.slot(function(previewCriterias) {
           var keys = Object.keys(previewCriterias);

@@ -16,7 +16,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass())
+      this.addClass()
         .start('div').addClass('img-container')
           .start('img')
             .attrs({

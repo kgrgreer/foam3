@@ -48,7 +48,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.addClass(this.myClass())
+      this.addClass()
       .start().addClass('wrapper-outer')
         .start().addClass('left-block')
           .start('div', null, this.leftPanel$)

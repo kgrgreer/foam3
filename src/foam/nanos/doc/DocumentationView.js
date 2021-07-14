@@ -66,7 +66,7 @@ foam.CLASS({
     },
     function initE() {
       var dao = this.__context__[this.daoKey];
-      this.addClass(this.myClass());
+      this.addClass();
       if ( ! dao ) {
         this.add('No DAO found for key: ', this.daoKey);
       } else this.add(this.slot(function(data, error) {
