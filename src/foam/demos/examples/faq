@@ -453,3 +453,61 @@ for ( var day of DayOfWeek.VALUES ) {
 
 log(DayOfWeek.isInstance(DayOfWeek.MONDAY));
 log(DayOfWeek.isInstance('Sunday'));
+
+
+##  Q14
+Q. Q5 how many and what types of arguments for “start()“?
+
+--
+
+// If no arguments are provided, a DIV tag is created:
+add(E().start().add("I'm in a div.").end());
+
+// Use a String to specify an HTML tag name
+add(E().start('b').add('bold').end());
+
+// Use a ViewSpec to specify a U2View
+add(E().start({class: 'foam.u2.TextField'}).end());
+
+// Let's create our own view:
+foam.CLASS({
+  name: 'MyView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function initE() {
+      this.add('MyView, myData: ', this.data$);
+    }
+  ]
+});
+
+
+// Let's use the second argument to specify the data:
+add(E().start({class: 'MyView'}, {data: 'data1'}).end());
+
+// This also works:
+add(E().start({class: 'MyView', data: 'data2'}).end());
+
+// This also also works:
+add(E().start(MyView, {data: 'data3'}).end());
+
+// You can also use a function:
+var randomTag = function() { return Math.random() < 0.5 ? 'b' : 'i'; };
+
+for ( var i = 0 ; i < 5 ; i++ )
+  add(E().start(randomTag).add('bold or italic').end());
+
+// It can also be a slot, but this option is being removed in U3
+
+// It can also be any object that has a toE() method.
+add(foam.util.Timer.create());
+
+// The third argument, if provided, is a slot which is set the the Element
+// that is eventually created as a result of this start(). This is used if
+// you want to store the sub-view in a variable for later reference.
+
+// Ex.: start('div', {}, this.sidePanel$)
+
+// Keep in mind that .tag() is the same as .start().end(), so the following are equivalent:
+add(E().start('input').end());
+add(E().tag('input'));
