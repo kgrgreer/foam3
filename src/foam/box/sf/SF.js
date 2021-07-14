@@ -62,15 +62,6 @@ foam.CLASS({
       name: 'fileCapability',
       value: 1024
     },
-    //This will not work in beanshall.
-    // {
-    //   class: 'Object',
-    //   javaType: 'StepFunction',
-    //   name: 'stepFunction',
-    //   javaFactory: `
-    //     return x -> x*2;
-    //   `
-    // },
     {
       name: 'retryStrategy',
       class: 'Enum',
