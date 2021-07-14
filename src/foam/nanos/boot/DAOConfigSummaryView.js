@@ -361,7 +361,7 @@ foam.CLASS({
             ]
           ]
         }
-      }, x, undefined, { navStackTitle: m.tail.head });
+      }, x);
     }
   ]
 });

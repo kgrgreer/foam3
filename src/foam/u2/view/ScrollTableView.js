@@ -221,7 +221,7 @@
             data: obj,
             config: this.config,
             idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }), undefined, { navStackTitle: title });
+          }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }));
         }
       }
     },
@@ -391,7 +391,7 @@
               data: null,
               config: this.config,
               idOfRecord: id
-            }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }), undefined, { navStackTitle: v.toSummary() });
+            }, this.__subContext__.createSubContext({ memento: this.table_.memento.tail }));
           });
         }
       }

@@ -159,6 +159,13 @@ foam.CLASS({
       factory: function() {
         return this.data ? this.data.id : null;
       }
+    },
+    {
+      class: 'String',
+      name: 'breadcrumbTitle',
+      expression: function(data) {
+        return data?.toSummary() ?? '';
+      }
     }
   ],
 
@@ -269,6 +276,13 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      // This is needed to ensure data is available for the breadcrumbTitle
+      this.SUPER();
+      var self = this;
+      var id = this.data?.id ?? this.idOfRecord;
+      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
+    },
     function initE() {
       var self = this;
       this.SUPER();
