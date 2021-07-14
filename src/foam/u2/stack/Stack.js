@@ -27,8 +27,14 @@ foam.CLASS({
     'foam.nanos.controller.Memento'
   ],
 
+  constants: [
+    { name: 'BCRMB_ID',    value: 'bcrmb' },
+  ],
+
   properties: [
     {
+      class: 'FObjectArray',
+      of: 'foam.u2.stack.StackBlock',
       name: 'stack_',
       hidden: true,
       factory: function() { return []; }
@@ -61,7 +67,7 @@ foam.CLASS({
       name: 'topNonPopup',
       hidden: true,
       expression: function(pos) {
-        while ( pos >= 0 && this.stack_[pos][3].popup ) pos--;
+        while ( pos >= 0 && this.stack_[pos].popup ) pos--;
         return this.stack_[pos] || null;
       }
     },
@@ -88,13 +94,20 @@ foam.CLASS({
       return i < 0 ? this.stack_[this.pos + i + 1] : this.stack_[i];
     },
 
-    function push(v, parent, opt_id, opt_hint) {
-      /** opt_id - used to give some unique id to the view being pushed. If it matches the current view then push() ignored. **/
+    function push(/*v, parent, opt_id, opt_hint*/ block) {
+      block = {
+        view: arguments[0],
+        parent: arguments[1],
+        id: arguments[2],
+        isMenuItem: arguments[3] && arguments[3].menuItem,
+        popup: arguments[3] && arguments[3].popup,
+        breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
+      };
 
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
-      if ( this.top && opt_id && this.top[2] === opt_id ) return;
+      if ( this.top && block.id && this.top.id === block.id ) return;
 
-      if ( foam.u2.Element.isInstance(v) ) {
+      if ( foam.u2.Element.isInstance(block.view) ) {
         console.warn("Views are not recommended to be pushed to a stack. Please use a viewSpec.");
       }
       // "parent" is the parent object for this view spec.  A view of this stack
@@ -106,9 +119,9 @@ foam.CLASS({
 
       this.depth = pos + 1;
       this.stack_.length = this.depth;
-      this.stack_[pos] = [v, parent, opt_id, opt_hint || {}];
+      this.stack_[pos] = block;
       this.pos = pos;
-      if ( opt_hint && opt_hint.menuItem )
+      if ( block.isMenuItem )
         this.navStackBottom = pos;
     },
 
@@ -129,10 +142,10 @@ foam.CLASS({
       }
 
       if ( m && m.parent ) {
-        // Find a better way to set this. This is kinda hacky
-        m.parent.tail$.set(null);
+        m.value = '';
       }
     },
+
     function findCurrentMemento() {
       var tail = this.memento;
       if ( ! tail )
@@ -150,38 +163,28 @@ foam.CLASS({
       //check if the class of the view to which current memento points has property MEMENTO_HEAD
       //or if the view is object and it has mementoHead set
       //if so we need to set last not-null memento in the memento chain to null as we're going back
+
       while ( this.pos > jumpPos ) {
-        if ( this.stack_[this.pos][3] && this.stack_[this.pos][3].mementoHead ) {
+        var isMementoSetWithView = false;
+        if ( this.stack_[this.pos].parent.memento.params == this.BCRMB_ID ) {
           isMementoSetWithView = true;
-          var obj = { mementoHead: this.stack_[this.pos][3].mementoHead };
-        } else if ( this.stack_[this.pos][0].class ) {
-          var classObj = this.stack_[this.pos][0].class;
-          if ( foam.String.isInstance(classObj) ) {
-            classObj = foam.lookup(this.stack_[this.pos][0].class);
-          }
-          var obj = classObj.create(this.stack_[this.pos][0], ctx);
-          if ( obj && obj.mementoHead ) {
-            isMementoSetWithView = true;
-          }
-        } else {
-          if ( this.stack_[this.pos][0].mementoHead ) {
-            isMementoSetWithView = true;
-          }
+        }
+
+        if ( isMementoSetWithView ) {
+          debugger;
+          this.deleteMemento(this.stack_[this.pos].parent.memento.head);
         }
 
         this.pos--;
 
         if ( this.navStackBottom > this.pos ) {
           for ( var i = this.pos; i >= 0; i-- ) {
-            if ( this.stack_[i][3] && this.stack_[i][3].menuItem ) {
+            if ( this.stack_[i].isMenuItem ) {
               this.navStackBottom = i;
               break;
             }
           }
         }
-
-        if ( isMementoSetWithView )
-          this.deleteMemento(obj.mementoHead);
       }
     }
   ],
