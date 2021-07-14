@@ -46,16 +46,14 @@ foam.CLASS({
               self.stack.jump(index, self);
             }
           });
-          if ( navStack[i].breadcrumbTitle ) {
-            self.tag(jumpAction, {
-              label: navStack[i].breadcrumbTitle,
+            self.start(jumpAction, {
+              label$: this.stack.stack_[index].breadcrumbTitle$,
               themeIcon: themeIcon,
               buttonStyle: 'LINK'
-            })
-            .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).add('/').end(); });
-          } else {
+            }).show(this.stack.stack_[index].breadcrumbTitle$).end()
+            .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).show(this.stack.stack_[index].breadcrumbTitle$).add('/').end(); });
+          if ( ! this.stack.stack_[index].breadcrumbTitle )
             console.warn('Missing Title for BreadcrumbView ' + navStack[i].view.class);
-          }
         });
       }
     }
