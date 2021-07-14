@@ -768,6 +768,10 @@ foam.CLASS({
       return Promise.resolve(this.el_());
     },
 
+    function slotE_(slot) {
+      return foam.u2.SlotNode.create({slot: slot}, this);
+    },
+
     function load() {
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
