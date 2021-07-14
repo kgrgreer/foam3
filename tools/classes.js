@@ -152,6 +152,7 @@ var classes = [
   'foam.box.sf.SFReplayBox',
   'foam.box.sf.SFEntry',
   'foam.box.sf.SFStatus',
+  'foam.box.sf.RetryStrategy',
   'foam.box.sf.SFManager',
   'foam.box.sf.SF',
   'foam.box.sf.HttpSFSink',

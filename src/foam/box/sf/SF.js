@@ -62,19 +62,20 @@ foam.CLASS({
       name: 'fileCapability',
       value: 1024
     },
+    //This will not work in beanshall.
+    // {
+    //   class: 'Object',
+    //   javaType: 'StepFunction',
+    //   name: 'stepFunction',
+    //   javaFactory: `
+    //     return x -> x*2;
+    //   `
+    // },
     {
-      class: 'Int',
-      name: 'initialValue',
-      documentation: 'Unit in Millisecond',
-      value: 1000
-    },
-    {
-      class: 'Object',
-      javaType: 'StepFunction',
-      name: 'stepFunction',
-      javaFactory: `
-        return x -> x*2;
-      `
+      name: 'retryStrategy',
+      class: 'Enum',
+      of: 'foam.box.sf.RetryStrategy',
+      value: 'CONST_FOUR_SECOND_RETRY'
     },
     {
       class: 'Int',
@@ -333,7 +334,7 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setCurStep(getStepFunction().next(e.getCurStep()));
+        e.setCurStep(getRetryStrategy().next(e.getCurStep()));
         if ( e.getCurStep() > getMaxRetryDelayMS() ) {
           e.setCurStep(getMaxRetryDelayMS());
         }
