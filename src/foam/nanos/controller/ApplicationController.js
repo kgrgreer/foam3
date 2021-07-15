@@ -393,20 +393,6 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
-        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        // if ( self.memento.value ) {
-        //   var menu = await client.menuDAO.find(self.memento.value);
-        //   // explicitly check that the menu is unauthenticated
-        //   // since if there is a user session on refresh, this would also 
-        //   // find authenticated menus to try to push before fetching subject
-        //   if ( menu && menu.authenticate === false ) {
-        //     self.pushMenu(menu);
-            // await self.maybeReinstallLanguage(client);
-            // self.languageInstalled.resolve();
-            // return;
-         // }
-        //}
-
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -627,31 +613,29 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
-      
       let idCheck = menu && menu.id ? menu.id : menu;
       let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
-      console.log(`********************menu: ${idCheck}, currentMenuCheck ${currentMenuCheck}, resulting Push ${currentMenuCheck == idCheck}`);
+      // console.log(`menuTryingToPush: ${idCheck}, currentMenu ${currentMenuCheck}, Should I Push? ${currentMenuCheck != idCheck}`);
       if ( currentMenuCheck == idCheck && ! opt_forceReload ) return;
-
+      // Yes Push Menu
       var dao;
       if ( this.client ) {
         dao = this.client.menuDAO;
         menu = await dao.find(menu);
         if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
         menu && menu.launch(this);
+        this.menuListener(menu);
       } else {
         await this.clientPromise.then(async () => {
           dao = this.client.menuDAO;
           menu = await dao.find(menu);
           if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
           menu && menu.launch(this);
+          this.menuListener(menu);
         });
       }
       /** Use to load a specific menu. **/
       // Do it this way so as to not reset mementoTail if set
-      // NOTE: if pushMenu is called from code the memento changes here cause memento.head !== menu
-      //       and this then changes the memento.value which then triggers ApplicationController.mementoChange
-      //       which then trigger pushMenu again. Stopped with idCheck
       if ( menu.id ) menu = menu.id;
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.value = menu;

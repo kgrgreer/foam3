@@ -16,7 +16,6 @@ foam.CLASS({
 
   imports: [
     'currentMenu',
-    'menuListener',
     'loginSuccess',
     'menuDAO',
     'pushMenu',
@@ -124,7 +123,6 @@ foam.CLASS({
     function openMenu(menu) {
       if ( menu.handler ) {
         this.pushMenu(menu, true);
-        this.menuListener(menu);
       }
     }
   ]
