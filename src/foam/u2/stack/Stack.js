@@ -169,12 +169,12 @@ foam.CLASS({
         }
 
         this.pos--;
-        if ( this.navStackBottom > this.pos ) {
-          for ( var i = this.pos; i >= 0; i-- ) {
-            if ( this.stack_[i].shouldResetBreadcrumbs ) {
-              this.navStackBottom = i;
-              break;
-            }
+      }
+      if ( this.navStackBottom > this.pos ) {
+        for ( var i = this.pos; i >= 0; i-- ) {
+          if ( this.stack_[i].shouldResetBreadcrumbs ) {
+            this.navStackBottom = i;
+            break;
           }
         }
       }
