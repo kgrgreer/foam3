@@ -43,11 +43,6 @@ foam.CLASS({
       text-align: center;
       justify-content:flex-start;
     }
-    ^innerFlexer {
-      display: inline-flex;
-      padding: 4px;
-      box-sizing: border-box;
-    }
   `,
 
   constants: {
@@ -174,7 +169,7 @@ foam.CLASS({
       return false;
     },
 
-    function getIndexOfChoice(data, choice){                          
+    function getIndexOfChoice(data, choice){
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return i;
       }
@@ -198,7 +193,7 @@ foam.CLASS({
       return slot;
     },
 
-    function initE() {
+    function render() {
       var self = this;
 
       this.onDAOUpdate();
@@ -245,7 +240,6 @@ foam.CLASS({
                       }
   
                       var isSelected = self.isChoiceSelected(data, choices[index][0]);
-  
                       return !! (! isSelected && data.length >= maxSelected);
                   } catch(err) {
                     console.error('isDisabledSlot', err);
@@ -258,10 +252,9 @@ foam.CLASS({
                 var selfE = self.E();
 
                 return selfE
-                  .addClass(self.myClass('innerFlexer'))
                   // NOTE: This should not be the way we implement columns.
                   .style({
-                    'width': `${100 / self.NUM_COLUMNS}%`
+                    'width': self.isVertical ? '100%' : `${100 / self.NUM_COLUMNS}%`
                   })
                   .start(self.CardSelectView, {
                     data$: valueSimpSlot,

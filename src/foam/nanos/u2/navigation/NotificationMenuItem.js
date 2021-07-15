@@ -92,13 +92,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.notificationDAO.on.sub(this.onDAOUpdate);
       this.user$.dot('id').sub(this.onDAOUpdate);
       this.group$.dot('id').sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
-      this.addClass(this.myClass())
+      this.addClass()
         .addClass('icon-container')
         .on('click', this.changeToNotificationsPage.bind(this))
 

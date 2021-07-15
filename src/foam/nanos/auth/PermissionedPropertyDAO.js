@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'PermissionedPropertyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
     'foam.core.FObject',
@@ -19,8 +20,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.Map'
   ],
-
-  extends: 'foam.dao.ProxyDAO',
 
   documentation: `A DAO decorator that prevents users from updating / reading
       properties for which they do not have the update / read permission.
@@ -243,9 +242,11 @@ foam.CLASS({
   ],
 });
 
+
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'HidePropertiesSink',
+  extends: 'foam.dao.ProxySink',
 
   javaImports: [
     'foam.core.FObject',
@@ -255,7 +256,6 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  extends: 'foam.dao.ProxySink',
   methods: [
     {
       name: 'put',

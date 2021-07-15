@@ -56,7 +56,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -75,7 +75,7 @@ foam.CLASS({
         this.selectedView = this.views[0][0];
       }
 
-      this.addClass(this.myClass())
+      this.addClass()
       this.startContext({data: this})
         this.start()
           .add(this.SELECTED_VIEW)

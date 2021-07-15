@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-global.DEBUG = global.DEBUG || false;
+globalThis.DEBUG = globalThis.DEBUG || false;
 
 if ( ! typeof performance !== 'undefined' ) performance = {
   now: function() { return Date.now(); }

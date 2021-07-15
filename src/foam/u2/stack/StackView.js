@@ -42,10 +42,9 @@ foam.CLASS({
   css: '%CUSTOMCSS%',
 
   methods: [
-    // TODO: Why is this init() instead of initE()? Investigate and maybe fix.
+    // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
-      this.setNodeName('div');
-      this.addClass(this.myClass());
+      this.addClass();
       this.addClass('foam-u2-stack-StackView');
 
       if ( this.showActions ) {
@@ -68,19 +67,6 @@ foam.CLASS({
       var X = this.getContextFromParent(parent);
 
       var v = foam.u2.ViewSpec.createView(view, null, this, X);
-      if ( X.memento && v.mementoHead ) {
-        var currMemento = this.data.findCurrentMemento();
-        //we need to check if memento is already set
-        //for example when we copy-paste url
-        if ( currMemento ) {
-          var m = this.Memento.create({ replaceHistoryState: false });
-          m.value = v.mementoHead;
-  
-          if ( this.shouldMementoValueBeChanged(X.ctrl.memento.value, v.mementoHead) ) {
-            currMemento.tail = m;
-          }
-        }
-      }
       return v;
     },
 

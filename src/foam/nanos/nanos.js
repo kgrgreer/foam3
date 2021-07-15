@@ -18,6 +18,7 @@ FOAM_FILES([
   { name: "foam/nanos/logger/StdoutLoggerDAO" },
   { name: 'foam/nanos/logger/benchmark/LoggerBenchmark' },
   { name: 'foam/nanos/fs/File' },
+  { name: 'foam/nanos/fs/FileLabel' },
   { name: 'foam/nanos/fs/FileType' },
   { name: 'foam/nanos/fs/FileProperty' },
   { name: 'foam/nanos/fs/FileDAODecorator' },
@@ -217,6 +218,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/MedusaNOPRegistryService' },
   { name: 'foam/nanos/medusa/MedusaSigningDAO' },
   { name: 'foam/nanos/medusa/MedusaSetNodeDAO' },
+  { name: 'foam/nanos/medusa/MedusaStatusWatcher' },
   { name: 'foam/nanos/medusa/MedusaTestingDAO' },
   { name: 'foam/nanos/medusa/MedusaType' },
   { name: 'foam/nanos/medusa/MedusaUniqueDAO' },
@@ -321,6 +323,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentAuthService" },
   { name: "foam/nanos/auth/AgentAuthClient" },
   { name: "foam/nanos/auth/ClientAgentAuthService" },
+  { name: "foam/nanos/auth/UniqueUserService" },
+  { name: "foam/nanos/auth/ProxyUniqueUserService" },
   { name: "foam/nanos/pm/PMTemperatureCellFormatter" },
   { name: "foam/nanos/pm/NullPM" },
   { name: "foam/nanos/pm/PM" },
@@ -515,6 +519,8 @@ FOAM_FILES([
   //spid
   { name: "foam/nanos/auth/CreateUserCapabilityJunctionOnSpidSet" },
   { name: "foam/nanos/auth/SetUserServiceProviderJunctionRuleAction" },
+  { name: "foam/nanos/auth/FilterBySpidService" },
+  { name: "foam/nanos/auth/PreventDuplicateEmailLoginService" },
   //ucjDAO rules
   { name: "foam/nanos/crunch/ruler/AuthorizeUCJStatusOnPut" },
   { name: "foam/nanos/crunch/ruler/CheckUCJOwnershipOnPut" },

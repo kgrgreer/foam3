@@ -15,12 +15,13 @@ foam.CLASS({
   ],
 
   properties: [
+    [ 'nodeName', 'span' ],
     'data'
   ],
 
   methods: [
-    function initE() {
-      this.setNodeName('span')
+    function render() {
+      this
         .start('input').attrs({ type: 'file' }).on('change', this.onChange).end()
         .add(this.slot(function(data) {
           return ! data ? this.E('span') : this.E('a')

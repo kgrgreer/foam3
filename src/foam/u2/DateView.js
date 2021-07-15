@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.setAttribute('type', 'date');
       this.setAttribute('max', '9999-12-31');
       this.setAttribute('placeholder', this.DATE_FORMAT);

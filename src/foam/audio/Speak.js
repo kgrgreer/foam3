@@ -22,6 +22,7 @@ foam.CLASS({
   documentation: 'Speak text.',
 
   imports: [
+    'setTimeout',
     'window'
   ],
 
@@ -71,7 +72,7 @@ foam.CLASS({
     {
       name: 'voice',
       view: function(_, X) {
-        var synth = X.window.speechSynthesis;
+        var synth = window.speechSynthesis;
         var view  = foam.u2.view.ChoiceView.create({
           choices: []
         }, X);
@@ -124,7 +125,7 @@ foam.CLASS({
   actions: [
     function play() {
       if ( ! this.voices ) {
-        window.setTimeout(50, () => this.play());
+        this.setTimeout(50, () => this.play());
         return;
       }
 

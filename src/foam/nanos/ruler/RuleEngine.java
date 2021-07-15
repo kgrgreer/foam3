@@ -116,10 +116,11 @@ public class RuleEngine extends ContextAwareSupport {
    * @param oldObj - Old FObject supplied to rules for execution
    */
   public void probe(List<Rule> rules, RulerProbe rulerProbe, FObject obj, FObject oldObj) {
-      PM pm = (PM) x_.get("PM");
-      pm.setKey(RulerProbe.getOwnClassInfo().getId());
-      pm.setName("Probe:" + obj.getClassInfo());
-      pm.init_();
+    PM pm = (PM) x_.get("PM");
+    pm.setKey(RulerProbe.getOwnClassInfo().getId());
+    pm.setName("Probe:" + obj.getClassInfo());
+    pm.init_();
+
     for (Rule rule : rules) {
       if ( ! isRuleActive(rule, rule.getAction()) ) continue;
       if ( ! checkPermission(rule, obj) ) continue;

@@ -18,7 +18,8 @@ foam.CLASS({
   ],
 
   topics: [
-    'clicked'
+    'clicked',
+    'selectionDisabled'
   ],
 
   css: `
@@ -49,6 +50,7 @@ foam.CLASS({
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;
+      margin: 4px;
     }
   `,
 
@@ -70,12 +72,15 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isDisabled'
+      name: 'isDisabled',
+      postSet: function(_, n) {
+        if ( n ) this.selectionDisabled.pub();
+      }
     }
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this
       .addClass(this.myClass())
       .addClass(this.myClass('innerFlexer'))

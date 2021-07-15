@@ -198,10 +198,11 @@ public class BenchmarkRunner
           Thread thread = new Thread(group, new Runnable() {
               @Override
               public void run() {
+                long passed = 0;
                 for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                   try {
                     test_.execute(x);
-                    pass.incrementAndGet();
+                    passed++;
                   } catch (Throwable t) {
                     fail.incrementAndGet();
                     Throwable e = t;
@@ -212,6 +213,8 @@ public class BenchmarkRunner
                     logger.debug(e);
                   }
                 }
+                pass.addAndGet(passed++);
+
                 // count down the latch when finished
                 latch.countDown();
               }

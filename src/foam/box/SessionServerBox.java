@@ -46,14 +46,14 @@ public class SessionServerBox
   }
 
   public void send(Message msg) {
-    NSpec spec = getX().get(NSpec.class);
+    NSpec  spec   = getX().get(NSpec.class);
     Logger logger = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName(),
         spec.getName()
       }, (Logger) getX().get("logger"));
-    DAO sessionDAO = (DAO) getX().get("localSessionDAO");
-    Session session = null;
-    String sessionID = null;
+    DAO     sessionDAO = (DAO) getX().get("localSessionDAO");
+    Session session    = null;
+    String   sessionID = null;
 
     try {
       HttpServletRequest req = getX().get(HttpServletRequest.class);

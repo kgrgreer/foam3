@@ -174,7 +174,7 @@ describe('RestDAO', function() {
       'foam.net.HTTPRequest');
   });
 
-  global.genericDAOTestBattery(function(of) {
+  globalThis.genericDAOTestBattery(function(of) {
     // Each test MUST assume that it operates over one and the same DAO for
     // all that test's expectations.
     dao = foam.dao.ArrayDAO.create({ of: of });

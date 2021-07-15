@@ -31,7 +31,7 @@ foam.CLASS({
     'hoverSelection',
     'selection',
     'subStack as stack',
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   imports: [
@@ -255,7 +255,8 @@ foam.CLASS({
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
-    }
+    },
+    'currentMemento_'
   ],
 
   methods: [
@@ -304,7 +305,7 @@ foam.CLASS({
       this.isColumnChanged = ! this.isColumnChanged;
     },
 
-    async function initE() {
+    async function render() {
       var view = this;
 
       const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
@@ -340,6 +341,10 @@ foam.CLASS({
           this.memento.head = this.columns_.map(c => {
             return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
           }).join(',');
+        }
+        if ( ! this.memento.tail ) {
+          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento});
+          this.currentMemento_ = this.memento.tail;
         }
       }
 
@@ -671,9 +676,12 @@ foam.CLASS({
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
                     var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
-                    callOn(prop.tableCellFormatter, 'format', [
-                      prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
-                    ]);
+                    call(function() { prop.tableCellFormatter.format(
+                      this,
+                      prop.f ? prop.f(objForCurrentProperty) : null,
+                      objForCurrentProperty,
+                      prop
+                    )});
                     tableRowElement.add(elmt);
                   }
 

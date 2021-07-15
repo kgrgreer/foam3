@@ -54,14 +54,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       if ( this.data == null && ! this.index ) {
         this.index = 0;
       }
 
       this.onDAOUpdate();
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
       this.start('label')
         .addClass('label')
         .addClass(this.slot(function(data) {

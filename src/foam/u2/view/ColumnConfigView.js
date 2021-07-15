@@ -169,7 +169,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -347,7 +347,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 
@@ -441,7 +441,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       this
@@ -533,7 +533,7 @@ foam.CLASS({
     },
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this

@@ -35,16 +35,13 @@ foam.CLASS({
   }
 
   ^ .side-nav-view {
-    font-size: medium;
-    font-weight: normal;
-    position: absolute;
+    background: /*%GREY5%*/ #f5f7fas;
+    border-right: 1px solid /*%GREY4%*/ #e7eaec;
+    color: /*%GREY2%*/ #9ba1a6;
     height: calc(100vh - 80px);
     overflow-x: hidden;
+    position: absolute;
     z-index: 100;
-    font-size: 26px;
-    color: /*%GREY2%*/ #9ba1a6;
-    border-right: 1px solid /*%GREY4%*/ #e7eaec;
-    background: /*%GREY5%*/ #f5f7fas;
   }
 
   ^search {
@@ -88,7 +85,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this
       .addClass(this.myClass())

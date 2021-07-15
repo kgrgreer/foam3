@@ -409,7 +409,7 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       this.style({outline: 'none'}).focus().add(this.canvas);
     },

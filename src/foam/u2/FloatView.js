@@ -46,9 +46,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
       if ( ! foam.Undefined.isInstance(this.min)  ) this.setAttribute('min',  this.min);
       if ( ! foam.Undefined.isInstance(this.max)  ) this.setAttribute('max',  this.max);
       if ( ! foam.Undefined.isInstance(this.step) ) this.setAttribute('step', this.step);
@@ -74,8 +74,10 @@ foam.CLASS({
       // to ensure it's formatted properly.
       this.on('blur', function () {
         var value = self.dataToText(data.get());
+        preventFeedback = true;
         view.set('0');
         view.set(value);
+        preventFeedback = false;
       });
 
       var preventFeedback = false;

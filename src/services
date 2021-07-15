@@ -99,6 +99,20 @@ p({
   "client": "{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "uniqueUserService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
+  "serviceScript": """
+    ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
+    ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
+      .setDelegate(ul)
+      .build();
+    return ul;
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -677,6 +691,7 @@ p({
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setInnerDAO(x.get("localRuleDAO"))
       .setRuler(false)
+      .setPermissioned(true)
       .build();
 
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
@@ -1133,4 +1148,11 @@ p({
       "of":"foam.nanos.auth.AddressConfig"
     }
   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusastatuswatcher",
+  "lazy": false,
+  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })

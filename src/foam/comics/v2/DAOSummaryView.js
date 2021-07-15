@@ -20,6 +20,12 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
+  imports: ['memento'],
+
+  exports: ['currentMemento_ as memento'],
+
+  requires: ['foam.nanos.controller.Memento'],
+
   css: `
     ^ {
       padding: 32px
@@ -186,8 +192,9 @@ foam.CLASS({
         if ( ! this.stack ) return;
 
         // setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
-        if ( this.memento && this.memento.tail )
+        if ( this.memento && this.memento.tail ) {
           this.memento.tail.head = 'edit';
+        }
         this.stack.push({
           class:  'foam.comics.v2.DAOUpdateView',
           data:   this.data,
@@ -266,22 +273,26 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
+      // The memento passed to DAOSummaryView must be the memento of the prev view instead of the tail
+      // This is because of how this view sets memento, working on a fix
       if ( this.memento ) {
-        var m = this.memento;
+        this.currentMemento_ = this.memento;
         var counter = 0;
 
         // counter < 2 is as at this point we need to skip 2 memento
-        // head of first one will be column selection
-        // and second will be DAOSummaryView mode
-        while ( m.tail != null && counter < 2 ) {
-          m = m.tail;
+        // head of first one will be DAOSummaryView mode
+        // and second will be the id for the view
+        while ( counter < 2 ) {
+          if ( ! this.currentMemento_.tail ) {
+            this.currentMemento_.tail = this.Memento.create();
+          }
+          this.currentMemento_ = this.currentMemento_.tail;
           counter++;
         }
 
-        this.currentMemento_ = m;
         if ( ! this.currentMemento_ ) {
           this.currentMemento_ = foam.nanos.controller.Memento.create();
         }
@@ -296,6 +307,13 @@ foam.CLASS({
         if ( self.memento && self.memento.tail && self.memento.tail.head.toLowerCase() === 'edit' ) {
           self.edit();
         } else {
+          if ( this.memento && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+            var m = foam.nanos.controller.Memento.create({ value: this.mementoHead, parent: this.memento, replaceHistoryState: false });
+            this.memento.tail = m;
+            if ( ! m.tail ) 
+              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
+            this.currentMemento_ = m.tail;
+          }
           this
           .addClass(this.myClass())
           .add(self.slot(function(data, config$viewBorder, viewView) {

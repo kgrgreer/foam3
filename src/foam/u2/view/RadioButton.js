@@ -26,6 +26,7 @@ foam.CLASS({
   `,
 
   properties: [
+    [ 'nodeName', 'svg' ],
     {
       name: 'selectedColor',
       expression: function(isSelected, isDisabled) {
@@ -49,8 +50,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      this.setNodeName('svg')
+    function render() {
+      this
         .addClass('radio')
         .attrs({ width: 20, height: 20 })
         .start('circle')

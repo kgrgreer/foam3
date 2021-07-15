@@ -7,10 +7,12 @@
 foam.CLASS({
   package: 'foam.build',
   name: 'ClassLoaderContext',
+
   exports: [
     'aref',
     'acreate'
   ],
+
   methods: [
     {
       class: 'ContextMethod',
@@ -18,7 +20,7 @@ foam.CLASS({
       async: true,
       code: async function(x, id) {
 //        console.log("aref(" + id + ")");
-        var cls = x.lookup(id, true);
+        var cls = x.maybeLookup(id);
         if ( cls ) return cls;
 
         return await x.classloader.load(id)
@@ -30,7 +32,7 @@ foam.CLASS({
       async: true,
       code: async function(x, id, args) {
 //        console.log("acreate(" + id + ", " + args);
-        var cls = x.lookup(id, true);
+        var cls = x.maybeLookup(id);
         if ( cls ) {
 //          console.log("** cls found");
           return cls.create(args, x);

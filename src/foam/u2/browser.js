@@ -62,7 +62,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       // TODO(braden): Add ViewFactory support to Element.start()
       var list = this.listFactory$f({
         rowFactory: this.rowFactory,
@@ -186,8 +186,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
+    function render() {
+      this.addClass();
 
       // TODO(braden): This isn't quite dynamic enough - should handle model
       // changing.
@@ -313,7 +313,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.stack.viewAdded.sub(this.onViewAdded);
       this.stack.viewRemoved.sub(this.onViewRemoved);
       if ( this.stack.views.length > 0 ) {
@@ -463,7 +463,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var dv = this.DetailView.create({ data$: this.innerData$ });
       this.startContext({ data: this });
       this.add(this.BACK);
@@ -556,7 +556,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var dv = this.buildDetailView();
       this.startContext({ data: this })
           .addClass(this.myClass())
