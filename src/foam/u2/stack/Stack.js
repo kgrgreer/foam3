@@ -163,12 +163,12 @@ foam.CLASS({
         tail = tail.tail;
       }
     },
-    function jump(jumpPos, ctx) {
+    function jump(jumpPos) {
 
       while ( this.pos > jumpPos ) {
       // Check if the class of the view to which current memento points has property viewTitle set 
       // using the identifier added to the memento params by stackView
-        if ( this.stack_[this.pos].parent.memento.params == this.BCRMB_ID ) {
+        if ( this.stack_[this.pos].parent?.memento.params == this.BCRMB_ID ) {
           this.deleteMemento(this.stack_[this.pos].parent.memento.head);
         }
 
