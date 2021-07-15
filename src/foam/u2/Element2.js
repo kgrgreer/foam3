@@ -284,7 +284,7 @@ foam.CLASS({
   methods: [
     function load() {
       this.SUPER();
-      this.onDetach(dao.listen(this));
+      this.onDetach(this.dao.listen(this));
 
       this.update();
     },
@@ -327,7 +327,12 @@ foam.CLASS({
           this.self.appendChild_ = c => {
             this.self.element_.insertBefore(c, this.element_);
           };
-          this.code.call(this.self, d);
+          var e = this.code.call(this.self, d);
+          if ( e ) {
+            // TODO: remove after port from U2 to U3
+            console.log('Deprecated use of select({return E}). Just do self.start() instead.');
+            this.self.tag(e);
+          }
           this.self.appendChild_ = foam.u2.Element.prototype.appendChild_;
 
           var newSize = this.self.childNodes.length;
@@ -387,9 +392,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate  = cls.create;
-      var axiom      = this;
-      var isFirstCSS = ! cls.private_.hasCSS;
+      var oldCreate   = cls.create;
+      var axiom       = this;
+      var isFirstCSS  = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -398,30 +403,32 @@ foam.CLASS({
           ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
           foam.__context__;
 
-        // if a class has inheritCSS: false then finish installing its other
-        // CSS axioms, but prevent any parent classes from installing theirs
-        // We put this in the context to communicate to other CSSAxioms
-        // down the chain. The last/first one will revert back to the original
-        // X so that objects aren't created with lastClassToInstallCSSFor
-        // in their contexts.
-        var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-        if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-          // Install CSS if not already installed in this document for this cls
-          axiom.maybeInstallInDocument(X, this);
-        }
-
-        if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-          X = X.createSubContext({
-            lastClassToInstallCSSFor: this,
-            originalX: X
-          });
-        }
-
-        if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-
         // Now call through to the original create
-        return oldCreate.call(this, args, X);
+        try {
+          return oldCreate.call(this, args, X);
+        } finally {
+          // if a class has inheritCSS: false then finish installing its other
+          // CSS axioms, but prevent any parent classes from installing theirs
+          // We put this in the context to communicate to other CSSAxioms
+          // down the chain. The last/first one will revert back to the original
+          // X so that objects aren't created with lastClassToInstallCSSFor
+          // in their contexts.
+          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
+
+          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
+            // Install CSS if not already installed in this document for this cls
+            axiom.maybeInstallInDocument(X, this);
+          }
+
+          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
+            X = X.createSubContext({
+              lastClassToInstallCSSFor: this,
+              originalX: X
+            });
+          }
+
+          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
+        }
       };
     },
 
@@ -522,7 +529,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'elementValidator',
+    //'elementValidator',
     'framed',
     'getElementById',
     'translationService?'
@@ -643,6 +650,7 @@ foam.CLASS({
         }
       }
     },
+    /*
     {
       class: 'Proxy',
       of: 'foam.u2.DefaultValidator',
@@ -653,6 +661,7 @@ foam.CLASS({
         return this.elementValidator$ ? this.elementValidator : this.DEFAULT_VALIDATOR;
       }
     },
+    */
     {
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
@@ -738,11 +747,20 @@ foam.CLASS({
         Defaults to __subContext__ unless in a nested startContext().`,
       factory: function() { return this.__subContext__; }
     },
-    'keyMap_'
+    'keyMap_',
+    {
+      // TODO: remove after port from U2 to U3
+      name: 'onload',
+      factory: function() {
+        return { sub: function(f) {
+          console.warn('Deprecated us of ELement.onload.sub().');
+          window.setTimeout(f, 16);
+        } };
+      }
+    }
   ],
 
   methods: [
-
     // from state
 
     // TODO: remove
@@ -787,12 +805,6 @@ foam.CLASS({
 
     function getBoundingClientRect() {
       return this.element_.getBoundingClientRect();
-    },
-
-
-    function init() {
-      // TODO: better if children just do this themselves
-      this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
     function render() {
@@ -1015,7 +1027,7 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip ) {
+      if ( name === 'title' && ! this.tooltip && value ) {
         this.Tooltip.create({target: this, text$: this.attrSlot('title')});
       }
 
@@ -1125,12 +1137,9 @@ foam.CLASS({
 
     function appendChild_(c) {
       this.element_.appendChild(c);
-//      debugger;
-//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
-      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -1179,12 +1188,6 @@ foam.CLASS({
           return;
         }
       }
-    },
-
-    function setNodeName(name) {
-      console.warn('Deprecated use of setNodeName. Set the nodeName property instead. CLASS: ', this.cls_.name);
-      this.nodeName = name;
-      return this;
     },
 
     function setID(id) {
@@ -2458,36 +2461,8 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'HTMLValidator',
-  extends: 'foam.u2.DefaultValidator',
-
-  axioms: [ foam.pattern.Singleton.create() ],
-
-  methods: [
-    function sanitizeText(text) {
-      // TODO: validate text
-      return text;
-    }
-  ]
-});
-
-
-// An Element which does not escape HTML content
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'HTMLElement',
-  extends: 'foam.u2.Element',
-
-  requires: [ 'foam.u2.HTMLValidator' ],
-
-  exports: [ 'validator as elementValidator' ],
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'HTMLView',
-  extends: 'foam.u2.HTMLElement',
+  extends: 'foam.u2.Element',
 
   documentation: 'View for safely displaying HTML content.',
 
@@ -2503,7 +2478,6 @@ foam.CLASS({
   methods: [
     function render() {
       this.addClass();
-      this.add('htmlview');
       this.update();
       this.onDetach(this.data$.sub(this.update()));
     }
@@ -2514,6 +2488,7 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
+        // TODO: add validation
         this.element_.innerHTML = this.data;
       }
     }
