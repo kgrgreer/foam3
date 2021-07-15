@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.addClass();
       if ( this.min != undefined ) this.setAttribute('min', this.min);

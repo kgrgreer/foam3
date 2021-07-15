@@ -35,7 +35,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var style = this.Style.create();

@@ -27,7 +27,7 @@
     { name: 'ERROR_MSG', message: 'Something went wrong! Please contact support'},
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this
       .start('h2')

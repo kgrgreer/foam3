@@ -109,7 +109,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.rowLanes_ = {};
       this.colLanes_ = {};
       this.cellLanes_ = {};

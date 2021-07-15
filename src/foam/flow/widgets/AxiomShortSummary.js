@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var getAxioms = `get${ this.ownAxioms ? 'Own' : '' }AxiomsByClass`;
       var axs = this.of[getAxioms](this.axiomClass);
 

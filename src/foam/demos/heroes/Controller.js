@@ -148,7 +148,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         start('h2').add('Tour of Heroes').end().
           // TODO: start(this.HEROES) and set class

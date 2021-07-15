@@ -89,7 +89,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var typingTimer;
       var doneTypingInterval = 400; 

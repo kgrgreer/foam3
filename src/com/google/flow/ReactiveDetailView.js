@@ -146,7 +146,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var prop = this.prop;
       var self = this;
 

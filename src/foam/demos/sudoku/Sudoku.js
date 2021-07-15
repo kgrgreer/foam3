@@ -62,7 +62,7 @@ foam.CLASS({
 */
       ];
     },
-    function initE(X) {
+    function render(X) {
       this.br().add('Speed: ', this.SPEED).br().br();
       var cells = this.cells;
       for ( var a = 0 ; a < 3 ; a++ ) {

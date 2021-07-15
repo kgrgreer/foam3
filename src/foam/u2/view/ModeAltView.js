@@ -58,7 +58,7 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       var self = this;
       var callFromProperty = function() {
         self.prop && this.fromProperty && this.fromProperty(self.prop);

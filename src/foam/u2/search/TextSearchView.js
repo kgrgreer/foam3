@@ -99,7 +99,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.initMemento();
       this
         .addClass(this.myClass())

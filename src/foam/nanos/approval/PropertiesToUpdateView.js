@@ -227,7 +227,7 @@
       this.containerHeight_ = `${sizeOfContainer}px`;
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       this.addClass()
       .start().addClass('titleClass')

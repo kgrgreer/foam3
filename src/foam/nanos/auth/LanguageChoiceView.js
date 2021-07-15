@@ -71,7 +71,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var self = this;
       this.supportedLanguages = (await this.languageDAO
         .where(foam.mlang.predicate.Eq.create({
