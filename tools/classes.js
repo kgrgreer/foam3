@@ -363,7 +363,12 @@ var classes = [
   'foam.nanos.auth.AddressConfig',
   'foam.nanos.auth.UserNotFoundException',
   'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
+<<<<<<< Upstream, based on development
   'foam.nanos.auth.PreventDuplicateEmailLoginService',
+=======
+  'foam.nanos.bench.Benchy',
+  'foam.nanos.script.BenchmarkRunnerScript',
+>>>>>>> 8bb9b94 add benchmarkRunnerScript
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.SendErrorHandler',

@@ -1162,3 +1162,25 @@ p({
   "lazy": false,
   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "benchmarkDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.bench.Benchy.getOwnClassInfo())
+      .setName("benchmark")
+      .setPm(false)
+      .setPipelinePm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmark")
+      .build();
+  """,
+   "client":
+  """
+    {
+      "of":"foam.nanos.bench.Benchy"
+    }
+  """
+})
