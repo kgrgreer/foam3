@@ -111,6 +111,11 @@ foam.CLASS({
       name: 'filteredOptions',
       expression: function(property, search, selectedOptions) {
         var options = property.of.VALUES;
+        options.sort(function(a, b){
+          if(a.name < b.name) { return -1; }
+          if(a.name > b.name) { return 1; }
+          return 0;
+        });
         // Filter out search
         if ( search ) {
           var lowerCaseSearch = search.toLowerCase();
