@@ -333,7 +333,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LINK_A
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LINK_SIMPLE",target:"Filtros simples"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.TOGGLE_DRAWER.label",target:"Filtros"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_RESULTS",target:"Resultados do filtro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_FILTER",target:"Filtros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.OPEN_ADVANCED.label",target:"Usando filtros simples"})
 
@@ -434,8 +434,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.SEND_EMAIL.label",target:"Enviar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOControllerConfig.CREATE_NEW",target:"crie um novo "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOControllerConfig.VIEW_ALL",target:"Ver tudo "})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.RESULTS",target:"resultado(s) encontrados"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.model_.name",target:"Usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.model_.plural",target:"Usuários"})
