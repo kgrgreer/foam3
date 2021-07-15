@@ -55,6 +55,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'fileSuffix',
+      transient: true,
       value: 0
     },
     {
@@ -104,14 +105,14 @@ foam.CLASS({
       name: 'delegateObject',
       transient: true,
     },
-    {
-      class: 'Object',
-      name: 'manager',
-      transient: true,
-      javaFactory: `
-        return (SFManager) getX().get("SFManager");
-      `
-    },
+    // {
+    //   class: 'Object',
+    //   name: 'manager',
+    //   transient: true,
+    //   javaFactory: `
+    //     return (SFManager) getX().get("SFManager");
+    //   `
+    // },
     {
       class: 'Object',
       name: 'nullDao',
@@ -119,24 +120,17 @@ foam.CLASS({
       javaFactory: `
         return new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build();
       `
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getFileName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
   methods: [
+    {
+      name: 'getManager',
+      javaType: 'SFManager',
+      javaCode: `
+        return (SFManager) getX().get("SFManager");
+      `
+    },
     {
       name: 'createWriteJournal',
       args: 'String fileName',
@@ -206,7 +200,7 @@ foam.CLASS({
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
         if ( getMaxRetryAttempts() > -1 && 
               e.getRetryAttempt() >= getMaxRetryAttempts() )  {
-          getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
+          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
 
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
@@ -236,11 +230,15 @@ foam.CLASS({
       `
     },
     {
-      name: 'initForwarder',
+      name: 'init',
       args: 'Context x',
       documentation: 'when system start, SFManager will call this service to initial re-forward',
       javaCode: `
-        FileSystemStorage fileSystemStorage = (FileSystemStorage) x.get(Storage.class);
+        logger_ = new PrefixLogger(new Object[] {
+                    this.getClass().getSimpleName(),
+                    this.getFileName()
+                  }, (Logger) getX().get("logger"));
+        FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
         // Do nothing if no file
         if ( filenames.size() == 0 ) return;
@@ -314,10 +312,11 @@ foam.CLASS({
 
         tempDAO.where(predicate).select(sink);
         List<SFEntry> sfEntryList = sink.getArray();
-        getLogger().log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
+        logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
         for ( SFEntry entry : sfEntryList ) {
           forward((SFEntry) entry.fclone());
         }
+        System.out.println("==================>>>>" + "Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
       `
     },
     {
@@ -350,6 +349,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+            protected Logger logger_ = null;
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
 

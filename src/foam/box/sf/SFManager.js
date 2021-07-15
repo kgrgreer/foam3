@@ -116,8 +116,8 @@ foam.CLASS({
           public void execute(X x) {
             lock_.lock();
             while ( true ) {
-              System.out.println("$$$$ SF running: " + count++);
-              if ( queue.size() < 0 ) {
+              System.out.println("$$$$ SF running: " + count++ + " queue size: " + queue.size());
+              if ( queue.size() > 0 ) {
                 if ( queue.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                   SFEntry e = queue.poll();
                   assemblyLine.enqueue(new foam.util.concurrent.AbstractAssembly() { 
@@ -136,6 +136,7 @@ foam.CLASS({
                 long waitTime = queue.peek().getScheduledTime() - System.currentTimeMillis();
                 if ( waitTime > 0 ) {
                   try {
+                    System.out.println("$$$ waitTime: " + waitTime);
                     notAvailable_.await(waitTime, TimeUnit.MILLISECONDS);
                   } catch ( InterruptedException e ) {
                     
@@ -157,14 +158,20 @@ foam.CLASS({
       name: 'start',
       documentation: 'Initial each SF',
       javaCode: `
+        X context = getX();
+        initForwarder(x_);
+
         DAO sfDAO = (DAO) getX().get("SFDAO");
         sfDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
             SF sf = (SF) obj;
-            sf.initForwarder(getX());
+            sf.setX(context);
+            sf.init(context);
           }
         });
+        System.out.println("==================>>>> SFManager Start");
+
       `
     }
   ],

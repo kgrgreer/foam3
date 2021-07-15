@@ -1,16 +1,16 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "SFBoxManager",
+  "name": "SFManager",
   "lazy": false,
   "service": {
-    "class": "foam.box.sf.SFBoxManager"
+    "class": "foam.box.sf.SFManager"
   }
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"SFDAO",
-  "description": "A read-only database of business sectors.",
+  "description": "A read-only database of SF.",
   "serve":true,
   "serviceScript":
   """

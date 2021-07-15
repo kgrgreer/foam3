@@ -16,18 +16,18 @@
 */
 
 foam.CLASS({
-	package: 'foam.box.sf',
-	name: 'HttpSFSink',
-	extends: 'foam.box.sf.SF',
-	implements: [ 'foam.dao.Sink' ],
-
-	javaImports: [
-		'foam.dao.HTTPSink',
-		'foam.core.FObject'
-	],
-
-	properties: [
-		{
+  package: 'foam.box.sf',
+  name: 'HttpSFSink',
+  extends: 'foam.box.sf.SF',
+  implements: [ 'foam.dao.Sink' ],
+  
+  javaImports: [
+    'foam.dao.HTTPSink',
+    'foam.core.FObject'
+  ],
+  
+  properties: [
+    {
       class: 'URL',
       name: 'url',
     },
@@ -35,69 +35,69 @@ foam.CLASS({
       class: 'String',
       name: 'bearerToken',
     },
-		{
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format',
       value: foam.nanos.http.Format.JSON
-		},
-		{
+    },
+    {
       class: 'Object',
       name: 'delegateObject',
       transient: true,
-			javaFactory: `
-				return new HTTPSink(
-					getUrl(),
-					getBearerToken(),
-					getFormat(),
-					new foam.lib.AndPropertyPredicate(
-						getX(),
-						new foam.lib.PropertyPredicate[] {
-							new foam.lib.ExternalPropertyPredicate(),
-							new foam.lib.NetworkPropertyPredicate(),
-							new foam.lib.PermissionedPropertyPredicate()
-						}
-					),
-					true
-				);
-			`
-    },
-	],
-	
-  methods: [
-    {
-      name: 'put',
-      code: function() {},
-      swiftCode: '// NOOP',
-      javaCode: `
-				SFEntry e = this.store((FObject) obj);
-				this.forward(e);
-				
-			`
-    },
-    {
-      name: 'remove',
-      code: function() {},
-      swiftCode: '// NOOP',
-      javaCode: `
-				throw new RuntimeException("HttpSFSink do not implement 'remove' method");
-			`
-    },
-    {
-      name: 'eof',
-      code: function() {},
-      swiftCode: '// NOOP',
-      javaCode: `
-				throw new RuntimeException("HttpSFSink do not implement 'remove' method");
-			`    
-		},
-    {
-      name: 'reset',
-      code: function() {},
-      swiftCode: '// NOOP',
-      javaCode: `
-				throw new RuntimeException("HttpSFSink do not implement 'remove' method");
-			`
-		}
-  ]
-})  
+      javaFactory: `
+      return new HTTPSink(
+        getUrl(),
+        getBearerToken(),
+        getFormat(),
+        new foam.lib.AndPropertyPredicate(
+          getX(),
+          new foam.lib.PropertyPredicate[] {
+            new foam.lib.ExternalPropertyPredicate(),
+            new foam.lib.NetworkPropertyPredicate(),
+            new foam.lib.PermissionedPropertyPredicate()
+          }
+          ),
+          true
+          );
+          `
+        },
+      ],
+      
+      methods: [
+        {
+          name: 'put',
+          code: function() {},
+          swiftCode: '// NOOP',
+          javaCode: `
+          SFEntry e = this.store((FObject) obj);
+          this.forward(e);
+          
+          `
+        },
+        {
+          name: 'remove',
+          code: function() {},
+          swiftCode: '// NOOP',
+          javaCode: `
+          throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+          `
+        },
+        {
+          name: 'eof',
+          code: function() {},
+          swiftCode: '// NOOP',
+          javaCode: `
+          throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+          `    
+        },
+        {
+          name: 'reset',
+          code: function() {},
+          swiftCode: '// NOOP',
+          javaCode: `
+          throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+          `
+        }
+      ]
+    })  

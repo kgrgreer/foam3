@@ -1,0 +1,9 @@
+p({
+  "class":"foam.box.sf.HttpSFSink",
+  "id":"constFourSecondHttpDemo",
+  "fileName":"httpSFSinkDemo",
+  "maxRetryDelayMS":70000,
+  "url": "http://localhost:8888/",
+  "timeWindow": 3600,
+  "replayFailEntry": true
+})
