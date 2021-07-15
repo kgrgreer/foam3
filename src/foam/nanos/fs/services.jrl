@@ -43,7 +43,10 @@ p({
     dao = new foam.dao.KeyValueDAO.Builder(x)
       .setDelegate(new foam.nanos.fs.SupportFileTypeDAO(x,
         new foam.nanos.fs.FileDataDAO.Builder(x)
-          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.fs.File.getOwnClassInfo()))
+          .setDelegate(
+            new foam.nanos.fs.FileLabelFilterDAO.Builder(x)
+              .setDelegate(new foam.dao.NullDAO(x, foam.nanos.fs.File.getOwnClassInfo()))
+              .build())
           .build()))
       .build();
 
