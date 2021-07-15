@@ -103,7 +103,7 @@ foam.CLASS({
       value: true
     },
     {
-      name: 'breadcrumbTitle',
+      name: 'viewTitle',
       expression: function(config) {
         var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
         return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);

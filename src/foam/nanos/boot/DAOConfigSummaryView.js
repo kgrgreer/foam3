@@ -107,7 +107,7 @@ foam.CLASS({
         },
         'currentMemento_',
         {
-          name: 'breadcrumbTitle',
+          name: 'viewTitle',
           factory: function() { return this.title; }
         }
       ],
@@ -210,7 +210,7 @@ foam.CLASS({
     {
       name: 'currentMemento_'
     },
-    ['breadcrumbTitle', 'Data Management']
+    ['viewTitle', 'Data Management']
   ],
 
   methods: [

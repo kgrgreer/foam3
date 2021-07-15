@@ -158,7 +158,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'breadcrumbTitle',
+      name: 'viewTitle',
       expression: function(data) {
         return data?.toSummary() ?? '';
       }
@@ -273,7 +273,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      // This is needed to ensure data is available for the breadcrumbTitle
+      // This is needed to ensure data is available for the viewTitle
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
