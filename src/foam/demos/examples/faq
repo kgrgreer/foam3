@@ -515,6 +515,8 @@ foam.CLASS({
 
 add(PropertyAndAction.create());
 
+// In the above example, this.add(this.COUNT, this.PLUS_ONE) would also have worked.
+
 // The third argument, if provided, is a slot which is set the the Element
 // that is eventually created as a result of this start(). This is used if
 // you want to store the sub-view in a variable for later reference.
@@ -793,7 +795,7 @@ add(E('hr'));
 
 // create a simple mock translationService
 var mockTranslationService = {
-  getTranslation: function(_, _, def) { return def + ' en francaise'; }
+  getTranslation: function(_, _, def) { return def + ' en français'; }
 };
 
 // Gives translated values:
