@@ -220,7 +220,7 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.document.addEventListener('keyup', this.onKeyPressed);

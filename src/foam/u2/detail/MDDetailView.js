@@ -97,7 +97,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
 
       var self = this;
       this.__subContext__.register(this.MDSelect, 'foam.u2.view.ChoiceView');

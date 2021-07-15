@@ -63,7 +63,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var size = this.size; var gap = this.gap;
       var self = this;
       var g = this.start('svg');

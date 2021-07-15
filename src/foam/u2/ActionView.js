@@ -118,7 +118,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.tooltip = this.action.toolTip;
 
       this.SUPER();

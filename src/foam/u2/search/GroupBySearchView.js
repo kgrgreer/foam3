@@ -102,7 +102,7 @@ foam.CLASS({
       this.hardData  = undefined;
     },
 
-    function initE() {
+    function render() {
       var self = this;
 
       this

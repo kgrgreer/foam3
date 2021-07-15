@@ -326,11 +326,7 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.render();
-      if ( this.initE != foam.u2.Element.prototype.initE ) {
-        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
-        this.initE();
-      }
+        this.render();
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1065,6 +1061,12 @@ foam.CLASS({
     },
 
     function render() {
+      /*
+        Template method for adding addtion element initialization
+        just before Element is output().
+      */
+      this.initTooltip();
+      this.initKeyboardShortcuts();
     },
 
     function initE() {

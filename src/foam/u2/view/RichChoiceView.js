@@ -433,7 +433,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( ! Array.isArray(this.sections) || this.sections.length === 0 ) {
@@ -664,7 +664,7 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           var summary = this.data.toSummary();
           return this
             .start()
@@ -716,7 +716,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
 
           this.style({
             'overflow': 'hidden',

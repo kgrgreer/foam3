@@ -196,7 +196,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       globalThis.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {

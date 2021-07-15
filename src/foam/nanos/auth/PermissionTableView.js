@@ -383,7 +383,7 @@ foam.CLASS({
       });
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -474,7 +474,7 @@ foam.CLASS({
         ^implied { color: gray }
       `,
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
           this.
             addClass(this.myClass()).

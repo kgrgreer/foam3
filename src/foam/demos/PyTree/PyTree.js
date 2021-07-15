@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         start('rect').
           attrs({width: 1, height: 1}).
@@ -68,7 +68,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.installCSS('');
       this.cssEl = this.document.head.lastChild;
 

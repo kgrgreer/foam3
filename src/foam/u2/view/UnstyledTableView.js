@@ -305,7 +305,7 @@ foam.CLASS({
       this.isColumnChanged = ! this.isColumnChanged;
     },
 
-    async function initE() {
+    async function render() {
       var view = this;
 
       const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));

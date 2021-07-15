@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var x = this.__subContext__.createSubContext({
         controllerMode: this.ControllerMode.VIEW
       });

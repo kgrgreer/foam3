@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this/*.add(this.RELOAD).br().br()*/.start('span',{}, this.viewArea$).tag(this.view).end();
       //this.delayedReload();
     }
@@ -76,7 +76,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var updateRows = () => this.setAttribute('rows', Math.max(4, this.data.split('\n').length+2));
       this.data$.sub(updateRows);
@@ -136,7 +136,7 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           var self = this;
@@ -336,7 +336,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
 
 /*

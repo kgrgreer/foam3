@@ -33,7 +33,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         add(this.of.BACK, this.of.FORWARD).
         add(this.wrap(this.data.slotAt(-1)), this.wrap(this.data.slotAt(-2)), this.wrap(this.data.slotAt(-3)));

@@ -207,7 +207,7 @@ foam.CLASS({
       this.onDetach(() => { this.filterController.isPreview = false; });
     },
 
-    function initE() {
+    function render() {
       var self = this;
       this.addClass()
         .start(this.ModalHeader, { title: this.TITLE_HEADER }).end()

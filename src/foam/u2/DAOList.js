@@ -41,7 +41,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var view = this;
       this.
         addClass(this.myClass()).

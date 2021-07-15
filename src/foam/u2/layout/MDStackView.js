@@ -35,7 +35,7 @@ foam.CLASS({
   css: '%CUSTOMCSS%',
 
   methods: [
-    // TODO: Why is this init() instead of initE()? Investigate and maybe fix.
+    // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
     this.curView$.sub(this.onViewUpdate);
 

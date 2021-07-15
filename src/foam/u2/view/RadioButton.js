@@ -50,7 +50,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         .addClass('radio')
         .attrs({ width: 20, height: 20 })

@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.ctrl.memento.value = '';
       this.window.location.hash = '';

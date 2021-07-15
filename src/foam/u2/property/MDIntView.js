@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       if ( this.min != undefined ) this.setAttribute('min', this.min);
       if ( this.max != undefined ) this.setAttribute('max', this.max);

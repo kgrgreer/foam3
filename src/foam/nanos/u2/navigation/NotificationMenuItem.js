@@ -92,7 +92,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.notificationDAO.on.sub(this.onDAOUpdate);
       this.user$.dot('id').sub(this.onDAOUpdate);
       this.group$.dot('id').sub(this.onDAOUpdate);

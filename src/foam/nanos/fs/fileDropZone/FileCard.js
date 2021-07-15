@@ -112,7 +112,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       if ( this.selected == this.index ) {
         this.style({

@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.config = this.DAOControllerConfig.create({ dao: this.data.dao });

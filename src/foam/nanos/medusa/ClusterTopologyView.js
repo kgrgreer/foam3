@@ -86,7 +86,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
 
       this.canvas.children = [];
