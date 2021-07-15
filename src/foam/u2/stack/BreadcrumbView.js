@@ -46,12 +46,13 @@ foam.CLASS({
               self.stack.jump(index, self);
             }
           });
-            self.start(jumpAction, {
-              label$: this.stack.stack_[index].breadcrumbTitle$,
-              themeIcon: themeIcon,
-              buttonStyle: 'LINK'
-            }).show(this.stack.stack_[index].breadcrumbTitle$).end()
-            .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).show(this.stack.stack_[index].breadcrumbTitle$).add('/').end(); });
+          var labelSlot = this.stack.stack_[index].breadcrumbTitle$;
+          self.start(jumpAction, {
+            label$: labelSlot,
+            themeIcon: themeIcon,
+            buttonStyle: 'LINK'
+          }).show(labelSlot).end()
+          .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end(); });
           if ( ! this.stack.stack_[index].breadcrumbTitle )
             console.warn('Missing Title for BreadcrumbView ' + navStack[i].view.class);
         });
