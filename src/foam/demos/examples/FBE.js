@@ -348,14 +348,14 @@ foam.CLASS({
         return response.text();
       });
 
-      this.testData += await fetch('u2').then(function(response) {
-        return response.text();
-      });
-
       this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
 */
+this.testData += await fetch('u2').then(function(response) {
+  return response.text();
+});
+
       this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
