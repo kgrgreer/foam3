@@ -101,7 +101,7 @@ foam.CLASS({
         view: arguments[0],
         parent: arguments[1],
         id: arguments[2],
-        isMenuItem: arguments[3] && arguments[3].menuItem,
+        shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
         popup: arguments[3] && arguments[3].popup,
         breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
       });
@@ -123,7 +123,7 @@ foam.CLASS({
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
       this.pos = pos;
-      if ( block.isMenuItem )
+      if ( block.shouldResetBreadcrumbs )
         this.navStackBottom = pos;
     },
 
@@ -160,22 +160,18 @@ foam.CLASS({
       }
     },
     function jump(jumpPos, ctx) {
-      var isMementoSetWithView = false;
-
-      //check if the class of the view to which current memento points has property MEMENTO_HEAD
-      //or if the view is object and it has mementoHead set
-      //if so we need to set last not-null memento in the memento chain to null as we're going back
 
       while ( this.pos > jumpPos ) {
+      // Check if the class of the view to which current memento points has property viewTitle set 
+      // using the identifier added to the memento params by stackView
         if ( this.stack_[this.pos].parent.memento.params == this.BCRMB_ID ) {
           this.deleteMemento(this.stack_[this.pos].parent.memento.head);
         }
 
         this.pos--;
-
         if ( this.navStackBottom > this.pos ) {
           for ( var i = this.pos; i >= 0; i-- ) {
-            if ( this.stack_[i].isMenuItem ) {
+            if ( this.stack_[i].shouldResetBreadcrumbs ) {
               this.navStackBottom = i;
               break;
             }
