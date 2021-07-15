@@ -23,7 +23,7 @@ foam.CLASS({
     [ 'nodeName', 'div' ]
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.

@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var vals = this.of.VALUES;
       if ( this.whitelist.length > 0 ) {
         vals = vals.filter(ax => this.whitelist.includes(ax.name));

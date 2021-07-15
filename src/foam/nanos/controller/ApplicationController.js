@@ -450,7 +450,7 @@ foam.CLASS({
       }));
     },
 
-    function initE() {
+    function render() {
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 

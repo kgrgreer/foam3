@@ -253,7 +253,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       if ( ! this.targetDAOName ) {
         console.error('Please specify a targetDAOKey on the reference.');

@@ -273,7 +273,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       // The memento passed to DAOSummaryView must be the memento of the prev view instead of the tail

@@ -31,6 +31,7 @@ foam.CLASS({
       display: inline-flex;
       gap: 8px;
       justify-content: center;
+      margin: 0;
       outline: none;
       text-align: center;
     }
@@ -344,7 +345,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.initCls();

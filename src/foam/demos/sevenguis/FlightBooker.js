@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.demos.sevenguis',
   name: 'FlightBooker',
-  extends: 'foam.u2.Controller', // can be commented out and remove initE
+  extends: 'foam.u2.Controller', // can be commented out and remove render
 
   requires: [
     'foam.u2.DateView',
@@ -73,7 +73,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.
         addClass(this.myClass()).

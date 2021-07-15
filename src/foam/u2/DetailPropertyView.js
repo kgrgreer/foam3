@@ -54,7 +54,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var prop = this.prop;
 
       this.show(

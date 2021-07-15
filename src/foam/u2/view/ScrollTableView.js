@@ -281,7 +281,7 @@
       this.updateCount();
     },
 
-    function initE() {
+    function render() {
       var self = this;
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params

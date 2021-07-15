@@ -198,7 +198,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       var pkg  = '';
@@ -259,7 +259,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var data = this.data;
       this.
@@ -319,7 +319,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var data = this.data;
@@ -392,7 +392,7 @@ foam.CLASS({
   properties: [ [ 'nodeName', 'a' ] ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.
@@ -536,7 +536,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       for ( var key in foam.UNUSED ) foam.lookup(key);
       this.SUPER();
       this.
@@ -797,7 +797,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var data = this.data;
       var nbrOfPropInNonConventionalDiag = 5;
       var propertyHeight = 20;

@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.addClass(this.myClass('container'));
       // this.columns.push([this.CLEAR, null]);
 

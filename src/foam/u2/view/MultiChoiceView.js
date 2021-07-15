@@ -193,7 +193,7 @@ foam.CLASS({
       return slot;
     },
 
-    function initE() {
+    function render() {
       var self = this;
 
       this.onDAOUpdate();

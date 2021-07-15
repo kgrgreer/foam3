@@ -119,7 +119,7 @@ foam.CLASS({
   documentation: 'Tooltip view to be used by the tooltip handler',
 
   methods: [
-    function initE(data) {
+    function render(data) {
       this.SUPER();
       this
       .add(this.data)

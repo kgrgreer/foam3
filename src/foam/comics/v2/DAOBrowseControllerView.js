@@ -155,7 +155,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
     this.SUPER();
 
     var self = this;
@@ -228,9 +228,8 @@ foam.CLASS({
                     .end();
                 })
                 .call(function(){
-                  var e = this;
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { config$: e.__subContext__.config$ });
+                    return self.E().tag(browseView, self.__subContext__);
                   }))
                 })
               .end()

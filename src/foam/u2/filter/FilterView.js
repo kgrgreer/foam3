@@ -279,7 +279,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view

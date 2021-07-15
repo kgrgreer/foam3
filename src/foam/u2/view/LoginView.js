@@ -143,7 +143,7 @@ foam.CLASS({
     align-items: center;
   }
   ^ .image-one {
-    width: 34vw;
+    width: 28vw;
   }
   `,
 
@@ -220,7 +220,7 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.document.addEventListener('keyup', this.onKeyPressed);
@@ -229,14 +229,14 @@ foam.CLASS({
       });
       let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
       // CREATE MODEL VIEW
-      var right = this.Element.create({}, this)
+      var right = this.E()
       // Header on-top of rendering model
-        .start().show(this.topBarShow).addClass('topBar-logo-Back')
+        .start().show(logo).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')
           .end()
-      .end()
+        .end()
       // Title txt and Model
         .start().addClass('title-top').add(this.model.TITLE).end()
         .startContext({ data: this })

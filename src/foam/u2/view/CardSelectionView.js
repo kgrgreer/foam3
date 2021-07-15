@@ -47,7 +47,7 @@
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this
         .start(this.isVertical ? foam.u2.layout.Rows : foam.u2.layout.Cols)

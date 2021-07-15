@@ -206,7 +206,7 @@ foam.CLASS({
       this.onDetach(this.choices$.sub(this.onChoicesUpdate));
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 

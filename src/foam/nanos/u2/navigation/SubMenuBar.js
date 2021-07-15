@@ -47,7 +47,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function render(){
       var self   = this;
       var menus  = self.data;
       var parent = self.parent;

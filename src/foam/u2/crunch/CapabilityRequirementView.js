@@ -108,7 +108,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var style = this.Style.create();
       style.addBinds(this);
       var mainCapability = this.functionData ?

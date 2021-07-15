@@ -75,7 +75,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function render(){
 
       this.addClass()
       .start().hide(this.hideSummary$)
@@ -110,7 +110,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
           this
             .start({
               selection$: this.selection$,

@@ -31,7 +31,7 @@ foam.CLASS({
   extends: 'foam.u2.svg.arrow.ArrowLine',
 
   methods: [
-    function initE() {
+    function render() {
       console.log('amaline', this)
       this.SUPER();
       var dy = Math.abs(this.endPos[1] - this.startPos[1]);
@@ -116,7 +116,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this
         .on('mouseover', () => { this.hoverState = true })

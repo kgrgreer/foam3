@@ -274,7 +274,7 @@ foam.CLASS({
         idOfRecord: id
       }, this.__subContext__);
     },
-    function initE() {
+    function render() {
       var self = this;
       var filterView;
       var simpleSearch;

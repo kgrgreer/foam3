@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.redirectToInner_ = false;
 
       var container = this.addClass().start().addClass(this.myClass('container'));

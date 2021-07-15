@@ -125,7 +125,7 @@ foam.CLASS({
 
   methods: [
 
-    function initE() {
+    function render() {
       var self = this;
       var indicator;
       if ( this.err ) {
