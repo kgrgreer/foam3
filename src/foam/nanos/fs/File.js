@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'fileTypeDAO'
+    'fileTypeDAO',
+    'sessionID'
   ],
 
   javaImports: [
@@ -108,12 +109,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'address',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      readVisibility: 'RO',
+      hidden: true,
       transient: true,
       expression: function (id) {
-        return window.location.origin + '/service/httpFileService/' + id;
+        return window.location.origin + '/service/httpFileService/' + id + '?sessionId=' + this.sessionID;
       }
     },
     {

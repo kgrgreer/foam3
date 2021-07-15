@@ -109,7 +109,7 @@ foam.CLASS({
       let d = this.data[pos].data;
       // If file is stored as a dataString, actual file is already on client side. Otherwise, actual file can be retrieved from server from File.address
       if ( ! d ) {
-        url = this.data[pos].address + '?sessionId=' + localStorage['defaultSession'];
+        url = this.data[pos].address;
       } else {
         url = URL.createObjectURL(d.blob);
       }
