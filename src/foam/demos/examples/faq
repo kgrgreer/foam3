@@ -4,7 +4,7 @@
 ##  Built-In Constants
 Where can I find built-in constants?
 ex)
-print("Method CODE property constant:", foam.core.Method.CODE);
+log("Method CODE property constant:", foam.core.Method.CODE);
 foam.core.Method.CODE.describe;
 
 Answer: Property constants are copied out of the model into to resulting class and prototype.
@@ -15,10 +15,10 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(Test.P1.name, Test.P2.name);
+log(Test.P1.name, Test.P2.name);
 
 var t = Test.create();
-print(t.P1.name, t.P2.name);
+log(t.P1.name, t.P2.name);
 
 ##  Class Type
 Is class is a kind of type?
@@ -40,7 +40,7 @@ foam.CLASS({
 });
 
 var p = foam.json.parse({class: 'some.package2.Test', p1: 42, p2: 'John'});
-print(p.cls_.id);
+log(p.cls_.id);
 
 ##  Packages
 How are packages defined in FOAM?
@@ -54,7 +54,7 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(Test.create());
+log(Test.create());
 
 // With a package:
 
@@ -64,7 +64,7 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(some.package2.Test.create());
+log(some.package2.Test.create());
 
 // When used from another class, packaged classes can be required:
 
@@ -76,7 +76,7 @@ foam.CLASS({
   ]
 });
 
-print(Client.create().createTest());
+log(Client.create().createTest());
 
 ##  FOAM Types
 What are all of the types in FOAM?
@@ -86,8 +86,8 @@ Most of the types in FOAM are defined in foam/core/types.js.
 Types are not hard-coded into FOAM and you can create your own by extending Property.
 The following script will find all of the FOAM "types":
 --
-for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
-for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) log(v); } catch(x) {} }
+for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) log(v); } catch(x) {} }
 
 ##  Flags
 What does this code mean? e.g., flags: [&#39;java&#39;], flags[&#39;web&#39;] , flags: [ &#39;node&#39; ]
@@ -262,7 +262,7 @@ foam.CLASS({name: 'Person', properties: [ 'name' ]});
 
 p1 = Person.create();
 p2 = Person.create({name:'John'});
-print('Initial:', p1.name, ' ', p2.name);
+log('Initial:', p1.name, ' ', p2.name);
 
 p1.name$.follow(p2.name$);
 log('After follow:', p1.name, ' ', p2.name);
