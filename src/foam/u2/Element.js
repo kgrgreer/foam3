@@ -326,7 +326,7 @@ foam.CLASS({
       });
     },
     function output(out) {
-        this.render();
+      this.render();
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1061,15 +1061,6 @@ foam.CLASS({
     },
 
     function render() {
-      /*
-        Template method for adding addtion element initialization
-        just before Element is output().
-      */
-      this.initTooltip();
-      this.initKeyboardShortcuts();
-    },
-
-    function initE() {
       /*
         Template method for adding addtion element initialization
         just before Element is output().
@@ -2868,7 +2859,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -3049,7 +3040,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.addClass();
 

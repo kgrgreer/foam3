@@ -312,7 +312,7 @@ foam.CLASS({
   requires: [ 'foam.u2.ControllerMode', 'foam.u2.view.StringView' ],
 
   methods: [
-    function initE() {
+    function render() {
       this.startContext({controllerMode: this.ControllerMode.VIEW}).
         // works, but generates a warning
         add('literal: ').tag(this.StringView.create({data: 'value1'})).
@@ -387,7 +387,7 @@ A1. In U2, Elements have a lifecycle which goes from INITIAL -> OUTPUT -> LOADED
 When an element is OUTPUT but not yet LOADED, it can't be modified, and if it is, then the
 "Mutation is not allowed in output state." error will occur. U2 is careful to always LOAD elements
 immediately after outputting them, so the way this normally happens is that an element throws
-an exception when being loaded (in its initE() method). To solve this problem add a try-catch block
+an exception when being loaded (in its render() method). To solve this problem add a try-catch block
 to your offending element and see if it is throwing an unexpected exception.
 A2. U3, U2's replacement, does away with states and this error is not possible.
 --
@@ -475,7 +475,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   methods: [
-    function initE() {
+    function render() {
       this.add('MyView, myData: ', this.data$);
     }
   ]
@@ -510,7 +510,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
   properties: [ { class: 'Int', name: 'count' } ],
   actions: [ { name: 'plusOne', code: function() { this.count++; } } ],
-  methods: [ function initE() { this.start(this.COUNT).end().start(this.PLUS_ONE).end(); } ]
+  methods: [ function render() { this.start(this.COUNT).end().start(this.PLUS_ONE).end(); } ]
 });
 
 add(PropertyAndAction.create());
@@ -574,15 +574,17 @@ sign(false);
 ##  Q16
 Q. What’ the difference of using between initE() and init()?
 
+Since this question was asked, initE() has been renamed to render().
+
 The method init() is defined on FObject, so is shared by all FOAM JS Objects.
 It is called whenever an object is created.
-The method initE() is defined on foam.u2.Element, the base class for all U2
+The method render() is defined on foam.u2.Element, the base class for all U2
 components. 'E' is short for 'Element'. It is called just before a U2 element
 is added to the DOM, which happens after init().
 
-In U3, initE has been renamed to render(), to make its purpose clearer.
+In U3, render has been renamed to render(), to make its purpose clearer.
 
-In U2, Borders need to use init() instead of initE(), but in U3 both Borders
+In U2, Borders need to use init() instead of render(), but in U3 both Borders
 and regular views should use the render method.
 --
 
@@ -590,7 +592,7 @@ foam.CLASS({
   name: 'Test',
   methods: [
     function init() { log('init called on ' + this.cls_.name); },
-    function initE() { this.add('element'); log('initE called on ' + this.cls_.name); },
+    function render() { this.add('element'); log('render called on ' + this.cls_.name); },
   ]
 });
 
@@ -599,7 +601,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   methods: [
     function init() { log('init called on ' + this.cls_.name); },
-    function initE() { this.add('element'); log('initE called on ' + this.cls_.name); }
+    function render() { this.add('element'); log('render called on ' + this.cls_.name); }
   ]
 });
 
@@ -608,19 +610,6 @@ var testE = TestElement.create();
 
 log('both objects created');
 add(testE);
-
-if ( foam.flags.u3 ) {
-  foam.CLASS({
-    name: 'TestElementU2',
-    extends: 'foam.u2.Element',
-    methods: [
-      function init() { log('init called on ' + this.cls_.name); },
-      function render() { this.add('element'); log('render called on ' + this.cls_.name); }
-    ]
-  });
-
-  add(TestElementU2.create());
-}
 
 ##  Q17
 Q. How should I understand this two “client” side codes below.
