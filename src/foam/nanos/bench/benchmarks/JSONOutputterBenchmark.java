@@ -13,7 +13,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 
 public class JSONOutputterBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected Outputter o_ = new Outputter(null);
   protected User      u_ = null;

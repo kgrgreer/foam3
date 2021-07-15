@@ -5,7 +5,7 @@ import foam.dao.*;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 
-public class JournalReplayBenchmark implements Benchmark {
+public class JournalReplayBenchmark extends Benchmark {
   protected FileJournal journal_;
   protected DAO dao_;
   protected int userCount;

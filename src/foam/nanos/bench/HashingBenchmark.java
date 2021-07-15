@@ -15,7 +15,7 @@ import foam.nanos.auth.User;
 import java.util.List;
 
 public class HashingBenchmark
-    implements Benchmark
+  extends Benchmark
 {
   List users = null;
   protected DAO userDAO_;

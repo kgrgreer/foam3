@@ -12,7 +12,6 @@
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.nanos.bench.Benchy',
     'foam.nanos.script.Language',
     'foam.nanos.bench.Benchmark',
     'foam.nanos.bench.BenchmarkRunner',
@@ -87,7 +86,7 @@
         }
 
         for ( int i = 0; i < benchmarkArray.size(); i ++ ) {
-          Benchy benchmark = (Benchy) benchmarkArray.get(i);
+          Benchmark benchmark = (Benchmark) benchmarkArray.get(i);
 
           if ( selectedBenchmarks != null ) {
             if ( selectedBenchmarks.contains(benchmark.getId()) ) {

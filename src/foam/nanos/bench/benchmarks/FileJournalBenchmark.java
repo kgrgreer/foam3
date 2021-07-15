@@ -15,7 +15,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 
 public class FileJournalBenchmark
-  implements Benchmark
+ extends Benchmark
 {
   protected FileJournal journal_;
   protected DAO         dao_;

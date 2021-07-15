@@ -143,7 +143,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/SimpleUserQueryService" },
   { name: "foam/nanos/auth/AssignableAware" },
   { name: "foam/nanos/auth/ResetSpidBeforeLoginAuthService" },
-  { name: "foam/nanos/bench/Benchy" },
   { name: "foam/nanos/theme/Theme" },
   { name: "foam/nanos/theme/ThemeGlyphs" },
   { name: "foam/nanos/theme/ThemeDomain" },
