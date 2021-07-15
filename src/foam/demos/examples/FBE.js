@@ -161,7 +161,7 @@ foam.CLASS({
             br().
             add(this.Example.CODE).
             br().
-            start('b').add('Output:').end().
+            start('span').style({'font-weight': 500}).add('Output:').end().
             start().
               style({border: '1px solid black', padding: '8px'}).
               tag('div', {}, this.dom$).
