@@ -502,6 +502,19 @@ for ( var i = 0 ; i < 5 ; i++ )
 // It can also be any object that has a toE() method.
 add(foam.util.Timer.create());
 
+// But the most common cases of objects that implement toE() are
+// Properties and Actions. Ex.:
+
+foam.CLASS({
+  name: 'PropertyAndAction',
+  extends: 'foam.u2.Controller',
+  properties: [ { class: 'Int', name: 'count' } ],
+  actions: [ { name: 'plusOne', code: function() { this.count++; } } ],
+  methods: [ function initE() { this.start(this.COUNT).end().start(this.PLUS_ONE).end(); } ]
+});
+
+add(PropertyAndAction.create());
+
 // The third argument, if provided, is a slot which is set the the Element
 // that is eventually created as a result of this start(). This is used if
 // you want to store the sub-view in a variable for later reference.
