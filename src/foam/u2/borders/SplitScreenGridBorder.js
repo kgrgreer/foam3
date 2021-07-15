@@ -43,6 +43,11 @@
       justify-content: center;
       align-items: center;
     }
+
+    /* TODO: Remove this when U3 allows non-E() adds */
+    ^split-screen > *{
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -67,16 +72,10 @@
 
       var right = this.GUnit.create({ columns: this.columnsConfig })
         .addClass(this.myClass('split-screen'))
-        .add(foam.u2.Element.create({}, this)
-        .start()
-          .start('div', null, this.rightPanel$).end()
-        .end());
-      var left = this.GUnit.create({ columns: this.columnsConfig })
+        .tag('', null, this.rightPanel$);
+        var left = this.GUnit.create({ columns: this.columnsConfig })
         .addClass(this.myClass('split-screen'))
-        .add(foam.u2.Element.create({}, this)
-        .start()
-          .start('div', null, this.leftPanel$).end()
-        .end());
+        .tag('', null, this.leftPanel$);
 
       var grid = this.Grid.create();
       grid
@@ -90,3 +89,4 @@
     }
   ]
 });
+
