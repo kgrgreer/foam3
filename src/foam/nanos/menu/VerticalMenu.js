@@ -123,7 +123,7 @@ foam.CLASS({
 
     function openMenu(menu) {
       if ( menu.handler ) {
-        this.pushMenu(menu);
+        this.pushMenu(menu, true);
         this.menuListener(menu);
       }
     }
