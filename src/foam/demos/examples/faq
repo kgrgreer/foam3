@@ -407,7 +407,7 @@ WebSocket connections are more expensive to support, so are rarely used.
 --
 
 ##  Q13
-Q. Q4. How “values” property works and what's the difference of between “properties” and “values?
+Q. How “values” property works and what's the difference of between “properties” and “values?
 
 foam.ENUM() creates an enumeration, not a regular class. The same as the following code
 which is both valid C and Java:
