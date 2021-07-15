@@ -16,10 +16,7 @@ foam.CLASS({
       var self = this;
       X.stack.push(
         () => {
-          // Set the menuId and call the menuListener so that the
-          // hash is updated properly when stack.back() is called.
           this.pushMenu(menu);
-          this.menuListener && this.menuListener(menu);
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
         X,

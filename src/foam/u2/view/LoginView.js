@@ -37,6 +37,7 @@ foam.CLASS({
   imports: [
     'appConfig',
     'loginVariables',
+    'memento',
     'stack',
     'theme'
   ],
@@ -222,7 +223,10 @@ foam.CLASS({
 
     function render() {
       this.SUPER();
-      var self = this;
+
+      this.memento.value = '';
+      location.hash = '';
+
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);

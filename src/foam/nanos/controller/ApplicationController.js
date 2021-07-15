@@ -393,20 +393,6 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
-        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.memento.head ) {
-          var menu = await self.__subContext__.menuDAO.find(self.memento.head);
-          // explicitly check that the menu is unauthenticated
-          // since if there is a user session on refresh, this would also
-          // find authenticated menus to try to push before fetching subject
-          if ( menu && menu.authenticate === false ) {
-            self.pushMenu(menu);
-            await self.maybeReinstallLanguage(client);
-            self.languageInstalled.resolve();
-            return;
-          }
-        }
-
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -626,16 +612,43 @@ foam.CLASS({
       return text;
     },
 
-    function pushMenu(menu, opt_forceReload) {
-      if ( menu.id ) {
-        menu.launch(this);
-        menu = menu.id;
+    async function pushMenu(menu, opt_forceReload) {
+      let idCheck = menu && menu.id ? menu.id : menu;
+      let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
+      // console.log(`menuTryingToPush: ${idCheck}, currentMenu ${currentMenuCheck}, Should I Push? ${currentMenuCheck != idCheck}`);
+      if ( currentMenuCheck == idCheck && ! opt_forceReload ) return;
+      // Yes Push Menu
+      var dao;
+      if ( this.client ) {
+        dao = this.client.menuDAO;
+        menu = await dao.find(menu);
+        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+        menu && menu.launch(this);
+        this.menuListener(menu);
+      } else {
+        await this.clientPromise.then(async () => {
+          dao = this.client.menuDAO;
+          menu = await dao.find(menu);
+          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+          menu && menu.launch(this);
+          this.menuListener(menu);
+        });
       }
       /** Use to load a specific menu. **/
       // Do it this way so as to not reset mementoTail if set
+      if ( menu.id ) menu = menu.id;
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.value = menu;
       }
+    },
+
+    async function findFirstMenuIHavePermissionFor(dao) {
+      // dao is expected to be the menuDAO
+      // arg(dao) passed in cause context handled in calling function
+      return await dao.orderBy(foam.nanos.menu.Menu.ORDER).select().then(ableToAccessMenus => {
+        ableToAccessMenus.array[0].launch(this);
+        return ableToAccessMenus.array[0];
+      }).catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {
@@ -675,15 +688,7 @@ foam.CLASS({
   listeners: [
     async function mementoChange() {
       // TODO: make a latch instead
-      if ( this.client ) {
-        var menu = await this.client.menuDAO.find(this.memento.head);
-        menu && menu.launch(this);
-      } else {
-        this.clientPromise.then(async () => {
-          var menu = await this.client.menuDAO.find(this.memento.head);
-          menu && menu.launch(this);
-        });
-      }
+      this.pushMenu(this.memento.head);
     },
 
     function onUserAgentAndGroupLoaded() {
