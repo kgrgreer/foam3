@@ -113,7 +113,7 @@ foam.CLASS({
       readVisibility: 'RO',
       transient: true,
       expression: function (id) {
-        return window.location.origin + '/service/httpFileService/' + id
+        return window.location.origin + '/service/httpFileService/' + id;
       }
     },
     {
@@ -155,7 +155,7 @@ foam.CLASS({
 
         return null;
       `,
-      getter: async function() {
+      getter: function() {
         if ( this.dataString ) {
           let b64Data = this.dataString.split(',')[1];
           const b64toBlob = (b64Data, contentType = this.mimeType, sliceSize = 512) => {
@@ -173,10 +173,10 @@ foam.CLASS({
               byteArrays.push(new Uint8Array(byteNumbers));
             }
 
-            return new Blob(byteArrays, {type: contentType});
+            return new Blob(byteArrays, { type: contentType });
           }
 
-          return this.BlobBlob.create({blob: b64toBlob(b64Data)});
+          this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
         }
 
         return this.instance_.data || null;
