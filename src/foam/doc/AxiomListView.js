@@ -46,7 +46,7 @@ foam.CLASS({
     }
   `,
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var of = this.of;

@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.addClass()
         .start('div').addClass('img-container')
           .start('img')

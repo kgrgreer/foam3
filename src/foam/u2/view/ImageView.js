@@ -24,7 +24,7 @@ foam.CLASS({
     ['nodeName', 'img']
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.attrs({ src: this.data$ });
     }

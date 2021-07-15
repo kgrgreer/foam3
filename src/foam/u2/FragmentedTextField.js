@@ -83,7 +83,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       return this
         .addClass(this.myClass())
         .createInnerFields()

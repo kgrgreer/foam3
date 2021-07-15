@@ -68,7 +68,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.attrs({
         label: this.label$,
         'always-float-label': this.alwaysFloatLabel,

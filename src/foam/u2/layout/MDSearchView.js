@@ -56,7 +56,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       self.addClass()
       this.start().addClass('container-search')

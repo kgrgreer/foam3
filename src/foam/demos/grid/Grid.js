@@ -112,7 +112,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var dao = this.dao;
 
       this.

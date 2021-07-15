@@ -24,7 +24,7 @@ foam.CLASS({
       this.prop = prop;
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       var prop = this.prop;

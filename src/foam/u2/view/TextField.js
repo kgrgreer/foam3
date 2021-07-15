@@ -47,7 +47,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.start(this.view, {
         data$:            this.data$,
         label$:           this.label$,

@@ -50,7 +50,7 @@ foam.CLASS({
     function fromProperty(p) {
       this.of = p.of;
     },
-    function initE() {
+    function render() {
       var self = this;
 
       this.SUPER();

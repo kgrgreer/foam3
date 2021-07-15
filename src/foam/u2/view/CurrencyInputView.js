@@ -130,7 +130,7 @@ foam.CLASS({
       this.currencyIdUpdate();
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.addClass()

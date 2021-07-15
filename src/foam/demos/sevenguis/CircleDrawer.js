@@ -54,7 +54,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
           this.nodeName = 'span';
           this.
             addClass(this.myClass()).
@@ -84,7 +84,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.memento$.sub(function() {
         var m = this.memento;
         if ( this.feedback_ ) return;

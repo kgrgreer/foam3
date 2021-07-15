@@ -99,7 +99,7 @@ foam.CLASS({
     ],
         
     methods:[
-      function initE(){
+      function render(){
         this.addClass()
         this
         .tag(this.ModalHeader.create({

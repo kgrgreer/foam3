@@ -36,7 +36,7 @@ foam.CLASS({
   // css: foam.u2.DetailView.model_.css,
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.startContext({data: this.data}).
         tag(this.DetailPropertyView, {prop: self.Timer.I}).
@@ -95,7 +95,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -183,7 +183,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 

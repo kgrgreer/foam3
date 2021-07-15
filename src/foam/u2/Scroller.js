@@ -101,7 +101,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       this.data$proxy.sub('on', this.onDAOUpdate);

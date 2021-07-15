@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.auth.logout().then(() => {
         localStorage.removeItem('defaultSession');

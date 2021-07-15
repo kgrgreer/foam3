@@ -13,7 +13,7 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE to render()
+  - rename render to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
@@ -42,6 +42,7 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
+  - NEXT_ID() removed. Use new Object().$UID instead.
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -768,15 +769,15 @@ foam.CLASS({
       return Promise.resolve(this.el_());
     },
 
+    function slotE_(slot) {
+      return foam.u2.SlotNode.create({slot: slot}, this);
+    },
+
     function load() {
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      if ( this.initE != foam.u2.Element.prototype.initE ) {
-        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
-        this.initE();
-      }
       this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
@@ -808,10 +809,6 @@ foam.CLASS({
     },
 
     function render() {
-    },
-
-    function initE() {
-      // TODO: remove
     },
 
     async function observeScrollHeight() {
@@ -2336,7 +2333,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);

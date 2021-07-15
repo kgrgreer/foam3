@@ -221,11 +221,12 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
+      this.SUPER();
+
       this.memento.value = '';
       location.hash = '';
-      this.SUPER();
-      var self = this;
+
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);

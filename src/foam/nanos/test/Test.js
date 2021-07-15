@@ -195,10 +195,10 @@ foam.CLASS({
           return;
         }
 
-        ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-        PrintStream           ps    = new PrintStream(baos);
-        PM                    pm    = new PM(this.getClass(), getId());
-        Language              l     = getLanguage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream           ps   = new PrintStream(baos);
+        PM                    pm   = new PM(this.getClass(), getId());
+        Language              l    = getLanguage();
 
         setPassed(0);
         setFailed(0);

@@ -195,7 +195,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.hideSummary = true;
 
       this.dao.on.sub(this.onDAOUpdate);
