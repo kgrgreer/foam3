@@ -384,17 +384,20 @@ log(`p1: ${t.p1}, p2: ${t.p2}, p3: ${t.p3}, p4: ${t.p4}, p5: ${t.p5}, p6: ${t.p6
 
 ##  Mutation not allowed
 Q. What does "Mutation is not allowed in output state." mean and how do I fix it.
+<p>
 A1. In U2, Elements have a lifecycle which goes from INITIAL -> OUTPUT -> LOADED -> UNLOADED.
 When an element is OUTPUT but not yet LOADED, it can't be modified, and if it is, then the
 "Mutation is not allowed in output state." error will occur. U2 is careful to always LOAD elements
 immediately after outputting them, so the way this normally happens is that an element throws
 an exception when being loaded (in its render() method). To solve this problem add a try-catch block
 to your offending element and see if it is throwing an unexpected exception.
+<p>
 A2. U3, U2's replacement, does away with states and this error is not possible.
 --
 
 ##  Remote Listener Support
 Q. What is remote listener support?
+<p>
 A. The JS EasyDAO has a boolean property called remoteListenerSupport which defaults to false.
 When set to false, the client DAO communicates with the server over the HTTPBox, which communicates requests and responses
 over the HTTP protocol.
@@ -409,7 +412,7 @@ WebSocket connections are more expensive to support, so are rarely used.
 
 ##  Enum Values
 Q. How “values” property works and what's the difference of between “properties” and “values?
-
+<p>
 foam.ENUM() creates an enumeration, not a regular class. The same as the following code
 which is both valid C and Java:
 
@@ -530,6 +533,7 @@ add(E().tag('input'));
 
 ##  Element.callIf()
 Q. When to use callIf()?
+<p>
 A. call, callIf, callIfElse, and forEach are defined in foam.core.Fluent, and
 are used for creating "fluent interfaces". This is where methods can be chained
 without ever storing intermediate values in variables. U2/U3 are fluent interfaces.
@@ -574,17 +578,17 @@ sign(false);
 
 ##  init() and initE()
 Q. What’ the difference of using between initE() and init()?
-
+<p>
 Since this question was asked, initE() has been renamed to render().
-
+<p>
 The method init() is defined on FObject, so is shared by all FOAM JS Objects.
 It is called whenever an object is created.
 The method render() is defined on foam.u2.Element, the base class for all U2
 components. 'E' is short for 'Element'. It is called just before a U2 element
 is added to the DOM, which happens after init().
-
+<p>
 In U3, render has been renamed to render(), to make its purpose clearer.
-
+<p>
 In U2, Borders need to use init() instead of render(), but in U3 both Borders
 and regular views should use the render method.
 --
