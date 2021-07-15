@@ -394,8 +394,8 @@ foam.CLASS({
         self.installLanguage();
 
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.memento.value ) {
-          var menu = await self.__subContext__.menuDAO.find(self.memento.value);
+        if ( self.memento.head ) {
+          var menu = await self.__subContext__.menuDAO.find(self.memento.head);
           // explicitly check that the menu is unauthenticated
           // since if there is a user session on refresh, this would also
           // find authenticated menus to try to push before fetching subject
@@ -450,7 +450,7 @@ foam.CLASS({
       }));
     },
 
-    function initE() {
+    function render() {
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 

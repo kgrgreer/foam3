@@ -89,7 +89,7 @@ tag('input');
 ##  shown / show() / hide()
 ##  focused / focus() / blur()
 ##  Creating a Component
-##   initE
+##   render
 ##  Keyboard Shortcuts
 ##  el() and id
 ##  E()
@@ -113,7 +113,7 @@ foam.CLASS({
          ^ { background: pink; }
        `,
        methods: [
-         function initE() {
+         function render() {
            this.SUPER();
             this.
               addClass(this.myClass()).
@@ -123,7 +123,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.
         addClass(this.myClass()).

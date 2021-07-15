@@ -64,7 +64,7 @@ foam.CLASS({
       var tmp = this.memento.value.split(this.Memento.SEPARATOR);
       if ( ! this.docKey ) this.docKey = tmp.length > 1 && tmp[1];
     },
-    function initE() {
+    function render() {
       var dao = this.__context__[this.daoKey];
       this.addClass();
       if ( ! dao ) {

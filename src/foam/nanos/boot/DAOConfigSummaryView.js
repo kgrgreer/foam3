@@ -113,7 +113,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           if ( this.memento )
@@ -214,7 +214,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var self          = this;

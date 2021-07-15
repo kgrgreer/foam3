@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.addClass();
 
       if ( this.choices.length == 0 ) {

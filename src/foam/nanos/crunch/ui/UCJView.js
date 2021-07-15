@@ -66,7 +66,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var user = await this.userDAO.find(this.data.effectiveUser);
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( ! user ) user = realUser;

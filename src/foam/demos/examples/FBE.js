@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this/*.add(this.RELOAD).br().br()*/.start('span',{}, this.viewArea$).tag(this.view).end();
       //this.delayedReload();
     }
@@ -76,7 +76,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var updateRows = () => this.setAttribute('rows', Math.max(4, this.data.split('\n').length+2));
       this.data$.sub(updateRows);
@@ -129,14 +129,14 @@ foam.CLASS({
 
       css: `
         ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; width: 45%; }
-        ^ .property-code { margin-bottom: 12px; width: 46%; }
+        ^ .property-text { border: none; padding: 10 0; }
+        ^ .property-code { margin-bottom: 12px; }
         ^ .property-title { float: left; }
         ^ .property-id { float: left; margin-right: 12px; }
       `,
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           var self = this;
@@ -163,7 +163,7 @@ foam.CLASS({
             br().
             start('b').add('Output:').end().
             start().
-              style({width: '45%', border: '1px solid black', padding: '8px'}).
+              style({border: '1px solid black', padding: '8px'}).
               tag('div', {}, this.dom$).
             end();
 
@@ -336,7 +336,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
 
 /*

@@ -38,7 +38,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this
         .start(this.Tabs)

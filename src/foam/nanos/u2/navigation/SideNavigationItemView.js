@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var view = this;
 
       var paddingLeft = view.level * 10 + 15;

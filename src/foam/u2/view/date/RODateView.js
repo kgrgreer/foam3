@@ -12,7 +12,7 @@ foam.CLASS({
   documentation: 'A ReadOnly DateView',
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.start().
         addClass(this.myClass()).

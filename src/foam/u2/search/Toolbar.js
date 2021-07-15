@@ -38,7 +38,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.addClass()
         .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })

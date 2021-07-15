@@ -117,7 +117,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       const self = this;
       const logo = this.theme.largeLogo || this.theme.logo;
 

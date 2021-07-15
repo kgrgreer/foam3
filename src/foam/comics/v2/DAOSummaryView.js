@@ -281,7 +281,7 @@ foam.CLASS({
       var id = this.data?.id ?? this.idOfRecord;
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
     },
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       // The memento passed to DAOSummaryView must be the memento of the prev view instead of the tail

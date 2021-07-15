@@ -20,7 +20,7 @@
    ],
 
    methods: [
-     function initE() {
+     function render() {
        this.SUPER();
 
        for ( let i = 0 ; i < this.numOfParts ; i++ ) {
@@ -342,7 +342,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.flop();
 
       this.field1 = 'foo';
@@ -470,7 +470,7 @@ foam.CLASS({
   name: 'BoundTextbox',
   extends: 'foam.u2.Controller',
   properties: [ ['text', 'hello' ] ],
-  methods: [ function initE() {
+  methods: [ function render() {
     this.start('h1').add("Bound Textbox").end().start(this.TEXT, {onKey: true}).end().add(this.text$);
   }]
 });
@@ -522,7 +522,7 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         // Default Button
         .add('subView: ', this.SUB_VIEW_ACTION);
@@ -542,7 +542,7 @@ foam.CLASS({
   exports: [ 'viewAction' ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         // Default Button
         .add(ActionDemo.ADD)
@@ -581,7 +581,7 @@ foam.CLASS({
   name: 'ParentView',
   extends: 'foam.u2.Element',
   css: '^ { background: pink }',
-  methods: [ function initE() {
+  methods: [ function render() {
     this.addClass().add('text');
   }]
 });
@@ -644,7 +644,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
 //      this.tick();

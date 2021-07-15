@@ -71,7 +71,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this
         .add(this.ENUM_VALUE)

@@ -57,7 +57,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function initE() {
+    async function render() {
       this.currentMemento_ = this.memento;
       if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
         this.openFullTable();

@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var instance = this.of.create(null, this.__subContext__);
       var sequence = instance[this.method]();
 

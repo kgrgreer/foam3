@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         .start('input').attrs({ type: 'file' }).on('change', this.onChange).end()
         .add(this.slot(function(data) {

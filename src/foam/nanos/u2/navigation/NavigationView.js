@@ -29,7 +29,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.addClass()
         .start()
           .addClass(this.myClass('top-nav'))

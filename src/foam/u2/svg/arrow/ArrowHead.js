@@ -35,7 +35,7 @@ foam.CLASS({
   extends: 'foam.u2.svg.arrow.ArrowHead',
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var a1 = this.angle + Math.PI + Math.PI/4;
       var a2 = this.angle + Math.PI - Math.PI/4;

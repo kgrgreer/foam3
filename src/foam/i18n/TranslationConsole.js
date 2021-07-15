@@ -164,7 +164,7 @@ foam.CLASS({
       this.translationService.translation.sub(this.onTranslation);
     },
 
-    function initE() {
+    function render() {
       this.
         addClass(this.myClass()).
         start(this.CardBorder).

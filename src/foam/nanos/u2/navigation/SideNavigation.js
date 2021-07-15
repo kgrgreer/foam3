@@ -56,7 +56,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       var dao = this.menuDAO
         .where(this.EQ(this.Menu.PARENT, this.menuName));

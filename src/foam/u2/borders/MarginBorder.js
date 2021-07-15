@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.style({'margin': this.margin$});
     }
   ]

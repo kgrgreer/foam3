@@ -510,7 +510,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.timer.start();
 
       this.properties.on.put.sub(this.onPropertyPut);

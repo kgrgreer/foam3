@@ -109,7 +109,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       var dataSlots = this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj));
       if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) {
         this.shown = false; return;

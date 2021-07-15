@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
           this.tag(this.MDCitationView, {
             of: this.data.cls_,
             data: this.data
