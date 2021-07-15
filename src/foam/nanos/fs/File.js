@@ -203,7 +203,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      visibility: 'HIDDEN',
+      hidden: true,
       storageTransient: true,
       section: 'systemInformation',
       javaFactory: `
