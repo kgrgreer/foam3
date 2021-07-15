@@ -326,7 +326,11 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.initE();
+      this.render();
+      if ( this.initE != foam.u2.Element.prototype.initE ) {
+        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
+        this.initE();
+      }
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1058,6 +1062,9 @@ foam.CLASS({
         console.warn('Element ' + this.cls_.name + ' created with globalContext');
       */
       this.onDetach(this.visitChildren.bind(this, 'detach'));
+    },
+
+    function render() {
     },
 
     function initE() {
