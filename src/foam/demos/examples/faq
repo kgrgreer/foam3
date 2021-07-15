@@ -1,6 +1,7 @@
+# Top
 ## FAQ
 
-##  Q1
+##  Built-In Constants
 Where can I find built-in constants?
 ex)
 print("Method CODE property constant:", foam.core.Method.CODE);
@@ -19,7 +20,7 @@ print(Test.P1.name, Test.P2.name);
 var t = Test.create();
 print(t.P1.name, t.P2.name);
 
-##  Q2
+##  Class Type
 Is class is a kind of type?
 
 Answer:
@@ -41,8 +42,8 @@ foam.CLASS({
 var p = foam.json.parse({class: 'some.package2.Test', p1: 42, p2: 'John'});
 print(p.cls_.id);
 
-##  Q3
-Is the Package Interface and how to use this in Foam?
+##  Packages
+How are packages defined in FOAM?
 
 Answer: A classes package is defined with package: and is optional.
 --
@@ -77,7 +78,7 @@ foam.CLASS({
 
 print(Client.create().createTest());
 
-##  Q4
+##  FOAM Types
 What are all of the types in FOAM?
 Answer:
 In FOAM, "types" are just sub-classes of foam.core.Property.
@@ -88,7 +89,7 @@ The following script will find all of the FOAM "types":
 for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 
-##  Q5
+##  Flags
 What does this code mean? e.g., flags: [&#39;java&#39;], flags[&#39;web&#39;] , flags: [ &#39;node&#39; ]
 <br>
 <br>
@@ -107,7 +108,7 @@ In your HTML file, you can customize the flags by setting FOAM_FLAGS before load
 </pre>
 The set of flags isn't fixed, and you can make up your own for your own purposes.
 
-##  Q6
+##  References
 How do I use References?
 <br>
 <br>
@@ -204,7 +205,7 @@ rt.province2$find.then(function(p) {
 // We can also, just add promises to U2 directly?
 add('find: ').add(rt.province1$find);
 
-##  Q7
+##  Slot.lear()
 What does Slot.clear() do?
 <br><br>
 <b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
@@ -248,7 +249,7 @@ t.clearProperty('defaultValue');
 t.defaultFactory$.clear();
 log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
 
-##  Q8
+##  Q8 Property Cloning
 From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
 <br><br>
 <b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
@@ -293,7 +294,7 @@ log('After Update p1:', p1.name, ' ', p2.name);
 p2.name = 'Samantha';
 log('After Update p2:', p1.name, ' ', p2.name);
 
-##  Q9
+##  Literal Views
 What does it mean when I get this error: Use of literal View as ViewSpec: foam.u2.someView?
 <br><br><b>A.</b>
 It means that you've add an actual View object to another View instead of adding a ViewSpec.
@@ -326,7 +327,7 @@ foam.CLASS({
 
 add(Test.create());
 
-##  Q10
+##  Property Value Precedence
 What method of determining a property's value takes precedence?
 <br><br><b>A.</b> The order of precedence is:
 <ol>
@@ -381,7 +382,7 @@ foam.CLASS({
 var t = Test.create({p1: 2, p2: 2});
 log(`p1: ${t.p1}, p2: ${t.p2}, p3: ${t.p3}, p4: ${t.p4}, p5: ${t.p5}, p6: ${t.p6}`);
 
-##  Q11
+##  Mutation not allowed
 Q. What does "Mutation is not allowed in output state." mean and how do I fix it.
 A1. In U2, Elements have a lifecycle which goes from INITIAL -> OUTPUT -> LOADED -> UNLOADED.
 When an element is OUTPUT but not yet LOADED, it can't be modified, and if it is, then the
@@ -392,7 +393,7 @@ to your offending element and see if it is throwing an unexpected exception.
 A2. U3, U2's replacement, does away with states and this error is not possible.
 --
 
-##  Q12
+##  Remote Listener Support
 Q. What is remote listener support?
 A. The JS EasyDAO has a boolean property called remoteListenerSupport which defaults to false.
 When set to false, the client DAO communicates with the server over the HTTPBox, which communicates requests and responses
@@ -406,7 +407,7 @@ clients won't know to update.
 WebSocket connections are more expensive to support, so are rarely used.
 --
 
-##  Q13
+##  Enum Values
 Q. How “values” property works and what's the difference of between “properties” and “values?
 
 foam.ENUM() creates an enumeration, not a regular class. The same as the following code
@@ -455,8 +456,8 @@ log(DayOfWeek.isInstance(DayOfWeek.MONDAY));
 log(DayOfWeek.isInstance('Sunday'));
 
 
-##  Q14
-Q. Q5 how many and what types of arguments for “start()“?
+##  Element.start()
+Q. how many and what types of arguments for “start()“?
 
 --
 
@@ -527,7 +528,7 @@ add(PropertyAndAction.create());
 add(E().start('input').end());
 add(E().tag('input'));
 
-##  Q15
+##  Element.callIf()
 Q. When to use callIf()?
 A. call, callIf, callIfElse, and forEach are defined in foam.core.Fluent, and
 are used for creating "fluent interfaces". This is where methods can be chained
@@ -571,7 +572,7 @@ function sign(isHoliday) {
 sign(true);
 sign(false);
 
-##  Q16
+##  init() and initE()
 Q. What’ the difference of using between initE() and init()?
 
 Since this question was asked, initE() has been renamed to render().
@@ -611,7 +612,7 @@ var testE = TestElement.create();
 log('both objects created');
 add(testE);
 
-##  Q17
+##  Service client:
 Q. How should I understand this two “client” side codes below.
 <pre>
 1.
@@ -671,7 +672,7 @@ remote services.
 2. The second example doesn't supply the 'class' of the Stub, because this service implements
 the DAO interface, which is the default, so class defaults to foa.dao.ClientDAO in this case.
 
-##  Q18
+##  Slot Types
 Q. What are the differences and when to use:<br>
 Slot Vs. Simple slot Vs. Expression slot
 <p>
@@ -749,7 +750,7 @@ p1.lastName = 'Doe';
 fullName.set('Jane Smith');
 log(fullName.get()); // Is still John Doe
 
-##  Q19
+##  DAO Value Translation
 Q. How to I translate the language of data I receive from a DAO?
 <p>
 A. The easiest way is in your view which adds the data to the GUI, instead
