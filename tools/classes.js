@@ -387,6 +387,7 @@ var classes = [
   'foam.nanos.logger.AbstractLogger',
   'foam.nanos.logger.DAOLogger',
   'foam.nanos.logger.Logger',
+  'foam.nanos.logger.LoggerUserInfo',
   'foam.nanos.logger.NotificationLogMessageDAO',
   'foam.nanos.logger.RepeatLogMessageDAO',
   'foam.nanos.logger.ProxyLogger',
