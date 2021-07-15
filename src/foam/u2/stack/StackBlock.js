@@ -32,7 +32,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isMenuItem',
+      name: 'shouldResetBreadcrumbs',
       documentation: 'Used by Stack to determine if breadcrumb trail should be reset'
     },
     {
