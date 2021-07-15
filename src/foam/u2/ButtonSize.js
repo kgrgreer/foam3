@@ -11,8 +11,8 @@ foam.ENUM({
   properties: ['iconSize'],
 
   values: [
-    { name: 'LARGE', label: 'Large', iconSize: '2em' },
-    { name: 'MEDIUM', label: 'Medium', iconSize: '1.5em' },
-    { name: 'SMALL', label: 'Small', iconSize: '1em' }
+    { name: 'LARGE', label: 'Large', iconSize: '2.25em' },
+    { name: 'MEDIUM', label: 'Medium', iconSize: '1.71em' },
+    { name: 'SMALL', label: 'Small', iconSize: '1.15em' }
   ]
 });
