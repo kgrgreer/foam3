@@ -96,15 +96,19 @@ foam.CLASS({
       return i < 0 ? this.stack_[this.pos + i + 1] : this.stack_[i];
     },
 
-    function push(/*v, parent, opt_id, opt_hint*/ block) {
-      block = this.StackBlock.create({
-        view: arguments[0],
-        parent: arguments[1],
-        id: arguments[2],
-        shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
-        popup: arguments[3] && arguments[3].popup,
-        breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
-      });
+    function push(block) {
+      // Temporary code to mutate old function calls to stackBlock object
+      if ( ! foam.u2.stack.StackBlock.isInstance(block) ) {
+        console.warn('This function has been changed. Please pass in a StackBlock FObject');
+        block = this.StackBlock.create({
+          view: arguments[0],
+          parent: arguments[1],
+          id: arguments[2],
+          shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
+          popup: arguments[3] && arguments[3].popup,
+          breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
+        });
+      }
 
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
       if ( this.top && block.id && this.top.id == block.id ) return;
