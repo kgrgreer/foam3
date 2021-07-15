@@ -129,8 +129,8 @@ foam.CLASS({
 
       css: `
         ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; width: 45%; }
-        ^ .property-code { margin-bottom: 12px; width: 46%; }
+        ^ .property-text { border: none; padding: 10 0; }
+        ^ .property-code { margin-bottom: 12px; }
         ^ .property-title { float: left; }
         ^ .property-id { float: left; margin-right: 12px; }
       `,
@@ -163,7 +163,7 @@ foam.CLASS({
             br().
             start('b').add('Output:').end().
             start().
-              style({width: '45%', border: '1px solid black', padding: '8px'}).
+              style({border: '1px solid black', padding: '8px'}).
               tag('div', {}, this.dom$).
             end();
 
