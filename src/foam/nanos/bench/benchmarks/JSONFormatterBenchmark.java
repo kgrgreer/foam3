@@ -13,7 +13,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 
 public class JSONFormatterBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected JSONFObjectFormatter f_ = new JSONFObjectFormatter(null);
   protected User                 u_ = null;

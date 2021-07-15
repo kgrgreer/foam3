@@ -1169,7 +1169,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.bench.Benchy.getOwnClassInfo())
+      .setOf(foam.nanos.bench.Benchmark.getOwnClassInfo())
       .setName("benchmark")
       .setPm(false)
       .setPipelinePm(true)
@@ -1180,7 +1180,7 @@ p({
    "client":
   """
     {
-      "of":"foam.nanos.bench.Benchy"
+      "of":"foam.nanos.bench.Benchmark"
     }
   """
 })

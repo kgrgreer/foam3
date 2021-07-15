@@ -12,7 +12,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 
 public class F3FileJournalBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected F3FileJournal journal_;
   protected DAO         dao_;

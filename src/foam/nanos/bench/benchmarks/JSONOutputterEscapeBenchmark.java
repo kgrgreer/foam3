@@ -11,7 +11,7 @@ import foam.nanos.bench.Benchmark;
 import foam.lib.json.Outputter;
 
 public class JSONOutputterEscapeBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected Outputter out_ = new Outputter(null);
 
