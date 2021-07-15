@@ -249,7 +249,7 @@ t.clearProperty('defaultValue');
 t.defaultFactory$.clear();
 log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
 
-##  Q8 Property Cloning
+##  Property Cloning
 From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
 <br><br>
 <b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
