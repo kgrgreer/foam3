@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.stack',
   name: 'StackBlock',
+  flags: ['web'],
 
   documentation: `Represents a single block in the stack,
   can be used to push views to the stack and keep track of information about any view in the stack`,

@@ -165,7 +165,8 @@ foam.CLASS({
     'foam.comics.BrowserView',
     'foam.comics.v2.DAOBrowseControllerView',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.controller.Memento'
+    'foam.nanos.controller.Memento',
+    'foam.u2.stack.StackBlock'
   ],
 
   implements: [ 'foam.mlang.Expressions' ],
@@ -338,32 +339,33 @@ foam.CLASS({
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
-      this.stack.push({
-        class: this.BackBorder,
-        title: m.tail.head,
-        inner: {
-          class: 'foam.u2.view.AltView',
-          data: this.__context__[m.tail.head],
-          views: [
-            [
-              {
-                class: this.BrowserView,
-                stack: this.stack
-              },
-              this.CONTROLLER1
+      this.stack.push(this.StackBlock.create({ 
+        view: {
+          class: this.BackBorder,
+          title: m.tail.head,
+          inner: {
+            class: 'foam.u2.view.AltView',
+            data: this.__context__[m.tail.head],
+            views: [
+              [
+                {
+                  class: this.BrowserView,
+                  stack: this.stack
+                },
+                this.CONTROLLER1
+              ],
+              [
+                {
+                  class: this.DAOBrowseControllerView,
+                  stack: this.stack,
+                  showNav: false
+                },
+                this.CONTROLLER2
+              ]
             ],
-            [
-              {
-                class: this.DAOBrowseControllerView,
-                stack: this.stack,
-                showNav: false
-              },
-              this.CONTROLLER2
-            ]
-          ],
-          selectedView: this.CONTROLLER2
-        }
-      }, x);
+            selectedView: this.CONTROLLER2
+          }
+        }, parent: x }));
     }
   ]
 });

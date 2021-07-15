@@ -55,7 +55,8 @@ foam.CLASS({
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
     'foam.u2.dialog.Popup',
-    'foam.u2.stack.BreadcrumbView'
+    'foam.u2.stack.BreadcrumbView',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -194,12 +195,14 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        this.stack.push({
-          class:  'foam.comics.v2.DAOUpdateView',
-          data:   this.data,
-          config: this.config,
-          of:     this.config.of
-        }, this.__subContext__.createSubContext({ memento: this.memento }));
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class:  'foam.comics.v2.DAOUpdateView',
+            data:   this.data,
+            config: this.config,
+            of:     this.config.of
+          }, parent: this.__subContext__.createSubContext({ memento: this.memento })
+        }));
       }
     },
     {
@@ -228,12 +231,13 @@ foam.CLASS({
         let newRecord = this.data.clone();
         // Clear PK so DAO can generate a new unique one
         newRecord.id = undefined;
-        this.stack.push({
-          class: 'foam.comics.v2.DAOCreateView',
-          data: newRecord,
-          config: this.config,
-          of: this.config.of
-        }, this.__subContext__);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOCreateView',
+            data: newRecord,
+            config: this.config,
+            of: this.config.of
+          }, parent: this.__subContext__ }));
       }
     },
     {

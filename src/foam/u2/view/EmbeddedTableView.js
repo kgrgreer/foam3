@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.comics.v2.DAOBrowseControllerView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.ScrollTableView'
   ],
 
@@ -82,11 +83,12 @@ foam.CLASS({
     },
     function openFullTable() {
       this.memento.head = `&${this.data.of.name}`;
-      this.stack.push({
-        class: this.DAOBrowseControllerView,
-        data$: this.data$,
-        config$: this.config$
-      }, this);
+      this.stack.push(this.StackBlock.create({
+        view: {
+          class: this.DAOBrowseControllerView,
+          data$: this.data$,
+          config$: this.config$
+        }, parent: this }));
     }
   ],
   actions: [
