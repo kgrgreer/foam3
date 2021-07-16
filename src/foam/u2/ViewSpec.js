@@ -35,13 +35,11 @@ foam.CLASS({
           }
 
           if ( foam.String.isInstance(spec) || spec === undefined || spec === null ) {
-            var classes = [];
-            if ( spec && spec.includes('.') ) {
-              var classes = spec.split('.');
-              spec = classes.shift();
+            if ( spec ) {
+              if ( ! args ) args = {};
+              args.nodeName = spec;
             }
-            return foam.u2.Element.create({nodeName: spec || 'DIV', ...args}, ctx)
-              .addClasses(classes);
+            return foam.u2.Element.create(args, ctx);
           }
 
           if ( foam.u2.Element.isInstance(spec) ) {
