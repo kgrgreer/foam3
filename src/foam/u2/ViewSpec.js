@@ -35,11 +35,13 @@ foam.CLASS({
           }
 
           if ( foam.String.isInstance(spec) || spec === undefined || spec === null ) {
-            if ( spec ) {
-              if ( ! args ) args = {};
-              args.nodeName = spec;
+            if ( args ) {
+              if ( spec ) args.nodeName = spec;
+              return foam.u2.Element.create(args, ctx);
             }
-            return foam.u2.Element.create(args, ctx);
+            var e = foam.u2.Element.create(null, ctx);
+            if ( spec ) e.nodeName = spec;
+            return e;
           }
 
           if ( foam.u2.Element.isInstance(spec) ) {
