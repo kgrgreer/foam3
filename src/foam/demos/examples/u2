@@ -1,23 +1,25 @@
 
 ## U3
 ##  Background
-U2 is FOAM's native UI library.
-It is named U2 because it is FOAM's second UI library.
-The first UI library was template based, but U2 is based on an Internal Domain Specific Language (IDSL) or Embedded Domain Specific Language (EDSL).
+U3 is FOAM's native UI library.
+It is named U3 because it is FOAM's third UI library.
+The first UI library was template based and U2, FOAM's second UI library, was based on an Internal Domain Specific Language (IDSL) or Embedded Domain Specific Language (EDSL).
 This IDSL is used to describe virtual DOM structures.
-DOM is the browser's native API for manipulating the page conents, and stands for Document Object Model.
+DOM is the browser's native API for manipulating the page contents, and stands for Document Object Model.
 A Virtual-DOM is an API which mirrors the real DOM API but does so in JS.
+U3 is a simplification of U2.
 <br>
 The advantages of a Virtual-DOM are:
 <ol>
 <li>It is more secure because, unlike template-based approaches, it isn't prone to Cross-Site-Scripting (XSS) attacks.</li>
-<li>It can offer higher-level features and abstracts over browser incompatibilites.</li>
+<li>It can offer higher-level features and abstracts over browser incompatibilities.</li>
 <li>It doesn't require a template parser, which can either make builds faster or the download size smaller, depending on where the template parsing is performed.</li>
 <li>It offers higher-level features which enable you to perform some functions with less code.</li>
 </oll>
 Improved security was the primary motivation for U2.
+Simplified use over U2, without losing any of U2's security benefits, was the primary motivation for U3.
 
-All U2 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
+All 32 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
 --
 add('testing');
 
@@ -27,24 +29,27 @@ console.profile('p1');
 function test1() {
 var startTime = performance.now();
 var node = foam.u2.Element.create({nodeName: 'UL'});     // Create a <ul> node
-for ( var i = 0 ; i < 100 ; i++ )
+for ( var i = 0 ; i < 10000 ; i++ )
   node.start('li').add("text" + i).end();                // Append an <li>
 
 //add(node);
 print(performance.now() - startTime);
 }
 test1();
-console.profileEnd('p1');
 
+function test2() {
 var startTime = performance.now();
 var node = document.createElement("UL");               // Create a <ul> node
-for ( var i = 0 ; i < 100 ; i++ ) {
+for ( var i = 0 ; i < 10000 ; i++ ) {
   var li = document.createElement("LI")
   li.appendChild(document.createTextNode("text" + i)); // Append an <li>
   node.appendChild(li);
 }
 //el().appendChild(node);
 print(performance.now() - startTime);
+}
+test2()
+console.profileEnd('p1');
 
 
 ##   DSL
