@@ -148,11 +148,6 @@ add(some.good.package.Test.create());
 ##   removeClass()
 ##   setAttribute()
 ##   removeAttribute()
-##   appendChild()
-##   removeChild()
-##   replaceChild()
-##   insertBefore()
-##   insertAfter()
 ##   remove()
 ##   addEventListener()
 ##   removeEventListener()
@@ -175,10 +170,8 @@ add(some.good.package.Test.create());
 ##   removeAllChildren()
 ##   setChildren()
 ##   repeat()
-##   daoSlot()
 ##   select()
 ##   call()
-##   callOn
 ##   callIf
 ##   callIfElse
 ##   forEach()
