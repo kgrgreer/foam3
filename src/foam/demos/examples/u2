@@ -56,9 +56,8 @@ console.profileEnd('p1');
 ##   Intro1
 ##   Intro2
 ##    SubIntro
-##   Fluent Interface
 ##   Hello World!
-Let's use U2 to say hello
+Let's use U3 to say hello
 --
 add(foam.u2.Element.create().add('Hello World!'));
 ##   nodeName
@@ -110,27 +109,37 @@ foam.CLASS({
 add(CardBorder.create().add('content').tag('br').add('more content').tag('br').add('even more content'));
 
 ##    content
-##   CSS
-##   CSS Variables
-##   inheritCSS
 ##   ViewSpec
-##   Entities / entity() / nbsp()
-##   onKey
-##   Element States
-##    state
-##    onload
-##    onunload
 ##   Tooltips
 ##   shown / show() / hide()
 ##   focused / focus() / blur()
 ##   Creating a Component
 ##    render
 ##   Keyboard Shortcuts
-##   el() and id
+##   el()
+##   id
 ##   E()
-##   addClass() / addClasses()
-##   enableClass()
-##   myClass()
+##   Children
+##    start() / end()
+##    tag()
+##    br()
+##    nbsp()
+##    remove()
+##    add()
+##     adding properties
+##     toE()
+##     view:
+##    removeAllChildren()
+##    setChildren()
+##   Styling
+##    style()
+##    css:
+##    CSS Variables
+##    inheritCSS
+##   CSS Classes
+##    addClass() / addClasses()
+##    enableClass()
+##    myClass()
 --
 foam.CLASS({
   package: 'some.good.package',
@@ -172,37 +181,28 @@ foam.CLASS({
   ]
 });
 add(some.good.package.Test.create());
-
-##   removeClass()
-##   setAttribute()
-##   removeAttribute()
-##   remove()
-##   addEventListener()
-##   removeEventListener()
-##   on()
+##    removeClass()
+##   Attributes
 ##   attr()
 ##   attrs()
-##   style()
-##   tag()
-##   br()
+##    setAttribute()
+##    removeAttribute()
+##   Control Flow
+##    repeat()
+##    select()
+##    call()
+##    callIf
+##    callIfElse
+##    forEach()
+##   Events
+##    addEventListener()
+##    removeEventListener()
+##    on()
+##    onKey
 ##   startContext() / endContext()
-##   start() / end()
 ##   i18n
 ##    Messages
 ##    translate()
-##   add()
-##    adding properties
-##    toE()
-##    view:
-##   addBefore()
-##   removeAllChildren()
-##   setChildren()
-##   repeat()
-##   select()
-##   call()
-##   callIf
-##   callIfElse
-##   forEach()
 ##   write()
 ##   Tags
 ##    attributes
