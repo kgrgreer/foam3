@@ -237,7 +237,7 @@ foam.CLASS({
         logger_ = new PrefixLogger(new Object[] {
                     this.getClass().getSimpleName(),
                     this.getFileName()
-                  }, (Logger) getX().get("logger"));
+                  }, (Logger) x.get("logger"));
         FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
         // Do nothing if no file

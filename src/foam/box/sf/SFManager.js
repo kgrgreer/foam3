@@ -133,20 +133,30 @@ foam.CLASS({
                   });
                 } 
 
-                long waitTime = queue.peek().getScheduledTime() - System.currentTimeMillis();
-                if ( waitTime > 0 ) {
+                if ( queue.size() > 0 ) {
+                  long waitTime = queue.peek().getScheduledTime() - System.currentTimeMillis();
+                  if ( waitTime > 0 ) {
+                    try {
+                      System.out.println("$$$ waitTime: " + waitTime);
+                      notAvailable_.await(waitTime, TimeUnit.MILLISECONDS);
+                    } catch ( InterruptedException e ) {
+                      getLogger().info("SFManager interrupt: " + waitTime);
+                    }
+                  }
+                } else {
                   try {
-                    System.out.println("$$$ waitTime: " + waitTime);
-                    notAvailable_.await(waitTime, TimeUnit.MILLISECONDS);
+                    notAvailable_.await();
                   } catch ( InterruptedException e ) {
-                    
+                    getLogger().info("SFManager interrupt");
+  
                   }
                 }
               } else {
                 try {
                   notAvailable_.await();
                 } catch ( InterruptedException e ) {
-                  
+                  getLogger().info("SFManager interrupt");
+
                 }
               }
             }

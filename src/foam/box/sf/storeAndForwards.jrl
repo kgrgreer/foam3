@@ -4,6 +4,6 @@ p({
   "fileName":"httpSFSinkDemo",
   "maxRetryDelayMS":70000,
   "url": "http://localhost:8888/",
-  "timeWindow": 3600,
+  "timeWindow": 60,
   "replayFailEntry": true
 })
