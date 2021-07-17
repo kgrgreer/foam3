@@ -33,7 +33,7 @@ for ( var i = 0 ; i < 10000 ; i++ )
   node.start('li').add("text" + i).end();                // Append an <li>
 
 //add(node);
-print(performance.now() - startTime);
+log(performance.now() - startTime);
 }
 test1();
 
@@ -46,7 +46,7 @@ for ( var i = 0 ; i < 10000 ; i++ ) {
   node.appendChild(li);
 }
 //el().appendChild(node);
-print(performance.now() - startTime);
+log(performance.now() - startTime);
 }
 test2()
 console.profileEnd('p1');
