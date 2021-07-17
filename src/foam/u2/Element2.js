@@ -49,6 +49,7 @@ becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - Is it faster if we don't add child to parent until we call end()?
   - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()
   - ??? replace replaceChild() with replace() on Node
@@ -2468,7 +2469,7 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.onDetach(this.data$.sub(this.update()));
+      this.onDetach(this.data$.sub(this.update));
     }
   ],
 
