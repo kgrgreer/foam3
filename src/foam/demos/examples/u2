@@ -81,6 +81,34 @@ tag('input');
 ##   ControllerMode
 ##   DisplayMode
 ##   Borders
+--
+foam.CLASS({
+  name: 'CardBorder',
+  extends: 'foam.u2.Element',
+  css: `
+    ^ {
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+      margin: 8px;
+      transform-origin: top left;
+      display: inline-block;
+    }
+    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+  `,
+  methods: [
+    function render() {
+      this.
+        addClass().
+        start('div', null, this.content$).
+          addClass(this.myClass('content')).
+        end();
+    }
+  ]
+});
+
+add(CardBorder.create().add('content').tag('br').add('more content').tag('br').add('even more content'));
+
 ##    content
 ##   CSS
 ##   CSS Variables
