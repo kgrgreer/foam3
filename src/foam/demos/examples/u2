@@ -29,7 +29,7 @@ console.profile('p1');
 function test1() {
 var startTime = performance.now();
 var node = foam.u2.Element.create({nodeName: 'UL'});     // Create a <ul> node
-for ( var i = 0 ; i < 10000 ; i++ )
+for ( var i = 0 ; i < 100 ; i++ )
   node.start('li').add("text" + i).end();                // Append an <li>
 
 //add(node);
@@ -40,7 +40,7 @@ test1();
 function test2() {
 var startTime = performance.now();
 var node = document.createElement("UL");               // Create a <ul> node
-for ( var i = 0 ; i < 10000 ; i++ ) {
+for ( var i = 0 ; i < 100 ; i++ ) {
   var li = document.createElement("LI")
   li.appendChild(document.createTextNode("text" + i)); // Append an <li>
   node.appendChild(li);
@@ -186,18 +186,20 @@ foam.CLASS({
 add(some.good.package.Test.create());
 ##    removeClass()
 ##   Attributes
-##   attr()
+##    attr() & setAttribute()
+attr() and setAttribute() are the same, with setAttribute() being for DOM compatibility.
 --
 start('img').attr('src', '/foam3/src/foam/u2/images/foam_red.png').end();
-##   attrs()
+start('img').setAttribute('src', '/foam3/src/foam/u2/images/foam_red.png').end();
+##    attrs()
 --
 start('img').attrs({
   src: '/foam3/src/foam/u2/images/foam_red.png',
   alt: 'foam logo',
   height: 100
 }).end();
-##    setAttribute()
 ##    removeAttribute()
+--
 ##   Control Flow
 ##    repeat()
 --
@@ -210,9 +212,11 @@ start('ul').repeat(1, 10, function(i) { this.start('li').add(i).end(); }).end();
 --
 start('ul').forEach(['Apples', 'Bananas', 'Oranges'], function(i) { this.start('li').add(i).end(); }).end();
 ##   Events
-##    addEventListener()
+##    on() & addEventListener
+on() and onEventListener() are the same, with onEventListener() being for DOM compatibility.
+--
+start('a').add('click me').on('click', function() { window.alert('clicked'); }).end();
 ##    removeEventListener()
-##    on()
 ##    onKey
 ##   startContext() / endContext()
 ##   i18n
