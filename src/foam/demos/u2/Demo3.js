@@ -6,15 +6,6 @@ foam.u2.Element.create().style({color: 'red'}).add('children').write();
 foam.u2.Element.create().write().style({color: 'red'}).add('children');
 foam.u2.Element.create().on('click', () => console.log('clicked')).add('clickme').write();
 foam.u2.Element.create().write().on('click', () => console.log('clicked')).add('clickme');
-foam.u2.Element.create()
-  .call(function() { this.add('call'); })
-  .callIf(true,      function() { this.add('true'); })
-  .callIf(false,     function() { this.add('false'); })
-  .callIfElse(true,  function() { this.add('true'); }, function() { this.add('false'); })
-  .callIfElse(false, function() { this.add('false'); }, function() { this.add('false'); })
-  .forEach([1,2,3],  function(a) { this.add(a); })
-.write();
-
 
 foam.u2.Element.create().write().start('ol').forEach(['a','b','c'], function(v) {
   this.start('li').add(v).end();
