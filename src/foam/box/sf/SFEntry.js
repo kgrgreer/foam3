@@ -21,11 +21,6 @@ foam.CLASS({
   extends: 'foam.nanos.medusa.MedusaEntry',
 
   properties: [
-    // {
-    //   class: 'FObjectProperty',
-    //   of: 'foam.box.Message',
-    //   name: 'message'
-    // },
     {
       class: 'FObjectProperty',
       of: 'foam.core.FObject',

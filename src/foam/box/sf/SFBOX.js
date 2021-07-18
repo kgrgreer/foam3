@@ -15,58 +15,33 @@
 * limitations under the License.
 */
 
+//TODO: implement
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'SFBOX',
   extends: 'foam.box.ProxyBox',
 
-  // javaImports: [
-  //   'foam.nanos.logger.PrefixLogger',
-  //   'foam.nanos.logger.Logger',
-  //   'foam.box.Message',
-  // ],
+  javaImports: [
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.Logger',
+    'foam.box.Message',
+  ],
   
-  // properties: [
-  //   {
-  //     class: 'FObjectProperty',
-  //     of: 'foam.box.sf.SF',
-  //     name: 'sf'
-  //   },
-  //   {
-  //     name: 'logger',
-  //     class: 'FObjectProperty',
-  //     of: 'foam.nanos.logger.Logger',
-  //     visibility: 'HIDDEN',
-  //     transient: true,
-  //     javaCloneProperty: '//noop',
-  //     javaFactory: `
-  //       return new PrefixLogger(new Object[] {
-  //         this.getClass().getSimpleName()
-  //       }, (Logger) getX().get("logger"));
-  //     `
-  //   }
-  // ],
+  properties: [
+  ],
 
-  // methods: [
-  //   {
-  //     name: 'send',
-  //     javaCode: `
-  //       // Store and Forward.
-  //       SFEntry e = getSf().store((Message)msg);
-  //       getSf().forward(e);
-  //     `
-  //   }
-  // ],
+  methods: [
+  ],
 
-  // axioms: [
-  //   {
-  //     name: 'javaExtras',
-  //     buildJavaClass: function(cls) {
-  //       cls.extras.push(foam.java.Code.create({
-  //         data: `
-  //         `
-  //       }));
-  //     }
-  //   }
-  // ]
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+          `
+        }));
+      }
+    }
+  ]
 });
