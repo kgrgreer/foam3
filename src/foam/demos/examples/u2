@@ -204,7 +204,6 @@ start('img').attrs({
 ##    repeat()
 --
 start('ul').repeat(1, 10, function(i) { this.start('li').add(i).end(); }).end();
-##    select()
 ##    call()
 ##    callIf
 ##    callIfElse
@@ -218,6 +217,62 @@ on() and onEventListener() are the same, with onEventListener() being for DOM co
 start('a').add('click me').on('click', function() { window.alert('clicked'); }).end();
 ##    removeEventListener()
 ##    onKey
+##    DAOs
+Let's create a DAO with some sample data to work with:
+--
+foam.CLASS({
+  name: 'SampleData',
+  properties: [
+    'id', 'name', 'value'
+  ],
+  methods: [
+    function toSummary() { return this.id + ' ' + this.value; }
+  ]
+});
+
+var dao = foam.dao.EasyDAO.create({
+  of: SampleData,
+  daoType: 'MDAO',
+  testData: [
+    { id: 'key1', name: 'John',  value: 'value1' },
+    { id: 'key2', name: 'John',  value: 'value2' },
+    { id: 'key3', name: 'Kevin', value: 'value3' },
+    { id: 'key4', name: 'Kevin', value: 'value4' },
+    { id: 'key5', name: 'Larry', value: 'value5' },
+    { id: 'key6', name: 'Linda', value: 'value6' }
+  ]
+});
+
+// Now, to add the data to our view, we can just call dao.select():
+add('Example 1');
+start('ol').call(function() {
+  dao.select(d => {
+    this.start('li').add(d.id, ' ', d.name, ' ', d.value).end();
+  });
+});
+
+// That works great, but has one limitation: it's static. If the data in the DAO
+// updates, the view won't, it will just remain the same forever. Sometimes, that's
+// what you want, but if you wanted the view to update whenever the DAO updated,
+// then instead call the Element.select() method:
+
+add('Example 2');
+start('ol')
+  .select(dao, function(d) {
+    return this.start('li').add(d.id, ' ', d.name, ' ', d.value).end();
+  })
+.end();
+
+// Now, if we add more data in the future, notice that only the second list
+// updates:
+
+for ( let i = 0 ; i < 10 ; i++ ) {
+  window.setTimeout(() => {
+    dao.put(SampleData.create({id: 'key' + (i+10), name: 'Mr.', value: '' + (i+10)}));
+  }, 1000 * (i-7));
+}
+
+##    select()
 ##   startContext() / endContext()
 ##   i18n
 ##    Messages
