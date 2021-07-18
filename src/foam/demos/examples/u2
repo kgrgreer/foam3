@@ -114,16 +114,17 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 ##   shown / show() / hide()
 ##   focused / focus() / blur()
 ##   Creating a Component
-##    render
+##    render()
 ##   Keyboard Shortcuts
 ##   el()
 ##   id
 ##   E()
 ##   Children
 ##    start() / end()
-##    tag()
 ##    br()
+br() is just short form for tag('br'), the html line-break element.
 ##    nbsp()
+no-breaking space, the same as adding &nbsp; to your html
 ##    remove()
 ##    add()
 ##     adding properties
@@ -133,6 +134,8 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 ##    setChildren()
 ##   Styling
 ##    style()
+--
+start().style({background: 'pink', border: '2px solid black;'}).add('styled content').end()
 ##    css:
 ##    CSS Variables
 ##    inheritCSS
@@ -184,7 +187,15 @@ add(some.good.package.Test.create());
 ##    removeClass()
 ##   Attributes
 ##   attr()
+--
+start('img').attr('src', '/foam3/src/foam/u2/images/foam_red.png').end();
 ##   attrs()
+--
+start('img').attrs({
+  src: '/foam3/src/foam/u2/images/foam_red.png',
+  alt: 'foam logo',
+  height: 100
+}).end();
 ##    setAttribute()
 ##    removeAttribute()
 ##   Control Flow
