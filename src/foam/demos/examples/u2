@@ -204,9 +204,29 @@ start('img').attrs({
 ##    repeat()
 --
 start('ul').repeat(1, 10, function(i) { this.start('li').add(i).end(); }).end();
+
 ##    call()
+--
+start()
+  .call(function() { this.add('call'); })
+.end();
+
 ##    callIf
+--
+start()
+  .callIf(true,  function() { this.add('true'); })
+  .br()
+  .callIf(false, function() { this.add('false'); })
+.end();
+
 ##    callIfElse
+--
+start()
+  .callIfElse(true,  function() { this.add('true'); }, function() { this.add('false'); })
+  .br()
+  .callIfElse(false, function() { this.add('false'); }, function() { this.add('false'); })
+.end();
+
 ##    forEach()
 --
 start('ul').forEach(['Apples', 'Bananas', 'Oranges'], function(i) { this.start('li').add(i).end(); }).end();
