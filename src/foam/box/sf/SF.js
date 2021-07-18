@@ -316,7 +316,6 @@ foam.CLASS({
         for ( SFEntry entry : sfEntryList ) {
           forward((SFEntry) entry.fclone());
         }
-        System.out.println("==================>>>>" + "Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
       `
     },
     {
