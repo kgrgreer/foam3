@@ -157,7 +157,7 @@ foam.CLASS({
                               .build();
         
         entry.setCreated(new Date());
-        long index = entryIndex_.	incrementAndGet();
+        long index = entryIndex_.incrementAndGet();
         long fileIndex = index / ((long) getFileCapability());
         entry.setIndex(index);
         String filename = getFileName() + "." + fileIndex;
