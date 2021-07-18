@@ -200,11 +200,15 @@ start('img').attrs({
 ##    removeAttribute()
 ##   Control Flow
 ##    repeat()
+--
+start('ul').repeat(1, 10, function(i) { this.start('li').add(i).end(); }).end();
 ##    select()
 ##    call()
 ##    callIf
 ##    callIfElse
 ##    forEach()
+--
+start('ul').forEach(['Apples', 'Bananas', 'Oranges'], function(i) { this.start('li').add(i).end(); }).end();
 ##   Events
 ##    addEventListener()
 ##    removeEventListener()
