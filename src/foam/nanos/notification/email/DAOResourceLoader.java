@@ -42,27 +42,28 @@ public class DAOResourceLoader
     do {
       boolean group_  = ! SafetyUtil.isEmpty(groupId);
       boolean spid_   = ! SafetyUtil.isEmpty(spid);
+      boolean locale_ = ! SafetyUtil.isEmpty(locale);
 
-      if ( group_ && spid_ )
+      if ( group_ && spid_ && locale_ )
         emailTemplate = findTemplateHelper(x, name, groupId, locale, spid);
 
-      if ( emailTemplate == null && group_)
+      if ( emailTemplate == null && group_ && locale_ && ! spid_)
         emailTemplate = findTemplateHelper(x, name, groupId, locale, "");
 
-      if ( emailTemplate == null && spid_ )
+      if ( emailTemplate == null && group_ && ! locale_ && spid_ )
         emailTemplate = findTemplateHelper(x, name, groupId, "en", spid);
 
-      if ( emailTemplate == null && group_ && spid_ )
-        emailTemplate = findTemplateHelper(x, name, groupId,"en", spid);
+      if ( emailTemplate == null && ! group_ && locale_ && ! spid_ )
+        emailTemplate = findTemplateHelper(x, name, "", locale, "");
 
-      if ( emailTemplate == null && group_ )
-        emailTemplate = findTemplateHelper(x, name, groupId, "en",   "");
+      if ( emailTemplate == null && group_ && ! locale_ && ! spid_ )
+        emailTemplate = findTemplateHelper(x, name, groupId, "en","");
 
-      if ( emailTemplate == null && spid_ )
+      if ( emailTemplate == null && ! group_ && ! locale_ && spid_ )
         emailTemplate = findTemplateHelper(x, name,"", "en", spid);
 
-      if ( emailTemplate == null )
-        findTemplateHelper(x, name, "", "en", "");
+      if ( emailTemplate == null && ! group_ && locale_ && spid_ )
+        emailTemplate = findTemplateHelper(x, name,"", locale, spid);
 
       if ( emailTemplate != null ) return emailTemplate;
 
