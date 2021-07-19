@@ -19,7 +19,6 @@ foam.CLASS({
     'currentMenu',
     'isMenuOpen',
     'menuDAO',
-    'menuListener',
     'pushMenu',
     'theme',
     'user'
@@ -102,8 +101,7 @@ foam.CLASS({
 
     function openMenu(menu) {
       if ( menu.handler ) {
-        this.pushMenu(menu);
-        this.menuListener(menu);
+        this.pushMenu(menu, true);
       }
     }
   ],
