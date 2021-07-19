@@ -179,7 +179,7 @@ foam.CLASS({
     },
 
     async function showAction(action) {
-      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      const slot = action.createIsAvailable$(this.__context__, this.obj);
       if (slot.get()) return true;
       return slot.promise || false;
     }
