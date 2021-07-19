@@ -22,7 +22,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets'
   ],
 
-  tableColumns: ['id', 'name', 'group', 'locale'],
+  tableColumns: ['id', 'name', 'group', 'locale', 'spid'],
 
   properties: [
     {
@@ -46,6 +46,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'spid'
+    },
+    {
+      class: 'String',
       name: 'subject',
       documentation: 'Template subject'
     },
@@ -56,7 +60,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.MultiView',
         views: [
-          { class: 'foam.u2.HTMLView' },
+          { class: 'foam.u2.IFrameHTMLView' },
           { class: 'foam.u2.tag.TextArea', rows: 40, cols: 150}
         ]
       }
@@ -138,14 +142,7 @@ foam.CLASS({
 
         // SUBJECT:
         if ( ! emailMessage.isPropertySet("subject") && ! SafetyUtil.isEmpty(getSubject()) ) {
-          // translate first and then set
-          TranslationService ts = (TranslationService) x.get("translationService");
-          Subject subject = (Subject) x.get("subject");
-          User user = subject.getRealUser();
-          String locale = user.getLanguage().toString();
-          String source = getId() + ".subject";
-          String translatedSubject = ts.getTranslation(locale, source, getSubject());
-          emailMessage.setSubject(templateEngine.renderTemplate(x, translatedSubject, templateArgs).toString());
+          emailMessage.setSubject(templateEngine.renderTemplate(x, getSubject(), templateArgs).toString());
         }
 
         // SEND TO:

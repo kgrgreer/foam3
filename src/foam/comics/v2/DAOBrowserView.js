@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -34,39 +35,10 @@ foam.CLASS({
   `,
 
   css: `
-    ^export {
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-      margin-left: 16px;
-    }
-
-    ^export:hover {
-      border: 1px solid /*%BLACK%*/ #1E1F21;
-    }
-
-    ^export:focus:not(:hover) {
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-    }
-
-    ^refresh {
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-    }
-
-    ^refresh:hover {
-      border: 1px solid /*%BLACK%*/ #1E1F21;
-    }
-
-    ^refresh:focus:not(:hover) {
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-    }
-
-    ^export img {
-      margin-right: 0;
-    }
-
-    .foam-u2-ActionView-refreshTable > img {
-      margin-right: 0;
+    ^wrapper {
+      box-sizing: border-box;
+      height: 100%;
+      justify-content: flex-start;
     }
 
     ^top-bar {
@@ -75,19 +47,42 @@ foam.CLASS({
       padding-top: 16px;
     }
 
-    ^query-bar {
-      padding: 40px 16px;
-    }
-
     ^toolbar {
       flex-grow: 1;
     }
 
+    ^query-bar {
+      padding: 12px 24px;
+      padding-top: 32px;
+    }
+
+    ^buttons{
+      gap: 0.5em;
+      align-items: flex-start;
+    }
+
+    ^filters{
+      padding: 0 24px;
+      padding-bottom: 12px;
+    }
+
     ^browse-view-container {
-      border-bottom: solid 1px #e7eaec;
       box-sizing: border-box;
-      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       overflow: hidden;
+    }
+
+    /*
+      Scroll is handled here to ensure summaryView always has a scroll 
+      even if it is not configured in the summaryView.
+      This is the generalised way to do this but should be removed 
+      if double scroll bars start appearing
+    */
+    ^browse-view-container > * {
+      height: 100%;
+      overflow: auto;
     }
 
     ^canned-queries {
@@ -106,26 +101,21 @@ foam.CLASS({
       flex-grow: 1;
     }
 
-    ^ .foam-u2-view-SimpleSearch .foam-u2-search-TextSearchView .foam-u2-tag-Input {
+    ^ .foam-u2-view-SimpleSearch input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
       border: 1px solid;
     }
-
-    ^browse-view-container .foam-u2-view-ScrollTableView {
-      height: calc(100% - 20px);
-    }
   `,
 
   messages: [
-    { name: 'REFRESH_MSG', message: 'Refresh Requested ... ' }
+    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' }
   ],
 
   imports: [
     'ctrl',
     'exportDriverRegistryDAO',
-    'memento',
     'stack?'
   ],
 
@@ -133,6 +123,7 @@ foam.CLASS({
     'click',
     'config',
     'filteredTableColumns',
+    'searchColumns',
     'serviceName'
   ],
 
@@ -151,6 +142,14 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ dao: this.data });
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(config$searchColumns){
+        return config$searchColumns;
       }
     },
     {
@@ -221,7 +220,7 @@ foam.CLASS({
   actions: [
     {
       name: 'export',
-      label: '',
+      label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
       isAvailable: async function() {
@@ -238,21 +237,21 @@ foam.CLASS({
     },
     {
       name: 'refreshTable',
-      label: '',
+      label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
       code: function(X) {
         this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
         this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
-        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true);
+        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
     {
       name: 'import',
-      label: '',
+      label: 'Import',
+      icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
-      // icon: 'images/export-arrow-icon.svg',//need find out where we're getting the icons
       code: function() {
         this.add(this.Popup.create().tag(this.importModal));
       }
@@ -280,20 +279,20 @@ foam.CLASS({
       var filterView;
       var simpleSearch;
 
-      if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create({});
-      }
+      this.initMemento();
 
       this.addClass(this.myClass());
       this.SUPER();
 
       this
         .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
+
+          // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
               data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
     
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
@@ -303,16 +302,21 @@ foam.CLASS({
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
             data: self.predicatedDAO$proxy,
             config: self.config
           },  this, filterView.__subContext__.createSubContext());
-          
+
+          if ( ! self.config.browseContext ) {
+            self.config.browseContext = summaryView;
+          }
+
           return self.E()
             .start(self.Rows)
+            .addClass(this.myClass('wrapper'))
               .callIf(config$cannedQueries.length >= 1, function() {
                 this
                   .start(self.Cols)
@@ -344,21 +348,23 @@ foam.CLASS({
                         this.add(filterView);
                     })
                     .endContext()
-                    .start()
+                    .start(self.Cols)
+                      .addClass(self.myClass('buttons'))
                       .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY' })
+                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', icon: 'images/export-arrow-icon.svg', css: {'transform': 'rotate(180deg)'} })
+                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY' })
+                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('refresh'))
                         .end()
                       .endContext()
                     .end()
-                  .end();
-              })
+                  .end()
+                  .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
+                })
               .start()
                 .add(summaryView)
                 .addClass(self.myClass('browse-view-container'))

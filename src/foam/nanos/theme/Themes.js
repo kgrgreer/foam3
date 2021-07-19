@@ -94,20 +94,24 @@ Later themes:
         var group = x.group;
         if ( user && group ) { // non-null when logged in.
           var group = await user.group$find;
+          var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
-            if ( groupTheme ) {
-              theme = theme && theme.copyFrom(groupTheme) || groupTheme;
-              if ( !! group.defaultMenu ) {
-                theme.defaultMenu = group.defaultMenu;
-              }
+            if ( groupTheme && ! foam.util.equals(theme, groupTheme) ) {
+              theme = theme && theme.merge(groupTheme) || groupTheme;
               break;
             }
             group = await group.parent$find;
           }
+
+          if ( !! defaultMenu ) {
+            theme.defaultMenu = defaultMenu;
+            theme.logoRedirect = defaultMenu;
+          }
+
           var userTheme = await user.theme$find;
-          if ( userTheme ) {
-            theme = theme && theme.copyFrom(userTheme) || theme;
+          if ( userTheme && ! foam.util.equals(theme, userTheme) ) {
+            theme = theme && theme.merge(userTheme) || userTheme;
           }
         }
         if ( theme ) {
@@ -187,24 +191,29 @@ Later themes:
         }
       }
 
-      // Augment the theme with group and user themes
+      // Merge the theme with group and user themes
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
+        var defaultMenu = group != null ? group.getDefaultMenu() : "";
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
-          if ( groupTheme != null ) {
-            theme = (Theme) theme.fclone().copyFrom(groupTheme);
-            if ( ! SafetyUtil.isEmpty(group.getDefaultMenu()) ) {
-              theme.setDefaultMenu(group.getDefaultMenu());
-            }
+          if ( groupTheme != null && ! SafetyUtil.equals(theme, groupTheme) ) {
+            theme = theme.merge(groupTheme);
             break;
           }
           group = (Group) groupDAO.find(group.getParent());
         }
+
+        // Use default menu from user group if present
+        if ( ! SafetyUtil.isEmpty(defaultMenu) ) {
+          theme.setDefaultMenu(defaultMenu);
+          theme.setLogoRedirect(defaultMenu);
+        }
+
         Theme userTheme = user.findTheme(x);
-        if ( userTheme != null ) {
-          theme = (Theme) theme.fclone().copyFrom(userTheme);
+        if ( userTheme != null && ! SafetyUtil.equals(theme, userTheme) ) {
+          theme = theme.merge(userTheme);
         }
       }
 

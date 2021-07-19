@@ -9,13 +9,20 @@ foam.CLASS({
   name: 'ConfigureFlowAgent',
   implements: [ 'foam.core.ContextAgent' ],
 
+  documentation: `
+    Exports pushView and popView, either delegates to the stack or creates
+    popups depending on the configuration. Additionally, exports an FObject for
+    wizardlet property subscriptions to detach on.
+  `,
+
   imports: [
     'stack'
   ],
 
   exports: [
     'pushView',
-    'popView'
+    'popView',
+    'wizardCloseSub'
   ],
 
   requires: [
@@ -23,6 +30,14 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'FObjectProperty',
+      name: 'wizardCloseSub',
+      of: 'foam.core.FObject',
+      factory: function() {
+        return foam.core.FObject.create();
+      }
+    },
     {
       name: 'popupMode',
       class: 'Boolean',
@@ -40,7 +55,7 @@ foam.CLASS({
       class: 'Function',
       expression: function () {
         var self = this;
-        return this.popupMode 
+        return this.popupMode
           ? function (viewSpec, onClose) {
             ctrl.add(
               self.Popup.create({
@@ -64,7 +79,7 @@ foam.CLASS({
       class: 'Function',
       expression: function () {
         var self = this;
-        return this.popupMode 
+        return this.popupMode
           ? function (x) {
             x.closeDialog();
           }

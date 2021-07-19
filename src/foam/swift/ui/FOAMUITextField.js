@@ -17,7 +17,7 @@ foam.CLASS({
       name: 'view',
       swiftType: 'UITextField',
       swiftFactory: 'return UITextField()',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 let updateTextField: Listener = { [weak self] _, _ in
   if self == nil { return }
   newValue.text = self!.data == nil ?
@@ -27,7 +27,7 @@ viewSub?.detach()
 viewSub = data$.swiftSub(updateTextField)
 updateTextField(viewSub!, [])
 newValue.delegate = self
-      */},
+      `,
     },
     {
       swiftType: 'Subscription?',
@@ -44,12 +44,12 @@ newValue.delegate = self
   methods: [
     {
       name: 'fromProperty',
-      swiftCode: function() {/*
+      swiftCode: `
 view.isEnabled = prop.visibility == foam_u2_DisplayMode.RW
 if view.isEnabled {
   view.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1)
 }
-      */},
+     `,
     },
     {
       name: 'textFieldDidEndEditing',
@@ -59,9 +59,9 @@ if view.isEnabled {
           swiftType: 'UITextField',
         },
       ],
-      swiftCode: function() {/*
+      swiftCode: `
 data = textField.text ?? ""
-      */},
+     `,
     },
     {
       name: 'textFieldShouldReturn',
@@ -72,10 +72,10 @@ data = textField.text ?? ""
         },
       ],
       type: 'Boolean',
-      swiftCode: function() {/*
+      swiftCode: `
 textField.resignFirstResponder()
 return true
-      */},
+     `,
     },
   ],
 });

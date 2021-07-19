@@ -23,7 +23,7 @@ foam.INTERFACE({
       name: 'createdByAgent',
       documentation: 'Agent acting as User who created the entry',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
+      updateVisibility: 'RO'
     }
   ]
 });
@@ -51,6 +51,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'userInformation',
+      readPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -61,6 +62,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'userInformation',
+      readPermissionRequired: true,
       gridColumns: 6
     }
   ]

@@ -25,7 +25,7 @@ foam.CLASS({
   templates: [
     {
       name: 'swiftInitializer',
-      template: function() {/*
+      template: `
 let topic = BasicTopic()
 
 var topicMap: [String:Topic] = [:]
@@ -43,7 +43,7 @@ topic.parent_ = self
 topic.map_ = topicMap
 
 return topic
-      */},
+      `,
     },
   ],
 });

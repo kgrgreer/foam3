@@ -20,8 +20,9 @@ foam.CLASS({
     'auth',
     'ctrl',
     'stack',
+    'translationService',
+    'theme',
     'user',
-    'theme'
   ],
 
   requires: [
@@ -181,7 +182,7 @@ foam.CLASS({
           window.history.replaceState(null, null, window.location.origin);
           location.reload();
         } else {
-          await this.auth.login(x, this.email, this.desiredPassword);
+          await this.auth.login(x, this.userName, this.desiredPassword);
           this.stack.push({
             class: 'foam.nanos.auth.ResendVerificationEmail'
           });
@@ -205,6 +206,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Get started',
+      buttonStyle: 'PRIMARY',
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
       },
@@ -223,7 +225,8 @@ foam.CLASS({
             await this.updateUser(x);
           }).catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
-              message: err.message || this.ERROR_MSG,
+              err: err.data,
+              message: this.ERROR_MSG,
               type: this.LogLevel.ERROR
             }));
           })

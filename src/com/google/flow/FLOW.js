@@ -13,7 +13,7 @@ foam.CLASS({
     [ 'autoRepaint', true ],
     [ 'width', 800 ],
     [ 'height', 600 ],
-    [ 'color', '#f3f3f3' ],
+    [ 'color', '#f3f3f3' ]
   ]
 });
 
@@ -96,6 +96,7 @@ foam.CLASS({
       }
     }
   ],
+
   actions: [
     {
       name: 'deleteRow',
@@ -155,24 +156,25 @@ foam.CLASS({
   ],
 
   requires: [
-    'com.google.dxf.ui.DXFDiagram',
+    'com.google.flow.Calc',
     'com.google.flow.Canvas',
     'com.google.flow.Circle',
-    'com.google.flow.Ellipse',
     'com.google.flow.DetailPropertyView',
+    'com.google.flow.Ellipse',
+    'com.google.flow.FLOW',
     'com.google.flow.Halo',
     'com.google.flow.Property',
-    'com.google.flow.FLOW',
-    'com.google.foam.demos.sevenguis.Cells',
     'foam.dao.EasyDAO',
+    'foam.demos.sevenguis.Cells',
+    'foam.google.flow.TreeView',
     'foam.graphics.Box',
     'foam.graphics.CView',
     'foam.physics.Physical',
     'foam.physics.PhysicsEngine',
     'foam.u2.PopupView',
     'foam.u2.TableView',
-    'foam.google.flow.TreeView',
     'foam.util.Timer'
+//    'com.google.dxf.ui.DXFDiagram',
   ],
 
   exports: [
@@ -197,9 +199,10 @@ foam.CLASS({
         color: #444;
         }
 
+      ^ .foam-u2-Tabs-tabRow { display: flex; }
       ^ { display: flex; }
       ^ > * { padding-left: 16px; padding-right: 16px; }
-      ^tools, ^properties, ^sheet { box-shadow: 3px 3px 6px 0 gray; height: 100%; }
+      ^tools, ^properties, ^sheet { box-shadow: 3px 3px 6px 0 gray; height: 100%; padding: 1px; }
       ^sheet { width: 100%; overflow-y: auto; }
       ^tools thead, ^properties thead { display: none }
       ^tools tr { height: 30px }
@@ -209,8 +212,22 @@ foam.CLASS({
       ^ canvas { border: none; }
       ^ .foam-u2-ActionView { margin: 10px; }
       ^cmd { box-shadow: 3px 3px 6px 0 gray; width: 100%; margin-bottom: 8px; }
+      ^properties { margin-right: 8px; height: auto; }
       ^properties .foam-u2-view-TreeViewRow { position: relative; }
-      ^properties .foam-u2-ActionView, ^properties .foam-u2-ActionView:hover { background: white; padding: 0; position: absolute; right: 2px; border: none; margin: 2px 2px 0 0; }
+      ^properties .foam-u2-ActionView, ^properties .foam-u2-ActionView:hover {
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: gray;
+        font-size: medium;
+        height: 6px;
+        margin: 2px 2px 0 0;
+        outline: none;
+        padding: 4px;
+        position: absolute;
+        right: 0;
+        top: 12px;
+      }
       .foam-u2-Tabs { padding-top: 0 !important; margin-right: -8px; }
       input[type="range"] { width: 60px; height: 15px; }
       input[type="color"] { width: 60px; }
@@ -341,7 +358,7 @@ foam.CLASS({
         dao.put(com.google.flow.Mushroom.model_);
         dao.put(com.google.flow.Turtle.model_);
         dao.put(com.google.flow.Turtle3D.model_);
-        dao.put(com.google.foam.demos.robot.Robot.model_);
+        dao.put(foam.demos.robot.Robot.model_);
         dao.put(com.google.flow.Desk.model_);
         dao.put(com.google.flow.DuplexDesk.model_);
         dao.put(com.google.flow.Desks.model_);
@@ -353,7 +370,7 @@ foam.CLASS({
         dao.put(com.google.flow.Cursor.model_);
         dao.put(com.google.flow.Script.model_);
         dao.put(foam.core.Model.model_);
-        dao.put(com.google.dxf.ui.DXFDiagram.model_);
+        // dao.put(com.google.dxf.ui.DXFDiagram.model_);
         return dao;
       }
     },
@@ -387,7 +404,7 @@ foam.CLASS({
       view: function(args, x) {
         return {
           class: 'com.google.flow.TreeView',
-          relationship: com.gogle.flow.PropertyPropertyRelationship,
+          relationship: com.google.flow.PropertyPropertyChildrenRelationship,
           startExpanded: true,
           formatter: function() {
             var X = this.__subSubContext__;
@@ -448,6 +465,14 @@ foam.CLASS({
         return this.Cells.create({rows: 28, columns:8}).style({width:'650px'});
       }
     },
+    {
+      name: 'calc',
+      factory: function() {
+        this.Calc.getAxiomsByClass(foam.core.Property).forEach(function(p) { p.hidden = true; });
+
+        return this.Calc.create().style({width:'650px'});
+      }
+    },
     'mouseTarget',
     {
       name: 'position',
@@ -499,10 +524,6 @@ foam.CLASS({
 
       this.
           addClass(this.myClass()).
-          start('div').
-            addClass(this.myClass('tools')).
-            start(this.TOOLS, {selection$: this.currentTool$}).end().
-          end().
           start('center').
             start(this.CMD_LINE).
               addClass(this.myClass('cmd')).
@@ -520,6 +541,11 @@ foam.CLASS({
 //            tag('br').
             start(foam.u2.Tabs).
               start(foam.u2.Tab, {label: 'canvas1'}).
+                style({display: 'flex'}).
+                start('div').
+                  addClass(this.myClass('tools')).
+                  start(this.TOOLS, {selection$: this.currentTool$}).end().
+                end().
                 start(this.canvas).
 //                  on('click',       this.onClick).
                   on('mousedown',   this.onMouseDown).
@@ -530,6 +556,10 @@ foam.CLASS({
               end().
               start(foam.u2.Tab, {label: 'sheet1'}).
                 start(this.sheet).
+                end().
+              end().
+              start(foam.u2.Tab, {label: 'calc1'}).
+                start(this.calc).
                 end().
               end().
               start(foam.u2.Tab, {label: '+'}).
@@ -603,7 +633,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onPropertyPut(_, __, p) {
+    function onPropertyPut(_, __, ___, p) {
       var o = p.value;
 
       this.scope[p.name] = p.value;
@@ -622,7 +652,7 @@ foam.CLASS({
       }
     },
 
-    function onPropertyRemove(_, __, p) {
+    function onPropertyRemove(_, __, ___, p) {
       var o = p.value;
 
       delete this.scope[p.name];

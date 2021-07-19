@@ -12,12 +12,14 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.menu.Menu',
-    'foam.nanos.menu.SubMenuView'
+    'foam.core.Action',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   imports: [
     'theme',
-    'subject'
+    'subject',
+    'translationService'
   ],
 
   css: `
@@ -25,12 +27,6 @@ foam.CLASS({
       cursor: pointer;
       display: flex;
       align-items: center;
-    }
-    ^carrot {
-      margin-left: 15px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 5px solid white;
     }
     ^userName {
       color: /*%GREY4%*/ #e7eaec;
@@ -42,51 +38,60 @@ foam.CLASS({
       font-weight: 400;
       font-size: 11px;
     }
-    ^ .name-container {
+    ^name-container {
       max-width: 90px;
+      line-height: normal;
+      display: flex;
+    }
+    ^name-container > *{
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    ^container {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-    }
   `,
 
   methods: [
-    function initE() {
+    async function initE() {
+      var self = this;
+      var menu = this.Menu.create({ id: this.theme.settingsRootMenu });
+      var X    = this.__subContext__;
+      var mainLabel = this.E()
+        .add(this.slot(subject$user => {
+        if ( ! this.subject.user ) return;
+        return this.E().addClass(self.myClass('name-container'))
+            .start('span').addClass(this.myClass('userName'))
+              .add(this.subject.user.toSummary())
+            .end();
+        }))
+        .add(this.slot(subject$realUser => {
+          if ( ! this.subject.realUser ) return;
+          return this.E().addClass(self.myClass('name-container'))
+              .start('span').addClass(this.myClass('agentName'))
+                .add( this.subject.realUser.toSummary() )
+              .end();
+        }));
+      var menuArray = (await menu.children.orderBy(foam.nanos.menu.Menu.ORDER).select())
+        .array.map( menuItem => {
+          var e = this;
+          return self.Action.create({
+            name: menuItem.name,
+            label: this.translationService.getTranslation(foam.locale, menuItem.id + '.label', menuItem.label),
+            code: () => {
+              menuItem.launch_(X, e);
+            }
+          });
+        });
+
       this
-        .addClass(this.myClass())
-        .start().addClass(this.myClass('container'))
-          .on('click', () => {
-            this.tag(this.SubMenuView.create({
-              menu: this.Menu.create({ id: this.theme.settingsRootMenu })
-            }));
-          })
-          .start()
-             .add(this.slot((subject$user) => {
-              if ( ! this.subject.user ) return;
-              return this.E().addClass('name-container')
-                  .start('span').addClass(this.myClass('userName'))
-                    .add(this.subject.user.toSummary())
-                  .end();
-            }))
-            .add(this.slot((subject$realUser) => {
-              if ( ! this.subject.realUser ) return;
-              return this.E().addClass('name-container')
-                  .start('span').addClass(this.myClass('agentName'))
-                    .add( this.subject.realUser.toSummary() )
-                  .end();
-            }))
-          .end()
-          .start()
-            .addClass(this.myClass('carrot'))
-          .end()
-        .end();
+      .addClass(this.myClass())
+      .start(this.OverlayActionListView, {
+        label: mainLabel,
+        data: menuArray,
+        obj: self,
+        buttonStyle: 'UNSTYLED'
+      })
+        .addClass(this.myClass('dropdown'))
+      .end();
     }
   ]
 });

@@ -130,19 +130,14 @@ foam.CLASS({
     line-height: 1.5;
     background: transparent;
   }
-      /* ON IMG SPLIT */
-  ^ .disclaimer-login-img {
-    margin-top: -20vh;
-  }
 
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
-    position: sticky;
+    margin-top: 10vh;
+    margin-left: 5vw;
   }
   ^ .image-one {
     width: 34vw;
-    margin-top: -75vh;
-    margin-left: 14vw;
   }
   `,
 
@@ -291,19 +286,19 @@ foam.CLASS({
         .end()
       // deciding to render half screen with img and model or just centered model
         .callIfElse( !! this.imgPath && !! split, () => {
-          this.add(split)
-          .start()
+          split.leftPanel.start()
             .addClass('cover-img-block1')
               .start('img')
                 .addClass('image-one')
                 .attr('src', this.imgPath)
               .end()
-      // add a disclaimer under img
+              // add a disclaimer under img
               .start('p')
                 .addClass('disclaimer-login').addClass('disclaimer-login-img')
                 .add(this.model.DISCLAIMER)
               .end()
             .end();
+          this.add(split);
         }, function() {
           this.add(right);
         });

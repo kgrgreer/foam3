@@ -185,6 +185,11 @@ foam.CLASS({
       value: false
     },
 
+    {
+      class: 'Boolean',
+      name: 'includeInHash',
+      value: true
+    },
     /**
       When set, marks the property with the given flags. This can be used for
       things like stripping out platform specific properties when serializing.
@@ -237,8 +242,7 @@ foam.CLASS({
         return function compare(o1, o2) {
           return comparePropertyValues(f(o1), f(o2));
         };
-      },
-
+      }
     },
     // FUTURE: Move to refinement?
     {
@@ -313,6 +317,8 @@ foam.CLASS({
     */
     function installInClass(c, superProp, existingProp) {
       var prop = this;
+
+      if ( existingProp ) superProp = existingProp;
 
       if ( superProp && foam.core.Property.isInstance(superProp) ) {
         prop = superProp.createChildProperty_(prop);
@@ -420,6 +426,21 @@ foam.CLASS({
       var eFactory    = this.exprFactory(prop.expression);
       var FIP         = factory && ( prop.name + '_fip' ); // Factory In Progress
       var fip         = 0;
+
+if ( factory && (
+     factory.toString().indexOf('/* ignoreWarning */') == -1) && (
+     factory.toString().indexOf('then(') != -1 ||
+     factory.toString().indexOf('await') != -1 ) )
+{
+  console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.factory=', factory);
+}
+if ( eFactory && (
+     eFactory.toString().indexOf('/* ignoreWarning */') == -1) && (
+     eFactory.toString().indexOf('then(') != -1 ||
+     eFactory.toString().indexOf('await') != -1 ) )
+{
+  console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.expression=', eFactory);
+}
 
       // Factory In Progress (FIP) Support
       // When a factory method is in progress, the object sets a private

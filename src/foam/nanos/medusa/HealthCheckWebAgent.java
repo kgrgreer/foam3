@@ -29,29 +29,48 @@ public class HealthCheckWebAgent
     ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
     if ( support != null ) {
-      ClusterConfig config = support.getConfig(x, support.getConfigId());
       ElectoralService electoral = (ElectoralService) x.get("electoralService");
-      if ( config.getType() == MedusaType.MEDIATOR ) {
-        if ( config.getEnabled() &&
-             config.getStatus() == Status.ONLINE &&
-             config.getRegionStatus() == RegionStatus.ACTIVE &&
-             ( config.getZone() > 0 ||
-               ( config.getZone() == 0 &&
-                 electoral.getState() == ElectoralServiceState.IN_SESSION ) ) ) {
+      ClusterConfig config = (ClusterConfig) ((foam.dao.DAO) x.get("clusterConfigDAO")).find(support.getConfigId());
+      ReplayingInfo info = config.getReplayingInfo();
+
+      if ( ! config.getEnabled() ) {
+        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        out.println("down\n");
+      } else {
+        if ( config.getType() == MedusaType.MEDIATOR ) {
+          if ( config.getStatus() == Status.ONLINE &&
+               config.getRegionStatus() == RegionStatus.ACTIVE &&
+               ( config.getZone() > 0 ||
+                 ( config.getZone() == 0 &&
+                   electoral.getState() == ElectoralServiceState.IN_SESSION ) ) ) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            out.println("up\n");
+          } else if ( config.getStatus() != Status.ONLINE &&
+                      config.getRegionStatus() == RegionStatus.ACTIVE &&
+                      config.getZone() == 0 &&
+                      info != null ) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            if ( ! foam.util.SafetyUtil.isEmpty(config.getErrorMessage()) ) {
+              out.println("failed\n");
+              out.println("error: "+config.getErrorMessage());
+            } else {
+              out.println("maint\n");
+              out.println("replaying: "+info.getReplaying()+"\n");
+              out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
+              out.println("percentComplete: "+info.getPercentComplete()+"\n");
+            }
+          } else {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            out.println("maint\n");
+          }
+        } else if ( config.getStatus() == Status.ONLINE &&
+                    config.getRegionStatus() == RegionStatus.ACTIVE ) {
           response.setStatus(HttpServletResponse.SC_OK);
           out.println("up\n");
         } else {
           response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
           out.println("maint\n");
         }
-      } else if ( config.getEnabled() &&
-                  config.getStatus() == Status.ONLINE &&
-                  config.getRegionStatus() == RegionStatus.ACTIVE ) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        out.println("up\n");
-      } else {
-        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        out.println("maint\n");
       }
     } else {
       response.setStatus(HttpServletResponse.SC_OK);

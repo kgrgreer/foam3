@@ -2,12 +2,14 @@ package foam.util.Emails;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.app.AppConfig;
-import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.app.SupportConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
 import foam.nanos.theme.Theme;
@@ -50,13 +52,13 @@ public class EmailsUtility {
 
     X userX = x;
     String group = "";
-    String spid = null;
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-      group = user.getGroup();
-      appConfig = user.findGroup(x).getAppConfig(x);
-      spid = user.getSpid();
+      Group userGroup = user.findGroup(x);
+      group = userGroup.getId();
+      userX = userX.put("group", user.findGroup(userX));
+      appConfig = userGroup.getAppConfig(x);
     }
 
     Theme theme = (Theme) x.get("theme");
@@ -65,41 +67,11 @@ public class EmailsUtility {
     ) {
       theme = ((Themes) x.get("themes")).findTheme(userX);
     }
-    if ( spid == null ) {
-      spid = theme.getSpid();
-    }
 
     if ( theme.getAppConfig() != null ) {
       appConfig.copyFrom(theme.getAppConfig());
     }
     userX = userX.put("appConfig", appConfig);
-
-    if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-      emailMessage.setSpid(user.getSpid());
-    }
-
-    SupportConfig supportConfig = theme.getSupportConfig();
-    EmailConfig emailConfig = supportConfig.getEmailConfig();
-    if ( emailConfig == null ) {
-      emailConfig = (EmailConfig) ((DAO) userX.get("emailConfigDAO")).find(spid);
-    }
-    // Set ReplyTo, From, DisplayName from support email config
-    if ( emailConfig != null ) {
-      // REPLY TO:
-      if ( ! SafetyUtil.isEmpty(emailConfig.getReplyTo()) ) {
-        emailMessage.setReplyTo(emailConfig.getReplyTo());
-      }
-
-      // DISPLAY NAME:
-      if ( ! SafetyUtil.isEmpty(emailConfig.getDisplayName()) ) {
-        emailMessage.setDisplayName(emailConfig.getDisplayName());
-      }
-
-      // FROM:
-      if ( ! SafetyUtil.isEmpty(emailConfig.getFrom()) ) {
-        emailMessage.setFrom(emailConfig.getFrom());
-      }
-    }
 
     // Add template name to templateArgs, to avoid extra parameter passing
     if ( ! SafetyUtil.isEmpty(templateName) ) {
@@ -109,27 +81,6 @@ public class EmailsUtility {
         templateArgs = new HashMap<>();
         templateArgs.put("template", templateName);
       }
-
-      String url = appConfig.getUrl().replaceAll("/$", "");
-      templateArgs.put("logo", (url + "/" + theme.getLogo()));
-      templateArgs.put("appLink", url);
-      templateArgs.put("appName", (theme.getAppName()));
-
-      templateArgs.put("locale", user.getLanguage().getCode().toString());
-  
-      foam.nanos.auth.Address address = supportConfig.getSupportAddress();
-      templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
-      templateArgs.put("supportPhone", (supportConfig.getSupportPhone()));
-      templateArgs.put("supportEmail", (supportConfig.getSupportEmail()));
-  
-      // personal support user
-      User psUser = supportConfig.findPersonalSupportUser(x);
-      templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
-      templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
-      templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
-      templateArgs.put("personalSupportFullName", psUser == null ? "" : psUser.getLegalName());
-      
-      emailMessage.setTemplateArguments(templateArgs);
     }
 
     // SERVICE CALL: to fill in email properties.
@@ -137,7 +88,11 @@ public class EmailsUtility {
     try {
       cts.apply(userX, group, emailMessage, templateArgs);
     } catch (Exception e) {
-      logger.error(e);
+      Alarm alarm = new Alarm("EmailTemplate");
+      alarm.setNote(templateName +": " + e.getMessage());
+      ((DAO) x.get("alarmDAO")).put(alarm);
+
+      logger.error("Problem with template: " + templateName, e);
       return;
     }
 

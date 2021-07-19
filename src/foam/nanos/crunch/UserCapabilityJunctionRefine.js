@@ -8,8 +8,10 @@ foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
-  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
+
   implements: [ 'foam.nanos.auth.LifecycleAware' ],
+
+  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
 
   documentation: `
     Model for UserCapabilityJunction, contains the data needed to grant the
@@ -25,6 +27,16 @@ foam.CLASS({
     'static foam.nanos.crunch.AssociatedEntity.*'
   ],
 
+  imports: [
+    'capabilityDAO',
+    'subject',
+    'userDAO'
+  ],
+
+  requires: [
+    'foam.nanos.crunch.AgentCapabilityJunction'
+  ],
+
   tableColumns: [
     'sourceId',
     'targetId',
@@ -36,7 +48,7 @@ foam.CLASS({
 
   messages: [
     { name: 'VIEW_TITLE_USER', message: 'Users' },
-    { name: 'VIEW_TITLE_CAP', message: 'Capabilities' }
+    { name: 'VIEW_TITLE_CAP',  message: 'Capabilities' }
   ],
 
   sections: [
@@ -102,6 +114,7 @@ foam.CLASS({
           }
         };
       },
+      tableWidth: 250,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.capabilityDAO
           .find(value)
@@ -115,11 +128,15 @@ foam.CLASS({
       name: 'payload',
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.UserCapabilityJunction',
+      includeInHash: false,
       javaCompare: 'return 0;',
       javaGetter: `
         return this;
       `,
-      hidden: true
+      javaSetter: '',
+      javaCloneProperty: '// noop',
+      hidden: true,
+      externalTransient: true
     },
     {
       name: 'lifecycleState',
@@ -206,12 +223,12 @@ foam.CLASS({
       `,
       javaCode: `
         Logger logger = (Logger) x.get("logger");
-        if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - subject", x.get("subject"));
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - data", getData());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - daoKey", capability.getDaoKey());
+        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - subject", x.get("subject"));
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - data", getData());
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - daoKey", capability.getDaoKey());
         }
         if ( getData() == null )
           throw new RuntimeException("UserCapabilityJunction data not submitted for capability: " + getTargetId());
@@ -220,22 +237,22 @@ foam.CLASS({
         if ( daoKey == null ) return null;
 
         DAO dao = (DAO) x.get(daoKey);
-        if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - is dao null", dao == null);
+        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - is dao null", dao == null);
         }
         if ( dao == null ) return null;
 
         FObject objectToSave;                                                  // Identify or create data to go into dao.
         String contextDAOFindKey = (String) capability.getContextDAOFindKey();
-        if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-123, " + putObject + "). - contextdaofindkey", contextDAOFindKey);
+        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
+          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - contextdaofindkey", contextDAOFindKey);
         }
 
         if ( contextDAOFindKey != null && ! contextDAOFindKey.isEmpty() ) {
           if ( contextDAOFindKey.toLowerCase().contains("subject") ) {         // 1- Case if subject lookup
             String[] words = foam.util.StringUtil.split(contextDAOFindKey, '.');
             objectToSave = getSubject(x);
-            if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
+            if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
               logger.debug(this.getClass().getSimpleName(), "getSubject(x). - objectToSave", objectToSave);
             }
 
@@ -244,19 +261,19 @@ foam.CLASS({
 
             if ( words[1].toLowerCase().equals("user") ) {
               objectToSave = ((Subject) objectToSave).getUser();
-              if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
+              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
                 logger.debug(this.getClass().getSimpleName(), "contextdaofindkey == subject.user - objectToSave", objectToSave);
               }
             } else if ( words[1].toLowerCase().equals("realuser") ) {
 
-              if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
+              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
                 logger.debug(this.getClass().getSimpleName(), "contextdaofindkey == subject.realUser - objectToSave", objectToSave);
               }
               objectToSave = ((Subject) objectToSave).getRealUser();
             }
             try {
               objectToSave = dao.find(((User)objectToSave).getId());
-              if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
+              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
                 logger.debug(this.getClass().getSimpleName(), "dao.find(objectToSave) - objectToSave", objectToSave);
               }
             } catch(Exception e) {
@@ -264,7 +281,7 @@ foam.CLASS({
             }
           } else {                                                              // 2- Case if anything other then subject specified
             objectToSave = (FObject) x.get(contextDAOFindKey);
-            if ( capability.getId().equals("777af38a-8225-87c8-dfdf-eeb15f71215f-123") ) {
+            if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
               logger.debug(this.getClass().getSimpleName(), "this is just wrong", objectToSave);
             }
 
@@ -352,7 +369,30 @@ foam.CLASS({
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         return subject;
-      `
+      `,
+      code: async function () {
+        // TODO: Why is 'this' missing some imports and requires?
+
+        if ( foam.nanos.crunch.AgentCapabilityJunction.isInstance(this) ) {
+          let user = await this.userDAO.find(this.effectiveUser);
+          let realUser = await this.userDAO.find(this.sourceId);
+          return foam.nanos.auth.Subject.create(
+            { user: user, realUser: realUser }, this.__subContext__);
+        }
+
+        var cap = await this.capabilityDAO.find(this.targetId);
+        if ( ! cap ) throw new Error(
+          'Tried to call getSubject() on UCJ with unrecognized capability');
+
+        if ( this.sourceId == this.__subContext__.subject.user.id )
+          return this.subject;
+
+        // TODO: is check for lastUpdatedRealUser needed here?
+
+        var user = await this.__subContext__.userDAO.find(this.sourceId);
+        return foam.nanos.auth.Subject.create(
+          { user: user, realUser: user }, this.__subContext__);
+      }
     },
     {
       name: 'toString',

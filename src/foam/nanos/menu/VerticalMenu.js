@@ -19,7 +19,8 @@ foam.CLASS({
     'menuListener',
     'loginSuccess',
     'menuDAO',
-    'pushMenu'
+    'pushMenu',
+    'theme'
   ],
 
   requires: [
@@ -30,11 +31,11 @@ foam.CLASS({
 
   css: `
   ^ input[type="search"] {
-    width: 240px;
+    width: 100%;
   }
 
   ^ .side-nav-view {
-    font-size: medium!important;
+    font-size: medium;
     font-weight: normal;
     position: absolute;
     height: calc(100vh - 80px);
@@ -46,9 +47,12 @@ foam.CLASS({
     background: /*%GREY5%*/ #f5f7fas;
   }
 
-  .foam-u2-search-TextSearchView {
+  ^search {
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding: 0 5px;
     text-align: center;
-    margin: 14px 0 0;
+    width: 240px;
   }
 
   ^ .tree-view-height-manager {
@@ -74,10 +78,10 @@ foam.CLASS({
       class: 'String',
       name: 'menuSearch',
       view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
+        class: 'foam.u2.SearchField',
         onKey: true,
-        ariaLabel: 'Menu Search'
+        ariaLabel: 'Menu Search',
+        autocomplete: false
       },
       value: ''
     }
@@ -94,7 +98,7 @@ foam.CLASS({
           .startContext({ data: this })
           .start()
             .add(this.MENU_SEARCH)
-            .addClass('foam-u2-search-TextSearchView')
+            .addClass(this.myClass('search'))
           .end()
           .endContext()
           .start()
@@ -106,10 +110,11 @@ foam.CLASS({
               startExpanded: true,
               query: self.menuSearch$,
               onClickAddOn: function(data) { self.openMenu(data); },
-              selection: self.currentMenu,
+              selection$: self.currentMenu$,
               formatter: function(data) {
                 this.translate(data.id + '.label', data.label);
-              }
+              },
+              defaultRoot: self.theme.navigationRootMenu
             })
           .end()
         .end()

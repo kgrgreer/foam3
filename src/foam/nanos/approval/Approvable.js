@@ -89,7 +89,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isUsingNestedJournal',
+      documentation: `
+        For cases where the approvable pertains to updating a nested object from a list. See  capable.capablePayloads for  example. 
+        This is done so that the predicate can differentiate between  an approvable for an entire object vs a nested object and
+        know when not to apply the generic approvable rule.
+      `,
       section: 'admin'
+    },
+    {
+      class: 'Boolean',
+      name: 'blockFulfillementLogic',
+      documentation: `If true, prevents Approvable reput logic in FulfilledApprovableRule.`,
+      section: 'admin',
+      value: false
     }
   ],
 
@@ -103,14 +115,12 @@ foam.CLASS({
         modelString = modelString.replace('local', '');
         modelString = modelString.replace('DAO', '');
 
-        return `(${modelString}:${this.objId}) UPDATE`;
-      },
-      javaCode: `
-        if ( foam.util.SafetyUtil.isEmpty(getDaoKey()) || getObjId() == null )
-          return "";
-        String modelString = getDaoKey().replace("local", "").replace("DAO", "");
-        return "(" + modelString + ":" + getObjId() + ") UPDATE";
-      `
+        return this.__subContext__[this.daoKey].find(this.objId).then(obj => {
+          return obj 
+            ? `${modelString}: ${obj.toSummary()}`
+            :  `(${modelString}:${this.objId}) UPDATE`
+        });
+      }
     }
   ]
 });

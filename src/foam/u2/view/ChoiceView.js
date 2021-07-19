@@ -39,12 +39,6 @@ foam.CLASS({
     foam.u2.tag.Select.
   `,
 
-  css: `
-    ^ .foam-u2-tag-Select {
-      height: 32px;
-    }
-  `,
-
   properties: [
     {
       class: 'String',
@@ -314,18 +308,19 @@ foam.CLASS({
             this.choices = s.projection;
           });
           return;
-        } else {
-          this.warn('Inefficient ChoiceView. Consider creating transient _choiceText_ property on ' + of.id + ' DAO, prop: ' + this.prop_);
-          /* Ex.:
-          {
-            class: 'String',
-            name: '_choiceText_',
-            transient: true,
-            javaGetter: 'return getName();',
-            getter: function() { return this.name; }
-          }
-          */
         }
+
+        this.warn('Inefficient ChoiceView. Consider creating transient _choiceText_ property on ' + of.id + ' DAO, prop: ' + this.prop_);
+        /* Ex.:
+        {
+          class: 'String',
+          name: '_choiceText_',
+          transient: true,
+          javaGetter: 'return getName();',
+          getter: function() { return this.name; }
+        }
+        */
+
         var p = this.mode === foam.u2.DisplayMode.RW ?
           dao.select().then(s => s.array) :
           dao.find(this.data).then(o => o ? [o] : []);
@@ -339,9 +334,8 @@ foam.CLASS({
               choices[i][1] = resolvedChoiceLabels[i];
             }
             this.choices = choices;
-            if ( ! this.choice && this.choices.length == 1 ) this.data = this.choices[0][0];
+            if ( ! this.data && this.index === -1 ) this.index = this.placeholder && this.choices.length != 1 ? -1 : 0;
           });
-          if ( this.data == null && this.index === -1 ) this.index = this.placeholder ? -1 : 0;
         });
       }
     }

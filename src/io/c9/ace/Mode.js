@@ -7,9 +7,11 @@
 foam.ENUM({
   package: 'io.c9.ace',
   name:'Mode',
+
   properties: [
     'path'
   ],
+
   values: [
     {
       path: 'ace/mode/abap',

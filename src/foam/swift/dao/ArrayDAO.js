@@ -22,7 +22,7 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      swiftCode: function() {/*
+      swiftCode: `
 let obj = obj!
 var found = false
 for (i, o) in array.enumerated() {
@@ -35,11 +35,11 @@ for (i, o) in array.enumerated() {
 if !found { array.append(obj) }
 _ = on["put"].pub([obj])
 return obj
-      */},
+      `,
     },
     {
       name: 'remove_',
-      swiftCode: function() {/*
+      swiftCode: `
 let i = array.firstIndex { (o) -> Bool in
   return self.primaryKey.compare(obj, o) == 0
 }
@@ -47,21 +47,21 @@ if i == nil { return nil }
 let o = array.remove(at: i!)
 _ = on["remove"].pub([obj])
 return o
-      */},
+      `,
     },
     {
       name: 'find_',
-      swiftCode: function() {/*
+      swiftCode: `
 let i = array.firstIndex { (o) -> Bool in
   return FOAM_utils.compare(id, self.primaryKey.get(o)) == 0
 }
 if i == nil { return nil }
 return array[i!]
-      */},
+      `,
     },
     {
       name: 'select_',
-      swiftCode: function() {/*
+      swiftCode: `
 let resultSink = sink
 let sink = decorateSink_(resultSink, skip, limit, order, predicate)
 
@@ -75,7 +75,7 @@ for o in array {
 sink?.eof()
 
 return resultSink
-      */},
+      `,
     },
     {
       name: 'removeAll_',

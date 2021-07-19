@@ -53,7 +53,7 @@ foam.CLASS({
             return a[foam.locale.substring(0, foam.locale.indexOf('-'))];
           return a['en'];// default language.
         }
-        var s = typeof a === 'function' ? foam.String.multiline(a) :
+        var s = typeof a === 'function' ||
                 typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
@@ -106,6 +106,56 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'FormattedString',
+  extends: 'String',
+  documentation: 'A delimiter separated string of digits',
+
+  properties: [
+    {
+      name:'formatter',
+      value:[],
+      documentation: `
+        An array of integers and strings of delimiters used to format the property
+        where integer values represent number of digits at its location
+        E.g., [3, '.', 3, '.', 3, '.', 3]
+      `
+    }
+  ],
+
+  methods: [
+    // create an extra property: formatted${propname} used to access
+    // a formatted version of this string
+    function installInClass(cls) {
+      this.SUPER(cls);
+      var capitalized = foam.String.capitalize(this.name);
+      var constantize = foam.String.constantize(this.name);
+      var prop = foam.core.String.create({
+        forClass_: cls.id,
+        sourceCls_: cls,
+        name: 'formatted' + capitalized,
+        hidden: true,
+        javaSetter: ``,
+        javaGetter: `return Formatted${capitalized}Factory_();`,
+        javaFactory: `
+          try {
+            java.lang.reflect.Method method = ${cls.name}.${constantize}.getClass().getMethod("getFormatted", Object.class);
+            this.formatted${capitalized}_ = (String) method.invoke(${cls.name}.${constantize}, (Object) this);
+            this.formatted${capitalized}IsSet_ = true;
+            return this.formatted${capitalized}_;
+          }
+          catch (NoSuchMethodException e) { }
+          catch (IllegalAccessException e) { }
+          catch (java.lang.reflect.InvocationTargetException e) { }
+          return null;
+        `
+      });
+      cls.axiomMap_[prop.name] = prop;
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.core',
@@ -144,7 +194,7 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function (_, d) {
-        if ( typeof d === 'number' ) return new Date(d);
+        if ( typeof d === 'number' ) d = new Date(d);
         if ( typeof d === 'string' ) {
           var ret = new Date(d);
 
@@ -158,8 +208,11 @@ foam.CLASS({
         }
         if ( d == foam.Date.MAX_DATE || d == foam.Date.MIN_DATE ) return d;
         if ( foam.Date.isInstance(d) ) {
-          // Convert the Date to Noon time in GMT /*its timezone*/.
-          d = new Date(d.getTime() - (d.getTime() % (1000*60*60*24)) + (12*60 + d.getTimezoneOffset()) * 60000);
+          // Convert the Date to Noon time in GMT
+          const DAY = 1000*60*60*24;
+          // Add many days to time so not to break for negative times before EPOCH of 1970
+          var timeOfDay = (d.getTime() + 100000 * DAY) % DAY;
+          return new Date(d.getTime() - timeOfDay + 12 * 60 * 60000);
         }
         return d;
       }
@@ -588,6 +641,13 @@ foam.CLASS({
   properties: [ [ 'displayWidth', 80 ] ]
 });
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'Website',
+  extends: 'URL',
+  label: `Websites (requires 'http(s)'/'www' links)`
+});
+
 
 foam.CLASS({
   package: 'foam.core',
@@ -800,7 +860,7 @@ foam.CLASS({
     function copyValueFrom(targetObj, sourceObj) {
       var name = this.name;
       if ( targetObj[name] && sourceObj[name] ) {
-        targetObj[name].copyFrom(sourceObj[name])
+        targetObj[name].copyFrom(sourceObj[name]);
         return true;
       }
       return false;
@@ -848,7 +908,20 @@ foam.CLASS({
     {
       name: 'value',
       expression: function(of) {
-        return of ? of.ID.value : null;
+        var ret = of ? of.ID.value : null;
+
+
+        if ( ! of ){
+          console.warn('Of not found for: ' + this.name)
+          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name)
+        }
+
+        if ( ret === undefined ){
+          console.warn('Default value is undefined for: ' + of.name + '.' + this.name)
+          ret = null;
+        }
+
+        return ret;
         // return ( of && of.ID.value ) || null;
       }
     }
@@ -857,10 +930,19 @@ foam.CLASS({
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
-      var self = this;
+      var self    = this;
+      var daoName = self.name + '$dao';
+
+      Object.defineProperty(proto, daoName, {
+        get: function classGetter() {
+          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+        },
+        configurable: true
+      });
+
       Object.defineProperty(proto, self.name + '$find', {
         get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey].find(this[self.name]);
+          return this[daoName].find(this[self.name]);
         },
         configurable: true
       });
@@ -945,6 +1027,30 @@ foam.CLASS({
       class: 'Boolean',
       name: 'async',
       value: false
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'GlyphProperty',
+  extends: 'FObjectProperty',
+
+  requires: ['foam.core.Glyph'],
+
+  properties: [
+    ['value', null],
+    {
+      name: 'adapt',
+      value: function(_, v, prop) {
+        if ( ! v ) return;
+        if ( foam.String.isInstance(v) ) {
+          return prop.Glyph.create({ themeName: v });
+        }
+        if ( ! foam.core.FObject.isInstance(v) ) {
+          return prop.Glyph.create(v);
+        }
+      }
     }
   ]
 });

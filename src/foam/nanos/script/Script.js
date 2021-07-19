@@ -31,6 +31,14 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.*',
+    'foam.dao.*',
+    'static foam.mlang.MLang.*',
+    'foam.nanos.auth.*',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
+
     'java.io.BufferedReader',
     'java.io.ByteArrayOutputStream',
     'java.io.PrintStream',
@@ -42,19 +50,7 @@ foam.CLASS({
 
     'bsh.EvalError',
     'bsh.Interpreter',
-    'jdk.jshell.JShell',
-
-    'foam.core.*',
-    'foam.dao.*',
-    'static foam.mlang.MLang.*',
-    'foam.nanos.auth.*',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.auth.*',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.pm.PM',
-    'java.io.ByteArrayOutputStream',
-    'java.io.PrintStream',
-    'java.util.Date',
+    'jdk.jshell.JShell'
   ],
 
   tableColumns: [
@@ -177,7 +173,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableWidth: 140,
-      storageTransient: true
+      storageTransient: true,
+      storageOptional: true
     },
     {
       class: 'Duration',
@@ -186,7 +183,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableWidth: 125,
-      storageTransient: true
+      storageTransient: true,
+      storageOptional: true
     },
     {
       class: 'Enum',
@@ -218,8 +216,9 @@ foam.CLASS({
       updateVisibility: 'RO',
       value: 'UNSCHEDULED',
       javaValue: 'ScriptStatus.UNSCHEDULED',
-      tableWidth: 100,
-      storageTransient: true
+      tableWidth: 120,
+      storageTransient: true,
+      storageOptional: true
     },
     {
       class: 'Code',
@@ -287,7 +286,7 @@ foam.CLASS({
       value: 'scriptDAO',
       transient: true,
       visibility: 'HIDDEN',
-      documentation: `Name of dao to store script itself. To set from inheritor just change property value`
+      documentation: 'Name of dao to store script itself. To set from inheritor just change property value'
     },
     {
       class: 'String',
@@ -295,7 +294,8 @@ foam.CLASS({
       value: 'scriptEventDAO',
       transient: true,
       visibility: 'HIDDEN',
-      documentation: `Name of dao to store script run/event report. To set from inheritor just change property value`
+      documentation: 'Name of dao to store script run/event report. To set from inheritor just change property value',
+      tableWidth: 120
     },
     {
       name: 'logger',
@@ -303,11 +303,13 @@ foam.CLASS({
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
         }, (Logger) getX().get("logger"));
-      `
+      `,
+      javaCloneProperty: '//noop'
     }
   ],
 
@@ -356,23 +358,6 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        // Run on all instances if:
-        // - startup "main" script, or
-        // - not-clusterable, or
-        // - a suitable cluster configuration
-
-        String startScript = System.getProperty("foam.main", "main");
-        if ( this instanceof foam.nanos.cron.Cron &&
-             getStatus() == ScriptStatus.SCHEDULED &&
-             ! getId().equals(startScript) &&
-             getClusterable() ) {
-          foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-          if ( support != null &&
-               ! support.cronEnabled(x) ) {
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
-            throw new ClientRuntimeException(this.getClass().getSimpleName() + " " + EXECUTION_DISABLED);
-          }
-        }
         return true;
       `
     },
@@ -494,7 +479,9 @@ foam.CLASS({
     {
       name: 'run',
       tableWidth: 90,
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function() {
         var self = this;
         this.output = '';

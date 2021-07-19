@@ -62,11 +62,7 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
-      // TODO: make random ,
-      value: 10000,
-      javaFactory: ` // 7000-10000 ms
-      return ((long)(Math.random() * 3))*1000 + 7000;
-      `
+      value: 10000
     },
     {
       name: 'initialTimerDelay',
@@ -92,6 +88,7 @@ foam.CLASS({
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
@@ -143,11 +140,10 @@ foam.CLASS({
       ClusterConfig config = support.getConfig(x, getId());
       try {
         if ( ! config.getEnabled() ) {
-          // getLogger().debug("execute, disabled");
+          getLogger().debug("execute, disabled");
           return;
         }
-        // getLogger().debug("execute");
-        DAO client = support.getHTTPClientDAO(x, "clusterConfigDAO", myConfig, config);
+        DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         PM pm = new PM(this.getClass().getSimpleName(), config.getId());
         try {
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
@@ -156,7 +152,7 @@ foam.CLASS({
             cfg.setPingTime(pm.getEndTime() - pm.getStartTime());
             getDao().put_(x, cfg);
           } else {
-            getLogger().warning("client,find", cfg.getId(), "null");
+            getLogger().warning("client,find", config.getId(), "null");
           }
         } catch ( Throwable t ) {
           pm.error(x, t);
@@ -174,7 +170,7 @@ foam.CLASS({
         }
 
         java.util.Date now = new java.util.Date();
-        client = support.getHTTPClientDAO(x, "alarmDAO", myConfig, config);
+        client = support.getClientDAO(x, "alarmDAO", myConfig, config);
         client = client.where(
           AND(
             EQ(Alarm.SEVERITY, LogLevel.ERROR),
@@ -187,7 +183,6 @@ foam.CLASS({
         if ( alarms != null ) {
           DAO alarmDAO = (DAO) x.get("alarmDAO");
           for (Alarm alarm : alarms ) {
-            getLogger().debug("alarm", alarm);
             alarmDAO.put(alarm);
           }
         }

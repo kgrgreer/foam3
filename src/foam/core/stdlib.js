@@ -29,6 +29,7 @@ foam.LIB({
   ]
 });
 
+
 /**
   Rather than extending built-in prototypes, we create flyweight versions.
 
@@ -212,14 +213,14 @@ foam.LIB({
     function memoize0(/* Function */ f) {
       var set = false, cache;
       var ret = foam.Function.setName(
-          function() {
-            if ( ! set ) {
-              set = true;
-              cache = f();
-            }
-            return cache;
-          },
-          'memoize0(' + f.name + ')');
+        function() {
+          if ( ! set ) {
+            set = true;
+            cache = f();
+          }
+          return cache;
+        },
+        'memoize0(' + f.name + ')');
       ret.toString = function() {
         return f.toString();
         return `foam.Function.memoize0(${f.toString()})`
@@ -235,21 +236,21 @@ foam.LIB({
     function memoize1(/* Function */ f) {
       var cache = {};
       var ret = foam.Function.setName(
-          function(key) {
-            foam.assert(
-                arguments.length === 1,
-                'Memoize1\'ed functions must take exactly one argument.');
+        function(key) {
+          foam.assert(
+              arguments.length === 1,
+              'Memoize1\'ed functions must take exactly one argument.');
 
-            var mKey =
-                key === null      ? '___null___'      :
-                key === undefined ? '___undefined___' :
-                key ;
+          var mKey =
+              key === null      ? '___null___'      :
+              key === undefined ? '___undefined___' :
+              key ;
 
-            if ( ! cache.hasOwnProperty(mKey) ) cache[mKey] = f.call(this, key);
+          if ( ! cache.hasOwnProperty(mKey) ) cache[mKey] = f.call(this, key);
 
-            return cache[mKey];
-          },
-          'memoize1(' + f.name + ')');
+          return cache[mKey];
+        },
+        'memoize1(' + f.name + ')');
       ret.toString = function() {
         return f.toString();
         return `foam.Function.memoize1(${f.toString()})`
@@ -278,17 +279,17 @@ foam.LIB({
     /** Finds the function(...) declaration arguments part. Strips newlines. */
     function argsStr(f) {
       var str = f.
-          toString().
-          replace(/(\r\n|\n|\r)/gm,'');
+        toString().
+        replace(/(\r\n|\n|\r)/gm,'');
       var isArrowFunction = !/(async )?function/.test(str);
 
       var match = isArrowFunction ?
-          // (...args...) => ...
-          // or
-          // arg => ...
-          match = str.match(/^(\(([^)]*)\)[^=]*|([^=]+))=>/) :
-          // function (...args...) { ...body... }
-          match = str.match(/^(async )?function(\s+[_$\w]+|\s*)\((.*?)\)/);
+        // (...args...) => ...
+        // or
+        // arg => ...
+        match = str.match(/^(\(([^)]*)\)[^=]*|([^=]+))=>/) :
+        // function (...args...) { ...body... }
+        match = str.match(/^(async )?function(\s+[_$\w]+|\s*)\((.*?)\)/);
 
       if ( ! match ) {
         /* istanbul ignore next */
@@ -320,9 +321,9 @@ foam.LIB({
       in the function body. */
     function functionComment(f) {
       var match = f.
-          toString().
-          replace(/\n/g, '_#_%_%_'). // fake newlines
-          match(/^function(\s+[_$\w]+|\s*)\(.*?\)(?:\_\#\_\%\_\%\_|\s)*\{(?:\_\#\_\%\_\%\_|\s)*\/\*\*?\s*(.*?)\*?\*\/.*\}/);
+        toString().
+        replace(/\n/g, '_#_%_%_'). // fake newlines
+        match(/^function(\s+[_$\w]+|\s*)\(.*?\)(?:\_\#\_\%\_\%\_|\s)*\{(?:\_\#\_\%\_\%\_|\s)*\/\*\*?\s*(.*?)\*?\*\/.*\}/);
       if ( ! match ) {
         return '';
       } else {
@@ -331,32 +332,26 @@ foam.LIB({
     },
 
     function breakdown(f) {
-      var ident = "([^,\\s\\)]+)";
-      var ws = "\\s*";
-      var comment = "(?:\\/\\*(?:.|\\s)*?\\*\\/)?";
-      var skip = "(?:" + ws + comment + ws + ")*";
-
+      var ident          = "([^,\\s\\)]+)";
+      var ws             = "\\s*";
+      var comment        = "(?:\\/\\*(?:.|\\s)*?\\*\\/)?";
+      var skip           = "(?:" + ws + comment + ws + ")*";
       var functionHeader = "(async )?" + "function" + skip + ident + "?" + ws + "\\(";
-
-      var arrowHeader = "\\(";
-
-      var arg = "(?:" + skip + ident + skip + ")";
-      var nextArg = "(?:," + skip + arg + ")";
-      var argEnd = skip + "\\)";
-      var headerToBody = skip + "(?:\\=\\>)?" + skip;
-      var bodyText = "((?:.|\\s)*)";
-      var body = "\\{" + bodyText + "\\}";
-      var arrowBody = bodyText;
-
-      var breakdown = {
+      var arrowHeader    = "\\(";
+      var arg            = "(?:" + skip + ident + skip + ")";
+      var nextArg        = "(?:," + skip + arg + ")";
+      var argEnd         = skip + "\\)";
+      var headerToBody   = skip + "(?:\\=\\>)?" + skip;
+      var bodyText       = "((?:.|\\s)*)";
+      var body           = "\\{" + bodyText + "\\}";
+      var arrowBody      = bodyText;
+      var breakdown      = {
         name: '',
         args: [],
         body: ''
       };
-
-      var source = f.toString();
-
-      var lastIndex = 0;
+      var source         = f.toString();
+      var lastIndex      = 0;
       var currentRegex;
 
       function again() {
@@ -401,7 +396,6 @@ foam.LIB({
       if ( ! match ) return null;
 
       if ( ! next(headerToBody) ) return null;
-
 
       match = isArrow ? next(arrowBody) : next(body);
 
@@ -528,19 +522,25 @@ foam.LIB({
       return a < b ? -1 : a > b ? 1 : 0;
     },
     (function() {
-      var bufForHash = new ArrayBuffer(8);
+      var bufForHash        = new ArrayBuffer(8);
       var floatArrayForHash = new Float64Array(bufForHash);
-      var intArrayForHash = new Int32Array(bufForHash);
+      var intArrayForHash   = new Int32Array(bufForHash);
 
       return function hashCode(n) {
         if (Number.isInteger(n)) return n & n; // Truncate to 32 bits.
 
         floatArrayForHash[0] = n;
         var hash = ((intArrayForHash[0] << 5) - intArrayForHash[0]) +
-            intArrayForHash[1];
+          intArrayForHash[1];
         return hash & hash; // Truncate to 32 bits.
       };
-    })()
+    })(),
+    {
+      name: 'clamp',
+      code: function(min, value, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+    }
   ]
 });
 
@@ -579,7 +579,7 @@ foam.LIB({
       code: foam.Function.memoize1(function(/* String= */ str) {
         if ( str === '' || str === null || foam.Undefined.isInstance(str) ) return '';
 
-        return this.capitalize(str.replace(/[a-z][A-Z]/g, function(a) {
+        return this.capitalize(str.replace(/_/g, ' ').replace(/[a-z][A-Z]/g, function(a) {
           return a.charAt(0) + ' ' + a.charAt(1);
         }));
       })
@@ -613,8 +613,8 @@ foam.LIB({
       name: 'toSlotName',
       code: foam.Function.memoize1(function toSlotName(key) {
         foam.assert(
-            typeof key === 'string',
-            'Cannot toSlotName non-string values.  Attempted: ', key);
+          typeof key === 'string',
+          'Cannot toSlotName non-string values.  Attempted: ', key);
 
         return key + '$';
       })
@@ -623,10 +623,21 @@ foam.LIB({
       name: 'toUpperCase',
       code: foam.Function.memoize1(function(str) {
         foam.assert(
-            typeof str === 'string',
-            'Cannot toUpperCase non-string values.');
+          typeof str === 'string',
+          'Cannot toUpperCase non-string values.');
 
         return str.toUpperCase();
+      })
+    },
+
+    {
+      name: 'toLowerCase',
+      code: foam.Function.memoize1(function(str) {
+        foam.assert(
+          typeof str === 'string',
+          'Cannot toLowerCase non-string values.');
+
+        return str.toLowerCase();
       })
     },
     {
@@ -644,15 +655,6 @@ foam.LIB({
         (new Array(-size).join(' ') + obj).slice(size)       :
         (obj + new Array(size).join(' ')).substring(0, size) ;
     },
-    function multiline(f) {
-      // Function for returning multi-line strings from commented functions.
-      // Ex. var str = multiline(function() { /* multi-line string here */ });
-      if ( typeof f === 'string' ) return f;
-      var s     = f.toString();
-      var start = s.indexOf('/*');
-      var end   = s.lastIndexOf('*/');
-      return ( start >= 0 && end >= 0 ) ? s.substring(start + 2, end) : '';
-    },
     function startsWithIC(a, b) {
       foam.assert(typeof a === 'string' && typeof b === 'string',
           'Cannot startsWithIC non-string values.');
@@ -667,37 +669,54 @@ foam.LIB({
         return map[val] || (map[val] = val.toString());
       };
     })(),
-    function applyFormat(string, formatString, placeholder, escapeChar) {
-      placeholder = placeholder || 'x';
-      escapeChar = escapeChar || '\\';
-      var newString = '';
-      var escaping = false;
-      var safe = true;
-      formatString.split('').forEach(chr => {
-        if ( escaping ) {
-          newString += chr;
-          escaping = false;
-          return;
-        }
-        if ( chr == escapeChar ) {
-          escaping = true;
-          return;
-        }
-        if ( chr == placeholder ) {
-          if ( string.length < 1 ) {
-            safe = false;
+    {
+      name: 'applyFormat',
+      documentation: `
+        Format a string by including delimiter characters to match the specified
+        format string, where 'x' represents a character from the input and any
+        other character is added to the output literally. The placeholder ('x')
+        can be escaped using the the escape character ('\\').
+
+        'placeholder' allows changing the placeholder character from 'x' to
+        something else. 'escapeChar' allows changing the character that escapes
+        the placeholder character.
+
+        Examples:
+          applyFormat('12345', 'xx-xx/x') // 12-34/5
+          applyFormat('12345', 'xx\\\\xxx/x') // 12x34/5
+          applyFormat('12345', '??x??x?', '?') // 12x34x5
+      `,
+      code: function applyFormat(string, formatString, placeholder, escapeChar) {
+        placeholder   = placeholder || 'x';
+        escapeChar    = escapeChar  || '\\';
+        var newString = '';
+        var escaping  = false;
+        var safe      = true;
+        formatString.split('').forEach(chr => {
+          if ( escaping ) {
+            newString += chr;
+            escaping = false;
             return;
           }
-          newString += string[0];
-          string = string.slice(1);
-          return;
-        }
-        newString += chr;
-      })
-      safe = safe && string.length == 0;
-      if ( ! safe ) console.warn(
-        'performed foam.String.applyMask with unsafe inputs');
-      return newString;
+          if ( chr == escapeChar ) {
+            escaping = true;
+            return;
+          }
+          if ( chr == placeholder ) {
+            if ( string.length < 1 ) {
+              safe = false;
+              return;
+            }
+            newString += string[0];
+            string = string.slice(1);
+            return;
+          }
+          newString += chr;
+        });
+        safe = safe && string.length == 0;
+        if ( ! safe ) console.warn('performed foam.String.applyMask with unsafe inputs');
+        return newString;
+      }
     }
   ]
 });
@@ -1047,8 +1066,8 @@ foam.LIB({
         if ( first ) {
           for ( var key in map ) {
             var type = key === 'FObject' ?
-                foam.core.FObject :
-                foam[key] || foam.lookup(key);
+              foam.core.FObject :
+              foam[key] || foam.lookup(key);
 
             type[uid] = map[key];
           }
@@ -1171,15 +1190,15 @@ foam.LIB({
      * Registers the given class in the global namespace.
      * If the given class has an id of 'some.package.MyClass'
      * then the class object will be made available globally at
-     * global.some.package.MyClass.
+     * globalThis.some.package.MyClass.
      */
     function registerClass(cls) {
       foam.assert(typeof cls === 'object',
-          'cls must be an object');
+        'cls must be an object');
       foam.assert(typeof cls.name === 'string' && cls.name !== '',
-          'cls must have a non-empty string name');
+        'cls must have a non-empty string name');
 
-      var pkg = foam.package.ensurePackage(global, cls.package);
+      var pkg = foam.package.ensurePackage(globalThis, cls.package);
       pkg[cls.name] = cls;
     },
 
@@ -1189,7 +1208,7 @@ foam.LIB({
      * The provided factory function creates the class.
      */
     function registerClassFactory(m, thunk) {
-      var pkg = foam.package.ensurePackage(global, m.package);
+      var pkg = foam.package.ensurePackage(globalThis, m.package);
       var tmp;
 
       Object.defineProperty(
@@ -1211,18 +1230,14 @@ foam.LIB({
      * Walk a dot separated path starting at root, creating empty
      * objects if necessary.
      *
-     * ensurePackage(global, 'some.dot.separated.path');
-     * will ensure that global.some.dot.separated.path exists with
+     * ensurePackage(globalThis, 'some.dot.separated.path');
+     * will ensure that globalThis.some.dot.separated.path exists with
      * each part being a JS object.
      *
      * Returns root if path is null or undefined.
      */
     function ensurePackage(root, path) {
-      if ( path === null ||
-           path === undefined ||
-           path === '' ) {
-        return root;
-      }
+      if ( ! path ) return root;
 
       foam.assert(typeof path === 'string',
           'Cannot make a package path of a non-string');

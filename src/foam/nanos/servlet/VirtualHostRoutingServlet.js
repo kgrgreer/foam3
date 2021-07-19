@@ -15,6 +15,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'foam.nanos.app.AppConfig',
     'foam.nanos.jetty.HttpServer',
     'foam.nanos.logger.Logger',
@@ -26,7 +27,8 @@ foam.CLASS({
     'javax.servlet.ServletConfig',
     'javax.servlet.ServletException',
     'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse'
+    'javax.servlet.ServletResponse',
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   properties: [
@@ -78,11 +80,13 @@ foam.CLASS({
         { name: 'x', javaType: 'X'},
         { name: 'theme', javaType: 'Theme'},
         { name: 'logger', javaType: 'Logger'},
-        { name: 'out', javaType: 'PrintWriter'}
+        { name: 'out', javaType: 'PrintWriter'},
+        { name: 'request', javaType: 'ServletRequest' }
       ],
       javaCode: `
       HashMap    headConfig          = (HashMap)   theme.getHeadConfig();
       AppConfig  appConfig           = (AppConfig) x.get("appConfig");
+      String     queryString         = ((HttpServletRequest)request).getQueryString();
       Boolean    customFavIconFailed = false;
       Boolean    customScriptsFailed = false;
       Boolean    customFontsFailed   = false;
@@ -111,7 +115,7 @@ foam.CLASS({
         out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"32x32\\" href=\\"/favicon/favicon-32x32.png\\">");
         out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"16x16\\" href=\\"/favicon/favicon-16x16.png\\">");
         out.println("<link rel=\\"manifest\\" href=\\"/favicon/manifest.json\\">");
-        out.println("<link rel=\\"mask-icon\\" href=\\"/favicon/safari-pinned-tab.svg\\" color=\\"#5bbad5\\">");
+        out.println("<link rel=\\"mask-icon\\" href=\\"/favicon/safari-pinned-tab.svg\\" color=\\"#406dea\\">");
         out.println("<link rel=\\"shortcut icon\\" href=\\"/favicon/favicon.ico\\">");
         out.println("<meta name=\\"msapplication-config\\" content=\\"/favicon/browserconfig.xml\\">");
         out.println("<meta name=\\"theme-color\\" content=\\"#ffffff\\">");
@@ -137,10 +141,9 @@ foam.CLASS({
           out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
-          out.println("<script async defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
+          out.println("<script defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.plugin.autotable.min.js\\"></script>");
-          out.println("<script async defer language=\\"JavaScript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
         }
         // development
         else {
@@ -153,14 +156,22 @@ foam.CLASS({
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/flinks/utils/files.js\\"></script>");
           }
+          else if ( ! SafetyUtil.isEmpty(queryString) ) {
+            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
+            out.println(queryString);
+            out.println("\\"></script>");
+          }
           else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
           }
-          out.println("<script async defer language=\\"JavaScript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
-          out.println("<script async defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
+          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
           out.println("<script language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.min.js\\"></script>");
-          out.println("<script async defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
+          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
         }
+
+        out.println("<script async language=\\"JavaScript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
+        out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
+
       }
 
       // custom fonts
@@ -180,7 +191,7 @@ foam.CLASS({
       if ( headConfig == null || ! headConfig.containsKey("customFonts") || customFontsFailed ) {
         out.println("<link href=\\"https://fonts.googleapis.com/css?family=Roboto:100,300,400,500\\" rel=\\"stylesheet\\">");
         out.println("<link href=\\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i,900,900i\\" rel=\\"stylesheet\\">");
-        out.println("<link href=\\"https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap\\" rel=\\"stylesheet\\">");
+        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap\\" rel=\\"stylesheet\\">");
       }
       `
     },
@@ -228,7 +239,7 @@ foam.CLASS({
         out.println("<html lang=\\"en\\">");
         out.println("<head>");
 
-        this.populateHead(x, theme, logger, out);
+        this.populateHead(x, theme, logger, out, request);
 
         out.println("</head>");
         out.println("<body>");

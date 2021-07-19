@@ -127,8 +127,7 @@ foam.CLASS({
       includeInDigest: false,
       section: 'emailInformation',
       order: 100,
-      gridColumns: 6,
-      tableWidth: 100
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -139,7 +138,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.MultiView',
         views: [
-          { class: 'foam.u2.HTMLView' },
+          { class: 'foam.u2.IFrameHTMLView' },
           { class: 'foam.u2.tag.TextArea', rows: 30, cols: 130 }
         ]
       }

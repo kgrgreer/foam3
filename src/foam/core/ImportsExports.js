@@ -110,7 +110,7 @@ foam.CLASS({
         get: function importsSlotGetter() {
           return this.__context__[key];
         },
-        configurable: false,
+        configurable: true,
         enumerable: false
       });
 

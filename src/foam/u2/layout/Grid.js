@@ -35,14 +35,15 @@ foam.CLASS({
         this.shown = false;
         var currentWidth = 0;
         this.childNodes.forEach((ret) => {
+          var cols = this.displayWidth ? this.displayWidth.cols : 12;
           var width = this.GUnit.isInstance(ret) && ret.columns &&
             ret.columns[`${this.displayWidth.name.toLowerCase()}Columns`] ||
-            this.displayWidth.cols;
+            cols;
 
           var startCol = currentWidth + 1;
           currentWidth += width;
 
-          if ( currentWidth > this.displayWidth.cols ) {
+          if ( currentWidth > cols ) {
             startCol = 1;
             currentWidth = width;
           }
@@ -51,7 +52,7 @@ foam.CLASS({
 
           ret.style({
             'grid-column-start': startCol,
-            'grid-column-end': endCol
+            'grid-column-end':   endCol
           });
         });
         this.shown = true;

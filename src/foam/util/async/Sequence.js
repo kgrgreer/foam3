@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.util.async',
   name: 'Sequence',
+  extends: 'foam.core.Fluent',
 
   implements: [
     'foam.core.ContextAgent',
@@ -41,7 +42,7 @@ foam.CLASS({
     },
     function addAs(name, spec, args) {
       this.contextAgentSpecs$push(this.Step.create({
-        name: spec.name,
+        name: name,
         spec: spec,
         args: args
       }));
@@ -71,6 +72,30 @@ foam.CLASS({
       return this;
     },
 
+    function addAfter(name, spec, args) {
+      for ( var i = 0; i < this.contextAgentSpecs.length; i++ ){
+        let ca = this.contextAgentSpecs[i];
+        if ( name == ca.name ) {
+          break;
+        }
+      }
+
+      var firstHalf = this.contextAgentSpecs.slice(0, i + 1);
+      var secondHalf = this.contextAgentSpecs.slice(i + 1);
+
+      this.contextAgentSpecs = [
+        ...firstHalf,
+        this.Step.create({
+          name: spec.name,
+          spec: spec,
+          args: args
+        }),
+        ...secondHalf
+      ]
+
+      return this;
+    },
+
     function reconfigure(name, args) {
       for ( let ca of this.contextAgentSpecs ) {
         if ( name == ca.name ) {
@@ -82,7 +107,7 @@ foam.CLASS({
     },
     function contains(name) {
       for ( let ca of this.contextAgentSpecs ) {
-        if ( name == ca.name ) {
+        if ( name == ca.name && ca.spec !== this.NullAgent ) {
           return true;
         }
       }

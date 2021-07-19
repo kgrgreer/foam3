@@ -45,12 +45,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      var parent = this.parentNode;
+    async function initE() {
+      var parent  = this.parentNode;
+      var parentE = await parent.el();
 
       if ( ! this.padding ) this.padding = 20;
-      if ( ! this.y       ) this.y = (parent.el().clientHeight - this.height)/2;
-      if ( ! this.x       ) this.x = (parent.el().clientWidth  - this.width )/2;
+      if ( ! this.y       ) this.y = (parentE.clientHeight - this.height)/2;
+      if ( ! this.x       ) this.x = (parentE.clientWidth  - this.width )/2;
       if ( this.width     ) this.style({width    : this.width     + 'px'});
       if ( this.height    ) this.style({height   : this.height    + 'px'});
       if ( this.maxWidth  ) this.style({maxWidth : this.maxWidth  + 'px'});

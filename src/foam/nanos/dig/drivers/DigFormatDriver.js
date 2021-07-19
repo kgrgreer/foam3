@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
@@ -46,6 +47,19 @@ foam.CLASS({
       name: 'format',
       class: 'Enum',
       of: 'foam.nanos.http.Format'
+    },
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
     }
   ],
 
@@ -109,7 +123,7 @@ foam.CLASS({
         PrintWriter out = x.get(PrintWriter.class);
         out.println();
         out.flush();
-        ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+        getLogger().debug("put.success");
 
         HttpServletResponse resp = x.get(HttpServletResponse.class);
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -129,7 +143,6 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        resp.setStatus(HttpServletResponse.SC_OK);
         return;
       }
 
@@ -139,7 +152,7 @@ foam.CLASS({
 
       ClassInfo cInfo = dao.getOf();
       Predicate pred = new WebAgentQueryParser(cInfo).parse(x, q);
-      ((Logger) x.get("logger")).debug("predicate", pred.getClass(), pred.toString());
+      getLogger().debug(pred.toString());
       dao = dao.where(pred);
 
       PropertyInfo idProp = (PropertyInfo) cInfo.getAxiomByName("id");
@@ -162,14 +175,14 @@ foam.CLASS({
       dao = dao.limit(pageSize);
 
       List fobjects = ((ArraySink) dao.select(new ArraySink())).getArray();
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Number of FObjects selected: " + fobjects.size());
+      getLogger().debug("Number of FObjects selected: " + fobjects.size());
 
       outputFObjects(x, dao, fobjects);
 
       PrintWriter out = x.get(PrintWriter.class);
       out.println();
       out.flush();
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+      getLogger().debug("select.success");
 
       resp.setStatus(HttpServletResponse.SC_OK);
       `
@@ -186,7 +199,7 @@ foam.CLASS({
         return;
 
       if ( SafetyUtil.isEmpty(id) ) {
-        DigUtil.outputException(x, new UnknownIdException.Builder(x).build(), getFormat());
+        DigUtil.outputException(x, new UnknownIdException(), getFormat());
         return;
       }
 
@@ -196,14 +209,14 @@ foam.CLASS({
       FObject targetFobj = dao.find(idObj);
 
       if ( targetFobj == null ) {
-        DigUtil.outputException(x, new UnknownIdException.Builder(x).build(), getFormat());
+        DigUtil.outputException(x, new UnknownIdException(), getFormat());
         return;
       }
 
       dao.remove(targetFobj);
-      DigUtil.outputException(x, new DigSuccessMessage.Builder(x).setMessage("Success").build(), getFormat());
+      DigUtil.outputException(x, new DigSuccessMessage("Success"), getFormat());
 
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+      getLogger().debug("remove.success");
       `
     },
     {
@@ -215,41 +228,28 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigUtil.outputException(x,
-          new GeneralException.Builder(x)
-            .setMessage("DAO name is required.").build(),
-          getFormat());
+        DigUtil.outputException(x, new DAORequiredException(), getFormat());
         return null;
       }
 
       DAO nSpecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(daoName);
       if ( nspec == null || ! nspec.getServe() ) {
-        DigUtil.outputException(x,
-          new DAONotFoundException.Builder(x)
-            .setMessage("DAO not found: " + daoName).build(),
-          getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
       // Check if the user is authorized to access the DAO.
       try {
         nspec.checkAuthorization(x);
-      } catch (foam.nanos.auth.AuthorizationException e) {
-        DigUtil.outputException(x,
-          new foam.nanos.dig.exception.AuthorizationException.Builder(x)
-            .setMessage(e.getMessage())
-            .build(),
-          getFormat());
+      } catch (AuthorizationException e) {
+        DigUtil.outputFObject(x, e, 403, getFormat());
         return null;
       }
 
       DAO dao = (DAO) x.get(daoName);
       if ( dao == null ) {
-        DigUtil.outputException(x,
-          new DAONotFoundException.Builder(x)
-            .setMessage("DAO not found: " + daoName).build(),
-          getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
@@ -281,7 +281,7 @@ foam.CLASS({
         // the existing behavior.
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
-          throw new DAOPutException(clientEx.getMessage(), ce);
+          throw new DAOPutException(clientEx.getMessage(), clientEx);
         }
         throw ce;
       }

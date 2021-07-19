@@ -36,12 +36,15 @@ foam.CLASS({
             fill: this.theme.white
           }),
         };
-      } else if ( wizardlet.indicator == this.WizardletIndicator.SAVING ) {
+      } else if (
+        wizardlet.indicator == this.WizardletIndicator.SAVING ||
+        wizardlet.indicator == this.WizardletIndicator.NETWORK_FAILURE
+      ) {
         args = {
           ...args,
           indicateProcessing: true,
-          borderColor: this.theme.grey2,
-          borderColorHover: this.theme.grey2,
+          borderColor: 'rgba(0,0,0,0)',
+          borderColorHover: 'rgba(0,0,0,0)',
           label: '' + number
         };
       } else {
@@ -109,6 +112,18 @@ foam.CLASS({
       width: 24px;
       height: 24px;
     }
+
+    ^hide {
+      opacity: 0.3;
+    }
+
+    ^search{
+      padding-bottom: 32px;
+    }
+
+    ^search input{
+      width: 100%;
+    }
   `,
 
   imports: [
@@ -120,18 +135,41 @@ foam.CLASS({
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.tag.CircleIndicator',
     'foam.u2.wizard.WizardPosition',
-    'foam.u2.wizard.WizardletIndicator'
+    'foam.u2.wizard.WizardletIndicator',
+    'foam.u2.wizard.WizardletSearchController'
   ],
 
   messages: [
     { name: 'PART_LABEL', message: 'Part ' }
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.u2.wizard.WizardletSearchController',
+      name: 'searchController'
+    },
+    {
+      class: 'Array',
+      name: 'stepElements'
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
+      this.searchController = this.WizardletSearchController.create({
+        wizardlets$: this.data.wizardlets$
+      });
       this
         .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('search'))
+          .tag(foam.u2.SearchField, {
+            data$: this.searchController.data$,
+            onKey: true
+          })
+        .end()
         .add(this.slot(function (
           data$wizardlets,
           data$wizardPosition,
@@ -141,6 +179,7 @@ foam.CLASS({
 
           let afterCurrent = false;
 
+          this.stepElements = [];
           for ( let w = 0 ; w < data$wizardlets.length ; w++ ) {
             let wizardlet = this.data.wizardlets[w];
             let isCurrent = wizardlet === this.data.currentWizardlet;
@@ -155,11 +194,15 @@ foam.CLASS({
 
             elem = elem
               .start()
+                .call(function () { self.stepElements.push(this) })
+                .setAttribute('data-wizardlet', wizardlet.id)
                 .addClass(self.myClass('item'))
+                .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
                 .add(this.ExpressionSlot.create({
                   args: [wizardlet.indicator$],
                   code: () => {
-                    return self.E().addClass(self.myClass('step-number-and-title'))
+                    return self.E()
+                      .addClass(self.myClass('step-number-and-title'))
 
                       // Render circle indicator
                       .start(this.CircleIndicator, this.configureIndicator(
@@ -244,63 +287,29 @@ foam.CLASS({
         })
         .translate(title, title);
     },
-    function configureIndicator(wizardlet, isCurrent, number) {
-      var args = {
-        size: 24, borderThickness: 2,
-      };
-      if ( wizardlet.indicator == this.WizardletIndicator.COMPLETED ) {
-        args = {
-          ...args,
-          borderColor: this.theme.approval3,
-          backgroundColor: this.theme.approval3,
-          borderColorHover: this.theme.approval3,
-          icon: this.theme.glyphs.checkmark.getDataUrl({
-            fill: this.theme.white
-          }),
-        };
-      } else if ( wizardlet.indicator == this.WizardletIndicator.SAVING ) {
-        args = {
-          ...args,
-          indicateProcessing: true,
-          borderColor: this.theme.grey2,
-          borderColorHover: this.theme.grey2,
-          label: '' + number
-        };
-      } else {
-        args = {
-          ...args,
-          borderColor: this.theme.grey2,
-          borderColorHover: this.theme.grey2,
-          label: '' + number
-        };
-      }
-      if ( isCurrent ) {
-        args = {
-          ...args,
-          borderColor: this.theme.black,
-          borderColorHover: this.theme.black
-        };
-      }
-      return args;
-    }
   ],
 
   listeners: [
     {
       name: 'setScrollPos',
-      code: function() {
-        let currI = 0;
-        for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
-          let wizardlet = this.data.wizardlets[w];
-          if (wizardlet === this.data.currentWizardlet){
-            currI = Math.max(w - 1, 0);
+      isFramed: true,
+      code: async function() {
+        var el    = await this.parentNode.el();
+
+        var currChild = null;
+        for ( let node of this.stepElements ) {
+          if ( node.getAttribute('data-wizardlet') == this.data.currentWizardlet.id ) {
+            currChild = node;
+            break;
           }
         }
+        var firstChild = await this.childNodes[0].childNodes[0].el();
+        currChild = await currChild.el();
 
-        var padding = this.childNodes[0].childNodes[0].el().offsetTop;
-        var scrollTop = this.childNodes[0].childNodes[currI].el().offsetTop;
-        this.parentNode.el().scrollTop = scrollTop - padding;
+        var padding    = firstChild.offsetTop;
+        var scrollTop  = currChild.offsetTop;
+        el.scrollTop   = scrollTop - padding;
       }
-    },
+    }
   ]
 });

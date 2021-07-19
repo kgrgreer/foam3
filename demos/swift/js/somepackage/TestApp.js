@@ -19,26 +19,26 @@ foam.CLASS({
     {
       swiftType: 'UINavigationController',
       name: 'stack',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return UINavigationController(rootViewController: daoController.vc)
-      */},
+      `,
     },
     {
       class: 'foam.dao.DAOProperty',
       of: 'somepackage.Test',
       name: 'dao',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return ArrayDAO_create([
   "of": somepackage_Test.classInfo(),
 ])
-      */},
+      `,
     },
     {
       class: 'FObjectProperty',
       of: 'foam.swift.ui.DAOViewController',
       required: true,
       name: 'daoController',
-      swiftFactory: function() {/*
+      swiftFactory: `
 let x = __subContext__
 let dvc = DAOViewController_create([
   "dao$": dao$,
@@ -94,13 +94,13 @@ dvc.tableViewDelegate?.updateVcFactory = { (o: foam_core_FObject) -> UIViewContr
 }
 
 return dvc
-      */},
+     `,
     },
   ],
   methods: [
     {
       name: 'init',
-      swiftCode: function() {/*
+      swiftCode: `
 DispatchQueue.global(qos: .background).async {
   var i = 1
   Async.aWhile(
@@ -119,7 +119,7 @@ DispatchQueue.global(qos: .background).async {
       ])
     )({_ in }, {_ in }, nil)
 }
-      */},
+      `,
     },
   ],
 });

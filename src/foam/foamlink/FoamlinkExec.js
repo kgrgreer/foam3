@@ -92,9 +92,10 @@ foam.CLASS({
 
       for ( name in info.files ) {
         let fileInfo = info.files[name];
-        
+
         if ( // These are the conditions in which a file is skipped
           fileInfo.name === 'foamlink.js'
+          || fileInfo.name === 'foam.js'
           || ! fileInfo.name.endsWith('.js')
           || fileInfo.name.startsWith('.')
           || fileInfo.name.startsWith('#')

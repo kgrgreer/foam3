@@ -37,10 +37,16 @@ foam.CLASS({
           dao: X.exportDriverRegistryDAO.where(X.data.predicate),
           objToChoice: function(a) {
             return [a.id, a.id];
-          }
+          },
+          placeholder: 'Select'
         }, X);
       },
-      value: 'CSV'
+    },
+    {
+      name: 'isDataTypeSelected',
+      expression: function(dataType) {
+        return dataType != '';
+      }
     },
     {
       name: 'note',
@@ -52,6 +58,10 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
       factory: function() { return foam.mlang.predicate.True.create(); }
+    },
+    {
+      name: 'unknownExportDriverRegistry',
+      factory: function() { return foam.nanos.export.ExportDriverRegistry.create(); }
     },
     'exportData',
     'exportObj',
@@ -80,16 +90,23 @@ foam.CLASS({
     ^{
       width: 448px;
       margin: auto;
+      padding-bottom: 24px;
+    }
+    ^ .property-dataType {
+      margin-right: 24px;
     }
     ^ .foam-u2-tag-Select {
-      width: 190px;
-      height: 40px;
+      width: 100%;
       border-radius: 0;
-      margin-left: 24px;
-      padding: 12px 20px;
+      padding: 6px 10px;
       border: solid 1px rgba(164, 179, 184, 0.5);
       background-color: white;
       outline: none;
+      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
+      -webkit-appearance: none;
+    }
+    ^ .foam-u2-ModalHeader {
+      border-bottom: none;
     }
     ^ .foam-u2-tag-Select:hover {
       cursor: pointer;
@@ -98,6 +115,12 @@ foam.CLASS({
       border: solid 1px #59A5D5;
     }
     ^ .label{
+      font-family: /*%FONT1%*/ 'IBM Plex Sans';
+      font-style: normal;
+      font-weight: normal;
+      font-size: 11px;
+      line-height: 14px;
+      color: #000000;
       margin: 10px 0px 0px 24px;
     }
     ^ .note {
@@ -106,7 +129,9 @@ foam.CLASS({
       margin-left: 24px;
     }
     ^buttons {
-      padding: 12px;
+      padding: 12px 12px 0px 24px;
+      position: relative;
+      top: 10;
     }
 
     ^ .foam-u2-ActionView-primary {
@@ -119,17 +144,18 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      self.exportDriverRegistryDAO.where(self.predicate).select().then(function(val) {
-        self.exportDriverRegistryDAO.find(val.array[0].id).then(function(val) {
-          self.exportDriverReg = val;
-          self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
-        });
-      });
+      this.exportDriverReg = this.unknownExportDriverRegistry;
+      this.exportDriver = undefined;
 
       self.dataType$.sub(function() {
         self.exportDriverRegistryDAO.find(self.dataType).then(function(val) {
-          self.exportDriverReg = val;
-          self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
+          if ( ! val ) {
+            self.exportDriverReg = self.unknownExportDriverRegistry;
+            self.exportDriver = undefined;
+          } else {
+            self.exportDriverReg = val;
+            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();           
+          }
         });
       });
 
@@ -147,23 +173,27 @@ foam.CLASS({
       .startContext({ data: this })
         .start()
           .start().addClass('label').style({'padding-top': '14px'}).add(this.DATA_TYPE_MSG).end()
-          .start(this.DATA_TYPE).end()
+          .start().style({'margin-left': '24px'}).add(this.DATA_TYPE).end()
           .add(this.slot(function (exportDriver) {
-            return this.E().add(exportDriver);
+            return this.E()
+              .show(exportDriver && exportDriver.cls_.getAxiomsByClass(foam.core.Property).some(p => ! p.hidden))
+              .add(exportDriver);
           }))
-          .start().addClass('label').style({'padding-top': '14px'}).add(this.RESPONSE).end()
-          .start(this.NOTE).addClass('input-box').addClass('note').end()
-          .add(
-            self.slot(function(exportDriverReg$exportAllColumns) {
-              if ( exportDriverReg$exportAllColumns ) {
-                return self.E().start().addClass('label').startContext({ data: self }).tag(self.EXPORT_ALL_COLUMNS).endContext().end();
-              }
-            })
-          )
-          .start(this.Cols).style({ 'justify-content': 'flex-start' }).addClass(this.myClass('buttons'))
-            .start(this.DOWNLOAD).end()
-            .start(this.CONVERT).end()
-            .start(this.OPEN).end()
+          .start().show(this.isDataTypeSelected$)
+            .start().addClass('label').style({'padding-top': '14px'}).add(this.RESPONSE).end()
+            .start(this.NOTE).addClass('input-box').addClass('note').end()
+            .add(
+              self.slot(function(exportDriverReg$exportAllColumns) {
+                if ( exportDriverReg$exportAllColumns ) {
+                  return self.E().start().addClass('label').startContext({ data: self }).tag(self.EXPORT_ALL_COLUMNS).endContext().end();
+                }
+              })
+            )
+            .start(this.Cols).style({ 'justify-content': 'flex-start' }).addClass(this.myClass('buttons'))
+              .start(this.DOWNLOAD).end()
+              .start(this.CONVERT).end()
+              .start(this.OPEN).end()
+            .end()
           .end()
         .end()
       .endContext();

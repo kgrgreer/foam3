@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.nanos.column.ColumnConfigToPropertyConverter',
     'foam.nanos.column.CommonColumnHandler',
     'foam.nanos.column.TableColumnOutputter',
-    'foam.u2.md.CheckBox',
+    'foam.u2.CheckBox',
     'foam.u2.md.OverlayDropdown',
     'foam.u2.tag.Image',
     'foam.u2.view.EditColumnsView',
@@ -31,10 +31,11 @@ foam.CLASS({
     'hoverSelection',
     'selection',
     'subStack as stack',
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   imports: [
+    'auth?',
     'click?',
     'dblclick?',
     'editRecord?',
@@ -84,27 +85,10 @@ foam.CLASS({
     },
     {
       name: 'columns_',
-      expression: function(columns, of, editColumnsEnabled, selectedColumnNames, allColumns) {
-        if ( ! of ) return [];
-        var cols;
-        if ( ! editColumnsEnabled )
-          cols = columns || allColumns;
-        else
-          cols = selectedColumnNames;
-        return this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(c => foam.Array.isInstance(c) ? c : [c, null]);
-      },
+      factory: function() { return []; }
     },
     {
       name: 'allColumns',
-      expression: function(of) {
-        return ! of ? [] : [].concat(
-          of.getAxiomsByClass(foam.core.Property)
-            .filter(p => ! p.hidden )
-            .map(a => a.name),
-          of.getAxiomsByClass(foam.core.Action)
-            .map(a => a.name)
-        );
-      }
     },
     {
       name: 'selectedColumnNames',
@@ -116,8 +100,7 @@ foam.CLASS({
     {
       name: 'columns',
       expression: function(of, allColumns, isColumnChanged) {
-        if ( ! of )
-          return [];
+        if ( ! of ) return [];
         var tc = of.getAxiomByName('tableColumns');
         return tc ? tc.columns : allColumns;
       }
@@ -265,6 +248,11 @@ foam.CLASS({
     {
       name: 'subStack',
       factory: function() {
+        // we export NoBackStack from table view,
+        // so that actions which have stack.back worked just fine from DAOSummaryView
+        // but had no effect on stack if the acction is called from context menu.
+        // so if such an action is called from DAOSummaryView we go back to TableView
+        // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
     },
@@ -320,18 +308,48 @@ foam.CLASS({
     async function initE() {
       var view = this;
 
-      this.currentMemento_ = null;
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
+      this.allColumns = ! view.of ? [] : [].concat(
+        asyncRes.map(a => a.name),
+        view.of.getAxiomsByClass(foam.core.Action)
+        .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns') ? view.of.getAxiomByName('tableColumns').columns.includes(a) : false)
+      );
 
+      this.columns$.sub(this.updateColumns_);
+      this.of$.sub(this.updateColumns_);
+      this.editColumnsEnabled$.sub(this.updateColumns_);
+      this.selectedColumnNames$.sub(this.updateColumns_);
+      this.allColumns$.sub(this.updateColumns_);
+      this.updateColumns_();
 
       //set memento's selected columns
       if ( this.memento ) {
-        this.memento.head = this.columns_.map(c => {
-          return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
-        }).join(',');
+        if ( this.memento.head.length != 0 ) {
+          var columns = this.memento.head.split(',');
+          for ( var c of columns ) {
+            if ( this.shouldColumnBeSorted(c) && ! c.includes('.')) {
+              var prop = view.props.find(p => p.fullPropertyName === c.substr(0, c.length - 1) );
+              if ( prop ) {
+                if ( c[c.length - 1] === this.DESCENDING_ORDER_CHAR )
+                  this.order = this.DESC(prop.property);
+                else
+                  this.order = prop.property;
+              }
+            }
+          }
+        } else {
+          this.memento.head = this.columns_.map(c => {
+            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+          }).join(',');
+        }
+        if ( ! this.memento.tail ) {
+          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento});
+          this.currentMemento_ = this.memento.tail;
+        }
       }
 
       //otherwise on adding new column creating new EditColumnsView, which is closed by default
-      if (view.editColumnsEnabled)
+      if ( view.editColumnsEnabled )
         var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
 
       if ( this.filteredTableColumns$ ) {
@@ -394,20 +412,30 @@ foam.CLASS({
                 var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
                 var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
 
-                if ( ! prop )
-                  return;
+                if ( ! prop ) return;
 
                 var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
+                var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
+                var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
+                var colTooltip = colData.colPath.join( '/' );
 
                 this.start().
                   addClass(view.myClass('th')).
                   addClass(view.myClass('th-' + prop.name))
-                  .style({ flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0', 'word-wrap' : 'break-word', 'white-space' : 'normal'})
-                  .start()
+                  .style({
+                    'align-items': 'center',
+                    display: 'flex',
+                    flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
+                    'justify-content': 'start',
+                    'word-wrap': 'break-word'
+                  })
+                  .start('', { tooltip: colTooltip })
+                    .addClass('h600')
                     .style({
-                      'display': 'inline-block',
+                      overflow: 'hidden',
+                      'text-overflow': 'ellipsis'
                     })
-                    .add(view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col)).
+                    .add(colHeader).
                   end()./*
                   .forEach(
                     view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col),
@@ -420,14 +448,7 @@ foam.CLASS({
                       }).
                       callIf(prop.label !== '', function() {
                         this.start()
-                          .style({
-                            'display': 'inline-block',
-                            'position': 'absolute'
-                          })
                           .start('img')
-                            .style({
-                              'margin-top': '2px'
-                            })
                             .attr('src', this.slot(function(order) {
                               if ( prop === order ) {
                                 currArrow = view.ascIcon;
@@ -473,7 +494,7 @@ foam.CLASS({
     },
     {
       name: 'rowsFrom',
-      code: function(dao) {
+      code: function(dao, top) {
         /**
          * Given a DAO, add a tbody containing the data from the DAO to the
          * table and return a reference to the tbody.
@@ -488,14 +509,6 @@ foam.CLASS({
           var view = this;
           view.props = this.returnPropertiesForColumns(view, view.columns_);
 
-          var actions = {};
-          var actionsMerger = action => { actions[action.name] = action; };
-
-          // Model actions
-          view.of.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
-          // Context menu actions
-          view.contextMenuActions.forEach(actionsMerger);
-
           // with this code error created slot.get cause promise return
           // FIX ME
           var slot = this.slot(function(data, data$delegate, order, updateValues) {
@@ -503,7 +516,7 @@ foam.CLASS({
             // on a table column header to sort by that column.
             var proxy = view.ProxyDAO.create({ delegate: dao });
             if ( this.order ) proxy = proxy.orderBy(this.order);
-            
+
 
             var canObjBeBuildFromProjection = true;
 
@@ -520,10 +533,14 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
 
             var tbodyElement = this.E();
-            tbodyElement.
+            tbodyElement.style({
+                position: top ? 'absolute' : '',
+                width: '100%',
+                top: top ? top + 'px' : ''
+              }).
               addClass(view.myClass('tbody'));
               valPromises.then(function(values) {
 
@@ -554,17 +571,17 @@ foam.CLASS({
                         return;
                       }
 
-                      if  ( !thisObjValue ) {
+                      if  ( ! thisObjValue ) {
                         dao.inX(ctrl.__subContext__).find(obj.id).then(v => {
                           view.selection = v;
                           if ( view.importSelection$ ) view.importSelection = v;
                           if ( view.editRecord$ ) view.editRecord(v);
-                          view.click(null, obj.id);
+                          view.importSelection = v;
+                          view.click(null, obj.id, v ? v.toSummary() : '');
                         });
                       } else {
                         if ( view.importSelection$ ) view.importSelection = thisObjValue;
                         if ( view.editRecord$ ) view.editRecord(thisObjValue);
-                        view.click(null, obj.id);
                       }
                     });
                   }).
@@ -658,7 +675,7 @@ foam.CLASS({
                     prop = objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(view.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : view.of.getAxiomByName(propName);
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
-                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0'}).
+                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
                     callOn(prop.tableCellFormatter, 'format', [
                       prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
                     ]);
@@ -666,7 +683,7 @@ foam.CLASS({
                   }
 
                   // Object actions
-                  obj.cls_.getOwnAxiomsByClass(foam.core.Action).forEach(actionsMerger);
+                  var actions = view.getActionsForRow(obj);
                   tableRowElement
                     .start()
                       .addClass(view.myClass('td')).
@@ -675,7 +692,10 @@ foam.CLASS({
                       tag(view.OverlayActionListView, {
                         data: Object.values(actions),
                         obj: obj,
-                        dao: dao
+                        dao: dao,
+                        showDropdownIcon: false,
+                        buttonStyle: 'TERTIARY',
+                        icon: 'images/Icon_More_Resting.svg'
                       }).
                     end();
                   tbodyElement.add(tableRowElement);
@@ -684,22 +704,6 @@ foam.CLASS({
 
               return tbodyElement;
             });
-
-            if ( this.memento && this.memento.head.length != 0 ) {
-              var columns = this.memento.head.split(',');
-              for ( var c of columns ) {
-                if ( this.shouldColumnBeSorted(c) && ! c.includes('.')) {
-                  var prop = view.props.find(p => p.fullPropertyName === c.substr(0, c.length - 1) );
-                  if ( prop ) {
-                    if ( c[c.length - 1] === this.DESCENDING_ORDER_CHAR )
-                      this.order = this.DESC(prop.property);
-                    else
-                      this.order = prop.property;
-                    dao = dao.orderBy(this.order);
-                  }
-                }
-              }
-            }
           return slot;
         }
       },
@@ -722,7 +726,88 @@ foam.CLASS({
       },
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
+      },
+      function returnMementoColumnNameDisregardSorting(c) {
+        return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
+      },
+      async function filterUnpermitted(arr) {
+        if ( this.auth ) {
+          const results = await Promise.all(arr.map( async p => 
+            p.hidden ? false : 
+            ! p.columnPermissionRequired || 
+            await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+          return arr.filter((_v, index) => results[index]);
+        }
+        return arr;
+      },
+      {
+        name: 'getActionsForRow',
+        code: function(obj) {
+          var actions = {};
+          var actionsMerger = action => { actions[action.name] = action; };
+
+          // Model actions
+          obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
+          // Context menu actions
+          this.contextMenuActions.forEach(actionsMerger);
+
+          return actions;
+        }
       }
+  ],
+
+  listeners: [
+    {
+      name: 'updateColumns_',
+      isFramed: true,
+      code: function() {
+        if ( ! this.of ) return [];
+        var auth = this.auth;
+        var self = this;
+
+        var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
+        Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
+          c => foam.Array.isInstance(c) ?
+            c :
+            [c, null]
+        ).map(c => {
+          if ( auth ) {
+            var axiom = self.of.getAxiomByName(c[0]);
+            if ( axiom && axiom.columnPermissionRequired ) {
+              var clsName  = self.of.name.toLowerCase();
+              var propName = axiom.name.toLowerCase();
+              return auth.check(null, `${clsName}.column.${propName}`).then(function(enabled) {
+                return enabled && c;
+              });
+            }
+          }
+          return c;
+        }))
+        .then(columns => this.columns_ = columns.filter(c => c));
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'TableViewPropertyRefinement',
+  refines: 'foam.core.Property',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'columnHidden'
+    },
+    {
+      class: 'Boolean',
+      documentation: `
+        When set to true, the '<model>.column.<property>' permission is required for a
+        user to be able to read this property. If false, any user can see the
+        value of this property in a table column.
+      `,
+      name: 'columnPermissionRequired'
+    },
   ]
 });
 

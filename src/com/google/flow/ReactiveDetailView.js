@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'com.google.flow',
   name: 'FObjectReactiveDetailViewRefinement',
   refines: 'FObject',
+
+  imports: [
+    'setTimeout'
+  ],
+
   properties: [
     {
       name: 'reactions_',
@@ -25,6 +30,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function addReaction(name, formula) {
       // TODO: stop any previous reaction
@@ -34,7 +40,7 @@ foam.CLASS({
     function startReaction_(name, formula) {
       // HACK: delay starting reaction in case we're loading a file
       // and dependent variables haven't loaded yet.
-      window.setTimeout(function() {
+      this.setTimeout(function() {
         var self = this;
         var f;
 
@@ -65,7 +71,12 @@ foam.CLASS({
   name: 'ReactiveDetailView',
   extends: 'foam.u2.DetailView',
 
-  requires: [ 'com.google.flow.DetailPropertyView' ]
+  requires: [ 'com.google.flow.DetailPropertyView' ],
+
+  css: `
+    ^ { margin: inherit !important; }
+    ^ table { width: auto !important; }
+  `
 });
 
 
@@ -90,7 +101,7 @@ foam.CLASS({
         text-align: right;
         vertical-align: top;
       }
-      ^switch { color: #ccc; }
+      ^switch { color: #ccc; width: 12px !important; }
       ^switch.reactive {
         font-weight: 600;
         color: red !important;

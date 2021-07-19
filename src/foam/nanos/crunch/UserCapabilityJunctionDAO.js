@@ -28,20 +28,26 @@ foam.CLASS({
     { name: 'ERROR_CAPABILITY_NOT_FOUND', message: 'Capability not found ' }
   ],
 
+  constants: [
+    {
+      name: 'TARGET_CAPABILITY_ID_CHANGE',
+      type: 'String',
+      value: 'usercapabilityjunction.update.targetid'
+    },
+    {
+      name: 'SOURCE_CAPABILITY_ID_CHANGE',
+      type: 'String',
+      value: 'usercapabilityjunction.update.sourceid'
+    }
+  ],
+
   methods: [
     {
       name: 'checkOwnership',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'foam.nanos.crunch.UserCapabilityJunction'
-        }
-      ],
-      documentation: `Check if current user has permission to add this junction`,
+      args: [ 'Context x', 'foam.nanos.crunch.UserCapabilityJunction obj' ],
+      type: 'Boolean',
+      documentation: `Check if current user has permission to find this junction.
+      Returns false if user should not have acccess.`,
       javaCode: `
         Subject subject = (Subject) x.get("subject");
         User user = subject.getUser();
@@ -49,7 +55,7 @@ foam.CLASS({
 
         AuthService auth = (AuthService) x.get("auth");
         boolean isOwner = obj.getSourceId() == user.getId() || obj.getSourceId() == realUser.getId();
-        if ( ! isOwner && ! auth.check(x, "usercapabilityjunction.read.*") ) throw new AuthorizationException();
+        return isOwner || auth.check(x, "usercapabilityjunction.read.*");
       `
     },
     {
@@ -66,15 +72,15 @@ foam.CLASS({
       Subject subject = (Subject) x.get("subject");
       User user = (User) subject.getUser();
       User realUser = (User) subject.getRealUser();
-      
+
       AuthService auth = (AuthService) x.get("auth");
-      if ( auth.check(x, "*") ) return getDelegate();
+      if ( auth.check(x, "usercapabilityjunction.read.*") ) return getDelegate();
       return getDelegate().where(
         OR(
           EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
           EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
         )
-      ); 
+      );
       `
     },
     {
@@ -99,8 +105,8 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-        FObject result = super.find_(x, id);
-        if ( result != null ) checkOwnership(x, (UserCapabilityJunction) result);
+        UserCapabilityJunction result = (UserCapabilityJunction) super.find_(x, id);
+        if ( result == null || ! checkOwnership(x, result) ) return null;
         return result;
       `
     },
@@ -111,8 +117,9 @@ foam.CLASS({
         UserCapabilityJunction old = (UserCapabilityJunction) super.find_(x, ucj.getId());
 
         // do not allow updates to sourceId/targetId properties
-        if ( old != null && ucj.getSourceId() != old.getSourceId() ) throw new RuntimeException(this.ERROR_TWO);
-        if ( old != null && ! ucj.getTargetId().equals(old.getTargetId()) ) throw new RuntimeException(this.ERROR_THREE);
+        AuthService auth = (AuthService) x.get("auth");
+        if ( old != null && ucj.getSourceId() != old.getSourceId() && ! auth.check(x, SOURCE_CAPABILITY_ID_CHANGE) ) throw new RuntimeException(this.ERROR_TWO);
+        if ( old != null && ! ucj.getTargetId().equals(old.getTargetId()) && ! auth.check(x, TARGET_CAPABILITY_ID_CHANGE) ) throw new RuntimeException(this.ERROR_THREE);
 
         // if ucj data is set but does not match expected data, do not put
         Capability capability = (Capability) ucj.findTargetId(x);

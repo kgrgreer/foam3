@@ -96,7 +96,7 @@ foam.CLASS({
           of: this.dao.of.id,
           onKey: true,
           viewSpec: {
-            class: 'foam.u2.tag.Input',
+            class: 'foam.u2.SearchField',
             focused: true
           }
         },

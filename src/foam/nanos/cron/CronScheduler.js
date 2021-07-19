@@ -26,8 +26,11 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.MapDAO',
+    'foam.log.LogLevel',
     'foam.mlang.MLang',
     'foam.mlang.sink.Min',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
@@ -61,22 +64,6 @@ foam.CLASS({
       name: 'enabled',
       class: 'Boolean',
       value: true
-    },
-    {
-      name: 'timer',
-      class: 'Object',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -86,7 +73,6 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName());
-      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), this),
         getInitialTimerDelay());
@@ -114,14 +100,11 @@ foam.CLASS({
     Logger logger = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName()
       }, (Logger) x.get("logger"));
-    logger.info("execute");
 
     try {
       while ( true ) {
         foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-        if ( getEnabled() &&
-             ( support == null ||
-               support.cronEnabled(x) ) ) {
+       if ( getEnabled() ) {
           Date now = new Date();
 
           getCronDAO().where(
@@ -141,10 +124,15 @@ foam.CLASS({
                                Cron cron = (Cron) ((FObject) obj).fclone();
                                PM pm = new PM(this.getClass().getSimpleName(), "cronjob", cron.getId());
                                try {
-                                 cron.setStatus(ScriptStatus.SCHEDULED);
-                                 getCronDAO().put(cron);
+                                 if ( ! cron.getClusterable() ||
+                                      support == null ||
+                                      support.cronEnabled(x) ) {
+                                   cron.setStatus(ScriptStatus.SCHEDULED);
+                                   getCronDAO().put_(x, cron);
+                                 }
                                } catch (Throwable t) {
-                                 logger.error(this.getClass(), "Error scheduling cron job", cron.getId(), t.getMessage(), t);
+                                 logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);
+                                 ((DAO) x.get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), LogLevel.ERROR, AlarmReason.CONFIGURATION));
                                  pm.error(x, t);
                                } finally {
                                  pm.log(x);

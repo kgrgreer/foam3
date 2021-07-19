@@ -15,10 +15,11 @@ foam.CLASS({
     'auth',
     'ctrl',
     'loginSuccess',
-    'stack',
-    'user',
     'menuDAO',
-    'memento'
+    'memento',
+    'stack',
+    'translationService',
+    'user'
   ],
 
   requires: [
@@ -118,6 +119,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Sign in',
+      buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       code: async function(X) {
@@ -133,7 +135,8 @@ foam.CLASS({
                     this.nextStep();
                   }).catch(err => {
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: err.message || this.ERROR_MSG,
+                      err: err.data,
+                      message: this.ERROR_MSG,
                       type: this.LogLevel.ERROR
                     }));
                   });
@@ -145,7 +148,8 @@ foam.CLASS({
           ).catch(
             err => {
               this.ctrl.add(this.NotificationMessage.create({
-                message: err.message || this.ERROR_MSG,
+                err: err.data,
+                message: this.ERROR_MSG,
                 type: this.LogLevel.ERROR
               }));
           });

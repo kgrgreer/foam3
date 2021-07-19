@@ -25,14 +25,14 @@ foam.CLASS({
     'foam.nanos.boot.NSpecAware'
   ],
 
-  documentation: function() {/*
+  documentation: `
     Facade for easily creating decorated DAOs.
     <p>
     Most DAOs are most easily created and configured with EasyDAO.
     Simply require foam.dao.EasyDAO and create() with the flags
     to indicate what behavior you're looking for. Under the hood, EasyDAO
     will create one or more DAO instances to service your requirements and then
-  */},
+  `,
 
   requires: [
     'foam.box.Context',
@@ -107,7 +107,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       factory: function() {
-        return this.nSpec && this.nSpec.name || this.of.id;
+        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
       },
       javaFactory: `
       if ( getNSpec() != null ) {
@@ -163,15 +163,8 @@ foam.CLASS({
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
-              //setMdao(fixedSizeDAO);
             }
-            if ( getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
-              if ( getWriteOnly() ) {
-                delegate = new foam.dao.WriteOnlyJDAO(getX(), delegate, getOf(), getJournalName());
-              } else {
-                delegate = new foam.dao.java.JDAO(getX(), delegate, getJournalName(), getCluster());
-              }
-            }
+            delegate = getJournalDelegate(getX(), delegate);
           }
         }
 
@@ -792,6 +785,30 @@ model from which to test ServiceProvider ID (spid)`,
          setMdao(new foam.dao.MDAO(of_));
        }
      `
+    },
+    {
+      name: 'getJournalDelegate',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'foam.dao.DAO',
+          name: 'delegate'
+        }
+      ],
+      type: 'foam.dao.DAO',
+      javaCode: `
+        if ( getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
+          if ( getWriteOnly() ) {
+            delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
+          } else {
+            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster());
+          }
+        }
+        return delegate;
+      `
     },
     {
       name: 'getOuterDAO',

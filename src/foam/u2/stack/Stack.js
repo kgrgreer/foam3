@@ -55,6 +55,24 @@ foam.CLASS({
       expression: function(pos) {
         return this.stack_[pos] || null;
       }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'topNonPopup',
+      hidden: true,
+      expression: function(pos) {
+        while ( pos >= 0 && this.stack_[pos][3].popup ) pos--;
+        return this.stack_[pos] || null;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'navStackBottom',
+      value: -1,
+      preSet: function(_, p) {
+        if ( isNaN(p) || p > this.depth || p < 0 ) return 0;
+        return p;
+      }
     }
   ],
 
@@ -70,7 +88,7 @@ foam.CLASS({
       return i < 0 ? this.stack_[this.pos + i + 1] : this.stack_[i];
     },
 
-    function push(v, parent, opt_id) {
+    function push(v, parent, opt_id, opt_hint) {
       /** opt_id - used to give some unique id to the view being pushed. If it matches the current view then push() ignored. **/
 
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
@@ -88,27 +106,31 @@ foam.CLASS({
 
       this.depth = pos + 1;
       this.stack_.length = this.depth;
-      this.stack_[pos] = [v, parent, opt_id];
+      this.stack_[pos] = [v, parent, opt_id, opt_hint || {}];
       this.pos = pos;
+      if ( opt_hint && opt_hint.menuItem )
+        this.navStackBottom = pos;
     },
+
     function deleteMemento(mementoToDelete) {
       /** setting the last not null memento in memento chain to null to update application controller memento value on stack.back **/
-      var m = this.memento;
-      if ( ! m )
-        return;
+      var m = this.findCurrentMemento();
+      if ( ! m ) return;
+
       var tail = this.memento.tail;
-      
+
       if ( tail == null ) {
         this.memento.value$.set('');
         return;
       }
 
-      while ( m != null && m.tail != null && m.tail.value.indexOf(mementoToDelete) != 0 ) {
-        m = m.tail;
+      while ( m != null && m.parent != null && m.value.indexOf(mementoToDelete) != 0 ) {
+        m = m.parent;
       }
 
-      if ( m && m.tail ) {
-        m.tail$.set(null);
+      if ( m && m.parent ) {
+        // Find a better way to set this. This is kinda hacky
+        m.parent.tail$.set(null);
       }
     },
     function findCurrentMemento() {
@@ -121,26 +143,23 @@ foam.CLASS({
         }
         tail = tail.tail;
       }
-    }
-  ],
+    },
+    function jump(jumpPos, ctx) {
+      var isMementoSetWithView = false;
 
-  actions: [
-    {
-      name: 'back',
-      // icon: 'arrow_back',
-      isEnabled: function(pos) { return pos > 0; },
-      code: function(X) {
-        var isMementoSetWithView = false;
-
-        //check if the class of the view to which current position points has property MEMENTO_HEAD
-        //or if the view is object and it has mementoHead set
-        //if so we need to set last not-null memento in the memento chain to null as we're going back
-        if ( this.stack_[this.pos][0].class ) {
+      //check if the class of the view to which current memento points has property MEMENTO_HEAD
+      //or if the view is object and it has mementoHead set
+      //if so we need to set last not-null memento in the memento chain to null as we're going back
+      while ( this.pos > jumpPos ) {
+        if ( this.stack_[this.pos][3] && this.stack_[this.pos][3].mementoHead ) {
+          isMementoSetWithView = true;
+          var obj = { mementoHead: this.stack_[this.pos][3].mementoHead };
+        } else if ( this.stack_[this.pos][0].class ) {
           var classObj = this.stack_[this.pos][0].class;
           if ( foam.String.isInstance(classObj) ) {
             classObj = foam.lookup(this.stack_[this.pos][0].class);
           }
-          var obj = classObj.create(this.stack_[this.pos][0], X);
+          var obj = classObj.create(this.stack_[this.pos][0], ctx);
           if ( obj && obj.mementoHead ) {
             isMementoSetWithView = true;
           }
@@ -152,8 +171,28 @@ foam.CLASS({
 
         this.pos--;
 
+        if ( this.navStackBottom > this.pos ) {
+          for ( var i = this.pos; i >= 0; i-- ) {
+            if ( this.stack_[i][3] && this.stack_[i][3].menuItem ) {
+              this.navStackBottom = i;
+              break;
+            }
+          }
+        }
+
         if ( isMementoSetWithView )
           this.deleteMemento(obj.mementoHead);
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'back',
+      // icon: 'arrow_back',
+      isEnabled: function(pos) { return pos > 0; },
+      code: function(X) {
+        this.jump(this.pos-1, X);
       }
     },
     {

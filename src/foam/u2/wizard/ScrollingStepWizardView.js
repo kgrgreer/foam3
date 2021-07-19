@@ -16,13 +16,21 @@ foam.CLASS({
   messages: [
     { name: 'NO_ACTION_LABEL', message: 'Done' },
     { name: 'SAVE_LABEL', message: 'Save' },
+    { name: 'REJECT_LABEL', message: 'Reject' },
+    {
+      name: 'NETWORK_FAILURE_MESSAGE',
+      message: 'There is a problem connecting to the server. Please wait.'
+    }
   ],
 
   requires: [
     'foam.u2.tag.CircleIndicator',
+    'foam.u2.tag.Input',
+    'foam.u2.borders.LoadingBorder',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.wizard.WizardPosition',
-    'foam.u2.wizard.WizardletIndicator'
+    'foam.u2.wizard.WizardletIndicator',
+    'foam.u2.wizard.WizardletSearchController'
   ],
 
   css: `
@@ -31,7 +39,7 @@ foam.CLASS({
     }
 
     ^mainView > * > *:not(:last-child):not(^heading) {
-      margin-bottom: 64px;
+      margin-bottom: 40px;
     }
 
     ^rightside {
@@ -52,25 +60,44 @@ foam.CLASS({
       /* padding-bottom: calc(var(--lrPadding) + var(--actionBarHeight)) */
     }
 
-    ^rightside ^actions {
-      padding: 0 var(--lrPadding);
-      padding-top: var(--actionBarTbPadding);
-      text-align: right;
-      width: calc(100% - 2*var(--lrPadding));
-      flex-grow: 0;
-      min-height: calc(
-        var(--actionBarHeight) - var(--actionBarTbPadding));
+    ^rightside ^bottomnav {
+      align-items: center;
       background-color: rgba(255,255,255,0.7);
       backdrop-filter: blur(5px);
-
-      /* TODO: Themes don't support this, so color is static */
-      border-top: 2px solid hsla(240,100%,80%,0.8);
+      box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-grow: 0;
+      justify-content: flex-end;
+      min-height: calc(
+        var(--actionBarHeight) - var(--actionBarTbPadding));
+      padding: var(--actionBarTbPadding) var(--lrPadding);
+      width: calc(100% - 2*var(--lrPadding));
     }
 
-    ^heading h2 {
-      margin: 0px;
+    ^heading {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
     }
 
+    ^network-failure-banner {
+      position: sticky;
+      top: 0;
+      background-color: %DESTRUCTIVE2%f0;
+      color: %WHITE%;
+      height: 30px;
+      font-size: 18px;
+      line-height: 30px;
+      text-align: center;
+      z-index: 1000;
+      padding: 15px;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    ^hide {
+      display: none !important;
+    }
   `,
 
   properties: [
@@ -84,10 +111,19 @@ foam.CLASS({
     },
     {
       name: 'scrollWizardPosition',
-      expression: function (scrollPosition, wizardPositionElements) {
+      expression: async function (scrollPosition, wizardPositionElements) {
         var offset = 50;
 
         var test_visible = el => {
+          // Offset parent might be a wrapping element, but we want the element
+          // who has the wizard scroller as its offsetParent
+          while ( el.offsetParent != this.scrollOffsetElement ) {
+            el = el.offsetParent;
+            // This is tricky; sometimes the element isn't really loaded, so
+            // offsetParent will be null. This also happens with display:none.
+            if ( el === null ) return false;
+          }
+
           var sectTop = el.offsetTop - offset;
           var sectBot = sectTop + el.clientHeight;
           var mainTop = this.mainScrollElement.scrollTop;
@@ -99,10 +135,10 @@ foam.CLASS({
         var minTopPosition = null;
         // Find the closest visible section to the top
         for ( let hash in wizardPositionElements ) {
-          let el = wizardPositionElements[hash].section.el();
+          let el = await wizardPositionElements[hash].section.el();
           let pos = wizardPositionElements[hash].position;
           if ( ! el ) {
-            console.error('missing element', wizardPositionElements[hash]);
+            delete wizardPositionElements[hash];
             continue;
           }
           if ( test_visible(el) ) {
@@ -115,6 +151,7 @@ foam.CLASS({
       }
     },
     'mainScrollElement',
+    'scrollOffsetElement',
     {
       name: 'hasAction',
       documentation: `
@@ -134,14 +171,36 @@ foam.CLASS({
       factory: function () {
         return this.sequence && this.sequence.contains('SaveAllAgent');
       }
+    },
+    {
+      name: 'willReject',
+      documentation: `
+        Used to put submit button in confirmationRequired mode and change the
+        submit button label from 'Done' to 'Reject' when rejectOnInvalidatedSave is true
+        and the wizard has at least one invalid wizardlet.
+      `,
+      expression: function( data$config$rejectOnInvalidatedSave, data$allValid ) {
+        return data$config$rejectOnInvalidatedSave && ! data$allValid;
+      }
+    },
+    {
+      name: 'primaryLabel',
+      documentation: 'Used to switch to the appropriate label for the primary action',
+      expression: function(hasAction, willReject, willSave) {
+        if ( willReject ) return this.REJECT_LABEL;
+        if ( hasAction ) return this.ACTION_LABEL;
+        if ( willSave ) return this.SAVE_LABEL;
+        return this.NO_ACTION_LABEL;
+      }
     }
   ],
 
   methods: [
     function initE() {
       var self = this;
-      window.testing_ = self;
+      globalThis.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {
+        if ( ! this.scrollWizardPosition ) return; // TEMP
         this.data.wizardPosition = this.scrollWizardPosition;
       }));
       this
@@ -162,14 +221,17 @@ foam.CLASS({
           .end()
           .start(this.GUnit, { columns: 8 })
             .addClass(this.myClass('rightside'))
+            .call(function () {
+              self.onDetach(async function() {
+                  self.scrollOffsetElement = await self.el();
+              });
+            })
             .start()
               .call(function () {
-                self.onDetach(this.state$.sub(() => {
-                  if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-                    self.mainScrollElement = this.el();
+                self.onDetach(async function() {
+                    self.mainScrollElement = await self.el();
                     self.scrollWizardPosition$.get();
-                  }
-                }));
+                });
               })
               .on('scroll', function (e) {
                 self.scrollPosition = e.srcElement.scrollTop;
@@ -177,21 +239,28 @@ foam.CLASS({
               .addClass(this.myClass('mainView'))
               // TODO: deprecate this hide-X-entry class
               .addClass(this.hideX ? this.myClass('hide-X-entry') : this.myClass('entry'))
-              .add(this.slot(function (data$wizardlets) {
+              .add(this.slot(function (data$someFailures) {
+                return data$someFailures
+                  ? this.E()
+                    .addClass(this.myClass('network-failure-banner'))
+                    .add(this.NETWORK_FAILURE_MESSAGE)
+                  : this.E();
+              }))
+              .add(this.slot(function (data$wizardlets, data$wizardPosition) {
                 return self.renderWizardlets(this.E(), data$wizardlets);
               }))
             .end()
             .start()
-              .addClass(this.myClass('actions'))
-              .startContext({ data: self })
-                .tag(this.SUBMIT, {
-                  label: this.hasAction
-                    ? this.ACTION_LABEL
-                    : this.willSave
-                      ? this.SAVE_LABEL
-                      : this.NO_ACTION_LABEL
-                })
-              .endContext()
+              .addClass(this.myClass('bottomnav'))
+              .start()
+                .addClass(this.myClass('actions'))
+                .startContext({ data: self })
+                  .tag(this.SUBMIT, {
+                    label$: this.primaryLabel$,
+                    buttonStyle: 'PRIMARY'
+                  })
+                .endContext()
+              .end()
             .end()
           .end()
         .end()
@@ -203,7 +272,13 @@ foam.CLASS({
         this.add(wizardlet.slot(function (isAvailable, isVisible) {
           if ( ! isVisible ) return self.E();
           var e2 = self.renderWizardletHeading(self.E(), wizardlet);
-          return self.renderWizardletSections(e2, wizardlet, wi);
+          return e2
+            .start(self.LoadingBorder, { loadingLevel$: wizardlet.loadingLevel$ })
+              .call(function () {
+                self.renderWizardletSections(this, wizardlet, wi);
+              })
+            .end()
+            ;
         }));
       });
     },
@@ -216,6 +291,7 @@ foam.CLASS({
           if ( ! isVisible ) return self.E();
           return self.E()
             .addClass(self.myClass('heading'))
+            .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
             .add(wizardlet.slot(function (indicator) {
               return self.E()
                 .style({
@@ -230,29 +306,33 @@ foam.CLASS({
                 ))
                 .end()
             }))
-            .start('h2') // ???: Should this really be h2?
+            .start()
+              .addClass('h300')
               .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
-            .end()
+            .end();
         }));
     },
     function renderWizardletSections(e, wizardlet, wi) {
       var self = this;
-      return e.forEach(wizardlet.sections, function (section, si) {
-        var position = self.WizardPosition.create({
-          wizardletIndex: wi,
-          sectionIndex: si,
-        });
-        this.add(section.createView().call(function () {
-          this.onDetach(this.state$.sub(() => {
-            if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-              self.wizardPositionElements$set(position.hash(), {
-                section: this,
-                position: position
-              });
-            }
+      return e.start(self.Grid)
+        .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
+        .forEach(wizardlet.sections, function (section, si) {
+          var position = self.WizardPosition.create({
+            wizardletIndex: wi,
+            sectionIndex: si,
+          });
+          this.add(section.createView().call(function () {
+            this.onDetach(this.state$.sub(() => {
+              if ( this.state.cls_ == foam.u2.LoadedElementState ) {
+                if ( ! self.wizardPositionElements[position.hash()] )
+                  self.wizardPositionElements$set(position.hash(), {
+                    section: this,
+                    position: position
+                  });
+              }
+            }));
           }));
-        }));
-      });
+        }).end();
     }
   ],
 
@@ -260,8 +340,15 @@ foam.CLASS({
     {
       name: 'submit',
       label: 'Done',
-      isEnabled: function (data$config, data$allValid) {
+      confirmationRequired: function(willReject) {
+        return willReject;
+      },
+      isEnabled: function (data$config, data$allValid, data$someFailures) {
+        if ( data$someFailures ) return false;
         return ! data$config.requireAll || data$allValid;
+      },
+      isAvailable: function (mode) {
+        return mode == foam.u2.DisplayMode.RW;
       },
       code: function (x) {
         for ( let w of this.data.wizardlets ) {

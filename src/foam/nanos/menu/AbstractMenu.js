@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'AbstractMenu',
   abstract: true,
 
-  imports: [ 'menuListener?', 'pushMenu' ],
+  imports: [ 'menuListener?', 'pushMenu', 'translationService' ],
 
   methods: [
     function launch(X, menu) {
@@ -20,12 +20,10 @@ foam.CLASS({
           // hash is updated properly when stack.back() is called.
           this.pushMenu(menu);
           this.menuListener && this.menuListener(menu);
-          return foam.u2.ViewSpec.createView(menu.border, {}, this, X).call(function() {
-            this.tag(self.createView(this.__subContext__, menu));
-          });
+          return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
         X,
-        menu.id);
+        menu.id, { menuItem: true, navStackTitle: self.translationService.getTranslation(foam.locale, menu.id + '.label', menu.label) });
     }
   ]
 });

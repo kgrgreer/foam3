@@ -122,7 +122,11 @@ public abstract class AbstractFObjectPropertyInfo
 
   @Override
   public void validateObj(X x, FObject obj) {
-    if ( isSet(obj) ) {
+    if ( getRequired() ) {
+      if ( ! isSet(obj) || get(obj) == null ) {
+        throw new ValidationException(getName() + " required");
+      }
+
       ((FObject) get(obj)).validate(x);
     }
   }
@@ -130,21 +134,20 @@ public abstract class AbstractFObjectPropertyInfo
   public String getSQLType() {
     return "";
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), null) == 0;
   }
-  
+
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     Object propObj = get_(obj);
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
-      formatter.output((FObject) propObj, of());
-    }
-    else {
+      formatter.output((FObject) propObj, of(), this);
+    } else {
       formatter.output(propObj);
     }
   }
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }

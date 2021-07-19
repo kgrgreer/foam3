@@ -25,6 +25,7 @@ foam.CLASS({
       HTTP status codes, it simply retries requests that reject-on-send().`,
 
   requires: [ 'foam.net.BaseHTTPRequest' ],
+
   imports: [ 'error', 'warn' ],
 
   properties: [

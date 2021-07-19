@@ -37,8 +37,20 @@ foam.CLASS({
       of: 'foam.graph.Graph'
     },
     {
+      name: 'selectedNodeId',
+      class: 'String',
+      documentation:`
+        OPTIONAL: Set a value if you want to enable node higlighting.
+        If used, ensure that the nodeView has an isSelected property to bind to.
+      `
+    },
+    {
       name: 'nodeView',
-      class: 'foam.u2.ViewSpec'
+      class: 'foam.u2.ViewSpec',
+      documentation: `
+        ViewSpec for each node rendered in the DAG view. This u2 element should
+        render as the same size specified by the cellSize property.
+      `
     },
     {
       name: 'cellSize',
@@ -69,10 +81,6 @@ foam.CLASS({
           cellSize$: this.cellSize$
         })
       }
-    },
-    {
-      name: 'nodeView',
-      class: 'foam.u2.ViewSpec'
     },
     {
       name: 'zoom',
@@ -151,12 +159,22 @@ foam.CLASS({
       g
         .callIf(! self.alreadyRendered_[node.id], function () {
           self.alreadyRendered_[node.id] = true;
-          this
-            .tag(self.nodeView, {
-              data: node.data,
-              position: coords,
-              size: Array(coords.length).fill(self.cellSize)
+
+          var args = {
+            of: node.data.cls_,
+            data: node.data,
+            position: coords,
+            size: Array(coords.length).fill(self.cellSize)
+          }
+
+          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
+            args.isSelected$ = self.slot(function(selectedNodeId) {
+              return selectedNodeId === node.data.id; 
             })
+          }
+          
+          this
+            .tag(self.nodeView, args)
         })
         // .callIf(parent, function () {
         //   var pcoords = self.placement_.getPlacement(parent);
@@ -291,6 +309,7 @@ foam.CLASS({
         let arrow = this.ArrowPlan.create({
           // Swap these to enable arrowhead sharing
           // enterCellLane: 0,
+          enterCellLane: this.getCellLane(enterCell, Math.random()/*parent.id*/),
           enterCellLane: this.getCellLane(enterCell, parent.id),
           exitCellLane: this.getCellLane(exitCell, parent.id)
         });
@@ -345,13 +364,15 @@ foam.CLASS({
     function cellLaneRatio_(lane) {
       // f0 produces the series: [1 2 2 4 4 4 4....] as v increases from 0.
       //  Multiplying the output of f0 by 2 gives the denominator
+      // TODO: Not multiplying by 2, seems to center the exit lane with leafs of length 1
+      // Needs to look into centering it for multi leaf nodes
       let f0 = v => Math.pow(2, Math.floor(Math.log2(v+1)));
 
       // f1 produces the series: [1 1 3 1 3 5 7....] as v increases from 0.
       // ???: If this has a formal name please let me know
       let f1 = v => (v - f0(v) + 2) * 2 - 1;
 
-      return f1(lane) / (2*f0(lane));
+      return f1(lane) / f0(lane);
     }
   ]
 });

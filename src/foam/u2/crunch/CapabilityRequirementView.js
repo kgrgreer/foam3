@@ -19,10 +19,10 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-width: 40vw;
-      max-height: 70vh;
+      max-width: 60vw;
+      max-height: 75vh;
       overflow: auto;
-      margin: 28px;
+      margin: 24px;
     }
 
     ^ .titles {
@@ -141,8 +141,8 @@ foam.CLASS({
         .end()
       .start().addClass('actionPosition')
         .startContext({ data: this })
-          .start(this.GET_STARTED).end()
-          .start(this.CANCEL, { buttonStyle: 'SECONDARY' }).end()
+          .tag(this.GET_STARTED, { buttonStyle: 'PRIMARY' })
+          .tag(this.CANCEL, { buttonStyle: 'SECONDARY' })
         .endContext()
       .end();
     }

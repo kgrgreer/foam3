@@ -46,8 +46,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.ControllerMode'
   ],
   imports: [
     'ctrl',
@@ -148,7 +147,7 @@ foam.CLASS({
                 // we will handle this in the StackView instead
                 .startContext({ data: self.stack })
                     .tag(self.stack.BACK, {
-                      buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+                      buttonStyle: foam.u2.ButtonStyle.LINK,
                       icon: 'images/back-icon.svg'
                     })
                 .endContext()
@@ -157,7 +156,7 @@ foam.CLASS({
                     .add(self.slot('config$createTitle'))
                     .addClass(this.myClass('account-name'))
                   .end()
-                  .startContext({ data: self }).add(self.SAVE).endContext()
+                  .startContext({ data: self }).tag(self.SAVE, { buttonStyle: foam.u2.ButtonStyle.PRIMARY }).endContext()
                 .end()
               .end()
               .start(config$viewBorder)

@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.nanos.crunch.ui.UCJView',
+    'foam.nanos.crunch.ui.ReviewUCJView',
     'foam.u2.detail.SectionedDetailView'
   ],
 
@@ -26,7 +26,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this
-        .tag(this.UCJView, { data$: this.capabilityId$ })
+        .tag(this.ReviewUCJView, { data$: this.capabilityId$ })
         .tag(this.SectionedDetailView, {
           data$: this.data$
         })

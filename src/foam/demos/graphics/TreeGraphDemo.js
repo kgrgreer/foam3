@@ -36,7 +36,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var g = this.Node.create({x:500, y:40}, this);
+      var g = this.TreeNode.create({x:500, y:40}, this);
       this.root = g;
       this.add(g.addChildNode().addChildNode().addChildNode().addChildNode());
       g.childNodes[0].addChildNode()/*.addChildNode()*/;

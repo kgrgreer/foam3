@@ -22,21 +22,21 @@ foam.CLASS({
   methods: [
     {
       name: 'swiftGet',
-      swiftCode: function() {/*
+      swiftCode: `
 return object?.get(key: propertyName) ?? nil
-      */},
+     `,
     },
     {
       name: 'swiftSet',
-      swiftCode: function() {/*
+      swiftCode: `
 object?.set(key: propertyName, value: value)
-      */},
+      `,
     },
     {
       name: 'swiftSub',
-      swiftCode: function() {/*
+      swiftCode: `
 return object?.sub(topics: ["propertyChange", propertyName], listener: listener) ?? Subscription(detach: {})
-      */},
+      `,
     },
   ]
 });

@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.token.Token',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Email',
@@ -70,12 +71,12 @@ sink = userDAO.where(MLang.EQ(User.EMAIL, user.getEmail()))
 
 List list = ((ArraySink) sink).getArray();
 if ( list == null || list.size() == 0 ) {
-  throw new RuntimeException("User not found");
+  throw new UserNotFoundException();
 }
 
 user = (User) list.get(0);
 if ( user == null ) {
-  throw new RuntimeException("User not found");
+  throw new UserNotFoundException();
 }
 
 Token token = new Token();
@@ -137,7 +138,7 @@ if ( data == null || data.size() == 0 ) {
 Token tokenResult = (Token) data.get(0);
 User userResult = (User) userDAO.find(tokenResult.getUserId());
 if ( userResult == null ) {
-  throw new RuntimeException("User not found");
+  throw new UserNotFoundException();
 }
 
 if ( ! Password.isValid(x, userResult, newPassword) ) {

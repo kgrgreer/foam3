@@ -41,7 +41,7 @@ foam.CLASS({
       class: 'String',
       transient: true,
       hidden: true,
-      getter: function() {
+      factory: function() {
         var s = this.sourceModel;
         var t = this.targetModel;
         return s.substring(s.lastIndexOf('.') + 1) +
@@ -73,14 +73,20 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'junctionModel',
-      expression: function(sourceModel, targetModel) {
-        var source = sourceModel.substring(sourceModel.lastIndexOf('.') + 1);
-        var target = targetModel.substring(targetModel.lastIndexOf('.') + 1);
+      name: 'junctionName',
+      factory: function() {
+        var source = this.sourceModel.substring(this.sourceModel.lastIndexOf('.') + 1);
+        var target = this.targetModel.substring(this.targetModel.lastIndexOf('.') + 1);
 
-        return (this.package ? this.package + '.' : '') +
-          source + target + 'Junction';
-    }
+        return  source + target + 'Junction';
+      }
+    },
+    {
+      class: 'String',
+      name: 'junctionModel',
+      expression: function(junctionName) {
+        return (this.package ? this.package + '.' : '') + junctionName;
+      }
     },
     {
       class: 'String',
@@ -169,8 +175,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       expression: function(flags) {
-        var enabledFlags = Object.keys(global.FOAM_FLAGS)
-          .filter(f => global.FOAM_FLAGS[f]);
+        var enabledFlags = Object.keys(globalThis.FOAM_FLAGS)
+          .filter(f => globalThis.FOAM_FLAGS[f]);
         return foam.util.flagFilter(enabledFlags)(this);
       }
     },
@@ -192,6 +198,16 @@ foam.CLASS({
       // before value.
       factory: function() {
         return ['sourceId', 'targetId'];
+      }
+    },
+    {
+      class: 'String',
+      name: 'junctionModelPlural',
+      documentation: 'Plural of the junction model.',
+      factory: function(junctionModel) {
+        var name = this.junctionModel.substring(
+          this.junctionModel.lastIndexOf('.') + 1);
+        return foam.String.labelize(foam.String.pluralize(name));
       }
     }
     /* FUTURE:
@@ -312,6 +328,7 @@ foam.CLASS({
         name: name,
         extends: this.extends,
         ids: this.ids,
+        plural: this.junctionModelPlural,
         properties: [
           {
             class: 'Reference',
@@ -342,6 +359,7 @@ foam.LIB({
       m.order = foam.__count++;
 
       var r = foam.dao.Relationship.create(m, opt_ctx);
+      foam.register(r);
       foam.package.registerClass(r);
 
       // Latch the junction right away, we have no idea when source or

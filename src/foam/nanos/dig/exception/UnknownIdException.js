@@ -7,16 +7,20 @@ foam.CLASS({
   package: 'foam.nanos.dig.exception',
   name: 'UnknownIdException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
+  javaGenerateDefaultConstructor: false,
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+          public UnknownIdException() {
+            super();
+          }
+
           public UnknownIdException(String message) {
             super(message);
-            setMessage(message);
-          } 
+          }
         `
         );
       }
@@ -30,19 +34,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1005
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'NotFound'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'Unknown ID'
+      name: 'errorCode',
+      value: '1005'
     }
   ]
 });

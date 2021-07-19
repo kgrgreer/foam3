@@ -81,6 +81,8 @@ This is the heart of Medusa.`,
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -95,7 +97,12 @@ This is the heart of Medusa.`,
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-      getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+      if ( replaying.getReplaying() ) {
+        // getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        if ( entry.getIndex() % 10000 == 0 ) {
+          getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        }
+      }
       PM pm = null;
       try {
         if ( replaying.getIndex() > entry.getIndex() ) {
@@ -201,7 +208,12 @@ This is the heart of Medusa.`,
         MedusaEntry.CONSENSUS_HASHES.clear(entry);
 
         dagger.verify(x, entry);
-        dagger.updateLinks(x, entry);
+        if ( ! SafetyUtil.isEmpty(entry.getData()) ) {
+          // Only non-transient entries can be used for links,
+          // as only non-transient are stored on the nodes.
+          dagger.updateLinks(x, entry);
+        }
+
         // test to save a synchronized call
         if ( entry.getIndex() > dagger.getGlobalIndex(x) ) {
           // Required on Secondaries.
@@ -272,7 +284,11 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            getLogger().debug("promoter", "next", nextIndex);
+            if ( nextIndex % 10000 == 0 ) {
+              getLogger().info("promoter", "next", nextIndex);
+            } else {
+              getLogger().debug("promoter", "next", nextIndex);
+            }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               synchronized ( next.getId().toString().intern() ) {
@@ -325,10 +341,11 @@ This is the heart of Medusa.`,
                 }
               }
             } else {
-              // If stalled on nextIndex and nextIndex + 1 exists and has conenssus, test if nextIndex exists in nodes, if not, skip.
+              // If stalled on nextIndex and nextIndex + 1 exists and has consensus, test if nextIndex exists in nodes, if not, skip.
               if ( nextIndex == replaying.getIndex() + 1 &&
-                   ( System.currentTimeMillis() - nextIndexSince ) > 10000 ) {
-                gap(x, nextIndex, nextIndexSince);
+                   ( replaying.getReplaying() ||
+                     ( System.currentTimeMillis() - nextIndexSince ) > 1000 ) ) {
+                  gap(x, nextIndex, nextIndexSince);
               }
             }
           } finally {
@@ -337,7 +354,7 @@ This is the heart of Medusa.`,
           if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
-                promoterLock_.wait(getTimerInterval());
+                promoterLock_.wait(replaying.getReplaying() ? 10 : getTimerInterval());
               }
             } catch (InterruptedException e ) {
               break;
@@ -384,8 +401,6 @@ This is the heart of Medusa.`,
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ||
              ! config.getIsPrimary() ) {
-          String data = entry.getData();
-          if ( ! SafetyUtil.isEmpty(data) ) {
             // TODO: cache cls for nspecName
             DAO dao = support.getMdao(x, entry.getNSpecName());
             Class cls = null;
@@ -394,20 +409,67 @@ This is the heart of Medusa.`,
             } else if ( dao instanceof foam.dao.MDAO ) {
               cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
             } else {
-              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class", data);
-              throw new RuntimeException("Error parsing data.");
+              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class");
+              Alarm alarm = new Alarm("Unknown class");
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              throw new MedusaException("Unknown class");
             }
-            FObject nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
+          FObject nu = null;
+          String data = entry.getData();
+          if ( ! SafetyUtil.isEmpty(data) ) {
+            try {
+              nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
+            } catch ( RuntimeException e ) {
+              Throwable cause = e.getCause();
+              while ( cause.getCause() != null ) {
+                cause = cause.getCause();
+              }
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
+              Alarm alarm = new Alarm("Medusa Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              throw new MedusaException("Failed to parse.", cause);
+            }
             if ( nu == null ) {
-              getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
-              throw new RuntimeException("Error parsing data.");
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
+              Alarm alarm = new Alarm("Medusa Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              throw new MedusaException("Failed to parse");
             }
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
               nu = old.fclone().copyFrom(nu);
             }
-
+          }
+          if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
+            FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
+            if ( tran == null ) {
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+              Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+            } else {
+              if ( nu == null ) {
+                nu = tran;
+                FObject old = dao.find_(x, nu.getProperty("id"));
+                if (  old != null ) {
+                  nu = old.fclone().copyFrom(nu);
+                }
+              } else {
+                nu = nu.copyFrom(tran);
+              }
+            }
+          }
+          if ( nu != null ) {
             if ( DOP.PUT == entry.getDop() ) {
               dao.put_(x, nu);
             } else if ( DOP.REMOVE == entry.getDop() ) {
@@ -495,7 +557,8 @@ This is the heart of Medusa.`,
       `
     },
     {
-      documentation: 'Test for gap, investigate, attempt recovery.',
+      documentation: `Test for gap, investigate, attempt recovery.
+During replay gaps are treated differently; If the index after the gap is ready for promotion, then promote it. During normal operation gaps are not expected and a wait strategy is invoked.`,
       name: 'gap',
       args: [
         {
@@ -524,6 +587,7 @@ This is the heart of Medusa.`,
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
         MedusaEntry entry = (MedusaEntry) getDelegate().find_(x, index + 1);
+        Long minIndex = 0L;
         if ( entry == null ) {
           Min min = (Min) getDelegate().where(
             EQ(MedusaEntry.PROMOTED, false)
@@ -531,7 +595,8 @@ This is the heart of Medusa.`,
           if ( min != null &&
                min.getValue() != null &&
               ((Long) min.getValue()) > index ) {
-            entry = (MedusaEntry) getDelegate().find_(x, (Long) min.getValue());
+            minIndex = (Long) min.getValue();
+            entry = (MedusaEntry) getDelegate().find_(x, minIndex);
           }
         }
         if ( entry != null ) {
@@ -541,76 +606,72 @@ This is the heart of Medusa.`,
             // ignore
           }
           if ( entry != null ) {
-            getLogger().warning("gap", "investigating", index);
-            // REVIEW: countEntryOnNodes no longer available as
-            // nodes don't keep an mdao of entries.
-            // long nodeCount = support.countEntryOnNodes(x, index);
-            long mediatorCount = support.countEntryOnMediators(x, index);
-            long nodeCount = 0L;
-            if ( nodeCount == 0L ) {
-              getLogger().warning("gap", "found", index);
-              Alarm alarm = new Alarm();
-              alarm.setClusterable(false);
-              alarm.setName("Medusa Gap");
-              alarm.setIsActive(true);
-              alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              config.setErrorMessage("gap detected, investigating...");
-              ((DAO) x.get("clusterConfigDAO")).put(config);
-
-              // Test for gap index dependencies - of course can only look
-              // ahead as far as we have entries locally.
-              // TODO: Combine these two counts into a sequence.
-              Count lookAhead = (Count) dao
-                .where(
-                    GT(MedusaEntry.INDEX, index)
-                  )
-                .select(COUNT());
-              Count dependencies = (Count) dao
-                .where(
-                  OR(
-                    EQ(MedusaEntry.INDEX1, index),
-                    EQ(MedusaEntry.INDEX2, index)
-                  ))
-                .select(COUNT());
-
-              // REVIEW: This is quick and dirty.
-              // look ahead, keep reducing threshold over time
-              Long lookAheadThreshold = 10L;
-              Long minutes = (long) (System.currentTimeMillis() - since) / (1000 * 60);
-              lookAheadThreshold = Math.max(1, lookAheadThreshold - minutes);
-
-              if ( ((Long)dependencies.getValue()).intValue() == 0 &&
-                   ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
-                // Recovery - set global index to the gap index. Then
-                // the promoter will look for the entry after the gap.
-                getLogger().info("gap", "recovery", index);
-                ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-                replaying.updateIndex(x, index);
-
-                alarm.setIsActive(false);
-                alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
-                ((DAO) x.get("alarmDAO")).put(alarm);
-                config.setErrorMessage("");
-                ((DAO) x.get("clusterConfigDAO")).put(config);
-              } else {
-                if ( ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
-                  getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
-                  alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
-                  alarm.setSeverity(foam.log.LogLevel.ERROR);
-                  ((DAO) x.get("alarmDAO")).put(alarm);
-                  config.setErrorMessage("gap with dependencies");
-                  ((DAO) x.get("clusterConfigDAO")).put(config);
-                  throw new MedusaException("gap with dependencies");
-                } else {
-                  getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
-                }
-              }
-            } else {
-              getLogger().info("gap", "not-found", index);
+            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            if ( replaying.getReplaying() ) {
+              // Set global index to next non promoted entry index -1,
+              // the promoter will look for the entry after the global index.
+              getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
+              replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
+              return;
             }
-          } else {
-            getLogger().info("gap", "not-found", index);
+
+            getLogger().warning("gap", "found", index);
+            Alarm alarm = new Alarm();
+            alarm.setClusterable(false);
+            alarm.setName("Medusa Gap");
+            alarm.setIsActive(true);
+            alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
+            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+            config.setErrorMessage("gap detected, investigating...");
+            ((DAO) x.get("clusterConfigDAO")).put(config);
+
+            // Test for gap index dependencies - of course can only look
+            // ahead as far as we have entries locally.
+            // TODO: Combine these two counts into a sequence.
+            Count lookAhead = (Count) dao
+              .where(
+                  GT(MedusaEntry.INDEX, index)
+                )
+              .select(COUNT());
+            Count dependencies = (Count) dao
+              .where(
+                OR(
+                  EQ(MedusaEntry.INDEX1, index),
+                  EQ(MedusaEntry.INDEX2, index)
+                ))
+              .select(COUNT());
+
+            // REVIEW: This is quick and dirty.
+            // look ahead, keep reducing threshold over time
+            Long lookAheadThreshold = 10L;
+            Long t = (long) (System.currentTimeMillis() - since) / 1000;
+            lookAheadThreshold = Math.max(1, lookAheadThreshold - t);
+
+            if ( ((Long)dependencies.getValue()).intValue() == 0 &&
+                 ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
+              // Recovery - set global index to the gap index. Then
+              // the promoter will look for the entry after the gap.
+              getLogger().info("gap", "recovery", index);
+              replaying.updateIndex(x, index);
+
+              alarm.setIsActive(false);
+              alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
+              ((DAO) x.get("alarmDAO")).put(alarm);
+              config.setErrorMessage("");
+              ((DAO) x.get("clusterConfigDAO")).put(config);
+            } else {
+              if ( ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
+                getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
+                alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
+                alarm.setSeverity(foam.log.LogLevel.ERROR);
+                ((DAO) x.get("alarmDAO")).put(alarm);
+                config.setErrorMessage("gap with dependencies");
+                ((DAO) x.get("clusterConfigDAO")).put(config);
+                // throw new MedusaException("gap with dependencies");
+              } else {
+                getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
+              }
+            }
           }
         }
       } catch (Throwable t) {

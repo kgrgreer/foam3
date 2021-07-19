@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-global.FOAM_FLAGS = {
+globalThis.FOAM_FLAGS = {
   web: true,
   js: true,
   debug: true,

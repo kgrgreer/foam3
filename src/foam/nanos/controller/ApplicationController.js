@@ -51,7 +51,7 @@ foam.CLASS({
     'foam.u2.crunch.CrunchController',
     'foam.u2.borders.MarginBorder',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView',
+    'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.session.SessionTimer',
     'foam.u2.dialog.Popup',
@@ -83,6 +83,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'requestLogin',
+    'returnExpandedCSS',
     'sessionID',
     'sessionTimer',
     'signUpEnabled',
@@ -94,10 +95,15 @@ foam.CLASS({
     'wrapCSS as installCSS'
   ],
 
+  topics: [
+    'themeChange'
+  ],
+
   constants: {
     MACROS: [
-      'logoBackgroundColour',
       'customCSS',
+      'logoBackgroundColour',
+      'font1',
       'primary1',
       'primary2',
       'primary3',
@@ -137,10 +143,10 @@ foam.CLASS({
   },
 
   messages: [
-    { name: 'GROUP_FETCH_ERR', message: 'Error fetching group' },
-    { name: 'GROUP_NULL_ERR', message: 'Group was null' },
+    { name: 'GROUP_FETCH_ERR',         message: 'Error fetching group' },
+    { name: 'GROUP_NULL_ERR',          message: 'Group was null' },
     { name: 'LOOK_AND_FEEL_NOT_FOUND', message: 'Could not fetch look and feel object' },
-    { name: 'LANGUAGE_FETCH_ERR', message: 'Error fetching language' },
+    { name: 'LANGUAGE_FETCH_ERR',      message: 'Error fetching language' },
   ],
 
   css: `
@@ -177,7 +183,7 @@ foam.CLASS({
     {
       name: 'sessionID',
       factory: function() {
-        var urlSession = "";
+        var urlSession = '';
         try {
           urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
@@ -189,7 +195,7 @@ foam.CLASS({
     {
       name: 'memento',
       factory: function() {
-        return this.Memento.create();
+        return this.Memento.create({ replaceHistoryState: false });
       }
     },
     {
@@ -210,6 +216,7 @@ foam.CLASS({
     {
       name: 'clientPromise',
       factory: function() {
+        /* ignoreWarning */
         var self = this;
         return self.ClientBuilder.create({}, this).promise.then(function(cls) {
           self.client = cls.create(null, self);
@@ -300,7 +307,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.Theme',
-      name: 'theme'
+      name: 'theme',
+      postSet: function() {
+        this.pub('themeChange');
+      }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -330,6 +340,10 @@ foam.CLASS({
     {
       name: 'languageDefaults_',
       factory: function() { return []; }
+    },
+    {
+      name: 'styles',
+      factory: function() { return {}; }
     }
   ],
 
@@ -343,10 +357,18 @@ foam.CLASS({
       var self = this;
 
       // Start Memento Support
-      this.WindowHash.create({value$: this.memento.value$});
+      var windowHash = this.WindowHash.create();
+      this.memento.value = windowHash.value;
+
+      this.onDetach(windowHash.value$.sub(function() {
+        if ( windowHash.feedback_ )
+          return;
+        self.memento.value = windowHash.value;
+      }));
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
         self.memento.value = self.memento.combine();
+        windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
 
         if ( ! self.memento.feedback_ )
           self.mementoChange();
@@ -355,8 +377,10 @@ foam.CLASS({
       this.onDetach(this.memento.value$.sub(function () {
         self.memento.parseValue();
 
-        if ( ! self.memento.feedback_ )
+        if ( ! self.memento.feedback_ ) {
           self.mementoChange();
+          windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
+        }
       }));
       // End Memento Support
 
@@ -364,10 +388,21 @@ foam.CLASS({
         self.setPrivate_('__subContext__', client.__subContext__);
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage;
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
         await client.translationService.initLatch;
         self.installLanguage();
+
+        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
+        if ( self.memento.value ) {
+          var menu = await self.__subContext__.menuDAO.find(self.memento.value);
+          if ( menu ) {
+            self.pushMenu(menu);
+            await self.maybeReinstallLanguage(client);
+            self.languageInstalled.resolve();
+            return;
+          }
+        }
 
         await self.fetchSubject();
 
@@ -399,6 +434,17 @@ foam.CLASS({
         self.onUserAgentAndGroupLoaded();
         self.mementoChange();
       });
+
+      // Reload styling on theme change
+      this.onDetach(this.sub('themeChange', () => {
+        for ( const eid in this.styles ) {
+          const text = this.returnExpandedCSS(this.styles[eid]);
+          const el = this.getElementById(eid);
+          if ( text !== el.textContent ) {
+            el.textContent = text;
+          }
+        }
+      }));
     },
 
     function initE() {
@@ -434,7 +480,7 @@ foam.CLASS({
             .start()
               .addClass('stack-wrapper')
               .tag({
-                class: 'foam.u2.stack.StackView',
+                class: 'foam.u2.stack.DesktopStackView',
                 data: this.stack,
                 showActions: false
               })
@@ -458,7 +504,7 @@ foam.CLASS({
       var map = this.__subContext__.translationService.localeEntries;
       for ( var key in map ) {
         try {
-          var node = global;
+          var node = globalThis;
           var path = key.split('.');
 
           for ( var i = 0 ; node && i < path.length-1 ; i++ ) node = node[path[i]];
@@ -556,24 +602,25 @@ foam.CLASS({
       /** CSS preprocessor, works on classes instantiated in subContext. */
       if ( text ) {
         var eid = foam.u2.Element.NEXT_ID();
+        this.styles[eid] = text;
 
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          let m     = this.MACROS[i];
-          var text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-
-            // If the macro was found, then listen for changes to the property
-            // and update the CSS if it changes.
-            if ( text != text2 ) {
-              text = text2;
-              this.onDetach(this.theme$.dot(m).sub(() => {
-                var el = this.getElementById(eid);
-                el.innerText = this.expandLongFormMacro(el.innerText, m);
-              }));
-            }
+          const m = this.MACROS[i];
+          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
         }
 
         this.installCSS(text, id, eid);
       }
+    },
+
+    function returnExpandedCSS(text) {
+      var text2 = text;
+      for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
+        let m = this.MACROS[i];
+        text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+        text = text2;
+      }
+      return text;
     },
 
     function pushMenu(menu, opt_forceReload) {
@@ -608,15 +655,16 @@ foam.CLASS({
       });
     },
 
-    function notify(toastMessage, toastSubMessage, severity, transient) {
+    function notify(toastMessage, toastSubMessage, severity, transient, icon) {
       var notification = this.Notification.create();
       notification.userId = this.subject && this.subject.realUser ?
         this.subject.realUser.id : this.user.id;
-      notification.toastMessage = toastMessage;
+      notification.toastMessage    = toastMessage;
       notification.toastSubMessage = toastSubMessage;
-      notification.toastState = this.ToastState.REQUESTED;
-      notification.severity = severity;
-      notification.transient = transient;
+      notification.toastState      = this.ToastState.REQUESTED;
+      notification.severity        = severity || this.LogLevel.INFO;
+      notification.transient       = transient;
+      notification.icon            = icon;
       this.__subContext__.notificationDAO.put(notification);
     }
   ],
@@ -651,7 +699,8 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({
             message: obj.toastMessage,
             type: obj.severity,
-            description: obj.toastSubMessage
+            description: obj.toastSubMessage,
+            icon: obj.icon
           }));
           var clonedNotification = obj.clone();
           clonedNotification.toastState = this.ToastState.DISPLAYED;
@@ -697,13 +746,14 @@ foam.CLASS({
       var lastTheme = this.theme;
       try {
         this.theme = await this.Themes.create().findTheme(this);
+        this.appConfig.copyFrom(this.theme.appConfig)
       } catch (err) {
         this.notify(this.LOOK_AND_FEEL_NOT_FOUND, '', this.LogLevel.ERROR, true);
         console.error(err);
         return;
       }
 
-      if ( ! lastTheme || lastTheme.id != this.theme.id ) this.useCustomElements();
+      if ( ! lastTheme || ! lastTheme.equals(this.theme) ) this.useCustomElements();
     },
 
     function useCustomElements() {
@@ -726,7 +776,7 @@ foam.CLASS({
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
-          .find(o => o.minWidth <= window.innerWidth);
+          .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
       }
     }
   ]

@@ -48,6 +48,17 @@ foam.CLASS({
     this(name, true);
   }
 
+  public Alarm(String name, String note) {
+    setName(name);
+    setNote(note);
+  }
+
+  public Alarm(String name, String note, foam.log.LogLevel severity) {
+    setName(name);
+    setNote(note);
+    setSeverity(severity);
+  }
+
   public Alarm(String name, boolean isActive) {
     setName(name);
     setIsActive(isActive);
@@ -56,6 +67,13 @@ foam.CLASS({
   public Alarm(String name, AlarmReason reason) {
     setName(name);
     setIsActive(true);
+    setReason(reason);
+  }
+
+  public Alarm(String name, foam.log.LogLevel severity, AlarmReason reason) {
+    setName(name);
+    setIsActive(true);
+    setSeverity(severity);
     setReason(reason);
   }
           `
@@ -134,6 +152,7 @@ foam.CLASS({
     {
       name: 'stop',
       label: 'Stop Alarm',
+      availablePermissions: ['foam.nanos.alarming.Alarm.rw.stop'],
       code: function() {
         let self = this;
         this.note = '';
@@ -155,6 +174,7 @@ foam.CLASS({
     {
       name: 'start',
       label: 'Start Alarm',
+      availablePermissions: ['foam.nanos.alarming.Alarm.rw.start'],
       code: function() {
         this.isActive = true;
         this.reason = this.AlarmReason.MANUAL;

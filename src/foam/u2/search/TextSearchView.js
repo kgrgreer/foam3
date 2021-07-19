@@ -19,14 +19,7 @@ foam.CLASS({
   package: 'foam.u2.search',
   name: 'TextSearchView',
   extends: 'foam.u2.View',
-
-  imports: [
-    'memento'
-  ],
-
-  exports: [
-    'currentMemento_'
-  ],
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.parse.QueryParser',
@@ -38,7 +31,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'LABEL_SEARCH',    message: 'Search' }
+    { name: 'LABEL_SEARCH', message: 'Search' }
   ],
 
   properties: [
@@ -82,7 +75,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'viewSpec',
-      value: { class: 'foam.u2.tag.Input' }
+      value: { class: 'foam.u2.SearchField' }
     },
     {
       name: 'view'
@@ -102,14 +95,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
-    },
-    'currentMemento_'
+    }
   ],
 
   methods: [
     function initE() {
-      if ( this.memento )
-        this.currentMemento_$ = this.memento.tail$;
+      this.initMemento();
       this
         .addClass(this.myClass())
         .tag(this.viewSpec, {

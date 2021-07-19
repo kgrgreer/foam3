@@ -53,10 +53,10 @@ foam.CLASS({
   css: `
     ^ {
       position: relative;
-      height: auto;
       background-color: /*%GREY5%*/ #f5f7fa;
-      max-height: 85vh;
       height: 100%;
+      max-height: 85vh;
+      max-width: 85vw;
     }
     ^fullscreen {
       display: flex;
@@ -67,7 +67,8 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw;
-      max-height: 100vh !important;
+      max-height: 100vh;
+      max-width: 100vw;
       z-index: 950;
       margin: 0;
       padding: 0;
@@ -84,7 +85,6 @@ foam.CLASS({
     ^hide-X-status {
       background-color: %WHITE%;
       padding: 50px;
-      padding-top: 75px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -191,6 +191,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var btn = { size: 'LARGE' };
+      var primaryBtn = { ...btn, buttonStyle: 'PRIMARY' };
       var self = this;
 
       this
@@ -247,8 +248,8 @@ foam.CLASS({
                   .tag(this.GO_PREV, btn)
                   .tag(this.GO_NEXT,
                     data$isLastScreen
-                      ? { ...btn, label: this.ACTION_LABEL }
-                      : btn
+                      ? { ...primaryBtn, label: this.ACTION_LABEL }
+                      : primaryBtn
                   )
                   .endContext();
               }))
@@ -290,7 +291,9 @@ foam.CLASS({
       isAvailable: function () {
         return this.showDiscardOption;
       },
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(x) {
         this.onClose(x, false);
       }

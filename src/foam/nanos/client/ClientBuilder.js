@@ -50,6 +50,7 @@ foam.CLASS({
     {
       name: 'promise',
       factory: function() {
+        /* ignoreWarning */
         var self = this;
         return new Promise(function(resolve) {
           // TODO: Instead of generating a model, generate and return a context.
@@ -99,7 +100,8 @@ foam.CLASS({
               .select({
                 put: function(spec) {
                   if ( spec.client ) {
-                    client.exports.push(spec.name);
+                    var serviceName = spec.name.substring(spec.name.lastIndexOf('.') + 1);
+                    client.exports.push(serviceName);
 
                     var json = JSON.parse(spec.client);
 
