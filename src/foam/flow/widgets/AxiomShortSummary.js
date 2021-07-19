@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.flow.widgets',
   name: 'AxiomShortSummary',
   extends: 'foam.u2.Element',
+
   documentation: `
     Brief summary of axioms for overview documentation.
   `,
@@ -39,9 +40,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var getAxioms = `get${ this.ownAxioms ? 'Own' : '' }AxiomsByClass`;
       var axs = this.of[getAxioms](this.axiomClass);
+
       if ( this.whitelist.length > 0 ) {
         axs = axs.filter(ax => this.whitelist.includes(ax.name));
       }
@@ -51,19 +53,19 @@ foam.CLASS({
         .start('table')
           .start('tr')
             .start('th').add('Name').end()
-            .callOn(self, 'generateAxiomClassHeadings')
+            .call(self.generateAxiomClassHeadings.bind(self))
             .start('th').add('Documentation').end()
           .end()
           .forEach(axs, function (ax) {
             this
               .start('tr')
                 .start('td').add(ax.name).end()
-                .callOn(self, 'generateAxiomClassFields', [ax])
+                .call(self.generateAxiomClassFields.bind(self, ax))
                 .start('td')
                   .addClass(self.myClass('preformatted'))
                   .add(ax.documentation)
                 .end()
-              .end()
+              .end();
           })
         .end()
         ;

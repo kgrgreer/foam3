@@ -34,7 +34,7 @@
     { name: 'NO_COLUMN_MATCHES_MSG', message: 'It looks like data you\'re trying to import do not match out records. Please make sure that google sheet you\'re trying to import and data on the current page match' }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 

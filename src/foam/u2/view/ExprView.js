@@ -25,7 +25,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.tag(this.ChoiceView, {
         choices$: this.of$.map(function(of) {
           return of.getAxiomsByClass(foam.core.Property).map(function(prop) {

@@ -26,8 +26,8 @@ foam.CLASS({
   documentation: 'A stylized border. Intended for use when creating cards.',
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
+    function render() {
+      this.addClass();
     }
   ]
 });

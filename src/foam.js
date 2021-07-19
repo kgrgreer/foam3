@@ -76,13 +76,15 @@
 
     files.
       filter(f => {
-        // If flags is defined, at least one flag must be true to load the file
+        // If flags are defined, don't load unless all are true
         if ( f.flags ) {
           for ( var i = 0 ; i < f.flags.length ; i++ ) {
-            if ( foam.flags[f.flags[i]] ) return true;
+            if ( ! foam.flags[f.flags[i]] ) {
+              // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
+              return false;
+            }
           }
-          console.log('Not loading', f);
-          return false;
+          return true;
         }
         return true;
       }).

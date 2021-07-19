@@ -67,7 +67,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( this.memento ) {

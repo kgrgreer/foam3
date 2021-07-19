@@ -37,12 +37,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var x = this.__subContext__.createSubContext({
         controllerMode: this.ControllerMode.VIEW
       });
        
-      this.addClass(this.myClass())
+      this.addClass()
         .startContext({ data: this })
           .tag(this.BACK, {
             buttonStyle: foam.u2.ButtonStyle.LINK,

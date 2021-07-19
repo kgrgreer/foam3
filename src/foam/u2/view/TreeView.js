@@ -143,7 +143,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       var controlledSearchSlot = foam.core.SimpleSlot.create();
@@ -415,7 +415,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.startExpanded = this.startExpanded;
 
       var M   = this.ExpressionsSingleton.create();
@@ -425,7 +425,7 @@ foam.CLASS({
       var self = this;
       var isFirstSet = false;
 
-      this.addClass(this.myClass()).
+      this.addClass().
         select(dao, function(obj) {
           if ( ! isFirstSet && ! self.selection ) {
             self.selection = obj;

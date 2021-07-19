@@ -47,7 +47,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this
         .add(this.slot(function (ucj) {
           if ( ! ucj ) return this.E();

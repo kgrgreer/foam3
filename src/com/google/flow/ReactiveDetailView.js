@@ -146,14 +146,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var prop = this.prop;
       var self = this;
 
       this.data$.sub(this.onDataChange);
       this.onDataChange();
 
-      this.addClass(this.myClass()).
+      this.addClass().
           start('td').addClass(this.myClass('label')).add(prop.label).end().
           start('td').
             addClass(this.myClass('switch')).

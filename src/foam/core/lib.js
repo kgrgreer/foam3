@@ -19,6 +19,7 @@
  * Top-Level of foam package
  */
 foam = {
+  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   language: typeof navigator === 'undefined' ? 'en' : navigator.language,
@@ -51,9 +52,6 @@ foam = {
 };
 
 
-/** Setup nodejs-like 'global' on web */
-
-
 Object.defineProperty(
   Object.prototype,
   '$UID',
@@ -84,29 +82,7 @@ if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
   };
 }
 
-
-/**
- * Define an assertion function that is significantly faster and more
- * compatible than console.assert.  Also allows us to turn off assertions
- * in a production scenario.
- *
- * Usage of console.assert directly is slow, and not all platforms agree
- * on what to do with extra arguments, some ignore them, some join them
- * to the message.
- *
- * However just defining as console.assert.bind(console); gives better stack
- * traces which start on the calling line so are easier to breakpoint,
- * so maybe this isn't worth doing anymore?
- */
-foam.assert = function assert(cond) {
-  if ( ! cond ) {
-    console.assert(false, Array.from(arguments).slice(1).join(' '));
-    //console.trace();
-  }
-
-  return cond;
-};
-
+foam.assert = console.assert.bind(console);
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of

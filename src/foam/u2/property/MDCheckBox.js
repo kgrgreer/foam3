@@ -31,10 +31,10 @@ foam.CLASS({
  `,
 
    methods: [
-    function initE() {
+    function render() {
     this.SUPER();
       this.setAttribute('type', 'checkbox');
-      this.addClass(this.myClass())
+      this.addClass()
         .on('click', function() {
            if ( this.getAttribute('disabled') ) return;
            this.data = ! this.data;

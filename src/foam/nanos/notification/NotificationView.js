@@ -107,8 +107,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass()).add(this.notificationsE());
+    function render() {
+      this.addClass().add(this.notificationsE());
     },
 
     function notificationsE() {

@@ -112,14 +112,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       if ( this.selected == this.index ) {
         this.style({
           "border-color": "/*%PRIMARY1%*/ #604aff"
         })
       }
-      this.addClass(this.myClass())
+      this.addClass()
         .start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end()
         .start('p').addClass(this.myClass('name'))
           .add(this.data.filename)

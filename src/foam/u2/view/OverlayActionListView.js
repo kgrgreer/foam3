@@ -109,12 +109,16 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      var dataSlots = this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj));
-      if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) {
-        this.shown = false; return;
-      }
+    async function render() {
       this.SUPER();
+
+      this.shown = false;
+      for ( let action of this.data ) {
+        if ( await this.isAvailable(action) ) {
+          this.shown = true;
+          break;
+        }
+      }
     },
 
     function addContent() {
@@ -143,19 +147,20 @@ foam.CLASS({
         self.overlay_.close();
       });
 
+      // a list where element at i stores whether ith action in data is available or not
+      const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
       this.overlay_.startContext({ data: self.obj })
-        .forEach(self.data, function(action) {
-          if ( action.createIsAvailable$(self.__context__, self.obj).value ) {
+        .forEach(self.data, function(action, index) {
+          if ( availabilities[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .addClass(action.createIsEnabled$(self.__context__, self.obj).map( e => ! e && self.myClass('disabled')))
                 .tag(action, { buttonStyle: 'UNSTYLED' })
-                .attrs({
-                  disabled: action.createIsEnabled$(self.__context__, self.obj).map(function(e) {
-                    return ! e;
-                  }),
-                  tabindex: -1
+                .attrs({ tabindex: -1 })
+                .callIf(! action.createIsEnabled$(self.__context__, self.obj).get(), function() {
+                  this
+                    .addClass(self.myClass('disabled'))
+                    .attrs({ disabled: true })
                 })
               .end();
           }
@@ -174,6 +179,15 @@ foam.CLASS({
       // with `overflow: hidden` then this overlay won't be cut off.
       this.ctrl.add(this.overlay_);
       this.overlayInitialized_ = true;
+    },
+
+    async function isAvailable(action) {
+      /*
+        checks if action is available
+      */
+      const slot = action.createIsAvailable$(this.__context__, this.obj);
+      if ( slot.get() ) return true;
+      return slot.promise || false;
     }
   ],
 

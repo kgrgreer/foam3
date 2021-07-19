@@ -108,7 +108,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var style = this.Style.create();
       style.addBinds(this);
       var mainCapability = this.functionData ?
@@ -117,7 +117,7 @@ foam.CLASS({
             capability.id == this.capabilityId
         ) :
         undefined;
-      this.addClass(this.myClass()).addClass('start')
+      this.addClass().addClass('start')
         // center icon image
         .start().callIf(mainCapability, function() {
           return this.addClass('circle-center')

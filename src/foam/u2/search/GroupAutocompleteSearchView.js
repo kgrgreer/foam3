@@ -126,7 +126,7 @@ foam.CLASS({
       this.view.data = '';
     },
 
-    function initE() {
+    function render() {
       this.view = this.start(this.viewSpec, {
         prop: this.property,
         label$: this.label$,

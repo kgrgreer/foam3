@@ -13,7 +13,9 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE to render()
+  - rename render to render()
+  - when setting nodeName value, set to lower-case
+    ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
@@ -24,13 +26,15 @@ PORTING U2 to U3:
   - innerHTML and outerHTML have been removed
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
-  - this.addClass() is the same as this.addClass(this.myClass())
+  - this.addClass() is the same as this.addClass()
   - automatic ID generation has been removed
   - replace use of slots that return elements with functions that add them
   - remove daoSlot() method
   -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
   - remove cssClass() (use addClass() instead
   -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - callOn removed
+  - remove entity() support
   - remove addBefore()
   - remove insertAt_()
   - remove insertBefore()
@@ -38,12 +42,14 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
+  - NEXT_ID() removed. Use new Object().$UID instead.
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - Is it faster if we don't add child to parent until we call end()?
   - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()
   - ??? replace replaceChild() with replace() on Node
@@ -51,7 +57,7 @@ becomes:
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
-  - remove callOn
+  - could we get rid of subSubContext be updating subContext?
 */
 
 foam.ENUM({
@@ -136,51 +142,6 @@ foam.CLASS({
 
     function isLiteral(o) {
       return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'Entity',
-  extends: 'foam.u2.Node',
-
-  documentation: 'U3 Entity Reference',
-
-  constants: {
-    MAP: {
-      lt: '<',
-      gt: '>',
-      amp: '&',
-      nbsp: '\xa0',
-      quot: '"'
-    }
-  },
-
-  properties: [
-    {
-      name: 'name',
-      documentation: `
-        // parser: seq(alphaChar, repeat0(wordChar)),
-        // TODO(adamvy): This should be 'pattern' or 'regex', if those are ever
-        // added.
-      `,
-      assertValue: function(nu) {
-        if ( ! nu.match(/^[a-z#]\w*$/i) ) {
-          throw new Error('Invalid Entity name: ' + nu);
-        }
-      }
-    },
-    {
-      name: 'element_',
-      factory: function() {
-        var char = this.MAP[this.name];
-        if ( char ) return this.document.createTextNode(char);
-        if ( this.name.startsWith('#x') ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(2), 16)));
-        if ( this.name.startsWith('#')  ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(1))));
-        return this.document.createTextNode('&' + this.name + ';');
-      }
     }
   ]
 });
@@ -326,7 +287,7 @@ foam.CLASS({
   methods: [
     function load() {
       this.SUPER();
-      this.onDetach(dao.listen(this));
+      this.onDetach(this.dao.listen(this));
 
       this.update();
     },
@@ -369,7 +330,12 @@ foam.CLASS({
           this.self.appendChild_ = c => {
             this.self.element_.insertBefore(c, this.element_);
           };
-          this.code.call(this.self, d);
+          var e = this.code.call(this.self, d);
+          if ( e ) {
+            // TODO: remove after port from U2 to U3
+            console.log('Deprecated use of select({return E}). Just do self.start() instead.');
+            this.self.tag(e);
+          }
           this.self.appendChild_ = foam.u2.Element.prototype.appendChild_;
 
           var newSize = this.self.childNodes.length;
@@ -429,9 +395,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate  = cls.create;
-      var axiom      = this;
-      var isFirstCSS = ! cls.private_.hasCSS;
+      var oldCreate   = cls.create;
+      var axiom       = this;
+      var isFirstCSS  = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -440,30 +406,32 @@ foam.CLASS({
           ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
           foam.__context__;
 
-        // if a class has inheritCSS: false then finish installing its other
-        // CSS axioms, but prevent any parent classes from installing theirs
-        // We put this in the context to communicate to other CSSAxioms
-        // down the chain. The last/first one will revert back to the original
-        // X so that objects aren't created with lastClassToInstallCSSFor
-        // in their contexts.
-        var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-        if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-          // Install CSS if not already installed in this document for this cls
-          axiom.maybeInstallInDocument(X, this);
-        }
-
-        if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-          X = X.createSubContext({
-            lastClassToInstallCSSFor: this,
-            originalX: X
-          });
-        }
-
-        if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-
         // Now call through to the original create
-        return oldCreate.call(this, args, X);
+        try {
+          return oldCreate.call(this, args, X);
+        } finally {
+          // if a class has inheritCSS: false then finish installing its other
+          // CSS axioms, but prevent any parent classes from installing theirs
+          // We put this in the context to communicate to other CSSAxioms
+          // down the chain. The last/first one will revert back to the original
+          // X so that objects aren't created with lastClassToInstallCSSFor
+          // in their contexts.
+          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
+
+          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
+            // Install CSS if not already installed in this document for this cls
+            axiom.maybeInstallInDocument(X, this);
+          }
+
+          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
+            X = X.createSubContext({
+              lastClassToInstallCSSFor: this,
+              originalX: X
+            });
+          }
+
+          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
+        }
       };
     },
 
@@ -532,6 +500,8 @@ foam.CLASS({
   name: 'Element',
   extends: 'foam.u2.Node',
 
+  mixins: [ 'foam.core.Fluent' ],
+
   documentation: `
     DOM API Element. Root model for all U3 UI components.
 
@@ -562,14 +532,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'elementValidator',
+    //'elementValidator',
     'framed',
     'getElementById',
     'translationService?'
-  ],
-
-  exports: [
-    'isSVG_ as isSVG'
   ],
 
   implements: [
@@ -617,6 +583,11 @@ foam.CLASS({
         '39': 'right',
         '40': 'down'
       }
+    },
+    // ???: alternatively, there could be a sub-class of Element called SVGElement
+    {
+      name: 'SVG_TAGS',
+      value: { svg: true, g: true, rect: true, path: true }
     }
   ],
 
@@ -631,7 +602,7 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        return this.isSVG_ ?
+        return this.SVG_TAGS[this.nodeName] ?
           this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
           this.document.createElement(this.nodeName);
       }
@@ -683,6 +654,7 @@ foam.CLASS({
         }
       }
     },
+    /*
     {
       class: 'Proxy',
       of: 'foam.u2.DefaultValidator',
@@ -693,16 +665,11 @@ foam.CLASS({
         return this.elementValidator$ ? this.elementValidator : this.DEFAULT_VALIDATOR;
       }
     },
+    */
     {
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
       value: 'div'
-    },
-    {
-      name: 'isSVG_',
-      factory: function() {
-        return this.nodeName === 'svg' || this.__context__.isSVG;
-      }
     },
     {
       name: 'attributeMap',
@@ -778,11 +745,20 @@ foam.CLASS({
         Defaults to __subContext__ unless in a nested startContext().`,
       factory: function() { return this.__subContext__; }
     },
-    'keyMap_'
+    'keyMap_',
+    {
+      // TODO: remove after port from U2 to U3
+      name: 'onload',
+      factory: function() {
+        return { sub: function(f) {
+          console.warn('Deprecated us of ELement.onload.sub().');
+          window.setTimeout(f, 16);
+        } };
+      }
+    }
   ],
 
   methods: [
-
     // from state
 
     // TODO: remove
@@ -790,15 +766,15 @@ foam.CLASS({
       return Promise.resolve(this.el_());
     },
 
+    function slotE_(slot) {
+      return foam.u2.SlotNode.create({slot: slot}, this);
+    },
+
     function load() {
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      if ( this.initE != foam.u2.Element.prototype.initE ) {
-        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
-        this.initE();
-      }
       this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
@@ -829,17 +805,7 @@ foam.CLASS({
       return this.element_.getBoundingClientRect();
     },
 
-
-    function init() {
-      // TODO: better if children just do this themselves
-      this.onDetach(this.visitChildren.bind(this, 'detach'));
-    },
-
     function render() {
-    },
-
-    function initE() {
-      // TODO: remove
     },
 
     async function observeScrollHeight() {
@@ -906,6 +872,8 @@ foam.CLASS({
         if ( count == 0 ) keyMap = null;
 
         cls.keyMap__ = keyMap;
+      } else {
+        keyMap = cls.keyMap__;
       }
 
       if ( ! keyMap ) return null;
@@ -1055,7 +1023,7 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip ) {
+      if ( name === 'title' && ! this.tooltip && value ) {
         this.Tooltip.create({target: this, text$: this.attrSlot('title')});
       }
 
@@ -1165,12 +1133,9 @@ foam.CLASS({
 
     function appendChild_(c) {
       this.element_.appendChild(c);
-//      debugger;
-//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
-      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -1221,22 +1186,10 @@ foam.CLASS({
       }
     },
 
-    function setNodeName(name) {
-      console.warn('Deprecated use of setNodeName. Set the nodeName property instead. CLASS: ', this.cls_.name);
-      this.nodeName = name;
-      return this;
-    },
-
     function setID(id) {
       /* Explicitly set Element's id. */
       this.id = id;
       this.element_.id = id;
-      return this;
-    },
-
-    function entity(name) {
-      /* Create and add a named entity. Ex. .entity('gt') */
-      this.addChild_(this.Entity.create({name: name}));
       return this;
     },
 
@@ -1374,17 +1327,13 @@ foam.CLASS({
     function start(spec, args, slot) {
       /* Create a new Element and add it as a child. Return the child. */
       var c = this.createChild_(spec, args);
-      this.add(c);
-
-/*
+      /*
       if ( this.content ) {
-        this.add(c);
+        this.content.addChild_(c, this);
       } else {
-        c.parentNode = this;
-        this.childNodes.push(c);
-        this.onAddChildren(c);
-      }
-      */
+        this.addChild_(c, this);
+      }*/
+      this.add(c);
 
       if ( slot ) slot.set(c);
       return c;
@@ -1456,7 +1405,7 @@ foam.CLASS({
     function add_(cs, parentNode) {
       /* Add Children to this Element. */
 //      var es = [];
-      var Y = this.__subSubContext__;
+//      var Y = this.__subSubContext__;
 
       for ( var i = 0 ; i < cs.length ; i++ ) {
         this.addChild_(cs[i], parentNode);
@@ -1542,21 +1491,6 @@ foam.CLASS({
     },
 
     /**
-     * Call the given function on each element in the array. In the function,
-     * `this` will refer to the element.
-     * @param {Array} array An array to loop over.
-     * @param {Function} fn A function to call for each item in the given array.
-     */
-    function forEach(array, fn) {
-      if ( foam.core.Slot.isInstance(array) ) {
-        this.add(array.map(a => this.E().forEach(a, fn)));
-      } else {
-        array.forEach(fn.bind(this));
-      }
-      return this;
-    },
-
-    /**
      * Given a DAO and a function that maps from a record in that DAO to an
      * Element, call the function with each record as an argument and add the
      * returned elements to the view.
@@ -1573,31 +1507,6 @@ foam.CLASS({
         dao: dao,
         code: f
       }));
-      return this;
-    },
-
-    function call(f, args) {
-      f.apply(this, args);
-
-      return this;
-    },
-
-    function callOn(obj, f, args) {
-      // TODO: remove
-      /** Call the method named f on obj with the supplied args. **/
-      obj[f].apply(obj, [this].concat(args));
-      return this;
-    },
-
-    function callIf(bool, f, args) {
-      if ( bool ) f.apply(this, args);
-
-      return this;
-    },
-
-    function callIfElse(bool, iff, elsef, args) {
-      (bool ? iff : elsef).apply(this, args);
-
       return this;
     },
 
@@ -1650,7 +1559,7 @@ foam.CLASS({
       if ( oldClass ) this.removeClass(oldClass);
       if ( newClass ) {
         if ( ! this.CSS_CLASSNAME_PATTERN.test(newClass) ) {
-          console.log('!!!!!!!!!!!!!!!!!!! Invalid CSS ClassName: ', newClass);
+          console.log('Invalid CSS ClassName: ', newClass);
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
@@ -2419,7 +2328,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -2536,6 +2445,43 @@ foam.CLASS({
       name: 'searchColumns',
       postSet: function(_, cs) {
         this.axioms_.push(foam.u2.SearchColumns.create({columns: cs}));
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLView',
+  extends: 'foam.u2.Element',
+
+  documentation: 'View for safely displaying HTML content.',
+
+  css: '^ { padding: 6px 0; }',
+
+  properties: [
+    {
+      name: 'data',
+      attribute: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.addClass();
+      this.update();
+      this.onDetach(this.data$.sub(this.update));
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        // TODO: add validation
+        this.element_.innerHTML = this.data;
       }
     }
   ]

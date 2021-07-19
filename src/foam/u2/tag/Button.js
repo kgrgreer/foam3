@@ -31,6 +31,7 @@ foam.CLASS({
       display: inline-flex;
       gap: 8px;
       justify-content: center;
+      margin: 0;
       outline: none;
       text-align: center;
     }
@@ -64,7 +65,7 @@ foam.CLASS({
     ^.material-icons {
       cursor: pointer;
     }
-    
+
     ^ > .foam-u2-HTMLView{
       padding: 0;
     }
@@ -128,7 +129,7 @@ foam.CLASS({
       color: /*%GREY1%*/ #494F59;
     }
 
-    ^secondary svg { fill: /*%GREY1%*/ #494F59; } 
+    ^secondary svg { fill: /*%GREY1%*/ #494F59; }
 
     ^secondary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #B2B6BD;
@@ -176,7 +177,7 @@ foam.CLASS({
 
     /* Tertiary */
 
-    ^tertiary{ 
+    ^tertiary{
       background: none;
       border: 1px solid transparent;
       color: /*%GREY1%*/ #5E6061;
@@ -205,7 +206,7 @@ foam.CLASS({
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE3%*/ #D9170E;   
+      color: /*%DESTRUCTIVE3%*/ #D9170E;
     }
 
     ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
@@ -344,7 +345,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.initCls();
@@ -365,7 +366,7 @@ foam.CLASS({
     },
 
     function initCls() {
-      this.addClass(this.myClass());
+      this.addClass();
     },
 
     async function addContent() {
@@ -373,7 +374,7 @@ foam.CLASS({
       var self = this;
       var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
       var iconStyle = { 'max-width': size, 'object-fit': 'contain' };
-      
+
       if ( this.themeIcon && this.theme ) {
         var indicator = this.themeIcon.clone(this).expandSVG();
         this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).style(iconStyle).end();
@@ -393,8 +394,8 @@ foam.CLASS({
         }
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
-        this.cssClass(this.action.name);
-        this.cssClass(this.iconFontClass); // required by font package
+        this.addClass(this.action.name);
+        this.addClass(this.iconFontClass); // required by font package
         this.style(iconStyle);
         this.attr(role, 'presentation')
         this.style({ 'font-family': this.iconFontFamily });

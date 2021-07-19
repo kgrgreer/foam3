@@ -29,20 +29,18 @@ foam.CLASS({
       name: 'curPos',
       value: 0
     },
-    'curView',
-
+    'curView'
   ],
 
   css: '%CUSTOMCSS%',
 
   methods: [
-    // TODO: Why is this init() instead of initE()? Investigate and maybe fix.
+    // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
     this.curView$.sub(this.onViewUpdate);
 
     var self = this;
-      this.setNodeName('div');
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.start('div').addClass('primary-stack')
         .add(this.slot(function(data) {

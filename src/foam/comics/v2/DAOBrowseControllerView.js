@@ -155,13 +155,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
     this.SUPER();
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     var nav = this.showNav ? self.BreadcrumbView : '';
-    this.addClass(this.myClass())
+    this.addClass()
 
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
         return self.E()
@@ -228,9 +228,8 @@ foam.CLASS({
                     .end();
                 })
                 .call(function(){
-                  var e = this;
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { config$: e.__subContext__.config$ });
+                    return self.E().tag(browseView, self.__subContext__);
                   }))
                 })
               .end()

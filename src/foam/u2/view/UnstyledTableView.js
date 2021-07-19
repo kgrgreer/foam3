@@ -305,7 +305,7 @@ foam.CLASS({
       this.isColumnChanged = ! this.isColumnChanged;
     },
 
-    async function initE() {
+    async function render() {
       var view = this;
 
       const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
@@ -676,9 +676,12 @@ foam.CLASS({
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
                     var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
-                    callOn(prop.tableCellFormatter, 'format', [
-                      prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
-                    ]);
+                    call(function() { prop.tableCellFormatter.format(
+                      this,
+                      prop.f ? prop.f(objForCurrentProperty) : null,
+                      objForCurrentProperty,
+                      prop
+                    )});
                     tableRowElement.add(elmt);
                   }
 
@@ -732,10 +735,10 @@ foam.CLASS({
       },
       async function filterUnpermitted(arr) {
         if ( this.auth ) {
-          const results = await Promise.all(arr.map( async p => 
-            p.hidden ? false : 
-            ! p.columnPermissionRequired || 
-            await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+          const results = await Promise.all(arr.map( async p =>
+            p.hidden ? false :
+            ! p.columnPermissionRequired ||
+            await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
           return arr.filter((_v, index) => results[index]);
         }
         return arr;
@@ -776,7 +779,7 @@ foam.CLASS({
             if ( axiom && axiom.columnPermissionRequired ) {
               var clsName  = self.of.name.toLowerCase();
               var propName = axiom.name.toLowerCase();
-              return auth.check(null, `${clsName}.column.${propName}`).then(function(enabled) {
+              return auth.check(ctrl.__subContext__, `${clsName}.column.${propName}`).then(function(enabled) {
                 return enabled && c;
               });
             }

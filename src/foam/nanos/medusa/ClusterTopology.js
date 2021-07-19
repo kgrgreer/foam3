@@ -25,8 +25,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass())
+    function render() {
+      this.addClass()
         .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
         .start()
         .add(this.ClusterTopologyView.create())

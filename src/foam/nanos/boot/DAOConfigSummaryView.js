@@ -113,7 +113,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           if ( this.memento )
@@ -213,7 +213,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var self          = this;
@@ -223,7 +223,7 @@ foam.CLASS({
       if ( self.memento )
         this.currentMemento_$ = self.memento.tail$;
 
-      this.addClass(this.myClass()).
+      this.addClass().
       start().
         style({ 'height': '56px'}).
         start().

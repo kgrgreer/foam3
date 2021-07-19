@@ -369,13 +369,11 @@ foam.CLASS({
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls  = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
@@ -406,13 +404,11 @@ foam.CLASS({
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls  = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
@@ -460,3 +456,59 @@ foam.CLASS({
     }
   ]
 });
+
+/*
+
+If improved entity support is needed, can use this code:
+
+function entity(name) {
+  // Create and add a named entity. Ex. .entity('gt')
+  this.addChild_(this.Entity.create({name: name}));
+  return this;
+},
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'Entity',
+  extends: 'foam.u2.Node',
+
+  documentation: 'U3 Entity Reference',
+
+  constants: {
+    MAP: {
+      lt: '<',
+      gt: '>',
+      amp: '&',
+      nbsp: '\xa0',
+      quot: '"'
+    }
+  },
+
+  properties: [
+    {
+      name: 'name',
+      documentation: `
+        // parser: seq(alphaChar, repeat0(wordChar)),
+        // TODO(adamvy): This should be 'pattern' or 'regex', if those are ever
+        // added.
+      `,
+      assertValue: function(nu) {
+        if ( ! nu.match(/^[a-z#]\w*$/i) ) {
+          throw new Error('Invalid Entity name: ' + nu);
+        }
+      }
+    },
+    {
+      name: 'element_',
+      factory: function() {
+        var char = this.MAP[this.name];
+        if ( char ) return this.document.createTextNode(char);
+        if ( this.name.startsWith('#x') ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(2), 16)));
+        if ( this.name.startsWith('#')  ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(1))));
+        return this.document.createTextNode('&' + this.name + ';');
+      }
+    }
+  ]
+});
+*/

@@ -55,7 +55,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       //this.SUPER();
       this.description = this.data.body;
       if ( this.description !== '' && this.description.length > 70 ) {
