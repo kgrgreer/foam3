@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   constants: [
-    { name: 'BCRMB_ID', value: 'bcrmb' },
+    { name: 'BCRMB_ID', value: 'b' },
   ],
 
   properties: [
