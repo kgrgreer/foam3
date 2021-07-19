@@ -328,13 +328,17 @@ public interface FObject
     for ( PropertyInfo p : props ) {
       Object remote = null;
       try {
-        remote = p.get(obj);
+        if ( p.isSet(obj) ) {
+          remote = p.get(obj);
+        }
       } catch ( ClassCastException e ) {
         PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
           try {
-            remote = p.get(obj);
+            if ( p.isSet(obj) ) {
+              remote = p.get(obj);
+            }
           } catch ( ClassCastException ee ) {
             System.err.println("FObject.overlay "+p.getName()+" get "+ee);
           }
