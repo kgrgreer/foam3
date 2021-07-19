@@ -227,10 +227,10 @@ foam.CLASS({
                       .addClass(self.myClass('altview-container'))
                     .end();
                 })
-                .call(function(){
+                .call(function() {
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, self.__subContext__);
-                  }))
+                    return self.E().tag(browseView, { data: data, config: config });
+                  }));
                 })
               .end()
             .end()
