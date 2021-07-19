@@ -7,10 +7,14 @@
 foam.CLASS({
   package: 'foam.nanos.fs',
   name: 'FileLabel',
-  ids:['name'],
   documentation: 'Contextual label applied to a file instance',
+  imports: [ 'translationService' ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'id',
+    },
     {
       class: 'String',
       name: 'name'
@@ -18,7 +22,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function toSummary() { return this.name; }
+    function toSummary() {
+      return this.id;
+    }
   ]
 })
 
