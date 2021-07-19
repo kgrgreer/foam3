@@ -57,6 +57,7 @@ becomes:
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
+  - could we get rid of subSubContext be updating subContext?
 */
 
 foam.ENUM({
@@ -585,7 +586,7 @@ foam.CLASS({
     },
     {
       name: 'SVG_TAGS',
-      value: { svg: true, g: true, rect: true }
+      value: { svg: true, g: true, rect: true, path: true }
     }
   ],
 
