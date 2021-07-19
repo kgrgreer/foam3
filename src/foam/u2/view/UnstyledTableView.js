@@ -780,7 +780,7 @@ foam.CLASS({
               var clsName  = self.of.name.toLowerCase();
               var propName = axiom.name.toLowerCase();
               return auth.check(ctrl.__subContext__, `${clsName}.column.${propName}`).then(function(enabled) {
-                return enabled && c;
+                return c;
               });
             }
           }
