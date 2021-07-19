@@ -166,12 +166,6 @@ foam.CLASS({
   .inline-block {
     display: inline-block;
   }
-  .status-text {
-    font-family: IBM Plex Sans;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    text-align: center;
-  }
+
   `
 });
