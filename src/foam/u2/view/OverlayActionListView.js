@@ -114,7 +114,7 @@ foam.CLASS({
 
       this.shown = false;
       for ( let action of this.data ) {
-        if ( await this.showAction(action) ) {
+        if ( await this.isAvailable(action) ) {
           this.shown = true;
           break;
         }
@@ -148,10 +148,10 @@ foam.CLASS({
       });
 
       // a list where element at i stores whether ith action in data is available or not
-      const isAvailable = await Promise.all(this.data.map(this.showAction.bind(this)));
+      const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
       this.overlay_.startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
-          if ( isAvailable[index] ) {
+          if ( availabilities[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
@@ -181,7 +181,7 @@ foam.CLASS({
       this.overlayInitialized_ = true;
     },
 
-    async function showAction(action) {
+    async function isAvailable(action) {
       /*
         checks if action is available
       */
