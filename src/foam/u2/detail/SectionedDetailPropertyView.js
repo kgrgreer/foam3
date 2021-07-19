@@ -111,12 +111,10 @@ foam.CLASS({
       box-sizing: border-box;
       -webkit-appearance: none;
       cursor: pointer;
-      font-size: 14px;
     }
 
     ^ .foam-u2-view-RichChoiceView .search {
       padding: 8px 16px;
-      font-size: 14px;
       border-bottom: 1px solid #f4f4f9;
     }
 
@@ -135,8 +133,7 @@ foam.CLASS({
 
     ^ .foam-u2-view-RichChoiceView-heading {
       border-bottom: 1px solid #f4f4f9;
-      line-height: 24px;
-      font-size: 14px;
+      line-height: 1.71;
       color: #333;
       font-weight: 900;
       padding: 6px 16px;
@@ -149,7 +146,7 @@ foam.CLASS({
     ^ .DefaultRowView-row {
       background: white;
       padding: 8px 16px;
-      font-size: 12px;
+      font-size: 0.86em;
       color: #424242;
     }
 
