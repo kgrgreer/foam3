@@ -113,8 +113,8 @@ foam.CLASS({
       this.SUPER();
 
       this.shown = false;
-      for (let action of this.data) {
-        if (await this.showAction(action)) {
+      for ( let action of this.data ) {
+        if ( await this.showAction(action) ) {
           this.shown = true;
           break;
         }
@@ -151,7 +151,7 @@ foam.CLASS({
       const showActions = await Promise.all(this.data.map(this.showAction.bind(this)));
       this.overlay_.startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
-          if (showActions[index]) {
+          if ( showActions[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
@@ -180,7 +180,7 @@ foam.CLASS({
 
     async function showAction(action) {
       const slot = action.createIsAvailable$(this.__context__, this.obj);
-      if (slot.get()) return true;
+      if ( slot.get() ) return true;
       return slot.promise || false;
     }
   ],
