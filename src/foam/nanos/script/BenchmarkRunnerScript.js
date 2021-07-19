@@ -67,7 +67,6 @@
         }
       ],
       javaCode: `
-//        foam.core.XLocator.set(x);
 
         // turn off logging to get rid of clutter.
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
@@ -99,7 +98,7 @@
           }
         }
 
-        System.out.println("DONE RUNNING " + benchmarkArray.size() + " Benchmarks");
+        System.out.println("DONE RUNNING " + selectedBenchmarks != null ? selectedBenchmarks.size() : benchmarkArray.size() + " Benchmarks");
         System.exit(0);
       `
     },
