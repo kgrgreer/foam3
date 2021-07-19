@@ -237,7 +237,7 @@ foam.CLASS({
             data: newRecord,
             config: this.config,
             of: this.config.of
-          }, parent: this.__subContext__ }));
+          }, parent: this }));
       }
     },
     {

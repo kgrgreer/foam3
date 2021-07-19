@@ -144,10 +144,10 @@ foam.CLASS({
               data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
-            }, parent: this.__subContext__
+            }, parent: this
           }));
         } else if ( this.config.createControllerView ) {
-          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this.__subContext__ }));
+          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this }));
         } else {
           this.stack.push(this.StackBlock.create({
             view: {
@@ -159,7 +159,7 @@ foam.CLASS({
               menu: this.config.menu,
               controllerMode: foam.u2.ControllerMode.CREATE,
               isEdit: true
-            }, parent: this.__subContext__
+            }, parent: this
           }));
         }
       }
