@@ -584,6 +584,7 @@ foam.CLASS({
         '40': 'down'
       }
     },
+    // ???: alternatively, there could be a sub-class of Element called SVGElement
     {
       name: 'SVG_TAGS',
       value: { svg: true, g: true, rect: true, path: true }
