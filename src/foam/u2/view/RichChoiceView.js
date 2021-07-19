@@ -206,6 +206,9 @@ foam.CLASS({
       border-color: /*%PRIMARY3%*/ #406dea;
     }
 
+    ^chevron {
+      width: 20%;
+    }
     ^chevron::before {
       content: '▾';
       font-size: 1.14em;
