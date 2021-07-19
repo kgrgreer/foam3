@@ -147,7 +147,7 @@ foam.CLASS({
         self.overlay_.close();
       });
 
-      // a list where element at i stores whether ith action in data is avaiable or not
+      // a list where element at i stores whether ith action in data is available or not
       const showActions = await Promise.all(this.data.map(this.showAction.bind(this)));
       this.overlay_.startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
