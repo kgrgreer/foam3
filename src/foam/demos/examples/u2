@@ -344,6 +344,11 @@ add(E().startContext({translationService: mockTranslationService}).select(dao, f
 }));
 
 ##   write()
+The Element.write() method appends to Element to the end of the document body.
+This is typically only used for debugging purposes, not in production code.
+--
+foam.u2.Element.create().start().add('Here I am, way at the bottom of the page!').end().write();
+
 ##   Tags
 ##    attributes
 ##    registerElement
