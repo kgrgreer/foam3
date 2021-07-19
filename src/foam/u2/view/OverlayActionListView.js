@@ -109,12 +109,16 @@ foam.CLASS({
   `,
 
   methods: [
-    function render() {
-      var dataSlots = this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj));
-      if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) {
-        this.shown = false; return;
-      }
+    async function render() {
       this.SUPER();
+
+      this.shown = false;
+      for (let action of this.data) {
+        if (await this.showAction(action)) {
+          this.shown = true;
+          break;
+        }
+      }
     },
 
     function addContent() {
@@ -143,18 +147,16 @@ foam.CLASS({
         self.overlay_.close();
       });
 
+      // a list where element at i stores whether ith action in data is avaiable or not
+      const showActions = await Promise.all(this.data.map(this.showAction.bind(this)));
       this.overlay_.startContext({ data: self.obj })
-        .forEach(self.data, function(action) {
-          if ( action.createIsAvailable$(self.__context__, self.obj).value ) {
+        .forEach(self.data, function(action, index) {
+          if (showActions[index]) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .addClass(action.createIsEnabled$(self.__context__, self.obj).map( e => ! e && self.myClass('disabled')))
                 .tag(action, { buttonStyle: 'UNSTYLED' })
                 .attrs({
-                  disabled: action.createIsEnabled$(self.__context__, self.obj).map(function(e) {
-                    return ! e;
-                  }),
                   tabindex: -1
                 })
               .end();
@@ -174,6 +176,12 @@ foam.CLASS({
       // with `overflow: hidden` then this overlay won't be cut off.
       this.ctrl.add(this.overlay_);
       this.overlayInitialized_ = true;
+    },
+
+    async function showAction(action) {
+      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      if (slot.get()) return true;
+      return slot.promise ? await slot.promise : false;
     }
   ],
 
