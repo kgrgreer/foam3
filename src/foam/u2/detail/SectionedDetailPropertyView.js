@@ -100,9 +100,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-RichChoiceView-chevron {
-      content: '▾';
       padding-left: 0px;
-      font-size: 16px;
       color: #8D9090;
     }
 
