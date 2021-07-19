@@ -44,7 +44,8 @@
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.CustomViewReferenceApprovable'
+    'foam.nanos.approval.CustomViewReferenceApprovable',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -960,45 +961,49 @@
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
             if ( obj.isUsingNestedJournal ) {
-              X.stack.push({
-                class: 'foam.u2.view.ViewReferenceFObjectView',
-                data: summaryData,
-                of: of
-              });
+              X.stack.push(self.StackBlock.create({
+                view: {
+                  class: 'foam.u2.view.ViewReferenceFObjectView',
+                  data: summaryData,
+                  of: of
+                } }));
               return;
             }
           } else {
             of = obj.of;
 
             // then here we created custom view to display these properties
-            X.stack.push({
-              class: 'foam.nanos.approval.PropertiesToUpdateView',
-              propObject: obj.propertiesToUpdate,
-              objId: obj.objId,
-              daoKey: obj.daoKey,
-              of: of,
-              title: 'Updated Properties and Changes'
-            });
+            X.stack.push(self.StackBlock.create({
+              view: {
+                class: 'foam.nanos.approval.PropertiesToUpdateView',
+                propObject: obj.propertiesToUpdate,
+                objId: obj.objId,
+                daoKey: obj.daoKey,
+                of: of,
+                title: 'Updated Properties and Changes'
+              } }));
             return;
           }
         }
 
         // else pass general view with modeled data for display
         // this is for create, deleting object approvals
-        X.stack.push({
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          of: of,
-          config: foam.comics.v2.DAOControllerConfig.create({
-            daoKey: daoKey,
+        X.stack.push(self.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
             of: of,
-            editPredicate: foam.mlang.predicate.False.create(),
-            createPredicate: foam.mlang.predicate.False.create(),
-            deletePredicate: foam.mlang.predicate.False.create()
-          }, X),
-          mementoHead: null,
-          backLabel: self.BACK_LABEL
-        }, X.createSubContext({stack: self.stack}));
+            config: foam.comics.v2.DAOControllerConfig.create({
+              daoKey: daoKey,
+              of: of,
+              editPredicate: foam.mlang.predicate.False.create(),
+              createPredicate: foam.mlang.predicate.False.create(),
+              deletePredicate: foam.mlang.predicate.False.create()
+            }, X),
+            mementoHead: null,
+          },
+          parent: X.createSubContext({ stack: self.stack })
+        }));
       }
     },
     {

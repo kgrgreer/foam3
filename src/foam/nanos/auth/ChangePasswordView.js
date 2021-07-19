@@ -17,6 +17,8 @@ foam.CLASS({
     'user'
   ],
 
+  requires: ['foam.u2.stack.StackBlock'],
+
   css: `
     ^ {
       margin-bottom: 24px
@@ -145,7 +147,7 @@ foam.CLASS({
             this.start().addClass(self.myClass('link'))
               .add(self.model.REDIRECTION_TO)
               .on('click', function() {
-                self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+                self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
               })
             .end();
           })
