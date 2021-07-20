@@ -122,7 +122,7 @@ start('div', {tooltip: 'My Tooltip'}).add('hover for tooltip').end();
 ##   Keyboard Shortcuts
 ##   el()
 ##   id
-You can set an element's id, but keep in mind that it isn't normally a good idea to do so.
+You can set an element's id, but keep in mind that it isn't normally not a good idea to do so.
 --
 start('b', {id: 'myId1'}).add('inspect me to see my id').end();
 start('i').setID('myId2').add('this method also works').end();
