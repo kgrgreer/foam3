@@ -206,7 +206,7 @@ foam.CLASS({
       this.onDetach(this.choices$.sub(this.onChoicesUpdate));
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -238,7 +238,7 @@ foam.CLASS({
             .end();
         }
 
-        return self.E().add(self.text$);
+        return self.E().translate(self.text + ".name", self.text);
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);
@@ -334,9 +334,8 @@ foam.CLASS({
               choices[i][1] = resolvedChoiceLabels[i];
             }
             this.choices = choices;
-            if ( ! this.choice && this.choices.length == 1 ) this.data = this.choices[0][0];
+            if ( ! this.data && this.index === -1 ) this.index = this.placeholder && this.choices.length != 1 ? -1 : 0;
           });
-          if ( this.data == null && this.index === -1 ) this.index = this.placeholder ? -1 : 0;
         });
       }
     }

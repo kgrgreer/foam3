@@ -57,7 +57,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.start()
         .addClass(this.myClass())
         .start({

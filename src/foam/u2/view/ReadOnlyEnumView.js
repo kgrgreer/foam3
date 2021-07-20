@@ -45,7 +45,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var data = this.data;
       this.SUPER();
       var color = this.returnExpandedCSS(this.data.color);

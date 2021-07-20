@@ -126,7 +126,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
 
       if ( this.memento )
         this.currentMemento_$ = this.memento.tail$;

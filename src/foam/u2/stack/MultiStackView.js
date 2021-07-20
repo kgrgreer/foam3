@@ -19,6 +19,7 @@ foam.CLASS({
   package: 'foam.u2.control',
   name: 'MultiStackView',
   extends: 'foam.u2.View',
+
   properties: [
     {
       class: 'Class',
@@ -30,12 +31,14 @@ foam.CLASS({
       name: 'limit'
     }
   ],
+
   methods: [
-    function initE() {
-      this.setNodeName('div').
+    function render() {
+      this.
         add(this.of.BACK, this.of.FORWARD).
         add(this.wrap(this.data.slotAt(-1)), this.wrap(this.data.slotAt(-2)), this.wrap(this.data.slotAt(-3)));
     },
+
     function wrap(s) {
       return this.slot(function(s) {
         var view = s[0];

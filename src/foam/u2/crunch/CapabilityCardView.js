@@ -88,7 +88,7 @@ foam.CLASS({
        this.daoUpdate();
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 

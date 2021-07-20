@@ -14,9 +14,13 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static io.methvin.watcher.DirectoryChangeEvent.EventType.MODIFY;
+import static io.methvin.watcher.DirectoryChangeEvent.EventType.DELETE;
 import io.methvin.watcher.DirectoryWatcher;
+import org.apache.commons.lang.ArrayUtils;
 
 public class LiveScriptBundler
   implements WebAgent, ContextAware
@@ -36,6 +40,13 @@ public class LiveScriptBundler
   // Configuration
   protected static final String FOAM_BIN_PATH = "./tools/js_build/foam-bin.js";
   protected static final String JS_BUILD_PATH = "./tools/js_build/build.js";
+  protected static final String GENJAVA_SRC_PATH = "build/src/java";
+  protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
+  protected static final String GENJAVA_OUTPUT_PATH = "tools/classes.js";
+
+  // Modified files
+  protected StringJoiner modified_;
+  protected StringJoiner removed_;
 
   private interface FileUpdateListener {
     public void onFileUpdate();
@@ -56,6 +67,10 @@ public class LiveScriptBundler
   public LiveScriptBundler(String path) {
     fileNames_ = new HashSet<>();
     path_ = path;
+    modified_ = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]");
+    modified_.setEmptyValue("{\"modified\":[]");
+    removed_ = new StringJoiner("\",\"", ",\"removed\":[\"", "\"]}");
+    removed_.setEmptyValue(",\"removed\":[]}");
 
     try {
       // Create list of files.js locations
@@ -105,6 +120,8 @@ public class LiveScriptBundler
           .path(Paths.get(path_, currentFilesPath))
           .listener(event -> {
             if ( event.path().getFileName().toString().endsWith(".js") ) {
+              if ( event.eventType() == MODIFY ) { modified_.add(event.path().toString()); }
+              if ( event.eventType() == DELETE ) { removed_.add(event.path().toString()); }
               scheduleRebuild();
             }
           })
@@ -151,12 +168,75 @@ public class LiveScriptBundler
     }
   }
 
+  private synchronized void doRebuildJavascript(HttpServletRequest req) {
+    String queryString = req.getQueryString();
+    String[] args = queryString.split("&");
+    String[] command = (String[]) ArrayUtils.add(args, 0, JS_BUILD_PATH );
+    
+    try {
+      log_("START", "Building javascript with updated flags... (JS)");
+
+      Process        p  = new ProcessBuilder(command).start();
+      BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String         line;
+      while ( (line = br.readLine()) != null ) {
+        log_("JS", "js> " + line);
+      }
+
+      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
+      javascriptBuffer_ = contents;
+      log_("DONE", "JS");
+    } catch (IOException e) {
+      log_("ERROR", e.getMessage());
+    }
+  }
+
+  private synchronized void doRegenJava(HttpServletRequest req) {
+    String[] command = { "node", "--stack_trace_limit=200", GENJAVA_INPUT_PATH, GENJAVA_OUTPUT_PATH,
+                         GENJAVA_SRC_PATH, System.getProperty("user.dir"), modified_.toString() + removed_.toString() };
+    try {
+      log_("START", "Debugging genJava... (JS)");
+
+      Process        p  = new ProcessBuilder(command).start();
+      BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String         line;
+      while ( (line = br.readLine()) != null ) {
+        log_("JS", "js> " + line);
+      }
+
+      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
+      javascriptBuffer_ = contents;
+
+      modified_ = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]");
+      modified_.setEmptyValue("{\"modified\":[]");
+      removed_ = new StringJoiner("\",\"", ",\"removed\":[\"", "\"]}");
+      removed_.setEmptyValue(",\"removed\":[]}");
+      log_("DONE", "JS");
+    } catch (IOException e) {
+      log_("ERROR", e.getMessage());
+    }
+  }
+
   @Override
   public void execute(X x) {
     PrintWriter         pw = x.get(PrintWriter.class);
     HttpServletResponse r  = x.get(HttpServletResponse.class);
     r.setHeader("Content-Type", "application/javascript");
+    HttpServletRequest  req = x.get(HttpServletRequest.class);
+    if ( req.getParameter("java") != null && req.getParameter("java").equals("true") ) {
+      doRegenJava(req);
+    }
 
+    if (
+      req.getParameter("node") != null  ||
+      req.getParameter("web") != null   ||
+      req.getParameter("java") != null  ||
+      req.getParameter("swift") != null ||
+      req.getParameter("debug") != null ||
+      req.getParameter("js") != null 
+    ) {
+      doRebuildJavascript(req);
+    }
     synchronized (this) { /* Wait for build to finish before serving */ }
     pw.println(javascriptBuffer_);
   }

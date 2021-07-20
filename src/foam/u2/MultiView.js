@@ -40,12 +40,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var self = this;
 
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.add(this.slot(function(views) {
         return self.E().forEach(views, function(v) {

@@ -34,23 +34,21 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
       value: {
-        class: 'foam.u2.view.ScrollTableView'
+        class: 'foam.u2.view.EmbeddedTableView'
       }
     }
   ],
 
   methods: [
-    function initE() {
-      var view = foam.u2.ViewSpec.createView(this.summaryView, {
-        data$: this.data.filteredDAO$,
-        multiSelectEnabled: !! this.data.relationship,
-        selectedObjects$: this.data.selectedObjects$
-      },
-      this,
-      this.__subContext__.createSubContext({ memento: null }));
+    function render() {
+      this.currentMemento_ = this.memento;
 
       this.
-        add(view).
+        tag(this.summaryView, {
+          data$: this.data.filteredDAO$,
+          multiSelectEnabled: this.data.relationship,
+          selectedObjects$: this.data.selectedObjects$
+        }).
         start('span').
           show(this.mode$.map(function(m) { return m == foam.u2.DisplayMode.RW; })).
           add(this.cls.getAxiomsByClass(foam.core.Action)).
@@ -59,13 +57,13 @@ foam.CLASS({
     function click(obj, id) {
       if ( ! this.stack ) return;
 
-      this.stack.push({
+      ctrl.stack.push({
         class: 'foam.comics.v2.DAOSummaryView',
         data: obj,
         config: foam.comics.v2.DAOControllerConfig.create({ dao: this.__subContext__[this.data.data.targetDAOKey] }),
         idOfRecord: id,
         backLabel: 'Back'
-      }, this.__subContext__.createSubContext({ memento: null }));
+      }, this.__subContext__.createSubContext({ memento: this.memento }));
     }
   ]
 });

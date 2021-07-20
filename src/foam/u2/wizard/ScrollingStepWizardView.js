@@ -176,7 +176,7 @@ foam.CLASS({
       name: 'willReject',
       documentation: `
         Used to put submit button in confirmationRequired mode and change the
-        submit button label from 'Done' to 'Reject' when rejectOnInvalidatedSave is true 
+        submit button label from 'Done' to 'Reject' when rejectOnInvalidatedSave is true
         and the wizard has at least one invalid wizardlet.
       `,
       expression: function( data$config$rejectOnInvalidatedSave, data$allValid ) {
@@ -196,9 +196,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      window.testing_ = self;
+      globalThis.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {
         if ( ! this.scrollWizardPosition ) return; // TEMP
         this.data.wizardPosition = this.scrollWizardPosition;
@@ -246,7 +246,7 @@ foam.CLASS({
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))
-              .add(this.slot(function (data$wizardlets) {
+              .add(this.slot(function (data$wizardlets, data$wizardPosition) {
                 return self.renderWizardlets(this.E(), data$wizardlets);
               }))
             .end()
@@ -346,6 +346,9 @@ foam.CLASS({
       isEnabled: function (data$config, data$allValid, data$someFailures) {
         if ( data$someFailures ) return false;
         return ! data$config.requireAll || data$allValid;
+      },
+      isAvailable: function (mode) {
+        return mode == foam.u2.DisplayMode.RW;
       },
       code: function (x) {
         for ( let w of this.data.wizardlets ) {

@@ -14,7 +14,7 @@ foam.CLASS({
     {
       name: 'srcDirs',
       factory: function() {
-        return [global.FOAM_ROOT]
+        return [globalThis.FOAM_ROOT]
       },
     },
     {
@@ -342,12 +342,12 @@ console.log("Done.");
       };
 
       with(context) {
-        eval(require('fs').readFileSync(global.FOAM_ROOT + 'files2.js', { encoding: 'utf8' }));
+        eval(require('fs').readFileSync(globalThis.FOAM_ROOT + 'files2.js', { encoding: 'utf8' }));
       }
 
       return files.reduce(function(s, f) {
         return s + '\n' +
-          require('fs').readFileSync(global.FOAM_ROOT + f.name + '.js', { encoding: 'utf8' });
+          require('fs').readFileSync(globalThis.FOAM_ROOT + f.name + '.js', { encoding: 'utf8' });
       }, '');
     },
 
@@ -433,7 +433,7 @@ console.log("Done.");
           { name: "foam/core/EndBoot" }
         ].reduce(function(s, f) {
           return s + '\n' + require('fs').
-            readFileSync(global.FOAM_ROOT + f.name + '.js', { encoding: 'utf8' });
+            readFileSync(globalThis.FOAM_ROOT + f.name + '.js', { encoding: 'utf8' });
         }, ''));
       }
 

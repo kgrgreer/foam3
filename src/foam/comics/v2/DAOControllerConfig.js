@@ -86,11 +86,6 @@ foam.CLASS({
       factory: function() { return this.of.model_.plural; }
     },
     {
-      class: 'String',
-      name: 'browseSubtitle',
-      value: ''
-    },
-    {
       class: 'FObjectProperty',
       name: 'primaryAction',
       documentation: `
@@ -109,14 +104,13 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
-      expression: function(defaultColumns) {
+      expression: function(tableColumns) {
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: true,
-          columns: defaultColumns,
+          columns: tableColumns,
           css: {
-            width: '100%',
-            'min-height': this.minHeight + 'px'
+            width: '100%'
           }
         };
       }
@@ -128,7 +122,7 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      name: 'defaultColumns',
+      name: 'tableColumns',
       factory: null,
       expression: function(of) {
         var tableColumns = of.getAxiomByName('tableColumns');
@@ -136,6 +130,42 @@ foam.CLASS({
         return tableColumns
           ? tableColumns.columns
           : of.getAxiomsByClass(foam.core.Property).map(p => p.name);
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(of, tableColumns) {
+        var tableSearchColumns = of.getAxiomByName('searchColumns');
+
+        var filteredDefaultColumns = tableColumns.filter(c => {
+          //  to account for nested columns like approver.legalName
+          if ( c.split('.').length > 1 ) return false;
+
+          var a = of.getAxiomByName(c);
+
+          if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
+
+          return a
+            && ! a.storageTransient
+            && ! a.networkTransient
+            && a.searchView
+            && ! a.hidden
+        });
+
+        var allProps = of.getAxiomsByClass(foam.core.Property).filter(p => {
+          return ! p.storageTransient
+            && ! p.networkTransient
+            && p.searchView
+            && ! p.hidden
+        })
+
+        return tableSearchColumns
+          ? tableSearchColumns.columns
+          : filteredDefaultColumns
+            ? filteredDefaultColumns
+            : allProps
       }
     },
     {
@@ -264,6 +294,23 @@ foam.CLASS({
       fromJSON: function fromJSON(value, ctx, prop, json) {
         return value;
       }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.Action',
+      name: 'browseActions',
+      documentation: 'An array of Actions valid for the summaryView',
+      adaptArrayElement: function(o) {
+        if ( foam.core.Action.isInstance(o) ) return;
+        var lastIndex = o.lastIndexOf('.');
+        var classObj = foam.lookup(o.substring(0, lastIndex));
+        return classObj[o.substring(lastIndex + 1)];
+      }
+    },
+    {
+      name: 'browseContext',
+      documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
+      value: null
     }
   ]
 });

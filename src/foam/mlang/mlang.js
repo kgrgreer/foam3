@@ -205,7 +205,7 @@ foam.CLASS({
         if ( ! foam.Function.isInstance(o.f) )      return foam.mlang.Constant.create({ value: o });
         return o;
       }
-      if ( o.class && this.__context__.lookup(o.class, true) ) {
+      if ( o.class && this.__context__.maybeLookup(o.class) ) {
         return this.adaptValue(this.__context__.lookup(o.class).create(o, this));
       }
       if ( foam.core.FObject.isSubClass(o) ) {
@@ -362,7 +362,7 @@ foam.CLASS({
         if ( o === true ) return foam.mlang.predicate.True.create();
         if ( o === false ) return foam.mlang.predicate.False.create();
         if ( foam.core.FObject.isInstance(o) ) return o;
-        if ( o.class && this.__context__.lookup(o.class, true) ) {
+        if ( o.class && this.__context__.maybeLookup(o.class) ) {
           return this.adaptArrayElement(this.__context__.lookup(o.class).create(o, this));
         }
         console.error('Invalid expression value: ', o);
@@ -3986,6 +3986,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'specializations_',
+      transient: true,
       factory: function() { return {}; },
       javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, foam.mlang.predicate.Predicate>();'
     },

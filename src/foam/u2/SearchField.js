@@ -14,7 +14,7 @@
       background-image: url("images/ic-search.svg");
       background-repeat: no-repeat;
       background-position: left 0.5em top 50%, 0 0;
-      padding: 0 16px 0 32px !important;
+      padding: 0 16px 0 32px;
     }
   `,
 
@@ -30,7 +30,7 @@
 
   methods: [
     function initCls() {
-      this.addClass(this.myClass());
+      this.addClass();
       this.addClass(this.myClass('icon'));
     }
   ]

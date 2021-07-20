@@ -45,7 +45,7 @@ describe('RestDAOHandler', function() {
     shutdownPromise = server.shutdown();
   });
 
-  global.genericDAOTestBattery(function(of) {
+  globalThis.genericDAOTestBattery(function(of) {
     return serverPromise.then(function() {
       return (clientDAO = foam.dao.RestDAO.create({
         of: of,

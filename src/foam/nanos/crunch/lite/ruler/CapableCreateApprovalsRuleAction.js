@@ -171,7 +171,6 @@ foam.CLASS({
                   .setGroup(getGroupToNotify())
                   .setAdditionalGroups(getAdditionalGroupsToNotify())
                   .setClassificationEnum(ApprovalRequestClassificationEnum.CAPABLE_CREATED_APPROVAL)
-                  .setDescription(capName + FOR + objName + " - id:" + String.valueOf(obj.getProperty("id")))
                   .setStatus(ApprovalStatus.REQUESTED).build();
 
                 approvalRequest = decorateApprovalRequest(x, approvalRequest, obj, capablePayload);

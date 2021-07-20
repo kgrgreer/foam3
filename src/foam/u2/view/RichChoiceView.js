@@ -207,6 +207,7 @@ foam.CLASS({
 
     ^chevron::before {
       content: '▾';
+      font-size: 1.5em;
       padding-left: 4px;
     }
 
@@ -432,7 +433,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( ! Array.isArray(this.sections) || this.sections.length === 0 ) {
@@ -583,11 +584,9 @@ foam.CLASS({
                   .add(this.slot(function(action, actionData) {
                     if ( action && actionData) {
                       return this.E()
-                        .startContext({ data: actionData })
-                        .start(self.DefaultActionView, { action: action })
+                        .start(self.DefaultActionView, { action: action, data: actionData })
                           .addClass(self.myClass('action'))
-                        .end()
-                        .endContext();
+                        .end();
                     }
                     if ( action ) {
                       return this.E()
@@ -665,7 +664,7 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           var summary = this.data.toSummary();
           return this
             .start()
@@ -717,7 +716,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
 
           this.style({
             'overflow': 'hidden',
@@ -751,6 +750,7 @@ foam.CLASS({
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
           font-size: 12px;
+          justify-content: flex-start;
           text-align: left;
           width: 100%;
         }

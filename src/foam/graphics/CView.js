@@ -1305,7 +1305,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.sub('onload', this.paint);
       this.cview$.valueSub('invalidated', this.paint);

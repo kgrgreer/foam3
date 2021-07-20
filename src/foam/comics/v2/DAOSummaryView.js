@@ -20,6 +20,10 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
+  imports: ['memento'],
+
+  exports: ['currentMemento_ as memento'],
+
   css: `
     ^ {
       padding: 32px
@@ -33,7 +37,6 @@ foam.CLASS({
     ^account-name {
       font-size: 36px;
       font-weight: 600;
-      margin-bottom: 32px;
     }
 
     ^actions-header .foam-u2-ActionView {
@@ -51,7 +54,9 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'foam.u2.stack.BreadcrumbView',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -133,6 +138,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'mementoHead',
+      documentation: 'This stores the id we want to add to the memento of the view',
       factory: function() {
         if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
           if ( ! this.idOfRecord )
@@ -141,7 +147,7 @@ foam.CLASS({
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
-          return 'view::' + id;
+          return id;
         }
       }
     },
@@ -149,6 +155,13 @@ foam.CLASS({
       name: 'idOfRecord',
       factory: function() {
         return this.data ? this.data.id : null;
+      }
+    },
+    {
+      class: 'String',
+      name: 'viewTitle',
+      expression: function(data) {
+        return data?.toSummary() ?? '';
       }
     }
   ],
@@ -182,14 +195,14 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        if ( this.memento && this.memento.tail )
-          this.memento.tail.head = 'edit';
-        this.stack.push({
-          class:  'foam.comics.v2.DAOUpdateView',
-          data:   this.data,
-          config: this.config,
-          of:     this.config.of
-        }, this.__subContext__);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class:  'foam.comics.v2.DAOUpdateView',
+            data:   this.data,
+            config: this.config,
+            of:     this.config.of
+          }, parent: this.__subContext__.createSubContext({ memento: this.memento })
+        }));
       }
     },
     {
@@ -218,12 +231,13 @@ foam.CLASS({
         let newRecord = this.data.clone();
         // Clear PK so DAO can generate a new unique one
         newRecord.id = undefined;
-        this.stack.push({
-          class: 'foam.comics.v2.DAOCreateView',
-          data: newRecord,
-          config: this.config,
-          of: this.config.of
-        }, this.__subContext__);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOCreateView',
+            data: newRecord,
+            config: this.config,
+            of: this.config.of
+          }, parent: this }));
       }
     },
     {
@@ -262,22 +276,31 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function init() {
+      // This is needed to ensure data is available for the viewTitle
+      this.SUPER();
+      var self = this;
+      var id = this.data?.id ?? this.idOfRecord;
+      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
+    },
+    function render() {
       var self = this;
       this.SUPER();
       if ( this.memento ) {
-        var m = this.memento;
+        this.currentMemento_ = this.memento;
         var counter = 0;
 
         // counter < 2 is as at this point we need to skip 2 memento
-        // head of first one will be column selection
-        // and second will be DAOSummaryView mode
-        while ( m.tail != null && counter < 2 ) {
-          m = m.tail;
+        // head of first one will be DAOSummaryView mode
+        // and second will be the id for the view
+        while ( counter < 2 ) {
+          if ( ! this.currentMemento_.tail ) {
+            this.currentMemento_.tail = this.Memento.create();
+          }
+          this.currentMemento_ = this.currentMemento_.tail;
           counter++;
         }
 
-        this.currentMemento_ = m;
         if ( ! this.currentMemento_ ) {
           this.currentMemento_ = foam.nanos.controller.Memento.create();
         }
@@ -289,9 +312,16 @@ foam.CLASS({
       // to this view from the edit view on the stack.
       promise.then(d => {
         if ( d ) self.data = d;
-        if ( self.memento && self.memento.tail && self.memento.tail.head.toLowerCase() === 'edit' ) {
+        if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
           self.edit();
         } else {
+          if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+            this.memento.head = 'view';
+            this.memento.tail.head = this.mementoHead;
+            if ( ! this.memento.tail.tail ) 
+              this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
+            this.currentMemento_ = this.memento.tail.tail;
+          }
           this
           .addClass(this.myClass())
           .add(self.slot(function(data, config$viewBorder, viewView) {
@@ -300,19 +330,15 @@ foam.CLASS({
                 .start(self.Rows)
                   // we will handle this in the StackView instead
                   .startContext({ onBack: self.onBack })
-                    .tag(self.BACK, {
-                      buttonStyle: foam.u2.ButtonStyle.LINK,
-                      themeIcon: 'back',
-                      label: self.backLabel
-                    })
+                    .tag(self.BreadcrumbView)
                   .endContext()
-                  .start(self.Cols).style({ 'align-items': 'center' })
+                  .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
                     .start()
                       .add(data && data.toSummary() ? data.toSummary() : '')
                       .addClass(self.myClass('account-name'))
                       .addClass('truncate-ellipsis')
                     .end()
-                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY'}).endContext()
+                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
                   .end()
                 .end()
 

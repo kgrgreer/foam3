@@ -110,20 +110,7 @@ foam.CLASS({
         return foam.u2.detail.TabbedDetailView;
       }
     },
-    'currentMemento_',
-    {
-      class: 'String',
-      name: 'mementoHead',
-      getter: function() {
-        if ( this.data.id ) {
-          var id = '' + this.data.id;
-          if ( id && foam.core.MultiPartID.isInstance(this.data.cls_.ID) ) {
-            id = id.substr(1, id.length - 2).replaceAll(':', '=');
-          }
-          return 'edit::' + id;
-        }
-      }
-    }
+    'currentMemento_'
   ],
 
   actions: [
@@ -133,7 +120,7 @@ foam.CLASS({
         return ! workingData$errors_;
       },
       code: function() {
-        this.config.dao.put(this.workingData).then((o) => {
+        this.config.dao.put(this.workingData).then(o => {
           if ( ! this.data.equals(o) ) {
             this.data = o;
             this.finished.pub();
@@ -148,7 +135,7 @@ foam.CLASS({
             }
           }
           this.stack.back();
-        }, (e) => {
+        }, e => {
           this.throwError.pub(e);
 
           if ( e.exception && e.exception.userFeedback  ) {
@@ -167,12 +154,14 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 
-      if ( this.memento )
+      if ( this.memento ) {
         this.currentMemento_$ = this.memento.tail$;
+        this.memento.head = 'edit';
+      }
 
       this
         .addClass(this.myClass())

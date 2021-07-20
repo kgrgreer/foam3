@@ -50,13 +50,35 @@ foam.CLASS({
       `,
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) );
+        return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
+      `
+    },
+    {
+      name: 'checkSpid_',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'permission', type: 'String' }
+      ],
+      type: 'Boolean',
+      documentation: `
+        When there is no user in the context, try to check if the permission is granted by the context spid
+      `,
+      javaCode: `
+        String spid = (String) x.get("spid");
+        if ( ! foam.util.SafetyUtil.isEmpty(spid) ) {
+          DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
+          ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
+          if ( sp == null ) return false;
+          sp.setX(x);
+          return sp.grantsPermission(permission);
+        }
+        return false;
       `
     },
     {
       name: 'checkUser',
       javaCode: `
-        return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission);
+        return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null && checkSpid_(x, permission) );
       `
     },
     {
@@ -175,7 +197,7 @@ foam.CLASS({
 
         // Find intercepting capabilities
         List<Capability> capabilities =
-          ( (ArraySink) capabilityDAO.where(CONTAINS(Capability.PERMISSIONS_INTERCEPTED, permission))
+          ( (ArraySink) capabilityDAO.where(IN(permission, Capability.PERMISSIONS_INTERCEPTED))
             .select(new ArraySink()) ).getArray();
 
         if ( capabilities.size() < 1 ) return;

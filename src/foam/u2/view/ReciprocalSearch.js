@@ -158,7 +158,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       this.dao.on.sub(this.updateTotalCount);
@@ -178,6 +178,7 @@ foam.CLASS({
         this.currentMemento_ = this.memento.tail;
       }
 
+      // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
       var counter = this.filters.length;
 
       this.

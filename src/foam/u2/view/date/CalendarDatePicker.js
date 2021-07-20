@@ -103,7 +103,7 @@ foam.CLASS({
       }
       return weeks;
     },
-    function initE() {
+    function render() {
       var self = this;
       this.startContext({ data: this.data }).
         addClass(this.myClass('calendar_table')).

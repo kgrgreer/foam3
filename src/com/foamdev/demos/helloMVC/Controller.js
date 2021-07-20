@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       //this.start(com.foamdev.demos.helloMVC.HelloView, {data: this.helloUser});
       this.tag(this.HelloView, {data: this.helloUser});
     }

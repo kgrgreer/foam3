@@ -34,6 +34,7 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.ProxyParser;
 import foam.lib.parse.StringPStream;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
@@ -101,11 +102,7 @@ public class SugarWebAgent
         throw new RuntimeException(String.format("Could not find service named '%s'", serviceName));
       }
 
-      try {
-        nspec.checkAuthorization(x);
-      } catch (foam.nanos.auth.AuthorizationException e) {
-        throw new RuntimeException(e.getMessage());
-      }
+      nspec.checkAuthorization(x);
 
       Class[] paramTypes; // for picked Method's parameters' types
       Object[] arglist; // to store each parameters' values

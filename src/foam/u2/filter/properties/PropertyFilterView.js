@@ -86,6 +86,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'activeFilterCheck_',
+      value: true
+    },
+    {
       name: 'searchView',
       documentation: 'The FilterView to wrap. You must set this.',
       required: true
@@ -132,11 +137,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-property'))
           .enableClass(this.myClass('container-property-active'), this.active$)
           .on('click', this.switchActive)
@@ -227,12 +232,22 @@ foam.CLASS({
       // check to see if there is an existing predicate to use the correct label
       if ( this.filterController.getExistingPredicate(this.criteria, this.property) && this.firstTime_ ) {
         this.labelFiltering = this.LABEL_PROPERTY_FILTER;
+        this.filterController.activeFilterCount++;
+        this.activeFilterCheck_ = false;
         return;
       }
       if ( ! this.view_ ) return;
       // Displays the correct label depending on situation
-      this.labelFiltering = this.view_.predicate !== this.TRUE ?
-        this.LABEL_PROPERTY_FILTER : this.LABEL_PROPERTY_ALL;
+        if ( this.view_.predicate !== this.TRUE && this.activeFilterCheck_ ) {
+          this.labelFiltering = this.LABEL_PROPERTY_FILTER;
+          this.filterController.activeFilterCount++;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
+        }
+        else if ( this.view_.predicate === this.TRUE && ! this.activeFilterCheck_ ) {
+          this.labelFiltering = this.LABEL_PROPERTY_ALL;
+          this.filterController.activeFilterCount--;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
+        }
     }
   ]
 });

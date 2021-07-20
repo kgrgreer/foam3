@@ -91,6 +91,14 @@ foam.CLASS({
       return  prop ? prop.property[property] : of.getAxiomByName(this.returnPropertyNamesForColumn(colObj))[property];
     },
     function groupObjectsThatAreRelatedToNestedProperties(of, arrayOfNestedPropertiesName, arrayOfValues) {
+      // this function creates obj for nested properties and adds it to the map
+      // eg lets assume that current `of` class has property called user
+      // and we query 3 properties user.firstName, user.lastName and user.fullName
+      // in this case we will create 'user' entry in our 'map' object initalized below
+      // and value for 'user' key will be object of class user
+      // then we set firstName of user with user.firstName value from array of values which we got with projection
+      // then user.lastName and then user.fullName
+      // so if tableCellFormatter of one property depends on tableCellFormatter of other property, it works correctly
       var map = {};
       for ( var i = 0 ; i < arrayOfNestedPropertiesName.length ; i++ ) {
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
@@ -109,10 +117,12 @@ foam.CLASS({
       return nestedPropertyName.substr(0, lastIndex);//lastIndex == length here
     },
     function getNameOfLastPropertyForNestedProperty(nestedPropertyName) {
+      // returns last property name eg for 'user.firstName' that would be 'firstName'
       var lastIndex = nestedPropertyName.lastIndexOf('.');
       return nestedPropertyName.substr(lastIndex + 1);
     },
-    function buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propNames) {
+    function buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propNames) {
+      // gathering nested properties and indexes of corresponding values in Projection array 
       var nestedPropertyNames = [];
       var indexOfValuesForCorrespondingPropertyNames = [];
       for ( var i = 0 ; i < propNames.length ; i++ ) {
