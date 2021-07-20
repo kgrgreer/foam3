@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.fs',
   name: 'FileLabel',
+  ids: [ 'name' ],
   documentation: 'Contextual label applied to a file instance',
 
   properties: [
