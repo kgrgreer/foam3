@@ -238,7 +238,7 @@ foam.CLASS({
             .end();
         }
 
-        return self.E().add(self.text$);
+        return self.E().translate(self.text + ".name", self.text);
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);
