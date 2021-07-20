@@ -21,7 +21,7 @@ foam.CLASS({
       margin: 0;
     }
 
-    /* TYPOGRAPHY */ 
+    /* TYPOGRAPHY */
     .h100{
       font-style: normal;
       font-weight: 700;
@@ -106,7 +106,7 @@ foam.CLASS({
       line-height: 14px;
       margin: 0;
     }
-    
+
     .New {
       width: 35px;
       height: 20px;

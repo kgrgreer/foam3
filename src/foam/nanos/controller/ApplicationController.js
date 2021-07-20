@@ -51,6 +51,7 @@ foam.CLASS({
     'foam.u2.crunch.CrunchController',
     'foam.u2.borders.MarginBorder',
     'foam.u2.stack.Stack',
+    'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.session.SessionTimer',
@@ -658,16 +659,16 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({
+          self.stack.push(self.StackBlock.create({ view: {
             class: 'foam.nanos.auth.ChangePasswordView',
             modelOf: 'foam.nanos.auth.ResetPassword'
-           });
+           }}));
           self.loginSuccess$.sub(resolve);
         });
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+        self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
