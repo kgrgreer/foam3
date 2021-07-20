@@ -9,21 +9,24 @@ foam.CLASS({
   name: 'AbstractMenu',
   abstract: true,
 
-  imports: [ 'menuListener?', 'pushMenu', 'translationService' ],
+  imports: [ 
+    'menuListener?',
+    'pushMenu',
+    'translationService' 
+  ],
 
   methods: [
     function launch(X, menu) {
       var self = this;
-      X.stack.push(
-        () => {
+      X.stack.push(foam.u2.stack.StackBlock.create({ 
+        view: () => {
           // Set the menuId and call the menuListener so that the
           // hash is updated properly when stack.back() is called.
           this.pushMenu(menu);
           this.menuListener && this.menuListener(menu);
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
-        X,
-        menu.id, { menuItem: true, navStackTitle: self.translationService.getTranslation(foam.locale, menu.id + '.label', menu.label) });
+        parent: X, id: menu.id, shouldResetBreadcrumbs: true }));
     }
   ]
 });

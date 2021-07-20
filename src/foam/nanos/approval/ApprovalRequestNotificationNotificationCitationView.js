@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.nanos.notification.NotificationCitationView',
 
   requires: [
-    'foam.comics.DAOUpdateControllerView'
+    'foam.comics.DAOUpdateControllerView',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -49,7 +50,7 @@ foam.CLASS({
     {
       name: 'viewMore',
       code: function() {
-        this.stack.push({ class: 'foam.comics.DAOUpdateControllerView', key: this.data.approvalRequest }, this );
+        this.stack.push(this.StackBlock.create({ view: { class: 'foam.comics.DAOUpdateControllerView', key: this.data.approvalRequest }, parent: this }));
       }
     }
   ],
