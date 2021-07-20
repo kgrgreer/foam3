@@ -1031,15 +1031,17 @@ foam.CLASS({
   ]
 });
 
+
+// TODO: When value:'s get adapt:'ed, then we should cleanup all instances of this.
 foam.CLASS({
   package: 'foam.core',
   name: 'GlyphProperty',
   extends: 'FObjectProperty',
 
-  requires: ['foam.core.Glyph'],
+  requires: [ 'foam.core.Glyph' ],
 
   properties: [
-    ['value', null],
+    [ 'value', null ],
     {
       name: 'adapt',
       value: function(_, v, prop) {

@@ -1,49 +1,3 @@
-foam.CLASS({
-  name: 'SampleData',
-  properties: [
-    'id', 'name', 'value'
-  ],
-  methods: [
-    function toSummary() { return this.id + ' ' + this.value; }
-  ]
-});
-
-var dao = foam.dao.EasyDAO.create({
-  of: SampleData,
-  daoType: 'MDAO',
-  testData: [
-    { id: 'key1', name: 'John',  value: 'value1' },
-    { id: 'key2', name: 'John',  value: 'value2' },
-    { id: 'key3', name: 'Kevin', value: 'value3' },
-    { id: 'key4', name: 'Kevin', value: 'value4' },
-    { id: 'key5', name: 'Larry', value: 'value5' },
-    { id: 'key6', name: 'Linda', value: 'value6' }
-  ]
-});
-
-
-
-// This works, but doesn't refresh if the DAO updates
-foam.u2.Element.create().write().start('ol').call(function() {
-  dao.select(d => {
-    this.start('li').add(d.id, ' ', d.name, ' ', d.value).end();
-  });
-});
-
-foam.u2.Element.create().write().start('ol')
-  .start('li').add('first').end()
-  .select(dao, function(d) {
-    return this.start('li').add(d.id, ' ', d.name, ' ', d.value).end();
-  })
-  .start('li').add('last').end();
-
-
-for ( let i = 8 ; i < 18 ; i++ ) {
-  window.setTimeout(() => {
-    dao.put(SampleData.create({id: 'key' + i, name: 'Mr.', value: '' + i}));
-  }, 1000 * (i-7));
-}
-
 foam.u2.Element.create().add('children').write();
 foam.u2.Element.create().write().add('children');
 foam.u2.Element.create({nodeName: 'b'}).add('children').write();
@@ -52,15 +6,6 @@ foam.u2.Element.create().style({color: 'red'}).add('children').write();
 foam.u2.Element.create().write().style({color: 'red'}).add('children');
 foam.u2.Element.create().on('click', () => console.log('clicked')).add('clickme').write();
 foam.u2.Element.create().write().on('click', () => console.log('clicked')).add('clickme');
-foam.u2.Element.create()
-  .call(function() { this.add('call'); })
-  .callIf(true,      function() { this.add('true'); })
-  .callIf(false,     function() { this.add('false'); })
-  .callIfElse(true,  function() { this.add('true'); }, function() { this.add('false'); })
-  .callIfElse(false, function() { this.add('false'); }, function() { this.add('false'); })
-  .forEach([1,2,3],  function(a) { this.add(a); })
-.write();
-
 
 foam.u2.Element.create().write().start('ol').forEach(['a','b','c'], function(v) {
   this.start('li').add(v).end();

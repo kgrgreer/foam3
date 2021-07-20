@@ -61,12 +61,19 @@ foam.CLASS({
     function renderStackView(s) {
       if ( ! s ) return this.E('span');
 
-      var view   = s[0];
-      var parent = s[1];
+      var view   = s.view;
+      var parent = s.parent;
 
       var X = this.getContextFromParent(parent);
 
       var v = foam.u2.ViewSpec.createView(view, null, this, X);
+
+      if ( ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/) && X.memento ) {
+        if ( X.memento.params != this.data.BCRMB_ID )
+          X.memento.params = this.data.BCRMB_ID;
+        this.data.top.breadcrumbTitle$.follow(v.viewTitle$ || v.children[0].viewTitle$);
+      }
+
       return v;
     },
 

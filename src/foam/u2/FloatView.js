@@ -84,7 +84,8 @@ foam.CLASS({
       view.sub(function() {
         if ( preventFeedback ) return;
         preventFeedback = true;
-        data.set(self.textToData(view.get()));
+        // check bounds on data update and set to boundary values if out of bounds
+        data.set(self.textToData(foam.Number.clamp(self.min, view.get(), self.max)));
         preventFeedback = false;
       });
 

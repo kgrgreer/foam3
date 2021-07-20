@@ -205,7 +205,7 @@ rt.province2$find.then(function(p) {
 // We can also, just add promises to U2 directly?
 add('find: ').add(rt.province1$find);
 
-##  Slot.lear()
+##  Slot.clear()
 What does Slot.clear() do?
 <br><br>
 <b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
@@ -249,7 +249,7 @@ t.clearProperty('defaultValue');
 t.defaultFactory$.clear();
 log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
 
-##  Q8 Property Cloning
+##  Property Cloning
 From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
 <br><br>
 <b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
@@ -383,7 +383,7 @@ var t = Test.create({p1: 2, p2: 2});
 log(`p1: ${t.p1}, p2: ${t.p2}, p3: ${t.p3}, p4: ${t.p4}, p5: ${t.p5}, p6: ${t.p6}`);
 
 ##  Mutation not allowed
-Q. What does "Mutation is not allowed in output state." mean and how do I fix it.
+Q. What does "Mutation is not allowed in output state" mean and how do I fix it?
 <p>
 A1. In U2, Elements have a lifecycle which goes from INITIAL -> OUTPUT -> LOADED -> UNLOADED.
 When an element is OUTPUT but not yet LOADED, it can't be modified, and if it is, then the
@@ -411,7 +411,7 @@ WebSocket connections are more expensive to support, so are rarely used.
 --
 
 ##  Enum Values
-Q. How “values” property works and what's the difference of between “properties” and “values?
+Q. How does “values” work in the code below and what's the difference of between “properties” and “values"?
 <p>
 foam.ENUM() creates an enumeration, not a regular class. The same as the following code
 which is both valid C and Java:
@@ -460,7 +460,7 @@ log(DayOfWeek.isInstance('Sunday'));
 
 
 ##  Element.start()
-Q. how many and what types of arguments for “start()“?
+Q. What are the arguments to “Element.start()“?
 
 --
 
@@ -532,7 +532,7 @@ add(E().start('input').end());
 add(E().tag('input'));
 
 ##  Element.callIf()
-Q. When to use callIf()?
+Q. When to use Element.callIf()?
 <p>
 A. call, callIf, callIfElse, and forEach are defined in foam.core.Fluent, and
 are used for creating "fluent interfaces". This is where methods can be chained
@@ -577,7 +577,7 @@ sign(true);
 sign(false);
 
 ##  init() and initE()
-Q. What’ the difference of using between initE() and init()?
+Q. What's the difference of using between initE() and init()?
 <p>
 Since this question was asked, initE() has been renamed to render().
 <p>
@@ -617,7 +617,7 @@ log('both objects created');
 add(testE);
 
 ##  Service client:
-Q. How should I understand this two “client” side codes below.
+Q. How should I understand the two “client:” configurations below?
 <pre>
 1.
 “client”:“”"
@@ -635,8 +635,7 @@ Q. How should I understand this two “client” side codes below.
 “client”:“{\“of\“: \“foam.nanos.auth.GroupPermissionJunction\“}”
 </pre>
 
-A.
-For the first example, it's useful to look at the code for ClientGoogleSheetsExportService:
+A. For the first example, it's useful to look at the code for ClientGoogleSheetsExportService:
 
 <pre>
 foam.CLASS({
@@ -677,8 +676,7 @@ remote services.
 the DAO interface, which is the default, so class defaults to foa.dao.ClientDAO in this case.
 
 ##  Slot Types
-Q. What are the differences and when to use:<br>
-Slot Vs. Simple slot Vs. Expression slot
+Q. What are the differences between and when to use: Slot Vs. Simple slot Vs. Expression slot?
 <p>
 A. For review, recall that a Slot is an object with three main methods:
 <pre>
@@ -753,46 +751,3 @@ p1.lastName = 'Doe';
 // Note that ExpressionSlots aren't set()-able:
 fullName.set('Jane Smith');
 log(fullName.get()); // Is still John Doe
-
-##  DAO Value Translation
-Q. How to I translate the language of data I receive from a DAO?
-<p>
-A. The easiest way is in your view which adds the data to the GUI, instead
-of calling .add(), you call .translate() instead.
-The first argument of translate() is a suitable translation key, and the
-second argument is the default English value that you would have add()'ed.
---
-
-foam.CLASS({
-  name: 'SampleData',
-  properties: [
-    'id', 'label'
-  ]
-});
-
-var dao = foam.dao.EasyDAO.create({
-  of: SampleData,
-  daoType: 'MDAO',
-  testData: [
-    { id: 'key1', label: 'label1' },
-    { id: 'key2', label: 'label2' },
-    { id: 'key3', label: 'label3' }
-  ]
-});
-
-// Gives untranslated values:
-add(E().select(dao, function(d) {
-  return this.E().add(d.id, ' ', d.label);
-}));
-
-add(E('hr'));
-
-// create a simple mock translationService
-var mockTranslationService = {
-  getTranslation: function(_, _, def) { return def + ' en français'; }
-};
-
-// Gives translated values:
-add(E().startContext({translationService: mockTranslationService}).select(dao, function(d) {
-  return this.E().add(d.id, ' ').translate('SampleData.' + d.id + '.label', d.label);
-}));

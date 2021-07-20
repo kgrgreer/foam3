@@ -538,7 +538,13 @@ foam.LIB({
     {
       name: 'clamp',
       code: function(min, value, max) {
-        return Math.min(Math.max(value, min), max);
+        if ( min != null && max == null )
+          return Math.max(min, value);
+        if ( min == null && max != null )
+          return Math.min(value, max);
+        if ( min == null && max == null )
+          return value;
+        return Math.max(Math.min(value, max), min);
       }
     }
   ]
