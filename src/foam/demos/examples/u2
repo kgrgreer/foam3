@@ -112,6 +112,9 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 ##    content
 ##   ViewSpec
 ##   Tooltips
+--
+start('div', {tooltip: 'My Tooltip'}).add('hover for tooltip').end();
+
 ##   shown / show() / hide()
 ##   focused / focus() / blur()
 ##   Creating a Component
@@ -119,6 +122,11 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 ##   Keyboard Shortcuts
 ##   el()
 ##   id
+You can set an element's id, but keep in mind that it isn't normally a good idea to do so.
+--
+start('b', {id: 'myId1'}).add('inspect me to see my id').end();
+start('i').setID('myId2').add('this method also works').end();
+
 ##   E()
 ##   Children
 ##    start() / end()
