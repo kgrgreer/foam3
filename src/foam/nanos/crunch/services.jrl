@@ -61,11 +61,16 @@ p({
   "serve": true,
   "description": "DAO responsible for storing capabilities' categories.",
   "serviceScript": """
+    mdao = new foam.dao.MDAO(foam.nanos.crunch.CapabilityCategoryCapabilityJunction.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.CapabilityCategoryCapabilityJunction.SOURCE_ID});
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.CapabilityCategoryCapabilityJunction.TARGET_ID});
+
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("capabilityCategoryCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityCategoryCapabilityJunction")
       .setOf(foam.nanos.crunch.CapabilityCategoryCapabilityJunction.getOwnClassInfo())
+      .setMdao(mdao)
       .build();
   """,
   "client": "{\"of\":\"foam.nanos.crunch.CapabilityCategoryCapabilityJunction\", \"remoteListenerSupport\": false}"
