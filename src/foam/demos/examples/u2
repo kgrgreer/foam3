@@ -54,8 +54,6 @@ console.profileEnd('p1');
 
 ##   DSL
 ##   Intro1
-##   Intro2
-##    SubIntro
 ##   Hello World!
 Let's use U3 to say hello
 --
@@ -101,6 +99,9 @@ foam.CLASS({
         addClass().
         start('div', null, this.content$).
           addClass(this.myClass('content')).
+        end().
+        start().
+          add('footer').
         end();
     }
   ]
