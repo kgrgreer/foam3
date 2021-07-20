@@ -12,18 +12,12 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id',
-    },
-    {
-      class: 'String',
       name: 'name'
     }
   ],
 
   methods: [
-    function toSummary() {
-      return this.id;
-    }
+    function toSummary() { return this.name; }
   ]
 })
 
