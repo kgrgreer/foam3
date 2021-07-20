@@ -92,6 +92,7 @@ foam.CLASS({
       Boolean    customFontsFailed   = false;
 
       out.println("<meta charset=\\"utf-8\\"/>");
+      out.println("<meta name=\\"viewport\\" content=\\"width=device-width\\" />");
       out.print("<title>");
       out.print(theme.getAppName());
       out.println("</title>");
