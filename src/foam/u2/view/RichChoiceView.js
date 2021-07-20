@@ -149,7 +149,6 @@ foam.CLASS({
     }
 
     ^container {
-      font-size: 1rem;
       position: absolute;
       bottom: -4px;
       left: 0;
@@ -167,7 +166,7 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 0.86em;
+      font-size: 12px;
       font-weight: 900;
       padding: 1px 2px;
     }
@@ -179,7 +178,7 @@ foam.CLASS({
       width: 100%;
 
       height: /*%INPUTHEIGHT%*/ 34px;
-      font-size: 1rem;
+      font-size: 14px;
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       border: 1px solid;
@@ -206,12 +205,8 @@ foam.CLASS({
       border-color: /*%PRIMARY3%*/ #406dea;
     }
 
-    ^chevron {
-      width: 20%;
-    }
     ^chevron::before {
       content: '▾';
-      font-size: 1.14em;
       padding-left: 4px;
     }
 
@@ -658,7 +653,7 @@ foam.CLASS({
         ^row {
           background: white;
           padding: 1px 2px;
-          font-size: 0.86em;
+          font-size: 12px;
         }
 
         ^row:hover {
@@ -752,7 +747,7 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
-          font-size: 0.86em;
+          font-size: 12px;
           justify-content: flex-start;
           text-align: left;
           width: 100%;
