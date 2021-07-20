@@ -11,13 +11,6 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  properties: [
-    {
-      name: 'exceptionMessage',
-      value: 'Primary not found'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',

@@ -122,11 +122,12 @@ public abstract class AbstractFObjectPropertyInfo
 
   @Override
   public void validateObj(X x, FObject obj) {
-    if ( isSet(obj) && getRequired() ) {
-      var value = get(obj);
-      if ( value != null ) {
-        ((FObject) value).validate(x);
+    if ( getRequired() ) {
+      if ( ! isSet(obj) || get(obj) == null ) {
+        throw new ValidationException(getName() + " required");
       }
+
+      ((FObject) get(obj)).validate(x);
     }
   }
 
@@ -141,9 +142,8 @@ public abstract class AbstractFObjectPropertyInfo
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     Object propObj = get_(obj);
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
-      formatter.output((FObject) propObj, of());
-    }
-    else {
+      formatter.output((FObject) propObj, of(), this);
+    } else {
       formatter.output(propObj);
     }
   }

@@ -11,28 +11,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'message'
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.core.Exception',
       name: 'exception'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'toString',
-      type: 'String',
-      javaCode: 'return getId() + ": "+getMessage();',
-      code: function() {
-        return this.id + ': ' + this.message;
-      }
     }
   ]
 });

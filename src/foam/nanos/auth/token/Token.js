@@ -33,7 +33,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'data',
-      documentation: 'The token data'
+      documentation: 'The token data',
+      tableWidth: 350
     },
     {
       class: 'Map',

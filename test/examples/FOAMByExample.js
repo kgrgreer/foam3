@@ -3254,14 +3254,14 @@ var examples = [
         templates: [
           {
             name: 'complexTemplate',
-            template: function() {/*
+            template: `
 Use raw JS code for loops and control structures
 <% for ( var i = 0 ; i < 10; i++ ) { %>
 i is: "<%= i %>" <% if ( i % 2 == 0 ) { %> which is even!<% }
 } %>
 Use percent signs to shortcut access to local properties
 For instance, my name is %%name
-            */}
+            `
           }
         ]
       });

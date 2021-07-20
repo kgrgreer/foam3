@@ -86,7 +86,7 @@ foam.CLASS({
     {
       name: 'swiftAxiomInit',
       args: ['parentCls'],
-      template: function() {/*
+      template: `
 class ActionInfo_: ActionInfo {
   let args: [MethodArg] = []
   let label = "<%=this.label%>" // TODO localize
@@ -97,19 +97,19 @@ class ActionInfo_: ActionInfo {
   }
 }
 return ActionInfo_()
-      */},
+      `,
     },
     {
       name: 'slotInit',
       args: [],
-      template: function() {/*
+      template: `
 return foam_swift_core_ConstantSlot([
   "value": { [weak self] (args: [Any?]) throws -> Any? in
     if self == nil { fatalError() }
-    return self!.`<%=this.swiftName%>`()
+    return self!.\`<%=this.swiftName%>\`()
   }
 ])
-      */},
+      `,
     },
   ],
 });

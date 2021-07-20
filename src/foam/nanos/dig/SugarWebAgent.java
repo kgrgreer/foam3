@@ -34,6 +34,7 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.ProxyParser;
 import foam.lib.parse.StringPStream;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
@@ -60,10 +61,7 @@ public class SugarWebAgent
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
-        DigErrorMessage error = new GeneralException.Builder(x)
-          .setMessage("Empty data")
-          .build();
-        DigUtil.outputException(x, error, Format.JSON);
+        DigUtil.outputException(x, new GeneralException("Empty data"), Format.JSON);
         return;
       }
 
@@ -104,11 +102,7 @@ public class SugarWebAgent
         throw new RuntimeException(String.format("Could not find service named '%s'", serviceName));
       }
 
-      try {
-        nspec.checkAuthorization(x);
-      } catch (foam.nanos.auth.AuthorizationException e) {
-        throw new RuntimeException(e.getMessage());
-      }
+      nspec.checkAuthorization(x);
 
       Class[] paramTypes; // for picked Method's parameters' types
       Object[] arglist; // to store each parameters' values
@@ -153,10 +147,7 @@ public class SugarWebAgent
       }
 
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
       pm.error(x, e.getMessage());
     } finally {
       pm.log(x);
@@ -184,15 +175,9 @@ public class SugarWebAgent
       outputterJson.output(declaredMethod_.invoke(x.get(serviceName), arglist));
       out.println(outputterJson);
     } catch (InvocationTargetException e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage("InvocationTargetException: " + e.getTargetException().getMessage())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException("InvocationTargetException: " + e.getTargetException().getMessage()), Format.JSON);
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage("Exception: " + e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException("Exception: " + e.toString()), Format.JSON);
     }
   }
 
@@ -231,10 +216,7 @@ public class SugarWebAgent
         }
       }
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
     }
 
     return clsObj;

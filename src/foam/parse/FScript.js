@@ -6,35 +6,96 @@
 
 foam.CLASS({
   package: 'foam.parse',
+  name: 'Test',
+  properties: [
+    'id',
+    'firstName',
+    'lastName',
+    { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.parse',
+  name: 'Address',
+  properties: [
+    'city', 'province'
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.parse',
   name: 'FScript',
 
   documentation: 'A simple scripting language.',
+
+  static: [
+    function test__() {
+//      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+      var fs = foam.parse.FScript.create({of: foam.parse.Test});
+
+      var data = foam.parse.Test.create({
+        id: 42,
+        firstName: 'Kevin',
+        lastName: 'Greer',
+        address: { city: 'Toronto', province: 'ON' }
+      });
+
+      function test(s) {
+        try {
+          var p = fs.parseString(s).partialEval();
+          console.log(s, '->', p.toString(), '=', p.f(data));
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('address.city!=address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
+    },
+
+    function test2__() {
+      var fs = foam.parse.FScript.create({of: foam.util.Timer});
+
+      function test(s) {
+        try {
+          var p = fs.parseString(s);
+          console.log(p.cls_.name, p.partialEval().toString());
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
+    }
+  ],
 
   axioms: [
     // Reuse parsers if created for same 'of' class.
     foam.pattern.Multiton.create({property: 'of'})
   ],
 
+  mixins: [ 'foam.mlang.Expressions' ],
+
   requires: [
-    'foam.mlang.Constant',
-    'foam.mlang.predicate.And',
-    'foam.mlang.predicate.ContainsIC',
-    'foam.mlang.predicate.DotF',
-    'foam.mlang.predicate.Eq',
-    'foam.mlang.predicate.Gt',
-    'foam.mlang.predicate.Gte',
-    'foam.mlang.predicate.Has',
-    'foam.mlang.predicate.In',
-    'foam.mlang.predicate.InIC',
-    'foam.mlang.predicate.Lt',
-    'foam.mlang.predicate.Lte',
-    'foam.mlang.predicate.MQLExpr',
-    'foam.mlang.predicate.Not',
-    'foam.mlang.predicate.Or',
-    'foam.mlang.predicate.True',
+    'foam.mlang.predicate.NamedProperty',
     'foam.parse.Alternate',
     'foam.parse.ImperativeGrammar',
-    'foam.parse.LiteralIC',
+    'foam.parse.Literal',
     'foam.parse.Parsers',
     'foam.parse.StringPStream'
   ],
@@ -51,55 +112,53 @@ foam.CLASS({
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
         return {
-          START: seq1(0, sym('script'), repeat0(' '), eof()),
+          START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          script: sym('or'),
+          expr: sym('or'),
 
-          or: repeat(sym('and'), literal(' || '), 1),
+          or: repeat(sym('and'), literal('||'), 1),
 
-          and: repeat(
-            sym('expr'),
-            alt(literalIC(' && '), literal(' ')), 1),
+          and: repeat(sym('simpleexpr'), literal('&&'), 1),
 
-          expr: alt(
+          simpleexpr: alt(
             sym('paren'),
             sym('negate'),
-            sym('expr')
+            sym('comparison')
           ),
 
           paren: seq1(1, '(', sym('expr'), ')'),
 
           negate: seq(literal('!'), sym('expr')),
 
-          dot: seq(sym('fieldname'), sym('subQuery')),
-
           subQuery: alt(sym('compoundSubQuery'), sym('simpleSubQuery')),
 
-          compoundSubQuery: seq1(1, '(', sym('compoundSubQueryBody'), ')'),
-
-          compoundSubQueryBody: repeat(alt(
-            seq('(', sym('compoundSubQueryBody'), ')'),
-            // like 'quoted string', except retains the quotes
-            join(seq('"',
-              join(repeat(alt(literal('\\"', '"'), notChars('"')))),
-              '"')),
-            notChars(')')
-          )),
-
-          simpleSubQuery: seq1(1, '.', repeat(not(alt(' ', eof()), anyChar()))),
-
-          equals: seq(sym('expr'), alt('==', '!=', '<', '<=', '>='),  sym('expr')),
+          comparison: seq(
+            sym('value'),
+            alt(
+              literal('==', this.EQ),
+              literal('!=', this.NEQ),
+              literal('<=', this.LTE),
+              literal('>=', this.GTE),
+              literal('<',  this.LT),
+              literal('>',  this.GT)
+            ),
+            sym('value')),
 
           value: alt(
             sym('string'),
-            sym('number')
+            sym('number'),
+            sym('field')
           ),
 
-          string: seq1(1, '"',
-            repeat(alt(literal('\\"', '"'), notChars('"'))),
-            '"'),
+          field: seq(
+            sym('fieldname'),
+            optional(seq('.', repeat(sym('word'), '.')))),
 
-          word: repeat(sym('char'), null, 1),
+          string: str(seq1(1, '"',
+            repeat(alt(literal('\\"', '"'), notChars('"'))),
+            '"')),
+
+          word: str(repeat(sym('char'), null, 1)),
 
           char: alt(
             range('a', 'z'),
@@ -114,67 +173,40 @@ foam.CLASS({
     {
       name: 'grammar_',
       factory: function() {
-        var cls = this.of;
-        var fields = [];
-        var properties = cls.getAxiomsByClass(foam.core.Property);
+        const self       = this;
+        const cls        = this.of;
+        const fields     = [];
+        const properties = cls.getAxiomsByClass(foam.core.Property);
+
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
-          fields.push(this.LiteralIC.create({
+          fields.push(this.Literal.create({
             s: prop.name,
             value: prop
           }));
-          if ( prop.shortName ) {
-            fields.push(this.LiteralIC.create({
-              s: prop.shortName,
-              value: prop
-            }));
-          }
-          if ( prop.aliases ) {
-            for ( var j = 0 ; j < prop.aliases.length ; j++ ) {
-              fields.push(this.LiteralIC.create({
-                s: prop.aliases[j],
-                value: prop
-              }));
-            }
-          }
         }
+
+        // order by -length, name
         fields.sort(function(a, b) {
-          var d = b.lower.length - a.lower.length;
-          if ( d !== 0 ) return d;
-          if ( a.lower === b.lower ) return 0;
-          return a.lower < b.lower ? 1 : -1;
+          var c = foam.util.compare(b.s.length, a.s.length);
+          if ( c ) return c;
+          return foam.util.compare(a.s, b.s);
         });
 
-        var base = foam.Function.withArgs(this.baseGrammar_,
+        var base = foam.Function.withArgs(
+          this.baseGrammar_,
           this.Parsers.create(), this);
+
         var grammar = {
           __proto__: base,
-          fieldname: this.Alternate.create({ args: fields })
+          fieldname: this.Alternate.create({args: fields})
         };
 
         var compactToString = function(v) {
           return v.join('');
         };
 
-        var self = this;
-
-        // TODO: Fix me to just build the object directly.
         var actions = {
-          id: function(v) {
-            return self.Eq.create({
-              arg1: cls.ID,
-              arg2: v
-            });
-          },
-
-          or: function(v) {
-            return self.Or.create({ args: v });
-          },
-
-          and: function(v) {
-            return self.And.create({ args: v });
-          },
-
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
           },
@@ -183,92 +215,28 @@ foam.CLASS({
             return parseInt(compactToString(v));
           },
 
-          dot: function(v) {
-            return self.DotF.create({
-              arg1: self.Constant.create({value: v[1]}),
-              arg2: v[0]
-            });
+          comparison: function(v) {
+            var lhs = v[0];
+            var op  = v[1];
+            var rhs = v[2];
+
+            return op.call(self, lhs, rhs);
           },
 
-          simpleSubQuery: function(v) {
-            return self.MQLExpr.create({query: v.join('')});
-          },
+          or: function(v) { return self.OR.apply(self, v); },
 
-          compoundSubQuery: function(v) {
-            return self.MQLExpr.create({query: v});
-          },
+          and: function(v) { return self.AND.apply(self, v); },
 
-          compoundSubQueryBody: function(v) {
-            return v.map(s => foam.String.isInstance(s) ? s : s.join('')).join('');
-          },
-
-          equals: function(v) {
-            // TODO: Refactor so that properties provide a way to adapt the
-            // values rather than putting all of the value adaptation logic
-            // here.
-
-            // v[2], the values, is an array, which might have an 'and', 'or' or
-            // 'negated' property on it. The default is 'or'. The partial
-            // evaluator for expressions can simplify the resulting Mlang further.
-            var prop = v[0];
-            var values = v[2];
-            // Int is actually the parent of Float and Long, so this captures all
-            // numeric properties.
-            var isNum = foam.core.Int.isInstance(prop) ||
-              foam.core.Reference.isInstance(prop) &&
-              foam.core.Int.isInstance(prop.of.ID);
-
-            var isFloat = foam.core.Float.isInstance(prop);
-
-            var expr;
-
-            if ( isNum ) {
-              for ( var i = 0 ; i < values.length ; i++ ) {
-                values[i] = isFloat ? parseFloat(values[i]) :
-                    parseInt(values[i]);
+          field: function(v) {
+            var expr = v[0];
+            if ( v[1] ) {
+              var parts = v[1][1];
+              for ( var i = 0 ; i < parts.length ; i++ ) {
+                expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
               }
-
-              expr = self.In.create({ arg1: prop, arg2: values });
-            } else if ( foam.core.Enum.isInstance(prop) ) {
-              // Convert string values into enum values, checking if either the
-              // enum name or label starts with the supplied value.
-              var newValues = [];
-              var e = prop.of;
-              for ( var i = 0 ; i < values.length ; i++ ) {
-                var value = values[i]
-                for ( var j = 0 ; j < e.VALUES.length ; j++ ) {
-                  var eValue = e.VALUES[j];
-                  if ( foam.String.startsWithIC(eValue.name, value) || foam.String.startsWithIC(eValue.label, value) )
-                    newValues.push(eValue);
-                }
-              }
-              expr = self.In.create({ arg1: prop, arg2: newValues });
-            } else {
-              expr = (v[1] === '=') ?
-                  self.Eq.create({ arg1: prop, arg2: values[0] }) :
-                  self.Or.create({
-                    args: values.map(function(v) {
-                      return self.ContainsIC.create({ arg1: prop, arg2: v });
-                    })
-                  });
             }
-
-            if ( values.negated ) return self.Not.create({ arg1: expr });
-
-            if ( values.and ) {
-              return self.And.create({
-                args: values.map(function(x) {
-                  expr.class_.create({ arg1: expr.arg1, arg2: [ x ] });
-                })
-              });
-            }
-
             return expr;
-          },
-
-          string: compactToString,
-
-          word: compactToString
+          }
         };
 
         var g = this.ImperativeGrammar.create({

@@ -43,9 +43,9 @@ foam.CLASS({
       class: 'String',
       name: 'exprProp',
       swiftExpressionArgs: ['firstName', 'lastName'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 return firstName + " " + lastName
-      */},
+      `,
     },
     {
       class: 'Int',
@@ -69,10 +69,10 @@ return firstName + " " + lastName
       class: 'String',
       name: 'firstName',
       value: 'John',
-      swiftPreSet: function() {/*
+      swiftPreSet: `
 self.prevFirstName = oldValue as? String ?? ""
 return newValue
-      */},
+      `,
     },
     {
       class: 'String',
@@ -82,9 +82,9 @@ return newValue
     },
     {
       name: 'factoryProp',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return ["Hello", "World"]
-      */},
+      `,
     },
     {
       class: 'DateTime',
@@ -100,18 +100,18 @@ return ["Hello", "World"]
     {
       name: 'swapFirstAndLast',
       code: function() {},
-      swiftCode: function() {/*
+      swiftCode: `
 let firstName = self.firstName
 self.firstName = self.lastName
 self.lastName = firstName
-      */},
+      `,
     },
     {
       name: 'startLogger',
       code: function() {},
-      swiftCode: function() {/*
+      swiftCode: `
 myListener()
-      */},
+      `,
     },
   ],
   methods: [
@@ -125,9 +125,9 @@ myListener()
         },
       ],
       code: function() {},
-      swiftCode: function() {/*
+      swiftCode: `
 return String(format: type(of: self).greeting, name!, "LASTNAME")
-      */},
+      `,
     }
   ],
   listeners: [
@@ -136,10 +136,10 @@ return String(format: type(of: self).greeting, name!, "LASTNAME")
       isMerged: true,
       mergeDelay: 500,
       code: function() {},
-      swiftCode: function() {/*
+      swiftCode: `
 NSLog("Hey")
 myListener()
-      */},
+      `,
     },
   ],
 });

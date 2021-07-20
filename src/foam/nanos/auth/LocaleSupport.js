@@ -14,6 +14,8 @@ foam.CLASS({
     'foam.nanos.auth.LanguageId',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
     'javax.servlet.http.HttpServletRequest'
   ],
@@ -25,6 +27,8 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+  public final static String CONTEXT_KEY = "locale.language";
+
   private final static LocaleSupport instance__ = new LocaleSupport();
   public static LocaleSupport instance() { return instance__; }
           `
@@ -49,9 +53,22 @@ foam.CLASS({
       Subject subject = (Subject) x.get("subject");
       if ( subject != null ) {
         User user = subject.getRealUser();
-        if ( user != null ) {
-          user.getLanguage().getCode();
+        if ( user != null &&
+             User.LANGUAGE.isSet(user) ) {
+          Language language = (Language) user.findLanguage(x);
+          if ( language != null ) {
+            return language.getCode();
+          }
         }
+      }
+
+      Theme theme = (Theme) x.get("theme");
+      if ( theme == null ) {
+        theme = ((Themes) x.get("themes")).findTheme(x);
+      }
+      if ( theme != null &&
+           Theme.DEFAULT_LOCALE_LANGUAGE.isSet(theme) ) {
+        return theme.getDefaultLocaleLanguage();
       }
 
       // HttpRequest Header

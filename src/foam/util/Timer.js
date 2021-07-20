@@ -61,12 +61,12 @@ foam.CLASS({
       name:  'time',
       help:  'The current time in milliseconds since epoch.',
       adapt: function(_, t) { return Math.ceil(t); },
-      swiftAdapt: function() {/*
+      swiftAdapt: `
 if let newValue = newValue as? Double {
   return Int(ceil(newValue))
 }
 return newValue as! Int
-      */},
+      `,
       value: 0
     },
     {
@@ -128,12 +128,12 @@ return newValue as! Int
         if ( arguments.length === 2 ) return s * a;
         return a + (1 + s) * (b-a)/2;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let s = sin(Float(time)/1000*frequency*Float.pi*2)
 if a == nil { return s }
 if b == nil { return s * a! }
 return a! + (1 + s) * (b!-a!)/2;
-      */}
+     `
     }
   ],
 
@@ -159,13 +159,13 @@ return a! + (1 + s) * (b!-a!)/2;
         this.minute = this.time /   60000 % 60 << 0;
         this.hour   = this.time / 3600000 % 24 << 0;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 i+=1
 time  += Int(Float(interval) * timeWarp)
 second = time /    1000 % 60 << 0;
 minute = time /   60000 % 60 << 0;
 hour   = time / 3600000 % 24 << 0;
-      */}
+     `
     },
     {
       name:  'stop',
@@ -189,7 +189,7 @@ hour   = time / 3600000 % 24 << 0;
         this.step();
         this.tick();
       },
-      swiftCode: function() {/*
+      swiftCode: `
 if !isStarted { return }
 
 let prevTime = startTime_
@@ -197,7 +197,7 @@ startTime_ = Int(Date().timeIntervalSince1970 * Double(1000))
 interval = startTime_ - prevTime
 step()
 tick()
-      */}
+      `
     }
   ]
 });

@@ -5,16 +5,16 @@
  */
 
 foam.CLASS({
-  name: 'AccountTemporarilyLockedException',
+  name: 'DuplicateEmailException',
   package: 'foam.nanos.auth',
-  extends: 'foam.nanos.auth.AuthenticationException',
+  extends: 'foam.core.ValidationException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Account temporarily locked. You can attempt to login after {{message_}}'
+      value: 'Email already in use'
     }
   ],
 
@@ -23,15 +23,19 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  public AccountTemporarilyLockedException() {
+  public DuplicateEmailException() {
     super();
   }
 
-  public AccountTemporarilyLockedException(String message) {
+  public DuplicateEmailException(String message) {
     super(message);
   }
 
-  public AccountTemporarilyLockedException(String message, Exception cause) {
+  public DuplicateEmailException(Throwable cause) {
+    super(cause);
+  }
+
+  public DuplicateEmailException(String message, Throwable cause) {
     super(message, cause);
   }
         `);

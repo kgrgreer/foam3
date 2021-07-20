@@ -64,11 +64,11 @@ foam.CLASS({
       units: 'seconds',
       preSet: function(_, n) { return Math.max(0, n) },
       swiftPreSet: 'return max(0, newValue)',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 if newValue == 0 {
   state.next(self);
 }
-      */}
+     `
     },
     {
       class: 'String',
@@ -97,14 +97,14 @@ if newValue == 0 {
         this.seconds$ = t.time$.map(function(t) { return Math.floor(t / 1000); });
         return t;
       },
-      swiftFactory: function() {/*
+      swiftFactory: `
 let t = Timer_create()
 self.seconds$ = t.time$.map({ t in
   let t = t as! Int
   return t/1000
 })
 return t
-      */},
+      `,
     },
     {
       class: 'FObjectProperty',
@@ -121,7 +121,7 @@ return t
     {
       name: 'init',
       code: function() {},
-      swiftCode: function() {/*
+      swiftCode: `
 elapsed$ = ExpressionSlot([
   "args": [seconds$, roundStart$],
   "code": { (args: [Any?]) -> Any? in
@@ -134,7 +134,7 @@ remaining$ = ExpressionSlot([
     return (args[1] as! Int) - (args[0] as! Int)
   },
 ])
-      */},
+      `,
     }
   ],
 
@@ -150,11 +150,11 @@ remaining$ = ExpressionSlot([
             t.roundStart  = t.seconds;
             t.action      = 'Warmup';
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.roundLength = t.setupTime
 t.roundStart = t.seconds
 t.action = "Warmup"
-          */},
+          `,
         },
         {
           name: 'next',
@@ -162,10 +162,10 @@ t.action = "Warmup"
             t.state = t.Work.create();
             t.state.start(t);
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.state = t.Work_create();
 t.state.start(t);
-          */},
+          `,
         },
       ]
     },
@@ -186,11 +186,11 @@ t.state.start(t);
             t.roundStart = t.seconds;
             t.action = this.action_string;
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.roundLength = t.workTime
 t.roundStart = t.seconds
 t.action = type(of: self).action_string
-          */},
+          `,
         },
         {
           name: 'next',
@@ -205,7 +205,7 @@ t.action = type(of: self).action_string
 
             t.state.start(t);
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.currentRound += 1
 if t.currentRound >= t.rounds + 1 {
   t.state = t.Finish_create()
@@ -214,7 +214,7 @@ if t.currentRound >= t.rounds + 1 {
   t.state = t.Rest_create()
 }
 t.state.start(t);
-          */},
+          `,
         },
       ]
     },
@@ -235,11 +235,11 @@ t.state.start(t);
             t.roundStart  = t.seconds;
             t.action      = this.action_string;
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.roundLength = t.restTime
 t.roundStart = t.seconds
 t.action = type(of: self).action_string
-          */},
+          `,
         },
         {
           name: 'next',
@@ -247,10 +247,10 @@ t.action = type(of: self).action_string
             t.state = t.Work.create();
             t.state.start(t);
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.state = t.Work_create();
 t.state.start(t);
-          */},
+          `,
         },
       ]
     },
@@ -272,12 +272,12 @@ t.state.start(t);
             t.roundStart  = t.seconds;
             t.stop();
           },
-          swiftCode: function() {/*
+          swiftCode: `
 t.action = type(of: self).action_string
 t.roundLength = 0;
 t.roundStart = t.seconds;
 t.stop()
-          */},
+          `,
         },
         {
           name: 'next',
@@ -295,10 +295,10 @@ t.stop()
         this.timer.start();
         this.state.start(this);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 timer.start()
 state.start(self)
-      */}
+     `
     },
     {
       name: 'stop',
@@ -314,13 +314,13 @@ state.start(self)
         this.state        = undefined;
         this.action       = undefined;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 stop();
 clearProperty("timer")
 clearProperty("currentRound")
 clearProperty("state")
 clearProperty("action")
-      */}
+      `
     }
   ]
 });

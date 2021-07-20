@@ -53,7 +53,7 @@ foam.CLASS({
             return a[foam.locale.substring(0, foam.locale.indexOf('-'))];
           return a['en'];// default language.
         }
-        var s = typeof a === 'function' ? foam.String.multiline(a) :
+        var s = typeof a === 'function' ||
                 typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
@@ -641,6 +641,13 @@ foam.CLASS({
   properties: [ [ 'displayWidth', 80 ] ]
 });
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'Website',
+  extends: 'URL',
+  label: `Websites (requires 'http(s)'/'www' links)`
+});
+
 
 foam.CLASS({
   package: 'foam.core',
@@ -901,7 +908,20 @@ foam.CLASS({
     {
       name: 'value',
       expression: function(of) {
-        return of ? of.ID.value : null;
+        var ret = of ? of.ID.value : null;
+
+
+        if ( ! of ){
+          console.warn('Of not found for: ' + this.name)
+          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name)
+        }
+
+        if ( ret === undefined ){
+          console.warn('Default value is undefined for: ' + of.name + '.' + this.name)
+          ret = null;
+        }
+
+        return ret;
         // return ( of && of.ID.value ) || null;
       }
     }
@@ -910,10 +930,19 @@ foam.CLASS({
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
-      var self = this;
+      var self    = this;
+      var daoName = self.name + '$dao';
+
+      Object.defineProperty(proto, daoName, {
+        get: function classGetter() {
+          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+        },
+        configurable: true
+      });
+
       Object.defineProperty(proto, self.name + '$find', {
         get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey].find(this[self.name]);
+          return this[daoName].find(this[self.name]);
         },
         configurable: true
       });

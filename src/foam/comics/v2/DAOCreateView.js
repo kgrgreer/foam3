@@ -46,8 +46,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.ControllerMode'
   ],
   imports: [
     'ctrl',

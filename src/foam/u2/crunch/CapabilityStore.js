@@ -5,6 +5,46 @@
  */
 
 foam.CLASS({
+  class: 'foam.core.Model',
+
+  package: 'foam.u2.crunch',
+  name: 'TestView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'something',
+      factory: () => ({ a: 1 })
+    },
+    {
+      class: 'String',
+      name: 'company',
+      value: 'Nanopay',
+      view: {
+        // Also read only, but usually don't favour this over ControllerMode
+        // but... really useful for custom views
+        class: 'foam.u2.view.ValueView'
+      }
+    }
+  ],
+
+  methods: [
+    function initE() {
+      this.something.a = 2;
+      this
+        .start('h1').add('hello').end() // <h1>hello</h1>
+        .start()
+          .start('p')
+            .startContext({ data: this, controllerMode: foam.u2.ControllerMode.VIEW /* read only */ })
+              .start(this.COMPANY).end()
+            .endContext()
+          .end()
+        .end()
+    }
+  ]
+});
+
+foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'CapabilityStore',
   extends: 'foam.u2.View',
@@ -21,14 +61,15 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.u2.crunch.CapabilityCardView',
-    'foam.u2.crunch.CapabilityFeatureView',
+    'foam.u2.ControllerMode',
     'foam.u2.Element',
-    'foam.u2.layout.Grid',
-    'foam.u2.layout.GUnit',
     'foam.u2.Tab',
     'foam.u2.Tabs',
-    'foam.u2.UnstyledTabs'
+    'foam.u2.UnstyledTabs',
+    'foam.u2.crunch.CapabilityCardView',
+    'foam.u2.crunch.CapabilityFeatureView',
+    'foam.u2.layout.Grid',
+    'foam.u2.layout.GUnit'
   ],
 
   imports: [
@@ -47,7 +88,8 @@ foam.CLASS({
   messages: [
     { name: 'TAB_ALL', message: 'All' },
     { name: 'TITLE', message: 'Features' },
-    { name: 'SUBTITLE', message: 'Unlock more features on {appName}' }
+    { name: 'SUBTITLE', message: 'Unlock more features on {appName}' },
+    { name: 'EDITABLE', message: 'Edit existing information' }
   ],
 
   css: `
@@ -176,12 +218,17 @@ foam.CLASS({
       name: 'cardsOverflow',
       class: 'Boolean'
     },
+    {
+      name: 'junctions',
+      factory: () => []
+    },
     'wizardOpened'
   ],
 
   methods: [
     function init() {
       this.crunchService.getAllJunctionsForUser().then(juncs => {
+        this.junctions = juncs;
         this.daoUpdate();
       });
       this.crunchService.getEntryCapabilities().then(a => {
@@ -204,7 +251,7 @@ foam.CLASS({
         .start('p').addClass(this.myClass('label-subtitle'))
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
-        .add(this.slot(function(featuredCapabilities){
+        .add(this.slot(function(junctions, featuredCapabilities){
           return self.renderFeatured();
         }))
         // NOTE: TEMPORARILY REMOVED
@@ -221,7 +268,7 @@ foam.CLASS({
         //       for ( let i = 0 ; i < a.array.length ; i++ ) {
         //         let category = a.array[i];
         //         let e = self.Tab.create({ label: category.name })
-        //           .add(self.renderSection(category));
+        //           .add(self.renderCategorySection(category));
         //         this.add(e);
         //       }
         //     });
@@ -244,7 +291,7 @@ foam.CLASS({
                 .addClass(self.myClass('featureSection'))
               .end()
               .on('click', () => {
-                self.openWizard(arr[i].id, true);
+                self.openWizard(arr[i], true);
               })
             .end());
         }
@@ -258,9 +305,9 @@ foam.CLASS({
           .end()
         .end();
         var ele;
-        function checkCardsOverflow(evt) {
-          if ( ! ele.el() ) return;
-          self.cardsOverflow = ele.el().scrollWidth > ele.el().clientWidth;
+        async function checkCardsOverflow(evt) {
+          var el = await ele.el();
+          self.cardsOverflow = el.scrollWidth > el.clientWidth;
         }
         spot.add(self.slot(
           function(carouselCounter, totalNumCards) {
@@ -327,7 +374,7 @@ foam.CLASS({
         });
     },
 
-    function renderSection(category) {
+    function renderCategorySection(category) {
       var self = this;
       var sectionElement = this.E();
 
@@ -358,6 +405,40 @@ foam.CLASS({
       });
       return sectionElement;
     },
+
+    function renderPredicatedSection(capPredicate, ucjPredicate) {
+      var self = this;
+      var sectionElement = this.E();
+
+      // When 'p' resolves, query all matching capabilities
+      self.visibleCapabilityDAO.where(capPredicate).select().then(result => {
+        let arr = result.array;
+        let grid = self.Grid.create();
+        let addedFirstItem = false;
+        for ( let i = 0 ; i < arr.length ; i++ ) {
+          let cap = arr[i];
+          let ucj = self.junctions.find(ucj => ucj.targetId == cap.id);
+          if ( ! ucjPredicate.f(ucj) ) continue;
+          if ( ! addedFirstItem ) {
+            addedFirstItem = true;
+            sectionElement
+              .addClass(this.myClass('category'))
+              // TODO: uncomment when UCJs are editable again
+              // .start('h3').add(this.EDITABLE).end()
+          }
+          grid = grid
+            .start(self.GUnit, { columns: 4 })
+              .tag(self.CapabilityCardView, { data: cap })
+              .on('click', () => {
+                self.openWizard(cap, true);
+              })
+            .end();
+        }
+        sectionElement.add(grid);
+      });
+      return sectionElement;
+    },
+
     function getCategoryDAO_(categoryId) {
       return this.capabilityCategoryCapabilityJunctionDAO.where(
         this.EQ(
@@ -385,16 +466,30 @@ foam.CLASS({
             this.IN(this.Capability.ID, visibleList),
             this.IN('featured', this.Capability.KEYWORDS)
           )).select())
-        .then(sink => {
+        .then(async sink => {
           if ( sink.array.length == 1 ) {
-            this.openWizard(sink.array[0], false);
+            let cap = sink.array[0];
+            let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
+            if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+              || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
+
+            this.openWizard(cap, false);
           }
         })
     },
-    function openWizard(cap, showToast) {
+    async function openWizard(cap, showToast) {
       if ( this.wizardOpened ) return;
       this.wizardOpened = true;
-      this.crunchController.createWizardSequence(cap)
+      let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
+      let x = null;
+      if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+        || ucj.status == this.CapabilityJunctionStatus.PENDING
+      ) ) {
+        x = this.__subContext__.createSubContext({
+          controllerMode: this.ControllerMode.VIEW
+        });
+      }
+      this.crunchController.createWizardSequence(cap, x)
         .reconfigure('CheckPendingAgent', { showToast: showToast })
           .execute().then(() => {
             this.wizardOpened = false
@@ -412,7 +507,8 @@ foam.CLASS({
         this.visibleCapabilityDAO = this.ArrayDAO.create({
           array: a.array
         });
-        await this.crunchService.getAllJunctionsForUser();
+        let juncs = await this.crunchService.getAllJunctionsForUser();
+        this.junctions = juncs;
         this.daoUpdate();
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);

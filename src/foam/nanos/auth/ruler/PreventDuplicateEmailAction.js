@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.Email',
@@ -25,7 +26,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DUPLICATE_ERROR', message: 'User with same email already exists: ' },
     { name: 'EMPTY_ERROR', message: 'Email required' },
     { name: 'INVALID_ERROR', message: 'Invalid email' }
   ],
@@ -63,7 +63,7 @@ foam.CLASS({
             )).limit(1).select(count);
 
         if ( count.getValue() == 1 ) {
-          throw new RuntimeException(DUPLICATE_ERROR + user.getEmail());
+          throw new DuplicateEmailException();
         }
       `
     }

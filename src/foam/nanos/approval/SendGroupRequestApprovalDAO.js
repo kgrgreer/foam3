@@ -26,13 +26,19 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.ApprovalRequest'
+    'foam.nanos.approval.ApprovalRequest',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   messages: [
     {
       name: 'GROUP_NOT_SET_ERROR_MSG',
       message: 'Approver or approver group must be set for approval request'
+    },
+    {
+      name: 'ADDITIONAL_GROUP_NOT_FOUND_ERROR_MSG',
+      message: 'Additional group cannot be found: '
     }
   ],
 
@@ -56,6 +62,8 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+        DAO groupDAO = (DAO) getX().get("groupDAO");
+
         ApprovalRequest request = (ApprovalRequest) obj;
         ApprovalRequest oldRequest = (ApprovalRequest) ((DAO) x.get("approvalRequestDAO")).find(obj);
 
@@ -69,22 +77,48 @@ foam.CLASS({
           return super.put_(x, request);
         }
 
-        Group group = request.findGroup(getX());
+        Group primaryGroup = request.findGroup(getX());
 
-        if ( group == null ) {
+        if ( primaryGroup == null ) {
           Logger logger = (Logger) x.get("logger");
           logger.error(GROUP_NOT_SET_ERROR_MSG, request.getGroup(), request.getApprover());
           throw new RuntimeException(GROUP_NOT_SET_ERROR_MSG);
         }
 
-        group.getUsers(getX()).select(new AbstractSink() {
+        List<Group> approverGroups = new ArrayList<>();
 
-          @Override
-          public void put(Object obj, Detachable sub) {
-            sendSingleRequest(x, request, ((User)obj).getId());
+        approverGroups.add(primaryGroup);
+
+        for ( String groupName : request.getAdditionalGroups() ){
+          Group group = (Group) groupDAO.find_(getX(), groupName);
+        
+          if ( group == null ) {
+            String errorMessage = ADDITIONAL_GROUP_NOT_FOUND_ERROR_MSG + groupName;
+
+            Logger logger = (Logger) x.get("logger");
+            logger.error(
+              errorMessage,
+              request.getGroup(), 
+              request.getApprover()
+            );
+
+            throw new RuntimeException(errorMessage);
           }
 
-        });
+          approverGroups.add(group);
+        }
+
+        for ( Group group : approverGroups ){
+          group.getUsers(getX()).select(new AbstractSink() {
+
+            @Override
+            public void put(Object obj, Detachable sub) {
+              sendSingleRequest(x, request, ((User)obj).getId());
+            }
+
+          });
+        }
+
         return obj;
       `
     },

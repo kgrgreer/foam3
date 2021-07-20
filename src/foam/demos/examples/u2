@@ -93,8 +93,8 @@ tag('input');
 ##  Keyboard Shortcuts
 ##  el() and id
 ##  E()
-##  addClass() / cssClass() / addClasses()
-##  enableCls() / enableClass()
+##  addClass() / addClasses()
+##  enableClass()
 ##  myClass()
 --
 foam.CLASS({

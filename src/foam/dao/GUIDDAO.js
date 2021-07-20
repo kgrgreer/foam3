@@ -20,14 +20,14 @@ foam.CLASS({
   name: 'GUIDDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: function() {/*
+  documentation: `
     DAO Decorator that sets a property to a new random GUID (globally unique identifier) on put(), unless value already set.
     By default, the .id property is used.
     <p>
     Use a foam.dao.EasyDAO with guid:true to automatically set GUIDs. Set
     EasyDAO.seqProperty to the desired property name or use the default
     of 'id'.
-  */},
+ `,
 
   javaImports: [
     'java.util.concurrent.ThreadLocalRandom',

@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'foam.core',
   name: 'Lock',
 
+  documentation: 'A binary Semaphore / Lock.',
+
   static: [
     function test__() {
       var lock = foam.core.Lock.create();
@@ -33,8 +35,6 @@ foam.CLASS({
       }
     }
   ],
-
-  documentation: 'A binary Semaphore / Lock.',
 
   properties: [
     {

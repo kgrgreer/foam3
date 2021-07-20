@@ -150,11 +150,11 @@ foam.CLASS({
     {
       name: 'onResize',
       isFramed: true,
-      code: function() {
-        if ( ! this.el() ) return;
+      code: async function() {
+        var el = await this.el();
 
         // Determine the height of the table's space.
-        var height = this.el().getBoundingClientRect().height;
+        var height = el.getBoundingClientRect().height;
         this.scrollHeight_ = height;
         this.scrollExtent_ = Math.floor(height / this.rowHeight);
       }

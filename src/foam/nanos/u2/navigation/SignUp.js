@@ -20,8 +20,9 @@ foam.CLASS({
     'auth',
     'ctrl',
     'stack',
+    'translationService',
+    'theme',
     'user',
-    'theme'
   ],
 
   requires: [
@@ -224,7 +225,8 @@ foam.CLASS({
             await this.updateUser(x);
           }).catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
-              message: err.message || this.ERROR_MSG,
+              err: err.data,
+              message: this.ERROR_MSG,
               type: this.LogLevel.ERROR
             }));
           })

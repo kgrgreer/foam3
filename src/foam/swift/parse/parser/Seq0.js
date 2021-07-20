@@ -18,14 +18,14 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var ps: foam_swift_parse_PStream? = ps
 for parser in parsers {
   ps = parser.parse(ps!, x)
   if ps == nil { return nil }
 }
 return ps
-      */},
+      `,
     },
   ]
 });

@@ -27,10 +27,13 @@ foam.CLASS({
       -moz-appearance: none;
       -webkit-appearance: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat;
-      background-position: right 0.9em top 50%, 0 0; 
+      background-position: right 0.25em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;
+      overflow: hidden;
+      padding-right: 2.1em;
+      text-overflow: ellipsis;
       width: 100%;
     }
     ^ option {
@@ -88,7 +91,7 @@ foam.CLASS({
           cs.push(self.E('option').attrs({
             value: -1,
             selected: self.data === -1
-          }).add(placeholder));
+          }).addClass('truncate-ellipsis').add(placeholder));
         }
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
@@ -98,12 +101,9 @@ foam.CLASS({
             value: i,
             selected: self.data === i
           }).translate(c[1]+'.name', value)
-
-          if ( value.indexOf('  ') !== -1 ) {
+          if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
-            e.onload.sub(function() {
-              e.el().innerHTML = value.replace(/ /g, '&nbsp;');
-            });
+            e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));
           }
 
           cs.push(e);

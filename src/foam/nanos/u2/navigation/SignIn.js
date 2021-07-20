@@ -15,11 +15,11 @@ foam.CLASS({
     'auth',
     'ctrl',
     'loginSuccess',
-    'stack',
-    'user',
     'menuDAO',
     'memento',
-    'translationService'
+    'stack',
+    'translationService',
+    'user'
   ],
 
   requires: [
@@ -135,7 +135,8 @@ foam.CLASS({
                     this.nextStep();
                   }).catch(err => {
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: err.message || this.ERROR_MSG,
+                      err: err.data,
+                      message: this.ERROR_MSG,
                       type: this.LogLevel.ERROR
                     }));
                   });
@@ -146,9 +147,9 @@ foam.CLASS({
             }
           ).catch(
             err => {
-              let message = err.message ? this.translationService.getTranslation(foam.locale, `${err.data.id}`, err.message) : this.ERROR_MSG
               this.ctrl.add(this.NotificationMessage.create({
-                message: message,
+                err: err.data,
+                message: this.ERROR_MSG,
                 type: this.LogLevel.ERROR
               }));
           });

@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public UnsupportException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,19 +29,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1004
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'Unsupport'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'Unsupported Accept'
+      name: 'errorCode',
+      value: '1004'
     }
   ]
 });

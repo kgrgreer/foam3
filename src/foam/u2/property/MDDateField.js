@@ -81,7 +81,7 @@ foam.CLASS({
       this.inputE();
 
       if ( this.showValidation ) {
-        this.enableCls(this.myClass('invalid'), this.validationError_$);
+        this.enableClass(this.myClass('invalid'), this.validationError_$);
         this.start().addClass(this.myClass('validation-error')).add(this.validationError_$).end();
       }
     },

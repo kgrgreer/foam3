@@ -89,8 +89,10 @@ public class DAOResourceLoader
   }
 
   public static EmailTemplate findTemplate(X x, String name) {
-    var groupId = ((Group) x.get("group")).getId();
-    String locale = ((Subject) x.get("subject")).getRealUser().getLanguage().getCode();
+    User user = ((Subject) x.get("subject")).getRealUser();
+    var groupId = user.findGroup(x).getId();
+    String locale = user.getLanguage().getCode();
+
     return findTemplate(x, name, groupId, locale);
   }
 

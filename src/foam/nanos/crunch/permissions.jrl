@@ -23,3 +23,18 @@ p({
   id: "service.crunchService.updateJunctionFor",
   description: "Permission to use crunch service's updateJunctionFor method."
 })
+p({
+  class: "foam.nanos.auth.Permission",
+  id: "userCapabilityJunctionApprovable.create",
+  description: ""
+})
+p({
+  class: "foam.nanos.auth.Permission",
+  id: "userCapabilityJunctionApprovable.read.*",
+  description: ""
+})
+p({
+  class: "foam.nanos.auth.Permission",
+  id: "userCapabilityJunctionApprovable.update.*",
+  description: ""
+})

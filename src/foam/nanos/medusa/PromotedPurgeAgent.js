@@ -47,7 +47,7 @@ foam.CLASS({
       documentation: 'Number of entries to retain for potential consensus matching.',
       name: 'retain',
       class: 'Long',
-      value: 1000,
+      value: 10000,
     },
     {
       name: 'timerInterval',
@@ -58,18 +58,6 @@ foam.CLASS({
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
  ],
 
@@ -78,7 +66,6 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      getLogger().info("start", "interval", getTimerInterval());
       schedule(getX());
       `
     },
@@ -108,6 +95,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      Logger logger = new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -121,14 +111,14 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
-        Count count = (Count) dao.select(COUNT());
-        if ( count.getValue() > 0 ) {
-          getLogger().debug("purging", count.getValue());
-          dao.select(new PurgeSink(x, new foam.dao.RemoveSink(x, dao)));
+        PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
+        dao.select(purgeSink);
+        if ( purgeSink.getCount() > 0 ) {
+          logger.debug("purged", purgeSink.getCount());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);
-        getLogger().error(t);
+        logger.error(t);
       } finally {
         pm.log(x);
         schedule(x);

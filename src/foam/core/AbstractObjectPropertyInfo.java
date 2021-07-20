@@ -92,6 +92,11 @@ public abstract class AbstractObjectPropertyInfo
   }
 
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
-    formatter.output(get_(obj));
+    Object propObj = get_(obj);
+    if ( propObj instanceof FObject ) {
+      formatter.output((FObject) propObj, null, this);
+    } else {
+      formatter.output(propObj);
+    }
   }
 }

@@ -18,10 +18,12 @@ foam.CLASS({
     ^ {
       max-width: 200px;
     }
-    ^search {
-      margin: 0px;
+    ^searchWrapper {
       padding: 0px 8px;
       padding-bottom: 16px;
+    }
+    ^searchBar{
+      width: 100%
     }
     ^ input[type='search']{
       width: 100%;
@@ -146,10 +148,9 @@ foam.CLASS({
       class: 'String',
       name: 'menuSearch',
       view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
+        class: 'foam.u2.SearchField',
         onKey: true,
-
+        autocomplete: false
       },
       value: '',
       postSet: function() {
@@ -176,9 +177,8 @@ foam.CLASS({
       .on('click', this.stopPropagation)
         .start()
           .start()
-            .add(this.MENU_SEARCH)
-            .addClass('foam-u2-search-TextSearchView')
-            .addClass(this.myClass('search'))
+            .start(this.MENU_SEARCH).addClass(this.myClass('searchBar')).end()
+            .addClass(this.myClass('searchWrapper'))
           .end()
           .start()
           .add(this.slot(function(views) {

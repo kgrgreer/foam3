@@ -27,8 +27,7 @@ foam.CLASS({
   exports: ['as data'],
 
   requires: [
-    'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.nanos.notification.Notification'
   ],
 
   css: `

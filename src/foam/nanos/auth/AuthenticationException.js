@@ -11,13 +11,6 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  properties: [
-    {
-      name: 'exceptionMessage',
-      value: 'Not logged in {{message_}}',
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
@@ -32,7 +25,7 @@ foam.CLASS({
   }
 
   public AuthenticationException(Throwable cause) {
-    super("Not logged in", cause);
+    super(cause);
   }
 
   public AuthenticationException(String message, Throwable cause) {

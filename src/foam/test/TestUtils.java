@@ -165,6 +165,9 @@ public class TestUtils {
       wasCorrectExceptionType = exceptionType.isInstance(t);
       threw = true;
       returnedMessage = t.getMessage();
+      if ( foam.core.FOAMException.class.isInstance(t) ) {
+        returnedMessage = ((foam.core.FOAMException) t).getTranslation();
+      }
       if ( ! wasCorrectExceptionType ) {
         System.out.println("Exception type mismatch.");
         System.out.println("EXPECTED: \""+exceptionType.getName()+"\"");
@@ -173,11 +176,16 @@ public class TestUtils {
         throw t;
       }
     }
-    if ( ! returnedMessage.equals(expectedExceptionMessage) ) {
+    if ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
+         ! returnedMessage.equals(expectedExceptionMessage) ) {
       System.out.println("Error message was not correct.");
       System.out.println("EXPECTED: \"" + expectedExceptionMessage + "\"");
       System.out.println("ACTUAL  : \"" + returnedMessage + "\"");
     }
-    return wasCorrectExceptionType && threw && returnedMessage.equals(expectedExceptionMessage);
+    return wasCorrectExceptionType &&
+      threw &&
+      ( foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) ||
+        ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
+          returnedMessage.equals(expectedExceptionMessage) ) );
   }
 }
