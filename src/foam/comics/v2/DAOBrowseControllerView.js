@@ -241,7 +241,7 @@ foam.CLASS({
                 })
                 .call(function() {
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { data: data, config: config });
+                    return self.E().tag(browseView, { data: data, config: config } );
                   }));
                 })
               .end()
