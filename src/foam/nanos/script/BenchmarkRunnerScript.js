@@ -54,7 +54,7 @@
     {
       name: 'failedBenchmarksList',
       class: 'FObjectArray',
-      of: 'Benchmark'
+      of: 'BenchmarkRunner'
     }
   ],
 
@@ -85,7 +85,7 @@
         }
 
         for ( int i = 0; i < benchmarkArray.size(); i ++ ) {
-          Benchmark benchmark = (Benchmark) benchmarkArray.get(i);
+          BenchmarkRunner benchmark = (BenchmarkRunner) benchmarkArray.get(i);
 
           if ( selectedBenchmarks != null ) {
             if ( selectedBenchmarks.contains(benchmark.getId()) ) {
@@ -98,7 +98,8 @@
           }
         }
 
-        System.out.println("DONE RUNNING " + selectedBenchmarks != null ? selectedBenchmarks.size() : benchmarkArray.size() + " Benchmarks");
+        int result = selectedBenchmarks != null ? selectedBenchmarks.size() : benchmarkArray.size();
+        System.out.println("DONE RUNNING " + result + " Benchmarks");
         System.exit(0);
       `
     },
@@ -109,18 +110,12 @@
           name: 'x', type: 'Context'
         },
         {
-          name: 'benchmark', type: 'foam.nanos.bench.Benchmark'
+          name: 'benchmark', type: 'foam.nanos.bench.BenchmarkRunner'
         }
       ],
       javaCode: `
         try {
-          BenchmarkRunner runner = new BenchmarkRunner.Builder(x)
-            .setInvocationCount(1)
-            .setThreadCount(1)
-            .setRunPerThread(false)
-            .setBenchmark(benchmark)
-            .build();
-          runner.execute(x);
+          benchmark.execute(x);
         }
         catch ( Exception e ) {
           Logger logger = (Logger) x.get("logger");
@@ -133,12 +128,12 @@
       name: 'addToFailedBenchmarksList',
       args: [
         {
-          name: 'benchmark', javaType: 'Benchmark'
+          name: 'benchmark', javaType: 'BenchmarkRunner'
         }
       ],
       javaCode: `
-        Benchmark[] failedBenchmarks = getFailedBenchmarksList();
-        Benchmark[] temp = new Benchmark[failedBenchmarks.length+1];
+        BenchmarkRunner[] failedBenchmarks = getFailedBenchmarksList();
+        BenchmarkRunner[] temp = new BenchmarkRunner[failedBenchmarks.length+1];
         for ( int i = 0;i < failedBenchmarks.length; i++ ) {
           temp[i] = failedBenchmarks[i];
         }

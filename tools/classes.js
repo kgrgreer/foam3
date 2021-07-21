@@ -261,6 +261,7 @@ var classes = [
   'foam.nanos.boot.DAONSpecMenu',
   'foam.nanos.app.Mode',
   'foam.nanos.bench.Benchmark',
+  'foam.nanos.bench.BenchmarkRunner',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
