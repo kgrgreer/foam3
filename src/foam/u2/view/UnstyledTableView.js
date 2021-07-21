@@ -775,7 +775,7 @@ foam.CLASS({
         ).map(c =>{
           return c;
         }))
-        ).then(columns => this.columns_ = columns.filter(c => c));
+        .then(columns => this.columns_ = columns.filter(c => c));
       }
       }
   ]
