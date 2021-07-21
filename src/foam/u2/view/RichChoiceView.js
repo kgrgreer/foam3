@@ -207,7 +207,6 @@ foam.CLASS({
 
     ^chevron::before {
       content: '▾';
-      font-size: 1.5em;
       padding-left: 4px;
     }
 
