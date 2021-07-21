@@ -149,6 +149,7 @@ FOAM_FILES([
   { name: "foam/nanos/theme/ThemeDomainsDAO" },
   { name: "foam/nanos/theme/Themes" },
   { name: "foam/nanos/bench/Benchmark" },
+  { name: 'foam/nanos/bench/BenchmarkRunner' },
   { name: "foam/nanos/boot/NSpec" },
   { name: "foam/nanos/boot/NSpecAware" },
   { name: "foam/nanos/boot/DAOConfigSummaryView", flags: ['web'] },

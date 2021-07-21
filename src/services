@@ -1136,24 +1136,20 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "benchmarkDAO",
-  "serve": true,
-  "serviceScript":
-  """
+  "class":"foam.nanos.boot.NSpec",
+  "name":"benchmarkDAO",
+  "serve":true,
+  "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.bench.Benchmark.getOwnClassInfo())
-      .setName("benchmark")
-      .setPm(false)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("benchmark")
+      .setOf(foam.nanos.bench.BenchmarkRunner.getOwnClassInfo())
       .build();
   """,
    "client":
   """
     {
-      "of":"foam.nanos.bench.Benchmark"
+      "of":"foam.nanos.bench.BenchmarkRunner"
     }
   """
 })
