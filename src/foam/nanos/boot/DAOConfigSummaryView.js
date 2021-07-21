@@ -89,14 +89,13 @@ foam.CLASS({
         'currentMemento_ as memento'
       ],
 
+      requires: ['foam.u2.stack.BreadcrumbView'],
+
       css: `
-        ^title {
-          padding: 25px;
-          font-size: 26px;
-        }
-        ^title a {
-          color: blue;
-          text-decoration: underline;
+        ^nav {
+          margin-top: 32px;
+          margin-left: 32px;
+          margin-bottom: 16px;
         }
       `,
 
@@ -106,27 +105,22 @@ foam.CLASS({
           class: 'foam.u2.ViewSpec',
           name: 'inner'
         },
-        'currentMemento_'
+        'currentMemento_',
+        {
+          name: 'viewTitle',
+          factory: function() { return this.title; }
+        }
       ],
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           if ( this.memento )
             this.currentMemento_$ = this.memento.tail$;
 
           this.
-            start().
-              addClass(this.myClass('title')).
-              start('a').
-                add('Data Management').on('click', () => {
-                  this.memento.tail$.set(null);
-                  this.stack.back();
-                }).
-              end().
-              add(' / ', this.title).
-            end().
+            start(this.BreadcrumbView).addClass(this.myClass('nav')).end().
             tag(this.inner);
         }
       ]
@@ -154,6 +148,7 @@ foam.CLASS({
     }
     ^section {
       display: inline-grid;
+      vertical-align: baseline;
     }
     ^header {
       background: /*%BLACK%*/ #1e1f21;
@@ -162,7 +157,7 @@ foam.CLASS({
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
     .foam-u2-view-AltView .property-selectedView {
-      margin-left: 24px;
+      margin-left: 32px;
     }
   `,
 
@@ -170,7 +165,8 @@ foam.CLASS({
     'foam.comics.BrowserView',
     'foam.comics.v2.DAOBrowseControllerView',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.controller.Memento'
+    'foam.nanos.controller.Memento',
+    'foam.u2.stack.StackBlock'
   ],
 
   implements: [ 'foam.mlang.Expressions' ],
@@ -179,7 +175,7 @@ foam.CLASS({
 
 
   exports: [
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   messages: [
@@ -208,18 +204,18 @@ foam.CLASS({
       class: 'String',
       name: 'search',
       view: {
-       class: 'foam.u2.TextField',
-       type: 'search',
+       class: 'foam.u2.SearchField',
        onKey: true
       }
     },
     {
       name: 'currentMemento_'
-    }
+    },
+    ['viewTitle', 'Data Management']
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var self          = this;
@@ -229,7 +225,7 @@ foam.CLASS({
       if ( self.memento )
         this.currentMemento_$ = self.memento.tail$;
 
-      this.addClass(this.myClass()).
+      this.addClass().
       start().
         style({ 'height': '56px'}).
         start().
@@ -296,7 +292,7 @@ foam.CLASS({
               .attrs({title: spec.description})
               .on('click', function() {
                 if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create() });
+                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), replaceHistoryState : false });
                   self.memento.tail$.set(tail);
                 }
               });
@@ -337,37 +333,39 @@ foam.CLASS({
         if ( ! isInitializing && ! m.tail ) this.stack.back();
         return;
       }
-
-      var x = this.__subContext__.createSubContext({ memento: this.memento });
+      var x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
-      this.stack.push({
-        class: this.BackBorder,
-        title: m.tail.head,
-        inner: {
-          class: 'foam.u2.view.AltView',
-          data: this.__context__[m.tail.head],
-          views: [
-            [
-              {
-                class: this.BrowserView,
-                stack: this.stack
-              },
-              this.CONTROLLER1
+      this.stack.push(this.StackBlock.create({ 
+        view: {
+          class: this.BackBorder,
+          title: m.tail.head,
+          inner: {
+            class: 'foam.u2.view.AltView',
+            data: this.__context__[m.tail.head],
+            views: [
+              [
+                {
+                  class: this.BrowserView,
+                  stack: this.stack
+                },
+                this.CONTROLLER1
+              ],
+              [
+                {
+                  class: this.DAOBrowseControllerView,
+                  stack: this.stack,
+                  showNav: false
+                },
+                this.CONTROLLER2
+              ]
             ],
-            [
-              {
-                class: this.DAOBrowseControllerView,
-                stack: this.stack
-              },
-              this.CONTROLLER2
-            ]
-          ]
-        }
-      }, x);
+            selectedView: this.CONTROLLER2
+          }
+        }, parent: x }));
     }
   ]
 });

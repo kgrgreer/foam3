@@ -96,6 +96,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
@@ -169,7 +171,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
-          getLogger().debug("send", "replyBox.setDelegate");
+          // getLogger().debug("send", "replyBox.setDelegate");
         } else {
           msg.getAttributes().put("replyBox", box);
         }
@@ -301,7 +303,7 @@ NOTE: duplicated in SocketConnectionReplyBox
               if ( o != null &&
                    o instanceof foam.box.RPCErrorMessage ) {
                 foam.box.RemoteException re = (foam.box.RemoteException) ((foam.box.RPCErrorMessage) o).getData();
-                getLogger().warning("RemoteException", re.getId(), re.getMessage(), re.getException());
+                getLogger().warning("RemoteException", re.getId(), re.getMessage(), re.getException() != null ? re.getException().getClass().getName() : "");
                 if ( re.getException() != null ) {
                   throw (foam.core.FOAMException) re.getException();
                 }

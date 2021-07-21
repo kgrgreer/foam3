@@ -7,12 +7,8 @@
 /*
 TODO:
  - Remove use of E() and replace with create-ing axiom to add same behaviour.
- - create 'inner' element which defaults to this. add() adds to inner to make
-   creating borders simple
  - start('leftPanel') should work for locating pre-existing named spaces
- - start, tag, and add() should use standard helper method
- - Fix handling of Slots that return arrays.
- - Properly handle insertBefore_ of an element that's already been inserted?
+ - Don't generate .java and remove need for flags: ['js'].
 */
 
 foam.ENUM({
@@ -41,12 +37,10 @@ foam.ENUM({
   values: [
     {
       name: 'CREATE',
-      label: 'Create',
       modePropertyName: 'createVisibility'
     },
     {
       name: 'VIEW',
-      label: 'View',
       modePropertyName: 'readVisibility',
       restrictDisplayMode: function(mode) {
         return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
@@ -54,7 +48,6 @@ foam.ENUM({
     },
     {
       name: 'EDIT',
-      label: 'Edit',
       modePropertyName: 'updateVisibility'
     }
   ]
@@ -75,10 +68,10 @@ foam.ENUM({
   ],
 
   values: [
-    { name: 'RW',       label: 'Read-Write' },
-    { name: 'DISABLED', label: 'Disabled' },
-    { name: 'RO',       label: 'Read-Only' },
-    { name: 'HIDDEN',   label: 'Hidden', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
+    { name: 'RW', label: 'Read-Write' },
+    { name: 'DISABLED' },
+    { name: 'RO', label: 'Read-Only' },
+    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
   ]
 });
 
@@ -172,30 +165,32 @@ foam.CLASS({
           ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
           foam.__context__;
 
-        // if a class has inheritCSS: false then finish installing its other
-        // CSS axioms, but prevent any parent classes from installing theirs
-        // We put this in the context to communicate to other CSSAxioms
-        // down the chain. The last/first one will revert back to the original
-        // X so that objects aren't created with lastClassToInstallCSSFor
-        // in their contexts.
-        var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-        if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-          // Install CSS if not already installed in this document for this cls
-          axiom.maybeInstallInDocument(X, this);
-        }
-
-        if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-          X = X.createSubContext({
-            lastClassToInstallCSSFor: this,
-            originalX: X
-          });
-        }
-
-        if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-
         // Now call through to the original create
-        return oldCreate.call(this, args, X);
+        try {
+          return oldCreate.call(this, args, X);
+        } finally {
+          // if a class has inheritCSS: false then finish installing its other
+          // CSS axioms, but prevent any parent classes from installing theirs
+          // We put this in the context to communicate to other CSSAxioms
+          // down the chain. The last/first one will revert back to the original
+          // X so that objects aren't created with lastClassToInstallCSSFor
+          // in their contexts.
+          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
+
+          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
+            // Install CSS if not already installed in this document for this cls
+            axiom.maybeInstallInDocument(X, this);
+          }
+
+          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
+            X = X.createSubContext({
+              lastClassToInstallCSSFor: this,
+              originalX: X
+            });
+          }
+
+          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
+        }
       };
     },
 
@@ -284,6 +279,7 @@ foam.CLASS({
   `,
 
   methods: [
+    function el() {},
     function output(out) {},
     function load() {},
     function unload() {},
@@ -301,39 +297,14 @@ foam.CLASS({
     function onRemoveChild() {},
     function getBoundingClientRect() {
       return {
-        left: 0,
-        right: 0,
+        left:   0,
+        right:  0,
         bottom: 0,
-        top: 0,
-        width: 0,
+        top:    0,
+        width:  0,
         height: 0
       };
     }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'UnloadedElementState',
-  extends: 'foam.u2.ElementState',
-
-  documentation: 'State of an unloaded Element.',
-
-  methods: [
-    function output(out) {
-      this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
-      this.state = this.OUTPUT;
-      this.output_(out);
-      return out;
-    },
-    function load() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function unload() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function toString() { return 'UNLOADED'; }
   ]
 });
 
@@ -348,8 +319,14 @@ foam.CLASS({
   axioms: [ foam.pattern.Singleton.create() ],
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
-      this.initE();
+      this.render();
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -367,6 +344,12 @@ foam.CLASS({
   documentation: 'State of Element after it has been output to DOM, but not yet loaded.',
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
       // TODO: raise a real error
       this.__context__.warn('ERROR: Duplicate output.');
@@ -375,8 +358,8 @@ foam.CLASS({
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
-        for ( var i = 0 ; i < ls.length ; i += 2 ) {
-          this.addEventListener_(ls[i], ls[i+1]);
+        for ( var i = 0 ; i < ls.length ; i += 3 ) {
+          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
         }
       }
 
@@ -384,7 +367,7 @@ foam.CLASS({
       this.state = this.LOADED;
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) window.setTimeout(() => { try { this.el().focus(); } catch(x) {} }, 70);
+      if ( this.focused ) this.el().then(el => el.focus());
       // Allows you to take the DOM element and map it back to a
       // foam.u2.Element object.  This is expensive when building
       // lots of DOM since it adds an extra DOM call per Element.
@@ -401,14 +384,14 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onSetClass(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onFocus(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetStyle(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetAttr(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveAttr(key) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddChildren(c) { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetClass() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onFocus() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetStyle() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onInsertChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onReplaceChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onRemoveChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
@@ -425,6 +408,10 @@ foam.CLASS({
   documentation: 'State of an Element after it has been output to the DOM and loaded.',
 
   methods: [
+    function el() {
+      return Promise.resolve(this.el_());
+    },
+
     function output(out) {
       this.__context__.warn('Duplicate output.');
       return this.UNLOADED.output.call(this, out);
@@ -432,7 +419,7 @@ foam.CLASS({
     function load() { this.__console__.warn('Duplicate load.'); },
     function unload() {
       if ( ! this.parentNode || this.parentNode.state === this.LOADED ) {
-        var e = this.el();
+        var e = this.el_();
         if ( e ) e.remove();
       }
 
@@ -442,7 +429,7 @@ foam.CLASS({
     },
     function onRemove() { this.unload(); },
     function onSetClass(cls, enabled) {
-      var e = this.el();
+      var e = this.el_();
       if ( e ) {
         e.classList[enabled ? 'add' : 'remove'](cls);
       } else {
@@ -450,33 +437,33 @@ foam.CLASS({
       }
     },
     function onFocus() {
-      this.el().focus();
+      this.el_().focus();
     },
-    function onAddListener(topic, listener) {
-      this.addEventListener_(topic, listener);
+    function onAddListener(topic, listener, opt_args) {
+      this.addEventListener_(topic, listener, opt_args);
     },
     function onRemoveListener(topic, listener) {
       this.addRemoveListener_(topic, listener);
     },
     function onSetStyle(key, value) {
-      this.el().style[key] = value;
+      this.el_().style[key] = value;
     },
     function onSetAttr(key, value) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el()[key] = value;
+        this.el_()[key] = value;
       } else {
-        this.el().setAttribute(key, value === true ? '' : value);
+        this.el_().setAttribute(key, value === true ? '' : value);
       }
     },
     function onRemoveAttr(key) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el()[key] = '';
+        this.el_()[key] = '';
       } else {
-        this.el().removeAttribute(key);
+        this.el_().removeAttribute(key);
       }
     },
     function onAddChildren() {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -491,7 +478,7 @@ foam.CLASS({
       }
     },
     function onInsertChildren(children, reference, where) {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -501,7 +488,7 @@ foam.CLASS({
         out(children[i]);
       }
 
-      reference.el().insertAdjacentHTML(where, out);
+      reference.el_().insertAdjacentHTML(where, out);
 
       // EXPERIMENTAL:
       // TODO(kgr): This causes some elements to get stuck in OUTPUT state
@@ -515,27 +502,56 @@ foam.CLASS({
       // }, 33);
     },
     function onReplaceChild(oldE, newE) {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
       }
       var out = this.createOutputStream();
       out(newE);
-      oldE.el().outerHTML = out.toString();
+      oldE.el_().outerHTML = out.toString();
       newE.load && newE.load();
     },
     function onRemoveChild(child, index) {
       if ( typeof child === 'string' ) {
-        this.el().childNodes[index].remove();
+        this.el_().childNodes[index].remove();
       } else {
         child.remove();
       }
     },
     function getBoundingClientRect() {
-      return this.el().getBoundingClientRect();
+      return this.el_().getBoundingClientRect();
     },
     function toString() { return 'LOADED'; }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'UnloadedElementState',
+  extends: 'foam.u2.ElementState',
+
+  documentation: 'State of an unloaded Element.',
+
+  methods: [
+    function el() {
+      // A NOOP Promise that will never resolve
+      return { then: function() {}, catch: function() {} };
+    },
+    function output(out) {
+      this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
+      this.state = this.OUTPUT;
+      this.output_(out);
+      return out;
+    },
+    function load() {
+      this.__context__.warn('Must output before loading.');
+    },
+    function unload() {
+      this.__context__.warn('Must output before loading.');
+    },
+    function toString() { return 'UNLOADED'; }
   ]
 });
 
@@ -717,8 +733,7 @@ foam.CLASS({
       `,
       name: 'PSEDO_ATTRIBUTES',
       value: {
-        valueAsDate: true,
-        value: true,
+        value:   true,
         checked: true
       }
     },
@@ -728,6 +743,18 @@ foam.CLASS({
       type: 'foam.u2.DefaultValidator',
       flags: ['js'],
       factory: function() { return foam.u2.DefaultValidator.create(); }
+    },
+
+    {
+      documentation: `
+        Initial state of an Element before it has been added to the DOM.
+      `,
+      name: 'INITIAL',
+      type: 'foam.u2.InitialElementState',
+      flags: ['js'],
+      factory: function() {
+        return foam.u2.InitialElementState.create();
+      }
     },
 
     {
@@ -763,18 +790,6 @@ foam.CLASS({
       type: 'foam.u2.UnloadedElementState',
       flags: ['js'],
       factory: function() { return foam.u2.UnloadedElementState.create(); }
-    },
-
-    {
-      documentation: `
-        Initial state of an Element before it has been added to the DOM.
-      `,
-      name: 'INITIAL',
-      type: 'foam.u2.InitialElementState',
-      flags: ['js'],
-      factory: function() {
-        return foam.u2.InitialElementState.create();
-      }
     },
 
     // ???: Add DESTROYED State?
@@ -1045,7 +1060,7 @@ foam.CLASS({
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
-    function initE() {
+    function render() {
       /*
         Template method for adding addtion element initialization
         just before Element is output().
@@ -1054,18 +1069,18 @@ foam.CLASS({
       this.initKeyboardShortcuts();
     },
 
-    function observeScrollHeight() {
+    async function observeScrollHeight() {
       // TODO: This should be handled by an onsub event when someone subscribes to
       // scroll height changes.
       var self = this;
-      var observer = new MutationObserver(function(mutations) {
-        self.scrollHeight = self.el().scrollHeight;
+      var observer = new MutationObserver(async function(mutations) {
+        var el = await self.el();
+        self.scrollHeight = el.scrollHeight;
       });
       var config = { attributes: true, childList: true, characterData: true };
 
-      this.onload.sub(function(s) {
-        observer.observe(self.el(), config);
-      });
+      var e = await this.el();
+      observer.observe(e, config);
       this.onunload.sub(function(s) {
         observer.disconnect()
       });
@@ -1121,6 +1136,8 @@ foam.CLASS({
         if ( count == 0 ) keyMap = null;
 
         cls.keyMap__ = keyMap;
+      } else {
+        keyMap = cls.keyMap__;
       }
 
       if ( ! keyMap ) return null;
@@ -1158,15 +1175,13 @@ foam.CLASS({
       }
     },
 
-    function el() {
-      /* Return this Element's real DOM element, if loaded. */
-      // Caching this call doesn't appear to help performance.
+    function el_() {
       return this.getElementById(this.id);
     },
 
     function findChildForEvent(e) {
       var src  = e.srcElement;
-      var el   = this.el();
+      var el   = this.el_();
       var cMap = {};
       var cs   = this.children;
 
@@ -1196,11 +1211,6 @@ foam.CLASS({
       if ( opt_event ) args.event    = opt_event;
 
       return this.AttrSlot.create(args);
-    },
-
-    function myCls(opt_extra) {
-      console.warn('Deprecated use of Element.myCls(). Use myClass() instead.');
-      return this.myClass(opt_extra);
     },
 
     function myClass(opt_extra) {
@@ -1356,8 +1366,8 @@ foam.CLASS({
     function getAttribute(name) {
       // TODO: add support for other dynamic attributes also
       // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el() ) {
-        var value = this.el()[name];
+      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
+        var value = this.el_()[name];
         var attr  = this.getAttributeNode(name);
 
         if ( attr ) {
@@ -1439,19 +1449,19 @@ foam.CLASS({
       }
     },
 
-    function addEventListener(topic, listener) {
+    function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
-      this.elListeners.push(topic, listener);
-      this.onAddListener(topic, listener);
+      this.elListeners.push(topic, listener, opt_args);
+      this.onAddListener(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
       var ls = this.elListeners;
-      for ( var i = 0 ; i < ls.length ; i+=2 ) {
+      for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
-          ls.splice(i, 2);
+          ls.splice(i, 3);
           this.onRemoveListener(topic, listener);
           return;
         }
@@ -1484,13 +1494,16 @@ foam.CLASS({
     },
 
     function cssClass(cls) {
+      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
       return this.addClass(cls);
     },
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
       var self = this;
-      if ( foam.core.Slot.isInstance(cls) ) {
+      if ( cls === undefined ) {
+        this.addClass_(null, this.myClass());
+      } else if ( foam.core.Slot.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();
@@ -1511,12 +1524,6 @@ foam.CLASS({
     function addClasses(a) {
       a && a.forEach((i) => this.addClass(i));
       return this;
-    },
-
-    // TODO: remove
-    function enableCls(cls, enabled, opt_negate) {
-      console.warn('Deprecated use of Element.enableCls(). Use enableClass() instead.');
-      return this.enableClass(cls, enabled, opt_negate);
     },
 
     function enableClass(cls, enabled, opt_negate) {
@@ -1541,12 +1548,6 @@ foam.CLASS({
       return this;
     },
 
-    // TODO: remove
-    function removeCls(cls) {
-      console.warn('Deprecated use of Element.removeCls(). Use removeClass() instead.');
-      return this.removeClass(cls);
-    },
-
     function removeClass(cls) {
       /* Remove specified CSS class. */
       if ( cls ) {
@@ -1556,9 +1557,9 @@ foam.CLASS({
       return this;
     },
 
-    function on(topic, listener) {
+    function on(topic, listener, opt_args) {
       /* Shorter fluent version of addEventListener. Prefered method. */
-      this.addEventListener(topic, listener);
+      this.addEventListener(topic, listener, opt_args);
       return this;
     },
 
@@ -1673,8 +1674,9 @@ foam.CLASS({
     function add_(cs, parentNode) {
       // Common case is one String, so optimize that case.
       if ( cs.length == 1 && typeof cs[0] === 'string' ) {
-        this.childNodes.push(this.sanitizeText(cs[0]));
-        this.onAddChildren(cs[0]);
+        var sanitized = this.sanitizeText(cs[0]);
+        this.childNodes.push(sanitized);
+        this.onAddChildren(sanitized);
         return this;
       }
 
@@ -1856,11 +1858,6 @@ foam.CLASS({
     function call(f, args) {
       f.apply(this, args);
 
-      return this;
-    },
-
-    function callOn(obj, f, args) {
-      obj[f].apply(obj, [this].concat(args));
       return this;
     },
 
@@ -2061,7 +2058,7 @@ foam.CLASS({
         }
         var first = Array.isArray(e) ? e[0] : e;
 
-        if ( first.state == first.INITIAL ) {
+        if ( first && first.state == first.INITIAL ) {
           // updated requested before initial element loaded
           // not a problem, just defer loading
           first.onload.sub(foam.events.oneTime(l));
@@ -2090,13 +2087,14 @@ foam.CLASS({
       return e;
     },
 
-    function addEventListener_(topic, listener) {
-      var el = this.el();
-      el && el.addEventListener(topic, listener, false);
+    function addEventListener_(topic, listener, opt_args) {
+      var el = this.el_();
+      el && el.addEventListener(topic, listener, opt_args || false);
     },
 
     function removeEventListener_(topic, listener) {
-      this.el() && this.el().removeEventListener(topic, listener);
+      var el = this.el_();
+      el && el.removeEventListener(topic, listener);
     },
 
     function output_(out) {
@@ -2143,8 +2141,9 @@ foam.CLASS({
           var value = attr.value;
 
           if ( value !== false ) {
-            out(' ', name);
-            out('="', foam.String.isInstance(value) ? value.replace(/"/g, '&quot;') : value, '"');
+            out(' ', name, '="');
+            out(foam.String.isInstance(value) ? value.replace(/"/g, '&quot;') : value);
+            out('"');
           }
         }
       }
@@ -2165,11 +2164,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'onKeyboardShortcut',
-      documentation: function() {/*
+      documentation: `
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
           to your $$DOC{ref:'foam.ui.View'}.
-      */},
+      `,
       code: function(evt) {
         if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
@@ -2325,6 +2324,10 @@ foam.CLASS({
         The order to render the property in if rendering multiple properties.
       `,
       value: Number.MAX_SAFE_INTEGER
+    },
+    {
+      class: 'Boolean',
+      name: 'onKey'
     }
   ],
 
@@ -2449,6 +2452,24 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'FormattedStringViewRefinement',
+  refines: 'foam.core.FormattedString',
+  requires: [ 'foam.u2.FormattedTextField' ],
+  properties: [
+    {
+      name: 'view',
+      factory: function() {
+        return {
+          class: 'foam.u2.FormattedTextField',
+          formatter: this.formatter,
+          returnFormatted: false
+        };
+      }
+    }
+  ]
+});
 
 foam.CLASS({
   package: 'foam.u2',
@@ -2552,7 +2573,7 @@ foam.CLASS({
       expression: function(label, labelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
-          label: label,
+          label: this.help,
           labelFormatter: labelFormatter
         };
       }
@@ -2631,7 +2652,7 @@ foam.CLASS({
       name: 'view',
       expression: function(of) {
         return {
-          class: 'foam.u2.view.FObjectArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           of: of
         };
       }
@@ -2840,7 +2861,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -2947,16 +2968,6 @@ foam.CLASS({
       value: true
     },
     {
-      documentation: `
-        // TODO: remove when all code ported
-      `,
-      name: 'tableProperties',
-      setter: function(_, ps) {
-        console.warn("Deprecated use of tableProperties. Use 'tableColumns' instead.");
-        this.tableColumns = ps;
-      }
-    },
-    {
       name: 'tableColumns',
       postSet: function(_, cs) {
         this.axioms_.push(foam.u2.TableColumns.create({columns: cs}));
@@ -2967,6 +2978,75 @@ foam.CLASS({
       postSet: function(_, cs) {
         this.axioms_.push(foam.u2.SearchColumns.create({columns: cs}));
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLValidator',
+  extends: 'foam.u2.DefaultValidator',
+
+  axioms: [ foam.pattern.Singleton.create() ],
+
+  methods: [
+    function sanitizeText(text) {
+      // TODO: validate text
+      return text;
+    }
+  ]
+});
+
+
+// An Element which does not escape HTML content
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLElement',
+  extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.HTMLValidator' ],
+
+  exports: [ 'validator as elementValidator' ],
+
+  properties: [
+    {
+      class: 'Proxy',
+      of: 'foam.u2.DefaultValidator',
+      name: 'validator',
+      factory: function() {
+        // Note that HTMLValidator is a singleton so only one instance of
+        // HTMLValidator should ever be created here.
+        return this.HTMLValidator.create()
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLView',
+//  extends: 'foam.u2.tag.TextArea',
+  extends: 'foam.u2.HTMLElement',
+
+  documentation: 'View for safely displaying HTML content.',
+
+  css: '^ { padding: 6px 0; }',
+
+  properties: [
+    {
+      name: 'data',
+      attribute: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.SUPER();
+      this.addClass();
+
+      this.add(this.data$);
     }
   ]
 });

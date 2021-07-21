@@ -203,18 +203,18 @@ foam.CLASS({
       }
     },
 
-    async function initE() {
+    async function render() {
       this.SUPER();
 
       function dataToClass(d) {
         return d ? d.cls_.id : '';
       }
 
-      var classToData = function(c) {
+      var classToData = (c) => {
         if ( ! c ) return undefined;
-        var m = c && this.__context__.lookup(c, true);
+        var m = c && this.__context__.maybeLookup(c);
         return m.create(this.data ? this.copyOldData(this.data) : null, this);
-      }.bind(this);
+      };
 
       this.dataWasProvided_ = !! this.data;
 

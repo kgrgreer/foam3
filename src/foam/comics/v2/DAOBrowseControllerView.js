@@ -18,11 +18,13 @@ foam.CLASS({
     'auth',
     'currentMenu?',
     'memento',
-    'stack'
+    'stack',
+    'translationService'
   ],
 
   exports: [
-    'memento'
+    'config',
+    'memento',
   ],
 
   requires: [
@@ -30,31 +32,22 @@ foam.CLASS({
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.view.IconChoiceView'
+    'foam.u2.stack.BreadcrumbView',
+    'foam.u2.stack.StackBlock',
+    'foam.u2.view.IconChoiceView',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   css: `
     ^container {
-      padding: 32px;
+      padding: 24px 32px 16px 32px;
+      height: 100%;
+      box-sizing: border-box;
     }
 
     ^header-container {
       padding-bottom: 32px;
       align-items: center;
-    }
-
-    ^browse-title {
-      font-size: 36px;
-      font-weight: 600;
-      line-height: 1.33;
-      color: #1e1f21;
-    }
-
-    ^browse-subtitle {
-      font-size: 18px;
-      line-height: 1.56;
-      color: #5e6061;
-      width: 50%;
     }
 
     ^altview-container {
@@ -63,17 +56,23 @@ foam.CLASS({
       padding: 12px 16px 0 0;
     }
 
+    ^buttons{
+      margin-right: 8px;
+    }
+
     ^ .foam-u2-borders-CardBorder {
-      padding: 0px;
-      border-radius: 6px;
-      box-shadow: 0px 1px 3px 0px #E7E7E7;
-      -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
-      -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
+      border: 1px solid /*%GREY4%*/ #DADDE2;
+      border-radius: 4px;
+      box-sizing: border-box;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+      height: 100%;
+      padding: 0;
     }
   `,
 
   messages: [
-    { name: 'VIEW_ALL', message: 'View all ' }
+    { name: 'VIEW_ALL', message: 'View all ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   properties: [
@@ -97,6 +96,18 @@ foam.CLASS({
           ? config$browseViews[0].view
           : this.DAOBrowserView
           ;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
+    },
+    {
+      name: 'viewTitle',
+      expression: function(config) {
+        var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
+        return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
       }
     }
   ],
@@ -125,57 +136,99 @@ foam.CLASS({
       },
       code: function() {
         if ( ! this.stack ) return;
-        this.stack.push({
-          class: 'foam.comics.v2.DAOCreateView',
-          data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-          config$: this.config$,
-          of: this.data.of
-        }, this.__subContext__);
+
+        if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView' ) {
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.config.createController.class,
+              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this
+          }));
+        } else if ( this.config.createControllerView ) {
+          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this }));
+        } else {
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.config.createController.class,
+              config$: this.config$,
+              of: this.data.of,
+              data: this.selection,
+              detailView: this.config.detailView.class,
+              menu: this.config.menu,
+              controllerMode: foam.u2.ControllerMode.CREATE,
+              isEdit: true
+            }, parent: this
+          }));
+        }
       }
     }
   ],
 
   methods: [
-    function initE() {
+    function render() {
     this.SUPER();
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
-    this.addClass(this.myClass())
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction) {
+    var nav = this.showNav ? self.BreadcrumbView : '';
+    this.addClass()
+
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
               .start()
                 .addClass(self.myClass('header-container'))
+                .tag(nav)
                 .start(self.Cols)
                   .start()
-                    .addClass(self.myClass('browse-title'))
+                    .addClasses(['h100', self.myClass('browse-title')])
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
-                  .startContext({ data: self }).tag(self.CREATE).endContext()
-                  .callIf(config$primaryAction, function() {
-                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
-                  })
+                  .start(self.Cols)
+                    .callIf( config.browseActions.length && config.browseContext, function() {
+                      if ( config.browseActions.length > 2 ) {
+                        this.start(self.OverlayActionListView, {
+                          label: this.ACTIONS,
+                          data: config.browseActions,
+                          obj: config$browseContext
+                        }).addClass(self.myClass('buttons')).end();
+                      } else {
+                        var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
+                        for ( action of config.browseActions ) {
+                          actions.tag(action, { size: 'LARGE' });
+                        }
+                        this.add(actions.endContext());
+                      }
+                    })
+                    .callIf( ! config.detailView, function() {
+                      this.startContext({ data: self })
+                        .tag(self.CREATE, {
+                            label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
+                            buttonStyle: foam.u2.ButtonStyle.PRIMARY,
+                            size: 'LARGE'
+                        })
+                      .endContext()
+                    })
+                    .callIf( config.createControllerView, function() {
+                      this.startContext({ data: self })
+                        .tag(self.CREATE, {
+                            label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
+                            buttonStyle: foam.u2.ButtonStyle.PRIMARY,
+                            size: 'LARGE'
+                        })
+                      .endContext();
+                    })
+                    .callIf( config$primaryAction, function() {
+                      this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
+                    })
+                  .end()
                 .end()
-                .callIf(config$browseSubtitle.length > 0, function() {
-                  this
-                    .start()
-                      .addClass(self.myClass('browse-subtitle'))
-                      .translate(menuId + ".browseSubtitle", config$browseSubtitle)
-                    .end();
-                })
-                .callIf(! config$browseSubtitle, function() {
-                  this
-                    .start()
-                      .addClass(self.myClass('browse-subtitle'))
-                      .translate(self.cls_.id + '.VIEW_ALL', self.VIEW_ALL)
-                      .translate(menuId + ".browseTitle", config$browseTitle)
-                    .end();
-                })
               .end()
             .start(self.CardBorder)
-              .style({ position: 'relative' })
+              .style({ position: 'relative', 'min-height': config.minHeight + 'px' })
               .start(config$browseBorder)
                 .callIf(config$browseViews.length > 1 && config.cannedQueries.length > 0, function() {
                   this
@@ -186,9 +239,11 @@ foam.CLASS({
                       .addClass(self.myClass('altview-container'))
                     .end();
                 })
-                .add(self.slot(function(browseView) {
-                  return self.E().tag(browseView, { data: data, config: config });
-                }))
+                .call(function() {
+                  this.add(self.slot(function(browseView) {
+                    return self.E().tag(browseView, { data: data, config: config } );
+                  }));
+                })
               .end()
             .end()
           .end();

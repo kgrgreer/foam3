@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.tag(this.TemperatureView, { data: this.temperatureTest });
     }
   ]

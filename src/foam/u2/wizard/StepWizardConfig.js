@@ -15,21 +15,44 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'allowSkipping'
+      name: 'allowSkipping',
+      documentation: `
+        Allow skipping sections without completing them in incremental wizards.
+      `
     },
     {
       class: 'Boolean',
       name: 'allowBacktracking',
-      value: true
+      value: true,
+      documentation: `
+        Allow going back to previous sections in incremental wizards.
+      `
     },
     {
       class: 'Boolean',
-      name: 'requireAll'
+      name: 'requireAll',
+      documentation: `
+        Require all sections to be valid to invoke wizard completion (done button).
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'rejectOnInvalidatedSave',
+      documentation: `
+        Set to true when ScrollingWizard is used in association with an Approval Request
+        and requires the approval request to be rejected if invalidated data is saved.
+      `,
+      value: false
     },
     {
       class: 'foam.u2.ViewSpec',
       name: 'wizardView',
       flags: ['web'], // Temporary
+      documentation: `
+        Specify a view to use with this controller. This property isn't used by
+        StepWizardController, but it can be used where a wizard is launched so
+        that only providing this configuration object is necessary.
+      `,
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       value: { class: 'foam.u2.wizard.ScrollingStepWizardView' }
     }

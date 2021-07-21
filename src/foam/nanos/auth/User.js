@@ -86,27 +86,33 @@ foam.CLASS({
     {
       name: 'businessInformation',
       title: 'Business Information',
-      order: 2
+      order: 2,
+      permissionRequired: true
     },
     {
       name: 'ownerInformation',
-      title: 'Ownership'
+      title: 'Ownership',
+      permissionRequired: true
     },
     {
       name: 'operationsInformation',
-      title: 'Operations'
+      title: 'Operations',
+      permissionRequired: true
     },
     {
       name: 'complianceInformation',
-      title: 'Compliance'
+      title: 'Compliance',
+      permissionRequired: true
     },
     {
       name: 'accountInformation',
-      title: 'Accounts'
+      title: 'Accounts',
+      permissionRequired: true
     },
     {
       name: 'contactInformation',
-      title: 'Contacts'
+      title: 'Contacts',
+      permissionRequired: true
     },
     {
       name: 'systemInformation',
@@ -135,7 +141,6 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       documentation: 'The ID for the User.',
-      final: true,
       tableWidth: 100,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -232,6 +237,7 @@ foam.CLASS({
       containsPII: true
     },
     {
+      class: 'String',
       name: 'legalName',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -310,19 +316,12 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'URL',
+      class: 'Website',
       name: 'website',
       includeInDigest: false,
       documentation: 'A URL link to the website of the User.',
       displayWidth: 80,
       width: 2048,
-      validateObj: function(website) {
-        var websiteRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
-
-        if ( website.length > 0 && ! websiteRegex.test(website) ) {
-          return 'Invalid website';
-        }
-      },
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 170,
@@ -424,6 +423,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       storageOptional: true,
       section: 'userInformation',
+      readPermissionRequired: true,
       order: 260,
       gridColumns: 6
     },
@@ -486,6 +486,9 @@ foam.CLASS({
             }
           }
         };
+      },
+      tableCellFormatter: function(val) {
+        this.translate(`${val}.label`, val);
       }
     },
     {
@@ -861,6 +864,7 @@ foam.RELATIONSHIP({
   forwardName: 'entities',
   inverseName: 'agents',
   junctionDAOKey: 'agentJunctionDAO',
+  junctionModelPlural: 'User Proxy Management',
   sourceProperty: {
     createVisibility: 'HIDDEN',
     label: 'Businesses',

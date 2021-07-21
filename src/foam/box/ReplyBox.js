@@ -49,11 +49,6 @@ foam.CLASS({
       java.util.Random r = ThreadLocalRandom.current();
       return new UUID(r.nextLong(), r.nextLong()).toString();
       `
-    },
-    {
-      name: 'delegate',
-      class: 'FObjectProperty',
-      of: 'foam.box.Box'
     }
   ],
 
@@ -64,10 +59,10 @@ foam.CLASS({
         this.registry.unregister(this.id);
         this.delegate.send(msg);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 (registry as! foam_box_BoxRegistry).unregister(id)
 try delegate.send(msg)
-      */},
+      `,
       javaCode: `
 getRegistry().unregister(getId());
 getDelegate().send(msg);

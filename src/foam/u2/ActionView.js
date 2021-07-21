@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'ActionView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.tag.Button',
 
   documentation: `
     A button View for triggering Actions.
@@ -32,242 +32,8 @@ foam.CLASS({
   requires: [
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.ConfirmationModal'
   ],
-
-  css: `
-    ^ {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      border-radius: 4px;
-      text-align: center;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      outline: none;
-      border: 1px solid transparent;
-    }
-
-    ^ + ^ {
-      margin-left: 8px;
-    }
-
-    ^ img {
-      margin-right: 4px;
-    }
-
-    ^:focus {
-      border-width: 2px;
-    }
-
-    ^:hover:not(:disabled) {
-      cursor: pointer;
-    }
-
-    ^unavailable {
-      display: none;
-    }
-
-    ^ img {
-      vertical-align: middle;
-    }
-
-    ^.material-icons {
-      cursor: pointer;
-    }
-
-
-    /*
-     * Primary
-     */
-
-    ^primary {
-      background-color: /*%PRIMARY3%*/ #406dea;
-      border-color: /*%SECONDARY1%*/ #4a33f4;
-      color: white;
-    }
-
-    ^primary:hover:not(:disabled) {
-      background-color: /*%PRIMARY2%*/ #144794;
-      border-color: /*%PRIMARY1%*/ #202341;
-      border: 1px solid #294798;
-    }
-
-    ^primary:focus:not(:hover) {
-      border-color: #23186c;
-      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
-    }
-    ^primary:focus:hover {
-      border: 2px solid #23186c;
-    }
-    ^primary:disabled {
-      background-color: /*%PRIMARY4%*/ #a7beff;
-      border: 1px solid /*%PRIMARY4%*/ #a7beff;
-    }
-
-    /*
-     * Primary destructive
-     */
-
-    ^primary-destructive {
-      background-color: /*%DESTRUCTIVE3%*/ #d9170e;
-      border: 1px solid /*%DESTRUCTIVE3%*/ #d9170e;
-      color: white;
-    }
-
-    ^primary-destructive:hover:not(:disabled) {
-      background-color: /*%DESTRUCTIVE2%*/ #a61414;
-      border-color: /*%DESTRUCTIVE1%*/ #a61414;
-    }
-
-    ^primary-destructive:focus {
-      border: 2px solid #a61414;
-      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
-      padding: 7px 15px;
-    }
-
-    ^primary-destructive:disabled {
-      background-color: /*%DESTRUCTIVE5%*/ #fbedec;
-      border-color: /*%DESTRUCTIVE4%*/ #ed8e8d;
-    }
-
-
-    /*
-     * Secondary
-     */
-
-    ^secondary {
-      background-color: white;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
-      color: /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^secondary:hover {
-      background-color: white;
-      border-color: /*%PRIMARY2%*/ #144794;
-      color: /*%PRIMARY2%*/ #144794;
-    }
-
-    ^secondary:focus:not(:hover) {
-      border-color: /*%SECONDARY2%*/ #432de7;
-      color: /*%PRIMARY2%*/ #144794;
-    }
-    ^secondary:focus:hover {
-      border: 2px solid /*%SECONDARY2%*/ #432de7;
-    }
-
-    ^secondary:disabled {
-      border-color: /*%PRIMARY4%*/ #a7beff;
-      color: /*%PRIMARY4%*/ #a7beff;
-    }
-
-
-    /*
-     * Secondary destructive
-     */
-
-    ^secondary-destructive {
-      background-color: white;
-      border-color: /*%DESTRUCTIVE3%*/ #d9170e;
-      color: /*%DESTRUCTIVE3%*/ #d9170e;
-    }
-
-    ^secondary-destructive:hover {
-      background-color: white;
-      border-color: /*%DESTRUCTIVE2%*/ #a61414;
-      color: /*%DESTRUCTIVE2%*/ #a61414;
-    }
-
-    ^secondary-destructive:disabled {
-      border-color: /*%DESTRUCTIVE5%*/ #fbedec;
-      color: /*%DESTRUCTIVE5%*/ #fbedec;
-    }
-
-
-    /*
-     * Tertiary
-     */
-
-    ^tertiary {
-      background: none;
-      border: 1px solid transparent;
-      box-shadow: none;
-      color: /*%GREY1%*/ #5E6061;
-    }
-
-    ^tertiary:hover:not(:disabled) {
-      color: /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^tertiary:focus:not(:hover) {
-      border-color: /*%SECONDARY1%*/ #4a33f4;
-    }
-
-    ^tertiary:focus:hover {
-      border: 2px solid /*%SECONDARY1%*/ #4a33f4;
-    }
-
-    ^tertiary:disabled {
-      color: /*%GREY3%*/ #cbcfd4;
-    }
-
-
-    /*
-     * Tertiary destructive
-     */
-
-    ^tertiary-destructive {
-      background-color: transparent;
-      border-color: transparent;
-      color: /*%BLACK%*/ #1e1f21;
-    }
-
-    ^tertiary-destructive:hover:not(:disabled) {
-      background-color: transparent;
-      border-color: transparent;
-    }
-
-    ^tertiary-destructive:focus:not(:hover) {
-      border-bottom-color: /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^tertiary-destructive:disabled {
-      color: /*%GREY3%*/ #cbcfd4;
-    }
-
-
-    /*
-     * Sizes
-     */
-
-    ^small {
-      font-size: 10px;
-      padding: 8px 16px;
-    }
-
-    ^medium {
-      font-size: 14px;
-      padding: 9px 16px;
-    }
-
-    ^large {
-      font-size: 16px;
-      padding: 13px 16px;
-    }
-
-    ^tertiary^small,
-    ^tertiary^medium,
-    ^tertiary^large {
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    ^tertiary^small:focus,
-    ^tertiary^medium:focus,
-    ^tertiary^large:focus {
-      padding-left: 1px;
-      padding-right: 1px;
-    }
-  `,
 
   imports: [
     'ctrl'
@@ -286,14 +52,18 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONFIRM', message: 'Confirm' }
+    { name: 'CONFIRM', message: 'Confirm' },
+    { name: 'CONFIRM_MSG', message: 'Are you sure you want to ' }
   ],
 
   properties: [
     {
-      class: 'URL',
       name: 'icon',
       factory: function(action) { return this.action.icon; }
+    },
+    {
+      name: 'themeIcon',
+      factory: function(action) { return this.action.themeIcon; }
     },
     {
       class: 'String',
@@ -301,23 +71,20 @@ foam.CLASS({
       factory: function(action) { return this.action.iconFontFamily; }
     },
     {
-      class: 'String',
       name: 'iconFontClass',
       factory: function(action) { return this.action.iconFontClass; }
     },
     {
-      class: 'String',
       name: 'iconFontName',
       factory: function(action) { return this.action.iconFontName; }
     },
     {
-      class: 'String',
       name: 'labelPlaceholder',
       expression: function(label) { return this.action.label; }
     },
     {
       name: 'buttonState',
-      factory: function() { return this.action && this.action.confirmationRequired ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM; }
+      factory: function() { return this.ButtonState.NO_CONFIRM; }
     },
     {
       name: 'data',
@@ -327,7 +94,6 @@ foam.CLASS({
       }
     },
     'action',
-    [ 'nodeName', 'button' ],
     {
       name: 'label',
       factory: function(action) { return this.action.label; }
@@ -336,7 +102,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle',
-      value: 'PRIMARY'
+      factory: function(action) { return this.action.buttonStyle || 'SECONDARY'; }
     },
     {
       class: 'Boolean',
@@ -346,69 +112,33 @@ foam.CLASS({
         that data is deleted in some way.
       `,
       factory: function() {
-        return this.action.confirmationRequired;
-      }
-    },
-    {
-      class: 'Enum',
-      of: 'foam.u2.ButtonSize',
-      name: 'size',
-      value: 'MEDIUM'
-    },
-    {
-      class: 'String',
-      name: 'styleClass_',
-      expression: function(isDestructive, buttonStyle) {
-        var s = buttonStyle.name.toLowerCase();
-        return isDestructive ? s + '-destructive' : s;
+        return false;
       }
     }
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.tooltip = this.action.toolTip;
 
       this.SUPER();
 
-      this.initCls();
-
-      this.on('click', this.click);
-
-      this.addContent();
-
       if ( this.action ) {
+        if ( this.action.confirmationRequired ) {
+          var cRSlot$ = this.action.createConfirmationRequired$(this.__context__, this.data);
+          this.onDetach(cRSlot$.sub(() => this.setConfirm(cRSlot$.get())));
+          this.setConfirm(cRSlot$.get());
+        }
         this.attrs({name: this.action.name, 'aria-label': this.action.ariaLabel });
 
         this.enableClass(this.myClass('unavailable'), this.action.createIsAvailable$(this.__context__, this.data), true);
         this.attrs({ disabled: this.action.createIsEnabled$(this.__context__, this.data).map((e) => e ? false : 'disabled') });
-
-        this.addClass(this.myClass(this.styleClass_));
-        this.addClass(this.myClass(this.size.label.toLowerCase()));
       }
     },
 
     function initCls() {
-      this.addClass(this.myClass());
+      this.addClass();
       this.addClass(this.myClass(this.action.name));
-    },
-
-    function addContent() {
-      /** Add text or icon to button. **/
-      if ( this.icon ) {
-        // this.nodeName = 'a';
-        this.start('img').attr('src', this.icon$).end();
-      } else if ( this.iconFontName ) {
-        this.nodeName = 'i';
-        this.cssClass(this.action.name);
-        this.cssClass(this.iconFontClass); // required by font package
-        this.style({ 'font-family': this.iconFontFamily });
-        this.add(this.iconFontName);
-      }
-
-      if ( this.label ) {
-        this.add(this.label$);
-      }
     }
   ],
 
@@ -416,16 +146,17 @@ foam.CLASS({
     function click(e) {
       try {
         if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
-          this.ctrl.add(this.Popup.create().tag(this.action.confirmationView, {
-            action: this.action,
-            data: this.data
-          }));
+          this.ctrl.add(this.ConfirmationModal.create({
+            primaryAction: this.action,
+            data: this.data,
+            title: this.action.confirmationView().title || this.action.label + ' ' + this.data.toSummary() + '?'
+          }).add(this.action.confirmationView().body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + this.data.toSummary() + '?'));
         } else if ( this.buttonState == this.ButtonState.NO_CONFIRM ) {
           this.action && this.action.maybeCall(this.__subContext__, this.data);
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {
           this.buttonState = this.ButtonState.DEBOUNCE;
           this.removeAllChildren();
-          this.add(this.CONFIRM);
+          this.start().addClass('h600').add(this.CONFIRM).end();
           this.debounce();
         } else if ( this.buttonState == this.ButtonState.ARMED ) {
           this.buttonState = this.ButtonState.CONFIRM;
@@ -460,6 +191,19 @@ foam.CLASS({
         this.removeAllChildren();
         this.addContent();
         this.buttonState = this.ButtonState.CONFIRM;
+      }
+    },
+    {
+      name: 'setConfirm',
+      code: function(confirm) {
+        let newState = confirm ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM;
+        let stateChange = this.buttonState != newState;
+        this.buttonState = newState;
+        this.isDestructive = confirm;
+        if ( stateChange ) {
+          this.removeAllChildren();
+          this.addContent();
+        }
       }
     }
   ]

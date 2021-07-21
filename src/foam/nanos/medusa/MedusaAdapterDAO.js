@@ -23,8 +23,6 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     'foam.dao.RemoveSink',
     'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
     'foam.log.LogLevel',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
@@ -62,6 +60,8 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
@@ -81,13 +81,32 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     @Override
     protected JSONFObjectFormatter initialValue() {
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
-      formatter.setQuoteKeys(false); // default
-      formatter.setOutputShortNames(true); // default
-      formatter.setOutputDefaultValues(true);
-      formatter.setOutputClassNames(true); // default
-      formatter.setOutputDefaultClassNames(true); // default
-      formatter.setOutputReadableDates(false);
-      formatter.setPropertyPredicate(new foam.lib.StoragePropertyPredicate());
+      formatter.setOutputShortNames(true);
+      formatter.setOutputDefaultClassNames(false);
+      formatter.setPropertyPredicate(
+        new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
+          new foam.lib.StoragePropertyPredicate(),
+          new foam.lib.ClusterPropertyPredicate()
+        }));
+      formatter.setCalculateDeltaForNestedFObjects(true);
+      return formatter;
+    }
+
+    @Override
+    public FObjectFormatter get() {
+      FObjectFormatter formatter = super.get();
+      formatter.reset();
+      return formatter;
+    }
+  };
+
+  protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
+    @Override
+    protected MedusaTransientJSONFObjectFormatter initialValue() {
+      MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
+      formatter.setOutputShortNames(true);
+      formatter.setOutputDefaultClassNames(false);
+      formatter.setCalculateDeltaForNestedFObjects(true);
       return formatter;
     }
 
@@ -186,7 +205,6 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       ClusterCommand cmd = new ClusterCommand(x, getNSpec().getName(), dop, obj);
       getLogger().debug("update", "secondary", dop, obj.getProperty("id"), "send");
       PM pm = PM.create(x, this.getClass().getSimpleName(), "secondary", "cmd");
-      // PM pm = new PM(this.getClass().getSimpleName(), "secondary", "cmd");
       cmd = (ClusterCommand) getClientDAO().cmd_(x, cmd);
       pm.log(x);
       cmd.logHops(x);
@@ -206,19 +224,19 @@ It then marshalls it to the primary mediator, and waits on a response.`,
             Alarm alarm = new Alarm();
             alarm.setClusterable(false);
             alarm.setSeverity(LogLevel.ERROR);
-            alarm.setName("MedusaAdapter secondary find failed");
+            alarm.setName("MedusaAdapter secondary failed - find");
             alarm.setNote(obj.getClass().getName()+" "+obj.getProperty("id"));
             alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+          } else {
+            return nu;
           }
-          // put again to update storageTransient properties
-          return getDelegate().put_(x, result);
         }
-        // TODO/REVIEW
+
         getLogger().error("update", "secondary", dop, obj.getProperty("id"), "result,null");
         Alarm alarm = new Alarm();
         alarm.setClusterable(false);
         alarm.setSeverity(LogLevel.ERROR);
-        alarm.setName("MedusaAdapter secondary cmd failed");
+        alarm.setName("MedusaAdapter secondary failed - put");
         alarm.setNote(obj.getClass().getName()+" "+obj.getProperty("id"));
         alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
       } else if ( DOP.REMOVE == dop ) {
@@ -227,7 +245,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
           Alarm alarm = new Alarm();
           alarm.setClusterable(false);
           alarm.setSeverity(LogLevel.ERROR);
-          alarm.setName("MedusaAdapter secondary remove failed");
+          alarm.setName("MedusaAdapter secondary failed - remove");
           alarm.setNote(obj.getClass().getName()+" "+obj.getProperty("id"));
           alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
           return getDelegate().remove_(x, obj);
@@ -268,9 +286,10 @@ It then marshalls it to the primary mediator, and waits on a response.`,
           FObject old = getDelegate().find_(x, id);
           FObject nu = getDelegate().put_(x, obj);
           String data = data(x, nu, old, dop);
-          // data will be empty if only changes are storageTransient.
-          if ( ! SafetyUtil.isEmpty(data) ) {
-            MedusaEntry entry = (MedusaEntry) submit(x, data, dop);
+          String transientData = transientData(x, nu, old, dop);
+          if ( ! SafetyUtil.isEmpty(data) ||
+               ! SafetyUtil.isEmpty(transientData) ) {
+            MedusaEntry entry = (MedusaEntry) submit(x, data, transientData, dop);
             getLogger().debug("updatePrimary", "primary", dop, nu.getProperty("id"), "entry", entry.toSummary());
             if ( cmd != null ) {
               cmd.setMedusaEntryId((Long) entry.getId());
@@ -285,7 +304,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         // DOP.REMOVE
         FObject result = getDelegate().remove_(x, obj);
         String data = data(x, obj, null, dop);
-        MedusaEntry entry = (MedusaEntry) submit(x, data, dop);
+        MedusaEntry entry = (MedusaEntry) submit(x, data, null, dop);
         if ( cmd != null ) {
           cmd.setMedusaEntryId((Long) entry.getId());
           cmd.setData(result);
@@ -373,6 +392,49 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       `
     },
     {
+      name: 'transientData',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'obj',
+          type: 'FObject'
+        },
+        {
+          name: 'old',
+          type: 'FObject'
+        },
+        {
+          name: 'dop',
+          type: 'foam.dao.DOP'
+        }
+      ],
+      type: 'String',
+      javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "transientData");
+      try {
+        FObjectFormatter transientFormatter = transientFormatter_.get();
+        if ( old != null ) {
+          if ( ! transientFormatter.maybeOutputDelta(old, obj) ) {
+            return null;
+          }
+          return transientFormatter.builder().toString();
+        } else {
+          transientFormatter.output(obj);
+          String data = transientFormatter.builder().toString();
+          if ( ! SafetyUtil.isEmpty(data) ) {
+            return data;
+          }
+          return null;
+        }
+      } finally {
+        pm.log(x);
+      }
+      `
+    },
+    {
       name: 'submit',
       args: [
         {
@@ -381,6 +443,10 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         },
         {
           name: 'data',
+          type: 'String'
+        },
+        {
+          name: 'transientData',
           type: 'String'
         },
         {
@@ -399,10 +465,11 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         entry.setNSpecName(getNSpec().getName());
         entry.setDop(dop);
         entry.setData(data);
+        if ( ! SafetyUtil.isEmpty(transientData) ) {
+          entry.setTransientData(transientData);
+        }
         pmLink.log(x);
-
         getLogger().debug("submit", entry.getId());
-
         MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
         registry.register(x, (Long) entry.getId());
         PM pmPut = new PM(this.getClass().getSimpleName(), "submit", "put");

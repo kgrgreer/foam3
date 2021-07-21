@@ -8,21 +8,14 @@ foam.CLASS({
   package: 'foam.u2.detail',
   name: 'TabbedDetailView',
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
-  imports: [
-    'memento'
-  ],
-
-  exports: [
-    'currentMemento_ as memento'
-  ],
 
   requires: [
     'foam.core.ArraySlot',
+    'foam.nanos.controller.Memento',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
-    'foam.u2.layout.Grid',
-    'foam.u2.layout.GUnit',
     'foam.u2.Tab',
     'foam.u2.Tabs'
   ],
@@ -45,6 +38,10 @@ foam.CLASS({
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
     }
+    
+    ^wrapper {
+      padding: 14px 24px;
+    }
   `,
 
   properties: [
@@ -53,15 +50,14 @@ foam.CLASS({
       name: 'defaultSectionLabel',
       value: 'Uncategorized'
     },
-    'tabs',
-    'currentMemento_'
+    'tabs'
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
-      this.currentMemento_$ = this.memento$;
+      this.currentMemento_ = this.memento;
 
       this.SUPER();
       this
@@ -74,11 +70,15 @@ foam.CLASS({
           });
 
           return self.E()
-            .add(arraySlot.map((visibilities) => {
-              var e = this.E()
+            .add(arraySlot.map(visibilities => {
+              var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
+              var e = availableSections.length == 1 ? 
+                this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
+                  .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })
+                .end() :
+                this.E()
                 .start(self.Tabs, {}, self.tabs$)
-                  .forEach(sections, function(s, i) {
-                    if ( ! visibilities[i] ) return;
+                  .forEach(availableSections, function(s) {
                     var title$ = foam.Function.isInstance(s.title) ?
                       foam.core.ExpressionSlot.create({
                         obj: self.data,
@@ -88,22 +88,21 @@ foam.CLASS({
 
                     var tab = foam.core.SimpleSlot.create();
                     this
-                      .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.tail && self.memento.tail.head === s.title }, tab)
+                      .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
                         .call(function() {
-                          var sectionView = foam.u2.ViewSpec.createView(self.SectionView, {
+                          this.tag(self.SectionView, {
                             data$: self.data$,
                             section: s,
                             showTitle: false,
                             selected$: tab.value.selected$
-                          }, self, self.__subContext__.createSubContext({ memento: null }));
-                          this.add(sectionView)
+                          });
                         })
                       .end();
                   })
                 .end();
-              self.tabs.updateMemento = true;
+              self.tabs && ( self.tabs.updateMemento = true );
               return e;
-            }))
+            }));
         }));
     }
   ]

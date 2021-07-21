@@ -485,6 +485,7 @@ configuration for contacting the primary node.`,
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -507,61 +508,6 @@ configuration for contacting the primary node.`,
         dao.put(myConfig);
       } else {
         throw new foam.core.FOAMException("ClusterConfig not found: "+getConfigId());
-      }
-      `
-    },
-    {
-      name: 'buildURL',
-      type: 'String',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'serviceName',
-          type: 'String'
-        },
-        {
-          name: 'query',
-          type: 'String'
-        },
-        {
-          name: 'fragment',
-          type: 'String'
-        },
-        {
-          name: 'config',
-          type: 'foam.nanos.medusa.ClusterConfig'
-        },
-      ],
-      javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "buildURL");
-      try {
-         // TODO: protocol - http will do for now as we are behind the load balancers.
-        String address = config.getId();
-        DAO hostDAO = (DAO) x.get("hostDAO");
-        Host host = (Host) hostDAO.find(config.getId());
-        if ( host != null ) {
-          address = host.getAddress();
-        }
-
-        StringBuilder path = new StringBuilder();
-        path.append("/");
-        path.append(getPath());
-        path.append("/");
-        path.append(serviceName);
-
-        String scheme = config.getUseHttps() ? "https" : "http";
-        java.net.URI uri = new java.net.URI(scheme, null, address, config.getPort(), path.toString(), query, fragment);
-
-        // getLogger.debug("buildURL", serviceName, uri.toURL().toString());
-        return uri.toURL().toString();
-      } catch (java.net.MalformedURLException | java.net.URISyntaxException e) {
-        getLogger().error(e);
-        throw new RuntimeException(e);
-      } finally {
-        pm.log(x);
       }
       `
     },
@@ -595,12 +541,12 @@ configuration for contacting the primary node.`,
         if ( host != null ) {
           address = host.getAddress();
         }
-        // getLogger().debug("getSocketClientBox", serviceName, address, host, receiveClusterConfig.getPort());
         SocketClientBox clientBox = new SocketClientBox();
         clientBox.setX(x);
         clientBox.setHost(address);
         clientBox.setPort(receiveClusterConfig.getPort() + SocketServer.PORT_OFFSET);
         clientBox.setServiceName(serviceName);
+        // getLogger().debug("getSocketClientBox", serviceName, clientBox);
         return clientBox;
       } finally {
         pm.log(x);
@@ -799,55 +745,7 @@ configuration for contacting the primary node.`,
       }
       `
     },
-    {
-      name: 'getHTTPClientDAO',
-      type: 'foam.dao.DAO',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'serviceName',
-          type: 'String',
-        },
-        {
-          name: 'sendClusterConfig',
-          type: 'ClusterConfig'
-        },
-        {
-          name: 'receiveClusterConfig',
-          type: 'ClusterConfig'
-        }
-      ],
-      javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "getHTTPClientDAO");
-      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      try {
-        String sessionId = sendClusterConfig.getSessionId();
-        Session session = (Session) x.get("session");
-        if ( session != null ) {
-          sessionId = session.getId();
-        }
-        return new foam.dao.ClientDAO.Builder(x)
-          .setOf(MedusaEntry.getOwnClassInfo())
-          .setDelegate(new foam.box.SessionClientBox.Builder(x)
-          .setSessionID(sessionId)
-          .setDelegate(new foam.box.HTTPBox.Builder(x)
-            .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
-            .setSessionID(sendClusterConfig.getSessionId())
-            .setUrl(support.buildURL(x, serviceName, null, null, receiveClusterConfig))
-            .setConnectTimeout(getHttpConnectTimeout())
-            .setReadTimeout(getHttpReadTimeout())
-            .build())
-          .build())
-        .build();
-      } finally {
-        pm.log(x);
-      }
-      `
-    },
-    {
+   {
       documentation: 'Notification client is send and forget, does not register a reply box.',
       name: 'getBroadcastClientDAO',
       type: 'foam.dao.DAO',
@@ -890,8 +788,7 @@ configuration for contacting the primary node.`,
       `
     },
     {
-      // TODO/REVIEW: Cron itself needs better cluster support
-      // we can't have the same crons running everywhere.
+      documentation: 'Crontrol which instances cron jobs run.  Clusterable cron jobs should only run one the primary mediator.',
       name: 'cronEnabled',
       type: 'Boolean',
       args: [
@@ -916,10 +813,6 @@ configuration for contacting the primary node.`,
                config.getZone() == 0L ) {
             return true;
           }
-          // if ( config.getStatus() == Status.ONLINE &&
-          //      config.getZone() > 0L ) {
-          //   return true;
-          // }
           return false;
         }
         if ( config.getType() == MedusaType.NODE ) {
@@ -1024,111 +917,6 @@ configuration for contacting the primary node.`,
         }
       }
       `
-    },
-    {
-      documentation: 'Determine the number of nodes which contain and entry.',
-      name: 'countEntryOnNodes',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'index',
-          type: 'Long'
-        }
-      ],
-      javaType: 'Long',
-      javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "countEntryOnNodes");
-      ClusterConfig myConfig = getConfig(getX(), getConfigId());
-
-      Long count = 0L;
-      try {
-        List<ClusterConfig> configs = ((ArraySink) ((DAO) x.get("clusterConfigDAO"))
-            .where(
-                AND(
-                    EQ(ClusterConfig.TYPE, MedusaType.NODE),
-                    EQ(ClusterConfig.ZONE, 0L),
-                    EQ(ClusterConfig.ENABLED, true),
-                    EQ(ClusterConfig.STATUS, Status.ONLINE),
-                    NEQ(ClusterConfig.ID, myConfig.getId()),
-//                    NEQ(ClusterConfig.REGION, myConfig.getRegion()),
-                    EQ(ClusterConfig.REALM, myConfig.getRealm())
-                )
-            )
-            .select(new ArraySink())).getArray();
-        for ( ClusterConfig config : configs ) {
-          DAO client = getClientDAO(x, "medusaEntryDAO", config, config);
-          MedusaEntry found = (MedusaEntry) client.find(index);
-          if ( found != null ) {
-            count++;
-            getLogger().debug("countEntryOnNodes", config.getId(), index);
-          }
-        }
-      } catch (Throwable t) {
-        pm.error(x, t);
-        getLogger().error(t);
-        throw t;
-      } finally {
-        pm.log(x);
-      }
-      getLogger().info("countEntryOnNodes", "index", index, "count", count);
-      return count;
-      `
-    },
-     {
-      documentation: 'Determine the number of mediators, in another region, which contain and entry. Used during mediator gap testing to determine if the gap is local to this region.',
-      name: 'countEntryOnMediators',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'index',
-          type: 'Long'
-        }
-      ],
-      javaType: 'Long',
-      javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "countEntryOnMediators");
-
-      ClusterConfig myConfig = getConfig(getX(), getConfigId());
-
-      Long count = 0L;
-      try {
-        List<ClusterConfig> configs = ((ArraySink) ((DAO) x.get("clusterConfigDAO"))
-            .where(
-                AND(
-                    EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-                    EQ(ClusterConfig.ZONE, 0L),
-                    EQ(ClusterConfig.ENABLED, true),
-//                    EQ(ClusterConfig.STATUS, Status.ONLINE),
-                    NEQ(ClusterConfig.ID, myConfig.getId()),
-//                    NEQ(ClusterConfig.REGION, myConfig.getRegion()),
-                    EQ(ClusterConfig.REALM, myConfig.getRealm())
-                )
-            )
-            .select(new ArraySink())).getArray();
-        for ( ClusterConfig config : configs ) {
-          DAO client = getClientDAO(x, "medusaEntryDAO", config, config);
-          MedusaEntry found = (MedusaEntry) client.find(index);
-          if ( found != null ) {
-            count++;
-            getLogger().debug("countEntryOnMediators", config.getId(), index);
-          }
-        }
-      } catch (Throwable t) {
-        pm.error(x, t);
-        getLogger().error(t);
-        throw t;
-      } finally {
-        pm.log(x);
-      }
-      getLogger().info("countEntryOnMediators", "index", index, "count", count);
-      return count;
-      `
-    },
+    }
   ]
 });

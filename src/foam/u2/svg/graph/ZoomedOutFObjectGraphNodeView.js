@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var dims = {
         x: '' + this.position[0],
         y: '' + this.position[1],

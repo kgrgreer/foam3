@@ -39,16 +39,18 @@ foam.CLASS({
     function init() {
       this.target.removeAttribute('title');
       this.target.on('mouseover', this.loadTooltip);
+      this.target.onDetach(this.close);
       this.SUPER();
     },
 
-    function setTooltip(evt) {
+    async function setTooltip(evt) {
+      var el            = await this.target.el();
       this.tooltipStore = this.TooltipView.create({ data: this.text });
-      var domRect      = this.target.el().getBoundingClientRect();
-      this.screenWidth = this.window.innerWidth;
-      var screenHeight = this.window.innerHeight;
-      var scrollY      = this.window.scrollY;
-      var height       = this.tooltipStore.getBoundingClientRect().height;
+      var domRect       = el.getBoundingClientRect();
+      this.screenWidth  = this.window.innerWidth;
+      var screenHeight  = this.window.innerHeight;
+      var scrollY       = this.window.scrollY;
+      var height        = this.tooltipStore.getBoundingClientRect().height;
       this.top = (domRect.top - scrollY > screenHeight / 2) ?
         evt.pageY - 30 - height : evt.pageY + 20;
       if ( domRect.left > 3 * (this.screenWidth / 4) ) {
@@ -60,8 +62,8 @@ foam.CLASS({
       }
       this.tooltipStore.style({
         'max-width': (this.screenWidth / 4)+'px',
-          'top': this.top$,
-          'left': this.left$,
+          'top':   this.top$,
+          'left':  this.left$,
           'right': this.right$
       });
       this.tooltipStore.write();
@@ -75,7 +77,7 @@ foam.CLASS({
       }
       this.timer = setTimeout(() => {
         this.setTooltip(evt);
-      }, 100);
+      }, 500);
       this.target.on('mousemove', evt => {
         this.close();
         this.setTooltip(evt);
@@ -89,17 +91,20 @@ foam.CLASS({
       clearTimeout(this.timer);
     },
 
-    function loadTooltip(evt) {
-      if ( ! this.target || ! this.target.el() ) {
+    async function loadTooltip(evt) {
+      if ( ! this.target ) {
         console.error('Target not found');
         return;
       }
-      this.target.on('mouseover', this.onMouseOver);
-      this.target.on('mousedown', this.close);
+
+      var el = await this.target.el();
+
+      this.target.on('mouseover',  this.onMouseOver);
+      this.target.on('mousedown',  this.close);
       this.target.on('mouseleave', this.close);
-      this.target.on('mouseout', this.close);
-      this.target.on('touchstart', this.close);
-      this.target.on('unload', this.close);
+      this.target.on('mouseout',   this.close);
+      this.target.on('touchstart', this.close, {passive: true});
+      this.target.on('unload',     this.close);
       this.onMouseOver(evt);
     }
   ]
@@ -114,17 +119,17 @@ foam.CLASS({
   documentation: 'Tooltip view to be used by the tooltip handler',
 
   methods: [
-    function initE(data) {
+    function render(data) {
       this.SUPER();
       this
       .add(this.data)
       .style({
-        'background': 'rgba(80, 80, 80, 0.9)',
+        'background':    'rgba(80, 80, 80, 0.9)',
         'border-radius': '5px',
-        'color': 'white',
-        'padding': '5px 8px',
-        'position': 'absolute',
-        'z-index': '2000',
+        'color':         'white',
+        'padding':       '5px 8px',
+        'position':      'absolute',
+        'z-index':       '2000'
       });
     }
   ]

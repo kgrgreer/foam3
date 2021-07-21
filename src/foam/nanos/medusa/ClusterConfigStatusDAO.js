@@ -32,6 +32,7 @@ foam.CLASS({
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -106,15 +107,6 @@ foam.CLASS({
                myConfig.getZone() > 0 ) ) */ &&
            nu.getType() == MedusaType.NODE ) ) {
         bucketNodes(x);
-      }
-
-      // Changing Primary - stop/start cron scheduler.
-      if ( myConfig.getType() == MedusaType.MEDIATOR &&
-           nu.getId() == myConfig.getId() &&
-           nu.getIsPrimary() != old.getIsPrimary() ) {
-        foam.nanos.cron.CronScheduler scheduler = (foam.nanos.cron.CronScheduler) x.get("cronScheduler");
-        scheduler.setEnabled(nu.getIsPrimary());
-        getLogger().info("cronScheduler,enabled", scheduler.getEnabled());
       }
 
       return nu;

@@ -55,10 +55,7 @@ foam.CLASS({
       List list = arraySink.getArray();
 
       if ( list == null || list.size() == 0 ) {
-        DigUtil.outputException(x, 
-          new ParsingErrorException.Builder(x)
-            .setMessage("Invalid CSV Format").build(), 
-          getFormat());
+        DigUtil.outputException(x, new ParsingErrorException("Invalid CSV Format"), getFormat());
         return null;
       }
 

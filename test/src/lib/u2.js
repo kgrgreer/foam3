@@ -22,11 +22,11 @@ describe('U2', function() {
       extends: 'foam.u2.Element',
       axioms: [
         foam.u2.CSS.create({
-          code: function() {/*
+          code: `
             .some-class-name {
               display: flex;
             }
-          */}
+         `
         })
       ]
     });
@@ -37,11 +37,11 @@ describe('U2', function() {
       extends: 'test.css.A',
       axioms: [
         foam.u2.CSS.create({
-          code: function() {/*
+          code: `
             .some-other-class {
               display: flex;
             }
-          */}
+          `
         })
       ]
     });
@@ -145,11 +145,11 @@ describe('U2', function() {
         extends: 'foam.u2.Element',
         axioms: [
           foam.u2.CSS.create({
-            code: function() {/*
+            code: `
               ^ {}
               ^bar {}
               ^ ^foo^bar {}
-            */}
+            `
           })
         ]
       });

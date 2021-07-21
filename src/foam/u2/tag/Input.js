@@ -21,7 +21,6 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    ^:read-only { border: none; background: rgba(0,0,0,0); }
     /* Still show outline when focused as read-only to help accessibility *
     ^:read-only:focus { outline: 1px solid rgb(238, 238, 238); }
   `,
@@ -68,6 +67,7 @@ foam.CLASS({
     'type',
     'placeholder',
     'ariaLabel',
+    [ 'autocomplete', true ],
     {
       name: 'choices',
       documentation: 'Array of [value, text] choices. You can pass in just ' +
@@ -103,7 +103,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -112,6 +112,7 @@ foam.CLASS({
       if ( this.placeholder   ) this.setAttribute('placeholder', this.placeholder);
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
+      if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').
@@ -133,7 +134,7 @@ foam.CLASS({
 
     function initCls() {
       // Template method, can be overriden by sub-classes
-      this.addClass(this.myClass());
+      this.addClass();
     },
 
     function link() {
@@ -144,7 +145,11 @@ foam.CLASS({
     function fromProperty(p) {
       this.SUPER(p);
 
-      if ( ! this.hasOwnProperty('onKey') && p.validateObj ) this.onKey = true;
+      if ( ! this.hasOwnProperty('onKey') ) {
+        if ( p.hasOwnProperty('onKey') ) this.onKey = p.onKey;
+        else this.onKey = p.validateObj;
+      }
+      if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;
     },
 

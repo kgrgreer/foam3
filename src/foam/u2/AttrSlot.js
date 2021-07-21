@@ -38,6 +38,9 @@ foam.CLASS({
     },
 
     function set(value) {
+      // consume redundant sets
+      // if ( value == this.value ) return;
+
       this.element.setAttribute(this.property, value);
 
       // The next line is necessary to fire a change event.
@@ -67,6 +70,11 @@ foam.CLASS({
           detachable.detach();
         }
       };
+    },
+
+    function follow(other) {
+      this.SUPER(other);
+      this.set(other.get());
     },
 
     function toString() {

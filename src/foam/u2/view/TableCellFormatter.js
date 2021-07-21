@@ -22,6 +22,9 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function(o, f, prop) {
+        if ( foam.String.isInstance(f) ) {
+          return foam.lookup(f).create();
+        }
         if ( foam.Function.isInstance(f) ) {
           return prop.FnFormatter.create({f: f});
         }
@@ -52,12 +55,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'tableHeader',
-      value: function() {
-        return this.label || foam.String.labelize(this.name);
-      }
-    },
-    {
       class: 'foam.u2.view.TableCellFormatter',
       name: 'tableCellFormatter',
       factory: function() {
@@ -72,6 +69,13 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tableWidth'
+    },
+    {
+      class: 'String',
+      documentation: 'Column label that overrides the label property in table headers',
+      name: 'columnLabel',
+      // return the label if columnLabel is not set
+      expression: function(label) { return label; }
     }
   ]
 });
@@ -85,10 +89,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'tableHeader',
-      value: function() {
-        return this.label || foam.String.labelize(this.name);
-      }
+      class: 'String',
+      name: 'columnLabel',
+      expression: function(label) { return label; }
     }
   ]
 });
@@ -120,6 +123,11 @@ foam.CLASS({
       generateJava: false,
       name: 'tableHeaderFormatter',
       value: function(axiom) { this.add(axiom.label); }
+    },
+    {
+       type: 'Int',
+       name: 'tableWidth',
+       value: 130
     }
   ]
 });
@@ -146,6 +154,11 @@ foam.CLASS({
           end();
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
@@ -245,6 +258,21 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2.view',
+  name: 'ReferenceToSummaryCellFormatter',
+
+  methods: [
+    function format(e, value, obj, axiom) {
+      try {
+        obj[axiom.name + '$find'].then(o => e.add(o.toSummary()), r => e.add(value));
+      } catch (x) {
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2.view',
   name: 'StringArrayTableCellFormatterRefinement',
   refines: 'foam.core.StringArray',
   properties: [
@@ -294,6 +322,11 @@ foam.CLASS({
           this.tooltip = formattedDate;
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
@@ -317,6 +350,11 @@ foam.CLASS({
           this.tooltip = formattedDate;
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
@@ -334,6 +372,24 @@ foam.CLASS({
       value: function(value) {
         let formatted = foam.core.Duration.duration(value);
         this.add(formatted || '0ms');
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'FormattedStringTableCellFormatterRefinement',
+  refines: 'foam.core.FormattedString',
+
+  properties: [
+    {
+      class: 'foam.u2.view.TableCellFormatter',
+      name: 'tableCellFormatter',
+      value: function(val, _, prop) {
+        var format = prop.formatter.join('').replace(/\d+/g, function(match) { return 'x'.repeat(match); });
+        this.add(foam.String.applyFormat(val, format));
       }
     }
   ]

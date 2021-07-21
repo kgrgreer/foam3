@@ -24,7 +24,6 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 36px;
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
@@ -138,9 +137,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start(this.QUALIFIER)
         .start('div').addClass(this.myClass('carrot')).end()
         .end()

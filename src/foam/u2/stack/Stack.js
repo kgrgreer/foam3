@@ -24,11 +24,18 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.controller.Memento'
+    'foam.nanos.controller.Memento',
+    'foam.u2.stack.StackBlock'
+  ],
+
+  constants: [
+    { name: 'BCRMB_ID', value: 'b' },
   ],
 
   properties: [
     {
+      class: 'FObjectArray',
+      of: 'foam.u2.stack.StackBlock',
       name: 'stack_',
       hidden: true,
       factory: function() { return []; }
@@ -49,11 +56,30 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'FObjectProperty',
+      of: 'foam.u2.stack.StackBlock',
       name: 'top',
       hidden: true,
       expression: function(pos) {
         return this.stack_[pos] || null;
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'topNonPopup',
+      hidden: true,
+      expression: function(pos) {
+        while ( pos >= 0 && this.stack_[pos].popup ) pos--;
+        return this.stack_[pos] || null;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'navStackBottom',
+      value: -1,
+      preSet: function(_, p) {
+        if ( isNaN(p) || p > this.depth || p < 0 ) return 0;
+        return p;
       }
     }
   ],
@@ -70,13 +96,24 @@ foam.CLASS({
       return i < 0 ? this.stack_[this.pos + i + 1] : this.stack_[i];
     },
 
-    function push(v, parent, opt_id) {
-      /** opt_id - used to give some unique id to the view being pushed. If it matches the current view then push() ignored. **/
+    function push(block) {
+      // Temporary code to mutate old function calls to stackBlock object
+      if ( ! foam.u2.stack.StackBlock.isInstance(block) ) {
+        console.warn('This function has been changed. Please pass in a StackBlock FObject');
+        block = this.StackBlock.create({
+          view: arguments[0],
+          parent: arguments[1],
+          id: arguments[2],
+          shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
+          popup: arguments[3] && arguments[3].popup,
+          breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
+        });
+      }
 
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
-      if ( this.top && opt_id && this.top[2] === opt_id ) return;
+      if ( this.top && block.id && this.top.id == block.id ) return;
 
-      if ( foam.u2.Element.isInstance(v) ) {
+      if ( foam.u2.Element.isInstance(block.view) ) {
         console.warn("Views are not recommended to be pushed to a stack. Please use a viewSpec.");
       }
       // "parent" is the parent object for this view spec.  A view of this stack
@@ -88,29 +125,33 @@ foam.CLASS({
 
       this.depth = pos + 1;
       this.stack_.length = this.depth;
-      this.stack_[pos] = [v, parent, opt_id];
+      this.stack_[pos] = block;
       this.pos = pos;
+      if ( block.shouldResetBreadcrumbs )
+        this.navStackBottom = pos;
     },
+
     function deleteMemento(mementoToDelete) {
       /** setting the last not null memento in memento chain to null to update application controller memento value on stack.back **/
-      var m = this.memento;
-      if ( ! m )
-        return;
+      var m = this.findCurrentMemento();
+      if ( ! m ) return;
+
       var tail = this.memento.tail;
-      
+
       if ( tail == null ) {
         this.memento.value$.set('');
         return;
       }
 
-      while ( m != null && m.tail != null && m.tail.value.indexOf(mementoToDelete) != 0 ) {
-        m = m.tail;
+      while ( m != null && m.parent != null && m.value.indexOf(mementoToDelete) != 0 ) {
+        m = m.parent;
       }
 
-      if ( m && m.tail ) {
-        m.tail$.set(null);
+      if ( m && m.parent ) {
+        m.value = '';
       }
     },
+
     function findCurrentMemento() {
       var tail = this.memento;
       if ( ! tail )
@@ -121,6 +162,26 @@ foam.CLASS({
         }
         tail = tail.tail;
       }
+    },
+    function jump(jumpPos) {
+
+      while ( this.pos > jumpPos ) {
+      // Check if the class of the view to which current memento points has property viewTitle set 
+      // using the identifier added to the memento params by stackView
+        if ( this.stack_[this.pos].parent?.memento.params == this.BCRMB_ID ) {
+          this.deleteMemento(this.stack_[this.pos].parent.memento.head);
+        }
+
+        this.pos--;
+      }
+      if ( this.navStackBottom > this.pos ) {
+        for ( var i = this.pos; i >= 0; i-- ) {
+          if ( this.stack_[i].shouldResetBreadcrumbs ) {
+            this.navStackBottom = i;
+            break;
+          }
+        }
+      }
     }
   ],
 
@@ -130,30 +191,7 @@ foam.CLASS({
       // icon: 'arrow_back',
       isEnabled: function(pos) { return pos > 0; },
       code: function(X) {
-        var isMementoSetWithView = false;
-
-        //check if the class of the view to which current position points has property MEMENTO_HEAD
-        //or if the view is object and it has mementoHead set
-        //if so we need to set last not-null memento in the memento chain to null as we're going back
-        if ( this.stack_[this.pos][0].class ) {
-          var classObj = this.stack_[this.pos][0].class;
-          if ( foam.String.isInstance(classObj) ) {
-            classObj = foam.lookup(this.stack_[this.pos][0].class);
-          }
-          var obj = classObj.create(this.stack_[this.pos][0], X);
-          if ( obj && obj.mementoHead ) {
-            isMementoSetWithView = true;
-          }
-        } else {
-          if ( this.stack_[this.pos][0].mementoHead ) {
-            isMementoSetWithView = true;
-          }
-        }
-
-        this.pos--;
-
-        if ( isMementoSetWithView )
-          this.deleteMemento(obj.mementoHead);
+        this.jump(this.pos-1, X);
       }
     },
     {

@@ -2,12 +2,14 @@ package foam.util.Emails;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.app.AppConfig;
-import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.app.SupportConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
 import foam.nanos.theme.Theme;
@@ -54,8 +56,10 @@ public class EmailsUtility {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-      group = user.getGroup();
-      appConfig = user.findGroup(x).getAppConfig(x);
+      Group userGroup = user.findGroup(x);
+      group = userGroup.getId();
+      userX = userX.put("group", user.findGroup(userX));
+      appConfig = userGroup.getAppConfig(x);
       spid = user.getSpid();
     }
 
@@ -112,23 +116,27 @@ public class EmailsUtility {
 
       String url = appConfig.getUrl().replaceAll("/$", "");
       templateArgs.put("logo", (url + "/" + theme.getLogo()));
+      templateArgs.put("largeLogo", (url + "/" + theme.getLargeLogo()));
       templateArgs.put("appLink", url);
       templateArgs.put("appName", (theme.getAppName()));
 
       templateArgs.put("locale", user.getLanguage().getCode().toString());
-  
+
       foam.nanos.auth.Address address = supportConfig.getSupportAddress();
       templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
       templateArgs.put("supportPhone", (supportConfig.getSupportPhone()));
       templateArgs.put("supportEmail", (supportConfig.getSupportEmail()));
-  
+
       // personal support user
       User psUser = supportConfig.findPersonalSupportUser(x);
       templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
       templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
       templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
       templateArgs.put("personalSupportFullName", psUser == null ? "" : psUser.getLegalName());
-      
+
+      // system
+      templateArgs.put("hostname", System.getProperty("hostname", "localhost"));
+
       emailMessage.setTemplateArguments(templateArgs);
     }
 
@@ -137,7 +145,11 @@ public class EmailsUtility {
     try {
       cts.apply(userX, group, emailMessage, templateArgs);
     } catch (Exception e) {
-      logger.error(e);
+      Alarm alarm = new Alarm("EmailTemplate");
+      alarm.setNote(templateName +": " + e.getMessage());
+      ((DAO) x.get("alarmDAO")).put(alarm);
+
+      logger.error("Problem with template: " + templateName, e);
       return;
     }
 

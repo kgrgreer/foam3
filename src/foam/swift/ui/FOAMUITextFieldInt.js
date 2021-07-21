@@ -11,11 +11,11 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      swiftFactory: function() {/*
-let t = UITextField() 
+      swiftFactory: `
+let t = UITextField()
 t.keyboardType = .numberPad
 return t
-      */},
+      `,
     },
     {
       name: 'emptyValue',

@@ -24,6 +24,10 @@ foam.CLASS({
     Inline notification message container.
   `,
 
+  requires: [
+    'foam.u2.ControllerMode'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -54,15 +58,17 @@ foam.CLASS({
             this.WARNING_ICON : this.SUCCESS_ICON;
       }
     },
+    'message',
     {
-      class: 'String',
-      name: 'message'
-    }
+      class: 'foam.u2.ViewSpec',
+      name: 'customView',
+      documentation: `enable to custom the view`
+    },
   ],
 
   constants: {
     ERROR_ICON: 'images/inline-error-icon.svg',
-    WARNING_ICON: 'images/information-small-purple.svg',
+    WARNING_ICON: 'images/baseline-warning-yellow.svg',
     SUCCESS_ICON: 'images/checkmark-small-green.svg'
   },
 
@@ -97,12 +103,12 @@ foam.CLASS({
       margin-left: 10px;
     }
     ^error-background {
-      background: #fff6f6;
-      border: 1px solid #f91c1c;
+      background: /*%GREY5%*/ #f5f4ff;
+      border: 1px solid /*%DESTRUCTIVE3%*/ #f91c1c;
     }
     ^warning-background {
-      background: #f5f4ff;
-      border: 1px solid #604aff;
+      background: /*%GREY5%*/ #f5f4ff;
+      border: 1px solid /*%WARNING3%*/ #604aff;
     }
     ^icon {
       display: inline-block;
@@ -110,7 +116,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
+      var self = this
       this
         .hide(this.isEmpty$)
         .addClass(this.myClass())
@@ -124,10 +131,15 @@ foam.CLASS({
                 .attrs({ src: this.iconImage$ })
               .end()
             .end()
-            .start()
+            .startContext({ controllerMode: this.ControllerMode.VIEW })
               .addClass(this.myClass('message'))
-              .add(this.message$)
-            .end()
+              .callIf(this.customView, function() {
+                this.tag(self.customView,{ data$: self.message$})
+              })
+              .callIf(! this.customView, function() {
+                this.tag(self.message$)
+              })
+            .endContext()
           .end()
         .end();
     }

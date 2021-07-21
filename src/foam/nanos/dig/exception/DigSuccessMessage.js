@@ -7,16 +7,20 @@ foam.CLASS({
   package: 'foam.nanos.dig.exception',
   name: 'DigSuccessMessage',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
+  javaGenerateDefaultConstructor: false,
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+          public DigSuccessMessage() {
+            super();
+          }
+
           public DigSuccessMessage(String message) {
             super(message);
-            setMessage(message);
-          } 
+          }
         `
         );
       }
@@ -30,18 +34,9 @@ foam.CLASS({
       value: '200'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1006
-    },
-    {
       class: 'String',
-      name: 'message'
-    },
-    {
-      class: 'String',
-      name: 'type',
-      value: 'Success'
+      name: 'errorCode',
+      value: '1006'
     }
   ]
 });

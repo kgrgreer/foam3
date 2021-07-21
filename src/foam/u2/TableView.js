@@ -46,20 +46,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'columnLabel'
-    },
-    {
       name: 'tableCellView',
       value: function(obj, e) {
         //       return foam.u2.ActionView.create({action: this, data: obj});
 
         return this.toE(null, e.__subContext__.createSubContext({data: obj}));
       }
-    },
-    {
-      type: 'Int',
-      name: 'tableWidth'
     }
   ]
 });
@@ -96,7 +88,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.on('click', function(event) {
         var obj = self.eToObj(event);
@@ -108,9 +100,9 @@ foam.CLASS({
       });
     },
 
-    function eToObj(event) {
+    async function eToObj(event) {
       /** Find the object associated with a DOM element. **/
-      var me = this.el();
+      var me = await this.el();
       var e = event.target;
       while ( e.nodeName !== 'TR' && e !== me )
         e = e.parentNode;
@@ -233,7 +225,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.nodeName = 'thead';
 
@@ -375,7 +367,7 @@ foam.CLASS({
       console.log('Deprecated use of foam.u2.TableView. Use foam.u2.view.TableView instead.');
     },
 
-    function initE() {
+    function render() {
       // Configure columns if 'config' set.
       if ( this.config ) {
         for ( var i = 0 ; i < this.columns_.length ; i++ ) {

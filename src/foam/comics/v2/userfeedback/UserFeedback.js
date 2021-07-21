@@ -27,7 +27,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'next',
-      javaToCSV: ``,
+      javaToCSV: `// intentionally left empty to prevent circular reference`,
       javaToCSVLabel: ``
     }
   ],

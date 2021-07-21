@@ -32,6 +32,7 @@ foam.CLASS({
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -66,7 +67,12 @@ foam.CLASS({
         ClusterConfig toConfig = support.getConfig(x, cmd.getDetails().getRequester());
         DAO clientDAO = support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig);
 
+        // replay from file system
         getJournal().replay(x, new RetryClientSinkDAO(x, clientDAO));
+
+        // replay mdao (cache - fixed size) - this includes storageTransient entries.
+        ((DAO) x.get("medusaNodeDAO")).select(new RetryClientSinkDAO(x, clientDAO));
+
         return cmd;
       }
 

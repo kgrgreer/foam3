@@ -75,7 +75,17 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    /**
+     * Restores the view based on passed in predicate
+     */
+      function restoreFromPredicate(predicate) {
+      if ( predicate === this.TRUE ) return;
+
+      this.qualifier = predicate.cls_.name;
+      this.amount = predicate.arg2.value;
+    },
+    
+    function render() {
       this
         .addClass(this.myClass())
         .start(this.ChoiceView, {
@@ -136,7 +146,6 @@ foam.CLASS({
       border-radius: 2px;
       border: 1px solid #dce0e7;
       color: /*%BLACK%*/ #1e1f21;
-      height: 40px;
       padding: 0 20px 0 8px;
       -webkit-appearance: none; /* Fix rounded corners in Chrome on OS X */
     }

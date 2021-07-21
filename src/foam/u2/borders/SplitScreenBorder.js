@@ -13,7 +13,7 @@ foam.CLASS({
     ^ {
       height: 100vh;
       width: 100vw;
-      background: #fff;
+      background: /*%WHITE%*/ #fff;
     }
     ^ .left-block {
       width: 55vw;
@@ -48,7 +48,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.addClass(this.myClass())
+      this.addClass()
       .start().addClass('wrapper-outer')
         .start().addClass('left-block')
           .start('div', null, this.leftPanel$)

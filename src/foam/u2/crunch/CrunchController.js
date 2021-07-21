@@ -22,7 +22,8 @@ foam.CLASS({
     'ctrl',
     'stack',
     'subject',
-    'userCapabilityJunctionDAO'
+    'userCapabilityJunctionDAO',
+    'translationService'
   ],
 
   requires: [
@@ -32,6 +33,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.CheckRootIdAgent',
+    'foam.u2.crunch.wizardflow.GrantedEditAgent',
     'foam.u2.crunch.wizardflow.CheckPendingAgent',
     'foam.u2.crunch.wizardflow.CheckNoDataAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
@@ -45,6 +47,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.PutFinalPayloadsAgent',
+    'foam.u2.crunch.wizardflow.DetachAgent',
     'foam.u2.crunch.wizardflow.TestAgent',
     'foam.u2.crunch.wizardflow.LoadTopConfig',
     'foam.u2.crunch.wizardflow.CapableDefaultConfigAgent',
@@ -52,6 +55,11 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.MaybeDAOPutAgent',
     'foam.u2.crunch.wizardflow.ShowPreexistingAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
+    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
+    'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
+    'foam.u2.crunch.wizardflow.SpinnerAgent',
+    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
+    'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.util.async.Sequence',
     'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -82,6 +90,14 @@ foam.CLASS({
         return new Map();
       }
     },
+    {
+      class: 'Boolean',
+      name: 'debugMode',
+      factory: function () {
+        // return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
+        return false;
+      }
+    }
   ],
 
   methods: [
@@ -93,12 +109,14 @@ foam.CLASS({
       `,
       code: function createWizardSequence(capabilityOrId, x) {
         if ( ! x ) x = this.__subContext__;
+        var self = this;
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
+          .add(this.GrantedEditAgent)
           .add(this.LoadCapabilitiesAgent)
           // TODO: remove CheckRootIdAgent after phase 2 fix on PENDING
           .add(this.CheckRootIdAgent)
@@ -111,8 +129,14 @@ foam.CLASS({
           .add(this.SkipGrantedAgent)
           .add(this.RequirementsPreviewAgent)
           .add(this.AutoSaveWizardletsAgent)
+          .callIf(this.debugMode, function () {
+            this.add(self.DebugAgent)
+          })
           .add(this.StepWizardAgent)
-          .add(this.PutFinalPayloadsAgent)
+          .add(this.DetachAgent)
+          .add(this.SpinnerAgent)
+          .add(this.DetachSpinnerAgent)
+          .add(this.CapabilityStoreAgent)
           // .add(this.TestAgent)
           ;
       }
@@ -134,13 +158,15 @@ foam.CLASS({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capable.capabilityIds[0], x)
+        return this.createWizardSequence(capable && capable.capabilityIds[0], x)
           .reconfigure('LoadCapabilitiesAgent', {
             waoSetting: this.LoadCapabilitiesAgent.WAOSetting.CAPABLE })
-          .addBefore('SkipGrantedAgent',this.ShowPreexistingAgent)
+          .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
+          .addBefore('DetachSpinnerAgent',this.SaveAllAgent)
           .add(this.MaybeDAOPutAgent)
           ;
       }
@@ -233,6 +259,9 @@ foam.CLASS({
 
       p.catch(err => {
         console.error(err); // do not remove
+        if (err.data.id == "foam.core.ClientRuntimeException" && err.data.exception.cause_) {
+          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message)
+        }
         intercept.reject(err.data);
       })
 

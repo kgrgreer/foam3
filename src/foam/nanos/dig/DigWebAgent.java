@@ -13,6 +13,7 @@ import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
+import foam.util.SafetyUtil;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +29,8 @@ public class DigWebAgent extends ContextAwareSupport
     Command             command = (Command) p.get(Command.class);
     Format              format  = (Format) p.get(Format.class);
     Logger              logger  = (Logger) x.get("logger");
-    PM                  pm      = new PM(getClass(), command.getName() + '/' + format.getName());
+    String              daoName = p.getParameter("dao");
+    PM                  pm      = new PM(getClass(), p.getParameter("dao"), command.getName(), format.getName());
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
 
@@ -37,9 +39,15 @@ public class DigWebAgent extends ContextAwareSupport
       DigFormatDriver driver = DigFormatDriverFactory.create(getX(), format);
 
       if ( driver == null ) {
-        DigUtil.outputException(x, new ParsingErrorException.Builder(x)
-          .setMessage("Unsupported format.")
-          .build(), format);
+        DigErrorMessage error = new ParsingErrorException("UnsupportedFormat");
+        DigUtil.outputException(x, error, format);
+        return;
+      }
+
+      if ( SafetyUtil.isEmpty(daoName) ) {
+        DigErrorMessage error = new DAORequiredException();
+        DigUtil.outputException(x, error, format);
+        logger.error(error);
         return;
       }
 
@@ -65,13 +73,10 @@ public class DigWebAgent extends ContextAwareSupport
       pm.error(x, fe.getMessage());
     } catch (Throwable t) {
       logger.error(t);
-      DigUtil.outputException(x,
-          new GeneralException.Builder(x)
-            .setStatus(String.valueOf(HttpServletResponse.SC_INTERNAL_SERVER_ERROR))
-            .setMessage(t.getMessage())
-            .setMoreInfo(t.getClass().getName())
-            .build(),
-          format);
+      DigErrorMessage error = new GeneralException(t.getMessage());
+      error.setStatus(String.valueOf(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
+      error.setMoreInfo(t.getClass().getName());
+      DigUtil.outputException(x, error, format);
       pm.error(x, t.getMessage());
     } finally {
       pm.log(x);
@@ -79,12 +84,9 @@ public class DigWebAgent extends ContextAwareSupport
   }
 
   public void sendError(X x, int status, String message) {
-    DigUtil.outputException(x,
-      new GeneralException.Builder(x)
-        .setStatus(String.valueOf(status))
-        .setMessage(message)
-        .build(),
-      Format.JSON);
+    DigErrorMessage error = new GeneralException(message);
+    error.setStatus(String.valueOf(status));
+    DigUtil.outputException(x, error, Format.JSON);
   }
 
   public boolean redirectToLogin(X x) {

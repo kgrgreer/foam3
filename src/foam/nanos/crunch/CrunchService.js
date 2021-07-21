@@ -28,7 +28,9 @@ foam.INTERFACE({
       name: 'getPrereqs',
       type: 'java.util.List<String>',
       args: [
-        { name: 'capId', type: 'String' }
+        { name: 'x',     type: 'Context' },
+        { name: 'capId', type: 'String' },
+        { name: 'ucj',   type: 'foam.nanos.crunch.UserCapabilityJunction' }
       ],
       flags: ['java']
     },
@@ -103,6 +105,10 @@ foam.INTERFACE({
         {
           name: 'filterGrantedUCJ',
           type: 'boolean'
+        },
+        {
+          name: 'groupPrereqAwares',
+          type: 'boolean'
         }
       ]
     },
@@ -119,7 +125,8 @@ foam.INTERFACE({
           name: 'capabilityId',
           type: 'String'
         }
-      ]
+      ],
+      flags: ['java']
     },
     {
       name: 'getJunctionFor',
@@ -344,6 +351,25 @@ foam.INTERFACE({
         },
         {
           name: 'capabilityId',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'createApprovalRequest',
+      async: true,
+      type: 'Void',
+      documentation: `
+        Create an approval request for UCJ updates that were saved in
+        approvables by the CRUNCH wizard.
+      `,
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'rootCapability',
           type: 'String'
         }
       ]

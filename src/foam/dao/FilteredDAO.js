@@ -35,8 +35,6 @@ foam.CLASS({
 if ( ret != null && getPredicate().f(ret) ) return ret;
 return null;`
     },
-
-    
     {
       name: 'select_',
       code: function(x, sink, skip, limit, order, predicate) {
@@ -46,13 +44,13 @@ return null;`
             this.And.create({ args: [this.predicate, predicate] }) :
             this.predicate);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 return try delegate.select_(
   x, sink, skip, limit, order,
   predicate != nil ?
     And_create(["args": [self.predicate, predicate!] ]) :
     self.predicate)
-                             */},
+     `,
       javaCode: 'return super.select_(x, sink, skip, limit, order, predicate == null ? getPredicate() : foam.mlang.MLang.AND(getPredicate(), predicate));'
     },
 

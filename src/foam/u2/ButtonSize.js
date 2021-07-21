@@ -8,9 +8,11 @@ foam.ENUM({
   package: 'foam.u2',
   name: 'ButtonSize',
 
+  properties: ['iconSize'],
+
   values: [
-    { name: 'LARGE', label: 'Large' },
-    { name: 'MEDIUM', label: 'Medium' },
-    { name: 'SMALL', label: 'Small' }
+    { name: 'LARGE', label: 'Large', iconSize: '2.25em' },
+    { name: 'MEDIUM', label: 'Medium', iconSize: '1.71em' },
+    { name: 'SMALL', label: 'Small', iconSize: '1.15em' }
   ]
 });

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CapableCreateApprovalsRuleAction',
 
   documentation: `
-    To create approvals requests specifically for Capable Payloads since theey are nested within an
+    To create approvals requests specifically for Capable Payloads since they are nested within an
     actual Capable object
   `,
 
@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.i18n.TranslationService',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.dao.Operation',
     'foam.nanos.auth.Subject',
@@ -52,6 +53,10 @@ foam.CLASS({
       class: 'String',
       name: 'groupToNotify',
       value: 'fraud-ops'
+    },
+    {
+      class: 'StringArray',
+      name: 'additionalGroupsToNotify'
     }
   ],
 
@@ -70,7 +75,7 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
-        { name: 'capableObj', type: 'Capable' },
+        { name: 'obj', type: 'FObject' },
         { name: 'capablePayloadObj', type: 'CapabilityJunctionPayload' }
       ],
       javaCode: `
@@ -158,16 +163,17 @@ foam.CLASS({
                 String capName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
                 String objName = ts.getTranslation(locale, obj.getClass().getName() + ".name", obj.getClassInfo().getObjClass().getSimpleName());
 
-                ApprovalRequest  approvalRequest = new ApprovalRequest.Builder(getX())
+                ApprovalRequest approvalRequest = new ApprovalRequest.Builder(getX())
                   .setDaoKey("approvableDAO")
                   .setObjId(approvable.getId())
                   .setOperation(operation)
                   .setCreatedFor(user.getId())
                   .setGroup(getGroupToNotify())
-                  .setClassification(capName + FOR + objName + " - id:" + String.valueOf(obj.getProperty("id")))
+                  .setAdditionalGroups(getAdditionalGroupsToNotify())
+                  .setClassificationEnum(ApprovalRequestClassificationEnum.CAPABLE_CREATED_APPROVAL)
                   .setStatus(ApprovalStatus.REQUESTED).build();
 
-                approvalRequest = decorateApprovalRequest(x, approvalRequest, capableObj, capablePayload);
+                approvalRequest = decorateApprovalRequest(x, approvalRequest, obj, capablePayload);
 
                 approvalRequestDAO.put_(getX(), approvalRequest);
               } catch (Exception e){

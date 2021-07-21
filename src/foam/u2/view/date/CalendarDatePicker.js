@@ -28,7 +28,7 @@ foam.CLASS({
   ],
   axioms: [
     foam.u2.CSS.create({
-      code: function() {/*
+      code: `
         ^selected_day_cell {
           background-color: #e5f1fc;
         }
@@ -72,7 +72,7 @@ foam.CLASS({
           line-height: 1.5;
           letter-spacing: normal;
         }
-      */}
+      `
     })
   ],
   methods: [
@@ -103,7 +103,7 @@ foam.CLASS({
       }
       return weeks;
     },
-    function initE() {
+    function render() {
       var self = this;
       this.startContext({ data: this.data }).
         addClass(this.myClass('calendar_table')).

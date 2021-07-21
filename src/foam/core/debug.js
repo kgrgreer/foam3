@@ -142,11 +142,11 @@ foam.CLASS({
           var axiom = cls.getAxiomByName(name);
 
           foam.assert(
-              axiom,
-              'Unknown argument ', name, ' in ', pName, expression);
+            axiom,
+            'Unknown argument ', name, ' in ', pName, expression);
           foam.assert(
-              axiom.toSlot,
-              'Non-Slot argument ', name, ' in ', pName, expression);
+            axiom.toSlot,
+            'Non-Slot argument ', name, ' in ', pName, expression);
         }
       }
     }
@@ -246,7 +246,7 @@ foam.SCRIPT({
   // Change 'false' to 'true' to enable error reporting for setting
   // non-Properties on FObjects.
   // TODO: add 'Did you mean...' support.
-  if ( false && global.Proxy ) {
+  if ( false && globalThis.Proxy ) {
     (function() {
 
       var IGNORE = {
@@ -335,19 +335,26 @@ foam.SCRIPT({
     foam.__context__ = foam.__context__.createSubContext({
       describe: function() {
         this.log(
-            'Context:',
-            this.hasOwnProperty('NAME') ? this.NAME : ('anonymous ' + this.$UID));
-        this.log('KEY                  Type           Value');
-        this.log('----------------------------------------------------');
+          'Context:',
+          this.hasOwnProperty('NAME') ? this.NAME : ('anonymous ' + this.$UID));
+        this.log('KEY                                      Type                                     Value');
+        this.log('--------------------------------------------------------------------------------------------------');
         for ( var key in this ) {
-          var value = this[key];
-          var type = foam.core.FObject.isInstance(value) ?
+          try {
+            var value = this[key];
+            var type = foam.core.FObject.isInstance(value) ?
               value.cls_.name :
               typeof value    ;
-          this.log(
-            foam.String.pad(key,  20),
-            foam.String.pad(type, 14),
-            typeof value === 'string' || typeof value === 'number' ? value : '');
+            if ( type == 'PropertySlot' ) value = value.get();
+            if ( type == 'ConstantSlot' ) value = value.get();
+            if ( foam.core.FObject.isInstance(value) ) value = value.cls_.name;
+            this.log(
+              foam.String.pad(key,  40),
+              foam.String.pad(type, 40),
+              value);
+//              type === 'string' ? '"' + value + '"' : (typeof value === 'number' || typeof value === 'boolean') ? value : '');
+          } catch (x) {
+          }
         }
         this.log('\n');
     }});

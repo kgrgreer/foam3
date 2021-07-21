@@ -11,6 +11,7 @@ foam.CLASS({
   requires: [
     'foam.core.FObject',
     'foam.u2.wizard.WizardPosition',
+    'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.StepWizardConfig'
   ],
 
@@ -23,6 +24,10 @@ foam.CLASS({
       name: 'config',
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.StepWizardConfig',
+      documentation: `
+        Configuration for the wizard. Some configurattion properties are not
+        applicable to all wizard views.
+      `,
       factory: function() {
         return this.StepWizardConfig.create();
       }
@@ -40,6 +45,10 @@ foam.CLASS({
       name: 'wizardlets',
       class: 'FObjectArray',
       of: 'foam.u2.wizard.Wizardlet',
+      documentation: `
+        An array containing all the wizardlets to use in this wizard. This may
+        include wizardlets with isAvailable initially set to false.
+      `,
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
@@ -48,7 +57,10 @@ foam.CLASS({
     {
       name: 'wizardPosition',
       documentation: `
-        Wizardlet position
+        A WizardPosition instance specifying the index of the wizardlet and
+        section that is considered the "current" section. For the incremental
+        view, this is the current screen; for the scrolling view, this is the
+        first section that is below the top of the visible portion of the wizard.
       `,
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.WizardPosition',
@@ -139,6 +151,10 @@ foam.CLASS({
     {
       name: 'allValid',
       class: 'Boolean'
+    },
+    {
+      name: 'someFailures',
+      class: 'Boolean'
     }
   ],
 
@@ -148,6 +164,8 @@ foam.CLASS({
 
       if ( this.wsub ) this.wsub.detach();
       this.wsub = this.FObject.create();
+
+      this.onWizardletValidity();
 
       var wi = 0, si = 0;
       wizardlets.forEach((w, wizardletIndex) => {
@@ -174,7 +192,13 @@ foam.CLASS({
         // Bind validity listener for wizardlet validity
         var isValid$ = w.isValid$;
         this.wsub.onDetach(isValid$.sub(() => {
-          this.onWizardletValidity(wizardletIndex, isValid$.get());
+          this.onWizardletValidity();
+        }));
+
+        // Bind indicator listener for wizardlet validity
+        var indicator$ = w.indicator$;
+        this.wsub.onDetach(indicator$.sub(() => {
+          this.onWizardletIndicator(wizardletIndex, indicator$.get());
         }));
 
       });
@@ -308,15 +332,24 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onWizardletAvailability(wizardletIndex, value) {
-      // Force a position update so views recalculate state
-      this.wizardPosition = this.WizardPosition.create({
-        wizardletIndex: this.wizardPosition.wizardletIndex,
-        sectionIndex: this.wizardPosition.sectionIndex,
-      });
+    {
+      name: 'onWizardletAvailability',
+      framed: true,
+      code: function onWizardletAvailability(wizardletIndex, value) {
+        // Force a position update so views recalculate state
+        this.wizardPosition = this.wizardPosition.clone();
+      },
     },
-    function onWizardletValidity(wizardletIndex, value) {
+    function onWizardletValidity() {
       this.allValid = this.wizardlets.filter(w => ! w.isValid).length == 0;
+    },
+    function onWizardletIndicator(wizardletIndex, value) {
+      if ( value == this.WizardletIndicator.NETWORK_FAILURE ) {
+        this.someFailures = true;
+        return;
+      }
+      this.someFailures = !! this.wizardlets.filter(
+        w => w.indicator == this.WizardletIndicator.NETWORK_FAILURE).length;
     },
     function onSectionAvailability(sectionPosition, value) {
       // If a previous position became available, move the wizard back
@@ -332,10 +365,7 @@ foam.CLASS({
       }
 
       // Force position update anyway so views recalculate state
-      this.wizardPosition = this.WizardPosition.create({
-        wizardletIndex: this.wizardPosition.wizardletIndex,
-        sectionIndex: this.wizardPosition.sectionIndex,
-      });
+      this.wizardPosition = this.wizardPosition.clone();
     }
   ]
 });

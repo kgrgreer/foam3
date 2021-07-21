@@ -129,6 +129,12 @@ foam.LIB({
        */
       this.private_.axiomCache = {};
 
+      // Sort axioms by priority, higher priority gets installed first.
+      // Default to 100.
+      axs = axs.sort(function(a, b) {
+        return foam.Number.compare(b.priority || 100, a.priority || 100);
+      });
+
       // We install in two passes to avoid ordering issues from Axioms which
       // need to access other axioms, like ids: and exports:.
 
@@ -137,7 +143,7 @@ foam.LIB({
       for ( var i = 0 ; i < axs.length ; i++ ) {
       // Convert JSON axioms to real instances as late as possible
         if ( foam.String.isInstance(axs[i].class) ) {
-          var axsCls = foam.lookup(axs[i].class, true);
+          var axsCls = foam.maybeLookup(axs[i].class);
           if ( axsCls ) axs[i] = axsCls.create(axs[i]);
         }
 
@@ -155,15 +161,6 @@ foam.LIB({
         this.axiomMap_[a.name] = a;
       }
 
-      // Sort axioms by priority, higher priority gets installed first.
-      // Default to 100.
-      axs = axs.sort(function(a, b) {
-        var p1 = foam.Number.isInstance(a.priority) ? a.priority : 100;
-        var p2 = foam.Number.isInstance(b.priority) ? b.priority : 100;
-
-        // compare p2 vs p1, as we want higher priority values first.
-        return foam.Number.compare(p2, p1);
-      });
 
       for ( var i = 0 ; i < axs.length ; i++ ) {
         var a = axs[i];
@@ -398,7 +395,7 @@ foam.LIB({
             m.properties[i] = a = { name: a };
           }
 
-          var type = foam.lookup(a.class, true) || foam.core.Property;
+          var type = foam.maybeLookup(a.class) || foam.core.Property;
           foam.assert(
             type !== a.cls_,
             'Property', a.name, 'on', m.name,
@@ -472,7 +469,7 @@ foam.CLASS({
 
       var prop = this.cls_.getAxiomByName(name);
       foam.assert(prop && foam.core.Property.isInstance(prop),
-                    'Attempted to clear non-property', name);
+        'Attempted to clear non-property', name);
 
       if ( this.hasOwnProperty(name) ) {
         var oldValue = this[name];
@@ -702,7 +699,7 @@ foam.CLASS({
       var l = arguments[arguments.length - 1];
 
       foam.assert(foam.Function.isInstance(l),
-          'Listener must be a function');
+        'Listener must be a function');
 
       var listeners = this.listeners_();
 
@@ -807,8 +804,8 @@ foam.CLASS({
        * Returns the input object, which can be useful for chaining.
        */
       foam.assert(! d || foam.Function.isInstance(d.detach) ||
-          foam.Function.isInstance(d),
-          'Argument to onDetach() must be callable or detachable.');
+        foam.Function.isInstance(d),
+        'Argument to onDetach() must be callable or detachable.');
       if ( d ) this.sub('detach', d.detach ? d.detach.bind(d) : d);
       return d;
     },
@@ -827,6 +824,8 @@ foam.CLASS({
       this.instance_.detaching_ = false;
       this.clearPrivate_('listeners');
     },
+
+    function isDetached() { return this.hasOwnProperty('detaching_'); },
 
 
     /************************************************
@@ -901,8 +900,10 @@ foam.CLASS({
       var ps = this.cls_.getAxiomsByClass(foam.core.Property);
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = this[ps[i].name];
-        hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
-        hash &= hash; // forces 'hash' back to a 32-bit int
+        if ( prop.includeInHash ) {
+          hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
+          hash &= hash; // forces 'hash' back to a 32-bit int
+        }
       }
 
       return hash;

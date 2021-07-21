@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'Just shows the value of data as a string.',
 
   properties: [
+    [ 'nodeName', 'SPAN' ],
     {
       name: 'prop'
     }
@@ -23,7 +24,7 @@ foam.CLASS({
       this.prop = prop;
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       var prop = this.prop;

@@ -88,7 +88,7 @@ foam.CLASS({
        this.daoUpdate();
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -109,11 +109,11 @@ foam.CLASS({
         .start().style({ 'flex': 1 })
           .start('p')
             .addClass(style.myClass('card-title'))
-            .add(( self.data.name != '') ? { data : self.data, clsInfo : self.data.cls_.NAME.name, default : self.data.name } : self.data.id)
+            .translate(self.data.id + '.' + self.data.cls_.NAME.name, self.data.name)
           .end()
           .start('p')
             .addClass(style.myClass('card-subtitle'))
-            .add({ data : self.data, clsInfo : self.data.cls_.DESCRIPTION.name, default : self.data.description })
+            .translate(self.data.id + '.' + self.data.cls_.DESCRIPTION.name, self.data.description)
           .end()
         .end()
         .start()
@@ -121,7 +121,7 @@ foam.CLASS({
             return this.E().addClass(style.myClass('tooltip'))
               .start()
                 .addClass(this.myClass('badge'))
-                .add(foam.u2.view.ReadOnlyEnumView.create({ data: cjStatus }))
+                .add(self.ReadOnlyEnumView.create({ data: cjStatus }))
               .end()
               .start('span')
                 .addClass(style.myClass('tooltiptext'))
@@ -157,30 +157,9 @@ foam.CLASS({
               isRenewable => this.isRenewable = isRenewable
             );
           }
-          if ( this.cjStatus === this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
-            this.auth.check(this.ctrl.__subContext__, 'certifydatareviewed.rw.reviewed').then(result => {
-              if ( ! result &&
-                ( ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-49' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-13' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-12' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-11'
-                ) ) {
-                this.cjStatus = this.CapabilityJunctionStatus.PENDING_REVIEW;
-              }
-            }).catch(err => {
-              if ( err.data && err.data.id === 'foam.nanos.crunch.CapabilityIntercept' &&
-                ( ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-49' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-13' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-12' ||
-                  ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-11'
-                ) ) {
-                this.cjStatus = this.CapabilityJunctionStatus.PENDING_REVIEW;
-              } else throw err;
-            });
-
-            if ( ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-20' ) {
+          if ( this.cjStatus === this.CapabilityJunctionStatus.ACTION_REQUIRED &&
+               ucj.targetId == '554af38a-8225-87c8-dfdf-eeb15f71215f-20') {
               this.cjStatus = this.CapabilityJunctionStatus.PENDING_REVIEW;
-            }
           }
         });
       }

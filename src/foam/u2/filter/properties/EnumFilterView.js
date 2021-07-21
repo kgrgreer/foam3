@@ -111,6 +111,11 @@ foam.CLASS({
       name: 'filteredOptions',
       expression: function(property, search, selectedOptions) {
         var options = property.of.VALUES;
+        options.sort(function(a, b){
+          if(a.label < b.label) { return -1; }
+          if(a.label > b.label) { return 1; }
+          return 0;
+        });
         // Filter out search
         if ( search ) {
           var lowerCaseSearch = search.toLowerCase();
@@ -160,9 +165,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',
@@ -187,7 +192,7 @@ foam.CLASS({
                     .start().addClass(self.myClass('container-option'))
                       .on('click', () => self.deselectOption(index))
                       .start({
-                        class: 'foam.u2.md.CheckBox',
+                        class: 'foam.u2.CheckBox',
                         data: true,
                         showLabel: true,
                         label: label
@@ -209,7 +214,7 @@ foam.CLASS({
                     .start().addClass(self.myClass('container-option'))
                       .on('click', () => self.selectOption(index))
                       .start({
-                        class: 'foam.u2.md.CheckBox',
+                        class: 'foam.u2.CheckBox',
                         data: false,
                         showLabel: true,
                         label: label

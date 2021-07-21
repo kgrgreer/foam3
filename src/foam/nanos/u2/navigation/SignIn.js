@@ -15,15 +15,17 @@ foam.CLASS({
     'auth',
     'ctrl',
     'loginSuccess',
-    'stack',
-    'user',
     'menuDAO',
-    'memento'
+    'memento',
+    'stack',
+    'translationService',
+    'user'
   ],
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.stack.StackBlock'
   ],
 
   messages: [
@@ -77,16 +79,18 @@ foam.CLASS({
       name: 'footerLink',
       code: function(topBarShow_, param) {
         window.history.replaceState(null, null, window.location.origin);
-        this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, this);
+        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, parent: this }));
       }
     },
     {
       name: 'subfooterLink',
       code: function() {
-        this.stack.push({
-          class: 'foam.nanos.auth.ChangePasswordView',
-          modelOf: 'foam.nanos.auth.RetrievePassword'
-        });
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }));
       }
     },
     {
@@ -95,14 +99,14 @@ foam.CLASS({
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
-          this.stack.push({
-            class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
-          });
+          this.stack.push(this.StackBlock.create({
+            view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
+          }));
         } else {
           if ( ! this.user.emailVerified ) {
-            this.stack.push({
-              class: 'foam.nanos.auth.ResendVerificationEmail'
-            });
+            this.stack.push(this.StackBlock.create({
+              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+            }));
           } else {
             this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
             if ( ! this.memento || this.memento.value.length === 0 )
@@ -118,6 +122,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Sign in',
+      buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       code: async function(X) {
@@ -133,7 +138,8 @@ foam.CLASS({
                     this.nextStep();
                   }).catch(err => {
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: err.message || this.ERROR_MSG,
+                      err: err.data,
+                      message: this.ERROR_MSG,
                       type: this.LogLevel.ERROR
                     }));
                   });
@@ -145,7 +151,8 @@ foam.CLASS({
           ).catch(
             err => {
               this.ctrl.add(this.NotificationMessage.create({
-                message: err.message || this.ERROR_MSG,
+                err: err.data,
+                message: this.ERROR_MSG,
                 type: this.LogLevel.ERROR
               }));
           });

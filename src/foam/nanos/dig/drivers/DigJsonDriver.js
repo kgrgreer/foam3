@@ -53,10 +53,7 @@ foam.CLASS({
         o = jsonParser.parseString(data, cInfo.getObjClass());
 
       if ( o == null ) {
-        DigUtil.outputException(x, 
-          new ParsingErrorException.Builder(x)
-            .setMessage("Invalid JSON Format").build(), 
-          getFormat());
+        DigUtil.outputException(x, new ParsingErrorException("Invalid JSON Format"), getFormat());
         return null;
       }
 
@@ -78,7 +75,7 @@ foam.CLASS({
       PrintWriter out = x.get(PrintWriter.class);
       ClassInfo cInfo = dao.getOf();
       String output = null;
-      
+
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
         return;
@@ -86,10 +83,10 @@ foam.CLASS({
 
       foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)
         .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x, 
+          new foam.lib.AndPropertyPredicate(x,
             new foam.lib.PropertyPredicate[] {
               new foam.lib.ExternalPropertyPredicate(),
-              new foam.lib.NetworkPropertyPredicate(), 
+              new foam.lib.NetworkPropertyPredicate(),
               new foam.lib.PermissionedPropertyPredicate()}));
 
       outputterJson.setOutputDefaultValues(true);
@@ -100,7 +97,7 @@ foam.CLASS({
         outputterJson.output(fobjects.get(0));
       else
         outputterJson.output(fobjects.toArray());
-      
+
       // Output the formatted data
       out.println(outputterJson.toString());
       `

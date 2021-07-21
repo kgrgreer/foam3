@@ -30,9 +30,6 @@ foam.CLASS({
       padding: 0;
     }
 
-    ^ .foam-u2-md-CheckBox {
-      border: 1px solid #d6dddf;
-    }
 
     ^ .form-element-container {
       background-color: #f6f9f9;
@@ -116,7 +113,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this
@@ -124,7 +121,7 @@ foam.CLASS({
         .start()
           .addClass('section')
           .tag(
-            { class: 'foam.u2.md.CheckBox', },
+            { class: 'foam.u2.CheckBox', },
             { label: this.property.label },
             this.checkbox$
           )

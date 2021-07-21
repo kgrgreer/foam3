@@ -38,7 +38,7 @@ foam.CLASS({
     {
       name: 'parseFObjects',
       javaCode: `
-      DigUtil.outputException(x, new UnsupportException.Builder(x).setMessage("HTML put operation is not supported").build(), getFormat());
+      DigUtil.outputException(x, new UnsupportException("HTML put operation is not supported"), getFormat());
       return null;
       `
     },

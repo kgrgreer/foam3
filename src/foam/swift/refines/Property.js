@@ -339,7 +339,7 @@ foam.CLASS({
   templates: [
     {
       name: 'swiftSlotInitializer',
-      template: function() {/*
+      template: `
 let s = <%=foam.swift.core.PropertySlot.model_.swiftName%>([
   "object": self,
   "propertyName": "<%=this.name%>",
@@ -348,17 +348,17 @@ self.onDetach(Subscription(detach: {
   s.detach()
 }))
 return s
-      */},
+      `,
     },
     {
       name: 'swiftSetterTemplate',
-      template: function() {/*
+      template: `
 self.set(key: "<%=this.name%>", value: value)
-      */},
+      `,
     },
     {
       name: 'swiftGetterTemplate',
-      template: function() {/*
+      template: `
 if <%=this.swiftInitedName%> {
   return <%=this.swiftValueName%><% if ( this.swiftType != this.swiftValueType ) { %>!<% } %>
 }
@@ -398,20 +398,20 @@ return nil
 <% } else { %>
 fatalError("No default value for <%=this.name%>")
 <% } %>
-      */},
+      `,
     },
     {
       name: 'swiftSlotSetter',
-      template: function() {/*
+      template: `
 self.<%=this.swiftSlotLinkSubName%>?.detach()
 self.<%=this.swiftSlotLinkSubName%> = self.<%=this.swiftSlotName%>.linkFrom(value)
 self.onDetach(self.<%=this.swiftSlotLinkSubName%>!)
-      */},
+      `,
     },
     {
       name: 'swiftPropertyInfoInit',
       args: ['parentCls'],
-      template: function() {/*
+      template: `
 class PInfo: PropertyInfo {
   let name = "<%=this.name%>"
   let classInfo: ClassInfo
@@ -434,7 +434,7 @@ class PInfo: PropertyInfo {
       for s in obj.<%=p.swiftExpressionSubscriptionName%>! { s.detach() }
     }
   <% } %>
-    let oldValue: Any? = obj.<%=p.swiftInitedName%> ? obj.`<%=p.swiftVarName%>` : nil
+    let oldValue: Any? = obj.<%=p.swiftInitedName%> ? obj.\`<%=p.swiftVarName%>\` : nil
     obj.<%=p.swiftValueName%> = obj.<%=p.swiftPreSetFuncName%>(oldValue, obj.<%=p.swiftAdaptFuncName%>(oldValue, value))
     obj.<%=p.swiftInitedName%> = true
     obj.<%=p.swiftPostSetFuncName%>(oldValue, obj.<%=p.swiftValueName%>)
@@ -458,7 +458,7 @@ class PInfo: PropertyInfo {
   }
   public func hasOwnProperty(_ obj: foam_core_FObject?) -> Bool {
     let obj = obj as! <%=parentCls.model_.swiftName%>
-    return obj.`<%=p.swiftInitedName%>`
+    return obj.\`<%=p.swiftInitedName%>\`
   }
   public func clearProperty(_ obj: foam_core_FObject?) {
     let obj = obj as! <%=parentCls.model_.swiftName%>
@@ -490,7 +490,7 @@ class PInfo: PropertyInfo {
   }
 }
 return PInfo(classInfo())
-      */},
+      `,
     }
   ],
 });

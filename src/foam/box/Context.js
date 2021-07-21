@@ -46,7 +46,7 @@ foam.CLASS({
       name: 'messagePortService',
       hidden: true,
       factory: function() {
-        var model = this.__context__.lookup('foam.messageport.MessagePortService', true);
+        var model = this.__context__.maybeLookup('foam.messageport.MessagePortService');
         if ( model ) {
           return model.create({
             delegate: this.registry
@@ -58,7 +58,7 @@ foam.CLASS({
       name: 'socketService',
       hidden: true,
       factory: function() {
-        var model = this.__context__.lookup('foam.net.node.SocketService', true);
+        var model = this.__context__.maybeLookup('foam.net.node.SocketService');
         if ( model ) {
           return model.create({
             port: Math.floor( 10000 + ( Math.random() * 10000 ) ),
@@ -122,11 +122,11 @@ return __context__.lookup("foam.swift.net.SocketService")!.create(args: [
         me.delegate = this.registry;
         return me;
       },
-      swiftFactory: function() {/*
+      swiftFactory: `
         let me = NamedBox_create(["name": self.myname])
         me.delegate = self.registry!
         return me
-      */},
+      `,
     },
     {
       class: 'Boolean',

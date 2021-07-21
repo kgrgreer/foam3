@@ -33,16 +33,20 @@ foam.CLASS({
   css: `
     ^ {
       box-sizing: border-box;
-      max-width: 365px;
+      max-height: 45vh;
+      height: 100%;
       padding: 16px;
       border: 2px dashed #8e9090;
       border-radius: 3px;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     ^instruction-container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-around;
       align-items: center;
       text-align: center;
       height: 228px;
@@ -52,46 +56,42 @@ foam.CLASS({
       margin-bottom: 16px;
     }
     ^input {
-      display: none;
-    }
-    ^title {
-      font-size: 16px;
-      font-weight: 900;
-      margin: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      opacity: 0;
+      position: absolute;
     }
     ^or {
       display: inline-block;
-      vertical-align: bottom;
-      margin: 0;
-      margin-top: 8px;
     }
     ^link {
       display: inline-block;
       cursor: pointer;
       color: /*%PRIMARY3%*/ #406dea;
-      margin: 0;
       margin-left: 5px;
     }
+    ^input:focus + ^instruction-container > ^browse-container > ^link{
+      border: 1px solid;
+      border-color: /*%PRIMARY1%*/ #406dea;
+    }
     ^caption-container {
-      margin-top: 24px;
-      position: relative;
-      top: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     ^caption {
-      display: inline-block;
       font-size: 10px;
       color: #525455;
-      margin: 0;
-      margin-top: 4px;
     }
   `,
 
   messages: [
     { name: 'LABEL_DEFAULT_TITLE', message: 'Drag your file here' },
     { name: 'LABEL_OR',            message: 'or' },
-    { name: 'LABEL_BROWSE',        message: 'select from your device' },
+    { name: 'LABEL_BROWSE',        message: 'Select from your device' },
     { name: 'LABEL_SUPPORTED',     message: 'Supported file types:' },
     { name: 'LABEL_MAX_SIZE',      message: 'Max size:' },
+    { name: 'ERROR_FILE_TITLE',    message: 'Error' },
     { name: 'ERROR_FILE_TYPE',     message: 'Invalid file type' },
     { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' }
   ],
@@ -140,27 +140,53 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
       var self = this;
 
       if ( Object.keys(this.supportedFormats).length == 0 ) {
-        let s = await this.fileTypeDAO.select()
+        let s = await this.fileTypeDAO.select();
         s.array.forEach(type => {
-          this.supportedFormats[type.toSummary()] = type.abbreviation
-        })
+          this.supportedFormats[type.toSummary()] = type.abbreviation;
+        });
       }
 
       this
         .addClass(this.myClass())
+        .callIf(this.isMultipleFiles, function() {
+          this.start('input')
+            .addClass(this.myClass('input'))
+            .addClass(this.instanceClass('input'))
+            .attrs({
+              type: 'file',
+              accept: this.getSupportedTypes(),
+              multiple: 'multiple'
+            })
+            .on('change', this.onChange)
+          .end();
+        })
+        .callIf(! this.isMultipleFiles, function() {
+          this.start('input')
+            .addClass(this.myClass('input'))
+            .addClass(this.instanceClass('input'))
+            .attrs({
+              type: 'file',
+              accept: this.getSupportedTypes()
+            })
+            .on('change', this.onChange)
+          .end();
+        })
         .start().addClass(this.myClass('instruction-container')).enableClass('selection', this.files$.map((v) => { return v.length > 0; }))
-          .start('p').addClass(this.myClass('title')).add(this.title || this.LABEL_DEFAULT_TITLE).end()
           .start().addClass(this.myClass('browse-container'))
-            .start('p').addClass(this.myClass('or')).add(this.LABEL_OR).end()
-            .start('p').addClass(this.myClass('link'))
-              .add(this.LABEL_BROWSE)
-              .on('click', this.onAddAttachmentClicked)
-            .end()
+            .start('p').addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
+              .start('p').addClass(this.myClass('or')).add(this.LABEL_OR).end()
+              .start('label').addClass(this.myClass('link'))
+                .add(this.LABEL_BROWSE)
+                .attrs({
+                  for: 'file-upload'
+                })
+                .on('click', this.onAddAttachmentClicked)
+              .end()
           .end()
           .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
             .start()
@@ -185,31 +211,8 @@ foam.CLASS({
           return e;
         }, this.files$))
         .on('drop', this.onDrop)
-        .on('dragover', (e) => { e.preventDefault() })
-        .on('dragenter', (e) => { e.preventDefault() })
-        .callIf(this.isMultipleFiles, function() {
-          this.start('input')
-            .addClass(this.myClass('input'))
-            .addClass(this.instanceClass(`input`))
-            .attrs({
-              type: 'file',
-              accept: this.getSupportedTypes(),
-              multiple: 'multiple'
-            })
-            .on('change', this.onChange)
-          .end();
-        })
-        .callIf(! this.isMultipleFiles, function() {
-          this.start('input')
-            .addClass(this.myClass('input'))
-            .addClass(this.instanceClass(`input`))
-            .attrs({
-              type: 'file',
-              accept: this.getSupportedTypes()
-            })
-            .on('change', this.onChange)
-          .end();
-        });
+        .on('dragover', e => e.preventDefault() )
+        .on('dragenter', e => e.preventDefault() );
     },
 
     function getSupportedTypes(readable) {
@@ -240,7 +243,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          ctrl.notify(this.ERROR_FILE_SIZE, '', this.LogLevel.ERROR, true);
+          ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;
@@ -283,6 +286,9 @@ foam.CLASS({
     },
 
     function removeFile(atIndex) {
+      if ( this.controllerMode === this.controllerMode.VIEW ) {
+        return;
+      }
       var files = Array.from(this.files);
       files.splice(atIndex, 1);
       if ( this.selected === files.length )
@@ -300,19 +306,25 @@ foam.CLASS({
 
   listeners: [
     function onAddAttachmentClicked(e) {
+      if ( this.controllerMode === this.controllerMode.VIEW ) {
+        return;
+      }
       if ( typeof e.target != 'undefined' ) {
-        if ( e.target.tagName == 'P' && e.target.tagName != 'A' ) {
+        if ( e.target.tagName == 'LABEL' && e.target.tagName != 'A' ) {
           this.document.querySelector('.' + this.instanceClass(`input`)).click();
         }
       } else {
         // For IE browser
-        if ( e.srcElement.tagName == 'P' && e.srcElement.tagName != 'A' ) {
+        if ( e.srcElement.tagName == 'LABEL' && e.srcElement.tagName != 'A' ) {
           this.document.querySelector('.' + this.instanceClass(`input`)).click();
         }
       }
     },
 
     function onDrop(e) {
+      if ( this.controllerMode === this.controllerMode.VIEW ) {
+        return;
+      }
       e.preventDefault();
       var files = [];
       var inputFile;
@@ -326,7 +338,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
+                ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
               }
             }
           }
@@ -338,7 +350,7 @@ foam.CLASS({
           if ( this.isFileType(file) ) {
             files.push(file);
           } else {
-            ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
+            ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
           }
         }
       }

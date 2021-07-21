@@ -15,13 +15,22 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.AssignableAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   requires: [
+    'foam.dao.AbstractDAO',
+    'foam.log.LogLevel',
     'foam.nanos.ticket.TicketStatus',
+    'foam.u2.dialog.Popup'
   ],
 
   javaImports: [
@@ -33,9 +42,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'userDAO',
+    'ctrl',
+    'currentMenu',
+    'notify',
+    'objectSummaryView?',
+    'stack',
+    'subject',
+    'summaryView?',
     'ticketDAO',
-    'ticketStatusDAO'
+    'ticketStatusDAO',
+    'userDAO'
   ],
 
   tableColumns: [
@@ -43,10 +59,22 @@ foam.CLASS({
     'type',
     // REVIEW: view fails to display when owner in tableColumn, the 2nd entry in allColumns is undefined.
     // 'owner',
+    'assignedTo.legalName',
     'createdBy.legalName',
     'lastModified',
     'status',
     'title'
+  ],
+
+  messages: [
+    {
+      name: 'SUCCESS_ASSIGNED',
+      message: 'You have successfully assigned this ticket'
+    },
+    {
+      name: 'SUCCESS_UNASSIGNED',
+      message: 'You have successfully unassigned this ticket'
+    }
   ],
 
   sections: [
@@ -72,7 +100,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       visibility: 'RO',
       section: 'infoSection',
@@ -292,6 +320,12 @@ foam.CLASS({
         }
         return spid_;
       `
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'assignedTo',
+      section: 'infoSection'
     }
   ],
 
@@ -355,17 +389,119 @@ foam.CLASS({
     {
       name: 'close',
       tableWidth: 70,
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       isAvailable: function(status, id) {
         return status != 'CLOSED' &&
                id > 0;
       },
       code: function() {
         this.status = 'CLOSED';
+        this.assignedTo = 0;
         this.ticketDAO.put(this).then(function(ticket) {
           this.copyFrom(ticket);
         }.bind(this));
       }
     },
+    {
+      name: 'assign',
+      section: 'infoSection',
+      isAvailable: function(status){
+        return status === 'CLOSED';
+      },
+      availablePermissions: [
+        "ticket.assign.*"
+      ],
+      code: function(X) {        
+        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
+        objToAdd.tag({
+          class: "foam.u2.PropertyModal",
+          property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
+          isModalRequired: true,
+          data$: X.data$,
+          propertyData$: X.data.assignedTo$,
+          title: this.ASSIGN_TITLE,
+          onExecute: this.assignTicket.bind(this, X)
+        });
+      }
+    },
+    {
+      name: 'assignToMe',
+      section: 'infoSection',
+      isAvailable: function(subject, assignedTo, status){
+        return (subject.user.id !== assignedTo) && (status === 'OPEN');
+      },
+      code: function(X) {
+        var assignedTicket = this.clone();
+        assignedTicket.assignedTo = X.subject.user.id;
+
+        this.ticketDAO.put(assignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top && 
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'unassignMe',
+      section: 'infoSection',
+      isAvailable: function(subject, assignedTo, status){
+        return (subject.user.id === assignedTo) && (status === 'OPEN');
+      },
+      code: function(X) {        
+        var unassignedTicket = this.clone();
+        unassignedTicket.assignedTo = 0;
+
+        this.ticketDAO.put(unassignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top && 
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'assignTicket',
+      code: function(X) {
+        var assignedTicket = this.clone();
+
+        this.ticketDAO.put(assignedTicket).then(_ => {
+          this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+
+          if (
+            X.stack.top && 
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, (e) => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    }
   ]
 });

@@ -13,9 +13,9 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       value: 'John',
-      swiftPreSet: function() {/*
+      swiftPreSet: `
 return newValue + "EXTENDED"
-      */},
+      `,
     },
   ],
   methods: [
@@ -28,9 +28,9 @@ return newValue + "EXTENDED"
           type: 'String',
         },
       ],
-      swiftCode: function() {/*
+      swiftCode: `
 return String(format: type(of: self).greeting, name!, "OVERRIDE!!!")
-      */},
+      `,
     }
   ]
 });

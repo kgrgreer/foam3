@@ -21,16 +21,15 @@ foam.CLASS({
   name: 'ReadWriteView',
   extends: 'foam.u2.View',
 
-  requires: [ 'foam.u2.tag.Input' ],
+  requires: [
+    'foam.u2.TextField',
+    'foam.u2.tag.Input'
+  ],
 
   methods: [
-    function initE() {
-      // Don't create ReadView if no data (saves memory and startup time).
-      if ( this.isLoaded() ) {
-        this.initReadView();
-      } else {
-        this.listenForLoad();
-      }
+    function render() {
+      this.addClass();
+      this.initReadView();
     },
 
     // Template Methods
@@ -50,7 +49,8 @@ foam.CLASS({
 
     function toWriteE() {
       this.data$.sub(this.onDataLoad);
-      return this.Input.create({data$: this.data$});
+      return this.TextField.create({data$: this.data$});
+//      return this.Input.create({data$: this.data$});
     }
   ],
 

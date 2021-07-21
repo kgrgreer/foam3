@@ -83,6 +83,9 @@ public abstract class AbstractPropertyInfo
 
   public void validateObj(foam.core.X x, foam.core.FObject obj) {
     /* Template Method: override in subclass if required. */
+    if ( getRequired() && ! isSet(obj) ) {
+      throw new ValidationException(getName() + " required");
+    }
   }
 
   public String[] getAliases() {
@@ -291,7 +294,6 @@ public abstract class AbstractPropertyInfo
         prop.set(obj, fromString(str));
       }
     });
-
   }
 
   public Object castObject(Object value) {

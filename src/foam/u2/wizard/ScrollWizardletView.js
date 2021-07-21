@@ -60,9 +60,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(this.myClass());
+      this.addClass();
       this.start('h1').add(this.title).end()
         .start()
         .add(this.slot(
@@ -99,7 +99,9 @@ foam.CLASS({
   actions: [
     {
       name: 'exit',
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(x) {
         x.stack.back();
       }

@@ -85,9 +85,9 @@ foam.CLASS({
       class: 'String',
       name: 'plural',
       expression: function(name) {
-        return foam.String.pluralize(name);
+        return foam.String.labelize(foam.String.pluralize(name));
       }
-    },
+    }
   ]
 });
 
@@ -282,8 +282,8 @@ foam.CLASS({
   var CLASS = foam.CLASS;
 
   foam.CLASS = function(m) {
-    if ( ! m.source && global.document && global.document.currentScript ) {
-      m.source = global.document.currentScript.src;
+    if ( ! m.source && globalThis.document && globalThis.document.currentScript ) {
+      m.source = globalThis.document.currentScript.src;
     }
 
     if ( ! m.name ) throw new Error("Unnamed model" + m.refines);

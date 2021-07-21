@@ -1,0 +1,122 @@
+## Validation
+
+##  AssertValue
+The simplest form of validation is to specify an assertValue property on a property.
+The assertValue function receives the old and new values of the property and if
+it throws an exception the new value is refused.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [
+    {
+      class: 'String',
+      name: 'p1',
+      assertValue: function(value, prop) {
+        // This property is passed as the second argument, so assertValue's can
+        // be defined in base classes and still refer to the correct property name
+        if ( ! value || value.length < 10 ) throw prop.name + ' must be at least 10 characters.'
+      }
+    },
+    {
+      class: 'Int',
+      name: 'age',
+      assertValue: function(age) {
+        if ( age < 0 )        throw 'Age must be at least 0.';
+        if ( age > 130 )      throw 'Age must be no more than 130.';
+        if ( age < this.age ) throw 'Age can not go backwards.';
+      }
+    }
+  ]
+});
+
+var t = Test.create();
+
+try { t.p1 = 'too short'; } catch (x) { print(x); }
+print(t.p1);
+t.p1 = 'not too short';
+print(t.p1);
+
+try { t.age = -1; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 5; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 4; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 10; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 200; } catch (x) { print(x); }
+print(t.age);
+
+##  validateObj
+The limitation of assertValue, is that it only lets you perform validations involving a single value.
+If you want to perform validations that involve more than one property, then you can use validateObj.
+Another difference of validateObj is that it doesn't block setting the property to an incorrect value,
+it just reports the value as being incorrect. This makes binding to a GUI easier, as it allows the user
+to type in intermediate values which are not yet correct. For example, for a string with a minimum length
+of five characters, the user could still type in "1", "12", "123", "1234" on the way to typing in the
+correct value of "12345".
+All errors returned from validateObj methods are stored in errors_. This approach is used rather than throwing
+an exception because it allows for the reporting of multiple errors, rather than just one at a time.
+The slot errors_$ can be subscribed to to be informed of a change to an object's validity.
+--
+foam.CLASS({
+  name: 'Flight',
+  properties: [
+    {
+      class: 'String',
+      name: 'passengerName',
+      required: true
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      required: true
+    },
+    {
+      class: 'Int',
+      name: 'age',
+      min: 0,
+      max: 130
+    },
+    {
+      class: 'Boolean',
+      name: 'returnFlight'
+    },
+    {
+      class: 'Date',
+      name: 'departureDate'
+    },
+    {
+      class: 'Date',
+      name: 'returnDate',
+      validateObj: function(returnFlight, departureDate, returnDate) {
+        if ( returnFlight && ! returnDate ) return 'Return date require for return flights.';
+        if ( ! returnFlight && returnDate ) return "Return date can't be specified for non return flights.";
+        if ( foam.Date.compare(returnDate, departureDate) < 0 ) return "Can't return before you depart.";
+      }
+    }
+  ]
+});
+
+var f = Flight.create();
+function validateFlight() {
+  print('Errors: ', f.errors_);
+}
+
+f.departureDate = new Date('2021/04/14');
+validateFlight();
+
+f.returnFlight = true;
+validateFlight();
+
+f.returnDate = new Date('2021/04/13');
+validateFlight();
+
+f.returnDate = new Date('2021/04/15');
+validateFlight();
+
+##  Validation Errors in GUI
+--
+var f = Flight.create();
+add(f);
+add(foam.u2.detail.SectionedDetailView.create({data: f}));

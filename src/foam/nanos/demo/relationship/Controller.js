@@ -34,7 +34,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.add(
         this.COURSES,
         this.PROFESSORS,

@@ -203,7 +203,7 @@ foam.CLASS({
           });
         });
         this.isLoading = false;
-        return options;
+        return options.sort();
       }
     },
     {
@@ -230,12 +230,14 @@ foam.CLASS({
         }
         if ( selectedOptions.length === 1 ) {
           var key = this.getKeyByValue(selectedOptions[0]);
-          key = parseInt(key) ? parseInt(key) : key;
+          if ( ! isNaN(key) )
+            key = parseInt(key) ? parseInt(key) : key;
           return this.EQ(this.property, key);
         }
         var keys = selectedOptions.map( (label) => {
           var key = this.getKeyByValue(label);
-          key = parseInt(key) ? parseInt(key) : key;
+          if ( ! isNaN(key) )
+            key = parseInt(key) ? parseInt(key) : key;
           return key;
         });
         return this.IN(this.property, keys);
@@ -251,7 +253,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       if ( ! this.targetDAOName ) {
         console.error('Please specify a targetDAOKey on the reference.');
@@ -261,7 +263,7 @@ foam.CLASS({
       this.onDetach(this.dao$.sub(this.daoUpdate));
       this.daoUpdate();
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',
@@ -290,7 +292,7 @@ foam.CLASS({
               .start().addClass(self.myClass('container-option'))
                 .on('click', () => self.deselectOption(index))
                 .start({
-                  class: 'foam.u2.md.CheckBox',
+                  class: 'foam.u2.CheckBox',
                   data: true,
                   showLabel: true,
                   label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
@@ -323,7 +325,7 @@ foam.CLASS({
               .start().addClass(self.myClass('container-option'))
                 .on('click', () => self.selectOption(index))
                 .start({
-                  class: 'foam.u2.md.CheckBox',
+                  class: 'foam.u2.CheckBox',
                   data: false,
                   showLabel: true,
                   label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY

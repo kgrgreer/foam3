@@ -20,14 +20,16 @@ foam.CLASS({
     'auth',
     'ctrl',
     'stack',
+    'translationService',
+    'theme',
     'user',
-    'theme'
   ],
 
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.stack.StackBlock'
   ],
 
   messages: [
@@ -157,7 +159,7 @@ foam.CLASS({
       name: 'footerLink',
       code: function(topBarShow_, param) {
         window.history.replaceState(null, null, window.location.origin);
-        this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, this);
+        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
       }
     },
     {
@@ -181,10 +183,10 @@ foam.CLASS({
           window.history.replaceState(null, null, window.location.origin);
           location.reload();
         } else {
-          await this.auth.login(x, this.email, this.desiredPassword);
-          this.stack.push({
-            class: 'foam.nanos.auth.ResendVerificationEmail'
-          });
+          await this.auth.login(x, this.userName, this.desiredPassword);
+          this.stack.push(this.StackBlock.create({
+            view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+          }));
         }
       }
     },
@@ -205,6 +207,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Get started',
+      buttonStyle: 'PRIMARY',
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
       },
@@ -223,7 +226,8 @@ foam.CLASS({
             await this.updateUser(x);
           }).catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
-              message: err.message || this.ERROR_MSG,
+              err: err.data,
+              message: this.ERROR_MSG,
               type: this.LogLevel.ERROR
             }));
           })

@@ -35,9 +35,27 @@ foam.CLASS({
         return this.package ? this.package + '.' + this.name : this.name;
       },
     },
-    'package',
+    {
+      name: 'package',
+      factory: function() {
+        if ( this.refines ) {
+          var i = this.refines.lastIndexOf('.');
+          return i == -1 ? '' : this.refines.substring(0, i);
+        }
+        return '';
+      }
+    },
     'abstract',
-    'name',
+    {
+      name: 'name',
+      factory: function() {
+        if ( this.refines ) {
+          var i = this.refines.lastIndexOf('.');
+          return i == -1 ? this.refines : this.refines.substring(i+1);
+        }
+        return '';
+      }
+    },
     {
       name: 'flags',
       documentation: `

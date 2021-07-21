@@ -363,8 +363,8 @@ var examples = [
   },
 ];
 
-global.FBEreg = global.FBEreg || test.helpers.ExemplarRegistry.create();
-global.FBE = global.FBE || [];
+globalThis.FBEreg = globalThis.FBEreg || test.helpers.ExemplarRegistry.create();
+globalThis.FBE = globalThis.FBE || [];
 examples.forEach(function(def) {
   FBE.push(test.helpers.Exemplar.create(def, FBEreg));
 });

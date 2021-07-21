@@ -9,6 +9,13 @@ foam.CLASS({
   name: 'FragmentedTextField',
   extends: 'foam.u2.View',
 
+  documentation: `
+    FormattedTextField should now be prefered over this view.
+    
+    FragmentedTextField displays a text input made of multiple text fields
+    separated by read-only strings. This can be used for formatted inputs.
+  `,
+
   requires: [
     'foam.core.ArraySlot',
   ],
@@ -45,6 +52,14 @@ foam.CLASS({
     }
   `,
 
+  constants: [
+    {
+      type: 'Array',
+      name: 'BACKSPACE_OR_DELETE',
+      value: [8 /*backspace*/, 46 /*delete*/]
+    }
+  ],
+
   properties: [
     {
       name: 'delegates',
@@ -68,7 +83,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       return this
         .addClass(this.myClass())
         .createInnerFields()
@@ -90,6 +105,13 @@ foam.CLASS({
         u2Elem.on('focus', () => {
           this.currentIndex = i;
         })
+        u2Elem.on('keydown', (evt) => {
+          if ( this.BACKSPACE_OR_DELETE.includes(evt.keyCode) ) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            this.onDelete();
+          }
+        });
         slots.push(u2Elem.data$)
       }
 
@@ -109,6 +131,25 @@ foam.CLASS({
       var maxLength = this.delegates[index].maxLength;
       arr.push(data.substring(0, maxLength));
       return this.processData(data.substring(maxLength), index + 2, arr);
+    },
+    async function onDelete() {
+      // do the deletion
+      var el = await this.childNodes[this.currentIndex].el();
+      var start = el.selectionStart == el.selectionEnd && el.selectionStart > 0 ? el.selectionStart - 1 : el.selectionStart;
+      this.childNodes[this.currentIndex].data = el.value.substr(0, start) + el.value.substr(el.selectionEnd);
+      // if there is more data before the cursor position, do not move to previous textfield
+      el.selectionStart = el.selectionEnd = start;
+      if ( el.value && el.selectionStart > 0 ) return;
+      var prevIndex = this.currentIndex > 0 ? this.currentIndex - 1 : 0;
+      while ( this.childNodes[prevIndex] && ! foam.u2.TextField.isInstance(this.childNodes[prevIndex]) ) {
+        prevIndex--;
+      }
+      if ( this.currentIndex != prevIndex ) {
+        var prev = this.childNodes[prevIndex];
+        var prevE = await prev.el();
+        prevE.setSelectionRange(prev.data.length + 1, prev.data.length + 1);
+        prev.focus();
+      }
     }
   ],
 

@@ -81,7 +81,7 @@
     ],
 
     methods: [
-      function initE() {
+      function render() {
         var self = this;
         this
           .addClass(this.myClass())
@@ -104,7 +104,10 @@
                 this.REMOVE_NOTIFICATION
               ],
               obj: this.data,
-              dao: this.notificationDAO
+              dao: this.notificationDAO,
+              icon: '/images/Icon_More_Resting.svg',
+              showDropdownIcon: false,
+              buttonStyle: 'TERTIARY'
             })
           .end();
       }
@@ -126,7 +129,9 @@
             }
           })
         },
-        confirmationRequired: true
+        confirmationRequired: function() {
+          return true;
+        },
       },
       function hideNotificationType(X) {
         var self = X.rowView;

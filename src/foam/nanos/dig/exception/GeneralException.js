@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public GeneralException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,18 +29,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1008
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'General'
-    },
-    {
-      class: 'String',
-      name: 'message'
+      name: 'errroCode',
+      value: '1008'
     }
   ]
 });

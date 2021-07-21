@@ -355,7 +355,7 @@ foam.CLASS({
       this.collider.start();
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       // Set focus to receive keyboard input
       this.focus().style({display:'flex', outline: 'none'}).add(this.canvas);

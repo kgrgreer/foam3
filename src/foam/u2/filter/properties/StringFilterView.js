@@ -26,7 +26,7 @@ foam.CLASS({
     }
 
     ^container-search {
-      padding: 24px 16px;
+      padding: 16px;
       border-bottom: solid 1px #cbcfd4;
     }
 
@@ -47,8 +47,7 @@ foam.CLASS({
     }
 
     ^label-limit {
-      margin-top: 8px;
-      margin-bottom: 0;
+      margin-top: 4px;
     }
 
     ^container-filter {
@@ -140,9 +139,14 @@ foam.CLASS({
       name: 'search',
       postSet: function(_, n) {
         this.isOverLimit = false;
-        this.dao.where(this.CONTAINS_IC(this.property, n)).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
+
+        var pred = this.search && this.search.trim().length > 0 
+          ? this.STARTS_WITH(this.property, this.search) 
+          : this.TRUE;
+
+        this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
           this.countByContents = results.groups;
-          if ( Object.keys(results.groups).length > 100 ) this.isOverLimit = true;
+          if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
         });
       }
     },
@@ -170,7 +174,7 @@ foam.CLASS({
           });
         });
 
-        return options;
+        return options.sort();
       }
     },
     {
@@ -207,11 +211,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.onDetach(this.dao$.sub(this.daoUpdate));
 
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',
@@ -220,8 +224,8 @@ foam.CLASS({
             onKey: true
           })
           .end()
-          .start('p')
-            .addClass(this.myClass('label-limit'))
+          .start()
+            .addClasses(['p-semibold', this.myClass('label-limit')])
             .show(this.isOverLimit$)
             .add(this.LABEL_LIMIT_REACHED)
           .end()
@@ -240,10 +244,10 @@ foam.CLASS({
                     .start().addClass(self.myClass('container-option'))
                       .on('click', () => self.deselectOption(index))
                       .start({
-                        class: 'foam.u2.md.CheckBox',
+                        class: 'foam.u2.CheckBox',
                         data: true,
                         showLabel: true,
-                        label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                        label: self.getLabelWithCount(option)
                       }).end()
                     .end();
                 });
@@ -273,10 +277,10 @@ foam.CLASS({
                     .start().addClass(self.myClass('container-option'))
                       .on('click', () => self.selectOption(index))
                       .start({
-                        class: 'foam.u2.md.CheckBox',
+                        class: 'foam.u2.CheckBox',
                         data: false,
                         showLabel: true,
-                        label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                        label: self.getLabelWithCount(option)
                       }).end()
                     .end();
                 });
@@ -288,7 +292,7 @@ foam.CLASS({
     function getLabelWithCount(option) {
       if ( ! this.countByContents[option] ) console.error('String mismatch: ', option);
       var value = this.countByContents[option].value;
-      if ( value > 1 ) return `[${this.countByContents[option].value}] ${option}`;
+      if ( value > 1 ) return `[${this.countByContents[option].value}] ${option ? option : this.LABEL_EMPTY}`;
       return option;
     },
 
@@ -316,10 +320,13 @@ foam.CLASS({
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
-        var pred = this.search && this.search.trim().length > 0 ? this.CONTAINS_IC(this.property, this.search) : this.TRUE;
-        this.dao.where(pred).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
+        var pred = this.search && this.search.trim().length > 0 
+          ? this.STARTS_WITH(this.property, this.search) 
+          : this.TRUE;
+
+        this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
           this.countByContents = results.groups;
-          if ( Object.keys(results.groups).length > 100 ) this.isOverLimit = true;
+          if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
           this.isLoading = false;
         });
       }

@@ -44,14 +44,11 @@ foam.CLASS({
       label: 'Object Value',
       documentation: 'Parameters input value (Object Type Parameters)',
       factory: function() {
-        var model = foam.lookup(this.javaType, true);
+        var model = foam.maybeLookup(this.javaType);
 
         if ( this.javaType != '' && ( this.javaType != 'String' && this.javaType != 'double' && this.javaType != 'boolean' && this.javaType != 'long' && this.javaType != 'foam.core.X' ) )
           return model.create(null, this);
       }
     }
-  ],
-
-  methods: [
   ]
 });

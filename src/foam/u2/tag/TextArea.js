@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   axioms: [
+    { class: 'foam.u2.TextInputCSS' },
     {
       class: 'foam.u2.CSS',
       code: `
@@ -31,8 +32,7 @@ foam.CLASS({
           padding-bottom: %INPUTVERTICALPADDING%;
         }
       `
-    },
-    { class: 'foam.u2.TextInputCSS' }
+    }
   ],
 
   properties: [
@@ -68,9 +68,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
       if ( this.escapeTextArea ) {
         this.style({'white-space': 'pre'});
       }

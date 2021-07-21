@@ -16,10 +16,97 @@ foam.CLASS({
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       letter-spacing: 0.2px;
-      color: #373a3c;
+      color: /*%BLACK%*/ #1E1F21;
       background: /*%GREY5%*/ #f5f7fa;
       margin: 0;
     }
+
+    /* TYPOGRAPHY */
+    .h100{
+      font-style: normal;
+      font-weight: 700;
+      font-size: 35px;
+      line-height: 40px;
+      margin: 0;
+    }
+    .h200{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 29px;
+      line-height: 32px;
+      margin: 0;
+    }
+    .h300{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 28px;
+      margin: 0;
+    }
+    .h400{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      margin: 0;
+    }
+    .h500{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+      margin: 0;
+    }
+    .h600{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      margin: 0;
+    }
+    .p{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 24px;
+      margin: 0;
+    }
+    .p-lg{
+      font-size: 18px;
+      font-style: normal;
+      font-weight: normal;
+      line-height: 32px;
+      margin: 0;
+    }
+    .p-semiBold{
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px;
+      margin: 0;
+    }
+    .p-bold{
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 24px;
+      margin: 0;
+    }
+    .p-legal{
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      margin: 0;
+    }
+    .p-label{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 14px;
+      margin: 0;
+    }
+
     .New {
       width: 35px;
       height: 20px;

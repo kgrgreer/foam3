@@ -29,10 +29,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      margin: 16px;
-    }
-
     ^container-property {
       display: flex;
       box-sizing: border-box;
@@ -90,6 +86,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'activeFilterCheck_',
+      value: true
+    },
+    {
       name: 'searchView',
       documentation: 'The FilterView to wrap. You must set this.',
       required: true
@@ -136,11 +137,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-property'))
           .enableClass(this.myClass('container-property-active'), this.active$)
           .on('click', this.switchActive)
@@ -171,7 +172,7 @@ foam.CLASS({
       this.isFiltering();
       this.isInit = false;
     },
-    
+
     function getPredicateFromMemento() {
       if ( this.memento && this.memento.head.length > 0 ) {
         var predicate = this.queryParser.parseString(this.memento.head);
@@ -224,23 +225,29 @@ foam.CLASS({
         if ( Object.keys(this.view_.predicate).length > 0 && ! foam.mlang.predicate.True.isInstance(this.view_.predicate) )
           pred =  this.view_.predicate.toMQL && this.view_.predicate.toMQL();
 
-        if ( pred ) {
-          this.memento.head = pred ? pred : '';
-        } else {
-          this.memento.head = '';
-        }
+        this.memento.head = pred ? pred : '';
       }
-      
+
       // Since the existing predicates are lazy loaded (on opening the view),
       // check to see if there is an existing predicate to use the correct label
       if ( this.filterController.getExistingPredicate(this.criteria, this.property) && this.firstTime_ ) {
         this.labelFiltering = this.LABEL_PROPERTY_FILTER;
+        this.filterController.activeFilterCount++;
+        this.activeFilterCheck_ = false;
         return;
       }
       if ( ! this.view_ ) return;
       // Displays the correct label depending on situation
-      this.labelFiltering = this.view_.predicate !== this.TRUE ?
-        this.LABEL_PROPERTY_FILTER : this.LABEL_PROPERTY_ALL;
+        if ( this.view_.predicate !== this.TRUE && this.activeFilterCheck_ ) {
+          this.labelFiltering = this.LABEL_PROPERTY_FILTER;
+          this.filterController.activeFilterCount++;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
+        }
+        else if ( this.view_.predicate === this.TRUE && ! this.activeFilterCheck_ ) {
+          this.labelFiltering = this.LABEL_PROPERTY_ALL;
+          this.filterController.activeFilterCount--;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
+        }
     }
   ]
 });

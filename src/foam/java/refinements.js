@@ -164,8 +164,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'synchronized',
-      value: false
+      name: 'synchronized'
     },
     {
       class: 'String',
@@ -226,11 +225,6 @@ foam.CLASS({
       expression: function(value) {
         return foam.java.asJavaValue(value);
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'synchronized',
-      value: false
     },
     {
       class: 'String',
@@ -339,7 +333,7 @@ foam.CLASS({
         toCSVLabel:              this.javaToCSVLabel,
         fromCSVLabelMapping:     this.javaFromCSVLabelMapping,
         formatJSON:              this.javaFormatJSON,
-        sheetsOutput:            this.sheetsOutput2
+        sheetsOutput:            this.sheetsOutput
       });
     },
 
@@ -570,7 +564,7 @@ foam.LIB({
         })
         .filter(flagFilter)
         .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType });
+          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
         });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
@@ -673,7 +667,7 @@ return sb.toString();`
                 type: 'Object'
               }
             ],
-            body: `return compareTo(o) == 0;`
+            body: `if ( o == null ) return false; if ( o.getClass() != getClass() ) return false; return compareTo(o) == 0;`
           });
         }
 
@@ -725,8 +719,9 @@ return sb.toString();`
           name: 'hashCode',
           type: 'int',
           body:
-            ['int hash = 1'].concat(props.map(function(f) {
-              return 'hash += hash * 31 + foam.util.SafetyUtil.hashCode('+f.name+ '_' +')';
+            ['int hash = 1'].concat(props.filter(function(p) {
+              return p.includeInHash; }).map(function(f) {
+              return 'hash = hash * 31 + foam.util.SafetyUtil.hashCode(' + f.name + '_)';
             })).join(';\n') + ';\n'
             +'return hash;\n'
         });
@@ -1254,8 +1249,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',                     'long'],
-    ['javaInfoType',                 'foam.core.AbstractLongPropertyInfo']
+    ['javaType',     'long'],
+    ['javaInfoType', 'foam.core.AbstractLongPropertyInfo']
   ]
 });
 
@@ -1268,8 +1263,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'double'],
-    ['javaInfoType',   'foam.core.AbstractDoublePropertyInfo']
+    ['javaType',     'double'],
+    ['javaInfoType', 'foam.core.AbstractDoublePropertyInfo']
   ]
 });
 
@@ -1614,6 +1609,69 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.java',
+  name: 'FormattedStringJavaRefinement',
+  refines: 'foam.core.FormattedString',
+  flags: ['java'],
+  documentation: `
+    Override setter for formattedstrings so that we only store the unformatted data
+    and generate method to return a formatted version of the data
+  `,
+
+  properties: [
+    {
+      name: 'javaSetter',
+      factory: function() {
+        var formattedName = 'Formatted' + foam.String.capitalize(this.name);
+        return `
+          assertNotFrozen();
+          // remove all non-numeric characters
+          val = val.replaceAll("[^\\\\\d]", "");
+          ${this.name}_ = val;
+          ${this.name}IsSet_ = true;`;
+      }
+    }
+  ],
+
+  methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+      var body = this.buildGetFormatted(cls.name, this.name);
+      info.method({
+        name: 'getFormatted',
+        visibility: 'public',
+        type: 'String',
+        args: [
+          { name: 'o', type: 'Object'}
+        ],
+        documentation: 'Returns a formatted version of this property',
+        body: body
+      });
+      return info;
+    },
+
+    function buildGetFormatted(cls, prop) {
+      var str = `
+        if ( ! ((${cls}) o).${prop}IsSet_ ) return "";
+        StringBuilder ret = new StringBuilder(((${cls}) o).${prop}_);
+      `;
+      var index = 0;
+      this.formatter.forEach(c => {
+        if ( !isNaN(c) ) index += c;
+        else {
+          str += `
+            if ( ret.length() < ${index} ) return ret.toString();
+            ret.insert(${index}, "${c}");
+          `
+          index++;
+        }
+      });
+      return str += `return ret.length() > ${index} ? ret.toString().substring(0, ${index}) : ret.toString();`
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.java',
   name: 'FObjectPropertyJavaRefinement',
   refines: 'foam.core.FObjectProperty',
   flags: ['java'],
@@ -1726,8 +1784,8 @@ foam.CLASS({
   templates: [
     {
         name: 'compareTemplate',
-        template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+        template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1741,8 +1799,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = foam.util.SafetyUtil.compare(values1[i], values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+    `
     }
   ]
 });
@@ -1794,8 +1852,8 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+      template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1809,8 +1867,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = ((Comparable)values1[i]).compareTo(values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+`
     }
   ]
 });
@@ -1861,8 +1919,8 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+      template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1876,8 +1934,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = ((Comparable)values1[i]).compareTo(values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+`
     }
   ]
 });
@@ -1907,7 +1965,7 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {/*
+      template: `
   <%= this.javaType %> values1 = get_(o1);
   <%= this.javaType %> values2 = get_(o2);
 
@@ -1919,7 +1977,8 @@ foam.CLASS({
     result = ((Comparable)values1.get(i)).compareTo(values2.get(i));
     if ( result != 0 ) return result;
   }
-  return 0;*/}
+  return 0;
+    `
     }
   ]
 });
@@ -2115,6 +2174,18 @@ foam.CLASS({
         }
 
         return str;
+      }
+    },
+    {
+      name: 'toString',
+      factory: function() {
+        var arr = [];
+        for ( var i = 0 ; i < this.propNames.length ; i++ ) {
+          var name = foam.String.capitalize(this.propNames[i]);
+
+          arr.push(`val.get${name}())`);
+        }
+        return 'return ' + arr.join(' + "-" + ') + ';';
       }
     }
   ]
@@ -2343,9 +2414,11 @@ foam.CLASS({
   refines: 'foam.dao.DAOProperty',
   flags: ['java'],
   properties: [
-    ['javaCompare',    '']
+    [ 'javaCompare',       '' ],
+    [ 'javaCloneProperty', 'set(dest, get(source));' ]
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',

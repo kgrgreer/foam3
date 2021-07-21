@@ -198,7 +198,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       var pkg  = '';
@@ -259,7 +259,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var data = this.data;
       this.
@@ -269,13 +269,13 @@ foam.CLASS({
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
-        cls = foam.lookup(cls.model_.extends, true);
+        cls = foam.maybeLookup(cls.model_.extends);
         if ( i ) this.add(' : ');
         this.start(this.ClassLink, {data: cls}).end();
         if ( cls === foam.core.FObject ) break;
       }
       this.br();
-      this.start(foam.u2.HTMLElement).add(data.model_.documentation).end();
+      this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
       this.add( this.slot(function () {
         var axs = [];
@@ -319,7 +319,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var data = this.data;
@@ -331,13 +331,13 @@ foam.CLASS({
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
-        cls = foam.lookup(cls.model_.extends, true);
+        cls = foam.maybeLookup(cls.model_.extends);
         if ( i ) this.add(' : ');
         this.start(this.ClassLink, {data: cls}).end();
         if ( cls === foam.core.FObject ) break;
       }
       this.br();
-      this.start(foam.u2.HTMLElement).add(data.model_.documentation).end();
+      this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
       this.add( this.slot(function (showInherited, showOnlyProperties) {
         // TODO: hide 'Source Class' column if showInherited is false
@@ -389,11 +389,13 @@ foam.CLASS({
 
   imports: [ 'browserPath' ],
 
+  properties: [ [ 'nodeName', 'a' ] ],
+
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
-      this.setNodeName('a').
+      this.
         on('click', this.click).
         attrs({href: this.data.path}).
         add(this.data.label);
@@ -476,7 +478,7 @@ foam.CLASS({
     {
       name: 'selectedClass',
       expression: function (path) {
-        return foam.lookup(path, true);
+        return foam.maybeLookup(path);
       }
     },
     {
@@ -534,7 +536,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       for ( var key in foam.UNUSED ) foam.lookup(key);
       this.SUPER();
       this.
@@ -795,7 +797,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var data = this.data;
       var nbrOfPropInNonConventionalDiag = 5;
       var propertyHeight = 20;
@@ -1164,7 +1166,7 @@ foam.CLASS({
       var cls   = this.data;
 
       for ( var i = 0; cls; i++ ) {
-        cls = foam.lookup( cls.model_.extends, true );
+        cls = foam.maybeLookup( cls.model_.extends);
         if ( cls === foam.core.FObject ) break;
         var extendsBox = this.Box.create({
           x: x,

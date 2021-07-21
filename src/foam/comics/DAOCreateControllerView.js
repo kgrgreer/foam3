@@ -84,7 +84,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         .addClass(this.myClass())
 
@@ -95,7 +95,7 @@ foam.CLASS({
           // Actions grouped to the left
           .start()
             .startContext({ data: this })
-              .tag(this.CANCEL, { buttonStyle: 'SECONDARY' })
+              .tag(this.CANCEL)
             .endContext()
           .end()
 

@@ -43,11 +43,11 @@ foam.CLASS({
           delegate: this.parentBox
         });
       },
-      swiftFactory: function() {/*
+      swiftFactory: `
 return ClientBoxRegistry_create([
   "delegate": parentBox
 ])
-      */}
+     `
     },
     {
       name: 'delegate',

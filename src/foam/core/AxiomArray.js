@@ -51,17 +51,17 @@ foam.CLASS({
         foam.assert(Array.isArray(v),
             'Tried to set', prop.name, 'to non array value');
 
-        var of = this.__context__.lookup(prop.of, true);
+        var of = this.__context__.maybeLookup(prop.of);
         foam.assert(
-            of,
-            'Unknown "of" Model in AxiomArray: property=',
-            prop.name,
-            ' of=',
-            prop.of);
+          of,
+          'Unknown "of" Model in AxiomArray: property=',
+          prop.name,
+          ' of=',
+          prop.of);
         for ( var i = 0 ; i < v.length ; i++ ) {
           foam.assert(of.isInstance(v[i]),
-              'Element', i, 'of', prop.name, 'is not an instance of', prop.of,
-              'at', this.package + '.' + this.name, '[', v[i].name, ']');
+            'Element', i, 'of', prop.name, 'is not an instance of', prop.of,
+            'at', this.package + '.' + this.name, '[', v[i].name, ']');
         }
       }
     },

@@ -205,7 +205,7 @@ foam.CLASS({
         if ( ! foam.Function.isInstance(o.f) )      return foam.mlang.Constant.create({ value: o });
         return o;
       }
-      if ( o.class && this.__context__.lookup(o.class, true) ) {
+      if ( o.class && this.__context__.maybeLookup(o.class) ) {
         return this.adaptValue(this.__context__.lookup(o.class).create(o, this));
       }
       if ( foam.core.FObject.isSubClass(o) ) {
@@ -362,7 +362,7 @@ foam.CLASS({
         if ( o === true ) return foam.mlang.predicate.True.create();
         if ( o === false ) return foam.mlang.predicate.False.create();
         if ( foam.core.FObject.isInstance(o) ) return o;
-        if ( o.class && this.__context__.lookup(o.class, true) ) {
+        if ( o.class && this.__context__.maybeLookup(o.class) ) {
           return this.adaptArrayElement(this.__context__.lookup(o.class).create(o, this));
         }
         console.error('Invalid expression value: ', o);
@@ -945,7 +945,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
@@ -1021,12 +1021,12 @@ foam.CLASS({
         }
         return true;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 for arg in args {
   if !arg.f(obj) { return false }
 }
 return true
-                             */},
+                             `,
       javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
                 + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
                 + '}\n'
@@ -1107,7 +1107,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
@@ -1314,13 +1314,13 @@ foam.CLASS({
       name: 'f',
       code: function f(o) {
         var arg1 = this.arg1.f(o);
-        var arg2 = this.arg2.f(o).toUpperCase();
+        var arg2 = this.arg2.f(o).toString().toUpperCase();
         if ( Array.isArray(arg1) ) {
           return arg1.some(function(a) {
-            return a.toUpperCase().indexOf(arg2) !== -1;
+            return a.toString().toUpperCase().indexOf(arg2) !== -1;
           })
         }
-        return arg1 ? arg1.toUpperCase().indexOf(arg2) !== -1 : false;
+        return arg1 ? arg1.toString().toUpperCase().indexOf(arg2) !== -1 : false;
       },
       javaCode:
 `Object s1 = getArg1().f(obj);
@@ -1631,7 +1631,7 @@ foam.CLASS({
             var set = {};
             for ( var i = 0 ; i < rhs.length ; i++ ) {
               var s = rhs[i];
-              if ( this.upperCase_ ) s = s.toUpperCase();
+              if ( this.upperCase_ ) s = s.toString().toUpperCase();
               set[s] = true;
             }
             this.valueSet_ = set;
@@ -1763,14 +1763,14 @@ foam.CLASS({
       var lhs = this.arg1.f(o);
       var rhs = this.arg2.f(o);
 
-      if ( lhs.toUpperCase ) lhs = lhs.toUpperCase();
+      if ( lhs.toUpperCase ) lhs = lhs.toString().toUpperCase();
 
       // If arg2 is a constant array, we use valueSet for it.
       if ( foam.mlang.Constant.isInstance(this.arg2) ) {
         if ( ! this.valueSet_ ) {
           var set = {};
           for ( var i = 0 ; i < rhs.length ; i++ ) {
-            set[rhs[i].toUpperCase()] = true;
+            set[rhs[i].toString().toUpperCase()] = true;
           }
           this.valueSet_ = set;
         }
@@ -1778,7 +1778,7 @@ foam.CLASS({
         return !! this.valueSet_[lhs];
       } else {
         if ( ! rhs ) return false;
-        return rhs.toUpperCase().indexOf(lhs) !== -1;
+        return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
       }
     }
   ]
@@ -1833,6 +1833,7 @@ foam.CLASS({
     function xxoutputJSON(os) {
       os.output(this.value);
     },
+
     function toMQL() {
       if ( this.value && foam.Date.isInstance(this.value) ) {
         var isoDateString = this.value.toISOString();
@@ -3586,6 +3587,10 @@ foam.CLASS({
       `
     },
 
+    function toString() {
+      return this.arg1 + '.' + this.arg2;
+    },
+
     function comparePropertyValues(o1, o2) {
       /**
          Compare property values using arg2's property value comparator.
@@ -3981,6 +3986,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'specializations_',
+      transient: true,
       factory: function() { return {}; },
       javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, foam.mlang.predicate.Predicate>();'
     },
@@ -4038,8 +4044,131 @@ foam.CLASS({
         return ((foam.mlang.predicate.Nary) ps.value()).partialEval();
       `
     },
+    {
+      name: 'toString',
+      code: function toString() {
+        return '(' + this.query + ')';
+      },
+      javaCode: `
+        return "(" + getQuery() + ")";
+      `
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'NamedProperty',
+  extends: 'foam.mlang.AbstractExpr',
+  implements: [ 'foam.core.Serializable' ],
+
+  documentation: `Stores propName as a property and returns property when f() is called.`,
+
+  javaImports: [
+    'foam.core.ClassInfo',
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'foam.mlang.Expr',
+    'java.util.List',
+    'java.util.Map',
+    'java.util.concurrent.ConcurrentHashMap'
+  ],
+
+  axioms: [
+    foam.pattern.Multiton.create({property: 'propName'}),
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(
+          `
+  protected final static Map map__ = new ConcurrentHashMap();
+  public static NamedProperty create(String propName) {
+    NamedProperty p = (NamedProperty) map__.get(propName);
+
+    if ( p == null ) {
+      p = new NamedProperty();
+      p.setPropName(propName);
+      map__.put(propName, p);
+    }
+
+    return p;
+  }
+ `
+        );
+      }
+    }
+  ],
+
+  properties: [
+    {
+      class: 'Map',
+      name: 'specializations_',
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, Expr>();'
+    },
+    {
+      class: 'String',
+      name: 'propName'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        return this.specialization(o.model_);
+      },
+      javaCode: `
+        if ( ! ( obj instanceof FObject ) )
+          return false;
+
+        return specialization(((FObject)obj).getClassInfo());
+      `
+    },
+    {
+      name: 'specialization',
+      args: [ { name: 'model', type: 'ClassInfo' } ],
+      type: 'Expr',
+      code: function(model) {
+        return this.specializations_[model.name] ||
+          ( this.specializations_[model.name] = this.specialize(model) );
+      },
+      javaCode: `
+        if ( getSpecializations_().get(model) == null ) {
+          Expr prop = specialize(model);
+          if ( prop != null ) getSpecializations_().put(model, specialize(model));
+        }
+        return (Expr) getSpecializations_().get(model);
+      `
+    },
+    {
+      name: 'specialize',
+      args: [ { name: 'model', type: 'ClassInfo' } ],
+      type: 'Expr',
+      code: function(model) {
+        for ( var i = 0; i < model.properties.length; i++  ) {
+          var prop = model.properties[i];
+          if ( this.propName == prop.name || this.propName == prop.shortName || prop.aliases.includes(this.propName) ) return prop;
+        }
+        return;
+      },
+      javaCode: `
+        List<PropertyInfo> properties  = model.getAxiomsByClass(PropertyInfo.class);
+
+        for ( PropertyInfo prop : properties ) {
+          if ( prop.getName().equals(getPropName()) || prop.getShortName() != null && prop.getShortName().equals(getPropName()) ) return prop;
+
+          for ( int i = 0; i < prop.getAliases().length; i++) {
+            if ( getPropName().equals(prop.getAliases()[i]) ) return prop;
+          }
+        }
+
+        return null;
+      `
+    },
     function toString() {
-      return '(' + this.query + ')';
+      return this.propName;
     }
   ]
 });

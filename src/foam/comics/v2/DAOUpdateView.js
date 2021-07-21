@@ -27,6 +27,10 @@ foam.CLASS({
       padding: 32px
     }
 
+    ^topContainer{
+      grid-gap: 32px 12px;
+    }
+
     ^ .foam-u2-ActionView-back {
       display: flex;
       align-self: flex-start;
@@ -51,8 +55,8 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.layout.Grid',
+    'foam.u2.ControllerMode'
   ],
 
   imports: [
@@ -103,23 +107,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'viewView',
       expression: function() {
-        return foam.u2.detail.SectionedDetailView;
+        return foam.u2.detail.TabbedDetailView;
       }
     },
-    'currentMemento_',
-    {
-      class: 'String',
-      name: 'mementoHead',
-      getter: function() {
-        if ( this.data.id ) {
-          var id = '' + this.data.id;
-          if ( id && foam.core.MultiPartID.isInstance(this.data.cls_.ID) ) {
-            id = id.substr(1, id.length - 2).replaceAll(':', '=');
-          }
-          return 'edit::' + id;
-        }
-      }
-    }
+    'currentMemento_'
   ],
 
   actions: [
@@ -129,7 +120,7 @@ foam.CLASS({
         return ! workingData$errors_;
       },
       code: function() {
-        this.config.dao.put(this.workingData).then((o) => {
+        this.config.dao.put(this.workingData).then(o => {
           if ( ! this.data.equals(o) ) {
             this.data = o;
             this.finished.pub();
@@ -144,7 +135,7 @@ foam.CLASS({
             }
           }
           this.stack.back();
-        }, (e) => {
+        }, e => {
           this.throwError.pub(e);
 
           if ( e.exception && e.exception.userFeedback  ) {
@@ -163,23 +154,26 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 
-      if ( this.memento )
+      if ( this.memento ) {
         this.currentMemento_$ = this.memento.tail$;
+        this.memento.head = 'edit';
+      }
 
       this
         .addClass(this.myClass())
         .add(self.slot(function(data, config$viewBorder) {
           return self.E()
-            .start(self.Rows)
+            .start(self.Grid)
+              .addClass(this.myClass('topContainer'))
               .start(self.Rows)
                 // we will handle this in the StackView instead
                 .startContext({ data: self.stack })
                   .tag(self.stack.BACK, {
-                    buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+                    buttonStyle: foam.u2.ButtonStyle.LINK,
                     icon: 'images/back-icon.svg',
                     label: this.BACK
                   })
@@ -190,7 +184,7 @@ foam.CLASS({
                     .addClass(this.myClass('account-name'))
                     .addClass('truncate-ellipsis')
                   .end()
-                  .startContext({ data: self }).add(self.SAVE).endContext()
+                  .startContext({ data: self }).tag(self.SAVE, { buttonStyle: 'PRIMARY' }).endContext()
                 .end()
               .end()
 

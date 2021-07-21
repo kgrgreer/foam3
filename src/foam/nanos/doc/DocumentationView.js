@@ -9,6 +9,14 @@ foam.CLASS({
   name: 'DocumentationView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'memento'
+  ],
+
+  requires: [
+    'foam.nanos.controller.Memento'
+  ],
+
   css: `
     ^ table { width: 100%; }
     ^ td , ^ th {
@@ -52,9 +60,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function init() {
+      var tmp = this.memento.value.split(this.Memento.SEPARATOR);
+      if ( ! this.docKey ) this.docKey = tmp.length > 1 && tmp[1];
+    },
+    function render() {
       var dao = this.__context__[this.daoKey];
-      this.addClass(this.myClass());
+      this.addClass();
       if ( ! dao ) {
         this.add('No DAO found for key: ', this.daoKey);
       } else this.add(this.slot(function(data, error) {

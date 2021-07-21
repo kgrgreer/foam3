@@ -56,10 +56,14 @@ foam.CLASS({
     },
     {
       name: 'created',
-      class: 'DateTime',
+      class: 'Long',
       visibility: 'RO',
-      javaFormatJSON: `formatter.outputReadableDate(get_(obj));`,
-      tableWidth: 180
+      javaFactory: 'return System.currentTimeMillis();',
+      tableWidth: 180,
+      view: 'foam.u2.view.date.ROMillisecondView',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(new Date(value).toISOString());
+      }
     },
     {
       class: 'Reference',
@@ -151,7 +155,15 @@ foam.CLASS({
     {
       name: 'toString',
       javaCode: `
-      return timestamper_.get().createTimestamp(getCreated().getTime())+","+getThread()+","+getSeverity()+","+getMessage();
+      StringBuilder sb = new StringBuilder();
+      sb.append(timestamper_.get().createTimestamp(getCreated()));
+      sb.append(",");
+      sb.append(getThread());
+      sb.append(",");
+      sb.append(getSeverity());
+      sb.append(",");
+      sb.append(getMessage());
+      return sb.toString();
       `
     }
   ]

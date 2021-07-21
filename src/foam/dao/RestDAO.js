@@ -20,13 +20,13 @@ foam.CLASS({
   name: 'RestDAO',
   extends: 'foam.dao.AbstractDAO',
 
-  documentation: function() {/*
+  documentation: `
     A client-side DAO for interacting with a REST endpoint.
 
     Sinks are managed on the client (i.e., sinks passed to
     select() will not serialize the sink and send it to the
     endpoint for server-side logic implementation).
-  */},
+   `,
 
   requires: [
     'foam.core.Serializable',

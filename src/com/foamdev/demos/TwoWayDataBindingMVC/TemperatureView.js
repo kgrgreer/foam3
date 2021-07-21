@@ -62,7 +62,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       //TODO it show the UTF-8 code not the character
       this.start('p').addClass('temperature-converter').
              start('label').addClass('celsius-wrap').add(this.data.C).add('°C').end().

@@ -11,10 +11,8 @@ foam.CLASS({
 
   documentation: 'A ReadOnly DateView',
 
-  css: '^ { padding: 8px; }',
-
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.start().
         addClass(this.myClass()).

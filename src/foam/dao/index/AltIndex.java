@@ -121,9 +121,9 @@ public class AltIndex
     Predicate  originalPredicate = null;
 
     for ( int i = 0 ; i < delegates_.size() ; i++ ) {
-      // ???: Why is this?
-      // To keep the original predicate, because in our next operate the predicate will be changed
+      // To keep the original predicate, because in our next operation the predicate could be changed.
       if ( predicate != null ) {
+        // not safe to move to shallowClone()
         originalPredicate = (Predicate) ((FObject) predicate).deepClone();
       }
 

@@ -67,7 +67,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( this.memento ) {
@@ -96,7 +96,7 @@ foam.CLASS({
           of: this.dao.of.id,
           onKey: true,
           viewSpec: {
-            class: 'foam.u2.tag.Input',
+            class: 'foam.u2.SearchField',
             focused: true
           }
         },

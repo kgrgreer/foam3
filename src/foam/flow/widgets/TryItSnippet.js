@@ -22,6 +22,11 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
+      name: 'language',
+      class: 'Enum',
+      of: 'foam.nanos.script.Language'
+    },
+    {
       name: 'code',
       class: 'Code'
     },
@@ -44,6 +49,7 @@ foam.CLASS({
           id$: this.scriptId$,
           code$: this.code$,
           server$: this.server$,
+          language$: this.language$,
           output$: this.scriptOutput$,
           isSynchronous: true
         });
@@ -58,7 +64,7 @@ foam.CLASS({
         this.code = this.innerFLOW;
       })
     },
-    function initE() {
+    function render() {
       this
         .tag(this.SERVER.view, { data$: this.server$ })
         .tag(this.CODE.view, { data$: this.code$ })
@@ -74,8 +80,11 @@ foam.CLASS({
     {
       name: 'run',
       tableWidth: 90,
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function() {
+        console.log('script...', this.script, this);
         return this.script.run();
       }
     }

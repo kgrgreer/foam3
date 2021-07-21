@@ -103,23 +103,23 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container'))
           .start({
-            class: 'foam.u2.md.CheckBox',
-            data$: this.boolT$,
+            class: 'foam.u2.CheckBox',
+            data$: this.boolF$,
             showLabel: true,
-            label: this.BOOL_T.label
+            label: this.BOOL_F.label
           }).end()
         .end()
         .start().addClass(this.myClass('container'))
           .start({
-            class: 'foam.u2.md.CheckBox',
-            data$: this.boolF$,
+            class: 'foam.u2.CheckBox',
+            data$: this.boolT$,
             showLabel: true,
-            label: this.BOOL_F.label
+            label: this.BOOL_T.label
           }).end()
         .end();
     },

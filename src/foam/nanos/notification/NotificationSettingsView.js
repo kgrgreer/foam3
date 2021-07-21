@@ -27,8 +27,7 @@ foam.CLASS({
   exports: ['as data'],
 
   requires: [
-    'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.nanos.notification.Notification'
   ],
 
   css: `
@@ -156,7 +155,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this

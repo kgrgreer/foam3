@@ -25,6 +25,7 @@ foam.CLASS({
     'static',
     'type',
     'final',
+    { class: 'Boolean', name: 'includeInHash', value: true },
     {
       class: 'Int',
       name: 'order',

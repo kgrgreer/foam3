@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PMTableView',
-  extends: 'foam.u2.view.TableView',
+  extends: 'foam.u2.view.ScrollTableView',
 
   documentation: 'TableView for displaying PMInfos.',
 
@@ -15,15 +15,15 @@ foam.CLASS({
 
   requires: [ 'foam.nanos.pm.PMInfo', 'foam.u2.view.TableView' ],
 
-  exports: [ 'maxTotalTime' ],
-
-  // Keep standard TableView styling
-  constants: { CSS_CLASS: 'foam-u2-view-TableView' },
+  exports: [ 'maxTotalTime', 'as tableView' ],
 
   css: `
-    .foam-comics-BrowserView-foam-nanos-pm-PMInfo .foam-u2-ActionView-clearAll { margin-bottom: 6px; }
-    .foam-comics-BrowserView-foam-nanos-pm-PMInfo .foam-u2-ActionView-create { display: none; }
-    .foam-comics-BrowserView-foam-nanos-pm-PMInfo .foam-u2-ActionView-edit   { display: none; }
+    ^ { overflow: auto; }
+    ^container{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
   `,
 
   properties: [
@@ -40,13 +40,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      // Next line is a temporary hack to fix CSS loading, otherwise screen
-      // is broken if loaded before any tableviews
-      this.TableView.create();
-
-      this.add(this.CLEAR_ALL);
-      this.columns_.push([this.CLEAR, null]);
+    function render() {
+      this.addClass(this.myClass('container'));
+      // this.columns.push([this.CLEAR, null]);
 
       this.SUPER();
 
@@ -60,6 +56,9 @@ foam.CLASS({
       name: 'clear',
       code: function(X) {
         X.pmInfoDAO.remove(this);
+        // This shouldn't be necessary, the DAO update should already cause
+        // a refresh
+        X.tableView.updateValues = ! X.tableView.updateValues;
       },
       tableWidth: 80
     },
@@ -67,6 +66,8 @@ foam.CLASS({
       name: 'clearAll',
       code: function(X) {
         X.pmInfoDAO.removeAll();
+        X.pmInfoDAO.select(console);
+        this.updateValues = ! this.updateValues;
       }
     }
   ],

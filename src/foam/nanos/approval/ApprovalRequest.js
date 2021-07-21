@@ -7,11 +7,12 @@
  foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
-  plural: 'ApprovalRequests',
+  plural: 'Approval Requests',
   documentation: 'Approval requests are stored in approvalRequestDAO and' +
   'represent a single approval request for a single user.',
 
   implements: [
+    'foam.nanos.auth.AssignableAware',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -23,11 +24,13 @@
     'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.*',
     'foam.nanos.logger.Logger',
     'foam.nanos.dao.Operation',
     'java.util.ArrayList',
     'java.util.List',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*'
   ],
 
@@ -40,7 +43,9 @@
     'foam.dao.AbstractDAO',
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
-    'foam.nanos.approval.ApprovalStatus'
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.CustomViewReferenceApprovable',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -48,17 +53,24 @@
     'ctrl',
     'currentMenu',
     'notify',
+    'objectSummaryView?',
     'stack',
-    'summaryView?',
-    'objectSummaryView?'
+    'subject',
+    'summaryView?'
+  ],
+
+  searchColumns: [
+    'id',
+    'classificationEnum',
+    'status'
   ],
 
   tableColumns: [
     'id',
-    'description',
-    'classification',
-    'objId',
-    'approver.legalName',
+    'referenceSummary',
+    'classificationEnum',
+    'createdFor',
+    'assignedTo.legalName',
     'status',
     'memo'
   ],
@@ -78,11 +90,27 @@
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
-      label: 'Pending',
+      label: 'Assigned',
       predicateFactory: function(e) {
         return e.EQ(
-          foam.nanos.approval.ApprovalRequest.STATUS,
-          foam.nanos.approval.ApprovalStatus.REQUESTED
+          foam.nanos.approval.ApprovalRequest.ASSIGNED_TO,
+          foam.nanos.approval.ApprovalRequest.APPROVER
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Pending',
+      predicateFactory: function(e) {
+        return e.AND(
+          e.EQ(
+            foam.nanos.approval.ApprovalRequest.STATUS,
+            foam.nanos.approval.ApprovalStatus.REQUESTED
+          ),
+          e.EQ(
+            foam.nanos.approval.ApprovalRequest.ASSIGNED_TO,
+            0
+          )
         );
       }
     },
@@ -90,7 +118,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Approved',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.APPROVED
         );
@@ -100,7 +128,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Rejected',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.REJECTED
         );
@@ -130,23 +158,23 @@
       order: 21,
       gridColumns: 6,
       transient: true,
-      tableWidth: 200,
+      tableWidth: 250,
       visibility: 'RO',
+      columnPermissionRequired: true,
       tableCellFormatter: function(_,obj) {
         let self = this;
         try {
           this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
             let referenceSummaryString = `ID:${obj.objId}`;
 
-            if ( requestObj ){
-              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
-                if ( requestObjSummary ){
-                  referenceSummaryString = requestObjSummary;
-                }
+            if ( ! requestObj ) return self.add(referenceSummaryString);
+            
+            // need to use a  Promise resolve because toSummary doesn't always return a promise
+            Promise.resolve(requestObj.toSummary()).then(requestObjSummary => {
+              if ( requestObjSummary ) referenceSummaryString = requestObjSummary;
 
-                self.add(referenceSummaryString);
-              })
-            }
+              self.add(referenceSummaryString);
+            })
           });
         } catch (x) {}
       },
@@ -182,6 +210,7 @@
       order: 10,
       gridColumns: 6,
       visibility: 'RO',
+      columnPermissionRequired: true,
       documentation: 'Approval request primary key.'
     },
     {
@@ -192,6 +221,7 @@
       section: 'approvalRequestInformation',
       order: 20,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: 'id of the object that needs approval.',
       tableWidth: 150
     },
@@ -203,16 +233,7 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 30,
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'description',
-      documentation: `Approval request description.`,
-      includeInDigest: false,
-      tableWidth: 200,
-      section: 'approvalRequestInformation',
-      order: 40,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -224,6 +245,7 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 50,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -235,6 +257,7 @@
       section: 'approvalRequestInformation',
       order: 60,
       gridColumns: 6,
+      columnPermissionRequired: true,
       javaFactory: 'return foam.nanos.approval.ApprovalStatus.REQUESTED;',
       visibility: 'RO'
     },
@@ -246,6 +269,7 @@
       section: 'approvalRequestInformation',
       order: 70,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       view: function(_, X) {
         let slot = foam.core.SimpleSlot.create();
@@ -300,10 +324,10 @@
     {
       class: 'String',
       name: 'classification',
-      label: 'Approval Type',
       section: 'approvalRequestInformation',
       order: 80,
       gridColumns: 6,
+      columnPermissionRequired: true,
       includeInDigest: false,
       tableWidth: 450,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
@@ -312,7 +336,41 @@
       mlang.AND(
         EQ(ApprovalRequest.OBJ_ID, objectId),
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
-      )`
+      )`,
+      storageTransient: true,
+      hidden: true,
+      javaSetter: `
+        // for legacy property(classification) migration
+        classification_ = val;
+        if ( ! SafetyUtil.isEmpty(classification_) ) {
+          classificationIsSet_ = true;
+          if ( ! getClassificationEnumIsSet_() ) {
+            var e = ApprovalRequestClassificationEnum.forLabel(classification_);
+            if ( e != null ) {
+              setClassificationEnum(e);
+            }
+          }
+        }
+      `,
+      javaGetter: `
+        // returning enum val to legacy propery(classification)
+        if ( getClassificationEnumIsSet_() )
+          return getClassificationEnum().getLabel();
+
+        return classification_;
+      `
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.approval.ApprovalRequestClassificationEnum',
+      name: 'classificationEnum',
+      label: 'Approval Type',
+      section: 'approvalRequestInformation',
+      order: 90,
+      gridColumns: 6,
+      columnPermissionRequired: true,
+      includeInDigest: true,
+      tableWidth: 300
     },
     {
       class: 'DateTime',
@@ -320,6 +378,7 @@
       section: 'approvalRequestInformation',
       order: 100,
       gridColumns: 6,
+      columnPermissionRequired: true,
       includeInDigest: true,
       visibility: function(created) {
         return created ?
@@ -330,11 +389,28 @@
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
+      name: 'createdFor',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 105,
+      gridColumns: 6,
+      columnPermissionRequired: true,
+      tableCellFormatter: function(value, obj, axiom) {
+        var defaultOutput = value ? `ID: ${value}`: "N/A";
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then(user => this.add(user ? user.toSummary() : defaultOutput));
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 110,
-      gridColumns: 3,
+      gridColumns: 6,
+      columnPermissionRequired: true,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -348,23 +424,9 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 115,
-      gridColumns: 3,
+      gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdFor',
-      includeInDigest: true,
-      section: 'approvalRequestInformation',
-      order: 116,
-      gridColumns: 3,
-      tableCellFormatter: function(value, obj, axiom) {
-        var defaultOutput = value ? `ID: ${value}`: "N/A";
-        this.__subSubContext__.userDAO
-          .find(value)
-          .then(user => this.add(user ? user.toSummary() : defaultOutput));
-      }
     },
     {
       class: 'DateTime',
@@ -373,6 +435,7 @@
       section: 'approvalRequestInformation',
       order:  120,
       gridColumns: 6,
+      columnPermissionRequired: true,
       visibility: function(lastModified) {
         return lastModified ?
           foam.u2.DisplayMode.RO :
@@ -386,7 +449,8 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
+      columnPermissionRequired: true,
       readPermissionRequired: true
     },
     {
@@ -396,7 +460,8 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
+      columnPermissionRequired: true,
       readPermissionRequired: true
     },
     {
@@ -406,6 +471,7 @@
       documentation: 'Meant to be used for explanation on why request was approved/rejected',
       includeInDigest: true,
       section: 'approvalRequestInformation',
+      columnPermissionRequired: true,
       order: 135
     },
     {
@@ -414,6 +480,7 @@
       section: 'systemInformation',
       order: 10,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `Used internally in approvalDAO to point where requested object can be found.
       Should not be used to retrieve approval requests for a given objects
       since an object can have multiple requests of different nature. When used in conjunction with serverDaoKey,
@@ -426,6 +493,7 @@
       section: 'systemInformation',
       order: 20,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `Used internally in approvalDAO if an approval request concerns both a clientDAO and
       a server side dao. The server dao key is mainly used for backend actions that get executed on
       the object as a cause of the approval request being approved or rejected.`,
@@ -440,6 +508,7 @@
       class: 'Boolean',
       name: 'isTrackingRequest',
       includeInDigest: true,
+      columnPermissionRequired: true,
       section: 'systemInformation',
       order: 30,
       gridColumns: 6
@@ -450,6 +519,7 @@
       includeInDigest: false,
       section: 'systemInformation',
       order: 40,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -463,6 +533,7 @@
       section: 'systemInformation',
       order: 50,
       gridColumns: 6,
+      columnPermissionRequired: true,
       visibility: function(points) {
         return points ?
           foam.u2.DisplayMode.RO :
@@ -477,6 +548,7 @@
       section: 'systemInformation',
       order: 60,
       gridColumns: 3,
+      columnPermissionRequired: true,
       documentation: `Defines how many approvers required and approvers' ranks.
       E.g. when set to 10:
       1) 10 approval requests with "points" set to 1.
@@ -494,6 +566,7 @@
       name: 'requiredRejectedPoints',
       value: 1,
       includeInDigest: false,
+      columnPermissionRequired: true,
       section: 'systemInformation',
       order: 70,
       gridColumns: 3,
@@ -510,6 +583,7 @@
       section: 'systemInformation',
       order: 80,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true,
       documentation: `
@@ -517,7 +591,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function(objId) {
+        return objId;
+      }
     },
     {
       class: 'String',
@@ -526,6 +603,7 @@
       section: 'systemInformation',
       order: 90,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true,
       documentation: `
@@ -533,7 +611,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function (daoKey) {
+        return daoKey;
+      }
     },
     {
       class: 'String',
@@ -543,6 +624,7 @@
       section: 'systemInformation',
       order: 100,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true
     },
@@ -550,22 +632,87 @@
       class: 'String',
       name: 'approvableHashKey',
       includeInDigest: true,
+      columnPermissionRequired: true,
+      hidden: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'assignedTo',
+      section: 'approvalRequestInformation',
+      columnPermissionRequired: true,
+      order: 65
+    },
+    {
+      class: 'StringArray',
+      name: 'additionalGroups',
+      columnPermissionRequired: true,
+      documentation: `
+        Optional field to specify the request to be sent to multiple  groups.
+        Should remain non-transient to handle fulfilled requests being visible to different groups.
+      `,
       hidden: true
     }
   ],
 
   messages: [
     {
+      name: 'BACK_LABEL',
+      message: 'Back'
+    },
+    {
+      name: 'SUCCESS_ASSIGNED',
+      message: 'You have successfully assigned this request'
+    },
+     {
+      name: 'SUCCESS_ASSIGNED_TITLE',
+      message: 'Request Assigned'
+     },
+    {
+      name: 'SUCCESS_UNASSIGNED',
+      message: 'You have successfully unassigned this request'
+    },
+    {
+      name: 'SUCCESS_UNASSIGNED_TITLE',
+      message: 'Request Unassigned'
+    },
+    {
       name: 'SUCCESS_APPROVED',
       message: 'You have successfully approved this request'
     },
+
+     {
+      name: 'SUCCESS_APPROVED_TITLE',
+      message: 'Request Approved'
+     },
+    {
+      name: 'SUCCESS_MEMO',
+      message: 'You have successfully added a memo'
+    },
+  {
+      name: 'SUCCESS_MEMO_TITLE',
+      message: 'Memo Added'
+   },
+
     {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request'
     },
     {
+      name: 'SUCCESS_REJECTED_TITLE',
+      message: 'Request Rejected'
+     },
+    {
       name: 'SUCCESS_CANCELLED',
       message: 'You have successfully cancelled this request'
+    },
+    {
+      name: 'SUCCESS_CANCELLED_TITLE',
+      message: 'Request Cancelled'
+     },
+    {
+      name: 'ASSIGN_TITLE',
+      message: 'Select an assignee'
     },
     {
       name: 'PENDING',
@@ -607,10 +754,17 @@
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return `(${this.classification}) ${this.operation}`;
+        return this.classificationEnum.label;
       },
       javaCode: `
-        return foam.util.SafetyUtil.isEmpty(getClassification()) ? "" : "(" + getClassification() + ")" + getOperation().toString();
+        return getClassificationEnum().getLabel();
+      `
+    },
+    {
+      name: 'getClassificationEnumIsSet_',
+      type: 'Boolean',
+      javaCode: `
+        return this.classificationEnumIsSet_;
       `
     }
   ],
@@ -619,8 +773,9 @@
     {
       name: 'approve',
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -630,8 +785,14 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
-          X.stack.back();
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
+
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
@@ -640,9 +801,11 @@
     },
     {
       name: 'approveWithMemo',
+      tableWidth: 175,
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -655,10 +818,28 @@
       }
     },
     {
-      name: 'reject',
+      name: 'addMemo',
       section: 'approvalRequestInformation',
       isAvailable: function(isTrackingRequest, status) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        return ! isTrackingRequest;
+      },
+      code: function(X) {
+        var objToAdd = X.objectSummaryView ?
+          X.objectSummaryView : X.summaryView;
+        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+          class: 'foam.u2.MemoModal',
+          isMemoRequired: true,
+          onExecute: this.addMemoL.bind(this, X)
+        }));
+      }
+    },
+    {
+      name: 'reject',
+      section: 'approvalRequestInformation',
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
+        if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -675,8 +856,9 @@
     {
       name: 'cancel',
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return isTrackingRequest;
       },
       code: function(X) {
@@ -687,9 +869,12 @@
           X.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
 
-          X.notify(this.SUCCESS_CANCELLED, '', this.LogLevel.INFO, true);
+          X.notify(this.SUCCESS_CANCELLED_TITLE, this.SUCCESS_CANCELLED, this.LogLevel.INFO, true);
 
-          if ( X.currentMenu.id !== X.stack.top[2] ) {
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
             X.stack.back();
           }
         }, e => {
@@ -702,6 +887,7 @@
       name: 'viewReference',
       section: 'approvalRequestInformation',
       isDefault: true,
+      tableWidth: 150,
       isAvailable: function() {
         var self = this;
 
@@ -738,7 +924,7 @@
             });
         }
       },
-      code: function(X) {
+      code: async function(X) {
         var self = this;
 
         // This should already be filtered out by the isAvailable, but adding here as duplicate protection
@@ -748,98 +934,151 @@
              return;
         }
 
-        var objId, daoKey, property;
-        if ( self.refObjId && self.refDaoKey ) {
-          daoKey = self.refDaoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
-        } else {
-          daoKey = self.daoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.objId, self.objId, property);
+        var daoKey = self.refDaoKey;
+        var property = X[daoKey].of.ID;
+        var objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
+
+        var obj = await X[daoKey].find(objId);
+
+        if ( this.CustomViewReferenceApprovable.isInstance(obj) ) {
+          obj.launchViewReference(X, this);
+          return;
         }
 
-        return X[daoKey]
-          .find(objId)
-          .then(obj => {
-            var of = obj.cls_;
+        var of = obj.cls_;
+        var summaryData = obj;
 
-            // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
-            // this is for updating object approvals
-            if ( obj.propertiesToUpdate ) {
-              if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
-                var temporaryNewObject = obj.of.create({}, X);
+        // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+        // this is for updating object approvals
+        if ( obj.propertiesToUpdate ) {
+          if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
+            summaryData = obj.of.create({}, X);
+            of = summaryData.cls_;
 
-                var propsToUpdate = obj.propertiesToUpdate;
-
-                var keyArray = Object.keys(propsToUpdate);
-
-                for ( var i = 0; i < keyArray.length; i++ ) {
-                  var propObj = temporaryNewObject.cls_.getAxiomByName(keyArray[i]);
-                  if (
-                    ! propObj ||
-                    propObj.transient ||
-                    propObj.storageTransient ||
-                    propObj.networkTransient
-                  ) continue;
-
-                  temporaryNewObject[keyArray[i]] = propsToUpdate[keyArray[i]];
-                }
-
-                of = temporaryNewObject.cls_;
-
-                X.stack.push({
-                  class: 'foam.comics.v2.DAOSummaryView',
-                  data: temporaryNewObject,
-                  of: of,
-                  config: foam.comics.v2.DAOControllerConfig.create({
-                    daoKey: obj.daoKey,
-                    of: of,
-                    editPredicate: foam.mlang.predicate.False.create(),
-                    createPredicate: foam.mlang.predicate.False.create(),
-                    deletePredicate: foam.mlang.predicate.False.create()
-                  }),
-                  mementoHead: null,
-                  backLabel: 'Back'
-                });
-              } else {
-                of = obj.of;
-
-                // then here we created custom view to display these properties
-                X.stack.push({
-                  class: 'foam.nanos.approval.PropertiesToUpdateView',
-                  propObject: obj.propertiesToUpdate,
-                  objId: obj.objId,
-                  daoKey: obj.daoKey,
-                  of: of,
-                  title: 'Updated Properties and Changes'
-                });
-              }
+            Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
+              .filter(p => p && ! p.transient && ! p.storageTransient && ! p.networkTransient)
+              .forEach(p => {
+                summaryData[p.name] = obj.propertiesToUpdate[p.name];
+              });
+            if ( obj.isUsingNestedJournal ) {
+              X.stack.push(self.StackBlock.create({
+                view: {
+                  class: 'foam.u2.view.ViewReferenceFObjectView',
+                  data: summaryData,
+                  of: of
+                } }));
               return;
             }
+          } else {
+            of = obj.of;
 
-            // else pass general view with modeled data for display
-            // this is for create, deleting object approvals
-            X.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: obj,
-              of: of,
-              config: foam.comics.v2.DAOControllerConfig.create({
-                daoKey: daoKey,
+            // then here we created custom view to display these properties
+            X.stack.push(self.StackBlock.create({
+              view: {
+                class: 'foam.nanos.approval.PropertiesToUpdateView',
+                propObject: obj.propertiesToUpdate,
+                objId: obj.objId,
+                daoKey: obj.daoKey,
                 of: of,
-                editPredicate: foam.mlang.predicate.False.create(),
-                createPredicate: foam.mlang.predicate.False.create(),
-                deletePredicate: foam.mlang.predicate.False.create()
-              }),
-              mementoHead: null,
-              backLabel: 'Back'
-            }, X);
-          })
-          .catch(err => {
-            console.warn(err.message || err);
-          });
+                title: 'Updated Properties and Changes'
+              } }));
+            return;
+          }
+        }
+
+        // else pass general view with modeled data for display
+        // this is for create, deleting object approvals
+        X.stack.push(self.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
+            of: of,
+            config: foam.comics.v2.DAOControllerConfig.create({
+              daoKey: daoKey,
+              of: of,
+              editPredicate: foam.mlang.predicate.False.create(),
+              createPredicate: foam.mlang.predicate.False.create(),
+              deletePredicate: foam.mlang.predicate.False.create()
+            }, X),
+            mementoHead: null,
+          },
+          parent: X.createSubContext({ stack: self.stack })
+        }));
+      }
+    },
+    {
+      name: 'assign',
+      section: 'approvalRequestInformation',
+      isAvailable: function(status){
+        return status === this.ApprovalStatus.REQUESTED;
       },
-      tableWidth: 100
+      availablePermissions: [
+        "approval.assign.*"
+      ],
+      code: function(X) {
+        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
+        objToAdd.tag({
+          class: "foam.u2.PropertyModal",
+          property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
+          isModalRequired: true,
+          data$: X.data$,
+          propertyData$: X.data.assignedTo$,
+          title: this.ASSIGN_TITLE,
+          onExecute: this.assignRequest.bind(this, X)
+        });
+      }
+    },
+    {
+      name: 'assignToMe',
+      section: 'approvalRequestInformation',
+      isAvailable: function(subject, assignedTo, status){
+        return (subject.user.id !== assignedTo) && (status === this.ApprovalStatus.REQUESTED);
+      },
+      code: function(X) {
+        var assignedApprovalRequest = this.clone();
+        assignedApprovalRequest.assignedTo = X.subject.user.id;
+
+        this.approvalRequestDAO.put(assignedApprovalRequest).then(req => {
+          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'unassignMe',
+      section: 'approvalRequestInformation',
+      isAvailable: function(subject, assignedTo, status){
+        return (subject.user.id === assignedTo) && (status === this.ApprovalStatus.REQUESTED);
+      },
+      code: function(X) {
+        var unassignedApprovalRequest = this.clone();
+        unassignedApprovalRequest.assignedTo = 0;
+
+        this.approvalRequestDAO.put(unassignedApprovalRequest).then(req => {
+          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_UNASSIGNED_TITLE, this.SUCCESS_UNASSIGNED, this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
     }
   ],
 
@@ -854,9 +1093,37 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
-          X.stack.back();
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'addMemoL',
+      code: function(X, memo) {
+        var newMemoRequest = this.clone();
+        newMemoRequest.memo = memo;
+
+        this.approvalRequestDAO.put(newMemoRequest).then(req => {
+          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_MEMO_TITLE, this.SUCCESS_MEMO, this.LogLevel.INFO, true);
+
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
@@ -873,14 +1140,55 @@
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_REJECTED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
 
-          X.stack.back();
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
+    },
+    {
+      name: 'assignRequest',
+      code: function(X) {
+        var assignedApprovalRequest = this.clone();
+
+        this.approvalRequestDAO.put(assignedApprovalRequest).then(_ => {
+          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
+
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, (e) => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'RefineEasyCrunchWizard',
+  refines: 'foam.u2.crunch.EasyCrunchWizard',
+
+  properties: [
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
     }
   ]
 });

@@ -13,7 +13,8 @@ foam.CLASS({
   imports: [
     'ctrl',
     'resetPasswordToken',
-    'stack'
+    'stack',
+    'translationService',
   ],
 
   requires: [
@@ -23,8 +24,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INSTRUC_ONE', message: 'Password reset instructions were sent to' },
-    { name: 'INSTRUC_TWO', message: 'Please check your inbox to continue' },
+    { name: 'INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
+    { name: 'INSTRUC', message: 'Please check your inbox to continue' },
     { name: 'REDIRECTION_TO', message: 'Back to Sign in' }
   ],
 
@@ -93,15 +94,16 @@ foam.CLASS({
         const user = this.User.create({ email: this.email });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
-            message: `${this.INSTRUC_ONE} ${this.email}. ${this.INSTRUC_TWO}`,
+            message: `${this.INSTRUC_TITLE}`,
+            description: `${this.INSTRUC}`,
             type: this.LogLevel.INFO,
             transient: true
           }));
           this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
-        })
-        .catch((err) => {
+        }).catch((err) => {
           this.ctrl.add(this.NotificationMessage.create({
-            message: err.message || this.ERROR_MSG,
+            err: err.data,
+            message: this.ERROR_MSG,
             type: this.LogLevel.ERROR,
             transient: true
           }));
