@@ -774,16 +774,10 @@ foam.CLASS({
             c :
             [c, null]
         ).map(c => {
-          if ( auth ) {
-            var axiom = self.of.getAxiomByName(c[0]);
-            if ( axiom && axiom.columnPermissionRequired ) {
-              var clsName  = self.of.name.toLowerCase();
-              var propName = axiom.name.toLowerCase();
-              return auth.check(ctrl.__subContext__, `${clsName}.column.${propName}`).then(function(enabled) {
-                return enabled && c;
-              });
-            }
-          }
+          return c;
+        });
+      }
+  }
           return c;
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
