@@ -14,7 +14,7 @@ foam.CLASS({
   css: `
     ^ {
       position: relative;
-      padding: 10px;
+      padding: 0.71em;
       border-top: 1px solid #999;
       margin-top: 1.14em;
     }
