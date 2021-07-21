@@ -9,13 +9,6 @@
   name: 'Benchmark',
   abstract: true,
 
-  properties: [
-    {
-      class: 'String',
-      name: 'id'
-    }
-  ],
-
   implements: [
     'foam.core.ContextAgent'
   ],
