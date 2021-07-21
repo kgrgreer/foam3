@@ -26,6 +26,7 @@
       justify-content: center;
       padding: 0 4vw;
       background-color: /*%WHITE%*/ white;
+      height: 100%;
     }
     ^show-footer {
       /* minus footer */
