@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Subject',
     'static foam.mlang.MLang.*'
   ],
 
@@ -67,9 +68,20 @@ foam.CLASS({
         }
 
         // Only put objects sent to a specific user
-        if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() )  
-          return getDelegate().put_(x, notif);
-    
+        if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() ) {
+          Subject subject = (Subject) x.get("subject");
+          if ( subject != null ) {
+            User user = subject.getUser();
+            notif.setSpid(user.getSpid());
+            if ( notif.getSpid() != null ) {
+             return getDelegate().put_(x, notif);
+            }
+          }
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("Notification " + notif.getNotificationType() +
+            " will not be saved to notificationDAO because no spid can be set");
+        }
+
         return obj;
       `
     }
