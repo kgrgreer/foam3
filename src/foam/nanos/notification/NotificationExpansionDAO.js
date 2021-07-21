@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Subject',
     'static foam.mlang.MLang.*'
   ],
 
@@ -79,9 +80,8 @@ foam.CLASS({
           Logger logger = (Logger) x.get("logger");
           logger.warning("Notification " + notif.getNotificationType() +
             " will not be saved to notificationDAO because no spid can be set");
-          }
-
         }
+
         return obj;
       `
     }
