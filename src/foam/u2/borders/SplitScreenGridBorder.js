@@ -10,7 +10,8 @@
   extends: 'foam.u2.Element',
 
   imports: [
-    'displayWidth'
+    'displayWidth',
+    'showFooter'
   ],
 
   requires: [
@@ -25,7 +26,8 @@
       justify-content: center;
       padding: 0 4vw;
       background-color: /*%WHITE%*/ white;
-
+    }
+    ^show-footer {
       /* minus footer */
       height: calc(100% - 65px);
       height: -moz-calc(100% - 65px);
@@ -83,6 +85,7 @@
         .add(left, right);
 
       this.start()
+        .enableClass(this.myClass('show-footer'), this.showFooter$)
         .addClass(this.myClass())
         .add(grid)
       .end();
