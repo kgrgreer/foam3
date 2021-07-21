@@ -716,6 +716,7 @@ var classes = [
   'foam.nanos.ruler.RuleAction',
   'foam.nanos.ruler.CompositeRuleAction',
   'foam.nanos.ruler.StopRulerAction',
+  'foam.nanos.ruler.NullRulerAction',
   'foam.nanos.ruler.ScriptPredicate',
   'foam.nanos.ruler.RuleHistory',
   'foam.nanos.ruler.RuleHistoryStatus',
