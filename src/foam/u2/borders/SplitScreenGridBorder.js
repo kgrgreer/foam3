@@ -10,7 +10,8 @@
   extends: 'foam.u2.Element',
 
   imports: [
-    'displayWidth'
+    'displayWidth',
+    'showFooter'
   ],
 
   requires: [
@@ -25,6 +26,7 @@
       justify-content: center;
       padding: 0 4vw;
       background-color: /*%WHITE%*/ white;
+      height: 100%;
     }
 
     ^show-footer {
