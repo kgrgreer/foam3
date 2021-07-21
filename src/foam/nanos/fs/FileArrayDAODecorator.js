@@ -87,7 +87,11 @@ foam.CLASS({
     async function arrayRecursion(obj) {
       if ( foam.nanos.fs.File.isInstance(obj) ) {
         await this.processFile(obj);
-      } else {
+      } else if ( obj.capability ) {
+        const label = obj.capability.labels;
+        obj.documents.map(f => f.labels = label);
+      }
+       {
         await this.processFiles(obj);
         const arr = obj.cls_.getAxiomsByClass(foam.core.Array);
         await Promise.all(arr.map(async p => await Promise.all(await p.f(obj).map(async data => await this.arrayRecursion(data)))));
