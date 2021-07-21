@@ -767,22 +767,16 @@ foam.CLASS({
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;
-
         var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c => {
-          return c;
-        });
+        ).map(c =>{
+          return c;})
+        ).then(columns => this.columns_ = columns.filter(c => c));
       }
-  }
-          return c;
-        }))
-        .then(columns => this.columns_ = columns.filter(c => c));
       }
-    }
   ]
 });
 
