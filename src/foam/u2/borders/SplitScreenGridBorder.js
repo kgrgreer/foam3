@@ -25,7 +25,9 @@
       justify-content: center;
       padding: 0 4vw;
       background-color: /*%WHITE%*/ white;
+    }
 
+    ^show-footer {
       /* minus footer */
       height: calc(100% - 65px);
       height: -moz-calc(100% - 65px);
@@ -84,6 +86,7 @@
 
       this.start()
         .addClass(this.myClass())
+        .enableClass(this.myClass('show-footer'), this.showFooter$)
         .add(grid)
       .end();
     }
