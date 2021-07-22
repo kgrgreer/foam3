@@ -74,7 +74,7 @@
         loggerFilter.setLogInfo(false);
         loggerFilter.setLogWarning(false);
 
-        DAO benchmarkDAO = (DAO) x.get("benchmarkDAO");
+        DAO benchmarkDAO = (DAO) x.get("benchmarkRunnerDAO");
         ArraySink benchmarks = (ArraySink) benchmarkDAO.select(new ArraySink());
         List benchmarkArray = benchmarks.getArray();
 
