@@ -323,6 +323,8 @@ var classes = [
   'foam.nanos.auth.token.TokenService',
   'foam.nanos.auth.token.ClientTokenService',
   'foam.nanos.auth.token.AbstractTokenService',
+  'foam.nanos.auth.token.TokenExpiredException',
+  'foam.nanos.auth.token.TokenInvalidException',
   'foam.nanos.auth.email.EmailTokenService',
   'foam.nanos.auth.email.EmailDocService',
   'foam.nanos.auth.email.EmailDocInterface',
