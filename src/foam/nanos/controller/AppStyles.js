@@ -12,6 +12,10 @@ foam.CLASS({
   documentation: 'Generic CSS that can be included into the top level controller of foam app. Implement to foam class to use.',
 
   css: `
+    html {
+      font-size: 14px;
+    }
+
     body {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1rem;
