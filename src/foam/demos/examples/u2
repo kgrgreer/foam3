@@ -123,6 +123,11 @@ start('div').hide().add('hide()').end();                // won't be shown
 start('div').hide().show().add('show()').end();         // will be shown
 
 ##   focused / focus() / blur()
+--
+// TODO: update to use data when working
+start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end();
+start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
+
 ##   Creating a Component
 ##    render()
 ##   Keyboard Shortcuts
