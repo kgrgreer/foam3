@@ -39,7 +39,8 @@ foam.CLASS({
     'loginVariables',
     'memento',
     'stack',
-    'theme'
+    'theme',
+    'displayWidth?'
   ],
 
   requires: [
@@ -87,8 +88,9 @@ foam.CLASS({
   }
 
   /* ON MODEL */
-  ^ .content-form {
-    width: 100%;
+  ^content-form {
+    align-self: center;
+    width: 75%;
     padding: 2vw;
     box-sizing: border-box;
     
@@ -143,9 +145,11 @@ foam.CLASS({
     flex-wrap: nowrap;
     align-items: center;
   }
-  ^ .image-one {
+  ^image-one {
     width: 28vw;
   }
+  ^wideImage { width: 50vw; }
+  ^fullWidth { width: 100%; }
   `,
 
   properties: [
@@ -201,7 +205,8 @@ foam.CLASS({
         return this.model.backLink_ || this.appConfig.externalUrl || undefined;
       },
       hidden: true
-    }
+    },
+    { class: 'Boolean', name: 'shouldResize' }
   ],
 
   messages: [
@@ -223,6 +228,7 @@ foam.CLASS({
 
     function render() {
       this.SUPER();
+      var self = this;
       // clearing any values that may linger in memento - such as SignOut
       this.memento.value = '';
       location.hash = '';
@@ -232,6 +238,7 @@ foam.CLASS({
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
       let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
@@ -243,9 +250,11 @@ foam.CLASS({
         .end()
       // Title txt and Model
         .start().addClass('title-top').add(this.model.TITLE).end()
-        .startContext({ data: this })
-          .addClass('content-form').tag(this.MODEL).br()
-        .endContext()
+        .addClass(self.myClass('content-form'))
+        .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
+        .enableClass(self.myClass('fullWidth'), self.shouldResize$)
+        .startContext({ data: this }).tag(this.MODEL).endContext()
+        .br()
       // first footer
       .br()
       .start().addClass('center-footer')
@@ -299,8 +308,9 @@ foam.CLASS({
           split.leftPanel
             .addClass('cover-img-block1')
             .start('img')
-              .addClass('image-one')
+              .addClass(self.myClass('image-one'))
               .attr('src', this.imgPath)
+              .enableClass(self.myClass('wideImage'), self.shouldResize$)
             .end()
             // add a disclaimer under img
             .start('p')
@@ -315,6 +325,17 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'resize',
+      isFramed: true,
+      code: function() {
+        if ( this.displayWidth == 'MD' || this.displayWidth == 'SM' ||this.displayWidth == 'XS' || this.displayWidth == 'XXS' ) {
+          this.shouldResize = true;
+        } else {
+          this.shouldResize = false;
+        }
+      }
+    },
     function onKeyPressed(e) {
       e.preventDefault();
       var key = e.key || e.keyCode;
