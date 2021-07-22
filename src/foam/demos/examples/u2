@@ -116,6 +116,12 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 start('div', {tooltip: 'My Tooltip'}).add('hover for tooltip').end();
 
 ##   shown / show() / hide()
+--
+start('div', {shown: false}).add('shown: false').end(); // won't be shown
+start('div', {shown: true}).add('shown: true').end();   // will be shown
+start('div').hide().add('hide()').end();                // won't be shown
+start('div').hide().show().add('show()').end();         // will be shown
+
 ##   focused / focus() / blur()
 ##   Creating a Component
 ##    render()
