@@ -27,49 +27,6 @@
     'java.util.concurrent.atomic.AtomicLong'
   ],
 
-  constants: [
-    {
-      class: 'String',
-      name: 'RUN',
-      value: 'Run'
-    },
-    {
-      class: 'String',
-      name: 'THREADCOUNT',
-      value: 'Threads'
-    },
-    {
-      class: 'String',
-      name: 'OPS',
-      value: 'Operations/s'
-    },
-    {
-      class: 'String',
-      name: 'OPSPT',
-      value: 'Operations/s/t'
-    },
-    {
-      class: 'String',
-      name: 'MEMORY',
-      value: 'Memory GB'
-    },
-    {
-      class: 'String',
-      name: 'TOTAL',
-      value: 'Total'
-    },
-    {
-      class: 'String',
-      name: 'PASS',
-      value: 'Pass'
-    },
-    {
-      class: 'String',
-      name: 'FAIL',
-      value: 'Fail'
-    },
-  ],
-
   properties: [
     {
       class: 'String',
@@ -96,7 +53,7 @@
       name: 'invocationCount'
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'foam.nanos.bench.Benchmark',
       name: 'benchmark'
     }
@@ -113,18 +70,19 @@
         }
       ],
       javaCode: `
+      Benchmark benchmark = (Benchmark) this.findBenchmark(x);
       Logger log = (Logger) x.get("logger");
       if ( log != null ) {
         log = new foam.nanos.logger.StdoutLogger();
       }
-      final Logger logger = new PrefixLogger(new String[] { benchmark_.getClass().getSimpleName() }, log);
+      final Logger logger = new PrefixLogger(new String[] { benchmark.getClass().getSimpleName() }, log);
   
       AppConfig config = (AppConfig) x.get("appConfig");
       if ( config.getMode() == Mode.PRODUCTION ) {
         logger.warning("Script execution disabled in PRODUCTION");
         return;
       }
-      logger.info("execute", benchmark_.getClass().getSimpleName());
+      logger.info("execute", benchmark.getClass().getSimpleName());
   
       int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
       int run = 1;
@@ -147,7 +105,7 @@
   
           // set up the benchmark
           logger.info("setup");
-          benchmark_.setup(x);
+          benchmark.setup(x);
   
           // get start time
           long startTime = System.currentTimeMillis();
@@ -161,7 +119,7 @@
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
-                      benchmark_.execute(x);
+                      benchmark.execute(x);
                       passed++;
                     } catch (Throwable t) {
                       fail.incrementAndGet();
@@ -205,7 +163,7 @@
           stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
   
           logger.info("teardown");
-          benchmark_.teardown(x, stats);
+          benchmark.teardown(x, stats);
           results_.add(stats);
   
           if ( getRunPerThread() ) {
@@ -242,7 +200,7 @@
       type: 'String',
       javaCode: `
       StringBuilder csv = new StringBuilder();
-      csv.append(benchmark_.getClass().getSimpleName());
+      csv.append(getBenchmark());
       csv.append(",");
       csv.append(new java.util.Date().toString());
       csv.append("\\n");
@@ -285,6 +243,14 @@
       buildJavaClass: function (cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+            public static String RUN         = "Run";
+            public static String THREADCOUNT = "Threads";
+            public static String OPS         = "Operations/s";
+            public static String OPSPT       = "Operations/s/t";
+            public static String MEMORY      = "Memory GB";
+            public static String TOTAL       = "Total";
+            public static String PASS        = "Pass";
+            public static String FAIL        = "Fail";
             protected List<Map<String, Object>> results_ = new ArrayList<Map<String, Object>>();
           
             public String getResult() {
