@@ -47,6 +47,8 @@
     /* TODO: Remove this when U3 allows non-E() adds */
     ^split-screen > *{
       width: 100%;
+      display: flex;
+      justify-content: center;
     }
   `,
 
