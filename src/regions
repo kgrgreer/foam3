@@ -282,21 +282,21 @@ p({"class":"foam.nanos.auth.Region", code:"FR-WF", "name":Wallis et Futuna, "cou
 p({"class":"foam.nanos.auth.Region", code:"FR-YT", "name":Mayotte, "countryId":"FR"})
 
 // Germany
+p({"class":"foam.nanos.auth.Region", "code":"DE-BB", "name":"Brandenburg", "countryId":"DE"})
+p({"class":"foam.nanos.auth.Region", "code":"DE-BE", "name":"Berlin", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-BW", "name":"Baden-Württemberg", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-BY", "name":"Bayern", "countryId":"DE"})
-p({"class":"foam.nanos.auth.Region", "code":"DE-BE", "name":"Berlin", "countryId":"DE"})
-p({"class":"foam.nanos.auth.Region", "code":"DE-BB", "name":"Brandenburg", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-HB", "name":"Bremen", "countryId":"DE"})
-p({"class":"foam.nanos.auth.Region", "code":"DE-HH", "name":"Hamburg", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-HE", "name":"Hesse", "countryId":"DE"})
-p({"class":"foam.nanos.auth.Region", "code":"DE-NI", "name":"Lower Saxony", "countryId":"DE"})
+p({"class":"foam.nanos.auth.Region", "code":"DE-HH", "name":"Hamburg", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-MV", "name":"Mecklenburg-Vorpommern", "countryId":"DE"})
+p({"class":"foam.nanos.auth.Region", "code":"DE-NI", "name":"Lower Saxony", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-NW", "name":"North Rhine-Westphalia", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-RP", "name":"Rhineland-Palatinate", "countryId":"DE"})
+p({"class":"foam.nanos.auth.Region", "code":"DE-SH", "name":"Schleswig-Holstein", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-SL", "name":"Saarland", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-SN", "name":"Saxony", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-ST", "name":"Saxony-Anhalt", "countryId":"DE"})
-p({"class":"foam.nanos.auth.Region", "code":"DE-SH", "name":"Schleswig-Holstein", "countryId":"DE"})
 p({"class":"foam.nanos.auth.Region", "code":"DE-TH", "name":"Thuringia", "countryId":"DE"})
 
 // Great Britain
