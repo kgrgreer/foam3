@@ -11,13 +11,6 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  properties: [
-    {
-      name: 'exceptionMessage',
-      value: 'Token has expired'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
