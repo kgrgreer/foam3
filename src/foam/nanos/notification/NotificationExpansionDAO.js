@@ -69,17 +69,21 @@ foam.CLASS({
 
         // Only put objects sent to a specific user
         if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() ) {
+          Logger logger = (Logger) x.get("logger");
           Subject subject = (Subject) x.get("subject");
           if ( subject != null ) {
             User user = subject.getUser();
             notif.setSpid(user.getSpid());
-            if ( notif.getSpid() != null ) {
-             return getDelegate().put_(x, notif);
+            if ( ! foam.util.SafetyUtil.isEmpty(notif.getSpid()) ) {
+              try {
+                return getDelegate().put_(x, notif);
+              } catch ( Throwable t ) {
+                logger.error(this.getClass().getSimpleName(), t);
+              }
             }
           }
-          Logger logger = (Logger) x.get("logger");
           logger.warning("Notification " + notif.getNotificationType() +
-            " will not be saved to notificationDAO because no spid can be set");
+            " will not be saved to notificationDAO because no spid can be determined");
         }
 
         return obj;
