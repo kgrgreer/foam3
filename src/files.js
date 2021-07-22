@@ -248,6 +248,7 @@ FOAM_FILES([
   { name: "foam/dao/InternalException" },
   { name: "foam/dao/ExternalException" },
   { name: "foam/dao/UniqueConstraintException" },
+  { name: "foam/dao/CompositeRelationship" },
   { name: "foam/mlang/order/Comparator" },
 //  { name: "foam/mlang/order/ComparatorJava", flags: ['java'] },
   { name: "foam/mlang/mlang" },

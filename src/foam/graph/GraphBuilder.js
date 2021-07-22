@@ -25,6 +25,21 @@ foam.CLASS({
   ],
 
   methods: [
+    function fromCompositeRelationship(
+      rootObject,
+      compositeRelationship,
+      noRootAdd
+    ) {
+      if ( ! foam.dao.CompositeRelationship.isInstance(compositeRelationship) ) {
+        throw new Error("No CompositeRelationship object detected")
+      }
+
+      var relationshipPromises = compositeRelationship.getForwardNames().map(
+        forwardName => this.fromRelationship(rootObject, forwardName, noRootAdd, true)
+      );
+
+      return Promise.all(relationshipPromises)
+    },
     function fromRelationship(
       rootObject, relationshipKey, noRootAdd
     ) {

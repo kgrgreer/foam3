@@ -12,13 +12,22 @@
 
   properties: [
     {
-      class: 'FObjectArray',
-      of: 'foam.dao.Relationship',
       name: 'relationships'
     }
   ],
 
   methods: [
-
+    {
+      name: 'getInverseNames',
+      code: function(){
+        return this.relationships.map(relationship => relationship.inverseName);
+      }
+    },
+    {
+      name: 'getForwardNames',
+      code: function(){
+        return this.relationships.map(relationship => relationship.forwardName);
+      }
+    }
   ]
 });
