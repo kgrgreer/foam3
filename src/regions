@@ -796,6 +796,7 @@ p({"class":"foam.nanos.auth.Region", "code":"ES-IB", "name":"Balearic Islands", 
 p({"class":"foam.nanos.auth.Region", "code":"ES-PV", "name":"Basque Country", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-CN", "name":"Canary Islands", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-CB", "name":"Cantabria", "countryId":"ES"})
+p({"class":"foam.nanos.auth.Region", "code":"ES-CE", "name":"Ceuta", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-CM", "name":"Castilla La Mancha", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-CL", "name":"Castilla Y Léon", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-CT", "name":"Catalonia", "countryId":"ES"})
@@ -804,6 +805,7 @@ p({"class":"foam.nanos.auth.Region", "code":"ES-GA", "name":"Galicia", "countryI
 p({"class":"foam.nanos.auth.Region", "code":"ES-RI", "name":"La Rioja", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-MD", "name":"Madrid", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-MC", "name":"Murcia", "countryId":"ES"})
+p({"class":"foam.nanos.auth.Region", "code":"ES-ML", "name":"Melilla", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-NC", "name":"Navarra", "countryId":"ES"})
 p({"class":"foam.nanos.auth.Region", "code":"ES-VC", "name":"Valencia", "countryId":"ES"})
 
