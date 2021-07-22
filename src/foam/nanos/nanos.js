@@ -116,6 +116,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/token/ClientTokenService" },
   { name: "foam/nanos/auth/token/Token" },
   { name: "foam/nanos/auth/token/AbstractTokenService" },
+  { name: "foam/nanos/auth/token/TokenExpiredException" },
+  { name: "foam/nanos/auth/token/TokenInvalidException" },
   { name: "foam/nanos/auth/ChangePasswordView" },
   { name: "foam/nanos/auth/ResetPassword" },
   { name: "foam/nanos/auth/RetrievePassword" },
