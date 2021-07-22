@@ -614,9 +614,10 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
       let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
-      // stop any duplicating recursive calls
+      /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
       /** Used to load a specific menus. **/
       // Do it this way so as to not reset mementoTail if set
@@ -624,8 +625,7 @@ foam.CLASS({
       if ( this.memento.head !== idCheck || opt_forceReload ) {
         this.memento.value = idCheck;
       }
-
-      // Checking validity of menu push and launching some default on fail
+      /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
         dao = this.client.menuDAO;
@@ -647,10 +647,11 @@ foam.CLASS({
     async function findFirstMenuIHavePermissionFor(dao) {
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
-      return await dao.orderBy(foam.nanos.menu.Menu.ORDER).select().then(ableToAccessMenus => {
-        ableToAccessMenus.array[0].launch(this);
-        return ableToAccessMenus.array[0];
-      }).catch(e => console.error(e.message || e));
+      return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
+        .select().then(ableToAccessMenus => {
+          ableToAccessMenus.array[0].launch(this);
+          return ableToAccessMenus.array[0];
+        }).catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {
