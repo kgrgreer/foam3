@@ -2192,18 +2192,6 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'onDWChange',
-      isFramed: true,
-      code: function(clsMap, a, b, c) {
-        for ( var key in clsMap ) {
-          if ( key ) {
-            var check = this.displayWidth.ordinal >= foam.u2.layout.DisplayWidth[key].ordinal;
-            foam.Array.isInstance(clsMap[key]) ? self.enableClasses(clsMap[key], check) : self.enableClass(clsMap[key], check);
-          }
-        }
-      }
-    },
-    {
       name: 'onKeyboardShortcut',
       documentation: `
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
