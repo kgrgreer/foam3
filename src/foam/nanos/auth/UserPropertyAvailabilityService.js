@@ -45,8 +45,8 @@ foam.CLASS({
           return true;
         }
 
-        DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);
-        User user = (User) userDAO
+        DAO userUserDAO = ((DAO) getX().get("localUserUserDAO")).inX(x);
+        User user = (User) userUserDAO
           .find(AND(
             EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
             EQ(User.SPID, theme.getSpid())));
