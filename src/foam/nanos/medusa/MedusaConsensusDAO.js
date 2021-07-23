@@ -284,11 +284,14 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( nextIndex % 10000 == 0 ) {
-              getLogger().info("promoter", "next", nextIndex);
-            } else {
-              getLogger().debug("promoter", "next", nextIndex);
-            }
+            // TODO: remove - report them all for now, it's our trouble
+            // shooting heartbeat
+            // if ( nextIndex % 10000 == 0 ) {
+            //   getLogger().info("promoter", "next", nextIndex);
+            // } else {
+            getLogger().debug("promoter", "next", nextIndex);
+            // }
+
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               synchronized ( next.getId().toString().intern() ) {
@@ -525,7 +528,6 @@ This is the heart of Medusa.`,
       try {
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         Map<Object, Map> hashes = next.getConsensusHashes();
-        Map<String, MedusaEntry> lastNodes = null;
         try {
           for ( Map<String, MedusaEntry> nodes : hashes.values() ) {
             if ( nodes.size() >= support.getNodeQuorum() ) {
@@ -539,7 +541,6 @@ This is the heart of Medusa.`,
                 throw new MedusaException("Multiple consensus detected. "+next.toSummary());
               }
             }
-            lastNodes = nodes;
           }
         } catch (Throwable t) {
           for ( Map<String, MedusaEntry> nodes : hashes.values() ) {
@@ -608,10 +609,18 @@ During replay gaps are treated differently; If the index after the gap is ready 
           if ( entry != null ) {
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
             if ( replaying.getReplaying() ) {
-              // Set global index to next non promoted entry index -1,
-              // the promoter will look for the entry after the global index.
-              getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
-              replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
+
+              // test if entry depends on any indexes in our skip range.
+              long skipRangeLowerBound = index;
+              long skipRangeHigherBound = minIndex > 0 ? minIndex-1 : skipRangeLowerBound;
+               if ( ( entry.getIndex1() < skipRangeLowerBound || entry.getIndex1() > skipRangeHigherBound ) &&
+                    ( entry.getIndex2() < skipRangeLowerBound || entry.getIndex2() > skipRangeHigherBound ) ) {
+
+                // Set global index to next non promoted entry index -1,
+                // the promoter will look for the entry after the global index.
+                getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
+                replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
+              }
               return;
             }
 
