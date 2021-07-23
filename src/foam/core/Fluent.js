@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.core',
   name: 'Fluent',
+
   documentation: `
     A domain-specific "language" - a model with chainable methods for
     constructing domain-specific objects, similar to using the builder pattern.
@@ -22,11 +23,6 @@ foam.CLASS({
     function call(f, args) {
       f.apply(this, args);
 
-      return this;
-    },
-
-    function callOn(obj, f, args) {
-      obj[f].apply(obj, [this].concat(args));
       return this;
     },
 

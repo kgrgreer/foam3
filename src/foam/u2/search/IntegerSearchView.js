@@ -85,7 +85,7 @@ foam.CLASS({
       this.amount = predicate.arg2.value;
     },
     
-    function initE() {
+    function render() {
       this
         .addClass(this.myClass())
         .start(this.ChoiceView, {

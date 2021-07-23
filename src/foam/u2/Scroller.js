@@ -101,7 +101,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       this.data$proxy.sub('on', this.onDAOUpdate);
@@ -113,7 +113,7 @@ foam.CLASS({
         height$: this.scrollHeight_$
       });
 
-      this.addClass(this.myClass())
+      this.addClass()
           .start()
               .addClass(this.myClass('container'))
               .call(function() { self.table = this; })
@@ -140,7 +140,7 @@ foam.CLASS({
         self.window.addEventListener('resize', self.onResize);
       });
 
-      this.onunload.sub(function() {
+      this.onDetach(function() {
         self.window.removeEventListener('resize', self.onResize);
       });
     }

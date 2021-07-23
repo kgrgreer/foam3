@@ -552,6 +552,12 @@ foam.CLASS({
       displayWidth: 80
     },
     {
+      class: 'Boolean',
+      name: 'allowDuplicateEmails',
+      section: 'administration',
+      value: false
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.PasswordPolicy',
       name: 'passwordPolicy',

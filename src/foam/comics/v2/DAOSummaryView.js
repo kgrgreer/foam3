@@ -24,8 +24,6 @@ foam.CLASS({
 
   exports: ['currentMemento_ as memento'],
 
-  requires: ['foam.nanos.controller.Memento'],
-
   css: `
     ^ {
       padding: 32px
@@ -57,7 +55,8 @@ foam.CLASS({
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
     'foam.u2.dialog.Popup',
-    'foam.u2.stack.BreadcrumbView'
+    'foam.u2.stack.BreadcrumbView',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -139,10 +138,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'mementoHead',
-      documentation: 'StackView will use mementoHead to set memento value. Stack will check if memento was set with mementoHead on back action execution and if so it will clean up memento',
+      documentation: 'This stores the id we want to add to the memento of the view',
       factory: function() {
-        // on url set to DAOSummaryView edit mode (we can check for it with this.memento.tail.head == 'edit') we return undefined to StackView. DAOUpdateView will reuse current memento
-        // so the url will look something like '...::edit::id' instead of '...::view::edit::id' though DAOUpdateView is child to current view'
         if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
           if ( ! this.idOfRecord )
             return '::';
@@ -150,7 +147,7 @@ foam.CLASS({
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
-          return 'view::' + id;
+          return id;
         }
       }
     },
@@ -158,6 +155,13 @@ foam.CLASS({
       name: 'idOfRecord',
       factory: function() {
         return this.data ? this.data.id : null;
+      }
+    },
+    {
+      class: 'String',
+      name: 'viewTitle',
+      expression: function(data) {
+        return data?.toSummary() ?? '';
       }
     }
   ],
@@ -191,16 +195,14 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        // setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
-        if ( this.memento && this.memento.tail ) {
-          this.memento.tail.head = 'edit';
-        }
-        this.stack.push({
-          class:  'foam.comics.v2.DAOUpdateView',
-          data:   this.data,
-          config: this.config,
-          of:     this.config.of
-        }, this.__subContext__);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class:  'foam.comics.v2.DAOUpdateView',
+            data:   this.data,
+            config: this.config,
+            of:     this.config.of
+          }, parent: this.__subContext__.createSubContext({ memento: this.memento })
+        }));
       }
     },
     {
@@ -229,12 +231,13 @@ foam.CLASS({
         let newRecord = this.data.clone();
         // Clear PK so DAO can generate a new unique one
         newRecord.id = undefined;
-        this.stack.push({
-          class: 'foam.comics.v2.DAOCreateView',
-          data: newRecord,
-          config: this.config,
-          of: this.config.of
-        }, this.__subContext__);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOCreateView',
+            data: newRecord,
+            config: this.config,
+            of: this.config.of
+          }, parent: this }));
       }
     },
     {
@@ -273,11 +276,16 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function init() {
+      // This is needed to ensure data is available for the viewTitle
+      this.SUPER();
+      var self = this;
+      var id = this.data?.id ?? this.idOfRecord;
+      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
+    },
+    function render() {
       var self = this;
       this.SUPER();
-      // The memento passed to DAOSummaryView must be the memento of the prev view instead of the tail
-      // This is because of how this view sets memento, working on a fix
       if ( this.memento ) {
         this.currentMemento_ = this.memento;
         var counter = 0;
@@ -304,15 +312,15 @@ foam.CLASS({
       // to this view from the edit view on the stack.
       promise.then(d => {
         if ( d ) self.data = d;
-        if ( self.memento && self.memento.tail && self.memento.tail.head.toLowerCase() === 'edit' ) {
+        if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
           self.edit();
         } else {
-          if ( this.memento && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
-            var m = foam.nanos.controller.Memento.create({ value: this.mementoHead, parent: this.memento, replaceHistoryState: false });
-            this.memento.tail = m;
-            if ( ! m.tail ) 
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
-            this.currentMemento_ = m.tail;
+          if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+            this.memento.head = 'view';
+            this.memento.tail.head = this.mementoHead;
+            if ( ! this.memento.tail.tail ) 
+              this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
+            this.currentMemento_ = this.memento.tail.tail;
           }
           this
           .addClass(this.myClass())

@@ -15,6 +15,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'foam.nanos.app.AppConfig',
     'foam.nanos.jetty.HttpServer',
     'foam.nanos.logger.Logger',
@@ -26,7 +27,8 @@ foam.CLASS({
     'javax.servlet.ServletConfig',
     'javax.servlet.ServletException',
     'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse'
+    'javax.servlet.ServletResponse',
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   properties: [
@@ -78,16 +80,19 @@ foam.CLASS({
         { name: 'x', javaType: 'X'},
         { name: 'theme', javaType: 'Theme'},
         { name: 'logger', javaType: 'Logger'},
-        { name: 'out', javaType: 'PrintWriter'}
+        { name: 'out', javaType: 'PrintWriter'},
+        { name: 'request', javaType: 'ServletRequest' }
       ],
       javaCode: `
       HashMap    headConfig          = (HashMap)   theme.getHeadConfig();
       AppConfig  appConfig           = (AppConfig) x.get("appConfig");
+      String     queryString         = ((HttpServletRequest)request).getQueryString();
       Boolean    customFavIconFailed = false;
       Boolean    customScriptsFailed = false;
       Boolean    customFontsFailed   = false;
 
       out.println("<meta charset=\\"utf-8\\"/>");
+      out.println("<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />");
       out.print("<title>");
       out.print(theme.getAppName());
       out.println("</title>");
@@ -151,6 +156,11 @@ foam.CLASS({
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso20022/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/flinks/utils/files.js\\"></script>");
+          }
+          else if ( ! SafetyUtil.isEmpty(queryString) ) {
+            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
+            out.println(queryString);
+            out.println("\\"></script>");
           }
           else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
@@ -230,7 +240,7 @@ foam.CLASS({
         out.println("<html lang=\\"en\\">");
         out.println("<head>");
 
-        this.populateHead(x, theme, logger, out);
+        this.populateHead(x, theme, logger, out, request);
 
         out.println("</head>");
         out.println("<body>");

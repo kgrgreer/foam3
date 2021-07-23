@@ -1,5 +1,25 @@
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"fileLabelDAO",
+  "authenticated":true,
+  "serve":true,
+  "lazy":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("fileLabelDAO"))
+      .setOf(foam.nanos.fs.FileLabel.getOwnClassInfo())
+      .setJournalName("fileLabels")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setRuler(false)
+      .setPm(true)
+      .build()
+  """,
+  "client":"{\"of\":\"foam.nanos.fs.FileLabel\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"fileTypeDAO",
   "serve":true,
   "serviceScript":
@@ -20,11 +40,10 @@ p({
   "name":"fileDAO",
   "serve":true,
   "serviceScript":"""
-    dao = new foam.dao.KeyValueDAO.Builder(x)
-      .setDelegate(new foam.nanos.fs.SupportFileTypeDAO(x,
-        new foam.nanos.fs.FileDataDAO.Builder(x)
-          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.fs.File.getOwnClassInfo()))
-          .build()))
+    dao = new foam.nanos.fs.FileDataDAO.Builder(x)
+      .setDelegate(new foam.nanos.fs.FileLabelFilterDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.fs.File.getOwnClassInfo()))
+        .build())
       .build();
 
     return new foam.dao.EasyDAO.Builder(x)

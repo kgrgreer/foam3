@@ -50,16 +50,14 @@ foam.CLASS({
       name: 'defaultSectionLabel',
       value: 'Uncategorized'
     },
-    'tabs',
-    'currentMemento_'
+    'tabs'
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
-      this.initMemento();
-
+      this.currentMemento_ = this.memento;
 
       this.SUPER();
       this
@@ -90,7 +88,7 @@ foam.CLASS({
 
                     var tab = foam.core.SimpleSlot.create();
                     this
-                      .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.tail && self.memento.tail.head === s.title }, tab)
+                      .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
                         .call(function() {
                           this.tag(self.SectionView, {
                             data$: self.data$,
@@ -104,7 +102,7 @@ foam.CLASS({
                 .end();
               self.tabs && ( self.tabs.updateMemento = true );
               return e;
-            }))
+            }));
         }));
     }
   ]

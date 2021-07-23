@@ -22,7 +22,7 @@
 // This will run a suite of generic DAO tests against it, that should work
 // against any DAO.
 
-global.genericDAOTestBattery = function(daoFactory) {
+globalThis.genericDAOTestBattery = function(daoFactory) {
   describe('generic DAO tests', function() {
     beforeEach(function() {
       foam.CLASS({

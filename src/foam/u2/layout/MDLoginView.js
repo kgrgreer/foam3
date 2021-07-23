@@ -172,13 +172,13 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
-      this.addClass(this.myClass());
+      this.addClass();
       this
         .start('div').addClass('background-container')
           .start('div').addClass('home-logo').start('div').addClass('home-img').addClass('material-icons').add('home').end().end()

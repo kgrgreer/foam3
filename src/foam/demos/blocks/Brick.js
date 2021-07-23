@@ -49,6 +49,7 @@ foam.CLASS({
   `,
 
   properties: [
+    [ 'nodeName', 'span' ],
     'x',
     'y',
     {
@@ -84,9 +85,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
-        setNodeName('span').
         addClass(this.myClass()).
         enableClass(this.myClass('removed'), this.removed$).
         on('click',       this.click).

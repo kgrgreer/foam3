@@ -18,7 +18,7 @@ foam.CLASS({
     'data',
   ],
   methods: [
-    function initE() {
+    function render() {
       var view = this;
       this.
         start('img').

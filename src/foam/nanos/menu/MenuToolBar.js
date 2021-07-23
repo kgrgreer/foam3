@@ -114,7 +114,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var self = this;
       if ( await this.availableMenuCount === 1 ) {
         this.dao.select().then( (res) => {

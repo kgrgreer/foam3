@@ -128,7 +128,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function render(){
       var self = this;
       this.user.supportEmails.limit(1).select().then(function(a){ 
         self.emptyDAO = a.array.length == 0;
@@ -191,7 +191,7 @@ foam.CLASS({
       ],
       
       methods: [
-        function initE() {
+        function render() {
           this
             .start({
               class: 'foam.u2.view.ScrollTableView',

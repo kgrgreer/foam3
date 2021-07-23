@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.c$.relateTo(this.f$, this.c2f, this.f2c);
       this.add(this.C, ' Celsius = ', this.F, ' Fahrenheit');
     },

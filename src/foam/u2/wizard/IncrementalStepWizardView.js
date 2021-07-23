@@ -189,7 +189,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var btn = { size: 'LARGE' };
       var primaryBtn = { ...btn, buttonStyle: 'PRIMARY' };
       var self = this;

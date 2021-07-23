@@ -47,7 +47,7 @@ foam.CLASS({
     'cols'
   ],
   methods: [
-    function initE() {
+    function render() {
       this.tag(this.SectionedDetailPropertyView, {
         prop: this.DATA_,
         data: this

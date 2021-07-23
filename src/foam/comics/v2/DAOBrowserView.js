@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.ScrollTableView',
     'foam.u2.view.SimpleSearch',
     'foam.u2.view.TabChoiceView'
@@ -267,21 +268,22 @@ foam.CLASS({
     },
     function click(obj, id) {
       if ( ! this.stack ) return;
-      this.stack.push({
-        class: 'foam.comics.v2.DAOSummaryView',
-        data: obj,
-        config: this.config,
-        idOfRecord: id
-      }, this.__subContext__);
+      this.stack.push(this.StackBlock.create({
+        view: {
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          config: this.config,
+          idOfRecord: id
+        }, parent: this.__subContext__ }));
     },
-    function initE() {
+    function render() {
       var self = this;
       var filterView;
       var simpleSearch;
 
       this.initMemento();
 
-      this.addClass(this.myClass());
+      this.addClass();
       this.SUPER();
 
       this

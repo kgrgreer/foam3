@@ -538,7 +538,13 @@ foam.LIB({
     {
       name: 'clamp',
       code: function(min, value, max) {
-        return Math.min(Math.max(value, min), max);
+        if ( min != null && max == null )
+          return Math.max(min, value);
+        if ( min == null && max != null )
+          return Math.min(value, max);
+        if ( min == null && max == null )
+          return value;
+        return Math.max(Math.min(value, max), min);
       }
     }
   ]
@@ -627,6 +633,17 @@ foam.LIB({
           'Cannot toUpperCase non-string values.');
 
         return str.toUpperCase();
+      })
+    },
+
+    {
+      name: 'toLowerCase',
+      code: foam.Function.memoize1(function(str) {
+        foam.assert(
+          typeof str === 'string',
+          'Cannot toLowerCase non-string values.');
+
+        return str.toLowerCase();
       })
     },
     {
@@ -1179,7 +1196,7 @@ foam.LIB({
      * Registers the given class in the global namespace.
      * If the given class has an id of 'some.package.MyClass'
      * then the class object will be made available globally at
-     * global.some.package.MyClass.
+     * globalThis.some.package.MyClass.
      */
     function registerClass(cls) {
       foam.assert(typeof cls === 'object',
@@ -1187,7 +1204,7 @@ foam.LIB({
       foam.assert(typeof cls.name === 'string' && cls.name !== '',
         'cls must have a non-empty string name');
 
-      var pkg = foam.package.ensurePackage(global, cls.package);
+      var pkg = foam.package.ensurePackage(globalThis, cls.package);
       pkg[cls.name] = cls;
     },
 
@@ -1197,7 +1214,7 @@ foam.LIB({
      * The provided factory function creates the class.
      */
     function registerClassFactory(m, thunk) {
-      var pkg = foam.package.ensurePackage(global, m.package);
+      var pkg = foam.package.ensurePackage(globalThis, m.package);
       var tmp;
 
       Object.defineProperty(
@@ -1219,8 +1236,8 @@ foam.LIB({
      * Walk a dot separated path starting at root, creating empty
      * objects if necessary.
      *
-     * ensurePackage(global, 'some.dot.separated.path');
-     * will ensure that global.some.dot.separated.path exists with
+     * ensurePackage(globalThis, 'some.dot.separated.path');
+     * will ensure that globalThis.some.dot.separated.path exists with
      * each part being a JS object.
      *
      * Returns root if path is null or undefined.

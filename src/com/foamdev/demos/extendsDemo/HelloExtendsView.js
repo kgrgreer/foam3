@@ -14,7 +14,7 @@ foam.CLASS({
 //   ],
 
   methods: [
-    function initE() {
+    function render() {
         this.start('h1').add('Hello ').add(this.data.yourName$).add('!').end();
         console.log(this.propFromController);
         console.log(this.propFromHelloView);

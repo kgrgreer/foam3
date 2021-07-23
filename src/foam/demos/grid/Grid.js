@@ -112,7 +112,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var dao = this.dao;
 
       this.
@@ -172,7 +172,7 @@ foam.CLASS({
       code: function() {
         console.log('show');
         this.dao.select().then(function(s) {
-          window.alert(foam.json.Outputter.create({
+          globalThis.alert(foam.json.Outputter.create({
             pretty:           false,
             outputClassNames: false
           }).stringify(s.array));

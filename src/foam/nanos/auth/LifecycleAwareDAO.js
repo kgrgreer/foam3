@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    DAO decorator that handles different lifecycle states 
+    DAO decorator that handles different lifecycle states
     (PENDING, REJECTED, APPROVED & DELETED) for objects
 
     In the case of remove_, LifecycleAwareDAO marks object as DELETED instead of actually removing
@@ -30,7 +30,7 @@ foam.CLASS({
 
     For filtering, objects with a lifecycle state of DELETED or REJECTED
     will be filtered out unless the user group has lifecyclestate.deleted.{name}
-    and/or {name}.read.lifecyclestate.rejected respectively permission where {name} is 
+    and/or {name}.read.lifecyclestate.rejected respectively permission where {name} is
     either the lowercase name of the model of the objects by default or the {name} provided by the user.
   `,
 
@@ -64,8 +64,8 @@ foam.CLASS({
 
         LifecycleAware lifecycleAwareObj = (LifecycleAware) obj;
 
-        if ( 
-            ( lifecycleAwareObj.getLifecycleState() == LifecycleState.DELETED && ! canReadDeleted(x) ) ||  
+        if (
+            ( lifecycleAwareObj.getLifecycleState() == LifecycleState.DELETED && ! canReadDeleted(x) ) ||
             ( lifecycleAwareObj.getLifecycleState() == LifecycleState.REJECTED && ! canReadRejected(x) )
           ) {
           return null;
@@ -78,7 +78,7 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         // TODO: See CPF-4875 for more info
-        // Will need to figure out if the DAO OF is not lifecycleAware, 
+        // Will need to figure out if the DAO OF is not lifecycleAware,
         // but a subclass entry may be lifecycleAware
 
         boolean userCanReadDeleted = canReadDeleted(x);
@@ -98,7 +98,7 @@ foam.CLASS({
           Predicate rejectedPredicate = MLang.EQ(getOf().getAxiomByName("lifecycleState"), LifecycleState.REJECTED);
           predicateList.add(rejectedPredicate);
         }
-        
+
         Predicate[] predicateArray = predicateList.toArray(new Predicate[predicateList.size()]);
 
         AbstractPredicate isLifecycleAwarePredicate = new AbstractPredicate(x) {
@@ -168,5 +168,5 @@ foam.CLASS({
         return authService.check(x, getRejectPermission_());
       `
     }
-  ],
+  ]
 });

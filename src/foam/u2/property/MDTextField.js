@@ -112,8 +112,8 @@ foam.CLASS({
         'inline',
       ],
       methods: [
-        function initE() {
-           this.addClass(this.myClass()).enableClass(this.myClass('inline'), this.inline$);
+        function render() {
+           this.addClass().enableClass(this.myClass('inline'), this.inline$);
         },
       ],
     },

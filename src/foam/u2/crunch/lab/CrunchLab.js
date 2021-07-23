@@ -171,7 +171,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       if ( this.memento) {
         this.currentMemento_$ = this.memento.tail$;
       }
@@ -252,9 +252,9 @@ foam.CLASS({
               delegate: placementPlan,
               targetProperty: 'id'
             });
-            window._testing = {};
-            window._testing.placementPlan = placementPlan;
-            window._testing.graph = graph;
+            globalThis._testing = {};
+            globalThis._testing.placementPlan = placementPlan;
+            globalThis._testing.graph = graph;
             return this.E()
               .tag(self.DAGView, {
                 gridPlacement: placementPlan,
