@@ -59,6 +59,8 @@ public class HealthCheckWebAgent
               out.println("replaying: "+info.getReplaying()+"\n");
               out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
               out.println("percentComplete: "+info.getPercentComplete()+"\n");
+              out.println("currentIndex: "+info.getIndex()+"\n");
+              out.println("targetIndex: "+info.getReplayIndex()+"\n");
             }
           } else {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
