@@ -331,6 +331,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/ServiceProviderAwareSink" },
   { name: "foam/nanos/auth/test/ServiceProviderAwareTest" },
   { name: "foam/nanos/auth/test/ServiceProviderAuthorizerTest" },
+  { name: "foam/nanos/auth/token/TokenExpiredException" },
+  { name: "foam/nanos/auth/token/TokenInvalidException" },
   { name: 'foam/nanos/auth/UserPropertyAvailabilityService' },
   { name: 'foam/nanos/auth/UserPropertyAvailabilityServiceInterface' },
   { name: 'foam/nanos/auth/ClientUserPropertyAvailabilityService' },
