@@ -131,6 +131,28 @@ start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().
 ##   Creating a Component
 ##    render()
 ##   Keyboard Shortcuts
+--
+foam.CLASS({
+  name: 'KeyboardTest',
+  extends: 'foam.u2.Controller',
+  properties: [
+    { class: 'Int', name: 'count' }
+  ],
+  methods: [
+    function render() { this.add(this.COUNT, this.INCR); }
+  ],
+  actions: [
+   {
+     name: 'incr',
+     code: function() { this.count++; },
+     keyboardShortcuts: [ '+' ]
+   }
+  ]
+});
+// TODO: doesn't work
+var k = KeyboardTest.create();
+start(k).end();
+
 ##   el()
 ##   id
 You can set an element's id, but keep in mind that it isn't normally not a good idea to do so.
