@@ -55,7 +55,14 @@
     {
       class: 'Reference',
       of: 'foam.nanos.bench.Benchmark',
-      name: 'benchmark'
+      name: 'benchmarkId'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.bench.Benchmark',
+      name: 'benchmark',
+      docmentation: 'Used by legacy benchmarks',
+      storageTransient: true
     }
   ],
 
@@ -70,7 +77,12 @@
         }
       ],
       javaCode: `
-      Benchmark benchmark = (Benchmark) this.findBenchmark(x);
+      final Benchmark benchmark;
+      if ( getBenchmark() != null ) {
+        benchmark = getBenchmark();
+      } else {
+        benchmark = (Benchmark) this.findBenchmarkId(x);
+      }
       Logger log = (Logger) x.get("logger");
       if ( log != null ) {
         log = new foam.nanos.logger.StdoutLogger();
@@ -199,8 +211,9 @@
       name: 'formatResults',
       type: 'String',
       javaCode: `
+      String benchmarkName = getBenchmark() == null ? getBenchmarkId() : getBenchmark().getClass().getSimpleName();
       StringBuilder csv = new StringBuilder();
-      csv.append(getBenchmark());
+      csv.append(benchmarkName);
       csv.append(",");
       csv.append(new java.util.Date().toString());
       csv.append("\\n");
@@ -252,10 +265,6 @@
             public static String PASS        = "Pass";
             public static String FAIL        = "Fail";
             protected List<Map<String, Object>> results_ = new ArrayList<Map<String, Object>>();
-          
-            public String getResult() {
-              return formatResults();
-            }
           `
         }));
       }

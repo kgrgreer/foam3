@@ -19,10 +19,10 @@ p({
     runner = builder.build();
     runner.execute(x);
     print("done");
-    print(runner.getResult());
+    print(runner.formatResults());
     l = x.get("logger");
     lc.setLogInfo(true);
     lc.setLogDebug(savedDebug);
-    l.info(new Object[] {runner.getResult()});
+    l.info(new Object[] {runner.formatResults()});
   `
 })
