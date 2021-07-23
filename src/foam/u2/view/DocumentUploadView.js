@@ -31,7 +31,7 @@
   `,
 
   methods: [
-    function initE() {
+    function render() {
       let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
       this.SUPER();
       this

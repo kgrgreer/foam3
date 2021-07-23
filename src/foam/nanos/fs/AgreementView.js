@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
       let file = await this.fileDAO.find(this.fileId);
       if ( file ) {

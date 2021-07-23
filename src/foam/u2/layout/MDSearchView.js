@@ -56,9 +56,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(self.myClass())
+      self.addClass()
       this.start().addClass('container-search')
         .start(self.TextSearchView, {
              richSearch: true,
@@ -79,7 +79,6 @@ foam.CLASS({
 
     function init() {
       this.onload.sub(this.addStyleOpenClose);
-      this.onunload.sub(this.removeStyleOpenClose);
     }
   ],
 
@@ -99,16 +98,9 @@ foam.CLASS({
   listeners: [
     {
       name: 'addStyleOpenClose',
-      isMerged:true,
-      mergeDelay:10, code: function() { this.enableClass('open-close', true);}
-    },
-    {
-      name: 'removeStyleOpenClose',
-      isMerged:true,
-      mergeDelay:10,
-      code: function() { this.addClass('test');}
+      isFramed: true,
+      code: function() { this.addClass('open-close'); }
     }
-
   ],
 
   css: `
@@ -152,4 +144,3 @@ foam.CLASS({
     }
   `
 });
-

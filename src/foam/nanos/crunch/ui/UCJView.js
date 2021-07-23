@@ -66,7 +66,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var user = await this.userDAO.find(this.data.effectiveUser);
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( ! user ) user = realUser;
@@ -99,7 +99,7 @@ foam.CLASS({
         .execute();
 
         //add back button and 'View Reference' title
-        this.addClass(this.myClass())
+        this.addClass()
           .startContext({ data: this })
             .tag(this.BACK, {
               buttonStyle: foam.u2.ButtonStyle.LINK,

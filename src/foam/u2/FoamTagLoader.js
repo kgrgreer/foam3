@@ -27,13 +27,17 @@ foam.CLASS({
 
     function loadTag(el) {
       var clsName = el.getAttribute('class');
-
       this.classloader.load(clsName).then(cls => {
         var obj = cls.create(null, foam.__context__);
 
         this.setAttributes(el, obj);
 
-        if ( obj.promiseE ) {
+        if ( obj.element_ ) {
+          el.parentNode.replaceChild(obj.element_, el);
+          obj.load && obj.load();
+          // Store view in global variable if named. Useful for testing.
+          if ( obj.id ) globalThis[obj.id] = obj;
+        } else if ( obj.promiseE ) {
           obj.promiseE().then(function(view) { this.installView(el, view); });
         } else if ( obj.toE ) {
           this.installView(el, obj.toE({}, obj));
@@ -55,13 +59,13 @@ foam.CLASS({
       view.load();
 
       // Store view in global variable if named. Useful for testing.
-      if ( id ) global[id] = view;
+      if ( id ) globalThis[id] = view;
     },
 
     function setAttributes(el, obj) {
       for ( var j = 0 ; j < el.attributes.length ; j++ ) {
         var attr = el.attributes[j];
-        var p    = this.findPropertyIC(obj.cls_, attr.name);
+        var p = this.findPropertyIC(obj.cls_, attr.name);
         if ( p ) p.set(obj, attr.value);
       }
     }

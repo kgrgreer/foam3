@@ -151,7 +151,7 @@ foam.CLASS({
         .end();
     },
     function addBody() {
-      return this.tag('', null, this.content$);
+      return this.E().tag('', null, this.content$);
     },
     function addActions() {
       var actions = this.E().startContext({ data$: this.data$ });

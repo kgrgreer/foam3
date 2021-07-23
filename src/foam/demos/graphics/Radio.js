@@ -19,7 +19,7 @@
    ],
 
    methods: [
-     function initE() {
+     function render() {
        this.
         start('circle').
           attrs({

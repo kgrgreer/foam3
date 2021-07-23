@@ -92,7 +92,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -119,7 +119,7 @@ foam.CLASS({
         return null;
       }
       var clsName = cls.of ? cls.of : cls.class;
-      return foam.lookup(clsName, true);
+      return foam.maybeLookup(clsName);
     }
   ],
 
@@ -128,7 +128,7 @@ foam.CLASS({
       name: 'printPage',
       label: 'Print',
       code: function() {
-        window.print();
+        globalThis.print();
       }
     }
   ]

@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'com.google.flow',
   name: 'FObjectReactiveDetailViewRefinement',
   refines: 'FObject',
+
+  imports: [
+    'setTimeout'
+  ],
+
   properties: [
     {
       name: 'reactions_',
@@ -25,6 +30,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function addReaction(name, formula) {
       // TODO: stop any previous reaction
@@ -34,7 +40,7 @@ foam.CLASS({
     function startReaction_(name, formula) {
       // HACK: delay starting reaction in case we're loading a file
       // and dependent variables haven't loaded yet.
-      window.setTimeout(function() {
+      this.setTimeout(function() {
         var self = this;
         var f;
 
@@ -140,14 +146,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var prop = this.prop;
       var self = this;
 
       this.data$.sub(this.onDataChange);
       this.onDataChange();
 
-      this.addClass(this.myClass()).
+      this.addClass().
           start('td').addClass(this.myClass('label')).add(prop.label).end().
           start('td').
             addClass(this.myClass('switch')).

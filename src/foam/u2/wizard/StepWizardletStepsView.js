@@ -156,7 +156,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.searchController = this.WizardletSearchController.create({
         wizardlets$: this.data.wizardlets$

@@ -18,9 +18,9 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.lib.json.JSONParser',
     'foam.nanos.pm.PM',
+    'foam.util.concurrent.AssemblyLine',
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
-    'foam.util.concurrent.AssemblyLine',
     'java.util.concurrent.atomic.AtomicInteger'
   ],
 
@@ -45,7 +45,7 @@ foam.CLASS({
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
-        PM pm = new PM(dao.getOf(), "replay."+getFilename());
+        PM pm = new PM(dao.getOf(), "replay." + getFilename());
         AssemblyLine assemblyLine = x.get("threadPool") == null ?
           new foam.util.concurrent.SyncAssemblyLine()   :
           new foam.util.concurrent.AsyncAssemblyLine(x) ;

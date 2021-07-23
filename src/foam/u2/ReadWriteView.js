@@ -27,14 +27,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
-      // Don't create ReadView if no data (saves memory and startup time).
-      if ( this.isLoaded() ) {
-        this.initReadView();
-      } else {
-        this.listenForLoad();
-      }
+    function render() {
+      this.addClass();
+      this.initReadView();
     },
 
     // Template Methods

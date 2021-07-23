@@ -22,6 +22,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.view.ScrollTableView',
+    'foam.u2.view.EmbeddedTableView',
     'foam.comics.v2.DAOControllerConfig'
   ],
 
@@ -30,14 +31,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
-      this.config = this.DAOControllerConfig.create({ dao: this.data.dao.delegate });
+      this.config = this.DAOControllerConfig.create({ dao: this.data.dao });
 
-      this.tag(this.ScrollTableView, {
+      this.tag(this.EmbeddedTableView, {
         data: this.data.dao,
-        config: this.config
+        config: this.config,
       });
     },
     function click(obj, id) {

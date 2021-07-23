@@ -7964,7 +7964,7 @@ will correspond to properties on the object itself rather than on <a data-link-t
                             window<span class="p">.</span>mozRequestAnimationFrame <span class="o">||</span> <span class="p">...</span><span class="p">;</span>
 </pre>
     <p>Because of the way variable declarations are handled in
-    ECMAScript, the code above would result in the <code>window.indexedDB</code> and <code>window.requestAnimationFrame</code> evaluating
+    ECMAScript, the code above would result in the <code>globalThis.indexedDB</code> and <code>globalThis.requestAnimationFrame</code> evaluating
     to <emu-val>undefined</emu-val>, as the shadowing variable
     property would already have been created before the
     assignment is evaluated.</p>
@@ -9477,10 +9477,10 @@ extended attribute, then return <a data-link-type="dfn" href="https://tc39.githu
 };
 </pre>
     <p>it is not possible to access the interface prototype object through
-    the <a data-link-type="dfn" href="#dfn-interface-object" id="ref-for-dfn-interface-object-16">interface object</a> (since it does not exist as <code>window.Foo</code>).  However, an instance
+    the <a data-link-type="dfn" href="#dfn-interface-object" id="ref-for-dfn-interface-object-16">interface object</a> (since it does not exist as <code>globalThis.Foo</code>).  However, an instance
     of <code class="idl">Foo</code> can expose the interface prototype
     object by gettings its internal [[Prototype]]
-    property value – <code>Object.getPrototypeOf(window.foo)</code> in
+    property value – <code>Object.getPrototypeOf(globalThis.foo)</code> in
     this example.</p>
     <p>If the interface is used solely as a <a data-link-type="dfn" href="#dfn-supplemental-interface" id="ref-for-dfn-supplemental-interface-6">supplemental interface</a>,
     then there will be no way to access its interface prototype object, since no
@@ -12507,8 +12507,8 @@ language binding.</p>
         }
 
         function getScrollTop() {
-            return (window.pageYOffset !== undefined)
-                ? window.pageYOffset
+            return (globalThis.pageYOffset !== undefined)
+                ? globalThis.pageYOffset
                 : (document.documentElement || document.body.parentNode || document.body).scrollTop;
         }
 
@@ -12619,7 +12619,7 @@ language binding.</p>
             scrollIntoView: true
         });
 
-        var mm = window.matchMedia('screen and (min-width: 78em)');
+        var mm = globalThis.matchMedia('screen and (min-width: 78em)');
         if (mm.matches) {
             spy.start();
         }

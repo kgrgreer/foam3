@@ -25,7 +25,7 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DAOConfigSummaryView"}},"parent":"admin"})
+p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DAOConfigSummaryView"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessages","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailMessageDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailtemplates","label":"Email Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailTemplateDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.export","label":"Export Drivers","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"exportDriverRegistryDAO"}},"parent":"admin"})
@@ -213,7 +213,6 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"digDAO",
       "browseTitle": "DIG API Calls",
-      "browseSubtitle": "An API endpoint that supports all DAO operations",
       "createTitle": "Create a New API Call"
     }
   },
@@ -229,7 +228,6 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "ruleDAO",
       "browseTitle": "DUG Webhooks",
-      "browseSubtitle": "Webhooks triggered by DAO operations",
       "createTitle": "Create a New Webhook",
       "predicate": {
         "class": "foam.mlang.predicate.IsInstanceOf",
@@ -250,7 +248,6 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"sugarDAO",
       "browseTitle": "SUGAR API Calls",
-      "browseSubtitle": "API calls for services",
       "createTitle": "Create a Service API Call"
     }
   },
@@ -275,7 +272,6 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "myNotificationDAO",
       "browseTitle": "Notifications",
-      "browseSubtitle": "View all Notifications",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"},

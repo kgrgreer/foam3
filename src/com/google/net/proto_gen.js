@@ -260,7 +260,7 @@ function getServiceMethods(service, pkg) {
           // can't use it for path/{replacement}/ or query params
           if ( foam.core.FObjectProperty.isInstance(subProp)
               || foam.core.FObjectArray.isInstance(subProp) ) {
-            var subSubType = foam.lookup(subProp.of, true);
+            var subSubType = foam.maybeLookup(subProp.of);
             if ( subSubType &&
                  ! foam.core.EnumModel.isInstance(subSubType.model_) ) {
               return;
@@ -439,7 +439,7 @@ function outputModel(pkg, name) {
 
   foam.json.Pretty.outputDefaultValues = false;
 
-  o += ( foam.core.EnumModel.isInstance(m.model_) ) ? 'window.foam.ENUM(' : 'window.foam.CLASS(';
+  o += ( foam.core.EnumModel.isInstance(m.model_) ) ? 'globalThis.foam.ENUM(' : 'globalThis.foam.CLASS(';
   o += foam.json.Pretty.stringify(m.model_);
   o += ');\n\n';
 
@@ -499,7 +499,7 @@ function getServiceProperties(service, pkg) {
       name: 'OUTPUTTER',
       factory: function() {
         return {
-          __proto__: window.foam.json.Strict,
+          __proto__: globalThis.foam.json.Strict,
           outputDefaultValues: false,
           outputClassNames: false
         };
@@ -606,7 +606,7 @@ function buildMessage(pkg, message) {
     properties: [],
     methods: [
       function serialize() {
-        var json = window.foam.json.Network.objectify(this);
+        var json = globalThis.foam.json.Network.objectify(this);
         // TODO(braden): Replace dropClass_ with the outputClass option.
         this.dropClass_(json);
         return json;
@@ -616,7 +616,7 @@ function buildMessage(pkg, message) {
           obj.forEach(this.dropClass_.bind(this));
         } else if ( typeof obj === 'object' ) {
           delete obj.class;
-          window.foam.Object.forEach(obj, this.dropClass_.bind(this));
+          globalThis.foam.Object.forEach(obj, this.dropClass_.bind(this));
         }
       }
     ]

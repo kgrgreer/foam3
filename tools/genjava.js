@@ -13,12 +13,12 @@ process.on('unhandledRejection', function(e) {
 });
 
 // enable FOAM java support.
-global.FOAM_FLAGS = { 'java': true, 'debug': true, 'js': false, 'swift': false };
+globalThis.FOAM_FLAGS = { 'java': true, 'node': true, 'debug': true, 'js': false, 'swift': false };
 
 // Enable FOAMLink mode but only if FOAMLINK_DATA is set in environment
 var foamlinkMode = process.env.hasOwnProperty('FOAMLINK_DATA');
 if ( foamlinkMode ) {
-  global.FOAMLINK_DATA = process.env['FOAMLINK_DATA'];
+  globalThis.FOAMLINK_DATA = process.env['FOAMLINK_DATA'];
 }
 
 var logger = {};
@@ -35,7 +35,7 @@ if ( process.env.hasOwnProperty('DEBUG_DATA_DIR') ) {
   };
 }
 
-require('../src/foam.js');
+require('../src/foam_node.js');
 require('../src/foam/nanos/nanos.js');
 require('../src/foam/support/support.js');
 
@@ -379,7 +379,7 @@ addDepsToClasses().then(function() {
     var allKeys = {};
     for ( k in classesNotFound ) allKeys[k] = true;
     for ( k in classesFound ) allKeys[k] = true;
-    console.log('${found}/${Object.keys(allKeys).length} sources found (${notFound} missing)');
+    console.log(`${found}/${Object.keys(allKeys).length} sources found (${notFound} missing)`);
     console.log(Object.keys(classesNotFound));
     if ( debugDataDir !== null ) {
       require('fs').writeFileSync(

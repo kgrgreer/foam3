@@ -24,6 +24,10 @@ foam.CLASS({
     Inline notification message container.
   `,
 
+  requires: [
+    'foam.u2.ControllerMode'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -54,10 +58,12 @@ foam.CLASS({
             this.WARNING_ICON : this.SUCCESS_ICON;
       }
     },
+    'message',
     {
-      class: 'String',
-      name: 'message'
-    }
+      class: 'foam.u2.ViewSpec',
+      name: 'customView',
+      documentation: `enable to custom the view`
+    },
   ],
 
   constants: {
@@ -110,7 +116,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
+      var self = this
       this
         .hide(this.isEmpty$)
         .addClass(this.myClass())
@@ -124,10 +131,15 @@ foam.CLASS({
                 .attrs({ src: this.iconImage$ })
               .end()
             .end()
-            .start()
+            .startContext({ controllerMode: this.ControllerMode.VIEW })
               .addClass(this.myClass('message'))
-              .add(this.message$)
-            .end()
+              .callIf(this.customView, function() {
+                this.tag(self.customView,{ data$: self.message$})
+              })
+              .callIf(! this.customView, function() {
+                this.tag(self.message$)
+              })
+            .endContext()
           .end()
         .end();
     }

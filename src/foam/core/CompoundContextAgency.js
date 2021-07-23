@@ -14,7 +14,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.nanos.pm.PM'
   ],
 
   properties: [
@@ -35,12 +36,15 @@ foam.CLASS({
       javaCode: `CompoundException e = null;
 Logger logger = (Logger) x.get("logger");
 for ( Runnable agent : getAgents() ) {
+  PM pm = PM.create(x, this.getClassInfo(), agent.toString());
   try {
     agent.run();
   } catch (Throwable t) {
     logger.error(t.getMessage(), t);
-	if ( e == null ) e = new CompoundException();
-    e.add(t);
+	  if ( e == null ) e = new CompoundException();
+      e.add(t);
+  } finally {
+    pm.log(x);
   }
 }
 if ( e != null ) e.maybeThrow();`

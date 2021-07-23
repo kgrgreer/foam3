@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-global.FOAM_FLAGS = { debug: true, gcloud: true };
+globalThis.FOAM_FLAGS = { debug: true, gcloud: true };
 (typeof require !== "undefined") &&  require("../../../src/foam.js");

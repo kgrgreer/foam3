@@ -17,7 +17,7 @@
   each propObject's [key value] pair is stored on propObject,
   where each key represents the property name, and
   where each corresponding value is well property value.
-  
+
   has a max size container that adjusts to overflow scroll, with more properties.
   if propObject.value is an FObject/Object, view goes only one layer in to display `,
 
@@ -98,13 +98,13 @@
           if ( objProp ) {
             if ( objProp.FObjectPropertyView && ! byPass ) {
               changingValue = this.E().startContext({ data: n, controllerMode: foam.u2.ControllerMode.VIEW }).start(objProp, { data: objValue }).end().endContext();
-              currentValue = this.E().startContext({ data: n, controllerMode: foam.u2.ControllerMode.VIEW }).start(objProp).end().endContext();
+              currentValue  = this.E().startContext({ data: n, controllerMode: foam.u2.ControllerMode.VIEW }).start(objProp).end().endContext();
             } else if ( objProp.tableCellFormatter ) {
-              changingValue = this.E().callOn(objProp.tableCellFormatter, 'format', [objValue, n, objProp]);
-              currentValue = this.E().callOn(objProp.tableCellFormatter, 'format', [fromValue, n, objProp]);
+              changingValue = this.E().call(function() { objProp.tableCellFormatter.format(this, objValue,  n, objProp); });
+              currentValue  = this.E().call(function() { objProp.tableCellFormatter.format(this, fromValue, n, objProp); });
             } else {
               changingValue = this.E().add(objValue);
-              currentValue = this.E().add(fromValue);
+              currentValue  = this.E().add(fromValue);
             }
           } else {
             return;
@@ -227,9 +227,9 @@
       this.containerHeight_ = `${sizeOfContainer}px`;
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
-      this.addClass(this.myClass())
+      this.addClass()
       .start().addClass('titleClass')
         .start().addClass('backPosition')
           .tag(this.BACK, {

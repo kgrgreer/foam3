@@ -55,7 +55,7 @@ foam.CLASS({
     },
   ],
   methods: [
-    function initE() {
+    function render() {
       this.
         start(this.DetailView, { data: this.config }).end().
         add(this.slot(function(data, view, config$colors, config$height, config$width) {

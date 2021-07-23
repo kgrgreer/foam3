@@ -176,19 +176,19 @@ foam.CLASS({
           // X so that objects aren't created with lastClassToInstallCSSFor
           // in their contexts.
           var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-  
+
           if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
             // Install CSS if not already installed in this document for this cls
             axiom.maybeInstallInDocument(X, this);
           }
-  
+
           if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
             X = X.createSubContext({
               lastClassToInstallCSSFor: this,
               originalX: X
             });
           }
-  
+
           if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
         }
       };
@@ -326,7 +326,7 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.initE();
+      this.render();
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1060,7 +1060,7 @@ foam.CLASS({
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
-    function initE() {
+    function render() {
       /*
         Template method for adding addtion element initialization
         just before Element is output().
@@ -1136,6 +1136,8 @@ foam.CLASS({
         if ( count == 0 ) keyMap = null;
 
         cls.keyMap__ = keyMap;
+      } else {
+        keyMap = cls.keyMap__;
       }
 
       if ( ! keyMap ) return null;
@@ -1492,13 +1494,16 @@ foam.CLASS({
     },
 
     function cssClass(cls) {
+      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
       return this.addClass(cls);
     },
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
       var self = this;
-      if ( foam.core.Slot.isInstance(cls) ) {
+      if ( cls === undefined ) {
+        this.addClass_(null, this.myClass());
+      } else if ( foam.core.Slot.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();
@@ -1853,12 +1858,6 @@ foam.CLASS({
     function call(f, args) {
       f.apply(this, args);
 
-      return this;
-    },
-
-    function callOn(obj, f, args) {
-      /** Call the method named f on obj with the supplied args. **/
-      obj[f].apply(obj, [this].concat(args));
       return this;
     },
 
@@ -2862,7 +2861,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -2979,6 +2978,75 @@ foam.CLASS({
       postSet: function(_, cs) {
         this.axioms_.push(foam.u2.SearchColumns.create({columns: cs}));
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLValidator',
+  extends: 'foam.u2.DefaultValidator',
+
+  axioms: [ foam.pattern.Singleton.create() ],
+
+  methods: [
+    function sanitizeText(text) {
+      // TODO: validate text
+      return text;
+    }
+  ]
+});
+
+
+// An Element which does not escape HTML content
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLElement',
+  extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.HTMLValidator' ],
+
+  exports: [ 'validator as elementValidator' ],
+
+  properties: [
+    {
+      class: 'Proxy',
+      of: 'foam.u2.DefaultValidator',
+      name: 'validator',
+      factory: function() {
+        // Note that HTMLValidator is a singleton so only one instance of
+        // HTMLValidator should ever be created here.
+        return this.HTMLValidator.create()
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'HTMLView',
+//  extends: 'foam.u2.tag.TextArea',
+  extends: 'foam.u2.HTMLElement',
+
+  documentation: 'View for safely displaying HTML content.',
+
+  css: '^ { padding: 6px 0; }',
+
+  properties: [
+    {
+      name: 'data',
+      attribute: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.SUPER();
+      this.addClass();
+
+      this.add(this.data$);
     }
   ]
 });

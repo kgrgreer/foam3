@@ -191,8 +191,8 @@ All instances have a context, but it's rare to explicitly specify the context. T
 - If you supply the optional second argument to `create` that context will be used: `SomeClass.create({ foo: 'bar', someContext)`
 - If the class being instantiated was fetched from a context that context will be used: `var instance = someX.SomeClass.create()`, `instance.__context__` is `someX`.
 - If the class being instantiated was `require`d then `this.__context__` will be used: `var instance = this.SomeClass.create()` then `instance.__context__ === this.__context__`.
-- If none of the above apply, eg. `SomeClass.create()`, the global context (`window.__context__`) is used.
-    - These global models (`window.SomeClass`) are planned to be removed later on and the global context might also disappear.
+- If none of the above apply, eg. `SomeClass.create()`, the global context (`globalThis.__context__`) is used.
+    - These global models (`globalThis.SomeClass`) are planned to be removed later on and the global context might also disappear.
 
 ### **d. Renaming**
 
