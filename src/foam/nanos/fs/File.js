@@ -72,7 +72,7 @@ foam.CLASS({
       updateVisibility: 'HIDDEN',
       readVisibility: 'RO',
       documentation: 'Filesize',
-      tableCellFormatter: function(value, obj) {
+      tableCellFormatter: function(value, _) {
         this.tag({
           class: 'foam.nanos.fs.FileSizeView',
           data: value
