@@ -165,6 +165,16 @@ start('i').setID('myId2').add('this method also works').end();
 ##    start() / end()
 ##    br()
 br() is just short form for tag('br'), the html line-break element.
+--
+start().
+  add('line 1').
+  start('br').end(). // long form
+  add('line 2').
+  tag('br').         // medium form
+  add('line 3').
+  br().              // short form
+  add('line 4').
+end();
 ##    nbsp()
 no-breaking space, the same as adding &nbsp; to your html
 ##    remove()
