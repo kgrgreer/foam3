@@ -209,7 +209,7 @@ foam.CLASS({
   css: `
     .myBlock {
       background: pink;
-      border: '2px solid black;
+      border: 2px solid black;
     }
   `,
   methods: [
@@ -220,12 +220,93 @@ foam.CLASS({
 });
 tag(CSSExample);
 
+##    myClass()
+The above example adds the CSS class name "myBlock" to the element to be styled,
+and then adds a corresponding styling block in its CSS section. This may seem
+fine, but it introduces problems. Consider the following example which also
+uses the 'myBlock' CSS classname:
+
+--
+foam.CLASS({
+  name: 'CSSExample2',
+  extends: 'foam.u2.Element',
+  css: `
+    .myBlock {
+      color: red;
+    }
+  `,
+  methods: [
+    function render() {
+      this.start().addClass('myBlock').add('more styled content').end();
+    }
+  ]
+});
+tag(CSSExample2);
+
+add(`
+Notice that it also has a pink background and
+black border. CSS has leaked from CSSExample into CSSExample2.
+This happens because CSS has a global namespace and names can leak between
+components. Two component writers might choose common CSS classnames like:
+'important', 'left-panel', 'content', 'header', 'section', etc. and the result
+would be the corruption of both of their components.
+
+To work around this problem, U3 introduces scoped CSS class names. This allows
+component writers to choose whatever class names they like without fear of
+conflict with other components.
+
+This works by calling this.myClass('classname') which will convert 'classname' into a component
+specific CSS classname. It does this by prefixing the classname with the FOAM class id, which
+includes the class package and name, but with periods (.) replaced with dashes (-).
+
+Ex.:
+`);
+foam.CLASS({
+  name: 'CSSExample3',
+  extends: 'foam.u2.Element',
+  css: `
+    ^myBlock {
+      background: pink;
+      border: 2px solid black;
+    }
+  `,
+  methods: [
+    function render() {
+      this.start().addClass(this.myClass('myBlock')).add('more styled content').end();
+    }
+  ]
+});
+tag(CSSExample3);
+
+foam.CLASS({
+  name: 'CSSExample4',
+  extends: 'foam.u2.Element',
+  css: `
+    ^myBlock {
+      color: red;
+    }
+  `,
+  methods: [
+    function render() {
+      this.start().addClass(this.myClass('myBlock')).add('more styled content').end();
+    }
+  ]
+});
+tag(CSSExample4);
+
+add(`
+Notice that the last two examples each use the CSS classname 'myBlock' but don't
+conflict with each other and neither leaks CSS to/from the other.
+
+If you inspect the CSS from the last example, you'll see that it's actually 'CSSExample4-myBlock'.
+If it had been in package: 'com.acme', then it would have been 'com-acme-CSSExample4-myBlock'.
+`);
+
 ##    CSS Variables
 ##    inheritCSS
 ##   CSS Classes
 ##    addClass() / addClasses()
 ##    enableClass()
-##    myClass()
 --
 foam.CLASS({
   package: 'some.good.package',
