@@ -227,6 +227,7 @@ foam.CLASS({
 });
 add(some.good.package.Test.create());
 ##    removeClass()
+
 ##   Attributes
 ##    attr() & setAttribute()
 attr() and setAttribute() are the same, with setAttribute() being for DOM compatibility.
@@ -396,8 +397,14 @@ foam.u2.Element.create().start().add('Here I am, way at the bottom of the page!'
 ##    registerElement
 ##    elementForName
 ##   View
+The foam.u2.View class extends Element and adds a property named 'data', which it exports.
+Views act as the display component (view) for their data. This is the standard MVC
+pattern where the View is the View, and the 'data' is the Model.
 ##    fromProperty()
 ##   Controller
+The foam.u2.Controller class extends Element and exports itself as 'data'. Unlike Views, which
+provide a view for some other piece of data, a Controller provides a view for itself. It may
+however create sub-Views which it includes in its own rendering.
 ##   Views
 ##    ActionView
 ##   StackView
