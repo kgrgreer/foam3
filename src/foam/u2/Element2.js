@@ -181,7 +181,6 @@ foam.CLASS({
 
   methods: [
     function load() {
-      this.SUPER();
       this.slot.sub(this.update);
       this.update();
     }
@@ -602,9 +601,11 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        return this.SVG_TAGS[this.nodeName] ?
+        var ret = this.SVG_TAGS[this.nodeName] ?
           this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
           this.document.createElement(this.nodeName);
+        if ( this.hasOwnProperty('id') ) ret.id = this.id;
+        return ret;
       }
     },
     {
@@ -1189,7 +1190,6 @@ foam.CLASS({
     function setID(id) {
       /* Explicitly set Element's id. */
       this.id = id;
-      this.element_.id = id;
       return this;
     },
 
