@@ -259,6 +259,10 @@ This works by calling this.myClass('classname') which will convert 'classname' i
 specific CSS classname. It does this by prefixing the classname with the FOAM class id, which
 includes the class package and name, but with periods (.) replaced with dashes (-).
 
+In the css: block, we use the '^' character to indicate class names that have been scoped with myClass().
+So, instead of '.myBlock', which would be unscoped, we use '^myBlock', which is scoped to the current
+component's CSS.
+
 Ex.:
 `);
 foam.CLASS({
