@@ -191,10 +191,35 @@ end();
 ##    removeAllChildren()
 ##    setChildren()
 ##   Styling
+CSS styling can be added to your elements in two ways:
+<ol>
+  <li>By specifying in-lined CSS with the style() method.
+  <li>By add a CSS class and then providing styling for that class in your component's css: block.
+</ol>
 ##    style()
+Use style() to add in-lined CSS styling to a parent start() tag.
 --
 start().style({background: 'pink', border: '2px solid black;'}).add('styled content').end()
 ##    css:
+The same output and styling as the above example, but using a css: block and named CSS Class.
+--
+foam.CLASS({
+  name: 'CSSExample',
+  extends: 'foam.u2.Element',
+  css: `
+    .myBlock {
+      background: pink;
+      border: '2px solid black;
+    }
+  `,
+  methods: [
+    function render() {
+      this.start().addClass('myBlock').add('styled content').end();
+    }
+  ]
+});
+tag(CSSExample);
+
 ##    CSS Variables
 ##    inheritCSS
 ##   CSS Classes
