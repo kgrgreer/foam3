@@ -176,7 +176,13 @@ start().
   add('line 4').
 end();
 ##    nbsp()
-no-breaking space, the same as adding &nbsp; to your html
+no-breaking space, the same as adding &amp;nbsp; to your html
+--
+start('div')
+  .style({width: 100})
+  .add('Breaking space').br()
+  .add('NonBreaking').nbsp().add('space').br()
+end();
 ##    remove()
 ##    add()
 ##     adding properties
