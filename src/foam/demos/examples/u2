@@ -23,33 +23,38 @@ All 32 components extend foam.u2.Element, which loosely modelled after the DOM <
 --
 add('testing');
 
-##   Virtual vs. Real DOM
+##   U3 vs. Real DOM
+The first example creates a ul tag with 100 li children using the browser's build-in DOM API.
+The second example does the same thing using U3. Notice how the two examples are very similar.
 --
 console.profile('p1');
 function test1() {
-var startTime = performance.now();
-var node = foam.u2.Element.create({nodeName: 'UL'});     // Create a <ul> node
-for ( var i = 0 ; i < 100 ; i++ )
-  node.start('li').add("text" + i).end();                // Append an <li>
-
-//add(node);
-log(performance.now() - startTime);
+  var startTime = performance.now();
+  var node = document.createElement("UL");               // Create a <ul> node
+  for ( var i = 0 ; i < 100 ; i++ ) {
+    var li = document.createElement("LI")
+    li.appendChild(document.createTextNode("text" + i)); // Append an <li>
+    node.appendChild(li);
+  }
+  //el().appendChild(node);
+  log(performance.now() - startTime);
 }
 test1();
+console.profileEnd('p1');
 
+
+console.profile('p2');
 function test2() {
-var startTime = performance.now();
-var node = document.createElement("UL");               // Create a <ul> node
-for ( var i = 0 ; i < 100 ; i++ ) {
-  var li = document.createElement("LI")
-  li.appendChild(document.createTextNode("text" + i)); // Append an <li>
-  node.appendChild(li);
-}
-//el().appendChild(node);
-log(performance.now() - startTime);
+  var startTime = performance.now();
+  var node = foam.u2.Element.create({nodeName: 'UL'}); // Create a <ul> node
+  for ( var i = 0 ; i < 100 ; i++ )
+    node.start('li').add("text" + i).end();            // Append an <li>
+
+  //add(node);
+  log(performance.now() - startTime);
 }
 test2()
-console.profileEnd('p1');
+console.profileEnd('p2');
 
 
 ##   DSL
