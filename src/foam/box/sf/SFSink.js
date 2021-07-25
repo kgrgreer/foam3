@@ -39,8 +39,11 @@ foam.CLASS({
       name: 'delegate',
       transient: true,
       factory: function() { return foam.dao.ArraySink.create(); },
-      javaGetter: `
-        return (Sink) getX().get(getNspecId());
+      javaSetter: `
+        if ( ! delegateIsSet_ ) {
+          delegate_ = val;
+          delegateIsSet_ = true;
+        }
       `
     }
   ],
@@ -61,6 +64,15 @@ foam.CLASS({
       args: 'Context x, SFEntry entry',
       javaCode: `
         getDelegate().put(entry.getObject(), null);
+      `
+    },
+    {
+      name: 'createDelegate',
+      documentation: 'creating delegate when start up',
+      javaCode: `
+        Sink sink = (Sink) getX().get(getNspecId());
+        if ( sink == null ) throw new RuntimeException("NspecId: " + getNspecId() + "Not Found!!");
+        setDelegate(sink);
       `
     },
     {

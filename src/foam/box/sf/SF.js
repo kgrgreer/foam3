@@ -148,7 +148,7 @@ foam.CLASS({
         
         entry.setCreated(new Date());
         long index = entryIndex_.incrementAndGet();
-        long fileIndex = index / ((long) getFileCapability());
+        long fileIndex = index / ((long) getFileCapacity());
         entry.setIndex(index);
         String filename = getFileName() + "." + fileIndex;
         Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
@@ -175,7 +175,7 @@ foam.CLASS({
         if ( getReplayFailEntry() == true ) {
           e.setStatus(SFStatus.COMPLETED);
           long index = e.getIndex();
-          long fileIndex = index / ((long) getFileCapability());
+          long fileIndex = index / ((long) getFileCapacity());
           String filename = getFileName() + "." + fileIndex;
           Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
           journal.put(getX(), "", (DAO) getNullDao(), e);
@@ -195,7 +195,7 @@ foam.CLASS({
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
             long index = e.getIndex();
-            long fileIndex = index / ((long) getFileCapability());
+            long fileIndex = index / ((long) getFileCapacity());
             String filename = getFileName() + "." + fileIndex;
             Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
             journal.put(getX(), "", (DAO) getNullDao(), e);
@@ -220,6 +220,13 @@ foam.CLASS({
       `
     },
     {
+      name: 'createDelegate',
+      documentation: 'creating delegate when start up',
+      javaCode: `
+        return;
+      `
+    },
+    {
       name: 'init',
       args: 'Context x',
       documentation: 'when system start, SFManager will call this service to initial re-forward',
@@ -228,6 +235,7 @@ foam.CLASS({
                     this.getClass().getSimpleName(),
                     this.getFileName()
                   }, (Logger) x.get("logger"));
+        createDelegate();
         FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
         // Do nothing if no file
