@@ -79,7 +79,6 @@ But if you didn't need to add() anything inside the tag, you could just use the 
 --
 start('input').end();
 tag('input');
-##   v2
 ##   ControllerMode
 ##   DisplayMode
 ##   Borders
@@ -117,8 +116,11 @@ add(CardBorder.create().add('content').tag('br').add('more content').tag('br').a
 ##    content
 ##   ViewSpec
 ##   Tooltips
+You can set the tooltip for an element by setting the 'tooltip' property
 --
 start('div', {tooltip: 'My Tooltip'}).add('hover for tooltip').end();
+// or
+add(foam.u2.Element.create({nodeName: 'b', tooltip: 'tooltip'}).add('hover for tooltip2'));
 
 ##   shown / show() / hide()
 --
