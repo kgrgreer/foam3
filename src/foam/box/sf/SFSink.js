@@ -37,6 +37,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.Sink',
       name: 'delegate',
+      transient: true,
       factory: function() { return foam.dao.ArraySink.create(); },
       javaGetter: `
         return (Sink) getX().get(getNspecId());

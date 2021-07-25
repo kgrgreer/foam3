@@ -60,7 +60,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'fileCapability',
+      name: 'fileCapacity',
       value: 1024
     },
     {
