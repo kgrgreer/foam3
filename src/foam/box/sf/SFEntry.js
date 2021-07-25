@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'curStep',
-      value: 1000,
+      value: 0,
       storageTransient: true,
     },
     {

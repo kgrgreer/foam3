@@ -65,21 +65,11 @@ foam.CLASS({
     },
     {
       name: 'retryStrategy',
-      class: 'Enum',
+      class: 'FObjectProperty',
       of: 'foam.box.sf.RetryStrategy',
-      value: 'CONST_FOUR_SECOND'
-    },
-    {
-      class: 'Int',
-      name: 'maxRetryDelayMS',
-      documentation: 'Unit in Millisecond',
-      value: 20000
-    },
-    {
-      name: 'maxRetryAttempts',
-      class: 'Int',
-      documentation: 'Set to -1 to infinitely retry.',
-      value: 20
+      javaFactory: `
+        return (new RetryStrategy.Builder(getX())).build();
+      `
     },
     {
       class: 'Int',
@@ -198,9 +188,9 @@ foam.CLASS({
       documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
-        if ( getMaxRetryAttempts() > -1 && 
-              e.getRetryAttempt() >= getMaxRetryAttempts() )  {
-          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
+        if ( getRetryStrategy().getMaxRetryAttempts() > -1 && 
+              e.getRetryAttempt() >= getRetryStrategy().getMaxRetryAttempts() )  {
+          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getRetryStrategy().getMaxRetryAttempts(), e.toString());
 
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
@@ -323,9 +313,9 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setCurStep(getRetryStrategy().next(e.getCurStep()));
-        if ( e.getCurStep() > getMaxRetryDelayMS() ) {
-          e.setCurStep(getMaxRetryDelayMS());
+        e.setCurStep(getRetryStrategy().delay(e.getCurStep()));
+        if ( e.getCurStep() > getRetryStrategy().getMaxRetryDelayMS() ) {
+          e.setCurStep(getRetryStrategy().getMaxRetryDelayMS());
         }
         e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
         return e;
