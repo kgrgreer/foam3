@@ -101,7 +101,6 @@ foam.CLASS({
               : p.visibility;
 
             if ( ! p.hidden && visibilityEnum !== foam.u2.DisplayMode.HIDDEN ) { 
-              console.log(p.name);
               str += `${p.name} ${p.label} `;
               if ( foam.core.FObjectProperty.isInstance(p) ) {
                 let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
