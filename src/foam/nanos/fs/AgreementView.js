@@ -37,26 +37,32 @@ foam.CLASS({
   methods: [
     async function render() {
       this.SUPER();
-      let file = await this.fileDAO.find(this.fileId);
-      if ( file ) {
-        if ( file.mimeType === "application/pdf" ) {
-          this
-            .addClass(this.myClass("pdf"))
+      // Temporary fix for agreement view. Update after
+      // https://nanopay.atlassian.net/browse/NP-5158 done
+      
+//      let file = await this.fileDAO.find(this.fileId);
+//      if ( file ) {
+//        if ( file.mimeType === "application/pdf" ) {
+          const url = window.location.origin + "/service/file/" + this.fileId;
+
+            this.addClass(this.myClass("pdf"))
             .start('embed')
               .attrs({
-                'src': URL.createObjectURL(file.data.blob),
-                'type': file.mimeType
+//                'src': URL.createObjectURL(file.data.blob),
+                'src': url,
+                'type': 'application/pdf'
+//                'type': file.mimeType
               })
             .end();
-        } else if ( file.mimeType === "plain/text" ) {
-          let text = await file.getText();
-          this
-            .addClass(this.myClass("text"))
-            .start("p")
-              .add(text)
-            .end();
-        }
-      }
+//        } else if ( file.mimeType === "plain/text" ) {
+//          let text = await file.getText();
+//          this
+//            .addClass(this.myClass("text"))
+//            .start("p")
+//              .add(text)
+//            .end();
+//        }
+//      }
     }
   ]
 })
