@@ -125,8 +125,8 @@
       ordinal: 22
     },
     {
-      name: 'PAYEE_PAYER_DOW_JONES_TRANSACTION',
-      label: 'Payee/Payer Dow Jones Transaction',
+      name: 'PAYEE_AND_PAYER_DOW_JONES_TRANSACTION',
+      label: 'Payee and Payer Dow Jones Transaction',
       ordinal: 23
     },
     {
@@ -198,6 +198,16 @@
       name: 'MANUAL_BUSINESS_SECUREFACT_LEV',
       label: 'Manual Business SecureFact LEV',
       ordinal: 37
+    },
+    {
+      name: 'PAYEE_DOW_JONES_TRANSACTION',
+      label: 'Payee Dow Jones Transaction',
+      ordinal: 38
+    },
+    {
+      name: 'PAYER_DOW_JONES_TRANSACTION',
+      label: 'Payer Dow Jones Transaction',
+      ordinal: 39
     }
   ]
 });

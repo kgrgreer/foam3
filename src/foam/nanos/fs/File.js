@@ -68,9 +68,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'filesize',
-      updateVisibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
       readVisibility: 'RO',
-      documentation: 'Filesize'
+      documentation: 'Filesize',
+      tableCellFormatter: function(value, _) {
+        this.tag({
+          class: 'foam.nanos.fs.FileSizeView',
+          data: value
+        });
+      },
+      view: { class: 'foam.nanos.fs.FileSizeView' }
     },
     {
       class: 'String',

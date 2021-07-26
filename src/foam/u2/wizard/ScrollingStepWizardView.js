@@ -246,7 +246,7 @@ foam.CLASS({
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))
-              .add(this.slot(function (data$wizardlets, data$wizardPosition) {
+              .add(this.slot(function (data$wizardlets) {
                 return self.renderWizardlets(this.E(), data$wizardlets);
               }))
             .end()
