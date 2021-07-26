@@ -390,8 +390,8 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.select(function(obj) {
-                      view.selectedObjects[obj.id] = obj;
+                    view.data.inX(ctrl.__subContext__).select().then(function(obj) {
+                     view.selectedObjects[obj.id] = obj;
                     });
                   } else {
                     view.selectedObjects = {};
@@ -566,7 +566,7 @@ foam.CLASS({
                       // don't do anything.
                       if (
                         evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots'))
+                        evt.target.classList.contains(view.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
                       ) {
                         return;
                       }
