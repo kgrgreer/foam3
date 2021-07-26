@@ -96,7 +96,12 @@ foam.CLASS({
           if ( seen.includes(cls) ) return;
           seen.push(cls);
           for ( let p of cls.getAxiomsByClass(foam.core.Property) ) {
-            if ( ! p.hidden ) { 
+            var visibilityEnum = p.visibility instanceof Function
+              ? p.visibility()
+              : p.visibility;
+
+            if ( ! p.hidden && visibilityEnum !== foam.u2.DisplayMode.HIDDEN ) { 
+              console.log(p.name);
               str += `${p.name} ${p.label} `;
               if ( foam.core.FObjectProperty.isInstance(p) ) {
                 let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
