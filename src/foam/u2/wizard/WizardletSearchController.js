@@ -96,18 +96,25 @@ foam.CLASS({
           if ( seen.includes(cls) ) return;
           seen.push(cls);
           for ( let p of cls.getAxiomsByClass(foam.core.Property) ) {
-            str += `${p.name} ${p.label} `;
-            if ( foam.core.FObjectProperty.isInstance(p) ) {
-              let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
-              writeClassProps(ofCls);
+            if ( ! p.hidden ) { 
+              str += `${p.name} ${p.label} `;
+              if ( foam.core.FObjectProperty.isInstance(p) ) {
+                let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
+                writeClassProps(ofCls);
+              }
             }
           }
         };
         writeClassProps(w.of);
+        if ( w.delegates && w.delegates.length > 0 ) {
+          for ( delegate of w.delegates ) {
+            writeClassProps(delegate.of);
+          }
+        }
         array.push(this.SearchableWizardlet.create({
           value: str,
           wizardlet: w,
-        }))
+        }));
       }
       this.searchDAO = this.ArrayDAO.create({
         array: array,
