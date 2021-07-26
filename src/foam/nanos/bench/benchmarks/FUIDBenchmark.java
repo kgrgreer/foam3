@@ -12,7 +12,7 @@ import foam.util.UIDGenerator;
 import foam.nanos.app.AppConfig;
 
 public class FUIDBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected UIDGenerator generator_ = new UIDGenerator();
 

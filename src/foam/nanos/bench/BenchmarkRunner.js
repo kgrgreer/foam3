@@ -14,6 +14,7 @@
   ],
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.logger.Logger',
@@ -63,6 +64,11 @@
       name: 'benchmark',
       docmentation: 'Used by legacy benchmarks',
       storageTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'clearPms',
+      docmentation: 'clear PMs before executing the benchmark',
     }
   ],
 
@@ -131,6 +137,10 @@
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
+                      if ( getClearPms() ) {
+                        DAO pmDAO = (DAO) x.get("pmDAO");
+                        pmDAO.removeAll();
+                      }
                       benchmark.execute(x);
                       passed++;
                     } catch (Throwable t) {
