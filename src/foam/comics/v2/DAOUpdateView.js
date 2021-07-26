@@ -159,7 +159,18 @@ foam.CLASS({
       this.SUPER();
 
       if ( this.memento ) {
-        this.currentMemento_$ = this.memento.tail$;
+        this.currentMemento_ = this.memento;
+        var counter = 0;
+        // counter < 2 is as at this point we need to skip 2 memento
+        // head of first one will be DAOSummaryView mode
+        // and second will be the id for the view
+        while ( counter < 2 ) {
+          if ( ! this.currentMemento_.tail ) {
+            this.currentMemento_.tail = this.Memento.create();
+          }
+          this.currentMemento_ = this.currentMemento_.tail;
+          counter++;
+        }
         this.memento.head = 'edit';
       }
 
@@ -193,7 +204,7 @@ foam.CLASS({
                   .add(self.slot(function(viewView) {
                     var view = foam.u2.ViewSpec.createView(viewView, {
                       data$: self.workingData$
-                    }, self, self.__subContext__.createSubContext({ memento: self.memento }));
+                    }, self, self);
 
                     return self.E().add(view);
                   }))

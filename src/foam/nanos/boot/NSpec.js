@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl'
+    'ctrl', 'pushMenu'
   ],
 
   javaImports: [
@@ -278,7 +278,7 @@ foam.CLASS({
       code: function() {
         var service = this.__context__[this.name];
         if ( foam.dao.DAO.isInstance(service) ) {
-          this.ctrl.memento.value = 'admin.data' + foam.nanos.controller.Memento.SEPARATOR + this.name;
+          this.pushMenu(foam.nanos.menu.Menu.create({ id: 'admin.data' + foam.nanos.controller.Memento.SEPARATOR + this.name }));
         }
       }
     }

@@ -82,12 +82,9 @@ foam.CLASS({
     {
       name: 'BackBorder',
       extends: 'foam.u2.Element',
+      mixins: ['foam.nanos.controller.MementoMixin'],
 
-      imports: [ 'memento', 'stack' ],
-
-      exports: [
-        'currentMemento_ as memento'
-      ],
+      imports: [ 'stack' ],
 
       requires: ['foam.u2.stack.BreadcrumbView'],
 
@@ -105,7 +102,6 @@ foam.CLASS({
           class: 'foam.u2.ViewSpec',
           name: 'inner'
         },
-        'currentMemento_',
         {
           name: 'viewTitle',
           factory: function() { return this.title; }
@@ -116,8 +112,7 @@ foam.CLASS({
         function render() {
           this.SUPER();
 
-          if ( this.memento )
-            this.currentMemento_$ = this.memento.tail$;
+          this.initMemento();
 
           this.
             start(this.BreadcrumbView).addClass(this.myClass('nav')).end().
