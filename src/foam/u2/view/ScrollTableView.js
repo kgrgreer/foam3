@@ -397,7 +397,7 @@
                 data: null,
                 config: this.config,
                 idOfRecord: id
-              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail }) 
+              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
             }));
           });
         }
