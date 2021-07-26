@@ -70,7 +70,7 @@ foam.CLASS({
         // Only put objects sent to a specific user
         if ( SafetyUtil.isEmpty(notif.getGroupId()) &&
              ! notif.getBroadcasted() &&
-             ! SafetyUtil.isEmpty(notif.getUserId()) ) {
+             notif.getUserId() > 0 ) {
           Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           Subject subject = (Subject) x.get("subject");
           if ( subject != null ) {
