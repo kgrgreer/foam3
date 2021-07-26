@@ -13,12 +13,12 @@ foam.CLASS({
 
   css: `
     :root{
-      font-size: 62.5%; // sets default to 10px so 14px would be 1.4rem
+      font-size: 10px; // sets default to 10px so 14px would be 1.4rem
     }
 
     body {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 1rem;
+      font-size: 1.4rem;
       letter-spacing: 0.014em;
       color: /*%BLACK%*/ #1E1F21;
       background: /*%GREY5%*/ #f5f7fa;
@@ -29,61 +29,61 @@ foam.CLASS({
     .h100{
       font-style: normal;
       font-weight: 700;
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       line-height: 1.14;
       margin: 0;
     }
     .h200{
       font-style: normal;
       font-weight: 600;
-      font-size: 2.07rem;
+      font-size: 3rem;
       line-height: 1.1;
       margin: 0;
     }
     .h300{
       font-style: normal;
       font-weight: 600;
-      font-size: 1.71rem;
+      font-size: 2.4rem;
       line-height: 1.17;
       margin: 0;
     }
     .h400{
       font-style: normal;
       font-weight: 600;
-      font-size: 1.43rem;
+      font-size: 2rem;
       line-height: 1.2;
       margin: 0;
     }
     .h500{
       font-style: normal;
       font-weight: 600;
-      font-size: 1.14rem;
+      font-size: 1.6rem;
       line-height: 1.25;
       margin: 0;
     }
     .h600{
       font-style: normal;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.4rem;
       line-height: 1.29;
       margin: 0;
     }
     .p{
       font-style: normal;
       font-weight: normal;
-      font-size: 1rem;
+      font-size: 1.4rem;
       line-height: 1.71;
       margin: 0;
     }
     .p-lg{
-      font-size: 1.29rem;
+      font-size: 1.8rem;
       font-style: normal;
       font-weight: normal;
       line-height: 1.78;
       margin: 0;
     }
     .p-semiBold{
-      font-size: 1rem;
+      font-size: 1.4rem;
       font-style: normal;
       font-weight: 600;
       line-height: 1.71;
@@ -92,21 +92,21 @@ foam.CLASS({
     .p-bold{
       font-style: normal;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.4rem;
       line-height: 1.71;
       margin: 0;
     }
     .p-legal{
       font-style: normal;
       font-weight: 500;
-      font-size: 0.86rem;
+      font-size: 1.2rem;
       line-height: 1.17;
       margin: 0;
     }
     .p-label{
       font-style: normal;
       font-weight: 600;
-      font-size: 0.86rem;
+      font-size: 1.2rem;
       line-height: 1.17;
       margin: 0;
     }
@@ -144,7 +144,7 @@ foam.CLASS({
     ^ .generic-status {
       display: inline-block;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 0.86rem;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
