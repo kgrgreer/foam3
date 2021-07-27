@@ -30,6 +30,7 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj; 
+            CapabilityJunctionStatus oldStatus = ucj.getStatus();
             
             // other relevant possibilities for ucj statuses are EXPIRED, ACTION_REQUIRED.
             // However, if the ucj is in either of these two statuses, it implies that the data
@@ -39,13 +40,18 @@ foam.CLASS({
               ucj.getStatus() != CapabilityJunctionStatus.PENDING && 
               ucj.getStatus() != CapabilityJunctionStatus.APPROVED && 
               ucj.getStatus() != CapabilityJunctionStatus.GRANTED 
-            ) 
+            ) {
+              logStatusReason(x, ucj, oldStatus, oldStatus, "Status NOT changed, is already pending or above");
               return;
+            }
 
             CapabilityJunctionStatus chainedStatus = checkPrereqsChainedStatus(x, ucj);
 
             // if the ucj is already equal to the chainedStatus, it does not need to be updated
-            if ( chainedStatus == ucj.getStatus() ) return;
+            if ( chainedStatus == ucj.getStatus() ) {
+              logStatusReason(x, ucj, oldStatus, oldStatus, "Status NOT changed, consistent with chainedStatus");
+              return;
+            }
 
             // the following should be checked if the result of previous rule ( validateUCJDataOnPut ) 
             // is not ACTION_REQUIRED. In the ACTION_REQUIRED case, the ucj should be put into the
@@ -61,13 +67,31 @@ foam.CLASS({
             ucj.setStatus(chainedStatus);
             if ( chainedStatus == CapabilityJunctionStatus.PENDING && reviewRequired && wasApproved ) {
               ucj.setStatus(CapabilityJunctionStatus.APPROVED);
+              logStatusReason(x, ucj, oldStatus, ucj.getStatus(), "Status changed to APPROVED, chainedStatus still PENDING");
             } else if ( chainedStatus == CapabilityJunctionStatus.GRANTED && reviewRequired ) {
               ucj.setStatus(wasApproved ? CapabilityJunctionStatus.GRANTED : CapabilityJunctionStatus.PENDING);
+              logStatusReason(x, ucj, oldStatus, ucj.getStatus(), "chainedStatus is GRANTED, status change based on reviewRequired");
+            } else {
+              logStatusReason(x, ucj, oldStatus, ucj.getStatus(), "Status was changed to chainedStatus");
             }
           }
         }, "set ucj status on put");
       `
-    },   
+    },
+    {
+      name: 'logStatusReason',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'oldStatus', javaType: 'foam.nanos.crunch.CapabilityJunctionStatus' },
+        { name: 'newStatus', javaType: 'foam.nanos.crunch.CapabilityJunctionStatus' },
+        { name: 'reason', javaType: 'String' }
+      ],
+      javaCode: `
+        Logger logger = (Logger) x.get("logger");
+        logger.info("SetUCJStatus result, UCJ: ", ucj.toString(), ", oldStatus: ", oldStatus, ", newStatus: ", newStatus, ", reason: ", reason);
+      `
+    },
     {
       name: 'checkPrereqsChainedStatus',
       args: [
