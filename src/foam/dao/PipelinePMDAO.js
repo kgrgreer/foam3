@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'java.util.Stack',
     'foam.core.X',
     'foam.nanos.boot.NSpec',
     'foam.nanos.pm.PM'
@@ -152,8 +153,10 @@ Creates the PM that will measure the performance of each operation and creates a
       ],
       javaType: 'X',
       javaCode: `
+      Stack st = new Stack();
       PM pm = PM.create(x, getClassType(), op);
-      return x.put(PIPE_PM_START, pm);
+      st.push(pm);
+      return x.put(PIPE_PM_START, st);
       `
     },
     {
@@ -266,8 +269,12 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
             }
           ],
           javaCode: `
-      PM pm = (PM) x.get(PIPE_PM_START);
-      if ( pm != null ) pm.log(x);
+          Stack st = (Stack) x.get(PIPE_PM_START);
+          
+	      if ( st != null && ! st.empty() ) {
+	        PM pm = (PM) st.pop();
+	        if ( pm != null ) pm.log(x);
+		  }
       `
         },
         {
