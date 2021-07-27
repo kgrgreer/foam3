@@ -85,11 +85,6 @@ foam.CLASS({
     // Some models can include other models with file
     // Do recursive look up for fileArrays on inside models
     async function arrayRecursion(obj) {
-      let capability = obj.cls_.getAxiomsByClass(foam.nanos.crunch.Capability);
-//      if ( obj.capability ) {
-//        const label = obj.capability.labels;
-//        obj.documents.map(f => f.labels = label);
-//      }
       if ( foam.nanos.fs.File.isInstance(obj) ) {
         await this.processFile(obj);
       } else {

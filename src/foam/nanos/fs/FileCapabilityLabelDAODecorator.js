@@ -10,10 +10,10 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
   documentation: 'Decorator to add labels from capability to file',
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.crunch.document.Document',
     'foam.nanos.fs.File',
-    'foam.dao.DAO'
+    'net.nanopay.crunch.document.Document'
   ],
 
   methods: [
@@ -22,14 +22,17 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         DAO fileDAO = (DAO) x.get("fileDAO");
+
         if ( ucj.getData() instanceof Document ) {
           Document document = (Document) ucj.getData();
           String[] labels = document.getCapability().getLabels();
+          File f = null;
+          File f1 = null;
           for ( File file: document.getDocuments() ) {
-            File f = (File) fileDAO.find(file.getId());
-            File f1  = (File) f.fclone();
+            f = (File) fileDAO.find(file.getId());
+            f1 = (File) f.fclone();
             f1.setLabels(labels);
-            f1 = (File) fileDAO.put(f1);
+            fileDAO.put(f1);
           }
         }
         return super.put_(x, obj);
