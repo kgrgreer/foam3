@@ -27,8 +27,9 @@ foam.CLASS({
           String[] labels = document.getCapability().getLabels();
           for ( File file: document.getDocuments() ) {
             File f = (File) fileDAO.find(file.getId());
-            f.setLabels(labels);
-            f = (File) fileDAO.put(f);
+            File f1  = (File) f.fclone();
+            f1.setLabels(labels);
+            f1 = (File) fileDAO.put(f1);
           }
         }
         return super.put_(x, obj);
