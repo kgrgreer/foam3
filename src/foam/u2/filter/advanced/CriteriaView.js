@@ -95,9 +95,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start(this.TextSearchView, {
           richSearch: true,
           of: this.filterController.dao.of.id,

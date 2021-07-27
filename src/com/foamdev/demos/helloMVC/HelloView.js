@@ -14,7 +14,7 @@ foam.CLASS({
   ],*/
 
   methods: [
-    function initE() {
+    function render() {
       this.start('h1').add('Name:').end().start('div').add(this.data.yourName).end(). 
         //start(this.data.YOUR_NAME).attrs({onKey: true, placeholder:'Your name please'}).end().
         start('h1').add('Hello ').add(this.data.yourName$).add('!').end().

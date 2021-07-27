@@ -9,12 +9,13 @@ foam.CLASS({
   name: 'LinkView',
   extends: 'foam.u2.View',
 
+  properties: [ [ 'nodeName', 'a' ] ],
+
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this
-        .setNodeName('a')
         .attrs({href: this.data$})
         .add(this.data$);
     }

@@ -14,6 +14,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      padding: 32px;
+    }
     ^ svg {
       display: inline-block;
     }
@@ -23,7 +26,6 @@ foam.CLASS({
     ^ .foam-u2-Tabs-tabRow {
       margin-bottom: 30px;
     }
-
     ^ .foam-u2-Tabs-content > div > div {
       display: inline-flex;
       vertical-align: text-bottom;
@@ -159,7 +161,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAllCapabilities',
       value: true,
-      help: `Toggles dropdown list to contain all capabilities instead 
+      help: `Toggles dropdown list to contain all capabilities instead
           of a filtered list based on user selections`
     },
     {
@@ -171,7 +173,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       if ( this.memento) {
         this.currentMemento_$ = this.memento.tail$;
       }
@@ -189,7 +191,7 @@ foam.CLASS({
           .end()
           .start(this.Tab, {
             label: this.UCJ_TAB,
-          })  
+          })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.CRUNCH_USER })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.EFFECTIVE_USER })
@@ -252,9 +254,9 @@ foam.CLASS({
               delegate: placementPlan,
               targetProperty: 'id'
             });
-            window._testing = {};
-            window._testing.placementPlan = placementPlan;
-            window._testing.graph = graph;
+            globalThis._testing = {};
+            globalThis._testing.placementPlan = placementPlan;
+            globalThis._testing.graph = graph;
             return this.E()
               .tag(self.DAGView, {
                 gridPlacement: placementPlan,

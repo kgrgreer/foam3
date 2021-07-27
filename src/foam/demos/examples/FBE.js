@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this/*.add(this.RELOAD).br().br()*/.start('span',{}, this.viewArea$).tag(this.view).end();
       //this.delayedReload();
     }
@@ -76,7 +76,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var updateRows = () => this.setAttribute('rows', Math.max(4, this.data.split('\n').length+2));
       this.data$.sub(updateRows);
@@ -129,14 +129,14 @@ foam.CLASS({
 
       css: `
         ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; width: 45%; }
-        ^ .property-code { margin-bottom: 12px; width: 46%; }
+        ^ .property-text { border: none; padding: 10 0; }
+        ^ .property-code { margin-bottom: 12px; }
         ^ .property-title { float: left; }
         ^ .property-id { float: left; margin-right: 12px; }
       `,
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           var self = this;
@@ -161,9 +161,9 @@ foam.CLASS({
             br().
             add(this.Example.CODE).
             br().
-            start('b').add('Output:').end().
+            start('span').style({'font-weight': 500}).add('Output:').end().
             start().
-              style({width: '45%', border: '1px solid black', padding: '8px'}).
+              style({border: '1px solid black', padding: '8px'}).
               tag('div', {}, this.dom$).
             end();
 
@@ -181,7 +181,16 @@ foam.CLASS({
               return self.Element.create({nodeName: opt_nodeName});
             },
             log: function() {
-              self.dom.add.apply(self.dom, arguments);
+              var args = [];
+              for ( var i = 0 ; i < arguments.length ; i++ ) {
+                if ( i ) args.push(' ');
+                if ( arguments[i] == false )
+                  args.push('false');
+                else
+                  args.push(arguments[i]);
+              }
+
+              self.dom.add.apply(self.dom, args);
               self.dom.br();
             },
             print: function() {
@@ -327,8 +336,16 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       this.SUPER();
+
+      this.testData += await fetch('u2').then(function(response) {
+        return response.text();
+      });
+
+      this.testData += await fetch('faq').then(function(response) {
+        return response.text();
+      });
 
       this.testData = await fetch('validation').then(function(response) {
         return response.text();
@@ -338,15 +355,7 @@ foam.CLASS({
         return response.text();
       });
 
-      this.testData += await fetch('u2').then(function(response) {
-        return response.text();
-      });
-
       this.testData += await fetch('dao').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
 

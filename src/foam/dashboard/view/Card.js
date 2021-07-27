@@ -82,7 +82,7 @@ foam.CLASS({
     }
   `,
   methods: [
-    function initE() {
+    function render() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
         this.data.update();
       }.bind(this)));

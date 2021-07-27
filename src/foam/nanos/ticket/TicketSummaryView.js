@@ -67,7 +67,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
     this.dao.on.sub(this.onDAOUpdate);
     this.onDAOUpdate();
 

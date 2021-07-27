@@ -43,9 +43,9 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.initMemento();
-      this.addClass(this.myClass());
+      this.addClass();
 
       // If no item is selected, and data has not been provided, select the 0th
       // entry.

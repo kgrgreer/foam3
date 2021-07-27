@@ -91,7 +91,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -109,16 +109,16 @@ foam.CLASS({
         }
       }
 
-      if ( this.memento && this.memento.tail && this.memento.tail.head.length != 0 ) {
-        var viewSelectedWithMemento = this.views.find(v => foam.Array.isInstance(v) && v[1] == this.memento.tail.head);
+      if ( this.memento && this.memento.head.length != 0 ) {
+        var viewSelectedWithMemento = this.views.find(v => foam.Array.isInstance(v) && v[1] == this.memento.head);
         if ( viewSelectedWithMemento ) {
           this.selectedView = viewSelectedWithMemento[1];
         } else {
-          this.memento.tail.head = '';
+          this.memento.head = '';
         }
       }
 
-      this.addClass(this.myClass())
+      this.addClass()
       this.startContext({data: this})
         this.start()
           .add(this.SELECTED_VIEW)
@@ -138,13 +138,13 @@ foam.CLASS({
 
   actions: [
     function setMementoWithSelectedView() {
-      if ( ! this.memento || ! this.memento.tail )
+      if ( ! this.memento )
         return;
       var view = this.views.find(v => v[0] == this.selectedView);
       if ( view )
-        this.memento.tail.head = view[1];
+        this.memento.head = view[1];
       else
-        this.memento.tail.head = '';
+        this.memento.head = '';
     }
   ]
 });

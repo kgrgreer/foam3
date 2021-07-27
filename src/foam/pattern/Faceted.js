@@ -65,7 +65,7 @@ foam.CLASS({
         var id = ( pkg ? pkg + '.' : '' ) + name + this.name;
 
         // The of[this.name] checks for an inner-class facet
-        return X.lookup(id, true) || of[this.name] || this;
+        return X.maybeLookup(id) || of[this.name] || this;
       };
 
       // ignoreFacets is set to true when called to prevent a second-level

@@ -164,7 +164,7 @@ foam.CLASS({
       this.Beep.create({duration: 320, frequency: 180, envelope: true, attack: 5, decay: 5}).play();
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       this.style({outline: 'none'}).focus().add(this.canvas);
     }

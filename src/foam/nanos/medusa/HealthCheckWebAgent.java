@@ -45,6 +45,7 @@ public class HealthCheckWebAgent
                    electoral.getState() == ElectoralServiceState.IN_SESSION ) ) ) {
             response.setStatus(HttpServletResponse.SC_OK);
             out.println("up\n");
+            out.println("index: "+info.getIndex());
           } else if ( config.getStatus() != Status.ONLINE &&
                       config.getRegionStatus() == RegionStatus.ACTIVE &&
                       config.getZone() == 0 &&
@@ -58,6 +59,8 @@ public class HealthCheckWebAgent
               out.println("replaying: "+info.getReplaying()+"\n");
               out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
               out.println("percentComplete: "+info.getPercentComplete()+"\n");
+              out.println("currentIndex: "+info.getIndex()+"\n");
+              out.println("targetIndex: "+info.getReplayIndex()+"\n");
             }
           } else {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -67,6 +70,7 @@ public class HealthCheckWebAgent
                     config.getRegionStatus() == RegionStatus.ACTIVE ) {
           response.setStatus(HttpServletResponse.SC_OK);
           out.println("up\n");
+          out.println("index: "+info.getIndex());
         } else {
           response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
           out.println("maint\n");

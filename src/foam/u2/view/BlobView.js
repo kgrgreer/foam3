@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'BlobView',
   extends: 'foam.u2.Element',
-  
+
   requires: [
     'foam.blob.BlobBlob'
   ],
@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   properties: [
+    [ 'nodeName', 'span' ],
     'data',
     {
       class: 'String',
@@ -45,10 +46,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var view = this;
       this.
-        setNodeName('span').
         start('input').attrs({ type: 'file' }).on('change', this.onChange).end().
         add(this.slot(function(data) {
           var url = data && view.blobService.urlFor(data);

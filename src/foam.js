@@ -15,39 +15,28 @@
  * limitations under the License.
  */
 
-// TODO:
-//  break into foam.js for web and foam_node.js for node.js
-//  change flag defaults for each
-//     default: web, debug, js
-//     node: node, java, swift, debug, js
-//  ???: is 'js' flag used anywhere, if so, where?
-//  replace use of global and window with new globalThis
-//  replace all use of 'global' in foam with globalThis
-//  remove support for workers
-//  case-specific setting of flags (HTTP parameters or command-line)
 
 (function() {
+  var foam  = globalThis.foam || ( globalThis.foam = {} );
+  var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
+  foam.flags = flags;
 
-  var isWorker = typeof importScripts !== 'undefined';
-  var isServer = ( ! isWorker ) && typeof window === 'undefined';
+  flags.web  = true;
 
-  // Imports used by the loadServer() loader
-  if ( isServer && typeof global !== 'undefined' ) {
-    global.imports = {}; global.imports.path = require('path');
-  }
-
-  var flags    = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
-  flags.web    = ! isServer;
-  flags.node   = isServer;
-  flags.loader = ! isServer;
-  if ( ! flags.hasOwnProperty('java')  ) flags.java  = false;
-  if ( ! flags.hasOwnProperty('swift') ) flags.swift = false;
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
 
-  function createLoadBrowser() {
-    var path = document.currentScript && document.currentScript.src;
+  // TODO: fix, needed to run web client for some reason
+  if ( ! flags.hasOwnProperty('java')  ) flags.java = true;
 
+  // set flags by url parameters
+  var urlParams = new URLSearchParams(window.location.search);
+  for ( var pair of urlParams.entries() ) {
+    flags[pair[0]] = (pair[1] == 'true');
+  }
+
+  function createLoader() {
+    var path = document.currentScript && document.currentScript.src;
     // document.currentScript isn't supported on all browsers, so the following
     // hack gets the job done on those browsers.
     if ( ! path ) {
@@ -59,10 +48,9 @@
         }
       }
     }
-    path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
 
-    if ( typeof global !== 'undefined' && ! global.FOAM_ROOT ) global.FOAM_ROOT = path;
-    if ( typeof window !== 'undefined' && ! window.FOAM_ROOT ) window.FOAM_ROOT = path;
+    path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
+    if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
     var loadedMap = {};
     var scripts   = '';
@@ -73,11 +61,9 @@
         return;
       }
       loadedMap[filename] = true;
-
       if ( filename ) {
         scripts += '<script type="text/javascript" src="' + path + filename + '.js"></script>\n';
       }
-
       if ( ! opt_batch ) {
         document.writeln(scripts);
         scripts = '';
@@ -85,48 +71,30 @@
     };
   }
 
-  function loadServer() {
-    var caller = flags.src || __filename;
-    var path = caller.substring(0, caller.lastIndexOf('src/')+4);
-
-    if ( typeof global !== 'undefined' && ! global.FOAM_ROOT ) global.FOAM_ROOT = path;
-
-    return function (filename) {
-      if ( ! filename ) return;
-      if ( typeof global !== 'undefined' ) {
-        // Set document.currentScript.src, as expected by EndBoot.js
-        let normalPath = global.imports.path.relative(
-          '.', global.imports.path.normalize(path + filename + '.js'));
-        global.document = { currentScript: { src: normalPath } };
-      }
-      require(path + filename + '.js');
-    }
-  }
-
-  function createLoadWorker(filename) {
-    var path = FOAM_BOOT_PATH;
-    return function(filename) {
-      importScripts(path + filename + '.js');
-    };
-  }
-
-  function getLoader() {
-    return isServer ? loadServer() :
-      isWorker ? createLoadWorker() :
-      createLoadBrowser();
-  }
-
   this.FOAM_FILES = async function(files) {
-    var load = getLoader();
+    var load = createLoader();
 
     files.
-      map(function(f) { return f.name; }).
+      filter(f => {
+        // If flags are defined, don't load unless all are true
+        if ( f.flags ) {
+          for ( var i = 0 ; i < f.flags.length ; i++ ) {
+            if ( ! foam.flags[f.flags[i]] ) {
+              // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
+              return false;
+            }
+          }
+          return true;
+        }
+        return true;
+      }).
+      filter(f => (! f.predicate) || f.predicate()).
+      map(f => f.name).
       forEach(f => load(f, true));
 
     load(null, false);
-
   //  delete this.FOAM_FILES;
   };
 
-  getLoader()('files', false);
+  createLoader()('files', false);
 })();

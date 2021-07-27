@@ -91,6 +91,7 @@ foam.CLASS({
 
       Notification notification = new Notification.Builder(x)
         .setBody(body.toString())
+        .setClusterable(alarm.getClusterable())
         .setEmailArgs(args)
         .setEmailName("alarm")
         .setSeverity(alarm.getSeverity())

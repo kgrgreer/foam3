@@ -83,10 +83,10 @@ foam.CLASS({
       return this;
     },
 
-    function initE() {
+    function render() {
       this.overrideAdd_ = false;
 
-      this.addClass(this.myClass()).addClass(this.myClass('container'));
+      this.addClass().addClass(this.myClass('container'));
       this.start('div')
         .addClass(this.myClass('header'))
         .start()

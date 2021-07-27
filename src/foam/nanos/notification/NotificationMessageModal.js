@@ -50,7 +50,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this.created = this.data.created.toUTCString();

@@ -214,3 +214,33 @@ r1.execute(x);
 r2.execute(x);""",
 	"lastModifiedBy": 1348
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"BenchmarkFUID",
+  "description":"Benchmark Foam Unique ID",
+  "code":`
+    import foam.nanos.bench.*;
+    import foam.nanos.bench.benchmarks.*;
+    import net.nanopay.bench.*;
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    b = new FUIDBenchmark();
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(1000)
+      .setThreadCount(2)
+      .setRunPerThread(false)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})

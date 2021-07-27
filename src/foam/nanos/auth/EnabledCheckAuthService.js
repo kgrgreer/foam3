@@ -22,14 +22,10 @@ foam.CLASS({
       javaCode: `
         if ( x == null || permission == null ) return false;
 
-        // Check if session exists and there's a user id set for it.
-        Session session = x.get(Session.class);
-        if ( session == null || session.getUserId() == 0 ) return false;
-
         Subject subject = (Subject) x.get("subject");
         // Check if user exists and is enabled.
         User user = subject.getUser();
-        if ( user == null || ! user.getEnabled() ) return false;
+        if ( user != null && ! user.getEnabled() ) return false;
 
         // Check if agent exists and is enabled. Note that it isn't mandatory
         // that an agent always be there, so it's fine if the agent is null.
