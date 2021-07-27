@@ -255,7 +255,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this
         .start('h1').add('Property Visibility Demo').end()

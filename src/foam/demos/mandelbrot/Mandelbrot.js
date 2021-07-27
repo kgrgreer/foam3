@@ -57,7 +57,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       var h = this.WindowHash.create();

@@ -469,7 +469,7 @@ foam.CLASS({
 
       var prop = this.cls_.getAxiomByName(name);
       foam.assert(prop && foam.core.Property.isInstance(prop),
-                    'Attempted to clear non-property', name);
+        'Attempted to clear non-property', name);
 
       if ( this.hasOwnProperty(name) ) {
         var oldValue = this[name];
@@ -699,7 +699,7 @@ foam.CLASS({
       var l = arguments[arguments.length - 1];
 
       foam.assert(foam.Function.isInstance(l),
-          'Listener must be a function');
+        'Listener must be a function');
 
       var listeners = this.listeners_();
 

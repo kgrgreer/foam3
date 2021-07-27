@@ -13,7 +13,7 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE to render()
+  - rename render to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
@@ -42,12 +42,14 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
+  - NEXT_ID() removed. Use new Object().$UID instead.
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - Is it faster if we don't add child to parent until we call end()?
   - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()
   - ??? replace replaceChild() with replace() on Node
@@ -55,6 +57,7 @@ becomes:
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
+  - could we get rid of subSubContext be updating subContext?
 */
 
 foam.ENUM({
@@ -535,10 +538,6 @@ foam.CLASS({
     'translationService?'
   ],
 
-  exports: [
-    'isSVG_ as isSVG' // maybe better to export a namespace
-  ],
-
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -584,6 +583,11 @@ foam.CLASS({
         '39': 'right',
         '40': 'down'
       }
+    },
+    // ???: alternatively, there could be a sub-class of Element called SVGElement
+    {
+      name: 'SVG_TAGS',
+      value: { svg: true, g: true, rect: true, path: true }
     }
   ],
 
@@ -598,7 +602,7 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        return this.isSVG_ ?
+        return this.SVG_TAGS[this.nodeName] ?
           this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
           this.document.createElement(this.nodeName);
       }
@@ -666,12 +670,6 @@ foam.CLASS({
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
       value: 'div'
-    },
-    {
-      name: 'isSVG_',
-      factory: function() {
-        return this.nodeName === 'svg' || this.__context__.isSVG;
-      }
     },
     {
       name: 'attributeMap',
@@ -768,15 +766,15 @@ foam.CLASS({
       return Promise.resolve(this.el_());
     },
 
+    function slotE_(slot) {
+      return foam.u2.SlotNode.create({slot: slot}, this);
+    },
+
     function load() {
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      if ( this.initE != foam.u2.Element.prototype.initE ) {
-        // console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
-        this.initE();
-      }
       this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
@@ -808,10 +806,6 @@ foam.CLASS({
     },
 
     function render() {
-    },
-
-    function initE() {
-      // TODO: remove
     },
 
     async function observeScrollHeight() {
@@ -878,6 +872,8 @@ foam.CLASS({
         if ( count == 0 ) keyMap = null;
 
         cls.keyMap__ = keyMap;
+      } else {
+        keyMap = cls.keyMap__;
       }
 
       if ( ! keyMap ) return null;
@@ -1331,17 +1327,13 @@ foam.CLASS({
     function start(spec, args, slot) {
       /* Create a new Element and add it as a child. Return the child. */
       var c = this.createChild_(spec, args);
-      this.add(c);
-
-/*
+      /*
       if ( this.content ) {
-        this.add(c);
+        this.content.addChild_(c, this);
       } else {
-        c.parentNode = this;
-        this.childNodes.push(c);
-        this.onAddChildren(c);
-      }
-      */
+        this.addChild_(c, this);
+      }*/
+      this.add(c);
 
       if ( slot ) slot.set(c);
       return c;
@@ -1413,7 +1405,7 @@ foam.CLASS({
     function add_(cs, parentNode) {
       /* Add Children to this Element. */
 //      var es = [];
-      var Y = this.__subSubContext__;
+//      var Y = this.__subSubContext__;
 
       for ( var i = 0 ; i < cs.length ; i++ ) {
         this.addChild_(cs[i], parentNode);
@@ -2336,7 +2328,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -2479,7 +2471,7 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.onDetach(this.data$.sub(this.update()));
+      this.onDetach(this.data$.sub(this.update));
     }
   ],
 

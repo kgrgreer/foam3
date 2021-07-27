@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.addClass();
       this.initReadView();
     },

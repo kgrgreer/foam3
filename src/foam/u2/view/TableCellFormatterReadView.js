@@ -23,7 +23,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       this.add(this.slot(function(data, prop) {

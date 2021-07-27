@@ -95,12 +95,16 @@ foam.CLASS({
       name: 'replaceHistoryState',
       documentation: 'if set to true, then current history state will be replaced instead of new state being created',
       value: true
+    },
+    {
+      name: 'params',
+      documentation: 'additional hints that can be added to the memento but are not modified by the view'
     }
   ],
 
   methods: [
     function combine() {
-      var params =  this.params ?  this.SEPARATOR + this.params : '';
+      var params =  this.params ? this.PARAMS_BEGIN + this.params + this.PARAMS_END : '';
       var tail = this.tail ? this.SEPARATOR + this.tail.combine() : '';
       return this.head + params + tail;
     },
@@ -117,8 +121,16 @@ foam.CLASS({
         this.head = this.value;
         this.tail = null;
       } else {
-        this.head     = this.value.substring(0, i);
-        var tailStr   = this.value.substring(i + 2);
+        var tempHead = this.value.substring(0, i);
+        var paramsBegin = tempHead.indexOf(this.PARAMS_BEGIN);
+        var paramsEnd = tempHead.indexOf(this.PARAMS_END);
+        if ( paramsBegin != -1 && paramsEnd != -1 ) {
+          params = tempHead.substring(paramsBegin+1, paramsEnd);
+          this.head = tempHead.substring(0, paramsBegin);
+        } else {
+          this.head = tempHead;
+        }
+        var tailStr = this.value.substring(i + 2);
         this.tail$.set(this.cls_.create({ value: tailStr, parent: this }));
       }
       this.feedback_ = false;

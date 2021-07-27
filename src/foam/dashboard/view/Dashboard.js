@@ -33,7 +33,7 @@ foam.CLASS({
 }
 `,
   methods: [
-    function initE() {
+    function render() {
       var timeout = this.setInterval(this.onUpdate, 5000);
       var view = this;
 

@@ -326,7 +326,7 @@ foam.CLASS({
         function init() {
           this.onload.sub(this.render);
         },
-        function initE() {
+        function render() {
           var self = this;
           this.addClass();
           this.enableClass(this.myClass('selectable'), this.selectionEnabled$);
@@ -590,7 +590,7 @@ foam.CLASS({
       this.SUPER();
     },
 
-    function initE() {
+    function render() {
       this.addEventListener('scroll', this.onScroll);
       this.
         add(this.sentinel_).

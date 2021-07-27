@@ -46,7 +46,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var view = this;
       this.
         start('input').attrs({ type: 'file' }).on('change', this.onChange).end().

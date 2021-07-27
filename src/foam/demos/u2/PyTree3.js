@@ -25,7 +25,7 @@ foam.CLASS({
   properties: [ [ 'nodeName', 'g' ], 'lvl' ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         start('rect').
           attrs({width: 1, height: 1}).
@@ -67,7 +67,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.installCSS('','pytree','pytree');
       this.myCss = this.document.head.lastChild;
 

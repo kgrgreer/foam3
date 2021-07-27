@@ -326,7 +326,7 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.initE();
+      this.render();
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1060,7 +1060,7 @@ foam.CLASS({
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
-    function initE() {
+    function render() {
       /*
         Template method for adding addtion element initialization
         just before Element is output().
@@ -1136,6 +1136,8 @@ foam.CLASS({
         if ( count == 0 ) keyMap = null;
 
         cls.keyMap__ = keyMap;
+      } else {
+        keyMap = cls.keyMap__;
       }
 
       if ( ! keyMap ) return null;
@@ -2859,7 +2861,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateMode_(this.mode);
       // this.enableClass('error', this.error_$);
@@ -3040,7 +3042,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.addClass();
 

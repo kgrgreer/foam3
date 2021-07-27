@@ -31,7 +31,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.addClass(this.myClass('display'));
@@ -46,16 +46,15 @@ foam.CLASS({
               self.stack.jump(index, self);
             }
           });
-          if ( navStack[i][3].navStackTitle ) {
-            self.tag(jumpAction, {
-              label: navStack[i][3].navStackTitle,
-              themeIcon: themeIcon,
-              buttonStyle: 'LINK'
-            })
-            .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).add('/').end(); });
-          } else {
-            console.warn('Missing Title for BreadcrumbView ' + navStack[i][0].class);
-          }
+          var labelSlot = this.stack.stack_[index].breadcrumbTitle$;
+          self.start(jumpAction, {
+            label$: labelSlot,
+            themeIcon: themeIcon,
+            buttonStyle: 'LINK'
+          }).show(labelSlot).end()
+          .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end(); });
+          if ( ! this.stack.stack_[index].breadcrumbTitle )
+            console.warn('Missing Title for BreadcrumbView ' + navStack[i].view.class);
         });
       }
     }

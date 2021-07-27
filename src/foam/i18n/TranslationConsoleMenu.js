@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       foam.i18n.TranslationConsole.OPEN();
       this.
         start().

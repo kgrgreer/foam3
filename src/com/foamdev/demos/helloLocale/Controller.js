@@ -42,7 +42,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.start('div').add(this.YOUR_NAME.label).end().start('div').add(this.YOUR_NAME).end();
       this.start('h1').add(this.GREETING.label).add(this.yourName$).add('!').end();
     }

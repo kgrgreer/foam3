@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         .start('input').attrs({ type: 'file' }).on('change', this.onChange).end()
         .add(this.slot(function(data) {
@@ -40,11 +40,10 @@ foam.CLASS({
   listeners: [
     function onChange (e) {
       var file = e.target.files[0];
-
       this.data = this.File.create({
         filename: file.name,
         filesize: file.size,
-        mimeType: file.type,
+        mimeType: file.mimeType,
         data: this.BlobBlob.create({
           blob: file
         })

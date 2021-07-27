@@ -51,7 +51,7 @@ foam.CLASS({
   `,
 
   methods: [
-    async function initE() {
+    async function render() {
       var self = this;
       var menu = this.Menu.create({ id: this.theme.settingsRootMenu });
       var X    = this.__subContext__;

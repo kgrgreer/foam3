@@ -153,7 +153,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function render(){
       var self = this;
       this.hideSummary = true;
       this.status = this.data.status;

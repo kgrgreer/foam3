@@ -45,7 +45,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var parent  = this.parentNode;
       var parentE = await parent.el();
 

@@ -49,7 +49,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       if ( this.permissioned ) {
         this.permissionedChoices();

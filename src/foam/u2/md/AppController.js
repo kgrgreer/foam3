@@ -85,7 +85,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
 
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();

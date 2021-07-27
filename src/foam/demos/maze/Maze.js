@@ -661,7 +661,7 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
 
       // Set focus so arrow keys work

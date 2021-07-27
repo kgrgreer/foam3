@@ -85,7 +85,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         addClass(this.myClass()).
         enableClass(this.myClass('removed'), this.removed$).

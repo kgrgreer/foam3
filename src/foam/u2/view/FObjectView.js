@@ -203,7 +203,7 @@ foam.CLASS({
       }
     },
 
-    async function initE() {
+    async function render() {
       this.SUPER();
 
       function dataToClass(d) {

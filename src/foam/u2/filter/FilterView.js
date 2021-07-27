@@ -61,11 +61,10 @@ foam.CLASS({
 
     ^container-drawer-open {
       align-items: center;
-      border: 1px solid #cbcfd4;
       max-height: -webkit-fill-available;
       max-height: -moz-available;
       overflow: auto;
-      padding: 24px;
+      padding: 24 0px;
     }
 
     ^container-filters {
@@ -164,11 +163,10 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'LABEL_RESULTS', message: 'Filter results: ' },
     { name: 'LINK_ADVANCED', message: 'Advanced filters' },
     { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
     { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
-    { name: 'RESULTS', message: 'result(s) found' },
+    { name: 'LABEL_FILTER', message: 'Filters' }
   ],
 
   properties: [
@@ -281,7 +279,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
@@ -311,7 +309,7 @@ foam.CLASS({
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
-            code: function(x) { return `Filters (${x})`; }});
+            code: function(x) { return x > 0 ? `${self.LABEL_FILTER} (${x})` : self.LABEL_FILTER; }});
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()

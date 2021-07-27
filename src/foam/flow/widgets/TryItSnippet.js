@@ -64,7 +64,7 @@ foam.CLASS({
         this.code = this.innerFLOW;
       })
     },
-    function initE() {
+    function render() {
       this
         .tag(this.SERVER.view, { data$: this.server$ })
         .tag(this.CODE.view, { data$: this.code$ })

@@ -96,7 +96,7 @@ foam.CLASS({
        this.onDetach(this.cjStatus$.sub(this.statusUpdate));
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.addClass();

@@ -66,11 +66,8 @@ public class RuleEngine extends ContextAwareSupport {
         if ( ! isRuleActive(rule, rule.getAction()) ) continue;
         if ( ! checkPermission(rule, obj) ) continue;
         if ( ! rule.f(userX_, obj, oldObj) ) continue;
-
-        PM pm = (PM) x_.get("PM");
-        pm.setKey(RulerDAO.getOwnClassInfo().getId());
-        pm.setName(rule.getDaoKey() + ": " + rule.getId());
-        pm.init_();
+        
+        PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
         applyRule(rule, obj, oldObj, agency);
         pm.log(x_);
         agency.submit(x_, x -> saveHistory(rule, obj), "Save history. Rule id:" + rule.getId());
@@ -116,10 +113,7 @@ public class RuleEngine extends ContextAwareSupport {
    * @param oldObj - Old FObject supplied to rules for execution
    */
   public void probe(List<Rule> rules, RulerProbe rulerProbe, FObject obj, FObject oldObj) {
-      PM pm = (PM) x_.get("PM");
-      pm.setKey(RulerProbe.getOwnClassInfo().getId());
-      pm.setName("Probe:" + obj.getClassInfo());
-      pm.init_();
+    PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
     for (Rule rule : rules) {
       if ( ! isRuleActive(rule, rule.getAction()) ) continue;
       if ( ! checkPermission(rule, obj) ) continue;
@@ -219,7 +213,9 @@ public class RuleEngine extends ContextAwareSupport {
           FObject nu = getDelegate().find_(x, obj).fclone();
           nu = reloadObject(obj, oldObj, nu, rule.getAfter());
           try {
+            PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC: " + rule.getDaoKey() + ": " + rule.getId());
             rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
+            pm.log(x_);
             saveHistory(rule, nu);
           } catch (Exception ex) {
             logger.warning("Retry asyncApply rule(" + rule.getId() + ").", ex);

@@ -84,7 +84,8 @@ foam.CLASS({
   ],
 
   constants: [
-    { name: 'BELL_IMAGE', value: 'images/bell.png' }
+    { name: 'BELL_IMAGE', value: 'images/bell.png' },
+    { name: 'MENU_ID', value: 'notifications' }
   ],
 
   messages: [
@@ -92,7 +93,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.notificationDAO.on.sub(this.onDAOUpdate);
       this.user$.dot('id').sub(this.onDAOUpdate);
       this.group$.dot('id').sub(this.onDAOUpdate);
@@ -117,12 +118,7 @@ foam.CLASS({
     },
 
     function changeToNotificationsPage() {
-      this.menuDAO.find('notifications').then((menu) => {
-        if ( menu == null ) {
-          throw new Error(this.INVALID_MENU);
-        }
-        this.pushMenu(menu.id);
-      });
+      this.pushMenu(this.MENU_ID);
     }
   ],
 

@@ -44,7 +44,8 @@
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.CustomViewReferenceApprovable'
+    'foam.nanos.approval.CustomViewReferenceApprovable',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -159,6 +160,7 @@
       transient: true,
       tableWidth: 250,
       visibility: 'RO',
+      columnPermissionRequired: true,
       tableCellFormatter: function(_,obj) {
         let self = this;
         try {
@@ -208,6 +210,7 @@
       order: 10,
       gridColumns: 6,
       visibility: 'RO',
+      columnPermissionRequired: true,
       documentation: 'Approval request primary key.'
     },
     {
@@ -218,6 +221,7 @@
       section: 'approvalRequestInformation',
       order: 20,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: 'id of the object that needs approval.',
       tableWidth: 150
     },
@@ -229,6 +233,7 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 30,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -240,6 +245,7 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 50,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -251,6 +257,7 @@
       section: 'approvalRequestInformation',
       order: 60,
       gridColumns: 6,
+      columnPermissionRequired: true,
       javaFactory: 'return foam.nanos.approval.ApprovalStatus.REQUESTED;',
       visibility: 'RO'
     },
@@ -262,6 +269,7 @@
       section: 'approvalRequestInformation',
       order: 70,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       view: function(_, X) {
         let slot = foam.core.SimpleSlot.create();
@@ -319,6 +327,7 @@
       section: 'approvalRequestInformation',
       order: 80,
       gridColumns: 6,
+      columnPermissionRequired: true,
       includeInDigest: false,
       tableWidth: 450,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
@@ -359,6 +368,7 @@
       section: 'approvalRequestInformation',
       order: 90,
       gridColumns: 6,
+      columnPermissionRequired: true,
       includeInDigest: true,
       tableWidth: 300
     },
@@ -368,6 +378,7 @@
       section: 'approvalRequestInformation',
       order: 100,
       gridColumns: 6,
+      columnPermissionRequired: true,
       includeInDigest: true,
       visibility: function(created) {
         return created ?
@@ -383,6 +394,7 @@
       section: 'approvalRequestInformation',
       order: 105,
       gridColumns: 6,
+      columnPermissionRequired: true,
       tableCellFormatter: function(value, obj, axiom) {
         var defaultOutput = value ? `ID: ${value}`: "N/A";
         this.__subSubContext__.userDAO
@@ -398,6 +410,7 @@
       section: 'approvalRequestInformation',
       order: 110,
       gridColumns: 6,
+      columnPermissionRequired: true,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -412,6 +425,7 @@
       section: 'approvalRequestInformation',
       order: 115,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true
     },
     {
@@ -421,6 +435,7 @@
       section: 'approvalRequestInformation',
       order:  120,
       gridColumns: 6,
+      columnPermissionRequired: true,
       visibility: function(lastModified) {
         return lastModified ?
           foam.u2.DisplayMode.RO :
@@ -435,6 +450,7 @@
       section: 'approvalRequestInformation',
       order: 130,
       gridColumns: 3,
+      columnPermissionRequired: true,
       readPermissionRequired: true
     },
     {
@@ -445,6 +461,7 @@
       section: 'approvalRequestInformation',
       order: 130,
       gridColumns: 3,
+      columnPermissionRequired: true,
       readPermissionRequired: true
     },
     {
@@ -454,6 +471,7 @@
       documentation: 'Meant to be used for explanation on why request was approved/rejected',
       includeInDigest: true,
       section: 'approvalRequestInformation',
+      columnPermissionRequired: true,
       order: 135
     },
     {
@@ -462,6 +480,7 @@
       section: 'systemInformation',
       order: 10,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `Used internally in approvalDAO to point where requested object can be found.
       Should not be used to retrieve approval requests for a given objects
       since an object can have multiple requests of different nature. When used in conjunction with serverDaoKey,
@@ -474,6 +493,7 @@
       section: 'systemInformation',
       order: 20,
       gridColumns: 6,
+      columnPermissionRequired: true,
       documentation: `Used internally in approvalDAO if an approval request concerns both a clientDAO and
       a server side dao. The server dao key is mainly used for backend actions that get executed on
       the object as a cause of the approval request being approved or rejected.`,
@@ -488,6 +508,7 @@
       class: 'Boolean',
       name: 'isTrackingRequest',
       includeInDigest: true,
+      columnPermissionRequired: true,
       section: 'systemInformation',
       order: 30,
       gridColumns: 6
@@ -498,6 +519,7 @@
       includeInDigest: false,
       section: 'systemInformation',
       order: 40,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -511,6 +533,7 @@
       section: 'systemInformation',
       order: 50,
       gridColumns: 6,
+      columnPermissionRequired: true,
       visibility: function(points) {
         return points ?
           foam.u2.DisplayMode.RO :
@@ -525,6 +548,7 @@
       section: 'systemInformation',
       order: 60,
       gridColumns: 3,
+      columnPermissionRequired: true,
       documentation: `Defines how many approvers required and approvers' ranks.
       E.g. when set to 10:
       1) 10 approval requests with "points" set to 1.
@@ -542,6 +566,7 @@
       name: 'requiredRejectedPoints',
       value: 1,
       includeInDigest: false,
+      columnPermissionRequired: true,
       section: 'systemInformation',
       order: 70,
       gridColumns: 3,
@@ -558,6 +583,7 @@
       section: 'systemInformation',
       order: 80,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true,
       documentation: `
@@ -577,6 +603,7 @@
       section: 'systemInformation',
       order: 90,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true,
       documentation: `
@@ -597,6 +624,7 @@
       section: 'systemInformation',
       order: 100,
       gridColumns: 6,
+      columnPermissionRequired: true,
       readPermissionRequired: true,
       writePermissionRequired: true
     },
@@ -604,6 +632,7 @@
       class: 'String',
       name: 'approvableHashKey',
       includeInDigest: true,
+      columnPermissionRequired: true,
       hidden: true
     },
     {
@@ -611,11 +640,13 @@
       of: 'foam.nanos.auth.User',
       name: 'assignedTo',
       section: 'approvalRequestInformation',
+      columnPermissionRequired: true,
       order: 65
     },
     {
       class: 'StringArray',
       name: 'additionalGroups',
+      columnPermissionRequired: true,
       documentation: `
         Optional field to specify the request to be sent to multiple  groups.
         Should remain non-transient to handle fulfilled requests being visible to different groups.
@@ -930,45 +961,49 @@
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
             if ( obj.isUsingNestedJournal ) {
-              X.stack.push({
-                class: 'foam.u2.view.ViewReferenceFObjectView',
-                data: summaryData,
-                of: of
-              });
+              X.stack.push(self.StackBlock.create({
+                view: {
+                  class: 'foam.u2.view.ViewReferenceFObjectView',
+                  data: summaryData,
+                  of: of
+                } }));
               return;
             }
           } else {
             of = obj.of;
 
             // then here we created custom view to display these properties
-            X.stack.push({
-              class: 'foam.nanos.approval.PropertiesToUpdateView',
-              propObject: obj.propertiesToUpdate,
-              objId: obj.objId,
-              daoKey: obj.daoKey,
-              of: of,
-              title: 'Updated Properties and Changes'
-            });
+            X.stack.push(self.StackBlock.create({
+              view: {
+                class: 'foam.nanos.approval.PropertiesToUpdateView',
+                propObject: obj.propertiesToUpdate,
+                objId: obj.objId,
+                daoKey: obj.daoKey,
+                of: of,
+                title: 'Updated Properties and Changes'
+              } }));
             return;
           }
         }
 
         // else pass general view with modeled data for display
         // this is for create, deleting object approvals
-        X.stack.push({
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          of: of,
-          config: foam.comics.v2.DAOControllerConfig.create({
-            daoKey: daoKey,
+        X.stack.push(self.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
             of: of,
-            editPredicate: foam.mlang.predicate.False.create(),
-            createPredicate: foam.mlang.predicate.False.create(),
-            deletePredicate: foam.mlang.predicate.False.create()
-          }, X),
-          mementoHead: null,
-          backLabel: self.BACK_LABEL
-        }, X.createSubContext({stack: self.stack}));
+            config: foam.comics.v2.DAOControllerConfig.create({
+              daoKey: daoKey,
+              of: of,
+              editPredicate: foam.mlang.predicate.False.create(),
+              createPredicate: foam.mlang.predicate.False.create(),
+              deletePredicate: foam.mlang.predicate.False.create()
+            }, X),
+            mementoHead: null,
+          },
+          parent: X.createSubContext({ stack: self.stack })
+        }));
       }
     },
     {

@@ -12,7 +12,7 @@ foam.CLASS({
   properties: [ [ 'nodeName', 'a' ] ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
       this

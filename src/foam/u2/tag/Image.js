@@ -34,7 +34,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.
         attrs({ src: this.data$ }).
         style({

@@ -28,6 +28,7 @@
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ReadWriteView',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.TableView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.nanos.controller.Memento'
@@ -216,13 +217,14 @@
         return function(obj, id, title) {
           if ( ! this.stack ) return;
 
-          this.stack.push({
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            config: this.config,
-            idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
-          //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              config: this.config,
+              idOfRecord: id
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+          }));
         }
       }
     },
@@ -281,7 +283,7 @@
       this.updateCount();
     },
 
-    function initE() {
+    function render() {
       var self = this;
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params
@@ -332,7 +334,7 @@
             return showPagination ?
              this.E().start(self.Cols).
               addClass(self.myClass('nav')).
-              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
+              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later.
               startContext({ data: self }).
                 start(self.Cols).
                   style({ gap: '4px', 'box-sizing': 'border-box' }).
@@ -363,12 +365,14 @@
 
       } else if ( this.table_.memento.tail.head.length != 0 ) {
         if ( this.table_.memento.tail.head == 'create' ) {
-          this.stack.push({
-            class: 'foam.comics.v2.DAOCreateView',
-            data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-            config$: this.config$,
-            of: this.data.of
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOCreateView',
+              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento })
+          }));
         } else if ( this.table_.memento.tail.tail && this.table_.memento.tail.tail.head ) {
           var id = this.table_.memento.tail.tail.head;
           if ( ! foam.core.MultiPartID.isInstance(this.data.of.ID) ) {
@@ -387,13 +391,14 @@
           this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
             if ( ! v ) return;
             if ( self.state != self.LOADED ) return;
-            this.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: null,
-              config: this.config,
-              idOfRecord: id
-            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
-            //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+            this.stack.push(this.StackBlock.create({
+              view: {
+                class: 'foam.comics.v2.DAOSummaryView',
+                data: null,
+                config: this.config,
+                idOfRecord: id
+              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+            }));
           });
         }
       }
@@ -458,7 +463,7 @@
         for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++) {
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
-          var dao = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
+          var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
           var tbody = this.table_.slotE_(this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight));
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;
