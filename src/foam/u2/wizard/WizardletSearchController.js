@@ -97,7 +97,7 @@ foam.CLASS({
           seen.push(cls);
           for ( let p of cls.getAxiomsByClass(foam.core.Property) ) {
             var visibilityEnum = p.visibility instanceof Function
-              ? p.visibility()
+              ? p.visibility.apply(w.data)
               : p.visibility;
 
             if ( ! p.hidden && visibilityEnum !== foam.u2.DisplayMode.HIDDEN ) { 
