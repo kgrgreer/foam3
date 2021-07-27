@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl', 'pushMenu'
+    'ctrl',
+    'pushMenu'
   ],
 
   javaImports: [
