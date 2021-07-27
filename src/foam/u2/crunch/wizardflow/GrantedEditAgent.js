@@ -41,9 +41,10 @@ foam.CLASS({
           .remove('CheckNoDataAgent')
           .remove('SkipGrantedAgent')
           .remove('WizardStateAgent') // TEMPORARY
-          .addAfter('SaveAllAgent', this.ApprovalRequestAgent, {
-            group: 'treviso-fraud-ops'
-          })
+          // TODO: uncomment below after finishing the feature
+          // .addAfter('SaveAllAgent', this.ApprovalRequestAgent, {
+          //   group: 'treviso-fraud-ops'
+          // })
           ;
       }
     }
