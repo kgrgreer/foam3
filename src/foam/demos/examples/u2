@@ -141,6 +141,61 @@ start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end(
 start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
 
 ##   Creating a Component
+<ol>
+  <li>Create a foam.CLASS()
+  <li>Extend foam.u2.Element, foam.u2.View (if you want to be a view for another 'data' object),
+  foam.u2.Controller (if you want to be a view for yourself), or some other foam class that directly
+  or indirection extends foam.u2.Element.
+  <li>Set your 'nodeName' property's value: if you desire to be something other than 'div'.
+  <li>Define component specific CSS with the css: property, if required.
+  <li>Define a render() method to add children, css classes, direct css styles, DOM listeners, and
+  set required html attributes.
+</ol>
+
+--
+foam.CLASS({
+  name: 'ExampleElement',
+  extends: 'foam.u2.Element',
+  // extends: 'foam.u2.View',
+  // extends: 'foam.u2.Controller',
+
+  css: `
+    ^ {
+      font: Roboto;
+      padding: 8px;
+    }
+  `,
+
+  properties: [
+    [ 'nodeName', 'b' ],
+  ],
+
+  methods: [
+    function render() {
+      this.
+        addClass(). // short for addClass(this.myClass())
+        style({border: '1px solid gray', background: 'lightgray'}).
+        attrs({}).
+        add('some text').
+        start('b').
+          add('some bold text')
+        end().
+        br().
+        tag('hr').
+        on('click', this.onClick);
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() { window.alert('clicked'); }
+    }
+  ]
+});
+
+start({class:'ExampleElement'}).end();
+
 ##    render()
 ##   Keyboard Shortcuts
 --
