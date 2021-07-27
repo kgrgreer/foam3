@@ -98,7 +98,13 @@ foam.CLASS({
     },
     {
       name: 'params',
-      documentation: 'additional hints that can be added to the memento but are not modified by the view'
+      documentation: 'additional hints that can be added to the memento but are not modified by the view',
+      postSet: function(o, n) {
+        if ( this.feedback_ ) return;
+        this.feedback_ = true;
+        this.changeIndicator = ! this.changeIndicator;
+        this.feedback_ = false;
+      }
     }
   ],
 
