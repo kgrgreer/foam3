@@ -25,7 +25,8 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      }
+      },
+      menuKeys: [ 'admin.capabilities' ]
     }
   ]
 });

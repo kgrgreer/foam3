@@ -25,7 +25,8 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      }
+      },
+      menuKeys: [ 'admin.capabilities' ]
     },
     {
       class: 'Reference',
@@ -38,7 +39,8 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      }
+      },
+      menuKeys: [ 'admin.capabilities' ]
     },
     {
       class: 'Boolean',

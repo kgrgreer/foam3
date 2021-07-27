@@ -246,7 +246,8 @@ foam.CLASS({
       section: 'approvalRequestInformation',
       order: 50,
       columnPermissionRequired: true,
-      gridColumns: 6
+      gridColumns: 6,
+      menuKeys: [ 'admin.groups' ]
     },
     {
       class: 'Enum',

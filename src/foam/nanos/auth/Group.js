@@ -58,7 +58,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ReferenceView',
         placeholder: '--'
-      }
+      },
+      menuKeys: [ 'admin.groups' ]
     },
     {
       class: 'Reference',

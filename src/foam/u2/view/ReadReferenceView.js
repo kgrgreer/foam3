@@ -120,20 +120,7 @@ foam.CLASS({
         A list of menu ids.
         The link will reference to the first menu to which you have permission
         in this list. If no menus are permissioned, the link will be disabled.
-      `,
-      expression: function(prop) {
-        // set default menuKeys for group, nature code and capability
-        switch (prop.targetDAOKey) {
-          case 'groupDAO':
-            return ['admin.groups'];
-          case 'natureCodeDAO':
-            return ['admin.natureCodes'];
-          case 'capabilityDAO':
-            return ['admin.capabilities'];
-          default:
-            return null;
-        }
-      }
+      `
     }
   ],
 
