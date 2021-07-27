@@ -12,8 +12,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.fs.File',
-    'net.nanopay.crunch.document.Document'
+    'foam.nanos.crunch.RenewableData',
+    'foam.nanos.fs.File'
   ],
 
   methods: [
@@ -23,7 +23,7 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         DAO fileDAO = (DAO) x.get("fileDAO");
 
-        if ( ucj.getData() instanceof Document ) {
+        if ( ucj.getData() instanceof RenewableData ) {
           Document document = (Document) ucj.getData();
           String[] labels = document.getCapability().getLabels();
           File f = null;
