@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'foam.mlang.order.Desc',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.GroupBy',
@@ -31,6 +32,8 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.List',
     'java.util.Map',
+    'java.util.PriorityQueue',
+    'java.util.Queue',
     'java.util.stream.Collectors',
     'static foam.mlang.MLang.*'
   ],
@@ -179,25 +182,21 @@ return ret;`
         }
       ],
       javaCode: `
-var groupIds = new java.util.ArrayList(sink.getGroupKeys());
-((DAO) x.get("ruleGroupDAO"))
-  .where(IN(RuleGroup.ID, groupIds))
-  .select(new AbstractSink() {
-    @Override
-    public void put(Object o, Detachable s) {
-      var rg = (RuleGroup) o;
-      if ( rg.f(x, obj, oldObj) ) {
-        var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
-        if ( ! rules.isEmpty() ) {
-          new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
-        }
+var logger = (Logger) x.get("logger");
+var ruleGroups = getRuleGroups(sink.getGroupKeys());
+var size = ruleGroups.size();
+while ( size-- > 0 ) {
+  var rg = ruleGroups.poll();
+  try {
+    if ( rg.f(x, obj, oldObj) ) {
+      var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
+      if ( ! rules.isEmpty() ) {
+        new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
       }
-      groupIds.remove(rg.getId());
     }
-  });
-
-if ( ! groupIds.isEmpty() ) {
-  ((foam.nanos.logger.Logger) x.get("logger")).error("RuleGroup not found.", groupIds);
+  } catch ( Throwable t ) {
+    logger.error("Failed applying rules in group:", rg.getId(), t);
+  }
 }`
     },
     {
@@ -293,6 +292,25 @@ for ( Object key : groups.getGroupKeys() ) {
      dao.where(predicate)
        .select(GROUP_BY(Rule.RULE_GROUP, new ArraySink()))
    );`
+    },
+    {
+      name: 'getRuleGroups',
+      type: 'Queue<RuleGroup>',
+      args: [ 'List groupIds' ],
+      javaCode: `
+var logger = (Logger) getX().get("logger");
+var ruleGroupDAO = (DAO) getX().get("ruleGroupDAO");
+var result = new PriorityQueue<RuleGroup>(DESC(RuleGroup.PRIORITY));
+
+for ( var groupId : groupIds ) {
+  var group = ruleGroupDAO.find(groupId);
+  if ( group == null ) {
+    logger.error("RuleGroup not found.", groupId);
+    continue;
+  }
+  result.add((RuleGroup) group);
+}
+return result;`
     }
   ],
 
