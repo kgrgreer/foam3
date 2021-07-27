@@ -26,7 +26,7 @@ foam.CLASS({
             this.add(value);
           });
       },
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       class: 'Reference',
@@ -40,7 +40,7 @@ foam.CLASS({
             this.add(value);
           });
       },
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       class: 'Boolean',

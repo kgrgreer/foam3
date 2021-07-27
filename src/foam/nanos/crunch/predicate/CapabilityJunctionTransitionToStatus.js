@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'capabilityId',
       of: 'foam.nanos.crunch.Capability',
       documentation: `Used to catch any ucj's with their targetId equaling this value.`,
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'status',

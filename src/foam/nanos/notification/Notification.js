@@ -187,7 +187,7 @@ foam.CLASS({
       name: 'groupId',
       documentation: 'Group notification will be sent to.',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' },
-      menuKeys: [ 'admin.groups' ]
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Map',

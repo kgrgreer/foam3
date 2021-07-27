@@ -265,7 +265,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.Group',
       name: 'group',
-      menuKeys: [ 'admin.groups' ]
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Boolean',

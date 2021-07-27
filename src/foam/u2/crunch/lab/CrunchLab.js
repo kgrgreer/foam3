@@ -156,7 +156,7 @@ foam.CLASS({
             this.currentMemento_ = null;
         }
       },
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       class: 'Boolean',

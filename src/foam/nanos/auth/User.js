@@ -890,7 +890,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'group',
-      menuKeys: [ 'admin.groups' ]
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Enum',

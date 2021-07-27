@@ -102,7 +102,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'alertGroup',
-      menuKeys: [ 'admin.groups' ]
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Reference',

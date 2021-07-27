@@ -33,7 +33,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
       view: 'foam.nanos.crunch.ui.ReviewUCJView',
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'of',

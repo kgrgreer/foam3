@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'capability',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'ignoreList',

@@ -19,7 +19,7 @@ foam.CLASS({
       name: 'capabilityId',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     }
   ],
 

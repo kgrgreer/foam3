@@ -35,7 +35,7 @@ foam.CLASS({
       class: 'Reference',
       name: 'capability',
       of: 'foam.nanos.crunch.Capability',
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'data',

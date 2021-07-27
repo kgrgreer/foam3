@@ -17,7 +17,7 @@ foam.CLASS({
       name: 'capabilityToReview',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      menuKeys: [ 'admin.capabilities' ]
+      menuKeys: ['admin.capabilities']
     }
   ],
 });
