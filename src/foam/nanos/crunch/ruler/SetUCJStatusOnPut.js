@@ -88,7 +88,7 @@ foam.CLASS({
         { name: 'reason', javaType: 'String' }
       ],
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.info("SetUCJStatus result, UCJ: ", ucj.toString(), ", oldStatus: ", oldStatus, ", newStatus: ", newStatus, ", reason: ", reason);
       `
     },
