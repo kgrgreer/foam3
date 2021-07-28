@@ -394,9 +394,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
+      var oldCreate  = cls.create;
+      var axiom      = this;
+      var isFirstCSS = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -438,8 +438,8 @@ foam.CLASS({
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^/<< shorthand on the CSS. */
-      // TODO(braden): Parse and validate the CSS.
-      // TODO(braden): Add the automatic prefixing once we have the parser.
+      // TODO: Parse and validate the CSS.
+      // TODO: Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
       return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
         var c = next.charCodeAt(0);
