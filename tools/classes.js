@@ -263,6 +263,7 @@ var classes = [
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
+  'foam.nanos.auth.AccountNotFoundException',
   'foam.nanos.auth.AgentJunctionStatus',
   'foam.nanos.auth.Authorizer',
   'foam.nanos.auth.AuthorizationDAO',

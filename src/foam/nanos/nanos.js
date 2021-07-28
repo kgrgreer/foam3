@@ -64,6 +64,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/Address" },
   { name: "foam/nanos/auth/AgentJunctionStatus" },
   { name: 'foam/nanos/auth/AccountLockedException' },
+  { name: 'foam/nanos/auth/AccountNotFoundException' },
   { name: 'foam/nanos/auth/AccountDisabledException' },
   { name: 'foam/nanos/auth/AuthenticationException' },
   { name: 'foam/nanos/auth/AuthorizationException' },
