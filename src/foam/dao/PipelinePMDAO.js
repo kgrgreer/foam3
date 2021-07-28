@@ -261,6 +261,7 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
 
       methods: [
         {
+          synchronized: true,
           name: 'log',
           args: [
             {
@@ -270,11 +271,11 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
           ],
           javaCode: `
           Stack st = (Stack) x.get(PIPE_PM_START);
-          
-	      if ( st != null && ! st.empty() ) {
-	        PM pm = (PM) st.pop();
-	        if ( pm != null ) pm.log(x);
-		  }
+
+          if ( st != null && ! st.empty() ) {
+            PM pm = (PM) st.pop();
+            if ( pm != null ) pm.log(x);
+          }
       `
         },
         {

@@ -80,6 +80,7 @@ foam.CLASS({
 
   methods: [
     {
+      synchronized: true,
       name: 'fold',
       type: 'void',
       args: [ 'PM pm' ],
