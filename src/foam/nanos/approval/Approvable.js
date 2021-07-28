@@ -129,7 +129,7 @@ foam.CLASS({
 
         StringBuilder sb = new StringBuilder();
         sb.append(modelString);
-        sb.append(': ');
+        sb.append(": ");
 
         foam.dao.DAO referenceDAO = (foam.dao.DAO) getX().get(getDaoKey());
 
