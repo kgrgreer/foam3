@@ -743,7 +743,9 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
+  'foam.nanos.approval.PopulateApprovalRequestSummariesDAO',
   'foam.nanos.approval.RestrictedApprovableDAO',
+  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
@@ -751,7 +753,6 @@ var classes = [
   'foam.nanos.geocode.GoogleMapsGeocodingDAO',
   'foam.dao.history.HistoryDAO',
   'foam.nanos.script.ScriptRunnerDAO',
-  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.dao.UnreliableDAO',
   'foam.nanos.auth.UserPasswordHashingDAO',
   'foam.dao.ValidatingDAO',
