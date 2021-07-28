@@ -164,14 +164,15 @@ foam.CLASS({
       }
     },
     function jump(jumpPos) {
-
       while ( this.pos > jumpPos ) {
-      // Check if the class of the view to which current memento points has property viewTitle set 
-      // using the identifier added to the memento params by stackView
-        if ( this.stack_[this.pos].parent?.memento?.params == this.BCRMB_ID ) {
-          this.deleteMemento(this.stack_[this.pos].parent.memento.head);
+        // Check if the class of the view to which current memento points has property viewTitle set 
+        // using the identifier added to the memento params by stackView
+        if ( this.stack_[this.pos].parent ) {
+          var parent = this.getContextFromParent(this.stack_[this.pos].parent);
+          if ( parent.memento?.params == this.BCRMB_ID ) {
+            this.deleteMemento(parent.memento.head);
+          }
         }
-
         this.pos--;
       }
       if ( this.navStackBottom > this.pos ) {
@@ -182,6 +183,18 @@ foam.CLASS({
           }
         }
       }
+    },
+    function getContextFromParent(parent) {
+      if ( ! parent ) return this.__subSubContext__;
+      if ( parent.isContext ) return parent;
+      if ( parent.__subContext__ ) return parent.__subContext__;
+
+
+      // Do a bit of a dance with the context, to ensure that exports from
+      // "parent" are available to "view"
+      // TODO: revisit KGR's comment from earlier; this may not be needed
+      console.warn('parent is neither an element nor a context');
+      return this.__subSubContext__.createSubContext(parent);
     }
   ],
 
