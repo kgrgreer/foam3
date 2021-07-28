@@ -134,19 +134,18 @@ foam.CLASS({
         sb.append(getObjId().toString());
         sb.append(") UPDATE");
 
-        modelString = sb.toString();
-
         foam.dao.DAO referenceDAO = (foam.dao.DAO) getX().get(getDaoKey());
 
-        if ( referenceDAO == null ) return modelString;
+        if ( referenceDAO == null ) return sb.toString();
 
         foam.core.FObject referenceObj = (foam.core.FObject) referenceDAO.find(getObjId());
 
         if ( referenceObj != null ){
-          modelString = modelString + ": " + referenceObj.toSummary();
+          sb.append(": ");
+          sb.append(referenceObj.toSummary());
         }
 
-        return modelString;
+        return sb.toString();
       `
     }
   ]
