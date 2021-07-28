@@ -74,6 +74,7 @@
           : "N/A";
         
         User createdForUser = (User) userDAO.find(approval.getCreatedFor());
+        createdForUser.setX(x);
 
         if ( createdForUser != null && ! SafetyUtil.isEmpty(createdForUser.toSummary()) ){
           createdForSummaryString = createdForUser.toSummary();
@@ -83,6 +84,7 @@
         String referenceSummaryString = "ID:" + approval.getObjId().toString();
 
         FObject referenceObject = (FObject) referenceDAO.find(approval.getObjId());
+        referenceObject.setX(x);
 
         String referenceObjectToSummary = referenceObject.toSummary();
 
