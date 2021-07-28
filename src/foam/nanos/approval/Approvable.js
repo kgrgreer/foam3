@@ -128,20 +128,19 @@ foam.CLASS({
         modelString = modelString.replaceAll("DAO","");
 
         StringBuilder sb = new StringBuilder();
-        sb.append('(');
         sb.append(modelString);
-        sb.append(':');
-        sb.append(getObjId().toString());
-        sb.append(") UPDATE");
+        sb.append(': ');
 
         foam.dao.DAO referenceDAO = (foam.dao.DAO) getX().get(getDaoKey());
 
-        if ( referenceDAO == null ) return sb.toString();
+        if ( referenceDAO == null ) {
+          sb.append(getObjId().toString());
+          return sb.toString();
+        }
 
         foam.core.FObject referenceObj = (foam.core.FObject) referenceDAO.find(getObjId());
 
         if ( referenceObj != null ){
-          sb.append(": ");
           sb.append(referenceObj.toSummary());
         }
 
