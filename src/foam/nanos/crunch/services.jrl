@@ -81,8 +81,8 @@ p({
       .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
-         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
-         .build())
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
+        .build())
       .build();
   """,
   "client":"{
