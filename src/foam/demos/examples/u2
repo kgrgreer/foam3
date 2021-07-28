@@ -375,6 +375,48 @@ If it had been in package: 'com.acme', then it would have been 'com-acme-CSSExam
 
 ##    CSS Variables
 ##    inheritCSS
+By default Element sub-classes inherit the CSS of their parent classes, but if the inheritCSS
+property is set to false, then CSS isn't inherited and the Element class starts from a clean slate.
+--
+foam.CLASS({
+  name: 'ParentElement',
+  extends: 'foam.u2.Element',
+  css: `
+    ^ { background: pink; }
+  `
+});
+
+
+foam.CLASS({
+  name: 'NormalChildElement',
+  extends: 'ParentElement',
+  methods: [
+    function render() {
+      this.addClass().add('content');
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'NoInheritCSSChildElement',
+  extends: 'ParentElement',
+  properties: [ 'inheritCSS', false ],
+  methods: [
+    function render() {
+      this.addClass().add('content');
+    }
+  ]
+});
+
+start({class: 'NormalChildElement'}).end();
+start({class: 'NoInheritCSSChildElement'}).end();
+
+// Of course, we could have just set the inheritCSS property false on NormalChildElement to get the same result.
+start({class: 'NormalChildElement'}, {inheritCSS: false}).end();
+
+// TODO: fix, isn't working
+
 ##   CSS Classes
 ##    addClass() / addClasses()
 ##    enableClass()
