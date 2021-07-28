@@ -184,8 +184,9 @@ foam.CLASS({
         }
       }
     },
-    function getContextFromParent(parent) {
-      if ( ! parent ) return this.__subSubContext__;
+    function getContextFromParent(parent, ctx) {
+      ctx = ctx || this;
+      if ( ! parent ) return ctx.__subSubContext__;
       if ( parent.isContext ) return parent;
       if ( parent.__subContext__ ) return parent.__subContext__;
 
@@ -194,7 +195,7 @@ foam.CLASS({
       // "parent" are available to "view"
       // TODO: revisit KGR's comment from earlier; this may not be needed
       console.warn('parent is neither an element nor a context');
-      return this.__subSubContext__.createSubContext(parent);
+      return ctx.__subSubContext__.createSubContext(parent);
     }
   ],
 

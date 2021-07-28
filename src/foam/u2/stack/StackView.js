@@ -64,7 +64,7 @@ foam.CLASS({
       var view   = s.view;
       var parent = s.parent;
 
-      var X = this.data.getContextFromParent(parent);
+      var X = this.data.getContextFromParent(parent, this);
 
       var v = foam.u2.ViewSpec.createView(view, null, this, X);
 
