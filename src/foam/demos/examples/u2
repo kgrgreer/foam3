@@ -392,7 +392,7 @@ foam.CLASS({
   extends: 'ParentElement',
   methods: [
     function render() {
-      this.addClass().add('content');
+      this.addClass().add('InheritCSS: ', this.model_.inheritCSS);
     }
   ]
 });
@@ -401,19 +401,19 @@ foam.CLASS({
 foam.CLASS({
   name: 'NoInheritCSSChildElement',
   extends: 'ParentElement',
-  properties: [ 'inheritCSS', false ],
+  inheritCSS: false,
+  css: '^ { color: red; }',
   methods: [
     function render() {
-      this.addClass().add('content');
+      this.addClass().add('No-inheritCSS: ', this.model_.inheritCSS);
     }
   ]
 });
 
+log(NoInheritCSSChildElement.model_.inheritCSS);
+
 start({class: 'NormalChildElement'}).end();
 start({class: 'NoInheritCSSChildElement'}).end();
-
-// Of course, we could have just set the inheritCSS property false on NormalChildElement to get the same result.
-start({class: 'NormalChildElement'}, {inheritCSS: false}).end();
 
 // TODO: fix, isn't working
 
