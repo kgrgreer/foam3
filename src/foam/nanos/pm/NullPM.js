@@ -29,7 +29,16 @@ foam.CLASS({
           type: 'X'
         }
       ],
-      javaCode: '/*nop*/'
+      javaCode: `
+      if ( x == null ) return;
+      if ( getIsError() ) return;
+      if ( getEndTime() == 0L ) {
+        setEndTime(System.currentTimeMillis());
+      }
+      PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
+      if ( pmLogger != null ) {
+        pmLogger.log(this);
+      }`
     }
   ]
 });
