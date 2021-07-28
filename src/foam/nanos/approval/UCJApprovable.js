@@ -78,7 +78,10 @@
       name: 'toSummary',
       code: function() {
         return this.ucj.id;
-      }
+      },
+      javaCode: `
+        return getUcj().getId();
+      `
     }
   ]
 });

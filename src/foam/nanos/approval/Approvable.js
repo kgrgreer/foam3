@@ -120,7 +120,26 @@ foam.CLASS({
             ? `${modelString}: ${obj.toSummary()}`
             :  `(${modelString}:${this.objId}) UPDATE`
         });
-      }
+      },
+      javaCode: `
+        String modelString = getDaoKey();
+
+        modelString = modelString.replaceAll("local","");
+        modelString = modelString.replaceAll("DAO","");
+        modelString = '(' + modelString + ':' + getObjId().toString() + ") UPDATE";
+
+        foam.dao.DAO referenceDAO = (foam.dao.DAO) getX().get(getDaoKey());
+
+        if ( referenceDAO == null ) return modelString;
+
+        foam.core.FObject referenceObj = (foam.core.FObject) referenceDAO.find(getObjId());
+
+        if ( referenceObj != null ){
+          modelString = modelString + ": " + referenceObj.toSummary();
+        }
+
+        return modelString;
+      `
     }
   ]
 });
