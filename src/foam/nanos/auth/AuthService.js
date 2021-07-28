@@ -192,6 +192,29 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'checkWithData',
+      documentation: `
+        Check if a user in the given context has the given permission for given object.
+      `,
+      async: true,
+      type: 'Boolean',
+      swiftThrows: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'permission',
+          type: 'String',
+        },
+        {
+          name: 'opt',
+          type: 'FObject'
+        }
+      ]
+    },
+    {
       name: 'updatePassword',
       documentation: `Updates a user's password.`,
       async: true,

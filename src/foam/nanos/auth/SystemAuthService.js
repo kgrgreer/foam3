@@ -58,6 +58,36 @@ foam.CLASS({
     },
     {
       name: 'check',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'permission',
+          type: 'String',
+        }
+      ],
+      javaCode: `
+        return this.checkWithData(x, permission, null);
+      `
+    },
+    {
+      name: 'checkWithData',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'permission',
+          type: 'String',
+        },
+        {
+          name: 'opt',
+          type: 'FObject'
+        }
+      ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
@@ -65,7 +95,7 @@ foam.CLASS({
           return true;
         }
 
-        return isAdmin(x, group) || getDelegate().check(x, permission);
+        return isAdmin(x, group) || getDelegate().checkWithData(x, permission, opt);
       `
     },
     {

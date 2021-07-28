@@ -166,6 +166,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         {
           name: 'permission',
           javaType: 'java.security.Permission'
+        },
+        {
+          name: 'object',
+          type: 'FObject'
         }
       ],
       javaCode: `
@@ -179,11 +183,37 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             continue;
           }
 
+
+
+          // if we're trying to check for "user.read.treviso-sme"
+          // we can have a permission that's "user.read.n(-group=treviso-sme,sme)"
+          // new AuthPermission(j.getTargetId().split("?")
+
+          // u = user object
+          // parse permission
+          // p = "user.read.*"
+          
+
+          // QUESTIONS - what would the syntax of the client requested permission be?
+          // user.read.* ? - a bit counter-intuitive
+
+          // user.read.?group=treviso-sme
+          // user.read.*?name=arthur
+          
+          // mql = "group=treviso-sme"
+          // mql.f(u)
+
+        
+          // user.read.8015
+          // user.read.*?group=treviso-sme
+
+
+
           if ( j.getTargetId().startsWith("@") ) {
             DAO   dao   = (DAO) x.get("groupDAO");
             Group group = (Group) dao.find(j.getTargetId().substring(1));
 
-            if ( group != null && group.implies(x, permission) ) {
+            if ( group != null && group.implies(x, permission, null) ) {
               return true;
             }
           } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {

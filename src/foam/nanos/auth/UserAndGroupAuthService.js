@@ -197,7 +197,9 @@ foam.CLASS({
             // if group is null break
             if ( group == null ) break;
             // check permission
-            if ( group.implies(x, new AuthPermission(permission)) ) return true;
+            // what to do about checkGroup checkUser
+            //TEMPORARY
+            if ( group.implies(x, new AuthPermission(permission), null) ) return true;
             // check parent group
             groupId = group.getParent();
           }
@@ -210,6 +212,38 @@ foam.CLASS({
       name: 'check',
       documentation: `Check if the user in the context supplied has the right
         permission.`,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'permission',
+          type: 'String',
+        }
+      ],
+      javaCode: `
+        return this.checkWithData(x, permission, null);
+      `
+    },
+    {
+      name: 'checkWithData',
+      documentation: `Check if the user in the context supplied has the right
+        permission.`,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'permission',
+          type: 'String',
+        },
+        {
+          name: 'o',
+          type: 'FObject'
+        }
+      ],
       javaCode: `
         if ( x == null || permission == null ) return false;
         Permission p = new AuthPermission(permission);
@@ -217,7 +251,7 @@ foam.CLASS({
           Group group = getCurrentGroup(x);
           while ( group != null ) {
             // check permission
-            if ( group.implies(x, p) ) return true;
+            if ( group.implies(x, p, o) ) return true;
             // check parent group
             group = (Group) ((DAO) getLocalGroupDAO()).find(group.getParent());
           }
