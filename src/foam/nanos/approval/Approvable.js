@@ -126,7 +126,15 @@ foam.CLASS({
 
         modelString = modelString.replaceAll("local","");
         modelString = modelString.replaceAll("DAO","");
-        modelString = '(' + modelString + ':' + getObjId().toString() + ") UPDATE";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        sb.append(modelString);
+        sb.append(':');
+        sb.append(getObjId().toString());
+        sb.append(") UPDATE");
+
+        modelString = sb.toString();
 
         foam.dao.DAO referenceDAO = (foam.dao.DAO) getX().get(getDaoKey());
 
