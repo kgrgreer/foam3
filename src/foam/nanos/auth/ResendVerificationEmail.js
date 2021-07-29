@@ -105,7 +105,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Go to sign in page.',
       code: function(X) {
-        this.pushMenu('sme.accountProfile.signout');
+        this.pushMenu('set-security');
       }
     }
   ]

@@ -118,7 +118,7 @@ foam.CLASS({
     {
       name: 'logout',
       code: function() {
-        this.pushMenu('sme.accountProfile.signout');
+        this.pushMenu('set-security');
       }
     }
   ],
