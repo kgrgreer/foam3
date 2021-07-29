@@ -536,6 +536,34 @@ foam.CLASS({
 tag(RemoveEventListenerDemo);
 
 ##    onKey
+--
+foam.CLASS({
+  name: 'OnKeyDemo',
+  extends: 'foam.u2.Element',
+
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      onKey: true
+    },
+    {
+      class: 'String',
+      name: 'value2',
+      // onKey: false // not needed, as false is the default
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.add(this.VALUE1, this.value1$, this.VALUE2, this.value2$);
+    }
+  ]
+});
+
+// TODO: fix
+tag({class: 'OnKeyDemo'});
+
 ##    DAOs
 Let's create a DAO with some sample data to work with:
 --
