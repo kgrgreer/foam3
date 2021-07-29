@@ -76,19 +76,6 @@ foam.CLASS({
       return v;
     },
 
-    function getContextFromParent(parent) {
-      if ( ! parent ) return this.__subSubContext__;
-      if ( parent.isContext ) return parent;
-      if ( parent.__subContext__ ) return parent.__subContext__;
-
-
-      // Do a bit of a dance with the context, to ensure that exports from
-      // "parent" are available to "view"
-      // TODO: revisit KGR's comment from earlier; this may not be needed
-      console.warn('parent is neither an element nor a context');
-      return this.__subSubContext__.createSubContext(parent);
-    },
-
     function shouldMementoValueBeChanged(mementoValue, mementoHead) {
       if ( ! mementoValue )
         return false;
