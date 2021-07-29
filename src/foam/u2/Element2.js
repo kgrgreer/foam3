@@ -360,6 +360,12 @@ foam.CLASS({
       name: 'code'
     },
     {
+      class: 'String',
+      name: 'allCode_',
+      factory: function() {
+      }
+    },
+    {
       name: 'name',
       factory: function() { return 'CSS-' + Math.abs(foam.util.hashCode(this.code)); }
     },
@@ -1176,12 +1182,13 @@ foam.CLASS({
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
+      debugger;
       var ls = this.elListeners;
       for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
           ls.splice(i, 3);
-          this.onRemoveListener_(topic, listener);
+          this.element_.removeEventListener(topic, listener);
           return;
         }
       }
