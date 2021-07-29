@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
@@ -111,8 +112,11 @@ public class SugarWebAgent
 
       Method[] method_ = class_.getMethods();  // get Methods' List from the class
 
+      boolean methodFound = false;
+
       for (var method : method_) {
         if (method.getName().equals(methodName)) { //found picked Method
+          methodFound = true;
 
           logger.debug("service : " + serviceName);
           logger.debug("methodName : " + method.getName());
@@ -145,6 +149,7 @@ public class SugarWebAgent
           }
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
+        if ( ! methodFound ) throw new RuntimeException("Invalid metho: " + methodName);
       }
 
     } catch (Exception e) {
