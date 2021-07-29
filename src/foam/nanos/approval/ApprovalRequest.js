@@ -412,7 +412,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 3,
+      gridColumns: 6,
       columnPermissionRequired: true,
       readPermissionRequired: true
     },
@@ -423,7 +423,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 3,
+      gridColumns: 6,
       columnPermissionRequired: true,
       readPermissionRequired: true
     },
