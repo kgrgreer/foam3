@@ -40,13 +40,14 @@ import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
 import foam.nanos.http.Format;
 import foam.nanos.http.HttpParameters;
+import foam.nanos.http.SendErrorHandler;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 
 public class SugarWebAgent
-  implements WebAgent
+  implements WebAgent, SendErrorHandler
 {
   public SugarWebAgent() {}
 
@@ -220,5 +221,11 @@ public class SugarWebAgent
     }
 
     return clsObj;
+  }
+
+  public void sendError(X x, int status, String message) {
+    DigErrorMessage error = new GeneralException(message);
+    error.setStatus(String.valueOf(status));
+    DigUtil.outputException(x, error, Format.JSON);
   }
 }
