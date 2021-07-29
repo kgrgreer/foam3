@@ -204,7 +204,8 @@ foam.CLASS({
       documentation: 'List of labels applied to this file',
       view: {
         class: 'foam.u2.view.ReferenceArrayView',
-        daoKey: 'fileLabelDAO'
+        daoKey: 'fileLabelDAO',
+        allowDuplicates: false
       }
     },
     {

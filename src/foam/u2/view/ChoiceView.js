@@ -155,6 +155,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'disabled_data',
+      documentation: 'Optional slot containing list of choice ids that should be disabled',
+      factory: function() {
+        return [];
+      }
+    },
+    {
       class: 'foam.u2.ViewSpec',
       name: 'selectSpec',
       value: { class: 'foam.u2.tag.Select' }
@@ -231,7 +238,8 @@ foam.CLASS({
               placeholder$:     self.placeholder$,
               mode$:            self.mode$,
               size$:            self.size$,
-              header$:          self.header$
+              header$:          self.header$,
+              disabled_data$:   self.disabled_data$
             })
               .attrs({name: self.name})
               .enableClass('selection-made', self.index$.map((index) => index !== -1))

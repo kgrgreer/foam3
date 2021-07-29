@@ -25,7 +25,8 @@ foam.CLASS({
       expression: function(dao) {
         return {
           class: 'foam.u2.view.ReferenceView',
-          dao: dao
+          dao: dao,
+          disabled_data$: this.disabled_data_$
         };
       }
     }

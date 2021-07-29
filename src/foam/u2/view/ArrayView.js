@@ -41,6 +41,18 @@ foam.CLASS({
       name: 'enableRemoving',
       value: true
     },
+    {
+      class: 'Boolean',
+      name: 'allowDuplicates',
+      defaultValue: true
+    },
+    {
+      name: 'disabled_data_',
+      documentation: 'Optional list of choices that should be disabled',
+      factory: function() {
+        return [];
+      }
+    },
     // The next two properties are used to avoid excess flickering.
     // We only update data to data2_ when we know that our feedback
     // didn't cause the update. This prevents the whole view from
@@ -119,6 +131,13 @@ foam.CLASS({
   `,
 
   methods: [
+    function init() {
+      // Hook up disabled data for any array that does not allow duplicates
+      if ( ! this.allowDuplicates) {
+        this.disabled_data_$.linkFrom(this.data$);
+      }
+    },
+
     function render() {
       this.SUPER();
       var self = this;

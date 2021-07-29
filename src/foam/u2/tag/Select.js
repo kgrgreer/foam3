@@ -64,6 +64,10 @@ foam.CLASS({
     {
       name: 'header',
       documentation: 'The heading text for the choices'
+    },
+    {
+      name: 'disabled_data',
+      documentation: 'Optional list of disabled choices that should not be selectable'
     }
   ],
 
@@ -80,7 +84,7 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.setChildren(this.slot(function(choices, placeholder, header) {
+      this.setChildren(this.slot(function(choices, placeholder, header, data) {
         var cs = [];
 
         if ( header ) {
@@ -96,10 +100,12 @@ foam.CLASS({
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var c = choices[i];
+          var isDisabled = self.slot(function(data) { return self.isOptionDisabled_(value, data === i); });
           let value = c[1];
           let e = self.E('option').attrs({
             value: i,
-            selected: self.data === i
+            selected: self.data === i,
+            disabled: isDisabled
           }).translate(c[1] + '.name', value)
           if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
@@ -118,6 +124,18 @@ foam.CLASS({
         mode === foam.u2.DisplayMode.DISABLED ||
         mode === foam.u2.DisplayMode.RO;
       this.setAttribute('disabled', disabled);
+    },
+
+    function isOptionDisabled_(option, isSelected) {
+      if (isSelected || typeof this.disabled_data === 'undefined') {
+        return false;
+      }
+
+      for ( var i = 0 ; i < this.disabled_data.length ; i++ ) {
+        if ( foam.util.equals(this.disabled_data[i], option) ) return true;
+      }
+
+      return false;
     }
   ]
 });
