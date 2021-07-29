@@ -630,6 +630,39 @@ foam.u2.Element.create().start().add('Here I am, way at the bottom of the page!'
 ##   Tags
 ##    attributes
 ##    registerElement
+The Context method 'registerElement' can be used to declare that a specified
+Element subclass should be transparently used whenever an tag is created
+with the specified node name.
+--
+foam.CLASS({
+  name: 'Blink',
+  extends: 'foam.u2.Element',
+  properties: [
+    [ 'nodeName', 'span' ],
+    { class: 'Boolean', name: 'on' }
+  ],
+
+  methods: [
+    function render() {
+      this.show(this.on$);
+      this.toggle();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'toggle',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() { this.on = ! this.on; this.toggle(); }
+    }
+  ]
+});
+
+// TODO: doesn't work
+foam.__context__.registerElement(Blink, 'blink');
+start('blink').add('blinking').end();
+
 ##    elementForName
 ##   View
 The foam.u2.View class extends Element and adds a property named 'data', which it exports.
