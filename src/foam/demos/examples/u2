@@ -513,7 +513,28 @@ start('ul').forEach(['Apples', 'Bananas', 'Oranges'], function(i) { this.start('
 on() and onEventListener() are the same, with onEventListener() being for DOM compatibility.
 --
 start('a').add('click me').on('click', function() { window.alert('clicked'); }).end();
+
 ##    removeEventListener()
+Provided for compatibility with DOM, but rarely used.
+--
+foam.CLASS({
+  name: 'RemoveEventListenerDemo',
+  extends: 'foam.u2.Element',
+  methods: [
+    function render() {
+      this.on('click', this.onClick).add('click me (once)');
+    }
+  ],
+  listeners: [
+    function onClick() {
+      log('clicked, removing listener');
+      this.removeEventListener('click', this.onClick);
+    }
+  ]
+});
+
+tag(RemoveEventListenerDemo);
+
 ##    onKey
 ##    DAOs
 Let's create a DAO with some sample data to work with:
