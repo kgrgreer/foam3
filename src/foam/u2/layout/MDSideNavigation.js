@@ -118,11 +118,7 @@ foam.CLASS({
     {
       name: 'logout',
       code: function() {
-        this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
-          localStorage.removeItem('defaultSession');
-        });
+        this.pushMenu('sme.accountProfile.signout');
       }
     }
   ],
@@ -178,8 +174,8 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-TreeViewRow-selected > .foam-u2-view-TreeViewRow-heading {
-       border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
-     }
+        border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
+    }
 
     ^ .foam-u2-view-TreeViewRow-heading {
         height: 10rem;

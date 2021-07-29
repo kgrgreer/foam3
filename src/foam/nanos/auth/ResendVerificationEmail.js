@@ -18,6 +18,7 @@ foam.CLASS({
     'auth',
     'emailToken',
     'notify',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -104,11 +105,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Go to sign in page.',
       code: function(X) {
-        this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
-          localStorage.removeItem('defaultSession');
-        });
+        this.pushMenu('sme.accountProfile.signout');
       }
     }
   ]
