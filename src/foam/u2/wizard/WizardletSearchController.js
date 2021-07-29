@@ -98,11 +98,12 @@ foam.CLASS({
           for ( let p of cls.getAxiomsByClass(foam.core.Property) ) {
             var visibilityEnum = p.visibility;
             if ( p.visibility instanceof Function ) {
+              // fetching argument values from the property's visibility method 
               var args = p.visibility.toString().match(/\((?:.+(?=\s*\))|)/)[0]
                 .slice(1)
                 .split(/\s*,\s*/g)
-                .map(a => a.trim())
-                .map(ps => w.data[ps]);
+                .map(argumentStrings => argumentStrings.trim())
+                .map(cleanedArgumentStrings => w.data[cleanedArgumentStrings]);
               visibilityEnum = p.visibility.apply(w.data, args);
             }
 
