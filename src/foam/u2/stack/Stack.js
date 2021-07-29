@@ -164,9 +164,10 @@ foam.CLASS({
       }
     },
     function jump(jumpPos) {
+
       while ( this.pos > jumpPos ) {
-        // Check if the class of the view to which current memento points has property viewTitle set 
-        // using the identifier added to the memento params by stackView
+      // Check if the class of the view to which current memento points has property viewTitle set 
+      // using the identifier added to the memento params by stackView
         if ( this.stack_[this.pos].parent ) {
           var parent = this.getContextFromParent(this.stack_[this.pos].parent);
           if ( parent.memento?.params == this.BCRMB_ID ) {
@@ -196,6 +197,7 @@ foam.CLASS({
       // TODO: revisit KGR's comment from earlier; this may not be needed
       console.warn('parent is neither an element nor a context');
       return ctx.__subSubContext__.createSubContext(parent);
+
     }
   ],
 

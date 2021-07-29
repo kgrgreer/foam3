@@ -65,7 +65,6 @@ foam.CLASS({
       var parent = s.parent;
 
       var X = this.data.getContextFromParent(parent, this);
-
       var v = foam.u2.ViewSpec.createView(view, null, this, X);
 
       if ( ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/) && X.memento ) {
@@ -75,7 +74,21 @@ foam.CLASS({
       }
 
       return v;
-    }, 
+    },
+
+    function getContextFromParent(parent) {
+      if ( ! parent ) return this.__subSubContext__;
+      if ( parent.isContext ) return parent;
+      if ( parent.__subContext__ ) return parent.__subContext__;
+
+
+      // Do a bit of a dance with the context, to ensure that exports from
+      // "parent" are available to "view"
+      // TODO: revisit KGR's comment from earlier; this may not be needed
+      console.warn('parent is neither an element nor a context');
+      return this.__subSubContext__.createSubContext(parent);
+    },
+
     function shouldMementoValueBeChanged(mementoValue, mementoHead) {
       if ( ! mementoValue )
         return false;
