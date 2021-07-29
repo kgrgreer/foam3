@@ -1563,7 +1563,7 @@ foam.CLASS({
       return this;
     },
 
-    // Think of a better name
+    // Think of a better name?
     function responsiveClasses(clsMap) {
       /*
       Enables and disables CSS classes based on displayWidth
@@ -1572,17 +1572,20 @@ foam.CLASS({
         'LG' : 'cls3'
       }
       */
-      //TODO: Why does this not work when initially rendering
       if ( ! this.displayWidth ) return;
       var self = this;
-      this.displayWidth$.map(function() {
+      this.displayWidth$.sub(mapClasses);
+      mapClasses();
+
+      function mapClasses() {
         for ( var key in clsMap ) {
           if ( key ) {
             var check = self.displayWidth.ordinal >= self.displayWidth.cls_[key].ordinal;
             foam.Array.isInstance(clsMap[key]) ? self.enableClasses(clsMap[key], check) : self.enableClass(clsMap[key], check);
           }
         }
-      });
+      }
+
       return this;
     },
 
