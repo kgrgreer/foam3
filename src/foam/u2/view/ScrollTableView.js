@@ -28,6 +28,7 @@
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ReadWriteView',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.TableView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.nanos.controller.Memento'
@@ -216,13 +217,14 @@
         return function(obj, id, title) {
           if ( ! this.stack ) return;
 
-          this.stack.push({
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            config: this.config,
-            idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
-          //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              config: this.config,
+              idOfRecord: id
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+          }));
         }
       }
     },
@@ -363,12 +365,14 @@
 
       } else if ( this.table_.memento.tail.head.length != 0 ) {
         if ( this.table_.memento.tail.head == 'create' ) {
-          this.stack.push({
-            class: 'foam.comics.v2.DAOCreateView',
-            data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-            config$: this.config$,
-            of: this.data.of
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOCreateView',
+              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento })
+          }));
         } else if ( this.table_.memento.tail.tail && this.table_.memento.tail.tail.head ) {
           var id = this.table_.memento.tail.tail.head;
           if ( ! foam.core.MultiPartID.isInstance(this.data.of.ID) ) {
@@ -387,13 +391,14 @@
           this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
             if ( ! v ) return;
             if ( self.state != self.LOADED ) return;
-            this.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: null,
-              config: this.config,
-              idOfRecord: id
-            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
-            //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+            this.stack.push(this.StackBlock.create({
+              view: {
+                class: 'foam.comics.v2.DAOSummaryView',
+                data: null,
+                config: this.config,
+                idOfRecord: id
+              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+            }));
           });
         }
       }
@@ -521,7 +526,7 @@
       name: 'prevPage',
       toolTip: 'Previous Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         if ( this.displayedRowCount_ ) {
@@ -534,7 +539,7 @@
       name: 'firstPage',
       toolTip: 'First Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         this.scrollTable(0);

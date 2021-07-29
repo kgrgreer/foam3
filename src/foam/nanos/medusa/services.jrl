@@ -13,7 +13,17 @@ p({
   "name": "health",
   "lazy": false,
   "authenticate": false,
+  "parameters": true,
   "serviceClass": "foam.nanos.medusa.HealthCheckWebAgent"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "info",
+  "lazy": false,
+  "authenticate": false,
+  "parameters": true,
+  "serviceClass": "foam.nanos.medusa.MedusaInfoWebAgent"
 })
 
 p({

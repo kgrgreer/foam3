@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Subject',
     'static foam.mlang.MLang.*'
   ],
 
@@ -67,9 +68,25 @@ foam.CLASS({
         }
 
         // Only put objects sent to a specific user
-        if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() )  
-          return getDelegate().put_(x, notif);
-    
+        if ( SafetyUtil.isEmpty(notif.getGroupId()) &&
+             ! notif.getBroadcasted() &&
+             notif.getUserId() > 0 ) {
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
+          Subject subject = (Subject) x.get("subject");
+          if ( subject != null ) {
+            User user = subject.getUser();
+            notif.setSpid(user.getSpid());
+            if ( ! foam.util.SafetyUtil.isEmpty(notif.getSpid()) ) {
+              try {
+                return getDelegate().put_(x, notif);
+              } catch ( Throwable t ) {
+                logger.error(t);
+              }
+            }
+          }
+          logger.warning(notif.getNotificationType(), "Spid not found", "Notification not saved");
+        }
+
         return obj;
       `
     }

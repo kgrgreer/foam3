@@ -110,20 +110,7 @@ foam.CLASS({
         return foam.u2.detail.TabbedDetailView;
       }
     },
-    'currentMemento_',
-    {
-      class: 'String',
-      name: 'mementoHead',
-      getter: function() {
-        if ( this.data.id ) {
-          var id = '' + this.data.id;
-          if ( id && foam.core.MultiPartID.isInstance(this.data.cls_.ID) ) {
-            id = id.substr(1, id.length - 2).replaceAll(':', '=');
-          }
-          return 'edit::' + id;
-        }
-      }
-    }
+    'currentMemento_'
   ],
 
   actions: [
@@ -133,7 +120,7 @@ foam.CLASS({
         return ! workingData$errors_;
       },
       code: function() {
-        this.config.dao.put(this.workingData).then((o) => {
+        this.config.dao.put(this.workingData).then(o => {
           if ( ! this.data.equals(o) ) {
             this.data = o;
             this.finished.pub();
@@ -148,7 +135,7 @@ foam.CLASS({
             }
           }
           this.stack.back();
-        }, (e) => {
+        }, e => {
           this.throwError.pub(e);
 
           if ( e.exception && e.exception.userFeedback  ) {
@@ -171,8 +158,21 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      if ( this.memento )
-        this.currentMemento_$ = this.memento.tail$;
+      if ( this.memento ) {
+        this.currentMemento_ = this.memento;
+        var counter = 0;
+        // counter < 2 is as at this point we need to skip 2 memento
+        // head of first one will be DAOSummaryView mode
+        // and second will be the id for the view
+        while ( counter < 2 ) {
+          if ( ! this.currentMemento_.tail ) {
+            this.currentMemento_.tail = this.Memento.create();
+          }
+          this.currentMemento_ = this.currentMemento_.tail;
+          counter++;
+        }
+        this.memento.head = 'edit';
+      }
 
       this
         .addClass(this.myClass())
@@ -204,7 +204,7 @@ foam.CLASS({
                   .add(self.slot(function(viewView) {
                     var view = foam.u2.ViewSpec.createView(viewView, {
                       data$: self.workingData$
-                    }, self, self.__subContext__.createSubContext({ memento: self.memento }));
+                    }, self, self);
 
                     return self.E().add(view);
                   }))

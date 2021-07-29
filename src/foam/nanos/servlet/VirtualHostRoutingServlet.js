@@ -92,6 +92,7 @@ foam.CLASS({
       Boolean    customFontsFailed   = false;
 
       out.println("<meta charset=\\"utf-8\\"/>");
+      out.println("<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />");
       out.print("<title>");
       out.print(theme.getAppName());
       out.println("</title>");
@@ -142,7 +143,7 @@ foam.CLASS({
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.min.js\\"></script>");
+          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.umd.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.plugin.autotable.min.js\\"></script>");
         }
         // development
@@ -165,7 +166,7 @@ foam.CLASS({
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
           }
           out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
-          out.println("<script language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.min.js\\"></script>");
+          out.println("<script language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.umd.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
         }
 

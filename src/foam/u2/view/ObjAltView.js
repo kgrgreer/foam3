@@ -11,6 +11,8 @@ foam.CLASS({
 
   imports: [ 'memento' ],
 
+  exports: ['currentMemento_ as memento'],
+
   requires: [ 'foam.u2.view.RadioView' ],
 
   documentation: "Like AltView, but for Objects instead of DAO's.",
@@ -44,15 +46,16 @@ foam.CLASS({
 
         var view = this.views.find(v => v[0] === this.selectedView);
         if ( view ) {
-          this.memento.tail.head = view[1];
+          this.memento.head = view[1];
         } else {
-          this.memento.tail.head = '';
+          this.memento.head = '';
         }
       }
     },
     {
       name: 'data'
-    }
+    },
+    'currentMemento_'
   ],
 
   methods: [
@@ -62,10 +65,11 @@ foam.CLASS({
 
       if ( this.memento && ! this.memento.tail ) {
         this.memento.tail = foam.nanos.controller.Memento.create();
+        this.currentMemento_ = this.memento.tail;
       }
 
-      if ( this.memento && this.memento.tail && this.memento.tail.head.length != 0 ) {
-        var view = this.views.find(v => v[1] === this.memento.tail.head);
+      if ( this.memento && this.memento.head.length != 0 ) {
+        var view = this.views.find(v => v[1] === this.memento.head);
         if ( view ) {
           this.selectedView = view[0];
         } else {

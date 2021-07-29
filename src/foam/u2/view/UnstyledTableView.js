@@ -390,8 +390,8 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.select(function(obj) {
-                      view.selectedObjects[obj.id] = obj;
+                    view.data.inX(ctrl.__subContext__).select().then(function(obj) {
+                     view.selectedObjects[obj.id] = obj;
                     });
                   } else {
                     view.selectedObjects = {};
@@ -566,7 +566,7 @@ foam.CLASS({
                       // don't do anything.
                       if (
                         evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots'))
+                        evt.target.classList.contains(view.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
                       ) {
                         return;
                       }
@@ -767,28 +767,17 @@ foam.CLASS({
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;
-
         var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c => {
-          if ( auth ) {
-            var axiom = self.of.getAxiomByName(c[0]);
-            if ( axiom && axiom.columnPermissionRequired ) {
-              var clsName  = self.of.name.toLowerCase();
-              var propName = axiom.name.toLowerCase();
-              return auth.check(ctrl.__subContext__, `${clsName}.column.${propName}`).then(function(enabled) {
-                return enabled && c;
-              });
-            }
-          }
+        ).map(c =>{
           return c;
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-    }
+      }
   ]
 });
 

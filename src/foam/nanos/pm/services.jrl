@@ -76,6 +76,6 @@ p({
   pm:false,
   service:{
     class:"foam.nanos.pm.PMFactory",
-    percentage:100
+    percentage:1
   }
 })

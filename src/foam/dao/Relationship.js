@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.dao.ManyToManyRelationshipAxiom',
     'foam.dao.ManyToManyRelationshipDAO',
     'foam.dao.OneToManyRelationshipAxiom',
-    'foam.dao.RelationshipDAO'
+    'foam.dao.RelationshipDAO',
+    'foam.u2.stack.StackBlock'
   ],
 
   properties: [
@@ -625,10 +626,9 @@ return junction`
           });
         });
 
-        x.stack.push({
-          class: 'foam.comics.DAOControllerView',
-          data: controller
-        });
+        x.stack.push(this.StackBlock.create({
+          view: { class: 'foam.comics.DAOControllerView', data: controller }
+        }));
       }
     },
     {
@@ -655,10 +655,9 @@ return junction`
           });
         });
 
-        x.stack.push({
-          class: 'foam.comics.DAOControllerView',
-          data: controller
-        });
+        x.stack.push(this.StackBlock.create({
+          view: { class: 'foam.comics.DAOControllerView', data: controller }
+        }));
       }
     }
   ]

@@ -25,6 +25,7 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/FileArray' },
   { name: 'foam/nanos/fs/FileArrayDAODecorator' },
   { name: 'foam/nanos/fs/FileArrayInCapablePayloadsDecorator' },
+  { name: 'foam/nanos/fs/FileSizeView', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FileDropZone', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FilePreview', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FileCard', flags: ['web'] },
@@ -116,6 +117,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/token/ClientTokenService" },
   { name: "foam/nanos/auth/token/Token" },
   { name: "foam/nanos/auth/token/AbstractTokenService" },
+  { name: "foam/nanos/auth/token/TokenExpiredException" },
+  { name: "foam/nanos/auth/token/TokenInvalidException" },
   { name: "foam/nanos/auth/ChangePasswordView" },
   { name: "foam/nanos/auth/ResetPassword" },
   { name: "foam/nanos/auth/RetrievePassword" },
@@ -575,6 +578,7 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
   { name: 'foam/nanos/approval/RestrictedApprovableDAO' },
+  { name: 'foam/nanos/approval/PopulateApprovalRequestSummariesDAO' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },
