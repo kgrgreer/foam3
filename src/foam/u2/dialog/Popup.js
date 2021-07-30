@@ -70,6 +70,9 @@ foam.CLASS({
       /* The following line fixes a stacking problem in certain browsers. */
       will-change: opacity;
     }
+    ^fullFrame {
+      width: 100%;
+    }
  `,
 
   properties: [
@@ -84,6 +87,11 @@ foam.CLASS({
       name: 'isStyled',
       value: true,
       documentation: 'Can be used to turn off all styling for modal container'
+    },
+    {
+      name: 'isFullFrame',
+      value: false,
+      documentation: 'Determines if pop up will take over full screen'
     }
   ],
 
@@ -101,6 +109,7 @@ foam.CLASS({
         .start()
           .call(function() { content = this; })
           .enableClass(this.myClass('inner'), this.isStyled$)
+          .enableClass(this.myClass('fullFrame'), this.isFullFrame$)
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .startContext({ data: this })
             .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
