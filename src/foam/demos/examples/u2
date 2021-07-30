@@ -721,6 +721,52 @@ The foam.u2.View class extends Element and adds a property named 'data', which i
 Views act as the display component (view) for their data. This is the standard MVC
 pattern where the View is the View, and the 'data' is the Model.
 ##    fromProperty()
+When Elements are used to view Property values, the fromProperty() method is called
+and provided the Property object that the view is being associated with.
+This allows the view to optionally configure itself based on Property values.
+Examples properties that may be taken from the property include:
+onKey, placeholder, displayWidth, size, min, max, of, daoKey, etc.
+--
+foam.CLASS({
+  name: 'LabelledTextField',
+  extends: 'foam.u2.TextField',
+
+  properties: [
+    { class: 'String', name: 'label' }
+  ],
+
+  methods: [
+    function fromProperty(p) {
+      this.label = p.label;
+    },
+
+    function render() {
+      this.add(this.label, ':');
+      this.SUPER();
+    }
+  ]
+});
+
+tag({class: 'LabelledTextField'});
+
+foam.CLASS({
+  name: 'LabelledTextFieldExample',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    { class: 'String', name: 'firstName', view: 'foam.u2.TextField' },
+    { class: 'String', name: 'lastName', view: 'LabelledTextField' }
+  ],
+
+  methods: [
+    function render() {
+      this.add(this.FIRST_NAME, this.LAST_NAME);
+    }
+  ]
+});
+
+tag({class: 'LabelledTextFieldExample'});
+
 ##   Controller
 The foam.u2.Controller class extends Element and exports itself as 'data'. Unlike Views, which
 provide a view for some other piece of data, a Controller provides a view for itself. It may
