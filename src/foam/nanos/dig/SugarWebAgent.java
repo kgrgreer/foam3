@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
@@ -40,13 +41,14 @@ import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
 import foam.nanos.http.Format;
 import foam.nanos.http.HttpParameters;
+import foam.nanos.http.SendErrorHandler;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 
 public class SugarWebAgent
-  implements WebAgent
+  implements WebAgent, SendErrorHandler
 {
   public SugarWebAgent() {}
 
@@ -110,8 +112,11 @@ public class SugarWebAgent
 
       Method[] method_ = class_.getMethods();  // get Methods' List from the class
 
+      boolean methodFound = false;
+
       for (var method : method_) {
         if (method.getName().equals(methodName)) { //found picked Method
+          methodFound = true;
 
           logger.debug("service : " + serviceName);
           logger.debug("methodName : " + method.getName());
@@ -144,6 +149,7 @@ public class SugarWebAgent
           }
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
+        if ( ! methodFound ) throw new RuntimeException("Invalid method: " + methodName);
       }
 
     } catch (Exception e) {
@@ -220,5 +226,11 @@ public class SugarWebAgent
     }
 
     return clsObj;
+  }
+
+  public void sendError(X x, int status, String message) {
+    DigErrorMessage error = new GeneralException(message);
+    error.setStatus(String.valueOf(status));
+    DigUtil.outputException(x, error, Format.JSON);
   }
 }
