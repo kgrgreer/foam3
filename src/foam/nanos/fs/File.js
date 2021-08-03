@@ -206,15 +206,11 @@ foam.CLASS({
       name: 'labels',
       class: 'StringArray',
       documentation: 'List of labels applied to this file',
-      validationPredicates: [
-        {
-          args: ['labels'],
-          predicateFactory: function(e) {
-            return e.NOT(e.CONTAINS(foam.nanos.fs.File.LABELS, ""));
-          },
-          errorString: 'INVALID_FILE_LABEL'
+      validateObj: function(labels) {
+        if (labels.indexOf("") >= 0) {
+          return 'An assigned file label cannot be empty';
         }
-      ],
+      },
       view: {
         class: 'foam.u2.view.ReferenceArrayView',
         daoKey: 'fileLabelDAO',
