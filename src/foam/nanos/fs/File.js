@@ -51,6 +51,10 @@ foam.CLASS({
     'mimeType'
   ],
 
+  messages: [
+    { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -202,6 +206,15 @@ foam.CLASS({
       name: 'labels',
       class: 'StringArray',
       documentation: 'List of labels applied to this file',
+      validationPredicates: [
+        {
+          args: ['labels'],
+          predicateFactory: function(e) {
+            return e.NOT(e.CONTAINS(foam.nanos.fs.File.LABELS, ""));
+          },
+          errorString: 'INVALID_FILE_LABEL'
+        }
+      ],
       view: {
         class: 'foam.u2.view.ReferenceArrayView',
         daoKey: 'fileLabelDAO',
