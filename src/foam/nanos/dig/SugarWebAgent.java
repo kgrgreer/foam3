@@ -149,7 +149,7 @@ public class SugarWebAgent
           }
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
-        if ( ! methodFound ) throw new RuntimeException("Invalid metho: " + methodName);
+        if ( ! methodFound ) throw new RuntimeException("Invalid method: " + methodName);
       }
 
     } catch (Exception e) {
