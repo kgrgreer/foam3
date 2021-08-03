@@ -50,11 +50,7 @@ foam.CLASS({
     'filename',
     'mimeType'
   ],
-
-  messages: [
-    { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
-  ],
-
+  
   properties: [
     {
       class: 'String',
