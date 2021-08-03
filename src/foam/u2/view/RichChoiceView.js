@@ -626,7 +626,7 @@ foam.CLASS({
       }
     },
     function clearSelection(evt) {
-      if ( evt ) evt.stopImmediatePropagation();
+      evt && evt.stopImmediatePropagation();
       this.fullObject_ = undefined;
 
       // If this view is being used for a property, then when the user clears
