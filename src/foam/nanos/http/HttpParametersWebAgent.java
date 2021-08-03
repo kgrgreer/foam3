@@ -195,7 +195,7 @@ public class HttpParametersWebAgent
           resp.setContentType("text/html");
           break;
         default:
-          logger.warning("accept/format could not be determined, default to JSON.");
+          logger.debug("accept/format could not be determined, default to JSON.");
       }
     }
     else if ( ! SafetyUtil.isEmpty(accept) && ! "application/x-www-form-urlencoded".equals(contentType)  ) {
@@ -227,10 +227,10 @@ public class HttpParametersWebAgent
         }
       }
       if ( i == formats.length ) {
-        logger.warning("accept/format could not be determined, default to JSON.");
+        logger.debug("accept/format could not be determined, default to JSON.");
       }
     } else {
-      logger.warning("accept/format could not be determined, default to JSON.");
+      logger.debug("accept/format could not be determined, default to JSON.");
     }
     parameters.set("format", format);
     parameters.set(Format.class, format);

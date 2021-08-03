@@ -10,7 +10,6 @@ import foam.core.X;
 import foam.nanos.http.WebAgent;
 import foam.nanos.http.Format;
 import foam.nanos.http.HttpParameters;
-import foam.nanos.logger.Logger;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import foam.lib.json.OutputterMode;
@@ -28,9 +27,7 @@ public class MedusaInfoWebAgent
     HttpServletResponse response = x.get(HttpServletResponse.class);
     HttpParameters      p       = x.get(HttpParameters.class);
     Format              format  = (Format) p.get(Format.class);
-    Logger              logger  = (Logger) x.get("logger");
 
-    logger.info(this.getClass().getSimpleName(), "format", format);
     response.setContentType("text/plain");
 
     ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
