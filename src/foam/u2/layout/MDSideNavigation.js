@@ -118,7 +118,7 @@ foam.CLASS({
     {
       name: 'logout',
       code: function() {
-        this.pushMenu('set-security');
+        this.pushMenu('sign-out');
       }
     }
   ],

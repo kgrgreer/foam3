@@ -105,7 +105,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Go to sign in page.',
       code: function(X) {
-        this.pushMenu('set-security');
+        this.pushMenu('sign-out');
       }
     }
   ]
