@@ -79,6 +79,10 @@ foam.CLASS({
       isAvailable: function(mode, enableAdding) {
         return enableAdding && mode === foam.u2.DisplayMode.RW;
       },
+      isEnabled: function(allowDuplicates, data, arrayLength_) {
+        // Disable adding if no duplicates and all uniques already assigned
+        return allowDuplicates || data.length !== arrayLength_;
+      },
       code: function() {
         var newItem = this.defaultNewItem;
         if ( this.FObject.isInstance(newItem) ) {
@@ -153,12 +157,7 @@ foam.CLASS({
       this.addClass();
 
       this
-        .add(this.slot(function(data2_, valueView, arrayLength_) {
-          if ( ! self.allowDuplicates) {
-            // Disable adding if no duplicates and all uniques already assigned
-            this.enableAdding = self.data.length !== self.arrayLength_;
-          }
-
+        .add(this.slot(function(data2_, valueView) {
           var data = data2_;
           return self.E()
             .start(self.Rows)
