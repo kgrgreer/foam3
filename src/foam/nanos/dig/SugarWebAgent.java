@@ -150,7 +150,7 @@ public class SugarWebAgent
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
       }
-      if ( ! methodFound ) throw new RuntimeException("Invalid method: " + methodName);
+      if ( ! methodFound ) throw new RuntimeException("Invalid Method");
     } catch (Exception e) {
       DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
       pm.error(x, e.getMessage());
