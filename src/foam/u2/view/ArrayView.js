@@ -47,11 +47,17 @@ foam.CLASS({
       defaultValue: true
     },
     {
-      name: 'disabled_data_',
+      name: 'disabledData_',
       documentation: 'Optional list of choices that should be disabled',
       factory: function() {
         return [];
       }
+    },
+    {
+      class: 'Int',
+      name: 'arrayLength_',
+      documentation: 'Optional number of unique elements in array, used to limit number of array items that can be assigned',
+      value: -1
     },
     // The next two properties are used to avoid excess flickering.
     // We only update data to data2_ when we know that our feedback
@@ -132,9 +138,9 @@ foam.CLASS({
 
   methods: [
     function init() {
-      // Hook up disabled data for any array that does not allow duplicates
       if ( ! this.allowDuplicates) {
-        this.disabled_data_$.linkFrom(this.data$);
+        // Hook up disabled data for any array that does not allow duplicates
+        this.disabledData_$.linkFrom(this.data$);
       }
     },
 
@@ -147,7 +153,12 @@ foam.CLASS({
       this.addClass();
 
       this
-        .add(this.slot(function(data2_, valueView) {
+        .add(this.slot(function(data2_, valueView, arrayLength_) {
+          if ( ! self.allowDuplicates) {
+            // Disable adding if no duplicates and all uniques already assigned
+            this.enableAdding = self.data.length !== self.arrayLength_;
+          }
+
           var data = data2_;
           return self.E()
             .start(self.Rows)
