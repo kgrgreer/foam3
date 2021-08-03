@@ -695,19 +695,7 @@ foam.CLASS({
             agent != null &&
             SafetyUtil.equals(agent.getId(), this.getId())
           );
-
-        if ( ! findSelf &&
-             ! auth.check(x, "user.read." + this.getId()) &&
-              ! auth.check(x, "user.read." + this.getGroup())
-        
-        //user.read.* + user
-
-        //auth.check(x, "user.read.*", this) = true
-        
-        
-
-
-        ) {
+        if ( ! findSelf && ! auth.checkWithData(x, "user.read." + this.getId(), this) ) {
           throw new AuthorizationException();
         }
       `

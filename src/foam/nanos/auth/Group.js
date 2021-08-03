@@ -150,7 +150,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     'foam.util.SafetyUtil',
     'java.util.List',
     'java.net.InetAddress',
-    'javax.security.auth.AuthPermission'
+    'javax.security.auth.AuthPermission',
+    'foam.mlang.predicate.MQLExpr'
   ],
 
   methods: [
@@ -173,6 +174,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
+        String[] requestedPermissionParsed = permission.getName().split("\\\\.");
         List<GroupPermissionJunction> junctions = ((ArraySink) getPermissions(x)
           .getJunctionDAO()
             .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
@@ -183,31 +185,41 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             continue;
           }
 
-
-
           // if we're trying to check for "user.read.treviso-sme"
           // we can have a permission that's "user.read.n(-group=treviso-sme,sme)"
           // new AuthPermission(j.getTargetId().split("?")
-
-          // u = user object
-          // parse permission
-          // p = "user.read.*"
-          
-
+ 
           // QUESTIONS - what would the syntax of the client requested permission be?
           // user.read.* ? - a bit counter-intuitive
+          // how do we add mql permissions dynamically? (delete old ones?)
 
           // user.read.?group=treviso-sme
           // user.read.*?name=arthur
-          
           // mql = "group=treviso-sme"
           // mql.f(u)
-
-        
           // user.read.8015
           // user.read.*?group=treviso-sme
+          // user.read.?spid:treviso AND userName:u-5aa58497-4852
 
-
+          // check for mql embedded permissions
+          String[] junctionPermissionParsed = j.getTargetId().split("\\\\.");
+          if ( requestedPermissionParsed.length > 2 && junctionPermissionParsed.length > 2
+            && object != null && object.getClassInfo().getId().toLowerCase().endsWith(requestedPermissionParsed[0].toLowerCase()) 
+            && j.getTargetId().contains(requestedPermissionParsed[0].concat("." + requestedPermissionParsed[1]))
+            ) {
+            String permissionId = junctionPermissionParsed[junctionPermissionParsed.length - 1];
+            // check for mql identifier
+            if ( permissionId.startsWith("?") ) {
+              String mql = permissionId.substring(1);
+              try {
+                MQLExpr mqlExp = new MQLExpr();
+                mqlExp.setQuery((String) mql);
+                return mqlExp.f(object);
+              } catch(Exception e) {
+                return false;
+              }
+            }
+          }
 
           if ( j.getTargetId().startsWith("@") ) {
             DAO   dao   = (DAO) x.get("groupDAO");
