@@ -648,6 +648,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "sugar",
+  "authenticate": false,
   "lazy": true,
   "serve": false,
   "parameters": true,
