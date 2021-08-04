@@ -209,7 +209,7 @@ foam.INTERFACE({
           type: 'String',
         },
         {
-          name: 'opt',
+          name: 'object',
           type: 'FObject'
         }
       ]

@@ -58,16 +58,6 @@ foam.CLASS({
     },
     {
       name: 'check',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'permission',
-          type: 'String',
-        }
-      ],
       javaCode: `
         return this.checkWithData(x, permission, null);
       `
@@ -84,7 +74,7 @@ foam.CLASS({
           type: 'String',
         },
         {
-          name: 'opt',
+          name: 'object',
           type: 'FObject'
         }
       ],
@@ -95,7 +85,7 @@ foam.CLASS({
           return true;
         }
 
-        return isAdmin(x, group) || getDelegate().checkWithData(x, permission, opt);
+        return isAdmin(x, group) || getDelegate().checkWithData(x, permission, object);
       `
     },
     {

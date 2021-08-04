@@ -45,19 +45,6 @@ foam.CLASS({
   methods: [
     {
       name: 'check',
-      documentation: `
-      Check if the given input string is in the userCapabilityJunctions or implied by a capability in userCapabilityJunctions for the current context user
-      `,
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'permission',
-          type: 'String',
-        }
-      ],
       javaCode: `
         return this.checkWithData(x, permission, null);
       `
@@ -77,13 +64,13 @@ foam.CLASS({
           type: 'String',
         },
         {
-          name: 'opt',
+          name: 'object',
           type: 'FObject'
         }
       ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        return getDelegate().checkWithData(x, permission, opt) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
+        return getDelegate().checkWithData(x, permission, object) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
       `
     },
     {

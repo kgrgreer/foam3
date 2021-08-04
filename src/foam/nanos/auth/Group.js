@@ -146,12 +146,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.EQ',
+    'foam.mlang.predicate.MQLExpr',
     'foam.nanos.app.AppConfig',
     'foam.util.SafetyUtil',
     'java.util.List',
     'java.net.InetAddress',
-    'javax.security.auth.AuthPermission',
-    'foam.mlang.predicate.MQLExpr'
+    'javax.security.auth.AuthPermission'
   ],
 
   methods: [
