@@ -39,11 +39,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id',
-      'filename',
-      'filesize',
-      'mimeType'
-    ],
+    'filename',
+    'filesize',
+    'mimeType',
+    'created'
+  ],
 
   searchColumns: [
     'id',
