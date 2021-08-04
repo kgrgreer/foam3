@@ -24,6 +24,13 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'isoCode',
+      javaFactory: `
+        return getCode();
+      `,
+    },
+    {
+      class: 'String',
       name: 'name'
     },
     {
@@ -43,13 +50,13 @@ foam.CLASS({
       name: 'getRegionCode',
       type: 'String',
       code: function() {
-        if ( this.code && this.code.length > 3 ) {
-          return this.code.substring(3, this.code.length);
+        if ( this.isoCode && this.isoCode.length > 3 ) {
+          return this.isoCode.substring(3, this.isoCode.length);
         }
         return '';
       },
       javaCode: `
-        String c = getCode();
+        String c = getIsoCode();
         if ( null != c && c.length() > 3 ) {
           return c.substring(3, c.length());
         }
