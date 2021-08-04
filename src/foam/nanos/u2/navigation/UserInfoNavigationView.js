@@ -72,7 +72,7 @@ foam.CLASS({
         }));
 
       // We need to add menus from settings (and then add menus from theme.settingsRootMenu) 
-      // because some menus might be used in both settings and theme.settingsRootMenu (e.g., sign-out).
+      // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
       // Doing this prevents us from creating the same menu for each setting.
       let menu = this.Menu.create({ id: 'settings' });
       let menuArray = (await menu.children.select()).array;
