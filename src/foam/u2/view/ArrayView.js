@@ -49,8 +49,8 @@ foam.CLASS({
     {
       name: 'disabledData_',
       documentation: 'Optional list of choices that should be disabled',
-      factory: function() {
-        return [];
+      expression: function(allowDuplicates, data) {
+        return allowDuplicates ? [] : data;
       }
     },
     {
@@ -141,13 +141,6 @@ foam.CLASS({
   `,
 
   methods: [
-    function init() {
-      if ( ! this.allowDuplicates) {
-        // Hook up disabled data for any array that does not allow duplicates
-        this.disabledData_$.linkFrom(this.data$);
-      }
-    },
-
     function render() {
       this.SUPER();
       var self = this;
@@ -207,6 +200,5 @@ foam.CLASS({
         this.feedback_ = false;
       }
     }
-
   ]
 });
