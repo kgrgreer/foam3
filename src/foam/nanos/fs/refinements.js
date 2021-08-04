@@ -1,4 +1,10 @@
 /**
+ * @license
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+/**
  * This refinement is necessary because of the way the class loader works.
  *
  * CreatedBy property is a reference of User however User model has property
