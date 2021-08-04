@@ -595,4 +595,7 @@ FOAM_FILES([
 
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" },
+
+  // refinements
+  { name: 'foam/nanos/fs/refinements' }
 ]);

@@ -12,9 +12,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.ServiceProviderAware',
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware'
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
@@ -51,11 +49,6 @@ foam.CLASS({
     'id',
     'filename',
     'mimeType'
-  ],
-
-  mixins: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware'
   ],
 
   properties: [
