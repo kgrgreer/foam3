@@ -604,6 +604,7 @@
       name: 'assignedTo',
       section: 'approvalRequestInformation',
       columnPermissionRequired: true,
+      gridColumns: 6,
       order: 65
     },
     {
