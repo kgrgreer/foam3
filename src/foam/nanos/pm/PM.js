@@ -85,15 +85,21 @@ foam.CLASS({
         }
       ],
       javaCode: `
-    if ( x == null ) return;
-    if ( getIsError() ) return;
-    if ( getEndTime() == 0L ) {
-      setEndTime(System.currentTimeMillis());
-    }
-    PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
-    if ( pmLogger != null ) {
-      pmLogger.log(this);
-    }
+        if ( x == null ) return;
+        if ( getIsError() ) return;
+        if ( getEndTime() == 0L ) {
+          setEndTime(System.currentTimeMillis());
+        }
+        PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
+        if ( pmLogger != null ) {
+          pmLogger.log(this);
+        }
+
+        // Candlestick
+        DAOPMLogger daoPMLogger = (DAOPMLogger) x.get("daoPMLogger");
+        if ( daoPMLogger != null ) {
+          daoPMLogger.log(this);
+        } 
       `
     },
     {
