@@ -729,7 +729,7 @@ onKey, placeholder, displayWidth, size, min, max, of, daoKey, etc.
 --
 foam.CLASS({
   name: 'LabelledTextField',
-  extends: 'foam.u2.TextField',
+  extends: 'foam.u2.View',
 
   properties: [
     { class: 'String', name: 'label' }
@@ -741,13 +741,11 @@ foam.CLASS({
     },
 
     function render() {
-      this.add(this.label, ':');
-      this.SUPER();
+      this.add(this.label, ': ');
+      this.tag({class: 'foam.u2.tag.Input', data$: this.data$});
     }
   ]
 });
-
-tag({class: 'LabelledTextField'});
 
 foam.CLASS({
   name: 'LabelledTextFieldExample',
@@ -755,12 +753,18 @@ foam.CLASS({
 
   properties: [
     { class: 'String', name: 'firstName', view: 'foam.u2.TextField' },
-    { class: 'String', name: 'lastName', view: 'LabelledTextField' }
+    { class: 'String', name: 'lastName',  view: 'LabelledTextField' }
   ],
 
   methods: [
     function render() {
       this.add(this.FIRST_NAME, this.LAST_NAME);
+
+      this.tag('hr');
+
+      var l = LabelledTextField.create({data$: this.firstName$});
+      l.fromProperty(this.FIRST_NAME);
+      this.tag(l);
     }
   ]
 });
