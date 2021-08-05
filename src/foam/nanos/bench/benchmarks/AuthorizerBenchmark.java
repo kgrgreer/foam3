@@ -27,7 +27,7 @@ import foam.test.TestUtils;
  */
 
 public class AuthorizerBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected X userAuthorizedContext;
   protected DAO dao = new MDAO(User.getOwnClassInfo());

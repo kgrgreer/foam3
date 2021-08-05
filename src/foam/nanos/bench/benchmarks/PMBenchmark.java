@@ -14,7 +14,7 @@ import foam.nanos.pm.*;
 import java.util.Map;
 
 public class PMBenchmark
-  implements Benchmark
+  extends Benchmark
 {
 
   @Override

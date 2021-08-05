@@ -69,7 +69,7 @@ builder = new BenchmarkRunner.Builder(x).setInvocationCount(100000).setBenchmark
 runner = builder.build();
 runner.execute(x);
 print("done");
-print(runner.getResult());""",
+print(runner.formatResults());""",
 	"lastModifiedBy": 1348
 })
 
@@ -87,7 +87,7 @@ builder = new BenchmarkRunner.Builder(x).setInvocationCount(1).setBenchmark(b);
 runner = builder.build();
 runner.execute(x);
 print("done");
-print(runner.getResult());""",
+print(runner.formatResults());""",
 	"lastModifiedBy": 1348
 })
 
@@ -105,7 +105,7 @@ builder = new BenchmarkRunner.Builder(x).setInvocationCount(1).setBenchmark(b);
 runner = builder.build();
 runner.execute(x);
 print("done");
-print(runner.getResult());""",
+print(runner.formatResults());""",
 	"lastModifiedBy": 1348
 })
 
@@ -123,7 +123,7 @@ builder = new BenchmarkRunner.Builder(x).setInvocationCount(100000).setBenchmark
 runner = builder.build();
 runner.execute(x);
 print("done");
-print(runner.getResult());""",
+print(runner.formatResults());""",
 	"lastModifiedBy": 1348
 })
 

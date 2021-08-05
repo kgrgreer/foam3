@@ -11,7 +11,7 @@ import foam.nanos.bench.Benchmark;
 import foam.nanos.logger.Logger;
 
 public class LoggingBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected Logger logger_;
 

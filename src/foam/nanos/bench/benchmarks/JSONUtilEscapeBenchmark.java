@@ -10,7 +10,7 @@ import foam.core.X;
 import foam.nanos.bench.Benchmark;
 
 public class JSONUtilEscapeBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected StringBuilder b_ = new StringBuilder();
 
