@@ -250,10 +250,6 @@ foam.CLASS({
         return newValue.toUpperCase();
       },
       gridColumns: 6,
-      view: {
-        class: 'foam.u2.TextField',
-        autocomplete: 'off'
-      },
       validationPredicates: [
         {
           args: ['postalCode'],
