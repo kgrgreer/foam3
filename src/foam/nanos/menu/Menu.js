@@ -48,7 +48,9 @@
       tableWidth: 80
     },
     {
-      class: 'JSFObject',
+      // TODO: temporary fix until we figure out why JSFObject breaks when using Medusa
+      class: 'FObjectProperty',
+      of: 'foam.nanos.menu.AbstractMenu',
       name: 'handler',
       documentation: 'View initialized when menu is launched.',
       view: {
