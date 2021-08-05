@@ -60,6 +60,13 @@ foam.CLASS({
         return [ 'serviceprovider.read.' + this.id ];
       },
       documentation: 'Service provider must have "serviceprovider.read.<SPID>" inherent permission.',
+    },
+    {
+      class: 'Reference',
+      name: 'vacantUser',
+      documentation: 'Reference to vacant user relative to spid. See the **authorizeVacancy** method in AuthService.js for further documentation.',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userUserDAO'
     }
   ],
 

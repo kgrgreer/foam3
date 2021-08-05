@@ -176,6 +176,16 @@ foam.CLASS({
       `
     },
     {
+      name: 'authorizeVacancy',
+      documentation: `
+        Authorizes a vacant user that has no true ownership. The assigned vacant user is relative to a spid,
+        holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
+      `,
+      javaCode: `
+        // Grab User from spid with getSpid
+      `
+    },
+    {
       name: 'checkUser',
       documentation: `Checks if the user passed into the method has the passed
       in permission attributed to it by checking their group. No check on User
