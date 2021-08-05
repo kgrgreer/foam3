@@ -10,6 +10,11 @@ foam.CLASS({
 
   documentation: 'Represents a file',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin'
+  ],
+
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.ServiceProviderAware'
