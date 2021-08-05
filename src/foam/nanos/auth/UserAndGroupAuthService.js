@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -65,6 +66,33 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'authorizeVacancy',
+      documentation: `
+        Authorizes a vacant user that has no true ownership. The assigned vacant user is relative to a spid,
+        holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
+      `,
+      javaCode: `
+        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
+        if ( serviceProvider == null ) {
+          throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize vacant user.");
+        }
+
+        try {
+          User vacantUser = (User) serviceProvider.findVacantUser(x);
+        } catch (Exception e) {
+          throw new AuthorizationException("Unable to find vacant user.");
+        }
+        X userX = x.put("subject", new Subject.Builder(x).setUser(vacantUser).build());
+
+        Session session = x.get(Session.class);
+        if ( session.getUserId() == vacantUser.getId() ) return vacantUser;
+        session.setUserId(vacantUser.getId());
+        ((DAO) getLocalSessionDAO()).inX(x).put(session);
+        session.setContext(session.applyTo(session.getContext()));
+        return vacantUser;
+      `
+    },
     {
       name: 'start',
       javaCode: '// nothing here'
@@ -173,16 +201,6 @@ foam.CLASS({
           throw new UserNotFoundException();
         }
         return loginHelper(x, user, password);
-      `
-    },
-    {
-      name: 'authorizeVacancy',
-      documentation: `
-        Authorizes a vacant user that has no true ownership. The assigned vacant user is relative to a spid,
-        holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
-      `,
-      javaCode: `
-        // Grab User from spid with getSpid
       `
     },
     {
