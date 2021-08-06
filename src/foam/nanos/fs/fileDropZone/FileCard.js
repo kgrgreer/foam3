@@ -13,13 +13,17 @@ foam.CLASS({
 
   requires: [
     'foam.blob.BlobBlob',
-    'foam.nanos.fs.File'
+    'foam.nanos.fs.File',
+    'foam.nanos.fs.FileSizeView',
+    'foam.u2.HTMLView',
+    'foam.u2.layout.Cols'
   ],
 
   imports: [
     'allowRemoval',
     'removeFile',
-    'highlight'
+    'highlight',
+    'theme'
   ],
 
   exports: [
@@ -28,16 +32,14 @@ foam.CLASS({
 
   css: `
     ^ {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
+      background: /*%WHITE%*/ #FFFFFF;
+      border: 1px solid /*%GREY5%*/ #F5F7FA;
+      border-radius: 4px;
+      box-sizing: border-box;
       height: 40px;
       margin-top: 8px;
-      border: 1px solid #e2e2e3;
-      border-radius: 3px;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
-      box-sizing: border-box;
-      padding: 10px 16px;
+      padding: 12px;
+      width: 100%;
 
       -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
@@ -46,41 +48,36 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
 
-    ^:first-child {
-      margin-top: 0;
+    ^label {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-start;
+      width: 100%;
     }
 
-    ^ img {
-      margin-right: 0px;
+    ^ img,^ svg {
       width: 16px;
       height: 16px;
     }
 
     ^name {
+      color: /*%PRIMARY3%*/ #406DEA;
       cursor: pointer;
-      margin: 0;
-      font-size: 14px;
-      color: /*%BLACK%*/ #1e1f21;
-      line-height: 1;
-      white-space: nowrap;
       overflow: hidden;
+      text-align: left;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 10vw;
     }
 
     ^name:hover {
-      color: #604AFF;
+      color: /*%PRIMARY1%*/ #604AFF;
     }
 
     ^ .foam-u2-ActionView {
-      border: none;
-      background: none;
-      box-shadow: none;
-      border: none;
-      box-shadow: none;
-      width: auto;
       height: 16px;
       padding: 0;
-      margin-left: auto;
     }
 
     ^close-action {
@@ -88,12 +85,8 @@ foam.CLASS({
       padding: 0;
     }
 
-    ^close-action:focus {
-      border: 1px solid /*%PRIMARY1%*/ #406DEA;
-    }
-
-    ^close-action span {
-      display: none;
+    ^size {
+      color: /*%GREY2%*/ #6B778C;
     }
   `,
 
@@ -114,21 +107,34 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
+      var self = this;
       if ( this.selected == this.index ) {
         this.style({
-          "border-color": "/*%PRIMARY1%*/ #604aff"
-        })
+          'border-color': '/*%PRIMARY1%*/ #604aff'
+        });
       }
-      this.addClass()
-        .start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end()
-        .start('p').addClass(this.myClass('name'))
+      var indicator = this.theme && this.theme.glyphs.file.expandSVG({ fill: this.theme.grey1 });
+      var label = this.E()
+        .addClass(this.myClass('label'))
+        .callIfElse(indicator, function() {  
+          this.start(self.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).end();
+        }, function() {
+          this.start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end();
+        })
+        .start().addClasses(['h600', this.myClass('name')])
           .add(this.data.filename)
-          .on('click', this.viewFile)
         .end()
-        .start(this.REMOVE_FILE_X, {
-          buttonStyle: foam.u2.ButtonStyle.TERTIARY,
-          icon: 'images/cancel-x.png'
-        }).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end();
+        .start(this.FileSizeView, { data: this.data.filesize }).addClasses([this.myClass('size'), 'p-legal']).end();
+
+      this.addClass()
+        .start(this.Cols)
+          .tag(self.VIEW_FILE, { label: label, buttonStyle: 'UNSTYLED' })
+          .start(this.REMOVE_FILE_X, {
+            label: '',
+            buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+            themeIcon: 'close'
+          }).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
+        .end();
 
       this.on('click', this.pick);
     }
@@ -141,22 +147,23 @@ foam.CLASS({
       code: function(X) {
         X.removeFile(X.fileCard.index);
       }
+    },
+    {
+      name: 'viewFile',
+      code: function() {
+        debugger;
+        var blob = this.data;
+        if ( this.BlobBlob.isInstance(blob) ) {
+          window.open(URL.createObjectURL(blob.blob));
+        } else {
+          var url = this.address;
+          window.open(url);
+        }
+      }
     }
   ],
 
   listeners: [
-    {
-      name: 'viewFile',
-      code: function() {
-        var blob = this.data.data;
-        if ( this.BlobBlob.isInstance(blob) ) {
-          window.open(URL.createObjectURL(blob.blob));
-        } else {
-          var url = this.data.address;
-          window.open(url);
-        }
-      }
-    },
     {
       name: 'pick',
       code: function(X) {

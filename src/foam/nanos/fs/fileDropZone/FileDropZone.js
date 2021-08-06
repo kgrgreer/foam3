@@ -32,27 +32,23 @@ foam.CLASS({
 
   css: `
     ^ {
-      box-sizing: border-box;
-      max-height: 45vh;
-      height: 100%;
-      padding: 16px;
-      border: 2px dashed #8e9090;
-      border-radius: 3px;
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    ^instruction-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
       align-items: center;
+      box-sizing: border-box;
+      border: 2px dashed /*%GREY3%*/ #B2B6BD;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: space-between;
+      padding: 16px 24px;
       text-align: center;
-      height: 228px;
+      width: 100%;
+    }
+    ^:focus {
+      background: /*%PRIMARY5%*/ #E5F1FC;
+      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
     }
     ^instruction-container.selection {
-      height: 172px;
       margin-bottom: 16px;
     }
     ^input {
@@ -60,15 +56,10 @@ foam.CLASS({
       appearance: none;
       opacity: 0;
       position: absolute;
+      z-index: -1;
     }
-    ^or {
-      display: inline-block;
-    }
-    ^link {
-      display: inline-block;
-      cursor: pointer;
+    ^link, ^link:hover {
       color: /*%PRIMARY3%*/ #406dea;
-      margin-left: 5px;
     }
     ^input:focus + ^instruction-container > ^browse-container > ^link{
       border: 1px solid;
@@ -83,12 +74,29 @@ foam.CLASS({
       font-size: 10px;
       color: #525455;
     }
+    ^browse-container{
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+    ^browse-container-row{
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+    ^dragged{
+      background: /*%PRIMARY5%*/ #E5F1FC;
+      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+    }
   `,
 
   messages: [
-    { name: 'LABEL_DEFAULT_TITLE', message: 'Drag your file here' },
+    { name: 'LABEL_DEFAULT_TITLE', message: 'Drag and Drop files here' },
     { name: 'LABEL_OR',            message: 'or' },
-    { name: 'LABEL_BROWSE',        message: 'Select from your device' },
+    { name: 'LABEL_BROWSE',        message: 'Browse' },
     { name: 'LABEL_SUPPORTED',     message: 'Supported file types:' },
     { name: 'LABEL_MAX_SIZE',      message: 'Max size:' },
     { name: 'ERROR_FILE_TITLE',    message: 'Error' },
@@ -136,6 +144,17 @@ foam.CLASS({
     },
     {
       name: 'selected'
+    },
+    {
+      class: 'Boolean',
+      name: 'hasFiles',
+      expression: function(files) {
+        return files.length;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isDragged_'
     }
   ],
 
@@ -150,69 +169,70 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
+      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles) { 
+          if ( isMultipleFiles ) return true;
+          return ! hasFiles;
+        });
 
-      this
-        .addClass(this.myClass())
-        .callIf(this.isMultipleFiles, function() {
-          this.start('input')
-            .addClass(this.myClass('input'))
-            .addClass(this.instanceClass('input'))
-            .attrs({
-              type: 'file',
-              accept: this.getSupportedTypes(),
-              multiple: 'multiple'
-            })
-            .on('change', this.onChange)
-          .end();
+      this.start('input')
+        .show(visibilitySlot)
+        .addClass(this.myClass('input'))
+        .addClass(this.instanceClass('input'))
+        .attrs({
+          type: 'file',
+          accept: this.getSupportedTypes(),
+          multiple: this.isMultipleFiles ? 'multiple' : ''
         })
-        .callIf(! this.isMultipleFiles, function() {
-          this.start('input')
-            .addClass(this.myClass('input'))
-            .addClass(this.instanceClass('input'))
-            .attrs({
-              type: 'file',
-              accept: this.getSupportedTypes()
-            })
-            .on('change', this.onChange)
-          .end();
-        })
-        .start().addClass(this.myClass('instruction-container')).enableClass('selection', this.files$.map((v) => { return v.length > 0; }))
-          .start().addClass(this.myClass('browse-container'))
-            .start('p').addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
-              .start('p').addClass(this.myClass('or')).add(this.LABEL_OR).end()
-              .start('label').addClass(this.myClass('link'))
-                .add(this.LABEL_BROWSE)
+        .on('change', this.onChange)
+      .end()
+      .start().addClass(this.myClass())
+        .show(visibilitySlot)
+        .addClass(this.myClass('instruction-container'))
+        .enableClass('selection', this.hasFiles$)
+        .enableClass(this.myClass('dragged'), this.isDragged_$)
+        .start()
+          .addClass(this.myClass('browse-container'))
+          .enableClass(this.myClass('browse-container-row'), this.hasFiles$)
+          .start().addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
+            .start().addClass('p').add(this.LABEL_OR).end()
+            .add(this.slot(function(hasFiles) {
+              return this.E().start(this.BROWSE, {
+                label: self.LABEL_BROWSE,
+                buttonStyle: hasFiles ? 'LINK' : 'SECONDARY'
+              })
+                .enableClass(this.myClass('link'), self.hasFiles$)
                 .attrs({
                   for: 'file-upload'
                 })
-                .on('click', this.onAddAttachmentClicked)
-              .end()
+              .end();
+            }))
+        .end()
+        .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
+          .start()
+            .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
+            .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
           .end()
-          .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
-            .start()
-              .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
-              .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
-            .end()
-            .start()
-              .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
-            .end()
+          .start()
+            .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
           .end()
         .end()
-        .add(this.slot(function(files) {
-          var e = this.E();
-          for ( var i = 0; i < files.length; i++ ) {
-            e.tag({
-              class: 'foam.nanos.fs.fileDropZone.FileCard',
-              data: files[i],
-              selected: this.selected,
-              index: i
-            });
-          }
-          return e;
-        }, this.files$))
-        .on('drop', this.onDrop)
-        .on('dragover', e => e.preventDefault() )
-        .on('dragenter', e => e.preventDefault() );
+      .end()
+      .on('drop', this.onDrop)
+      .on('dragover', e => { this.isDragged_ = true; e.preventDefault(); } )
+      .on('dragenter', e => { this.isDragged_ = true; e.preventDefault(); })
+      .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); })
+      .add(this.slot(function(files) {
+        var e = this.E().addClass(self.myClass('fileCards'));
+        for ( var i = 0; i < files.length; i++ ) {
+          e.tag({
+            class: 'foam.nanos.fs.fileDropZone.FileCard',
+            data: files[i],
+            selected: this.selected,
+            index: i
+          });
+        }
+        return e;
+      }, this.files$));
     },
 
     function getSupportedTypes(readable) {
@@ -305,26 +325,11 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onAddAttachmentClicked(e) {
-      if ( this.controllerMode === this.controllerMode.VIEW ) {
-        return;
-      }
-      if ( typeof e.target != 'undefined' ) {
-        if ( e.target.tagName == 'LABEL' && e.target.tagName != 'A' ) {
-          this.document.querySelector('.' + this.instanceClass(`input`)).click();
-        }
-      } else {
-        // For IE browser
-        if ( e.srcElement.tagName == 'LABEL' && e.srcElement.tagName != 'A' ) {
-          this.document.querySelector('.' + this.instanceClass(`input`)).click();
-        }
-      }
-    },
-
     function onDrop(e) {
       if ( this.controllerMode === this.controllerMode.VIEW ) {
         return;
       }
+      this.isDragged_ = false;
       e.preventDefault();
       var files = [];
       var inputFile;
@@ -363,6 +368,18 @@ foam.CLASS({
       // Remove all temporary files in the element.target.files
       this.document.querySelector('.' + this.instanceClass(`input`)).value = null;
       this.onFilesChanged();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'browse',
+      code: function() {
+        if ( this.controllerMode === this.controllerMode.VIEW ) {
+          return;
+        }
+        this.document.querySelector('.' + this.instanceClass(`input`)).click();
+      }
     }
   ]
 });
