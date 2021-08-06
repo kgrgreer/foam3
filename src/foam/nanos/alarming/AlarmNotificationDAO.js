@@ -47,6 +47,11 @@ foam.CLASS({
         return alarm;
       }
 
+      // TODO: Occuring from medusa during replay
+      if ( alarm.getCreated() ==  null ) {
+        alarm = (Alarm) alarm.fclone();
+        alarm.setCreated(new java.util.Date());
+      }
       // create body for non-email notifications
       StringBuilder body = new StringBuilder();
       body.append("[");
