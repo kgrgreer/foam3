@@ -44,7 +44,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'allowDuplicates',
-      defaultValue: true
+      value: true
     },
     {
       name: 'disabledData_',

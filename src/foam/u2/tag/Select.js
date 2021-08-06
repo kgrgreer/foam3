@@ -104,11 +104,11 @@ foam.CLASS({
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var c = choices[i];
           let value = c[1];
-          var isDisabled = self.slot(function(data) { return self.isOptionDisabled_(value, data === i); });
+          var isSelected = data === i;
           let e = self.E('option').attrs({
             value: i,
-            selected: self.data === i,
-            disabled: isDisabled
+            selected: isSelected,
+            disabled: ! isSelected && self.disabled_data.some(o => foam.util.equals(o, value))
           }).translate(value + '.name', value)
           if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's

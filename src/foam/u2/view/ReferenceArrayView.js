@@ -41,7 +41,7 @@ foam.CLASS({
       this.SUPER();
       if ( ! this.allowDuplicates) {
         // Get array size for limiting assignment of array items
-        this.dao.select(foam.mlang.sink.Count.create()).then(c => this.arrayLength_ = c.value);
+        this.dao.select(this.Count.create()).then(c => this.arrayLength_ = c.value);
       }
     }
   ]
