@@ -10,6 +10,11 @@ foam.CLASS({
 
   documentation: 'Represents a file',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin'
+  ],
+
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.ServiceProviderAware'
@@ -39,16 +44,20 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id',
-      'filename',
-      'filesize',
-      'mimeType'
-    ],
+    'filename',
+    'filesize',
+    'mimeType',
+    'created'
+  ],
 
   searchColumns: [
     'id',
     'filename',
     'mimeType'
+  ],
+
+  messages: [
+    { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
   ],
 
   properties: [
@@ -202,9 +211,15 @@ foam.CLASS({
       name: 'labels',
       class: 'StringArray',
       documentation: 'List of labels applied to this file',
+      validateObj: function(labels) {
+        if ( labels.indexOf("") >= 0 ) {
+          return this.INVALID_FILE_LABEL;
+        }
+      },
       view: {
         class: 'foam.u2.view.ReferenceArrayView',
-        daoKey: 'fileLabelDAO'
+        daoKey: 'fileLabelDAO',
+        allowDuplicates: false
       }
     },
     {

@@ -38,7 +38,6 @@ public class MedusaInfoWebAgent
       ReplayingInfo info = config.getReplayingInfo();
 
       config.SESSION_ID.clear(config);
-      info.REPLAY_NODES.clear(info);
       config.setReplayingInfo(info);
 
       if ( format == Format.JSON ) {
