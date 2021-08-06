@@ -72,7 +72,7 @@ foam.CLASS({
       this.tick();
     },
 
-    function initE() {
+    function render() {
       this.
         addClass(this.myClass()).
         start('row').start('span').addClass('label').add('Elapsed Time:').end().add(this.PROGRESS).end().

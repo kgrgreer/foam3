@@ -29,9 +29,7 @@ foam.CLASS({
       name: 'Document',
       extends: 'foam.u2.View',
 
-      requires: [
-        'foam.u2.HTMLElement'
-      ],
+      requires: [ 'foam.u2.HTMLView' ],
 
       css: `
         ^ {
@@ -40,13 +38,12 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           this.SUPER();
 
           this.
-            start(this.HTMLElement).
+            start(this.HTMLView, {data: this.data}).
               addClass(this.myClass()).
-              add(this.data).
             end();
         }
       ]

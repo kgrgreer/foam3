@@ -72,7 +72,7 @@ foam.CLASS({
       this.selectColumnsExpanded = ! this.selectColumnsExpanded;
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
 
       var self = this;

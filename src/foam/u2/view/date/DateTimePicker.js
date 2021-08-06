@@ -267,7 +267,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var zeroLeadingNumArray = function(start, end) {
         var a = [];
         for ( var i = start; i <= end; i++ ) {

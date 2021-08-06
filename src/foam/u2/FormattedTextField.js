@@ -77,7 +77,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.resetState();
       this.formattedData$.sub(this.formatData);
       this.formattedData = this.data || '';

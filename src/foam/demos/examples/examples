@@ -1145,7 +1145,7 @@ Inner classes are only accessible through their outer class
 log("Access through outer:", InnerClassTest.InnerClass1.name);
 
 // Inner-classes do not appear in the global namespace
-log("Available globally?", !! global.InnerClass1);
+log("Available globally?", !! globalThis.InnerClass1);
 
 
 ##  Inner Enums
@@ -1177,7 +1177,7 @@ Inner-enums can only be accessed through the outer-class
 log("Access through outer:", InnerEnumTest.InnerEnum.name);
 
 // Inner-enums do not appear in the global namespace
-log("Available globally?", !! global.InnerEnum);
+log("Available globally?", !! globalThis.InnerEnum);
 
 
 ##  Pub Sub
@@ -1622,7 +1622,7 @@ log("After set to 66:", s.get());
 PromiseSlot provides a declarative way of creating a slot that should contain the value of a promise when it resolves.
 --
 var promise = new Promise(function(resolve, reject) {
-  window.setTimeout(function() {
+  globalThis.setTimeout(function() {
     resolve(66);
   }, 3000);
 }).then((value) => {
@@ -1635,7 +1635,7 @@ var s = foam.core.PromiseSlot.create({
   promise: promise
 });
 log("Intial value of the slot:", s.get());
-window.setTimeout(() => {
+globalThis.setTimeout(() => {
   log('Value 1 second later, at ' + new Date() + ':', s.get());
 }, 1000);
 return promise;
@@ -1645,7 +1645,7 @@ return promise;
 ArraySlot provides a way to group several slots together so that when any of them update we can invalidate.
 --
 var promise = new Promise(function(resolve, reject) {
-  window.setTimeout(() => resolve('bar'), 3000);
+  globalThis.setTimeout(() => resolve('bar'), 3000);
 });
 var s1 = foam.core.SimpleSlot.create({ value: 42 });
 var s2 = foam.core.PromiseSlot.create({ value: 'foo', promise: promise });
@@ -3842,7 +3842,7 @@ Inner classes are only accessible through their outer class
 log("Access through outer:", InnerClassTest.InnerClass1.name);
 
 // Inner-classes do not appear in the global namespace
-log("Available globally?", !! global.InnerClass1);
+log("Available globally?", !! globalThis.InnerClass1);
 
 
 ##  Inner Enums
@@ -3874,7 +3874,7 @@ Inner-enums can only be accessed through the outer-class
 log("Access through outer:", InnerEnumTest.InnerEnum.name);
 
 // Inner-enums do not appear in the global namespace
-log("Available globally?", !! global.InnerEnum);
+log("Available globally?", !! globalThis.InnerEnum);
 
 
 ##  Pub Sub
@@ -4319,7 +4319,7 @@ log("After set to 66:", s.get());
 PromiseSlot provides a declarative way of creating a slot that should contain the value of a promise when it resolves.
 --
 var promise = new Promise(function(resolve, reject) {
-  window.setTimeout(function() {
+  globalThis.setTimeout(function() {
     resolve(66);
   }, 3000);
 }).then((value) => {
@@ -4332,7 +4332,7 @@ var s = foam.core.PromiseSlot.create({
   promise: promise
 });
 log("Intial value of the slot:", s.get());
-window.setTimeout(() => {
+globalThis.setTimeout(() => {
   log('Value 1 second later, at ' + new Date() + ':', s.get());
 }, 1000);
 return promise;
@@ -4342,7 +4342,7 @@ return promise;
 ArraySlot provides a way to group several slots together so that when any of them update we can invalidate.
 --
 var promise = new Promise(function(resolve, reject) {
-  window.setTimeout(() => resolve('bar'), 3000);
+  globalThis.setTimeout(() => resolve('bar'), 3000);
 });
 var s1 = foam.core.SimpleSlot.create({ value: 42 });
 var s2 = foam.core.PromiseSlot.create({ value: 'foo', promise: promise });

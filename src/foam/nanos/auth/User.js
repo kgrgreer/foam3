@@ -697,7 +697,8 @@ foam.CLASS({
           );
 
         if ( ! findSelf &&
-             ! auth.check(x, "user.read." + this.getId())
+             ! auth.check(x, "user.read." + this.getId()) &&
+             ! auth.check(x, "user.read." + this.getGroup())
         ) {
           throw new AuthorizationException();
         }
@@ -864,6 +865,7 @@ foam.RELATIONSHIP({
   forwardName: 'entities',
   inverseName: 'agents',
   junctionDAOKey: 'agentJunctionDAO',
+  junctionModelPlural: 'User Proxy Management',
   sourceProperty: {
     createVisibility: 'HIDDEN',
     label: 'Businesses',

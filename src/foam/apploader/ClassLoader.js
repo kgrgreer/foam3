@@ -158,7 +158,7 @@ have multiple classloaders running alongside eachother`
             });
           }
 
-          if ( foam.lookup(id, true) )
+          if ( foam.maybeLookup(id) )
             return Promise.resolve(foam.lookup(id));
 
           return this.pending[id] = this.modelDAO.inX(subClassLoader).find(id).then(function(m) {

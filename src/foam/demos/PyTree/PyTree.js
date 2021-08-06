@@ -14,21 +14,23 @@ foam.CLASS({
 
   imports: [ 'maxLvl' ],
 
-  properties: [ 'lvl' ],
+  properties: [
+    [ 'nodeName', 'g' ],
+    'lvl'
+  ],
 
   methods: [
-    function initE() {
-      this.setNodeName('g').
+    function render() {
+      this.
         start('rect').
-          setID(null).
           attrs({width: 1, height: 1}).
           style({fill: this.fillColor(this.lvl)}).
         end();
 
       if ( this.lvl < this.maxLvl ) {
         this.add(
-            this.PyBranch.create({lvl: this.lvl+1}).setID(null).addClass('l'),
-            this.PyBranch.create({lvl: this.lvl+1}).setID(null).addClass('r'));
+          this.PyBranch.create({lvl: this.lvl+1}).addClass('l'),
+          this.PyBranch.create({lvl: this.lvl+1}).addClass('r'));
       }
     },
     {
@@ -52,6 +54,7 @@ foam.CLASS({
   exports: [ 'maxLvl' ],
 
   properties: [
+    [ 'nodeName', 'svg' ],
     [ 'heightFactor', 0.55 ],
     [ 'lean', 0 ],
     { name: 'maxLvl', factory: function() {
@@ -65,11 +68,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.installCSS('');
       this.cssEl = this.document.head.lastChild;
 
-      this.setNodeName('svg').
+      this.
         style({border: '1px solid lightgray'}).
         attrs({width: 1200, height: 600}).
         on('mousemove', this.onMouseMove).

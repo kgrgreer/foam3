@@ -10,11 +10,11 @@
 <script src="./dxf.js"></script>
 
 <body>
-  See <tt>window.__ctrl</tt>.
+  See <tt>globalThis.__ctrl</tt>.
 
 <script>
 var ctrl = com.google.dxf.ui.Controller.create();
-window.document.body.insertAdjacentHTML('beforeend', ctrl.outerHTML);
+globalThis.document.body.insertAdjacentHTML('beforeend', ctrl.outerHTML);
 ctrl.load();
 </script>
 

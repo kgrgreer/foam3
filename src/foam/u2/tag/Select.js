@@ -68,7 +68,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -100,7 +100,7 @@ foam.CLASS({
           let e = self.E('option').attrs({
             value: i,
             selected: self.data === i
-          }).translate(c[1]+'.name', value)
+          }).translate(c[1] + '.name', value)
           if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
             e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));

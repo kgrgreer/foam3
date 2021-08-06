@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.pm.PM',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
     'foam.nanos.theme.Themes',
@@ -104,7 +105,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastUsed',
       visibility: 'RO',
-      storageTransient: true
+      storageTransient: true,
+      clusterTransient: true
     },
     {
       class: 'Duration',
@@ -128,7 +130,8 @@ foam.CLASS({
       class: 'Long',
       name: 'uses',
       tableWidth: 70,
-      storageTransient: true
+      storageTransient: true,
+      clusterTransient: true
     },
     {
       class: 'String',
@@ -257,14 +260,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           .put("subject", subject)
           .put("group", null)
           .put("twoFactorSuccess", false)
-          .put(CachingAuthService.CACHE_KEY, null)
-          .put(
-            "logger",
-            new PrefixLogger(
-              new Object[] { "Unauthenticated session" },
-              (Logger) x.get("logger")
-            )
-          );
+          .put(CachingAuthService.CACHE_KEY, null);
       `
     },
     {
@@ -279,13 +275,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
+      PM pm = PM.create(x, "Session","applyTo");
+      try {
         // We null out the security-relevant entries in the context since we
         // don't want whatever was there before to leak through, especially
         // since the system context (which has full admin privileges) is often
         // used as the argument to this method.
         X rtn = reset(x);
-
-        if ( getUserId() == 0 ) {
+        if ( getUserId() <= 1 ) {
           HttpServletRequest req = x.get(HttpServletRequest.class);
           if ( req == null ) {
             // null during test runs
@@ -308,6 +305,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
           rtn = rtn.put("appConfig", appConfig);
           rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
           return rtn;
         }
 
@@ -319,23 +317,25 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         AuthService auth  = (AuthService) x.get("auth");
         User user         = (User) localUserDAO.find(getUserId());
         User agent        = (User) localUserDAO.find(getAgentId());
-        Object[] prefix   = agent == null
-          ? new Object[] { String.format("%s (%d)", user.toSummary(), user.getId()) }
-          : new Object[] { String.format("%s (%d) acting as %s (%d)", agent.toSummary(), agent.getId(), user.toSummary(), user.getId()) };
-
-        Subject subject = new Subject();
-        subject.setUser(agent);
-        subject.setUser(user);
 
         // Support hierarchical SPID context
         var subX = rtn.cd(user.getSpid());
         if ( subX != null ) {
           rtn = reset(subX);
         }
+
+        Subject subject = null;
+        if ( user != null ||
+             agent != null ) {
+          subject = new Subject();
+          subject.setUser(agent);
+          subject.setUser(user);
+          rtn = rtn
+            .put("subject", subject)
+            .put("spid", subject.getUser().getSpid());
+        }
+
         rtn = rtn
-          .put("subject", subject)
-          .put("spid", user.getSpid())
-          .put("logger", new PrefixLogger(prefix, (Logger) x.get("logger")))
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
           .put(CachingAuthService.CACHE_KEY, getContext().get(CachingAuthService.CACHE_KEY))
           .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY));
@@ -349,10 +349,20 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             .put("group", group)
             .put("appConfig", group.getAppConfig(rtn));
         }
-        rtn = rtn.put("theme", ((Themes) x.get("themes")).findTheme(rtn));
+        Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(rtn);
+        rtn = rtn.put("theme", theme);
+        if ( subject == null &&
+             theme != null && ! SafetyUtil.isEmpty(theme.getSpid()) ) {
+          rtn = rtn.put("spid", theme.getSpid());
+        }
+
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
 
         return rtn;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {

@@ -88,14 +88,4 @@ public class DigWebAgent extends ContextAwareSupport
     error.setStatus(String.valueOf(status));
     DigUtil.outputException(x, error, Format.JSON);
   }
-
-  public boolean redirectToLogin(X x) {
-    HttpServletRequest req = x.get(HttpServletRequest.class);
-    String methodName = req.getMethod();
-    if ( "get".equalsIgnoreCase(methodName)
-      && req.getHeader("Authorization") == null ) {
-      return true;
-    }
-    return false;
-  }
 }

@@ -432,7 +432,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( ! Array.isArray(this.sections) || this.sections.length === 0 ) {
@@ -622,10 +622,11 @@ foam.CLASS({
             this.fullObject_ = result;
           });
         }
+        else this.clearSelection();
       }
     },
     function clearSelection(evt) {
-      evt.stopImmediatePropagation();
+      evt && evt.stopImmediatePropagation();
       this.fullObject_ = undefined;
 
       // If this view is being used for a property, then when the user clears
@@ -663,7 +664,7 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           var summary = this.data.toSummary();
           return this
             .start()
@@ -715,7 +716,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
 
           this.style({
             'overflow': 'hidden',

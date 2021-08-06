@@ -310,7 +310,7 @@ server.connect(worker).then(function(workerBox) {
     })
   }, server);
 
-  window.proxy = proxy;
+  globalThis.proxy = proxy;
 
   proxy.greetUser("Adam").then(function(s) { console.log(s); });
 
@@ -322,7 +322,7 @@ server.connect(worker).then(function(workerBox) {
     })
   }, server);
 
-  window.dao = dao;
+  globalThis.dao = dao;
 
   dao.select(foam.mlang.sink.Count.create()).then(function(c) {
     console.log("There are ", c.value, " people in the dao");

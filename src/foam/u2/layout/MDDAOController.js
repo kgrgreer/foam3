@@ -145,14 +145,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this.isMenuOpen = false;
 
       this.isSearchActive$.sub(this.onSearchActiveChanged);
 
-      this.addClass(this.myClass())
+      this.addClass()
       .startContext({data: this})
          .tag({
            class: 'foam.u2.layout.MDToolbarView',

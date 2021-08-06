@@ -44,7 +44,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'initE',
+      name: 'render',
       code: function() {
         var self = this;
         this.SUPER();

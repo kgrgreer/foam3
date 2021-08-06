@@ -30,20 +30,22 @@ foam.CLASS({
   DEPENDING ON PASSED IN ARGUMENTS:
 
   Property functionality:
-  imgPath: if present view uses SplitScreenBorder (-USED to toggle splitScreen - picked up from ApplicationController)
+  imgPath: if present view uses SplitScreenGridBorder (-USED to toggle splitScreen - picked up from ApplicationController)
   backLink_: if on model uses string link from model, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
   `,
 
   imports: [
     'appConfig',
     'loginVariables',
+    'memento',
     'stack',
-    'theme'
+    'theme',
+    'displayWidth?'
   ],
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.borders.SplitScreenBorder',
+    'foam.u2.borders.SplitScreenGridBorder',
     'foam.nanos.u2.navigation.SignIn',
     'foam.nanos.u2.navigation.SignUp'
   ],
@@ -86,8 +88,12 @@ foam.CLASS({
   }
 
   /* ON MODEL */
-  ^ .content-form {
-    width: 25vw;
+  ^content-form {
+    align-self: center;
+    width: 75%;
+    padding: 2vw;
+    box-sizing: border-box;
+    
   }
 
   /* ON ALL FOOTER TEXT */
@@ -133,12 +139,17 @@ foam.CLASS({
 
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
-    margin-top: 10vh;
-    margin-left: 5vw;
+    /* align img with disclaimer */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
   }
-  ^ .image-one {
-    width: 34vw;
+  ^image-one {
+    width: 28vw;
   }
+  ^wideImage { width: 50vw; }
+  ^fullWidth { width: 100%; }
   `,
 
   properties: [
@@ -194,7 +205,8 @@ foam.CLASS({
         return this.model.backLink_ || this.appConfig.externalUrl || undefined;
       },
       hidden: true
-    }
+    },
+    { class: 'Boolean', name: 'shouldResize' }
   ],
 
   messages: [
@@ -214,28 +226,35 @@ foam.CLASS({
       }
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
+      // clearing any values that may linger in memento - such as SignOut
+      this.memento.value = '';
+      location.hash = '';
+
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
       let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+
       // CREATE MODEL VIEW
-      var right = this.Element.create({}, this)
+      var right = this.E()
       // Header on-top of rendering model
-        .start().show(this.topBarShow).addClass('topBar-logo-Back')
+        .start().show(logo).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')
           .end()
-      .end()
+        .end()
       // Title txt and Model
         .start().addClass('title-top').add(this.model.TITLE).end()
-        .startContext({ data: this })
-          .addClass('content-form').tag(this.MODEL).br()
-        .endContext()
+        .addClass(self.myClass('content-form'))
+        .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
+        .enableClass(self.myClass('fullWidth'), self.shouldResize$)
+        .startContext({ data: this }).tag(this.MODEL).endContext()
+        .br()
       // first footer
       .br()
       .start().addClass('center-footer')
@@ -259,14 +278,14 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath ) {
-        var split = foam.u2.borders.SplitScreenBorder.create();
+        var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.model.DISCLAIMER).end();
       }
 
       // RENDER EVERYTHING ONTO PAGE
-      this.addClass(this.myClass())
+      this.addClass()
       // full width bar with navigation to app landing page
         .start().addClass('top-bar-nav').show(this.topBarShow_)
           .start()
@@ -286,17 +305,17 @@ foam.CLASS({
         .end()
       // deciding to render half screen with img and model or just centered model
         .callIfElse( !! this.imgPath && !! split, () => {
-          split.leftPanel.start()
+          split.leftPanel
             .addClass('cover-img-block1')
-              .start('img')
-                .addClass('image-one')
-                .attr('src', this.imgPath)
-              .end()
-              // add a disclaimer under img
-              .start('p')
-                .addClass('disclaimer-login').addClass('disclaimer-login-img')
-                .add(this.model.DISCLAIMER)
-              .end()
+            .start('img')
+              .addClass(self.myClass('image-one'))
+              .attr('src', this.imgPath)
+              .enableClass(self.myClass('wideImage'), self.shouldResize$)
+            .end()
+            // add a disclaimer under img
+            .start('p')
+              .addClass('disclaimer-login').addClass('disclaimer-login-img')
+              .add(this.model.DISCLAIMER)
             .end();
           this.add(split);
         }, function() {
@@ -306,6 +325,17 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'resize',
+      isFramed: true,
+      code: function() {
+        if ( this.displayWidth == 'MD' || this.displayWidth == 'SM' ||this.displayWidth == 'XS' || this.displayWidth == 'XXS' ) {
+          this.shouldResize = true;
+        } else {
+          this.shouldResize = false;
+        }
+      }
+    },
     function onKeyPressed(e) {
       e.preventDefault();
       var key = e.key || e.keyCode;

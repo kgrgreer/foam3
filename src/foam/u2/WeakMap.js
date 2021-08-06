@@ -7,8 +7,8 @@
 // WeakMap Polyfill, doesn't implement the full interface, just the parts
 // that FOAM uses. Only used in Element.js, which is why it's in the u2 package
 // rather than in core with other polyfils.
-if ( ! global.WeakMap ) {
-  Object.defineProperty(window, 'WeakMap', {
+if ( ! globalThis.WeakMap ) {
+  Object.defineProperty(globalThis, 'WeakMap', {
     configurable: true,
     writable: true,
     value: function WeakMap() {

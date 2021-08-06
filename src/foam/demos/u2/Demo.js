@@ -20,7 +20,7 @@
    ],
 
    methods: [
-     function initE() {
+     function render() {
        this.SUPER();
 
        for ( let i = 0 ; i < this.numOfParts ; i++ ) {
@@ -101,11 +101,7 @@ E().
   add('Entities: ').
   add('foo').
   nbsp().
-  entity('amp').
   add(' bar ').
-  entity('lt').
-  entity('quot').
-  entity("#039").
   add("&quot;").
   tag('br').
   br().
@@ -346,7 +342,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.flop();
 
       this.field1 = 'foo';
@@ -474,7 +470,7 @@ foam.CLASS({
   name: 'BoundTextbox',
   extends: 'foam.u2.Controller',
   properties: [ ['text', 'hello' ] ],
-  methods: [ function initE() {
+  methods: [ function render() {
     this.start('h1').add("Bound Textbox").end().start(this.TEXT, {onKey: true}).end().add(this.text$);
   }]
 });
@@ -526,7 +522,7 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         // Default Button
         .add('subView: ', this.SUB_VIEW_ACTION);
@@ -546,7 +542,7 @@ foam.CLASS({
   exports: [ 'viewAction' ],
 
   methods: [
-    function initE() {
+    function render() {
       this
         // Default Button
         .add(ActionDemo.ADD)
@@ -561,7 +557,7 @@ foam.CLASS({
         .start(ActionDemo.ADD, {showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).end()
 
         // Set the ActionView's icon and hide the label and make an anchor to avoid button decoration
-        .start(ActionDemo.ADD, {showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).setNodeName('a').end()
+        .start(ActionDemo.ADD, {nodeName: 'a', showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).end()
 
         // Show an Action that already has an icon defined
         .start(ActionDemo.ADD2).end()
@@ -585,8 +581,8 @@ foam.CLASS({
   name: 'ParentView',
   extends: 'foam.u2.Element',
   css: '^ { background: pink }',
-  methods: [ function initE() {
-    this.addClass(this.myClass()).add('text');
+  methods: [ function render() {
+    this.addClass().add('text');
   }]
 });
 
@@ -648,7 +644,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
 //      this.tick();

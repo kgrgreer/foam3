@@ -15,6 +15,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'stack',
+    'tableViewApprovalRequestDAO',
     'translationService',
     'userDAO'
   ],
@@ -66,7 +67,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    async function render() {
       var user = await this.userDAO.find(this.data.effectiveUser);
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( ! user ) user = realUser;
@@ -99,7 +100,7 @@ foam.CLASS({
         .execute();
 
         //add back button and 'View Reference' title
-        this.addClass(this.myClass())
+        this.addClass()
           .startContext({ data: this })
             .tag(this.BACK, {
               buttonStyle: foam.u2.ButtonStyle.LINK,
@@ -123,6 +124,10 @@ foam.CLASS({
           rejectedApproval.memo = 'Outdated Approval.';
           this.approvalRequestDAO.put(rejectedApproval).then(o => {
             this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+            this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+            this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+            this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+            
             this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
           }, e => {

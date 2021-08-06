@@ -64,7 +64,7 @@ foam.CLASS({
           var clsName = args.forClass_;
           var name = args.name;
 
-          var cls = X.lookup(clsName, true);
+          var cls = X.maybeLookup(clsName);
 
           // If we failed to find the class, try to deserialize the old format
           // where forClass_ contains the full path to the property: foo.bar.Pereson.lastName
@@ -96,7 +96,7 @@ foam.CLASS({
       name: 'create',
       installInClass: function(cls) {
         cls.create = function(args, x) {
-          return foam.lookup(args.forClass_, true);
+          return foam.maybeLookup(args.forClass_);
         };
       }
     }
@@ -567,8 +567,8 @@ foam.CLASS({
     },
 
     function getCls(opt_cls) {
-      return foam.typeOf(opt_cls) === foam.String ? this.__context__.lookup(opt_cls, true) :
-          opt_cls;
+      return foam.typeOf(opt_cls) === foam.String ? this.__context__.maybeLookup(opt_cls) :
+        opt_cls;
     }
   ]
 });

@@ -143,7 +143,7 @@ foam.LIB({
       for ( var i = 0 ; i < axs.length ; i++ ) {
       // Convert JSON axioms to real instances as late as possible
         if ( foam.String.isInstance(axs[i].class) ) {
-          var axsCls = foam.lookup(axs[i].class, true);
+          var axsCls = foam.maybeLookup(axs[i].class);
           if ( axsCls ) axs[i] = axsCls.create(axs[i]);
         }
 
@@ -395,7 +395,7 @@ foam.LIB({
             m.properties[i] = a = { name: a };
           }
 
-          var type = foam.lookup(a.class, true) || foam.core.Property;
+          var type = foam.maybeLookup(a.class) || foam.core.Property;
           foam.assert(
             type !== a.cls_,
             'Property', a.name, 'on', m.name,
@@ -469,7 +469,7 @@ foam.CLASS({
 
       var prop = this.cls_.getAxiomByName(name);
       foam.assert(prop && foam.core.Property.isInstance(prop),
-                    'Attempted to clear non-property', name);
+        'Attempted to clear non-property', name);
 
       if ( this.hasOwnProperty(name) ) {
         var oldValue = this[name];
@@ -699,7 +699,7 @@ foam.CLASS({
       var l = arguments[arguments.length - 1];
 
       foam.assert(foam.Function.isInstance(l),
-          'Listener must be a function');
+        'Listener must be a function');
 
       var listeners = this.listeners_();
 
@@ -825,7 +825,7 @@ foam.CLASS({
       this.clearPrivate_('listeners');
     },
 
-    function isDetached() { return t.hasOwnProperty('detaching_'); },
+    function isDetached() { return this.hasOwnProperty('detaching_'); },
 
 
     /************************************************

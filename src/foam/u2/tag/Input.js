@@ -103,7 +103,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -134,7 +134,7 @@ foam.CLASS({
 
     function initCls() {
       // Template method, can be overriden by sub-classes
-      this.addClass(this.myClass());
+      this.addClass();
     },
 
     function link() {
