@@ -30,7 +30,7 @@ public class DigWebAgent extends ContextAwareSupport
     Format              format  = (Format) p.get(Format.class);
     Logger              logger  = (Logger) x.get("logger");
     String              daoName = p.getParameter("dao");
-    PM                  pm      = new PM(getClass(), p.getParameter("dao"), command.getName(), format.getName());
+    PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format.getName());
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
 

@@ -65,6 +65,12 @@ foam.CLASS({
       name: 'exception',
       class: 'Object',
       storageTransient: true
+    },
+    {
+      name: 'enableCandlestick',
+      class: 'Boolean',
+      value: false,
+      documentation: 'Whether to create a candlestick for this PM.'
     }
   ],
 
@@ -96,10 +102,12 @@ foam.CLASS({
         }
 
         // Candlestick
-        DAOPMLogger daoPMLogger = (DAOPMLogger) x.get("daoPMLogger");
-        if ( daoPMLogger != null ) {
-          daoPMLogger.log(this);
-        } 
+        if ( getEnableCandlestick() ) {
+          DAOPMLogger daoPMLogger = (DAOPMLogger) x.get("daoPMLogger");
+          if ( daoPMLogger != null ) {
+            daoPMLogger.log(this);
+          }
+        }
       `
     },
     {
@@ -201,6 +209,12 @@ foam.CLASS({
               pm.setName(combine((Object[]) args));
               pm.init_();
 
+              return pm;
+            }
+
+            public static PM create(X x, Boolean enableCandlestick, String... args) {
+              PM pm = new PM(args);
+              pm.setEnableCandlestick(enableCandlestick);
               return pm;
             }
 
