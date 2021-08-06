@@ -212,7 +212,7 @@ foam.CLASS({
       class: 'StringArray',
       documentation: 'List of labels applied to this file',
       validateObj: function(labels) {
-        if (labels.indexOf("") >= 0) {
+        if ( labels.indexOf("") >= 0 ) {
           return this.INVALID_FILE_LABEL;
         }
       },
