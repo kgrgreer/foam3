@@ -49,8 +49,8 @@ foam.CLASS({
     {
       name: 'disabledData_',
       documentation: 'Optional list of choices that should be disabled',
-      expression: function(allowDuplicates, data) {
-        return allowDuplicates ? [] : data;
+      expression: function(allowDuplicates, data2_) {
+        return allowDuplicates ? [] : data2_;
       }
     },
     {
@@ -136,7 +136,16 @@ foam.CLASS({
 
   css: `
     ^value-view {
-      flex: 1;
+      flex: 1; 
+    }
+    ^addButton {
+      border: 1.5px dashed /*%GREY4%*/ #DADDE2;
+      justify-content: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+    ^value-view-container {
+      gap: 4px;
     }
   `,
 
@@ -160,27 +169,29 @@ foam.CLASS({
                   .startContext({ data: row })
                     .start(self.Cols)
                       .addClass(self.myClass('value-view-container'))
-                      .tag(self.Row.REMOVE, {
-                        isDestructive: true,
-                        // icon: '/images/remove-circle.svg',
-                        // encode data as an embedded data URL of the SVG
-                        // because then the GUI updates without flickering
-                        icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%23d9170e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z'/%3E%3C/svg%3E",
-                        buttonStyle: 'TERTIARY'
-                      })
                       .start(valueView, { data$: row.value$ })
                         .addClass(self.myClass('value-view'))
                       .end()
+                      .tag(self.Row.REMOVE, {
+                        // isDestructive: true,
+                        // icon: '/images/remove-circle.svg',
+                        // encode data as an embedded data URL of the SVG
+                        // because then the GUI updates without flickering
+                        themeIcon: 'close',
+                        icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%23d9170e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z'/%3E%3C/svg%3E",
+                        buttonStyle: 'TERTIARY'
+                      })
                     .end()
                   .endContext();
                 row.onDetach(row.sub(self.updateDataWithoutFeedback));
               });
         }))
         .startContext({ data: this })
-          .tag(this.ADD_ROW, {
+          .start(this.ADD_ROW, {
+            themeIcon: 'plus',
             icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%2317d90e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E",
             buttonStyle: 'TERTIARY'
-          })
+          }).addClass(this.myClass('addButton')).end()
         .endContext();
     }
   ],
