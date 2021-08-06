@@ -51,7 +51,7 @@ foam.CLASS({
     ^label {
       align-items: center;
       display: flex;
-      gap: 8px;
+      gap: 0.5em;
       justify-content: flex-start;
       width: 100%;
     }
@@ -68,7 +68,6 @@ foam.CLASS({
       text-align: left;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 10vw;
     }
 
     ^name:hover {
@@ -87,6 +86,12 @@ foam.CLASS({
 
     ^size {
       color: /*%GREY2%*/ #6B778C;
+      white-space: nowrap;
+    }
+
+    ^fileButton {
+      overflow: hidden;
+      justify-content: flex-start;
     }
   `,
 
@@ -128,7 +133,7 @@ foam.CLASS({
 
       this.addClass()
         .start(this.Cols)
-          .tag(self.VIEW_FILE, { label: label, buttonStyle: 'UNSTYLED' })
+          .start(self.VIEW_FILE, { label: label, buttonStyle: 'UNSTYLED' }).addClass(this.myClass('fileButton')).end()
           .start(this.REMOVE_FILE_X, {
             label: '',
             buttonStyle: foam.u2.ButtonStyle.TERTIARY,
