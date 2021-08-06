@@ -173,7 +173,6 @@ foam.CLASS({
                         .addClass(self.myClass('value-view'))
                       .end()
                       .tag(self.Row.REMOVE, {
-                        // isDestructive: true,
                         // icon: '/images/remove-circle.svg',
                         // encode data as an embedded data URL of the SVG
                         // because then the GUI updates without flickering
