@@ -155,7 +155,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'disabled_data',
+      name: 'disabledData',
       documentation: 'Optional slot containing list of choice ids that should be disabled',
       factory: function() {
         return [];
@@ -239,7 +239,7 @@ foam.CLASS({
               mode$:            self.mode$,
               size$:            self.size$,
               header$:          self.header$,
-              disabled_data$:   self.disabled_data$
+              disabledData$:    self.disabledData$
             })
               .attrs({name: self.name})
               .enableClass('selection-made', self.index$.map((index) => index !== -1))

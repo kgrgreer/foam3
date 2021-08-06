@@ -30,7 +30,7 @@ foam.CLASS({
           class: 'foam.u2.view.ReferenceView',
           dao: dao,
           defaultValue: '',
-          disabled_data$: this.disabledData_$
+          disabledData$: this.disabledData_$
         };
       }
     }
