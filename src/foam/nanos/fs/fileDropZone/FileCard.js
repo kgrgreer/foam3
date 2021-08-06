@@ -156,12 +156,11 @@ foam.CLASS({
     {
       name: 'viewFile',
       code: function() {
-        debugger;
-        var blob = this.data;
+        var blob = this.data.data;
         if ( this.BlobBlob.isInstance(blob) ) {
           window.open(URL.createObjectURL(blob.blob));
         } else {
-          var url = this.address;
+          var url = this.data.address;
           window.open(url);
         }
       }
