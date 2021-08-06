@@ -466,6 +466,7 @@ var classes = [
   'foam.nanos.medusa.ReplayDetailsCmd',
   'foam.nanos.medusa.ReplayMediatorDAO',
   'foam.nanos.medusa.ReplayNodeDAO',
+  'foam.nanos.medusa.ReplayRequestCmd',
   'foam.nanos.medusa.ReplayingDAO',
   'foam.nanos.medusa.ReplayingInfo',
   'foam.nanos.medusa.ReplayingInfoDAO',
