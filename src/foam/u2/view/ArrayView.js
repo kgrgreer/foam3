@@ -41,6 +41,24 @@ foam.CLASS({
       name: 'enableRemoving',
       value: true
     },
+    {
+      class: 'Boolean',
+      name: 'allowDuplicates',
+      value: true
+    },
+    {
+      name: 'disabledData_',
+      documentation: 'Optional list of choices that should be disabled',
+      expression: function(allowDuplicates, data) {
+        return allowDuplicates ? [] : data;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'arrayLength_',
+      documentation: 'Optional number of unique elements in array, used to limit number of array items that can be assigned',
+      value: -1
+    },
     // The next two properties are used to avoid excess flickering.
     // We only update data to data2_ when we know that our feedback
     // didn't cause the update. This prevents the whole view from
@@ -60,6 +78,10 @@ foam.CLASS({
       label: 'Add',
       isAvailable: function(mode, enableAdding) {
         return enableAdding && mode === foam.u2.DisplayMode.RW;
+      },
+      isEnabled: function(allowDuplicates, data, arrayLength_) {
+        // Disable adding if no duplicates and all uniques already assigned
+        return allowDuplicates || data.length !== arrayLength_;
       },
       code: function() {
         var newItem = this.defaultNewItem;
@@ -178,6 +200,5 @@ foam.CLASS({
         this.feedback_ = false;
       }
     }
-
   ]
 });
