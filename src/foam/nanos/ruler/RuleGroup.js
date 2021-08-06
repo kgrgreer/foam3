@@ -48,7 +48,12 @@
     {
       class: 'Int',
       name: 'priority',
-      documentation: 'Support prioritizing rule group execution in the rule engine.',
+      value: 10,
+      documentation: `
+        Support prioritizing rule group execution in the rule engine.
+        Priority is a multiple of 10 in the range of (lowest) 0 -> inf (highest).
+        Priority is defaulted to 10 so rule groups can ensure they go last by setting priority to 0
+      `,
       writePermissionRequired: true
     }
   ],

@@ -38,7 +38,7 @@ foam.CLASS({
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
     }
-    
+
     ^wrapper {
       padding: 14px 24px;
     }
@@ -72,32 +72,34 @@ foam.CLASS({
           return self.E()
             .add(arraySlot.map(visibilities => {
               var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
-              var e = availableSections.length == 1 ? 
+              var e = availableSections.length == 1 ?
                 this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
                   .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })
                 .end() :
                 this.E()
                 .start(self.Tabs, {}, self.tabs$)
                   .forEach(availableSections, function(s) {
-                    var title$ = foam.Function.isInstance(s.title) ?
-                      foam.core.ExpressionSlot.create({
-                        obj: self.data,
-                        code: s.title
-                      }) :
-                      s.title$;
+                    if ( s.title ) {
+                      var title$ = foam.Function.isInstance(s.title) ?
+                        foam.core.ExpressionSlot.create({
+                          obj: self.data,
+                          code: s.title
+                        }) :
+                        s.title$;
 
-                    var tab = foam.core.SimpleSlot.create();
-                    this
-                      .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
-                        .call(function() {
-                          this.tag(self.SectionView, {
-                            data$: self.data$,
-                            section: s,
-                            showTitle: false,
-                            selected$: tab.value.selected$
-                          });
-                        })
-                      .end();
+                      var tab = foam.core.SimpleSlot.create();
+                      this
+                        .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
+                         .call(function() {
+                           this.tag(self.SectionView, {
+                             data$: self.data$,
+                             section: s,
+                             showTitle: false,
+                             selected$: tab.value.selected$
+                           });
+                         })
+                       .end();
+                    }
                   })
                 .end();
               self.tabs && ( self.tabs.updateMemento = true );

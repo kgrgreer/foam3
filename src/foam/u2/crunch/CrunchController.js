@@ -135,6 +135,7 @@ foam.CLASS({
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
+          .add(this.SaveAllAgent)
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           // .add(this.TestAgent)
@@ -166,7 +167,6 @@ foam.CLASS({
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
-          .addBefore('DetachSpinnerAgent',this.SaveAllAgent)
           .add(this.MaybeDAOPutAgent)
           ;
       }

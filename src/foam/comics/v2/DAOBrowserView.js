@@ -76,9 +76,9 @@ foam.CLASS({
     }
 
     /*
-      Scroll is handled here to ensure summaryView always has a scroll 
+      Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
-      This is the generalised way to do this but should be removed 
+      This is the generalised way to do this but should be removed
       if double scroll bars start appearing
     */
     ^browse-view-container > * {
@@ -229,9 +229,14 @@ foam.CLASS({
         return records && records.array && records.array.length != 0;
       },
       code: function() {
+        var adao;
+        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects,{}) ) {
+          adao = foam.dao.ArrayDAO.create({ of: this.data.of });
+          foam.Object.forEach(summaryView.selectedObjects,function(y){adao.put(y)})
+       }
         this.add(this.Popup.create().tag({
           class: 'foam.u2.ExportModal',
-          exportData: this.predicatedDAO$proxy,
+          exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
         }));
       }
@@ -295,7 +300,7 @@ foam.CLASS({
               showCount: false,
               data$: self.searchPredicate$,
             }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-    
+
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$

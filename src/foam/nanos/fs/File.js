@@ -10,6 +10,11 @@ foam.CLASS({
 
   documentation: 'Represents a file',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin'
+  ],
+
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.ServiceProviderAware'
@@ -39,11 +44,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id',
-      'filename',
-      'filesize',
-      'mimeType'
-    ],
+    'filename',
+    'filesize',
+    'mimeType',
+    'created'
+  ],
 
   searchColumns: [
     'id',
@@ -68,9 +73,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'filesize',
-      updateVisibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
       readVisibility: 'RO',
-      documentation: 'Filesize'
+      documentation: 'Filesize',
+      tableCellFormatter: function(value, _) {
+        this.tag({
+          class: 'foam.nanos.fs.FileSizeView',
+          data: value
+        });
+      },
+      view: { class: 'foam.nanos.fs.FileSizeView' }
     },
     {
       class: 'String',

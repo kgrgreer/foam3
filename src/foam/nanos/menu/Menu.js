@@ -48,7 +48,8 @@
       tableWidth: 80
     },
     {
-      class: 'JSFObject',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.menu.AbstractMenu',
       name: 'handler',
       documentation: 'View initialized when menu is launched.',
       view: {

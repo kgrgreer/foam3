@@ -147,8 +147,11 @@ foam.CLASS({
         self.overlay_.close();
       });
 
+      // a list where element at i stores whether ith action in data is enabled or not
+      const enabled = await Promise.all(this.data.map(this.isEnabled.bind(this)));
       // a list where element at i stores whether ith action in data is available or not
       const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
+
       this.overlay_.startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
           if ( availabilities[index] ) {
@@ -157,7 +160,7 @@ foam.CLASS({
                 .addClass(self.myClass('button-container'))
                 .tag(action, { buttonStyle: 'UNSTYLED' })
                 .attrs({ tabindex: -1 })
-                .callIf(! action.createIsEnabled$(self.__context__, self.obj).get(), function() {
+                .callIf(! enabled[index], function() {
                   this
                     .addClass(self.myClass('disabled'))
                     .attrs({ disabled: true })
@@ -181,10 +184,19 @@ foam.CLASS({
       this.overlayInitialized_ = true;
     },
 
+    async function isEnabled(action) {
+      /*
+       * checks if action is enabled
+       */
+      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      if ( slot.get() ) return true;
+      return slot.args[1].promise || false;
+    },
+
     async function isAvailable(action) {
       /*
-        checks if action is available
-      */
+       * checks if action is available
+       */
       const slot = action.createIsAvailable$(this.__context__, this.obj);
       if ( slot.get() ) return true;
       return slot.promise || false;

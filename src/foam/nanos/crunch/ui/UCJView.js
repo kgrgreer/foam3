@@ -15,6 +15,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'stack',
+    'tableViewApprovalRequestDAO',
     'translationService',
     'userDAO'
   ],
@@ -123,6 +124,10 @@ foam.CLASS({
           rejectedApproval.memo = 'Outdated Approval.';
           this.approvalRequestDAO.put(rejectedApproval).then(o => {
             this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+            this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+            this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+            this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+            
             this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
           }, e => {
