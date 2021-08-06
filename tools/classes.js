@@ -90,6 +90,7 @@ var classes = [
   'foam.mlang.expr.Divide',
   'foam.mlang.expr.MinFunc',
   'foam.mlang.expr.MaxFunc',
+  'foam.mlang.expr.EndOfDay',
   'foam.mlang.PredicatedExpr',
   'foam.mlang.ContextObject',
   'foam.mlang.CurrentTime',

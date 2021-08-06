@@ -17,6 +17,7 @@ import foam.nanos.auth.Authorizer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Static helper functions for creating MLangs.
@@ -27,6 +28,8 @@ public class MLang
 {
   public static final Predicate TRUE  = new True();
   public static final Predicate FALSE = new False();
+
+  public static final Date EOD = new Date(( System.currentTimeMillis() / ( 3600 * 24 * 1000 ) + 1 ) * ( 3600 * 24 * 1000 ));
 
   public static final Expr NEW_OBJ    = new ContextObject("NEW");
   public static final Expr OLD_OBJ    = new ContextObject("OLD");

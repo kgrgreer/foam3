@@ -3799,11 +3799,15 @@ foam.CLASS({
   constants: [
     {
       name: 'FALSE',
-      factory: function() { return foam.mlang.predicate.False.create() }
+      factory: function() { return foam.mlang.predicate.False.create(); }
     },
     {
       name: 'TRUE',
-      factory: function() { return foam.mlang.predicate.True.create() }
+      factory: function() { return foam.mlang.predicate.True.create(); }
+    },
+    {
+      name: 'EOD',
+      factory: function() { return foam.mlang.expr.EndOfDay.create().f(); }
     }
   ],
 
@@ -4298,6 +4302,28 @@ return true;
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang.expr',
+  name: 'EndOfDay',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Expression which returns the time of the end of the current day.',
+  implements: [ 'foam.core.Serializable' ],
+  axioms: [ foam.pattern.Singleton.create() ],
+  javaImports: [
+    'java.util.Date'
+  ],
+  methods: [
+    {
+      name: 'f',
+      code: function() {
+        return new Date(Math.floor(Date.now() / ( 3600 * 24 * 1000 ) + 1) * ( 3600 * 24 * 1000 ));
+      },
+      javaCode: `
+        return new Date((System.currentTimeMillis() / ( 3600 * 24 * 1000 ) + 1 ) * ( 3600 * 24 * 1000 ));
+      `
+    }
+  ]
+});
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
