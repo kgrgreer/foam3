@@ -175,7 +175,6 @@ foam.CLASS({
           }
 
           if ( details.getMaxIndex() >= minIndex ) {
-          // if ( details.getMaxIndex() > 0L ) {
             ReplayCmd cmd = new ReplayCmd();
             details = (ReplayDetailsCmd) details.fclone();
             details.setMinIndex(minIndex);
