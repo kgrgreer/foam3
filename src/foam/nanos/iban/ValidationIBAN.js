@@ -149,7 +149,7 @@ Columns: validation format, parsing format, example`,
     {
       name: 'MIN_IBAN_LENGTH',
       type: 'int',
-      value: 19
+      value: 15
     }
   ],
 

@@ -49,6 +49,8 @@ becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - fromProperty() doesn't make sense since you need to create the view first
+    a 'property' property would work better
   - Is it faster if we don't add child to parent until we call end()?
   - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()
@@ -181,7 +183,6 @@ foam.CLASS({
 
   methods: [
     function load() {
-      this.SUPER();
       this.slot.sub(this.update);
       this.update();
     }
@@ -361,6 +362,12 @@ foam.CLASS({
       name: 'code'
     },
     {
+      class: 'String',
+      name: 'allCode_',
+      factory: function() {
+      }
+    },
+    {
       name: 'name',
       factory: function() { return 'CSS-' + Math.abs(foam.util.hashCode(this.code)); }
     },
@@ -395,9 +402,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
+      var oldCreate  = cls.create;
+      var axiom      = this;
+      var isFirstCSS = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -439,8 +446,8 @@ foam.CLASS({
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^/<< shorthand on the CSS. */
-      // TODO(braden): Parse and validate the CSS.
-      // TODO(braden): Add the automatic prefixing once we have the parser.
+      // TODO: Parse and validate the CSS.
+      // TODO: Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
       return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
         var c = next.charCodeAt(0);
@@ -602,9 +609,11 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        return this.SVG_TAGS[this.nodeName] ?
+        var ret = this.SVG_TAGS[this.nodeName] ?
           this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
           this.document.createElement(this.nodeName);
+        if ( this.hasOwnProperty('id') ) ret.id = this.id;
+        return ret;
       }
     },
     {
@@ -1175,12 +1184,13 @@ foam.CLASS({
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
+      debugger;
       var ls = this.elListeners;
       for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
           ls.splice(i, 3);
-          this.onRemoveListener_(topic, listener);
+          this.element_.removeEventListener(topic, listener);
           return;
         }
       }
@@ -1189,7 +1199,6 @@ foam.CLASS({
     function setID(id) {
       /* Explicitly set Element's id. */
       this.id = id;
-      this.element_.id = id;
       return this;
     },
 

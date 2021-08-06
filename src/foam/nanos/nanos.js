@@ -236,6 +236,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/ReplayDetailsCmd' },
   { name: 'foam/nanos/medusa/ReplayMediatorDAO' },
   { name: 'foam/nanos/medusa/ReplayNodeDAO' },
+  { name: 'foam/nanos/medusa/ReplayRequestCmd' },
   { name: 'foam/nanos/medusa/ReplayingDAO' },
   { name: 'foam/nanos/medusa/ReplayingInfo' },
   { name: 'foam/nanos/medusa/ReplayingInfoDAO' },
@@ -578,6 +579,7 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
   { name: 'foam/nanos/approval/RestrictedApprovableDAO' },
+  { name: 'foam/nanos/approval/PopulateApprovalRequestSummariesDAO' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },
