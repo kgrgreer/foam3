@@ -78,9 +78,8 @@ foam.CLASS({
           throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize vacant user.");
         }
 
-        try {
-          User vacantUser = (User) serviceProvider.findVacantUser(x);
-        } catch (Exception e) {
+        User vacantUser = (User) ((DAO) x.get("localUserUserDAO")).find(serviceProvider.getVacantUser());
+        if ( vacantUser == null ) {
           throw new AuthorizationException("Unable to find vacant user.");
         }
         X userX = x.put("subject", new Subject.Builder(x).setUser(vacantUser).build());
