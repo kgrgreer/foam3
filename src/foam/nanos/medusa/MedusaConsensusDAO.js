@@ -331,6 +331,9 @@ This is the heart of Medusa.`,
                   alarm.setIsActive(true);
                   alarm.setNote("No Consensus: "+next.toSummary());
                   alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+                  ReplayRequestCmd cmd = new ReplayRequestCmd();
+                  cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
+                  ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
                 } else {
                   if ( alarm.getIsActive() ) {
                     alarm.setIsActive(false);

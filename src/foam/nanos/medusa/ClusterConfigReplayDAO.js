@@ -148,6 +148,8 @@ foam.CLASS({
           synchronized ( this ) {
             DaggerService dagger = (DaggerService) x.get("daggerService");
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            replaying.getReplayNodes().put(details.getResponder(), details);
+
             if ( replaying.getStartTime() == null ) {
               replaying.setStartTime(new java.util.Date());
               replaying.updateIndex(x, dagger.getGlobalIndex(x));
@@ -159,7 +161,6 @@ foam.CLASS({
             if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
               replaying.setReplayIndex(details.getMaxIndex());
             }
-            replaying.getReplayNodes().put(details.getResponder(), details);
 
             getLogger().debug(myConfig.getId(), "replaying", replaying.getReplaying(), "index", replaying.getIndex(), "replayIndex", replaying.getReplayIndex(), "node quorum", support.getHasNodeQuorum());
 
@@ -173,9 +174,11 @@ foam.CLASS({
             }
           }
 
-          // if ( details.getMaxIndex() > minIndex ) {
-          if ( details.getMaxIndex() > 0L ) {
+          if ( details.getMaxIndex() >= minIndex ) {
+          // if ( details.getMaxIndex() > 0L ) {
             ReplayCmd cmd = new ReplayCmd();
+            details = (ReplayDetailsCmd) details.fclone();
+            details.setMinIndex(minIndex);
             cmd.setDetails(details);
             cmd.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
@@ -186,6 +189,37 @@ foam.CLASS({
         }
       }
       return nu;
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( obj instanceof ReplayRequestCmd ) {
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
+
+        getLogger().info("ReplayRequestCmd", "min", cmd.getDetails().getMinIndex());
+
+        java.util.List<ClusterConfig> nodes = support.getReplayNodes();
+        for ( ClusterConfig cfg : nodes ) {
+          ReplayCmd c = new ReplayCmd();
+          ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
+          details.setRequester(myConfig.getId());
+          details.setResponder(cfg.getId());
+          c.setDetails(cmd.getDetails());
+
+          DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
+          clientDAO = new RetryClientSinkDAO.Builder(x)
+            .setName("medusaEntryDAO")
+            .setDelegate(clientDAO)
+            .setMaxRetryAttempts(support.getMaxRetryAttempts())
+            .setMaxRetryDelay(support.getMaxRetryDelay())
+            .build();
+          clientDAO.cmd_(x, c);
+        }
+      }
+      return obj;
       `
     }
   ]
