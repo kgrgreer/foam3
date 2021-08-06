@@ -137,7 +137,7 @@ foam.CLASS({
           .start(this.REMOVE_FILE_X, {
             label: '',
             buttonStyle: foam.u2.ButtonStyle.TERTIARY,
-            themeIcon: 'close'
+            themeIcon: 'trash'
           }).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
         .end();
 
