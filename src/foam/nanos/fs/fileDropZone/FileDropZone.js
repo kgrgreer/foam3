@@ -297,7 +297,7 @@ foam.CLASS({
           });
         }
       }
-      this.selected = this.files.length - 1;
+      if ( this.selected ) this.selected = this.files.length - 1;
       this.files = Array.from(this.files);
     },
 
