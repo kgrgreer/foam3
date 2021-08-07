@@ -84,6 +84,8 @@ public class FObjectParser
             }
 
             return null;
+          } catch (ClassNotFoundException e) {
+            return UnknownFObjectParser.instance().parse(ps,x);
           } catch (Throwable t) {
             t.printStackTrace();
             return null;
