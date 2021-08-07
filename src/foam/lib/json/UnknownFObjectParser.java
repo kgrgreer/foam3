@@ -12,6 +12,8 @@ import foam.core.X;
 public class UnknownFObjectParser
   implements Parser
 {
+  private final static Parser instance__ = new UnknownFObjectParser();
+  public static Parser instance() { return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
 
   public PStream parse(PStream ps, ParserContext x) {
     ps = ps.apply(Whitespace.instance(), x);
