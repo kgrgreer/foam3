@@ -260,7 +260,7 @@ foam.CLASS({
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service." + getName()) ) {
-          throw new AuthorizationException("You do not have permission to access the service named "+getName());
+          throw new AuthorizationException("You do not have permission to access the service named " + getName());
         }
       `
     }

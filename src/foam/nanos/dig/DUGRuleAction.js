@@ -108,7 +108,7 @@ foam.CLASS({
       
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
-        PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
+        PM pm = PM.create(x, true, getClass().getSimpleName(), rule.getDaoKey(), rule.getName());
         DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
         DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         try {
