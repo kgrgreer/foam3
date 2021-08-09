@@ -150,7 +150,8 @@ foam.CLASS({
           data$: dataSlot,
           selected$: selectSlot
         });
-      }
+      },
+      comparePropertyValues: function(o1, o2) { return 0; } 
     },
     {
       class: 'Blob',
