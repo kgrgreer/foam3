@@ -61,7 +61,7 @@ foam.CLASS({
             public void execute(X y) {
               Logger logger = (Logger) y.get("logger");
               if ( logger == null ) {
-                logger = new StdoutLogger();
+                logger = StdoutLogger.instance();
               }
               logger = new PrefixLogger(new Object[] {
                 this.getClass().getSimpleName()

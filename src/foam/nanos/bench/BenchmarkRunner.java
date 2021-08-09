@@ -155,7 +155,7 @@ public class BenchmarkRunner
   public void execute(final X x) {
     Logger log = (Logger) x.get("logger");
     if ( log != null ) {
-      log = new foam.nanos.logger.StdoutLogger();
+      log = foam.nanos.logger.StdoutLogger.instance();
     }
     final Logger logger = new PrefixLogger(new String[] { test_.getClass().getSimpleName() }, log);
 
