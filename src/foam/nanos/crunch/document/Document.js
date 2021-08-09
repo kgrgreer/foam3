@@ -16,13 +16,8 @@ foam.CLASS({
     'translationService'
   ],
 
-  javaImplements: [
-    'foam.core.XArgsFactory'
-  ],
-
   implements: [
-    'foam.core.Validatable',
-//    'foam.core.XArgsFactory'
+    'foam.core.Validatable'
   ],
 
   requires: ['foam.nanos.crunch.Capability'],
@@ -88,23 +83,6 @@ foam.CLASS({
       if ( getIsRequired() && getDocuments().length == 0 ) {
         throw new foam.core.ValidationException(IMAGE_REQUIRED);
       }
-      `
-    },
-    {
-      name: 'getInstance',
-      type: 'Any',
-      args: [
-        {
-          name: 'args',
-          type: 'Map'
-        },
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      javaCode: `
-        return new Document.Builder(x).build();
       `
     }
   ]
