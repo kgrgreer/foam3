@@ -98,9 +98,13 @@ p({
   """,
   "client":"""
     {
-      "class":"foam.nanos.auth.CachedAuthServiceProxy",
-      "delegate":{
-        "class":"foam.nanos.auth.ClientLoginAuthService"
+      "class": "foam.nanos.auth.AuthorizeVacancyClientDecorator",
+      "delegate":
+      {
+        "class":"foam.nanos.auth.CachedAuthServiceProxy",
+        "delegate":{
+          "class":"foam.nanos.auth.ClientLoginAuthService"
+        }
       }
     }
   """

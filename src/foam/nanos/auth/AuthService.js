@@ -90,7 +90,7 @@ foam.INTERFACE({
     },
     {
       name: 'authorizeVacancy',
-      type: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.Subject',
       documentation: `
         Authorizes a vacant user that has no true ownership other than to the system's acting service provider. The assigned vacant user is relative to a spid,
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.

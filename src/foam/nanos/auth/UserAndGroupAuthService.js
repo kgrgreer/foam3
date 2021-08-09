@@ -82,14 +82,14 @@ foam.CLASS({
         if ( vacantUser == null ) {
           throw new AuthorizationException("Unable to find vacant user.");
         }
-        X userX = x.put("subject", new Subject.Builder(x).setUser(vacantUser).build());
+        x = x.put("subject", new Subject.Builder(x).setUser(vacantUser).setVacantMode(true).build());
 
         Session session = x.get(Session.class);
-        if ( session.getUserId() == vacantUser.getId() ) return vacantUser;
+        if ( session.getUserId() == vacantUser.getId() ) return ((Subject) x.get("subject"));
         session.setUserId(vacantUser.getId());
         ((DAO) getLocalSessionDAO()).inX(x).put(session);
         session.setContext(session.applyTo(session.getContext()));
-        return vacantUser;
+        return ((Subject) x.get("subject"));
       `
     },
     {
@@ -113,6 +113,7 @@ foam.CLASS({
           throw new AuthenticationException("Group disabled");
         }
         Subject subject = (Subject) x.get("subject");
+        if ( ((ServiceProvider) x.get("spid")).getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
         return subject;
       `
     },

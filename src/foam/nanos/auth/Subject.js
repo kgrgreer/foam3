@@ -52,6 +52,11 @@ foam.CLASS({
       documentation: 'path from realUser to current user',
       javaFactory: 'return new ArrayList();'
     },
+    {
+      class: 'Boolean',
+      name: 'vacantMode',
+      documentation: 'Flag subject as being used with vacant user.'
+    }
   ],
 
   axioms: [

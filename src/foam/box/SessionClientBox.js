@@ -19,6 +19,7 @@ foam.CLASS({
     'loginSuccess',
     'requestLogin',
     'sessionTimer',
+    'subject',
     'window'
   ],
 
@@ -55,8 +56,8 @@ foam.CLASS({
           // that something occurred on the backend to destroy this user's
           // session. Therefore we reset the client state and ask them to log
           // in again.
-          if ( this.loginSuccess ) {
-            if ( this.ctrl )  this.ctrl.remove();
+          if ( this.loginSuccess && ! this.subject.vacantMode ) {
+            if ( this.ctrl ) this.ctrl.remove();
             alert(this.REFRESH_MSG);
 
             return;
