@@ -22,12 +22,6 @@ foam.CLASS({
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'logger',
-      class: 'Object',
-      javaFactory: `return new foam.nanos.logger.StdoutLogger();`,
-      visibility: 'HIDDEN'
     }
   ],
 
@@ -36,14 +30,14 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
-          data:
-          `protected ThreadLocal<Boolean> initializing = new ThreadLocal<Boolean>() {
-  @Override
-  protected Boolean initialValue() {
-    return false;
-  }
-};`
-        }));
+          data: `
+  protected ThreadLocal<Boolean> initializing = new ThreadLocal<Boolean>() {
+    @Override
+    protected Boolean initialValue() {
+      return false;
+    }
+  };
+      ` }));
       }
     }
   ],
