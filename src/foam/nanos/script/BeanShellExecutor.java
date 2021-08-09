@@ -31,7 +31,7 @@ public class BeanShellExecutor {
     } catch (EvalError e) {
       Logger logger = (Logger) x.get("logger");
       if ( logger != null ) {
-        logger = new foam.nanos.logger.StdoutLogger();
+        logger = foam.nanos.logger.StdoutLogger.instance();
       }
       logger.error(this.getClass().getSimpleName(), "execute", (this.nSpec != null ? this.nSpec.getName() : ""), e);
       return null;

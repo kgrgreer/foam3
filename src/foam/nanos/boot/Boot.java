@@ -40,7 +40,7 @@ public class Boot {
   public Boot(String datadir) {
     XLocator.set(root_);
 
-    Logger logger = new ProxyLogger(new StdoutLogger());
+    Logger logger = new ProxyLogger(StdoutLogger.instance());
     root_.put("logger", logger);
 
     boolean cluster = SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));

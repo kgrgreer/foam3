@@ -88,7 +88,7 @@ public class SyncAssemblyLine
           if ( x_ != null ) {
             logger = (foam.nanos.logger.Logger) x_.get("logger");
           } else {
-            logger = new foam.nanos.logger.StdoutLogger();
+            logger = foam.nanos.logger.StdoutLogger.instance();
           }
           logger.error(this.getClass().getSimpleName(), t.getMessage(), t);
         }

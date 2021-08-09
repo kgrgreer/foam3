@@ -455,7 +455,7 @@ Columns: validation format, parsing format, example`,
         if ( temp == null || temp[1] == null || SafetyUtil.isEmpty((String)temp[1]) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
           if ( logger == null ) {
-            logger = new foam.nanos.logger.StdoutLogger();
+            logger = foam.nanos.logger.StdoutLogger.instance();
           }
           logger.warning(this.getClass().getSimpleName(), "parse", "Format not found", ibanInfo.getCountry());
           return null;
@@ -521,7 +521,7 @@ Columns: validation format, parsing format, example`,
               if ( Character.compare('0', next) != 0 ) {
                 foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
                 if ( logger == null ) {
-                  logger = new foam.nanos.logger.StdoutLogger();
+                  logger = foam.nanos.logger.StdoutLogger.instance();
                 }
                 logger.warning(this.getClass().getSimpleName(), "parse", "symbol mismatch", format, i, format[i], next);
               }
@@ -529,7 +529,7 @@ Columns: validation format, parsing format, example`,
             default:
               foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
               if ( logger == null ) {
-                logger = new foam.nanos.logger.StdoutLogger();
+                logger = foam.nanos.logger.StdoutLogger.instance();
               }
               logger.warning(this.getClass().getSimpleName(), "parse", "unexpected symbol", format, i, format[i]);
           }

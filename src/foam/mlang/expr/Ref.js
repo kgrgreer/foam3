@@ -43,7 +43,7 @@ foam.CLASS({
         } catch ( Throwable t ) {
           Logger logger = (Logger) getX().get("logger");
           if ( logger == null ) {
-            logger = new StdoutLogger();
+            logger = StdoutLogger.instance();
           }
           logger.error(t);
         }
