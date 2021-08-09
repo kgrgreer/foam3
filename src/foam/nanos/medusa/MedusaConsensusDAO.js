@@ -325,12 +325,18 @@ This is the heart of Medusa.`,
                   }
                 } else if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 5000 ) {
                   getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
-                  alarm.setIsActive(true);
-                  alarm.setNote("No Consensus: "+next.toSummary());
-                  alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                  ReplayRequestCmd cmd = new ReplayRequestCmd();
-                  cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-                  ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                  if ( ! alarm.getIsActive() ) {
+                    alarm.setIsActive(true);
+                    alarm.setNote("No Consensus: "+next.toSummary());
+                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+
+                    // NOTE: inside the alarm.getIsActive - replay request
+                    // will run once per alarm. So to force replay again,
+                    // clear the alarm.
+                    ReplayRequestCmd cmd = new ReplayRequestCmd();
+                    cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
+                    ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                  }
                 } else {
                   if ( alarm.getIsActive() ) {
                     alarm.setIsActive(false);
