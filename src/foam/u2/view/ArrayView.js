@@ -18,7 +18,8 @@ foam.CLASS({
   exports: [
     'enableRemoving',
     'mode',
-    'updateData'
+    'updateData',
+    'updateDataWithoutFeedback'
   ],
 
   properties: [
@@ -49,8 +50,8 @@ foam.CLASS({
     {
       name: 'disabledData_',
       documentation: 'Optional list of choices that should be disabled',
-      expression: function(allowDuplicates, data2_) {
-        return allowDuplicates ? [] : data2_;
+      expression: function(allowDuplicates, data) {
+        return allowDuplicates ? [] : data;
       }
     },
     {
@@ -101,7 +102,8 @@ foam.CLASS({
         'data',
         'enableRemoving',
         'mode',
-        'updateData'
+        'updateData',
+        'updateDataWithoutFeedback'
       ],
       properties: [
         {
@@ -114,7 +116,7 @@ foam.CLASS({
           postSet: function(_, n) {
             if ( this.data[this.index] === n ) return;
             this.data[this.index] = n;
-            this.updateData();
+            this.updateDataWithoutFeedback();
           }
         }
       ],
