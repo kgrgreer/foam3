@@ -698,7 +698,7 @@ foam.CLASS({
 
         if ( ! findSelf &&
              ! auth.check(x, "user.read." + this.getId()) &&
-             ! auth.check(x, "user.read.byGroup." + this.getGroup())
+             ! auth.check(x, "user.readByGroup." + this.getGroup())
         ) {
           throw new AuthorizationException();
         }
