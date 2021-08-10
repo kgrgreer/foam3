@@ -60,11 +60,11 @@ foam.CLASS({
       synchronized: true,
       type: 'String',
       documentation: `
-        Generate a Unique ID. The Unique ID consists of : 8 hexits timestamp(s)
-        + at least 2 hexits sequence inside second
-        + 2 hexits checksum. After the checksum is added, the ID is permutated
-        based on the permutationSeq. In most cases, the generated ID should be
-        12 digits long.
+        Generate a Unique ID. The Unique ID consists of :
+        8 hexits timestamp(s) + at least 2 hexits sequence inside second + 2 hexits checksum.
+
+        After the checksum is added, the ID is permutated based on the
+        permutationSeq. In most cases, the generated ID should be 12 digits long.
       `,
       javaCode: `
         StringBuilder id = new StringBuilder();
@@ -122,13 +122,15 @@ foam.CLASS({
       type: 'int[]',
       documentation: `
         A hard coded array used as permutation sequence. It only supports
-        permutation of a string less than 30 digits.
-        The part of a string over 30 digits will not be involved in permutation.
+        permutation of a string less than 30 digits. The part of a string over
+        30 digits will not be involved in permutation.
       `,
       javaCode: `
         int[] permutationSeq = new int[] {
-          11, 3, 7, 9, 5, 6, 2, 8, 1, 9, 11, 10, 8, 12, 6,
-          14, 6, 5, 16, 3, 17, 2, 20, 18, 24, 17, 25, 3, 16, 12 };
+          11,  3,  7,  9,  5,  6,  2, 8,  1,  9,
+          11, 10,  8, 12,  6, 14,  6, 5, 16,  3,
+          17,  2, 20, 18, 24, 17, 25, 3, 16, 12
+        };
         return permutationSeq;
       `
     },
