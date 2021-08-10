@@ -6,7 +6,7 @@
 
 package foam.nanos.pm;
 
-/** Last-resort method of locating thread-local session context. **/
+/** ThreadLocal store for current PipelinePM PM. **/
 public class PipelinePMLocator
 {
 
