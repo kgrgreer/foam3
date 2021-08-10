@@ -76,15 +76,13 @@ foam.CLASS({
               buttonStyle: 'LINK'
             }).show(labelSlot).end();
           } else if ( i == self.maxHead ) {
-            self.start(this.OverlayActionListView, {
+            self.tag(this.OverlayActionListView, {
               label: '...',
               data$: self.actionArray$,
               obj: self,
               buttonStyle: 'LINK',
               showDropdownIcon: false,
-            })
-              .addClass(this.myClass('dropdown'))
-            .end();
+            });
             self.actionArray.push(jumpAction);
           } else {
             self.actionArray.push(jumpAction);
