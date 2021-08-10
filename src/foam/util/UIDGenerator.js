@@ -23,6 +23,10 @@ foam.CLASS({
       name: 'lastSecondCalled',
       class: 'Long',
       javaFactory: 'return System.currentTimeMillis() / 1000;'
+    },
+    {
+      name: 'salt',
+      class: 'String'
     }
   ],
 
@@ -55,29 +59,39 @@ foam.CLASS({
       synchronized: true,
       type: 'String',
       documentation: `
-        Generate a Unique ID. The Unique ID consists of : 8 hexits timestamp(s) + at least 2 hexits sequence inside second 
-        + 2 hexits checksum. After the checksum is added, the ID is permutated based on the permutationSeq. In most cases, 
-        the generated ID should be 12 digits long.
+        Generate a Unique ID. The Unique ID consists of : 8 hexits timestamp(s)
+        + at least 2 hexits sequence inside second
+        + 2 hexits checksum. After the checksum is added, the ID is permutated
+        based on the permutationSeq. Finally, prepended with at most 3 hexits
+        salt checksum. In most cases, the generated ID should be 15 digits long.
       `,
       javaCode: `
+        StringBuilder id = new StringBuilder();
+
+        // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
+        id.append(Long.toHexString(curSec));
+
+        // 2 bits sequence + 2 bits checksum
         if ( curSec != getLastSecondCalled() ) {
           setSeqNo(0);
           setLastSecondCalled(curSec);
         }
         int seqNo = getSeqNo();
-        StringBuilder id = new StringBuilder(Long.toHexString(curSec));
         int seqNoAndCks = seqNo * 256 + calcChecksum(curSec, seqNo);
         if ( seqNoAndCks == 0 ) {
           id.append("0000");
         } else {
           int l = (int) (Math.log(seqNoAndCks) / Math.log(16)) + 1;
-          if ( l <= 2 ) { id.append("00"); } 
+          if ( l <= 2 ) { id.append("00"); }
           if ( l % 2 != 0 ) { id.append('0'); }
         }
         id.append(Integer.toHexString(seqNoAndCks));
         setSeqNo(seqNo + 1);
-        return permutate(id);
+
+        // salt checksum + permutation of the id
+        int saltChecksum = Integer.remainderUnsigned(getSalt().hashCode(), 4096);
+        return Integer.toHexString(saltChecksum) + permutate(id);
       `
     },
     {
@@ -107,11 +121,14 @@ foam.CLASS({
       visibility: 'protected',
       type: 'int[]',
       documentation: `
-        A hard coded array used as permutation sequence. It only supports permutation of a string less than 30 digits. 
-        The part of a string over 30 digits will not be involved in permutation.
+        A hard coded array used as permutation sequence. It only supports
+        permutation of a string less than 33 digits.
+        The part of a string over 33 digits will not be involved in permutation.
       `,
       javaCode: `
-        int[] permutationSeq = new int[] {11, 3, 7, 9, 5, 6, 2, 8, 1, 9, 11, 10, 8, 12, 6, 14, 6, 5, 16, 3, 17, 2, 20, 18, 24, 17, 25, 3, 16, 12};
+        int[] permutationSeq = new int[] {
+          11, 3, 7, 9, 5, 6, 2, 8, 1, 9, 11, 10, 8, 12, 6,
+          14, 6, 5, 16, 3, 17, 2, 20, 18, 24, 17, 25, 3, 16, 12, 7, 19, 18 };
         return permutationSeq;
       `
     },
