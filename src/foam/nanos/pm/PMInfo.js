@@ -30,7 +30,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      tableWidth: 320
+      tableWidth: 420
     },
     {
       class: 'Int',

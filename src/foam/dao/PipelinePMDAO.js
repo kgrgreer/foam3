@@ -20,28 +20,19 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.nanos.boot.NSpec',
+    'foam.nanos.pm.PipelinePMLocator',
     'foam.nanos.pm.PM'
-  ],
-
-  constants: [
-    {
-      name: 'PIPE_PM_START',
-      documentation: '',
-      type: 'String',
-      value: '__pipePMStart__'
-    }
   ],
 
   properties: [
     {
+      class: 'Int',
+      name: 'level'
+    },
+    {
       name: 'nSpec',
       class: 'FObjectProperty',
       type: 'foam.nanos.boot.NSpec'
-    },
-    {
-      documentation: 'Enable PMs on DAO.find operations',
-      name: 'pmFind',
-      class: 'Boolean'
     },
     {
       name: 'classType',
@@ -95,18 +86,22 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-    `public PipelinePMDAO(X x, NSpec nspec, DAO delegate) {
+    `public PipelinePMDAO(X x, NSpec nspec, DAO delegate, int level) {
       setX(x);
       setNSpec(nspec);
+      setLevel(level);
       setDelegate(delegate);
       init_();
      }
 
-     // TODO: Remove when all DAO nspecs converted to EasyDAO
-     public PipelinePMDAO(X x, DAO delegate) {
-      setX(x);
-      setDelegate(delegate);
-      init_();
+     public static DAO decorate(X x, NSpec nspec, DAO dao, int level) {
+       if ( dao instanceof PipelinePMDAO  ) return dao;
+       if ( dao instanceof ProxyDAO ) {
+         ProxyDAO proxy = (ProxyDAO) dao;
+
+         proxy.setDelegate(new EndPipelinePMDAO(x, decorate(x, nspec, proxy.getDelegate(), level+1)));
+       }
+       return new PipelinePMDAO(x, nspec, dao, level);
      }
           `
         }));
@@ -116,22 +111,12 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'init_',
-      javaCode: `
-        ProxyDAO delegate = (ProxyDAO) getDelegate();
-        if ( delegate.getDelegate() instanceof ProxyDAO && ! ( delegate.getDelegate() instanceof PipelinePMDAO ) ) {
-          delegate.setDelegate(new PipelinePMDAO(getX(), getNSpec(), delegate.getDelegate()));
-        }
-        delegate.setDelegate(new EndPipelinePMDAO(getX(), delegate.getDelegate()));
-    `
-    },
-    {
       name: 'createName_',
       args: [ {name: 'name', type: 'String '} ],
       javaType: 'String',
       javaCode: `
         String spec = ( getNSpec() == null ) ? "NOSPEC" : getNSpec().getName();
-        return spec + "/" + getDelegate().getClass().getSimpleName() + ":" + name;
+        return spec + "." + name + "(" + String.format("%03d", getLevel()) + ")" + " " + getDelegate().getClass().getSimpleName();
       `
     },
     {
@@ -139,7 +124,7 @@ foam.CLASS({
 Creates the PM that will measure the performance of each operation and creates a new context with it as a variable which the EndPipelinePMDAO
    *  will use to access the pm after it is passed onto it through the arguments of the DAO operations
 `,
-      name: 'createPMX',
+      name: 'createPM',
       args: [
         {
           name: 'x',
@@ -150,10 +135,13 @@ Creates the PM that will measure the performance of each operation and creates a
           type: 'String'
         }
       ],
-      javaType: 'X',
+      javaType: 'PM',
       javaCode: `
-      PM pm = PM.create(x, getClassType(), op);
-      return x.put(PIPE_PM_START, pm);
+        PM pm = new PM();
+        pm.setKey(getClassType().getId());
+        pm.setName(op);
+        return pm;
+//      return PM.create(x, getClassType(), op);
       `
     },
     {
@@ -165,61 +153,103 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
       javaCode: `
       `
     },
-    /*
     {
-      name: 'log',
+      name: 'reset',
       args: [
         {
           name: 'x',
           type: 'X',
         },
         {
-          name: 'pm',
+          name: 'old',
           type: 'PM'
         }
       ],
       javaCode: `
-    if ( pm != null ) {
-      pm.log(x);
-    }
+        PM pm = PipelinePMLocator.get();
+        // Log the PM if the EndPipelinePMDAO didn't already do it
+        if ( pm.getEndTime() == 0L ) {
+          pm.log(x);
+        }
+        PipelinePMLocator.set(old);
       `
     },
-    */
     {
       name: 'put_',
       javaCode: `
-    return getDelegate().put_(createPMX(x, getPutName()), obj);
+        PM old = PipelinePMLocator.get();
+        try {
+          PipelinePMLocator.set(createPM(x, getPutName()));
+
+          return getDelegate().put_(x, obj);
+        } finally {
+          reset(x, old);
+        }
      `
     },
     {
       name: 'find_',
       javaCode: `
-    X y = getPmFind() ? createPMX(x, getFindName()) : x;
-    return super.find_(y, id);
+      PM old = PipelinePMLocator.get();
+      try {
+        PipelinePMLocator.set(createPM(x, getFindName()));
+
+        return getDelegate().find_(x, id);
+      } finally {
+        reset(x, old);
+      }
      `
     },
     {
       name: 'select_',
       javaCode: `
-      return getDelegate().select_(createPMX(x, getSelectName()), sink, skip, limit, order, predicate);
+      PM old = PipelinePMLocator.get();
+      try {
+        PipelinePMLocator.set(createPM(x, getSelectName()));
+
+        return getDelegate().select_(x, sink, skip, limit, order, predicate);
+      } finally {
+        reset(x, old);
+      }
      `
     },
     {
       name: 'remove_',
       javaCode: `
-    return getDelegate().remove_(createPMX(x, getRemoveName()), obj);
+      PM old = PipelinePMLocator.get();
+      try {
+        PipelinePMLocator.set(createPM(x, getRemoveName()));
+
+        return getDelegate().remove_(x, obj);
+      } finally {
+        reset(x, old);
+      }
      `
     },
     {
       name: 'removeAll_',
       javaCode: `
-    getDelegate().removeAll_(createPMX(x, getRemoveAllName()), skip, limit, order, predicate);
+      PM old = PipelinePMLocator.get();
+      try {
+        PipelinePMLocator.set(createPM(x, getRemoveAllName()));
+
+        getDelegate().removeAll_(x, skip, limit, order, predicate);
+      } finally {
+        reset(x, old);
+      }
       `
     },
     {
       name: 'cmd_',
       javaCode: `
-    return getDelegate().cmd_(createPMX(x, getCmdName()), obj);
+      PM old = PipelinePMLocator.get();
+      try {
+        PipelinePMLocator.set(createPM(x, getCmdName()));
+
+        return getDelegate().cmd_(x, obj);
+      } finally {
+        reset(x, old);
+      }
      `
     }
   ],
@@ -265,52 +295,36 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
               type: 'X',
             }
           ],
+          javaType: 'X',
           javaCode: `
-      PM pm = (PM) x.get(PIPE_PM_START);
+      PM pm = PipelinePMLocator.get();
       if ( pm != null ) pm.log(x);
+      return x;
       `
         },
         {
           name: 'put_',
-          javaCode: `
-      log(x);
-      return super.put_(x, obj);
-     `
+          javaCode: 'return super.put_(log(x), obj);'
         },
         {
           name: 'find_',
-          javaCode: `
-      log(x);
-      return super.find_(x, id);
-     `
+          javaCode: 'return super.find_(log(x), id);'
         },
         {
           name: 'select_',
-          javaCode: `
-      log(x);
-      return super.select_(x, sink, skip, limit, order, predicate);
-     `
+          javaCode: 'return super.select_(log(x), sink, skip, limit, order, predicate);'
         },
         {
           name: 'remove_',
-          javaCode: `
-      log(x);
-      return super.remove_(x, obj);
-     `
+          javaCode: 'return super.remove_(log(x), obj);'
         },
         {
           name: 'removeAll_',
-          javaCode: `
-      log(x);
-      super.removeAll_(x, skip, limit, order, predicate);
-     `
+          javaCode: 'super.removeAll_(log(x), skip, limit, order, predicate);'
         },
         {
           name: 'cmd_',
-          javaCode: `
-      log(x);
-      return super.cmd_(x, obj);
-     `
+          javaCode: 'return super.cmd_(log(x), obj);'
         }
       ]
     }

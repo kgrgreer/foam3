@@ -330,15 +330,15 @@ foam.CLASS({
         if ( getLogging() )
           delegate = new foam.nanos.logger.LoggingDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
-        /*
         if ( getPipelinePm() && ( delegate instanceof ProxyDAO ) )
-          delegate = new foam.dao.PipelinePMDAO(getX(), getNSpec(), delegate);
-          */
+            delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);
+
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
         // see comments above regarding DAOs with init_
-        ((ProxyDAO)delegate_).setDelegate(delegate);
+        ((ProxyDAO) delegate_).setDelegate(delegate);
+
         return delegate_;
       `
     },
