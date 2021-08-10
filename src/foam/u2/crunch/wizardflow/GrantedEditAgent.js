@@ -23,15 +23,24 @@ foam.CLASS({
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
-    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent'
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.SkipMode'
   ],
 
   methods: [
     // If Property expressions ever unwrap promises this method can be blank.
     async function execute() {
       var ucj = await this.crunchService.getJunction(null, this.rootCapability.id);
-
+      var isRenewable = await this.crunchService.isRenewable(this.__subContext__, this.rootCapability.id);
       if ( ucj.status === this.CapabilityJunctionStatus.GRANTED ) {
+        if ( isRenewable ) {
+          // reopening a renewable capability
+          this.sequence
+            .reconfigure('SkipGrantedAgent', { mode: this.SkipMode.HIDE })
+            .remove('AutoSaveWizardletsAgent')
+            .remove('WizardStateAgent');
+          return;
+        }
         this.sequence
           .reconfigure('LoadCapabilitiesAgent', {
             waoSetting: this.LoadCapabilitiesAgent.WAOSetting.APPROVAL
