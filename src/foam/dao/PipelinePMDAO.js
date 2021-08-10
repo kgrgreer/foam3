@@ -94,6 +94,11 @@ foam.CLASS({
       init_();
      }
 
+     public PipelinePMDAO(foam.core.X x, foam.dao.ProxyDAO dao) {
+       setX(x);
+       setDelegate(dao);
+     }
+
      public static DAO decorate(X x, NSpec nspec, DAO dao, int level) {
        if ( dao instanceof PipelinePMDAO  ) return dao;
        if ( dao instanceof ProxyDAO ) {
