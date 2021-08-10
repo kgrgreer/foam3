@@ -152,21 +152,23 @@ foam.CLASS({
             cfg.setPingTime(pm.getEndTime() - pm.getStartTime());
             getDao().put_(x, cfg);
           } else {
-            getLogger().warning("client,find", config.getId(), "null");
+            getLogger().warning("client,find", "null");
           }
         } catch ( Throwable t ) {
           pm.error(x, t);
           if ( config.getStatus() != Status.OFFLINE ) {
-            getLogger().debug(config.getId(), t.getClass().getSimpleName(), t.getMessage());
+            getLogger().debug(t.getClass().getSimpleName(), t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
             config = (ClusterConfig) getDao().put_(x, cfg);
           }
           Throwable cause = t.getCause();
           if ( cause == null ||
-               ! ( cause instanceof java.io.IOException ) ) {
-            getLogger().warning(config.getId(), t.getClass().getSimpleName(), t.getMessage(), t);
+               ! ( cause instanceof java.io.IOException ) &&
+               config.getStatus() != Status.OFFLINE ) {
+            getLogger().warning(t.getClass().getSimpleName(), t.getMessage(), t);
           }
+          return;
         }
 
         java.util.Date now = new java.util.Date();
@@ -192,7 +194,7 @@ foam.CLASS({
         if ( cause == null ||
              ! ( cause instanceof java.io.IOException ) &&
              config.getStatus() != Status.OFFLINE ) {
-          getLogger().debug(config.getId(), t.getClass().getSimpleName(), t.getMessage(), t);
+          getLogger().debug(t.getClass().getSimpleName(), t.getMessage(), t);
         }
       } finally {
         schedule(x);
