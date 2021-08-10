@@ -75,7 +75,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'viewSpec',
-      view: { class: 'foam.u2.SearchField' }
+      value: { class: 'foam.u2.SearchField' }
     },
     {
       name: 'view'

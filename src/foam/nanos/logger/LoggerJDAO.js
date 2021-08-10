@@ -25,7 +25,7 @@ foam.CLASS({
               .setFilename(filename)
               .setCreateFile(true)
               .setDao(getDelegate())
-              .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[JDAO]", filename }, new foam.nanos.logger.StdoutLogger()))
+              .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[JDAO]", filename }, foam.nanos.logger.StdoutLogger.instance()))
               .build());
           }
         `);

@@ -136,7 +136,7 @@ foam.CLASS({
         // TODO: replace logger instantiation once javaFactory issue above is fixed
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
 
         logger = new PrefixLogger(new Object[] {
@@ -764,7 +764,7 @@ model from which to test ServiceProvider ID (spid)`,
         // TODO: replace logger instantiation once javaFactory issue above is fixed
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
 
         logger = new PrefixLogger(new Object[] {
