@@ -206,7 +206,7 @@ foam.CLASS({
           ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
           details.setRequester(myConfig.getId());
           details.setResponder(cfg.getId());
-          c.setDetails(cmd.getDetails());
+          c.setDetails(details);
 
           DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
           clientDAO = new RetryClientSinkDAO.Builder(x)

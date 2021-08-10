@@ -21,7 +21,9 @@ This is the heart of Medusa.`,
   javaImports: [
     'foam.core.Agency',
     'foam.core.AgencyTimerTask',
+    'foam.core.ContextAgent',
     'foam.core.FObject',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.DOP',
@@ -282,13 +284,14 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( replaying.getReplaying() ) {
-              if ( nextIndex % 10000 == 0 ) {
-                getLogger().info("promoter", "next", nextIndex);
-              }
-            } else {
-               getLogger().debug("promoter", "next", nextIndex);
-            }
+            // if ( replaying.getReplaying() ) {
+            //   if ( nextIndex % 10000 == 0 ) {
+            //     getLogger().info("promoter", "next", nextIndex);
+            //   }
+            // } else {
+            //    getLogger().debug("promoter", "next", nextIndex);
+            // }
+getLogger().debug("promoter", "next", nextIndex);
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               if ( next.getPromoted() ) {
@@ -333,9 +336,14 @@ This is the heart of Medusa.`,
                     // NOTE: inside the alarm.getIsActive - replay request
                     // will run once per alarm. So to force replay again,
                     // clear the alarm.
-                    ReplayRequestCmd cmd = new ReplayRequestCmd();
+                    final ReplayRequestCmd cmd = new ReplayRequestCmd();
                     cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-                    ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                    Agency agency = (Agency) x.get(support.getThreadPoolName());
+                    agency.submit(x, new ContextAgent() {
+                      public void execute(X x) {
+                        ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                      }
+                    }, this.getClass().getSimpleName());
                   }
                 } else {
                   if ( alarm.getIsActive() ) {
@@ -356,7 +364,9 @@ This is the heart of Medusa.`,
           if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
+getLogger().debug("promoter", "wait");
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
+getLogger().debug("promoter", "wake");
               }
             } catch (InterruptedException e ) {
               break;
@@ -607,6 +617,10 @@ During replay gaps are treated differently; If the index after the gap is ready 
         if ( entry != null ) {
           try {
             entry = getConsensusEntry(x, entry);
+            if ( entry.getIndex() == replaying.getIndex() + 1 ) {
+getLogger().debug("gap", "found", "next");
+              return;
+            }
           } catch ( MedusaException e ) {
             // ignore
           }
@@ -615,13 +629,13 @@ During replay gaps are treated differently; If the index after the gap is ready 
               // test if entry depends on any indexes in our skip range.
               long skipRangeLowerBound = index;
               long skipRangeHigherBound = minIndex > 0 ? minIndex-1 : skipRangeLowerBound;
-               if ( ( entry.getIndex1() < skipRangeLowerBound || entry.getIndex1() > skipRangeHigherBound ) &&
+              if ( ( entry.getIndex1() < skipRangeLowerBound || entry.getIndex1() > skipRangeHigherBound ) &&
                     ( entry.getIndex2() < skipRangeLowerBound || entry.getIndex2() > skipRangeHigherBound ) ) {
                 // Set global index to next non promoted entry index -1,
                 // the promoter will look for the entry after the global index.
                 getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
                 replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
-             }
+              }
               return;
             }
 
