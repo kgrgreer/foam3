@@ -617,10 +617,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
         if ( entry != null ) {
           try {
             entry = getConsensusEntry(x, entry);
-            if ( entry.getIndex() == replaying.getIndex() + 1 ) {
-getLogger().debug("gap", "found", "next");
-              return;
-            }
           } catch ( MedusaException e ) {
             // ignore
           }
@@ -636,6 +632,10 @@ getLogger().debug("gap", "found", "next");
                 getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
                 replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
               }
+              return;
+            }
+            if ( entry.getIndex() == replaying.getIndex() + 1 ) {
+getLogger().debug("gap", "found", "next");
               return;
             }
 
