@@ -20,6 +20,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'key',
+      aliases: [ 'class' ],
       label: 'Class',
       tableWidth: 170,
       tableCellFormatter: function(cls) {
