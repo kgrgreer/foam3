@@ -13,17 +13,19 @@ public class UnknownFObjectParser
   implements Parser
 {
   private final static Parser instance__ = new UnknownFObjectParser();
-  public static Parser instance() { return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
+  public static Parser instance() { return instance__; } //return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
 
   public PStream parse(PStream ps, ParserContext x) {
-    ps = ps.apply(Whitespace.instance(), x);
+   /* ps = ps.apply(Whitespace.instance(), x);
+
+    if ( ps == null ) return null;*/
+
+    ps = ps.apply(UnknownObjectParser.instance(), x);
+
     if ( ps == null ) return null;
 
-    ps = ps.apply(new UnknownObjectParser(), x);
-    if ( ps == null ) {
-      return null;
-    }
     UnknownFObject unknownFObject = ((X) x.get("X")).create(UnknownFObject.class);
+    System.err.println("Unknown JSON: " + ps.value().toString());
     unknownFObject.setJson(ps.value().toString());
     return ps.setValue(unknownFObject);
   }

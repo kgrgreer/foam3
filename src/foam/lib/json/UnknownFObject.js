@@ -21,6 +21,11 @@ foam.CLASS({
 
   methods: [
     {
+      javaType: 'void',
+      name: 'init_',
+      javaCode: 'System.err.println("UNKNOWN FOBJECT ******************************* " + getJson());'
+    },
+    {
       name: 'outputJSON',
       args: [
         {
