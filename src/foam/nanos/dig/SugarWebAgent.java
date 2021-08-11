@@ -45,7 +45,7 @@ import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 
 public class SugarWebAgent extends AuthWebAgent
-  implements WebAgent, SendErrorHandler
+  implements SendErrorHandler
 {
   public SugarWebAgent() {}
 
