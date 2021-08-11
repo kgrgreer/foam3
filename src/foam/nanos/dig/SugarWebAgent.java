@@ -53,6 +53,8 @@ public class SugarWebAgent extends AuthWebAgent
   public SugarWebAgent() {}
 
   public void execute(X x) {
+    sendErrorHandler_ = this;
+
     Logger              logger         = (Logger) x.get("logger");
     PrintWriter         out            = x.get(PrintWriter.class);
     HttpServletResponse resp           = x.get(HttpServletResponse.class);
@@ -104,7 +106,7 @@ public class SugarWebAgent extends AuthWebAgent
 
         if ( session == null ) {
           try {
-            this.sendError(x, HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+            sendError(x, resp, HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
           }  finally {
             XLocator.set(null);
           }
