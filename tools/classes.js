@@ -401,7 +401,7 @@ var classes = [
   'foam.nanos.menu.XRegistration',
   'foam.nanos.menu.Menu',
   'foam.nanos.menu.DAOMenu',
-  'foam.nanos.menu.DAOMenu2',
+//  'foam.nanos.menu.DAOMenu2',
   'foam.nanos.menu.DocumentMenu',
   'foam.nanos.menu.DocumentFileMenu',
   'foam.nanos.menu.LinkMenu',

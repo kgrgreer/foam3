@@ -142,7 +142,6 @@ Creates the PM that will measure the performance of each operation and creates a
         pm.setName(op);
         pm.init_();
         return pm;
-//      return PM.create(x, getClassType(), op);
       `
     },
     {

@@ -11,6 +11,9 @@
   public class UnknownObjectParser
     extends ProxyParser
   {
+    private final static Parser instance__ = new UnknownObjectParser();
+    public static Parser instance() { return instance__; }
+
     public UnknownObjectParser() {
       super(new Parser() {
         private Parser delegate = new Seq1(3, Whitespace.instance(),
