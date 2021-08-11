@@ -40,7 +40,7 @@ public class Boot {
   public Boot(String datadir) {
     XLocator.set(root_);
 
-    Logger logger = new ProxyLogger(new StdoutLogger());
+    Logger logger = new ProxyLogger(StdoutLogger.instance());
     root_.put("logger", logger);
 
     boolean cluster = SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
@@ -72,7 +72,7 @@ public class Boot {
       }
 
       var x      = root_;
-      var path   = sp.getName().split("\\.");
+      var path   = sp.getName().split("/");
       var parent = new StringBuilder();
 
       // Register path as sub context
@@ -84,7 +84,7 @@ public class Boot {
         }
         x = (X) x.get(contextName);
 
-        if ( parent.length() > 0 ) parent.append(".");
+        if ( parent.length() > 0 ) parent.append("/");
         parent.append(contextName);
         subContexts.add(parent.toString());
       }

@@ -37,7 +37,7 @@ public class FObjectParser
   }
 
   public FObjectParser(final Class defaultClass) {
-    super(new Seq1(3,
+    super(new Alt(new Seq1(3,
       Whitespace.instance(),
       Literal.create("{"),
       Whitespace.instance(),
@@ -58,8 +58,7 @@ public class FObjectParser
               defaultClass ;
 
             // return null if class not specified in JSON and no default class available
-            if ( c == null ||
-                 c == foam.core.FObject.class ) {
+            if ( c == null || c == foam.core.FObject.class ) {
               return null;
             }
 
@@ -74,7 +73,7 @@ public class FObjectParser
             } else {
               Object obj = ((X) x.get("X")).create(c);
               subx.set("obj", obj);
-              subParser = ModelParserFactory.getInstance(c);
+              subParser = ModelParserFactory.getInstance(obj.getClass());
             }
 
             ps = ps.apply(subParser, subx);
@@ -84,14 +83,18 @@ public class FObjectParser
             }
 
             return null;
-          } catch (Throwable t) {
+          } catch (ClassNotFoundException e) {
+            System.err.println("Unknown JSON class: " + e);
+            return null;
+          }
+          catch (Throwable t) {
             t.printStackTrace();
             return null;
           }
         }
       },
       Whitespace.instance(),
-      Literal.create("}")));
+      Literal.create("}")), UnknownFObjectParser.instance()));
   }
 
   public FObjectParser() {

@@ -45,7 +45,7 @@ foam.CLASS({
       javaFactory: `
       Logger logger = (Logger) getX().get("logger");
       if ( logger == null ) {
-        logger = new StdoutLogger();
+        logger = StdoutLogger.instance();
       }
       return new PrefixLogger(new Object[] {
         this.getClass().getSimpleName()

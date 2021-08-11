@@ -236,6 +236,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/ReplayDetailsCmd' },
   { name: 'foam/nanos/medusa/ReplayMediatorDAO' },
   { name: 'foam/nanos/medusa/ReplayNodeDAO' },
+  { name: 'foam/nanos/medusa/ReplayRequestCmd' },
   { name: 'foam/nanos/medusa/ReplayingDAO' },
   { name: 'foam/nanos/medusa/ReplayingInfo' },
   { name: 'foam/nanos/medusa/ReplayingInfoDAO' },
@@ -501,6 +502,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/UCJUpdateApprovable" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
+  { name: 'foam/nanos/crunch/document/Document' },
   //daos
   { name: "foam/nanos/crunch/UserCapabilityJunctionDAO" },
   { name: "foam/nanos/crunch/connection/CapabilityPayloadDAO" },

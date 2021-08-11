@@ -41,7 +41,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'richSearch'
+      name: 'richSearch',
+      value: true
     },
     {
       class: 'Boolean',
@@ -65,7 +66,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'width',
-      value: 47
+      value: 60
     },
     'property',
     {

@@ -235,7 +235,7 @@ foam.CLASS({
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
 
-          if ( prop.searchable ) continue;
+          if ( ! prop.searchable ) continue;
 
           fields.push(this.LiteralIC.create({
             s: prop.name,
@@ -256,8 +256,9 @@ foam.CLASS({
             }
           }
         }
+
         fields.sort(function(a, b) {
-          var d = b.lower.length - a.lower.length;
+          var d = b.length - a.length;
           if ( d !== 0 ) return d;
           if ( a.lower === b.lower ) return 0;
           return a.lower < b.lower ? 1 : -1;

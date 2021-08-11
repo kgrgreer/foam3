@@ -401,7 +401,7 @@ var classes = [
   'foam.nanos.menu.XRegistration',
   'foam.nanos.menu.Menu',
   'foam.nanos.menu.DAOMenu',
-  'foam.nanos.menu.DAOMenu2',
+//  'foam.nanos.menu.DAOMenu2',
   'foam.nanos.menu.DocumentMenu',
   'foam.nanos.menu.DocumentFileMenu',
   'foam.nanos.menu.LinkMenu',
@@ -466,6 +466,7 @@ var classes = [
   'foam.nanos.medusa.ReplayDetailsCmd',
   'foam.nanos.medusa.ReplayMediatorDAO',
   'foam.nanos.medusa.ReplayNodeDAO',
+  'foam.nanos.medusa.ReplayRequestCmd',
   'foam.nanos.medusa.ReplayingDAO',
   'foam.nanos.medusa.ReplayingInfo',
   'foam.nanos.medusa.ReplayingInfoDAO',
@@ -891,6 +892,8 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+
+  'foam.nanos.crunch.document.Document',
 
   //authservice
   'foam.nanos.auth.CapabilityAuthService',

@@ -263,6 +263,24 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'replayNodes',
+      class: 'List',
+      visibility: 'RO',
+      javaFactory: `
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      return (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, 0L),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            EQ(ClusterConfig.REGION, config.getRegion()),
+            EQ(ClusterConfig.TYPE, MedusaType.NODE),
+            EQ(ClusterConfig.ENABLED, true)
+          ))
+        .select(new ArraySink())).getArray();
+      `
+    },
+    {
       name: 'nodeBuckets',
       class: 'List',
       visibility: 'RO',

@@ -1677,7 +1677,7 @@ foam.CLASS({
   flags: ['java'],
   properties: [
     ['javaInfoType', 'foam.core.AbstractFObjectPropertyInfo'],
-    ['javaCompare',    ''],
+    ['javaCompare',  ''],
     {
       name: 'javaJSONParser',
       expression: function(of) {

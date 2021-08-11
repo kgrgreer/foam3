@@ -49,6 +49,8 @@ becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - fromProperty() doesn't make sense since you need to create the view first
+    a 'property' property would work better
   - Is it faster if we don't add child to parent until we call end()?
   - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()

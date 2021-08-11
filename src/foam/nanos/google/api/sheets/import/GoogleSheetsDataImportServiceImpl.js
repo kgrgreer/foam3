@@ -85,7 +85,7 @@
         } catch ( Throwable t ) {
           Logger logger = (Logger) x.get("logger");
           if ( logger == null )
-            logger = new StdoutLogger();
+            logger = StdoutLogger.instance();
           logger.error(t);
           return null;
         }
@@ -142,7 +142,7 @@
         } catch ( Throwable t ) {
           Logger logger = (Logger) x.get("logger");
           if ( logger == null )
-            logger = new StdoutLogger();
+            logger = StdoutLogger.instance();
           logger.error(t);
           result.setSuccess(false);
         }
@@ -177,7 +177,7 @@
         } catch ( Throwable t ) {
           Logger logger = (Logger) x.get("logger");
           if ( logger == null )
-            logger = new StdoutLogger();
+            logger = StdoutLogger.instance();
           logger.error(t);
         }
       }
@@ -327,7 +327,7 @@
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         if ( logger == null )
-          logger = new StdoutLogger();
+          logger = StdoutLogger.instance();
         logger.error(t);
         return false;
       }

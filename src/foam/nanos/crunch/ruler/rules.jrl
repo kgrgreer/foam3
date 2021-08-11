@@ -91,10 +91,23 @@ p({
             "class":"foam.mlang.predicate.Or",
             "args":[
               {
-                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-                "propName":"isRenewable",
-                "propValue":true,
-                "isNew":false
+                "class":"foam.mlang.predicate.And",
+                "args":[
+                  {
+                    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+                    "propName":"isRenewable",
+                    "propValue":true,
+                    "isNew":false
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Not",
+                    "arg1":{
+                      "class": "foam.nanos.crunch.predicate.StatusChangedTo",
+                      "status": 2,
+                      "checkInequality":true
+                    }
+                  }
+                ]
               },
               {
                 "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",

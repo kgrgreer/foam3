@@ -59,7 +59,7 @@ public class SugarWebAgent
     HttpParameters      p              = x.get(HttpParameters.class);
     String              data           = p.getParameter("data");
 
-    var pm = new PM(SugarWebAgent.class.getSimpleName());
+    var pm = PM.create(x, true, getClass().getSimpleName());
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
@@ -149,9 +149,8 @@ public class SugarWebAgent
           }
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
-        if ( ! methodFound ) throw new RuntimeException("Invalid method: " + methodName);
       }
-
+      if ( ! methodFound ) throw new RuntimeException("Invalid Method");
     } catch (Exception e) {
       DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
       pm.error(x, e.getMessage());

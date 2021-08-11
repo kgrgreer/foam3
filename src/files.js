@@ -101,7 +101,6 @@ FOAM_FILES([
   { name: "foam/i18n/Messages" },
   { name: "foam/core/Validation" },
   { name: "foam/core/Action" },
-  { name: "foam/core/JSFObject" },
   { name: "foam/core/Static" },
   { name: "foam/core/Reaction" },
   { name: "foam/core/Serializable" },
@@ -492,7 +491,6 @@ FOAM_FILES([
   { name: "foam/swift/refines/Topic", flags: ['swift'] },
   { name: "foam/swift/refines/Remote", flags: ['swift'] },
 
-  { name: "foam/nanos/menu/DAOMenu2" },
   { name: "foam/nanos/menu/MenuToolBar" },
   { name: "foam/box/LogBox" },
   { name: "foam/box/MultiDelegateBox" },

@@ -10,17 +10,16 @@ import foam.lib.json.OutputJSON;
 import foam.lib.json.UnknownFObject;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.security.MessageDigest;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.util.Iterator;
 import java.util.List;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public abstract class AbstractFObjectPropertyInfo
   extends AbstractObjectPropertyInfo
@@ -145,6 +144,14 @@ public abstract class AbstractFObjectPropertyInfo
       formatter.output((FObject) propObj, of(), this);
     } else {
       formatter.output(propObj);
+    }
+  }
+
+  public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
+    if ( obj instanceof foam.lib.json.OutputJSON ) {
+      ((foam.lib.json.OutputJSON) obj).formatJSON((foam.lib.formatter.JSONFObjectFormatter) formatter );
+    } else {
+      format(formatter, obj);
     }
   }
 
