@@ -5,46 +5,13 @@
  */
 foam.CLASS({
   package: 'foam.dao',
-  name: 'QueryCache',
-
-  documentation: 'Storage class for query cache',
-
-  properties: [
-    {
-      class: 'StringArray',
-      name: 'keyList',
-      documentation: 'Order list of keys matching given predicate.',
-      factory: function() {
-        return [];
-      }
-    },
-    {
-      name: 'valueList',
-      documentation: 'Sparse array of result',
-      factory: function() {
-        return [];
-      }
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'foam.dao',
   name: 'QueryCachingDAODecorator',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',
 
   requires: [
-    'foam.dao.PromisedDAO',
-    'foam.dao.QueryCache'
-  ],
-
-  constants: [
-    {
-      name: 'PURGE',
-      value: 'PURGE'
-    }
+    'foam.dao.PromisedDAO'
   ],
 
   properties: [
@@ -62,7 +29,7 @@ foam.CLASS({
       name: 'startIdx_'
     },
     {
-      name: 'limit_'
+      name: 'endIdx_'
     }
   ],
 
