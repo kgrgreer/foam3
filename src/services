@@ -661,6 +661,7 @@ p({
   "name": "sugar",
   "lazy": true,
   "serve": false,
+  "authenticate": false,
   "parameters": true,
   "serviceScript": "return new foam.nanos.dig.SugarWebAgent()"
 })

@@ -59,7 +59,7 @@ foam.CLASS({
           if ( this.loginSuccess && ! this.subject.vacantMode ) {
             if ( this.ctrl ) this.ctrl.remove();
             alert(this.REFRESH_MSG);
-
+            (this.window || window).location.reload();
             return;
           }
 
