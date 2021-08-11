@@ -564,7 +564,7 @@ foam.CLASS({
       try {
         var result = await this.client.auth.getCurrentSubject(null);
 
-        if ( ! result || ! result.user) throw new Error();
+        if ( ! result || ! result.user || result.vacantMode ) throw new Error();
 
         this.subject = result;
       } catch (err) {

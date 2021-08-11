@@ -78,15 +78,15 @@ foam.CLASS({
           throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize vacant user.");
         }
 
-        User vacantUser = (User) ((DAO) x.get("localUserUserDAO")).find(serviceProvider.getVacantUser());
+        User vacantUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getVacantUser());
         if ( vacantUser == null ) {
           throw new AuthorizationException("Unable to find vacant user.");
         }
-        x = x.put("subject", new Subject.Builder(x).setUser(vacantUser).setVacantMode(true).build());
 
         Session session = x.get(Session.class);
         if ( session.getUserId() == vacantUser.getId() ) return ((Subject) x.get("subject"));
         session.setUserId(vacantUser.getId());
+        session.setAgentId(0);
         ((DAO) getLocalSessionDAO()).inX(x).put(session);
         session.setContext(session.applyTo(session.getContext()));
         return ((Subject) x.get("subject"));
@@ -113,7 +113,8 @@ foam.CLASS({
           throw new AuthenticationException("Group disabled");
         }
         Subject subject = (Subject) x.get("subject");
-        if ( ((ServiceProvider) x.get("spid")).getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
+        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
+        if ( serviceProvider.getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
         return subject;
       `
     },

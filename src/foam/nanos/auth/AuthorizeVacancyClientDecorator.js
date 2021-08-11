@@ -25,5 +25,5 @@
       this.subject = result;
       return this.subject;
     }
-  ],
+  ]
 });
