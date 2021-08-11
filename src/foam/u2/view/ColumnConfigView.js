@@ -166,18 +166,6 @@ foam.CLASS({
       }
     }
   ],
-  listeners: [
-   {
-     name: 'onMenuSearchUpdate',
-     isMerged: true,
-     mergeDelay: 200,
-     code: function() {
-       for ( var i = 0 ; i < this.columns.length ; i++ ) {
-         this.columns[i].updateOnSearch(this.menuSearch);
-       }
-     }
-   }
-  ],
   methods: [
     function render() {
       this.SUPER();
@@ -303,6 +291,18 @@ foam.CLASS({
         startUnselectedIndex++;
       }
       return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
+    }
+  ]
+  listeners: [
+    {
+      name: 'onMenuSearchUpdate',
+      isMerged: true,
+      mergeDelay: 200,
+      code: function() {
+        for ( var i = 0 ; i < this.columns.length ; i++ ) {
+          this.columns[i].updateOnSearch(this.menuSearch);
+        }
+      }
     }
   ]
 });
@@ -718,14 +718,15 @@ foam.CLASS({
       this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
       if ( this.hasSubProperties && this.level < 2) {
         this.expanded = false;
-        if (this.subColumnSelectConfig.length == 0) this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
-          for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
-            if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
-              this.expanded = true;
-              this.showOnSearch = true;
-            }
+        if (this.subColumnSelectConfig.length == 0)
+          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
+        for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
+          if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
+            this.expanded = true;
+            this.showOnSearch = true;
           }
         }
+      }
       return this.showOnSearch;
     },
     function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
