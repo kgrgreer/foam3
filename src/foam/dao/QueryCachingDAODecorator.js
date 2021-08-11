@@ -21,7 +21,8 @@ foam.CLASS({
       factory: function() { return {}; }
     },
     {
-      // Number of elements in the cache lists
+      // Number of elements in the DAO backing this query cache
+      // Allows limit to what we cache so we do not have to always call DAO if limit is not provided
       name: 'daoCount_',
       value: 0
     },
@@ -54,7 +55,7 @@ foam.CLASS({
       return new Promise(function(resolve, reject) {
 
         // Validate we have a fresh dao count
-        self.refreshDaoCount_(self).then(async function() {
+        self.refreshDaoCount_(self).then(function() {
 
           // Ensure we have cache for request
           self.fillCache_(self, key, x, sink, skip, limit, order, predicate).then(function() {
@@ -71,6 +72,7 @@ foam.CLASS({
     },
 
     function refreshDaoCount_(self) {
+      // If we have not retrieved the dao count previously do it now
       if ( !self.hasOwnProperty('daoCount_') ) {
           return self.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
             self.daoCount_ = count.array.length;
