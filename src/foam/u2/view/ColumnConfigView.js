@@ -154,9 +154,7 @@ foam.CLASS({
       },
       value: '',
       postSet: function() {
-        for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch);
-        }
+        this.onMenuSearchUpdate();
       }
     },
     {
@@ -167,6 +165,18 @@ foam.CLASS({
         return foam.nanos.column.CommonColumnHandler.create();
       }
     }
+  ],
+  listeners: [
+   {
+     name: 'onMenuSearchUpdate',
+     isMerged: true,
+     mergeDelay: 200,
+     code: function() {
+       for ( var i = 0 ; i < this.columns.length ; i++ ) {
+         this.columns[i].updateOnSearch(this.menuSearch);
+       }
+     }
+   }
   ],
   methods: [
     function render() {
@@ -605,7 +615,7 @@ foam.CLASS({
     {
       name: 'prop',
       expression: function(rootProperty) {
-        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty));
+        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty)) || {};
       }
     },
     {
@@ -646,19 +656,16 @@ foam.CLASS({
       name: 'parentExpanded',
       class: 'Boolean',
       value: false,
-      postSet: function() {
+      postSet: function(o, n) {
         if ( ! this.parentExpanded )
           this.expanded = false;
+        return n;
       }
     },
     {
       name: 'expanded',
       class: 'Boolean',
-      value: false,
-      postSet: function() {
-        if ( this.subColumnSelectConfig.length == 0 ) 
-          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded);
-      }
+      value: false
     },
     {
       name: 'showOnSearch',
@@ -705,29 +712,25 @@ foam.CLASS({
       return [this.rootProperty[0]];
     },
     function updateOnSearch(query) {
-      if ( ! this.hasSubProperties ) {
-        if ( query.length !== 0 ) {
-          this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
-        } else
-          this.showOnSearch = true;
-      } else {
-        this.showOnSearch = false;
-        for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
-          if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
-            this.showOnSearch = true;
+      this.showOnSearch = false;
+      this.expanded = false;
+      if (query.length == 0) {this.showOnSearch = true; this.expanded = false; return this.showOnSearch;}
+      this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
+      if ( this.hasSubProperties && this.level < 2) {
+        this.expanded = false;
+        if (this.subColumnSelectConfig.length == 0) this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
+          for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
+            if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
+              this.expanded = true;
+              this.showOnSearch = true;
+            }
           }
         }
-      }
-      if ( query.length !== 0 && this.showOnSearch )
-        this.expanded = true;
-      if ( query.length === 0 )
-        this.expanded = false;
       return this.showOnSearch;
     },
-    function returnSubColumnSelectConfig(subProperties, level, expanded) {
+    function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
       var arr = [];
-
-      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ! expanded )
+      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || (! ignoreExpanded && ! expanded) )
           return arr;
         var l = level + 1;
         var r = this.of.getAxiomByName(this.rootProperty[0]);
@@ -745,11 +748,6 @@ foam.CLASS({
           ( foam.String.isInstance(c) && c.split('.').length >= this.level && c.split('.')[this.level] === this.rootProperty[0] );
         });
 
-        if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length == ( this.level + 1 )) ) {
-          selectedSubProperties.push(['', 'To Summary']);
-        } else {
-          otherSubProperties.push(['', 'To Summary']);
-        }
 
         for ( var i = 0 ; i < subProperties.length ; i++ ) {
           //the comparison mentioned above is working with the assumption that columns which are specified in 'tableColumns' are top-level properties and
