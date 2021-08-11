@@ -123,6 +123,7 @@ foam.CLASS({
   exports: [
     'click',
     'config',
+    'data as dao',
     'filteredTableColumns',
     'searchColumns',
     'serviceName'
