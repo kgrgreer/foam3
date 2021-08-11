@@ -73,7 +73,7 @@ public class FObjectParser
             } else {
               Object obj = ((X) x.get("X")).create(c);
               subx.set("obj", obj);
-              subParser = ModelParserFactory.getInstance(c);
+              subParser = ModelParserFactory.getInstance(obj.getClass());
             }
 
             ps = ps.apply(subParser, subx);
