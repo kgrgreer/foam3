@@ -18,12 +18,18 @@ foam.CLASS({
 
   css: `
   ^display {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    flex-wrap: wrap;
   }
   ^slash{
     padding: 8px;
     vertical-align: middle;
+  }
+  ^breadCrumb > * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   `,
 
@@ -74,7 +80,7 @@ foam.CLASS({
             self.start(jumpAction, {
               themeIcon: themeIcon,
               buttonStyle: 'LINK'
-            }).show(labelSlot).end();
+            }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
           } else if ( i == self.maxHead ) {
             self.tag(this.OverlayActionListView, {
               label: '...',
