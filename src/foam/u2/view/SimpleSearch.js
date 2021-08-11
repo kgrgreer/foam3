@@ -45,9 +45,9 @@ foam.CLASS({
       name: 'countText',
       expression: function(selectedCount, totalCount) {
         var singular = this.dao.of.name.toLowerCase();
-        var plural = this.dao.of.model_.plural.toLowerCase();
-        var word = totalCount === 1 ? singular : plural;
-        var format = (int) => int
+        var plural   = this.dao.of.model_.plural.toLowerCase();
+        var word     = totalCount === 1 ? singular : plural;
+        var format   = (int) => int
           .toString()
           .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         return selectedCount !== totalCount ?
@@ -88,7 +88,7 @@ foam.CLASS({
       self.updateSelectedCount(0, 0, 0, this.searchManager.filteredDAO$);
 
       var generalQueryView = foam.u2.ViewSpec.createView(
-        { 
+        {
           class: 'foam.u2.search.TextSearchView',
         },
         {
