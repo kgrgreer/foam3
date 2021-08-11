@@ -21,6 +21,7 @@ foam.CLASS({
           public WriteOnlyJDAO(foam.core.X x, foam.dao.DAO delegate, foam.core.ClassInfo classInfo, String filename) {
             setX(x);
             setOf(classInfo);
+            setFilename(filename);
             setDelegate(delegate);
 
             // create journal
