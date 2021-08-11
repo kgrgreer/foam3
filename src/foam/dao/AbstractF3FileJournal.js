@@ -226,7 +226,7 @@ try {
                 fmt.output(obj, of);
               }
             } catch (Throwable t) {
-              getLogger().error("Failed to write put entry to journal", t);
+              getLogger().error("Failed to write put entry to journal in executeJob " + getFilename(), t);
               fmt.reset();
             }
           }
@@ -241,10 +241,9 @@ try {
                 fmt.builder(),
                 getMultiLineOutput() ? "\\n" : "",
                 foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
-
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
-              getLogger().error("Failed to write put entry to journal", t);
+              getLogger().error("Failed to write put entry to journal in endJob " + getFilename(), t);
             } finally {
               fmt.reset();
             }
@@ -296,7 +295,7 @@ try {
             toWrite.setProperty("id", obj.getProperty("id"));
             fmt.output(toWrite, dao.getOf());
           } catch (Throwable t) {
-            getLogger().error("Failed to write put entry to journal", t);
+            getLogger().error("Failed to write remove entry to journal executeJob " + getFilename(), t);
           }
         }
 
@@ -309,7 +308,7 @@ try {
 
             if ( isLast ) getWriter().flush();
           } catch (Throwable t) {
-            getLogger().error("Failed to write put entry to journal", t);
+            getLogger().error("Failed to write remove entry to journal in endJob" + getFilename(), t);
           }
         }
       });
