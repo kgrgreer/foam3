@@ -130,7 +130,7 @@ foam.CLASS({
         if ( logger == null ) {
           logger = StdoutLogger.instance();
         }
-        return new PrefixLogger(new Object[] { "[JDAO]", getFilename() }, logger);
+        return new PrefixLogger(new Object[] { "[JDAO]" }, logger);
       `,
       javaCloneProperty: '//noop'
     },
@@ -159,11 +159,12 @@ foam.CLASS({
 try {
   InputStream is = getX().get(foam.nanos.fs.Storage.class).getInputStream(getFilename());
   if ( is == null ) {
-    getLogger().warning("File not found", getFilename());
+    getLogger().warning("File not found", "for reading", getFilename());
+    return null;
   }
-  return (is == null) ? null : new BufferedReader(new InputStreamReader(is));
+  return new BufferedReader(new InputStreamReader(is));
 } catch ( Throwable t ) {
-  getLogger().error("Failed to initialize reader on journal", getFilename(), t);
+  getLogger().error("Failed to initialize reader", getFilename(), t);
   throw new RuntimeException(t);
 }
       `
@@ -177,11 +178,12 @@ try {
 try {
   OutputStream os = getX().get(foam.nanos.fs.Storage.class).getOutputStream(getFilename());
   if ( os == null ) {
-    getLogger().warning("File not found", getFilename());
+    getLogger().warning("File not found", "for writing", getFilename());
+    return null;
   }
-  return (os == null) ? null : new BufferedWriter(new OutputStreamWriter(os));
+  return new BufferedWriter(new OutputStreamWriter(os));
 } catch ( Throwable t ) {
-  getLogger().error("Failed to initialize writer on journal", getFilename(), t);
+  getLogger().error("Failed to initialize writer", getFilename(), t);
   throw new RuntimeException(t);
 }
       `
@@ -226,7 +228,7 @@ try {
                 fmt.output(obj, of);
               }
             } catch (Throwable t) {
-              getLogger().error("Failed to write put entry to journal", t);
+              getLogger().error("Failed to format put", getFilename(), of.getId(), "id", id, t);
               fmt.reset();
             }
           }
@@ -244,7 +246,7 @@ try {
 
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
-              getLogger().error("Failed to write put entry to journal", t);
+              getLogger().error("Failed to write put", getFilename(), of.getId(), "id", id, t);
             } finally {
               fmt.reset();
             }
@@ -296,7 +298,7 @@ try {
             toWrite.setProperty("id", obj.getProperty("id"));
             fmt.output(toWrite, dao.getOf());
           } catch (Throwable t) {
-            getLogger().error("Failed to write put entry to journal", t);
+            getLogger().error("Failed to write remove", getFilename(), dao.getOf().getId(), "id", id, t);
           }
         }
 
@@ -309,7 +311,7 @@ try {
 
             if ( isLast ) getWriter().flush();
           } catch (Throwable t) {
-            getLogger().error("Failed to write put entry to journal", t);
+            getLogger().error("Failed to write remove", getFilename(), dao.getOf().getId(), "id", id, t);
           }
         }
       });
@@ -392,7 +394,7 @@ try {
           }
           return stringBuilder;
         } catch (Throwable t) {
-          getLogger().error("Failed to read from journal", t);
+          getLogger().error("Failed to read", t);
           return null;
         }
       `

@@ -26,7 +26,8 @@ foam.CLASS({
       DAO configDAO = (DAO) x.get("alarmConfigDAO");
       AlarmConfig config = (AlarmConfig) configDAO.find(alarm.getName());
       if ( config != null ) {
-        if ( ! config.getEnabled() ) {
+        if ( ! config.getEnabled() ||
+             ! alarm.getClusterable() ) {
           return alarm;
         }
       } else {
