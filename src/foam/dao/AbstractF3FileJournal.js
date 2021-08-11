@@ -228,11 +228,7 @@ try {
                 fmt.output(obj, of);
               }
             } catch (Throwable t) {
-<<<<<<< HEAD
-              getLogger().error("Failed to write put entry to journal in executeJob " + getFilename(), t);
-=======
               getLogger().error("Failed to format put", getFilename(), of.getId(), "id", id, t);
->>>>>>> dca5b825b71bcd849883ada3632faa74c61e4f4d
               fmt.reset();
             }
           }
@@ -249,11 +245,7 @@ try {
                 foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
-<<<<<<< HEAD
-              getLogger().error("Failed to write put entry to journal in endJob " + getFilename(), t);
-=======
               getLogger().error("Failed to write put", getFilename(), of.getId(), "id", id, t);
->>>>>>> dca5b825b71bcd849883ada3632faa74c61e4f4d
             } finally {
               fmt.reset();
             }
@@ -305,11 +297,7 @@ try {
             toWrite.setProperty("id", obj.getProperty("id"));
             fmt.output(toWrite, dao.getOf());
           } catch (Throwable t) {
-<<<<<<< HEAD
-            getLogger().error("Failed to write remove entry to journal executeJob " + getFilename(), t);
-=======
             getLogger().error("Failed to write remove", getFilename(), dao.getOf().getId(), "id", id, t);
->>>>>>> dca5b825b71bcd849883ada3632faa74c61e4f4d
           }
         }
 
@@ -322,11 +310,7 @@ try {
 
             if ( isLast ) getWriter().flush();
           } catch (Throwable t) {
-<<<<<<< HEAD
-            getLogger().error("Failed to write remove entry to journal in endJob" + getFilename(), t);
-=======
             getLogger().error("Failed to write remove", getFilename(), dao.getOf().getId(), "id", id, t);
->>>>>>> dca5b825b71bcd849883ada3632faa74c61e4f4d
           }
         }
       });
