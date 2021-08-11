@@ -6,7 +6,6 @@
 
 package foam.nanos.dig;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
@@ -37,7 +35,6 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.ProxyParser;
 import foam.lib.parse.StringPStream;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
