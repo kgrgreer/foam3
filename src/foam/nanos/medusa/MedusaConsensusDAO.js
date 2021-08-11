@@ -284,14 +284,13 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            // if ( replaying.getReplaying() ) {
-            //   if ( nextIndex % 10000 == 0 ) {
-            //     getLogger().info("promoter", "next", nextIndex);
-            //   }
-            // } else {
-            //    getLogger().debug("promoter", "next", nextIndex);
-            // }
-getLogger().debug("promoter", "next", nextIndex);
+            if ( replaying.getReplaying() ) {
+              if ( nextIndex % 10000 == 0 ) {
+                getLogger().info("promoter", "next", nextIndex);
+              }
+            } else {
+               getLogger().debug("promoter", "next", nextIndex);
+            }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               if ( next.getPromoted() ) {
@@ -364,9 +363,7 @@ getLogger().debug("promoter", "next", nextIndex);
           if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
-getLogger().debug("promoter", "wait");
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
-getLogger().debug("promoter", "wake");
               }
             } catch (InterruptedException e ) {
               break;
@@ -635,7 +632,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
               return;
             }
             if ( entry.getIndex() == replaying.getIndex() + 1 ) {
-getLogger().debug("gap", "found", "next");
               return;
             }
 
