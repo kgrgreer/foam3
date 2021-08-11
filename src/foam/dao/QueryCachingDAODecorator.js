@@ -73,7 +73,7 @@ foam.CLASS({
 
     function refreshDaoCount_(self) {
       // If we have not retrieved the dao count previously do it now
-      if ( !self.hasOwnProperty('daoCount_') ) {
+      if ( ! self.hasOwnProperty('daoCount_') ) {
           return self.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
             self.daoCount_ = count.array.length;
           });
@@ -94,8 +94,8 @@ foam.CLASS({
       if (self.cache[key]) {
         // Cycle through exising cached elements to verify all requested are present
         for ( let idx = self.startIdx_; idx < self.endIdx_; idx++ ) {
-          if (!self.cache[key][idx]) {
-            if (!hasMissingData) {
+          if ( ! self.cache[key][idx]) {
+            if ( ! hasMissingData) {
               // Found start of missing data withing requested block
               hasMissingData = true;
               startIdx = idx;
@@ -120,7 +120,7 @@ foam.CLASS({
 
           // Update cache with missing data
           for (let idx = 0; idx < result.array.length; idx++) {
-            if (!self.cache[key][startIdx + idx]) {
+            if ( ! self.cache[key][startIdx + idx]) {
               self.cache[key][startIdx + idx] = result.array[idx];
             }
           }
