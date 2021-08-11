@@ -6,6 +6,7 @@
 
 package foam.nanos.dig;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
 import foam.core.X;
+import foam.core.XLocator;
 import foam.dao.DAO;
 import foam.lib.AndPropertyPredicate;
 import foam.lib.ExternalPropertyPredicate;
@@ -39,15 +41,13 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
-import foam.nanos.http.Format;
-import foam.nanos.http.HttpParameters;
-import foam.nanos.http.SendErrorHandler;
-import foam.nanos.http.WebAgent;
+import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
+import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 
-public class SugarWebAgent
+public class SugarWebAgent extends AuthWebAgent
   implements WebAgent, SendErrorHandler
 {
   public SugarWebAgent() {}
@@ -98,6 +98,21 @@ public class SugarWebAgent
       // Check if the user is authorized to access the DAO.
       DAO nSpecDAO = (DAO) x.get("nSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(serviceName);
+
+      if ( nspec.getAuthenticate() ) {
+        Session session = super.authenticate(x);
+
+        if ( session == null ) {
+          try {
+            this.sendError(x, HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+          }  finally {
+            XLocator.set(null);
+          }
+          return;
+        }
+
+        x = session.getContext();
+      }
 
       // Check if service exists and is served.
       if ( nspec == null || ! nspec.getServe() ) {
