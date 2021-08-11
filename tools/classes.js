@@ -893,6 +893,8 @@ var classes = [
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
 
+  'foam.nanos.crunch.document.Document',
+
   //authservice
   'foam.nanos.auth.CapabilityAuthService',
   // userQueryService

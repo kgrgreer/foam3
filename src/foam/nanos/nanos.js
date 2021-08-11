@@ -410,6 +410,7 @@ FOAM_FILES([
   { name: 'foam/nanos/dig/Argument'},
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/DIG' },
+  { name: 'foam/nanos/dig/DUGDigestConfig' },
   { name: 'foam/nanos/dig/DUGRule' },
   { name: 'foam/nanos/dig/DUGRuleAction' },
   { name: 'foam/nanos/dig/DigFileUploadView' },
@@ -502,6 +503,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/UCJUpdateApprovable" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
+  { name: 'foam/nanos/crunch/document/Document' },
   //daos
   { name: "foam/nanos/crunch/UserCapabilityJunctionDAO" },
   { name: "foam/nanos/crunch/connection/CapabilityPayloadDAO" },

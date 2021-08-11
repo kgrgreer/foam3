@@ -48,7 +48,7 @@ foam.CLASS({
             try {
               fmt.output(obj, of);
             } catch (Throwable t) {
-              getLogger().error("Failed to format journal entry", t);
+              getLogger().error("Failed to format put", getFilename(), of.getId(), "id", id, t);
               fmt.reset();
             }
           }
@@ -65,7 +65,7 @@ foam.CLASS({
 
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
-              getLogger().error("Failed to write put entry to journal", t);
+              getLogger().error("Failed to write put", getFilename(), of.getId(), "id", id, t);
             }  finally {
               fmt.reset();
             }

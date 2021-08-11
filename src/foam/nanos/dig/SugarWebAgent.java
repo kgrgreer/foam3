@@ -16,11 +16,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
 import foam.core.X;
+import foam.core.XLocator;
 import foam.dao.DAO;
 import foam.lib.AndPropertyPredicate;
 import foam.lib.ExternalPropertyPredicate;
@@ -35,24 +35,23 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.ProxyParser;
 import foam.lib.parse.StringPStream;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
-import foam.nanos.http.Format;
-import foam.nanos.http.HttpParameters;
-import foam.nanos.http.SendErrorHandler;
-import foam.nanos.http.WebAgent;
+import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
+import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 
-public class SugarWebAgent
-  implements WebAgent, SendErrorHandler
+public class SugarWebAgent extends AuthWebAgent
+  implements SendErrorHandler
 {
   public SugarWebAgent() {}
 
   public void execute(X x) {
+    sendErrorHandler_ = this;
+
     Logger              logger         = (Logger) x.get("logger");
     PrintWriter         out            = x.get(PrintWriter.class);
     HttpServletResponse resp           = x.get(HttpServletResponse.class);
@@ -98,6 +97,21 @@ public class SugarWebAgent
       // Check if the user is authorized to access the DAO.
       DAO nSpecDAO = (DAO) x.get("nSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(serviceName);
+
+      if ( nspec.getAuthenticate() ) {
+        Session session = super.authenticate(x);
+
+        if ( session == null ) {
+          try {
+            sendError(x, resp, HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+          }  finally {
+            XLocator.set(null);
+          }
+          return;
+        }
+
+        x = session.getContext();
+      }
 
       // Check if service exists and is served.
       if ( nspec == null || ! nspec.getServe() ) {
