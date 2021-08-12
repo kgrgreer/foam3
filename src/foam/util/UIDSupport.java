@@ -8,7 +8,7 @@ package foam.util;
 
 public class UIDSupport {
   /**
-   * Modulo constant for UID
+   * Modulo constant for UID checksum
    */
   public final static int MOD = 997;
 
