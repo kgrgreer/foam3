@@ -20,8 +20,8 @@ public class UIDSupport {
    * 30 digits will not be involved in permutation.
    */
   private final static int[] PERMUTATION_SEQ = new int[] {
-    11,  3,  7,  9,  5,  6,  2, 8,  1,  9,
-    11, 10,  8, 12,  6, 14,  6, 5, 16,  3,
+    9,  3,  7,  9,  5,  6,  2, 8,  1,  4,
+    10, 11,  8, 12,  6, 14,  6, 5, 16,  3,
     17,  2, 20, 18, 24, 17, 25, 3, 16, 12
   };
 
@@ -31,29 +31,32 @@ public class UIDSupport {
     return instance__;
   }
 
-  public String permutate(StringBuilder idStr) {
-    int l = idStr.length();
-    char[] id = new char[l];
+  public String permutate(String idStr) {
+    var l = idStr.length() - 3;
+    var checksum = Integer.parseInt(idStr.substring(l), 16) + 256;
+    var id = new char[l];
     idStr.getChars(0, l, id, 0);
+
     for ( int i = 0 ; i < l ; i++ ) {
       int newI = PERMUTATION_SEQ[i];
       char c = id[newI];
       id[newI] = id[i];
       id[i] = c;
     }
-    return String.valueOf(id);
+    return toHexString(checksum, 3) + String.valueOf(id);
   }
 
   public String undoPermutate(String idStr) {
-    int l = idStr.length();
-    char[] id = idStr.toCharArray();
-    for ( int i = l - 1 ; i >= 0; i-- ) {
+    var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
+    var id = idStr.substring(3).toCharArray();
+
+    for ( int i = id.length - 1 ; i >= 0; i-- ) {
       int newI = PERMUTATION_SEQ[i];
       char c = id[newI];
       id[newI] = id[i];
       id[i] = c;
     }
-    return String.valueOf(id);
+    return String.valueOf(id) + toHexString(checksum, 3);
   }
 
   public int hash(long uid) {
@@ -71,5 +74,17 @@ public class UIDSupport {
 
   public int mod(long n) {
     return (int) (n % MOD);
+  }
+
+  public String toHexString(long l) {
+    return toHexString(l, 0);
+  }
+
+  public String toHexString(long l, int numberOfBits) {
+    var sb = new StringBuilder(Long.toHexString(l));
+    while ( sb.length() < numberOfBits ) {
+      sb.insert(0, '0');
+    }
+    return sb.toString();
   }
 }

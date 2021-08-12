@@ -66,11 +66,12 @@ foam.CLASS({
         permutationSeq. In most cases, the generated ID should be 13 digits long.
       `,
       javaCode: `
-        StringBuilder id = new StringBuilder();
+        var id = new StringBuilder();
+        var support = UIDSupport.getInstance();
 
         // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
-        id.append(Long.toHexString(curSec));
+        id.append(support.toHexString(curSec));
 
         // 2 bits sequence
         if ( curSec != getLastSecondCalled() ) {
@@ -78,23 +79,15 @@ foam.CLASS({
           setLastSecondCalled(curSec);
         }
         int seqNo = getSeqNo();
-        if ( seqNo < 16 ) {
-          id.append('0');
-        }
-        id.append(Integer.toHexString(seqNo));
+        id.append(support.toHexString(seqNo, 2));
         setSeqNo(seqNo + 1);
 
         // 3 bits checksum
-        int checksum = calcChecksum(id.toString());
-        if ( checksum < 16 ) {
-          id.append("00");
-        } else if ( checksum < 256 ) {
-          id.append('0');
-        }
-        id.append(Integer.toHexString(checksum));
+        var checksum = support.toHexString(calcChecksum(id.toString()), 3);
+        id.append(checksum);
 
         // permutation
-        return UIDSupport.getInstance().permutate(id);
+        return UIDSupport.getInstance().permutate(id.toString());
       `
     },
     {
