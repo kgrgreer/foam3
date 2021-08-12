@@ -292,15 +292,15 @@ foam.CLASS({
       }
       return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
     }
-  ]
+  ],
   listeners: [
     {
       name: 'onMenuSearchUpdate',
       isMerged: true,
-      mergeDelay: 200,
+      mergeDelay: 500,
       code: function() {
         for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch);
+          this.columns[i].updateOnSearch(this.menuSearch.trim().toLowerCase());
         }
       }
     }
@@ -656,16 +656,14 @@ foam.CLASS({
       name: 'parentExpanded',
       class: 'Boolean',
       value: false,
-      postSet: function(o, n) {
-        if ( ! this.parentExpanded )
+      postSet: function(_, n) {
+        if ( ! n )
           this.expanded = false;
-        return n;
       }
     },
     {
       name: 'expanded',
-      class: 'Boolean',
-      value: false
+      class: 'Boolean'
     },
     {
       name: 'showOnSearch',
@@ -714,11 +712,11 @@ foam.CLASS({
     function updateOnSearch(query) {
       this.showOnSearch = false;
       this.expanded = false;
-      if (query.length == 0) {this.showOnSearch = true; this.expanded = false; return this.showOnSearch;}
-      this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
-      if ( this.hasSubProperties && this.level < 2) {
+      if ( query.length == 0 ) { this.showOnSearch = true; this.expanded = false; return this.showOnSearch; }
+      this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query) : this.rootProperty.name.toLowerCase().includes(query);
+      if ( this.hasSubProperties && this.level < 2 ) {
         this.expanded = false;
-        if (this.subColumnSelectConfig.length == 0)
+        if ( this.subColumnSelectConfig.length == 0 )
           this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
         for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
           if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
@@ -749,6 +747,11 @@ foam.CLASS({
           ( foam.String.isInstance(c) && c.split('.').length >= this.level && c.split('.')[this.level] === this.rootProperty[0] );
         });
 
+        if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length == ( this.level + 1 )) ) {
+          selectedSubProperties.push(['', 'To Summary']);
+        } else {
+           otherSubProperties.push(['', 'To Summary']);
+        }
 
         for ( var i = 0 ; i < subProperties.length ; i++ ) {
           //the comparison mentioned above is working with the assumption that columns which are specified in 'tableColumns' are top-level properties and
