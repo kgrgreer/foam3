@@ -2994,8 +2994,9 @@ foam.CLASS({
           a = [o.cls_.id];
           for ( var i = 0 ; i < this.exprs.length ; i++ )
             a[i+this.PROJECTION_VALUES_OFFSET] = this.exprs[i].f(o);
-        } else
+        } else {
           a = [o];
+        }
         this.projectionWithClass.push(a);
       },
 // TODO:      swiftCode: 'array.append(obj)',

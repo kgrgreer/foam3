@@ -48,8 +48,9 @@ foam.CLASS({
       name: 'documents',
       label: '',
       section: 'documentUploadSection',
+      gridColumns: 6,
       view: function(_, X) {
-        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documents$ }, X);
+        return foam.nanos.fs.fileDropZone.FileDropZone.create({ files$: X.data.documents$ }, X);
       },
       validateObj: function(documents, isRequired) {
         if ( isRequired && documents.length === 0 ) {

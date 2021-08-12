@@ -57,8 +57,10 @@ foam.CLASS({
           // in again.
           if ( this.loginSuccess ) {
             if ( this.ctrl )  this.ctrl.remove();
+            // Set loginSuccess to false so that if multiple requests are sent with no authentication, alert is called only once
+            this.loginSuccess = false;
             alert(this.REFRESH_MSG);
-
+            (this.window || window).location.reload();
             return;
           }
 
