@@ -84,7 +84,8 @@ public class FObjectParser
 
             return null;
           } catch (ClassNotFoundException e) {
-            System.err.println("Unknown JSON class: " + e);
+            // Will use UnknownFObjectParser instead
+            // System.err.println("Unknown JSON class: " + e);
             return null;
           }
           catch (Throwable t) {
