@@ -20,6 +20,11 @@
       class: 'Object',
       name: 'outputDAO',
       javaType: 'foam.dao.DAO',
+    },
+    {
+      class: 'Boolean',
+      name: 'cloneOnPut',
+      value: true
     }
   ],
 
@@ -27,9 +32,11 @@
     {
       name: 'put',
       code: function put(o, sub) {
-        this.outputDAO.put(o);
+        this.outputDAO.put(this.cloneOnPut ? o.clone() : o);
       },
-      javaCode: 'getOutputDAO().put((foam.core.FObject) obj);'
+      javaCode: `
+      var fobj = (foam.core.FObject) obj;
+      getOutputDAO().put(getCloneOnPut() ? fobj.fclone() : fobj);`
     }
   ]
 });
