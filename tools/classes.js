@@ -195,6 +195,7 @@ var classes = [
   'foam.dao.MergedResetSink',
   'foam.dao.Sink',
   'foam.dao.ArraySink',
+  'foam.dao.DAOTransferSink',
   'foam.dao.AbstractSink',
   'foam.mlang.sink.AbstractUnarySink',
   'foam.dao.PredicatedSink',
