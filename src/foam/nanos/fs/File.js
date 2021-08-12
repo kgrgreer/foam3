@@ -17,8 +17,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.ServiceProviderAware',
-    'foam.nanos.auth.LifecycleAware'
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
