@@ -113,7 +113,8 @@ foam.CLASS({
           throw new AuthenticationException("Group disabled");
         }
         Subject subject = (Subject) x.get("subject");
-        if ( ((ServiceProvider) x.get("spid")).getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
+        ServiceProvider spid = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
+        if ( spid.getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
         return subject;
       `
     },
