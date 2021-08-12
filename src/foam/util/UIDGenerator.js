@@ -94,7 +94,7 @@ foam.CLASS({
         id.append(Integer.toHexString(checksum));
 
         // permutation
-        return permutate(id);
+        return UIDSupport.getInstance().permutate(id);
       `
     },
     {
@@ -108,63 +108,6 @@ foam.CLASS({
         var targetMod = Math.abs(getSalt().hashCode()) % 997;
         var idMod     = Long.parseLong(id + "000", 16) % 997;
         return (int) (997 - idMod + targetMod);
-      `
-    },
-    {
-      name: 'getPermutationSeq',
-      visibility: 'protected',
-      type: 'int[]',
-      documentation: `
-        A hard coded array used as permutation sequence. It only supports
-        permutation of a string less than 30 digits. The part of a string over
-        30 digits will not be involved in permutation.
-      `,
-      javaCode: `
-        int[] permutationSeq = new int[] {
-          11,  3,  7,  9,  5,  6,  2, 8,  1,  9,
-          11, 10,  8, 12,  6, 14,  6, 5, 16,  3,
-          17,  2, 20, 18, 24, 17, 25, 3, 16, 12
-        };
-        return permutationSeq;
-      `
-    },
-    {
-      name: 'permutate',
-      type: 'String',
-      args: [
-        { name: 'idStr', type: 'StringBuilder' }
-      ],
-      javaCode: `
-        int l = idStr.length();
-        char[] id = new char[l];
-        idStr.getChars(0, l, id, 0);
-        int[] permutationSeq = getPermutationSeq();
-        for ( int i = 0 ; i < l ; i++ ) {
-          int newI = permutationSeq[i];
-          char c = id[newI];
-          id[newI] = id[i];
-          id[i] = c;
-        }
-        return String.valueOf(id);
-      `
-    },
-    {
-      name: 'undoPermutate',
-      type: 'String',
-      args: [
-        { name: 'idStr', type: 'String' }
-      ],
-      javaCode: `
-        int l = idStr.length();
-        char[] id = idStr.toCharArray();
-        int[] permutationSeq = getPermutationSeq();
-        for ( int i = l - 1 ; i >= 0; i-- ) {
-          int newI = permutationSeq[i];
-          char c = id[newI];
-          id[newI] = id[i];
-          id[i] = c;
-        }
-        return String.valueOf(id);
       `
     }
   ]
