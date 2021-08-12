@@ -10,6 +10,11 @@ foam.CLASS({
   extends: 'foam.dao.java.JDAO',
 
   documentation: `Only write to underlying JDAO if not PRODUCTION mode`,
+
+  javaImports: [
+    'foam.dao.MDAO'
+  ],
+
   axioms: [
     {
       name: 'javaExtras',
@@ -31,6 +36,16 @@ foam.CLASS({
           }
         `);
       }
+    }
+  ],
+
+  properties: [
+    {
+      documentation: `Overwrite JDAO delegate to make javaPostSet a noop so when class is decorated by PipelinePMDAO the parent JDAO javaPostSet, which again calculates the 'journal' is not run.`,
+      name: 'delegate',
+      class: 'foam.dao.DAOProperty',
+      javaFactory: 'return new MDAO(getOf());',
+      javaPostSet: ' // noop '
     }
   ]
 });
