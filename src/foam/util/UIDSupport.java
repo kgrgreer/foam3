@@ -12,6 +12,9 @@ public class UIDSupport {
    */
   public final static int CHECKSUM_MOD = 997;
 
+  /**
+   * Singleton instance
+   */
   private final static UIDSupport instance__ = new UIDSupport();
 
   /**
@@ -31,6 +34,17 @@ public class UIDSupport {
     return instance__;
   }
 
+  /**
+   * Permutate id string according to the {@link #PERMUTATION_SEQ}.
+   *
+   * The checksum in the id string will be shifted to the beginning of the
+   * output string and its value is bumped up to avoid leading zeros since they
+   * could be lost during long integer uid conversion from and to hex string
+   * then mess up the length and permutation sequence when calculating its hash.
+   *
+   * @param idStr Source id string to permutate
+   * @return Generated unique ID
+   */
   public String permutate(String idStr) {
     var l = idStr.length() - 3;
     var checksum = Integer.parseInt(idStr.substring(l), 16) + 256;
@@ -46,6 +60,13 @@ public class UIDSupport {
     return toHexString(checksum, 3) + String.valueOf(id);
   }
 
+  /**
+   * Undo/reverse permutate the generated unique id returned from
+   * {@code permutate(idStr) }.
+   *
+   * @param idStr Generated unique id
+   * @return Source id string
+   */
   public String undoPermutate(String idStr) {
     var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
     var id = idStr.substring(3).toCharArray();
@@ -59,27 +80,67 @@ public class UIDSupport {
     return String.valueOf(id) + toHexString(checksum, 3);
   }
 
+  /**
+   * Calculate the hash value of a generated long integer unique id.
+   *
+   * @param uid Generated unique id
+   * @return Hash of the unique id
+   */
   public int hash(long uid) {
     return hash(Long.toHexString(uid));
   }
 
+  /**
+   * Calculate the hash value of a generated string unique id.
+   *
+   * @param uid Generated unique id
+   * @return Hash of the unique id
+   */
   public int hash(String uid) {
     var hex = undoPermutate(uid);
     return mod(Long.parseLong(hex, 16));
   }
 
+  /**
+   * Calculate the checksum of a (salt) string.
+   *
+   * @param s Input (salt) string
+   * @return checksum
+   */
   public int mod(String s) {
     return mod(Math.abs(s.hashCode()));
   }
 
+  /**
+   * Calculate the checksum modulus of a number.
+   *
+   * @param n Input number
+   * @return checksum
+   */
   public int mod(long n) {
     return (int) (n % CHECKSUM_MOD);
   }
 
+  /**
+   * Convert a long integer to hex string.
+   *
+   * @param l Input long integer
+   * @return Hex string equivalent to the input
+   */
   public String toHexString(long l) {
     return toHexString(l, 0);
   }
 
+  /**
+   * Convert a long integer to hex string and format with according to the
+   * desired numberOfBits given.
+   *
+   * Eg. toHexString(11, 4); // => "000b"
+   *
+   * @param l Input long integer
+   * @param numberOfBits Number of minimum bits for formatting the hex string
+   * @return Hex string equivalent to the input
+   */
   public String toHexString(long l, int numberOfBits) {
     var sb = new StringBuilder(Long.toHexString(l));
     while ( sb.length() < numberOfBits ) {
