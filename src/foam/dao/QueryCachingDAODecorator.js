@@ -10,10 +10,6 @@ foam.CLASS({
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',
 
-  requires: [
-    'foam.dao.PromisedDAO'
-  ],
-
   properties: [
     {
       // The cache for local storage and fast access
@@ -25,12 +21,6 @@ foam.CLASS({
       // Allows limit to what we cache so we do not have to always call DAO if limit is not provided
       name: 'daoCount_',
       value: 0
-    },
-    {
-      name: 'startIdx_'
-    },
-    {
-      name: 'endIdx_'
     }
   ],
 
@@ -53,15 +43,17 @@ foam.CLASS({
       var key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-
         // Validate we have a fresh dao count
         self.refreshDaoCount_(self).then(function() {
 
+          var requestStartIdx = typeof skip !== 'undefined' ? skip : 0;
+          var requestEndIdx = typeof limit !== 'undefined' && skip + limit < self.daoCount_ ? skip + limit : self.daoCount_;
+
           // Ensure we have cache for request
-          self.fillCache_(self, key, x, sink, skip, limit, order, predicate).then(function() {
+          self.fillCache_(self, key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(function() {
 
             // Return data from cache
-            for (let idx = self.startIdx_; idx < self.endIdx_; idx++) {
+            for (let idx = requestStartIdx; idx < requestEndIdx; idx++) {
               sink.put(self.cache[key][idx]);
             }
 
@@ -82,20 +74,17 @@ foam.CLASS({
       return Promise.resolve();
     },
 
-    function fillCache_(self, key, x, sink, skip, limit, order, predicate) {
+    function fillCache_(self, key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
       // Pre-check cache for elements
-      self.startIdx_ = typeof skip !== 'undefined' ? skip : 0;
-      self.endIdx_ = typeof limit !== 'undefined' && skip + limit < self.daoCount_ ? skip + limit : self.daoCount_;
-
       let startIdx = -1;
       let endIdx = -1;
       let hasMissingData = false;
 
       if (self.cache[key]) {
         // Cycle through exising cached elements to verify all requested are present
-        for ( let idx = self.startIdx_; idx < self.endIdx_; idx++ ) {
-          if ( ! self.cache[key][idx]) {
-            if ( ! hasMissingData) {
+        for ( let idx = requestStartIdx; idx < requestEndIdx; idx++ ) {
+          if ( ! self.cache[key][idx] ) {
+            if ( ! hasMissingData ) {
               // Found start of missing data withing requested block
               hasMissingData = true;
               startIdx = idx;
@@ -108,12 +97,13 @@ foam.CLASS({
       } else {
         // No data present load entire block
         hasMissingData = true;
-        startIdx = self.startIdx_;
-        endIdx = self.endIdx_;
+        startIdx = requestStartIdx;
+        endIdx = requestEndIdx;
         self.cache[key] = [];
       }
 
       if (hasMissingData) {
+        console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + 'daoCount: ' + self.daoCount_ + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         return this.delegate.select_(x, sink, startIdx, 1 + endIdx - startIdx, order, predicate).then(function (result) {
           // Point to the appropriate array source
 //          let array = foam.mlang.sink.Projection.isInstance(sink) ? result.projectionWithClass : result.array;
