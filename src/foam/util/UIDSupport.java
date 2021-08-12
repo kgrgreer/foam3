@@ -10,7 +10,7 @@ public class UIDSupport {
   /**
    * Modulo constant for UID checksum
    */
-  public final static int MOD = 997;
+  public final static int CHECKSUM_MOD = 997;
 
   private final static UIDSupport instance__ = new UIDSupport();
 
@@ -65,15 +65,15 @@ public class UIDSupport {
 
   public int hash(String uid) {
     var hex = undoPermutate(uid);
-    return mod(Long.parseLong(hex, 16) % MOD);
+    return mod(Long.parseLong(hex, 16));
   }
 
   public int mod(String s) {
-    return Math.abs(s.hashCode()) % MOD;
+    return mod(Math.abs(s.hashCode()));
   }
 
   public int mod(long n) {
-    return (int) (n % MOD);
+    return (int) (n % CHECKSUM_MOD);
   }
 
   public String toHexString(long l) {
