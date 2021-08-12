@@ -9,11 +9,6 @@ foam.CLASS({
   name: 'UIDGenerator',
   flags: ['java'],
 
-  javaImports: [
-    'java.util.Arrays',
-    'java.util.List'
-  ],
-
   properties: [
     {
       name: 'seqNo',
@@ -102,7 +97,7 @@ foam.CLASS({
         var targetMod = support.mod(getSalt());
         var idMod     = support.mod(Long.parseLong(id + "000", 16));
 
-        return (int) (UIDSupport.MOD - idMod + targetMod);
+        return (int) (UIDSupport.CHECKSUM_MOD - idMod + targetMod);
       `
     }
   ]
