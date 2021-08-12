@@ -352,11 +352,11 @@ This is the heart of Medusa.`,
                 }
               }
             }
-            if ( next == null ||
-                 entry != null &&
-                 ! entry.getPromoted() ) {
-              gap(x, nextIndex, nextIndexSince);
-            }
+            // if ( next == null ||
+            //      entry != null &&
+            //      ! entry.getPromoted() ) {
+               gap(x, nextIndex, nextIndexSince);
+            // }
           } finally {
             pm.log(x);
           }
@@ -636,12 +636,17 @@ During replay gaps are treated differently; If the index after the gap is ready 
             }
 
             getLogger().warning("gap", "found", index);
-            Alarm alarm = new Alarm();
+            String alarmName = "Medusa Gap";
+            final Alarm alarm;
+            Alarm a = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmName), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
+            if ( a == null ) {
+              alarm = new Alarm(alarmName);
+            } else {
+              alarm = (Alarm) a.fclone();
+            }
             alarm.setClusterable(false);
-            alarm.setName("Medusa Gap");
             alarm.setIsActive(true);
             alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
-            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
             config.setErrorMessage("gap detected, investigating...");
             ((DAO) x.get("clusterConfigDAO")).put(config);
             // Test for gap index dependencies - of course can only look
@@ -672,7 +677,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               replaying.updateIndex(x, index);
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
-              ((DAO) x.get("alarmDAO")).put(alarm);
+              // ((DAO) x.get("alarmDAO")).put(alarm);
               config.setErrorMessage("");
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
@@ -680,7 +685,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
                 alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
                 alarm.setSeverity(foam.log.LogLevel.ERROR);
-                ((DAO) x.get("alarmDAO")).put(alarm);
+                // ((DAO) x.get("alarmDAO")).put(alarm);
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
                 // throw new MedusaException("gap with dependencies");
@@ -688,6 +693,13 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
               }
             }
+            // Create and submit alarm via agency to avoid deadlock
+            // Agency agency = (Agency) x.get(support.getThreadPoolName());
+            // agency.submit(x, new ContextAgent() {
+            //   public void execute(X x) {
+                ((DAO) x.get("alarmDAO")).put_(x, alarm);
+            //   }
+            // }, this.getClass().getSimpleName());
           }
         }
       } catch (Throwable t) {
