@@ -28,17 +28,14 @@ foam.CLASS({
     }
 
     ^ [type=radio]:checked ~ label {
-      border-bottom: solid 3px #406dea;
+      border-bottom: solid 3px /*%PRIMARY3%*/ #406dea;
       font-weight: bold;
-      color: #406dea;
+      color: /*%PRIMARY3%*/ #406dea;
     }
 
     ^ label {
       cursor: pointer;
-      line-height: 1.4;
       padding: 16px 32px;
-      text-align:center;
-      font-size: 14px;
     }
   `,
 
@@ -86,6 +83,7 @@ foam.CLASS({
             }).
           end().
           start('label').
+            addClass('p').
             attrs({ for: id }).
             start('span').
               translate(c[1], c[1]).
