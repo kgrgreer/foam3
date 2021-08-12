@@ -49,7 +49,7 @@ foam.CLASS({
       name: 'UIDGeneratorTest_GenerateVerifiableUniqueLongIDs',
       args: [ 'UIDGenerator uidgen', 'int hash' ],
       javaCode: `
-        var n = 10;
+        var n = 1000;
         var ids = new HashSet<Long>();
         for ( int i = 0; i < n; i++ ) {
           ids.add(uidgen.getNextLong());
