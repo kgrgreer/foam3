@@ -353,11 +353,11 @@ This is the heart of Medusa.`,
                 }
               }
             }
-            // if ( next == null ||
-            //      entry != null &&
-            //      ! entry.getPromoted() ) {
+            if ( next == null ||
+                 entry != null &&
+                 ! entry.getPromoted() ) {
                gap(x, nextIndex, nextIndexSince);
-            // }
+            }
           } finally {
             pm.log(x);
           }
@@ -678,7 +678,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
               replaying.updateIndex(x, index);
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
-              // ((DAO) x.get("alarmDAO")).put(alarm);
               config.setErrorMessage("");
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
@@ -686,7 +685,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
                 alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
                 alarm.setSeverity(foam.log.LogLevel.ERROR);
-                // ((DAO) x.get("alarmDAO")).put(alarm);
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
                 // throw new MedusaException("gap with dependencies");
@@ -694,13 +692,8 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
               }
             }
-            // Create and submit alarm via agency to avoid deadlock
-            // Agency agency = (Agency) x.get(support.getThreadPoolName());
-            // agency.submit(x, new ContextAgent() {
-            //   public void execute(X x) {
-                ((DAO) x.get("alarmDAO")).put_(x, alarm);
-            //   }
-            // }, this.getClass().getSimpleName());
+            // TODO: do not put, causing deadlock
+            // ((DAO) x.get("alarmDAO")).put(alarm);
           }
         }
       } catch (Throwable t) {
