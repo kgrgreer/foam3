@@ -7,6 +7,11 @@
 package foam.util;
 
 public class UIDSupport {
+  /**
+   * Modulo constant for UID
+   */
+  public final static int MOD = 997;
+
   private final static UIDSupport instance__ = new UIDSupport();
 
   /**
@@ -49,5 +54,22 @@ public class UIDSupport {
       id[i] = c;
     }
     return String.valueOf(id);
+  }
+
+  public int hash(long uid) {
+    return hash(Long.toHexString(uid));
+  }
+
+  public int hash(String uid) {
+    var hex = undoPermutate(uid);
+    return mod(Long.parseLong(hex, 16) % MOD);
+  }
+
+  public int mod(String s) {
+    return Math.abs(s.hashCode()) % MOD;
+  }
+
+  public int mod(long n) {
+    return (int) (n % MOD);
   }
 }
