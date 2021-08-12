@@ -148,11 +148,17 @@ public abstract class AbstractFObjectPropertyInfo
   }
 
   public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
-    FObject propObj = (FObject) get_(obj);
+    Object propObj = (FObject) get_(obj);
+    // KGR: this seems to happen, but I'm not sure how
+    if ( ! ( propObj instanceof FObject ) ) {
+      format(formatter, obj);
+      return;
+    }
+
     if ( propObj instanceof foam.lib.json.OutputJSON ) {
       ((foam.lib.json.OutputJSON) propObj).formatJSON((foam.lib.formatter.JSONFObjectFormatter) formatter);
     } else {
-      formatter.output(propObj, of(), this);
+      formatter.output((FObject) propObj, of(), this);
     }
   }
 
