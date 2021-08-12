@@ -53,6 +53,7 @@ p({
       .setJournalName("files")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setPm(true)
+      .setLifecycleAware(true)
       .build()
   """,
   "client":"""

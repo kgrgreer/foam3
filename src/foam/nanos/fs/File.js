@@ -17,7 +17,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.ServiceProviderAware'
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.auth.LifecycleAware'
   ],
 
   requires: [
@@ -35,6 +36,7 @@ foam.CLASS({
     'foam.blob.InputStreamBlob',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
@@ -151,7 +153,7 @@ foam.CLASS({
           selected$: selectSlot
         });
       },
-      comparePropertyValues: function(o1, o2) { return 0; } 
+      comparePropertyValues: function(o1, o2) { return 0; }
     },
     {
       class: 'Blob',
@@ -240,7 +242,17 @@ foam.CLASS({
           .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
+    {
+      name: 'lifecycleState',
+      class: 'Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      documentation: 'Display a file state',
+      value: 'ACTIVE',
+      visibility: 'RO',
+      includeInDigest: true,
+    }
   ],
+
   methods: [
     {
       name: 'authorizeOnCreate',
@@ -267,7 +279,8 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "file.remove." + getId()) ) {
+
+        if ( ! auth.check(x, "file.remove.*") ) {
           throw new AuthorizationException();
         }
       `
