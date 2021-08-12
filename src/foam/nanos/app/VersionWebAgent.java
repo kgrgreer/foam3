@@ -25,8 +25,13 @@ public class VersionWebAgent
     response.setContentType("text/plain");
     response.setStatus(HttpServletResponse.SC_OK);
 
-    AppConfig app = (AppConfig) x.get("appConfig");
-    out.print(app.getVersion());
+    String version = foam.nanos.app.AppConfig.class.getPackage().getImplementationVersion();
+    String revision = foam.nanos.app.AppConfig.class.getPackage().getSpecificationVersion();
+    out.print(version);
+    if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
+         revision.length() > 2 ) {
+      out.print("-"+revision.substring(0, 3));
+    }
     out.println("\n");
   }
 }
