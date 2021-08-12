@@ -105,9 +105,11 @@ foam.CLASS({
         { name: 'id', type: 'String' }
       ],
       javaCode: `
-        var targetMod = Math.abs(getSalt().hashCode()) % 997;
-        var idMod     = Long.parseLong(id + "000", 16) % 997;
-        return (int) (997 - idMod + targetMod);
+        var support   = UIDSupport.getInstance();
+        var targetMod = support.mod(getSalt());
+        var idMod     = support.mod(Long.parseLong(id + "000", 16));
+
+        return (int) (UIDSupport.MOD - idMod + targetMod);
       `
     }
   ]
