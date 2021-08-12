@@ -35,8 +35,7 @@ foam.CLASS({
       name: 'getNextString',
       type: 'String',
       javaCode: `
-        int saltChecksum = Integer.remainderUnsigned(getSalt().hashCode(), 4096);
-        return Integer.toHexString(saltChecksum) + generate();
+        return generate();
       `
     },
     {
@@ -61,10 +60,10 @@ foam.CLASS({
       type: 'String',
       documentation: `
         Generate a Unique ID. The Unique ID consists of :
-        8 hexits timestamp(s) + at least 2 hexits sequence inside second + 2 hexits checksum.
+        8 hexits timestamp(s) + at least 2 hexits sequence inside second + 3 hexits checksum.
 
         After the checksum is added, the ID is permutated based on the
-        permutationSeq. In most cases, the generated ID should be 12 digits long.
+        permutationSeq. In most cases, the generated ID should be 13 digits long.
       `,
       javaCode: `
         StringBuilder id = new StringBuilder();
@@ -73,22 +72,26 @@ foam.CLASS({
         long curSec = System.currentTimeMillis() / 1000;
         id.append(Long.toHexString(curSec));
 
-        // 2 bits sequence + 2 bits checksum
+        // 2 bits sequence
         if ( curSec != getLastSecondCalled() ) {
           setSeqNo(0);
           setLastSecondCalled(curSec);
         }
         int seqNo = getSeqNo();
-        int seqNoAndCks = seqNo * 256 + calcChecksum(curSec, seqNo);
-        if ( seqNoAndCks == 0 ) {
-          id.append("0000");
-        } else {
-          int l = (int) (Math.log(seqNoAndCks) / Math.log(16)) + 1;
-          if ( l <= 2 ) { id.append("00"); }
-          if ( l % 2 != 0 ) { id.append('0'); }
+        if ( seqNo < 16 ) {
+          id.append('0');
         }
-        id.append(Integer.toHexString(seqNoAndCks));
+        id.append(Integer.toHexString(seqNo));
         setSeqNo(seqNo + 1);
+
+        // 3 bits checksum
+        int checksum = calcChecksum(id.toString());
+        if ( checksum < 16 ) {
+          id.append("00");
+        } else if ( checksum < 256 ) {
+          id.append('0');
+        }
+        id.append(Integer.toHexString(checksum));
 
         // permutation
         return permutate(id);
@@ -97,23 +100,14 @@ foam.CLASS({
     {
       name: 'calcChecksum',
       visibility: 'protected',
-      type: 'int',
+      type: 'Integer',
       args: [
-        { name: 'curSec', type: 'long' },
-        { name: 'seqNo', type: 'int' }
+        { name: 'id', type: 'String' }
       ],
       javaCode: `
-        int checksum = 0;
-        while ( curSec > 0 ) {
-          checksum += curSec % 256;
-          curSec = curSec / 256;
-        }
-        while ( seqNo > 0 ) {
-          checksum += seqNo % 256;
-          seqNo = seqNo / 256;
-        }
-        checksum = 256 - (checksum % 256);
-        return checksum;
+        var targetMod = Math.abs(getSalt().hashCode()) % 997;
+        var idMod     = Long.parseLong(id + "000", 16) % 997;
+        return (int) (997 - idMod + targetMod);
       `
     },
     {
