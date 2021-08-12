@@ -299,8 +299,9 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 500,
       code: function() {
+        var query = this.menuSearch.trim().toLowerCase()
         for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch.trim().toLowerCase());
+          this.columns[i].updateOnSearch(query);
         }
       }
     }
@@ -729,7 +730,7 @@ foam.CLASS({
     },
     function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
       var arr = [];
-      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || (! ignoreExpanded && ! expanded) )
+      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
           return arr;
         var l = level + 1;
         var r = this.of.getAxiomByName(this.rootProperty[0]);
@@ -750,7 +751,7 @@ foam.CLASS({
         if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length == ( this.level + 1 )) ) {
           selectedSubProperties.push(['', 'To Summary']);
         } else {
-           otherSubProperties.push(['', 'To Summary']);
+          otherSubProperties.push(['', 'To Summary']);
         }
 
         for ( var i = 0 ; i < subProperties.length ; i++ ) {
