@@ -6,7 +6,7 @@
 
  foam.CLASS({
   package: 'foam.dao',
-  name: 'DAOTransferSink',
+  name: 'DAOCopySink',
   extends: 'foam.dao.AbstractSink',
 
   documentation: 'Puts all objects in the sink into a different DAO',
