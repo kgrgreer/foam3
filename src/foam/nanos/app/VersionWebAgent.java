@@ -27,7 +27,11 @@ public class VersionWebAgent
 
     String version = foam.nanos.app.AppConfig.class.getPackage().getImplementationVersion();
     String revision = foam.nanos.app.AppConfig.class.getPackage().getSpecificationVersion();
-    out.print(version+"-"+revision.substring(0, 3));
+    out.print(version);
+    if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
+         revision.length() > 2 ) {
+      out.print("-"+revision.substring(0, 3));
+    }
     out.println("\n");
   }
 }
