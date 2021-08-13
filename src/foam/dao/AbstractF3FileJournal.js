@@ -440,10 +440,13 @@ try {
       javaCode: `
       try {
         if ( prop.isSet(diffFObject) ) {
-          if ( prop instanceof AbstractFObjectPropertyInfo && prop.get(oldFObject) != null
-            && prop.get(diffFObject) != null ) {
-            FObject nestedDiffFObj = (FObject) prop.get(diffFObject);
+          Object diffObj = prop.get(diffFObject);
+          if ( prop instanceof AbstractFObjectPropertyInfo &&
+               prop.get(oldFObject) != null &&
+               diffObj != null &&
+               diffObj instanceof FObject ) {
             FObject oldNestedFObj  = (FObject) prop.get(oldFObject);
+            FObject nestedDiffFObj = (FObject) diffObj;
             if ( oldNestedFObj.getClassInfo() != nestedDiffFObj.getClassInfo() ) {
               FObject nestedOldDiff = nestedDiffFObj.fclone();
               nestedOldDiff.copyFrom(oldNestedFObj);
@@ -453,7 +456,7 @@ try {
               mergeFObject(oldNestedFObj, nestedDiffFObj);
             }
           } else {
-            prop.set(oldFObject, prop.get(diffFObject));
+            prop.set(oldFObject, diffObj);
           }
         }
       } catch(ClassCastException e) {
