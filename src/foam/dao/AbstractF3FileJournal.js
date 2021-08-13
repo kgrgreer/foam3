@@ -457,7 +457,7 @@ try {
           }
         }
       } catch(ClassCastException e) {
-        String msg = "******************* UNEXPECTED CCE " + oldFObject + " " + diffFObject + " " + prop.getName();
+        String msg = "******************* UNEXPECTED CCE " + oldFObject + " " + diffFObject + " " + prop.getName()+ " "+ getFilename();
         getLogger().error(msg);
         System.err.println(msg);
         throw e;
