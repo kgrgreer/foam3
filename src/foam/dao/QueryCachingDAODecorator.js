@@ -10,6 +10,13 @@ foam.CLASS({
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',
 
+  constants: [
+    {
+      name: 'CLEAR_CACHE',
+      value: 'CLEAR_CACHE'
+    }
+  ],
+
   properties: [
     {
       // The cache for local storage and fast access
@@ -43,6 +50,8 @@ foam.CLASS({
       var key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
+        console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ) + ' daoCount_: ' + self.daoCount_);
+
         // Validate we have a fresh dao count
         self.refreshDaoCount_(self).then(function() {
 
@@ -63,15 +72,27 @@ foam.CLASS({
       });
     },
 
-    function refreshDaoCount_(self) {
-      // If we have not retrieved the dao count previously do it now
-      if ( ! self.hasOwnProperty('daoCount_') ) {
-          return self.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
-            self.daoCount_ = count.array.length;
-          });
-      }
+    // Remove invalidates cache and is forwarded to the source.
+    function remove_(x, o) {
+      this.cache = {};
+      this.clearProperty('daoCount_');
+      return this.delegate.remove_(x, o);
+    },
 
-      return Promise.resolve();
+    // RemoveAll invalidates cache and is forwarded to the source.
+    function removeAll_(x, skip, limit, order, predicate) {
+      this.cache = {};
+      this.clearProperty('daoCount_');
+      this.delegate.removeAll_(x, skip, limit, order, predicate);
+    },
+
+    function cmd_(x, obj) {
+      if ( obj == this.CLEAR_CACHE ) {
+        this.cache = {};
+        this.clearProperty('daoCount_');
+      } else {
+        this.SUPER(x, obj);
+      }
     },
 
     function fillCache_(self, key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
@@ -120,18 +141,15 @@ foam.CLASS({
       return Promise.resolve();
     },
 
-    // Remove invalidates cache and is forwarded to the source.
-    function remove_(x, o) {
-      this.cache = {};
-      this.clearProperty('daoCount_');
-      return this.delegate.remove_(x, o);
-    },
+    function refreshDaoCount_(self) {
+      // If we have not retrieved the dao count previously do it now
+      if ( ! self.hasOwnProperty('daoCount_') ) {
+        return self.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
+          self.daoCount_ = count.array.length;
+        });
+      }
 
-    // RemoveAll invalidates cache and is forwarded to the source.
-    function removeAll_(x, skip, limit, order, predicate) {
-      this.cache = {};
-      this.clearProperty('daoCount_');
-      this.delegate.removeAll_(x, skip, limit, order, predicate);
+      return Promise.resolve();
     }
   ]
 });
