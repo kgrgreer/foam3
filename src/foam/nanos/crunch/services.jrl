@@ -171,7 +171,6 @@ p({
     decorator = new foam.nanos.crunch.PredicatedPrerequisiteCapabilityJunctionDAO.Builder(x).build();
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("prerequisiteCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("prerequisiteCapabilityJunctions")
