@@ -37,7 +37,7 @@ public class FObjectParser
   }
 
   public FObjectParser(final Class defaultClass) {
-    super(new Alt(new Seq1(3,
+    super(new Seq1(3,
       Whitespace.instance(),
       Literal.create("{"),
       Whitespace.instance(),
@@ -51,6 +51,8 @@ public class FObjectParser
             new Optional(Literal.create(",")));
 
         public PStream parse(PStream ps, ParserContext x) {
+          PStream originalPS = ps;
+
           try {
             PStream ps1 = ps.apply(delegate, x);
             Class   c   = ( ps1 != null ) ?
@@ -85,8 +87,9 @@ public class FObjectParser
             return null;
           } catch (ClassNotFoundException e) {
             // Will use UnknownFObjectParser instead
-            // System.err.println("Unknown JSON class: " + e);
-            return null;
+            System.err.println("Unknown JSON class: " + e);
+
+            return UnknownFObjectParser.instance().parse(originalPS, x);
           }
           catch (Throwable t) {
             t.printStackTrace();
@@ -95,7 +98,7 @@ public class FObjectParser
         }
       },
       Whitespace.instance(),
-      Literal.create("}")), UnknownFObjectParser.instance()));
+      Literal.create("}")));
   }
 
   public FObjectParser() {
