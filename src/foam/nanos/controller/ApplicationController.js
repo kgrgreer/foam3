@@ -411,7 +411,6 @@ foam.CLASS({
 
         await self.maybeReinstallLanguage(client);
         self.languageInstalled.resolve();
-
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
           get: function() {

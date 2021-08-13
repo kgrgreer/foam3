@@ -87,8 +87,8 @@ foam.CLASS({
         if ( session.getUserId() == vacantUser.getId() ) return ((Subject) x.get("subject"));
         session.setUserId(vacantUser.getId());
         session.setAgentId(0);
-        ((DAO) getLocalSessionDAO()).inX(x).put(session);
         session.setContext(session.applyTo(session.getContext()));
+        ((DAO) getLocalSessionDAO()).inX(x).put(session);
         return ((Subject) x.get("subject"));
       `
     },
@@ -197,6 +197,9 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
+        // Log out vacant user
+        logout(x);
+
         User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);
         if ( user == null ) {
           throw new UserNotFoundException();

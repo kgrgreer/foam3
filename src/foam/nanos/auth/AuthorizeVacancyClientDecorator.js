@@ -20,7 +20,7 @@
 
   methods: [
     async function authorizeVacancy(x) {
-      var result = await this.delegate.authorizeVacancy(x);
+      var result = await this.delegate.authorizeVacancy(null);
       if ( ! result || ! result.user ) throw new Error();
       this.subject = result;
       return this.subject;
