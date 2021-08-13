@@ -753,6 +753,14 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'approvableAwareRelationshipName',
       class: 'String',
       documentation: 'If the DAO is approvable aware, this sets the ApprovableAwareDAO RelationshipName field'
+    },
+    {
+      documentation: 'pipelinePm activation',
+      name: 'activatePipelinePm',
+      class: 'Boolean',
+      javaFactory: `
+        return foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false"));
+      `
     }
   ],
 
