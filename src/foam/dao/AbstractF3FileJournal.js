@@ -438,11 +438,15 @@ try {
       name: 'mergeProperty',
       args: [ 'FObject oldFObject', 'FObject diffFObject', 'foam.core.PropertyInfo prop' ],
       javaCode: `
+      try {
         if ( prop.isSet(diffFObject) ) {
-          if ( prop instanceof AbstractFObjectPropertyInfo && prop.get(oldFObject) != null
-            && prop.get(diffFObject) != null ) {
-            FObject nestedDiffFObj = (FObject) prop.get(diffFObject);
-            FObject oldNestedFObj = (FObject) prop.get(oldFObject);
+          Object diffObj = prop.get(diffFObject);
+          if ( prop instanceof AbstractFObjectPropertyInfo &&
+               prop.get(oldFObject) != null &&
+               diffObj != null &&
+               diffObj instanceof FObject ) {
+            FObject oldNestedFObj  = (FObject) prop.get(oldFObject);
+            FObject nestedDiffFObj = (FObject) diffObj;
             if ( oldNestedFObj.getClassInfo() != nestedDiffFObj.getClassInfo() ) {
               FObject nestedOldDiff = nestedDiffFObj.fclone();
               nestedOldDiff.copyFrom(oldNestedFObj);
@@ -452,9 +456,15 @@ try {
               mergeFObject(oldNestedFObj, nestedDiffFObj);
             }
           } else {
-            prop.set(oldFObject, prop.get(diffFObject));
+            prop.set(oldFObject, diffObj);
           }
         }
+      } catch(ClassCastException e) {
+        String msg = "******************* UNEXPECTED CCE " + oldFObject + " " + diffFObject + " " + prop.getName()+ " "+ getFilename();
+        getLogger().error(msg);
+        System.err.println(msg);
+        throw e;
+      }
       `
     }
   ]

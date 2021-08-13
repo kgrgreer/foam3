@@ -234,6 +234,7 @@ FOAM_FILES([
   { name: "foam/dao/PredicatedDualDelegateDAO" },
   { name: "foam/dao/daoUtils" },
   { name: "foam/dao/ArraySink" },
+  { name: "foam/dao/DAOCopySink" },
   { name: "foam/dao/DAOInterceptor" },
   { name: "foam/dao/AbstractDAO" },
   { name: "foam/dao/FilteredDAO" },
