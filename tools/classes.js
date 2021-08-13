@@ -945,11 +945,8 @@ var classes = [
   // Notification
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
-  'foam.counter.Counter',
+  'foam.counter.Counter'
 
-  'net.nanopay.account.BankInfoService',
-  'net.nanopay.account.ClientBankInfoService',
-  'net.nanopay.account.GenerateBankInfoReport'
 
 ];
 
@@ -982,7 +979,7 @@ var skeletons = [
   'foam.nanos.google.api.sheets.GoogleSheetsDataImportService',
   'foam.nanos.crunch.CrunchService',
   'foam.i18n.TranslationService',
-  'net.nanopay.account.BankInfoService'
+
 ];
 
 var proxies = [
