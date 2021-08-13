@@ -305,7 +305,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
           rtn = rtn.put("appConfig", appConfig);
           rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
+          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
           return rtn;
         }
 
@@ -357,7 +357,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
         return rtn;
       } finally {

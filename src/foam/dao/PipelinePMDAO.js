@@ -100,8 +100,9 @@ foam.CLASS({
          ProxyDAO proxy = (ProxyDAO) dao;
 
          proxy.setDelegate(new EndPipelinePMDAO(x, decorate(x, nspec, proxy.getDelegate(), level+1)));
+         return new PipelinePMDAO(x, nspec, dao, level);
        }
-       return new PipelinePMDAO(x, nspec, dao, level);
+       return dao;
      }
           `
         }));

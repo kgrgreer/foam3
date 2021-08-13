@@ -26,11 +26,11 @@ foam.CLASS({
       DAO configDAO = (DAO) x.get("alarmConfigDAO");
       AlarmConfig config = (AlarmConfig) configDAO.find(alarm.getName());
       if ( config != null ) {
-        if ( ! config.getEnabled() ||
-             ! alarm.getClusterable() ) {
+        if ( ! config.getEnabled() ) {
           return alarm;
         }
-      } else {
+        alarm.setSeverity(config.getSeverity());
+      } else if ( alarm.getClusterable() ) {
         config = new AlarmConfig();
         config.setName(alarm.getName());
         config.setSeverity(alarm.getSeverity());
@@ -41,7 +41,6 @@ foam.CLASS({
           ((Logger) x.get("logger")).error(e);
         }
       }
-      alarm.setSeverity(config.getSeverity());
       return getDelegate().put_(x, alarm);
       `
     }
