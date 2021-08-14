@@ -13,6 +13,8 @@ import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Log subject user, agent
@@ -48,12 +50,12 @@ public class SubjectLogger
   }
 
   protected Object[] getPrefix(X x) {
-    StringBuilder sb = null;
+    List list = null;
     String spid = (String) x.get("spid");
     if ( ! SafetyUtil.isEmpty(spid) ) {
-      sb = new StringBuilder();
-      sb.append("{spid:");
-      sb.append(spid);
+      list = new ArrayList();
+      list.add("spid");
+      list.add(spid);
     }
     Subject subject = (Subject) x.get("subject");
     if ( subject != null &&
@@ -61,21 +63,19 @@ public class SubjectLogger
       User user = subject.getRealUser();
       if ( SafetyUtil.isEmpty(spid) ) {
         spid = user.getSpid();
-        sb = new StringBuilder();
-        sb.append("{spid:");
-        sb.append(user);
+        list = new ArrayList();
+        list.add("spid");
+        list.add(spid);
       }
-      sb.append(",user:");
-      sb.append(user.getId());
+      list.add("user");
+      list.add(user.getId());
       if ( subject.isAgent() ) {
-        sb.append(",agent:");
-        sb.append(subject.getUser().getId());
+        list.add("agent");
+        list.add(subject.getUser().getId());
       }
     }
-    if ( sb != null ) {
-      sb.append("}");
-      
-      return new Object[] { sb.toString() };
+    if ( list != null ) {
+      return list.toArray(Object[]::new);
     }
 
     return null;
