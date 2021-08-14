@@ -20,8 +20,8 @@ This is the heart of Medusa.`,
 
   javaImports: [
     'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
     'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -253,12 +253,11 @@ This is the heart of Medusa.`,
       name: 'start',
       javaCode: `
       getLogger().info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
-      Timer timer = new Timer(this.getClass().getSimpleName());
+      Timer timer = new Timer(this.getClass().getSimpleName(), true);
       timer.schedule(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        new ContextAgentTimerTask(getX(), this),
         getInitialTimerDelay());
-      `
+       `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
