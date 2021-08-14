@@ -94,7 +94,7 @@ foam.CLASS({
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
-      timer.scheduleAtFixedRate(
+      timer.schedule(
         new ContextAgentTimerTask(getX(), this),
         getInitialTimerDelay(),
         getTimerInterval());

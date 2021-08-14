@@ -96,7 +96,7 @@ foam.CLASS({
       javaCode: `
       getLogger().info("start", "interval", getTimerInterval());
       Timer timer = new Timer(this.getClass().getSimpleName()+"-"+getId(), true);
-      timer.scheduleAtFixedRate(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
+      timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
     },
     {
@@ -113,7 +113,6 @@ foam.CLASS({
       ClusterConfig config = support.getConfig(x, getId());
       try {
         if ( ! config.getEnabled() ) {
-          getLogger().debug("execute, disabled");
           return;
         }
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
