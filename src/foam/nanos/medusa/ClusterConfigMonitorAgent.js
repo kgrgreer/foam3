@@ -15,9 +15,8 @@ foam.CLASS({
   documentation: 'Attempt to contact Nodes and Mediators, record ping time and mark them ONLINE or OFFLINE.',
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
     'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -70,14 +69,6 @@ foam.CLASS({
       value: 5000
     },
     {
-      name: 'timer',
-      class: 'Object'
-    },
-    {
-      name: 'isRunning',
-      class: 'Boolean'
-    },
-    {
       name: 'lastAlarmsSince',
       class: 'Date',
       javaFactory: 'return new java.util.Date(1081157732);'
@@ -104,26 +95,8 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       getLogger().info("start", "interval", getTimerInterval());
-      schedule(getX());
-      `
-    },
-    {
-      name: 'schedule',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaCode: `
-      long interval = getTimerInterval();
-      // getLogger().info("schedule", "interval", interval);
-      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      Timer timer = new Timer(this.getClass().getSimpleName(), true);
-      setTimer(timer);
-      timer.schedule(
-        new AgencyTimerTask(x, support.getThreadPoolName(), this),
-        interval);
+      Timer timer = new Timer(this.getClass().getSimpleName()+"-"+getId(), true);
+      timer.scheduleAtFixedRate(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
     },
     {
@@ -135,29 +108,28 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig config = support.getConfig(x, getId());
       try {
         if ( ! config.getEnabled() ) {
           getLogger().debug("execute, disabled");
           return;
         }
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
-        PM pm = new PM(this.getClass().getSimpleName(), config.getId());
         try {
+          long startTime = System.currentTimeMillis();
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
-          pm.log(x);
           if ( cfg != null ) {
-            cfg.setPingTime(pm.getEndTime() - pm.getStartTime());
+            cfg.setPingTime(System.currentTimeMillis() - startTime);
             getDao().put_(x, cfg);
           } else {
             getLogger().warning("client,find", "null");
           }
         } catch ( Throwable t ) {
-          pm.error(x, t);
           if ( config.getStatus() != Status.OFFLINE ) {
-            getLogger().debug(t.getClass().getSimpleName(), t.getMessage());
+            getLogger().debug(t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
             config = (ClusterConfig) getDao().put_(x, cfg);
@@ -166,7 +138,7 @@ foam.CLASS({
           if ( cause == null ||
                ! ( cause instanceof java.io.IOException ) &&
                config.getStatus() != Status.OFFLINE ) {
-            getLogger().warning(t.getClass().getSimpleName(), t.getMessage(), t);
+            getLogger().warning(t.getMessage(), t);
           }
           return;
         }
@@ -194,10 +166,11 @@ foam.CLASS({
         if ( cause == null ||
              ! ( cause instanceof java.io.IOException ) &&
              config.getStatus() != Status.OFFLINE ) {
-          getLogger().debug(t.getClass().getSimpleName(), t.getMessage(), t);
+          getLogger().debug(t.getMessage(), t);
         }
+        pm.error(x, t);
       } finally {
-        schedule(x);
+        pm.log(x);
       }
       `
     }
