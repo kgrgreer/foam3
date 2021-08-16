@@ -12,8 +12,8 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'CLEAR_CACHE',
-      value: 'CLEAR_CACHE'
+      name: 'PURGE',
+      value: 'PURGE'
     }
   ],
 
@@ -47,7 +47,7 @@ foam.CLASS({
       }
 
       let self = this;
-      let key  = [sink, order, predicate].toString();
+      let key  = [order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
         //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ) + ' daoCount_: ' + self.daoCount_);
@@ -87,7 +87,7 @@ foam.CLASS({
     },
 
     function cmd_(x, obj) {
-      if ( obj === this.CLEAR_CACHE ) {
+      if ( obj === this.PURGE ) {
         this.cache = {};
         this.clearProperty('daoCount_');
       } else {
@@ -126,7 +126,7 @@ foam.CLASS({
       if ( hasMissingData ) {
         //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' daoCount: ' + this.daoCount_ + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
-        return this.delegate.select_(x, sink, startIdx, 1 + endIdx - startIdx, order, predicate).then( function (result) {
+        return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then( function (result) {
           // Update cache with missing data
           for ( let idx = 0; idx < result.array.length; idx++ ) {
             if ( ! self.cache[key][startIdx + idx] ) {
