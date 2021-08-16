@@ -25,7 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
   ],
@@ -82,6 +84,19 @@ foam.CLASS({
         String spid = sessionUser.getSpid();
         if ( SafetyUtil.isEmpty(spid) ) spid = "*";
         return auth.check(x, String.format("session.%s.%s", operation, spid));
+      `
+    },
+    {
+      name: 'expireSession',
+      javaCode: `
+      var sessionId = ((Session)x.get(Session.class)).getId();
+      var sessionDAO = (DAO) getX().get("sessionDAO");
+      var session = (Session) sessionDAO.find(sessionId);
+
+      if ( session == null ) throw new AuthenticationException("Current session not found");
+
+      session.setTtl(0);
+      sessionDAO.put(session);
       `
     }
   ]

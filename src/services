@@ -650,6 +650,7 @@ p({
   "name": "sugar",
   "lazy": true,
   "serve": false,
+  "authenticate": false,
   "parameters": true,
   "serviceScript": "return new foam.nanos.dig.SugarWebAgent()"
 })
@@ -835,7 +836,6 @@ p({
       .setOf(foam.core.Currency.getOwnClassInfo())
       .setName("currency")
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("currencies")
       .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
@@ -895,7 +895,6 @@ p({
       .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
       .setPm(true)
-      .setPipelinePm(true)
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("approvalRequests")

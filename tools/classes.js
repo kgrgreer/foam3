@@ -195,6 +195,7 @@ var classes = [
   'foam.dao.MergedResetSink',
   'foam.dao.Sink',
   'foam.dao.ArraySink',
+  'foam.dao.DAOCopySink',
   'foam.dao.AbstractSink',
   'foam.mlang.sink.AbstractUnarySink',
   'foam.dao.PredicatedSink',
@@ -892,6 +893,8 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+
+  'foam.nanos.crunch.document.Document',
 
   //authservice
   'foam.nanos.auth.CapabilityAuthService',

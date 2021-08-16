@@ -39,6 +39,8 @@ public class AuthWebAgent
   protected String permission_;
   protected SendErrorHandler sendErrorHandler_;
 
+  public AuthWebAgent() {}
+
   public AuthWebAgent(String permission, WebAgent delegate, SendErrorHandler sendErrorHandler) {
     setDelegate(delegate);
     permission_ = permission;
@@ -280,7 +282,7 @@ public class AuthWebAgent
     return null;
   }
 
-  private void sendError(X x, HttpServletResponse resp, int status, String message) throws java.io.IOException
+  protected void sendError(X x, HttpServletResponse resp, int status, String message) throws java.io.IOException
   {
     if ( sendErrorHandler_ == null ) {
       resp.sendError(status, message);

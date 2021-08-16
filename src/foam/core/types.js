@@ -560,8 +560,10 @@ foam.CLASS({
         return v;
       }
     ],
-    [ 'type', 'Class' ]
+    [ 'type', 'Class' ],
+    [ 'displayWidth', 80 ]
   ],
+
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);

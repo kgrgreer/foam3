@@ -21,11 +21,15 @@ This is the heart of Medusa.`,
   javaImports: [
     'foam.core.Agency',
     'foam.core.AgencyTimerTask',
+    'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.DOP',
     'foam.lib.json.JSONParser',
+    'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GT',
@@ -70,7 +74,7 @@ This is the heart of Medusa.`,
     {
       name: 'initialTimerDelay',
       class: 'Long',
-      value: 30000
+      value: 10000
     },
     {
       name: 'lastPromotedIndex',
@@ -250,12 +254,11 @@ This is the heart of Medusa.`,
       name: 'start',
       javaCode: `
       getLogger().info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
       timer.schedule(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        new AgencyTimerTask(getX(), this),
         getInitialTimerDelay());
-      `
+       `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
@@ -267,8 +270,6 @@ This is the heart of Medusa.`,
         }
       ],
       javaCode: `
-      String savedThreadName = Thread.currentThread().getName();
-      Thread.currentThread().setName(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
@@ -333,9 +334,14 @@ This is the heart of Medusa.`,
                     // NOTE: inside the alarm.getIsActive - replay request
                     // will run once per alarm. So to force replay again,
                     // clear the alarm.
-                    ReplayRequestCmd cmd = new ReplayRequestCmd();
+                    final ReplayRequestCmd cmd = new ReplayRequestCmd();
                     cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-                    ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                    Agency agency = (Agency) x.get(support.getThreadPoolName());
+                    agency.submit(x, new ContextAgent() {
+                      public void execute(X x) {
+                        ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                      }
+                    }, this.getClass().getSimpleName());
                   }
                 } else {
                   if ( alarm.getIsActive() ) {
@@ -376,7 +382,6 @@ This is the heart of Medusa.`,
         ((DAO) x.get("alarmDAO")).put(alarm);
       } finally {
         getLogger().warning("promoter", "exit");
-        Thread.currentThread().setName(savedThreadName);
       }
      `
     },
@@ -615,23 +620,31 @@ During replay gaps are treated differently; If the index after the gap is ready 
               // test if entry depends on any indexes in our skip range.
               long skipRangeLowerBound = index;
               long skipRangeHigherBound = minIndex > 0 ? minIndex-1 : skipRangeLowerBound;
-               if ( ( entry.getIndex1() < skipRangeLowerBound || entry.getIndex1() > skipRangeHigherBound ) &&
+              if ( ( entry.getIndex1() < skipRangeLowerBound || entry.getIndex1() > skipRangeHigherBound ) &&
                     ( entry.getIndex2() < skipRangeLowerBound || entry.getIndex2() > skipRangeHigherBound ) ) {
                 // Set global index to next non promoted entry index -1,
                 // the promoter will look for the entry after the global index.
                 getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
                 replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
-             }
+              }
+              return;
+            }
+            if ( entry.getIndex() == replaying.getIndex() + 1 ) {
               return;
             }
 
             getLogger().warning("gap", "found", index);
-            Alarm alarm = new Alarm();
+            String alarmName = "Medusa Gap";
+            final Alarm alarm;
+            Alarm a = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmName), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
+            if ( a == null ) {
+              alarm = new Alarm(alarmName);
+            } else {
+              alarm = (Alarm) a.fclone();
+            }
             alarm.setClusterable(false);
-            alarm.setName("Medusa Gap");
             alarm.setIsActive(true);
             alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
-            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
             config.setErrorMessage("gap detected, investigating...");
             ((DAO) x.get("clusterConfigDAO")).put(config);
             // Test for gap index dependencies - of course can only look
@@ -662,7 +675,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
               replaying.updateIndex(x, index);
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
-              ((DAO) x.get("alarmDAO")).put(alarm);
               config.setErrorMessage("");
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
@@ -670,7 +682,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
                 alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
                 alarm.setSeverity(foam.log.LogLevel.ERROR);
-                ((DAO) x.get("alarmDAO")).put(alarm);
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
                 // throw new MedusaException("gap with dependencies");
@@ -678,6 +689,8 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
               }
             }
+            // TODO: do not put, causing deadlock
+            // ((DAO) x.get("alarmDAO")).put(alarm);
           }
         }
       } catch (Throwable t) {

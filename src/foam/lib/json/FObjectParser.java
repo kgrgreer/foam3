@@ -51,6 +51,8 @@ public class FObjectParser
             new Optional(Literal.create(",")));
 
         public PStream parse(PStream ps, ParserContext x) {
+          PStream originalPS = ps;
+
           try {
             PStream ps1 = ps.apply(delegate, x);
             Class   c   = ( ps1 != null ) ?
@@ -58,8 +60,7 @@ public class FObjectParser
               defaultClass ;
 
             // return null if class not specified in JSON and no default class available
-            if ( c == null ||
-                 c == foam.core.FObject.class ) {
+            if ( c == null || c == foam.core.FObject.class ) {
               return null;
             }
 
@@ -74,7 +75,7 @@ public class FObjectParser
             } else {
               Object obj = ((X) x.get("X")).create(c);
               subx.set("obj", obj);
-              subParser = ModelParserFactory.getInstance(c);
+              subParser = ModelParserFactory.getInstance(obj.getClass());
             }
 
             ps = ps.apply(subParser, subx);
@@ -85,8 +86,12 @@ public class FObjectParser
 
             return null;
           } catch (ClassNotFoundException e) {
-            return UnknownFObjectParser.instance().parse(ps,x);
-          } catch (Throwable t) {
+            // Will use UnknownFObjectParser instead
+            System.err.println("Unknown JSON class: " + e);
+
+            return UnknownFObjectParser.instance().parse(originalPS, x);
+          }
+          catch (Throwable t) {
             t.printStackTrace();
             return null;
           }
