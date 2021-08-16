@@ -17,8 +17,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
@@ -93,12 +92,10 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      getLogger().info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
-      timer.scheduleAtFixedRate(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+      timer.schedule(
+        new ContextAgentTimerTask(getX(), this),
         getInitialTimerDelay(),
         getTimerInterval());
       `
