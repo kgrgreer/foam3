@@ -133,7 +133,7 @@ foam.CLASS({
 
       this.addClass()
         .start(this.Cols)
-          .start(self.VIEW_FILE, { label: label, buttonStyle: 'UNSTYLED' }).addClass(this.myClass('fileButton')).end()
+          .start(self.File.DOWNLOAD, { label: label, buttonStyle: 'UNSTYLED' }).addClass(this.myClass('fileButton')).end()
           .start(this.REMOVE_FILE_X, {
             label: '',
             buttonStyle: foam.u2.ButtonStyle.TERTIARY,
@@ -151,18 +151,6 @@ foam.CLASS({
       icon: 'images/cancel-x.png',
       code: function(X) {
         X.removeFile(X.fileCard.index);
-      }
-    },
-    {
-      name: 'viewFile',
-      code: function() {
-        var blob = this.data;
-        if ( this.BlobBlob.isInstance(blob) ) {
-          window.open(URL.createObjectURL(blob.blob));
-        } else {
-          var url = this.address;
-          window.open(url);
-        }
       }
     }
   ],
