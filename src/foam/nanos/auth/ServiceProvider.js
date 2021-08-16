@@ -55,7 +55,10 @@ foam.CLASS({
     },
     {
       name: 'inherentPermissions',
-      javaGetter: 'return new String[] { "serviceprovider.read." + getId() };',
+      javaGetter: `return new String[] {
+        "serviceprovider.read." + getId(),
+        "serviceproviderdao.read." + getId()
+      };`,
       factory: function() {
         return [
           'serviceprovider.read.' + this.id,
