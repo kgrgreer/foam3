@@ -280,7 +280,7 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
 
-        if ( ! auth.check(x, "file.remove.*") ) {
+        if ( ! auth.check(x, "file.remove.id") ) {
           throw new AuthorizationException();
         }
       `
