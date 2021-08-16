@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.dao.*',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.StdoutLogger',
+    'foam.nanos.logger.StdoutLogger'
   ],
 
   axioms: [
