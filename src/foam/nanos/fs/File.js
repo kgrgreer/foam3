@@ -34,6 +34,8 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.blob.Blob',
     'foam.blob.InputStreamBlob',
+    'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.LifecycleState',
@@ -42,7 +44,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.io.*',
-    'java.util.Base64'
+    'java.util.Base64',
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -279,8 +283,15 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
+        Boolean hasPermission = auth.check(x, "file.remove." + getId());
 
-        if ( ! auth.check(x, "file.remove.id") ) {
+        // find a file owner
+        // creating a file uses businessID for the file owner
+        DAO businessDAO = (DAO) x.get("businessDAO");
+        Business fileOwner = (Business) businessDAO
+          .find(EQ(Business.ID, getOwner()));
+
+        if ( ! hasPermission || fileOwner == null ) {
           throw new AuthorizationException();
         }
       `
