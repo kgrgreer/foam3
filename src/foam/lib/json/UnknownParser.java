@@ -21,8 +21,9 @@ public class UnknownParser
         new DoubleParser(),
         new LongParser(),
         new UnknownStringParser(),
-        new UnknownReferenceParser());
-      
+        UnknownReferenceParser.instance(),
+        UnknownObjectParser.instance());
+
       public PStream parse(PStream ps, ParserContext x) {
         PStream ps1 = ps.apply(delegate, x);
 
