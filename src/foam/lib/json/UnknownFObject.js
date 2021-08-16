@@ -38,7 +38,7 @@ foam.CLASS({
           javaType: 'foam.lib.formatter.JSONFObjectFormatter'
         }
       ],
-      javaCode: 'System.err.println("***** UNKNOWNFOBJECT **** " + getJson());formatter.outputJson(getJson());'
+      javaCode: 'formatter.outputJson(getJson());'
     }
   ]
 });
