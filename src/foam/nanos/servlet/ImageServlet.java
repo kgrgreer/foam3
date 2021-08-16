@@ -62,6 +62,7 @@ public class ImageServlet
         try ( BufferedInputStream is = new BufferedInputStream(new FileInputStream(src)) ) {
           resp.setContentType(!SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
           resp.setHeader("Content-Disposition", "filename=\"" + StringEscapeUtils.escapeHtml4(src.getName()) + "\"");
+          resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
           resp.setContentLengthLong(src.length());
 
           IOUtils.copy(is, resp.getOutputStream());
