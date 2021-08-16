@@ -922,7 +922,7 @@ model from which to test ServiceProvider ID (spid)`,
         }
       }
 
-      if (this.queryCache) {
+      if ( this.queryCache ) {
         //* Query cache ****
         dao = this.QueryCachingDAODecorator.create({
           delegate: dao

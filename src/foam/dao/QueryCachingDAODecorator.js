@@ -46,23 +46,23 @@ foam.CLASS({
         return this.SUPER(x, sink, skip, limit, order, predicate);
       }
 
-      var self = this;
-      var key  = [sink, order, predicate].toString();
+      let self = this;
+      let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ) + ' daoCount_: ' + self.daoCount_);
+        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ) + ' daoCount_: ' + self.daoCount_);
 
         // Validate we have a fresh dao count
-        self.refreshDaoCount_(self).then(function() {
+        self.refreshDaoCount_().then( function() {
 
-          var requestStartIdx = typeof skip !== 'undefined' ? skip : 0;
-          var requestEndIdx = typeof limit !== 'undefined' && skip + limit < self.daoCount_ ? skip + limit : self.daoCount_;
+          let requestStartIdx = typeof skip !== 'undefined' ? skip : 0;
+          let requestEndIdx = typeof limit !== 'undefined' && skip + limit < self.daoCount_ ? skip + limit : self.daoCount_;
 
           // Ensure we have cache for request
-          self.fillCache_(self, key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(function() {
+          self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( function() {
 
             // Return data from cache
-            for (let idx = requestStartIdx; idx < requestEndIdx; idx++) {
+            for ( let idx = requestStartIdx; idx < requestEndIdx; idx++ ) {
               sink.put(self.cache[key][idx]);
             }
 
@@ -87,7 +87,7 @@ foam.CLASS({
     },
 
     function cmd_(x, obj) {
-      if ( obj == this.CLEAR_CACHE ) {
+      if ( obj === this.CLEAR_CACHE ) {
         this.cache = {};
         this.clearProperty('daoCount_');
       } else {
@@ -95,16 +95,16 @@ foam.CLASS({
       }
     },
 
-    function fillCache_(self, key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
+    function fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
       // Pre-check cache for elements
       let startIdx = -1;
       let endIdx = -1;
       let hasMissingData = false;
 
-      if (self.cache[key]) {
+      if ( this.cache[key] ) {
         // Cycle through exising cached elements to verify all requested are present
         for ( let idx = requestStartIdx; idx < requestEndIdx; idx++ ) {
-          if ( ! self.cache[key][idx] ) {
+          if ( ! this.cache[key][idx] ) {
             if ( ! hasMissingData ) {
               // Found start of missing data withing requested block
               hasMissingData = true;
@@ -120,18 +120,16 @@ foam.CLASS({
         hasMissingData = true;
         startIdx = requestStartIdx;
         endIdx = requestEndIdx;
-        self.cache[key] = [];
+        this.cache[key] = [];
       }
 
-      if (hasMissingData) {
-        console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + 'daoCount: ' + self.daoCount_ + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
-        return this.delegate.select_(x, sink, startIdx, 1 + endIdx - startIdx, order, predicate).then(function (result) {
-          // Point to the appropriate array source
-//          let array = foam.mlang.sink.Projection.isInstance(sink) ? result.projectionWithClass : result.array;
-
+      if ( hasMissingData ) {
+        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' daoCount: ' + this.daoCount_ + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        let self = this;
+        return this.delegate.select_(x, sink, startIdx, 1 + endIdx - startIdx, order, predicate).then( function (result) {
           // Update cache with missing data
-          for (let idx = 0; idx < result.array.length; idx++) {
-            if ( ! self.cache[key][startIdx + idx]) {
+          for ( let idx = 0; idx < result.array.length; idx++ ) {
+            if ( ! self.cache[key][startIdx + idx] ) {
               self.cache[key][startIdx + idx] = result.array[idx];
             }
           }
@@ -141,10 +139,11 @@ foam.CLASS({
       return Promise.resolve();
     },
 
-    function refreshDaoCount_(self) {
+    function refreshDaoCount_() {
       // If we have not retrieved the dao count previously do it now
-      if ( ! self.hasOwnProperty('daoCount_') ) {
-        return self.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
+      let self = this;
+      if ( ! this.hasOwnProperty('daoCount_') ) {
+        return this.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
           self.daoCount_ = count.array.length;
         });
       }
