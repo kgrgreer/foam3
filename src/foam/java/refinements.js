@@ -1683,7 +1683,7 @@ foam.CLASS({
       expression: function(of) {
         // TODO: add caching
         return 'new foam.lib.parse.Alt(foam.lib.json.PropertyReferenceParser.instance(), foam.lib.json.FObjectParser.create('
-          + (of ? of.id + '.class' : '') + '), foam.lib.json.UnknownFObjectParser.instance())';
+          + (of ? of.id + '.class' : '') + ')/*, foam.lib.json.UnknownFObjectParser.instance()*/)';
       }
     },
     {
