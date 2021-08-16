@@ -86,11 +86,9 @@ public class FObjectParser
 
             return null;
           } catch (ClassNotFoundException e) {
-            // Will use UnknownFObjectParser instead
-            System.err.println("Unknown JSON class: " + e);
-            return UnknownFObjectParser.instance().parse(originalPS, x);
-          }
-          catch (Throwable t) {
+//            System.err.println("********************* " + e);
+            throw new TypeNotPresentException("class", e);
+          } catch (Throwable t) {
             t.printStackTrace();
             return null;
           }
@@ -103,4 +101,13 @@ public class FObjectParser
   public FObjectParser() {
     this(null);
   }
+
+  public PStream parse(PStream ps, ParserContext x) {
+    try {
+      return getDelegate().parse(ps, x);
+    } catch (TypeNotPresentException e) {
+      return UnknownFObjectParser.instance().parse(ps, x);
+    }
+  }
+
 }
