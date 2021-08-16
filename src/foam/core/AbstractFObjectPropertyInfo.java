@@ -140,6 +140,8 @@ public abstract class AbstractFObjectPropertyInfo
 
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     Object propObj = get_(obj);
+    // Protects against mlang's which have arg1 as an FObjectProperty but store references
+    // to PropertyInfo's, which aren't FObjects.
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
       formatter.output((FObject) propObj, of(), this);
     } else {

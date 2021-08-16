@@ -143,7 +143,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.NotificationSetting.getOwnClassInfo())
       .setPm(true)
-      .setPipelinePm(true)
       .setAuthorize(true)
       .setInnerDAO((foam.dao.DAO) x.get("localNotificationSettingDAO"))
       .setEnableInterfaceDecorators(false)
