@@ -111,7 +111,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' }
+    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   imports: [
@@ -225,16 +226,17 @@ foam.CLASS({
       label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
-      isAvailable: async function() {
+      isAvailable: async function(config) {
+        if ( ! config.exportPredicate.f() ) return false;
         var records = await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
       code: function() {
         var adao;
-        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects,{}) ) {
+        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
           adao = foam.dao.ArrayDAO.create({ of: this.data.of });
-          foam.Object.forEach(summaryView.selectedObjects,function(y){adao.put(y)})
-       }
+          foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
+        }
         this.add(this.Popup.create().tag({
           class: 'foam.u2.ExportModal',
           exportData: adao ? adao : this.predicatedDAO$proxy,
@@ -247,6 +249,10 @@ foam.CLASS({
       label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
+      isAvailable: function(config) {
+        if ( ! config.refreshPredicate.f() ) return false;
+        return true;
+      },
       code: function(X) {
         this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
         this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
@@ -259,6 +265,10 @@ foam.CLASS({
       icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
+      isAvailable: function(config) {
+        if ( ! config.importPredicate.f() ) return false;
+        return true;
+      },
       code: function() {
         this.add(this.Popup.create().tag(this.importModal));
       }
@@ -368,6 +378,21 @@ foam.CLASS({
                         .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('refresh'))
                         .end()
+                        .callIf( self.config.DAOActions.length, function() {
+                          if ( self.config.DAOActions.length > 2 ) {
+                            self.start(self.OverlayActionListView, {
+                              label: this.ACTIONS,
+                              data: self.config.DAOActions,
+                              obj: self
+                            }).addClass(self.myClass('buttons')).end();
+                          } else {
+                            var actions = this.E().addClass(self.myClass('buttons'));
+                            for ( action of self.config.DAOActions ) {
+                              actions.tag(action);
+                            }
+                            this.add(actions);
+                          }
+                        })
                       .endContext()
                     .end()
                   .end()
