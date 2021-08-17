@@ -57,8 +57,8 @@ foam.CLASS({
           // that something occurred on the backend to destroy this user's
           // session. Therefore we reset the client state and ask them to log
           // in again.
-          var promptlogin = await this.client.auth.check(null, 'auth.promptlogin');
-          var authResult =  await this.client.auth.check(null, '*');
+          var promptlogin = await this.auth.check(null, 'auth.promptlogin');
+          var authResult =  await this.auth.check(null, '*');
 
           if ( this.loginSuccess && ( ! promptlogin || authResult ) ) {
             if ( this.ctrl ) this.ctrl.remove();

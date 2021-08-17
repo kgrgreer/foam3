@@ -101,7 +101,6 @@ public class CachingAuthService
       DAO       userDAO   = (DAO) x.get("localUserDAO");
       DAO       groupDAO  = (DAO) x.get("localGroupDAO");
       DAO       groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
-      DAO       sessionDAO = (DAO) x.get("sessionDAO");
       User      agent     = subject.getRealUser();
       Predicate predicate = EQ(User.ID, user.getId());
 
@@ -112,7 +111,6 @@ public class CachingAuthService
       groupDAO.listen(purgeSink, TRUE);
       userDAO.listen(purgeSink, predicate);
       groupPermissionJunctionDAO.listen(purgeSink, TRUE);
-      sessionDAO.listen(purgeSink, TRUE);
 
       String[] extraDAOsToListenTo = (String[]) x.get("extraDAOsToListenTo");
 

@@ -164,11 +164,13 @@ foam.CLASS({
         } catch (foam.core.ValidationException e) {
           throw new AccessDeniedException(e);
         }
+
         Session session = x.get(Session.class);
         // Re use the session context if the current session context's user id matches the id of the user trying to log in
         if ( session.getUserId() == user.getId() ) {
           return user;
         }
+        CachingAuthService.purgeCache(x);
         // Freeze user
         user = (User) user.fclone();
         user.freeze();
@@ -195,9 +197,6 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        // Log out anonymous user
-        logout(x);
-
         User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);
         if ( user == null ) {
           throw new UserNotFoundException();
