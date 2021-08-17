@@ -714,7 +714,6 @@ p({
   """
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setGuid(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
