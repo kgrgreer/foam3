@@ -123,8 +123,8 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'ruleGroups',
-      javaType: 'Map<GroupBy, List>',
-      javaFactory: 'return new java.util.HashMap<GroupBy, List>();'
+      javaType: 'Map<Predicate, List<RuleGroup>>',
+      javaFactory: 'return new java.util.HashMap<Predicate, List<RuleGroup>>();'
     }
   ],
 
@@ -132,11 +132,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-var rulesList = getRulesList();
 if ( oldObj == null ) {
-  applyRules(x, obj, oldObj, rulesList.get(getCreateBefore()));
+  applyRules(x, obj, oldObj, getCreateBefore());
 } else {
-  applyRules(x, obj, oldObj, rulesList.get(getUpdateBefore()));
+  applyRules(x, obj, oldObj, getUpdateBefore());
 }
 
 // Clone and pass unfrozen object to 'sync' 'after' rules so, similar
@@ -148,9 +147,9 @@ if ( ret != null ) {
   ret = ret.fclone();
   FObject before = ret.fclone();
   if ( oldObj == null ) {
-    applyRules(x, ret, oldObj, rulesList.get(getCreateAfter()));
+    applyRules(x, ret, oldObj, getCreateAfter());
   } else {
-    applyRules(x, ret, oldObj, rulesList.get(getUpdateAfter()));
+    applyRules(x, ret, oldObj, getUpdateAfter());
   }
 
   // Test for changes during 'after' rule
@@ -163,9 +162,9 @@ return ret;`
     {
       name: 'remove_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-applyRules(x, obj, oldObj, getRulesList().get(getRemoveBefore()));
+applyRules(x, obj, oldObj, getRemoveBefore());
 FObject ret =  getDelegate().remove_(x, obj);
-applyRules(x, ret, oldObj, getRulesList().get(getRemoveAfter()));
+applyRules(x, ret, oldObj, getRemoveAfter());
 return ret;`
     },
     {
@@ -184,16 +183,13 @@ return ret;`
           type: 'foam.core.FObject'
         },
         {
-          name: 'sink',
-          type: 'foam.mlang.sink.GroupBy'
+          name: 'pred',
+          type: 'Predicate'
         }
       ],
       javaCode: `var logger = (Logger) x.get("logger");
-List<RuleGroup> ruleGroups = getRuleGroups().get(sink);
-if ( ruleGroups == null ) {
-  return;
-}
-
+var ruleGroups = getRuleGroups().get(pred);
+var sink = getRulesList().get(pred);
 for ( var rg : ruleGroups ) {
   try {
     if ( rg.f(x, obj, oldObj) ) {
@@ -305,9 +301,7 @@ List<RuleGroup> ruleGroups = ((ArraySink)
     .where(IN(RuleGroup.ID, groupBy.getGroupKeys()))
     .select(new ArraySink())
   ).getArray();
-if ( ! ruleGroups.isEmpty() ) {
-  getRuleGroups().put(groupBy, ruleGroups);
-}`
+getRuleGroups().put(predicate, ruleGroups);`
     }
   ],
 
