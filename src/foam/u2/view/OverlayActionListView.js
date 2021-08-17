@@ -62,7 +62,7 @@ foam.CLASS({
       value: '/images/dropdown-icon.svg'
     },
     // Used for keyboard navigation
-    'firstEl_', 'lastEl_', 
+    'firstEl_', 'lastEl_',
     [ 'isMouseClick_', true ]
   ],
 
@@ -123,10 +123,23 @@ foam.CLASS({
 
     function addContent() {
       this.SUPER();
-      this.showDropdownIcon && this.start().addClass(this.myClass('dropdownIcon')).add(this.theme ?
-        this.HTMLView.create({ data: this.theme.glyphs.dropdown.expandSVG() }):
-        this.start('img').attr('src', this.dropdownIcon$).end()
-      ).end();
+      var self = this;
+      if ( this.showDropdownIcon ) {
+        this.add(this.shown$.map(function(shown) {
+          var e = self.E();
+          if ( shown ) {
+            e.start().addClass(self.myClass('dropdownIcon')).callIfElse(self.theme,
+              function() {
+                this.add(self.HTMLView.create({ data: self.theme.glyphs.dropdown.expandSVG() }));
+              },
+              function() {
+                this.start('img').attr('src', this.dropdownIcon$).end();
+              }
+            ).end();
+          }
+          return e;
+        }));
+      }
     },
 
     async function initializeOverlay() {
@@ -171,7 +184,7 @@ foam.CLASS({
       .endContext();
 
       // Moves focus to the modal when it is open and keeps it in the modal till it is closed
-      
+
       this.overlay_.on('keydown', this.onKeyDown);
       var actionElArray_ = this.overlay_.dropdownE_.childNodes;
       this.firstEl_ = actionElArray_[0].childNodes[0];
