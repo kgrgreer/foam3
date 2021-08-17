@@ -85,7 +85,7 @@ foam.CLASS({
       type: 'void',
       args: [ 'PM pm' ],
       javaCode: `
-      if ( pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
+      if ( this.getCount() == 0 || pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
       if ( pm.getTime() > getMaxTime() ) setMaxTime(pm.getTime());
 
       setCount(getCount() + 1);
