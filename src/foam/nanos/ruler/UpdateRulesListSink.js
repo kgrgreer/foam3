@@ -33,11 +33,14 @@ foam.CLASS({
     {
       name: 'put',
       javaCode: `
+        // REVIEW: When rule.daoKey changes, the listener will skip the update.
         Rule rule = (Rule) obj;
         if ( ! rule.getDaoKey().equals(dao_.getDaoKey()) ) {
           return;
         }
 
+        // REVIEW: When rule.ruleGroup/operation/after properties change, would
+        // also need to reload the rules list for the previous group.
         var rulesList = dao_.getRulesList();
         String ruleGroup = rule.getRuleGroup();
         for ( Object key : rulesList.keySet() ) {
