@@ -397,7 +397,7 @@
                 data: null,
                 config: this.config,
                 idOfRecord: id
-              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail }) 
+              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
             }));
           });
         }
@@ -526,7 +526,7 @@
       name: 'prevPage',
       toolTip: 'Previous Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         if ( this.displayedRowCount_ ) {
@@ -539,7 +539,7 @@
       name: 'firstPage',
       toolTip: 'First Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         this.scrollTable(0);

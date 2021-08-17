@@ -61,7 +61,7 @@ foam.CLASS({
             public void execute(X y) {
               Logger logger = (Logger) y.get("logger");
               if ( logger == null ) {
-                logger = new StdoutLogger();
+                logger = StdoutLogger.instance();
               }
               logger = new PrefixLogger(new Object[] {
                 this.getClass().getSimpleName()
@@ -71,9 +71,9 @@ foam.CLASS({
               try {
                 s.setStatus(ScriptStatus.RUNNING);
                 s = (Script) getDelegate().put_(x, s).fclone();
-                logger.debug("agency", s.getId(), "start");
+                // logger.debug("agency", s.getId(), "start");
                 s.runScript(x);
-                logger.debug("agency", s.getId(), "end");
+                // logger.debug("agency", s.getId(), "end");
                 s.setStatus(ScriptStatus.UNSCHEDULED);
                 getDelegate().put_(x, s);
               } catch(Throwable t) {

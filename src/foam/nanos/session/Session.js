@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.pm.PM',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
     'foam.nanos.theme.Themes',
@@ -104,7 +105,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastUsed',
       visibility: 'RO',
-      storageTransient: true
+      storageTransient: true,
+      clusterTransient: true
     },
     {
       class: 'Duration',
@@ -128,7 +130,8 @@ foam.CLASS({
       class: 'Long',
       name: 'uses',
       tableWidth: 70,
-      storageTransient: true
+      storageTransient: true,
+      clusterTransient: true
     },
     {
       class: 'String',
@@ -272,6 +275,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
+      PM pm = PM.create(x, "Session","applyTo");
+      try {
         // We null out the security-relevant entries in the context since we
         // don't want whatever was there before to leak through, especially
         // since the system context (which has full admin privileges) is often
@@ -300,7 +305,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
           rtn = rtn.put("appConfig", appConfig);
           rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
+          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
           return rtn;
         }
 
@@ -352,9 +357,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
         return rtn;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {

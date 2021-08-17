@@ -8,6 +8,9 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceArrayView',
   extends: 'foam.u2.view.ArrayView',
+  imports: [
+    'foam.mlang.sink.Count'
+  ],
   properties: [
     {
       class: 'String',
@@ -25,8 +28,20 @@ foam.CLASS({
       expression: function(dao) {
         return {
           class: 'foam.u2.view.ReferenceView',
-          dao: dao
+          dao: dao,
+          defaultValue: '',
+          disabledData$: this.disabledData_$
         };
+      }
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      if ( ! this.allowDuplicates) {
+        // Get array size for limiting assignment of array items
+        this.dao.select(this.Count.create()).then(c => this.arrayLength_ = c.value);
       }
     }
   ]

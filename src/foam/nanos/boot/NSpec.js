@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl'
+    'ctrl',
+    'pushMenu'
   ],
 
   javaImports: [
@@ -259,7 +260,7 @@ foam.CLASS({
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service." + getName()) ) {
-          throw new AuthorizationException("You do not have permission to access the service named "+getName());
+          throw new AuthorizationException("You do not have permission to access the service named " + getName());
         }
       `
     }
@@ -278,7 +279,7 @@ foam.CLASS({
       code: function() {
         var service = this.__context__[this.name];
         if ( foam.dao.DAO.isInstance(service) ) {
-          this.ctrl.memento.value = 'admin.data' + foam.nanos.controller.Memento.SEPARATOR + this.name;
+          this.pushMenu(`admin.data${foam.nanos.controller.Memento.SEPARATOR}${this.name}`);
         }
       }
     }

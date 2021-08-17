@@ -24,6 +24,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'isoCode'
+    },
+    {
+      class: 'String',
       name: 'name'
     },
     {
@@ -36,25 +40,5 @@ foam.CLASS({
       class: 'StringArray',
       name: 'alternativeNames'
     }
-  ],
-
-  methods: [
-    {
-      name: 'getRegionCode',
-      type: 'String',
-      code: function() {
-        if ( this.code && this.code.length > 3 ) {
-          return this.code.substring(3, this.code.length);
-        }
-        return '';
-      },
-      javaCode: `
-        String c = getCode();
-        if ( null != c && c.length() > 3 ) {
-          return c.substring(3, c.length());
-        }
-        return "";
-      `
-    }
-  ],
+  ]
 });

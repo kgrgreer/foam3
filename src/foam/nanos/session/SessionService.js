@@ -36,6 +36,13 @@ foam.INTERFACE({
         { name: 'agentId', type: 'Long' },
         { name: 'ttl',    type: 'Long' }
       ]
+    },
+    {
+      name: 'expireSession',
+      documentation: 'Expire your own session',
+      args: [
+        { name: 'x',      type: 'Context' }
+      ]
     }
   ],
 });

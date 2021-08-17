@@ -71,6 +71,10 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
+      "browseTitle":"Performance",
+      "searchMode":2,
+      "summaryView":{"class":"foam.nanos.pm.PMTableView"},
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
       "daoKey":"pmInfoDAO",
       "summaryView":{
         "class":"foam.nanos.pm.PMTableView"
@@ -258,7 +262,7 @@ p({"class":"foam.flow.DocumentMenu","id":"admin.flowdoc","label":"FLOW Documents
 
 // settings
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-security","label":"Log Out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":110,"parent":"settings"})
+p({"class":"foam.nanos.menu.Menu","id":"sign-out","label":"Sign Out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":10000,"parent":"settings"})
 
 // hidden
 p({"class":"foam.nanos.menu.Menu","id":"dashboard-demo","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.dashboard.Demo"}},"parent":"hidden"})

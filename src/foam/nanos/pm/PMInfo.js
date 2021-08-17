@@ -20,6 +20,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'key',
+      aliases: [ 'class' ],
       label: 'Class',
       tableWidth: 170,
       tableCellFormatter: function(cls) {
@@ -30,7 +31,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      tableWidth: 320
+      tableWidth: 420
     },
     {
       class: 'Int',
@@ -84,7 +85,7 @@ foam.CLASS({
       type: 'void',
       args: [ 'PM pm' ],
       javaCode: `
-      if ( pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
+      if ( this.getCount() == 0 || pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
       if ( pm.getTime() > getMaxTime() ) setMaxTime(pm.getTime());
 
       setCount(getCount() + 1);

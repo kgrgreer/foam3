@@ -76,7 +76,7 @@ foam.CLASS({
 
     ^general-field {
       margin: 0;
-      flex: 0 0 40%;
+      flex: 0 0 60%;
     }
 
     ^general-field input {

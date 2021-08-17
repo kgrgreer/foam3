@@ -113,9 +113,15 @@ foam.CLASS({
       }));
       availabilitySlots.push(propVisSlot);
 
-      return foam.core.ArraySlot.create({slots: availabilitySlots}).map(arr => {
-        return arr.every(b => b);
+      var simpleSlot = foam.core.SimpleSlot.create();
+      var arrSlot = foam.core.ArraySlot.create({slots: availabilitySlots}).map(arr => {
+        var ret =  arr.every(b => b);
+        if ( ret != simpleSlot.get() ) simpleSlot.set(ret); 
+        return ret;
       });
+      arrSlot.get();
+      arrSlot.sub(function(){ arrSlot.get(); });
+      return simpleSlot;
     },
 
     function installInClass(cls) {

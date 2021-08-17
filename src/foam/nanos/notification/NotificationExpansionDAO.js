@@ -53,7 +53,7 @@ foam.CLASS({
                                             EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
                 ));
           Count count = (Count) receivers.select(new Count());
-          Logger logger = (Logger) x.get("logger");
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           if ( count.getValue() == 0 ) {
             logger.warning("Notification " + notif.getNotificationType() +
               " will not be saved to notificationDAO because no users exist in the group " + notif.getGroupId());
@@ -68,8 +68,10 @@ foam.CLASS({
         }
 
         // Only put objects sent to a specific user
-        if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() ) {
-          Logger logger = (Logger) x.get("logger");
+        if ( SafetyUtil.isEmpty(notif.getGroupId()) &&
+             ! notif.getBroadcasted() &&
+             notif.getUserId() > 0 ) {
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           Subject subject = (Subject) x.get("subject");
           if ( subject != null ) {
             User user = subject.getUser();
@@ -78,12 +80,11 @@ foam.CLASS({
               try {
                 return getDelegate().put_(x, notif);
               } catch ( Throwable t ) {
-                logger.error(this.getClass().getSimpleName(), t);
+                logger.error(t);
               }
             }
           }
-          logger.warning("Notification " + notif.getNotificationType() +
-            " will not be saved to notificationDAO because no spid can be determined");
+          logger.warning(notif.getNotificationType(), "Spid not found", "Notification not saved");
         }
 
         return obj;

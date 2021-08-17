@@ -195,6 +195,7 @@ var classes = [
   'foam.dao.MergedResetSink',
   'foam.dao.Sink',
   'foam.dao.ArraySink',
+  'foam.dao.DAOCopySink',
   'foam.dao.AbstractSink',
   'foam.mlang.sink.AbstractUnarySink',
   'foam.dao.PredicatedSink',
@@ -466,6 +467,7 @@ var classes = [
   'foam.nanos.medusa.ReplayDetailsCmd',
   'foam.nanos.medusa.ReplayMediatorDAO',
   'foam.nanos.medusa.ReplayNodeDAO',
+  'foam.nanos.medusa.ReplayRequestCmd',
   'foam.nanos.medusa.ReplayingDAO',
   'foam.nanos.medusa.ReplayingInfo',
   'foam.nanos.medusa.ReplayingInfoDAO',
@@ -477,8 +479,6 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
-  'foam.box.BackoffBox',
 
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
@@ -743,7 +743,9 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
+  'foam.nanos.approval.PopulateApprovalRequestSummariesDAO',
   'foam.nanos.approval.RestrictedApprovableDAO',
+  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
@@ -751,7 +753,6 @@ var classes = [
   'foam.nanos.geocode.GoogleMapsGeocodingDAO',
   'foam.dao.history.HistoryDAO',
   'foam.nanos.script.ScriptRunnerDAO',
-  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.dao.UnreliableDAO',
   'foam.nanos.auth.UserPasswordHashingDAO',
   'foam.dao.ValidatingDAO',
@@ -890,6 +891,8 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+
+  'foam.nanos.crunch.document.Document',
 
   //authservice
   'foam.nanos.auth.CapabilityAuthService',

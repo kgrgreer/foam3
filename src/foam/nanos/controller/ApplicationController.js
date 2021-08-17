@@ -394,6 +394,19 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
+        if ( self.memento.head ) {
+          var menu = await self.__subContext__.menuDAO.find(self.memento.head);
+          // explicitly check that the menu is unauthenticated
+          // since if there is a user session on refresh, this would also
+          // find authenticated menus to try to push before fetching subject
+          if ( menu && menu.authenticate === false ) {
+            self.pushMenu(menu);
+            self.languageInstalled.resolve();
+            return;
+          }
+        }
+
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);

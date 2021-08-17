@@ -12,12 +12,12 @@ import foam.nanos.auth.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
-
 import java.lang.Exception;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class RuleEngine extends ContextAwareSupport {
   private DAO                      delegate_         = null;
@@ -58,15 +58,16 @@ public class RuleEngine extends ContextAwareSupport {
    */
   public void execute(List<Rule> rules, FObject obj, FObject oldObj) {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
-    ContextualizingAgency agency = new ContextualizingAgency(compoundAgency, userX_, getX());
-    Logger logger = (Logger) getX().get("logger");
-    for (Rule rule : rules) {
+    ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
+    Logger                logger         = (Logger) getX().get("logger");
+
+    for ( Rule rule : rules ) {
       try {
         if ( stops_.get() ) break;
         if ( ! isRuleActive(rule, rule.getAction()) ) continue;
-        if ( ! checkPermission(rule, obj) ) continue;
-        if ( ! rule.f(userX_, obj, oldObj) ) continue;
-        
+        if ( ! checkPermission(rule, obj)           ) continue;
+        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+
         PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
         applyRule(rule, obj, oldObj, agency);
         pm.log(x_);
@@ -77,6 +78,7 @@ public class RuleEngine extends ContextAwareSupport {
         throw e;
       }
     }
+
     try {
       compoundAgency.execute(x_);
     } catch (Exception e) {
@@ -84,11 +86,8 @@ public class RuleEngine extends ContextAwareSupport {
       // TODO: use foam.core.Exception when interface properties
       //       are supported in Java generation
       if ( e instanceof foam.core.ExceptionInterface ) {
-        RuntimeException clientE = (RuntimeException)
-          ((ExceptionInterface) e).getClientRethrowException();
-        if ( clientE != null ) {
-          throw clientE;
-        }
+        RuntimeException clientE = (RuntimeException) ((ExceptionInterface) e).getClientRethrowException();
+        if ( clientE != null ) throw clientE;
       }
 
       // This should never happen.
@@ -114,10 +113,11 @@ public class RuleEngine extends ContextAwareSupport {
    */
   public void probe(List<Rule> rules, RulerProbe rulerProbe, FObject obj, FObject oldObj) {
     PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
-    for (Rule rule : rules) {
+
+    for ( Rule rule : rules ) {
       if ( ! isRuleActive(rule, rule.getAction()) ) continue;
-      if ( ! checkPermission(rule, obj) ) continue;
-      if ( ! rule.f(userX_, obj, oldObj) ) continue;
+      if ( ! checkPermission(rule, obj)           ) continue;
+      if ( ! rule.f(userX_, obj, oldObj)          ) continue;
 
       TestedRule agent = new TestedRule();
       agent.setRule(rule.getId());
@@ -127,6 +127,7 @@ public class RuleEngine extends ContextAwareSupport {
         rulerProbe.getAppliedRules().add(agent);
         continue;
       }
+
       try {
         applyRule(rule, obj, oldObj, agent);
         agent.setMessage("Successfully applied");
@@ -134,9 +135,11 @@ public class RuleEngine extends ContextAwareSupport {
         agent.setPassed(false);
         agent.setMessage(e.getMessage());
       }
+
       rulerProbe.getAppliedRules().add(agent);
     }
-    for (Rule rule : rules) {
+
+    for ( Rule rule : rules ) {
       if ( isRuleActive(rule, rule.getAsyncAction())
         && checkPermission(rule, obj)
         && rule.f(x_, obj, oldObj)
@@ -147,6 +150,7 @@ public class RuleEngine extends ContextAwareSupport {
         rulerProbe.appliedRules_.add(asyncAgent);
       }
     }
+
     pm.log(x_);
   }
 
@@ -178,7 +182,7 @@ public class RuleEngine extends ContextAwareSupport {
     currentRule_ = rule;
 
     // Check if the rule is in an ACTIVE state
-    Boolean isActive = true;
+    boolean isActive = true;
     if (rule instanceof LifecycleAware) {
       isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
     }
@@ -188,18 +192,21 @@ public class RuleEngine extends ContextAwareSupport {
 
   private boolean checkPermission(Rule rule, FObject obj) {
     var user = rule.getUser(getX(), obj);
+
     if ( user != null ) {
       var auth = (AuthService) getX().get("auth");
       return auth.checkUser(getX(), user, "rule.read." + rule.getId());
     }
+
     return true;
   }
 
   private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj) {
     if (rules.isEmpty()) return;
+
     ((Agency) getX().get("threadPool")).submit(userX_, x -> {
       Logger logger = (Logger) x.get("logger");
-      for (Rule rule : rules) {
+      for ( Rule rule : rules ) {
         if ( stops_.get() ) return;
 
         if ( isRuleActive(rule, rule.getAsyncAction())
@@ -234,9 +241,7 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   private void saveHistory(Rule rule, FObject obj) {
-    if ( ! rule.getSaveHistory() ) {
-      return;
-    }
+    if ( ! rule.getSaveHistory() ) return;
 
     RuleHistory record = savedRuleHistory_.get(rule.getId());
     if ( record == null ) {
@@ -246,7 +251,9 @@ public class RuleEngine extends ContextAwareSupport {
         .setObjectDaoKey(rule.getDaoKey())
         .build();
     }
+
     record.setResult(getResult(rule.getId()));
+
     if ( rule.getValidity() > 0 ) {
       Duration validity = Duration.ofDays(rule.getValidity());
       Date expirationDate = Date.from(Instant.now().plus(validity));
@@ -279,6 +286,7 @@ public class RuleEngine extends ContextAwareSupport {
    */
   private FObject reloadObject(FObject obj, FObject oldObj, FObject nu, boolean greedy) {
     FObject old = (FObject) SafetyUtil.deepClone(oldObj);
+
     if ( old == null ) {
       try {
         old = obj.getClass().newInstance();
@@ -289,6 +297,7 @@ public class RuleEngine extends ContextAwareSupport {
         return obj;
       }
     }
+
     FObject cloned = obj.fclone();
 
     // Update lastModified and lastModifiedBy of old and cloned objects so that
@@ -305,9 +314,7 @@ public class RuleEngine extends ContextAwareSupport {
     }
 
     // Return the original object as the reloaded object if nu == old or nu == obj.
-    if ( nu.equals(old) || nu.equals(cloned) ) {
-      return cloned;
-    }
+    if ( nu.equals(old) || nu.equals(cloned) ) return cloned;
 
     // For greedy mode, return the reloaded object `nu` as is. Otherwise,
     // override the reloaded object with the changes from the original object.

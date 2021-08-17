@@ -208,6 +208,11 @@
       name: 'PAYER_DOW_JONES_TRANSACTION',
       label: 'Payer Dow Jones Transaction',
       ordinal: 39
+    },
+    {
+      name: 'UNKNOWN_BUSINESS_LEV',
+      label: 'Unknown Business in SecureFact LEV',
+      ordinal: 40
     }
   ]
 });
