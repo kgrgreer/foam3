@@ -67,25 +67,25 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'authorizeVacancy',
+      name: 'authorizeAnonymous',
       documentation: `
-        Authorizes a vacant user that has no true ownership. The assigned vacant user is relative to a spid,
+        Authorizes a anonymous user that has no true ownership. The assigned anonymous user is relative to a spid,
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
       `,
       javaCode: `
         ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
         if ( serviceProvider == null ) {
-          throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize vacant user.");
+          throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize anonymous user.");
         }
 
-        User vacantUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getVacantUser());
-        if ( vacantUser == null ) {
-          throw new AuthorizationException("Unable to find vacant user.");
+        User anonymousUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getAnonymousUser());
+        if ( anonymousUser == null ) {
+          throw new AuthorizationException("Unable to find anonymous user.");
         }
 
         Session session = x.get(Session.class);
-        if ( session.getUserId() == vacantUser.getId() ) return ((Subject) x.get("subject"));
-        session.setUserId(vacantUser.getId());
+        if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
+        session.setUserId(anonymousUser.getId());
         session.setAgentId(0);
         session.setContext(session.applyTo(session.getContext()));
         ((DAO) getLocalSessionDAO()).inX(x).put(session);
@@ -113,8 +113,6 @@ foam.CLASS({
           throw new AuthenticationException("Group disabled");
         }
         Subject subject = (Subject) x.get("subject");
-        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
-        if ( serviceProvider.getVacantUser() == ((User) subject.getUser()).getId() ) subject.setVacantMode(true);
         return subject;
       `
     },
@@ -197,7 +195,7 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        // Log out vacant user
+        // Log out anonymous user
         logout(x);
 
         User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);

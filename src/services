@@ -98,7 +98,7 @@ p({
   """,
   "client":"""
     {
-      "class": "foam.nanos.auth.AuthorizeVacancyClientDecorator",
+      "class": "foam.nanos.auth.AuthorizeAnonymousClientDecorator",
       "delegate":
       {
         "class":"foam.nanos.auth.CachedAuthServiceProxy",

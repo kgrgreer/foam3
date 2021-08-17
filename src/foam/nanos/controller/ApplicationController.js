@@ -406,7 +406,7 @@ foam.CLASS({
             return;
           }
         }
-
+        await self.fetchGroup();
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -431,7 +431,6 @@ foam.CLASS({
 
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
-        await self.fetchGroup();
         await self.fetchTheme();
         self.onUserAgentAndGroupLoaded();
         self.mementoChange();
@@ -562,10 +561,12 @@ foam.CLASS({
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
-
-        if ( ! result || ! result.user || result.vacantMode ) throw new Error();
-
         this.subject = result;
+
+        var promptlogin = await this.client.auth.check(null, 'auth.promptlogin');
+        var authResult =  await this.client.auth.check(null, '*');
+        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
+
       } catch (err) {
         this.languageInstalled.resolve();
         await this.requestLogin();

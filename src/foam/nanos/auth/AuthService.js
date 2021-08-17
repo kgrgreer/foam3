@@ -20,7 +20,7 @@ foam.INTERFACE({
       * validatePassword
       * updatePassword
       * validateUser
-      * authorizeVacancy
+      * authorizeAnonymous
 
     and the methods relating to authorization are:
 
@@ -89,10 +89,10 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'authorizeVacancy',
+      name: 'authorizeAnonymous',
       type: 'foam.nanos.auth.Subject',
       documentation: `
-        Authorizes a vacant user that has no true ownership other than to the system's acting service provider. The assigned vacant user is relative to a spid,
+        Authorizes a anonymous user that has no true ownership other than to the system's acting service provider. The assigned anonymous user is relative to a spid,
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
       `,
       javaThrows: [

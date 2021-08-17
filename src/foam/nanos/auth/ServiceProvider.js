@@ -63,8 +63,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'vacantUser',
-      documentation: 'Reference to vacant user relative to spid. See the **authorizeVacancy** method in AuthService.js for further documentation.'
+      name: 'anonymousUser',
+      documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
     }
   ],
 

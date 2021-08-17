@@ -6,7 +6,7 @@
 
  foam.CLASS({
   package: 'foam.nanos.auth',
-  name: 'AuthorizeVacancyClientDecorator',
+  name: 'AuthorizeAnonymousClientDecorator',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
   imports: [
@@ -19,8 +19,8 @@
   `,
 
   methods: [
-    async function authorizeVacancy(x) {
-      var result = await this.delegate.authorizeVacancy(null);
+    async function authorizeAnonymous(x) {
+      var result = await this.delegate.authorizeAnonymous(null);
       if ( ! result || ! result.user ) throw new Error();
       this.subject = result;
       return this.subject;
