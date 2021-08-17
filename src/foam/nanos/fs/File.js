@@ -283,15 +283,11 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        Boolean hasPermission = auth.check(x, "file.remove." + getId());
+        Boolean hasPermission = auth.check(x, "file.remove." + this.getId());
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getRealUser();
 
-        // find a file owner
-        // creating a file uses businessID for the file owner
-        DAO businessDAO = (DAO) x.get("businessDAO");
-        Business fileOwner = (Business) businessDAO
-          .find(EQ(Business.ID, getOwner()));
-
-        if ( ! hasPermission || fileOwner == null ) {
+        if ( ! hasPermission && user.getId() != this.getCreatedBy() ) {
           throw new AuthorizationException();
         }
       `
