@@ -117,6 +117,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'rulesList',
+      javaType: 'Map<Predicate, GroupBy>',
       javaFactory: `return new java.util.HashMap<Predicate, GroupBy>();`
     },
     {
@@ -131,11 +132,11 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-Map rulesList = getRulesList();
+var rulesList = getRulesList();
 if ( oldObj == null ) {
-  applyRules(x, obj, oldObj, (GroupBy) rulesList.get(getCreateBefore()));
+  applyRules(x, obj, oldObj, rulesList.get(getCreateBefore()));
 } else {
-  applyRules(x, obj, oldObj, (GroupBy) rulesList.get(getUpdateBefore()));
+  applyRules(x, obj, oldObj, rulesList.get(getUpdateBefore()));
 }
 
 // Clone and pass unfrozen object to 'sync' 'after' rules so, similar
@@ -147,9 +148,9 @@ if ( ret != null ) {
   ret = ret.fclone();
   FObject before = ret.fclone();
   if ( oldObj == null ) {
-    applyRules(x, ret, oldObj, (GroupBy) rulesList.get(getCreateAfter()));
+    applyRules(x, ret, oldObj, rulesList.get(getCreateAfter()));
   } else {
-    applyRules(x, ret, oldObj, (GroupBy) rulesList.get(getUpdateAfter()));
+    applyRules(x, ret, oldObj, rulesList.get(getUpdateAfter()));
   }
 
   // Test for changes during 'after' rule
@@ -162,9 +163,9 @@ return ret;`
     {
       name: 'remove_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-applyRules(x, obj, oldObj, (GroupBy) getRulesList().get(getRemoveBefore()));
+applyRules(x, obj, oldObj, getRulesList().get(getRemoveBefore()));
 FObject ret =  getDelegate().remove_(x, obj);
-applyRules(x, ret, oldObj, (GroupBy) getRulesList().get(getRemoveAfter()));
+applyRules(x, ret, oldObj, getRulesList().get(getRemoveAfter()));
 return ret;`
     },
     {

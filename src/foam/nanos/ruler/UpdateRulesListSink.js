@@ -38,16 +38,14 @@ foam.CLASS({
           return;
         }
 
-        Map rulesList = dao_.getRulesList();
-        // Q: what if rule.ruleGroup changed? Loop through all groups and find the rule by id then remove the old
+        var rulesList = dao_.getRulesList();
         String ruleGroup = rule.getRuleGroup();
         for ( Object key : rulesList.keySet() ) {
-          // Q: what if rule.after and rule.operation changed?
           if ( ((Predicate) key).f(obj) ) {
             rule.setX(getX());
-            GroupBy group = (GroupBy) rulesList.get(key);
-            if ( group.getGroupKeys().contains(ruleGroup) ) {
-              List<Rule> rules = ((ArraySink) group.getGroups().get(ruleGroup)).getArray();
+            var groupBy = rulesList.get(key);
+            if ( groupBy.getGroupKeys().contains(ruleGroup) ) {
+              List<Rule> rules = ((ArraySink) groupBy.getGroups().get(ruleGroup)).getArray();
               Rule foundRule = Rule.findById(rules, rule.getId());
               if ( foundRule != null ) {
                 rules.remove(foundRule);
@@ -61,7 +59,7 @@ foam.CLASS({
               }
               Collections.sort(rules, new Desc(Rule.PRIORITY));
             } else {
-              group.putInGroup_(sub, ruleGroup, obj);
+              groupBy.putInGroup_(sub, ruleGroup, obj);
             }
           }
         }
@@ -75,17 +73,16 @@ foam.CLASS({
           return;
         }
 
-        Map rulesList = dao_.getRulesList();
+        var rulesList = dao_.getRulesList();
         String ruleGroup = rule.getRuleGroup();
         for ( Object key : rulesList.keySet() ) {
           if ( ((Predicate) key).f(obj) ) {
-            GroupBy group = (GroupBy) rulesList.get(key);
-            if ( group.getGroupKeys().contains(ruleGroup) ) {
-              List<Rule> rules = ((ArraySink) group.getGroups().get(ruleGroup)).getArray();
+            var groupBy = rulesList.get(key);
+            if ( groupBy.getGroupKeys().contains(ruleGroup) ) {
+              List<Rule> rules = ((ArraySink) groupBy.getGroups().get(ruleGroup)).getArray();
               Rule foundRule = Rule.findById(rules, rule.getId());
               if ( foundRule != null ) {
                 rules.remove(foundRule);
-                // TODO: remove/update ruleGroups[group]
               }
             }
           }
