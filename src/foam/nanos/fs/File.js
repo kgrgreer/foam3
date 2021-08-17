@@ -35,7 +35,6 @@ foam.CLASS({
     'foam.blob.Blob',
     'foam.blob.InputStreamBlob',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.LifecycleState',
