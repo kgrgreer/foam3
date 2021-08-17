@@ -56,6 +56,10 @@ foam.CLASS({
         { type: 'foam.nanos.script.Script', name: 'script' }
       ],
       javaCode: `
+          //delete all the old entry
+          DAO pmdao = (DAO) x.get("pmInfoDAO");
+          pmdao.removeAll();
+
           ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
             @Override
             public void execute(X y) {
