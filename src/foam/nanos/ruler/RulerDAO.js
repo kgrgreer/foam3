@@ -291,14 +291,22 @@ for ( Object key : groups.getGroupKeys() ) {
           type: 'foam.mlang.predicate.Predicate'
         }
       ],
-      javaCode: `GroupBy groupBy = (GroupBy) dao.where(predicate).select(
-  GROUP_BY(Rule.RULE_GROUP, new ArraySink())
+      javaCode: `
+getRulesList().put(
+  predicate,
+  (GroupBy) dao.where(predicate)
+               .select(GROUP_BY(Rule.RULE_GROUP, new ArraySink()))
 );
-
-getRulesList().put(predicate, groupBy);
+updateRuleGroups(predicate);`
+    },
+    {
+      name: 'updateRuleGroups',
+      args: [ 'Predicate predicate' ],
+      javaCode: `var dao = (DAO) getX().get("ruleGroupDAO");
+var groupIds = getRulesList().get(predicate).getGroupKeys();
 List<RuleGroup> ruleGroups = ((ArraySink)
-  ((DAO) getX().get("ruleGroupDAO"))
-    .where(IN(RuleGroup.ID, groupBy.getGroupKeys()))
+  dao
+    .where(IN(RuleGroup.ID, groupIds))
     .select(new ArraySink())
   ).getArray();
 getRuleGroups().put(predicate, ruleGroups);`

@@ -61,6 +61,7 @@ foam.CLASS({
             } else {
               groupBy.putInGroup_(sub, ruleGroup, obj);
             }
+            dao_.updateRuleGroups((Predicate) key);
           }
         }
       `
@@ -83,6 +84,7 @@ foam.CLASS({
               Rule foundRule = Rule.findById(rules, rule.getId());
               if ( foundRule != null ) {
                 rules.remove(foundRule);
+                dao_.updateRuleGroups((Predicate) key);
               }
             }
           }
