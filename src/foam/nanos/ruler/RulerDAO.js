@@ -118,6 +118,12 @@ foam.CLASS({
       class: 'Map',
       name: 'rulesList',
       javaFactory: `return new java.util.HashMap<Predicate, GroupBy>();`
+    },
+    {
+      class: 'Map',
+      name: 'ruleGroups',
+      javaType: 'Map<GroupBy, List>',
+      javaFactory: 'return new java.util.HashMap<GroupBy, List>();'
     }
   ],
 
@@ -181,12 +187,13 @@ return ret;`
           type: 'foam.mlang.sink.GroupBy'
         }
       ],
-      javaCode: `
-var logger = (Logger) x.get("logger");
-var ruleGroups = getRuleGroups(sink.getGroupKeys());
-var size = ruleGroups.size();
-while ( size-- > 0 ) {
-  var rg = ruleGroups.poll();
+      javaCode: `var logger = (Logger) x.get("logger");
+List<RuleGroup> ruleGroups = getRuleGroups().get(sink);
+if ( ruleGroups == null ) {
+  return;
+}
+
+for ( var rg : ruleGroups ) {
   try {
     if ( rg.f(x, obj, oldObj) ) {
       var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
@@ -287,30 +294,19 @@ for ( Object key : groups.getGroupKeys() ) {
           type: 'foam.mlang.predicate.Predicate'
         }
       ],
-      javaCode: `getRulesList().put(
-     predicate,
-     dao.where(predicate)
-       .select(GROUP_BY(Rule.RULE_GROUP, new ArraySink()))
-   );`
-    },
-    {
-      name: 'getRuleGroups',
-      type: 'Queue<RuleGroup>',
-      args: [ 'List groupIds' ],
-      javaCode: `
-var logger = (Logger) getX().get("logger");
-var ruleGroupDAO = (DAO) getX().get("ruleGroupDAO");
-var result = new PriorityQueue<RuleGroup>(DESC(RuleGroup.PRIORITY));
+      javaCode: `GroupBy groupBy = (GroupBy) dao.where(predicate).select(
+  GROUP_BY(Rule.RULE_GROUP, new ArraySink())
+);
 
-for ( var groupId : groupIds ) {
-  var group = ruleGroupDAO.find(groupId);
-  if ( group == null ) {
-    logger.error("RuleGroup not found.", groupId);
-    continue;
-  }
-  result.add((RuleGroup) group);
-}
-return result;`
+getRulesList().put(predicate, groupBy);
+List<RuleGroup> ruleGroups = ((ArraySink)
+  ((DAO) getX().get("ruleGroupDAO"))
+    .where(IN(RuleGroup.ID, groupBy.getGroupKeys()))
+    .select(new ArraySink())
+  ).getArray();
+if ( ! ruleGroups.isEmpty() ) {
+  getRuleGroups().put(groupBy, ruleGroups);
+}`
     }
   ],
 
