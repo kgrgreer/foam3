@@ -106,7 +106,8 @@ public class FObjectParser
     try {
       return getDelegate().parse(ps, x);
     } catch (TypeNotPresentException e) {
-      return UnknownFObjectParser.instance().parse(ps, x);
+      return null;
+//      return UnknownFObjectParser.instance().parse(ps, x);
     }
   }
 
