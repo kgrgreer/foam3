@@ -27,14 +27,10 @@ foam.CLASS({
     'foam.mlang.order.Desc',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.GroupBy',
-    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.dao.Operation',
-    'foam.util.SafetyUtil',
+    'java.util.ArrayList',
     'java.util.List',
     'java.util.Map',
-    'java.util.PriorityQueue',
-    'java.util.Queue',
-    'java.util.stream.Collectors',
     'static foam.mlang.MLang.*'
   ],
 
@@ -237,7 +233,31 @@ addRuleList(localRuleDAO, getUpdateBefore());
 addRuleList(localRuleDAO, getRemoveBefore());
 addRuleList(localRuleDAO, getCreateAfter());
 addRuleList(localRuleDAO, getUpdateAfter());
-addRuleList(localRuleDAO, getRemoveAfter());`
+addRuleList(localRuleDAO, getRemoveAfter());
+
+// RuleGroup listener
+var ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
+ruleGroupDAO.listen(new AbstractSink() {
+  @Override
+  public void put(Object obj, Detachable sub) {
+    updateRuleGroups(getCreateBefore());
+    updateRuleGroups(getUpdateBefore());
+    updateRuleGroups(getRemoveBefore());
+    updateRuleGroups(getCreateAfter());
+    updateRuleGroups(getUpdateAfter());
+    updateRuleGroups(getRemoveAfter());
+  }
+
+  @Override
+  public void remove(Object obj, foam.core.Detachable sub) {
+    updateRuleGroups(getCreateBefore());
+    updateRuleGroups(getUpdateBefore());
+    updateRuleGroups(getRemoveBefore());
+    updateRuleGroups(getCreateAfter());
+    updateRuleGroups(getUpdateAfter());
+    updateRuleGroups(getRemoveAfter());
+  }
+}, null);`
     },
     {
       name: 'cmd_',
@@ -303,13 +323,23 @@ updateRuleGroups(predicate);`
       name: 'updateRuleGroups',
       args: [ 'Predicate predicate' ],
       javaCode: `var dao = (DAO) getX().get("ruleGroupDAO");
-var groupIds = getRulesList().get(predicate).getGroupKeys();
-List<RuleGroup> ruleGroups = ((ArraySink)
-  dao
-    .where(IN(RuleGroup.ID, groupIds))
-    .select(new ArraySink())
-  ).getArray();
-getRuleGroups().put(predicate, ruleGroups);`
+var groupIds = new ArrayList(getRulesList().get(predicate).getGroupKeys());
+var ruleGroups = new ArrayList<RuleGroup>();
+dao.where(IN(RuleGroup.ID, groupIds)).select(new AbstractSink() {
+  @Override
+  public void put(Object obj, Detachable sub) {
+    var rg = (RuleGroup) obj;
+    ruleGroups.add(rg);
+    groupIds.remove(rg.getId());
+  }
+});
+getRuleGroups().put(predicate, ruleGroups);
+
+// Log rule group not found error
+var logger = (Logger) getX().get("logger");
+for ( var groupId : groupIds ) {
+  logger.error("RuleGroup not found. Rules in the group will not be run.", groupId);
+}`
     }
   ],
 
