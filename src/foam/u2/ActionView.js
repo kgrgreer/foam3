@@ -36,8 +36,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl'
+    'ctrl',
+    'memento?'
   ],
+
+  exports: ['memento'],
 
   enums: [
     {
@@ -114,11 +117,20 @@ foam.CLASS({
       factory: function() {
         return false;
       }
+    },
+    {
+      name: 'mementoHead',
+      factory: function(action) { return this.action.mementoHead; }
     }
   ],
 
   methods: [
     function render() {
+      if ( this.mementoHead ) {
+      if ( this.mementoHead && this.memento?.head == this.mementoHead ) {
+        this.click();
+      }
+    }
       this.tooltip = this.action.toolTip;
 
       this.SUPER();
@@ -167,9 +179,10 @@ foam.CLASS({
       } catch (x) {
         console.warn('Unexpected Exception in Action: ', x);
       }
-
-      e.preventDefault();
-      e.stopPropagation();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     },
     {
       name: 'debounce',
