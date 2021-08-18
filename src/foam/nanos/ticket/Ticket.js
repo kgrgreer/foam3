@@ -29,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
+    'foam.nanos.ticket.TicketComment',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -49,6 +50,7 @@ foam.CLASS({
     'stack',
     'subject',
     'summaryView?',
+    'ticketCommentDAO',
     'ticketDAO',
     'ticketStatusDAO',
     'userDAO'
@@ -74,6 +76,10 @@ foam.CLASS({
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this ticket'
+    },
+    {
+      name: 'SUCCESS_REASSIGNED',
+      message: 'You have successfully reassigned this ticket'
     }
   ],
 
@@ -121,6 +127,12 @@ foam.CLASS({
       `,
       tableWidth: 160,
       order: 2
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.ticket.TicketType',
+      name: 'category',
+      label: 'Ticket type',
     },
     {
       class: 'Reference',
@@ -326,6 +338,66 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'assignedTo',
       section: 'infoSection'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdFor',
+      documentation: 'User/business this ticket was created for.',
+      section: 'infoSection',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.ticket.TicketHistory',
+      name: 'ticketHistory',
+      documentation: 'Status history of the ticket.',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      javaFactory: `
+        TicketHistory[] h = new TicketHistory[1];
+        h[0] = new TicketHistory();
+        h[0].setAssignedTo(getAssignedTo());
+        h[0].setTimeStamp(new Date());
+        return h;`
+    },
+    {
+      class: 'String',
+      name: 'comment1',
+      transient: true,
+      createVisibility: 'RW',
+      readVisibility: 'RW',
+      updateVisibility: 'RW',
+      section: 'infoSection',
+      view: {
+        class: 'foam.u2.TextField'
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'reassignUser',
+      transient: true,
+      section: 'infoSection',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RW',
+      updateVisibility: 'RW',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Group',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.GROUP)
+            }
+          ]
+        };
+      }
     }
   ],
 
@@ -472,6 +544,71 @@ foam.CLASS({
           ) {
             X.stack.back();
           }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'reassign',
+      section: 'infoSection',
+      isAvailable: function(subject, assignedTo, status) {
+        return ( subject.user.id === assignedTo) && (status === 'OPEN');
+      },
+      code: function(X) {
+        var ticket = this.clone();
+        ticket.assignedTo = this.reassignUser;
+
+        this.ticketDAO.put(ticket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'internalComment',
+      section: 'infoSection',
+      code: function(X) {
+        let comment = this.TicketComment.create();
+        comment.comment = this.comment1;
+        comment.ticket = this.id;
+
+        this.ticketCommentDAO.put(comment).then(req => {
+          this.ticketCommentDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
+          this.comment1 = '';
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'externalComment',
+      section: 'infoSection',
+      code: function(X) {
+        let comment = this.TicketComment.create();
+        comment.comment = this.comment1;
+        comment.ticket = this.id;
+        comment.external = true;
+
+        this.ticketCommentDAO.put(comment).then(req => {
+          this.ticketCommentDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
+          this.comment1 = '';
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
