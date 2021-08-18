@@ -28,6 +28,7 @@ import static foam.mlang.MLang.EQ;
 public class Boot {
   // Context key used to store the top-level root context in the context.
   public final static String ROOT = "_ROOT_";
+  public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
   protected X                         root_      = new ProxyX();
@@ -42,6 +43,7 @@ public class Boot {
 
     Logger logger = new ProxyLogger(StdoutLogger.instance());
     root_.put("logger", logger);
+    root_.put(BOOT_TIME, System.currentTimeMillis());
 
     boolean cluster = SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
 

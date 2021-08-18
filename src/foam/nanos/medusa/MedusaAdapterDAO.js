@@ -169,7 +169,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
 
       if ( obj instanceof Clusterable &&
            ! ((Clusterable) obj).getClusterable() ) {
-        getLogger().debug("update", dop.getLabel(), "not clusterable", obj.getClass().getSimpleName(), obj.getProperty("id"));
+        // getLogger().debug("update", dop.getLabel(), "not clusterable", obj.getClass().getSimpleName(), obj.getProperty("id"));
         if ( DOP.PUT == dop ) return getDelegate().put_(x, obj);
         if ( DOP.REMOVE == dop ) return getDelegate().remove_(x, obj);
       }
