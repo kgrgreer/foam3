@@ -364,6 +364,10 @@ foam.CLASS({
         var classObj = foam.lookup(o.substring(0, lastIndex));
         return classObj[o.substring(lastIndex + 1)];
       }
+    },
+    {
+      class: 'Map',
+      name: 'selectedObjs'
     }
   ]
 });

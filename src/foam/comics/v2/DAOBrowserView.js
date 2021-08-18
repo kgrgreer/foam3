@@ -332,6 +332,8 @@ foam.CLASS({
             self.config.browseContext = summaryView;
           }
 
+          self.config.selectedObjs$ = summaryView.selectedObjects$;
+
           return self.E()
             .start(self.Rows)
             .addClass(this.myClass('wrapper'))
