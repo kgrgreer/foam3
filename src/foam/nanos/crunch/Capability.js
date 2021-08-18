@@ -313,6 +313,13 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ReferenceArrayView'
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'disableAutoSave',
+      documentation: 'If true, disable auto save for wizardlets associated to this capability.',
+      hidden: true,
+      value: false
     }
   ],
 
