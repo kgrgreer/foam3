@@ -727,8 +727,7 @@ foam.CLASS({
 
         if (
           ! updatingSelf &&
-          ! hasUserEditPermission &&
-          ! auth.check(x, "serviceprovider.update." + user.getSpid())
+          ! hasUserEditPermission
         ) {
           throw new AuthorizationException("You do not have permission to update this user.");
         }
@@ -760,8 +759,7 @@ foam.CLASS({
 
         if (
           ! SafetyUtil.equals(this.getId(), user.getId()) &&
-          ! auth.check(x, "user.remove." + this.getId()) &&
-          ! auth.check(x, "serviceprovider.remove." + this.getSpid())
+          ! auth.check(x, "user.remove." + this.getId())
         ) {
           throw new RuntimeException("You do not have permission to delete that user.");
         }
