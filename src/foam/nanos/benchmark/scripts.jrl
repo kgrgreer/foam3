@@ -26,3 +26,18 @@ p({
   `,
   "output":""
 })
+p({
+  class:"foam.nanos.script.Script",
+  id:"testPm",
+  code:`
+    import foam.nanos.pm.PM;
+
+    //delete all the old entry
+    pmdao = x.get("pmInfoDAO");
+    pmdao.removeAll();
+
+    pm = new PM(new String[] {"testPM"});
+
+    pm.log(x);
+  `
+      })
