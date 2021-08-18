@@ -462,9 +462,7 @@
       name: 'authorizeOnRead',
       javaCode: `
         var auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "rule.read." + getId())
-          && ! auth.check(x, "serviceprovider.read." + getSpid())
-        ) {
+        if ( ! auth.check(x, "rule.read." + getId()) ) {
           throw new AuthorizationException("You do not have permission to read the rule.");
         }
       `
@@ -482,9 +480,7 @@
       name: 'authorizeOnDelete',
       javaCode: `
         var auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "rule.remove." + getId())
-          && ! auth.check(x, "serviceprovider.update." + getSpid())
-        ) {
+        if ( ! auth.check(x, "rule.remove." + getId()) ) {
           throw new AuthorizationException("You do not have permission to delete the rule.");
         }
       `

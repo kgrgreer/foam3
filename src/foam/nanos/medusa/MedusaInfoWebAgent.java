@@ -35,10 +35,8 @@ public class MedusaInfoWebAgent
     if ( support != null ) {
       response.setStatus(HttpServletResponse.SC_OK);
       ClusterConfig config = (ClusterConfig) ((foam.dao.DAO) x.get("clusterConfigDAO")).find(support.getConfigId()).fclone();
-      ReplayingInfo info = config.getReplayingInfo();
 
       config.SESSION_ID.clear(config);
-      config.setReplayingInfo(info);
 
       if ( format == Format.JSON ) {
         foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)

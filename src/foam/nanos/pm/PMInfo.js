@@ -31,13 +31,20 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      tableWidth: 420
+      tableWidth: 450,
+      tableCellFormatter: function(name) {
+        this.tooltip = name;
+        this.add(name);
+      }
     },
     {
       class: 'Int',
       name: 'count',
       label: 'Count',
-      tableWidth: 70
+      tableWidth: 70,
+      tableCellFormatter: function(count) {
+        this.add(Number(count).toLocaleString());
+      }
     },
     {
       class: 'Duration',
@@ -61,9 +68,16 @@ foam.CLASS({
       label: 'Max'
     },
     {
+      class: 'Duration',
+      name: 'totalTime_',
+      label: 'Total',
+      transient: true,
+      expression: function(totalTime) { return totalTime; }
+    },
+    {
       class: 'Long',
       name: 'totalTime',
-      label: 'Total',
+      label: 'Temperature',
       aliases: ['total'],
       tableCellFormatter: { class: 'foam.nanos.pm.PMTemperatureCellFormatter' }
     },
@@ -85,7 +99,7 @@ foam.CLASS({
       type: 'void',
       args: [ 'PM pm' ],
       javaCode: `
-      if ( pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
+      if ( this.getCount() == 0 || pm.getTime() < getMinTime() ) setMinTime(pm.getTime());
       if ( pm.getTime() > getMaxTime() ) setMaxTime(pm.getTime());
 
       setCount(getCount() + 1);
