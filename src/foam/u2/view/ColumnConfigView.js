@@ -550,13 +550,11 @@ foam.CLASS({
       this
         .start()
         .show(self.data.expanded$)
-        .add(this.slot(function(views) {
-          return this.E().forEach(this.views, function(v) {
-            self
-              .show(self.data.expanded$)
-              .add(v);
-        });
-      }))
+        .forEach(this.views$, function(v) {
+          return this
+            .show(self.data.expanded$)
+            .add(v);
+        })
       .end();
     },
     function updateSubColumnsOrder(selectionChanged) {
