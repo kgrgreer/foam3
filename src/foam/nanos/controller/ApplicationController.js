@@ -627,7 +627,7 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
-      if ( ! menu ) return;
+      if ( ! this.loginSuccess ) return;
 
       /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
