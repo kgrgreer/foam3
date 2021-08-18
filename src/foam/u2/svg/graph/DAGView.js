@@ -16,6 +16,10 @@ foam.CLASS({
     'foam.u2.svg.arrow.SegmentedArrowLine',
   ],
 
+  exports: [
+    'graph'
+  ],
+
   classes: [
     {
       name: 'ArrowPlan',
@@ -54,9 +58,8 @@ foam.CLASS({
     },
     {
       name: 'cellSize',
-      documentation: `Size of each cell as one dimension of a square`,
-      class: 'Int',
-      value: 100
+      class: 'Array',
+      factory: () => [100, 100]
     },
     {
       name: 'gridGap',
@@ -78,9 +81,14 @@ foam.CLASS({
         return this.ArrowDisplaceCellsPlacementPlan.create({
           gridPlacementPlan$: this.gridPlacement$,
           gridGap$: this.gridGap$,
-          cellSize$: this.cellSize$
+          cellSize: this.cellSize
         })
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isArrowheadShown',
+      value: true,
     },
     {
       name: 'zoom',
@@ -164,13 +172,17 @@ foam.CLASS({
             of: node.data.cls_,
             data: node.data,
             position: coords,
-            size: Array(coords.length).fill(self.cellSize)
+            size: self.cellSize
           }
 
           if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
             args.isSelected$ = self.slot(function(selectedNodeId) {
               return selectedNodeId === node.data.id; 
             })
+          }
+
+          if ( self.gridGap && self.nodeView.hasOwnAxiom("gridGap") ){
+            args.gridGap = self.gridGap
           }
           
           this
@@ -213,8 +225,6 @@ foam.CLASS({
         let parentPixelCoords = this.placement_.getPlacement(parent);
         let nodePixelCoords = this.placement_.getPlacement(node);
 
-        let cellLanePixels = this.cellSize * 0.5;
-
         let enterCell, exitCell;
         (() => {
           // These variables are in a closure to prevent use after this
@@ -226,8 +236,8 @@ foam.CLASS({
 
         for ( let arrow of arrows ) {
           let anchors = [];
-          let enterCellLane = this.cellSize * this.cellLaneRatio_(arrow.enterCellLane);
-          let exitCellLane = this.cellSize * this.cellLaneRatio_(arrow.exitCellLane);
+          let enterCellLane = this.cellSize[1] * this.cellLaneRatio_(arrow.enterCellLane);
+          let exitCellLane = this.cellSize[1] * this.cellLaneRatio_(arrow.exitCellLane);
 
           // Start first row after exiting the node
           if ( arrow.hasOwnProperty('topRowLane') ) {
@@ -263,7 +273,7 @@ foam.CLASS({
           g.tag(this.SegmentedArrowLine, {
             startPos: [
               parentPixelCoords[0] + exitCellLane,
-              parentPixelCoords[1] + this.cellSize,
+              parentPixelCoords[1] + this.cellSize[1],
             ],
             endPos: [
               nodePixelCoords[0] + enterCellLane,
@@ -276,14 +286,17 @@ foam.CLASS({
               arrow: arrow
             }
           });
-          g.tag(this.SimpleArrowHead, {
-            originPos: [
-              nodePixelCoords[0] + enterCellLane,
-              nodePixelCoords[1],
-            ],
-            angle: 0,
-            size: 5
-          })
+          
+          if ( this.isArrowheadShown ){
+            g.tag(this.SimpleArrowHead, {
+              originPos: [
+                nodePixelCoords[0] + enterCellLane,
+                nodePixelCoords[1],
+              ],
+              angle: 0,
+              size: 5
+            })
+          }
         }
       }
       this.graph.getDirectChildren(node.id).forEach(childNode => {
@@ -364,7 +377,6 @@ foam.CLASS({
     function cellLaneRatio_(lane) {
       // f0 produces the series: [1 2 2 4 4 4 4....] as v increases from 0.
       //  Multiplying the output of f0 by 2 gives the denominator
-      // TODO: Not multiplying by 2, seems to center the exit lane with leafs of length 1
       // Needs to look into centering it for multi leaf nodes
       let f0 = v => Math.pow(2, Math.floor(Math.log2(v+1)));
 
@@ -372,7 +384,7 @@ foam.CLASS({
       // ???: If this has a formal name please let me know
       let f1 = v => (v - f0(v) + 2) * 2 - 1;
 
-      return f1(lane) / f0(lane);
+      return f1(lane) / (2*f0(lane));
     }
   ]
 });

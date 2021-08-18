@@ -262,7 +262,7 @@ foam.CLASS({
                 gridPlacement: placementPlan,
                 graph: graph,
                 nodeView: this.CapabilityGraphNodeView,
-                cellSize: 200,
+                cellSize: [200, 200],
                 zoom: 0.7
               })
               ;
