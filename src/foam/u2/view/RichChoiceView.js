@@ -617,12 +617,7 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       code: function() {
-        if ( this.data ) {
-          this.sections[0].dao.find(this.data).then((result) => {
-            this.fullObject_ = result;
-          });
-        }
-        else this.clearSelection();
+        if ( this.data === undefined ) this.clearSelection();
       }
     },
     function clearSelection(evt) {
