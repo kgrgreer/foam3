@@ -62,20 +62,21 @@ public class RuleEngine extends ContextAwareSupport {
     Logger                logger         = (Logger) getX().get("logger");
 
     for ( Rule rule : rules ) {
+      PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
       try {
         if ( stops_.get() ) break;
         if ( ! isRuleActive(rule, rule.getAction()) ) continue;
         if ( ! checkPermission(rule, obj)           ) continue;
         if ( ! rule.f(userX_, obj, oldObj)          ) continue;
 
-        PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
         applyRule(rule, obj, oldObj, agency);
-        pm.log(x_);
         agency.submit(x_, x -> saveHistory(rule, obj), "Save history. Rule id:" + rule.getId());
       } catch (Exception e) {
         // To be expected if a rule blocks an operation. Not an error.
         logger.debug(this.getClass().getSimpleName(), "id", rule.getId(), "\\nrule", rule, "\\nobj", obj, "\\nold", oldObj, "\\n", e);
         throw e;
+      } finally {
+        pm.log(x_);
       }
     }
 
@@ -114,44 +115,46 @@ public class RuleEngine extends ContextAwareSupport {
   public void probe(List<Rule> rules, RulerProbe rulerProbe, FObject obj, FObject oldObj) {
     PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
 
-    for ( Rule rule : rules ) {
-      if ( ! isRuleActive(rule, rule.getAction()) ) continue;
-      if ( ! checkPermission(rule, obj)           ) continue;
-      if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+    try {
+      for ( Rule rule : rules ) {
+        if ( ! isRuleActive(rule, rule.getAction()) ) continue;
+        if ( ! checkPermission(rule, obj)           ) continue;
+        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
 
-      TestedRule agent = new TestedRule();
-      agent.setRule(rule.getId());
-      if ( stops_.get() ) {
-        agent.setMessage("Not executed because was overridden and forced to stop.");
-        agent.setPassed(false);
+        TestedRule agent = new TestedRule();
+        agent.setRule(rule.getId());
+        if ( stops_.get() ) {
+          agent.setMessage("Not executed because was overridden and forced to stop.");
+          agent.setPassed(false);
+          rulerProbe.getAppliedRules().add(agent);
+          continue;
+        }
+
+        try {
+          applyRule(rule, obj, oldObj, agent);
+          agent.setMessage("Successfully applied");
+        } catch (Exception e ) {
+          agent.setPassed(false);
+          agent.setMessage(e.getMessage());
+        }
+
         rulerProbe.getAppliedRules().add(agent);
-        continue;
       }
 
-      try {
-        applyRule(rule, obj, oldObj, agent);
-        agent.setMessage("Successfully applied");
-      } catch (Exception e ) {
-        agent.setPassed(false);
-        agent.setMessage(e.getMessage());
+      for ( Rule rule : rules ) {
+        if ( isRuleActive(rule, rule.getAsyncAction())
+          && checkPermission(rule, obj)
+          && rule.f(x_, obj, oldObj)
+        ) {
+          TestedRule asyncAgent = new TestedRule();
+          asyncAgent.setRule(rule.getId());
+          asyncAgent.setMessage("AsyncAction.");
+          rulerProbe.appliedRules_.add(asyncAgent);
+        }
       }
-
-      rulerProbe.getAppliedRules().add(agent);
+    } finally {
+      pm.log(x_);
     }
-
-    for ( Rule rule : rules ) {
-      if ( isRuleActive(rule, rule.getAsyncAction())
-        && checkPermission(rule, obj)
-        && rule.f(x_, obj, oldObj)
-      ) {
-        TestedRule asyncAgent = new TestedRule();
-        asyncAgent.setRule(rule.getId());
-        asyncAgent.setMessage("AsyncAction.");
-        rulerProbe.appliedRules_.add(asyncAgent);
-      }
-    }
-
-    pm.log(x_);
   }
 
   /**
@@ -219,18 +222,20 @@ public class RuleEngine extends ContextAwareSupport {
           // object will be copied over to the reloaded object.
           FObject nu = getDelegate().find_(x, obj).fclone();
           nu = reloadObject(obj, oldObj, nu, rule.getAfter());
+          PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC: " + rule.getDaoKey() + ": " + rule.getId());
+
           try {
-            PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC: " + rule.getDaoKey() + ": " + rule.getId());
             rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
-            pm.log(x_);
             saveHistory(rule, nu);
           } catch (Exception ex) {
             logger.warning("Retry asyncApply rule(" + rule.getId() + ").", ex);
             retryAsyncApply(x, rule, nu, oldObj);
+          } finally {
+            pm.log(x_);
           }
         }
       }
-    }, "Async apply rules. Rule group: " + rules.get(0).getRuleGroup());
+    }, "Async apply rules. Rule group: " + rules.get(0).getRuleGroup() + " " + rules.get(0).getDaoKey());
   }
 
   private void retryAsyncApply(X x, Rule rule, FObject obj, FObject oldObj) {
