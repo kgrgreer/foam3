@@ -71,10 +71,11 @@ public class FoldReducePMLogger
     Map<String,PMInfo> m2 = (Map<String,PMInfo>) state2;
 
     for ( PMInfo pi2 : m2.values() ) {
-      PMInfo pi1 = m1.get(pi2);
+      String key = pi2.getKey() + ":" + pi2.getName();
+      PMInfo pi1 = m1.get(key);
 
       if ( pi1 == null ) {
-        m1.put(pi2.getKey() + ":" + pi2.getName(), pi2);
+        m1.put(key, pi2);
       } else {
         pi1.reduce(pi2);
       }
