@@ -34,7 +34,6 @@ foam.CLASS({
   methods: [
     // Put invalidates cache and is forwarded to the source.
     function put_(x, o) {
-      //* Can caches be kept up to date efficiently? ****
       this.cache = {};
       this.clearProperty('daoCount_');
       return this.delegate.put_(x, o);
@@ -53,7 +52,7 @@ foam.CLASS({
         //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ) + ' daoCount_: ' + self.daoCount_);
 
         // Validate we have a fresh dao count
-        self.refreshDaoCount_().then( function() {
+        self.refreshDaoCount_(x).then( function() {
 
           let requestStartIdx = typeof skip !== 'undefined' ? skip : 0;
           let requestEndIdx = typeof limit !== 'undefined' && skip + limit < self.daoCount_ ? skip + limit : self.daoCount_;
@@ -139,12 +138,12 @@ foam.CLASS({
       return Promise.resolve();
     },
 
-    function refreshDaoCount_() {
+    function refreshDaoCount_(x) {
       // If we have not retrieved the dao count previously do it now
       let self = this;
       if ( ! this.hasOwnProperty('daoCount_') ) {
-        return this.delegate.select_(foam.mlang.sink.Count.create()).then( function(count) {
-          self.daoCount_ = count.array.length;
+        return this.delegate.select_(x, foam.mlang.sink.Count.create()).then( function(count) {
+          self.daoCount_ = count.value;
         });
       }
 
