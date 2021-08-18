@@ -49,6 +49,8 @@ foam.CLASS({
         Runtime runtime = Runtime.getRuntime();
         config.setMemoryMax(runtime.maxMemory());
         config.setMemoryFree(runtime.freeMemory());
+
+        config.setUptime(System.currentTimeMillis() - (Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
       }
       return config;
       `

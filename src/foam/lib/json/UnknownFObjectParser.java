@@ -21,7 +21,6 @@ public class UnknownFObjectParser
     if ( ps == null ) return null;
 
     UnknownFObject unknownFObject = new UnknownFObject();
-//     System.err.println("Unknown JSON: " + ps.value().toString());
     unknownFObject.setJson(ps.value().toString());
     return ps.setValue(unknownFObject);
   }

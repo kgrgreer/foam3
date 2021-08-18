@@ -6,8 +6,8 @@
 package foam.nanos.auth;
 
 import foam.core.Detachable;
-import foam.core.X;
 import foam.core.ProxyX;
+import foam.core.X;
 import foam.core.XFactory;
 import foam.dao.DAO;
 import foam.dao.Sink;
@@ -18,7 +18,6 @@ import java.security.Permission;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
-
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
 import static foam.mlang.MLang.TRUE;
@@ -59,26 +58,25 @@ public class CachingAuthService
    */
   protected String[] extraDAOsToListenTo_;
   public static String CACHE_KEY = "CachingAuthService.PermissionCache";
-
+  protected static ConcurrentHashMap<String,Boolean> noUserCache__ = new ConcurrentHashMap<String,Boolean>();
   protected static Map<String,Boolean> getPermissionMap(final X x) {
     Session session = x.get(Session.class);
     Subject subject = (Subject) x.get("subject");
     User    user    = subject.getUser();
 
-    if ( user == null ) {
-      return new ConcurrentHashMap<String,Boolean>();
-    }
+    if ( user == null ) return noUserCache__;
 
     // If the user in the context does not match the session user, do not use the
     // cache permission map, which belong to session user
-    Long contextUserId = user.getId();
-    Long sessionUserId = session.getUserId();
+    long contextUserId = user.getId();
+    long sessionUserId = session.getUserId();
 
-    if ( ! contextUserId.equals(sessionUserId) ) {
+    if ( contextUserId != sessionUserId ) {
+//       System.err.println("************** SESSION ID MISMATCH " + subject + " " + contextUserId + " " + sessionUserId);
       return new ConcurrentHashMap<String,Boolean>();
     }
 
-    Map<String,Boolean> map     = (Map) session.getContext().get(CACHE_KEY);
+    Map<String,Boolean> map = (Map) session.getContext().get(CACHE_KEY);
 
     if ( map == null ) {
       Sink purgeSink = new Sink() {
@@ -133,7 +131,7 @@ public class CachingAuthService
   public static void purgeCache(X x) {
     Session session = x.get(Session.class);
 
-    if ( session != null ){
+    if ( session != null ) {
       session.setContext(session.getContext().put(CACHE_KEY, null));
     }
   }
@@ -150,13 +148,12 @@ public class CachingAuthService
   @Override
   public boolean check(foam.core.X x, String permission) {
     if ( x == null || permission == null ) return false;
+
     Permission p = new AuthPermission(permission);
 
     Map<String,Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_));
 
-    if ( map.containsKey(p.getName()) ) {
-      return map.get(p.getName());
-    }
+    if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
     boolean permissionCheck = getDelegate().check(x, permission);
 
