@@ -126,11 +126,10 @@ foam.CLASS({
 
   methods: [
     function render() {
-      if ( this.mementoHead ) {
       if ( this.mementoHead && this.memento?.head == this.mementoHead ) {
         this.click();
       }
-    }
+
       this.tooltip = this.action.toolTip;
 
       this.SUPER();
