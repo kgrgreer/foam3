@@ -627,6 +627,8 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      if ( ! menu ) return;
+
       /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
       let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
