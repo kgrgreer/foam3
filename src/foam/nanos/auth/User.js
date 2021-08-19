@@ -164,7 +164,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
-      documentation: 'Determines whether the User can login to the platform.',
+      documentation: `Determines whether the User can login to the platform.
+      A user that tries to login with this false -- gets account disabled error msg.`,
       writePermissionRequired: true,
       includeInDigest: false,
       value: true,
@@ -887,7 +888,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      name: 'group'
+      name: 'group',
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Enum',

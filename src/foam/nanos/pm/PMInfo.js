@@ -54,12 +54,21 @@ foam.CLASS({
     },
     {
       class: 'Duration',
+      // average duration stored in 1/100th of a ms
       name: 'average',
       label: 'Avg',
       aliases: ['avg'],
-      getter: function() { return (this.totalTime / this.count).toFixed(2); },
-      javaGetter: `return (long) (Math.round( ( (float)getTotalTime() / (float)getCount() ) * 100.0 ) / 100.0);`,
-      storageTransient: true
+      tableCellFormatter: function(value) {
+        if ( value < 100 && value > 1 ) {
+          this.add((value/100).toFixed(2) + "ms");
+        } else {
+          let formatted = foam.core.Duration.duration(value/100);
+          this.add(formatted);
+        }
+      },
+      getter: function() { return this.count ? (100 * this.totalTime / this.count) : 0/*.toFixed(2)*/; },
+      javaGetter: `if ( getCount() == 0 ) return 0l; return (long) (Math.round( ( 100.0 * (float)getTotalTime() / (float)getCount() ) ));`,
+      transient: true
     },
     {
       class: 'Duration',
