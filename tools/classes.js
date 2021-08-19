@@ -671,6 +671,7 @@ var classes = [
   'foam.lib.query.FooEnum',
 
   'foam.parse.QueryParserUserTest',
+  'foam.parse.QueryParserTest',
   'foam.parse.PSymbol',
   'foam.lib.parse.Grammar',
   'foam.lib.parse.Action',

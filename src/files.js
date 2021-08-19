@@ -374,6 +374,7 @@ FOAM_FILES([
   { name: "foam/parse/QueryParser" },
   { name: "foam/parse/FScript" },
   { name: "foam/parse/QueryParserUserTest" },
+  { name: "foam/parse/QueryParserTest" },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },
   { name: "foam/physics/PhysicsEngine" },
