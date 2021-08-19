@@ -529,7 +529,15 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler",                      "lazy":false,  "serve":false, "authenticate": false, "serviceClass":"foam.nanos.http.LiveScriptBundler"})
-p({"class":"foam.nanos.boot.NSpec", "name":"emailToken",                         "serve":true,  "serviceClass":"foam.nanos.auth.email.EmailTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"emailToken",
+  "serve":true,
+  "authenticate": false,
+  "serviceClass":"foam.nanos.auth.email.EmailTokenService",
+  "boxClass":"foam.nanos.auth.token.TokenServiceSkeleton",
+  "client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
