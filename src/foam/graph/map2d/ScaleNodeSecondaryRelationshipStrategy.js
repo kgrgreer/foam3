@@ -21,10 +21,16 @@
     },
     {
       name: 'xScalePerSecondary',
+      factory: function(){
+        return 0;
+      }
     },
     {
       name: 'yScalePerSecondary',
-    },
+      factory: function(){
+        return 0;
+      }
+    }
   ],
 
   methods: [
