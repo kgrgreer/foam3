@@ -18,12 +18,10 @@ import foam.mlang.predicate.*;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import org.hamcrest.core.Is;
 
 import java.lang.Exception;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.DOT_F;
 
