@@ -21,7 +21,9 @@ foam.CLASS({
     {
       // The cache for local storage and fast access
       name: 'cache',
-      factory: function() { return {}; }
+      factory: function() {
+        return {};
+      }
     }
   ],
 
@@ -43,18 +45,18 @@ foam.CLASS({
       }
 
       let self = this;
-      let key  = [order, predicate].toString();
+      let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
-        let requestStartIdx = typeof skip !== 'undefined' ? skip : 0;
-        let requestEndIdx = skip + limit;
+        console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        let requestStartIdx = skip || 0;
+        let requestEndIdx = requestStartIdx + limit;
 
         // Ensure we have cache for request
         self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( function() {
 
           // Return data from cache
-          for ( let idx = requestStartIdx; idx < requestEndIdx; idx++ ) {
+          for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
             sink.put(self.cache[key][idx]);
           }
 
@@ -91,16 +93,24 @@ foam.CLASS({
 
       if ( this.cache[key] ) {
         // Cycle through exising cached elements to verify all requested are present
-        for ( let idx = requestStartIdx; idx < requestEndIdx; idx++ ) {
+        for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
           if ( ! this.cache[key][idx] ) {
             if ( ! hasMissingData ) {
               // Found start of missing data withing requested block
               hasMissingData = true;
               startIdx = idx;
+              break;
             }
+          }
+        }
 
-            // Make sure we have the last index of a missing data element within requested block
-            endIdx = idx + 1;
+        if ( hasMissingData ) {
+          for ( let idx = requestEndIdx - 1 ; idx >= startIdx ; idx-- ) {
+            if ( ! this.cache[key][idx] ) {
+              // Found end of missing data
+              endIdx = idx + 1;
+              break;
+            }
           }
         }
       } else {
@@ -112,11 +122,11 @@ foam.CLASS({
       }
 
       if ( hasMissingData ) {
-        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
-        return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then( function (result) {
+        return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
           // Update cache with missing data
-          for ( let idx = 0; idx < result.array.length; idx++ ) {
+          for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
             if ( ! self.cache[key][startIdx + idx] ) {
               self.cache[key][startIdx + idx] = result.array[idx];
             }
