@@ -3735,6 +3735,34 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'IsSet',
+  extends: 'foam.mlang.predicate.Has',
+  implements: [ 'foam.core.Serializable' ],
+
+  documentation: 'Predicate which checks if given property is set(for FObjects only, for java objects we invoke HasPredicate)',
+
+  javaImports: [
+    'foam.core.FObject',
+    'foam.core.PropertyInfo'
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        if ( ! ( obj instanceof FObject) )
+          return super.f(obj);
+
+        if ( ! ( getArg1() instanceof PropertyInfo ) ) return false;
+
+        return ((FObject) obj).isPropertySet(((PropertyInfo)getArg1()).getName());
+      `
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.mlang',

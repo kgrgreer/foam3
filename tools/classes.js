@@ -64,6 +64,7 @@ var classes = [
   'foam.mlang.predicate.Keyword',
   'foam.mlang.predicate.IsInstanceOf',
   'foam.mlang.predicate.IsClassOf',
+  'foam.mlang.predicate.IsSet',
   'foam.mlang.predicate.DotF',
   'foam.mlang.sink.Count',
   'foam.mlang.sink.GroupBy',
