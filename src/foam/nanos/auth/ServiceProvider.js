@@ -55,9 +55,15 @@ foam.CLASS({
     },
     {
       name: 'inherentPermissions',
-      javaGetter: 'return new String[] { "serviceprovider.read." + getId() };',
+      javaGetter: `return new String[] {
+        "serviceprovider.read." + getId(),
+        "serviceproviderdao.read." + getId()
+      };`,
       factory: function() {
-        return [ 'serviceprovider.read.' + this.id ];
+        return [
+          'serviceprovider.read.' + this.id,
+          'serviceproviderdao.read.' + this.id
+        ];
       },
       documentation: 'Service provider must have "serviceprovider.read.<SPID>" inherent permission.',
     }
