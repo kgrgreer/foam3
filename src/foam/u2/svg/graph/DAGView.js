@@ -86,6 +86,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'FObjectProperty',
+      name: 'embeddedSecondaryRelationshipStrategy',
+      of: 'foam.graph.map2d.ScaleNodeSecondaryRelationshipStrategy'
+    },
+    {
       class: 'Boolean',
       name: 'isArrowheadShown',
       value: true,
@@ -314,10 +319,18 @@ foam.CLASS({
         let parentCoords = this.gridPlacement.getPlacement(parent);
         let nodeCoords = this.gridPlacement.getPlacement(node);
 
+        var yAdj = 1
+
+        if ( this.embeddedSecondaryRelationshipStrategy ){
+          // get the scaled node side of the parent to determin if there is truly a dY
+          yAdj = this.embeddedSecondaryRelationshipStrategy.getBaseCellSize(parent)[1];
+        }
+
         let hasDX = parentCoords[0] - nodeCoords[0] != 0;
-        let hasDY = parentCoords[1] - nodeCoords[1] != -1;
+        let hasDY = parentCoords[1] - nodeCoords[1] != -yAdj;
+
         let enterCell = nodeCoords;
-        let exitCell = [parentCoords[0], parentCoords[1] + 1];
+        let exitCell = [parentCoords[0], parentCoords[1] + yAdj];
 
         let arrow = this.ArrowPlan.create({
           // Swap these to enable arrowhead sharing
