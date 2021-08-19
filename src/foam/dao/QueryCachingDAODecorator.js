@@ -94,7 +94,7 @@ foam.CLASS({
         for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
           if ( ! this.cache[key][idx] ) {
             if ( ! hasMissingData ) {
-              // Found start of missing data withing requested block
+              // Found start of missing data within requested block
               hasMissingData = true;
               startIdx = idx;
               break;
@@ -105,7 +105,7 @@ foam.CLASS({
         if ( hasMissingData ) {
           for ( let idx = requestEndIdx - 1 ; idx >= startIdx ; idx-- ) {
             if ( ! this.cache[key][idx] ) {
-              // Found end of missing data
+              // Found end of missing data within requested block
               endIdx = idx + 1;
               break;
             }
@@ -125,9 +125,7 @@ foam.CLASS({
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
           // Update cache with missing data
           for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
-            if ( ! self.cache[key][startIdx + idx] ) {
-              self.cache[key][startIdx + idx] = result.array[idx];
-            }
+            self.cache[key][startIdx + idx] = result.array[idx];
           }
         });
       }
