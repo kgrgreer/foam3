@@ -48,7 +48,7 @@ foam.CLASS({
       let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
         let requestEndIdx = requestStartIdx + limit;
 
@@ -80,8 +80,6 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( obj === this.PURGE ) {
         this.cache = {};
-      } else {
-        this.SUPER(x, obj);
       }
     },
 
@@ -122,7 +120,7 @@ foam.CLASS({
       }
 
       if ( hasMissingData ) {
-        console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
           // Update cache with missing data
