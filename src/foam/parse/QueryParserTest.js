@@ -14,9 +14,9 @@ foam.CLASS({
   'foam.lib.parse.ParserContext',
   'foam.lib.parse.ParserContextImpl',
   'foam.lib.parse.StringPStream',
+  'foam.mlang.predicate.Predicate',
   'foam.nanos.auth.User',
-  'foam.mlang.predicate.Nary',
-  'foam.mlang.predicate.Predicate'
+  'foam.nanos.test.Test'
   ],
 
   methods: [
@@ -27,6 +27,11 @@ foam.CLASS({
       user.setFirstName("kristina");
       user.setLastName("smirnova");
       test(testQuery("firstName = \\"kristina\\" and lastName=smirnova", user), "user's firstName = kristina, lastName = smirnova");
+
+      var test = new Test();
+      test(testQuery("instanceof foam.nanos.script.Script", test), "Test object is instance of Script");
+      test(! testQuery("classof foam.nanos.script.Script", test), "Test object is NOT classof Script");
+      test(testQuery("classof foam.nanos.test.Test", test), "Test object is classof Test");
       `
     },
     {
