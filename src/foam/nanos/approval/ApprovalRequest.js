@@ -86,6 +86,10 @@
       name: 'systemInformation',
       order: 30,
       permissionRequired: true
+    },
+    {
+      name: 'additionalInformation',
+      order: 20
     }
   ],
 
@@ -359,7 +363,7 @@
     {
       class: 'String',
       name: 'createdForSummary',
-      section: 'approvalRequestInformation',
+      section: 'additionalInformation',
       order: 107,
       gridColumns: 6,
       columnPermissionRequired: true,
@@ -370,7 +374,7 @@
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       includeInDigest: true,
-      section: 'approvalRequestInformation',
+      section: 'additionalInformation',
       order: 110,
       gridColumns: 6,
       columnPermissionRequired: true,
@@ -385,7 +389,7 @@
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       includeInDigest: true,
-      section: 'approvalRequestInformation',
+      section: 'additionalInformation',
       order: 115,
       gridColumns: 6,
       columnPermissionRequired: true,
@@ -410,7 +414,7 @@
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       includeInDigest: true,
-      section: 'approvalRequestInformation',
+      section: 'additionalInformation',
       order: 130,
       gridColumns: 6,
       columnPermissionRequired: true,
@@ -421,7 +425,7 @@
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       includeInDigest: true,
-      section: 'approvalRequestInformation',
+      section: 'additionalInformation',
       order: 130,
       gridColumns: 6,
       columnPermissionRequired: true,
