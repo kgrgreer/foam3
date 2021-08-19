@@ -271,7 +271,7 @@ foam.CLASS({
       javaCode: `
       `
     },
-    {
+   {
       name: 'authorizeOnUpdate',
       javaCode: `
         // KeyValueDAO will return the same object if it is update operation
@@ -284,9 +284,9 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         Boolean hasPermission = auth.check(x, "file.remove." + this.getId());
         Subject subject = (Subject) x.get("subject");
-        User user = subject.getRealUser();
+        User user = subject.getUser();
 
-        if ( ! hasPermission && user.getId() != this.getCreatedBy() ) {
+        if ( ! hasPermission && user.getId() != this.getOwner() ) {
           throw new AuthorizationException();
         }
       `
