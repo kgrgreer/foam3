@@ -247,16 +247,6 @@ ruleGroupDAO.listen(new AbstractSink() {
     updateRuleGroups(getUpdateAfter());
     updateRuleGroups(getRemoveAfter());
   }
-
-  @Override
-  public void remove(Object obj, foam.core.Detachable sub) {
-    updateRuleGroups(getCreateBefore());
-    updateRuleGroups(getUpdateBefore());
-    updateRuleGroups(getRemoveBefore());
-    updateRuleGroups(getCreateAfter());
-    updateRuleGroups(getUpdateAfter());
-    updateRuleGroups(getRemoveAfter());
-  }
 }, null);`
     },
     {
