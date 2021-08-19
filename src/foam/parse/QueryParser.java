@@ -18,6 +18,7 @@ import foam.mlang.predicate.*;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import org.hamcrest.core.Is;
 
 import java.lang.Exception;
 import java.lang.reflect.Method;
@@ -120,8 +121,8 @@ public class QueryParser
 
     grammar.addSymbol("EXPR", new Alt(grammar.sym("PAREN"),
       grammar.sym("NEGATE"), grammar.sym("HAS"), grammar.sym("IS"), grammar.sym("DOT"), grammar.sym("CLASS_OF"),
-      grammar.sym("INSTANCE_OF"), grammar.sym("EQUALS"), grammar.sym("BEFORE"), grammar .sym("AFTER"),
-      grammar.sym("ID")));
+      grammar.sym("IS_SET"), grammar.sym("INSTANCE_OF"), grammar.sym("EQUALS"), grammar.sym("BEFORE"),
+      grammar .sym("AFTER"), grammar.sym("ID")));
 
     grammar.addSymbol("PAREN", new Seq1(1,
       Literal.create("("),
@@ -216,6 +217,14 @@ public class QueryParser
         logger.warning("failed to parse classOf query");
         return null;
       }
+    });
+
+    grammar.addSymbol("IS_SET", new Seq1(1, Literal.create("isset:"),
+      grammar.sym("FIELD_NAME")));
+    grammar.addAction("IS_SET", (val, x) -> {
+      Has predicate = new IsSet();
+      predicate.setArg1((PropertyInfo) val);
+      return predicate;
     });
 
     grammar.addSymbol("INSTANCE_OF", new Seq1(2,

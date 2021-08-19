@@ -27,6 +27,8 @@ foam.CLASS({
       user.setFirstName("kristina");
       user.setLastName("smirnova");
       test(testQuery("firstName = \\"kristina\\" and lastName=smirnova", user), "user's firstName = kristina, lastName = smirnova");
+      test(testQuery("isset:firstName", user), "user's firstName is set");
+      test(testQuery("-isset:email", user), "user's address is NOT set");
 
       var test = new Test();
       test(testQuery("instanceof foam.nanos.script.Script", test), "Test object is instance of Script");
