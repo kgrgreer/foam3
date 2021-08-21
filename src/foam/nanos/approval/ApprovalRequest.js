@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
   plural: 'Approval Requests',
@@ -210,7 +210,8 @@
       section: 'approvalRequestInformation',
       order: 50,
       columnPermissionRequired: true,
-      gridColumns: 6
+      gridColumns: 6,
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Enum',

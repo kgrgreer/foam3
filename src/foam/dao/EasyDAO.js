@@ -63,6 +63,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.OrderedDAO',
     'foam.dao.PromisedDAO',
+    'foam.dao.QueryCachingDAODecorator',
     'foam.dao.TTLCachingDAO',
     'foam.dao.TTLSelectCachingDAO',
     'foam.dao.RequestResponseClientDAO',
@@ -404,6 +405,12 @@ foam.CLASS({
       class: 'Long',
       name: 'ttlSelectPurgeTime',
       units: 'ms',
+      generateJava: false
+    },
+    {
+      documentation: 'Enable local in-memory query caching of the DAO',
+      class: 'Boolean',
+      name: 'queryCache',
       generateJava: false
     },
     {
@@ -913,6 +920,13 @@ model from which to test ServiceProvider ID (spid)`,
             });
           }
         }
+      }
+
+      if ( this.queryCache ) {
+        //* Query cache ****
+        dao = this.QueryCachingDAODecorator.create({
+          delegate: dao
+        });
       }
 
       if ( this.journal ) {
