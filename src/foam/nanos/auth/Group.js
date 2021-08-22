@@ -14,7 +14,19 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
-  requires: [ 
+  javaImports: [
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.pm.PM',
+    'foam.util.SafetyUtil',
+    'java.net.InetAddress',
+    'java.util.List',
+    'javax.security.auth.AuthPermission',
+    'static foam.mlang.MLang.EQ'
+  ],
+
+  requires: [
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.PasswordPolicy'
   ],
@@ -32,7 +44,7 @@ foam.CLASS({
       type: 'String'
     }
   ],
-  
+
   properties: [
     {
       class: 'String',
@@ -143,17 +155,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     */
   ],
 
-  javaImports: [
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
-    'foam.nanos.app.AppConfig',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'java.net.InetAddress',
-    'javax.security.auth.AuthPermission'
-  ],
-
   methods: [
     {
       name: 'implies',
@@ -170,29 +171,30 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
-        List<GroupPermissionJunction> junctions = ((ArraySink) getPermissions(x)
-          .getJunctionDAO()
-            .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
-            .select(new ArraySink())).getArray();
+        PM pm = PM.create(x, this.getClass(), "implies");
+        try {
+          List<GroupPermissionJunction> junctions = ((ArraySink) getPermissions(x)
+            .getJunctionDAO()
+              .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
+              .select(new ArraySink())).getArray();
 
-        for ( GroupPermissionJunction j : junctions ) {
-          if ( j.getTargetId().isBlank() ) {
-            continue;
-          }
+          for ( GroupPermissionJunction j : junctions ) {
+            if ( j.getTargetId().isBlank() ) continue;
 
-          if ( j.getTargetId().startsWith("@") ) {
-            DAO   dao   = (DAO) x.get("groupDAO");
-            Group group = (Group) dao.find(j.getTargetId().substring(1));
+            if ( j.getTargetId().startsWith("@") ) {
+              DAO   dao   = (DAO) x.get("groupDAO");
+              Group group = (Group) dao.find(j.getTargetId().substring(1));
 
-            if ( group != null && group.implies(x, permission) ) {
+              if ( group != null && group.implies(x, permission) ) return true;
+            } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
               return true;
             }
-          } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
-            return true;
           }
-        }
 
-        return false;
+          return false;
+      } finally {
+        pm.log(x);
+      }
       `,
       code: async function(x, permissionId) {
         // TODO: Support inheritance via @
@@ -272,9 +274,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         DAO localGroupDAO = (DAO) x.get("localGroupDAO");
         User user = (User) ((Subject) x.get("subject")).getUser();
         Group userGroup = (Group) localGroupDAO.find(user.getGroup());
-        while ( userGroup != null ) { 
+        while ( userGroup != null ) {
           if ( getId() == userGroup.getId() ) return;
-          userGroup = getAncestor(x, userGroup);  
+          userGroup = getAncestor(x, userGroup);
         }
 
         AuthService auth = (AuthService) x.get("auth");
