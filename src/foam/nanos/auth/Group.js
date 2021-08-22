@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
+    'foam.core.Detachable',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.pm.PM',
@@ -171,30 +172,37 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
-        PM pm = PM.create(x, this.getClass(), "implies");
+        PM        pm      = PM.create(x, this.getClass(), "implies");
+        DAO       dao     = (DAO) x.get("groupDAO");
+        boolean[] granted = { false };
+
         try {
-          List<GroupPermissionJunction> junctions = ((ArraySink) getPermissions(x)
-            .getJunctionDAO()
-              .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
-              .select(new ArraySink())).getArray();
+          getPermissions(x).getJunctionDAO()
+            .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
+            .select(new AbstractSink() {
+              public void put(Object o, Detachable d) {
+                GroupPermissionJunction j = (GroupPermissionJunction) o;
 
-          for ( GroupPermissionJunction j : junctions ) {
-            if ( j.getTargetId().isBlank() ) continue;
+                if ( j.getTargetId().isBlank() ) return;
 
-            if ( j.getTargetId().startsWith("@") ) {
-              DAO   dao   = (DAO) x.get("groupDAO");
-              Group group = (Group) dao.find(j.getTargetId().substring(1));
+                if ( j.getTargetId().startsWith("@") ) {
+                  Group group = (Group) dao.find(j.getTargetId().substring(1));
 
-              if ( group != null && group.implies(x, permission) ) return true;
-            } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
-              return true;
-            }
-          }
+                  if ( group != null && group.implies(x, permission) ) {
+                    granted[0] = true;
+                    d.detach();
+                  }
+                } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
+                  granted[0] = true;
+                  d.detach();
+                }
+              }
+            });
 
-          return false;
-      } finally {
-        pm.log(x);
-      }
+          return granted[0];
+        } finally {
+          pm.log(x);
+        }
       `,
       code: async function(x, permissionId) {
         // TODO: Support inheritance via @
