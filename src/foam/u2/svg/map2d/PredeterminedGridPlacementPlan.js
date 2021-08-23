@@ -31,10 +31,11 @@ foam.CLASS({
         return this.coords[id] || null;
       }
     },
-    function addAssociation_(id, coords) {
+    function addAssociation_(id, coords, cellSize = [1,1]) {
       this.coords[id] = coords;
+
       for ( let i = 0 ; i < coords.length ; i++ ) {
-        this.shape[i] = Math.max(coords[i] + 1, this.shape[i]);
+        this.shape[i] = Math.max(coords[i] + cellSize[i], this.shape[i]);
       }
     }
   ]

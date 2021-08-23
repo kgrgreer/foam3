@@ -34,7 +34,7 @@ foam.CLASS({
         throw new Error("No CompositeRelationship object detected")
       }
 
-      var relationshipPromises = compositeRelationship.getForwardNames().map(
+      var relationshipPromises = compositeRelationship.getPrimaryForwardNames().map(
         forwardName => this.fromRelationship(rootObject, forwardName, noRootAdd, compositeRelationship )
       );
 
@@ -52,6 +52,26 @@ foam.CLASS({
         if ( ! noRootAdd ) this.roots.push(this.data[rootObject.id]);
       }
 
+      var isRoot;
+      this.roots.forEach(root => {
+        if ( root.id === rootObject.id ) isRoot = true;
+      })
+
+      // if root object
+      if (
+        compositeRelationship 
+        && compositeRelationship.getSecondaryForwardNames().length > 0 
+        && isRoot
+      ){
+        // TODO: make this work with an array
+        var secondaryRelationshipKey = compositeRelationship.getSecondaryForwardNames()[0];
+
+        var secondaryRelationshipDAO = rootObject[secondaryRelationshipKey].dao || rootObject[secondaryRelationshipKey];
+        secondaryRelationshipDAO.select().then(secondaries => {
+          this.data[rootObject.id].secondaryForwardLinks = secondaries.array ? secondaries.array : [secondaries];
+        })
+      }
+
       // Iterate over rootObject's children
       var parent = this.data[rootObject.id];
       var relationshipDAO = rootObject[relationshipKey].dao || rootObject[relationshipKey];
@@ -59,6 +79,18 @@ foam.CLASS({
       return relationshipDAO
         .select().then(r => Promise.all(r.array.map(o => {
           parent.forwardLinks = [...parent.forwardLinks, o.id];
+
+          // Add secondary relationship link but don't create actual nodes for them
+          if ( compositeRelationship && compositeRelationship.getSecondaryForwardNames().length > 0 ){
+            // TODO: make this work with an array
+            var secondaryRelationshipKey = compositeRelationship.getSecondaryForwardNames()[0];
+
+            var secondaryRelationshipDAO = o[secondaryRelationshipKey].dao || o[secondaryRelationshipKey];
+            secondaryRelationshipDAO.select().then(secondaries => {
+              this.data[o.id].secondaryForwardLinks = secondaries.array ? secondaries.array : [secondaries];
+            })
+          }
+
           // Add child and its children (recursively)
           var fromPromise = compositeRelationship 
             ? this.fromCompositeRelationship(o, compositeRelationship, true)
