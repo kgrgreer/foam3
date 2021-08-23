@@ -705,6 +705,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'displayWidth?',
     'document',
     'elementValidator',
     'framed',
@@ -1548,12 +1549,43 @@ foam.CLASS({
       return this;
     },
 
+    function enableClasses(cls, enabled, opt_negate) {
+      cls && cls.forEach(i => this.enableClass(i, enabled, opt_negate));
+      return this;
+    },
+
     function removeClass(cls) {
       /* Remove specified CSS class. */
       if ( cls ) {
         delete this.classes[cls];
         this.onSetClass(cls, false);
       }
+      return this;
+    },
+
+    // Think of a better name?
+    function responsiveClasses(clsMap) {
+      /*
+      Enables and disables CSS classes based on displayWidth
+      clsMap = {
+        'SM' : ['cls1', 'cls2'],
+        'LG' : 'cls3'
+      }
+      */
+      if ( ! this.displayWidth ) return;
+      var self = this;
+      this.displayWidth$.sub(mapClasses);
+      mapClasses();
+
+      function mapClasses() {
+        for ( var key in clsMap ) {
+          if ( key ) {
+            var check = self.displayWidth.ordinal >= self.displayWidth.cls_[key].ordinal;
+            foam.Array.isInstance(clsMap[key]) ? self.enableClasses(clsMap[key], check) : self.enableClass(clsMap[key], check);
+          }
+        }
+      }
+
       return this;
     },
 
