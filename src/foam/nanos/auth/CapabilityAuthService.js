@@ -33,8 +33,8 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
-
     'java.util.Date',
     'java.util.List',
     'java.util.Map',
@@ -50,7 +50,12 @@ foam.CLASS({
       `,
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
+        PM pm = PM.create(getX(), this.getClass(), "check");
+        try {
+          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
+        } finally {
+          pm.log(getX());
+        }
       `
     },
     {
@@ -78,7 +83,12 @@ foam.CLASS({
     {
       name: 'checkUser',
       javaCode: `
-        return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null && checkSpid_(x, permission) );
+        PM pm = PM.create(getX(), this.getClass(), "check");
+        try {
+          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null && checkSpid_(x, permission) );
+        } finally {
+          pm.log(getX());
+        }
       `
     },
     {
