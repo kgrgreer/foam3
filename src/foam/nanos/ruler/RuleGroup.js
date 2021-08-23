@@ -11,7 +11,14 @@
   documentation: 'A rule group groups some rules together, the rules within only run if the ruleGroup predicate evaluates to true.',
 
   javaImports: [
+    'foam.mlang.sink.Count',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.logger.Logger'
+  ],
+
+  implements: [
+    'foam.nanos.auth.Authorizable'
   ],
 
   properties: [
@@ -90,6 +97,47 @@
           ((Logger) x.get("logger")).error(
             "Failed to evaluate predicate of rule: " + getId(), t);
           return false;
+        }
+      `
+    },
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rulegroup.create") ) {
+          throw new AuthorizationException("You do not have permission to create the rule group.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rulegroup.read." + getId()) ) {
+          throw new AuthorizationException("You do not have permission to read the rule group.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rulegroup.update." + getId()) ) {
+          throw new AuthorizationException("You do not have permission to update the rule group.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rulegroup.remove." + getId()) ) {
+          throw new AuthorizationException("You do not have permission to delete the rule group.");
+        }
+
+        var count = (Count) getRules(x).select(new Count());
+        if ( count.getValue() > 0 ) {
+          throw new AuthorizationException("Non-empty rule group cannot be deleted.");
         }
       `
     }
