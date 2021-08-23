@@ -48,7 +48,7 @@ foam.CLASS({
         PM pm = new PM(dao.getOf(), "replay." + getFilename());
         AssemblyLine assemblyLine = x.get("threadPool") == null ?
           new foam.util.concurrent.SyncAssemblyLine()   :
-          new foam.util.concurrent.AsyncAssemblyLine(x) ;
+          new foam.util.concurrent.AsyncAssemblyLine(x, "replay") ;
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
