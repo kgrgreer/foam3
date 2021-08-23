@@ -6,14 +6,12 @@
 package foam.nanos.auth;
 
 import foam.core.Detachable;
-import foam.core.ProxyX;
 import foam.core.X;
-import foam.core.XFactory;
 import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.User;
-import foam.nanos.session.Session;
+import foam.util.LRULinkedHashMap;
+
 import java.security.Permission;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -21,27 +19,6 @@ import javax.security.auth.AuthPermission;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
 import static foam.mlang.MLang.TRUE;
-
-/** Only return value if the session context hasn't changed. **/
-class SessionContextCacheFactory
-  implements XFactory
-{
-  protected X      sessionX_;
-  protected Object value_;
-
-  public SessionContextCacheFactory(Object value) {
-    value_ = value;
-  }
-
-  public Object create(X x) {
-    Session session = x.get(Session.class);
-    if ( session == null ) return null;
-    if ( sessionX_ == null ) sessionX_ = session.getContext();
-    if ( sessionX_ != session.getContext() ) return null;
-    return value_;
-  }
-}
-
 
 /**
  * Decorator to add Caching to AuthService.
@@ -57,26 +34,21 @@ public class CachingAuthService
    * FUTURE: Support supplying predicates to pass to the listeners as well.
    */
   protected String[] extraDAOsToListenTo_;
-  public static String CACHE_KEY = "CachingAuthService.PermissionCache";
+
+  public static String CACHE_NAME = "UserPermissionCache";
+  protected static final int CACHE_SIZE = 10000;
+
   protected static ConcurrentHashMap<String,Boolean> noUserCache__ = new ConcurrentHashMap<String,Boolean>();
+  protected static LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
+
   protected static Map<String,Boolean> getPermissionMap(final X x) {
-    Session session = x.get(Session.class);
     Subject subject = (Subject) x.get("subject");
     User    user    = subject.getUser();
 
     if ( user == null ) return noUserCache__;
 
-    // If the user in the context does not match the session user, do not use the
-    // cache permission map, which belong to session user
-    long contextUserId = user.getId();
-    long sessionUserId = session.getUserId();
-
-    if ( contextUserId != sessionUserId ) {
-//       System.err.println("************** SESSION ID MISMATCH " + subject + " " + contextUserId + " " + sessionUserId);
-      return new ConcurrentHashMap<String,Boolean>();
-    }
-
-    Map<String,Boolean> map = (Map) session.getContext().get(CACHE_KEY);
+    long userId = user.getId();
+    Map<String,Boolean> map = userPermissionCache_.get(userId);
 
     if ( map == null ) {
       Sink purgeSink = new Sink() {
@@ -97,17 +69,19 @@ public class CachingAuthService
       };
 
       DAO       userDAO   = (DAO) x.get("localUserDAO");
-      DAO       groupDAO  = (DAO) x.get("localGroupDAO");
+//      DAO       groupDAO  = (DAO) x.get("localGroupDAO");
+      DAO       userCapabilityJunction = (DAO) x.get("userCapabilityJunctionDAO");
       DAO       groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
       User      agent     = subject.getRealUser();
-      Predicate predicate = EQ(User.ID, user.getId());
+      Predicate predicate = EQ(User.ID, userId);
 
       if ( agent != user ) {
         predicate = OR(predicate, EQ(User.ID, agent.getId()));
       }
 
-      groupDAO.listen(purgeSink, TRUE);
+//      groupDAO.listen(purgeSink, TRUE);
       userDAO.listen(purgeSink, predicate);
+      userCapabilityJunction.listen(purgeSink, predicate);
       groupPermissionJunctionDAO.listen(purgeSink, TRUE);
 
       String[] extraDAOsToListenTo = (String[]) x.get("extraDAOsToListenTo");
@@ -120,19 +94,17 @@ public class CachingAuthService
       }
 
       map = new ConcurrentHashMap<String,Boolean>();
-      session.setContext(session.getContext().putFactory(
-        CACHE_KEY,
-        new SessionContextCacheFactory(map)));
+      userPermissionCache_.put(userId, map);
     }
 
     return map;
   }
 
   public static void purgeCache(X x) {
-    Session session = x.get(Session.class);
-
-    if ( session != null ) {
-      session.setContext(session.getContext().put(CACHE_KEY, null));
+    Subject subject = (Subject) x.get("subject");
+    User user = subject.getUser();
+    if ( user != null ) {
+      userPermissionCache_.remove(user.getId());
     }
   }
 
