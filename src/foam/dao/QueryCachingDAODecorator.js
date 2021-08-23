@@ -81,6 +81,8 @@ foam.CLASS({
       if ( obj === this.PURGE ) {
         this.cache = {};
       }
+
+      this.SUPER(x, obj);
     },
 
     function fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
