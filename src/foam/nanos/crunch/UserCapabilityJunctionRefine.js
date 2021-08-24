@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
 
-  implements: [ 'foam.nanos.auth.LifecycleAware' ],
+  implements: [
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.fs.DownloadAware'
+  ],
 
   mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
 
@@ -19,11 +22,16 @@ foam.CLASS({
   `,
 
   javaImports: [
+    'com.itextpdf.text.*',
+    'com.itextpdf.text.pdf.PdfWriter',
     'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
+    'java.io.ByteArrayInputStream',
+    'java.io.ByteArrayOutputStream',
     'static foam.nanos.crunch.AssociatedEntity.*'
   ],
 
@@ -402,6 +410,48 @@ foam.CLASS({
       },
       javaCode: `
       return "UCJ id: "+getId()+", source: "+getSourceId()+", target: "+getTargetId()+", status: "+getStatus().getName()+", data: "+(getData() != null ? getData().getClass().getName() : "null");
+      `
+    },
+    {
+      name: 'download',
+      javaType: 'java.io.InputStream',
+      args: [ 'Context x' ],
+      javaCode: `
+        if ( getStatus() == CapabilityJunctionStatus.GRANTED ) {
+          if ( getData() != null ) {
+            try ( var baos = new ByteArrayOutputStream() ) {
+              var document = new Document();
+              var writer = PdfWriter.getInstance(document, baos);
+
+              document.open();
+              document.add(new Paragraph("Hello world"));
+              // TODO: Iterate getData().getAxiomsByClass(PropertyInfo.class)
+              document.close();
+              writer.close();
+
+              return new ByteArrayInputStream(baos.toByteArray());
+            } catch ( Exception e ) {
+              e.printStackTrace();
+            }
+          }
+        }
+        return null;
+      `
+    },
+    {
+      name: 'toFile',
+      type: 'File',
+      args: [ 'Context x' ],
+      javaCode: `
+        if ( getStatus() == CapabilityJunctionStatus.GRANTED ) {
+          var capability = findTargetId(x);
+          return new File.Builder(x)
+            .setFilename(capability.getId() + ".pdf")
+            .setMimeType("application/pdf")
+            .setLabels(capability.getLabels())
+            .build();
+        }
+        return null;
       `
     }
   ]
