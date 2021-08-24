@@ -383,7 +383,7 @@ foam.CLASS({
           var req  = this.HTTPRequest.create({
             method: 'GET',
             path: this.icon,
-            shouldCache: true
+            cache: true
           });
           await req.send().then(function(payload) {
             return payload.resp.text();

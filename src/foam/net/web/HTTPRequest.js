@@ -87,7 +87,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'shouldCache'
+      name: 'cache'
     }
   ],
 
@@ -107,8 +107,12 @@ foam.CLASS({
       }
       this.addContentHeaders();
 
-      this.headers['Pragma'] = this.shouldCache ? '' : 'no-cache';
-      this.headers['Cache-Control'] = this.shouldCache ? 'public' : 'no-cache, no-store';
+      if ( this.cache ) {
+        this.headers['Cache-Control'] = 'public';
+      } else {
+        this.headers['Pragma'] = 'no-cache';
+        this.headers['Cache-Control'] = 'no-cache, no-store';
+      }
 
       var self = this;
 
