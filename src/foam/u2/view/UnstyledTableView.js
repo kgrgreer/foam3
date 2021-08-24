@@ -556,20 +556,14 @@ foam.CLASS({
                     view.hoverSelection = obj;
                   }).
                   callIf(view.dblclick && ! view.disableUserSelection, function() {
-                    tableRowElement.on('dblclick', function() {
+                    tableRowElement.on('dblclick', function(evt) {
+                      if ( view.shouldEscapeEvts(evt) ) return;
                       view.dblclick(null, obj.id);
                     });
                   }).
                   callIf( view.click && ! view.disableUserSelection, function() {
                     tableRowElement.on('click', function(evt) {
-                      // If we're clicking somewhere to close the context menu,
-                      // don't do anything.
-                      if (
-                        evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-                      ) {
-                        return;
-                      }
+                      if ( view.shouldEscapeEvts(evt) ) return;
 
                       if  ( ! thisObjValue ) {
                         dao.inX(ctrl.__subContext__).find(obj.id).then(v => {
@@ -760,6 +754,21 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'shouldEscapeEvts',
+      documentation: `Use this function to skip clicks/doubleclicks on table 
+                      elements such as checkboxes/context menus`,
+      code: function(evt) {
+        // If we're clicking somewhere to close the context menu or other inputs,
+        // don't do anything.
+        if (
+          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
+          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
+        ) {
+          return true;
+        }
+      }
+    },
     {
       name: 'updateColumns_',
       isFramed: true,
