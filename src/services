@@ -1156,7 +1156,7 @@ p({
   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })
 
- p({
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "downloadAwareWebAgent",
   "authenticate": true,
