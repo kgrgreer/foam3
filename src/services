@@ -1155,3 +1155,10 @@ p({
   "lazy": false,
   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })
+
+ p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "downloadAwareWebAgent",
+  "authenticate": true,
+  "serviceClass": "foam.nanos.fs.DownloadAwareWebAgent"
+})
