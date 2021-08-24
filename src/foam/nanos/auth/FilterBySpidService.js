@@ -35,13 +35,13 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO userDAO = (DAO) x.get("localUserUserDAO");
         userDAO = userDAO
           .where(OR(
             EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()),
             EQ(User.SPID, getSuperSpid())));
 
-        x = x.put("localUserDAO", userDAO);
+        x = x.put("localUserUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
       `
     }
