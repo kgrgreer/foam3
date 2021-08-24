@@ -323,12 +323,14 @@ foam.CLASS({
         fetch('/service/downloadAwareWebAgent?fileId=' + self.id, {
           headers: { Authorization: 'BEARER ' + self.sessionID }
         }).then(res => {
-          return res.blob().then(b => {
-            var a = document.createElement('a');
-            a.href = URL.createObjectURL(b);
-            a.setAttribute("download", self.filename);
-            a.click();
-          });
+          if ( res.ok ) {
+            return res.blob().then(b => {
+              var a = document.createElement('a');
+              a.href = URL.createObjectURL(b);
+              a.setAttribute("download", self.filename);
+              a.click();
+            });
+          }
         });
       }
     }
