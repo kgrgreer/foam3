@@ -382,7 +382,8 @@ foam.CLASS({
         if ( this.icon.endsWith('.svg') ) {
           var req  = this.HTTPRequest.create({
             method: 'GET',
-            path: this.icon
+            path: this.icon,
+            cache: true
           });
           await req.send().then(function(payload) {
             return payload.resp.text();
