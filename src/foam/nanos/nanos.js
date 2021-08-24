@@ -403,8 +403,6 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketDAOCreateView' },
   { name: 'foam/nanos/ticket/TicketSummaryView' },
   { name: 'foam/nanos/ticket/SummaryCard' },
-  { name: 'foam/nanos/ticket/TicketHistory' },
-  { name: 'foam/nanos/ticket/TicketHistoryRule' },
   { name: 'foam/nanos/ticket/TicketType' },
 
   // Dig

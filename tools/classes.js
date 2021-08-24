@@ -783,8 +783,6 @@ var classes = [
   'foam.nanos.ticket.TicketAddCommentDAO',
   'foam.nanos.ticket.TicketOwnerDAO',
   'foam.nanos.ticket.TicketCommentOwnerDAO',
-  'foam.nanos.ticket.TicketHistory',
-  'foam.nanos.ticket.TicketHistoryRule',
   'foam.nanos.ticket.TicketType',
 
   // Testing support

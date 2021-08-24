@@ -110,8 +110,9 @@ foam.CLASS({
       name: 'id',
       visibility: 'RO',
       section: 'infoSection',
-      order: 1,
-      tableWidth: 100
+      order: 2,
+      tableWidth: 100,
+      gridColumns: 6
     },
     {
       name: 'type',
@@ -126,13 +127,17 @@ foam.CLASS({
     return getClass().getSimpleName();
       `,
       tableWidth: 160,
-      order: 2
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
       of: 'foam.nanos.ticket.TicketType',
       name: 'category',
       label: 'Ticket type',
+      section: 'infoSection',
+      updateVisibility: 'RO',
+      order: 4,
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -164,6 +169,7 @@ foam.CLASS({
           }
         };
       },
+      gridColumns: 6
     },
     {
       name: 'statusChoices',
@@ -207,32 +213,32 @@ foam.CLASS({
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
-      order: 4
+      order: 1
     },
     {
       class: 'String',
       name: 'comment',
       value: '',
-    // required: true,
       storageTransient: true,
       section: 'infoSection',
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment'],
+          args: ['id', 'title', 'comment', 'externalComment'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
                 e.EQ(foam.nanos.ticket.Ticket.ID, 0),
                 e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
               ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, "")
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
             );
           },
-          errorString: 'Please provide a comment.'
+          errorString: 'Please provide a comment or external comment.'
         }
       ],
-      order: 5
+      order: 9
     },
     {
       class: 'DateTime',
@@ -254,7 +260,7 @@ foam.CLASS({
           }
         }.bind(this));
       },
-      section: 'infoSection', // until 'owner' showing
+      section: 'metaSection'
     },
     {
       class: 'Reference',
@@ -337,7 +343,27 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'assignedTo',
-      section: 'infoSection'
+      section: 'infoSection',
+      postSet: function(_, n) {
+        if ( n != 0 ) {
+          this.assignedToGroup = '';
+        }
+      },
+      order: 7,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'assignedToGroup',
+      section: 'infoSection',
+      postSet: function(_, n) {
+        if ( n !== '' ) {
+          this.assignedTo = 0;
+        }
+      },
+      order: 8,
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -345,59 +371,33 @@ foam.CLASS({
       name: 'createdFor',
       documentation: 'User/business this ticket was created for.',
       section: 'infoSection',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'RO',
-      updateVisibility: 'RO'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.nanos.ticket.TicketHistory',
-      name: 'ticketHistory',
-      documentation: 'Status history of the ticket.',
-      createVisibility: 'HIDDEN',
       readVisibility: 'RO',
       updateVisibility: 'RO',
-      javaFactory: `
-        TicketHistory[] h = new TicketHistory[1];
-        h[0] = new TicketHistory();
-        h[0].setAssignedTo(getAssignedTo());
-        h[0].setTimeStamp(new Date());
-        return h;`
+      order: 6,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'comment1',
-      transient: true,
-      createVisibility: 'RW',
-      readVisibility: 'RW',
-      updateVisibility: 'RW',
+      name: 'externalComment',
+      storageTransient: true,
       section: 'infoSection',
-      view: {
-        class: 'foam.u2.TextField'
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'reassignUser',
-      transient: true,
-      section: 'infoSection',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'RW',
-      updateVisibility: 'RW',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
-          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
-          sections: [
-            {
-              heading: 'Group',
-              dao: X.userDAO.orderBy(foam.nanos.auth.User.GROUP)
-            }
-          ]
-        };
-      }
+      validationPredicates: [
+        {
+          args: ['id', 'title', 'comment', 'externalComment'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
+                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
+              ),
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
+            );
+          },
+          errorString: 'Please provide a comment or external comment.'
+        }
+      ],
+      order: 10
     }
   ],
 
@@ -544,71 +544,6 @@ foam.CLASS({
           ) {
             X.stack.back();
           }
-        }, e => {
-          this.throwError.pub(e);
-          this.notify(e.message, '', this.LogLevel.ERROR, true);
-        });
-      }
-    },
-    {
-      name: 'reassign',
-      section: 'infoSection',
-      isAvailable: function(subject, assignedTo, status) {
-        return ( subject.user.id === assignedTo) && (status === 'OPEN');
-      },
-      code: function(X) {
-        var ticket = this.clone();
-        ticket.assignedTo = this.reassignUser;
-
-        this.ticketDAO.put(ticket).then(req => {
-          this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.finished.pub();
-          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
-        }, e => {
-          this.throwError.pub(e);
-          this.notify(e.message, '', this.LogLevel.ERROR, true);
-        });
-      }
-    },
-    {
-      name: 'internalComment',
-      section: 'infoSection',
-      code: function(X) {
-        let comment = this.TicketComment.create();
-        comment.comment = this.comment1;
-        comment.ticket = this.id;
-
-        this.ticketCommentDAO.put(comment).then(req => {
-          this.ticketCommentDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.finished.pub();
-          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
-          this.comment1 = '';
-        }, e => {
-          this.throwError.pub(e);
-          this.notify(e.message, '', this.LogLevel.ERROR, true);
-        });
-      }
-    },
-    {
-      name: 'externalComment',
-      section: 'infoSection',
-      code: function(X) {
-        let comment = this.TicketComment.create();
-        comment.comment = this.comment1;
-        comment.ticket = this.id;
-        comment.external = true;
-
-        this.ticketCommentDAO.put(comment).then(req => {
-          this.ticketCommentDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.finished.pub();
-          this.notify(this.SUCCESS_REASSIGNED, '', this.LogLevel.INFO, true);
-          this.comment1 = '';
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
