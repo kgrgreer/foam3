@@ -25,8 +25,7 @@ import static foam.mlang.MLang.TRUE;
  * Stores cache in user Session so that memory is freed when user logs out.
  **/
 public class CachingAuthService
-  extends ProxyAuthService
-{
+  extends ProxyAuthService {
   /**
    * A list of DAOs that will be listened to. When any of these DAOs update, the
    * cache will be invalidated. Use this to listen to DAOs that are specific to
@@ -35,51 +34,64 @@ public class CachingAuthService
    */
   protected String[] extraDAOsToListenTo_;
 
-  public static String CACHE_NAME = "UserPermissionCache";
-  protected static final int CACHE_SIZE = 10000;
+  private static final String CACHE_NAME = "UserPermissionCache";
+  private static final int CACHE_SIZE = 2;
 
-  protected static ConcurrentHashMap<String,Boolean> noUserCache__ = new ConcurrentHashMap<String,Boolean>();
+  protected static ConcurrentHashMap<String, Boolean> noUserCache__ = new ConcurrentHashMap<>();
   protected static LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
 
-  protected static Map<String,Boolean> getPermissionMap(final X x) {
-    Subject subject = (Subject) x.get("subject");
-    User    user    = subject.getUser();
+  private static User getUserFromContext(X x) {
+    if ( x != null ) {
+      Subject subject = (Subject) x.get("subject");
+      return subject.getUser();
+    }
 
+    return null;
+  }
+
+  private static User getRealUserFromContext(X x) {
+    if ( x != null ) {
+      Subject subject = (Subject) x.get("subject");
+      return subject.getRealUser();
+    }
+
+    return null;
+  }
+
+  protected static Map<String, Boolean> getPermissionMap(final X x, User user, User agent) {
     if ( user == null ) return noUserCache__;
 
-    long userId = user.getId();
-    Map<String,Boolean> map = userPermissionCache_.get(userId);
-
+    Map<String, Boolean> map = userPermissionCache_.get(user.getId());
     if ( map == null ) {
       Sink purgeSink = new Sink() {
         public void put(Object obj, Detachable sub) {
           purgeCache(x);
           sub.detach();
         }
+
         public void remove(Object obj, Detachable sub) {
           purgeCache(x);
           sub.detach();
         }
+
         public void eof() {
         }
+
         public void reset(Detachable sub) {
           purgeCache(x);
           sub.detach();
         }
       };
 
-      DAO       userDAO   = (DAO) x.get("localUserDAO");
-//      DAO       groupDAO  = (DAO) x.get("localGroupDAO");
-      DAO       userCapabilityJunction = (DAO) x.get("userCapabilityJunctionDAO");
-      DAO       groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
-      User      agent     = subject.getRealUser();
-      Predicate predicate = EQ(User.ID, userId);
+      DAO userDAO = (DAO) x.get("localUserDAO");
+      DAO userCapabilityJunction = (DAO) x.get("userCapabilityJunctionDAO");
+      DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
+      Predicate predicate = EQ(User.ID, user.getId());
 
       if ( agent != user ) {
         predicate = OR(predicate, EQ(User.ID, agent.getId()));
       }
 
-//      groupDAO.listen(purgeSink, TRUE);
       userDAO.listen(purgeSink, predicate);
       userCapabilityJunction.listen(purgeSink, predicate);
       groupPermissionJunctionDAO.listen(purgeSink, TRUE);
@@ -93,17 +105,16 @@ public class CachingAuthService
         }
       }
 
-      map = new ConcurrentHashMap<String,Boolean>();
-      userPermissionCache_.put(userId, map);
+      map = new ConcurrentHashMap<>();
+      userPermissionCache_.put(user.getId(), map);
     }
 
     return map;
   }
 
   public static void purgeCache(X x) {
-    Subject subject = (Subject) x.get("subject");
-    User user = subject.getUser();
-    if ( user != null ) {
+    User user = getUserFromContext(x);
+    if (user != null) {
       userPermissionCache_.remove(user.getId());
     }
   }
@@ -121,9 +132,18 @@ public class CachingAuthService
   public boolean check(foam.core.X x, String permission) {
     if ( x == null || permission == null ) return false;
 
+    User user = getUserFromContext(x);
+    return checkUser(x, user, permission);
+  }
+
+  @Override
+  public boolean checkUser(foam.core.X x, foam.nanos.auth.User user, String permission) {
+    if ( x == null || permission == null ) return false;
+
     Permission p = new AuthPermission(permission);
 
-    Map<String,Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_));
+    User agent = getRealUserFromContext(x);
+    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user, agent);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
