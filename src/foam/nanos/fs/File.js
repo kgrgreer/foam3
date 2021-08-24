@@ -17,7 +17,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.ServiceProviderAware'
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.fs.DownloadAware'
   ],
 
   requires: [
@@ -151,7 +152,7 @@ foam.CLASS({
           selected$: selectSlot
         });
       },
-      comparePropertyValues: function(o1, o2) { return 0; } 
+      comparePropertyValues: function(o1, o2) { return 0; }
     },
     {
       class: 'Blob',
@@ -297,6 +298,39 @@ foam.CLASS({
         }
         return "";
       `
+    },
+    {
+      type: 'java.io.InputStream',
+      name: 'download',
+      args: [ 'Context x' ],
+      javaCode: `
+        return ((InputStreamBlob) getData()).getInputStream();
+      `
+    },
+    {
+      type: 'foam.nanos.fs.File',
+      name: 'toFile',
+      args: [ 'Context x' ],
+      javaCode: 'return this;'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'Download',
+      code: function() {
+        var self = this;
+        fetch('/service/downloadAwareWebAgent?fileId=' + self.id, {
+          headers: { Authorization: 'BEARER ' + self.sessionID }
+        }).then(res => {
+          return res.blob().then(b => {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(b);
+            a.setAttribute("download", self.filename);
+            a.click();
+          });
+        });
+      }
     }
   ]
 });
