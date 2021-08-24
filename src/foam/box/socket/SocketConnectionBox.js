@@ -88,7 +88,7 @@ foam.CLASS({
     {
       name: 'replyBoxes',
       class: 'Map',
-      javaFactory: `return new HashMap();`,
+      javaFactory: `return java.util.Collections.synchronizedMap(new HashMap());`,
       visibility: 'HIDDEN',
     },
     {
