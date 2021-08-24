@@ -187,16 +187,12 @@ return ret;`
 var ruleGroups = getRuleGroups().get(pred);
 var sink = getRulesList().get(pred);
 for ( var rg : ruleGroups ) {
-  try {
     if ( rg.f(x, obj, oldObj) ) {
       var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
       if ( ! rules.isEmpty() ) {
         new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
       }
     }
-  } catch ( Throwable t ) {
-    logger.error("Failed applying rules in group:", rg.getId(), t);
-  }
 }`
     },
     {
