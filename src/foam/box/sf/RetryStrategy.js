@@ -17,6 +17,7 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
+  abstract: true,
   name: 'RetryStrategy',
 
   properties: [
@@ -27,7 +28,7 @@ foam.CLASS({
       value: 20
     },
     {
-      name: 'initialValue',
+      name: 'constantDelayTime',
       class: 'Long',
       value: 0
     },
@@ -46,7 +47,15 @@ foam.CLASS({
       javaType: 'long',
       args: 'long cur',
       javaCode: `
-        return 4000;
+        throw new RuntimeException("Do not support");
+      `
+    },
+    {
+      name: 'maxRetryDelay',
+      documentation: 'Unit: MS',
+      javaType: 'long',
+      javaCode: `
+        throw new RuntimeException("Do not support");
       `
     }
   ],
