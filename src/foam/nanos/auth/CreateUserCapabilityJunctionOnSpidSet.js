@@ -52,15 +52,15 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             Logger logger = (Logger) x.get("logger");
-            User user = (User) obj;
-            User old = (User) oldObj;
+            User   user   = (User) obj;
+            User   old    = (User) oldObj;
 
-            String spid = user.getSpid() == null ? null : user.getSpid().trim();
+            String spid    = user.getSpid() == null ? null : user.getSpid().trim();
             String oldSpid = old == null || old.getSpid() == null ? null : old.getSpid().trim();
 
             if ( spid == null || spid.isEmpty() || spid.equals(oldSpid) ) return;
 
-            ServiceProvider sp = (ServiceProvider) user.findSpid(x);
+            ServiceProvider sp = (ServiceProvider) user.findSpid(systemX);
             if ( sp == null ) {
               logger.error("Cannot find capability for service provider : ", spid);
               return;
