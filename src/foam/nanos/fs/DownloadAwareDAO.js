@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+    'foam.mlang.sink.Count',
     'static foam.mlang.MLang.*'
   ],
 
@@ -56,11 +57,13 @@ foam.CLASS({
             var file = ((DownloadAware) ret).toFile(x);
             if ( file != null ) {
               var fileDAO = ((DAO) x.get("fileDAO")).where(INSTANCE_OF(LinkedFile.class));
-              var linkedFile = (LinkedFile) fileDAO.find(AND(
+              var count = (Count) fileDAO.where(AND(
                 EQ(LinkedFile.OBJ_ID, id),
-                EQ(LinkedFile.TARGET_DAO_KEY, getDaoKey())));
-              if ( linkedFile == null ) {
-                linkedFile = new LinkedFile.Builder(x)
+                EQ(LinkedFile.TARGET_DAO_KEY, getDaoKey()))
+              ).limit(1).select(new Count());
+
+              if ( count.getValue() == 0 ) {
+                var linkedFile = new LinkedFile.Builder(x)
                   .setOwner(owner.getId())
                   .setObjId(id)
                   .setTargetDaoKey(getDaoKey())
