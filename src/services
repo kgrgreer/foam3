@@ -74,11 +74,6 @@ p({
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
     auth = new foam.nanos.auth.UserAndGroupAuthService(x);
-    auth = new foam.nanos.auth.PMAuthService.Builder(x)
-      .setLabel("uncached")
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.CachingAuthService(auth);
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -89,6 +84,11 @@ p({
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
+    auth = new foam.nanos.auth.CachingAuthService(auth);
+    auth = new foam.nanos.auth.PMAuthService.Builder(x)
+      .setLabel("uncached")
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
