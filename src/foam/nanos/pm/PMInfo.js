@@ -82,7 +82,8 @@ foam.CLASS({
       name: 'totalTime_',
       label: 'Total',
       transient: true,
-      expression: function(totalTime) { return totalTime; }
+      expression: function(totalTime) { return totalTime; },
+      javaGetter: 'return getTotalTime();'
     },
     {
       class: 'Long',
