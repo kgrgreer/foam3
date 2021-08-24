@@ -32,7 +32,8 @@ foam.CLASS({
       name: 'capabilityToReview',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      view: 'foam.nanos.crunch.ui.ReviewUCJView'
+      view: 'foam.nanos.crunch.ui.ReviewUCJView',
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'of',

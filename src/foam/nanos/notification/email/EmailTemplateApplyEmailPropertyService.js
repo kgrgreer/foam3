@@ -28,7 +28,7 @@ foam.CLASS({
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       if ( logger == null ) {
-        logger = new StdoutLogger();
+        logger = StdoutLogger.instance();
       }
       if ( templateArgs == null ) {
         return emailMessage;

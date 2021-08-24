@@ -144,10 +144,11 @@ foam.CLASS({
               data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
-            }, parent: this
+            }, parent: this,
+            popup: this.config.createPopup
           }));
         } else if ( this.config.createControllerView ) {
-          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this }));
+          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this, popup: this.config.createPopup }));
         } else {
           this.stack.push(this.StackBlock.create({
             view: {
@@ -159,7 +160,8 @@ foam.CLASS({
               menu: this.config.menu,
               controllerMode: foam.u2.ControllerMode.CREATE,
               isEdit: true
-            }, parent: this
+            }, parent: this,
+            popup: this.config.createPopup
           }));
         }
       }
@@ -241,7 +243,7 @@ foam.CLASS({
                 })
                 .call(function() {
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { data: data, config: config });
+                    return self.E().tag(browseView, { data: data, config: config } );
                   }));
                 })
               .end()

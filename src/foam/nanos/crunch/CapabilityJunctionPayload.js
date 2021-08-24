@@ -21,7 +21,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.Validatable',
     'foam.dao.DAO',
-    'foam.nanos.crunch.Capability'
+    'foam.nanos.crunch.Capability',
+    'foam.util.SafetyUtil'
   ],
 
   implements: [
@@ -34,7 +35,8 @@ foam.CLASS({
     {
       class: 'Reference',
       name: 'capability',
-      of: 'foam.nanos.crunch.Capability'
+      of: 'foam.nanos.crunch.Capability',
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'data',
@@ -92,11 +94,25 @@ foam.CLASS({
     },
     {
       name: 'toSummary',
+      type: 'String', //TODO: investigate why we need to define type String
       code: function(){
         return this.capability
           ? this.capabilityDAO.find(this.capability).then(capability => capability.name)
           : '';
-      }
+      },
+      javaCode: `
+        String toSummaryString = "";
+
+        if ( SafetyUtil.isEmpty(getCapability()) ){
+          return toSummaryString;
+        }
+
+        Capability capability = findCapability(getX());
+
+        toSummaryString = capability.getName();
+
+        return toSummaryString;
+      `
     }
   ],
 });

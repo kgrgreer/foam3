@@ -46,6 +46,7 @@ foam.CLASS({
       if ( old == null ||
            old.getEnabled() != nu.getEnabled() ||
            old.getStatus() != nu.getStatus() ) {
+        ClusterConfigSupport.REPLAY_NODES.clear(support);
         ClusterConfigSupport.NODE_COUNT.clear(support);
         ClusterConfigSupport.NODE_GROUPS.clear(support);
         ClusterConfigSupport.NODE_QUORUM.clear(support);

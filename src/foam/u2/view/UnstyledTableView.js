@@ -390,8 +390,8 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.select(function(obj) {
-                      view.selectedObjects[obj.id] = obj;
+                    view.data.inX(ctrl.__subContext__).select().then(function(obj) {
+                     view.selectedObjects[obj.id] = obj;
                     });
                   } else {
                     view.selectedObjects = {};
@@ -556,20 +556,14 @@ foam.CLASS({
                     view.hoverSelection = obj;
                   }).
                   callIf(view.dblclick && ! view.disableUserSelection, function() {
-                    tableRowElement.on('dblclick', function() {
+                    tableRowElement.on('dblclick', function(evt) {
+                      if ( view.shouldEscapeEvts(evt) ) return;
                       view.dblclick(null, obj.id);
                     });
                   }).
                   callIf( view.click && ! view.disableUserSelection, function() {
                     tableRowElement.on('click', function(evt) {
-                      // If we're clicking somewhere to close the context menu,
-                      // don't do anything.
-                      if (
-                        evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots'))
-                      ) {
-                        return;
-                      }
+                      if ( view.shouldEscapeEvts(evt) ) return;
 
                       if  ( ! thisObjValue ) {
                         dao.inX(ctrl.__subContext__).find(obj.id).then(v => {
@@ -761,34 +755,38 @@ foam.CLASS({
 
   listeners: [
     {
+      name: 'shouldEscapeEvts',
+      documentation: `Use this function to skip clicks/doubleclicks on table 
+                      elements such as checkboxes/context menus`,
+      code: function(evt) {
+        // If we're clicking somewhere to close the context menu or other inputs,
+        // don't do anything.
+        if (
+          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
+          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
+        ) {
+          return true;
+        }
+      }
+    },
+    {
       name: 'updateColumns_',
       isFramed: true,
       code: function() {
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;
-
         var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c => {
-          if ( auth ) {
-            var axiom = self.of.getAxiomByName(c[0]);
-            if ( axiom && axiom.columnPermissionRequired ) {
-              var clsName  = self.of.name.toLowerCase();
-              var propName = axiom.name.toLowerCase();
-              return auth.check(ctrl.__subContext__, `${clsName}.column.${propName}`).then(function(enabled) {
-                return enabled && c;
-              });
-            }
-          }
+        ).map(c =>{
           return c;
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-    }
+      }
   ]
 });
 

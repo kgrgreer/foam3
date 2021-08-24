@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import foam.core.PropertyInfo;
 import foam.core.X;
+import foam.core.XLocator;
 import foam.dao.DAO;
 import foam.lib.AndPropertyPredicate;
 import foam.lib.ExternalPropertyPredicate;
@@ -34,30 +35,30 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.ProxyParser;
 import foam.lib.parse.StringPStream;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.boot.NSpec;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.exception.GeneralException;
-import foam.nanos.http.Format;
-import foam.nanos.http.HttpParameters;
-import foam.nanos.http.WebAgent;
+import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
+import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 
-public class SugarWebAgent
-  implements WebAgent
+public class SugarWebAgent extends AuthWebAgent
+  implements SendErrorHandler
 {
   public SugarWebAgent() {}
 
   public void execute(X x) {
+    sendErrorHandler_ = this;
+
     Logger              logger         = (Logger) x.get("logger");
     PrintWriter         out            = x.get(PrintWriter.class);
     HttpServletResponse resp           = x.get(HttpServletResponse.class);
     HttpParameters      p              = x.get(HttpParameters.class);
     String              data           = p.getParameter("data");
 
-    var pm = new PM(SugarWebAgent.class.getSimpleName());
+    var pm = PM.create(x, true, getClass().getSimpleName());
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
@@ -97,6 +98,21 @@ public class SugarWebAgent
       DAO nSpecDAO = (DAO) x.get("nSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(serviceName);
 
+      if ( nspec.getAuthenticate() ) {
+        Session session = super.authenticate(x);
+
+        if ( session == null ) {
+          try {
+            sendError(x, resp, HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+          }  finally {
+            XLocator.set(null);
+          }
+          return;
+        }
+
+        x = session.getContext();
+      }
+
       // Check if service exists and is served.
       if ( nspec == null || ! nspec.getServe() ) {
         throw new RuntimeException(String.format("Could not find service named '%s'", serviceName));
@@ -110,8 +126,11 @@ public class SugarWebAgent
 
       Method[] method_ = class_.getMethods();  // get Methods' List from the class
 
+      boolean methodFound = false;
+
       for (var method : method_) {
         if (method.getName().equals(methodName)) { //found picked Method
+          methodFound = true;
 
           logger.debug("service : " + serviceName);
           logger.debug("methodName : " + method.getName());
@@ -145,7 +164,7 @@ public class SugarWebAgent
           executeMethod(x, resp, out, class_, serviceName, methodName, paramTypes, arglist);
         }
       }
-
+      if ( ! methodFound ) throw new RuntimeException("Invalid Method");
     } catch (Exception e) {
       DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
       pm.error(x, e.getMessage());
@@ -220,5 +239,11 @@ public class SugarWebAgent
     }
 
     return clsObj;
+  }
+
+  public void sendError(X x, int status, String message) {
+    DigErrorMessage error = new GeneralException(message);
+    error.setStatus(String.valueOf(status));
+    DigUtil.outputException(x, error, Format.JSON);
   }
 }

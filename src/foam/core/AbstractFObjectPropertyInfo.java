@@ -10,17 +10,16 @@ import foam.lib.json.OutputJSON;
 import foam.lib.json.UnknownFObject;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.security.MessageDigest;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.util.Iterator;
 import java.util.List;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public abstract class AbstractFObjectPropertyInfo
   extends AbstractObjectPropertyInfo
@@ -141,12 +140,31 @@ public abstract class AbstractFObjectPropertyInfo
 
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     Object propObj = get_(obj);
+    // Protects against mlang's which have arg1 as an FObjectProperty but store references
+    // to PropertyInfo's, which aren't FObjects.
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
       formatter.output((FObject) propObj, of(), this);
     } else {
       formatter.output(propObj);
     }
   }
+
+/*
+  public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
+    Object propObj = get_(obj);
+    // KGR: this seems to happen, but I'm not sure how
+    if ( ! ( propObj instanceof FObject ) ) {
+      format(formatter, obj);
+      return;
+    }
+
+    if ( propObj instanceof foam.lib.json.OutputJSON ) {
+      ((foam.lib.json.OutputJSON) propObj).formatJSON((foam.lib.formatter.JSONFObjectFormatter) formatter);
+    } else {
+      formatter.output((FObject) propObj, of(), this);
+    }
+  }
+  */
 
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));

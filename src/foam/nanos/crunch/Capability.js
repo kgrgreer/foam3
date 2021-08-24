@@ -41,7 +41,6 @@ foam.CLASS({
     'description',
     'version',
     'enabled',
-    'visible',
     'expiry',
     'daoKey'
   ],
@@ -306,6 +305,21 @@ foam.CLASS({
       documentation: `A short introduction displayed as subtitle in CapabilityRequirementView`,
       section: 'uiSettings',
       includeInDigest: false,
+    },
+    {
+      name: 'labels',
+      class: 'StringArray',
+      documentation: 'List of labels applied to this file',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView'
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'autoSave',
+      documentation: 'If false, disable auto save for wizardlets associated to this capability.',
+      hidden: true,
+      value: true
     }
   ],
 

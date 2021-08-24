@@ -10,7 +10,8 @@
   extends: 'foam.u2.Element',
 
   imports: [
-    'displayWidth'
+    'displayWidth',
+    'showFooter'
   ],
 
   requires: [
@@ -25,7 +26,10 @@
       justify-content: center;
       padding: 0 4vw;
       background-color: /*%WHITE%*/ white;
+      height: 100%;
+    }
 
+    ^show-footer {
       /* minus footer */
       height: calc(100% - 65px);
       height: -moz-calc(100% - 65px);
@@ -47,6 +51,8 @@
     /* TODO: Remove this when U3 allows non-E() adds */
     ^split-screen > *{
       width: 100%;
+      display: flex;
+      justify-content: center;
     }
   `,
 
@@ -84,6 +90,7 @@
 
       this.start()
         .addClass(this.myClass())
+        .enableClass(this.myClass('show-footer'), this.showFooter$)
         .add(grid)
       .end();
     }

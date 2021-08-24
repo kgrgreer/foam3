@@ -95,7 +95,7 @@ foam.CLASS({
     },
     {
       name: 'nextStep',
-      code: function(X) {
+      code: async function(X) {
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
@@ -104,6 +104,7 @@ foam.CLASS({
           }));
         } else {
           if ( ! this.user.emailVerified ) {
+            await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
@@ -126,6 +127,7 @@ foam.CLASS({
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       code: async function(X) {
+        this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {

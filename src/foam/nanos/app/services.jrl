@@ -1,0 +1,7 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "version",
+  "lazy": false,
+  "authenticate": false,
+  "serviceClass": "foam.nanos.app.VersionWebAgent"
+})

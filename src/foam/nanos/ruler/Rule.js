@@ -209,6 +209,7 @@
     {
       class: 'DateTime',
       name: 'created',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     },
@@ -216,6 +217,7 @@
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableCellFormatter: function(value, obj) {
@@ -230,6 +232,7 @@
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableCellFormatter: function(value, obj) {
@@ -243,6 +246,7 @@
     {
       class: 'DateTime',
       name: 'lastModified',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     },
@@ -250,6 +254,7 @@
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableCellFormatter: function(value, obj) {
@@ -264,6 +269,7 @@
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
+      section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableCellFormatter: function(value, obj) {
@@ -278,6 +284,7 @@
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
+      section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -299,6 +306,7 @@
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
+      section: 'basicInfo',
       value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       documentation: 'Service Provider Id of the rule. Default to ServiceProviderAware.GLOBAL_SPID for rule applicable to all service providers.'
     }
@@ -454,9 +462,7 @@
       name: 'authorizeOnRead',
       javaCode: `
         var auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "rule.read." + getId())
-          && ! auth.check(x, "serviceprovider.read." + getSpid())
-        ) {
+        if ( ! auth.check(x, "rule.read." + getId()) ) {
           throw new AuthorizationException("You do not have permission to read the rule.");
         }
       `
@@ -474,9 +480,7 @@
       name: 'authorizeOnDelete',
       javaCode: `
         var auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "rule.remove." + getId())
-          && ! auth.check(x, "serviceprovider.update." + getSpid())
-        ) {
+        if ( ! auth.check(x, "rule.remove." + getId()) ) {
           throw new AuthorizationException("You do not have permission to delete the rule.");
         }
       `

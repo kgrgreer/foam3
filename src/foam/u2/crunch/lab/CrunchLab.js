@@ -14,6 +14,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      padding: 32px;
+    }
     ^ svg {
       display: inline-block;
     }
@@ -23,7 +26,6 @@ foam.CLASS({
     ^ .foam-u2-Tabs-tabRow {
       margin-bottom: 30px;
     }
-
     ^ .foam-u2-Tabs-content > div > div {
       display: inline-flex;
       vertical-align: text-bottom;
@@ -153,13 +155,14 @@ foam.CLASS({
           else
             this.currentMemento_ = null;
         }
-      }
+      },
+      menuKeys: ['admin.capabilities']
     },
     {
       class: 'Boolean',
       name: 'showAllCapabilities',
       value: true,
-      help: `Toggles dropdown list to contain all capabilities instead 
+      help: `Toggles dropdown list to contain all capabilities instead
           of a filtered list based on user selections`
     },
     {
@@ -189,7 +192,7 @@ foam.CLASS({
           .end()
           .start(this.Tab, {
             label: this.UCJ_TAB,
-          })  
+          })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.CRUNCH_USER })
             .tag(this.SectionedDetailPropertyView, { data: this, prop: this.EFFECTIVE_USER })

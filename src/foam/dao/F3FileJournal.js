@@ -48,7 +48,7 @@ foam.CLASS({
         PM pm = new PM(dao.getOf(), "replay." + getFilename());
         AssemblyLine assemblyLine = x.get("threadPool") == null ?
           new foam.util.concurrent.SyncAssemblyLine()   :
-          new foam.util.concurrent.AsyncAssemblyLine(x) ;
+          new foam.util.concurrent.AsyncAssemblyLine(x, "replay") ;
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
@@ -88,11 +88,11 @@ foam.CLASS({
                 }
               });
             } catch ( Throwable t ) {
-              getLogger().error("Error replaying journal entry:", entry, t);
+              getLogger().error("Error replaying journal", dao.getOf().getId(), entry, t);
             }
           }
         } catch ( Throwable t) {
-          getLogger().error("Failed to read from journal", t);
+          getLogger().error("Failed to read journal", dao.getOf().getId(), t);
         } finally {
           assemblyLine.shutdown();
           pm.log(x);

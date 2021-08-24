@@ -164,7 +164,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
-      documentation: 'Determines whether the User can login to the platform.',
+      documentation: `Determines whether the User can login to the platform.
+      A user that tries to login with this false -- gets account disabled error msg.`,
       writePermissionRequired: true,
       includeInDigest: false,
       value: true,
@@ -697,7 +698,8 @@ foam.CLASS({
           );
 
         if ( ! findSelf &&
-             ! auth.check(x, "user.read." + this.getId())
+             ! auth.check(x, "user.read." + this.getId()) &&
+             ! auth.check(x, "user.readByGroup." + this.getGroup())
         ) {
           throw new AuthorizationException();
         }
@@ -726,8 +728,7 @@ foam.CLASS({
 
         if (
           ! updatingSelf &&
-          ! hasUserEditPermission &&
-          ! auth.check(x, "serviceprovider.update." + user.getSpid())
+          ! hasUserEditPermission
         ) {
           throw new AuthorizationException("You do not have permission to update this user.");
         }
@@ -759,8 +760,7 @@ foam.CLASS({
 
         if (
           ! SafetyUtil.equals(this.getId(), user.getId()) &&
-          ! auth.check(x, "user.remove." + this.getId()) &&
-          ! auth.check(x, "serviceprovider.remove." + this.getSpid())
+          ! auth.check(x, "user.remove." + this.getId())
         ) {
           throw new RuntimeException("You do not have permission to delete that user.");
         }
@@ -888,7 +888,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      name: 'group'
+      name: 'group',
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Enum',

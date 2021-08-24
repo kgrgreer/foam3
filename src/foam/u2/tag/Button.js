@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.u2.tag.CircleIndicator'
   ],
 
-  imports: ['theme?'],
+  imports: [ 'theme?' ],
 
   css: `
     ^ {

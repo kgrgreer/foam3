@@ -62,7 +62,7 @@ foam.CLASS({
       value: '/images/dropdown-icon.svg'
     },
     // Used for keyboard navigation
-    'firstEl_', 'lastEl_', 
+    'firstEl_', 'lastEl_',
     [ 'isMouseClick_', true ]
   ],
 
@@ -123,10 +123,23 @@ foam.CLASS({
 
     function addContent() {
       this.SUPER();
-      this.showDropdownIcon && this.start().addClass(this.myClass('dropdownIcon')).add(this.theme ?
-        this.HTMLView.create({ data: this.theme.glyphs.dropdown.expandSVG() }):
-        this.start('img').attr('src', this.dropdownIcon$).end()
-      ).end();
+      var self = this;
+      if ( this.showDropdownIcon ) {
+        this.add(this.shown$.map(function(shown) {
+          var e = self.E();
+          if ( shown ) {
+            e.start().addClass(self.myClass('dropdownIcon')).callIfElse(self.theme,
+              function() {
+                this.add(self.HTMLView.create({ data: self.theme.glyphs.dropdown.expandSVG() }));
+              },
+              function() {
+                this.start('img').attr('src', this.dropdownIcon$).end();
+              }
+            ).end();
+          }
+          return e;
+        }));
+      }
     },
 
     async function initializeOverlay() {
@@ -147,8 +160,11 @@ foam.CLASS({
         self.overlay_.close();
       });
 
+      // a list where element at i stores whether ith action in data is enabled or not
+      const enabled = await Promise.all(this.data.map(this.isEnabled.bind(this)));
       // a list where element at i stores whether ith action in data is available or not
       const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
+
       this.overlay_.startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
           if ( availabilities[index] ) {
@@ -157,7 +173,7 @@ foam.CLASS({
                 .addClass(self.myClass('button-container'))
                 .tag(action, { buttonStyle: 'UNSTYLED' })
                 .attrs({ tabindex: -1 })
-                .callIf(! action.createIsEnabled$(self.__context__, self.obj).get(), function() {
+                .callIf(! enabled[index], function() {
                   this
                     .addClass(self.myClass('disabled'))
                     .attrs({ disabled: true })
@@ -168,7 +184,7 @@ foam.CLASS({
       .endContext();
 
       // Moves focus to the modal when it is open and keeps it in the modal till it is closed
-      
+
       this.overlay_.on('keydown', this.onKeyDown);
       var actionElArray_ = this.overlay_.dropdownE_.childNodes;
       this.firstEl_ = actionElArray_[0].childNodes[0];
@@ -181,10 +197,19 @@ foam.CLASS({
       this.overlayInitialized_ = true;
     },
 
+    async function isEnabled(action) {
+      /*
+       * checks if action is enabled
+       */
+      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      if ( slot.get() ) return true;
+      return slot.args[1].promise || false;
+    },
+
     async function isAvailable(action) {
       /*
-        checks if action is available
-      */
+       * checks if action is available
+       */
       const slot = action.createIsAvailable$(this.__context__, this.obj);
       if ( slot.get() ) return true;
       return slot.promise || false;

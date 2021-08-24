@@ -19,7 +19,6 @@ foam.CLASS({
     'currentMenu',
     'isMenuOpen',
     'menuDAO',
-    'menuListener',
     'pushMenu',
     'theme',
     'user'
@@ -102,8 +101,7 @@ foam.CLASS({
 
     function openMenu(menu) {
       if ( menu.handler ) {
-        this.pushMenu(menu);
-        this.menuListener(menu);
+        this.pushMenu(menu, true);
       }
     }
   ],
@@ -120,11 +118,7 @@ foam.CLASS({
     {
       name: 'logout',
       code: function() {
-        this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
-          localStorage.removeItem('defaultSession');
-        });
+        this.pushMenu('sign-out');
       }
     }
   ],
@@ -180,8 +174,8 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-TreeViewRow-selected > .foam-u2-view-TreeViewRow-heading {
-       border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
-     }
+        border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
+    }
 
     ^ .foam-u2-view-TreeViewRow-heading {
         height: 10rem;

@@ -74,11 +74,6 @@ p({
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
     auth = new foam.nanos.auth.UserAndGroupAuthService(x);
-    auth = new foam.nanos.auth.PMAuthService.Builder(x)
-      .setLabel("uncached")
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.CachingAuthService(auth);
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -89,6 +84,11 @@ p({
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
+    auth = new foam.nanos.auth.CachingAuthService(auth);
+    auth = new foam.nanos.auth.PMAuthService.Builder(x)
+      .setLabel("uncached")
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
@@ -522,14 +522,22 @@ p({
   """
     return new foam.nanos.auth.AuthorizationDAO.Builder(x)
       .setDelegate((foam.dao.DAO) x.get("localServiceProviderDAO"))
-      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceprovider"))
+      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceproviderdao"))
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.ServiceProvider\"}"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler",                      "lazy":false,  "serve":false, "authenticate": false, "serviceClass":"foam.nanos.http.LiveScriptBundler"})
-p({"class":"foam.nanos.boot.NSpec", "name":"emailToken",                         "serve":true,  "serviceClass":"foam.nanos.auth.email.EmailTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"emailToken",
+  "serve":true,
+  "authenticate": false,
+  "serviceClass":"foam.nanos.auth.email.EmailTokenService",
+  "boxClass":"foam.nanos.auth.token.TokenServiceSkeleton",
+  "client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -650,6 +658,7 @@ p({
   "name": "sugar",
   "lazy": true,
   "serve": false,
+  "authenticate": false,
   "parameters": true,
   "serviceScript": "return new foam.nanos.dig.SugarWebAgent()"
 })
@@ -713,7 +722,6 @@ p({
   """
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setGuid(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -835,7 +843,6 @@ p({
       .setOf(foam.core.Currency.getOwnClassInfo())
       .setName("currency")
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("currencies")
       .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
@@ -895,7 +902,6 @@ p({
       .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
       .setPm(true)
-      .setPipelinePm(true)
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("approvalRequests")

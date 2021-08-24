@@ -215,7 +215,7 @@ foam.CLASS({
                 eval(self.data.code);
               } catch (x) {
                 self.data.error = true;
-                scope.log(x);
+                scope.log(x.toString());
               }
             }
           }
@@ -305,13 +305,15 @@ foam.CLASS({
 
   exports: [
     'globalScope',
+    'query',
     'selected'
   ],
 
   properties: [
-    { class: 'Int', name: 'count' },
-    { class: 'Int', name: 'exampleCount' },
-    { class: 'Int', name: 'errorCount' },
+    { class: 'Int',    name: 'count' },
+    { class: 'Int',    name: 'exampleCount' },
+    { class: 'Int',    name: 'errorCount' },
+    { class: 'String', name: 'query', view: 'foam.u2.SearchField', onKey: true },
     'selected',
     'testData',
     {
@@ -342,7 +344,7 @@ foam.CLASS({
       this.testData += await fetch('u2').then(function(response) {
         return response.text();
       });
-
+/*
       this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
@@ -358,6 +360,7 @@ foam.CLASS({
       this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
+      */
 
       var self = this;
       this.
@@ -369,6 +372,7 @@ foam.CLASS({
           style({ display: 'flex' }).
           start().
             addClass(this.myClass('index')).
+            add(this.QUERY).
             start().
             select(this.data, function(e) {
               self.count++;
@@ -377,6 +381,11 @@ foam.CLASS({
               return this.E('a')
                 .attrs({href: '#' + e.id})
                 .enableClass('error', e.error$)
+                .show(self.query$.map(function(q) {
+                  q = q.trim().toLowerCase();
+                  if ( ! q ) return true;
+                  return e.title.toLowerCase().indexOf(q) != -1;
+                }))
                 .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
                 .add(e.id, ' ', e.title)
                 .enableClass('selected', self.selected$.map(s => s == e.id))

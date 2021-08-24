@@ -56,7 +56,7 @@ public class JShellExecutor {
     } catch (Exception e) {
       Logger logger = (Logger) x.get("logger");
       if ( logger != null ) {
-        logger = new foam.nanos.logger.StdoutLogger();
+        logger = foam.nanos.logger.StdoutLogger.instance();
       }
       logger.error(this.getClass().getSimpleName(), "execute", e);
     }

@@ -60,6 +60,13 @@ foam.CLASS({
   methods: [
     async function render() {
       this.currentMemento_ = this.memento;
+
+      // Default controller config that would be used for nested tables if no menu config can be found.
+      // Update this  to be a fallback for menuKeys when we have menuKeys for references, DAOproperties and relationships
+      this.config.editPredicate =   foam.mlang.predicate.False.create();
+      this.config.createPredicate = foam.mlang.predicate.False.create();
+      this.config.deletePredicate = foam.mlang.predicate.False.create();
+
       if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
         this.openFullTable();
       } else {
@@ -88,7 +95,7 @@ foam.CLASS({
           class: this.DAOBrowseControllerView,
           data$: this.data$,
           config$: this.config$
-        }, parent: this }));
+        }, parent: this.__subContext__.createSubContext({ controllerMode: 'CREATE' }) }));
     }
   ],
   actions: [

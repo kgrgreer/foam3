@@ -48,9 +48,9 @@ foam.CLASS({
   protected class ContextAgentRunnable
     implements Runnable {
 
-    protected X x_;
+    protected X            x_;
     protected ContextAgent agent_;
-    protected String description_;
+    protected String       description_;
 
     public ContextAgentRunnable(X x, ContextAgent agent, String description) {
       x_ = x;
@@ -63,7 +63,7 @@ foam.CLASS({
       incrQueued(-1);
 
       Logger logger = (Logger) x_.get("logger");
-      PM     pm     = new PM(this.getClass(), agent_.getClass().getSimpleName()+":"+description_);
+      PM     pm     = PM.create(x_, this.getClass(), agent_.getClass().getSimpleName() + ":" + description_);
 
       X oldX = ((ProxyX) XLocator.get()).getX();
 

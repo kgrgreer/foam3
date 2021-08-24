@@ -63,6 +63,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.OrderedDAO',
     'foam.dao.PromisedDAO',
+    'foam.dao.QueryCachingDAODecorator',
     'foam.dao.TTLCachingDAO',
     'foam.dao.TTLSelectCachingDAO',
     'foam.dao.RequestResponseClientDAO',
@@ -136,7 +137,7 @@ foam.CLASS({
         // TODO: replace logger instantiation once javaFactory issue above is fixed
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
 
         logger = new PrefixLogger(new Object[] {
@@ -330,15 +331,17 @@ foam.CLASS({
         if ( getLogging() )
           delegate = new foam.nanos.logger.LoggingDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
-        /*
-        if ( getPipelinePm() && ( delegate instanceof ProxyDAO ) )
-          delegate = new foam.dao.PipelinePMDAO(getX(), getNSpec(), delegate);
-          */
+        if ( ( foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false")) || getPipelinePm() ) &&
+            getMdao() != null &&
+            ( delegate instanceof ProxyDAO ) )
+            delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);
+
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
         // see comments above regarding DAOs with init_
-        ((ProxyDAO)delegate_).setDelegate(delegate);
+        ((ProxyDAO) delegate_).setDelegate(delegate);
+
         return delegate_;
       `
     },
@@ -402,6 +405,12 @@ foam.CLASS({
       class: 'Long',
       name: 'ttlSelectPurgeTime',
       units: 'ms',
+      generateJava: false
+    },
+    {
+      documentation: 'Enable local in-memory query caching of the DAO',
+      class: 'Boolean',
+      name: 'queryCache',
       generateJava: false
     },
     {
@@ -764,7 +773,7 @@ model from which to test ServiceProvider ID (spid)`,
         // TODO: replace logger instantiation once javaFactory issue above is fixed
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
 
         logger = new PrefixLogger(new Object[] {
@@ -911,6 +920,13 @@ model from which to test ServiceProvider ID (spid)`,
             });
           }
         }
+      }
+
+      if ( this.queryCache ) {
+        //* Query cache ****
+        dao = this.QueryCachingDAODecorator.create({
+          delegate: dao
+        });
       }
 
       if ( this.journal ) {

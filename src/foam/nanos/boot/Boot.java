@@ -28,6 +28,7 @@ import static foam.mlang.MLang.EQ;
 public class Boot {
   // Context key used to store the top-level root context in the context.
   public final static String ROOT = "_ROOT_";
+  public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
   protected X                         root_      = new ProxyX();
@@ -40,8 +41,9 @@ public class Boot {
   public Boot(String datadir) {
     XLocator.set(root_);
 
-    Logger logger = new ProxyLogger(new StdoutLogger());
+    Logger logger = new ProxyLogger(StdoutLogger.instance());
     root_.put("logger", logger);
+    root_.put(BOOT_TIME, System.currentTimeMillis());
 
     boolean cluster = SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
 
@@ -72,7 +74,7 @@ public class Boot {
       }
 
       var x      = root_;
-      var path   = sp.getName().split("\\.");
+      var path   = sp.getName().split("/");
       var parent = new StringBuilder();
 
       // Register path as sub context
@@ -84,7 +86,7 @@ public class Boot {
         }
         x = (X) x.get(contextName);
 
-        if ( parent.length() > 0 ) parent.append(".");
+        if ( parent.length() > 0 ) parent.append("/");
         parent.append(contextName);
         subContexts.add(parent.toString());
       }
