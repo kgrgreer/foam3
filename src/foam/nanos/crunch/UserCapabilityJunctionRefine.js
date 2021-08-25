@@ -9,15 +9,15 @@ foam.CLASS({
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
 
-  implements: [ 
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.auth.LifecycleAware',
-  ],
+  implements: [ 'foam.nanos.auth.LifecycleAware' ],
 
-  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin',
+    'foam.nanos.auth.LastModifiedAwareMixin',
+    'foam.nanos.auth.LastModifiedByAwareMixin',
+    'foam.nanos.crunch.CapabilityJunctionPayload'
+  ],
 
   documentation: `
     Model for UserCapabilityJunction, contains the data needed to grant the
@@ -162,40 +162,6 @@ foam.CLASS({
         user last changed a capability of an effective user.
       `,
       includeInDigest: true,
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdBy',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdByAgent',
-      includeInDigest: true
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'lastModifiedBy',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'lastModifiedByAgent',
-      includeInDigest: true
     },
     // renewable
     {
