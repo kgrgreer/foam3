@@ -155,7 +155,6 @@ foam.CLASS({
   methods: [
     {
       documentation: `Send format:
-timestamp: 4 bytes, // used to generate a PM when received. 
 length: 1 byte, // message byte length
 message
 NOTE: duplicated in SocketConnectionReplyBox
@@ -167,7 +166,7 @@ NOTE: duplicated in SocketConnectionReplyBox
       String replyBoxId = null;
       if ( replyBox != null ) {
         replyBoxId = java.util.UUID.randomUUID().toString();
-        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getOwnClassInfo().getId(), getHost()+":"+getPort()+":roundtrip")));
+        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getClass().getSimpleName(), getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
@@ -193,7 +192,6 @@ NOTE: duplicated in SocketConnectionReplyBox
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
           // getLogger().debug("send", message);
-          out_.writeLong(System.currentTimeMillis());
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
           // TODO/REVIEW
@@ -227,19 +225,12 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
       ],
       javaCode: `
-      String pmKey = this.getClass().getSimpleName()+":"+getHost()+":"+getPort();
-      String pmName = "receive"; 
       OMLogger omLogger = (OMLogger) x.get("OMLogger");
       try {
         while ( getValid() ) {
           PM pm = null;
           try {
-            long sent = in_.readLong();
-            PM p = PM.create(getX(), this.getClass().getSimpleName(), getHost()+":"+getPort()+":network");
-            p.setStartTime(sent);
-            p.log(x);
-
-            pm = PM.create(x, pmKey, pmName);
+            pm = PM.create(x, this.getClass().getSimpleName(), getId()+":receive");
 
             int length = in_.readInt();
             byte[] bytes = new byte[length];
