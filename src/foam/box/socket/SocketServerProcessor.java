@@ -16,6 +16,7 @@ import foam.lib.json.JSONParser;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
+import foam.nanos.om.OMLogger;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -74,16 +75,13 @@ public class SocketServerProcessor
 
   public void execute(X x) {
     String pmKey = "SocketServerProcessor";
-    String pmName = String.valueOf(socket_.getRemoteSocketAddress());;
+    String pmName = String.valueOf(socket_.getRemoteSocketAddress());
+    OMLogger omLogger = (OMLogger) x.get("OMLogger");
     try {
       while ( true ) {
         PM pm = null;
         try {
-          long sent = in_.readLong();
-          PM p = PM.create(x, pmKey, pmName+":network");
-          p.setStartTime(sent);
-          p.log(x);
-
+          omLogger.log(pmKey, pmName);
           pm = PM.create(x, pmKey, pmName+":execute");
 
           int length = in_.readInt();
@@ -153,7 +151,6 @@ public class SocketServerProcessor
             String replyString = formatter.builder().toString();
             byte[] replyBytes = replyString.getBytes(java.nio.charset.StandardCharsets.UTF_8);
             synchronized ( out_ ) {
-              out_.writeLong(System.currentTimeMillis());
               out_.writeInt(replyBytes.length);
               out_.write(replyBytes);
               out_.flush();

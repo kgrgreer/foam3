@@ -9,6 +9,7 @@ package foam.nanos.bench;
 import foam.core.ContextAgent;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
 import foam.nanos.logger.Logger;
@@ -35,6 +36,7 @@ public class BenchmarkRunner
   protected int       threadCount_;
   protected Boolean   runPerThread_;
   protected Boolean   reverseThreads_;
+  protected Boolean   clearPMs_;
   protected int       invocationCount_;
   protected Benchmark test_;
   protected List<Map<String, Object>> results_ = new ArrayList<Map<String, Object>>();
@@ -52,6 +54,7 @@ public class BenchmarkRunner
     protected int       threadCount_     = Runtime.getRuntime().availableProcessors();
     protected Boolean   runPerThread_    = false;
     protected Boolean   reverseThreads_  = false;
+    protected Boolean   clearPMs_        = false;
     protected int       invocationCount_ = 0;
     protected Benchmark test_;
 
@@ -89,6 +92,11 @@ public class BenchmarkRunner
       return (T) this;
     }
 
+    public T setClearPMs(Boolean val) {
+      clearPMs_ = val;
+      return (T) this;
+    }
+
     public BenchmarkRunner build() {
       return new BenchmarkRunner(getX(), this);
     }
@@ -101,6 +109,7 @@ public class BenchmarkRunner
     runPerThread_    = builder.runPerThread_;
     reverseThreads_  = builder.reverseThreads_;
     invocationCount_ = builder.invocationCount_;
+    clearPMs_        = builder.clearPMs_;
     test_            = builder.test_;
   }
 
@@ -137,6 +146,13 @@ public class BenchmarkRunner
    */
   public Boolean getReverseThreads() {
     return reverseThreads_;
+  }
+
+  /**
+   * Clear PMInfoDAO after setup, before execute
+   */
+  public Boolean getClearPMs() {
+    return clearPMs_;
   }
 
   /**
@@ -188,6 +204,10 @@ public class BenchmarkRunner
         // set up the test
         logger.info("setup");
         test_.setup(x);
+
+        if ( getClearPMs() ) {
+          ((DAO) x.get("pmInfoDAO")).removeAll();
+        }
 
         // get start time
         long startTime = System.currentTimeMillis();

@@ -477,6 +477,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.DaggerLinkBenchmark',
   'foam.nanos.medusa.benchmark.DaggerVerifyBenchmark',
   'foam.nanos.medusa.benchmark.MedusaBenchmark',
+  'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
 

@@ -84,6 +84,10 @@ foam.CLASS({
       class: 'String',
       name: 'mode',
       value: 'cors'
+    },
+    {
+      class: 'Boolean',
+      name: 'cache'
     }
   ],
 
@@ -103,8 +107,12 @@ foam.CLASS({
       }
       this.addContentHeaders();
 
-      this.headers['Pragma'] = 'no-cache';
-      this.headers['Cache-Control'] = 'no-cache, no-store';
+      if ( this.cache ) {
+        this.headers['Cache-Control'] = 'public';
+      } else {
+        this.headers['Pragma'] = 'no-cache';
+        this.headers['Cache-Control'] = 'no-cache, no-store';
+      }
 
       var self = this;
 
