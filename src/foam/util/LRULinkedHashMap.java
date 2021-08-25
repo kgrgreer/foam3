@@ -1,7 +1,7 @@
 package foam.util;
 
+import foam.core.ContextAware;
 import foam.core.X;
-import foam.core.XLocator;
 import foam.nanos.om.OMLogger;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,29 +9,33 @@ import java.util.Map;
 /**
  * Created by marcroopchand on 2017-05-24.
  */
-public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
+public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements ContextAware {
 
   private static final String OM_MESSAGE_CACHE_HIT = "CacheHIT";
   private static final String OM_MESSAGE_CACHE_MISS = "CacheMISS";
 
   private final int maxSize_;
   private final String cacheName_;
-  private OMLogger omLogger_;
+  private final OMLogger omLogger_;
+  private X x_;
 
-  public LRULinkedHashMap(String cacheName, int maxSize) {
+  public LRULinkedHashMap(X x,String cacheName, int maxSize) {
     super(maxSize, 0.75f, true);
+
+    setX(x);
     this.cacheName_ = cacheName;
     this.maxSize_ = maxSize;
+    this.omLogger_ = (OMLogger) getX().get("OMLogger");
   }
 
   @Override
   public V get(Object key) {
     V result = super.get(key);
 
-    if (result != null) {
-      logOM(cacheName_, OM_MESSAGE_CACHE_HIT);
+    if ( result != null ) {
+      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
     } else {
-      logOM(cacheName_, OM_MESSAGE_CACHE_MISS);
+      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
     }
 
     return result;
@@ -42,9 +46,9 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     V result = super.getOrDefault(key, defaultValue);
 
     if ( result != null ) {
-      logOM(cacheName_, OM_MESSAGE_CACHE_HIT);
+      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
     } else {
-      logOM(cacheName_, OM_MESSAGE_CACHE_MISS);
+      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
     }
 
     return result;
@@ -55,21 +59,13 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     return size() >= maxSize_;
   }
 
-  private void logOM(String cache, String message) {
-    // Retrieve OM logger from service locator if it is available
-    if ( omLogger_ == null) {
-      try {
-        X x = XLocator.get();
-        if (x != null) {
-          omLogger_ = (OMLogger) x.get("OMLogger");
-        }
-      } catch (NullPointerException npe) {
-        // Failed to retrieve OM logger from context
-      }
-    }
+  @Override
+  public X getX() {
+    return x_;
+  }
 
-    if ( omLogger_ != null ) {
-      omLogger_.log(this.getClass().getSimpleName(), cache, message);
-    }
+  @Override
+  public void setX(X x) {
+    x_ = x;
   }
 }

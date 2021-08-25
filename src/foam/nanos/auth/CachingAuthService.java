@@ -35,10 +35,18 @@ public class CachingAuthService
   protected String[] extraDAOsToListenTo_;
 
   private static final String CACHE_NAME = "UserPermissionCache";
-  private static final int CACHE_SIZE = 2;
+  private static final int CACHE_SIZE = 10000;
 
-  protected static ConcurrentHashMap<String, Boolean> noUserCache__ = new ConcurrentHashMap<>();
-  protected static LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
+  protected static final ConcurrentHashMap<String, Boolean> noUserCache__ = new ConcurrentHashMap<>();
+  protected static LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_;
+
+  private static LRULinkedHashMap<Long, Map<String, Boolean>> getUserPermissionCache(X x) {
+    if (userPermissionCache_ == null) {
+      userPermissionCache_ = new LRULinkedHashMap<>(x, CACHE_NAME, CACHE_SIZE);
+    }
+
+    return userPermissionCache_;
+  }
 
   private static User getUserFromContext(X x) {
     if ( x != null ) {
@@ -61,7 +69,7 @@ public class CachingAuthService
   protected static Map<String, Boolean> getPermissionMap(final X x, User user, User agent) {
     if ( user == null ) return noUserCache__;
 
-    Map<String, Boolean> map = userPermissionCache_.get(user.getId());
+    Map<String, Boolean> map = getUserPermissionCache(x).get(user.getId());
     if ( map == null ) {
       Sink purgeSink = new Sink() {
         public void put(Object obj, Detachable sub) {
@@ -106,7 +114,7 @@ public class CachingAuthService
       }
 
       map = new ConcurrentHashMap<>();
-      userPermissionCache_.put(user.getId(), map);
+      getUserPermissionCache(x).put(user.getId(), map);
     }
 
     return map;
@@ -115,7 +123,7 @@ public class CachingAuthService
   public static void purgeCache(X x) {
     User user = getUserFromContext(x);
     if (user != null) {
-      userPermissionCache_.remove(user.getId());
+      getUserPermissionCache(x).remove(user.getId());
     }
   }
 
