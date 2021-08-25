@@ -163,6 +163,40 @@ foam.CLASS({
       `,
       includeInDigest: true,
     },
+    {
+      class: 'DateTime',
+      name: 'created',
+      includeInDigest: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      includeInDigest: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      includeInDigest: true
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      includeInDigest: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      includeInDigest: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true
+    },
     // renewable
     {
       name: 'isExpired',
@@ -201,41 +235,7 @@ foam.CLASS({
       name: 'gracePeriod',
       includeInDigest: true,
       section: 'ucjExpirySection'
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdBy',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdByAgent',
-      includeInDigest: true
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'lastModifiedBy',
-      includeInDigest: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'lastModifiedByAgent',
-      includeInDigest: true
-    },
+    }
   ],
 
   methods: [
