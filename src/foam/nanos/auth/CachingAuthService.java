@@ -17,15 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
 import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
 import static foam.mlang.MLang.TRUE;
 
 /**
  * Decorator to add Caching to AuthService.
  * Stores cache in user Session so that memory is freed when user logs out.
  **/
-public class CachingAuthService
-  extends ProxyAuthService {
+public class CachingAuthService extends ProxyAuthService {
   /**
    * A list of DAOs that will be listened to. When any of these DAOs update, the
    * cache will be invalidated. Use this to listen to DAOs that are specific to
@@ -37,39 +35,38 @@ public class CachingAuthService
   private static final String CACHE_NAME = "UserPermissionCache";
   private static final int CACHE_SIZE = 10000;
 
-  protected static final ConcurrentHashMap<String, Boolean> noUserCache__ = new ConcurrentHashMap<>();
-  protected static LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_;
+  protected LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
 
-  private static LRULinkedHashMap<Long, Map<String, Boolean>> getUserPermissionCache(X x) {
-    if (userPermissionCache_ == null) {
-      userPermissionCache_ = new LRULinkedHashMap<>(x, CACHE_NAME, CACHE_SIZE);
-    }
-
-    return userPermissionCache_;
+  public CachingAuthService(AuthService delegate) {
+    this(delegate, new String[0]);
   }
 
-  private static User getUserFromContext(X x) {
-    if ( x != null ) {
-      Subject subject = (Subject) x.get("subject");
-      return subject.getUser();
-    }
-
-    return null;
+  public CachingAuthService(AuthService delegate, String[] extraDAOsToListenTo) {
+    setDelegate(delegate);
+    extraDAOsToListenTo_ = extraDAOsToListenTo;
   }
 
-  private static User getRealUserFromContext(X x) {
-    if ( x != null ) {
-      Subject subject = (Subject) x.get("subject");
-      return subject.getRealUser();
-    }
+//  public static void purgeCache(X x, CachingAuthService service) {
+//    if ( service != null ) {
+//      service.purgeCache(x);
+//    }
+//  }
 
-    return null;
+  public void purgeCache(X x) {
+    User user = getUserFromContext(x);
+    if ( user != null ) {
+      userPermissionCache_.remove(user.getId());
+    }
   }
 
-  protected static Map<String, Boolean> getPermissionMap(final X x, User user, User agent) {
-    if ( user == null ) return noUserCache__;
+  protected Map<String, Boolean> getPermissionMap(final X x, User user) {
+    // TODO: Context is set on user permission cache for OM support, this can be removed when OM is removed from LRULinkListHashMap
+    if (userPermissionCache_.getX() == null) {
+      userPermissionCache_.setX(x);
+    }
 
-    Map<String, Boolean> map = getUserPermissionCache(x).get(user.getId());
+    long userId = user == null ? -1 : user.getId();
+    Map<String, Boolean> map = userPermissionCache_.get(userId);
     if ( map == null ) {
       Sink purgeSink = new Sink() {
         public void put(Object obj, Detachable sub) {
@@ -82,8 +79,7 @@ public class CachingAuthService
           sub.detach();
         }
 
-        public void eof() {
-        }
+        public void eof() {}
 
         public void reset(Detachable sub) {
           purgeCache(x);
@@ -94,11 +90,7 @@ public class CachingAuthService
       DAO userDAO = (DAO) x.get("localUserDAO");
       DAO userCapabilityJunction = (DAO) x.get("userCapabilityJunctionDAO");
       DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
-      Predicate predicate = EQ(User.ID, user.getId());
-
-      if ( agent != user ) {
-        predicate = OR(predicate, EQ(User.ID, agent.getId()));
-      }
+      Predicate predicate = EQ(User.ID, userId);
 
       userDAO.listen(purgeSink, predicate);
       userCapabilityJunction.listen(purgeSink, predicate);
@@ -114,26 +106,19 @@ public class CachingAuthService
       }
 
       map = new ConcurrentHashMap<>();
-      getUserPermissionCache(x).put(user.getId(), map);
+      userPermissionCache_.put(userId, map);
     }
 
     return map;
   }
 
-  public static void purgeCache(X x) {
-    User user = getUserFromContext(x);
-    if (user != null) {
-      getUserPermissionCache(x).remove(user.getId());
+  private User getUserFromContext(X x) {
+    if ( x != null ) {
+      Subject subject = (Subject) x.get("subject");
+      return subject.getUser();
     }
-  }
 
-  public CachingAuthService(AuthService delegate) {
-    this(delegate, new String[0]);
-  }
-
-  public CachingAuthService(AuthService delegate, String[] extraDAOsToListenTo) {
-    setDelegate(delegate);
-    extraDAOsToListenTo_ = extraDAOsToListenTo;
+    return null;
   }
 
   @Override
@@ -150,8 +135,7 @@ public class CachingAuthService
 
     Permission p = new AuthPermission(permission);
 
-    User agent = getRealUserFromContext(x);
-    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user, agent);
+    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 

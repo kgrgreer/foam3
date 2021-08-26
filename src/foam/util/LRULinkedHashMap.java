@@ -14,24 +14,25 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
   private static final String OM_MESSAGE_CACHE_HIT = "CacheHIT";
   private static final String OM_MESSAGE_CACHE_MISS = "CacheMISS";
 
+  private static final int INITIAL_CACHE_SIZE = 16;
+
   private final int maxSize_;
   private final String cacheName_;
-  private final OMLogger omLogger_;
+  private OMLogger omLogger_;
   private X x_;
 
-  public LRULinkedHashMap(X x,String cacheName, int maxSize) {
-    super(maxSize, 0.75f, true);
+  public LRULinkedHashMap(String cacheName, int maxSize) {
+    super(INITIAL_CACHE_SIZE, 0.75f, true);
 
-    setX(x);
     this.cacheName_ = cacheName;
     this.maxSize_ = maxSize;
-    this.omLogger_ = (OMLogger) getX().get("OMLogger");
   }
 
   @Override
   public V get(Object key) {
     V result = super.get(key);
 
+    // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
     if ( result != null ) {
       omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
     } else {
@@ -45,6 +46,7 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
   public V getOrDefault(Object key, V defaultValue) {
     V result = super.getOrDefault(key, defaultValue);
 
+    // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
     if ( result != null ) {
       omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
     } else {
@@ -65,7 +67,14 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
   }
 
   @Override
-  public void setX(X x) {
-    x_ = x;
+  public synchronized void setX(X x) {
+    if ( x_ == null ) {
+      x_ = x;
+
+      // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
+      if ( this.omLogger_ == null ) {
+        this.omLogger_ = (OMLogger) getX().get("OMLogger");
+      }
+    }
   }
 }
