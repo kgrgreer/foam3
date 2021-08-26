@@ -341,6 +341,7 @@ FOAM_FILES([
   { name: 'foam/nanos/auth/CommonPassword' },
   { name: 'foam/nanos/auth/AddressConfig' },
   { name: "foam/nanos/auth/UserNotFoundException" },
+  { name: 'foam/nanos/auth/AuthorizeAnonymousClientDecorator' },
   { name: "foam/nanos/logger/Logger" },
   { name: "foam/nanos/logger/DAOLogger" },
   { name: "foam/nanos/logger/LoggingDAO" },

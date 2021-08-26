@@ -407,12 +407,11 @@ foam.CLASS({
             return;
           }
         }
-
+        await self.fetchGroup();
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
         self.languageInstalled.resolve();
-
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
           get: function() {
@@ -433,7 +432,6 @@ foam.CLASS({
 
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
-        await self.fetchGroup();
         await self.fetchTheme();
         self.onUserAgentAndGroupLoaded();
         self.mementoChange();
@@ -564,10 +562,12 @@ foam.CLASS({
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
-
-        if ( ! result || ! result.user) throw new Error();
-
         this.subject = result;
+
+        var promptlogin = await this.client.auth.check(this, 'auth.promptlogin');
+        var authResult =  await this.client.auth.check(this, '*');
+        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
+
       } catch (err) {
         this.languageInstalled.resolve();
         await this.requestLogin();

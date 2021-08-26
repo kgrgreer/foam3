@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -65,6 +66,32 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'authorizeAnonymous',
+      documentation: `
+        Authorizes a anonymous user that has no true ownership. The assigned anonymous user is relative to a spid,
+        holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
+      `,
+      javaCode: `
+        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
+        if ( serviceProvider == null ) {
+          throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize anonymous user.");
+        }
+
+        User anonymousUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getAnonymousUser());
+        if ( anonymousUser == null ) {
+          throw new AuthorizationException("Unable to find anonymous user.");
+        }
+
+        Session session = x.get(Session.class);
+        if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
+        session.setUserId(anonymousUser.getId());
+        session.setAgentId(0);
+        session.setContext(session.applyTo(session.getContext()));
+        ((DAO) getLocalSessionDAO()).inX(x).put(session);
+        return ((Subject) x.get("subject"));
+      `
+    },
     {
       name: 'start',
       javaCode: '// nothing here'
@@ -137,11 +164,13 @@ foam.CLASS({
         } catch (foam.core.ValidationException e) {
           throw new AccessDeniedException(e);
         }
+
         Session session = x.get(Session.class);
         // Re use the session context if the current session context's user id matches the id of the user trying to log in
         if ( session.getUserId() == user.getId() ) {
           return user;
         }
+        CachingAuthService.purgeCache(x);
         // Freeze user
         user = (User) user.fclone();
         user.freeze();

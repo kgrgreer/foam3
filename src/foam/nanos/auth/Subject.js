@@ -51,7 +51,7 @@ foam.CLASS({
       name: 'userPath',
       documentation: 'path from realUser to current user',
       javaFactory: 'return new ArrayList();'
-    },
+    }
   ],
 
   axioms: [
