@@ -91,6 +91,7 @@ foam.CLASS({
       documentation: 'report stats when true',
       name: 'debug',
       class: 'Boolean',
+      value: true
     }
   ],
 
@@ -204,7 +205,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        foam.nanos.logger.Loggers.logger(x, this).info("report", "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Loggers.logger(x, this).info("report", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
