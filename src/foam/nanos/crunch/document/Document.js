@@ -81,6 +81,8 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+      super.validate(x);
+
       if ( getIsRequired() && getDocuments().length == 0 ) {
         throw new foam.core.ValidationException(IMAGE_REQUIRED);
       }
