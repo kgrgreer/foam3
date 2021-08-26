@@ -2318,7 +2318,7 @@ foam.CLASS({
     {
       type: 'FObject',
       name: 'fclone',
-      javaCode: 'Thread.dumpStack(); return this;'
+      javaCode: 'return this;'
     },
     {
       name: 'f',
