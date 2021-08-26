@@ -22,7 +22,6 @@ import foam.util.SafetyUtil;
 import java.lang.Exception;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.DOT_F;
 
@@ -119,8 +118,9 @@ public class QueryParser
     });
 
     grammar.addSymbol("EXPR", new Alt(grammar.sym("PAREN"),
-      grammar.sym("NEGATE"), grammar.sym("HAS"), grammar.sym("IS"), grammar.sym("DOT"), grammar.sym("INSTANCE_OF"),
-      grammar.sym("EQUALS"), grammar.sym("BEFORE"), grammar.sym("AFTER"), grammar.sym("ID")));
+      grammar.sym("NEGATE"), grammar.sym("HAS"), grammar.sym("IS"), grammar.sym("DOT"), grammar.sym("CLASS_OF"),
+      grammar.sym("IS_SET"), grammar.sym("INSTANCE_OF"), grammar.sym("EQUALS"), grammar.sym("BEFORE"),
+      grammar .sym("AFTER"), grammar.sym("ID")));
 
     grammar.addSymbol("PAREN", new Seq1(1,
       Literal.create("("),
@@ -195,6 +195,33 @@ public class QueryParser
       Binary predicate = new Eq ();
       predicate.setArg1((PropertyInfo) val);
       predicate.setArg2(new foam.mlang.Constant(true));
+      return predicate;
+    });
+
+    grammar.addSymbol("CLASS_OF", new Seq1(2,
+      new Alt(Literal.create("classof")),
+      Whitespace.instance(),
+      grammar.sym("STRING")
+    ));
+    grammar.addAction("CLASS_OF", (val, x) -> {
+      try {
+        Class cls = Class.forName((String) val);
+        FObject clsInstance = (FObject) cls.newInstance();
+        IsClassOf classOf = new IsClassOf();
+        classOf.setTargetClass(clsInstance.getClassInfo());
+        return classOf;
+      } catch (Exception e) {
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+        logger.warning("failed to parse classOf query");
+        return null;
+      }
+    });
+
+    grammar.addSymbol("IS_SET", new Seq1(1, Literal.create("isset:"),
+      grammar.sym("FIELD_NAME")));
+    grammar.addAction("IS_SET", (val, x) -> {
+      Has predicate = new IsSet();
+      predicate.setArg1((PropertyInfo) val);
       return predicate;
     });
 
