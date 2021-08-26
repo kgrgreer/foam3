@@ -19,6 +19,7 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'ActionView',
   extends: 'foam.u2.tag.Button',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     A button View for triggering Actions.
@@ -39,8 +40,6 @@ foam.CLASS({
     'ctrl',
     'memento?'
   ],
-
-  exports: ['memento'],
 
   enums: [
     {
@@ -119,15 +118,20 @@ foam.CLASS({
       }
     },
     {
-      name: 'mementoHead',
-      factory: function(action) { return this.action.mementoHead; }
-    }
+      name: 'mementoName',
+      factory: function(action) { return this.action.mementoName; }
+    },
   ],
 
   methods: [
     function render() {
-      if ( this.mementoHead && this.memento?.head == this.mementoHead ) {
-        this.click();
+      if ( this.mementoName ) {
+        if ( this.memento?.head == this.mementoName ) {
+          this.click();
+        }
+        this.initMemento();
+      } else {
+        this.currentMemento_ = this.memento;
       }
 
       this.tooltip = this.action.toolTip;
@@ -177,6 +181,9 @@ foam.CLASS({
         }
       } catch (x) {
         console.warn('Unexpected Exception in Action: ', x);
+      }
+      if ( this.memento && this.mementoName ) {
+        this.memento.head = this.mementoName;
       }
       if (e) {
         e.preventDefault();

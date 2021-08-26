@@ -188,7 +188,7 @@ If empty then no permissions are required.`
     },
     {
       class: 'String',
-      name: 'mementoHead',
+      name: 'mementoName',
       documentation: 'If this value appears in the mementoHead on ActionView render, the action is executed',
       generateJava: false,
       value: ''
