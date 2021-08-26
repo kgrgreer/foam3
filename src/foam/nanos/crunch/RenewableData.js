@@ -34,6 +34,7 @@ foam.CLASS({
       name: 'reviewed',
       class: 'Boolean',
       section: 'reviewDataSection',
+      hidden: true,
       validationPredicates: [
         {
           args: ['renewable', 'reviewed'],
