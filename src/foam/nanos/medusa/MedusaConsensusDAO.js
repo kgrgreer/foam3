@@ -22,6 +22,7 @@ This is the heart of Medusa.`,
     'foam.core.Agency',
     'foam.core.AgencyTimerTask',
     'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -73,7 +74,7 @@ This is the heart of Medusa.`,
     {
       name: 'initialTimerDelay',
       class: 'Long',
-      value: 30000
+      value: 10000
     },
     {
       name: 'lastPromotedIndex',
@@ -253,12 +254,11 @@ This is the heart of Medusa.`,
       name: 'start',
       javaCode: `
       getLogger().info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
       timer.schedule(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        new AgencyTimerTask(getX(), this),
         getInitialTimerDelay());
-      `
+       `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
@@ -270,8 +270,6 @@ This is the heart of Medusa.`,
         }
       ],
       javaCode: `
-      String savedThreadName = Thread.currentThread().getName();
-      Thread.currentThread().setName(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
@@ -356,7 +354,7 @@ This is the heart of Medusa.`,
             if ( next == null ||
                  entry != null &&
                  ! entry.getPromoted() ) {
-               gap(x, nextIndex, nextIndexSince);
+              gap(x, nextIndex, nextIndexSince);
             }
           } finally {
             pm.log(x);
@@ -384,7 +382,6 @@ This is the heart of Medusa.`,
         ((DAO) x.get("alarmDAO")).put(alarm);
       } finally {
         getLogger().warning("promoter", "exit");
-        Thread.currentThread().setName(savedThreadName);
       }
      `
     },

@@ -53,7 +53,7 @@ foam.CLASS({
                                             EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
                 ));
           Count count = (Count) receivers.select(new Count());
-          Logger logger = (Logger) x.get("logger");
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           if ( count.getValue() == 0 ) {
             logger.warning("Notification " + notif.getNotificationType() +
               " will not be saved to notificationDAO because no users exist in the group " + notif.getGroupId());

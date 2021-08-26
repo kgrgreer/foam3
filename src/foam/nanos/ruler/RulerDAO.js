@@ -23,15 +23,14 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'foam.mlang.order.Desc',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.GroupBy',
-    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.dao.Operation',
-    'foam.util.SafetyUtil',
+    'java.util.ArrayList',
     'java.util.List',
     'java.util.Map',
-    'java.util.stream.Collectors',
     'static foam.mlang.MLang.*'
   ],
 
@@ -114,7 +113,14 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'rulesList',
+      javaType: 'Map<Predicate, GroupBy>',
       javaFactory: `return new java.util.HashMap<Predicate, GroupBy>();`
+    },
+    {
+      class: 'Map',
+      name: 'ruleGroups',
+      javaType: 'Map<Predicate, List<RuleGroup>>',
+      javaFactory: 'return new java.util.HashMap<Predicate, List<RuleGroup>>();'
     }
   ],
 
@@ -122,11 +128,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-Map rulesList = getRulesList();
 if ( oldObj == null ) {
-  applyRules(x, obj, oldObj, (GroupBy) rulesList.get(getCreateBefore()));
+  applyRules(x, obj, oldObj, getCreateBefore());
 } else {
-  applyRules(x, obj, oldObj, (GroupBy) rulesList.get(getUpdateBefore()));
+  applyRules(x, obj, oldObj, getUpdateBefore());
 }
 
 // Clone and pass unfrozen object to 'sync' 'after' rules so, similar
@@ -138,9 +143,9 @@ if ( ret != null ) {
   ret = ret.fclone();
   FObject before = ret.fclone();
   if ( oldObj == null ) {
-    applyRules(x, ret, oldObj, (GroupBy) rulesList.get(getCreateAfter()));
+    applyRules(x, ret, oldObj, getCreateAfter());
   } else {
-    applyRules(x, ret, oldObj, (GroupBy) rulesList.get(getUpdateAfter()));
+    applyRules(x, ret, oldObj, getUpdateAfter());
   }
 
   // Test for changes during 'after' rule
@@ -153,9 +158,9 @@ return ret;`
     {
       name: 'remove_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-applyRules(x, obj, oldObj, (GroupBy) getRulesList().get(getRemoveBefore()));
+applyRules(x, obj, oldObj, getRemoveBefore());
 FObject ret =  getDelegate().remove_(x, obj);
-applyRules(x, ret, oldObj, (GroupBy) getRulesList().get(getRemoveAfter()));
+applyRules(x, ret, oldObj, getRemoveAfter());
 return ret;`
     },
     {
@@ -174,30 +179,20 @@ return ret;`
           type: 'foam.core.FObject'
         },
         {
-          name: 'sink',
-          type: 'foam.mlang.sink.GroupBy'
+          name: 'pred',
+          type: 'Predicate'
         }
       ],
-      javaCode: `
-var groupIds = new java.util.ArrayList(sink.getGroupKeys());
-((DAO) x.get("ruleGroupDAO"))
-  .where(IN(RuleGroup.ID, groupIds))
-  .select(new AbstractSink() {
-    @Override
-    public void put(Object o, Detachable s) {
-      var rg = (RuleGroup) o;
-      if ( rg.f(x, obj, oldObj) ) {
-        var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
-        if ( ! rules.isEmpty() ) {
-          new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
-        }
+      javaCode: `var logger = (Logger) x.get("logger");
+var ruleGroups = getRuleGroups().get(pred);
+var sink = getRulesList().get(pred);
+for ( var rg : ruleGroups ) {
+    if ( rg.f(x, obj, oldObj) ) {
+      var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
+      if ( ! rules.isEmpty() ) {
+        new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
       }
-      groupIds.remove(rg.getId());
     }
-  });
-
-if ( ! groupIds.isEmpty() ) {
-  ((foam.nanos.logger.Logger) x.get("logger")).error("RuleGroup not found.", groupIds);
 }`
     },
     {
@@ -234,7 +229,21 @@ addRuleList(localRuleDAO, getUpdateBefore());
 addRuleList(localRuleDAO, getRemoveBefore());
 addRuleList(localRuleDAO, getCreateAfter());
 addRuleList(localRuleDAO, getUpdateAfter());
-addRuleList(localRuleDAO, getRemoveAfter());`
+addRuleList(localRuleDAO, getRemoveAfter());
+
+// RuleGroup listener
+var ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
+ruleGroupDAO.listen(new AbstractSink() {
+  @Override
+  public void put(Object obj, Detachable sub) {
+    updateRuleGroups(getCreateBefore());
+    updateRuleGroups(getUpdateBefore());
+    updateRuleGroups(getRemoveBefore());
+    updateRuleGroups(getCreateAfter());
+    updateRuleGroups(getUpdateAfter());
+    updateRuleGroups(getRemoveAfter());
+  }
+}, null);`
     },
     {
       name: 'cmd_',
@@ -288,11 +297,35 @@ for ( Object key : groups.getGroupKeys() ) {
           type: 'foam.mlang.predicate.Predicate'
         }
       ],
-      javaCode: `getRulesList().put(
-     predicate,
-     dao.where(predicate)
-       .select(GROUP_BY(Rule.RULE_GROUP, new ArraySink()))
-   );`
+      javaCode: `
+getRulesList().put(
+  predicate,
+  (GroupBy) dao.where(predicate)
+               .select(GROUP_BY(Rule.RULE_GROUP, new ArraySink()))
+);
+updateRuleGroups(predicate);`
+    },
+    {
+      name: 'updateRuleGroups',
+      args: [ 'Predicate predicate' ],
+      javaCode: `var dao = (DAO) getX().get("ruleGroupDAO");
+var groupIds = new ArrayList(getRulesList().get(predicate).getGroupKeys());
+var ruleGroups = new ArrayList<RuleGroup>();
+dao.where(IN(RuleGroup.ID, groupIds)).select(new AbstractSink() {
+  @Override
+  public void put(Object obj, Detachable sub) {
+    var rg = (RuleGroup) obj;
+    ruleGroups.add(rg);
+    groupIds.remove(rg.getId());
+  }
+});
+getRuleGroups().put(predicate, ruleGroups);
+
+// Log rule group not found error
+var logger = (Logger) getX().get("logger");
+for ( var groupId : groupIds ) {
+  logger.error("RuleGroup not found. Rules in the group will not be run.", groupId);
+}`
     }
   ],
 

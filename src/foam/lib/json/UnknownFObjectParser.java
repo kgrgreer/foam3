@@ -20,8 +20,7 @@ public class UnknownFObjectParser
 
     if ( ps == null ) return null;
 
-    UnknownFObject unknownFObject = ((X) x.get("X")).create(UnknownFObject.class);
-//     System.err.println("Unknown JSON: " + ps.value().toString());
+    UnknownFObject unknownFObject = new UnknownFObject();
     unknownFObject.setJson(ps.value().toString());
     return ps.setValue(unknownFObject);
   }

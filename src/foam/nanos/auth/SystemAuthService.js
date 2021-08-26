@@ -36,9 +36,8 @@ foam.CLASS({
       name: 'init',
       javaCode: `
         DAO groupPermissionJunctionDAO = (DAO) getX().get("groupPermissionJunctionDAO");
-        if ( groupPermissionJunctionDAO == null ) {
-          return;
-        }
+
+        if ( groupPermissionJunctionDAO == null ) return;
 
         Map<String, Boolean> cache = ( Map<String, Boolean> ) getCache();
         groupPermissionJunctionDAO.listen(new Sink() {
@@ -82,9 +81,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( group == null ) {
-          return false;
-        }
+        if ( group == null ) return false;
+
         AuthService auth = (AuthService) x.get("auth");
         Map<String, Boolean> cache = getCache();
         var groupCache = cache.get(group.getId());
@@ -93,6 +91,7 @@ foam.CLASS({
           cache.put(group.getId(), isSuper);
           return isSuper;
         }
+
         return groupCache;
       `
     }
