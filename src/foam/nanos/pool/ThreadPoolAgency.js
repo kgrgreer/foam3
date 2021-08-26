@@ -194,7 +194,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        ((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "report", "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Logger.logger(x, this).info("report", "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
