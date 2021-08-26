@@ -11,6 +11,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.nanos.NanoService'
   ],
 
@@ -114,6 +115,9 @@ foam.CLASS({
       }
     );
     pool_.allowCoreThreadTimeOut(true);
+    java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
+    timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), 1000, 1000);
+
 `
     },
     {
@@ -179,6 +183,20 @@ foam.CLASS({
     incrQueued(1);
     getPool().submit(new ContextAgentRunnable(x, agent, description));
      `
+    },
+    {
+      name: 'execute',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+      if ( getQueued() > 0 ) {
+        ((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "report", "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+      }
+      `
     }
   ]
 });
