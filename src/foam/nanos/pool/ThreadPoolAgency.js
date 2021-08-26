@@ -92,6 +92,11 @@ foam.CLASS({
       name: 'debug',
       class: 'Boolean',
       value: true
+    },
+    {
+      name: 'reportInterval',
+      class: 'Long',
+      value: 1000
     }
   ],
 
@@ -126,9 +131,8 @@ foam.CLASS({
 
     if ( getDebug() ) {
       java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), 1000, 1000);
+      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval(), getReportInterval());
     }
-
 `
     },
     {
@@ -205,7 +209,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        foam.nanos.logger.Loggers.logger(x, this).info("report", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
