@@ -46,11 +46,30 @@ public class CachingAuthService extends ProxyAuthService {
     extraDAOsToListenTo_ = extraDAOsToListenTo;
   }
 
-//  public static void purgeCache(X x, CachingAuthService service) {
-//    if ( service != null ) {
-//      service.purgeCache(x);
-//    }
-//  }
+  @Override
+  public boolean check(foam.core.X x, String permission) {
+    if ( x == null || permission == null ) return false;
+
+    User user = getUserFromContext(x);
+    return checkUser(x, user, permission);
+  }
+
+  @Override
+  public boolean checkUser(foam.core.X x, foam.nanos.auth.User user, String permission) {
+    if ( x == null || permission == null ) return false;
+
+    Permission p = new AuthPermission(permission);
+
+    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user);
+
+    if ( map.containsKey(p.getName()) ) return map.get(p.getName());
+
+    boolean permissionCheck = getDelegate().check(x, permission);
+
+    map.put(p.getName(), permissionCheck);
+
+    return permissionCheck;
+  }
 
   public void purgeCache(X x) {
     User user = getUserFromContext(x);
@@ -61,7 +80,7 @@ public class CachingAuthService extends ProxyAuthService {
 
   protected Map<String, Boolean> getPermissionMap(final X x, User user) {
     // TODO: Context is set on user permission cache for OM support, this can be removed when OM is removed from LRULinkListHashMap
-    if (userPermissionCache_.getX() == null) {
+    if ( userPermissionCache_.getX() == null ) {
       userPermissionCache_.setX(x);
     }
 
@@ -79,7 +98,8 @@ public class CachingAuthService extends ProxyAuthService {
           sub.detach();
         }
 
-        public void eof() {}
+        public void eof() {
+        }
 
         public void reset(Detachable sub) {
           purgeCache(x);
@@ -119,30 +139,5 @@ public class CachingAuthService extends ProxyAuthService {
     }
 
     return null;
-  }
-
-  @Override
-  public boolean check(foam.core.X x, String permission) {
-    if ( x == null || permission == null ) return false;
-
-    User user = getUserFromContext(x);
-    return checkUser(x, user, permission);
-  }
-
-  @Override
-  public boolean checkUser(foam.core.X x, foam.nanos.auth.User user, String permission) {
-    if ( x == null || permission == null ) return false;
-
-    Permission p = new AuthPermission(permission);
-
-    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user);
-
-    if ( map.containsKey(p.getName()) ) return map.get(p.getName());
-
-    boolean permissionCheck = getDelegate().check(x, permission);
-
-    map.put(p.getName(), permissionCheck);
-
-    return permissionCheck;
   }
 }
