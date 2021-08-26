@@ -33,10 +33,12 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
     V result = super.get(key);
 
     // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
-    if ( result != null ) {
-      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
-    } else {
-      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
+    if ( omLogger_ != null ) {
+      if ( result != null ) {
+        omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
+      } else {
+        omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
+      }
     }
 
     return result;
@@ -47,10 +49,12 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
     V result = super.getOrDefault(key, defaultValue);
 
     // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
-    if ( result != null ) {
-      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
-    } else {
-      omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
+    if ( omLogger_ != null ) {
+      if ( result != null ) {
+        omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_HIT);
+      } else {
+        omLogger_.log(this.getClass().getSimpleName(), this.cacheName_, OM_MESSAGE_CACHE_MISS);
+      }
     }
 
     return result;
