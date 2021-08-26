@@ -181,6 +181,7 @@ foam.CLASS({
       }
       if ( this.memento && this.mementoName ) {
         this.memento.head = this.mementoName;
+        this.memento.params = foam.u2.stack.Stack.ACTION_ID;
       }
       if (e) {
         e.preventDefault();
