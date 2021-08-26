@@ -29,7 +29,6 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
-    'foam.nanos.ticket.TicketComment',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -50,7 +49,6 @@ foam.CLASS({
     'stack',
     'subject',
     'summaryView?',
-    'ticketCommentDAO',
     'ticketDAO',
     'ticketStatusDAO',
     'userDAO'
@@ -76,10 +74,6 @@ foam.CLASS({
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this ticket'
-    },
-    {
-      name: 'SUCCESS_REASSIGNED',
-      message: 'You have successfully reassigned this ticket'
     }
   ],
 
@@ -381,6 +375,7 @@ foam.CLASS({
       name: 'externalComment',
       storageTransient: true,
       section: 'infoSection',
+      readVisibility: 'HIDDEN',
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
