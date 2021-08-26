@@ -36,10 +36,7 @@ foam.CLASS({
     'foam.u2.dialog.ConfirmationModal'
   ],
 
-  imports: [
-    'ctrl',
-    'memento?'
-  ],
+  imports: ['ctrl'],
 
   enums: [
     {
