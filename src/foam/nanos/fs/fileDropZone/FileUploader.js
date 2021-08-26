@@ -101,7 +101,7 @@
   actions: [
     {
       name: 'upload',
-      labels: 'upload',
+      label: 'upload',
       code: function(){
         if ( this.files[0] && this.labels ) {
           this.files[0].labels = this.labels;
