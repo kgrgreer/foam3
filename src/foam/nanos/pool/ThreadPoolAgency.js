@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.XLocator',
     'foam.core.ProxyX',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.concurrent.LinkedBlockingQueue',
     'java.util.concurrent.ExecutorService',
@@ -63,7 +63,6 @@ foam.CLASS({
       incrExecuting(1);
       incrQueued(-1);
 
-      Logger logger = (Logger) x_.get("logger");
       PM     pm     = PM.create(x_, this.getClass(), agent_.getClass().getSimpleName() + ":" + description_);
 
       X oldX = ((ProxyX) XLocator.get()).getX();
@@ -72,7 +71,7 @@ foam.CLASS({
         XLocator.set(x_);
         agent_.execute(x_);
       } catch (Throwable t) {
-        logger.error(this.getClass(), agent_.getClass().getSimpleName(), description_, t.getMessage(), t);
+        Loggers.logger(x_, this).error(agent_.getClass().getSimpleName(), description_, t.getMessage(), t);
       } finally {
         XLocator.set(oldX);
         incrExecuting(-1);
@@ -84,6 +83,14 @@ foam.CLASS({
           `
         }));
       }
+    }
+  ],
+
+  properties: [
+    {
+      documentation: 'report stats when true',
+      name: 'debug',
+      class: 'Boolean',
     }
   ],
 
@@ -115,8 +122,11 @@ foam.CLASS({
       }
     );
     pool_.allowCoreThreadTimeOut(true);
-    java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
-    timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), 1000, 1000);
+
+    if ( getDebug() ) {
+      java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
+      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), 1000, 1000);
+    }
 
 `
     },
@@ -194,7 +204,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        foam.nanos.logger.Logger.logger(x, this).info("report", "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Loggers.logger(x, this).info("report", "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
