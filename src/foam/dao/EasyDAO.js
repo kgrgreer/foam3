@@ -761,6 +761,11 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'approvableAwareRelationshipName',
       class: 'String',
       documentation: 'If the DAO is approvable aware, this sets the ApprovableAwareDAO RelationshipName field'
+    },
+    {
+      name: 'internalAccessDAO',
+      class: 'foam.dao.DAOProperty',
+      documentation: 'dao to be added '
     }
   ],
 
