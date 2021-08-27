@@ -53,8 +53,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.Action',
-      name: 'actionArray',
-      value: []
+      name: 'actionArray'
     }
   ],
 
@@ -66,7 +65,7 @@ foam.CLASS({
       if ( this.stack && this.stack.stack_ ) {
         var navStack = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
         var themeIcon = navStack.length == 1 ? 'back' : '';
-        navStack.map((v, i, _) => {
+        navStack.map((v, i) => {
           var index = i + this.stack.navStackBottom;
           var jumpAction  = self.Action.create({
             name: 'back',
