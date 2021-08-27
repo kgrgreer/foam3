@@ -185,15 +185,7 @@ foam.CLASS({
       try {
       if ( getExecuting() == pool_.getMaximumPoolSize() &&
            getQueued() >= pool_.getMaximumPoolSize() * 0.1 ) {
-        long waiting = 0;
-        Thread[] threads = new Thread[threadGroup_.activeCount()];
-        int count = threadGroup_.enumerate(threads);
-        for ( int i = 0; i < count; i++ ) {
-          Thread thread = threads[i];
-          if ( thread.getState() == Thread.State.WAITING ) {
-            waiting++;
-          }
-        }
+        long waiting = getWaiting();
         if ( waiting > getExecuting() * 0.1 ) {
           pool_.setMaximumPoolSize(pool_.getMaximumPoolSize() + 1);
           foam.nanos.logger.Loggers.logger(x_, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "waiting", waiting, "executed", getExecuted(), "INCREASE");
@@ -247,6 +239,26 @@ t.printStackTrace();
       if ( getQueued() > 0 ) {
         foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
+      `
+    },
+    {
+      name: 'getWaiting',
+      type: 'Long',
+      javaCode: `
+      long waiting = 0;
+      try {
+        Thread[] threads = new Thread[threadGroup_.activeCount()];
+        int count = threadGroup_.enumerate(threads);
+        for ( int i = 0; i < count; i++ ) {
+          Thread thread = threads[i];
+          if ( thread.getState() == Thread.State.WAITING ) {
+            waiting++;
+          }
+        }
+      } catch ( Throwable t ) {
+        t.printStackTrace();
+      }
+      return waiting;
       `
     }
   ]
