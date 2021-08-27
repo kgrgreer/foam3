@@ -11,6 +11,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.nanos.NanoService'
   ],
 
@@ -22,7 +23,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.XLocator',
     'foam.core.ProxyX',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.concurrent.LinkedBlockingQueue',
     'java.util.concurrent.ExecutorService',
@@ -62,7 +63,6 @@ foam.CLASS({
       incrExecuting(1);
       incrQueued(-1);
 
-      Logger logger = (Logger) x_.get("logger");
       PM     pm     = PM.create(x_, this.getClass(), agent_.getClass().getSimpleName() + ":" + description_);
 
       X oldX = ((ProxyX) XLocator.get()).getX();
@@ -71,7 +71,7 @@ foam.CLASS({
         XLocator.set(x_);
         agent_.execute(x_);
       } catch (Throwable t) {
-        logger.error(this.getClass(), agent_.getClass().getSimpleName(), description_, t.getMessage(), t);
+        Loggers.logger(x_, this).error(agent_.getClass().getSimpleName(), description_, t.getMessage(), t);
       } finally {
         XLocator.set(oldX);
         incrExecuting(-1);
@@ -83,6 +83,20 @@ foam.CLASS({
           `
         }));
       }
+    }
+  ],
+
+  properties: [
+    {
+      documentation: 'report stats when true',
+      name: 'debug',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      name: 'reportInterval',
+      class: 'Long',
+      value: 1000
     }
   ],
 
@@ -114,6 +128,11 @@ foam.CLASS({
       }
     );
     pool_.allowCoreThreadTimeOut(true);
+
+    if ( getDebug() ) {
+      java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
+      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval(), getReportInterval());
+    }
 `
     },
     {
@@ -179,6 +198,20 @@ foam.CLASS({
     incrQueued(1);
     getPool().submit(new ContextAgentRunnable(x, agent, description));
      `
+    },
+    {
+      name: 'execute',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+      if ( getQueued() > 0 ) {
+        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+      }
+      `
     }
   ]
 });
