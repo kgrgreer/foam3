@@ -79,7 +79,7 @@ p({
       .setJournalType(foam.dao.JournalType.NO_JOURNAL)
       .setPm(true)
       .setOf(foam.nanos.fs.TempFile.getOwnClassInfo())
-      .setSeqNo(true)
+      .setGuid(true)
       .build();
   """
 })
