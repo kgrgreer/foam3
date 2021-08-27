@@ -45,6 +45,7 @@ foam.CLASS({
   protected Object             queuedLock_    = new Object();
   protected Object             executingLock_ = new Object();
   protected Object             executedLock_  = new Object();
+  protected ThreadGroup        threadGroup_   = null;
 
   protected class ContextAgentRunnable
     implements Runnable {
@@ -104,6 +105,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+    threadGroup_ = new ThreadGroup(Thread.currentThread().getThreadGroup(), getPrefix());
     pool_ = new ThreadPoolExecutor(
       getNumberOfThreads(),
       getNumberOfThreads(),
@@ -115,12 +117,12 @@ foam.CLASS({
 
         public Thread newThread(Runnable runnable) {
           Thread thread = new Thread(
-            Thread.currentThread().getThreadGroup(),
+            threadGroup_,
             runnable,
             getPrefix() + "-" + threadNumber.getAndIncrement(),
             0
             );
-          // Thread don not block server from shut down.
+          // Thread does not block server from shut down.
           thread.setDaemon(true);
           thread.setPriority(Thread.NORM_PRIORITY);
           return thread;
@@ -133,7 +135,7 @@ foam.CLASS({
       java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
       timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval(), getReportInterval());
     }
-`
+    `
     },
     {
       name: 'incrExecuting',
@@ -146,6 +148,18 @@ foam.CLASS({
       javaCode: `
     synchronized ( executingLock_ ) {
       setExecuting(getExecuting() + d);
+      try {
+      if ( getQueued() == 0 &&
+           getExecuting() < pool_.getMaximumPoolSize() &&
+           pool_.getMaximumPoolSize() > getNumberOfThreads() ) {
+        // Thread exited or running after wait,
+        // and we previously increased the pool size
+        pool_.setMaximumPoolSize(pool_.getMaximumPoolSize() - 1);
+        foam.nanos.logger.Loggers.logger(x_, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted(), "DECREASE");
+      }
+      } catch ( Throwable t ) {
+        t.printStackTrace();
+      }
     }
       `
     },
@@ -168,8 +182,30 @@ foam.CLASS({
       javaCode: `
     synchronized ( queuedLock_ ) {
       setQueued(getQueued() + d);
+      try {
+      if ( getExecuting() == pool_.getMaximumPoolSize() &&
+           getQueued() >= pool_.getMaximumPoolSize() * 0.1 ) {
+        long waiting = 0;
+        Thread[] threads = new Thread[threadGroup_.activeCount()];
+        int count = threadGroup_.enumerate(threads);
+        for ( int i = 0; i < count; i++ ) {
+          Thread thread = threads[i];
+          if ( thread.getState() == Thread.State.WAITING ) {
+            waiting++;
+          }
+        }
+        if ( waiting > getExecuting() * 0.1 ) {
+          pool_.setMaximumPoolSize(pool_.getMaximumPoolSize() + 1);
+          foam.nanos.logger.Loggers.logger(x_, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "waiting", waiting, "executed", getExecuted(), "INCREASE");
+        } else if ( waiting > 0 ) {
+          foam.nanos.logger.Loggers.logger(x_, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "waiting", waiting, "executed", getExecuted());
+        }
+      }
+} catch ( Throwable t ) {
+t.printStackTrace();
+}
     }
-      `
+    `
     },
     {
       name: 'getPool',
@@ -209,7 +245,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", pool_.getMaximumPoolSize(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
