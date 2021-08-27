@@ -21,8 +21,9 @@ p({
   "documentation":"Re-assign user spid on CREATE of User-ServiceProvider junction",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":0,
-  "after":true,
+  "after":false,
   "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.IsUserServiceProviderJunction" },
   "action":{
     "class":"foam.nanos.auth.SetUserServiceProviderJunctionRuleAction"
   },

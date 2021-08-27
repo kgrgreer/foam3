@@ -892,6 +892,7 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+  'foam.nanos.crunch.predicate.IsUserServiceProviderJunction',
 
   'foam.nanos.crunch.document.Document',
 
