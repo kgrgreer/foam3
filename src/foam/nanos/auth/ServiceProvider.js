@@ -80,7 +80,8 @@ foam.CLASS({
       name: 'setupSpid',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'user', javaType: 'foam.nanos.auth.User' }
+        { name: 'user', javaType: 'foam.nanos.auth.User' },
+        { name: 'includeSpid', javaType: 'Boolean' }
       ],
       documentation: `
         Method responsible for setting up a user's ServiceProvider capability by finding
@@ -97,11 +98,16 @@ foam.CLASS({
         try {
           // for each capability in the grantPath of the spid capability,
           // find the ucj and update its status to granted, or create a ucj none found
-
           UserCapabilityJunction ucj;
-          Subject subject = new Subject(user);
           for ( Capability capability : grantPath ) {
-            ucj = crunchService.updateUserJunction(x, subject, capability.getId(), null, CapabilityJunctionStatus.GRANTED);
+            if ( ! includeSpid && capability.getId() == getId() ) continue;
+            ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.put(
+              new UserCapabilityJunction.Builder(x)
+                .setSourceId(user.getId())
+                .setTargetId(capability.getId())
+                .setStatus(CapabilityJunctionStatus.GRANTED)
+                .build()
+            );
             if ( ucj == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED )
               throw new RuntimeException("Error setting up UserCapabilityJunction for user: " + user.getId() + " and spid: " + getId());
           }
