@@ -31,14 +31,14 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getInputStream',
-      type: 'java.io.InputStream',
+      name: 'getOutputStream',
+      type: 'java.io.OutputStream',
       javaCode: `
         try {
           if ( file_ == null ) {
             file_ = java.io.File.createTempFile("tempFile", "");
           }
-          return new java.io.FileInputStream(this.file_);
+          return new java.io.FileOutputStream(this.file_);
         } catch ( Exception e ) {
           return null;
         }
