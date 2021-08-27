@@ -7,20 +7,19 @@
 package foam.nanos.http;
 
 import foam.core.X;
-
+import foam.nanos.boot.Boot;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 public class UptimeWebAgent
   implements WebAgent
 {
-  protected long startTime_ = System.currentTimeMillis();
-
   @Override
   public void execute(X x) {
     PrintWriter         out      = x.get(PrintWriter.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
-    long                gap      = System.currentTimeMillis()-startTime_;
+    Long              startTime = (Long) x.get(Boot.BOOT_TIME);
+    long                gap      = System.currentTimeMillis()-startTime;
 
     response.setContentType("text/plain");
 

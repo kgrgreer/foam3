@@ -45,49 +45,6 @@ foam.CLASS({
   ],
 
   methods: [
-    // Methods specific to PM
-    {
-      name: 'createPM',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'op',
-          type: 'String'
-        }
-      ],
-      javaType: 'PM',
-      javaCode: `
-    PM pm = null;
-    if ( getEnabled() ) {
-      pm = (PM) x.get("PM");
-      pm.setKey(this.getClassType().getId());
-      pm.setName(op);
-      pm.init_();
-    }
-    return pm;
-      `
-    },
-    {
-      name: 'log',
-      args: [
-        {
-          name: 'x',
-          type: 'X',
-        },
-        {
-          name: 'pm',
-          type: 'PM'
-        }
-      ],
-      javaCode: `
-    if ( pm != null ) {
-      pm.log(x);
-    }
-      `
-    },
     {
       name: 'getNameFor',
       args: [
@@ -109,77 +66,84 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-      PM pm = createPM(x, getNameFor("login"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("login"));
       try {
         return super.login(x, identifier, password);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'validatePassword',
       javaCode: `
-      PM pm = createPM(x, getNameFor("validatePassword"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("validatePassword"));
       try {
         super.validatePassword(x, user, potentialPassword);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'checkUser',
       javaCode: `
-      PM pm = createPM(x, getNameFor("checkUser"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("checkUser"));
       try {
         return super.checkUser(x, user, permission);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'check',
       javaCode: `
-      PM pm = createPM(x, getNameFor("check"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("check"));
       try {
         return super.check(x, permission);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'updatePassword',
       javaCode: `
-      PM pm = createPM(x, getNameFor("updatePassword"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("updatePassword"));
       try {
         return super.updatePassword(x, oldPassword, newPassword);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'validateUser',
       javaCode: `
-      PM pm = createPM(x, getNameFor("validateUser"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("validateUser"));
       try {
         super.validateUser(x, user);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },
     {
       name: 'logout',
       javaCode: `
-      PM pm = createPM(x, getNameFor("logout"));
+      PM pm = null;
+      if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("logout"));
       try {
         super.logout(x);
       } finally {
-        log(x, pm);
+        if ( pm != null ) pm.log(x);
       }
      `
     },

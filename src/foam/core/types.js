@@ -893,6 +893,24 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'enableLink',
+      documentation: `
+        Create the reference view as an anchor link to the reference's DetailView or provided menu.
+        Check ReadReferenceView documentation for more info.
+      `,
+      value: true
+    },
+    {
+      name: 'menuKeys',
+      documentation: `
+        A list of menu ids.
+        The link will reference to the first menu to which group has permission
+        in this list. If no menus are permissioned, the link will be disabled.
+        Check ReadReferenceView documentation for more info.
+      `
+    },
+    {
       class: 'String',
       name: 'unauthorizedTargetDAOKey',
       documentation: `

@@ -49,7 +49,8 @@
       class: 'Reference',
       of: 'foam.nanos.ruler.RuleGroup',
       name: 'ruleGroup',
-      documentation: 'The name of the ruleGroup associated with the rule.'
+      documentation: 'The name of the ruleGroup associated with the rule.',
+      writePermissionRequired: true
     }
   ],
 
