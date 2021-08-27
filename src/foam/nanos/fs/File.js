@@ -56,6 +56,8 @@ foam.CLASS({
     'mimeType'
   ],
 
+  contextMenuActions: [this.DOWNLOAD],
+
   messages: [
     { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
   ],
@@ -297,6 +299,41 @@ foam.CLASS({
         }
         return "";
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'download',
+      code: function(a, X) {
+        // TODO: Add logging for who has downloaded files etc.
+        var blob = this.data;
+        if ( foam.blob.BlobBlob.isInstance(blob) ) {
+          window.open(URL.createObjectURL(blob.blob));
+        } else {
+          var url = this.address;
+          window.open(url);
+        }
+      }
+    },
+    {
+      name: 'multiDownload',
+      label: 'Download',
+      isAvailable: function() { return false; },
+      code: function(ctx, X) {
+        // For multi-select download support in DAOBrowserView
+        if ( this.config && this.config.selectedObjs && ! foam.Object.equals(this.config.selectedObjs, {}) ) {
+          foam.Object.forEach(this.config.selectedObjs, function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else if ( this.predicatedDAO$proxy ) {
+          this.predicatedDAO$proxy.select(function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else {
+          console.warn('Something went wrong downloading using multi-select');
+        }
+      }
     }
   ]
 });
