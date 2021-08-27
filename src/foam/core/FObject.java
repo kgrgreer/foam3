@@ -612,4 +612,6 @@ public interface FObject
   default String toSummary() {
     return toString();
   }
+
+  default String toHtml() { return ""; }
 }
