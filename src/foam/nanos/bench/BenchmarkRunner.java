@@ -40,6 +40,7 @@ public class BenchmarkRunner
   protected int       invocationCount_;
   protected Benchmark test_;
   protected List<Map<String, Object>> results_ = new ArrayList<Map<String, Object>>();
+  protected float     tps;
 
   // Builder pattern to avoid large constructor in the case
   // we want to add more variables to this test runner later.
@@ -257,6 +258,7 @@ public class BenchmarkRunner
         long  endTime  = System.currentTimeMillis();
         float complete = (float) (threads * getInvocationCount());
         float duration = ((float) (endTime - startTime) / 1000.0f);
+        tps            = complete / duration;
         stats.put(PASS, pass.get());
         stats.put(FAIL, fail.get());
         stats.put(TOTAL, pass.get() + fail.get());
@@ -335,5 +337,9 @@ public class BenchmarkRunner
     }
 
     return csv.toString();
+  }
+
+  public float getTps() {
+    return tps;
   }
 }
