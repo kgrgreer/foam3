@@ -45,6 +45,7 @@ foam.CLASS({
   protected Object             queuedLock_    = new Object();
   protected Object             executingLock_ = new Object();
   protected Object             executedLock_  = new Object();
+  protected ThreadGroup        threadGroup_   = null;
 
   protected class ContextAgentRunnable
     implements Runnable {
@@ -104,6 +105,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+    threadGroup_ = new ThreadGroup(Thread.currentThread().getThreadGroup(), getPrefix());
     pool_ = new ThreadPoolExecutor(
       getNumberOfThreads(),
       getNumberOfThreads(),
@@ -115,12 +117,12 @@ foam.CLASS({
 
         public Thread newThread(Runnable runnable) {
           Thread thread = new Thread(
-            Thread.currentThread().getThreadGroup(),
+            threadGroup_,
             runnable,
             getPrefix() + "-" + threadNumber.getAndIncrement(),
             0
             );
-          // Thread don not block server from shut down.
+          // Thread does not block server from shut down.
           thread.setDaemon(true);
           thread.setPriority(Thread.NORM_PRIORITY);
           return thread;
@@ -200,6 +202,26 @@ foam.CLASS({
      `
     },
     {
+      name: 'getWaiting',
+      type: 'Long',
+      javaCode: `
+      long waiting = 0;
+      try {
+        Thread[] threads = new Thread[threadGroup_.activeCount()];
+        int count = threadGroup_.enumerate(threads);
+        for ( int i = 0; i < count; i++ ) {
+          Thread thread = threads[i];
+          if ( thread.getState() == Thread.State.WAITING ) {
+            waiting++;
+          }
+        }
+      } catch ( Throwable t ) {
+        t.printStackTrace();
+      }
+      return waiting;
+      `
+    },
+    {
       name: 'execute',
       args: [
         {
@@ -209,7 +231,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getQueued() > 0 ) {
-        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "executing", getExecuting(), "executed", getExecuted());
+        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
       }
       `
     }
