@@ -105,7 +105,7 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      Agency agency = (Agency) x.get("threadPool");
+      Agency agency = (Agency) x.get(support.getThreadPoolName());
       for ( ClusterConfig config : support.getBroadcastNARegionMediators() ) {
         // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
         agency.submit(x, new ContextAgent() {

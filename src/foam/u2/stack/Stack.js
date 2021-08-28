@@ -30,6 +30,7 @@ foam.CLASS({
 
   constants: [
     { name: 'BCRMB_ID', value: 'b' },
+    { name: 'ACTION_ID', value: 'a' },
   ],
 
   properties: [
@@ -149,6 +150,7 @@ foam.CLASS({
 
       if ( m && m.parent ) {
         m.value = '';
+        return m.parent;
       }
     },
 
@@ -169,9 +171,14 @@ foam.CLASS({
       // Check if the class of the view to which current memento points has property viewTitle set 
       // using the identifier added to the memento params by stackView
         if ( this.stack_[this.pos].parent ) {
+          var actionMemento;
           var parent = this.getContextFromParent(this.stack_[this.pos].parent);
           if ( parent.memento?.params == this.BCRMB_ID ) {
-            this.deleteMemento(parent.memento.head);
+            actionMemento = this.deleteMemento(parent.memento.head);
+          }
+          //Remove all actions that may have been performed in this view
+          while ( actionMemento?.params == this.ACTION_ID ) {
+            actionMemento = this.deleteMemento(actionMemento.head);
           }
         }
         this.pos--;
