@@ -77,9 +77,11 @@ public class SocketRouter
 
   public void service(Message msg) 
     throws IOException {
-
+    PM pm = null;
     String serviceKey = (String) msg.getAttributes().get("serviceKey");
-    PM pm = PM.create(getX(), this.getClass().getSimpleName(), serviceKey);
+    if ( ! serviceKey.equals("static") ) {
+      pm = PM.create(getX(), this.getClass().getSimpleName(), serviceKey);
+    }
 
     try {
       Object service = getX().get(serviceKey);
@@ -104,13 +106,11 @@ public class SocketRouter
         new SessionServerBox(requestContext, agent.getSkeletonBox(), agent.getAuthenticate()).send(msg);
       } catch (Exception e) {
         logger_.error("Error serving", serviceKey, e);
-        if ( ! serviceKey.equals("static") ) pm.error(getX(), e);
+        if ( pm != null ) pm.error(getX(), e);
         throw e;
-      } finally {
-        if ( ! serviceKey.equals("static") ) pm.log(getX());
       }
     } finally {
-      pm.log(getX());
+      if ( pm != null ) pm.log(getX());
     }
   }
 
