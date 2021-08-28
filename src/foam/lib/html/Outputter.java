@@ -93,7 +93,7 @@ public class Outputter
     /*if ( outputHeaders_ )
       outputHeaders(obj);*/
 
-    outputTable(obj);
+    outputFObject(obj);
     return this.toString();
   }
 
@@ -167,29 +167,6 @@ int j = 0;
       writer_.append("</td>");
     }
     writer_.append("</tr>");
-  }
-
-  protected void outputTable(FObject obj) {
-    outputStartTable();
-    List<PropertyInfo> props = of_.getAxiomsByClass(PropertyInfo.class);
-    for ( PropertyInfo prop : props ) {
-      if ( mode_ == OutputterMode.NETWORK && prop.getNetworkTransient() ) continue;
-      if ( mode_ == OutputterMode.STORAGE && prop.getStorageTransient() ) continue;
-
-      writer_.append("<tr>");
-      writer_.append("<td>");
-      writer_.append(prop.getName());
-      writer_.append("</td>");
-      writer_.append("<td>");
-      try {
-        output(prop.get(obj));
-      } catch ( Throwable t ) {
-        output("nbsp;<!-- error -->");
-      }
-      writer_.append("</td>");
-      writer_.append("</tr>");
-    }
-    outputEndTable();
   }
 
   public void output(Object value) {

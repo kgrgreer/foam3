@@ -613,9 +613,4 @@ public interface FObject
   default String toSummary() {
     return toString();
   }
-
-  default String toHtml() {
-    var out = new foam.lib.html.Outputter(getClassInfo(), OutputterMode.NETWORK);
-    return out.stringify(this);
-  }
 }
