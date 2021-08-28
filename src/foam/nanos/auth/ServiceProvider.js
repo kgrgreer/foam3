@@ -81,7 +81,11 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' },
-        { name: 'includeSpid', javaType: 'Boolean' }
+        {
+          name: 'includeSpid',
+          javaType: 'Boolean',
+          documentation: 'If true, include the top level spid capability when granting the capability hierarchy'
+        }
       ],
       documentation: `
         Method responsible for setting up a user's ServiceProvider capability by finding

@@ -8,6 +8,10 @@
   package: 'foam.nanos.crunch.predicate',
   name: 'IsUserServiceProviderJunction',
   extends: 'foam.mlang.predicate.AbstractPredicate',
+  documentation: `
+    A predicate to check whether the target Capability in an UserCapabilityJunction
+    is a ServiceProvider capability.
+  `,
 
   javaImports: [
     'foam.core.X',
