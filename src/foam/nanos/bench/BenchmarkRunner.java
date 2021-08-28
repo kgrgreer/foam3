@@ -176,6 +176,7 @@ public class BenchmarkRunner
       log = foam.nanos.logger.StdoutLogger.instance();
     }
     final Logger logger = new PrefixLogger(new String[] { test_.getClass().getSimpleName() }, log);
+    final X y = x.put("logger", logger);
 
     AppConfig config = (AppConfig) x.get("appConfig");
     if ( config.getMode() == Mode.PRODUCTION ) {
@@ -205,11 +206,13 @@ public class BenchmarkRunner
 
         // set up the test
         logger.info("setup");
-        test_.setup(x);
+        test_.setup(y);
 
         if ( getClearPMs() ) {
           ((DAO) x.get("pmInfoDAO")).removeAll();
         }
+
+        logger.info("execute");
 
         // get start time
         long startTime = System.currentTimeMillis();
@@ -223,7 +226,7 @@ public class BenchmarkRunner
                 long passed = 0;
                 for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                   try {
-                    test_.execute(x);
+                    test_.execute(y);
                     passed++;
                   } catch (Throwable t) {
                     fail.incrementAndGet();
@@ -269,7 +272,7 @@ public class BenchmarkRunner
         stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
 
         logger.info("teardown");
-        test_.teardown(x, stats);
+        test_.teardown(y, stats);
         results_.add(stats);
 
         if ( getRunPerThread() ) {
