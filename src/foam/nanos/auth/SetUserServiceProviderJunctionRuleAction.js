@@ -73,7 +73,7 @@ foam.CLASS({
             serviceProvider.removeSpid(x, user);
 
             // get grantpath and create/reput grantpath
-            serviceProvider.setupSpid(x, user);
+            serviceProvider.setupSpid(x, user, false);
             logger.debug("Updating spid capabilities for user", serviceProvider.getId(), user.getId());
 
             // finally set user spid to new spid

@@ -67,7 +67,7 @@ foam.CLASS({
             }
 
             sp.removeSpid(systemX, user);
-            sp.setupSpid(systemX, user);
+            sp.setupSpid(systemX, user, true);
             logger.debug("Setup spid for user", sp.getId(), user.getId());
           }
         }, "Create ucj on user spid set");
