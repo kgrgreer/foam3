@@ -26,6 +26,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'populated'
+    },
+    {
+      class: 'Object',
+      javaType: 'java.io.File',
+      name: 'file_',
+      javaFactory: `
+        try {
+          return java.io.File.createTempFile(getClassInfo().getId(), "");
+        } catch ( java.io.IOException e ) {
+          throw new RuntimeException(e);
+        }
+      `,
+      flags: [ 'java' ]
     }
   ],
 
@@ -35,25 +48,22 @@ foam.CLASS({
       type: 'java.io.OutputStream',
       javaCode: `
         try {
-          if ( file_ == null ) {
-            file_ = java.io.File.createTempFile("tempFile", "");
-          }
-          return new java.io.FileOutputStream(this.file_);
-        } catch ( Exception e ) {
+          return new java.io.FileOutputStream(this.getFile_());
+        } catch ( java.io.FileNotFoundException e ) {
           return null;
         }
       `
-    }
-  ],
-
-  axioms: [
+    },
     {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          private java.io.File file_;
-        `);
-      }
+      name: 'getInputStream',
+      type: 'java.io.InputStream',
+      javaCode: `
+        try {
+          return new java.io.FileInputStream(this.getFile_());
+        } catch ( java.io.FileNotFoundException e ) {
+          return null;
+        }
+      `
     }
   ]
 });
