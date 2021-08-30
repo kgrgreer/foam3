@@ -17,8 +17,28 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
-  abstract: true,
-  name: 'RetryStrategy',
+  extends: 'foam.box.sf.RetryStrategy',
+  name: 'DefaultRetryStrategy',
+
+  properties: [
+    {
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      documentation: 'Set to -1 to infinitely retry.',
+      value: 20
+    },
+    {
+      name: 'constantDelayTime',
+      class: 'Long',
+      value: 4000
+    },
+    {
+      class: 'Int',
+      name: 'maxRetryDelayMS',
+      documentation: 'Unit in Millisecond',
+      value: 20000
+    },
+  ],
 
   methods: [
     {
@@ -27,7 +47,7 @@ foam.CLASS({
       javaType: 'long',
       args: 'long cur',
       javaCode: `
-        throw new RuntimeException("Do not support");
+        return getConstantDelayTime();
       `
     },
     {
@@ -35,7 +55,7 @@ foam.CLASS({
       documentation: 'Unit: MS',
       javaType: 'long',
       javaCode: `
-        throw new RuntimeException("Do not support");
+        return getMaxRetryDelayMS();
       `
     },
     {
@@ -43,20 +63,8 @@ foam.CLASS({
       documentation: 'Unit: MS',
       javaType: 'long',
       javaCode: `
-        throw new RuntimeException("Do not support");
+        return getMaxRetryAttempts();
       `
     }
   ],
-  
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-          `
-        }));
-      }
-    }
-  ]
 })

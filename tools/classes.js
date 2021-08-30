@@ -154,6 +154,8 @@ var classes = [
   'foam.box.sf.SFEntry',
   'foam.box.sf.SFStatus',
   'foam.box.sf.RetryStrategy',
+  'foam.box.sf.BackoffRetryStrategy',
+  'foam.box.sf.DefaultRetryStrategy',
   'foam.box.sf.SFManager',
   'foam.box.sf.SF',
   'foam.box.sf.Strategy',
