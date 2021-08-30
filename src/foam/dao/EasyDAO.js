@@ -339,6 +339,9 @@ foam.CLASS({
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
+        if ( getInternalAccessDAO() != null )
+          delegate = new foam.dao.RemoteDAO(getX(), delegate, getInternalAccessDAO());
+
         // see comments above regarding DAOs with init_
         ((ProxyDAO) delegate_).setDelegate(delegate);
 

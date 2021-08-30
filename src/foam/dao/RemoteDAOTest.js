@@ -13,7 +13,12 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        var user =
+      var putDao = new foam.dao.PutOnlyDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()).build();
+      var delegate = new foam.dao.ReadOnlyDAO.Builder(x)
+                     .setDelegate(putDao)
+                     .build();
+      var dao = new foam.dao.EasyDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).setDecorator(delegate).build();
+      
       `
     }
   ]
