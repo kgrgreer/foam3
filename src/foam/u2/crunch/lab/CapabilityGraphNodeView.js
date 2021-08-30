@@ -70,7 +70,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       var dims = {
         x: '' + (this.position[0] - 15),

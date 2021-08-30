@@ -118,10 +118,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
-      this.addClass(this.myClass());
+      this.addClass();
 
       self.SUPER();
       self

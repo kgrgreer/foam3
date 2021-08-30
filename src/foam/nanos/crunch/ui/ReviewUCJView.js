@@ -48,7 +48,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.update();
       this.SUPER();
       this

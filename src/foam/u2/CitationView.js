@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this.updateSummary();
       this.add(this.summary$);

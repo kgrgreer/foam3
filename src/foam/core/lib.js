@@ -19,7 +19,8 @@
  * Top-Level of foam package
  */
 foam = {
-  isServer: typeof window === 'undefined',
+  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
+  isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   language: typeof navigator === 'undefined' ? 'en' : navigator.language,
   next$UID: (function() {
@@ -36,9 +37,9 @@ foam = {
 
     // Only execute if the script's flags match the curren runtime flags.
     if ( m.flags &&
-         global.FOAM_FLAGS ) {
+         globalThis.FOAM_FLAGS ) {
       for ( var i = 0 ; i < m.flags.length ; i++ ) {
-        if ( global.FOAM_FLAGS[m.flags[i]] ) {
+        if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
           m.code();
           return;
         }
@@ -49,10 +50,6 @@ foam = {
     m.code();
   }
 };
-
-
-/** Setup nodejs-like 'global' on web */
-if ( ! foam.isServer ) global = window;
 
 
 Object.defineProperty(
@@ -75,39 +72,17 @@ Object.defineProperty(
 
 
 /**
- * Check for the FOAMLINK_DATA global. If it is set, FOAMLink will be
+ * Check for the FOAMLINK_DATA globalThis. If it is set, FOAMLink will be
  * enabled in the server-side classloader
  */
-if ( typeof global.FOAMLINK_DATA !== 'undefined' ) {
+if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
   foam.hasFoamlink = true;
   foam.foamlink = {
-    dataFile: global.FOAMLINK_DATA
+    dataFile: globalThis.FOAMLINK_DATA
   };
 }
 
-
-/**
- * Define an assertion function that is significantly faster and more
- * compatible than console.assert.  Also allows us to turn off assertions
- * in a production scenario.
- *
- * Usage of console.assert directly is slow, and not all platforms agree
- * on what to do with extra arguments, some ignore them, some join them
- * to the message.
- *
- * However just defining as console.assert.bind(console); gives better stack
- * traces which start on the calling line so are easier to breakpoint,
- * so maybe this isn't worth doing anymore?
- */
-foam.assert = function assert(cond) {
-  if ( ! cond ) {
-    console.assert(false, Array.from(arguments).slice(1).join(' '));
-    //console.trace();
-  }
-
-  return cond;
-};
-
+foam.assert = console.assert.bind(console);
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of
@@ -130,7 +105,7 @@ foam.network.sendPacket();
  * @memberof module:foam
  */
 foam.LIB = function LIB(model) {
-  var root = global;
+  var root = globalThis;
   var path = model.name.split('.');
   var i;
 

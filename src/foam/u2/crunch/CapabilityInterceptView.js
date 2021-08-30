@@ -117,7 +117,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
+    function render() {
       this.data.capabilityOptions.forEach(c => {
         if (
           this.crunchController.capabilityCache.has(c) &&

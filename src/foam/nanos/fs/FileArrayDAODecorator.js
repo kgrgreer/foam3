@@ -39,13 +39,20 @@ foam.CLASS({
       if ( ! newObj ) {
         return Promise.resolve(obj);
       }
-      await this.arrayRecursion(newObj, this);
+      await this.arrayRecursion(newObj);
       return Promise.resolve(obj);
     },
 
     async function processFiles(obj) {
       var props1 = obj.cls_.getAxiomsByClass(foam.nanos.fs.FileArray);
-      var values = await Promise.all(props1.map(prop => Promise.all(prop.f(obj).map(f => this.processFile(f)))));
+      let labels;
+      if ( foam.nanos.crunch.document.Document.isInstance(obj) ) {
+        labels = obj.capability.labels;
+      }
+      var values = await Promise.all(props1.map(prop => Promise.all(prop.f(obj).map(f => {
+          f.labels = labels;
+          return this.processFile(f);
+        }))));
       values.forEach(f => f.forEach(f2 => {
         f2.dataString = undefined;
         f2.data = undefined;
@@ -84,10 +91,14 @@ foam.CLASS({
 
     // Some models can include other models with file
     // Do recursive look up for fileArrays on inside models
-    async function arrayRecursion(obj, self) {
-      await self.processFiles(obj);
-      let arr = obj.cls_.getAxiomsByClass(foam.core.Array);
-      await Promise.all(arr.map(async a => await Promise.all(await a.f(obj).map(async f => await this.arrayRecursion(f, self)))));
+    async function arrayRecursion(obj) {
+      if ( foam.nanos.fs.File.isInstance(obj) ) {
+        await this.processFile(obj);
+      } else {
+        await this.processFiles(obj);
+        const arr = obj.cls_.getAxiomsByClass(foam.core.Array);
+        await Promise.all(arr.map(async p => await Promise.all(await p.f(obj).map(async data => await this.arrayRecursion(data)))));
+      }
     }
   ]
 });

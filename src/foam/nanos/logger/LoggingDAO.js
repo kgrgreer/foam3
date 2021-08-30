@@ -58,7 +58,7 @@ foam.CLASS({
           }, logger);
           this.setMyLogger(logger);
         } else {
-          return new StdoutLogger();
+          return StdoutLogger.instance();
         }
         return logger;
       `

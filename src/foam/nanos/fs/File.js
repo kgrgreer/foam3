@@ -10,12 +10,23 @@ foam.CLASS({
 
   documentation: 'Represents a file',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin'
+  ],
+
   implements: [
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
     'foam.blob.BlobBlob'
+  ],
+
+  imports: [
+    'fileTypeDAO',
+    'sessionID'
   ],
 
   javaImports: [
@@ -24,6 +35,7 @@ foam.CLASS({
     'foam.blob.InputStreamBlob',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
@@ -32,16 +44,31 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id',
-      'filename',
-      'filesize',
-      'mimeType'
-    ],
+    'filename',
+    'filesize',
+    'mimeType',
+    'created'
+  ],
+
+  searchColumns: [
+    'id',
+    'filename',
+    'mimeType'
+  ],
+
+  contextMenuActions: [this.DOWNLOAD],
+
+  messages: [
+    { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
+  ],
 
   properties: [
     {
       class: 'String',
       name: 'id',
+      createVisibility: 'HIDDEN',
+      updatevisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'GUID'
     },
     {
@@ -52,19 +79,59 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'filesize',
-      documentation: 'Filesize'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      documentation: 'Filesize',
+      tableCellFormatter: function(value, _) {
+        this.tag({
+          class: 'foam.nanos.fs.FileSizeView',
+          data: value
+        });
+      },
+      view: { class: 'foam.nanos.fs.FileSizeView' }
     },
     {
       class: 'String',
       name: 'mimeType',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'File mime type'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileType',
+      name: 'fileType',
+      label: 'Mime Type',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      documentation: 'File mime type',
+      storageTransient: true,
     },
     {
       class: 'String',
       name: 'dataString',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'File converted to base64 string',
-      postSet: function() {
-        this.instance_.data = undefined;
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          }
+        ]
+      },
+    },
+    {
+      class: 'String',
+      name: 'address',
+      hidden: true,
+      transient: true,
+      expression: function (id) {
+        return window.location.origin + '/service/httpFileService/' + id + '?sessionId=' + this.sessionID;
       }
     },
     {
@@ -74,6 +141,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       readVisibility: 'RO',
       transient: true,
+      storageTransient: true,
       expression: function () {
         return [this];
       },
@@ -84,27 +152,14 @@ foam.CLASS({
           data$: dataSlot,
           selected$: selectSlot
         });
-      }
-    },
-    {
-      class: 'String',
-      name: 'address',
-      label: 'Download Link',
-      transient: true,
-      expression: function (id) {
-        var sessionId = localStorage['defaultSession'];
-        var url = window.location.origin + '/service/httpFileService/' + id
-        // attach session id if available
-        if ( sessionId ) {
-          url += '?sessionId=' + sessionId;
-        }
-        return url;
       },
-      view: 'foam.nanos.dig.LinkView'
+      comparePropertyValues: function(o1, o2) { return 0; } 
     },
     {
       class: 'Blob',
       name: 'data',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
       javaGetter:`
         if ( dataIsSet_ ) return data_;
 
@@ -120,7 +175,6 @@ foam.CLASS({
         return null;
       `,
       getter: function() {
-        if ( this.instance_.data ) return this.instance_.data;
         if ( this.dataString ) {
           let b64Data = this.dataString.split(',')[1];
           const b64toBlob = (b64Data, contentType = this.mimeType, sliceSize = 512) => {
@@ -138,10 +192,10 @@ foam.CLASS({
               byteArrays.push(new Uint8Array(byteNumbers));
             }
 
-            return this.instance_.data = new Blob(byteArrays, { type: contentType });
+            return new Blob(byteArrays, { type: contentType });
           }
 
-          return this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
+          this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
         }
 
         return this.instance_.data || null;
@@ -155,7 +209,39 @@ foam.CLASS({
       adapt: function(oldObj, newObj) {
         return newObj;
       }
-    }
+    },
+    {
+      name: 'labels',
+      class: 'StringArray',
+      documentation: 'List of labels applied to this file',
+      validateObj: function(labels) {
+        if ( labels.indexOf("") >= 0 ) {
+          return this.INVALID_FILE_LABEL;
+        }
+      },
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'fileLabelDAO',
+        allowDuplicates: false
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      hidden: true,
+      storageTransient: true,
+      section: 'systemInformation',
+      javaFactory: `
+        var map = new java.util.HashMap();
+        map.put(
+          File.class.getName(),
+          new foam.core.PropertyInfo[] { File.OWNER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), map, this);
+      `
+    },
   ],
   methods: [
     {
@@ -213,6 +299,41 @@ foam.CLASS({
         }
         return "";
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'download',
+      code: function(a, X) {
+        // TODO: Add logging for who has downloaded files etc.
+        var blob = this.data;
+        if ( foam.blob.BlobBlob.isInstance(blob) ) {
+          window.open(URL.createObjectURL(blob.blob));
+        } else {
+          var url = this.address;
+          window.open(url);
+        }
+      }
+    },
+    {
+      name: 'multiDownload',
+      label: 'Download',
+      isAvailable: function() { return false; },
+      code: function(ctx, X) {
+        // For multi-select download support in DAOBrowserView
+        if ( this.config && this.config.selectedObjs && ! foam.Object.equals(this.config.selectedObjs, {}) ) {
+          foam.Object.forEach(this.config.selectedObjs, function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else if ( this.predicatedDAO$proxy ) {
+          this.predicatedDAO$proxy.select(function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else {
+          console.warn('Something went wrong downloading using multi-select');
+        }
+      }
     }
   ]
 });

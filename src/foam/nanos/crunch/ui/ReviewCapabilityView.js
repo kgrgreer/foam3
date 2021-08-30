@@ -18,12 +18,13 @@ foam.CLASS({
     {
       name: 'capabilityId',
       class: 'Reference',
-      of: 'foam.nanos.crunch.Capability'
+      of: 'foam.nanos.crunch.Capability',
+      menuKeys: ['admin.capabilities']
     }
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       this
         .tag(this.ReviewUCJView, { data$: this.capabilityId$ })

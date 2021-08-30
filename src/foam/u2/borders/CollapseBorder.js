@@ -14,9 +14,9 @@ foam.CLASS({
   css: `
     ^ {
       position: relative;
-      padding: 10px;
+      padding: 0.71em;
       border-top: 1px solid #999;
-      margin-top: 16px;
+      margin-top: 1.14em;
     }
     ^.expanded {
       border: 1px solid #999;
@@ -26,7 +26,6 @@ foam.CLASS({
     }
     ^control {
       display: inline;
-      height: 30px;
       position: relative;
       width: 30px;
     }
@@ -44,18 +43,23 @@ foam.CLASS({
     }
     ^title {
       background: white;
-      padding: 3px;
       position: relative;
     }
-    ^control > .foam-u2-ActionView-toggle {
-      transform: rotate(-90deg);
-      transition: transform 0.3s;
+    ^toggle-button {
+      font-size: inherit !important;
       border: none;
       outline: none;
       padding: 3px;
+    }
+    ^toggle-button:focus {
+      background-color: white;
+    }
+    ^control > ^toggle-button {
+      transform: rotate(-90deg);
+      transition: transform 0.3s;
       width: 30px;
     }
-    ^.expanded .foam-u2-ActionView-toggle {
+    ^.expanded ^toggle-button {
       transform: rotate(0deg);
       transition: transform 0.3s;
     }
@@ -92,12 +96,15 @@ foam.CLASS({
           start('div').
             addClass(this.myClass('control')).
             enableClass(this.myClass('place-right'), this.toggleLeft$.map( val => ! val)).
-            tag(this.TOGGLE, { label: this.label$ }).
+            start(this.TOGGLE, {label: this.label$}).
+              addClass(this.myClass('toggle-button')).
+            end().
           end().
           start('span').
-            // TODO add support for toggle action on title click
             addClass(this.myClass('title')).
-            add(this.title$).
+            start(this.TOGGLE, {label: this.title$, tabIndex: -1}).
+              addClass(this.myClass('toggle-button')).
+            end().
           end().
         end().
         start('div', null, this.content$).

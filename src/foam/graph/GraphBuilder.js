@@ -25,8 +25,23 @@ foam.CLASS({
   ],
 
   methods: [
+    function fromCompositeRelationship(
+      rootObject,
+      compositeRelationship,
+      noRootAdd
+    ) {
+      if ( ! foam.dao.CompositeRelationship.isInstance(compositeRelationship) ) {
+        throw new Error("No CompositeRelationship object detected")
+      }
+
+      var relationshipPromises = compositeRelationship.getForwardNames().map(
+        forwardName => this.fromRelationship(rootObject, forwardName, noRootAdd, compositeRelationship )
+      );
+
+      return Promise.all(relationshipPromises)
+    },
     function fromRelationship(
-      rootObject, relationshipKey, noRootAdd
+      rootObject, relationshipKey, noRootAdd, compositeRelationship
     ) {
       // Add graph node (with no relations yet)
       if ( ! this.data[rootObject.id] ) {
@@ -39,11 +54,17 @@ foam.CLASS({
 
       // Iterate over rootObject's children
       var parent = this.data[rootObject.id];
-      return rootObject[relationshipKey].dao
+      var relationshipDAO = rootObject[relationshipKey].dao || rootObject[relationshipKey];
+      
+      return relationshipDAO
         .select().then(r => Promise.all(r.array.map(o => {
           parent.forwardLinks = [...parent.forwardLinks, o.id];
           // Add child and its children (recursively)
-          return this.fromRelationship(o, relationshipKey, true).then(() => {
+          var fromPromise = compositeRelationship 
+            ? this.fromCompositeRelationship(o, compositeRelationship, true)
+            : this.fromRelationship(o, relationshipKey, true);
+
+          return fromPromise.then(() => {
             // Add inverse links before resolving the promise
             this.data[o.id].inverseLinks =
               [...this.data[o.id].inverseLinks, rootObject.id];

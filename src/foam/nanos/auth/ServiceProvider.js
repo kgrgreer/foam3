@@ -55,9 +55,15 @@ foam.CLASS({
     },
     {
       name: 'inherentPermissions',
-      javaGetter: 'return new String[] { "serviceprovider.read." + getId() };',
+      javaGetter: `return new String[] {
+        "serviceprovider.read." + getId(),
+        "serviceproviderdao.read." + getId()
+      };`,
       factory: function() {
-        return [ 'serviceprovider.read.' + this.id ];
+        return [
+          'serviceprovider.read.' + this.id,
+          'serviceproviderdao.read.' + this.id
+        ];
       },
       documentation: 'Service provider must have "serviceprovider.read.<SPID>" inherent permission.',
     }
@@ -107,7 +113,7 @@ foam.CLASS({
     {
       name: 'removeSpid',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       documentation: `
@@ -116,8 +122,8 @@ foam.CLASS({
         Called before a user is assigned a new ServiceProvider capability
       `,
       javaCode: `
-        CrunchService crunchService = (CrunchService) x.get("crunchService");
-        DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+        CrunchService crunchService             = (CrunchService) x.get("crunchService");
+        DAO           userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
 
         // find list of old spids to remove from user
         AbstractPredicate serviceProviderTargetPredicate = new AbstractPredicate(x) {

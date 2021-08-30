@@ -76,7 +76,7 @@ foam.CLASS({
       if ( myConfig.getRegionStatus() == RegionStatus.STANDBY &&
            myConfig.getIsPrimary() ) {
  
-        Agency agency = (Agency) x.get("threadPool");
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
   
         List<Set> buckets = support.getNodeBuckets();
         int index = (int) (entry.getIndex() % buckets.size());

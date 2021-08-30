@@ -61,9 +61,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
 
       if ( this.displayWidth ) {
         this.onDetach(this.displayWidth$.sub(this.resizeChildren));

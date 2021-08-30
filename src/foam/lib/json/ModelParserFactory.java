@@ -10,13 +10,12 @@ import foam.core.ClassInfo;
 import foam.core.PropertyInfo;
 import foam.lib.parse.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ModelParserFactory {
-  protected static HashMap<Class, Parser> parsers_ = new HashMap<Class, Parser>();
+  protected static ConcurrentHashMap<Class, Parser> parsers_ = new ConcurrentHashMap<Class, Parser>();
 
   public static Parser getInstance(Class c) {
     if ( parsers_.containsKey(c) ) return parsers_.get(c);

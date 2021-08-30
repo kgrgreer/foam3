@@ -32,6 +32,14 @@ foam.CLASS({
     'foam.nanos.theme.ThemeGlyphs'
   ],
 
+  javaImports: [
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'java.util.Map'
+  ],
+
   tableColumns: [
     'enabled',
     'name',
@@ -122,13 +130,13 @@ foam.CLASS({
           },
           { class: 'foam.u2.view.ImageView' },
         ]
-      },
+      }
     },
     {
       class: 'Array',
       name: 'domains',
       of: 'String',
-      factory: function(){
+      factory: function() {
         return  ['localhost'];
       },
       javaFactory: 'return new String[] { "localhost" };',
@@ -533,7 +541,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of:'foam.nanos.app.SupportConfig',
       name: 'supportConfig',
-      factory: function() { return foam.nanos.app.SupportConfig.create({},this)},
+      factory: function() { return foam.nanos.app.SupportConfig.create({}, this)},
       javaFactory: `
         return new foam.nanos.app.SupportConfig();
       `
@@ -542,6 +550,12 @@ foam.CLASS({
       class: 'String',
       name: 'customRefinement',
       displayWidth: 80
+    },
+    {
+      class: 'Boolean',
+      name: 'allowDuplicateEmails',
+      section: 'administration',
+      value: false
     },
     {
       class: 'FObjectProperty',
@@ -584,5 +598,123 @@ foam.CLASS({
         return foam.util.SafetyUtil.isEmpty(getName()) || foam.util.SafetyUtil.isEmpty(getDescription()) ? "" : getName() + " " + getDescription();
       `
     },
+    {
+      name: 'merge',
+      type: 'Theme',
+      args: [ 'Theme other' ],
+      code: function(other) {
+        var theme = this.clone();
+        var props = this.cls_.getAxiomsByClass(foam.core.Property);
+        for ( var i = 0 ; i < props.length ; i++ ) {
+          var name = props[i].name;
+          if ( ! other.hasOwnProperty(name) ) continue;
+
+          if ( foam.core.StringArray.isInstance(props[i])          ) this.mergeArrayProperty(props[i], theme, other);
+          else if ( foam.core.Map.isInstance(props[i])             ) this.mergeMapProperty(props[i], theme, other);
+          else if ( foam.core.FObjectProperty.isInstance(props[i]) ) this.mergeFObjectProperty(props[i], theme, other);
+          else theme[name] = other[name];
+        }
+        return theme;
+      },
+      javaCode: `
+        var theme = (Theme) this.fclone();
+        List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+        for ( PropertyInfo p : props ) {
+          if ( ! p.isSet(other) ) continue;
+
+          if ( p.getValueClass().isArray()                            ) mergeArrayProperty(p, theme, other);
+          else if ( Map.class.isAssignableFrom(p.getValueClass())     ) mergeMapProperty(p, theme, other);
+          else if ( FObject.class.isAssignableFrom(p.getValueClass()) ) mergeFObjectProperty(p, theme, other);
+          else p.set(theme, p.get(other));
+        }
+        return theme;
+      `
+    },
+    {
+      name: 'mergeArrayProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      code: function(prop, t1, t2) {
+        var name = prop.name;
+
+        if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
+        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+          t1[name].push(...t2[name]);
+        }
+      },
+      javaCode: `
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+          var value1 = (Object[]) prop.get(t1);
+          var value2 = (Object[]) prop.get(t2);
+
+          if ( value2 == null ) return;
+          if ( value1 == null ) {
+            prop.set(t1, value2);
+            return;
+          }
+
+          Object[] merged = new Object[value1.length + value2.length];
+          System.arraycopy(value1, 0, merged, 0, value1.length);
+          System.arraycopy(value2, 0, merged, value1.length, value2.length);
+          prop.set(t1, merged);
+        }
+      `
+    },
+    {
+      name: 'mergeMapProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      code: function(prop, t1, t2) {
+        var name = prop.name;
+
+        if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
+        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+          Object.assign(t1[name], t2[name]);
+        }
+      },
+      javaCode: `
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+          var m1 = (Map) prop.get(t1);
+          var m2 = (Map) prop.get(t2);
+
+          if ( m2 == null ) return;
+          if ( m1 == null ) {
+            prop.set(t1, m2);
+            return;
+          }
+
+          for ( var k : m2.keySet() ) {
+            m1.put(k, m2.get(k));
+          }
+        }
+      `
+    },
+    {
+      name: 'mergeFObjectProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      code: function(prop, t1, t2) {
+        var name = prop.name;
+
+        if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
+        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+          t1[name].copyFrom(t2[name]);
+        }
+      },
+      javaCode: `
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+          var value1 = (FObject) prop.get(t1);
+          var value2 = (FObject) prop.get(t2);
+
+          if ( value2 == null ) return;
+          if ( value1 == null ) {
+            prop.set(t1, value2);
+            return;
+          }
+
+          value1.copyFrom(value2);
+        }
+      `
+    }
   ]
 });

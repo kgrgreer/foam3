@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: 'Appends object id after object summary in RichChoiceViews',
 
-  // duplicates css and most of initE method from RichChoiceView.DefaultRowView
+  // duplicates css and most of render method from RichChoiceView.DefaultRowView
   css: `
         ^row {
           background: white;
@@ -26,7 +26,7 @@ foam.CLASS({
       `,
 
   methods: [
-    function initE() {
+    function render() {
       var summary = this.data.toSummary() + ' ('+this.data.id+')';
       return this
         .start()

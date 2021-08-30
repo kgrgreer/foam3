@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [ 'browserPath' ],
 
   properties: [
+    [ 'nodeName', 'a' ],
     {
       class: 'Class',
       name: 'data'
@@ -23,10 +24,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
 
-      this.setNodeName('a').
+      this.
         on('click', this.click).
         attrs({href: this.data.id}).
         add(this.showPackage ? this.data.id : this.data.name);

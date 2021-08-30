@@ -22,8 +22,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
+    function render() {
+      this.addClass();
     }
   ]
 });

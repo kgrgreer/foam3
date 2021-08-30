@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.DetailView',
   documentation: 'A DetailView which gets its data from its context.',
   methods: [
-    function initE() {
+    function render() {
       // TODO: This should just be imports: [ 'data$' ] but DetailView
       // is not property dynamic on data/of.  In particular it sets
       // this.of when this.data is set rather than making 'of' an

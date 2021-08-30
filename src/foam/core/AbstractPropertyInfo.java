@@ -294,7 +294,6 @@ public abstract class AbstractPropertyInfo
         prop.set(obj, fromString(str));
       }
     });
-
   }
 
   public Object castObject(Object value) {

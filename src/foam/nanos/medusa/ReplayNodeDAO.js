@@ -16,6 +16,12 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Journal',
+    'foam.dao.Sink',
+    'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.MIN',
+    'foam.mlang.sink.Count',
+    'foam.mlang.sink.Min',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
   ],
@@ -60,6 +66,8 @@ foam.CLASS({
 
       if ( obj instanceof ReplayCmd ) {
         ReplayCmd cmd = (ReplayCmd) obj;
+        ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
+
         getLogger().info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -67,12 +75,38 @@ foam.CLASS({
         ClusterConfig toConfig = support.getConfig(x, cmd.getDetails().getRequester());
         DAO clientDAO = support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig);
 
-        // replay from file system
-        getJournal().replay(x, new RetryClientSinkDAO(x, clientDAO));
+        // mdao (cache, fixed size, last x received) - this includes storageTransient entries.
+        DAO cache = (DAO) x.get("medusaNodeDAO");
 
-        // replay mdao (cache - fixed size) - this includes storageTransient entries.
-        ((DAO) x.get("medusaNodeDAO")).select(new RetryClientSinkDAO(x, clientDAO));
+        ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
+        if ( details.getMinIndex() <= info.getMaxIndex() ) {
+          Min min = (Min) MIN(MedusaEntry.INDEX);
+          Count count = new Count();
+          Sequence seq = new Sequence.Builder(x)
+            .setArgs(new Sink[] {count, min})
+            .build();
+          cache.select(seq);
 
+          if ( ((Long) count.getValue()) == 0 ||
+               min != null &&
+               min.getValue() != null &&
+               details.getMinIndex() < (Long) min.getValue() ) {
+;
+
+            // replay from file system
+            getJournal().replay(x, new RetryClientSinkDAO(x, clientDAO));
+          }
+
+          // replay from cache
+          // long indexAtStart = info.getIndex();
+          cache.select(new RetryClientSinkDAO(x, clientDAO));
+
+          // if ( info.getIndex() > indexAtStart ) {
+          //   // send the extra received since we started the cache replay
+          //   // Often after replay, the last storageTransient entry is not sent.
+          //   cache.where(GT(MedusaEntry.INDEX, info.getIndex())).select(new RetryClientSinkDAO(x, clientDAO));
+          // }
+        }
         return cmd;
       }
 

@@ -34,7 +34,7 @@ public class NSpecFactory
       logger = (Logger) x.get("logger");
     }
     if ( logger == null ) {
-      logger = new StdoutLogger();
+      logger = StdoutLogger.instance();
     }
 
     // Avoid infinite recursions when creating services
@@ -103,7 +103,7 @@ public class NSpecFactory
   public synchronized void invalidate(NSpec spec) {
     Logger logger = (Logger) x_.get("logger");
     if ( logger == null ) {
-      logger = new StdoutLogger();
+      logger = StdoutLogger.instance();
     }
     logger.info("Invalidating Service", spec_.getName());
     if ( ! SafetyUtil.equals(spec.getService(), spec_.getService())

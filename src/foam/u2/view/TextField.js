@@ -47,7 +47,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.start(this.view, {
         data$:            this.data$,
         label$:           this.label$,
@@ -62,7 +62,7 @@ foam.CLASS({
 
       if ( this.autocompleter ) {
         this.onDetach(this.onload.sub(this.loaded));
-        this.onDetach(this.onunload.sub(this.removeList));
+        this.onDetach(this.removeList);
       }
     },
 

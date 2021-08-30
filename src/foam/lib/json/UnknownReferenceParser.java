@@ -11,6 +11,9 @@ import foam.core.*;
 public class UnknownReferenceParser
   extends ProxyParser
 {
+  private final static Parser instance__ = new UnknownReferenceParser();
+  public static Parser instance() { return instance__; }
+
   public UnknownReferenceParser() {
     super(new Parser(){
       private Parser delegate = Whitespace.instance();
@@ -20,7 +23,7 @@ public class UnknownReferenceParser
         if ( ps == null || ! ps.valid() ) {
           return null;
         }
-        
+
         char head = ps.head();
 
         if ( head != '{' && head != '[' ) {

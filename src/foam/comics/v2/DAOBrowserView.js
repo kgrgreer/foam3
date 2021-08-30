@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.ScrollTableView',
     'foam.u2.view.SimpleSearch',
     'foam.u2.view.TabChoiceView'
@@ -72,14 +73,12 @@ foam.CLASS({
       flex-direction: column;
       height: 100%;
       overflow: hidden;
-      padding: 0 24px;
-      padding-bottom: 24px;
     }
 
     /*
-      Scroll is handled here to ensure summaryView always has a scroll 
+      Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
-      This is the generalised way to do this but should be removed 
+      This is the generalised way to do this but should be removed
       if double scroll bars start appearing
     */
     ^browse-view-container > * {
@@ -112,7 +111,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' }
+    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   imports: [
@@ -124,6 +124,7 @@ foam.CLASS({
   exports: [
     'click',
     'config',
+    'data as dao',
     'filteredTableColumns',
     'searchColumns',
     'serviceName'
@@ -225,14 +226,20 @@ foam.CLASS({
       label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
-      isAvailable: async function() {
+      isAvailable: async function(config) {
+        if ( ! config.exportPredicate.f() ) return false;
         var records = await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
       code: function() {
+        var adao;
+        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
+          adao = foam.dao.ArrayDAO.create({ of: this.data.of });
+          foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
+        }
         this.add(this.Popup.create().tag({
           class: 'foam.u2.ExportModal',
-          exportData: this.predicatedDAO$proxy,
+          exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
         }));
       }
@@ -242,6 +249,10 @@ foam.CLASS({
       label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
+      isAvailable: function(config) {
+        if ( ! config.refreshPredicate.f() ) return false;
+        return true;
+      },
       code: function(X) {
         this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
         this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
@@ -254,6 +265,10 @@ foam.CLASS({
       icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
+      isAvailable: function(config) {
+        if ( ! config.importPredicate.f() ) return false;
+        return true;
+      },
       code: function() {
         this.add(this.Popup.create().tag(this.importModal));
       }
@@ -269,21 +284,22 @@ foam.CLASS({
     },
     function click(obj, id) {
       if ( ! this.stack ) return;
-      this.stack.push({
-        class: 'foam.comics.v2.DAOSummaryView',
-        data: obj,
-        config: this.config,
-        idOfRecord: id
-      }, this.__subContext__);
+      this.stack.push(this.StackBlock.create({
+        view: {
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          config: this.config,
+          idOfRecord: id
+        }, parent: this.__subContext__ }));
     },
-    function initE() {
+    function render() {
       var self = this;
       var filterView;
       var simpleSearch;
 
       this.initMemento();
 
-      this.addClass(this.myClass());
+      this.addClass();
       this.SUPER();
 
       this
@@ -295,7 +311,7 @@ foam.CLASS({
               showCount: false,
               data$: self.searchPredicate$,
             }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-    
+
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
@@ -315,6 +331,8 @@ foam.CLASS({
           if ( ! self.config.browseContext ) {
             self.config.browseContext = summaryView;
           }
+
+          self.config.selectedObjs$ = summaryView.selectedObjects$;
 
           return self.E()
             .start(self.Rows)
@@ -362,6 +380,21 @@ foam.CLASS({
                         .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('refresh'))
                         .end()
+                        .callIf( self.config.DAOActions.length, function() {
+                          if ( self.config.DAOActions.length > 2 ) {
+                            self.start(self.OverlayActionListView, {
+                              label: this.ACTIONS,
+                              data: self.config.DAOActions,
+                              obj: self
+                            }).addClass(self.myClass('buttons')).end();
+                          } else {
+                            var actions = this.E().addClass(self.myClass('buttons'));
+                            for ( action of self.config.DAOActions ) {
+                              actions.tag(action);
+                            }
+                            this.add(actions);
+                          }
+                        })
                       .endContext()
                     .end()
                   .end()

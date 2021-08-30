@@ -164,8 +164,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'synchronized',
-      value: false
+      name: 'synchronized'
     },
     {
       class: 'String',
@@ -226,11 +225,6 @@ foam.CLASS({
       expression: function(value) {
         return foam.java.asJavaValue(value);
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'synchronized',
-      value: false
     },
     {
       class: 'String',
@@ -1683,12 +1677,13 @@ foam.CLASS({
   flags: ['java'],
   properties: [
     ['javaInfoType', 'foam.core.AbstractFObjectPropertyInfo'],
-    ['javaCompare',    ''],
+    ['javaCompare',  ''],
     {
       name: 'javaJSONParser',
       expression: function(of) {
-        return 'foam.lib.json.FObjectParser.create('
-          + (of ? of.id + '.class' : '') + ')';
+        // TODO: add caching
+        return 'new foam.lib.parse.Alt(foam.lib.json.PropertyReferenceParser.instance(), foam.lib.json.FObjectParser.create('
+          + (of ? of.id + '.class' : '') + ')/*, foam.lib.json.UnknownFObjectParser.instance()*/)';
       }
     },
     {

@@ -294,7 +294,7 @@ foam.CLASS({
           return;
         }
 
-        Agency agency = (Agency) x.get("threadPool");
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
 
         // request votes from others
         for (int i = 0; i < voters.size(); i++) {
@@ -423,7 +423,7 @@ foam.CLASS({
         }
 
         report(getWinner());
-        Agency agency = (Agency) x.get("threadPool");
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
  
         for (int j = 0; j < voters.size(); j++) {
           ClusterConfig clientConfig2 = (ClusterConfig) voters.get(j);

@@ -26,16 +26,6 @@ foam.INTERFACE({
           type: 'String'
         }
       ]
-    },
-    {
-      name: 'redirectToLogin',
-      type: 'Boolean',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ]
     }
   ]
 });

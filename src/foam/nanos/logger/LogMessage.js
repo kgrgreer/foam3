@@ -155,7 +155,15 @@ foam.CLASS({
     {
       name: 'toString',
       javaCode: `
-      return timestamper_.get().createTimestamp(getCreated())+","+getThread()+","+getSeverity()+","+getMessage();
+      StringBuilder sb = new StringBuilder();
+      sb.append(timestamper_.get().createTimestamp(getCreated()));
+      sb.append(",");
+      sb.append(getThread());
+      sb.append(",");
+      sb.append(getSeverity());
+      sb.append(",");
+      sb.append(getMessage());
+      return sb.toString();
       `
     }
   ]

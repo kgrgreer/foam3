@@ -560,8 +560,10 @@ foam.CLASS({
         return v;
       }
     ],
-    [ 'type', 'Class' ]
+    [ 'type', 'Class' ],
+    [ 'displayWidth', 80 ]
   ],
+
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
@@ -574,7 +576,7 @@ foam.CLASS({
 
       var adapt = function(value) {
         if ( foam.String.isInstance(value) ) {
-          var cls = this.__context__.lookup(value, true);
+          var cls = this.__context__.maybeLookup(value);
           if ( ! cls ) { // if the model is not available, it will be set on each get()
             console.error(`Property '${name}' of type '${this.model_.name}' was set to '${value}', which isn't a valid class.`);
             return null;
@@ -595,7 +597,7 @@ foam.CLASS({
         get: function classGetter() {
           console.warn("Deprecated use of 'cls.$cls'. Just use 'cls' instead.");
           return typeof this[name] !== 'string' ? this[name] :
-            this.__context__.lookup(this[name], true);
+            this.__context__.maybeLookup(this[name]);
         },
         configurable: true
       });
@@ -891,6 +893,24 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'enableLink',
+      documentation: `
+        Create the reference view as an anchor link to the reference's DetailView or provided menu.
+        Check ReadReferenceView documentation for more info.
+      `,
+      value: true
+    },
+    {
+      name: 'menuKeys',
+      documentation: `
+        A list of menu ids.
+        The link will reference to the first menu to which group has permission
+        in this list. If no menus are permissioned, the link will be disabled.
+        Check ReadReferenceView documentation for more info.
+      `
+    },
+    {
       class: 'String',
       name: 'unauthorizedTargetDAOKey',
       documentation: `
@@ -1031,15 +1051,17 @@ foam.CLASS({
   ]
 });
 
+
+// TODO: When value:'s get adapt:'ed, then we should cleanup all instances of this.
 foam.CLASS({
   package: 'foam.core',
   name: 'GlyphProperty',
   extends: 'FObjectProperty',
 
-  requires: ['foam.core.Glyph'],
+  requires: [ 'foam.core.Glyph' ],
 
   properties: [
-    ['value', null],
+    [ 'value', null ],
     {
       name: 'adapt',
       value: function(_, v, prop) {

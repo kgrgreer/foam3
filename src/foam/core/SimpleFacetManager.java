@@ -39,6 +39,7 @@ public class SimpleFacetManager
         }
       }
 
+      T obj = null;
       try {
         java.lang.reflect.Method method = type.getMethod("getOwnClassInfo");
         ClassInfo classInfo = (ClassInfo) method.invoke(null);
@@ -55,13 +56,15 @@ public class SimpleFacetManager
         }
 
         if ( f != null ) {
-          return ((XArgsFactory<T>) f).getInstance(args, x);
+          obj = ((XArgsFactory<T>) f).getInstance(args, x);
         }
 
       } catch (NoSuchMethodException e) {
       }
 
-      T obj = type.newInstance();
+      if ( obj == null ) {
+        obj = type.newInstance();
+      }
 
       if ( obj instanceof ContextAware ) ((ContextAware) obj).setX(x);
 

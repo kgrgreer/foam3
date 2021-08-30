@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.tag(this.HelloExtendsView, {data: this.helloUser});
     }
   ]

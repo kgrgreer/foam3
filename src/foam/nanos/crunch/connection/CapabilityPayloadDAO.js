@@ -256,7 +256,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      var pm = new PM(CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+      var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;

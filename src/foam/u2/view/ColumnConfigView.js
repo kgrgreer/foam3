@@ -154,9 +154,7 @@ foam.CLASS({
       },
       value: '',
       postSet: function() {
-        for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch);
-        }
+        this.onMenuSearchUpdate();
       }
     },
     {
@@ -169,7 +167,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -294,6 +292,19 @@ foam.CLASS({
       }
       return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
     }
+  ],
+  listeners: [
+    {
+      name: 'onMenuSearchUpdate',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() {
+        var query = this.menuSearch.trim().toLowerCase()
+        for ( var i = 0 ; i < this.columns.length ; i++ ) {
+          this.columns[i].updateOnSearch(query);
+        }
+      }
+    }
   ]
 });
 
@@ -347,7 +358,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 
@@ -441,7 +452,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       this
@@ -533,7 +544,7 @@ foam.CLASS({
     },
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this
@@ -605,7 +616,7 @@ foam.CLASS({
     {
       name: 'prop',
       expression: function(rootProperty) {
-        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty));
+        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty)) || {};
       }
     },
     {
@@ -646,19 +657,14 @@ foam.CLASS({
       name: 'parentExpanded',
       class: 'Boolean',
       value: false,
-      postSet: function() {
-        if ( ! this.parentExpanded )
+      postSet: function(_, n) {
+        if ( ! n )
           this.expanded = false;
       }
     },
     {
       name: 'expanded',
-      class: 'Boolean',
-      value: false,
-      postSet: function() {
-        if ( this.subColumnSelectConfig.length == 0 ) 
-          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded);
-      }
+      class: 'Boolean'
     },
     {
       name: 'showOnSearch',
@@ -705,29 +711,26 @@ foam.CLASS({
       return [this.rootProperty[0]];
     },
     function updateOnSearch(query) {
-      if ( ! this.hasSubProperties ) {
-        if ( query.length !== 0 ) {
-          this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
-        } else
-          this.showOnSearch = true;
-      } else {
-        this.showOnSearch = false;
+      this.showOnSearch = false;
+      this.expanded = false;
+      if ( query.length == 0 ) { this.showOnSearch = true; this.expanded = false; return this.showOnSearch; }
+      this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query) : this.rootProperty.name.toLowerCase().includes(query);
+      if ( this.hasSubProperties && this.level < 2 ) {
+        this.expanded = false;
+        if ( this.subColumnSelectConfig.length == 0 )
+          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
         for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
           if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
+            this.expanded = true;
             this.showOnSearch = true;
           }
         }
       }
-      if ( query.length !== 0 && this.showOnSearch )
-        this.expanded = true;
-      if ( query.length === 0 )
-        this.expanded = false;
       return this.showOnSearch;
     },
-    function returnSubColumnSelectConfig(subProperties, level, expanded) {
+    function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
       var arr = [];
-
-      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ! expanded )
+      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
           return arr;
         var l = level + 1;
         var r = this.of.getAxiomByName(this.rootProperty[0]);

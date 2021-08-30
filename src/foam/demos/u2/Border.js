@@ -30,8 +30,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
+    function render() {
+      this.addClass();
     }
   ]
 });
@@ -644,7 +644,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.addClass(this.myClass());
+      this.addClass();
     }
   ]
 });
@@ -666,7 +666,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.addClass(this.myClass())
+      this.addClass()
     }
   ]
 });

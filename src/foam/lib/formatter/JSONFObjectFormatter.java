@@ -201,6 +201,12 @@ public class JSONFObjectFormatter
   }
 
   protected boolean maybeOutputFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
+    if ( newFObject instanceof foam.lib.json.OutputJSON ) {
+      if ( newFObject.equals(oldFObject) ) return false;
+      ((foam.lib.json.OutputJSON) newFObject).formatJSON(this);
+      return true;
+    }
+
     if ( prop instanceof AbstractFObjectPropertyInfo && oldFObject != null &&
       prop.get(oldFObject) != null && prop.get(newFObject) != null
     ) {
@@ -351,6 +357,12 @@ public class JSONFObjectFormatter
   }
 
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass) {
+    if ( newFObject instanceof foam.lib.json.OutputJSON ) {
+      if ( newFObject.equals(oldFObject) ) return false;
+      ((foam.lib.json.OutputJSON) newFObject).formatJSON(this);
+      return true;
+    }
+
     ClassInfo newInfo   = newFObject.getClassInfo();
     String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
     List      axioms    = getProperties(parentProp, newInfo);
@@ -387,14 +399,12 @@ public class JSONFObjectFormatter
     String output = builder().toString();
     reset();
 
-    if ( delta > 0 && delta > ids + optional ) {
-      boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass );
-
+    if ( delta > ids + optional ) {
       append(before);
       append('{');
       addInnerNewline();
-      if ( outputClass ) {
-        //output Class name
+      if ( outputClassNames_ ||
+           ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
         outputKey("class");
         append(':');
         output(newInfo.getId());
@@ -445,6 +455,11 @@ public class JSONFObjectFormatter
   }
 
   public void output(FObject o, ClassInfo defaultClass, PropertyInfo parentProp) {
+    if ( o instanceof foam.lib.json.OutputJSON ) {
+      ((foam.lib.json.OutputJSON) o).formatJSON(this);
+      return;
+    }
+
     ClassInfo info = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );

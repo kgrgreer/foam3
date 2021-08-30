@@ -7,7 +7,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("alarmConfig")
+      .setJournalName("alarmConfigs")
       .setOf(foam.nanos.alarming.AlarmConfig.getOwnClassInfo())
       .setDecorator(new foam.nanos.alarming.AlarmConfigOMNameDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.alarming.AlarmConfig.getOwnClassInfo()))

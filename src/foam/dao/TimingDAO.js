@@ -34,13 +34,13 @@ foam.CLASS({
       class: 'Function',
       name: 'now',
       factory: function() {
-        if ( global.window && global.window.performance ) {
+        if ( globalThis.window && globalThis.window.performance ) {
           return function() {
-            return window.performance.now();
+            return globalThis.performance.now();
           }
-        } else if ( global.process && global.process.hrtime ) {
+        } else if ( globalThis.process && globalThis.process.hrtime ) {
           return function() {
-            var hr = global.process.hrtime();
+            var hr = globalThis.process.hrtime();
             return ( hr[0] * 1000 ) + ( hr[1] / 1000000 );
           }
         } else {

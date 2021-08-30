@@ -96,9 +96,9 @@ p({
         .getArray();
     emailService = x.get("email");
     
-    // SES limit - 10 tps
+    // SES limit - 14 tps
     second = 1000;
-    tps = 10;
+    tps = 14;
     
     endtime = System.currentTimeMillis() + second;
     count = 0;
@@ -106,7 +106,7 @@ p({
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
       count++;
       if ( count > tps ) {
-        remaining = endTime - System.currentTimeMillis;
+        remaining = endTime - System.currentTimeMillis();
         if ( remaining > 0 ) {
           Thread.sleep(remaining);
         }
@@ -114,28 +114,5 @@ p({
         endTime = System.currentTimeMillis() + second;
       }
     }
-  """
-})
-
-p({
-  "class": "foam.nanos.cron.Cron",
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "minute": 1,
-    "hour": 0,
-    "dayOfMonth": -1,
-    "month": -1,
-    "dayOfWeek": -1,
-    "second": 1
-  },
-  "scheduledTime": "2019-09-09T16:56:00.000Z",
-  "id": "expireUserCapabilityJunctionsCron",
-  "description": "Check for expired UserCapabilityJunctions daily, and set their status to EXPIRED",
-  "code": 
-  """
-    import foam.nanos.crunch.ExpireUserCapabilityJunctionsCron;
-    cron = new ExpireUserCapabilityJunctionsCron();
-    cron.execute(x);
-    print("done");
   """
 })

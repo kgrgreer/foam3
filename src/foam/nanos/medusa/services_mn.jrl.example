@@ -18,7 +18,6 @@ p({
       .setRuler(false)
       .setCluster(false)
       .setPm(true)
-      .setPipelinePm(true)
       .setDecorator(new foam.nanos.medusa.ReplayNodeDAO.Builder(x)
         .setJournal(new net.nanopay.security.HashingReplayJournal.Builder(x)
           .setFilename("ledger")

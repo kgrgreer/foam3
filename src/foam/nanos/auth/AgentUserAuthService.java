@@ -66,9 +66,6 @@ public class AgentUserAuthService
     agent = (User) agent.fclone();
     agent.freeze();
 
-    // Purge auth cache
-    CachingAuthService.purgeCache(x);
-
     // Set user and agent objects into the session context and place into sessionDAO.
     Session session = x.get(Session.class);
     session.setUserId(user.getId());
@@ -134,9 +131,6 @@ public class AgentUserAuthService
 
     agent = (User) agent.fclone();
     agent.freeze();
-
-    // Purge auth cache
-    CachingAuthService.purgeCache(x);
 
     // Update the session and context
     Session session = x.get(Session.class);

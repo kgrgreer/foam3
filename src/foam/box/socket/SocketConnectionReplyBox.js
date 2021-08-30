@@ -85,7 +85,6 @@ foam.CLASS({
   methods: [
     {
       documentation: `Send format:
-timestamp: 4 bytes, // used to generate a PM when received.
 length: 1 byte, // message byte length
 message
 NOTE: duplicated in SocketConnectionBox
@@ -102,7 +101,6 @@ NOTE: duplicated in SocketConnectionBox
         String message = formatter.builder().toString();
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
         synchronized( out ) {
-          out.writeLong(System.currentTimeMillis());
           out.writeInt(messageBytes.length);
           out.write(messageBytes);
           out.flush();

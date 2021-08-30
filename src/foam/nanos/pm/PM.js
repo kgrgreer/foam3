@@ -65,6 +65,12 @@ foam.CLASS({
       name: 'exception',
       class: 'Object',
       storageTransient: true
+    },
+    {
+      name: 'enableCandlestick',
+      class: 'Boolean',
+      value: false,
+      documentation: 'Whether to create a candlestick for this PM.'
     }
   ],
 
@@ -85,15 +91,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-    if ( x == null ) return;
-    if ( getIsError() ) return;
-    if ( getEndTime() == 0L ) {
-      setEndTime(System.currentTimeMillis());
-    }
-    PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
-    if ( pmLogger != null ) {
-      pmLogger.log(this);
-    }
+        if ( x == null ) return;
+        if ( getIsError() ) return;
+        if ( getEndTime() == 0L ) {
+          setEndTime(System.currentTimeMillis());
+        }
+        PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
+        if ( pmLogger != null ) {
+          pmLogger.log(this);
+        }
+
+        // Candlestick
+        if ( getEnableCandlestick() ) {
+          DAOPMLogger daoPMLogger = (DAOPMLogger) x.get("daoPMLogger");
+          if ( daoPMLogger != null ) {
+            daoPMLogger.log(this);
+          }
+        }
       `
     },
     {
@@ -186,6 +200,10 @@ foam.CLASS({
               return pm;
             }
 
+            public static PM create(X x, Class cls, Object... args) {
+              return create(x, cls.getName(), args);
+            }
+
             public static PM create(X x, Object key, Object... args) {
               PM pm = (PM) x.get("PM");
 
@@ -195,6 +213,12 @@ foam.CLASS({
               pm.setName(combine((Object[]) args));
               pm.init_();
 
+              return pm;
+            }
+
+            public static PM create(X x, Boolean enableCandlestick, String... args) {
+              PM pm = new PM(args);
+              pm.setEnableCandlestick(enableCandlestick);
               return pm;
             }
 

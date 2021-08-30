@@ -66,7 +66,7 @@ foam.CLASS({
       final MedusaEntry entry = (MedusaEntry) obj;
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-      Agency agency = (Agency) x.get("threadPool");
+      Agency agency = (Agency) x.get(support.getThreadPoolName());
 
       List<Set> buckets = support.getNodeBuckets();
       int index = (int) (entry.getIndex() % buckets.size());

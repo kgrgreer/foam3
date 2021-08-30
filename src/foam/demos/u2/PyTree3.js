@@ -18,15 +18,15 @@ foam.CLASS({
   name: 'PyBranch',
   extends: 'foam.u2.Element',
 
-  requires: [ 'PyBranch' ],
+//  requires: [ 'PyBranch' ],
 
   imports: [ 'maxLvl' ],
 
-  properties: [ 'lvl' ],
+  properties: [ [ 'nodeName', 'g' ], 'lvl' ],
 
   methods: [
-    function initE() {
-      this.setNodeName('g').
+    function render() {
+      this.
         start('rect').
           attrs({width: 1, height: 1}).
           style({fill: this.fillColor(this.lvl)}).
@@ -58,6 +58,7 @@ foam.CLASS({
   exports: [ 'maxLvl' ],
 
   properties: [
+    [ 'nodeName', 'svg' ],
     [ 'width',  1600 ],
     [ 'height', 800 ],
     'heightFactor',
@@ -66,11 +67,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.installCSS('','pytree','pytree');
       this.myCss = this.document.head.lastChild;
 
-      this.setNodeName('svg').
+      this.
         style({border: '1px solid lightgray', width: this.width, height: this.height}).
         on('mousemove', this.onMouseMove).
         add(this.PyBranch.create({lvl: 1, w: 80}).attrs({transform: 'translate(560 510) scale(80)'}));
@@ -96,6 +97,7 @@ foam.CLASS({
     },
 
     function onMouseMove(e) {
+      console.log('PyTree3 MouseMove: ', e);
       this.heightFactor = (1 - e.offsetY / this.height) * 0.8;
       this.lean         = e.offsetX / this.width - 0.5;
       this.redraw();

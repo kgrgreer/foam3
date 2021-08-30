@@ -44,8 +44,8 @@ public class ThreadsWebAgent
     out.println("</tr>");
 
     for ( Thread thread : threadArray ) {
-      StackTraceElement[] elements  = thread.getStackTrace();
-      String methodName             = null;
+      StackTraceElement[] elements   = thread.getStackTrace();
+      String              methodName = null;
 
       if ( elements.length > 0 ) {
         methodName = elements[0].getMethodName();
@@ -85,9 +85,7 @@ public class ThreadsWebAgent
       out.println("<br><br><H2>Stack Trace</H2>\n");
 
       for ( Thread thread : threadArray ) {
-        Long id = new Long(thread.getId());
-
-        if ( param.equals(id.toString()) ) {
+        if ( param.equals(String.valueOf(thread.getId())) ) {
           out.println("<b>Thread: " + thread.getName() + "</b>\n");
           StackTraceElement[] elements = thread.getStackTrace();
 

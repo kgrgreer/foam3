@@ -62,7 +62,7 @@ foam.CLASS({
       value: '/images/dropdown-icon.svg'
     },
     // Used for keyboard navigation
-    'firstEl_', 'lastEl_', 
+    'firstEl_', 'lastEl_',
     [ 'isMouseClick_', true ]
   ],
 
@@ -109,20 +109,37 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      var dataSlots = this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj));
-      if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) {
-        this.shown = false; return;
-      }
+    async function render() {
       this.SUPER();
+
+      this.shown = false;
+      for ( let action of this.data ) {
+        if ( await this.isAvailable(action) ) {
+          this.shown = true;
+          break;
+        }
+      }
     },
 
     function addContent() {
       this.SUPER();
-      this.showDropdownIcon && this.start().addClass(this.myClass('dropdownIcon')).add(this.theme ?
-        this.HTMLView.create({ data: this.theme.glyphs.dropdown.expandSVG() }):
-        this.start('img').attr('src', this.dropdownIcon$).end()
-      ).end();
+      var self = this;
+      if ( this.showDropdownIcon ) {
+        this.add(this.shown$.map(function(shown) {
+          var e = self.E();
+          if ( shown ) {
+            e.start().addClass(self.myClass('dropdownIcon')).callIfElse(self.theme,
+              function() {
+                this.add(self.HTMLView.create({ data: self.theme.glyphs.dropdown.expandSVG() }));
+              },
+              function() {
+                this.start('img').attr('src', this.dropdownIcon$).end();
+              }
+            ).end();
+          }
+          return e;
+        }));
+      }
     },
 
     async function initializeOverlay() {
@@ -143,19 +160,23 @@ foam.CLASS({
         self.overlay_.close();
       });
 
+      // a list where element at i stores whether ith action in data is enabled or not
+      const enabled = await Promise.all(this.data.map(this.isEnabled.bind(this)));
+      // a list where element at i stores whether ith action in data is available or not
+      const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
+
       this.overlay_.startContext({ data: self.obj })
-        .forEach(self.data, function(action) {
-          if ( action.createIsAvailable$(self.__context__, self.obj).value ) {
+        .forEach(self.data, function(action, index) {
+          if ( availabilities[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .addClass(action.createIsEnabled$(self.__context__, self.obj).map( e => ! e && self.myClass('disabled')))
                 .tag(action, { buttonStyle: 'UNSTYLED' })
-                .attrs({
-                  disabled: action.createIsEnabled$(self.__context__, self.obj).map(function(e) {
-                    return ! e;
-                  }),
-                  tabindex: -1
+                .attrs({ tabindex: -1 })
+                .callIf(! enabled[index], function() {
+                  this
+                    .addClass(self.myClass('disabled'))
+                    .attrs({ disabled: true })
                 })
               .end();
           }
@@ -163,7 +184,7 @@ foam.CLASS({
       .endContext();
 
       // Moves focus to the modal when it is open and keeps it in the modal till it is closed
-      
+
       this.overlay_.on('keydown', this.onKeyDown);
       var actionElArray_ = this.overlay_.dropdownE_.childNodes;
       this.firstEl_ = actionElArray_[0].childNodes[0];
@@ -174,6 +195,24 @@ foam.CLASS({
       // with `overflow: hidden` then this overlay won't be cut off.
       this.ctrl.add(this.overlay_);
       this.overlayInitialized_ = true;
+    },
+
+    async function isEnabled(action) {
+      /*
+       * checks if action is enabled
+       */
+      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      if ( slot.get() ) return true;
+      return slot.args[1].promise || false;
+    },
+
+    async function isAvailable(action) {
+      /*
+       * checks if action is available
+       */
+      const slot = action.createIsAvailable$(this.__context__, this.obj);
+      if ( slot.get() ) return true;
+      return slot.promise || false;
     }
   ],
 

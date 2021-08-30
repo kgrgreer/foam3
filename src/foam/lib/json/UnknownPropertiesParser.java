@@ -17,18 +17,16 @@ public class UnknownPropertiesParser
       Literal.create(","));
       public PStream parse(PStream ps, ParserContext x) {
         ps = ps.apply(delegate, x);
-        if ( ps == null ) {
-          return null;
-        }
+        if ( ps == null ) return null;
         Object[] objs = (Object[]) ps.value();
-        String res = "";
+        StringBuilder res = new StringBuilder();
         for ( int i = 0 ; i < objs.length ; i++ ) {
-          res = res + objs[i].toString();
+          res.append(objs[i].toString());
           if ( i < objs.length - 1) {
-            res = res + ",";
+            res.append(',');
           }
         }
-        return ps.setValue(res);
+        return ps.setValue(res.toString());
       }
     });
   }
