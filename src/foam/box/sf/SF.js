@@ -60,26 +60,16 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'fileCapability',
+      name: 'fileCapacity',
       value: 1024
     },
     {
       name: 'retryStrategy',
-      class: 'Enum',
+      class: 'FObjectProperty',
       of: 'foam.box.sf.RetryStrategy',
-      value: 'CONST_FOUR_SECOND'
-    },
-    {
-      class: 'Int',
-      name: 'maxRetryDelayMS',
-      documentation: 'Unit in Millisecond',
-      value: 20000
-    },
-    {
-      name: 'maxRetryAttempts',
-      class: 'Int',
-      documentation: 'Set to -1 to infinitely retry.',
-      value: 20
+      javaFactory: `
+        return (new RetryStrategy.Builder(getX())).build();
+      `
     },
     {
       class: 'Int',
@@ -158,7 +148,7 @@ foam.CLASS({
         
         entry.setCreated(new Date());
         long index = entryIndex_.incrementAndGet();
-        long fileIndex = index / ((long) getFileCapability());
+        long fileIndex = index / ((long) getFileCapacity());
         entry.setIndex(index);
         String filename = getFileName() + "." + fileIndex;
         Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
@@ -185,7 +175,7 @@ foam.CLASS({
         if ( getReplayFailEntry() == true ) {
           e.setStatus(SFStatus.COMPLETED);
           long index = e.getIndex();
-          long fileIndex = index / ((long) getFileCapability());
+          long fileIndex = index / ((long) getFileCapacity());
           String filename = getFileName() + "." + fileIndex;
           Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
           journal.put(getX(), "", (DAO) getNullDao(), e);
@@ -198,14 +188,14 @@ foam.CLASS({
       documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
-        if ( getMaxRetryAttempts() > -1 && 
-              e.getRetryAttempt() >= getMaxRetryAttempts() )  {
-          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
+        if ( getRetryStrategy().getMaxRetryAttempts() > -1 && 
+              e.getRetryAttempt() >= getRetryStrategy().getMaxRetryAttempts() )  {
+          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getRetryStrategy().getMaxRetryAttempts(), e.toString());
 
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
             long index = e.getIndex();
-            long fileIndex = index / ((long) getFileCapability());
+            long fileIndex = index / ((long) getFileCapacity());
             String filename = getFileName() + "." + fileIndex;
             Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
             journal.put(getX(), "", (DAO) getNullDao(), e);
@@ -230,6 +220,13 @@ foam.CLASS({
       `
     },
     {
+      name: 'createDelegate',
+      documentation: 'creating delegate when start up',
+      javaCode: `
+        return;
+      `
+    },
+    {
       name: 'init',
       args: 'Context x',
       documentation: 'when system start, SFManager will call this service to initial re-forward',
@@ -238,6 +235,7 @@ foam.CLASS({
                     this.getClass().getSimpleName(),
                     this.getFileName()
                   }, (Logger) x.get("logger"));
+        createDelegate();
         FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
         // Do nothing if no file
@@ -323,9 +321,9 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setCurStep(getRetryStrategy().next(e.getCurStep()));
-        if ( e.getCurStep() > getMaxRetryDelayMS() ) {
-          e.setCurStep(getMaxRetryDelayMS());
+        e.setCurStep(getRetryStrategy().delay(e.getCurStep()));
+        if ( e.getCurStep() > getRetryStrategy().getMaxRetryDelayMS() ) {
+          e.setCurStep(getRetryStrategy().getMaxRetryDelayMS());
         }
         e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
         return e;

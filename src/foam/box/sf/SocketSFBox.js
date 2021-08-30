@@ -17,44 +17,41 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'SFEntry',
-  extends: 'foam.nanos.medusa.MedusaEntry',
+  name: 'SocketSFBox',
+  extends: 'foam.box.sf.SF',
+  implements: [ 'foam.box.Box' ],
 
+  javaImports: [
+    'foam.box.socket.*',
+  ],
+  
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.core.FObject',
-      name: 'object'
-    },
-    {
-      class: 'Long',
-      name: 'scheduledTime',
-      storageTransient: true,
-      value: 0
-    },
-    {
-      class: 'Long',
-      name: 'curStep',
-      value: 0,
-      storageTransient: true,
+      class: 'String',
+      name: 'host'
     },
     {
       class: 'Int',
-      name: 'retryAttempt',
-      value: 0,
-      storageTransient: true,
+      name: 'port'
+    }
+  ],
+  
+  methods: [
+    {
+      name: 'send',
+      javaCode: `
+        SFEntry e = this.store((FObject) msg);
+        this.forward(e);
+      `
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.box.sf.SF',
-      name: 'sf',
-      storageTransient: true
-    },
-    {
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.box.sf.SFStatus',
-      value: 'FAILURE'
+      name: 'submit',
+      args: 'Context x, SFEntry entry',
+      javaCode: `
+        msg.getAttributes().put("serviceKey", getServiceName());
+        foam.box.Box box = ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).get(getX(), getHost(), getPort());
+        box.send((Message) entry.getObject());
+      `
     },
   ]
 })

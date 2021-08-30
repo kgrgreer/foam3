@@ -15,18 +15,48 @@
 * limitations under the License.
 */
 
-foam.ENUM({
+foam.CLASS({
   package: 'foam.box.sf',
+  abstract: true,
   name: 'RetryStrategy',
-  
-  values: [
+
+  properties: [
     {
-      name: 'CONST_FOUR_SECOND',
-      ordinal: 0,
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      documentation: 'Set to -1 to infinitely retry.',
+      value: 20
     },
     {
-      name: 'INCREMENT_ONE_SECOND',
-      ordinal: 1,
+      name: 'constantDelayTime',
+      class: 'Long',
+      value: 0
+    },
+    {
+      class: 'Int',
+      name: 'maxRetryDelayMS',
+      documentation: 'Unit in Millisecond',
+      value: 20000
+    },
+  ],
+
+  methods: [
+    {
+      name: 'delay',
+      documentation: 'Unit: MS',
+      javaType: 'long',
+      args: 'long cur',
+      javaCode: `
+        throw new RuntimeException("Do not support");
+      `
+    },
+    {
+      name: 'maxRetryDelay',
+      documentation: 'Unit: MS',
+      javaType: 'long',
+      javaCode: `
+        throw new RuntimeException("Do not support");
+      `
     }
   ],
   
@@ -36,16 +66,6 @@ foam.ENUM({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-          public long next(long cur) {
-            switch ( this ) {
-              case CONST_FOUR_SECOND:
-              return 4000;
-              case INCREMENT_ONE_SECOND:
-              return cur + 1000;
-              default:
-              throw new RuntimeException("unsupport operation");
-            }
-          }
           `
         }));
       }
