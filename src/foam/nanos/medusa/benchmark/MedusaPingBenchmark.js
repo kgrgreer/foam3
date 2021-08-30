@@ -25,11 +25,14 @@ foam.CLASS({
     'foam.nanos.medusa.ClusterServerDAO',
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.Status',
+    'foam.nanos.pm.PM',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.NOT',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.HashMap',
+    'java.util.List',
+    'java.util.Map'
   ],
 
   properties: [
@@ -41,6 +44,11 @@ foam.CLASS({
     {
       name: 'clients',
       class: 'Array'
+    },
+    {
+      name: 'configs',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
     },
     {
       name: 'logger',
@@ -89,10 +97,10 @@ foam.CLASS({
         for ( ClusterConfig cfg : configs ) {
           DAO client = support.getClientDAO(x, "clusterConfigDAO", config, cfg);
           clients.add(client);
+          getConfigs().put(client, cfg);
           getLogger().info("created,client", cfg.getId());
         }
         setClients(clients.toArray());
-        // ((DAO) x.get("pmInfoDAO")).removeAll();
       `
     },
     {
@@ -106,7 +114,10 @@ foam.CLASS({
       javaCode: `
       int index = (int) (Math.random() * getClients().length);
       DAO client = (DAO) getClients()[index];
+      ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
+      PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
       client.cmd(ClusterServerDAO.PING);
+      pm.log(x);
       `
     },
     {

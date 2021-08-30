@@ -102,7 +102,7 @@ p({
       .setThreadCount(8)
       .setRunPerThread(false)
       .setBenchmark(b)
-      .setCleanPMs(true);
+      .setClearPMs(true);
     runner = builder.build();
     runner.execute(x);
     print("done");

@@ -15,11 +15,13 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewDataSection',
+      title: 'Confirmation',
       isAvailable: function(renewable) { return renewable; }
     }
   ],
 
   messages: [
+    { name: 'CONFIRMATION_MSG', message: 'I agree that all the information provided above is accurate and up to date' },
     { name: 'REVIEW_ERROR', message: 'Need to certify data reviewed' }
   ],
 
@@ -33,7 +35,14 @@ foam.CLASS({
     {
       name: 'reviewed',
       class: 'Boolean',
+      label: '',
       section: 'reviewDataSection',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.CONFIRMATION_MSG
+        };
+      },
       validationPredicates: [
         {
           args: ['renewable', 'reviewed'],
