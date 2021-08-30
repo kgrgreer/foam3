@@ -168,7 +168,7 @@ foam.CLASS({
   `,
 
   properties: [
-    [ 'nodeName', 'b' ],
+    [ 'nodeName', 'i' ],
   ],
 
   methods: [
@@ -179,7 +179,7 @@ foam.CLASS({
         attrs({}).
         add('some text').
         start('b').
-          add('some bold text')
+          add('some bold text').
         end().
         br().
         tag('hr').
