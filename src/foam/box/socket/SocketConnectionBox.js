@@ -342,7 +342,8 @@ NOTE: duplicated in SocketConnectionReplyBox
           getReplyBoxes().remove(entry.getKey());
           i++;
         }
-        getLogger().warning("SocketConnectionBox", getKey(), "free thread: " + i);
+        getLogger().warning("Terminating reply boxes", getKey());
+        getLogger().debug("free reply boxex: " + i);
       `
     }
   ]
