@@ -138,6 +138,7 @@ start('div').hide().show().add('show()').end();         // will be shown
 --
 // TODO: update to use data when working
 start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end();
+add(' ');
 start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
 
 ##   Creating a Component
