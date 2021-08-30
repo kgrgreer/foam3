@@ -31,13 +31,13 @@ console.profile('p1');
 function test1() {
   var startTime = performance.now();
   var node = document.createElement("UL");               // Create a <ul> node
-  for ( var i = 0 ; i < 100 ; i++ ) {
+  for ( var i = 0 ; i < 10 ; i++ ) {
     var li = document.createElement("LI")
     li.appendChild(document.createTextNode("text" + i)); // Append an <li>
     node.appendChild(li);
   }
-  //el().appendChild(node);
-  log(performance.now() - startTime);
+  start().call(function() { this.element_.appendChild(node); });
+  log('DOM', performance.now() - startTime);
 }
 test1();
 console.profileEnd('p1');
@@ -47,15 +47,14 @@ console.profile('p2');
 function test2() {
   var startTime = performance.now();
   var node = foam.u2.Element.create({nodeName: 'UL'}); // Create a <ul> node
-  for ( var i = 0 ; i < 100 ; i++ )
+  for ( var i = 0 ; i < 10 ; i++ )
     node.start('li').add("text" + i).end();            // Append an <li>
 
-  //add(node);
-  log(performance.now() - startTime);
+  add(node);
+  log('U3', performance.now() - startTime);
 }
 test2()
 console.profileEnd('p2');
-
 
 ##   DSL
 ##   Intro1
