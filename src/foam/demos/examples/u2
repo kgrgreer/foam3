@@ -224,7 +224,7 @@ start(k).end();
 ##   el()
 ##   id
 You can set an element's id, but keep in mind that it isn't normally a good idea to do so because
-it prevents you from instantiating two instances of your component. 
+it prevents you from instantiating two instances of your component.
 --
 start('b', {id: 'myId1'}).add('inspect me to see my id').end();
 start('i').setID('myId2').add('this method also works').end();
@@ -268,7 +268,7 @@ CSS styling can be added to your elements in two ways:
 ##    style()
 Use style() to add in-lined CSS styling to a parent start() tag.
 --
-start().style({background: 'pink', border: '2px solid black;'}).add('styled content').end()
+start().style({background: 'pink', border: '2px solid black'}).add('styled content').end()
 ##    css:
 The same output and styling as the above example, but using a css: block and named CSS Class.
 --
