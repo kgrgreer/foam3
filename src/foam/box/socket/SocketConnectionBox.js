@@ -343,7 +343,7 @@ NOTE: duplicated in SocketConnectionReplyBox
           i++;
         }
         getLogger().warning("Terminating reply boxes", getKey());
-        getLogger().debug("free reply boxex: " + i);
+        getLogger().debug("free reply box: " + i);
       `
     }
   ]
