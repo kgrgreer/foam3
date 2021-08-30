@@ -65,8 +65,28 @@ add(foam.u2.Element.create().add('Hello World!'));
 ##   nodeName
 If you inspect the HTML output from the Hellow World! example, you'll notice that it is a div tag.<br>
 However, if you want to change it to another type, you can specify the node's name with the nodeName property.
+An Element's nodeName can't be changed after it is created. It must either be set as an argument of create(),
+or by changing the default value of the 'nodeName' property.
 --
 add(foam.u2.Element.create({nodeName: 'b'}).add('Hello World!'));
+
+start().br().end();
+
+foam.CLASS({
+  name: 'Example',
+  extends: 'foam.u2.Element',
+  properties: [
+    [ 'nodeName', 'b' ]
+  ],
+  methods: [
+    function render() {
+      this.add('Hello World (from a component)!');
+    }
+  ]
+});
+
+tag({class: 'Example'});
+
 ##  Short Form
 Given it is so common to want to create new Elements from within other Elements, Element has a method called start()
 which is used to add another Element to it.
