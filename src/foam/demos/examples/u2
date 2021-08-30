@@ -222,10 +222,11 @@ foam.CLASS({
   name: 'KeyboardTest',
   extends: 'foam.u2.Controller',
   properties: [
-    { class: 'Int', name: 'count' }
+    // TODO: view: shouldn't be required, remove when fixed.
+    { class: 'Int', name: 'count', value: 5, view: 'foam.u2.IntView' }
   ],
   methods: [
-    function render() { this.add(this.COUNT, this.INCR); }
+    function render() { this.add(this.COUNT, ' ', this.INCR); }
   ],
   actions: [
    {
@@ -235,9 +236,8 @@ foam.CLASS({
    }
   ]
 });
-// TODO: doesn't work
 var k = KeyboardTest.create();
-start(k).end();
+tag(k);
 
 ##   el()
 ##   id
