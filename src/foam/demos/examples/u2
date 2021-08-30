@@ -182,7 +182,7 @@ foam.CLASS({
   css: `
     ^ {
       font: Roboto;
-      padding: 8px;
+      margin: 4px;
     }
   `,
 
@@ -194,14 +194,13 @@ foam.CLASS({
     function render() {
       this.
         addClass(). // short for addClass(this.myClass())
-        style({border: '1px solid gray', background: 'lightgray'}).
-        attrs({}).
-        add('some text').
+        style({border: '2px solid gray', background: 'lightgray'}).
+        attrs({comment:  'something'}).
+        add('some text ').
         start('b').
           add('some bold text').
         end().
         br().
-        tag('hr').
         on('click', this.onClick);
     }
   ],
@@ -214,7 +213,7 @@ foam.CLASS({
   ]
 });
 
-start({class:'ExampleElement'}).end();
+tag({class:'ExampleElement'});
 
 ##    render()
 ##   Keyboard Shortcuts
