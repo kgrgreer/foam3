@@ -223,7 +223,8 @@ start(k).end();
 
 ##   el()
 ##   id
-You can set an element's id, but keep in mind that it isn't normally a good idea to do so.
+You can set an element's id, but keep in mind that it isn't normally a good idea to do so because
+it prevents you from instantiating two instances of your component. 
 --
 start('b', {id: 'myId1'}).add('inspect me to see my id').end();
 start('i').setID('myId2').add('this method also works').end();
