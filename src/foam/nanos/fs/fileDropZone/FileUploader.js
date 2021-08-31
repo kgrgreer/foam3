@@ -92,11 +92,11 @@
     {
       name: 'upload',
       label: 'Upload',
-      code: function(){
+      code: function() {
         if ( this.files[0] && !! this.labels.length ) {
           this.files[0].labels = this.labels;
           this.fileDAO.put(this.files[0]);
-          this.stack.back();
+          this.parentNode.close();
         } else {
           ctrl.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);
         }
