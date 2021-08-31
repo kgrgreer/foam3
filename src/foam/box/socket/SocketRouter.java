@@ -77,36 +77,40 @@ public class SocketRouter
 
   public void service(Message msg) 
     throws IOException {
-
+    PM pm = null;
     String serviceKey = (String) msg.getAttributes().get("serviceKey");
-    Object service = getX().get(serviceKey);
-    NSpec spec = (NSpec) nSpecDAO_.find(serviceKey);
-    if ( spec == null ) {
-      logger_.error(this.getClass().getSimpleName(), "Service not found", serviceKey);
-      throw new IOException("Service not found: "+serviceKey);
+    if ( ! serviceKey.equals("static") ) {
+      pm = PM.create(getX(), this.getClass().getSimpleName(), serviceKey);
     }
 
-    PM pm = PM.create(getX(), this.getClass().getSimpleName(), serviceKey);
-
-    X requestContext = getX()
-      .put("logger", new PrefixLogger(new Object[] {
-            this.getClass().getSimpleName(),
-            spec.getName()
-          }, (Logger) getX().get("logger")))
-      .put(NSpec.class, spec);
-    SocketWebAgent agent = (SocketWebAgent) getWebAgent(spec, service);
-    if ( agent == null ) {
-      logger_.error(this.getClass().getSimpleName(), "Agent not found", serviceKey);
-      throw new IOException("Service not found: "+serviceKey);
-    }
     try {
-      new SessionServerBox(requestContext, agent.getSkeletonBox(), agent.getAuthenticate()).send(msg);
-    } catch (Exception e) {
-      logger_.error("Error serving", serviceKey, e);
-      if ( ! serviceKey.equals("static") ) pm.error(getX(), e);
-      throw e;
+      Object service = getX().get(serviceKey);
+      NSpec spec = (NSpec) nSpecDAO_.find(serviceKey);
+      if ( spec == null ) {
+        logger_.error("Service not found", serviceKey);
+        throw new IOException("Service not found: "+serviceKey);
+      }
+
+      X requestContext = getX()
+        .put("logger", new PrefixLogger(new Object[] {
+              this.getClass().getSimpleName(),
+              spec.getName()
+            }, (Logger) getX().get("logger")))
+        .put(NSpec.class, spec);
+      SocketWebAgent agent = (SocketWebAgent) getWebAgent(spec, service);
+      if ( agent == null ) {
+        logger_.error("Agent not found", serviceKey);
+        throw new IOException("Service not found: "+serviceKey);
+      }
+      try {
+        new SessionServerBox(requestContext, agent.getSkeletonBox(), agent.getAuthenticate()).send(msg);
+      } catch (Exception e) {
+        logger_.error("Error serving", serviceKey, e);
+        if ( pm != null ) pm.error(getX(), e);
+        throw e;
+      }
     } finally {
-      if ( ! serviceKey.equals("static") ) pm.log(getX());
+      if ( pm != null ) pm.log(getX());
     }
   }
 

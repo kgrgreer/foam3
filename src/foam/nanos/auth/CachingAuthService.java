@@ -10,6 +10,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.crunch.UserCapabilityJunction;
 import foam.util.LRULinkedHashMap;
 
 import java.security.Permission;
@@ -110,10 +111,9 @@ public class CachingAuthService extends ProxyAuthService {
       DAO userDAO = (DAO) x.get("localUserDAO");
       DAO userCapabilityJunction = (DAO) x.get("userCapabilityJunctionDAO");
       DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
-      Predicate predicate = EQ(User.ID, userId);
 
-      userDAO.listen(purgeSink, predicate);
-      userCapabilityJunction.listen(purgeSink, predicate);
+      userDAO.listen(purgeSink, EQ(User.ID, userId));
+      userCapabilityJunction.listen(purgeSink, EQ(UserCapabilityJunction.SOURCE_ID, userId));
       groupPermissionJunctionDAO.listen(purgeSink, TRUE);
 
       String[] extraDAOsToListenTo = (String[]) x.get("extraDAOsToListenTo");
