@@ -65,7 +65,7 @@ public class CachingAuthService extends ProxyAuthService {
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
-    boolean permissionCheck = getDelegate().check(x, permission);
+    boolean permissionCheck = getDelegate().checkUser(x, user, permission);
 
     map.put(p.getName(), permissionCheck);
 
