@@ -259,6 +259,15 @@ foam.CLASS({
       var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
       try {
+        CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+          .setCapabilityPayload((CapabilityPayload) obj)
+          .build();
+        ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+      } catch ( Throwable t ) {
+        getLogger().warning("Failed to save record", obj, t);
+      }
+
+      try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 

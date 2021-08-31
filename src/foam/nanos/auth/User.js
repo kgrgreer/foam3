@@ -349,7 +349,13 @@ foam.CLASS({
       documentation: 'Personal phone number.',
       section: 'userInformation',
       order: 190,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          val = val.trim();
+          val = val.startsWith("+") ? val.substring(1) : val;
+        }
+    `
     },
     {
       class: 'Boolean',
