@@ -22,11 +22,9 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             public RemoteDAO(X x, DAO delegate, DAO internalAccessPoint) {
-              super(x, delegate);
-              do {
-                if ( ! ( internalAccessDelegate_ instanceof ProxyDAO ) ) throw new IllegalArgumentException("internalAccessPoint");
-                internalAccessDelegate_ = ((ProxyDAO)internalAccessDelegate_).getDelegate();
-              } while ( internalAccessDelegate_.getClass() != internalAccessPoint.getClass() );
+              setX(x);
+              setDelegate(delegate);
+              setInternalAccessDelegate(internalAccessPoint);
             }
             `
         }));
@@ -73,7 +71,7 @@ foam.CLASS({
         },
       ],
       javaCode: `
-      return ((Subject) x.get("subject")).getUser().getId() == 1 ? getInternalAccessDelegate() : getDelegate();
+      return ((Subject) x.get("subject")).getUser().getGroup().equals("system") ? getInternalAccessDelegate() : getDelegate();
       `
     }
   ]

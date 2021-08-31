@@ -306,6 +306,7 @@ FOAM_FILES([
   { name: "foam/dao/QueryCachingDAODecorator" },
   { name: "foam/dao/SequenceNumberDAO" },
   { name: "foam/dao/SequenceNumberDAOTest" },
+  { name: "foam/dao/RemoteDAOTest" },
   { name: "foam/dao/ContextualizingDAO" },
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
