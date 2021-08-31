@@ -16,8 +16,9 @@
   ],
 
   imports: [
-      'fileDAO'
-    ],
+    'fileDAO',
+    'fileLabelDAO'
+  ],
 
   messages: [
     { name: 'LABEL_TITLE',       message: 'File Uploader' },
@@ -30,10 +31,9 @@
   css: `
     ^ {
       background: /*%WHITE%*/ #FFFFFF;
-    }
-
-    ^container {
-      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     ^button {
@@ -51,40 +51,38 @@
       name: 'labels'
     },
     {
-      class: 'String',
-      name: 'title',
-      value: this.LABEL_TITLE,
-      factory: function() {
-        return this.LABEL_TITLE;
-      }
+      class: 'Boolean',
+      name: 'showTitle'
     }
   ],
 
   methods: [
     function render() {
       this.SUPER();
-      let self = this;
-
+      var self = this;
       this
-        .addClass(this.myClass())
-        .addClass(this.myClass('container'))
-        .start('h1')
-          .add(this.title)
-        .end()
-        .start({class: 'foam.nanos.fs.fileDropZone.FileDropZone', files$: this.files$, isMultipleFiles: false})
-        .end()
-        .start('h4')
+        .addClass()
+        .callIf(this.showTitle, () => {
+          this.start().addClass('h100')
+            .add(this.LABEL_TITLE)
+          .end();
+        })
+        .tag(this.FileDropZone, { files$: this.files$, isMultipleFiles: false })
+        .start()
+          .addClass('h600')
           .add(this.LABEL_FILE_GROUP)
         .end()
-        .start({class: 'foam.u2.view.ReferenceArrayView', daoKey: 'fileLabelDAO', allowDuplicates: false, data$: this.labels$})
-        .end()
-        .start('br').end()
-        .start('div')
-          .startContext({ data: self })
+        .tag({
+          class: 'foam.u2.view.ReferenceArrayView',
+          dao: this.fileLabelDAO,
+          allowDuplicates: false,
+          data$: this.labels$
+          })
+        .startContext({ data: self })
+          .start(this.UPLOAD, { buttonStyle: foam.u2.ButtonStyle.PRIMARY })
             .addClass(this.myClass('button'))
-            .tag(this.UPLOAD, { buttonStyle: foam.u2.ButtonStyle.PRIMARY })
-          .endContext()
-        .end();
+          .end()
+        .endContext();
     }
   ],
 
@@ -92,15 +90,15 @@
     {
       name: 'upload',
       label: 'Upload',
-      code: function() {
+      code: function(X) {
         if ( this.files[0] && !! this.labels.length ) {
           this.files[0].labels = this.labels;
           this.fileDAO.put(this.files[0]);
-          this.parentNode.close();
+          X.closeDialog();
         } else {
           ctrl.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);
         }
       }
     }
   ]
- })
+ });
