@@ -12,6 +12,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
+import foam.nanos.notification.email.EmailTemplateSourceEnum;
+import foam.nanos.pm.PM;
 import foam.nanos.theme.Theme;
 import foam.nanos.theme.Themes;
 import foam.util.SafetyUtil;
@@ -75,12 +77,10 @@ public class EmailsUtility {
 
     // Add template name to templateArgs, to avoid extra parameter passing
     if ( ! SafetyUtil.isEmpty(templateName) ) {
-      if ( templateArgs != null ) {
-        templateArgs.put("template", templateName);
-      } else {
+      if ( templateArgs == null )
         templateArgs = new HashMap<>();
-        templateArgs.put("template", templateName);
-      }
+
+      templateArgs.put("template", templateName);
     }
 
     // SERVICE CALL: to fill in email properties.

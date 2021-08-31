@@ -97,6 +97,7 @@
         // system
         templateArgs.put("hostname", System.getProperty("hostname", "localhost"));
         emailMessage.setTemplateArguments(templateArgs);
+
         return emailMessage;
       `
     }

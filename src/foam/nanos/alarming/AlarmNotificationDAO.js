@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.log.LogLevel',
     'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.nanos.notification.Notification',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
@@ -85,6 +86,8 @@ foam.CLASS({
       args.put("alarm.started", alarm.getCreated().toString());
       args.put("alarm.cleared", alarm.getIsActive() ? "" : alarm.getLastModified().toString());
       args.put("alarm.note", alarm.getNote());
+      args.put("templateSource", this.getClass().getName());
+      args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
 
       // Notifications are ServiceProviderAware
       String spid = ServiceProviderAware.GLOBAL_SPID;

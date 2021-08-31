@@ -11,6 +11,20 @@ foam.CLASS({
   documentation: `Represents an email template that stores the default properties of a specific email,
   mimics the EmailMessage which is the end obj that is processed into email.`,
 
+  mixins: [ 'foam.nanos.notification.email.EmailTemplateSource' ],
+
+  imports: [
+    'pmInfoDAO'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.pm.PMInfo'
+  ],
+
   javaImports: [
     'foam.i18n.Locale',
     'foam.i18n.TranslationService',
@@ -22,7 +36,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets'
   ],
 
-  tableColumns: ['id', 'name', 'group', 'locale', 'spid'],
+  tableColumns: ['id', 'name', 'group', 'locale', 'spid', 'sourceClass', 'disabled', 'count'],
 
   properties: [
     {
@@ -87,6 +101,15 @@ foam.CLASS({
       transient: true,
       type: 'Byte[]',
       javaFactory: 'return getBody() != null ? getBody().getBytes(StandardCharsets.UTF_8) : null;'
+    },
+    {
+      class: 'Int',
+      name: 'count',
+      transient: true,
+      getter: async function() {
+        var pmInfo = await this.pmInfoDAO.find(this.EQ(this.PMInfo.KEY, this.sourceClass));
+        return pmInfo ? pmInfo.count : 0;
+      }
     }
   ],
 
