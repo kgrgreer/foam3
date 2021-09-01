@@ -42,7 +42,7 @@ foam.CLASS({
             Approvable approvable = (Approvable) obj;
             DAO dao = (DAO) getX().get(approvable.getServerDaoKey());
 
-            FObject objectToReput = dao.find(approvable.getObjId());
+            FObject objectToReput = dao.find(approvable.getObjId()).fclone();
 
             Capable capableObjectToReput = (Capable) objectToReput;
 
