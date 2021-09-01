@@ -93,8 +93,7 @@
   actions: [
     {
       name: 'upload',
-      label: 'Upload',
-      code: function(X, _) {
+      code: function(X) {
         if ( this.files[0] && !! this.labels.length ) {
           this.files[0].labels = this.labels;
           if ( this.owner !== 0 ) {
