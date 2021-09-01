@@ -158,6 +158,7 @@ foam.CLASS({
       containsPII: false,
       documentation: 'The username of the User.',
       section: 'userInformation',
+      required: true,
       order: 20,
       gridColumns: 6
     },
