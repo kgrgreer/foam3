@@ -349,7 +349,13 @@ foam.CLASS({
       documentation: 'Personal phone number.',
       section: 'userInformation',
       order: 190,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
@@ -368,7 +374,13 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 210,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
