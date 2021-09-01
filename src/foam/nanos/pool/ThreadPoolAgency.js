@@ -98,6 +98,11 @@ foam.CLASS({
       name: 'reportInterval',
       class: 'Long',
       value: 1000
+    },
+    {
+      name: 'stackDepth',
+      class: 'Int',
+      value: 10
     }
   ],
 
@@ -205,6 +210,8 @@ foam.CLASS({
       name: 'getWaiting',
       type: 'Long',
       javaCode: `
+      if ( getStackDepth() == 0 ) return -1;
+
       long waiting = 0;
       try {
         Thread[] threads = new Thread[threadGroup_.activeCount()];
@@ -213,6 +220,23 @@ foam.CLASS({
           Thread thread = threads[i];
           if ( thread.getState() == Thread.State.WAITING ) {
             waiting++;
+            int depth = 0;
+            foam.nanos.logger.Loggers.logger(getX(), this).info("pool", getPrefix(), "thread", thread.getName(), "stack");
+            StackTraceElement[] stackTraceElement = thread.getStackTrace();
+            for ( int j = 0; j < stackTraceElement.length; j++ ) {
+              StackTraceElement element = stackTraceElement[j];
+              if ( element.getClassName().contains("foam") ) {
+                if ( depth == 0 ) {
+                  // last java library entry for context
+                  System.out.println(stackTraceElement[j-1]);
+                }
+                System.out.println(element);
+                depth++;
+              }
+              if ( depth > getStackDepth() ) {
+                break;
+              }
+            }
           }
         }
       } catch ( Throwable t ) {
