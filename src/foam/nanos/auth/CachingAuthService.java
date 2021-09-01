@@ -70,7 +70,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
     Permission p = new AuthPermission(permission);
 
     User user = getUserFromContext(x);
-    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user);
+    Map<String, Boolean> map = getPermissionMap(user);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
