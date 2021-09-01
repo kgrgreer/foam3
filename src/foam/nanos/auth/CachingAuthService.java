@@ -67,8 +67,18 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
   public boolean check(foam.core.X x, String permission) {
     if ( x == null || permission == null ) return false;
 
+    Permission p = new AuthPermission(permission);
+
     User user = getUserFromContext(x);
-    return checkUser(x, user, permission);
+    Map<String, Boolean> map = getPermissionMap(x.put("extraDAOsToListenTo", extraDAOsToListenTo_), user);
+
+    if ( map.containsKey(p.getName()) ) return map.get(p.getName());
+
+    boolean permissionCheck = getDelegate().check(x, permission);
+
+    map.put(p.getName(), permissionCheck);
+
+    return permissionCheck;
   }
 
   @Override
@@ -81,7 +91,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
-    boolean permissionCheck = getDelegate().check(x, permission);
+    boolean permissionCheck = getDelegate().checkUser(x, user, permission);
 
     map.put(p.getName(), permissionCheck);
 
