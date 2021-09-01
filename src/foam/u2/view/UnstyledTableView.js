@@ -492,8 +492,15 @@ foam.CLASS({
               });
             })).
         end().
-        callIf(view.editColumnsEnabled, function() {this.start(this.EditColumnsView, {data: view, selectColumnsExpanded$: this.selectColumnsExpanded$, parentId: this.id}).end();}).
-        add(this.rowsFrom(this.data$proxy));
+        callIf(view.editColumnsEnabled, function() {
+          this.start(this.EditColumnsView, {
+            data: view,
+            selectColumnsExpanded$: this.selectColumnsExpanded$,
+            parentId: this.id
+            })
+          .end();
+        })
+        .add(this.rowsFrom(this.data$proxy));
     },
     {
       name: 'rowsFrom',
