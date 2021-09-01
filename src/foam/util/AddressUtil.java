@@ -6,7 +6,16 @@
 
 package foam.util;
 
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
+import java.util.List;
 import java.util.regex.Pattern;
+
+import static foam.mlang.MLang.*;
+
 
 public class AddressUtil {
 
@@ -55,6 +64,44 @@ public class AddressUtil {
       throw new IllegalArgumentException("Couldn't parse " + address1 + (address2.isEmpty() ? "" : "," + address2));
 
     return new String[] { streetNumber, streetName };
+  }
+
+  public static String normalizeRegion(X x, String country, String regionCode) {
+    String normalizedRegion = country + "-" + regionCode;
+    DAO regionDAO = (DAO) x.get("regionDAO");
+    ArraySink sink = (ArraySink) regionDAO.where(AND(
+      EQ(Region.COUNTRY_ID, country)
+    )).select(new ArraySink());
+
+    List<Region> regions = sink.getArray();
+
+    for ( int i = 0; i < regions.size(); i++ ) {
+      Region region = (Region) regions.get(i);
+      if ( region.getIsoCode().equals(regionCode) || region.getName().equalsIgnoreCase(regionCode) ) {
+        normalizedRegion = region.getCode();
+        break;
+      }
+    }
+    return normalizedRegion;
+  }
+
+  public static String normalizeCountry(X x, String countryCode) {
+    String normalizedCountry = countryCode;
+    DAO countryDAO = (DAO) x.get("countryDAO");
+    ArraySink sink = (ArraySink) countryDAO.select(new ArraySink());
+
+    List<Country> countries = sink.getArray();
+
+    for ( int i = 0; i < countries.size(); i++ ) {
+      Country country = (Country) countries.get(i);
+      if ( country.getCode().equals(countryCode) ||
+           country.getName().equalsIgnoreCase(countryCode) ||
+           country.getIso31661Code().equals(countryCode) ) {
+        normalizedCountry = country.getCode();
+        break;
+      }
+    }
+    return normalizedCountry;
   }
 
 }
