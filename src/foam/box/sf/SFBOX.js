@@ -15,22 +15,37 @@
 * limitations under the License.
 */
 
-//TODO: implement
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'SFBOX',
-  extends: 'foam.box.ProxyBox',
+  name: 'SFBox',
+  extends: 'foam.box.sf.SF',
+  implements: [ 'foam.box.Box' ],
 
   javaImports: [
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.box.Message',
   ],
   
   properties: [
+    {
+      class: 'Proxy',
+      of: 'foam.box.Box',
+      name: 'delegate',
+      transient: true,
+      javaSetter: `
+        if ( ! delegateIsSet_ ) {
+          delegate_ = val;
+          delegateIsSet_ = true;
+        }
+      `
+    }
   ],
 
   methods: [
+    {
+      name: 'send',
+      javaCode: `
+        getDelegate().send(msg);
+      `
+    }
   ],
 
   axioms: [

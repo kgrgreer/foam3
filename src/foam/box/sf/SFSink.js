@@ -38,7 +38,6 @@ foam.CLASS({
       of: 'foam.dao.Sink',
       name: 'delegate',
       transient: true,
-      factory: function() { return foam.dao.ArraySink.create(); },
       javaSetter: `
         if ( ! delegateIsSet_ ) {
           delegate_ = val;

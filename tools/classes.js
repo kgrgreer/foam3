@@ -148,7 +148,7 @@ var classes = [
   'foam.box.socket.SocketClientReplyBox',
   'foam.box.socket.SocketServer',
   'foam.box.socket.SslContextFactory',
-  'foam.box.sf.SFBOX',
+  'foam.box.sf.SFBox',
   'foam.box.sf.SFSink',
   'foam.box.sf.SFReplayBox',
   'foam.box.sf.SFEntry',
