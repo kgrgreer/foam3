@@ -265,12 +265,17 @@ foam.CLASS({
       sb.append("-"+revision.substring(0, 3));
     }
     return sb.toString();
-      `
+      `,
+      storageTransient: true,
+      storageTransient: true,
+      clusterTransient: true
     },
     {
       documentation: 'Report system uptime. See ClusterConfigReplayingInfoDAO',
       name: 'uptime',
-      class: 'Long'
-   }
+      class: 'Long',
+      storageTransient: true,
+      clusterTransient: true
+    }
   ]
 });
