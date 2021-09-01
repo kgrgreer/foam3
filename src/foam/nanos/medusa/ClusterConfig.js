@@ -267,7 +267,6 @@ foam.CLASS({
     return sb.toString();
       `,
       storageTransient: true,
-      storageTransient: true,
       clusterTransient: true
     },
     {
