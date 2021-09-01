@@ -645,6 +645,7 @@ var classes = [
   'foam.nanos.fs.FileLabel',
   'foam.nanos.fs.FileLabelFilterDAO',
   'foam.nanos.fs.FileType',
+  'foam.nanos.fs.TempFile',
   'foam.crypto.hash.Hasher',
   'foam.crypto.hash.HashableTest',
 

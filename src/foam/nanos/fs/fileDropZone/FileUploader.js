@@ -53,6 +53,10 @@
     {
       class: 'Boolean',
       name: 'showTitle'
+    },
+    {
+      class: 'Int',
+      name: 'owner'
     }
   ],
 
@@ -90,9 +94,12 @@
     {
       name: 'upload',
       label: 'Upload',
-      code: function(X) {
+      code: function(X, _) {
         if ( this.files[0] && !! this.labels.length ) {
           this.files[0].labels = this.labels;
+          if ( this.owner !== 0 ) {
+            this.files[0].owner = this.owner;
+          }
           this.fileDAO.put(this.files[0]);
           X.closeDialog();
         } else {
