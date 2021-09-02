@@ -18,7 +18,6 @@ import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
 import foam.nanos.notification.email.EmailTemplateSourceEnum;
 import foam.nanos.pm.PM;
-import foam.nanos.pm.PMInfo;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
 import java.io.ByteArrayInputStream;
