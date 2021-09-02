@@ -240,6 +240,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUC
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.File.INVALID_FILE_LABEL",target:"Um rótulo de arquivo atribuído não pode estar vazio"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_TITLE",target:"Uploader de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_FILE_GROUP",target:"Grupo de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.ERROR_FILE_UPLOAD",target:"Forneça arquivo e etiqueta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.UPLOAD.label",target:"Envio"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO.label",target:"vamos para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO_TERM.label",target:"ir para o prazo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO_PRIVACY.label",target:"vá para privacidade"})
