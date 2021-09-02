@@ -3,6 +3,7 @@ package foam.test;
 import foam.core.ContextAware;
 import foam.core.X;
 import foam.nanos.test.Test;
+import foam.util.AddressUtil;
 import static foam.util.AddressUtil.parseAddress;
 
 public class AddressUtilTests extends Test {
@@ -40,10 +41,10 @@ public class AddressUtilTests extends Test {
 
   public void testCountryNormalization(X x, String country, String normalizedCountry) {
     var computed = AddressUtil.normalizeCountry(x, country);
-    test(normalizeCountry.equals(computed), "[" + country + "] normalized to " + computed);
+    test(normalizedCountry.equals(computed), "[" + country + "] normalized to " + computed);
   }
 
-  public void testRegionNormalization(X x, string country, string region, string normalizedRegion) {
+  public void testRegionNormalization(X x, String country, String region, String normalizedRegion) {
     var computed = AddressUtil.normalizeRegion(x, country, region);
     test(normalizedRegion.equals(computed), "[" + country + ":" + region + "] normalized to " + computed);
   }
