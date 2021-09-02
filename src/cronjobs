@@ -125,7 +125,7 @@ p({
     class:"foam.nanos.cron.IntervalSchedule",
     duration:{
       class:"foam.nanos.cron.TimeHMS",
-      hour:4,
+      hour:1,
       minute:0,
       seconds:0
     }
@@ -136,18 +136,22 @@ p({
     import foam.dao.DAO;
     import foam.nanos.fs.TempFile;
     import java.io.File;
-    import java.util.Calendar;
+    import java.time.LocalDateTime;
+    import java.time.ZoneId;
     import java.util.Date;
     import java.util.List;
 
+    final int TTL = 4;
+
     DAO tempFileDAO = (DAO) x.get("tempFileDAO");
 
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(new Date());
-    calendar.add(Calendar.HOUR_OF_DAY, -4);
-    Date forHourBefore = calendar.getTime();
+    Date threshold = Date.from(LocalDateTime.now().minusHours(TTL).atZone(ZoneId.systemDefault()).toInstant());
 
-    List tempFiles = ((ArraySink) tempFileDAO.select(new ArraySink())).getArray();
+    List tempFiles = ((ArraySink) tempFileDAO
+      .where(MLang.LT(TempFile.CREATED, threshold))
+      .select(new ArraySink()))
+      .getArray();
+
     TempFile tempFile;
 
     for ( int i = 0 ; i < tempFiles.size() ; i++ ) {
