@@ -145,7 +145,7 @@ p({
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
     calendar.add(Calendar.HOUR_OF_DAY, -4);
-    Date forHourBefore = calendar.getTime();
+    Date threshold = calendar.getTime();
 
     List tempFiles = ((ArraySink) tempFileDAO.select(new ArraySink())).getArray();
     TempFile tempFile;
