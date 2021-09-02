@@ -30,8 +30,20 @@ foam.CLASS({
     ^ input[type='search']{
       width: 100%;
     }
-    ^resetButton{
+    ^resetButton {
       float: right;
+      background: none;
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:hover:not(:disabled) {
+      text-decoration: underline;
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:focus {
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:disabled {
+      color: /*%GREY2%*/ #6B778C;
     }
   `,
   properties: [
@@ -322,12 +334,15 @@ foam.CLASS({
     {
       name: 'resetColumns',
       label: 'Reset Columns',
-      code: function(){
+      code: function() {
         localStorage.removeItem(this.data.of.id);
         this.data.memento.head = '';
         this.data.selectedColumnNames = undefined;
         this.data.updateColumns();
         this.columns = this.getColumns();
+      },
+      isEnabled: function(data$columns, data$selectedColumnNames) {
+        return ! ( this.data.columns.length === this.data.selectedColumnNames.length && this.data.columns.every(i => this.data.selectedColumnNames.includes(i)) );
       }
     }
   ]
