@@ -77,7 +77,7 @@ public class AddressUtil {
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
-        CONTAINS_IC(Region.NAME, regionCode)
+        STARTS_WITH_IC(Region.NAME, regionCode)
       )
     )).select(new ArraySink());
 
@@ -111,7 +111,7 @@ public class AddressUtil {
     ArraySink sink = (ArraySink) countryDAO
       .where(OR(
         EQ(Country.ISO31661CODE, countryCode),
-        CONTAINS_IC(Country.NAME, countryCode)
+        STARTS_WITH_IC(Country.NAME, countryCode)
       ))
       .select(new ArraySink());
 
