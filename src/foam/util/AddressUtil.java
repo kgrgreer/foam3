@@ -69,11 +69,15 @@ public class AddressUtil {
   public static String normalizeRegion(X x, String country, String regionCode) {
     String normalizedRegion = country + "-" + regionCode;
     DAO regionDAO = (DAO) x.get("regionDAO");
+    Region found = (Region) regionDAO.find(regionCode);
+    if ( found != null )
+      return found.getCode();
+
     ArraySink sink = (ArraySink) regionDAO.where(AND(
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
-        STARTS_WITH_IC(Region.NAME, regionCode)
+        CONTAINS_IC(Region.NAME, regionCode)
       )
     )).select(new ArraySink());
 
@@ -83,11 +87,11 @@ public class AddressUtil {
     if (regions.size() > 0)
       normalizedRegion = regions.get(0).getCode();
     
-    // When there are more than one, take the first matches on the full name (i.e. not just STARTS_WITH_IC)
+    // When there are more than one, take the first matches on the ISO code or on the full name (i.e. not just CONTAINS_IC)
     if (regions.size() > 1) {
       for ( int i = 0; i < regions.size(); i++ ) {
         Region region = (Region) regions.get(i);
-        if ( region.getName().equalsIgnoreCase(regionCode) ) {
+        if ( region.getIsoCode().equals(regionCode) || region.getName().equalsIgnoreCase(regionCode) ) {
           normalizedRegion = region.getCode();
           break;
         }
@@ -100,11 +104,14 @@ public class AddressUtil {
   public static String normalizeCountry(X x, String countryCode) {
     String normalizedCountry = countryCode;
     DAO countryDAO = (DAO) x.get("countryDAO");
+    Country found = (Country) countryDAO.find(countryCode);
+    if ( found != null )
+      return found.getCode();
+
     ArraySink sink = (ArraySink) countryDAO
       .where(OR(
-        EQ(Country.Code, countryCode),
-        EQ(Country.ISO31661CODE),
-        STARTS_WITH_IC(Country.NAME, countryCode)
+        EQ(Country.ISO31661CODE, countryCode),
+        CONTAINS_IC(Country.NAME, countryCode)
       ))
       .select(new ArraySink());
 
@@ -112,19 +119,19 @@ public class AddressUtil {
 
     // Take the first match as default
     if (countries.size() > 0)
-      normalizedCountry = country.getCode();
+      normalizedCountry = countries.get(0).getCode();
 
-    // When there is more than one, take the first match on the full name (i.e. not just STARTS_WITH_IC)
+    // When there is more than one, take the first match on the ISO code or on the full name (i.e. not just CONTAINS_IC)
     if (countries.size() > 1) {
       for ( int i = 0; i < countries.size(); i++ ) {
         Country country = (Country) countries.get(i);
-        if ( country.getName().equalsIgnoreCase(countryCode) )
+        if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
           normalizedCountry = country.getCode();
           break;
         }
       }
     }
-
+    
     return normalizedCountry;
   }
 
