@@ -9,10 +9,9 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.Sink;
-import foam.nanos.NanoService;
 import foam.nanos.crunch.UserCapabilityJunction;
+import foam.nanos.NanoService;
 import foam.util.LRULinkedHashMap;
-
 import java.security.Permission;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -25,7 +24,7 @@ import static foam.mlang.MLang.TRUE;
  **/
 public class CachingAuthService extends ProxyAuthService implements NanoService {
   private static final String CACHE_NAME = "UserPermissionCache";
-  private static final int CACHE_SIZE = 10000;
+  private static final int    CACHE_SIZE = 2500;
 
   /**
    * A list of DAOs that will be listened to. When any of these DAOs update, the
@@ -85,8 +84,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
   public boolean checkUser(foam.core.X x, foam.nanos.auth.User user, String permission) {
     if ( x == null || permission == null ) return false;
 
-    Permission p = new AuthPermission(permission);
-
+    Permission           p   = new AuthPermission(permission);
     Map<String, Boolean> map = getPermissionMap(user);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
