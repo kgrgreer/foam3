@@ -258,6 +258,8 @@ foam.CLASS({
       javaCode: `
       var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
+      recordCapabilityPayload(x, obj.fclone());
+
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
@@ -273,6 +275,22 @@ foam.CLASS({
       } finally {
         pm.log(x);
       }
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
       `
     },
     {

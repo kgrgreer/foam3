@@ -43,7 +43,8 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Collections',
     'java.util.concurrent.atomic.AtomicInteger',
-    'java.util.concurrent.atomic.AtomicLong'
+    'java.util.concurrent.atomic.AtomicLong',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
     
   constants: [
@@ -81,14 +82,17 @@ foam.CLASS({
     {
       documentation: 'Set to false when send exits, triggering execute to exit',
       name: 'valid',
-      class: 'Boolean',
-      value: true,
-      visibility: 'HIDDEN'
+      class: 'Object',
+      javaType: 'AtomicBoolean',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new AtomicBoolean(true);
+      `
     },
     {
       name: 'replyBoxes',
       class: 'Map',
-      javaFactory: `return java.util.Collections.synchronizedMap(new HashMap());`,
+      javaFactory: `return new java.util.concurrent.ConcurrentHashMap<String, BoxHolder>();`,
       visibility: 'HIDDEN',
     },
     {
@@ -202,12 +206,13 @@ NOTE: duplicated in SocketConnectionReplyBox
         pm.error(getX(), t);
         // TODO: perhaps report last exception on host port via manager.
         getLogger().error("Error sending message", message, t);
-        setValid(false);
+        getValid().getAndSet(false);
         if ( replyBox != null ) {
          Message reply = new Message();
          reply.getAttributes().put("replyBox", replyBox);
          reply.replyWithException(t);
          getReplyBoxes().remove(replyBoxId);
+         releaseHoldingThread(t);
         } else {
           throw new RuntimeException(t);
         }
@@ -227,7 +232,7 @@ NOTE: duplicated in SocketConnectionReplyBox
       javaCode: `
       OMLogger omLogger = (OMLogger) x.get("OMLogger");
       try {
-        while ( getValid() ) {
+        while ( getValid().get() ) {
           PM pm = null;
           try {
             pm = PM.create(x, this.getClass().getSimpleName(), getId()+":receive");
@@ -309,6 +314,7 @@ NOTE: duplicated in SocketConnectionReplyBox
           } catch ( Throwable t ) {
             getLogger().error(t);
             if ( pm != null ) pm.error(x, t);
+            releaseHoldingThread(t);
             break;
           } finally {
             if ( pm != null) pm.log(x);
@@ -317,6 +323,27 @@ NOTE: duplicated in SocketConnectionReplyBox
       } finally {
         ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).remove(this);
       }
+      `
+    },
+    {
+      name: 'releaseHoldingThread',
+      args: "Throwable t",
+      synchronized: true,
+      javaCode:`
+        int i = 0;
+        for (Map.Entry<String, BoxHolder> entry : ((Map<String, BoxHolder>) getReplyBoxes()).entrySet()) {
+          BoxHolder holder = entry.getValue();
+          Box replyBox = holder.getBox();
+          if ( replyBox != null ) {
+            Message reply = new Message();
+            reply.getAttributes().put("replyBox", replyBox);
+            reply.replyWithException(t);
+          }
+          getReplyBoxes().remove(entry.getKey());
+          i++;
+        }
+        getLogger().warning("Terminating reply boxes", getKey());
+        getLogger().debug("free reply box: " + i);
       `
     }
   ]

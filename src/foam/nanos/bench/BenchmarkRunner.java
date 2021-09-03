@@ -40,6 +40,8 @@ public class BenchmarkRunner
   protected int       invocationCount_;
   protected Benchmark test_;
   protected List<Map<String, Object>> results_ = new ArrayList<Map<String, Object>>();
+  protected float     ops_;
+  protected float     opst_;
 
   // Builder pattern to avoid large constructor in the case
   // we want to add more variables to this test runner later.
@@ -174,6 +176,7 @@ public class BenchmarkRunner
       log = foam.nanos.logger.StdoutLogger.instance();
     }
     final Logger logger = new PrefixLogger(new String[] { test_.getClass().getSimpleName() }, log);
+    final X y = x.put("logger", logger);
 
     AppConfig config = (AppConfig) x.get("appConfig");
     if ( config.getMode() == Mode.PRODUCTION ) {
@@ -203,11 +206,13 @@ public class BenchmarkRunner
 
         // set up the test
         logger.info("setup");
-        test_.setup(x);
+        test_.setup(y);
 
         if ( getClearPMs() ) {
           ((DAO) x.get("pmInfoDAO")).removeAll();
         }
+
+        logger.info("execute");
 
         // get start time
         long startTime = System.currentTimeMillis();
@@ -221,7 +226,7 @@ public class BenchmarkRunner
                 long passed = 0;
                 for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                   try {
-                    test_.execute(x);
+                    test_.execute(y);
                     passed++;
                   } catch (Throwable t) {
                     fail.incrementAndGet();
@@ -257,15 +262,17 @@ public class BenchmarkRunner
         long  endTime  = System.currentTimeMillis();
         float complete = (float) (threads * getInvocationCount());
         float duration = ((float) (endTime - startTime) / 1000.0f);
+        ops_           = complete / duration;
+        opst_          = ops_ / (float) threads;
         stats.put(PASS, pass.get());
         stats.put(FAIL, fail.get());
         stats.put(TOTAL, pass.get() + fail.get());
-        stats.put(OPS, String.format("%.02f", (complete / duration)));
-        stats.put(OPSPT, String.format("%.02f", (complete / duration) / (float) threads));
+        stats.put(OPS, String.format("%.02f", ops_));
+        stats.put(OPSPT, String.format("%.02f", opst_));
         stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
 
         logger.info("teardown");
-        test_.teardown(x, stats);
+        test_.teardown(y, stats);
         results_.add(stats);
 
         if ( getRunPerThread() ) {
@@ -335,5 +342,15 @@ public class BenchmarkRunner
     }
 
     return csv.toString();
+  }
+
+  // Operations Per Second
+  public float getOps() {
+    return ops_;
+  }
+
+  // Operations Per Second Per Thread
+  public float getOpst() {
+    return opst_;
   }
 }
