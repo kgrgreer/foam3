@@ -83,4 +83,22 @@ public class StringUtil {
   public static String normalize(String s) {
     return java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD).replaceAll("\\P{Print}", "");
   }
+
+  public static String labelize(String s) {
+    if ( s.isBlank() ) return s;
+
+    var sb = new StringBuilder();
+    char current = 0;
+    for ( var c : s.toCharArray() ) {
+      if ( current == 0 ) current = Character.toUpperCase(c);
+      else {
+        if ( ! Character.isUpperCase(current) && Character.isUpperCase(c) ) {
+          sb.append(' ');
+        }
+        current = c;
+      }
+      sb.append(current);
+    }
+    return sb.toString();
+  }
 }
