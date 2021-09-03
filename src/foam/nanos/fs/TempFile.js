@@ -38,7 +38,8 @@ foam.CLASS({
           throw new RuntimeException(e);
         }
       `,
-      flags: [ 'java' ]
+      flags: [ 'java' ],
+      transient: true
     }
   ],
 
