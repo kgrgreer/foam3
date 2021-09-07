@@ -170,7 +170,10 @@ foam.CLASS({
         if ( session.getUserId() == user.getId() ) {
           return user;
         }
-        CachingAuthService.purgeCache(x);
+
+        // TODO review - this shouldn't be necessary with cachingauthservice changes
+        // CachingAuthService.purgeCache(x);
+
         // Freeze user
         user = (User) user.fclone();
         user.freeze();
