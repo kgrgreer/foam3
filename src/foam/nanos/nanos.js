@@ -505,6 +505,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/UCJProperty" },
   { name: "foam/nanos/crunch/UCJUpdateApprovable" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
+  { name: "foam/nanos/crunch/connection/CapabilityPayloadRecord" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
   { name: 'foam/nanos/crunch/document/Document' },
   //daos
