@@ -258,8 +258,9 @@ foam.CLASS({
             continue;
           }
           rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
-        } else
+        } else {
           rootProperty = data.selectedColumnNames[i];
+          }
         var rootPropertyName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(rootProperty);
         if ( ! topLevelProps.includes(rootPropertyName) ) {
           arr.push(foam.u2.view.SubColumnSelectConfig.create({
@@ -273,7 +274,7 @@ foam.CLASS({
         }
       }
 
-      for ( var colToDelete of columnThatShouldBeDeleted) {
+      for ( var colToDelete of columnThatShouldBeDeleted ) {
         data.selectedColumnNames.splice(data.selectedColumnNames.indexOf(colToDelete), 1);
       }
 
@@ -292,8 +293,9 @@ foam.CLASS({
         var nonSelectedViewModels = [];
         for ( i = 0 ; i < notSelectedColumns.length ; i++ ) {
           var rootProperty;
-          if ( this.columnHandler.canColumnBeTreatedAsAnAxiom(notSelectedColumns[i]) )
+          if ( this.columnHandler.canColumnBeTreatedAsAnAxiom(notSelectedColumns[i]) ) {
             rootProperty = notSelectedColumns[i];
+          }
           else {
             var axiom =  tableColumns.find(c => c.name === notSelectedColumns[i]);
             axiom = axiom || data.of.getAxiomByName(notSelectedColumns[i]);
