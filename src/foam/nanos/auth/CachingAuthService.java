@@ -5,15 +5,17 @@
  */
 package foam.nanos.auth;
 
+import foam.core.AgencyTimerTask;
+import foam.core.ContextAgent;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.Sink;
-import foam.nanos.NanoService;
 import foam.nanos.crunch.UserCapabilityJunction;
+import foam.nanos.NanoService;
 import foam.util.LRULinkedHashMap;
-
 import java.security.Permission;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
@@ -23,9 +25,10 @@ import static foam.mlang.MLang.TRUE;
  * Decorator to add Caching to AuthService.
  * Stores cache in user Session so that memory is freed when user logs out.
  **/
-public class CachingAuthService extends ProxyAuthService implements NanoService {
+public class CachingAuthService extends ProxyAuthService implements NanoService, ContextAgent {
   private static final String CACHE_NAME = "UserPermissionCache";
-  private static final int CACHE_SIZE = 10000;
+  private static final int    CACHE_SIZE = 2500;
+  private static final long   INITIAL_TIMER_DELAY = 0L;
 
   /**
    * A list of DAOs that will be listened to. When any of these DAOs update, the
@@ -85,8 +88,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
   public boolean checkUser(foam.core.X x, foam.nanos.auth.User user, String permission) {
     if ( x == null || permission == null ) return false;
 
-    Permission p = new AuthPermission(permission);
-
+    Permission           p   = new AuthPermission(permission);
     Map<String, Boolean> map = getPermissionMap(user);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
@@ -98,35 +100,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
     return permissionCheck;
   }
 
-  public void purgeCache(Object obj) {
-    Long userId = null;
-
-    // Check for supported types to purge single user permission map
-    if ( obj instanceof User ) {
-      userId = ((User) obj).getId();
-    } else if ( obj instanceof UserCapabilityJunction ) {
-      userId = ((UserCapabilityJunction) obj).getSourceId();
-    }
-
-    if ( userId != null ) {
-      // Reset single user permission map
-      userPermissionCache_.remove(userId);
-    } else {
-      // Reset permission cache
-      // Reassigning LRU cache will garbage collect old cache and reset to empty cache with initial capacity
-      userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
-    }
-  }
-
-  @Override
-  public void setX(X x) {
-    super.setX(x);
-
-    // TODO: Context is set on user permission cache for OM support, this can be removed when OM is removed from LRULinkListHashMap
-    userPermissionCache_.setX(getX());
-  }
-
-  public void start() throws Exception {
+  public void execute(X x) {
     // Configure listeners for explicit permission DAOs
     DAO userDAO = (DAO) getX().get("localUserDAO");
     if ( userDAO != null ) userDAO.listen(purgeSink, TRUE);
@@ -144,6 +118,39 @@ public class CachingAuthService extends ProxyAuthService implements NanoService 
         if ( dao != null ) dao.listen(purgeSink, TRUE);
       }
     }
+  }
+
+  public void purgeCache(Object obj) {
+    // Use Long instead of long so can use as a flag to drive clear user or clear cache
+    Long userId = null;
+
+    // Check for supported types to purge single user permission map
+    if ( obj instanceof User ) {
+      userId = ((User) obj).getId();
+    } else if ( obj instanceof UserCapabilityJunction ) {
+      userId = ((UserCapabilityJunction) obj).getSourceId();
+    }
+
+    if ( userId != null ) {
+      // Reset single user permission map
+      userPermissionCache_.remove(userId);
+    } else {
+      // Reset permission cache
+      userPermissionCache_.clear();
+    }
+  }
+
+  @Override
+  public void setX(X x) {
+    super.setX(x);
+
+    // TODO: Context is set on user permission cache for OM support, this can be removed when OM is removed from LRULinkListHashMap
+    userPermissionCache_.setX(getX());
+  }
+
+  public void start() throws Exception {
+    Timer timer = new Timer(this.getClass().getSimpleName());
+    timer.schedule(new AgencyTimerTask(getX(), this), INITIAL_TIMER_DELAY);
   }
 
   protected Map<String, Boolean> getPermissionMap(User user) {

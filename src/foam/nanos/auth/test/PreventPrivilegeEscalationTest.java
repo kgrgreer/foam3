@@ -102,6 +102,7 @@ public class PreventPrivilegeEscalationTest
     testUser = new User.Builder(x)
       .setId(999999999L)
       .setEmail("ppet@example.com")
+      .setUserName("ppet")
       .setGroup(groupId)
       .setSpid(spid_)
       .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
@@ -282,6 +283,7 @@ public class PreventPrivilegeEscalationTest
       .setGroup("admin")
       .setSpid(spid_)
       .setEmail("ppet+admin@example.com")
+      .setUserName("ppet+admin")
       .setDesiredPassword("!@#$ppet1234")
       .build();
 
@@ -323,6 +325,7 @@ public class PreventPrivilegeEscalationTest
       .setGroup("basicUser")
       .setSpid(spid_)
       .setEmail("ppet1+admin@example.com")
+      .setUserName("ppet1+admin")
       .setFirstName("ppet")
       .setLastName("ppet")
       .setDesiredPassword("!@#$ppet1234")
@@ -341,6 +344,7 @@ public class PreventPrivilegeEscalationTest
       // Try to update the user's group to "admin".
       u2 = (User) u1.fclone();
       u2.setEmail("ppet2+admin@example.com");
+      u2.setUserName("ppet2+admin");
       u2.setGroup("admin");
       u2 = (User) userDAO.inX(userContext).put(u2);
 

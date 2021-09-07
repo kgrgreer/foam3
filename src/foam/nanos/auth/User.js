@@ -77,6 +77,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'USERNAME_REQUIRED', message: 'Username required' }
+  ],
+
   sections: [
     {
       name: 'userInformation',
@@ -158,6 +162,18 @@ foam.CLASS({
       containsPII: false,
       documentation: 'The username of the User.',
       section: 'userInformation',
+      validationPredicates: [
+        {
+          args: ['userName', 'type'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
+              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
+            );
+          },
+          errorMessage: 'USERNAME_REQUIRED'
+        }
+      ],
       order: 20,
       gridColumns: 6
     },
