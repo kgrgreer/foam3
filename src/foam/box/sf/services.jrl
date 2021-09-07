@@ -31,3 +31,27 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"demoHttpSink",
+  "description": "A demo http sink for SFSink",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.HTTPSink(
+      "http://localhost:8888/",
+      null,
+      foam.nanos.http.Format.JSON,
+      new foam.lib.AndPropertyPredicate(
+        x,
+        new foam.lib.PropertyPredicate[] {
+          new foam.lib.ExternalPropertyPredicate(),
+          new foam.lib.NetworkPropertyPredicate(),
+          new foam.lib.PermissionedPropertyPredicate()
+        }
+      ),
+      false
+    );
+  """
+})

@@ -1,9 +1,9 @@
 p({
-  "class":"foam.box.sf.HttpSFSink",
-  "id":"constFourSecondHttpDemo",
+  "class":"foam.box.sf.SFSink",
+  "id":"constFourSecondHttpSinkDemo",
   "fileName":"httpSFSinkDemo",
-  "maxRetryDelayMS":70000,
-  "url": "http://localhost:8888/",
+  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
   "timeWindow": 3600,
-  "replayFailEntry": true
+  "replayFailEntry": true,
+  "nspecId": "demoHttpSink"
 })
