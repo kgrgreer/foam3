@@ -191,15 +191,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.L
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHARACTER",target:"Caráter inválido na posição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHECKSUM",target:"Checksum inválido"})
 
-
-
-
-
-
-
-
-
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.OF.label",target:"do"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.DATA.label",target:"dados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.TITLE.label",target:"título"})
@@ -968,7 +959,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Sweden.name",target:"Suécia"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trinidad and Tobago.name",target:"Trinidad e Tobago"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"United Kingdom.name",target:"Reino Unido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"US.name",target:"Estados Unidos"})
-
 
 /* ApprovalRequestClassificationEnum */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR.label",target:"Validador Genérico de Negócios"})
