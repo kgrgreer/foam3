@@ -17,7 +17,8 @@ foam.CLASS({
 
   imports: [
     'fileDAO',
-    'fileLabelDAO'
+    'fileLabelDAO',
+    'notify'
   ],
 
   messages: [
@@ -66,7 +67,7 @@ foam.CLASS({
       var self = this;
       this
         .addClass()
-        .callIf(this.showTitle, () => {
+        .callIf(this.showTitle, function() {
           this.start().addClass('h100')
             .add(this.LABEL_TITLE)
           .end();
@@ -102,7 +103,7 @@ foam.CLASS({
           this.fileDAO.put(this.files[0]);
           X.closeDialog();
         } else {
-          ctrl.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);
+          this.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);
         }
       }
     }
