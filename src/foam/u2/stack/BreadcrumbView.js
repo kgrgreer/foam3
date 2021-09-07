@@ -18,8 +18,8 @@ foam.CLASS({
 
   css: `
   ^display {
-    display: flex;
     align-items: center;
+    display: flex;
     flex-wrap: wrap;
   }
   ^slash{
@@ -28,8 +28,8 @@ foam.CLASS({
   }
   ^breadCrumb > * {
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   `,
 
