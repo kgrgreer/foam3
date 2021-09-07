@@ -85,7 +85,7 @@ public class StringUtil {
   }
 
   public static String labelize(String s) {
-    if ( s.isBlank() ) return s;
+    if ( SafetyUtil.isEmpty(s) ) return s;
 
     var sb = new StringBuilder();
     char current = 0;
