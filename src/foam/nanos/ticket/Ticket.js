@@ -121,15 +121,6 @@ foam.CLASS({
     return getClass().getSimpleName();
       `,
       tableWidth: 160,
-      hidden: true
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'foam.nanos.ticket.TicketType',
-      name: 'category',
-      label: 'Ticket type',
-      section: 'infoSection',
-      updateVisibility: 'RO',
       order: 4,
       gridColumns: 6
     },
@@ -229,7 +220,7 @@ foam.CLASS({
               e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
             );
           },
-          errorString: 'Please provide a comment or external comment.'
+          errorString: 'Please provide a comment.'
         }
       ],
       order: 9
@@ -389,7 +380,7 @@ foam.CLASS({
               e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
             );
           },
-          errorString: 'Please provide a comment or external comment.'
+          errorString: 'Please provide a comment.'
         }
       ],
       order: 10
