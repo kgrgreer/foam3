@@ -260,16 +260,16 @@ foam.CLASS({
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
-        var pm1 = PM.create(x, true, "CapabilityPayloadDAO - receivingCapPayload.getCapabilityDataObjects");
+        var pm1 = PM.create(x, true, "CapabilityPayloadDAO", "receivingCapPayload.getCapabilityDataObjects");
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
         pm1.log(x);
 
-        var pm2 = PM.create(x, true, "CapabilityPayloadDAO - CrunchService - getGrantPath");
+        var pm2 = PM.create(x, true, "CapabilityPayloadDAO", "crunchService.getGrantPath");
         List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
         pm2.log(x);
         processCapabilityList(x, grantPath, capabilityDataObjects);
 
-        var pm3 = PM.create(x, true, "CapabilityPayloadDAO - find_ - receivingCapPayload.getId");
+        var pm3 = PM.create(x, true, "CapabilityPayloadDAO", "find_ - receivingCapPayload.getId");
         var ret =  find_(x, receivingCapPayload.getId());
         pm3.log(x);
         return ret;
