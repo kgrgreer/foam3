@@ -121,6 +121,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
   }
 
   public void purgeCache(Object obj) {
+    // Use Long instead of long so can use as a flag to drive clear user or clear cache
     Long userId = null;
 
     // Check for supported types to purge single user permission map
@@ -135,8 +136,6 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userPermissionCache_.remove(userId);
     } else {
       // Reset permission cache
-      // Reassigning LRU cache will garbage collect old cache and reset to empty cache with initial capacity
-      //userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
       userPermissionCache_.clear();
     }
   }
