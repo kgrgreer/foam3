@@ -35,11 +35,6 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("localUserDAO");
 
         User user = (User) obj;
-        if ( SafetyUtil.isEmpty(user.getUserName()) ) {
-          return;
-          // TODO: REMOVE COMMENT ONCE READY TO MAKE USERNAME A REQUIREMENT
-          // throw new RuntimeException(EMPTY_ERROR);
-        }
 
         // Check against the spid of the user who is submitting the request in
         // case the user.spid is not set (or was cleared by PermissionedPropertyDAO).

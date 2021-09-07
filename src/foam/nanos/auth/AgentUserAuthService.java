@@ -12,7 +12,6 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.logger.Logger;
 import foam.nanos.session.Session;
-
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
