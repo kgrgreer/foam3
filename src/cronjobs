@@ -122,24 +122,22 @@ p({
   "id":"CleanupTempFileCron",
   "description":"Cron to clean up files which exist more than 4 hours",
   schedule:{
-    class:"foam.nanos.cron.IntervalSchedule",
-    duration:{
-      class:"foam.nanos.cron.TimeHMS",
-      hour:1,
-      minute:0,
-      seconds:0
-    }
+    class:"foam.nanos.cron.CronSchedule",
+    minute: 0,
+    hour: -1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second: -1
   },
   "code": """
     import foam.core.X;
-    import foam.dao.ArraySink;
     import foam.dao.DAO;
+    import foam.mlang.MLang;
     import foam.nanos.fs.TempFile;
-    import java.io.File;
     import java.time.LocalDateTime;
     import java.time.ZoneId;
     import java.util.Date;
-    import java.util.List;
 
     final int TTL = 4;
 
@@ -147,20 +145,9 @@ p({
 
     Date threshold = Date.from(LocalDateTime.now().minusHours(TTL).atZone(ZoneId.systemDefault()).toInstant());
 
-    List tempFiles = ((ArraySink) tempFileDAO
+    tempFileDAO
       .where(MLang.LT(TempFile.CREATED, threshold))
-      .select(new ArraySink()))
-      .getArray();
-
-    TempFile tempFile;
-
-    for ( int i = 0 ; i < tempFiles.size() ; i++ ) {
-      tempFile = (TempFile) tempFiles.get(i);
-       if ( forHoursBefore.after(tFile.getCreated()) ) {
-        tempFiles.get(i).getFile_().delete();
-        tempFileDAO.remove(tempFile);
-      }
-    }
+      .removeAll();
   """,
-  "enabled":true
+  "enabled":false
 })
