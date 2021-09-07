@@ -20,6 +20,15 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
   ],
 
+
+  constants: [
+    {
+      name: 'PING',
+      type: 'String',
+      value: 'PING'
+    }
+  ],
+
   properties: [
     {
       name: 'logger',
@@ -94,6 +103,10 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
+      if ( obj != null &&
+           PING.equals(obj.toString()) )  {
+        return System.currentTimeMillis();
+      }
       ClusterCommand cmd = (ClusterCommand) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       cmd = cmd.addHop(x, DOP.CMD, "received");

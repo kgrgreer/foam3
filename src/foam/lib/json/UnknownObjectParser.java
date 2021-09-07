@@ -16,7 +16,8 @@
 
     public UnknownObjectParser() {
       super(new Parser() {
-        private Parser delegate = new Seq1(3, Whitespace.instance(),
+        private Parser delegate = new Seq1(3,
+        Whitespace.instance(),
         Literal.create("{"),
         Whitespace.instance(),
         new UnknownPropertiesParser(),
@@ -26,10 +27,7 @@
         public PStream parse(PStream ps, ParserContext x) {
           ps = ps.apply(delegate, x);
           if ( ps == null) return null;
-          String res = "{";
-          res = res + ps.value().toString();
-          res = res + "}";
-          return ps.setValue(res);
+          return ps.setValue("{" + ps.value() + "}");
         }
       });
     }

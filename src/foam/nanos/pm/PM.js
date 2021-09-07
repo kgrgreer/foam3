@@ -200,6 +200,10 @@ foam.CLASS({
               return pm;
             }
 
+            public static PM create(X x, Class cls, Object... args) {
+              return create(x, cls.getName(), args);
+            }
+
             public static PM create(X x, Object key, Object... args) {
               PM pm = (PM) x.get("PM");
 

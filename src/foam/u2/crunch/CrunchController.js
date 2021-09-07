@@ -55,6 +55,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.MaybeDAOPutAgent',
     'foam.u2.crunch.wizardflow.ShowPreexistingAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
+    'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.SpinnerAgent',
@@ -136,6 +137,7 @@ foam.CLASS({
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
           .add(this.SaveAllAgent)
+          .add(this.SubmitAgent)
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           // .add(this.TestAgent)

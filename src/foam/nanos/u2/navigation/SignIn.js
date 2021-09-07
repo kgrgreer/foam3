@@ -95,7 +95,7 @@ foam.CLASS({
     },
     {
       name: 'nextStep',
-      code: function(X) {
+      code: async function(X) {
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
@@ -104,6 +104,7 @@ foam.CLASS({
           }));
         } else {
           if ( ! this.user.emailVerified ) {
+            await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));

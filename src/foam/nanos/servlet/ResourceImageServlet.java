@@ -34,9 +34,9 @@ import java.util.Map;
    setup requires explicit knowledge of the webroot folder name, which
    needs to be prepended to the request.
 */
-public class ResourceImageServlet 
+public class ResourceImageServlet
   extends ImageServlet
-{  
+{
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException
@@ -49,7 +49,7 @@ public class ResourceImageServlet
       String ext = EXTS.get(request.substring(request.lastIndexOf('.') +1));
       try ( BufferedInputStream bis = new BufferedInputStream(is) ) {
         resp.setContentType(!SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
-        resp.setHeader("Cache-Control", "public, max-age=3600"); // cache for 1 hour
+        resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
 
         IOUtils.copy(bis, resp.getOutputStream());
         return;

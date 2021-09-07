@@ -382,8 +382,8 @@ foam.CLASS({
       ],
       javaCode: `
         canRun(x);
-        PM               pm          = new PM.Builder(x).setKey(Script.getOwnClassInfo().getId()).setName(getId()).build();
-        RuntimeException thrown      = null;
+        PM               pm          = new PM(this.getClass(), getId());
+        RuntimeException thrown     = null;
         Language         l           = getLanguage();
         Thread.currentThread().setPriority(getPriority());
 

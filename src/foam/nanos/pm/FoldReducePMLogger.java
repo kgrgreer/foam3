@@ -71,10 +71,11 @@ public class FoldReducePMLogger
     Map<String,PMInfo> m2 = (Map<String,PMInfo>) state2;
 
     for ( PMInfo pi2 : m2.values() ) {
-      PMInfo pi1 = m1.get(pi2);
+      String key = pi2.getKey() + ":" + pi2.getName();
+      PMInfo pi1 = m1.get(key);
 
       if ( pi1 == null ) {
-        m1.put(pi2.getKey() + ":" + pi2.getName(), pi2);
+        m1.put(key, pi2);
       } else {
         pi1.reduce(pi2);
       }
@@ -114,6 +115,19 @@ public class FoldReducePMLogger
           return dao;
         }
       }
+
+      public foam.core.FObject remove_(X x, foam.core.FObject obj) {
+        try {
+          PMInfo pmi = (PMInfo) obj;
+          String key = pmi.getKey() + ":" + pmi.getName();
+          getDelegate();
+          Map<String,PMInfo> map = (Map<String,PMInfo>) getState();
+          map.remove(key);
+        } catch (Throwable t) {
+        }
+        return obj;
+      }
+
       public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
         resetState();
       }

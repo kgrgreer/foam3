@@ -58,9 +58,10 @@ foam.CLASS({
         groupPermissionJunctionDAO.where(EQ(GroupPermissionJunction.SOURCE_ID, "test")).removeAll();
 
         // not explicitly testing spids
-        groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.create").build());
-        groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.read.*").build());
-        groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.update.*").build());
+        // REVIEW: "serviceprovider.create" permission should no longer exist since it is replaced with "serviceproviderdao" permission
+        // groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.create").build());
+        // groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.read.*").build());
+        // groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("test").setTargetId("serviceprovider.update.*").build());
 
         DAO delegate = new MDAO(User.getOwnClassInfo());
         DAO dao = new foam.nanos.auth.AuthorizationDAO.Builder(x)
@@ -344,7 +345,7 @@ foam.CLASS({
           test(false, "put without explicit spid.create but created by same spid should throw AuthorizationException: "+e.getMessage());
         }
 
-        groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(y).setSourceId("test").setTargetId("serviceprovider.create.other").build());
+        // groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(y).setSourceId("test").setTargetId("serviceprovider.create.other").build());
         try {
           user4 = (User) dao.put(user4);
           test(true, "put with all permissions should not throw AuthorizationException");

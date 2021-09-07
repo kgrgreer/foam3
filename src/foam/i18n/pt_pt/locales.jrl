@@ -473,6 +473,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.UNASSIGN_ME.label",target:"Não Me Designo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.ADD_MEMO.label",target:"Adiciona um memorando"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.SECTION_APPROVAL_REQUEST_INFORMATION.title",target:"Aprovação Solicitação Informações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.SECTION_ADDITIONAL_INFORMATION.title",target:"Informações adicionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.SECTION_SYSTEM_INFORMATION.title",target:"Sistema Informação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.SUCCESS_MEMO",target:"Você adicionou com sucesso um memorando"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.SUCCESS_APPROVED",target:"Você aprovou com sucesso este pedido"})
@@ -870,3 +871,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthorizationExc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAORequiredException.DAO name required",target:"O nome DAO é obrigatório."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{message}}",target:"DAO não encontrado: {{daoName}}"})
+
+// Renewable data
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.SECTION_REVIEW_DATA_SECTION.title",target:"Confirmação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.CONFIRMATION_MSG",target:"Concordo que todas as informações aqui apresentadas estão atualizadas."})

@@ -90,12 +90,12 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.on('click', function(event) {
-        var obj = self.eToObj(event);
+      this.on('click', async function(event) {
+        var obj = await self.eToObj(event);
         if ( obj ) self.tableView.selection = obj;
       }).
-      on('dblclick', function(event) {
-        var obj = self.eToObj(event);
+      on('dblclick', async function(event) {
+        var obj = await self.eToObj(event);
         if ( obj ) 1;
       });
     },

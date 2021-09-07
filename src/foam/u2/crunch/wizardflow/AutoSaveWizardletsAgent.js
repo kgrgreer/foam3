@@ -15,6 +15,10 @@ foam.CLASS({
     'wizardlets'
   ],
 
+  requires: [
+    'foam.nanos.crunch.ui.CapabilityWizardlet'
+  ],
+
   implements: [
     'foam.core.ContextAgent'
   ],
@@ -23,9 +27,11 @@ foam.CLASS({
     async function execute() {
       // TODO: investigate adding onDetach here
       for ( let wizardlet of this.wizardlets ) {
-        wizardlet.getDataUpdateSub().sub(() => {
-          wizardlet.save({ reloadData: false });
-        })
+        if ( this.CapabilityWizardlet.isInstance(wizardlet) && (wizardlet.capability && wizardlet.capability.autoSave) ) {
+          wizardlet.getDataUpdateSub().sub(() => {
+            wizardlet.save({ reloadData: false });
+          })
+        }
       }
     }
   ]

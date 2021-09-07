@@ -540,7 +540,7 @@ foam.CLASS({
               e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IE'),
               e.REG_EXP(
                 foam.nanos.auth.Address.POSTAL_CODE,
-                /[A-Za-z]\d{2}\s[A-Za-z\d]{4}/
+                /[A-Za-z]\d{2}\s?[A-Za-z\d]{4}/
               )
             );
           },
