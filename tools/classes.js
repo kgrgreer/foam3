@@ -158,7 +158,6 @@ var classes = [
   'foam.box.sf.DefaultRetryStrategy',
   'foam.box.sf.SFManager',
   'foam.box.sf.SF',
-  'foam.box.sf.Strategy',
  // 'foam.box.network.DemoSocketClientReplyBox',
   'foam.box.NullBox',
   'foam.dao.DAO',
