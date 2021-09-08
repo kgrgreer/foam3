@@ -289,6 +289,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUC
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.File.INVALID_FILE_LABEL",target:"Um rótulo de arquivo atribuído não pode estar vazio"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_TITLE",target:"Uploader de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_FILE_GROUP",target:"Grupo de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.ERROR_FILE_UPLOAD",target:"Forneça arquivo e etiqueta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.UPLOAD.label",target:"Envio"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",target:"Arraste e solte arquivos aqui"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",target:"Navegar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_MAX_SIZE",target:"Tamanho máximo:"})
