@@ -289,6 +289,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUC
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.File.INVALID_FILE_LABEL",target:"Um rótulo de arquivo atribuído não pode estar vazio"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_TITLE",target:"Uploader de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.LABEL_FILE_GROUP",target:"Grupo de arquivos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.ERROR_FILE_UPLOAD",target:"Forneça arquivo e etiqueta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileUploader.UPLOAD.label",target:"Envio"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",target:"Arraste e solte arquivos aqui"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",target:"Navegar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_MAX_SIZE",target:"Tamanho máximo:"})
@@ -329,6 +334,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.SUB_FOOTER_LINK",target:"Esqueceu a senha?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG",target:"Ocorreu um problema com o login."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG2",target:"Por favor, insira o Email ou nome de usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG3",target:"Por favor insira a senha"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.IDENTIFIER.label",target:"Email ou nome de usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.PASSWORD.label",target:"Senha"})
@@ -423,6 +429,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.MultiChoiceView.CHO
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.MultiChoiceView.CHOICES.documentation",target:"Uma matriz de opções que são de escolha única é denotada como [valor, rótulo, isSelected, choiceMode, isFinal], no entanto, o usuário pode apenas passar [valor, rótulo] e a função de adaptação irá transformá-lo em [valor, rótulo, isSelected , choiceMode, isFinal] formato para fins de processamento"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.MultiChoiceView.DAO.documentation",target:"Se o usuário quiser apenas passar um dao, ele será processado para preencher a matriz de opções em vez de inserir manualmente as opções"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ColumnConfigPropView.RESET_COLUMNS.label",target:"Redefinir Colunas"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.borders.BrowserSupportBorder.BROWSER_SUPPORT",target:"Este aplicativo é otimizado para "})
 
@@ -645,6 +653,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.PENDING",target:"Pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.TRACKING",target:"Rastreamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.BACK_LABEL",target:"Voltar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CREATED_FOR_SUMMARY.label",target:"Criado Para esumo"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_CANCELLED",target:"Você cancelou com sucesso este tíquete"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_ASSIGNED",target:"Você designou com sucesso este tíquete"})
@@ -1033,7 +1042,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotF
 
 // Renewable data
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.SECTION_REVIEW_DATA_SECTION.title",target:"Confirmação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.CONFIRMATION_MSG",target:"Concordo que todas as informações aqui apresentadas estão atualizadas."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.CONFIRMATION_MSG",target:"Concordo que todas as informações aqui apresentadas estão atualizadas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.REVIEW_ERROR",target:"Certificação necessária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.YEAR.label",target:"ano"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.MONTH.label",target:"mês"})
