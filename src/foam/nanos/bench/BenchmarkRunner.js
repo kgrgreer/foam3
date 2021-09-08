@@ -94,23 +94,23 @@
         log = new foam.nanos.logger.StdoutLogger();
       }
       final Logger logger = new PrefixLogger(new String[] { benchmark.getClass().getSimpleName() }, log);
-  
+
       AppConfig config = (AppConfig) x.get("appConfig");
       if ( config.getMode() == Mode.PRODUCTION ) {
         logger.warning("Script execution disabled in PRODUCTION");
         return;
       }
       logger.info("execute", benchmark.getClass().getSimpleName());
-  
+
       int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
       int run = 1;
       int threads = 1;
-  
+
       if ( ! getRunPerThread() ||
            reverseThreads_ ) {
         threads = availableThreads;
       }
-  
+
       try {
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
@@ -120,14 +120,14 @@
           Map stats = new HashMap<String, Object>();
           stats.put(RUN, run);
           stats.put(THREADCOUNT, threads);
-  
+
           // set up the benchmark
           logger.info("setup");
           benchmark.setup(x);
-  
+
           // get start time
           long startTime = System.currentTimeMillis();
-  
+
           // execute all the threads
           for ( int i = 0 ; i < threads ; i++ ) {
             final int tno = i;
@@ -154,7 +154,7 @@
                     }
                   }
                   pass.addAndGet(passed++);
-  
+
                   // count down the latch when finished
                   latch.countDown();
                 }
@@ -167,10 +167,10 @@
             // start the thread
             thread.start();
           }
-  
+
           // wait until latch reaches 0
           latch.await();
-  
+
           // calculate length taken
           // get number of threads completed and duration
           // print out transactions per second
@@ -183,26 +183,26 @@
           stats.put(OPS, String.format("%.02f", (complete / duration)));
           stats.put(OPSPT, String.format("%.02f", (complete / duration) / (float) threads));
           stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
-  
+
           logger.info("teardown");
           benchmark.teardown(x, stats);
           results_.add(stats);
-  
+
           if ( getRunPerThread() ) {
             String results = formatResults();
             System.out.println(results);
             logger.info(results);
-  
+
             if ( reverseThreads_ ) {
               threads--;
             } else {
               threads++;
             }
-  
+
             if ( threads <= 0 || threads > availableThreads ) {
               break;
             }
-  
+
             run++;
           } else {
             String results = formatResults();
@@ -227,23 +227,23 @@
       csv.append(",");
       csv.append(new java.util.Date().toString());
       csv.append("\\n");
-  
+
       if ( results_.size() == 0 ) {
         csv.append("no results\\n");
         return csv.toString();
       }
-  
+
       Map<String, Object> r = results_.get(0);
-  
+
       int index = 0;
       for ( Map.Entry<String, Object> entry : r.entrySet() ) {
         index++;
         csv.append(entry.getKey());
         if ( index < r.entrySet().size() ) csv.append(",");
       }
-  
+
       csv.append("\\n");
-  
+
       for ( Map<String, Object> result : results_ ) {
         index = 0;
         for ( Map.Entry<String, Object> entry : result.entrySet() ) {
@@ -254,7 +254,7 @@
         }
         csv.append("\\n");
       }
-  
+
       return csv.toString();
       `
     }

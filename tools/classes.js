@@ -365,7 +365,6 @@ var classes = [
   'foam.nanos.auth.UserNotFoundException',
   'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
   'foam.nanos.auth.PreventDuplicateEmailLoginService',
-  'foam.nanos.bench.Benchy',
   'foam.nanos.script.BenchmarkRunnerScript',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
