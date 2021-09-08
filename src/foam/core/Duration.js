@@ -29,7 +29,7 @@ foam.CLASS({
         // initialize array of values and labels
         foam.util.date.TimeUnit.VALUES.forEach(unit => {
           var numUnits = Math.floor(value / unit.conversionFactorMs);
-          var label = useShort ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.short`, unit.short) :
+          var label = useShort ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.shorthand`, unit.shorthand) :
                       numUnits > 1 ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.plural`, unit.plural) :
                       ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.label`, unit.label);
           values.push([numUnits, label])
