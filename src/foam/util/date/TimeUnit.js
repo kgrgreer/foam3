@@ -11,7 +11,7 @@ foam.ENUM({
   properties: [
     {
       class: 'String',
-      name: 'short'
+      name: 'shorthand'
     },
     {
       class: 'String',
