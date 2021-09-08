@@ -128,7 +128,7 @@ foam.CLASS({
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
                 .start().add(this.requestName$).addClass('company-name').end() 
-                .start().add(this.formatDate(this.message.dateCreated)).addClass('date').end()
+                .start().add(foam.Date.formatDate(this.message.dateCreated)).addClass('date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('internal-status')
                     .add('Internal Note')
@@ -138,14 +138,6 @@ foam.CLASS({
               .start().add(this.message.message).addClass('text').end()   
           .end()     
         .end()               
-    },
-
-    function formatDate(date) {
-      return date.toLocaleString(foam.locale, { month: 'short' }) + ' ' +
-        date.getDate() + ', ' +
-        date.getFullYear() + ' ' +
-        date.getHours() + ':' +
-        date.getMinutes();
     }
   ]
 });
