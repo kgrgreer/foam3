@@ -27,6 +27,7 @@ foam.INTERFACE({
     {
       name: 'getPrereqs',
       type: 'java.util.List<String>',
+      async: true,
       args: [
         { name: 'x',     type: 'Context' },
         { name: 'capId', type: 'String' },
