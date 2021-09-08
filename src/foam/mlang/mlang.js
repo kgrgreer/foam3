@@ -2604,7 +2604,6 @@ if ( ! ( getArg1().f(obj) instanceof String ) ) return false;
 String arg1 = ((String) getArg1().f(obj)).toUpperCase();
 List props = ((foam.core.FObject) obj).getClassInfo().getAxiomsByClass(PropertyInfo.class);
 Iterator i = props.iterator();
-setCheckingNestedFObject_(false);
 
 while ( i.hasNext() ) {
   PropertyInfo prop = (PropertyInfo) i.next();
@@ -2613,6 +2612,7 @@ while ( i.hasNext() ) {
     String s = "";
     if ( prop instanceof foam.core.AbstractFObjectPropertyInfo ) {
       if ( checkNestedFObject(prop.f(obj)) ) return true;
+      setCheckingNestedFObject_(false);
     } else if ( prop instanceof foam.core.AbstractEnumPropertyInfo ) {
       Object value = prop.f(obj);
       if ( value == null ) continue;
