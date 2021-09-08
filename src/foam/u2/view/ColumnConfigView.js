@@ -493,7 +493,7 @@ foam.CLASS({
   listeners: [
     function toggleSelection(e) {
       e.stopPropagation();
-      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop)) {
+      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
         if ( ! this.data.isPropertySelected )
           this.data.expanded = false;
         this.onSelectionChangedParentFunction(this.data.isPropertySelected, this.data.index);
