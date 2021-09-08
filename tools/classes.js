@@ -860,6 +860,7 @@ var classes = [
   'foam.nanos.crunch.UCJUpdateApprovable',
 
   'foam.nanos.crunch.connection.CapabilityPayload',
+  'foam.nanos.crunch.connection.CapabilityPayloadRecord',
   'foam.nanos.crunch.connection.GrantPathNode',
 
   //daos

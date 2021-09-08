@@ -216,6 +216,13 @@ public class MLang
     return contains;
   }
 
+  public static Predicate STARTS_WITH_IC(Object o1, Object o2) {
+    StartsWithIC startsWithIC = new StartsWithIC();
+    startsWithIC.setArg1(MLang.prepare(o1));
+    startsWithIC.setArg2(MLang.prepare(o2));
+    return startsWithIC;
+  }
+
   public static Predicate HAS(Object o) {
     Has has = new Has();
     has.setArg1(MLang.prepare(o));

@@ -17,7 +17,7 @@ foam.CLASS({
     'user'
   ],
 
-  requires: ['foam.u2.stack.StackBlock'],
+  requires: [ 'foam.u2.stack.StackBlock' ],
 
   css: `
     ^ {

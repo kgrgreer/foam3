@@ -20,7 +20,7 @@ foam.CLASS({
   imports: [
     'dblclick?',
     'onObjDrop',
-    'returnExpandedCSS',
+    'returnExpandedCSS?',
     'selection',
     'startExpanded'
   ],
@@ -245,9 +245,9 @@ foam.CLASS({
             'padding-left': ((( self.level - 1) * 16 + 8) + 'px')
           }).
           startContext({ data: self }).
-            start(self.ON_CLICK_FUNCTIONS, { 
-              buttonStyle: 'UNSTYLED', 
-              label: mainLabel, 
+            start(self.ON_CLICK_FUNCTIONS, {
+              buttonStyle: 'UNSTYLED',
+              label: mainLabel,
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
@@ -255,11 +255,11 @@ foam.CLASS({
             addClass(this.myClass('button')).
             style({
               'fill': this.slot(function(selected, id) {
-                        if ( selected && foam.util.equals(selected.id, id) ) {
-                          return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
-                        }
-                        return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
-                      }, this.selection$, this.data$.dot('id'))
+                if ( selected && foam.util.equals(selected.id, id) ) {
+                  return (self.returnExpandedCSS || (a => a))('/*%PRIMARY3%*/ #604aff') ;
+                }
+                return (self.returnExpandedCSS || (a => a))('/*%GREY2%*/ #9ba1a6');
+              }, this.selection$, this.data$.dot('id'))
             }).
           endContext().
           end().
