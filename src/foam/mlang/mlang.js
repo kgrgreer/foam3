@@ -2604,7 +2604,7 @@ if ( ! ( getArg1().f(obj) instanceof String ) ) return false;
 String arg1 = ((String) getArg1().f(obj)).toUpperCase();
 List props = ((foam.core.FObject) obj).getClassInfo().getAxiomsByClass(PropertyInfo.class);
 Iterator i = props.iterator();
-setCheckingNestedFObject_(true);
+setCheckingNestedFObject_(false);
 
 while ( i.hasNext() ) {
   PropertyInfo prop = (PropertyInfo) i.next();
@@ -2661,6 +2661,7 @@ return false;`
       },
       javaCode: `
         if ( obj == null || getCheckingNestedFObject_() ) return false;
+        setCheckingNestedFObject_(true);
         return this.f(obj);
       `
     },
