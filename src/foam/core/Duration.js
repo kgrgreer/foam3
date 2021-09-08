@@ -17,32 +17,32 @@ foam.CLASS({
   static: [
     {
       name: 'duration',
-      code: function(value) {
-        value = Math.round(value);
-        var days = Math.floor(value / 86400000);
-        value -= days * 86400000;
-        var hours = Math.floor(value / 3600000);
-        value -= hours * 3600000;
-        var minutes = Math.floor(value / 60000);
-        value -= minutes * 60000;
-        var seconds = Math.floor(value / 1000);
-        value -= seconds * 1000;
-        var milliseconds = value % 1000;
+      documentation: `
+        Use the precision parameter to configure the number of units in the return string
+        Use the useShort paramter to configure whether to use the short hand for time units
+      `,
+      code: function(value, precision = 2, useShort = true) {
+        var ts = ctrl.__subContext__.translationService;
+        var values = [];
+        // precision should be atleast one
+        precision < 1 && ( precision = 1 );
+        // initialize array of values and labels
+        foam.util.date.TimeUnit.VALUES.forEach(unit => {
+          var numUnits = Math.floor(value / unit.conversionFactorMs);
+          var label = useShort ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.short`, unit.short) :
+                      numUnits > 1 ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.plural`, unit.plural) :
+                      ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.label`, unit.label);
+          values.push([numUnits, label])
+          value -= numUnits * unit.conversionFactorMs;
+        })
 
-        // For long durations, don't show smaller components
-        if ( days ) {
-          minutes = 0;
-          seconds = 0;
-          milliseconds = 0;
-        } else if ( hours ) {
-          seconds = 0;
-          milliseconds = 0;
-        } else if ( minutes ) {
-          milliseconds = 0;
-        }
-
-        var formatted = [[days, 'd'], [hours, 'h'], [minutes, 'm'], [seconds, 's'], [milliseconds, 'ms']].reduce((acc, cur) => {
-          return cur[0] > 0 ? acc.concat([cur[0] + cur[1]]) : acc;
+        var formatted = values.reduce((acc, cur) => {
+          if ( cur[0] > 0 && precision > 0)
+            acc = acc.concat([cur[0] + cur[1]]);
+          // once a nonzero value has been found, keep decrementing
+          // precision even if next values are zero
+          if ( acc.length ) precision--;
+          return acc;
         }, []).join(' ');
 
         return formatted || '0ms';
