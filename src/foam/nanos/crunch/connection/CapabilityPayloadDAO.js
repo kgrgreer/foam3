@@ -157,7 +157,10 @@ foam.CLASS({
           return null;
         }
 
-        return filterCapabilityPayload(x, idToString);
+        var pm = PM.create(x, true, "CapabilityPayloadDAO", "find_ - filterCapabilityPayload");
+        CapabilityPayload filteredPayload = filterCapabilityPayload(x, idToString);
+        pm.log(x);
+        return filteredPayload;
       `
     },
     {
@@ -260,16 +263,16 @@ foam.CLASS({
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
-        var pm1 = PM.create(x, true, "CapabilityPayloadDAO", "receivingCapPayload.getCapabilityDataObjects");
+        var pm1 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - receivingCapPayload.getCapabilityDataObjects");
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
         pm1.log(x);
 
-        var pm2 = PM.create(x, true, "CapabilityPayloadDAO", "crunchService.getGrantPath");
+        var pm2 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - crunchService.getGrantPath");
         List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
         pm2.log(x);
         processCapabilityList(x, grantPath, capabilityDataObjects);
 
-        var pm3 = PM.create(x, true, "CapabilityPayloadDAO", "find_ - receivingCapPayload.getId");
+        var pm3 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - find_ - receivingCapPayload.getId");
         var ret =  find_(x, receivingCapPayload.getId());
         pm3.log(x);
         return ret;
