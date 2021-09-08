@@ -259,8 +259,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           .put("spid", null)
           .put("subject", subject)
           .put("group", null)
-          .put("twoFactorSuccess", false)
-          .put(CachingAuthService.CACHE_KEY, null);
+          .put("twoFactorSuccess", false);
       `
     },
     {
@@ -337,7 +336,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         rtn = rtn
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
-          .put(CachingAuthService.CACHE_KEY, getContext().get(CachingAuthService.CACHE_KEY))
           .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY));
 
         // We need to do this after the user and agent have been put since

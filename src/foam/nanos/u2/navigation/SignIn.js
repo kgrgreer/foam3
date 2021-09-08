@@ -34,7 +34,8 @@ foam.CLASS({
     { name: 'FOOTER_LINK', message: 'Create an account' },
     { name: 'SUB_FOOTER_LINK', message: 'Forgot password?' },
     { name: 'ERROR_MSG', message: 'There was an issue logging in' },
-    { name: 'ERROR_MSG2', message: 'Please enter email or username' }
+    { name: 'ERROR_MSG2', message: 'Please enter email or username' },
+    { name: 'ERROR_MSG3', message: 'Please enter password' }
   ],
 
   properties: [
@@ -95,7 +96,7 @@ foam.CLASS({
     },
     {
       name: 'nextStep',
-      code: function(X) {
+      code: async function(X) {
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
@@ -104,6 +105,7 @@ foam.CLASS({
           }));
         } else {
           if ( ! this.user.emailVerified ) {
+            await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
@@ -128,6 +130,15 @@ foam.CLASS({
       code: async function(X) {
         this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {
+          if ( ! this.password ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.ERROR_MSG3,
+              type: this.LogLevel.ERROR
+            }));
+
+            return;
+          }
+
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;

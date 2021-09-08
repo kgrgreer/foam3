@@ -25,6 +25,7 @@
     {
       name: 'importData',
       type: 'foam.nanos.google.api.sheets.ImportDataMessage',
+      async: true,
       args: [
         {
           name: 'x',

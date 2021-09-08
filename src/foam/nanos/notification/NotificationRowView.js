@@ -19,7 +19,6 @@
 
     imports: [
       'summaryView?',
-      'invoiceDAO',
       'notificationDAO',
       'notify',
       'stack',
@@ -90,7 +89,7 @@
               self.ctrl.add(self.Popup.create().tag({
                 class: 'foam.nanos.notification.NotificationMessageModal',
                 data: self.data
-              }));    
+              }));
             })
             .tag(this.NotificationCitationView, {
               of: this.data.cls_,
@@ -148,7 +147,7 @@
         self.userDAO.put(userClone).then(user => {
           self.finished.pub();
           self.user = user;
-          
+
           if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
             self.summaryView.update();
           } else {

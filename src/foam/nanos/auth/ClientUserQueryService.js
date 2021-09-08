@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'ClientUserQueryService',
+
   documentation: `
     A version of the UserQueryService which can be served on the client side
     to query users in the GUI

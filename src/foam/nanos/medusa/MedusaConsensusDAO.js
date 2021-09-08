@@ -254,9 +254,10 @@ This is the heart of Medusa.`,
       name: 'start',
       javaCode: `
       getLogger().info("start");
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
       timer.schedule(
-        new AgencyTimerTask(getX(), this),
+        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
        `
     },

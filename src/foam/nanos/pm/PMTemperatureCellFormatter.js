@@ -13,6 +13,7 @@ foam.CLASS({
 
   methods: [
     function format(e, value, obj, axiom) {
+      e.tooltip = foam.core.Duration.duration(value);
       e.tag({ class: 'foam.nanos.pm.TemperatureCView', totalTime: value });
     }
   ]

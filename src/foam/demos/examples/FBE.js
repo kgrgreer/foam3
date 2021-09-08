@@ -215,7 +215,7 @@ foam.CLASS({
                 eval(self.data.code);
               } catch (x) {
                 self.data.error = true;
-                scope.log(x);
+                scope.log(x.toString());
               }
             }
           }
@@ -344,7 +344,7 @@ foam.CLASS({
       this.testData += await fetch('u2').then(function(response) {
         return response.text();
       });
-
+/*
       this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
@@ -360,6 +360,7 @@ foam.CLASS({
       this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
+      */
 
       var self = this;
       this.

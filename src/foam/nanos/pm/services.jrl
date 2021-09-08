@@ -15,7 +15,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"pm1MinuteDAO",
   "lazy":true,
   "serve":true,
@@ -41,7 +41,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"pmHourlyReduceManager",
   "lazy":true,
   "serve":true,
@@ -86,7 +86,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"pmFoldManager",
   "lazy":true,
   "serve":true,
@@ -116,10 +116,10 @@ p({
   """
     return new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
       .setDelegate(
-        new foam.nanos.ruler.RulerDAO(x, 
+        new foam.nanos.ruler.RulerDAO(x,
           new foam.dao.NullDAO.Builder(x)
             .setOf(foam.nanos.pm.PM.getOwnClassInfo())
-            .build(), 
+            .build(),
           "pmDAO"))
       .setFm((foam.nanos.analytics.DAOFoldManager) x.get("pmFoldManager"))
       .build();
@@ -135,6 +135,6 @@ p({
   pm:false,
   service:{
     class:"foam.nanos.pm.PMFactory",
-    percentage:1
+    percentage:100
   }
 })

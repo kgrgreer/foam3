@@ -26,7 +26,7 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO userDAO = (DAO) x.get("localUserUserDAO");
         Sink sink = new ArraySink();
         sink = userDAO
           .where(OR(
