@@ -128,7 +128,7 @@ foam.CLASS({
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
                 .start().add(this.requestName$).addClass('company-name').end() 
-                .start().add(foam.Date.formatDate(this.message.dateCreated)).addClass('date').end()
+                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('internal-status')
                     .add('Internal Note')
