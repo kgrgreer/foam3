@@ -29,42 +29,42 @@ foam.ENUM({
   values: [
     {
       name: 'YEAR',
-      short: 'Y',
+      shorthand: 'Y',
       conversionFactorMs: 31556926000
     },
     {
       name: 'MONTH',
-      short: 'M',
+      shorthand: 'M',
       conversionFactorMs: 2629743833
     },
     {
       name: 'WEEK',
-      short: 'W',
+      shorthand: 'W',
       conversionFactorMs: 604800000
     },
     {
       name: 'DAY',
-      short: 'd',
+      shorthand: 'd',
       conversionFactorMs: 86400000
     },
     {
       name: 'HOUR',
-      short: 'h',
+      shorthand: 'h',
       conversionFactorMs: 3600000
     },
     {
       name: 'MINUTE',
-      short: 'm',
+      shorthand: 'm',
       conversionFactorMs: 60000
     },
     {
       name: 'SECOND',
-      short: 's',
+      shorthand: 's',
       conversionFactorMs: 1000
     },
     {
       name: 'MILLISECOND',
-      short: 'ms',
+      shorthand: 'ms',
       conversionFactorMs: 1
     }
   ]
