@@ -20,7 +20,9 @@
   name: 'PermissionedUserRule',
   extends: 'foam.nanos.ruler.Rule',
 
-  documentation: 'Rule that applies to user object if the user has permission to run it.',
+  documentation: `
+    Authorizable rule - rule execution is permitted via permissions. 'rule.read.ruleId'
+  `,
 
   javaImports: [
     'foam.nanos.auth.User'
