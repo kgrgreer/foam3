@@ -334,6 +334,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.SUB_FOOTER_LINK",target:"Esqueceu a senha?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG",target:"Ocorreu um problema com o login."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG2",target:"Por favor, insira o Email ou nome de usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.ERROR_MSG3",target:"Por favor insira a senha"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.IDENTIFIER.label",target:"Email ou nome de usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.PASSWORD.label",target:"Senha"})
@@ -652,6 +653,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.PENDING",target:"Pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.TRACKING",target:"Rastreamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.BACK_LABEL",target:"Voltar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CREATED_FOR_SUMMARY.label",target:"Criado Para esumo"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_CANCELLED",target:"Você cancelou com sucesso este tíquete"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_ASSIGNED",target:"Você designou com sucesso este tíquete"})
@@ -1040,4 +1042,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotF
 
 // Renewable data
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.SECTION_REVIEW_DATA_SECTION.title",target:"Confirmação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.CONFIRMATION_MSG",target:"Concordo que todas as informações aqui apresentadas estão atualizadas."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.CONFIRMATION_MSG",target:"Concordo que todas as informações aqui apresentadas estão atualizadas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.REVIEW_ERROR",target:"Certificação necessária"})

@@ -22,7 +22,7 @@ foam.CLASS({
 
   messages: [
     { name: 'CONFIRMATION_MSG', message: 'I agree that all the information provided above is accurate and up to date' },
-    { name: 'REVIEW_ERROR', message: 'Need to certify data reviewed' }
+    { name: 'REVIEW_ERROR', message: 'Certification required' }
   ],
 
   properties: [
