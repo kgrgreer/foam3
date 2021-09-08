@@ -1158,6 +1158,45 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "benchmarkDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.bench.Benchmark.getOwnClassInfo())
+      .setName("benchmark")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmark")
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.bench.Benchmark"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"benchmarkRunnerDAO",
+  "serve":true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmarkRunner")
+      .setOf(foam.nanos.bench.BenchmarkRunner.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.bench.BenchmarkRunner"
+    }
+  """
+})
+
+p({
   "name": "medusastatuswatcher",
   "lazy": false,
   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
