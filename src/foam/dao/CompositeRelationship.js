@@ -12,21 +12,42 @@
 
   properties: [
     {
-      name: 'relationships'
+      name: 'primaryRelationships',
+      factory: function(){
+        return [];
+      }
+    },
+    {
+      name: 'secondaryRelationships',
+      factory: function(){
+        return []
+      }
     }
   ],
 
   methods: [
     {
-      name: 'getInverseNames',
+      name: 'getPrimaryInverseNames',
       code: function(){
-        return this.relationships.map(relationship => relationship.inverseName);
+        return this.primaryRelationships.map(relationship => relationship.inverseName);
       }
     },
     {
-      name: 'getForwardNames',
+      name: 'getPrimaryForwardNames',
       code: function(){
-        return this.relationships.map(relationship => relationship.forwardName);
+        return this.primaryRelationships.map(relationship => relationship.forwardName);
+      }
+    },
+    {
+      name: 'getSecondaryInverseNames',
+      code: function(){
+        return this.secondaryRelationships.map(relationship => relationship.inverseName);
+      }
+    },
+    {
+      name: 'getSecondaryForwardNames',
+      code: function(){
+        return this.secondaryRelationships.map(relationship => relationship.forwardName);
       }
     }
   ]
