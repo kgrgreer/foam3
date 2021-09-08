@@ -1000,8 +1000,8 @@ foam.LIB({
       return date.toDateString().substring(4);
     },
     /** formats a date as MMM dd, YYYY
-     *  Use options includeTime and timeFirst to include a time
-     *  string hh:mm:ss at the start of end of the date string
+     *  Use the timeFirst parameter to include a time string
+     *  "hh:mm:ss" at the start or end of the date string
      **/
     function formatDate(date, timeFirst) {
       if ( date === undefined ) return '';
