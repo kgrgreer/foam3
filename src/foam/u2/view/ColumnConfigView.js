@@ -493,7 +493,7 @@ foam.CLASS({
   listeners: [
     function toggleSelection(e) {
       e.stopPropagation();
-      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) ) {
+      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop)) {
         if ( ! this.data.isPropertySelected )
           this.data.expanded = false;
         this.onSelectionChangedParentFunction(this.data.isPropertySelected, this.data.index);
@@ -568,7 +568,7 @@ foam.CLASS({
     },
     function onChildrenSelectionChanged(isColumnSelected, index, isColumnSelectionHaventChanged) {
       //isColumnSelectionHaventChanged to be false on either selectionChanged or being undefined
-      if ( ! isColumnSelectionHaventChanged || foam.core.Reference.isInstance(this.data.prop) ) {
+      if ( ! isColumnSelectionHaventChanged || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
         //to change view
         this.onSelectionChanged(isColumnSelected, index, this.views);
         //to set currentProperty isColumnSelected
@@ -576,7 +576,7 @@ foam.CLASS({
         //to re-check if isPropertySelected changed
         if ( this.data.isPropertySelected !== isColumnSelected ) {
           var anySelected = this.data.subColumnSelectConfig.find(s => s.isPropertySelected);
-          if ( foam.core.Reference.isInstance(this.data.prop) ) {
+          if ( foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
             this.data.isPropertySelected = typeof anySelected !== 'undefined';
             //close if not selected
             if ( ! this.data.isPropertySelected )
