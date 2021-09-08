@@ -998,6 +998,23 @@ foam.LIB({
       }
 
       return date.toDateString().substring(4);
+    },
+    /** formats a date as MMM dd, YYYY
+     *  Use options includeTime and timeFirst to include a time
+     *  string hh:mm:ss at the start of end of the date string
+     * */
+    function formatDate(date, includeTime = true, timeFirst) {
+      if ( typeof date === 'undefined' ) return '';
+      if ( typeof date === 'number' ) date = new Date(date);
+      if ( ! ( date instanceof Date ) ) return '';
+
+      var formattedDate = date.toLocaleDateString(foam.locale, { year: 'numeric', month: 'short', day: '2-digit' });
+      if ( ! includeTime ) return formattedDate;
+
+      var formattedTime = date.toLocaleTimeString(foam.locale, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      return  ( timeFirst ? formattedTime + ' ' : '' )
+            + formattedDate 
+            + ( ! timeFirst ? ' ' + formattedTime : '' );
     }
   ]
 });
