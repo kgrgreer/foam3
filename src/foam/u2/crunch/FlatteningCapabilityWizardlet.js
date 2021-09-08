@@ -113,9 +113,7 @@ foam.CLASS({
       class: 'Boolean',
       expression: function (of, data, data$errors_, delegates, delegateValidationToggle) {
         if ( ! this.of ) return true;
-        if ( ! data || data$errors_ ) {
-          return false;
-        }
+        if ( ! data || data$errors_ ) return false;
         for ( delegate of delegates ) {
           if ( ! delegate.isValid ) return false;
         }
