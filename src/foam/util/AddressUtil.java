@@ -6,7 +6,9 @@
 
 package foam.util;
 
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Country;
@@ -67,72 +69,54 @@ public class AddressUtil {
   }
 
   public static String normalizeRegion(X x, String country, String regionCode) {
-    String normalizedRegion = country + "-" + regionCode;
+    String[] normalizedRegion = { country + "-" + regionCode };
     DAO regionDAO = (DAO) x.get("regionDAO");
     Region found = (Region) regionDAO.find(regionCode);
     if ( found != null )
       return found.getCode();
 
-    ArraySink sink = (ArraySink) regionDAO.where(AND(
+    regionDAO.where(AND(
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
         STARTS_WITH_IC(Region.NAME, regionCode)
       )
-    )).select(new ArraySink());
-
-    List<Region> regions = sink.getArray();
-    
-    // Take the first match as the default
-    if (regions.size() > 0)
-      normalizedRegion = regions.get(0).getCode();
-    
-    // When there are more than one, take the first matches on the ISO code or on the full name (i.e. not just CONTAINS_IC)
-    if (regions.size() > 1) {
-      for ( int i = 0; i < regions.size(); i++ ) {
-        Region region = (Region) regions.get(i);
+    )).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        Region region = (Region) o;
         if ( region.getIsoCode().equals(regionCode) || region.getName().equalsIgnoreCase(regionCode) ) {
-          normalizedRegion = region.getCode();
-          break;
+          normalizedRegion[0] = region.getCode();
+          d.detach();
         }
       }
-    }
+    });
     
-    return normalizedRegion;
+    return normalizedRegion[0];
   }
 
   public static String normalizeCountry(X x, String countryCode) {
-    String normalizedCountry = countryCode;
+    String[] normalizedCountry = { countryCode };
     DAO countryDAO = (DAO) x.get("countryDAO");
     Country found = (Country) countryDAO.find(countryCode);
     if ( found != null )
       return found.getCode();
 
-    ArraySink sink = (ArraySink) countryDAO
+    countryDAO
       .where(OR(
         EQ(Country.ISO31661CODE, countryCode),
         STARTS_WITH_IC(Country.NAME, countryCode)
       ))
-      .select(new ArraySink());
-
-    List<Country> countries = sink.getArray();
-
-    // Take the first match as default
-    if (countries.size() > 0)
-      normalizedCountry = countries.get(0).getCode();
-
-    // When there is more than one, take the first match on the ISO code or on the full name (i.e. not just CONTAINS_IC)
-    if (countries.size() > 1) {
-      for ( int i = 0; i < countries.size(); i++ ) {
-        Country country = (Country) countries.get(i);
-        if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
-          normalizedCountry = country.getCode();
-          break;
+      .select(new AbstractSink() {
+        public void put(Object o, Detachable d) {
+          Country country = (Country) o;
+          if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
+            normalizedCountry[0] = country.getCode();
+            d.detach();
+          }
         }
-      }
-    }
+      });
     
-    return normalizedCountry;
+    return normalizedCountry[0];
   }
 
 }
