@@ -1000,8 +1000,9 @@ foam.LIB({
       return date.toDateString().substring(4);
     },
     /** formats a date as MMM dd, YYYY
-     *  Use the timeFirst parameter to include a time string
-     *  "hh:mm:ss" at the start or end of the date string
+     *  Use the timeFirst parameter to include a time string.
+     *  If the parameter is not provided, no time informationwill be encoded in the final format.
+     *  When provided and true, time is prefixed, else postfixed.
      **/
     function formatDate(date, timeFirst) {
       if ( date === undefined ) return '';
