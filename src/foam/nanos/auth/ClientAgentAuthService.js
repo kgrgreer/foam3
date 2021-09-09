@@ -14,8 +14,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.box.SessionClientBox',
-    'foam.box.HTTPBox'
+    'foam.box.HTTPBox',
+    'foam.box.SessionClientBox'
   ],
 
   properties: [

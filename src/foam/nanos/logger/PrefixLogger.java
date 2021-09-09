@@ -18,6 +18,8 @@ public class PrefixLogger
   }
 
   protected Object[] prefix(Object[] args) {
+    if ( prefix_ == null ) return args;
+
     Object[] ret = new Object[prefix_.length + args.length];
 
     System.arraycopy(prefix_, 0, ret, 0, prefix_.length);

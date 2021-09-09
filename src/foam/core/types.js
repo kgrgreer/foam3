@@ -226,6 +226,12 @@ foam.CLASS({
 
         return foam.Date.compare(o1, o2);
       }
+    },
+    {
+      name: 'format',
+      value: function(val) {
+        return foam.Date.formatDate(val);
+      }
     }
   ]
 });
@@ -256,6 +262,12 @@ foam.CLASS({
           return ret;
         }
         return d;
+      }
+    },
+    {
+      name: 'format',
+      value: function(val, timeFirst = false) {
+        return foam.Date.formatDate(val, timeFirst);
       }
     }
   ]

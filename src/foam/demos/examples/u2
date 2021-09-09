@@ -31,13 +31,13 @@ console.profile('p1');
 function test1() {
   var startTime = performance.now();
   var node = document.createElement("UL");               // Create a <ul> node
-  for ( var i = 0 ; i < 100 ; i++ ) {
+  for ( var i = 0 ; i < 10 ; i++ ) {
     var li = document.createElement("LI")
     li.appendChild(document.createTextNode("text" + i)); // Append an <li>
     node.appendChild(li);
   }
-  //el().appendChild(node);
-  log(performance.now() - startTime);
+  start().call(function() { this.element_.appendChild(node); });
+  log('DOM', performance.now() - startTime);
 }
 test1();
 console.profileEnd('p1');
@@ -47,15 +47,14 @@ console.profile('p2');
 function test2() {
   var startTime = performance.now();
   var node = foam.u2.Element.create({nodeName: 'UL'}); // Create a <ul> node
-  for ( var i = 0 ; i < 100 ; i++ )
+  for ( var i = 0 ; i < 10 ; i++ )
     node.start('li').add("text" + i).end();            // Append an <li>
 
-  //add(node);
-  log(performance.now() - startTime);
+  add(node);
+  log('U3', performance.now() - startTime);
 }
 test2()
 console.profileEnd('p2');
-
 
 ##   DSL
 ##   Intro1
@@ -66,8 +65,28 @@ add(foam.u2.Element.create().add('Hello World!'));
 ##   nodeName
 If you inspect the HTML output from the Hellow World! example, you'll notice that it is a div tag.<br>
 However, if you want to change it to another type, you can specify the node's name with the nodeName property.
+An Element's nodeName can't be changed after it is created. It must either be set as an argument of create(),
+or by changing the default value of the 'nodeName' property.
 --
 add(foam.u2.Element.create({nodeName: 'b'}).add('Hello World!'));
+
+start().br().end();
+
+foam.CLASS({
+  name: 'Example',
+  extends: 'foam.u2.Element',
+  properties: [
+    [ 'nodeName', 'b' ]
+  ],
+  methods: [
+    function render() {
+      this.add('Hello World (from a component)!');
+    }
+  ]
+});
+
+tag({class: 'Example'});
+
 ##  Short Form
 Given it is so common to want to create new Elements from within other Elements, Element has a method called start()
 which is used to add another Element to it.
@@ -138,6 +157,7 @@ start('div').hide().show().add('show()').end();         // will be shown
 --
 // TODO: update to use data when working
 start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end();
+add(' ');
 start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
 
 ##   Creating a Component
@@ -162,26 +182,25 @@ foam.CLASS({
   css: `
     ^ {
       font: Roboto;
-      padding: 8px;
+      margin: 4px;
     }
   `,
 
   properties: [
-    [ 'nodeName', 'b' ],
+    [ 'nodeName', 'i' ],
   ],
 
   methods: [
     function render() {
       this.
         addClass(). // short for addClass(this.myClass())
-        style({border: '1px solid gray', background: 'lightgray'}).
-        attrs({}).
-        add('some text').
+        style({border: '2px solid gray', background: 'lightgray'}).
+        attrs({comment:  'something'}).
+        add('some text ').
         start('b').
-          add('some bold text')
+          add('some bold text').
         end().
         br().
-        tag('hr').
         on('click', this.onClick);
     }
   ],
@@ -194,7 +213,7 @@ foam.CLASS({
   ]
 });
 
-start({class:'ExampleElement'}).end();
+tag({class:'ExampleElement'});
 
 ##    render()
 ##   Keyboard Shortcuts
@@ -203,10 +222,12 @@ foam.CLASS({
   name: 'KeyboardTest',
   extends: 'foam.u2.Controller',
   properties: [
-    { class: 'Int', name: 'count' }
+    // TODO: view: shouldn't be required, remove when fixed.
+    // appears to be issue with ModeAltView
+    { class: 'Int', name: 'count', value: 5, view: 'foam.u2.IntView' }
   ],
   methods: [
-    function render() { this.add(this.COUNT, this.INCR); }
+    function render() { this.add(this.COUNT, ' ', this.INCR); }
   ],
   actions: [
    {
@@ -216,13 +237,13 @@ foam.CLASS({
    }
   ]
 });
-// TODO: doesn't work
 var k = KeyboardTest.create();
-start(k).end();
+tag(k);
 
 ##   el()
 ##   id
-You can set an element's id, but keep in mind that it isn't normally a good idea to do so.
+You can set an element's id, but keep in mind that it isn't normally a good idea to do so because
+it prevents you from instantiating two instances of your component.
 --
 start('b', {id: 'myId1'}).add('inspect me to see my id').end();
 start('i').setID('myId2').add('this method also works').end();
@@ -266,7 +287,7 @@ CSS styling can be added to your elements in two ways:
 ##    style()
 Use style() to add in-lined CSS styling to a parent start() tag.
 --
-start().style({background: 'pink', border: '2px solid black;'}).add('styled content').end()
+start().style({background: 'pink', border: '2px solid black'}).add('styled content').end()
 ##    css:
 The same output and styling as the above example, but using a css: block and named CSS Class.
 --

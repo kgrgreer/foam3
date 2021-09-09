@@ -92,7 +92,7 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnNames',
-      expression: function(columns, of, memento) {
+      expression: function(columns, of, memento, memento$head) {
         var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
         return ls || columns;
       }
@@ -256,7 +256,11 @@ foam.CLASS({
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
     },
-    'currentMemento_'
+    'currentMemento_',
+    {
+      class: 'Boolean',
+      name: 'selectColumnsExpanded'
+    }
   ],
 
   methods: [
@@ -475,9 +479,8 @@ foam.CLASS({
                   callIf(view.editColumnsEnabled, function() {
                     this.addClass(view.myClass('th-editColumns'))
                     .on('click', function(e) {
-                      editColumnView.parentId = this.id;
-                      if ( ! editColumnView.selectColumnsExpanded )
-                        editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
+                      if ( ! view.selectColumnsExpanded )
+                        view.selectColumnsExpanded = ! view.selectColumnsExpanded;
                     }).
                     tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
                     addClass(view.myClass('vertDots')).
@@ -489,8 +492,15 @@ foam.CLASS({
               });
             })).
         end().
-        callIf(view.editColumnsEnabled, function() {this.add(editColumnView);}).
-        add(this.rowsFrom(this.data$proxy));
+        callIf(view.editColumnsEnabled, function() {
+          this.start(this.EditColumnsView, {
+            data: view,
+            selectColumnsExpanded$: this.selectColumnsExpanded$,
+            parentId: this.id
+            })
+          .end();
+        })
+        .add(this.rowsFrom(this.data$proxy));
     },
     {
       name: 'rowsFrom',
@@ -756,7 +766,7 @@ foam.CLASS({
   listeners: [
     {
       name: 'shouldEscapeEvts',
-      documentation: `Use this function to skip clicks/doubleclicks on table 
+      documentation: `Use this function to skip clicks/doubleclicks on table
                       elements such as checkboxes/context menus`,
       code: function(evt) {
         // If we're clicking somewhere to close the context menu or other inputs,
