@@ -201,7 +201,9 @@ foam.CLASS({
         javaCode: `
           CrunchService crunchService = (CrunchService) x.get("crunchService");
           List grantPath = crunchService.getGrantPath(x, id);
+          var pm = PM.create(x, true, "CapabilityPayloadDAO", "filterCapabilityPayload - walkGrantPath");
           Map<String,GrantPathNode> dataMap = walkGrantPath(grantPath, x);
+          pm.log(x);
 
           // Sorted maps for return data
           Map<String,FObject> dataObjects = new TreeMap<String,FObject>();
