@@ -17,7 +17,8 @@ foam.CLASS({
       name: 'remove_',
       documentation: 'TempFile stores actual file on fileSystem, so we need to explicitly remove it',
       javaCode: `
-        ((TempFile) obj).getFile_().delete();
+        if ( ((TempFile) obj).FILE_.isSet(obj) )
+          ((TempFile) obj).getFile_().delete();
 
         return getDelegate().remove_(x, obj);
       `
