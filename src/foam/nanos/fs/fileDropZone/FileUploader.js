@@ -48,8 +48,9 @@ foam.CLASS({
       name: 'files',
     },
     {
-      class: 'StringArray',
-      name: 'labels'
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      name: 'label'
     },
     {
       class: 'Boolean',
@@ -78,10 +79,9 @@ foam.CLASS({
           .add(this.LABEL_FILE_GROUP)
         .end()
         .tag({
-          class: 'foam.u2.view.ReferenceArrayView',
+          class: 'foam.u2.view.ReferenceView',
           dao: this.fileLabelDAO,
-          allowDuplicates: false,
-          data$: this.labels$
+          data$: this.label$
           })
         .startContext({ data: self })
           .start(this.UPLOAD, { buttonStyle: foam.u2.ButtonStyle.PRIMARY })
@@ -95,8 +95,8 @@ foam.CLASS({
     {
       name: 'upload',
       code: function(X) {
-        if ( this.files[0] && !! this.labels.length ) {
-          this.files[0].labels = this.labels;
+        if ( this.files[0] && !! this.label ) {
+          this.files[0].label = this.label;
           if ( this.owner !== 0 ) {
             this.files[0].owner = this.owner;
           }
