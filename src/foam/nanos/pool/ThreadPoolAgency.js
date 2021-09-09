@@ -90,9 +90,19 @@ foam.CLASS({
   properties: [
     {
       documentation: 'report stats when true',
-      name: 'debug',
+      name: 'reportingEnabled',
       class: 'Boolean',
-      value: true
+      value: true,
+      javaSetter: `
+      boolean old = getReportingEnabled();
+      reportingEnabled_ = val;
+      reportingEnabledIsSet_ = true;
+
+      if ( ! old && val &&
+           pool_ != null ) {
+        schedule();
+      }
+      `
     },
     {
       name: 'reportInterval',
@@ -135,12 +145,17 @@ foam.CLASS({
       }
     );
     pool_.allowCoreThreadTimeOut(true);
-
-    if ( getDebug() ) {
+    schedule();
+    `
+    },
+    {
+      name: 'schedule',
+      javaCode: `
+    if ( getReportingEnabled() ) {
       java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval(), getReportInterval());
+      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval());
     }
-`
+    `
     },
     {
       name: 'incrExecuting',
@@ -257,6 +272,7 @@ foam.CLASS({
       if ( getQueued() > 0 ) {
         foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
       }
+      schedule();
       `
     }
   ]
