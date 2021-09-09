@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
     'foam.u2.stack.StackBlock',
-    'foam.u2.view.ScrollTableView'
+    'foam.u2.view.ScrollTableView',
+    'foam.u2.table.TableView'
   ],
 
   imports: ['stack'],
@@ -72,7 +73,7 @@ foam.CLASS({
       } else {
         var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
         this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-          .start(this.ScrollTableView, {
+          .start(this.TableView, {
             data: this.data.limit(this.rowsToDisplay),
             editColumnsEnabled: false,
             multiSelectEnabled: false,
