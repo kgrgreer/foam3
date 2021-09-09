@@ -30,6 +30,10 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  messages: [
+    { name: 'SPID_MISMATCH_ERROR', message: 'Spid mismatch between user and capability.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -88,6 +92,15 @@ foam.CLASS({
       `,
       javaCode: `
         Logger logger = (Logger) x.get("logger");
+
+        DAO userDAO = (DAO) x.get("bareUserDAO");
+        user = (User) userDAO.find(user.getId());
+
+        if ( ! user.getSpid().equals(getId()) ) {
+          logger.debug(this.SPID_MISMATCH_ERROR, "user=", user.getId(), "user.spid=", user.getSpid(), "serviceprovider=", getId());
+          throw new RuntimeException(this.SPID_MISMATCH_ERROR);
+        }
+
         DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
         CrunchService crunchService = (CrunchService) x.get("crunchService");
 
