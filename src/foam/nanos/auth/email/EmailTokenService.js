@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.token.Token',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.util.Emails.EmailsUtility',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -30,64 +31,69 @@ foam.CLASS({
   methods: [
     {
       name: 'generateTokenWithParameters',
-      javaCode:
-`try {
-DAO tokenDAO = (DAO) getX().get("localTokenDAO");
-DAO userDAO  = (DAO) getX().get("localUserDAO");
-AppConfig appConfig = user.findGroup(x).getAppConfig(x);
-String url = appConfig.getUrl();
+      javaCode: `
+        try {
+          DAO tokenDAO = (DAO) getX().get("localTokenDAO");
+          DAO userDAO  = (DAO) getX().get("localUserDAO");
+          AppConfig appConfig = user.findGroup(getX()).getAppConfig(x);
+          String url = appConfig.getUrl();
 
-Token token = new Token();
-token.setUserId(user.getId());
-token.setExpiry(generateExpiryDate());
-token.setData(UUID.randomUUID().toString());
-token = (Token) tokenDAO.put(token);
+          Token token = new Token();
+          token.setUserId(user.getId());
+          token.setExpiry(generateExpiryDate());
+          token.setData(UUID.randomUUID().toString());
+          token = (Token) tokenDAO.put(token);
 
-EmailMessage message = new EmailMessage();
-message.setTo(new String[]{user.getEmail()});
+          EmailMessage message = new EmailMessage();
+          message.setTo(new String[]{user.getEmail()});
 
-HashMap<String, Object> args = new HashMap<>();
-args.put("name", user.getFirstName());
-args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
+          HashMap<String, Object> args = new HashMap<>();
+          args.put("name", user.getFirstName());
+          args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
+          args.put("templateSource", this.getClass().getName());
+          args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
 
-EmailsUtility.sendEmailFromTemplate(getX(), user, message, "verifyEmail", args);
-return true;
-} catch(Throwable t) {
-  t.printStackTrace();
-  return false;
-}`
-  },
+          EmailsUtility.sendEmailFromTemplate(x, user, message, "verifyEmail", args);
+
+          return true;
+        } catch(Throwable t) {
+          t.printStackTrace();
+          return false;
+        }
+      `
+    },
     {
       name: 'processToken',
-      javaCode:
-`DAO userDAO = (DAO) getX().get("localUserDAO");
-DAO tokenDAO = (DAO) getX().get("localTokenDAO");
-Calendar calendar = Calendar.getInstance();
+      javaCode: `
+        DAO userDAO = (DAO) getX().get("localUserDAO");
+        DAO tokenDAO = (DAO) getX().get("localTokenDAO");
+        Calendar calendar = Calendar.getInstance();
 
-Sink sink = new ArraySink();
-sink = tokenDAO.where(MLang.AND(
-  MLang.EQ(Token.USER_ID, user.getId()),
-  MLang.EQ(Token.PROCESSED, false),
-  MLang.GT(Token.EXPIRY, calendar.getTime()),
-  MLang.EQ(Token.DATA, token)
-)).limit(1).select(sink);
+        Sink sink = new ArraySink();
+        sink = tokenDAO.where(MLang.AND(
+          MLang.EQ(Token.USER_ID, user.getId()),
+          MLang.EQ(Token.PROCESSED, false),
+          MLang.GT(Token.EXPIRY, calendar.getTime()),
+          MLang.EQ(Token.DATA, token)
+        )).limit(1).select(sink);
 
-List list = ((ArraySink) sink).getArray();
-if ( list == null || list.size() == 0 ) {
-  // token not found
-  throw new RuntimeException("Token not found");
-}
+        List list = ((ArraySink) sink).getArray();
+        if ( list == null || list.size() == 0 ) {
+          // token not found
+          throw new RuntimeException("Token not found");
+        }
 
-// set token processed to true
-FObject result = (FObject) list.get(0);
-Token clone = (Token) result.fclone();
-clone.setProcessed(true);
-tokenDAO.put(clone);
+        // set token processed to true
+        FObject result = (FObject) list.get(0);
+        Token clone = (Token) result.fclone();
+        clone.setProcessed(true);
+        tokenDAO.put(clone);
 
-// set user email verified to true
-user.setEmailVerified(true);
-userDAO.put(user);
-return true;`
+        // set user email verified to true
+        user.setEmailVerified(true);
+        userDAO.put(user);
+        return true;
+      `
     }
   ]
 });

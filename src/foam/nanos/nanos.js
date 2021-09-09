@@ -29,6 +29,8 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/fileDropZone/FileDropZone', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FilePreview', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FileCard', flags: ['web'] },
+  { name: 'foam/nanos/fs/fileDropZone/FileUploader', flags: ['web'] },
+  { name: 'foam/nanos/fs/TempFile' },
   { name: "foam/nanos/crunch/AssociatedEntity" },
   { name: "foam/nanos/crunch/CapabilityGrantMode" },
   { name: "foam/nanos/crunch/Capability" },
@@ -346,6 +348,8 @@ FOAM_FILES([
   { name: 'foam/nanos/notification/email/EmailMessage' },
   { name: 'foam/nanos/notification/email/EmailService' },
   { name: 'foam/nanos/notification/email/EmailTemplate' },
+  { name: 'foam/nanos/notification/email/EmailTemplateSource' },
+  { name: 'foam/nanos/notification/email/EmailTemplateSourceEnum' },
   { name: 'foam/nanos/notification/email/SMTPEmailService' },
   { name: 'foam/nanos/notification/email/Status' },
   { name: 'foam/nanos/notification/push/PushService' },
@@ -404,6 +408,7 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketDAOCreateView' },
   { name: 'foam/nanos/ticket/TicketSummaryView' },
   { name: 'foam/nanos/ticket/SummaryCard' },
+  { name: 'foam/nanos/ticket/RFITicket' },
 
   // Dig
   { name: 'foam/nanos/dig/exception/DigErrorMessage' },
