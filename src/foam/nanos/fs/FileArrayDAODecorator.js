@@ -45,12 +45,12 @@ foam.CLASS({
 
     async function processFiles(obj) {
       var props1 = obj.cls_.getAxiomsByClass(foam.nanos.fs.FileArray);
-      let labels;
+      let label;
       if ( foam.nanos.crunch.document.Document.isInstance(obj) ) {
-        labels = obj.capability.labels;
+        label = obj.capability.label;
       }
       var values = await Promise.all(props1.map(prop => Promise.all(prop.f(obj).map(f => {
-          f.labels = labels;
+          f.label = label;
           return this.processFile(f);
         }))));
       values.forEach(f => f.forEach(f2 => {
