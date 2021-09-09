@@ -183,7 +183,6 @@ foam.CLASS({
           window.history.replaceState(null, null, window.location.origin);
           location.reload();
         } else {
-          await this.auth.login(x, this.userName, this.desiredPassword);
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
           }));

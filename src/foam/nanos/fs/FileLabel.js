@@ -14,6 +14,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name'
+    },
+    {
+      class: 'String',
+      name: 'description'
     }
   ],
 
@@ -22,3 +26,20 @@ foam.CLASS({
   ]
 })
 
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.fs.FileLabel',
+  targetModel: 'foam.nanos.fs.FileLabel',
+  forwardName: 'children',
+  inverseName: 'parent',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    class: 'String',
+    value: '',
+    view: {
+      class: 'foam.u2.view.ReferenceView',
+      placeholder: '--'
+    }
+  }
+});

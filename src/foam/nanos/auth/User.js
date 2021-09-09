@@ -77,6 +77,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'USERNAME_REQUIRED', message: 'Username required' }
+  ],
+
   sections: [
     {
       name: 'userInformation',
@@ -158,13 +162,26 @@ foam.CLASS({
       containsPII: false,
       documentation: 'The username of the User.',
       section: 'userInformation',
+      validationPredicates: [
+        {
+          args: ['userName', 'type'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
+              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
+            );
+          },
+          errorMessage: 'USERNAME_REQUIRED'
+        }
+      ],
       order: 20,
       gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
-      documentation: 'Determines whether the User can login to the platform.',
+      documentation: `Determines whether the User can login to the platform.
+      A user that tries to login with this false -- gets account disabled error msg.`,
       writePermissionRequired: true,
       includeInDigest: false,
       value: true,
@@ -348,7 +365,13 @@ foam.CLASS({
       documentation: 'Personal phone number.',
       section: 'userInformation',
       order: 190,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
@@ -367,7 +390,13 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 210,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
@@ -727,8 +756,7 @@ foam.CLASS({
 
         if (
           ! updatingSelf &&
-          ! hasUserEditPermission &&
-          ! auth.check(x, "serviceprovider.update." + user.getSpid())
+          ! hasUserEditPermission
         ) {
           throw new AuthorizationException("You do not have permission to update this user.");
         }
@@ -760,8 +788,7 @@ foam.CLASS({
 
         if (
           ! SafetyUtil.equals(this.getId(), user.getId()) &&
-          ! auth.check(x, "user.remove." + this.getId()) &&
-          ! auth.check(x, "serviceprovider.remove." + this.getSpid())
+          ! auth.check(x, "user.remove." + this.getId())
         ) {
           throw new RuntimeException("You do not have permission to delete that user.");
         }
@@ -889,7 +916,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      name: 'group'
+      name: 'group',
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Enum',

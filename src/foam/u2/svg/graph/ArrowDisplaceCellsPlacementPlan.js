@@ -21,8 +21,8 @@ foam.CLASS({
     },
     {
       name: 'cellSize',
-      class: 'Int',
-      value: 100
+      class: 'Array',
+      factory: () => [100, 100]
     },
     {
       name: 'displacementFactor',
@@ -45,7 +45,7 @@ foam.CLASS({
     {
       name: 'width',
       getter: function () {
-        let v = (this.cellSize + this.gridGap) * this.gridPlacementPlan.shape[0];
+        let v = (this.cellSize[0] + this.gridGap) * this.gridPlacementPlan.shape[0];
         for ( let k in this.colDisplacement_ ) {
           v += this.colDisplacement_[k] * this.displacementFactor;
         }
@@ -55,7 +55,7 @@ foam.CLASS({
     {
       name: 'height',
       getter: function () {
-        let v = (this.cellSize + this.gridGap) * this.gridPlacementPlan.shape[1];
+        let v = (this.cellSize[1] + this.gridGap) * this.gridPlacementPlan.shape[1];
         for ( let k in this.rowDisplacement_ ) {
           v += this.rowDisplacement_[k] * this.displacementFactor;
         }
@@ -71,8 +71,9 @@ foam.CLASS({
         var cellPosition = this.gridPlacementPlan.getPlacement(id);
         if ( ! cellPosition ) return null;
 
-        var x = (this.cellSize + this.gridGap) * cellPosition[0];
-        var y = (this.cellSize + this.gridGap) * cellPosition[1];
+        var x = (this.cellSize[0] + this.gridGap) * cellPosition[0];
+        var y = (this.cellSize[1] + this.gridGap) * cellPosition[1];
+
         for ( let i = 0 ; i <= cellPosition[0] ; i++ ) {
           if ( ! this.colDisplacement_.hasOwnProperty(i) ) continue;
           x += this.colDisplacement_[i] * this.displacementFactor;
@@ -92,7 +93,7 @@ foam.CLASS({
       return this.getLaneDisplacement_(this.colDisplacement_, col, lane);
     },
     function getLaneDisplacement_(map, index, lane) {
-      var v = (this.cellSize + this.gridGap) * index;
+      var v = (this.cellSize[1] + this.gridGap) * index;
       for ( let i = 0 ; i < index ; i++ ) {
         if ( ! map.hasOwnProperty(i) ) continue;
         v += map[i] * this.displacementFactor;

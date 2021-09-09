@@ -48,6 +48,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'delegateValidationToggle',
+      documentation: `
+        A toggle to trigger capability validation once a delegate's
+        validation has been updated.
+      `
+    },
+    {
       name: 'delegates',
       class: 'FObjectArray',
       of: 'foam.nanos.crunch.ui.CapabilityWizardlet',
@@ -69,6 +77,11 @@ foam.CLASS({
           }
           this.clearProperty('indicator');
         }));
+        for ( delegate of n ) {
+          this.onDetach(delegate.isValid$.sub(x => {
+            this.delegateValidationToggle = ! this.delegateValidationToggle;
+          }))
+        }
       }
     },
     {
@@ -95,6 +108,18 @@ foam.CLASS({
           : prereqSections.concat(sections);
       }
     },
+    {
+      name: 'isValid',
+      class: 'Boolean',
+      expression: function (of, data, data$errors_, delegates, delegateValidationToggle) {
+        if ( ! this.of ) return true;
+        if ( ! data || data$errors_ ) return false;
+        for ( delegate of delegates ) {
+          if ( ! delegate.isValid ) return false;
+        }
+        return true;
+      }
+    }
   ],
 
   methods: [

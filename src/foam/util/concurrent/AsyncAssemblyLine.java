@@ -9,6 +9,7 @@ package foam.util.concurrent;
 import foam.core.Agency;
 import foam.core.ContextAgent;
 import foam.core.X;
+import foam.nanos.pm.PM;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -58,8 +59,8 @@ public class AsyncAssemblyLine
         }
         throw t;
       }
-
     }
+
     pool_.submit(x_, new ContextAgent() { public void execute(X x) {
       try {
         job.executeJob();
@@ -71,16 +72,19 @@ public class AsyncAssemblyLine
         synchronized ( qLock_ ) {
           // If I'm still the only job in the queue, then remove me
           if ( q_ == job ) {
-            q_ = null;
+            q_     = null;
             isLast = true;
           }
         }
 
         synchronized ( endLock_ ) {
+          PM pm = PM.create(x_, AsyncAssemblyLine.this.getClass(), "endJob");
           try {
             job.endJob(isLast);
           } catch (Throwable t) {
             ((foam.nanos.logger.Logger) x.get("logger")).error(this.getClass().getSimpleName(), agencyName_, t);
+          } finally {
+            pm.log(x_);
           }
         }
       } finally {

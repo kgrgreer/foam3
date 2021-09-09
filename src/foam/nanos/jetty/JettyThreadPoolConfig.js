@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'maxThreads',
       class: 'Int',
-      value: 200
+      value: 1000
     },
     {
       name: 'idleTimeout',
