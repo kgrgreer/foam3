@@ -11,7 +11,13 @@ foam.CLASS({
 
   implements: [ 'foam.nanos.auth.LifecycleAware' ],
 
-  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin',
+    'foam.nanos.auth.LastModifiedAwareMixin',
+    'foam.nanos.auth.LastModifiedByAwareMixin',
+    'foam.nanos.crunch.CapabilityJunctionPayload'
+  ],
 
   documentation: `
     Model for UserCapabilityJunction, contains the data needed to grant the

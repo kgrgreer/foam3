@@ -234,7 +234,7 @@ foam.CLASS({
       fill: /*%GREY1%*/ #5E6061;
     }
 
-    ^link:hover,^link:hover svg {
+    ^link:hover:not(:disabled),^link:hover svg {
       text-decoration: underline;
       color: /*%GREY2%*/ #6B778C;
       fill: /*%GREY2%*/ #6B778C;
@@ -382,7 +382,8 @@ foam.CLASS({
         if ( this.icon.endsWith('.svg') ) {
           var req  = this.HTTPRequest.create({
             method: 'GET',
-            path: this.icon
+            path: this.icon,
+            cache: true
           });
           await req.send().then(function(payload) {
             return payload.resp.text();

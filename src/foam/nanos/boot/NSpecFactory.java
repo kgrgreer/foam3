@@ -10,6 +10,7 @@ import foam.core.*;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.*;
+import foam.nanos.auth.ProxyAuthService;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.StdoutLogger;
 import foam.nanos.pm.PM;
@@ -75,6 +76,8 @@ public class NSpecFactory
         }
         if ( ns instanceof ProxyDAO ) {
           ns = ((ProxyDAO) ns).getDelegate();
+        } else if ( ns instanceof ProxyAuthService ) {
+          ns = ((ProxyAuthService) ns).getDelegate();
         } else {
           ns = null;
         }

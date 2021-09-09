@@ -307,12 +307,10 @@ foam.CLASS({
       includeInDigest: false,
     },
     {
-      name: 'labels',
-      class: 'StringArray',
-      documentation: 'List of labels applied to this file',
-      view: {
-        class: 'foam.u2.view.ReferenceArrayView'
-      }
+      name: 'label',
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      documentation: 'File label applied to the document for this capability'
     },
     {
       class: 'Boolean',

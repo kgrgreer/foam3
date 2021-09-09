@@ -185,6 +185,13 @@ If empty then no permissions are required.`
       hidden: true,
       transient: true,
       documentation: 'A weak Map to track the running state of action on a per object basis.'
+    },
+    {
+      class: 'String',
+      name: 'mementoName',
+      documentation: 'If this value appears in the mementoHead on ActionView render, the action is executed',
+      generateJava: false,
+      value: ''
     }
   ],
 

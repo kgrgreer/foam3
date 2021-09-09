@@ -92,7 +92,7 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnNames',
-      expression: function(columns, of, memento) {
+      expression: function(columns, of, memento, memento$head) {
         var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
         return ls || columns;
       }
@@ -256,7 +256,11 @@ foam.CLASS({
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
     },
-    'currentMemento_'
+    'currentMemento_',
+    {
+      class: 'Boolean',
+      name: 'selectColumnsExpanded'
+    }
   ],
 
   methods: [
@@ -475,9 +479,8 @@ foam.CLASS({
                   callIf(view.editColumnsEnabled, function() {
                     this.addClass(view.myClass('th-editColumns'))
                     .on('click', function(e) {
-                      editColumnView.parentId = this.id;
-                      if ( ! editColumnView.selectColumnsExpanded )
-                        editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
+                      if ( ! view.selectColumnsExpanded )
+                        view.selectColumnsExpanded = ! view.selectColumnsExpanded;
                     }).
                     tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
                     addClass(view.myClass('vertDots')).
@@ -489,8 +492,15 @@ foam.CLASS({
               });
             })).
         end().
-        callIf(view.editColumnsEnabled, function() {this.add(editColumnView);}).
-        add(this.rowsFrom(this.data$proxy));
+        callIf(view.editColumnsEnabled, function() {
+          this.start(this.EditColumnsView, {
+            data: view,
+            selectColumnsExpanded$: this.selectColumnsExpanded$,
+            parentId: this.id
+            })
+          .end();
+        })
+        .add(this.rowsFrom(this.data$proxy));
     },
     {
       name: 'rowsFrom',
@@ -556,20 +566,14 @@ foam.CLASS({
                     view.hoverSelection = obj;
                   }).
                   callIf(view.dblclick && ! view.disableUserSelection, function() {
-                    tableRowElement.on('dblclick', function() {
+                    tableRowElement.on('dblclick', function(evt) {
+                      if ( view.shouldEscapeEvts(evt) ) return;
                       view.dblclick(null, obj.id);
                     });
                   }).
                   callIf( view.click && ! view.disableUserSelection, function() {
                     tableRowElement.on('click', function(evt) {
-                      // If we're clicking somewhere to close the context menu,
-                      // don't do anything.
-                      if (
-                        evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-                      ) {
-                        return;
-                      }
+                      if ( view.shouldEscapeEvts(evt) ) return;
 
                       if  ( ! thisObjValue ) {
                         dao.inX(ctrl.__subContext__).find(obj.id).then(v => {
@@ -760,6 +764,21 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'shouldEscapeEvts',
+      documentation: `Use this function to skip clicks/doubleclicks on table
+                      elements such as checkboxes/context menus`,
+      code: function(evt) {
+        // If we're clicking somewhere to close the context menu or other inputs,
+        // don't do anything.
+        if (
+          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
+          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
+        ) {
+          return true;
+        }
+      }
+    },
     {
       name: 'updateColumns_',
       isFramed: true,

@@ -12,7 +12,6 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.logger.Logger;
 import foam.nanos.session.Session;
-
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
@@ -65,9 +64,6 @@ public class AgentUserAuthService
 
     agent = (User) agent.fclone();
     agent.freeze();
-
-    // Purge auth cache
-    CachingAuthService.purgeCache(x);
 
     // Set user and agent objects into the session context and place into sessionDAO.
     Session session = x.get(Session.class);
@@ -134,9 +130,6 @@ public class AgentUserAuthService
 
     agent = (User) agent.fclone();
     agent.freeze();
-
-    // Purge auth cache
-    CachingAuthService.purgeCache(x);
 
     // Update the session and context
     Session session = x.get(Session.class);

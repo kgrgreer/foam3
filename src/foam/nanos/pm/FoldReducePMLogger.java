@@ -115,6 +115,19 @@ public class FoldReducePMLogger
           return dao;
         }
       }
+
+      public foam.core.FObject remove_(X x, foam.core.FObject obj) {
+        try {
+          PMInfo pmi = (PMInfo) obj;
+          String key = pmi.getKey() + ":" + pmi.getName();
+          getDelegate();
+          Map<String,PMInfo> map = (Map<String,PMInfo>) getState();
+          map.remove(key);
+        } catch (Throwable t) {
+        }
+        return obj;
+      }
+
       public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
         resetState();
       }

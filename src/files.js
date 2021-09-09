@@ -248,7 +248,7 @@ FOAM_FILES([
   { name: "foam/dao/InternalException" },
   { name: "foam/dao/ExternalException" },
   { name: "foam/dao/UniqueConstraintException" },
-  { name: "foam/dao/CompositeRelationship" },
+  { name: "foam/dao/CompositeRelationship", flags: ['web'] },
   { name: "foam/mlang/order/Comparator" },
 //  { name: "foam/mlang/order/ComparatorJava", flags: ['java'] },
   { name: "foam/mlang/mlang" },
@@ -544,6 +544,7 @@ FOAM_FILES([
   { name: "foam/u2/svg/map2d/PredeterminedGridPlacementPlan" },
   { name: "foam/u2/svg/map2d/IdPropertyPlacementPlanDecorator" },
   { name: "foam/graph/map2d/RelationshipGridPlacementStrategy", flags: ['web'] },
+  { name: "foam/graph/map2d/ScaleNodeSecondaryRelationshipStrategy", flags: ['web'] },
   { name: "foam/graph/Graph" },
   { name: "foam/graph/GraphNode" },
   { name: "foam/graph/GraphBuilder" },
@@ -1059,10 +1060,13 @@ FOAM_FILES([
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
   { name: 'foam/nanos/fs/AgreementView' },
+
   // Table
   { name: "foam/u2/table/TableHelperMixin", flags: ['web'] },
   { name: "foam/u2/table/TableView", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableView", flags: ['web'] }
+
+  { name: "foam/util/date/TimeUnit" }
 ])

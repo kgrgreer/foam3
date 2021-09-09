@@ -504,6 +504,11 @@ foam.CLASS({
 
   methods: [
     {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
       name: 'f',
       code: function() { return true; },
       swiftCode: 'return true',
@@ -529,6 +534,11 @@ foam.CLASS({
   axioms: [ foam.pattern.Singleton.create() ],
 
   methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
     {
       name: 'f',
       code: function f() { return false; },
@@ -731,6 +741,11 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
     function toIndex(tail) {
       return this.arg1 && this.arg1.toIndex(tail);
     },
@@ -1026,7 +1041,7 @@ for arg in args {
   if !arg.f(obj) { return false }
 }
 return true
-                             `,
+`,
       javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
                 + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
                 + '}\n'
@@ -1060,7 +1075,7 @@ return stmt.toString();`
         var FALSE = foam.mlang.predicate.False.create();
         var TRUE  = foam.mlang.predicate.True.create();
 
-        for ( var i = 0; i < this.args.length; i++ ) {
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a    = this.args[i];
           var newA = this.args[i].partialEval();
 
@@ -1091,14 +1106,15 @@ return stmt.toString();`
         return updated ? this.cls_.create({ args: newArgs }) : this;
       },
       javaCode:
-        `java.util.List<Predicate> args = new java.util.ArrayList<>();
+        `java.util.List<Predicate> args = null;
 boolean update = false;
-for ( int i = 0; i < this.args_.length; i++ ) {
-  Predicate arg = this.args_[i];
+for ( int i = 0 ; i < this.args_.length ; i++ ) {
+  Predicate arg    = this.args_[i];
   Predicate newArg = this.args_[i].partialEval();
   if ( newArg == foam.mlang.MLang.FALSE ) return foam.mlang.MLang.FALSE;
   if ( newArg instanceof And ) {
-    for ( int j = 0; j < ( ( (And) newArg ).args_.length ); j++ ) {
+    if ( args == null ) args = new java.util.ArrayList<>();
+    for ( int j = 0 ; j < ( ( (And) newArg ).args_.length ) ; j++ ) {
       args.add(( (And) newArg ).args_[j]);
     }
     update = true;
@@ -1106,13 +1122,16 @@ for ( int i = 0; i < this.args_.length; i++ ) {
     if ( newArg == foam.mlang.MLang.TRUE || newArg == null ) {
       update = true;
     } else {
+      if ( args == null ) args = new java.util.ArrayList<>();
       args.add(newArg);
       if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
-if ( args.size() == 0 ) return foam.mlang.MLang.TRUE;
-if ( args.size() == 1 ) return args.get(0);
+
+if ( args == null || args.size() == 0 ) return foam.mlang.MLang.TRUE;
+if ( args != null && args.size() == 1 ) return args.get(0);
+
 if ( update ) {
   Predicate newArgs[] = new Predicate[args.size()];
   int i = 0;
@@ -1802,6 +1821,11 @@ foam.CLASS({
 
   methods: [
     {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
       name: 'f',
       code: function() { return this.value; },
       swiftCode: `return value`,
@@ -2242,6 +2266,11 @@ foam.CLASS({
 
   methods: [
     {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
       name: 'f',
       code: function f(obj) {
         var value = this.arg1.f(obj);
@@ -2286,6 +2315,11 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
     {
       name: 'f',
       code: function f(obj) { return ! this.arg1.f(obj); },
@@ -2336,7 +2370,7 @@ foam.CLASS({
         return this;
       },
       javaCode:
-      `Not predicate = (Not) this.fclone();
+      `
     if ( this.arg1_ instanceof Not )
       return ( (Not) arg1_ ).arg1_.partialEval();
     if ( arg1_.getClass().equals(Eq.class) ) {
@@ -2375,6 +2409,8 @@ foam.CLASS({
         .setArg2(( (Binary) arg1_ ).getArg2())
         .build();
     }
+//    Not predicate = (Not) this.fclone();
+    Not predicate = this;
     if ( predicate.arg1_.getClass().equals(And.class) ) {
       int len = ( (And) predicate.getArg1() ).args_.length;
       for ( int i = 0; i < len; i++ ) {
@@ -2451,6 +2487,11 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
     {
       name: 'f',
       code: function f(obj) { return this.targetClass.isInstance(obj); },
@@ -2571,6 +2612,7 @@ while ( i.hasNext() ) {
     String s = "";
     if ( prop instanceof foam.core.AbstractFObjectPropertyInfo ) {
       if ( checkNestedFObject(prop.f(obj)) ) return true;
+      setCheckingNestedFObject_(false);
     } else if ( prop instanceof foam.core.AbstractEnumPropertyInfo ) {
       Object value = prop.f(obj);
       if ( value == null ) continue;

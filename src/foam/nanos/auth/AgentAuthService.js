@@ -19,7 +19,6 @@ foam.INTERFACE({
     the group associated to the junction object is associated to the "user" within the context.
   `,
 
-
   methods: [
     {
       name: 'actAs',

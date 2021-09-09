@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'MementoMixin',
 
-  imports: ['memento'],
+  imports: ['memento?'],
 
   exports: ['currentMemento_ as memento'],
 

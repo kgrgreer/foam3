@@ -33,19 +33,22 @@ foam.CLASS({
     {
       name: 'put',
       javaCode: `
+        // REVIEW: When rule.daoKey changes, the listener will skip the update.
         Rule rule = (Rule) obj;
         if ( ! rule.getDaoKey().equals(dao_.getDaoKey()) ) {
           return;
         }
 
-        Map rulesList = dao_.getRulesList();
+        // REVIEW: When rule.ruleGroup/operation/after properties change, would
+        // also need to reload the rules list for the previous group.
+        var rulesList = dao_.getRulesList();
         String ruleGroup = rule.getRuleGroup();
         for ( Object key : rulesList.keySet() ) {
           if ( ((Predicate) key).f(obj) ) {
             rule.setX(getX());
-            GroupBy group = (GroupBy) rulesList.get(key);
-            if ( group.getGroupKeys().contains(ruleGroup) ) {
-              List<Rule> rules = ((ArraySink) group.getGroups().get(ruleGroup)).getArray();
+            var groupBy = rulesList.get(key);
+            if ( groupBy.getGroupKeys().contains(ruleGroup) ) {
+              List<Rule> rules = ((ArraySink) groupBy.getGroups().get(ruleGroup)).getArray();
               Rule foundRule = Rule.findById(rules, rule.getId());
               if ( foundRule != null ) {
                 rules.remove(foundRule);
@@ -59,8 +62,9 @@ foam.CLASS({
               }
               Collections.sort(rules, new Desc(Rule.PRIORITY));
             } else {
-              group.putInGroup_(sub, ruleGroup, obj);
+              groupBy.putInGroup_(sub, ruleGroup, obj);
             }
+            dao_.updateRuleGroups((Predicate) key);
           }
         }
       `
@@ -73,16 +77,17 @@ foam.CLASS({
           return;
         }
 
-        Map rulesList = dao_.getRulesList();
+        var rulesList = dao_.getRulesList();
         String ruleGroup = rule.getRuleGroup();
         for ( Object key : rulesList.keySet() ) {
           if ( ((Predicate) key).f(obj) ) {
-            GroupBy group = (GroupBy) rulesList.get(key);
-            if ( group.getGroupKeys().contains(ruleGroup) ) {
-              List<Rule> rules = ((ArraySink) group.getGroups().get(ruleGroup)).getArray();
+            var groupBy = rulesList.get(key);
+            if ( groupBy.getGroupKeys().contains(ruleGroup) ) {
+              List<Rule> rules = ((ArraySink) groupBy.getGroups().get(ruleGroup)).getArray();
               Rule foundRule = Rule.findById(rules, rule.getId());
               if ( foundRule != null ) {
                 rules.remove(foundRule);
+                dao_.updateRuleGroups((Predicate) key);
               }
             }
           }
