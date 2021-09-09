@@ -318,6 +318,18 @@ foam.CLASS({
       documentation: 'If false, disable auto save for wizardlets associated to this capability.',
       hidden: true,
       value: true
+    },
+    {
+      class: 'String',
+      name: 'spid',
+      writePermissionRequired: true,
+      readPermissionRequired: true,
+      setter: function(){},
+      javaSetter: ``,
+      documentation: `
+        If spid is set, an ucj with this Capability can be created only when the source User
+        has the same spid
+      `
     }
   ],
 
