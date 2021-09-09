@@ -643,8 +643,8 @@ var classes = [
   'foam.nanos.fs.FileDataClearSink',
   'foam.nanos.fs.FileDataDAO',
   'foam.nanos.fs.FileLabel',
-  'foam.nanos.fs.FileLabelFilterDAO',
   'foam.nanos.fs.FileType',
+  'foam.nanos.fs.TempFile',
   'foam.crypto.hash.Hasher',
   'foam.crypto.hash.HashableTest',
 
@@ -782,6 +782,7 @@ var classes = [
   'foam.nanos.ticket.TicketAddCommentDAO',
   'foam.nanos.ticket.TicketOwnerDAO',
   'foam.nanos.ticket.TicketCommentOwnerDAO',
+  'foam.nanos.ticket.RFITicket',
 
   // Testing support
   'foam.test.TestEnum',
@@ -953,7 +954,8 @@ var classes = [
   // Notification
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
-  'foam.counter.Counter'
+  'foam.counter.Counter',
+  'foam.util.date.TimeUnit'
 ];
 
 var abstractClasses = [
