@@ -1066,7 +1066,7 @@ FOAM_FILES([
   { name: "foam/u2/table/TableView", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
-  { name: "foam/u2/table/UnstyledTableView", flags: ['web'] }
+  { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" }
 ])
