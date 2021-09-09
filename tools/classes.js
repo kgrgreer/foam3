@@ -870,6 +870,7 @@ var classes = [
 
   // spid
   'foam.nanos.auth.CreateUserCapabilityJunctionOnSpidSet',
+  'foam.nanos.auth.CheckUserCapabilitySpidMismatch',
   'foam.nanos.auth.FilterBySpidService',
 
   //ucjdao rules

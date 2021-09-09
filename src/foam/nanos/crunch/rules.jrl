@@ -13,6 +13,34 @@ p({
   "lifecycleState":1
 })
 
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-23sd-213d-1",
+  "name":"Check Spid Mismatch on UCJ Create and Update",
+  "priority":1000,
+  "ruleGroup":"spidCapability",
+  "documentation":"check that if the target capability has a spid, it must match that of the user",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "enabled":true,
+  "action":{ "class":"foam.nanos.auth.CheckUserCapabilitySpidMismatch" },
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-23sd-213d-1",
+  "name":"Check Spid Mismatch on UCJ Create and Update",
+  "priority":1000,
+  "ruleGroup":"spidCapability",
+  "documentation":"check that if the target capability has a spid, it must match that of the user",
+  "daoKey":"bareUserCapabilityJunctionDAO",
+  "operation":3,
+  "enabled":true,
+  "action":{ "class":"foam.nanos.auth.CheckUserCapabilitySpidMismatch" },
+  "lifecycleState":1
+})
+
 // disable status update notification
 // TODO: come up with new logic to minimize the number of notifications sent to users
 p({

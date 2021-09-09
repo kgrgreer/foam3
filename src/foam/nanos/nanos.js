@@ -529,6 +529,7 @@ FOAM_FILES([
   { name: 'foam/nanos/crunch/predicate/IsAgentUpdate' },
   //spid
   { name: "foam/nanos/auth/CreateUserCapabilityJunctionOnSpidSet" },
+  { name: "foam/nanos/auth/CheckUserCapabilitySpidMismatch" },
   { name: "foam/nanos/auth/FilterBySpidService" },
   { name: "foam/nanos/auth/PreventDuplicateEmailLoginService" },
   //ucjDAO rules
