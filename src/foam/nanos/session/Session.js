@@ -16,6 +16,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.OrX',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
@@ -152,6 +153,15 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       class: 'Object',
+      name: 'applyContext',
+      type: 'Context',
+      visibility: 'HIDDEN',
+      transient: true,
+      networkTransient: true,
+      clusterTransient: true
+    },
+    {
+      class: 'Object',
       name: 'context',
       type: 'Context',
       javaFactory: 'return reset(getX());',
@@ -274,14 +284,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
-      PM pm = PM.create(x, "Session","applyTo");
-      try {
+
         // We null out the security-relevant entries in the context since we
         // don't want whatever was there before to leak through, especially
         // since the system context (which has full admin privileges) is often
         // used as the argument to this method.
-        X rtn = reset(x);
         if ( getUserId() <= 1 ) {
+          X rtn = reset(x);
+
           HttpServletRequest req = x.get(HttpServletRequest.class);
           if ( req == null ) {
             // null during test runs
@@ -305,11 +315,17 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           rtn = rtn.put("appConfig", appConfig);
           rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
           rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
+
           return rtn;
         }
 
         // Validate
         validate(x);
+
+      X rtn = getApplyContext();
+      if ( rtn == null ) {
+        PM pm = PM.create(x, "Session", "applyTo", "create");
+        rtn = new foam.core.ProxyX();
 
         DAO localUserDAO  = (DAO) x.get("localUserDAO");
         DAO localGroupDAO = (DAO) x.get("localGroupDAO");
@@ -345,22 +361,25 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         if ( group != null ) {
           rtn = rtn
             .put("group", group)
-            .put("appConfig", group.getAppConfig(rtn));
+            .put("appConfig", group.getAppConfig(x));
         }
-        Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(rtn);
+        Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(new OrX(x, rtn));
         rtn = rtn.put("theme", theme);
         if ( subject == null &&
              theme != null && ! SafetyUtil.isEmpty(theme.getSpid()) ) {
           rtn = rtn.put("spid", theme.getSpid());
         }
 
-        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(x));
         rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
-        return rtn;
-      } finally {
+        rtn = rtn.put("localLocalSettingDAO", new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo()));
+
+        setApplyContext(rtn);
         pm.log(x);
       }
+
+      return new OrX(x, rtn);
       `
     },
     {
