@@ -187,7 +187,6 @@ NOTE: duplicated in SocketConnectionReplyBox
       Box replyBox = (Box) msg.getAttributes().get("replyBox");
       String replyBoxId = null;
       if ( replyBox != null ) {
-        PM pmReplyBox = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send", "replyBox");
         replyBoxId = java.util.UUID.randomUUID().toString();
         getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getClass().getSimpleName(), getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
@@ -197,18 +196,15 @@ NOTE: duplicated in SocketConnectionReplyBox
         } else {
           msg.getAttributes().put("replyBox", box);
         }
-        pmReplyBox.log(getX());
       }
       String message = null;
       try {
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
-        PM pmFormat = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send", "format");
         foam.lib.formatter.FObjectFormatter formatter = formatter_.get();
         formatter.setX(getX());
         formatter.output(msg);
         message = formatter.builder().toString();
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
-        pmFormat.log(getX());
         Socket socket = (Socket) getSocket();
         if ( socket.isClosed() ||
              ! socket.isConnected() ) {
@@ -216,13 +212,11 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
         omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
         synchronized (out_) {
-          PM pmWrite = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send", "write");
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
           // getLogger().debug("send", message);
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
           omLogger.log(this.getClass().getSimpleName(), getId(), "sent");
-          pmWrite.log(getX());
         }
         // If no other send operations immediately pending, then flush
         if ( pending == pending_.longValue() ) {
