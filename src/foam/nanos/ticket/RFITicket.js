@@ -11,18 +11,40 @@
 
   documentation: 'Request for information ticket.',
 
-  javaImports: [
+  imports: [
+    'appConfig'
   ],
 
   properties: [
     {
       name: 'type',
-      value: 'Request for information'
+      value: 'Request for information',
+      section: 'infoSection'
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'attachments'
+      name: 'attachments',
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'url',
+      section: 'infoSection',
+      visibility: 'RO',
+      expression: function(appConfig, requesteeSession, id) {
+        return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
+      }
+    },
+    {
+      class: 'String',
+      name: 'requesteeSession',
+      visibility: 'HIDDEN'
     }
-  ],
+  ]
 
 });
