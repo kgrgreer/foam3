@@ -10,27 +10,27 @@
 
   values: [
     {
-      name: 'UNDEFINED_SOURCE',
+      name: 'UNDEFINED',
       label: 'Undefined Source',
       ordinal: 0
     },
     {
-      name: 'RULE_SOURCE',
+      name: 'RULE',
       label: 'Rule',
       ordinal: 1
     },
     {
-      name: 'CRON_SOURCE',
+      name: 'CRON',
       label: 'Cron',
       ordinal: 2
     },
     {
-      name: 'SERVICE_SOURCE',
+      name: 'SERVICE',
       label: 'Service',
       ordinal: 3
     },
     {
-      name: 'WEB_AGENT_SOURCE',
+      name: 'WEB_AGENT',
       label: 'Web Agent',
       ordinal: 4
     }

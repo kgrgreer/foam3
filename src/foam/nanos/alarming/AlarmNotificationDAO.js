@@ -87,7 +87,7 @@ foam.CLASS({
       args.put("alarm.cleared", alarm.getIsActive() ? "" : alarm.getLastModified().toString());
       args.put("alarm.note", alarm.getNote());
       args.put("templateSource", this.getClass().getName());
-      args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
+      args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
       // Notifications are ServiceProviderAware
       String spid = ServiceProviderAware.GLOBAL_SPID;

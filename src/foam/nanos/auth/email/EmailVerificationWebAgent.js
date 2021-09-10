@@ -105,7 +105,7 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("sendTo", user.getEmail());
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.WEB_AGENT_SOURCE.getLabel());
+          args.put("templateSourceType", EmailTemplateSourceEnum.WEB_AGENT.getLabel());
 
           out.append(message);
           EmailsUtility.sendEmailFromTemplate(x, user, emailMessage, "verify-email-link", args);

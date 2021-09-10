@@ -52,7 +52,7 @@ foam.CLASS({
         HashMap<String, Object> args = new HashMap<>();
         args.put("doc", doc.getBody());
         args.put("templateSource", this.getClass().getName());
-        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
+        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
         EmailsUtility.sendEmailFromTemplate(getX(), user, message, "docEmail", args);
         return true;

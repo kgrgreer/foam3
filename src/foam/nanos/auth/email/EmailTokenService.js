@@ -51,7 +51,7 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
+          args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
           EmailsUtility.sendEmailFromTemplate(x, user, message, "verifyEmail", args);
 

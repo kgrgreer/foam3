@@ -59,7 +59,7 @@ foam.CLASS({
           args.put("junctionStatusEn", junction.getStatus().getName());
           args.put("junctionStatus", junctionStatus);
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.RULE_SOURCE.getLabel());
+          args.put("templateSourceType", EmailTemplateSourceEnum.RULE.getLabel());
 
           TopLevelCapabilityStatusUpdateNotification notification = new TopLevelCapabilityStatusUpdateNotification();
           notification.setCapabilityName(cap.getName());

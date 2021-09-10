@@ -110,12 +110,12 @@ public class DAOResourceLoader
       if ( ! SafetyUtil.isEmpty(sourceType) )
         clonedTemplate.setSourceType(sourceType);
       else
-        clonedTemplate.setSourceType(EmailTemplateSourceEnum.UNDEFINED_SOURCE.getLabel());
+        clonedTemplate.setSourceType(EmailTemplateSourceEnum.UNDEFINED.getLabel());
 
       if ( ! SafetyUtil.isEmpty(source) )
         clonedTemplate.setSourceClass(source);
       else
-        clonedTemplate.setSourceClass(EmailTemplateSourceEnum.UNDEFINED_SOURCE.getLabel());
+        clonedTemplate.setSourceClass(EmailTemplateSourceEnum.UNDEFINED.getLabel());
 
       PM pm = PM.create(x, source, name);
       pm.log(x);

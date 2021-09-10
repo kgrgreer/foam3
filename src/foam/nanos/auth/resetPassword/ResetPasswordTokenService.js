@@ -92,7 +92,7 @@ foam.CLASS({
         args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
         args.put("link", url +"?token=" + token.getData() + "#reset");
         args.put("templateSource", this.getClass().getName());
-        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
+        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
         EmailsUtility.sendEmailFromTemplate(x, user, message, "reset-password", args);
 
@@ -166,7 +166,7 @@ foam.CLASS({
         args.put("sendTo", userResult.getEmail());
         args.put("link", url);
         args.put("templateSource", this.getClass().getName());
-        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE_SOURCE.getLabel());
+        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
         EmailsUtility.sendEmailFromTemplate(x, userResult, message, "password-changed", args);
 
