@@ -51,13 +51,6 @@ foam.CLASS({
             Capability target = ucj.findTargetId(x);
             if ( ! ( target instanceof ServiceProvider ) ) return;
 
-            // get the
-            User user = (User) ucj.findSourceId(x).fclone();
-            ServiceProvider serviceProvider = (ServiceProvider) target;
-            if ( serviceProvider.getId().equals(user.getSpid() ) {
-              return;
-            }
-
             AuthService auth = (AuthService) x.get("auth");
             Logger logger = (Logger) x.get("logger");
 
@@ -72,6 +65,9 @@ foam.CLASS({
             )
               throw new RuntimeException("You are not authorized to perform this update");
 
+            // get the
+            User user = (User) ucj.findSourceId(x).fclone();
+            ServiceProvider serviceProvider = (ServiceProvider) target;
 
             // if is create, check if any old user-serviceprovider junctions exist, and remove it and its grant path   
             serviceProvider.removeSpid(x, user);
