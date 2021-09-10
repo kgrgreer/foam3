@@ -253,6 +253,28 @@ p({
 
 p({
   class: "foam.nanos.boot.NSpec",
+  name: "capabilityPayloadRecordDAO",
+  lazy: true,
+  serve: true,
+  serviceScript: `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setGuid(true)
+      .setOf(foam.nanos.crunch.connection.CapabilityPayloadRecord.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("capabilityPayloadRecords")
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED) )
+        .setSize(10000)
+        .build())
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED})
+      .build();
+  `,
+  client: "{\"of\":\"foam.nanos.crunch.connection.CapabilityPayloadRecord\"}"
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
   name: "wizardStateDAO",
   lazy: true,
   serve: true,

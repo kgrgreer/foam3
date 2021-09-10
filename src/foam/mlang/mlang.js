@@ -2612,6 +2612,7 @@ while ( i.hasNext() ) {
     String s = "";
     if ( prop instanceof foam.core.AbstractFObjectPropertyInfo ) {
       if ( checkNestedFObject(prop.f(obj)) ) return true;
+      setCheckingNestedFObject_(false);
     } else if ( prop instanceof foam.core.AbstractEnumPropertyInfo ) {
       Object value = prop.f(obj);
       if ( value == null ) continue;

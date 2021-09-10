@@ -248,7 +248,7 @@ FOAM_FILES([
   { name: "foam/dao/InternalException" },
   { name: "foam/dao/ExternalException" },
   { name: "foam/dao/UniqueConstraintException" },
-  { name: "foam/dao/CompositeRelationship" },
+  { name: "foam/dao/CompositeRelationship", flags: ['web'] },
   { name: "foam/mlang/order/Comparator" },
 //  { name: "foam/mlang/order/ComparatorJava", flags: ['java'] },
   { name: "foam/mlang/mlang" },
@@ -544,6 +544,7 @@ FOAM_FILES([
   { name: "foam/u2/svg/map2d/PredeterminedGridPlacementPlan" },
   { name: "foam/u2/svg/map2d/IdPropertyPlacementPlanDecorator" },
   { name: "foam/graph/map2d/RelationshipGridPlacementStrategy", flags: ['web'] },
+  { name: "foam/graph/map2d/ScaleNodeSecondaryRelationshipStrategy", flags: ['web'] },
   { name: "foam/graph/Graph" },
   { name: "foam/graph/GraphNode" },
   { name: "foam/graph/GraphBuilder" },
@@ -1057,6 +1058,7 @@ FOAM_FILES([
   { name: 'foam/counter/Counter' },
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
-  { name: 'foam/nanos/fs/AgreementView' }
+  { name: 'foam/nanos/fs/AgreementView' },
 
+  { name: "foam/util/date/TimeUnit" }
 ])

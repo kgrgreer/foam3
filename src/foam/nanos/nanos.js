@@ -29,6 +29,8 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/fileDropZone/FileDropZone', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FilePreview', flags: ['web'] },
   { name: 'foam/nanos/fs/fileDropZone/FileCard', flags: ['web'] },
+  { name: 'foam/nanos/fs/fileDropZone/FileUploader', flags: ['web'] },
+  { name: 'foam/nanos/fs/TempFile' },
   { name: "foam/nanos/crunch/AssociatedEntity" },
   { name: "foam/nanos/crunch/CapabilityGrantMode" },
   { name: "foam/nanos/crunch/Capability" },
@@ -406,6 +408,7 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketDAOCreateView' },
   { name: 'foam/nanos/ticket/TicketSummaryView' },
   { name: 'foam/nanos/ticket/SummaryCard' },
+  { name: 'foam/nanos/ticket/RFITicket' },
 
   // Dig
   { name: 'foam/nanos/dig/exception/DigErrorMessage' },
@@ -505,6 +508,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/UCJProperty" },
   { name: "foam/nanos/crunch/UCJUpdateApprovable" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
+  { name: "foam/nanos/crunch/connection/CapabilityPayloadRecord" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
   { name: 'foam/nanos/crunch/document/Document' },
   //daos
