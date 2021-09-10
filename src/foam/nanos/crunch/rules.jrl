@@ -19,9 +19,8 @@ p({
   "priority":100,
   "ruleGroup":"spidCapability",
   "documentation":"Re-assign user spid on CREATE of User-ServiceProvider junction",
-  "daoKey":"userCapabilityJunctionDAO",
+  "daoKey":"bareUserCapabilityJunctionDAO",
   "operation":0,
-  "after":true,
   "enabled":true,
   "action":{
     "class":"foam.nanos.auth.SetUserServiceProviderJunctionRuleAction"
