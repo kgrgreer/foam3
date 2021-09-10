@@ -54,7 +54,7 @@ foam.CLASS({
             // get the
             User user = (User) ucj.findSourceId(x).fclone();
             ServiceProvider serviceProvider = (ServiceProvider) target;
-            if ( user.getSpid() == serviceProvider.getId() ) {
+            if ( serviceProvider.getId().equals(user.getSpid() ) {
               return;
             }
 
