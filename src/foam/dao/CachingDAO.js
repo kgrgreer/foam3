@@ -38,6 +38,12 @@ foam.CLASS({
     'foam.dao.QuickSink'
   ],
 
+  imports: [
+    'setInterval'
+  ],
+
+  implements: [ 'foam.mlang.Expressions' ],
+
   constants: [
     {
       name: 'PURGE',
@@ -87,6 +93,15 @@ foam.CLASS({
           promise: cacheFilled
         });
       }
+    },
+    {
+      class: 'Int',
+      name: 'pollingFrequency'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.order.Comparator',
+      name: 'pollingComparator'
     }
   ],
 
@@ -100,6 +115,10 @@ foam.CLASS({
         removeFn: this.onSrcRemove,
         resetFn: this.onSrcReset
       }));
+
+      if ( this.pollingFrequency > 0 ) {
+        this.setInterval(this.poll.bind(this), this.pollingFrequency);
+      }
     },
 
     /** Puts are sent to the cache and to the source, ensuring both
@@ -135,11 +154,26 @@ foam.CLASS({
         delete this.private_['delegate'];
       }
       else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+        // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
       }
       else {
         this.SUPER(x, obj);
       }
+    },
+
+    function poll() {
+      var self = this;
+
+      self.delegate
+        .orderBy(self.pollingComparator).limit(1)
+        .select().then(function(data) {
+          if ( data.array.length === 1 ) {
+            self.src
+              .where(self.GT(self.src.of.ID, data.array[0].id))
+              .select(self.QuickSink.create({ putFn: self.onSrcPut }));
+          }
+        });
     }
   ],
 

@@ -394,6 +394,19 @@ foam.CLASS({
       generateJava: false
     },
     {
+      documentation: 'Set polling frequency for the caching DAO',
+      class: 'Int',
+      name: 'pollingCacheFrequency',
+      generateJava: false
+    },
+    {
+      documentation: 'Set polling comparator for the caching DAO',
+      class: 'FObjectArray',
+      of: 'foam.mlang.order.Comparator',
+      name: 'pollingComparator',
+      generateJava: false
+    },
+    {
       documentation: 'Time to wait before purging cache on find().',
       class: 'Long',
       name: 'ttlPurgeTime',
@@ -900,7 +913,9 @@ model from which to test ServiceProvider ID (spid)`,
             dao = this.CachingDAO.create({
               cache: cache,
               src: dao,
-              of: this.model
+              of: this.model,
+              pollingFrequency: this.pollingCacheFrequency,
+              pollingComparator: foam.compare.toCompare(this.pollingComparator)
             });
           }
 
