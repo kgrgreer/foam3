@@ -170,7 +170,7 @@ foam.CLASS({
         if ( session.getUserId() == user.getId() ) {
           return user;
         }
-        CachingAuthService.purgeCache(x);
+
         // Freeze user
         user = (User) user.fclone();
         user.freeze();
