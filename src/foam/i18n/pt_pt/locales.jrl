@@ -302,6 +302,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileD
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_SUPPORTED",target:"Tipos de arquivos suportados:"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.ERROR_FILE_SIZE",target:"O tamanho do arquivo excede 15 MB"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.ERROR_FILE_TYPE",target:"Tipo de arquivo inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.ERROR_FILE_TITLE",target:"Erro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.SUPPORTED_FORMATS.label",target:"formatos suportados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.TITLE.label",target:"título"})
 
