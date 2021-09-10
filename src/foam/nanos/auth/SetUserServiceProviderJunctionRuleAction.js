@@ -24,9 +24,8 @@ foam.CLASS({
   ],
 
   documentation: `
-    On create of User-ServiceProvider junction, find old User-ServiceProvider junctions,
-    remove the old junctions and its prerequisites, and set up the new serviceprovider
-    junctions, then update the spid reference on the user to the new serviceprovider.
+    On create of User-ServiceProvider junction, find and remove old User-ServiceProvider junctions,
+    then update user.spid to junction.targetId
   `,
 
   javaImports: [
@@ -51,6 +50,11 @@ foam.CLASS({
             Capability target = ucj.findTargetId(x);
             if ( ! ( target instanceof ServiceProvider ) ) return;
 
+            // if user spid is already set to ucj.targetid, skip this ruleaction
+            User user = (User) ucj.findSourceId(x).fclone();
+            ServiceProvider serviceProvider = (ServiceProvider) target;
+            if ( serviceProvider.getId().equals(user.getSpid()) ) return;
+
             AuthService auth = (AuthService) x.get("auth");
             Logger logger = (Logger) x.get("logger");
 
@@ -65,16 +69,8 @@ foam.CLASS({
             )
               throw new RuntimeException("You are not authorized to perform this update");
 
-            // get the
-            User user = (User) ucj.findSourceId(x).fclone();
-            ServiceProvider serviceProvider = (ServiceProvider) target;
-
             // if is create, check if any old user-serviceprovider junctions exist, and remove it and its grant path   
             serviceProvider.removeSpid(x, user);
-
-            // get grantpath and create/reput grantpath
-            serviceProvider.setupSpid(x, user);
-            logger.debug("Updating spid capabilities for user", serviceProvider.getId(), user.getId());
 
             // finally set user spid to new spid
             DAO userDAO = (DAO) x.get("bareUserDAO");
