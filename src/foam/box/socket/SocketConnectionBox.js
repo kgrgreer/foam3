@@ -221,8 +221,6 @@ NOTE: duplicated in SocketConnectionReplyBox
         // If no other send operations immediately pending, then flush
         if ( pending == pending_.longValue() ) {
           out_.flush();
-        } else {
-          getLogger().debug("send", "flush", false, pending, pending_.longValue());
         }
       } catch ( Throwable t ) {
         pm.error(getX(), t);
