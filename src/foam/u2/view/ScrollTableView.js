@@ -166,7 +166,8 @@
     {
       class: 'Boolean',
       name: 'multiSelectEnabled',
-      documentation: 'Pass through to UnstyledTableView.'
+      documentation: 'Pass through to UnstyledTableView.',
+      value: true
     },
     {
       class: 'Map',
@@ -304,6 +305,7 @@
 
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
+        refDAO: this.data,
         columns: this.columns,
         contextMenuActions: this.contextMenuActions,
         selection$: this.selection$,

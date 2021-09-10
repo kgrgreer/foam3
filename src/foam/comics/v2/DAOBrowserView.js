@@ -233,6 +233,7 @@ foam.CLASS({
       },
       code: function() {
         var adao;
+        console.log(summaryView.selectedObjects);
         if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
           adao = foam.dao.ArrayDAO.create({ of: this.data.of });
           foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
