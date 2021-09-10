@@ -153,7 +153,7 @@ foam.CLASS({
           selected$: selectSlot
         });
       },
-      comparePropertyValues: function(o1, o2) { return 0; } 
+      comparePropertyValues: function(o1, o2) { return 0; }
     },
     {
       class: 'Blob',
@@ -211,19 +211,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'labels',
-      class: 'StringArray',
-      documentation: 'List of labels applied to this file',
-      validateObj: function(labels) {
-        if ( labels.indexOf("") >= 0 ) {
-          return this.INVALID_FILE_LABEL;
-        }
-      },
-      view: {
-        class: 'foam.u2.view.ReferenceArrayView',
-        daoKey: 'fileLabelDAO',
-        allowDuplicates: false
-      }
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      name: 'label'
     },
     {
       class: 'Reference',

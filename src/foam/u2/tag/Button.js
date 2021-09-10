@@ -234,7 +234,7 @@ foam.CLASS({
       fill: /*%GREY1%*/ #5E6061;
     }
 
-    ^link:hover,^link:hover svg {
+    ^link:hover:not(:disabled),^link:hover svg {
       text-decoration: underline;
       color: /*%GREY2%*/ #6B778C;
       fill: /*%GREY2%*/ #6B778C;
