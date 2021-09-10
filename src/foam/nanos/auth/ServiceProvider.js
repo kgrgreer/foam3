@@ -66,6 +66,11 @@ foam.CLASS({
         ];
       },
       documentation: 'Service provider must have "serviceprovider.read.<SPID>" inherent permission.',
+    },
+    {
+      class: 'Long',
+      name: 'anonymousUser',
+      documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
     }
   ],
 
