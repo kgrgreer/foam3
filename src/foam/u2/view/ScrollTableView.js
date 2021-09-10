@@ -166,8 +166,7 @@
     {
       class: 'Boolean',
       name: 'multiSelectEnabled',
-      documentation: 'Pass through to UnstyledTableView.',
-      value: true
+      documentation: 'Pass through to UnstyledTableView.'
     },
     {
       class: 'Map',
