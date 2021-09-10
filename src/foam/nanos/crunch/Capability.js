@@ -377,12 +377,11 @@ foam.CLASS({
         if ( PredicatedPrerequisiteCapabilityJunctionDAO.PERMISSION.equals(permission) ) return false;
 
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        var prereqs = crunchService.getPrereqs(x, getId(), null);
+        List<Capability> prereqs = crunchService.getCapabilityPath(x, getId(), false, false);
 
         if ( prereqs != null && prereqs.size() > 0 ) {
-          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-          for ( var capId : prereqs ) {
-            Capability capability = (Capability) capabilityDAO.find(capId);
+          for ( Capability capability : prereqs ) {
+            if ( getId().equals(capability.getId()) ) continue;
             if ( capability != null && capability.grantsPermission(permission) ) return true;
           }
         }
