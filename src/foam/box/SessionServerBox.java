@@ -18,6 +18,7 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.boot.Boot;
 import foam.nanos.boot.NSpec;
+import foam.nanos.pm.PM;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.session.Session;
@@ -46,6 +47,8 @@ public class SessionServerBox
   }
 
   public void send(Message msg) {
+    PM pm = PM.create(getX(), this.getClass(), "send");
+
     NSpec  spec   = getX().get(NSpec.class);
     Logger logger = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName(),
@@ -156,16 +159,20 @@ public class SessionServerBox
         return;
       }
 
+      // If session context already configured, no need to run again.
+      if ( ! Session.CONTEXT.isSet(session) ) {
+        session.setContext(session.applyTo(getX()));
+      }
+
       if ( session.getContext().get("localLocalSettingDAO") == null && session.getUserId() != 0 ) {
         DAO localLocalSettingDAO = new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo());
         session.setContext(session.getContext().put("localLocalSettingDAO", localLocalSettingDAO));
       }
 
-      X effectiveContext = session.applyTo(getX());
+      X effectiveContext = session.getContext();
 
       // Make context available to thread-local XLocator
       XLocator.set(effectiveContext);
-      session.setContext(effectiveContext);
 
       session.touch();
 
@@ -189,12 +196,14 @@ public class SessionServerBox
     } catch (Throwable t) {
       logger.warning(t.getMessage());
       msg.replyWithException(t);
+      pm.error(getX(), t);
 
       AppConfig appConfig = (AppConfig) getX().get("appConfig");
       if ( Mode.TEST == appConfig.getMode() )
         throw t;
     } finally {
       XLocator.set(null);
+      pm.log(getX());
     }
   }
 }
