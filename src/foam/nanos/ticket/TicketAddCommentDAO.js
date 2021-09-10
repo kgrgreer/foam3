@@ -70,7 +70,8 @@ foam.CLASS({
 
       User user = ticket.findCreatedFor(x);
       Notification notification = new Notification.Builder(x)
-        .setBody("Ticket notification placeholder")
+        .setBody(ticket.getExternalComment())
+        .setNotificationType("Request Information")
         .build();
       user.doNotify(x, notification);
 
