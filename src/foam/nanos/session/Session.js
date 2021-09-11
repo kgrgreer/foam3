@@ -383,17 +383,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         rtn = rtn.put("localLocalSettingDAO", new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo()));
 
-        rtn = rtn.put("logger", new foam.nanos.logger.PrefixLogger(
-          new Object[] {"session", getId().split("-")[0]},
-          foam.nanos.logger.Loggers.logger(rtn, true)
-        ));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
+        // Cache the context changes of applyTo
         setApplyContext(apply);
         pm.log(x);
-foam.nanos.logger.Loggers.logger(x, this).info(getId().split("-")[0], "applyTo", "create", "subject", rtn.get("subject"));
       } else {
         rtn = new OrX(x, rtn);
-     }
+      }
       return rtn;
       `
     },
