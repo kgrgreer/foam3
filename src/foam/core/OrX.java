@@ -7,7 +7,7 @@
 package foam.core;
 
 /** Simple Or X implementation.
-    get - first test local x, then delegate
+    get - first test delegate, then local
     put - put to delegate
  **/
 public class OrX
@@ -30,25 +30,27 @@ public class OrX
 
   public <T> T get(Class<T> key) {
     T t = getX().get(key);
-    if ( t == null ) return localX_.get(key);
+    if ( t == null ) return (T) localX_.get(this, key);
     return t;
   }
 
-  public Object get(X x, Object name) {
-    Object o = getX().get(x, name);
-    if ( o == null ) return localX_.get(x, name);
+  public Object get(X x, Object key) {
+    Object o = getX().get(x, key);
+    if ( o == null ) return localX_.get(x, key);
     return o;
   }
 
   public int getInt(X x, Object key, int defaultValue) {
-    Object o = getX().getInt(x, key, defaultValue);
-    if ( o == null ) return (int) localX_.get(key);
+    Object o = getX().get(x, key); 
+    if ( o == null ) o = localX_.get(x, key);
+    if ( o == null ) return defaultValue;
     return (int) o;
   }
 
   public boolean getBoolean(X x, Object key, boolean defaultValue) {
-    Boolean b = (Boolean) getX().getBoolean(x, key, defaultValue);
-    if ( b == null ) return (boolean) localX_.get(key);
-    return b;
+    Object o = getX().get(x, key); 
+    if ( o == null ) o = localX_.get(x, key);
+    if ( o == null ) return defaultValue;
+    return (boolean) o;
   }
 }
