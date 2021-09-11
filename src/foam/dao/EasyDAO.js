@@ -400,10 +400,10 @@ foam.CLASS({
       generateJava: false
     },
     {
-      documentation: 'Set polling comparator for the caching DAO',
-      class: 'FObjectArray',
-      of: 'foam.mlang.order.Comparator',
-      name: 'pollingComparator',
+      documentation: 'Set polling property for the caching DAO',
+      class: 'FObjectProperty',
+      of: 'foam.core.Property',
+      name: 'pollingProperty',
       generateJava: false
     },
     {
@@ -915,7 +915,7 @@ model from which to test ServiceProvider ID (spid)`,
               src: dao,
               of: this.model,
               pollingFrequency: this.pollingCacheFrequency,
-              pollingComparator: foam.compare.toCompare(this.pollingComparator)
+              pollingProperty: this.pollingProperty
             });
           }
 

@@ -100,8 +100,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.mlang.order.Comparator',
-      name: 'pollingComparator'
+      of: 'foam.core.Property',
+      name: 'pollingProperty'
     }
   ],
 
@@ -166,11 +166,12 @@ foam.CLASS({
       var self = this;
 
       self.delegate
-        .orderBy(self.pollingComparator).limit(1)
+        .orderBy(this.DESC(self.pollingProperty)).limit(1)
         .select().then(function(data) {
           if ( data.array.length === 1 ) {
             self.src
-              .where(self.GT(self.src.of.ID, data.array[0].id))
+              .where(self.GT(
+                self.pollingProperty, self.pollingProperty.f(data.array[0])))
               .select(self.QuickSink.create({ putFn: self.onSrcPut }));
           }
         });
