@@ -130,6 +130,7 @@ foam.CLASS({
         this.myNotificationDAO.where(
           this.AND(
             this.EQ(this.Notification.READ, false),
+            this.EQ(this.Notification.TRANSIENT, false),
             this.NOT(this.IN(
               this.Notification.NOTIFICATION_TYPE,
               this.subject.user.disabledTopics))
