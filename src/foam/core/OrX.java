@@ -6,7 +6,10 @@
 
 package foam.core;
 
-/** Simple Or X implementation. **/
+/** Simple Or X implementation.
+    get - first test local x, then delegate
+    put - put to delegate
+ **/
 public class OrX
   extends    ProxyX
 {
@@ -16,38 +19,36 @@ public class OrX
     this(EmptyX.instance(), EmptyX.instance());
   }
 
+  public OrX(X x) {
+    this(x, EmptyX.instance());
+  }
+
   public OrX(X x, X delegate) {
+    super(delegate);
     localX_ = x;
-    setX(delegate);
   }
 
   public <T> T get(Class<T> key) {
-    T t = localX_.get(key);
-    if ( t == null ) return getX().get(key);
+    T t = getX().get(key);
+    if ( t == null ) return localX_.get(key);
     return t;
   }
 
-  public Object get(Object name) {
-    Object o = localX_.get(name);
-    if ( o == null ) return get(this, name);
-    return o;
-  }
-
   public Object get(X x, Object name) {
-    Object o = localX_.get(x, name);
-    if ( o == null ) return getX().get(x, name);
+    Object o = getX().get(x, name);
+    if ( o == null ) return localX_.get(x, name);
     return o;
   }
 
   public int getInt(X x, Object key, int defaultValue) {
-    Object o = localX_.get(key);
-    if ( o == null ) return getX().getInt(x, key, defaultValue);
+    Object o = getX().getInt(x, key, defaultValue);
+    if ( o == null ) return (int) localX_.get(key);
     return (int) o;
   }
 
   public boolean getBoolean(X x, Object key, boolean defaultValue) {
-    Boolean b = (Boolean) localX_.get(key);
-    if ( b == null ) return getX().getBoolean(x, key, defaultValue);
+    Boolean b = (Boolean) getX().getBoolean(x, key, defaultValue);
+    if ( b == null ) return (boolean) localX_.get(key);
     return b;
   }
 }
