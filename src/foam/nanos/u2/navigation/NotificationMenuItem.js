@@ -21,7 +21,7 @@ foam.CLASS({
     'currentMenu',
     'group',
     'menuDAO',
-    'notificationDAO',
+    'myNotificationDAO',
     'pushMenu',
     'user'
   ],
@@ -94,7 +94,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.notificationDAO.on.sub(this.onDAOUpdate);
+      this.myNotificationDAO.on.sub(this.onDAOUpdate);
       this.user$.dot('id').sub(this.onDAOUpdate);
       this.group$.dot('id').sub(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -129,14 +129,9 @@ foam.CLASS({
       code: function() {
         if ( ! this.group || ! this.user ) return;
         if ( this.user.id ) {
-          this.notificationDAO.where(
+          this.myNotificationDAO.where(
             this.AND(
               this.EQ(this.Notification.READ, false),
-              this.OR(
-                this.EQ(this.Notification.USER_ID, this.user.id),
-                this.EQ(this.Notification.GROUP_ID, this.group.id),
-                this.EQ(this.Notification.BROADCASTED, true)
-              ),
               this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
                 this.user.disabledTopics))
