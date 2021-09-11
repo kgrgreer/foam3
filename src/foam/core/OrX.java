@@ -53,4 +53,10 @@ public class OrX
     if ( o == null ) return defaultValue;
     return (boolean) o;
   }
+
+  public X cd(X x, String path) {
+    X o = getX().cd(x, path);
+    if ( o == null ) return localX_.cd(x, path);
+    return o;
+  }
 }
