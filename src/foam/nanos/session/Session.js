@@ -329,13 +329,20 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       AuthService auth  = (AuthService) x.get("auth");
       User user         = (User) localUserDAO.find(getUserId());
       User agent        = (User) localUserDAO.find(getAgentId());
-
+      User subjectUser = null;
+      User subjectAgent = null;
+      if ( rtn != null ) {
+        Subject subject = (Subject) rtn.get("subject");
+        if ( subject != null ) {
+          subjectUser = subject.getUser();
+          subjectAgent = subject.getRealUser();
+        }
+      }
       if ( rtn == null ||
            user == null ||
-           rtn.get("subject") == null ||
-           ((Subject) rtn.get("subject")).getUser().getId() != user.getId() ||
-           ( agent != null &&
-             ((Subject) rtn.get("subject")).getRealUser().getId() != agent.getId() ) ) {
+           ( subjectUser != null && subjectUser.getId() == user.getId() ) ||
+           ( agent != null && subjectAgent != null &&
+             subjectAgent.getId() != agent.getId() ) ) {
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
@@ -383,7 +390,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         rtn = rtn.put("localLocalSettingDAO", new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo()));
 
-        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
+        rtn = rtn.put("logger",
+          new foam.nanos.logger.PrefixLogger(
+            new Object[] { "session", getId().split("-")[0] },
+            foam.nanos.logger.Loggers.logger(rtn, true)
+          ));
 
         // Cache the context changes of applyTo
         setApplyContext(apply);
