@@ -340,7 +340,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       }
       if ( rtn == null ||
            user == null ||
-           ( subjectUser != null && subjectUser.getId() == user.getId() ) ||
+           ( subjectUser != null &&
+             subjectUser.getId() != user.getId() ) ||
            ( agent != null && subjectAgent != null &&
              subjectAgent.getId() != agent.getId() ) ) {
 
