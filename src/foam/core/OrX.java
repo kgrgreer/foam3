@@ -13,7 +13,7 @@ package foam.core;
 public class OrX
   extends ProxyX
 {
-  X parentX_;
+  X parent_;
 
   public OrX() {
     this(EmptyX.instance(), EmptyX.instance());
@@ -23,44 +23,44 @@ public class OrX
     this(x, EmptyX.instance());
   }
 
-  public OrX(X x, X delegate) {
+  public OrX(X parent, X delegate) {
     super(delegate);
-    parentX_ = x;
+    parent_ = parent;
   }
 
   public X put(Object name, Object value) {
-    return new OrX(getX().put(name, value), parentX_);
+    return new OrX(parent_, getX().put(name, value));
   }
 
   public <T> T get(Class<T> key) {
     T t = getX().get(key);
-    if ( t == null ) return (T) parentX_.get(this, key);
+    if ( t == null ) return (T) parent_.get(this, key);
     return t;
   }
 
   public Object get(X x, Object key) {
     Object o = getX().get(x, key);
-    if ( o == null ) return parentX_.get(x, key);
+    if ( o == null ) return parent_.get(x, key);
     return o;
   }
 
   public int getInt(X x, Object key, int defaultValue) {
     Object o = getX().get(x, key);
-    if ( o == null ) o = parentX_.get(x, key);
+    if ( o == null ) o = parent_.get(x, key);
     if ( o == null ) return defaultValue;
     return (int) o;
   }
 
   public boolean getBoolean(X x, Object key, boolean defaultValue) {
     Object o = getX().get(x, key);
-    if ( o == null ) o = parentX_.get(x, key);
+    if ( o == null ) o = parent_.get(x, key);
     if ( o == null ) return defaultValue;
     return (boolean) o;
   }
 
   public X cd(X x, String path) {
     X o = getX().cd(x, path);
-    if ( o == null ) return parentX_.cd(x, path);
+    if ( o == null ) return parent_.cd(x, path);
     return o;
   }
 }
