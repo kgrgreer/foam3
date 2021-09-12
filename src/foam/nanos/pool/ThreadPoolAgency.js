@@ -92,7 +92,6 @@ foam.CLASS({
       documentation: 'report stats when true',
       name: 'reportingEnabled',
       class: 'Boolean',
-      value: true,
       javaSetter: `
       boolean old = getReportingEnabled();
       reportingEnabled_ = val;
@@ -107,7 +106,7 @@ foam.CLASS({
     {
       name: 'reportInterval',
       class: 'Long',
-      value: 1000
+      value: 10000
     },
     {
       name: 'stackDepth',
@@ -252,6 +251,7 @@ foam.CLASS({
                 break;
               }
             }
+            System.out.println();
           }
         }
       } catch ( Throwable t ) {
