@@ -27,7 +27,7 @@ foam.CLASS({
       to all objects put() and remove()d. Instead of deleting objects that
       are remove()d, a placeholder with a deleted flag is put() in its place.
       This allows foam.dao.SyncDAO clients that are polling a VersionNoDAO to
-      recieve deletes from other clients.
+      receive deletes from other clients.
 
       This DAO expects to be "of" a class that has the trait
       foam.version.VersionTrait.
@@ -82,6 +82,7 @@ foam.CLASS({
             this.ready_ = true;
           }.bind(this));
     },
+
     function validate() {
       this.SUPER();
       if ( ! this.VersionTrait.isSubClass(this.of) ) {
@@ -89,6 +90,7 @@ foam.CLASS({
                             foam.version.VersionTrait`);
       }
     },
+
     function put_(x, obj) {
       if ( ! this.ready_ )
         return Promise.reject(this.InternalException.create());
@@ -98,6 +100,7 @@ foam.CLASS({
       this.version++;
       return this.delegate.put_(x, obj);
     },
+
     function remove_(x, obj) {
       if ( ! this.ready_ )
         return Promise.reject(this.InternalException.create());
@@ -110,20 +113,21 @@ foam.CLASS({
       this.version++;
       return this.delegate.put_(x, deleted);
     },
+
     function removeAll_(x, skip, limit, order, predicate) {
       if ( ! this.ready_ )
         return Promise.reject(this.InternalException.create());
 
       // Select relevant records and mark each as deleted via remove_().
       return this.select_(x, null, skip, limit, order, predicate).
-          then(function(sink) {
-            var array = sink.array;
-            var promises = [];
-            for ( var i = 0; i < array.length; i++ ) {
-              promises.push(this.remove_(x, array[i]));
-            }
-            return Promise.all(promises);
-          }.bind(this));
+        then(function(sink) {
+          var array = sink.array;
+          var promises = [];
+          for ( var i = 0; i < array.length; i++ ) {
+            promises.push(this.remove_(x, array[i]));
+          }
+          return Promise.all(promises);
+        }.bind(this));
     }
   ]
 });
