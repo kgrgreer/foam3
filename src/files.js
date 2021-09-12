@@ -341,6 +341,7 @@ FOAM_FILES([
   { name: 'foam/nanos/auth/CommonPassword' },
   { name: 'foam/nanos/auth/AddressConfig' },
   { name: "foam/nanos/auth/UserNotFoundException" },
+  { name: 'foam/nanos/auth/AuthorizeAnonymousClientDecorator' },
   { name: "foam/nanos/logger/Logger" },
   { name: "foam/nanos/logger/DAOLogger" },
   { name: "foam/nanos/logger/LoggingDAO" },
@@ -1058,6 +1059,7 @@ FOAM_FILES([
   { name: 'foam/counter/Counter' },
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
-  { name: 'foam/nanos/fs/AgreementView' }
+  { name: 'foam/nanos/fs/AgreementView' },
 
+  { name: "foam/util/date/TimeUnit" }
 ])

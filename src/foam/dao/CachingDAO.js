@@ -96,9 +96,9 @@ foam.CLASS({
 
       var proxy = this.src$proxy;
       proxy.listen(this.QuickSink.create({
-        putFn: this.onSrcPut,
+        putFn:    this.onSrcPut,
         removeFn: this.onSrcRemove,
-        resetFn: this.onSrcReset
+        resetFn:  this.onSrcReset
       }));
     },
 
@@ -120,6 +120,7 @@ foam.CLASS({
         return self.delegate.remove_(x, o);
       });
     },
+
     /** removeAll is executed on the cache and the source, ensuring both
       are up to date. */
     function removeAll_(x, skip, limit, order, predicate) {
@@ -133,11 +134,9 @@ foam.CLASS({
       if ( obj == this.PURGE ) {
         this.cache.removeAll();
         delete this.private_['delegate'];
-      }
-      else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+      } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
         delete this.cache[obj.id];
-      }
-      else {
+      } else {
         this.SUPER(x, obj);
       }
     }

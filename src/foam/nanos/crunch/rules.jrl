@@ -1,6 +1,6 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75afsbdkjfbsk-c",
+  "class":"foam.nanos.ruler.PermissionedUserRule",
+  "id":"create-user-capability-on-spid-set",
   "name":"Set up User Spid On User Create and Update",
   "priority":100,
   "ruleGroup":"spidCapability",
@@ -13,8 +13,8 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-afdsgk-sd212",
+  "class":"foam.nanos.ruler.PermissionedUCJRule",
+  "id":"set-user-service-provider",
   "name":"Update User Spid On UCJ Update",
   "priority":100,
   "ruleGroup":"spidCapability",
