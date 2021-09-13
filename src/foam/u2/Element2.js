@@ -1145,6 +1145,7 @@ foam.CLASS({
     },
 
     function removeChild(c) {
+      // TODO: set c.parentNode to undefined ?
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; i++ ) {
