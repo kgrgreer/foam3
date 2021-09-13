@@ -192,6 +192,12 @@ foam.CLASS({
         if ( willSave ) return this.SAVE_LABEL;
         return this.NO_ACTION_LABEL;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'displayWizardletSteps',
+      value: true,
+      documentation: `Show capability wizard steps.`
     }
   ],
 
@@ -208,7 +214,7 @@ foam.CLASS({
         .enableClass(this.myClass('fullscreen'), this.fullScreen$)
         .start(this.Grid)
           .addClass(this.myClass('fix-grid'))
-          .start(this.GUnit, { columns: 4 })
+          .start(this.GUnit, { columns: 4 }).show(this.displayWizardletSteps)
             // TODO: deprecate this hide-X-status class
             .addClass(this.hideX ? this.myClass('hide-X-status') : this.myClass('status'))
             .add(
@@ -219,7 +225,7 @@ foam.CLASS({
               })
             )
           .end()
-          .start(this.GUnit, { columns: 8 })
+          .start(this.GUnit, { columns: this.displayWizardletSteps ? 8 : 12 })
             .addClass(this.myClass('rightside'))
             .call(function () {
               self.onDetach(async function() {

@@ -20,9 +20,11 @@ import foam.nanos.om.OMLogger;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,7 +50,7 @@ public class SocketServerProcessor
   {
     setX(x);
     socket_ = socket;
-    in_ = new DataInputStream(socket.getInputStream());
+    in_ = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
     out_ = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
     logger_ = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName(),
@@ -73,6 +75,18 @@ public class SocketServerProcessor
     x_ = x;
   }
 
+  protected byte [] readBytes (InputStream in, int expectedSize)
+    throws IOException {
+    final byte[] buffer = new byte[expectedSize];
+    int totalReadSize = 0;
+    while (totalReadSize < expectedSize) {
+      int readSize = in.read(buffer, totalReadSize, expectedSize - totalReadSize);
+      if (readSize < 0) throw new EOFException ();
+      totalReadSize += readSize;
+    }
+    return buffer;
+  }
+
   public void execute(X x) {
     String pmKey = "SocketServerProcessor";
     String pmName = String.valueOf(socket_.getRemoteSocketAddress());
@@ -81,47 +95,20 @@ public class SocketServerProcessor
       while ( true ) {
         PM pm = null;
         try {
-          omLogger.log(pmKey, pmName);
-          pm = PM.create(x, pmKey, pmName+":execute");
+          omLogger.log(pmKey, pmName, "execute");
+          pm = PM.create(x, pmKey, pmName, "execute");
 
           int length = in_.readInt();
-          byte[] bytes = new byte[length];
-          StringBuilder data = new StringBuilder();
-          int total = 0;
-          while ( true ) {
-            int bytesRead = 0;
-            try {
-              bytesRead = in_.read(bytes, 0, length - total);
-              if ( bytesRead == -1 ) {
-               logger_.debug("eof,-1");
-               break;
-             }
-           } catch ( java.io.EOFException | java.net.SocketException e ) {
-              logger_.debug(e.getMessage());
-              break;
-            }
-            data.append(new String(bytes, 0, bytesRead, StandardCharsets.UTF_8));
-            total += bytesRead;
-            if ( total == length ) {
-              break;
-            }
-            if ( total > length ) {
-              logger_.error("read too much", length, total);
-              break;
-            }
-          }
-          String message = data.toString();
-          if ( foam.util.SafetyUtil.isEmpty(message) ) {
-            throw new RuntimeException("Received empty message. from: "+socket_.getRemoteSocketAddress());
-          }
-          Message msg = (Message) x.create(JSONParser.class).parseString(message);
+          byte[] bytes = readBytes(in_, length);
+          String data = new String(bytes, 0, length, StandardCharsets.UTF_8);
+          Message msg = (Message) x.create(JSONParser.class).parseString(data);
           if ( msg == null ) {
-            throw new IllegalArgumentException("Failed to parse. from: "+socket_.getRemoteSocketAddress()+", message: "+message);
+            throw new IllegalArgumentException("Failed to parse. from: "+socket_.getRemoteSocketAddress()+", message: "+data);
           }
           pm.log(x);
 
           // NOTE: enable along with send and receive debug calls in SocketConnectionBox to monitor all messages.
-          // logger_.debug("execute", "service", (String) msg.getAttributes().get("serviceKey"), message);
+          // logger_.debug("execute", "service", (String) msg.getAttributes().get("serviceKey"), data);
 
           socketRouter_.service(msg);
         } catch ( java.net.SocketTimeoutException e ) {

@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'capabilityDAO',
     'group',
+    'subject',
     'userCapabilityJunctionDAO'
   ],
   properties: [
@@ -26,6 +27,9 @@ foam.CLASS({
   methods: [
     function init() {
       this.onDetach(this.group$.sub(function() {
+        this.cache = {};
+      }.bind(this)));
+      this.onDetach(this.subject$.sub(function() {
         this.cache = {};
       }.bind(this)));
       this.onDetach(this.userCapabilityJunctionDAO.on.sub(

@@ -56,7 +56,9 @@ foam.CLASS({
   methods: [
     function installInClass(cls) {
       var m = this.__context__.lookup(this.path);
-      if ( ! m ) throw 'No such interface or trait: ' + this.path;
+      if ( ! m ) {
+        throw 'No such interface or trait: ' + this.path;
+      }
 
       // TODO: clone these axioms since they could be reused and then would
       // have the wrong sourceCls_;
