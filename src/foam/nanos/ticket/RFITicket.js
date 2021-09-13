@@ -36,7 +36,7 @@
       name: 'url',
       section: 'infoSection',
       visibility: 'RO',
-      expression: function(appConfig, requesteeSession, id) {
+      expression: function(appConfig, requesteeSession) {
         return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
       }
     },
