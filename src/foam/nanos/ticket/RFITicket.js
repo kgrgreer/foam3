@@ -6,7 +6,7 @@
 
  foam.CLASS({
   package: 'foam.nanos.ticket',
-  name: 'RFITicket',
+  name: 'RfiTicket',
   extends: 'foam.nanos.ticket.Ticket',
 
   documentation: 'Request for information ticket.',
