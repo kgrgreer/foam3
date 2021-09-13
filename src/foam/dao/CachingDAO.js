@@ -38,6 +38,12 @@ foam.CLASS({
     'foam.dao.QuickSink'
   ],
 
+  imports: [
+    'setInterval'
+  ],
+
+  implements: [ 'foam.mlang.Expressions' ],
+
   constants: [
     {
       name: 'PURGE',
@@ -87,6 +93,16 @@ foam.CLASS({
           promise: cacheFilled
         });
       }
+    },
+    {
+      class: 'Int',
+      name: 'pollingInterval',
+      units: 'ms'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Property',
+      name: 'pollingProperty'
     }
   ],
 
@@ -100,6 +116,10 @@ foam.CLASS({
         removeFn: this.onSrcRemove,
         resetFn:  this.onSrcReset
       }));
+
+      if ( this.pollingInterval > 0 ) {
+        this.setInterval(this.poll, this.pollingInterval);
+      }
     },
 
     /** Puts are sent to the cache and to the source, ensuring both
@@ -135,6 +155,7 @@ foam.CLASS({
         this.cache.removeAll();
         delete this.private_['delegate'];
       } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+        // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
       } else {
         this.SUPER(x, obj);
@@ -159,6 +180,22 @@ foam.CLASS({
       @private */
     function onSrcReset() {
       // TODO: Should this removeAll from the cache?
+    },
+
+    /** Polls updates from the source. */
+    function poll() {
+      var self = this;
+
+      self.delegate
+        .orderBy(this.DESC(self.pollingProperty)).limit(1)
+        .select().then(function(data) {
+          if ( data.array.length === 1 ) {
+            self.src
+              .where(self.GT(
+                self.pollingProperty, self.pollingProperty.f(data.array[0])))
+              .select(self.QuickSink.create({ putFn: self.onSrcPut }));
+          }
+        });
     }
   ]
 });
