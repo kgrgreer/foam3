@@ -645,6 +645,7 @@ var classes = [
   'foam.nanos.fs.FileLabel',
   'foam.nanos.fs.FileType',
   'foam.nanos.fs.TempFile',
+  'foam.nanos.fs.TempFileDAO',
   'foam.crypto.hash.Hasher',
   'foam.crypto.hash.HashableTest',
 
@@ -710,6 +711,7 @@ var classes = [
   'foam.nanos.ruler.FindRuledCommand',
   'foam.nanos.ruler.Ruled',
   'foam.nanos.ruler.Rule',
+  'foam.nanos.ruler.PermissionedUserRule',
   'foam.nanos.ruler.RuledDAO',
   'foam.nanos.ruler.RulerData',
   'foam.nanos.ruler.test.RuledDAOTest',

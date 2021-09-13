@@ -4,12 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
- * TODO: There are a couple of known bugs with the current implementation of this view:
- *  - Creating a circular loop is not supported as mementos need to support adding the same view to the URL and removing the right one
- *  - Relationships have the same double stack push error that was seen with scroll tables
- */
-
 foam.CLASS({
   package: 'foam.u2.stack',
   name: 'BreadcrumbView',
@@ -17,28 +11,61 @@ foam.CLASS({
 
   imports: ['stack'],
 
-  requires: ['foam.core.Action'],
+  requires: [
+    'foam.core.Action',
+    'foam.u2.view.OverlayActionListView',
+  ],
 
   css: `
   ^display {
-    display: inline-flex;
     align-items: center;
+    display: flex;
+    flex-wrap: wrap;
   }
   ^slash{
     padding: 8px;
     vertical-align: middle;
   }
+  ^breadCrumb > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   `,
+
+  properties: [
+    { 
+      name: 'maxHead',
+      documentation: 'maximum number of breadcrumbs to be displayed before the dropdown',
+      value: 3
+    },
+    {
+      name: 'maxTail',
+      documentation: 'maximum number of breadcrumbs to be displayed after the dropdown',
+      value: 3
+    },
+    {
+      name: 'collapseBreakpoint',
+      documentation: `If the number of breadcrumbs goes over this value they will start collapsing into a dropdown,
+      default value is sum of maxHead and maxTail + 1 to avoid a single breadcrumb collapsing into a dropdown `,
+      factory: function() { return this.maxHead + this.maxTail + 1; }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.Action',
+      name: 'actionArray'
+    }
+  ],
 
   methods: [
     function render() {
       this.SUPER();
       var self = this;
       this.addClass(this.myClass('display'));
-      if ( this.stack && this.stack.stack_ ) { 
+      if ( this.stack && this.stack.stack_ ) {
         var navStack = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
         var themeIcon = navStack.length == 1 ? 'back' : '';
-        navStack.map((v, i, _) =>{
+        navStack.map((v, i) => {
           var index = i + this.stack.navStackBottom;
           var jumpAction  = self.Action.create({
             name: 'back',
@@ -47,12 +74,27 @@ foam.CLASS({
             }
           });
           var labelSlot = this.stack.stack_[index].breadcrumbTitle$;
-          self.start(jumpAction, {
-            label$: labelSlot,
-            themeIcon: themeIcon,
-            buttonStyle: 'LINK'
-          }).show(labelSlot).end()
-          .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end(); });
+          jumpAction.label$ = labelSlot;
+          if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
+            self.start(jumpAction, {
+              themeIcon: themeIcon,
+              buttonStyle: 'LINK'
+            }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
+          } else if ( i == self.maxHead ) {
+            self.tag(this.OverlayActionListView, {
+              label: '...',
+              data$: self.actionArray$,
+              obj: self,
+              buttonStyle: 'LINK',
+              showDropdownIcon: false,
+            });
+            self.actionArray.push(jumpAction);
+          } else {
+            self.actionArray.push(jumpAction);
+          }
+          self.callIf(navStack.length != 1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ), () => {
+            self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
+          });
           if ( ! this.stack.stack_[index].breadcrumbTitle )
             console.warn('Missing Title for BreadcrumbView ' + navStack[i].view.class);
         });

@@ -96,7 +96,18 @@ p({
       .build();
     return auth;
   """,
-  "client": "{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
+  "client":"""
+    {
+      "class": "foam.nanos.auth.AuthorizeAnonymousClientDecorator",
+      "delegate":
+      {
+        "class":"foam.nanos.auth.CachedAuthServiceProxy",
+        "delegate":{
+          "class":"foam.nanos.auth.ClientLoginAuthService"
+        }
+      }
+    }
+  """
 })
 
 p({
