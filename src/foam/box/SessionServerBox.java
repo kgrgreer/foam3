@@ -156,6 +156,11 @@ public class SessionServerBox
         return;
       }
 
+      if ( session.getContext().get("localLocalSettingDAO") == null && session.getUserId() != 0 ) {
+        DAO localLocalSettingDAO = new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo());
+        session.setContext(session.getContext().put("localLocalSettingDAO", localLocalSettingDAO));
+      }
+
       X effectiveContext = session.applyTo(getX());
 
       // Make context available to thread-local XLocator
@@ -183,9 +188,6 @@ public class SessionServerBox
       getDelegate().send(msg);
     } catch (Throwable t) {
       logger.warning(t.getMessage());
-      if ( t instanceof NullPointerException ) {
-        logger.error(t);
-      }
       msg.replyWithException(t);
 
       AppConfig appConfig = (AppConfig) getX().get("appConfig");
