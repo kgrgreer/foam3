@@ -225,7 +225,7 @@ foam.CLASS({
     function returnExpandedCSS(a) {
       /* Fallback function for using long form color MACROS in non-nanos apps */
       return a;
-    },
+    }
   ]
 });
 
