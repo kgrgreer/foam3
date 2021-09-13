@@ -258,9 +258,9 @@ foam.CLASS({
               style({
                 'fill': this.slot(function(selected, id) {
                   if ( selected && foam.util.equals(selected.id, id) ) {
-                    return (self.returnExpandedCSS || (a => a))('/*%PRIMARY3%*/ #604aff');
+                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
                   }
-                  return (self.returnExpandedCSS || (a => a))('/*%GREY2%*/ #9ba1a6');
+                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
                 }, this.selection$, this.data$.dot('id'))
               }).
             end().
