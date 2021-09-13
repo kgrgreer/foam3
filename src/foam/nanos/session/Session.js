@@ -16,7 +16,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.core.OrX',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
@@ -153,15 +152,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       class: 'Object',
-      name: 'applyContext',
-      type: 'Context',
-      visibility: 'HIDDEN',
-      transient: true,
-      networkTransient: true,
-      clusterTransient: true
-    },
-    {
-      class: 'Object',
       name: 'context',
       type: 'Context',
       javaFactory: 'return reset(getX());',
@@ -284,71 +274,48 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
-
-      // We null out the security-relevant entries in the context since we
-      // don't want whatever was there before to leak through, especially
-      // since the system context (which has full admin privileges) is often
-      // used as the argument to this method.
-      if ( getUserId() <= 1 ) {
+      PM pm = PM.create(x, "Session","applyTo");
+      try {
+        // We null out the security-relevant entries in the context since we
+        // don't want whatever was there before to leak through, especially
+        // since the system context (which has full admin privileges) is often
+        // used as the argument to this method.
         X rtn = reset(x);
+        if ( getUserId() <= 1 ) {
+          HttpServletRequest req = x.get(HttpServletRequest.class);
+          if ( req == null ) {
+            // null during test runs
+            return rtn;
+          }
+          AppConfig appConfig = (AppConfig) x.get("appConfig");
+          appConfig = (AppConfig) appConfig.fclone();
 
-        HttpServletRequest req = x.get(HttpServletRequest.class);
-        if ( req == null ) {
-          // null during test runs
+          Theme theme = ((Themes) x.get("themes")).findTheme(x);
+          rtn = rtn.put("theme", theme);
+
+          // if there is no user, set spid to the theme spid so that spid restrictions can be applied
+          rtn = rtn.put("spid", theme.getSpid());
+
+          AppConfig themeAppConfig = theme.getAppConfig();
+          if ( themeAppConfig != null ) {
+            appConfig.copyFrom(themeAppConfig);
+          }
+          appConfig = appConfig.configure(x, null);
+
+          rtn = rtn.put("appConfig", appConfig);
+          rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
           return rtn;
         }
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-        appConfig = (AppConfig) appConfig.fclone();
 
-        Theme theme = ((Themes) x.get("themes")).findTheme(x);
-        rtn = rtn.put("theme", theme);
+        // Validate
+        validate(x);
 
-        // if there is no user, set spid to the theme spid so that spid restrictions can be applied
-        rtn = rtn.put("spid", theme.getSpid());
-
-        AppConfig themeAppConfig = theme.getAppConfig();
-        if ( themeAppConfig != null ) {
-          appConfig.copyFrom(themeAppConfig);
-        }
-        appConfig = appConfig.configure(x, null);
-
-        rtn = rtn.put("appConfig", appConfig);
-        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(new OrX(x, rtn), true));
-
-        return rtn;
-      }
-
-      // Validate
-      validate(x);
-
-      X rtn = getApplyContext();
-
-      DAO localUserDAO  = (DAO) x.get("localUserDAO");
-      DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-      AuthService auth  = (AuthService) x.get("auth");
-      User user         = (User) localUserDAO.find(getUserId());
-      User agent        = (User) localUserDAO.find(getAgentId());
-      User subjectUser = null;
-      User subjectAgent = null;
-      if ( rtn != null ) {
-        Subject subject = (Subject) rtn.get("subject");
-        if ( subject != null ) {
-          subjectUser = subject.getUser();
-          subjectAgent = subject.getRealUser();
-        }
-      }
-      if ( rtn == null ||
-           user == null ||
-           ( subjectUser != null &&
-             subjectUser.getId() != user.getId() ) ||
-           ( agent != null && subjectAgent != null &&
-             subjectAgent.getId() != agent.getId() ) ) {
-
-        PM pm = PM.create(x, "Session", "applyTo", "create");
-
-        X apply = new foam.core.ProxyX();
-        rtn = new OrX(x, apply);
+        DAO localUserDAO  = (DAO) x.get("localUserDAO");
+        DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+        AuthService auth  = (AuthService) x.get("auth");
+        User user         = (User) localUserDAO.find(getUserId());
+        User agent        = (User) localUserDAO.find(getAgentId());
 
         // Support hierarchical SPID context
         var subX = rtn.cd(user.getSpid());
@@ -388,22 +355,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
-        rtn = rtn.put("localLocalSettingDAO", new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo()));
-
-        rtn = rtn.put("logger",
-          new foam.nanos.logger.PrefixLogger(
-            new Object[] { "session", getId().split("-")[0] },
-            foam.nanos.logger.Loggers.logger(rtn, true)
-          ));
-
-        // Cache the context changes of applyTo
-        setApplyContext(apply);
+        return rtn;
+      } finally {
         pm.log(x);
-      } else {
-        rtn = new OrX(x, rtn);
       }
-      return rtn;
       `
     },
     {
