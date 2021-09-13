@@ -11,7 +11,7 @@ foam.CLASS({
 
   requires: ['foam.u2.tag.CircleIndicator'],
 
-  imports: ['returnExpandedCSS', 'theme'],
+  imports: ['returnExpandedCSS?', 'theme'],
 
   css: `
     ^pill{
@@ -48,8 +48,8 @@ foam.CLASS({
     function render() {
       var data = this.data;
       this.SUPER();
-      var color = this.returnExpandedCSS(this.data.color);
-      var background = this.returnExpandedCSS(this.data.background);
+      var color = (this.returnExpandedCSS || (a => a))(this.data.color);
+      var background = (this.returnExpandedCSS || (a => a))(this.data.background);
       var isPill = this.isFancy(this.data.VALUES);
       this
         .enableClass(this.myClass('pill'), isPill)
@@ -71,7 +71,7 @@ foam.CLASS({
         })
         .callIfElse(isPill,
           () => { this.start().add(data.label).end(); },
-          () => { this.start('p').add(data.label).end(); }
+          () => { this.start().addClass('p').add(data.label).end(); }
         );
     },
     {

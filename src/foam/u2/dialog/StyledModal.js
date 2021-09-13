@@ -32,7 +32,7 @@ foam.CLASS({
     This view is a simple styled modal with a title and ability to add content/strings and actions
   `,
 
-  imports: ['returnExpandedCSS', 'theme?'],
+  imports: ['returnExpandedCSS?', 'theme?'],
 
   requires: ['foam.u2.dialog.ModalStyles', 'foam.u2.layout.Rows'],
 
@@ -116,7 +116,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var bgColor = this.returnExpandedCSS(this.modalStyle.color);
+      var bgColor = (this.returnExpandedCSS || (a => a))(this.modalStyle.color);
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyDown)
@@ -129,7 +129,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('/*%GREY4%*/ #DADDE2')})
+              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : (this.returnExpandedCSS || (a => a))('/*%GREY4%*/ #DADDE2') })
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)
