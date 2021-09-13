@@ -116,7 +116,7 @@
     'rowObserver',
     { 
       name: 'rootElement',
-      documentation: ''
+      documentation: 'FOAM element that is used as the observation bounds for intersectionManager'
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -138,23 +138,24 @@
     },
     { 
       name: 'ctx',
-      documentation: ''
+      documentation: 'A context variable that is passed to the prepDAO function'
     },
     { 
       class: 'Function',
       name:'prepDAO',
-      documentation: ''
+      documentation: `Function that is run before each page is loaded on a limited DAO,
+      should always return a promise, can be used to create projections`
     },
     { 
       name: 'appendTo',
       factory: function() { return this.parentNode; },
-      documentation: ''
+      documentation: 'FOAM element that the ScrollManager adds rows to. Defaults to parentNode to avoid layout shifts'
     },
     {
       class: 'Int',
       name: 'offsetTop',
       value: 0,
-      documentation: ''
+      documentation: 'Offset property that is passed to IntersectionObserver'
     }
   ],
 

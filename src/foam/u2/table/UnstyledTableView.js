@@ -262,10 +262,17 @@ foam.CLASS({
         return this.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
       }
     },
-    'el',
-    'groupBy',
+    {
+      name: 'groupBy',
+      description: 'Property that stores the current column that the table is being grouped by'
+    },
+    {
+      class: 'Boolean',
+      name: 'showPagination',
+      value: true
+    },
+    'el_',
     'scrollEl_',
-    ['showPagination', true],
     ['tableHeadHeight', 52]
   ],
 
@@ -413,7 +420,7 @@ foam.CLASS({
       }
       this.start(this.Rows)
         .enableClass(this.myClass('full-height'), this.showPagination$)
-        .start('', {}, this.el$).addClass(this.myClass('table-wrapper'))
+        .start('', {}, this.el_$).addClass(this.myClass('table-wrapper'))
         .start().
           addClass(this.myClass()).
           addClass(this.myClass(this.of.id.replace(/\./g, '-'))).
@@ -551,7 +558,7 @@ foam.CLASS({
                 order$: view.order$,
                 rowView: { class: 'foam.u2.table.UnstyledTableRow', data: view },
                 groupHeaderView: { class: 'foam.u2.table.UnstyledTableGroup', data: view },
-                rootElement: this.el,
+                rootElement: this.el_,
                 ctx: view,
                 prepDAO: view.prepDAO,
                 groupBy$: view.groupBy$,
