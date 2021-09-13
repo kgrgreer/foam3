@@ -96,7 +96,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'pollingFrequency'
+      name: 'pollingInterval',
+      units: 'ms'
     },
     {
       class: 'FObjectProperty',
@@ -116,8 +117,8 @@ foam.CLASS({
         resetFn:  this.onSrcReset
       }));
 
-      if ( this.pollingFrequency > 0 ) {
-        this.setInterval(this.poll.bind(this), this.pollingFrequency);
+      if ( this.pollingInterval > 0 ) {
+        this.setInterval(this.poll, this.pollingInterval);
       }
     },
 
@@ -159,21 +160,6 @@ foam.CLASS({
       } else {
         this.SUPER(x, obj);
       }
-    },
-
-    function poll() {
-      var self = this;
-
-      self.delegate
-        .orderBy(this.DESC(self.pollingProperty)).limit(1)
-        .select().then(function(data) {
-          if ( data.array.length === 1 ) {
-            self.src
-              .where(self.GT(
-                self.pollingProperty, self.pollingProperty.f(data.array[0])))
-              .select(self.QuickSink.create({ putFn: self.onSrcPut }));
-          }
-        });
     }
   ],
 
@@ -194,6 +180,22 @@ foam.CLASS({
       @private */
     function onSrcReset() {
       // TODO: Should this removeAll from the cache?
+    },
+
+    /** Polls updates from the source. */
+    function poll() {
+      var self = this;
+
+      self.delegate
+        .orderBy(this.DESC(self.pollingProperty)).limit(1)
+        .select().then(function(data) {
+          if ( data.array.length === 1 ) {
+            self.src
+              .where(self.GT(
+                self.pollingProperty, self.pollingProperty.f(data.array[0])))
+              .select(self.QuickSink.create({ putFn: self.onSrcPut }));
+          }
+        });
     }
   ]
 });

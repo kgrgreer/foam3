@@ -394,9 +394,10 @@ foam.CLASS({
       generateJava: false
     },
     {
-      documentation: 'Set polling frequency for the caching DAO',
+      documentation: 'Set polling interval for the caching DAO',
       class: 'Int',
-      name: 'pollingCacheFrequency',
+      name: 'pollingInterval',
+      units: 'ms',
       generateJava: false
     },
     {
@@ -914,7 +915,7 @@ model from which to test ServiceProvider ID (spid)`,
               cache: cache,
               src: dao,
               of: this.model,
-              pollingFrequency: this.pollingCacheFrequency,
+              pollingInterval: this.pollingInterval,
               pollingProperty: this.pollingProperty
             });
           }

@@ -93,8 +93,8 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.myNotificationDAO.on.sub(this.onDAOUpdate);
-      this.subject.user$.dot('id').sub(this.onDAOUpdate);
+      this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
+      this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
 
       this.addClass()
