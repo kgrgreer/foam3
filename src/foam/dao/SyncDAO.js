@@ -144,19 +144,19 @@ foam.CLASS({
       // Push initial data from delegate.
       var self = this;
       self.synced = self.delegate.select().
-          then(function(sink) {
-            var minVersionNo = 0;
-            var array = sink.array;
-            for ( var i = 0; i < array.length; i++ ) {
-              var version = self.VersionTrait.VERSION_.f(array[i]);
-              self.syncRecordDAO.put(self.VersionedSyncRecord.create({
-                id: array[i].id,
-                version_: version
-              }));
-              minVersionNo = Math.max(minVersionNo, version);
-            }
-            return self.syncFromRemote_(minVersionNo);
-          });
+        then(function(sink) {
+          var minVersionNo = 0;
+          var array = sink.array;
+          for ( var i = 0 ; i < array.length ; i++ ) {
+            var version = self.VersionTrait.VERSION_.f(array[i]);
+            self.syncRecordDAO.put(self.VersionedSyncRecord.create({
+              id: array[i].id,
+              version_: version
+            }));
+            minVersionNo = Math.max(minVersionNo, version);
+          }
+          return self.syncFromRemote_(minVersionNo);
+        });
 
       // Setup polling after initial sync.
       if ( ! self.polling ) return;
@@ -166,12 +166,14 @@ foam.CLASS({
         }, self.pollingFrequency);
       });
     },
+
     function validate() {
       this.SUPER();
       if ( ! this.VersionTrait.isSubClass(this.of) ) {
         throw new Error(`SyncDAO.of must have trait foam.version.VersionTrait`);
       }
     },
+
     function sync() {
       // Sync after any sync(s) in progress complete.
       return this.synced = this.synced.then(function() {
@@ -197,6 +199,7 @@ foam.CLASS({
         });
       }).then(self.onLocalUpdate).then(function() { return ret; });
     },
+
     function remove_(x, obj) {
       var self = this;
       var ret;
@@ -212,19 +215,20 @@ foam.CLASS({
         });
       }).then(self.onLocalUpdate).then(function() { return ret; });
     },
+
     function removeAll_(x, skip, limit, order, predicate) {
       // Marks all the removed objects' sync records as deleted via remove_().
       return this.delegate.select_(x, null, skip, limit, order, predicate).
-          then(function(a) {
-            a = a.array;
-            var promises = [];
+        then(function(a) {
+          a = a.array;
+          var promises = [];
 
-            for ( var i = 0 ; i < a.length ; i++ ) {
-              promises.push(this.remove_(x, a[i]));
-            }
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            promises.push(this.remove_(x, a[i]));
+          }
 
-            return Promise.all(promises);
-          }.bind(this));
+          return Promise.all(promises);
+        }.bind(this));
     },
 
     //
@@ -276,17 +280,17 @@ foam.CLASS({
         var ret;
         return self.withSyncRecordTx_(function() {
           return self.syncRecordDAO.
-              where(self.GT(self.VersionedSyncRecord.VERSION_, -1)).
-              removeAll().
-              then(self.syncRecordDAO.select.bind(self.syncRecordDAO)).
-              then(function(sink) {
-                var idsToKeep = sink.array.map(function(syncRecord) {
-                  return syncRecord.id;
-                });
-                return self.delegate.where(
-                    self.NOT(self.IN(self.of.ID, idsToKeep))).
-                    removeAll();
+            where(self.GT(self.VersionedSyncRecord.VERSION_, -1)).
+            removeAll().
+            then(self.syncRecordDAO.select.bind(self.syncRecordDAO)).
+            then(function(sink) {
+              var idsToKeep = sink.array.map(function(syncRecord) {
+                return syncRecord.id;
               });
+              return self.delegate.where(
+                  self.NOT(self.IN(self.of.ID, idsToKeep))).
+                  removeAll();
+            });
         }).then(self.sync.bind(self));
       }
     },
@@ -298,14 +302,14 @@ foam.CLASS({
         var self = this;
         var VERSION_ = self.VersionedSyncRecord.VERSION_;
         return self.syncRecordDAO.
-            // Like MAX(), but faster on DAOs that can optimize order+limit.
-            orderBy(self.DESC(VERSION_)).limit(1).
-            select().then(function(sink) {
-              var minVersionNo = sink.array[0] && VERSION_.f(sink.array[0]) ||
-                  0;
-              return self.syncToRemote_().
-                  then(self.syncFromRemote_.bind(self, minVersionNo));
-            });
+          // Like MAX(), but faster on DAOs that can optimize order+limit.
+          orderBy(self.DESC(VERSION_)).limit(1).
+          select().then(function(sink) {
+            var minVersionNo = sink.array[0] && VERSION_.f(sink.array[0]) ||
+                0;
+            return self.syncToRemote_().
+                then(self.syncFromRemote_.bind(self, minVersionNo));
+          });
       }
     },
     {
@@ -374,22 +378,22 @@ foam.CLASS({
       code: function(minVersionNo) {
         var self = this;
         return self.remoteDAO.
-            where(self.GT(self.VersionTrait.VERSION_, minVersionNo)).
-            orderBy(self.VersionTrait.VERSION_).
-            select().then(function(sink) {
-              var array = sink.array;
-              var promises = [];
+          where(self.GT(self.VersionTrait.VERSION_, minVersionNo)).
+          orderBy(self.VersionTrait.VERSION_).
+          select().then(function(sink) {
+            var array = sink.array;
+            var promises = [];
 
-              for ( var i = 0 ; i < array.length ; i++ ) {
-                if ( self.VersionTrait.DELETED_.f(array[i]) ) {
-                  promises.push(self.removeFromRemote_(array[i]));
-                } else {
-                  promises.push(self.putFromRemote_(array[i]));
-                }
+            for ( var i = 0 ; i < array.length ; i++ ) {
+              if ( self.VersionTrait.DELETED_.f(array[i]) ) {
+                promises.push(self.removeFromRemote_(array[i]));
+              } else {
+                promises.push(self.putFromRemote_(array[i]));
               }
+            }
 
-              return Promise.all(promises);
-            });
+            return Promise.all(promises);
+          });
       }
     },
     {
