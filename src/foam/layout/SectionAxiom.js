@@ -111,7 +111,30 @@ foam.CLASS({
       }).map(arr => arr.some(m => {
         return m != foam.u2.DisplayMode.HIDDEN
       }));
-      availabilitySlots.push(propVisSlot);
+
+      // add check for at least one available action as well (actionAvailSlot)
+      let actions;
+      actions = data.cls_.getAxiomsByClass(foam.core.Action)
+        .filter(a => a.section === this.name);
+
+      var actionAvailSlot = foam.core.ArraySlot.create({
+        slots: actions.map(
+          a => a.createIsAvailable$(data.__subContext__, data)
+        )
+      }).map(arr => arr.some(isAvailable => {
+        return isAvailable;
+      }));
+
+      var atLeastOnePropertyOrActionAvailableSlot = foam.core.ArraySlot.create({
+        slots: [
+          propVisSlot,
+          actionAvailSlot
+        ]
+      }).map(arr => arr.some(isVisibleOrAvailable => {
+        return isVisibleOrAvailable;
+      }));
+
+      availabilitySlots.push(atLeastOnePropertyOrActionAvailableSlot);
 
       var simpleSlot = foam.core.SimpleSlot.create();
       var arrSlot = foam.core.ArraySlot.create({slots: availabilitySlots}).map(arr => {
