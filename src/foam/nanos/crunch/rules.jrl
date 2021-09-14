@@ -1,34 +1,3 @@
-p({
-  "class":"foam.nanos.ruler.PermissionedUserRule",
-  "id":"create-user-capability-on-spid-set",
-  "name":"Set up User Spid On User Create and Update",
-  "priority":100,
-  "ruleGroup":"spidCapability",
-  "documentation":"On user create or update, if spid is set, remove old spids and create UserCapabilityJunction between User/Spid",
-  "daoKey":"localUserDAO",
-  "operation":3,
-  "after":true,
-  "enabled":true,
-  "action":{ "class":"foam.nanos.auth.CreateUserCapabilityJunctionOnSpidSet" },
-  "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.PermissionedUCJRule",
-  "id":"set-user-service-provider",
-  "name":"Update User Spid On UCJ Update",
-  "priority":100,
-  "ruleGroup":"spidCapability",
-  "documentation":"Re-assign user spid on CREATE of User-ServiceProvider junction",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":0,
-  "after":true,
-  "enabled":true,
-  "action":{
-    "class":"foam.nanos.auth.SetUserServiceProviderJunctionRuleAction"
-  },
-  "lifecycleState":1
-})
-
 // disable status update notification
 // TODO: come up with new logic to minimize the number of notifications sent to users
 p({

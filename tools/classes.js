@@ -712,6 +712,7 @@ var classes = [
   'foam.nanos.ruler.Ruled',
   'foam.nanos.ruler.Rule',
   'foam.nanos.ruler.PermissionedUserRule',
+  'foam.nanos.ruler.PermissionedUCJRule',
   'foam.nanos.ruler.RuledDAO',
   'foam.nanos.ruler.RulerData',
   'foam.nanos.ruler.test.RuledDAOTest',

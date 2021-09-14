@@ -431,6 +431,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/Ruled" },
   { name: "foam/nanos/ruler/Rule" },
   { name: 'foam/nanos/ruler/PermissionedUserRule' },
+  { name: 'foam/nanos/ruler/PermissionedUCJRule' },
   { name: "foam/nanos/ruler/RuleAction" },
   { name: "foam/nanos/ruler/CompositeRuleAction" },
   { name: "foam/nanos/ruler/StopRulerAction" },
