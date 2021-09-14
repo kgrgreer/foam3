@@ -13,11 +13,6 @@ public class UIDSupport {
   public final static int CHECKSUM_MOD = 997;
 
   /**
-   * Singleton instance
-   */
-  private final static UIDSupport instance__ = new UIDSupport();
-
-  /**
    * A hard coded array used as permutation sequence. It only supports
    * permutation of a string less than 30 digits. The part of a string over
    * 30 digits will not be involved in permutation.
@@ -27,12 +22,6 @@ public class UIDSupport {
     10, 11,  8, 12,  6, 14,  6, 5, 16,  3,
     17,  2, 20, 18, 24, 17, 25, 3, 16, 12
   };
-
-  private UIDSupport() {}
-
-  public static UIDSupport instance() {
-    return instance__;
-  }
 
   /**
    * Permutate id string according to the {@link #PERMUTATION_SEQ}.
@@ -45,7 +34,7 @@ public class UIDSupport {
    * @param idStr Source id string to permutate
    * @return Generated unique ID
    */
-  public String permutate(String idStr) {
+  public static String permutate(String idStr) {
     var l = idStr.length() - 3;
     var checksum = Integer.parseInt(idStr.substring(l), 16) + 256;
     var id = new char[l];
@@ -67,7 +56,7 @@ public class UIDSupport {
    * @param idStr Generated unique id
    * @return Source id string
    */
-  public String undoPermutate(String idStr) {
+  public static String undoPermutate(String idStr) {
     var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
     var id = idStr.substring(3).toCharArray();
 
@@ -86,7 +75,7 @@ public class UIDSupport {
    * @param uid Generated unique id
    * @return Hash of the unique id
    */
-  public int hash(long uid) {
+  public static int hash(long uid) {
     return hash(Long.toHexString(uid));
   }
 
@@ -96,7 +85,7 @@ public class UIDSupport {
    * @param uid Generated unique id
    * @return Hash of the unique id
    */
-  public int hash(String uid) {
+  public static int hash(String uid) {
     var hex = undoPermutate(uid);
     return mod(Long.parseLong(hex, 16));
   }
@@ -107,7 +96,7 @@ public class UIDSupport {
    * @param s Input (salt) string
    * @return checksum
    */
-  public int mod(String s) {
+  public static int mod(String s) {
     return mod(Math.abs(s.hashCode()));
   }
 
@@ -117,7 +106,7 @@ public class UIDSupport {
    * @param n Input number
    * @return checksum
    */
-  public int mod(long n) {
+  public static int mod(long n) {
     return (int) (n % CHECKSUM_MOD);
   }
 
@@ -127,23 +116,23 @@ public class UIDSupport {
    * @param l Input long integer
    * @return Hex string equivalent to the input
    */
-  public String toHexString(long l) {
+  public static String toHexString(long l) {
     return toHexString(l, 0);
   }
 
   /**
    * Convert a long integer to hex string and format with according to the
-   * desired numberOfBits given.
+   * desired numberOfBytes given.
    *
    * Eg. toHexString(11, 4); // => "000b"
    *
    * @param l Input long integer
-   * @param numberOfBits Number of minimum bits for formatting the hex string
+   * @param numberOfBytes Number of minimum bytes for formatting the hex string
    * @return Hex string equivalent to the input
    */
-  public String toHexString(long l, int numberOfBits) {
+  public static String toHexString(long l, int numberOfBytes) {
     var sb = new StringBuilder(Long.toHexString(l));
-    while ( sb.length() < numberOfBits ) {
+    while ( sb.length() < numberOfBytes ) {
       sb.insert(0, '0');
     }
     return sb.toString();

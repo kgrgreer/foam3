@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'UIDGenerator',
   flags: ['java'],
 
+  javaImports: [
+    'static foam.util.UIDSupport.*'
+  ],
+
   properties: [
     {
       name: 'seqNo',
@@ -62,11 +66,10 @@ foam.CLASS({
       `,
       javaCode: `
         var id = new StringBuilder();
-        var support = UIDSupport.instance();
 
         // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
-        id.append(support.toHexString(curSec));
+        id.append(toHexString(curSec));
 
         // 2 bits sequence
         if ( curSec != getLastSecondCalled() ) {
@@ -74,15 +77,15 @@ foam.CLASS({
           setLastSecondCalled(curSec);
         }
         int seqNo = getSeqNo();
-        id.append(support.toHexString(seqNo, 2));
+        id.append(toHexString(seqNo, 2));
         setSeqNo(seqNo + 1);
 
         // 3 bits checksum
-        var checksum = support.toHexString(calcChecksum(id.toString()), 3);
+        var checksum = toHexString(calcChecksum(id.toString()), 3);
         id.append(checksum);
 
         // permutation
-        return UIDSupport.instance().permutate(id.toString());
+        return permutate(id.toString());
       `
     },
     {
@@ -93,9 +96,8 @@ foam.CLASS({
         { name: 'id', type: 'String' }
       ],
       javaCode: `
-        var support   = UIDSupport.instance();
-        var targetMod = support.mod(getSalt());
-        var idMod     = support.mod(Long.parseLong(id + "000", 16));
+        var targetMod = mod(getSalt());
+        var idMod     = mod(Long.parseLong(id + "000", 16));
 
         return (int) (UIDSupport.CHECKSUM_MOD - idMod + targetMod);
       `

@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'static foam.util.UIDSupport.*',
     'java.util.HashSet'
   ],
 
@@ -18,7 +19,7 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         var uidgen = new UIDGenerator.Builder(x).setSalt("foobar").build();
-        var hash   = UIDSupport.instance().mod("foobar");
+        var hash   = mod("foobar");
         UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(uidgen, hash);
         UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(uidgen, hash);
       `
@@ -36,11 +37,10 @@ foam.CLASS({
 
         var verified = true;
         var it = ids.iterator();
-        var support = UIDSupport.instance();
         var id = "";
         while ( verified && it.hasNext() ) {
           id = it.next();
-          verified = hash == support.hash(id);
+          verified = hash == UIDSupport.hash(id);
         }
         test(verified, "Should generated unique string ids be verifiable" + (verified ? "" : ", but " + id + " failed verification"));
       `
@@ -58,11 +58,10 @@ foam.CLASS({
 
         var verified = true;
         var it = ids.iterator();
-        var support = UIDSupport.instance();
         var id = 0L;
         while ( verified && it.hasNext() ) {
           id = it.next();
-          verified = hash == support.hash(id);
+          verified = hash == UIDSupport.hash(id);
         }
         test(verified, "Should generated unique string ids be verifiable" + (verified ? "" : ", but " + id + " failed verification"));
       `
