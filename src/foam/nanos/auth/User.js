@@ -53,7 +53,6 @@ foam.CLASS({
     'id',
     'type',
     'group.id',
-    'organization',
     'email'
   ],
 
@@ -65,7 +64,6 @@ foam.CLASS({
     'enabled',
     'firstName',
     'lastName',
-    'organization',
     'email'
   ],
 
@@ -175,7 +173,8 @@ foam.CLASS({
         }
       ],
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'Boolean',
@@ -198,7 +197,8 @@ foam.CLASS({
       order: 40,
       gridColumns: 6,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      columnPermissionRequired: true
     },
     {
       class: 'DateTime',
@@ -240,7 +240,8 @@ foam.CLASS({
       order: 80,
       gridColumns: 6,
       includeInDigest: true,
-      containsPII: true
+      containsPII: true,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -262,7 +263,8 @@ foam.CLASS({
       order: 100,
       gridColumns: 6,
       includeInDigest: false,
-      containsPII: true
+      containsPII: true,
+      columnPermissionRequired: true
     },
     {
       class: 'Date',
@@ -272,7 +274,8 @@ foam.CLASS({
       documentation: 'The date of birth of the individual person, or real user.',
       section: 'userInformation',
       order: 120,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'Reference',
@@ -290,7 +293,8 @@ foam.CLASS({
       },
       javaFactory: `
         return new foam.nanos.auth.LanguageId.Builder(null).setCode("en").build();
-      `
+      `,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -301,7 +305,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 140,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'EMail',
@@ -330,7 +335,8 @@ foam.CLASS({
       writePermissionRequired: true,
       section: 'userInformation',
       order: 160,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'Website',
@@ -342,7 +348,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 170,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'FObjectProperty',
@@ -380,7 +387,8 @@ foam.CLASS({
       writePermissionRequired: true,
       section: 'userInformation',
       order: 200,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'PhoneNumber',
@@ -396,7 +404,8 @@ foam.CLASS({
           val = val.replaceAll(" ", "");
           val = val.replaceAll("[-()]", "");
         }
-      `
+      `,
+      columnPermissionRequired: true
     },
     {
       class: 'Boolean',
@@ -405,7 +414,8 @@ foam.CLASS({
       writePermissionRequired: true,
       section: 'userInformation',
       order: 220,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -429,7 +439,8 @@ foam.CLASS({
       displayWidth: 70,
       view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 100 },
       section: 'userInformation',
-      order: 240
+      order: 240,
+      columnPermissionRequired: true
     },
     {
       class: 'DateTime',
@@ -478,7 +489,8 @@ foam.CLASS({
       section: 'businessInformation',
       order: 15,
       gridColumns: 6,
-      tableWidth: 170
+      tableWidth: 170,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -491,7 +503,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'businessInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -531,7 +544,8 @@ foam.CLASS({
       gridColumns: 6,
       javaPostSet: `
         clearDisabledTopicSet();
-      `
+      `,
+      columnPermissionRequired: true
     },
     {
       class: 'foam.core.Enum',
@@ -564,7 +578,8 @@ foam.CLASS({
           return "";
         }
         return spid_;
-      `
+      `,
+      columnPermissionRequired: true
     },
     {
       class: 'Boolean',
@@ -616,7 +631,8 @@ foam.CLASS({
       readVisibility: 'HIDDEN',
       section: 'systemInformation',
       order: 110,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'Password',
@@ -624,7 +640,8 @@ foam.CLASS({
       includeInDigest: true,
       documentation: 'The password that is currently active with the User.',
       hidden: true,
-      networkTransient: true
+      networkTransient: true,
+      columnPermissionRequired: true
     },
     {
       class: 'Password',
@@ -868,7 +885,8 @@ foam.RELATIONSHIP({
     hidden: false,
     section: 'systemInformation',
     order: 30,
-    gridColumns: 6
+    gridColumns: 6,
+    columnPermissionRequired: true
   }
 });
 
@@ -880,7 +898,8 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   sourceProperty: {
     transient: true,
-    section: 'systemInformation'
+    section: 'systemInformation',
+    columnPermissionRequired: true
   }
 });
 
@@ -897,13 +916,15 @@ foam.RELATIONSHIP({
     createVisibility: 'HIDDEN',
     label: 'Businesses',
     section: 'businessInformation',
-    order: 50
+    order: 50,
+    columnPermissionRequired: true
   },
   targetProperty: {
     createVisibility: 'HIDDEN',
     label: 'Agents of Business',
     section: 'businessInformation',
-    order: 40
+    order: 40,
+    columnPermissionRequired: true
   }
 });
 
@@ -944,6 +965,7 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'systemInformation',
     order: 60,
-    gridColumns: 6
+    gridColumns: 6,
+    columnPermissionRequired: true
   }
 });
