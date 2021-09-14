@@ -62,7 +62,7 @@ foam.CLASS({
       `,
       javaCode: `
         var id = new StringBuilder();
-        var support = UIDSupport.getInstance();
+        var support = UIDSupport.instance();
 
         // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
@@ -82,7 +82,7 @@ foam.CLASS({
         id.append(checksum);
 
         // permutation
-        return UIDSupport.getInstance().permutate(id.toString());
+        return UIDSupport.instance().permutate(id.toString());
       `
     },
     {
@@ -93,7 +93,7 @@ foam.CLASS({
         { name: 'id', type: 'String' }
       ],
       javaCode: `
-        var support   = UIDSupport.getInstance();
+        var support   = UIDSupport.instance();
         var targetMod = support.mod(getSalt());
         var idMod     = support.mod(Long.parseLong(id + "000", 16));
 

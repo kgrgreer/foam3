@@ -30,7 +30,7 @@ public class UIDSupport {
 
   private UIDSupport() {}
 
-  public static UIDSupport getInstance() {
+  public static UIDSupport instance() {
     return instance__;
   }
 
@@ -71,7 +71,7 @@ public class UIDSupport {
     var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
     var id = idStr.substring(3).toCharArray();
 
-    for ( int i = id.length - 1 ; i >= 0; i-- ) {
+    for ( int i = id.length - 1; i >= 0; i-- ) {
       int newI = PERMUTATION_SEQ[i];
       char c = id[newI];
       id[newI] = id[i];

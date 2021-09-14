@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         var uidgen = new UIDGenerator.Builder(x).setSalt("foobar").build();
-        var hash   = UIDSupport.getInstance().mod("foobar");
+        var hash   = UIDSupport.instance().mod("foobar");
         UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(uidgen, hash);
         UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(uidgen, hash);
       `
@@ -36,7 +36,7 @@ foam.CLASS({
 
         var verified = true;
         var it = ids.iterator();
-        var support = UIDSupport.getInstance();
+        var support = UIDSupport.instance();
         var id = "";
         while ( verified && it.hasNext() ) {
           id = it.next();
@@ -58,7 +58,7 @@ foam.CLASS({
 
         var verified = true;
         var it = ids.iterator();
-        var support = UIDSupport.getInstance();
+        var support = UIDSupport.instance();
         var id = 0L;
         while ( verified && it.hasNext() ) {
           id = it.next();
