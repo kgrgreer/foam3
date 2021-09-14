@@ -45,6 +45,9 @@ foam.CLASS({
       autoValidate: true,
       documentation: `data for capability.of`,
       view: 'foam.u2.view.AnyView'
+      // view: function(_, x) {
+      //   return { class: 'foam.u2.crunch.UCJReferenceView', data: x.data };
+      // }
     },
     {
       name: 'status',
