@@ -33,6 +33,11 @@
     },
     {
       class: 'String',
+      name: 'documentType',
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
       name: 'url',
       section: 'infoSection',
       visibility: 'RO',
