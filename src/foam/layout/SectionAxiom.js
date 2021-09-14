@@ -113,8 +113,7 @@ foam.CLASS({
       }));
 
       // add check for at least one available action as well (actionAvailSlot)
-      let actions;
-      actions = data.cls_.getAxiomsByClass(foam.core.Action)
+      var actions = data.cls_.getAxiomsByClass(foam.core.Action)
         .filter(a => a.section === this.name);
 
       var actionAvailSlot = foam.core.ArraySlot.create({
