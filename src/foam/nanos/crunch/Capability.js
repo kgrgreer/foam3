@@ -321,7 +321,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isInternalCapbility',
+      name: 'isInternalCapability',
       documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
       Disables crunchService.isRenewable from propogating anything else in the heirarchy.
       Disables user notifications.
@@ -544,7 +544,7 @@ foam.CLASS({
       `,
       javaCode: `
         if ( ! getEnabled() ) return false;
-        if ( getIsInternalCapbility() ) return false;
+        if ( getIsInternalCapability() ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");

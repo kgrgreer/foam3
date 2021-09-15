@@ -71,16 +71,6 @@ foam.CLASS({
     },
     {
       class: 'foam.comics.v2.CannedQuery',
-      label: 'Business Ranking',
-      predicateFactory: function(e) {
-        return e.EQ(
-          foam.nanos.crunch.UserCapabilityJunction.TARGET_ID,
-          'confidential.agentAccessOnly.risk.ranking'
-        );
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
       label: 'All Expirable',
       predicateFactory: function(e) {
         return e.NEQ(

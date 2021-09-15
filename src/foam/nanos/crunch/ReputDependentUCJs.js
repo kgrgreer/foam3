@@ -81,8 +81,8 @@ foam.CLASS({
             for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
               if ( ucjToReput.getStatus() == CapabilityJunctionStatus.GRANTED ) {
                 var cap = (Capability) ucj.findTargetId(x);
-                if ( ucj.getIsInGracePeriod() && ! cap.getIsInternalCapbility() ) ucjToReput.setIsInGracePeriod(true);
-                if ( ucj.getIsRenewable() && ! cap.getIsInternalCapbility() ) ucjToReput.setIsRenewable(true);
+                if ( ucj.getIsInGracePeriod() && ! cap.getIsInternalCapability() ) ucjToReput.setIsInGracePeriod(true);
+                if ( ucj.getIsRenewable() && ! cap.getIsInternalCapability() ) ucjToReput.setIsRenewable(true);
               }
               if ( effectiveUserId != null && effectiveX != null &&
                    ucjToReput.getSourceId() == effectiveUserId )
