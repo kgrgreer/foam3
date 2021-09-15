@@ -324,8 +324,8 @@ foam.CLASS({
       name: 'isInternalCapability',
       documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
       Disables crunchService.isRenewable from propogating anything else in the heirarchy.
-      Disables user notifications.
-      Disables ccapability.maybeReOpen()`
+      Disables user expiry notifications.
+      Disables capability.maybeReOpen()`
     }
   ],
 
