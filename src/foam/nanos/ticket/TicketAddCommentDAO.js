@@ -48,7 +48,7 @@ foam.CLASS({
       ticket = (Ticket) ticket.fclone();
       ticket.setExternalComment("");
       ticket = (Ticket) getDelegate().put_(x, ticket);
-      notify(x, ticket);
+      notify(x, ticket, tc);
     }
 
     return ticket;
@@ -64,13 +64,17 @@ foam.CLASS({
         {
           type: 'foam.nanos.ticket.Ticket',
           name: 'ticket'
+        },
+        {
+          type: 'foam.nanos.ticket.TicketComment',
+          name: 'ticketComment'
         }
       ],
       javaCode: `
 
-      User user = ticket.findCreatedFor(x);
+      User user = ticket.findAssignedTo(x);
       Notification notification = new Notification.Builder(x)
-        .setBody(ticket.getExternalComment())
+        .setBody(ticketComment.getComment())
         .setNotificationType("Request Information")
         .build();
       user.doNotify(x, notification);
