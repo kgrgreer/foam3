@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.core.ConstantSlot',
     'foam.core.ExpressionSlot',
     'foam.u2.md.OverlayDropdown',
-    'foam.u2.HTMLView'
+    'foam.u2.HTMLView',
+    'foam.u2.LoadingSpinner'
   ],
 
   imports: [
@@ -142,8 +143,15 @@ foam.CLASS({
       }
     },
 
-    async function initializeOverlay() {
+    async function initializeOverlay(x, y) {
       var self = this;
+      this.overlayInitialized_ = true;
+      var spinner = this.E().style({ padding: '1em' }).tag(self.LoadingSpinner, { size: 24 });
+      this.overlay_.add(spinner);
+      // Add the overlay to the controller so if the table is inside a container
+      // with `overflow: hidden` then this overlay won't be cut off.
+      this.ctrl.add(this.overlay_);
+      this.overlay_.open(x, y);
 
       if ( this.obj && this.dao ) {
         this.obj = await this.dao.inX(this.__context__).find(this.obj.id);
@@ -165,7 +173,7 @@ foam.CLASS({
       // a list where element at i stores whether ith action in data is available or not
       const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
 
-      this.overlay_.startContext({ data: self.obj })
+      var el = this.E().startContext({ data: self.obj })
         .forEach(self.data, function(action, index) {
           if ( availabilities[index] ) {
             this
@@ -182,6 +190,9 @@ foam.CLASS({
           }
         })
       .endContext();
+      spinner.remove();
+      this.overlay_.add(el);
+      this.overlay_.open(x, y);
 
       // Moves focus to the modal when it is open and keeps it in the modal till it is closed
 
@@ -191,10 +202,6 @@ foam.CLASS({
       this.lastEl_ = actionElArray_[actionElArray_.length - 1].childNodes[0];
       (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
 
-      // Add the overlay to the controller so if the table is inside a container
-      // with `overflow: hidden` then this overlay won't be cut off.
-      this.ctrl.add(this.overlay_);
-      this.overlayInitialized_ = true;
     },
 
     async function isEnabled(action) {
@@ -224,8 +231,11 @@ foam.CLASS({
       var x = evt.clientX || this.getBoundingClientRect().x;
       var y = evt.clientY || this.getBoundingClientRect().y;
       if ( this.disabled_ ) return;
-      if ( ! this.overlayInitialized_ ) this.initializeOverlay();
-      this.overlay_.open(x, y);
+      if ( ! this.overlayInitialized_ ) {
+        this.initializeOverlay(x, y);
+      } else {
+        this.overlay_.open(x, y);
+      }
       (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
     },
 
