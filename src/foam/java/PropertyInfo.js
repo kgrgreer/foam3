@@ -17,17 +17,30 @@
 
 foam.CLASS({
   package: 'foam.java',
+  name: 'PropertyInfoPropertyRefinement',
+  refines: 'foam.core.Property',
+
+  documentation: 'Used by PropertyInfo Properties to specifiy which foam.core.Property they take their value from.',
+
+  properties: [
+    { name: 'propertyName' }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
   name: 'PropertyInfo',
   extends: 'foam.java.Class',
 
   properties: [
-    ['anonymous', true],
-    'propName',
-    'propShortName',
-    'propAliases',
-    'compare',
-    'comparePropertyToObject',
-    'comparePropertyToValue',
+    { name: 'anonymous', value: true },
+    { name: 'propName',                propertyName: 'name' },
+    { name: 'propShortName',           propertyName: 'shortName' },
+    { name: 'propAliases',             propertyName: 'aliases' },
+    { name: 'compare',                 propertyName: 'javaCompare' },
+    { name: 'comparePropertyToObject', propertyName: 'javaComparePropertyToObject' },
+    { name: 'comparePropertyToValue',  propertyName: 'javaComparePropertyToValue' },
     {
       name: 'getAliasesBody',
       expression: function() {
@@ -41,7 +54,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'networkTransient'
+      name: 'networkTransient',
+      propertyName: 'networkTransient'
     },
     {
       class: 'Boolean',
@@ -49,37 +63,45 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'storageTransient'
+      name: 'storageTransient',
+      propertyName: 'storageTransient'
     },
     {
       class: 'Boolean',
-      name: 'storageOptional'
+      name: 'storageOptional',
+      propertyName: 'storageOptional'
     },
     {
       class: 'Boolean',
-      name: 'clusterTransient'
+      name: 'clusterTransient',
+      propertyName: 'clusterTransient'
     },
     {
       class: 'Boolean',
-      name: 'readPermissionRequired'
+      name: 'readPermissionRequired',
+      propertyName: 'readPermissionRequired'
     },
     {
       class: 'Boolean',
-      name: 'writePermissionRequired'
+      name: 'writePermissionRequired',
+      propertyName: 'writePermissionRequired'
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML attribute. eg <foo id="XMLAttribute"></foo>',
-      name: 'xmlAttribute'
+      name: 'xmlAttribute',
+      propertyName: 'xmlAttribute'
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML textNode. eg <foo id="1">textNode</foo>',
-      name: 'xmlTextNode'
+      name: 'xmlTextNode',
+      propertyName: 'xmlTextNode'
     },
     {
       class: 'String',
-      name: 'sqlType'
+      name: 'sqlType',
+      propertyName: 'sqlType'
     },
     {
       name: 'getterName',
@@ -106,38 +128,43 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeInDigest',
+      propertyName: 'includeInDigest',
       value: true
     },
     {
       class: 'Boolean',
       name: 'includeInSignature',
+      propertyName: 'includeInSignature',
       value: true
     },
     {
       class: 'Boolean',
-      name: 'containsPII'
+      name: 'containsPII',
+      propertyName: 'containsPII'
     },
     {
       class: 'Boolean',
-      name: 'containsDeletablePII'
+      name: 'containsDeletablePII',
+      propertyName: 'containsDeletablePII'
     },
-    'sourceCls',
-    'propType',
-    'propValue',
-    'propRequired',
-    'jsonParser',
-    'csvParser',
-    'cloneProperty',
-    'queryParser',
-    'diffProperty',
-    'validateObj',
-    'toCSV',
-    'toCSVLabel',
-    'fromCSVLabelMapping',
-    'formatJSON',
+    { name: 'sourceCls' },
+    { name: 'propType',            propertyName: 'javaType' },
+    { name: 'propValue',           propertyName: 'javaValue' },
+    { name: 'propRequired',        propertyName: 'required' },
+    { name: 'jsonParser',          propertyName: 'javaJSONParser' },
+    { name: 'csvParser',           propertyName: 'javaCSVParser' },
+    { name: 'cloneProperty',       propertyName: 'javaCloneProperty' },
+    { name: 'queryParser',         propertyName: 'javaQueryParser' },
+    { name: 'diffProperty',        propertyName: 'javaDiffProperty' },
+    { name: 'validateObj',         propertyName: 'javaValidateObj' },
+    { name: 'toCSV',               propertyName: 'javaToCSV' },
+    { name: 'toCSVLabel',          propertyName: 'javaToCSVLabel' },
+    { name: 'fromCSVLabelMapping', propertyName: 'javaFromCSVLabelMapping' },
+    { name: 'formatJSON',          propertyName: 'javaFormatJSON' },
     {
       class: 'Boolean',
       name: 'sheetsOutput',
+      propertyName: 'sheetsOutput',
       documentation: 'The sheetsOutput specifies if property shoud be written to Google Sheet on import. eg on Transaction import in case there is Status column transaction\'s status will be written there'
     },
     {
