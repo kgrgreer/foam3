@@ -698,7 +698,7 @@ foam.CLASS({
       notification.severity        = severity || this.LogLevel.INFO;
       notification.transient       = transient;
       notification.icon            = icon;
-      this.__subContext__.notificationDAO.put(notification);
+      this.__subContext__.myNotificationDAO.put(notification);
     }
   ],
 
@@ -715,11 +715,8 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-       var userNotificationQueryId = this.subject && this.subject.realUser ?
-             this.subject.realUser.id : this.user.id;
-      this.__subSubContext__.notificationDAO.where(
-        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
-      ).on.put.sub((sub, on, put, obj) => {
+      this.__subSubContext__.myNotificationDAO
+      .on.put.sub((sub, on, put, obj) => {
         if ( obj.toastState == this.ToastState.REQUESTED ) {
           this.add(this.NotificationMessage.create({
             message: obj.toastMessage,

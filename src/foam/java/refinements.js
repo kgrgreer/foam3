@@ -1750,7 +1750,7 @@ foam.CLASS({
 
         return 'new String[] {\"' + value.join('\",\"') + '\"}';
       }
-    },
+    }
   ],
 
   methods: [

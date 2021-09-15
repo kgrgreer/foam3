@@ -84,16 +84,17 @@ foam.CLASS({
       }
     },
     {
-      name: 'client',
+      name: 'client'
     }
  ],
 
   methods: [
     async function render() {
       this.add('Building Client...');
-      var cls = await this.ClientBuilder.create({}, this).promise;
-      debugger;
+      var cls = await this.ClientBuilder.create({authenticate: false}, this).promise;
       this.client = cls.create(null, this);
+
+      if ( ! globalThis.client ) globalThis.client = this.client;
 
       this.add('built.');
     }
