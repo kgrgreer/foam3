@@ -224,7 +224,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    async function click(evt) {
+    function click(evt) {
       this.SUPER(evt);
       this.overlay_.parentEl = this;
       this.isMouseClick = !! evt.detail;
@@ -232,7 +232,7 @@ foam.CLASS({
       var y = evt.clientY || this.getBoundingClientRect().y;
       if ( this.disabled_ ) return;
       if ( ! this.overlayInitialized_ ) {
-        await this.initializeOverlay(x, y);
+        this.initializeOverlay(x, y);
       } else {
         this.overlay_.open(x, y);
       }
