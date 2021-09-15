@@ -142,7 +142,7 @@ foam.CLASS({
         }));
       }
     },
-    
+
     async function initializeOverlay(x, y) {
       var self = this;
       this.overlayInitialized_ = true;
