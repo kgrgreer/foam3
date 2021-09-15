@@ -138,7 +138,7 @@ foam.CLASS({
         this.properties = a.properties.map(p => {
           if ( foam.String.isInstance(p) ) return cls.getAxiomByName(p);
           if ( p.name ) return cls.getAxiomByName(p.name).clone().copyFrom(p);
-        }).sort((p1, p2) => p1.order - p2.order);
+        }).sort(foam.core.Property.ORDER.compare);
       } else {
         this.properties = cls.getAxiomsByClass(foam.core.Property)
           .filter(p => p.section == a.name)
