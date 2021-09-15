@@ -201,10 +201,14 @@ foam.CLASS({
         javaCode: `
           CrunchService crunchService = (CrunchService) x.get("crunchService");
           List grantPath = crunchService.getGrantPath(x, id);
-          var pm = PM.create(x, true, "CapabilityPayloadDAO", "filterCapabilityPayload - walkGrantPath");
+          
+          PM pm = PM.create(x, true, "CapabilityPayloadDAO", "filterCapabilityPayload", "walkGrantPath");
           Map<String,GrantPathNode> dataMap = walkGrantPath(grantPath, x);
           pm.log(x);
 
+          // Monitor the rest of the code
+          pm = PM.create(x, true, "CapabilityPayloadDAO", "filterCapabilityPayload", "algorithm");
+          
           // Sorted maps for return data
           Map<String,FObject> dataObjects = new TreeMap<String,FObject>();
           Map<String,String> validationErrors = new TreeMap<String,String>();
@@ -251,6 +255,8 @@ foam.CLASS({
             }
           }
 
+          pm.log(x); // algorithm
+
           return new CapabilityPayload.Builder(x)
             .setCapabilityDataObjects(dataObjects)
             .setCapabilityValidationErrors(validationErrors)
@@ -261,30 +267,35 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+      var overallPm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
       recordCapabilityPayload(x, obj.fclone());
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
-        var pm1 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - receivingCapPayload.getCapabilityDataObjects");
+
+        PM pm = PM.create(x, true, "CapabilityPayloadDAO", "put", "getCapabilityDataObjects");
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
-        pm1.log(x);
+        pm.log(x);
 
-        var pm2 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - crunchService.getGrantPath");
+        pm = PM.create(x, true, "CapabilityPayloadDAO", "put", "getGrantPath");
         List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
-        pm2.log(x);
-        processCapabilityList(x, grantPath, capabilityDataObjects);
+        pm.log(x);
 
-        var pm3 = PM.create(x, true, "CapabilityPayloadDAO", "put_ - find_ - receivingCapPayload.getId");
+        pm = PM.create(x, true, "CapabilityPayloadDAO", "put", "processCapabilityList");
+        processCapabilityList(x, grantPath, capabilityDataObjects);
+        pm.log(x);
+
+        pm = PM.create(x, true, "CapabilityPayloadDAO", "put", "find");
         var ret =  find_(x, receivingCapPayload.getId());
-        pm3.log(x);
+        pm.log(x);
+
         return ret;
       } catch(Throwable t) {
-        pm.error(x, t.getMessage());
+        overallPm.error(x, t.getMessage());
         throw t;
       } finally {
-        pm.log(x);
+        overallPm.log(x);
       }
       `
     },
@@ -316,6 +327,7 @@ foam.CLASS({
           if ( item instanceof Capability ) {
             Capability cap = (Capability) item;
 
+            PM pm = PM.create(x, true, "CapabilityPayloadDAO", "processCapabilityList", cap.getId());
             FObject dataObj = null;
             if ( capabilityDataObjects != null && capabilityDataObjects.containsKey(cap.getName()) ) {
               // Making sure to cast the of to the object before it gets casted to an fobject
@@ -334,6 +346,7 @@ foam.CLASS({
             
             UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
             getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
+            pm.log(x);
           } else if ( item instanceof List ) {
             processCapabilityList(x, (List) item, capabilityDataObjects);
           } else {
