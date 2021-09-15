@@ -75,7 +75,7 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.EQ(
           foam.nanos.crunch.UserCapabilityJunction.TARGET_ID,
-          'business.ranking'
+          'confidential.agentAccessOnly.risk.ranking'
         );
       }
     },

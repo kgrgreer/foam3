@@ -567,7 +567,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     if ( prereqs == null || prereqs.size() == 0 || topLevelRenewable ) return topLevelRenewable;
 
     for ( var capId : prereqs ) {
-      if ( isRenewable(x, capId.toString())  ) return true;
+      String cId = capId.toString();
+      if ( ! capability.getIsInternalCapbility() && isRenewable(x, cId)  ) return true;
     }
     return false;
   }

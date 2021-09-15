@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
     'java.util.ArrayList',
     'java.util.List',
     'static foam.mlang.MLang.*'
@@ -79,8 +80,9 @@ foam.CLASS({
 
             for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
               if ( ucjToReput.getStatus() == CapabilityJunctionStatus.GRANTED ) {
-                if ( ucj.getIsInGracePeriod() ) ucjToReput.setIsInGracePeriod(true);
-                if ( ucj.getIsRenewable() ) ucjToReput.setIsRenewable(true);
+                var cap = (Capability) ucj.findTargetId(x);
+                if ( ucj.getIsInGracePeriod() && ! cap.getIsInternalCapbility() ) ucjToReput.setIsInGracePeriod(true);
+                if ( ucj.getIsRenewable() && ! cap.getIsInternalCapbility() ) ucjToReput.setIsRenewable(true);
               }
               if ( effectiveUserId != null && effectiveX != null &&
                    ucjToReput.getSourceId() == effectiveUserId )

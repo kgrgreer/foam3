@@ -318,6 +318,14 @@ foam.CLASS({
       documentation: 'If false, disable auto save for wizardlets associated to this capability.',
       hidden: true,
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isInternalCapbility',
+      documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
+      Disables crunchService.isRenewable from propogating anything else in the heirarchy.
+      Disables user notifications.
+      Disables ccapability.maybeReOpen()`
     }
   ],
 
@@ -536,6 +544,7 @@ foam.CLASS({
       `,
       javaCode: `
         if ( ! getEnabled() ) return false;
+        if ( getIsInternalCapbility() ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
