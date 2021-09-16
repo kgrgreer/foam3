@@ -138,6 +138,8 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setDecorator(decorator)
       .setIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.STATUS })
+      .setPipelinePm(true)
+      .setPm(true)
       .build();
     return dao;
   """,
