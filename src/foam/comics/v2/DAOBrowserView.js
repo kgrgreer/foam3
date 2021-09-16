@@ -382,7 +382,7 @@ foam.CLASS({
                           .addClass(self.myClass('refresh'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > 2 ) {
+                          if ( self.config.DAOActions.length > 3 ) {
                             self.start(self.OverlayActionListView, {
                               label: this.ACTIONS,
                               data: self.config.DAOActions,
