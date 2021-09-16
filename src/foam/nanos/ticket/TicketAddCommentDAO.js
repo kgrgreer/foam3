@@ -72,7 +72,7 @@ foam.CLASS({
       ],
       javaCode: `
 
-      User user = ticket.findAssignedTo(x);
+      User user = ticket.findCreatedFor(x);
       Notification notification = new Notification.Builder(x)
         .setBody(ticketComment.getComment())
         .setNotificationType("Request Information")
