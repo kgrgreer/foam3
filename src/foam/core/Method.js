@@ -58,6 +58,25 @@ foam.CLASS({
   name: 'AbstractMethod',
 
   properties: [
+    {
+      name: 'signature',
+      postSet: function(_, signature) {
+        // type name(aa) throws
+        var [meth, throws] = signature.split(' throws ');
+        var i    = meth.indexOf(' ');
+        var type = meth.substring(0, i);
+        var sig  = meth.substring(i+1);
+        var i2   = sig.indexOf('(');
+        var name = sig.substring(0, i2);
+        var args = sig.substring(i2+1, sig.length-1);
+
+        this.name = name;
+        this.args = args;
+        this.type = type;
+
+        if ( throws ) this.javaThrows = throws.split(',');
+      }
+    },
     { name: 'name', required: true },
     { name: 'code', required: false },
     'documentation',
@@ -195,6 +214,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.SCRIPT({
   package: 'foam.core',
