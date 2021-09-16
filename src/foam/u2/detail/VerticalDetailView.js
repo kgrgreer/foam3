@@ -38,7 +38,7 @@ foam.CLASS({
           return self.E()
             .start(self.Rows)
               .forEach(sections, function(s) {
-                var slot = s.createIsAvailableFor(self.data$).map(function(isAvailable) {
+                var slot = s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$).map(function(isAvailable) {
                   if ( ! isAvailable ) return self.E().style({ display: 'none' });
                   return self.E().start(self.SectionView, {
                     data$: self.data$,

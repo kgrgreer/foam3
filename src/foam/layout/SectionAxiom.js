@@ -62,7 +62,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function createIsAvailableFor(data$) {
+    function createIsAvailableFor(data$, controllerMode$) {
       var self = this;
       var slot = foam.core.ProxyExpressionSlot.create({
         obj$: data$,
@@ -103,6 +103,7 @@ foam.CLASS({
       var propVisSlot = foam.core.ArraySlot.create({
         slots: props.map(
           p => p.createVisibilityFor(data$,
+            controllerMode$ ||
             data.__subContext__.controllerMode$ ||
             (data.__subContext__.ctrl && data.__subContext__.ctrl.controllerMode$) ||
             foam.core.ConstantSlot.create({value: foam.u2.ControllerMode.CREATE})
