@@ -528,6 +528,7 @@ foam.CLASS({
       section: 'operationsInformation',
       order: 80,
       gridColumns: 6,
+      readPermissionRequired: true,
       javaPostSet: `
         clearDisabledTopicSet();
       `
