@@ -128,7 +128,9 @@ foam.CLASS({
   package: 'foam.java',
   name: 'PropertyJavaRefinement',
   refines: 'foam.core.Property',
+
   flags: ['java'],
+
   properties: [
     {
       class: 'Boolean',
@@ -297,43 +299,10 @@ foam.CLASS({
       }
 
       return foam.java.PropertyInfo.create({
-        sourceCls:               cls,
-        propName:                this.name,
-        propShortName:           this.shortName,
-        propAliases:             this.aliases,
-        propType:                this.javaType,
-        propValue:               this.javaValue,
-        propRequired:            this.required,
-        cloneProperty:           this.javaCloneProperty,
-        diffProperty:            this.javaDiffProperty,
-        compare:                 this.javaCompare,
-        comparePropertyToValue:  this.javaComparePropertyToValue,
-        comparePropertyToObject: this.javaComparePropertyToObject,
-        jsonParser:              this.javaJSONParser,
-        queryParser:             this.javaQueryParser,
-        csvParser:               this.javaCSVParser,
-        extends:                 this.javaInfoType,
-        networkTransient:        this.networkTransient,
-        externalTransient:       this.externalTransient,
-        readPermissionRequired:  this.readPermissionRequired,
-        writePermissionRequired: this.writePermissionRequired,
-        storageTransient:        this.storageTransient,
-        storageOptional:         this.storageOptional,
-        clusterTransient:        this.clusterTransient,
-        xmlAttribute:            this.xmlAttribute,
-        xmlTextNode:             this.xmlTextNode,
-        sqlType:                 this.sqlType,
-        includeInID:             isID,
-        includeInDigest:         this.includeInDigest,
-        includeInSignature:      this.includeInSignature,
-        containsPII:             this.containsPII,
-        containsDeletablePII:    this.containsDeletablePII,
-        validateObj:             this.javaValidateObj,
-        toCSV:                   this.javaToCSV,
-        toCSVLabel:              this.javaToCSVLabel,
-        fromCSVLabelMapping:     this.javaFromCSVLabelMapping,
-        formatJSON:              this.javaFormatJSON,
-        sheetsOutput:            this.sheetsOutput
+        includeInID: isID,
+        sourceCls:   cls,
+        extends:     this.javaInfoType,
+        property:    this
       });
     },
 
