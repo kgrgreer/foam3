@@ -160,7 +160,7 @@ foam.CLASS({
           if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
             userPredicate = AND(
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-              NOT(INSTANCE_OF(AgentCapabilityJunction.class)),
+              NOT(INSTANCE_OF(AgentCapabilityJunction.class))
             );
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;

@@ -125,6 +125,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"bareUserCapabilityJunctionDAO",
+  "lazy": false,
   "serviceScript":"""
     decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
     decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
