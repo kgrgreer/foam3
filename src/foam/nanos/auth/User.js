@@ -17,7 +17,8 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.auth.LifecycleAware',
-    'foam.nanos.notification.Notifiable'
+    'foam.nanos.notification.Notifiable',
+    'foam.nanos.dig.ExternalDataInterface'
   ],
 
   requires: [

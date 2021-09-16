@@ -661,6 +661,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
+  'foam.nanos.dig.ExternalDataInterface',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
