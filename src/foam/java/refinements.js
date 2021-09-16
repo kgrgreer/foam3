@@ -298,18 +298,12 @@ foam.CLASS({
         }
       }
 
-      var args = {
+      return foam.java.PropertyInfo.create({
         includeInID: isID,
         sourceCls:   cls,
-        extends:     this.javaInfoType
-      };
-
-      var ps = foam.java.PropertyInfo.getAxiomsByClass(foam.core.Property);
-      for ( var p of ps ) {
-        if ( p.propertyName ) args[p.name] = this[p.propertyName];
-      }
-
-      return foam.java.PropertyInfo.create(args);
+        extends:     this.javaInfoType,
+        property:    this
+      });
     },
 
     function generateSetter_() {
