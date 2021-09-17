@@ -56,8 +56,16 @@ foam.CLASS({
   ],
 
   methods: [
+    function interfaceMethod(m) {
+      var im = foam.java.InterfaceMethod.create(m);
+      this.methods.push(im);
+      return this;
+    },
+
     function method(m) {
-      this.methods.push(foam.java.InterfaceMethod.create(m));
+      var im = foam.java.InterfaceMethod.create(m);
+      im.body = '';
+      this.methods.push(im);
       return this;
     },
 
