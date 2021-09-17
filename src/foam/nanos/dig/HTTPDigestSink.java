@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.HashMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
@@ -93,6 +94,15 @@ public class HTTPDigestSink extends AbstractSink {
       String payload = outputter.stringify(fobj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
+
+      if ( fobj instanceof ExternalDataInterface ) {
+        ExternalDataInterface extDataObj = (ExternalDataInterface) fobj;
+        HashMap<String, String> externalData = (HashMap<String, String>) extDataObj.getExternalData();
+        if ( externalData.containsKey("tid") ) {
+          conn.addRequestProperty("intuit_tid", externalData.get("tid"));
+        }
+      }
+
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
