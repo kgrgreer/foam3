@@ -1950,7 +1950,7 @@ foam.CLASS({
   properties: [
     ['javaType', 'ArrayList'],
     ['javaInfoType', 'foam.core.AbstractPropertyInfo'],
-    ['javaJSONParser', 'oam.lib.json.ArrayParser.instance()']
+    ['javaJSONParser', 'foam.lib.json.ArrayParser.instance()']
   ],
 
   methods: [
