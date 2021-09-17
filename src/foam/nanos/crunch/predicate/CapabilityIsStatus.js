@@ -75,7 +75,7 @@ foam.CLASS({
 
         var ucj = crunchService.getJunction(x, getCapabilityId());
         if ( ucj == null || ucj.getStatus() != getStatus() ) return false;
-        // if status is GRANTED, check if we should include ucjs that are renewable
+        // if status being checked is GRANTED, check if we should include ucjs that are renewable
         if ( getStatus() == GRANTED && ucj.getIsRenewable() ) return getIncludeRenewable();
         return true;
       `
