@@ -10,14 +10,14 @@ foam.INTERFACE({
 
   documentation: `Each medusa entry has a unique index and hash. This interface captures that pairing.`,
 
-  methods: [
+  properties: [
     {
       name: 'index',
-      type: 'long'
+      class: 'Long'
     },
     {
       name: 'hash',
-      type: 'String'
-    },
+      class: 'String'
+    }
   ]
 });
