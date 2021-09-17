@@ -4,7 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
  foam.INTERFACE({
   package: 'foam.u2',
   name: 'TextFormatter',
@@ -73,6 +72,23 @@
       name: 'reset',
       documentation: `
         Optional method to Reset state variables on initialization, data change, and formatData calls
+      `
+    },
+    {
+      name: 'buildJavaGetFormatted',
+      args: [
+        { name: 'cls', type: 'String' },
+        { name: 'prop', type: 'String' }
+      ],
+      documentation: `
+        Builds a java method to return a formatted string using this formatter.
+        Takes an argument o denoting the source object of the property.
+      `
+    },
+    {
+      name: 'buildJavaRemoveFormatting',
+      documentation: `
+        Builds java code to remove formatting from a string 'val'
       `
     }
   ]
@@ -146,6 +162,24 @@ foam.CLASS({
         if ( start > data.length - this.formatter.length ) start = data.length - this.formatter.length;
       }
       return [start, end]; 
+    },
+
+    function buildJavaGetFormatted(cls, prop) {
+      return `
+        if ( ! ((${cls}) o).${prop}IsSet_ ) return "";
+        String ret = ((${cls}) o).${prop}_;
+        ret = ret.trim().replaceAll("[^\\\\\w]", "");
+        if ( foam.util.SafetyUtil.isEmpty(ret) ) return "";
+        return ret + "${this.formatter}";
+      `
+    },
+
+    function buildJavaRemoveFormatting() {
+      if ( ! this.formatter ) return '';
+      return `
+        if ( ! foam.util.SafetyUtil.isEmpty(val) && val.endsWith("${this.formatter}") )
+          val = val.substring(0, val.length() - ${this.formatter.length});
+      `
     }
   ]
 });
@@ -220,6 +254,29 @@ foam.CLASS({
 
     function getUnformatted(formattedData) {
       return formattedData.replace(/\D/g,'');
+    },
+
+    function buildJavaGetFormatted(cls, prop) {
+      var str = `
+        if ( ! ((${cls}) o).${prop}IsSet_ ) return "";
+        StringBuilder ret = new StringBuilder(((${cls}) o).${prop}_);
+      `;
+      var index = 0;
+      this.formatter.forEach(c => {
+        if ( !isNaN(c) ) index += c;
+        else {
+          str += `
+            if ( ret.length() < ${index} ) return ret.toString();
+            ret.insert(${index}, "${c}");
+          `
+          index++;
+        }
+      });
+      return str += `return ret.length() > ${index} ? ret.toString().substring(0, ${index}) : ret.toString();`
+    },
+
+    function buildJavaRemoveFormatting() {
+      return `val.replaceAll("[^\\\\\d]", "");`;
     }
   ]
 });
