@@ -22,6 +22,8 @@ import javax.xml.stream.XMLStreamReader;
 public abstract class AbstractPropertyInfo
   implements PropertyInfo
 {
+  final static String[] EMPTY_STRING_ARRAY = new String[] {};
+
   protected ClassInfo parent;
   protected byte[]    nameAsByteArray_ = null;
 
@@ -36,71 +38,13 @@ public abstract class AbstractPropertyInfo
     return parent;
   }
 
-/*
-  @Override
-  public String getShortName() {
-    return null;
-  }
-  public boolean getNetworkTransient() {
-    return false;
-  }
-  */
-/*
-  public boolean getExternalTransient() {
-    return false;
-  }
-*/
-  public boolean getStorageTransient() {
-    return false;
-  }
-
-  public boolean getStorageOptional() {
-    return false;
-  }
-
-  public boolean getClusterTransient() {
-    return false;
-  }
-
-  public boolean getReadPermissionRequired() {
-    return false;
-  }
-
-  public boolean getWritePermissionRequired() {
-    return false;
-  }
-
-  public boolean getXMLAttribute() {
-    return false;
-  }
-
-  public boolean getXMLTextNode() {
-    return false;
-  }
-
-  public boolean getRequired() {
-    return false;
-  }
-
-  public void validateObj(foam.core.X x, foam.core.FObject obj) {
-    /* Template Method: override in subclass if required. */
-    if ( getRequired() && ! isSet(obj) ) {
-      throw new ValidationException(getName() + " required");
-    }
-  }
-
   public String[] getAliases() {
-    return new String[] {};
+    return EMPTY_STRING_ARRAY;
   }
 
   @Override
   public void toJSON(foam.lib.json.Outputter outputter, Object value) {
     outputter.output(value);
-  }
-
-  @Override
-  public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
-    format(formatter, obj);
   }
 
   @Override
@@ -279,14 +223,6 @@ public abstract class AbstractPropertyInfo
     return nameAsByteArray_;
   }
 
-  public void toCSV(foam.core.X x, Object obj, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(obj != null ? get(obj) : null);
-  }
-
-  public void toCSVLabel(foam.core.X x, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(getName());
-  }
-
   public void fromCSVLabelMapping(java.util.Map<String, foam.lib.csv.FromCSVSetter> map) {
 
     foam.core.PropertyInfo prop = this;
@@ -295,9 +231,5 @@ public abstract class AbstractPropertyInfo
         prop.set(obj, fromString(str));
       }
     });
-  }
-
-  public Object castObject(Object value) {
-    return value;
   }
 }

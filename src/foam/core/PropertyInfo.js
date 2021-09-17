@@ -36,14 +36,14 @@ foam.INTERFACE({
   methods: [
     'boolean getExternalTransient() { return false; }',
     'boolean getNetworkTransient() { return false; }',
-    'boolean getReadPermissionRequired()',
-    'boolean getWritePermissionRequired()',
-    'boolean getStorageTransient()',
-    'boolean getStorageOptional()',
-    'boolean getClusterTransient()',
-    'boolean getXMLAttribute()',
-    'boolean getXMLTextNode()',
-    'boolean getRequired()',
+    'boolean getReadPermissionRequired() { return false; }',
+    'boolean getWritePermissionRequired() { return false; }',
+    'boolean getStorageTransient() { return false; }',
+    'boolean getStorageOptional() { return false; }',
+    'boolean getClusterTransient() { return false; }',
+    'boolean getXMLAttribute() { return false; }',
+    'boolean getXMLTextNode() { return false; }',
+    'boolean getRequired() { return false; }',
     'java.lang.Class getValueClass()',
     'String getName()',
     'String[] getAliases()',
@@ -55,11 +55,11 @@ foam.INTERFACE({
     'Parser jsonParser()',
     'Parser queryParser()',
     'Parser csvParser()',
-    'void toJSON(foam.lib.json.Outputter outputter, Object value)',
+    'void toJSON(foam.lib.json.Outputter outputter, Object value) { outputter.output(value); }',
     'void format(foam.lib.formatter.FObjectFormatter outputter, FObject obj)',
-    'void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj)',
-    'void toCSV(X x, Object obj, foam.lib.csv.CSVOutputter outputter)',
-    'void toCSVLabel(X x, foam.lib.csv.CSVOutputter outputter)',
+    'void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) { format(formatter, obj); }',
+    'void toCSV(X x, Object obj, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(obj != null ? get(obj) : null); }',
+    'void toCSVLabel(X x, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(getName()); }',
     'void toXML(foam.lib.xml.Outputter outputter, Object value)',
     'void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop)',
     {
@@ -83,9 +83,14 @@ foam.INTERFACE({
     'void cloneProperty(FObject source, FObject dest)',
     'boolean containsPII()',
     'boolean containsDeletablePII()',
-    'void validateObj(foam.core.X x, foam.core.FObject obj)',
+    `void validateObj(foam.core.X x, foam.core.FObject obj) {
+       /* Template Method: override in subclass if required. */
+       if ( getRequired() && ! isSet(obj) ) {
+         throw new ValidationException(getName() + " required");
+       }
+    }`,
     'void fromCSVLabelMapping(java.util.Map<String,foam.lib.csv.FromCSVSetter> map)',
     'boolean getSheetsOutput()',
-    'Object castObject(Object value)'
+    'Object castObject(Object value) { return value; }'
   ]
 });
