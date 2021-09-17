@@ -38,29 +38,6 @@ foam.CLASS({
     }
   ],
 
-  css: `
-    .foam-nanos-auth-ChangePasswordView .foam-u2-layout-Grid {
-      width: 75%;
-      display: inline-block;
-      vertical-align: bottom;
-    }
-
-    .foam-nanos-auth-ChangePasswordView .foam-u2-layout-Cols {
-      display: inline-block;
-      margin-left: 5%;
-      vertical-align: bottom;
-    }
-
-    .foam-nanos-auth-ChangePasswordView .foam-u2-layout-Rows {
-      display: block;
-    }
-
-    .foam-nanos-auth-ChangePasswordView .foam-u2-detail-SectionedDetailPropertyView-validation-container {
-      position: absolute;
-      margin-left: 0px;
-      display: flex;
-    }
-  `,
 
   properties: [
     {
