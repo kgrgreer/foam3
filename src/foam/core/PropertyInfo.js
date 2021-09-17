@@ -35,7 +35,7 @@ foam.INTERFACE({
   // TODO: break into XML, CSV, SQL, Sheets, PII, crypto
   methods: [
     'boolean getExternalTransient() { return false; }',
-    'boolean NetworkTransient() { return false; }',
+    'boolean getNetworkTransient() { return false; }',
     'boolean getReadPermissionRequired()',
     'boolean getWritePermissionRequired()',
     'boolean getStorageTransient()',
