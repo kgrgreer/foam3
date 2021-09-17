@@ -160,6 +160,7 @@ var classes = [
   'foam.lib.csv.CSVOutputterImpl',
   'foam.lib.csv.ProxyCSVOutputter',
   'foam.lib.csv.FromCSVSetter',
+  'foam.core.PropertyInfo',
   'foam.dao.java.JDAO',
   'foam.dao.CopyFromDAO',
   'foam.dao.FilteredDAO',
