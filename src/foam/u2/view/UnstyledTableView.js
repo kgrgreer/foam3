@@ -752,10 +752,10 @@ foam.CLASS({
           var grantedProperties = await this.filterPropertiesByReadPermission(permissionedProperties, this.of.name.toLowerCase());
           var unorderedProperties = unpermissionedProperties.concat(grantedProperties);
           var orderedProperties = arr.filter(p => unorderedProperties.includes(p));
-          const columnPermissionedProperties = await Promise.all(arr.map( async p =>
+          const columnPermissionedProperties = await Promise.all(orderedProperties.map( async p =>
             ! p.columnPermissionRequired ||
             await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
-          return arr.filter((_v, index) => columnPermissionedProperties[index]);
+          return orderedProperties.filter((_v, index) => columnPermissionedProperties[index]);
         }
         return arr;
       },

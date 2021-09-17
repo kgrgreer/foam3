@@ -480,8 +480,7 @@ foam.CLASS({
 
       if ( ! of ) this.filters = [];
       
-      // var searchColumns_ = await this.filterPropertiesByReadPermission(this.searchColumns, of.id);
-      var searchColumns_ = this.searchColumns;
+      var searchColumns_ = await this.filterPropertiesByReadPermission(this.searchColumns, of.id);
       if ( searchColumns_ && searchColumns_.length > 0 ) {
         this.filters =  searchColumns_;
         return;
@@ -489,7 +488,7 @@ foam.CLASS({
 
       var columns = of.getAxiomByName('searchColumns');
       columns = columns && columns.columns;
-      // columns = await this.filterPropertiesByReadPermission(columns, of.id);
+      columns = await this.filterPropertiesByReadPermission(columns, of.id);
       if ( columns ) {
         this.filters = columns;
         return;
@@ -497,7 +496,7 @@ foam.CLASS({
 
       columns = of.getAxiomByName('tableColumns');
       columns = columns && columns.columns;
-      // columns = await this.filterPropertiesByReadPermission(columns, of.id);
+      columns = await this.filterPropertiesByReadPermission(columns, of.id);
       if ( columns ) {
         this.columns = columns.filter(function(c) {
         //  to account for nested columns like approver.legalName
@@ -524,8 +523,7 @@ foam.CLASS({
           && ! p.hidden
         })
         .map(foam.core.Property.NAME.f);
-      // this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
-      this.filters = columns;
+      this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
     }
   ],
 
