@@ -80,7 +80,7 @@ foam.CLASS({
             for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
               if ( ucjToReput.getStatus() == CapabilityJunctionStatus.GRANTED ) {
                 if ( ucj.getIsInGracePeriod() ) ucjToReput.setIsInGracePeriod(true);
-                if ( ucj.getIsRenewable() ) ucjToReput.setIsRenewable(true);
+                if ( ucj.getIsInRenewablePeriod() ) ucjToReput.setIsInRenewablePeriod(true);
               }
               if ( effectiveUserId != null && effectiveX != null &&
                    ucjToReput.getSourceId() == effectiveUserId )
