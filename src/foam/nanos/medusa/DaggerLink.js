@@ -13,11 +13,11 @@ foam.INTERFACE({
   methods: [
     {
       name: 'index',
-      class: 'Long'
+      type: 'long'
     },
     {
       name: 'hash',
-      class: 'String'
+      type: 'String'
     },
   ]
 });
