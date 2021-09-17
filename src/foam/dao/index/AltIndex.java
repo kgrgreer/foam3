@@ -124,7 +124,7 @@ public class AltIndex
       // To keep the original predicate, because in our next operation the predicate could be changed.
       if ( predicate != null ) {
         // not safe to move to shallowClone()
-        originalPredicate = (Predicate) ((FObject) predicate).deepClone();
+        originalPredicate = (Predicate) predicate;
       }
 
       SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, originalPredicate);
