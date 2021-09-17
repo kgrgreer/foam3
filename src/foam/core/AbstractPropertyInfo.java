@@ -36,19 +36,20 @@ public abstract class AbstractPropertyInfo
     return parent;
   }
 
+/*
   @Override
   public String getShortName() {
     return null;
   }
-
   public boolean getNetworkTransient() {
     return false;
   }
-
+  */
+/*
   public boolean getExternalTransient() {
     return false;
   }
-
+*/
   public boolean getStorageTransient() {
     return false;
   }
