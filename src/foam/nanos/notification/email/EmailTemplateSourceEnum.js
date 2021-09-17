@@ -11,7 +11,7 @@
   values: [
     {
       name: 'UNDEFINED',
-      label: 'Undefined Source',
+      label: 'Undefined',
       ordinal: 0
     },
     {
