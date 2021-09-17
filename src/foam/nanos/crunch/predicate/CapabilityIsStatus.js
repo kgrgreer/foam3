@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'includeRenewablePeriod',
+      name: 'includeRenewableAndGracePeriod',
       documentation: `
         If status is GRANTED, determine if ucjs that are GRANTED but in renewable period
         should also be included.
@@ -76,7 +76,7 @@ foam.CLASS({
         var ucj = crunchService.getJunction(x, getCapabilityId());
         if ( ucj == null || ucj.getStatus() != getStatus() ) return false;
         // if status being checked is GRANTED, check if we should include those that are granted but in renewable period
-        if ( getStatus() == GRANTED && ucj.getIsRenewable() ) return getIncludeRenewablePeriod();
+        if ( getStatus() == GRANTED && ucj.getIsRenewable() ) return getIncludeRenewableAndGracePeriod();
         return true;
       `
     }
