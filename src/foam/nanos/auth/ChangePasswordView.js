@@ -59,6 +59,9 @@ foam.CLASS({
       text-align: center;
       padding-top: 1.5vh;
     }
+    ^ .foam-u2-layout-Cols > .foam-u2-ActionView {
+      width: 100%;
+    }
   `,
 
   properties: [
