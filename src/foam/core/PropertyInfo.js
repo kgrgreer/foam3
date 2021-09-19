@@ -70,19 +70,19 @@ foam.INTERFACE({
       `
     },
     'Object fromString(String value)',
-    'void setFromString(Object obj, String value)',
+    'void setFromString(Object obj, String value) { this.set(obj, fromString(value));}',
     'Object fromXML(X x, XMLStreamReader reader)',
     'int comparePropertyToObject(Object key, Object o)',
     'int comparePropertyToValue(Object key, Object value)',
     'String getSQLType()',
-    'boolean includeInID()',
+    'boolean includeInID() { return false; }',
     'boolean isSet(Object obj)',
     'boolean isDefaultValue(Object obj)',
     'void setStatementValue(IndexedPreparedStatement stmt, FObject o) throws java.sql.SQLException',
     'void setFromResultSet(java.sql.ResultSet resultSet, int index, FObject o) throws java.sql.SQLException',
-    'void cloneProperty(FObject source, FObject dest)',
-    'boolean containsPII()',
-    'boolean containsDeletablePII()',
+    'void cloneProperty(FObject source, FObject dest) { set(dest, foam.util.SafetyUtil.deepClone(get(source))); }',
+    'boolean containsPII() { return false; }',
+    'boolean containsDeletablePII() { return false; }',
     `void validateObj(foam.core.X x, foam.core.FObject obj) {
        /* Template Method: override in subclass if required. */
        if ( getRequired() && ! isSet(obj) ) {
@@ -90,7 +90,7 @@ foam.INTERFACE({
        }
     }`,
     'void fromCSVLabelMapping(java.util.Map<String,foam.lib.csv.FromCSVSetter> map)',
-    'boolean getSheetsOutput()',
+    'boolean getSheetsOutput() { return false; }',
     'Object castObject(Object value) { return value; }'
   ]
 });

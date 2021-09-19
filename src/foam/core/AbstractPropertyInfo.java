@@ -104,10 +104,6 @@ public abstract class AbstractPropertyInfo
     return false;
   }
 
-  public void setFromString(Object obj, String value) {
-    this.set(obj, fromString(value));
-  }
-
   @Override
   public Object fromXML(X x, XMLStreamReader reader) {
     // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
@@ -141,20 +137,11 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public void cloneProperty(FObject source, FObject dest) {
-    set(dest, foam.util.SafetyUtil.deepClone(get(source)));
-  }
-
-  @Override
+  // ???: Is this still used?
   public void validate(X x, FObject obj)
     throws IllegalStateException
   {
     /* Template Method: override in subclasses if required. */
-  }
-
-  @Override
-  public boolean includeInID() {
-    return false;
   }
 
   @Override
@@ -174,21 +161,6 @@ public abstract class AbstractPropertyInfo
   @Override
   public boolean includeInSignature() {
     return includeInDigest();
-  }
-
-  @Override
-  public boolean containsPII(){
-    return false;
-  }
-
-  @Override
-  public boolean containsDeletablePII(){
-    return false;
-  }
-
-  @Override
-  public boolean getSheetsOutput(){
-    return false;
   }
 
   @Override
