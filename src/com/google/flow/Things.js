@@ -330,8 +330,8 @@ foam.CLASS({
     {
       name: 'onMouseMove',
       code: function(evt) {
-        this.x = evt.offsetX;
-        this.y = evt.offsetY;
+        this.x = evt.layerX;
+        this.y = evt.layerY;
       }
     }
   ]

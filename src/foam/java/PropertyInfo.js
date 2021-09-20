@@ -21,13 +21,14 @@ foam.CLASS({
   extends: 'foam.java.Class',
 
   properties: [
-    ['anonymous', true],
-    'propName',
-    'propShortName',
-    'propAliases',
-    'compare',
-    'comparePropertyToObject',
-    'comparePropertyToValue',
+    { name: 'property' },
+    { name: 'anonymous', value: true },
+    { name: 'propName',                factory: function() { return this.property.name; } },
+    { name: 'propShortName',           factory: function() { return this.property.shortName; } },
+    { name: 'propAliases',             factory: function() { return this.property.aliases; } },
+    { name: 'compare',                 factory: function() { return this.property.javaCompare; } },
+    { name: 'comparePropertyToObject', factory: function() { return this.property.javaComparePropertyToObject; } },
+    { name: 'comparePropertyToValue',  factory: function() { return this.property.javaComparePropertyToValue; } },
     {
       name: 'getAliasesBody',
       expression: function() {
@@ -41,7 +42,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'networkTransient'
+      name: 'networkTransient',
+      factory: function() { return this.property.networkTransient; }
     },
     {
       class: 'Boolean',
@@ -49,37 +51,45 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'storageTransient'
+      name: 'storageTransient',
+      factory: function() { return this.property.storageTransient; }
     },
     {
       class: 'Boolean',
-      name: 'storageOptional'
+      name: 'storageOptional',
+      factory: function() { return this.property.storageOptional; }
     },
     {
       class: 'Boolean',
-      name: 'clusterTransient'
+      name: 'clusterTransient',
+      factory: function() { return this.property.clusterTransient; }
     },
     {
       class: 'Boolean',
-      name: 'readPermissionRequired'
+      name: 'readPermissionRequired',
+      factory: function() { return this.property.readPermissionRequired; }
     },
     {
       class: 'Boolean',
-      name: 'writePermissionRequired'
+      name: 'writePermissionRequired',
+      factory: function() { return this.property.writePermissionRequired; }
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML attribute. eg <foo id="XMLAttribute"></foo>',
-      name: 'xmlAttribute'
+      name: 'xmlAttribute',
+      factory: function() { return this.property.xmlAttribute; }
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML textNode. eg <foo id="1">textNode</foo>',
-      name: 'xmlTextNode'
+      name: 'xmlTextNode',
+      factory: function() { return this.property.xmlTextNode; }
     },
     {
       class: 'String',
-      name: 'sqlType'
+      name: 'sqlType',
+      factory: function() { return this.property.sqlType; }
     },
     {
       name: 'getterName',
@@ -106,38 +116,43 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeInDigest',
+      factory: function() { return this.property.includeInDigest; },
       value: true
     },
     {
       class: 'Boolean',
       name: 'includeInSignature',
+      factory: function() { return this.property.includeInSignature; },
       value: true
     },
     {
       class: 'Boolean',
-      name: 'containsPII'
+      name: 'containsPII',
+      factory: function() { return this.property.containsPII; }
     },
     {
       class: 'Boolean',
-      name: 'containsDeletablePII'
+      name: 'containsDeletablePII',
+      factory: function() { return this.property.containsDeletablePII; }
     },
-    'sourceCls',
-    'propType',
-    'propValue',
-    'propRequired',
-    'jsonParser',
-    'csvParser',
-    'cloneProperty',
-    'queryParser',
-    'diffProperty',
-    'validateObj',
-    'toCSV',
-    'toCSVLabel',
-    'fromCSVLabelMapping',
-    'formatJSON',
+    { name: 'sourceCls' },
+    { name: 'propType',            factory: function() { return this.property.javaType; } },
+    { name: 'propValue',           factory: function() { return this.property.javaValue; } },
+    { name: 'propRequired',        factory: function() { return this.property.required; } },
+    { name: 'jsonParser',          factory: function() { return this.property.javaJSONParser; } },
+    { name: 'csvParser',           factory: function() { return this.property.javaCSVParser; } },
+    { name: 'cloneProperty',       factory: function() { return this.property.javaCloneProperty; } },
+    { name: 'queryParser',         factory: function() { return this.property.javaQueryParser; } },
+    { name: 'diffProperty',        factory: function() { return this.property.javaDiffProperty; } },
+    { name: 'validateObj',         factory: function() { return this.property.javaValidateObj; } },
+    { name: 'toCSV',               factory: function() { return this.property.javaToCSV; } },
+    { name: 'toCSVLabel',          factory: function() { return this.property.javaToCSVLabel; } },
+    { name: 'fromCSVLabelMapping', factory: function() { return this.property.javaFromCSVLabelMapping; } },
+    { name: 'formatJSON',          factory: function() { return this.property.javaFormatJSON; } },
     {
       class: 'Boolean',
       name: 'sheetsOutput',
+      factory: function() { return this.property.sheetsOutput; },
       documentation: 'The sheetsOutput specifies if property shoud be written to Google Sheet on import. eg on Transaction import in case there is Status column transaction\'s status will be written there'
     },
     {

@@ -57,7 +57,7 @@ foam.CLASS({
         .style({
           'background-color': background,
           'color': color,
-          'border-color': background == '#FFFFFF' || ! background ? color : background
+          'border-color': background.includes('#FFFFFF') || ! background ? color : background
         })
         .callIf(this.showGlyph && data.glyph, () => {
           var icon = {
@@ -71,7 +71,7 @@ foam.CLASS({
         })
         .callIfElse(isPill,
           () => { this.start().add(data.label).end(); },
-          () => { this.start('p').add(data.label).end(); }
+          () => { this.start().addClass('p').add(data.label).end(); }
         );
     },
     {

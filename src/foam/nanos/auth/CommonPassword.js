@@ -7,13 +7,14 @@
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'CommonPassword',
-  
+
   properties: [
     {
       class: 'String',
       name: 'id'
     }
   ],
+
   methods: [
     {
       name: 'toString',
@@ -22,4 +23,4 @@ foam.CLASS({
       }
     }
   ]
-})  
+})

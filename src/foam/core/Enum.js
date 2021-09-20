@@ -319,6 +319,20 @@ foam.CLASS({
       name: 'background'
     },
     {
+      class: 'String',
+      name: 'glyphFill',
+      factory: function(){
+        return this.color;
+      }
+    },
+    {
+      class: 'String',
+      name: 'glyphBackground',
+      factory: function(){
+        return this.background;
+      }
+    },
+    {
       class: 'Boolean',
       name: 'isItalic'
     },

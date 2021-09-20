@@ -12,7 +12,6 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.HumanNameTrait',
     'foam.nanos.auth.LastModifiedAware',
@@ -75,6 +74,10 @@ foam.CLASS({
       value: 1,
       type: 'Long'
     }
+  ],
+
+  messages: [
+    { name: 'USERNAME_REQUIRED', message: 'Username required' }
   ],
 
   sections: [
@@ -158,6 +161,18 @@ foam.CLASS({
       containsPII: false,
       documentation: 'The username of the User.',
       section: 'userInformation',
+      validationPredicates: [
+        {
+          args: ['userName', 'type'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
+              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
+            );
+          },
+          errorMessage: 'USERNAME_REQUIRED'
+        }
+      ],
       order: 20,
       gridColumns: 6
     },
@@ -349,7 +364,13 @@ foam.CLASS({
       documentation: 'Personal phone number.',
       section: 'userInformation',
       order: 190,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
@@ -368,7 +389,13 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'userInformation',
       order: 210,
-      gridColumns: 6
+      gridColumns: 6,
+      javaPreSet: `
+        if ( !foam.util.SafetyUtil.isEmpty(val) ) {
+          val = val.replaceAll(" ", "");
+          val = val.replaceAll("[-()]", "");
+        }
+      `
     },
     {
       class: 'Boolean',
