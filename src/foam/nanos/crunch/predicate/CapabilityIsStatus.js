@@ -43,10 +43,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'includeGracePeriod',
+      name: 'includeRenewable',
       documentation: `
-        If status is GRANTED, determine if ucjs that are GRANTED but in gracePeriod
-        should also be included.
+        When status is set to GRANTED and ucjs are granted and renewable, CapabilityIsStatus predicate
+        will return true if this property is set to true or return false otherwise.
       `
     }
   ],
@@ -75,8 +75,8 @@ foam.CLASS({
 
         var ucj = crunchService.getJunction(x, getCapabilityId());
         if ( ucj == null || ucj.getStatus() != getStatus() ) return false;
-        // if status being checked is GRANTED, check if we should include those that are granted but in graceperiod
-        if ( getStatus() == GRANTED && ucj.getIsInGracePeriod() ) return getIncludeGracePeriod();
+        // if status being checked is GRANTED, check if we should include ucjs that are renewable
+        if ( getStatus() == GRANTED && ucj.getIsRenewable() ) return getIncludeRenewable();
         return true;
       `
     }

@@ -94,13 +94,13 @@ foam.CLASS({
   actions: [
     {
       name: 'upload',
-      code: function(X) {
+      code: async function(X) {
         if ( this.files[0] && !! this.label ) {
           this.files[0].label = this.label;
           if ( this.owner !== 0 ) {
             this.files[0].owner = this.owner;
           }
-          this.fileDAO.put(this.files[0]);
+          await this.fileDAO.put(this.files[0]);
           X.closeDialog();
         } else {
           this.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);

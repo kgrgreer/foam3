@@ -67,7 +67,18 @@ p({
       .setInnerDAO((foam.dao.DAO) x.get("localTicketDAO"))
       .build();
   """,
-  "client": "{\"of\":\"foam.nanos.ticket.Ticket\"}"
+  "client":
+  """
+  {
+    "of": "foam.nanos.ticket.Ticket",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
 })
 
 p({

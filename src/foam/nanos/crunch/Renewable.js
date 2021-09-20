@@ -23,11 +23,7 @@ foam.CLASS({
     {
       name: 'isRenewable',
       class: 'Boolean',
-      getter: function() {
-        return this.isExpired ||
-          this.isInRenewablePeriod ||
-            this.isInGracePeriod;
-      },
+      getter: function() { return this.isExpired || this.isInRenewablePeriod || this.isInGracePeriod; },
       javaGetter: `
         return getIsExpired() || getIsInRenewablePeriod() || getIsInGracePeriod();
       `

@@ -3230,7 +3230,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'arg1',
       type: 'foam.mlang.order.Comparator',
-      adapt: function(_, c) { return foam.compare.toCompare(c); },
+      adapt: function(o, n, prop) {
+        var ret  = foam.compare.toCompare(n);
+        var type = foam.lookup(prop.type);
+        if ( type.isInstance(ret) ) {
+          return ret;
+        }
+        return foam.core.FObjectProperty.ADAPT.value.call(this, o, n, prop);
+      },
       javaJSONParser: 'foam.lib.json.ExprParser.instance()'
     }
   ],
