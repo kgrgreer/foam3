@@ -601,7 +601,8 @@ foam.RELATIONSHIP({
   sourceProperty: {
     section: 'systemInformation',
     order: 20,
-    updateVisibility: 'RO'
+    updateVisibility: 'RO',
+    columnPermissionRequired: true
   }
 });
 
