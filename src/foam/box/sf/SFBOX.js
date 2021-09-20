@@ -22,9 +22,16 @@ foam.CLASS({
   implements: [ 'foam.box.Box' ],
 
   javaImports: [
+    'foam.core.FObject',
+    'foam.box.Box',
+    'foam.box.Message'
   ],
   
   properties: [
+    {
+      class: 'String',
+      name: 'nspecId',
+    },
     {
       class: 'Proxy',
       of: 'foam.box.Box',
@@ -43,9 +50,26 @@ foam.CLASS({
     {
       name: 'send',
       javaCode: `
-        getDelegate().send(msg);
+      SFEntry e = this.store((FObject) msg);
+      this.forward(e);
       `
-    }
+    },
+    {
+      name: 'submit',
+      args: 'Context x, SFEntry entry',
+      javaCode: `
+        getDelegate().send((Message) entry.getObject());
+      `
+    },
+    {
+      name: 'createDelegate',
+      documentation: 'creating delegate when start up',
+      javaCode: `
+        Box box = (Box) getX().get(getNspecId());
+        if (  box == null ) throw new RuntimeException("NspecId: " + getNspecId() + "Not Found!!");
+        setDelegate(box);
+      `
+    },
   ],
 
   axioms: [

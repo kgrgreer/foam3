@@ -24,8 +24,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.HTTPSink',
     'foam.core.FObject',
-    'foam.dao.Sink',
-    'foam.box.Message'
+    'foam.dao.Sink'
   ],
   
   properties: [

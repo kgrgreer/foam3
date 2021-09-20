@@ -14,44 +14,51 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'SocketSFBox',
-  extends: 'foam.box.sf.SF',
-  implements: [ 'foam.box.Box' ],
-
+  name: 'DUGSFRuleAction',
+  extends: 'foam.nanos.dig.DUGRuleAction',
+  
   javaImports: [
-    'foam.box.socket.*',
+    'foam.dao.Sink',
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.dao.AbstractSink',
+    'foam.dao.DAO',
+    'foam.dao.HTTPSink',
+    'foam.dao.Sink',
   ],
   
   properties: [
     {
       class: 'String',
-      name: 'host'
-    },
-    {
-      class: 'Int',
-      name: 'port'
+      name: 'sfId',
     }
   ],
   
   methods: [
     {
-      name: 'send',
+      name: 'getDelegateSink',
+      args: 'X agencyX, foam.nanos.ruler.Rule rule',
+      type: 'foam.dao.Sink',
       javaCode: `
-        SFEntry e = this.store((FObject) msg);
-        this.forward(e);
+        DAO sfDAO = (DAO) agencyX.get("SFDAO");
+        Sink sink = (Sink)sfDAO.find_(agencyX, getSfId());
+        if ( sink == null ) throw new RuntimeException("SFId: " + getSfId() + " Not Found!!");
+        return sink;
       `
-    },
+    }
+  ],
+  
+  axioms: [
     {
-      name: 'submit',
-      args: 'Context x, SFEntry entry',
-      javaCode: `
-        msg.getAttributes().put("serviceKey", getServiceName());
-        foam.box.Box box = ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).get(getX(), getHost(), getPort());
-        box.send((Message) entry.getObject());
-      `
-    },
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+          `
+        }));
+      }
+    }
   ]
-})
+});

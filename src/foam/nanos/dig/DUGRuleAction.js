@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
+    'foam.dao.Sink',
     'foam.log.LogLevel',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
@@ -57,6 +58,53 @@ foam.CLASS({
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
         }, (Logger) x.get("logger"));
+      `
+    },
+    {
+      name: 'getDelegateSink',
+      args: 'X agencyX, foam.nanos.ruler.Rule rule',
+      type: 'foam.dao.Sink',
+      javaCode: `
+        DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
+        DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
+        DUGRule dugRule = (DUGRule) rule;
+        AbstractSink sink = null;
+        if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
+            sink = new HTTPDigestSink(
+              dugRule.getUrl(),
+              dugRule.evaluateBearerToken(),
+              dugDigestConfig,
+              dugRule.getFormat(),
+              new foam.lib.AndPropertyPredicate(
+                agencyX,
+                new foam.lib.PropertyPredicate[] {
+                  new foam.lib.ExternalPropertyPredicate(),
+                  new foam.lib.NetworkPropertyPredicate(),
+                  new foam.lib.PermissionedPropertyPredicate()
+                }
+              ),
+              true,
+              true
+            );
+          } else {
+            sink = new HTTPSink(
+              dugRule.getUrl(),
+              dugRule.evaluateBearerToken(),
+              dugRule.getFormat(),
+              new foam.lib.AndPropertyPredicate(
+                agencyX,
+                new foam.lib.PropertyPredicate[] {
+                  new foam.lib.ExternalPropertyPredicate(),
+                  new foam.lib.NetworkPropertyPredicate(),
+                  new foam.lib.PermissionedPropertyPredicate()
+                }
+              ),
+              true
+            );
+          }
+
+          sink.setX(agencyX);
+          return sink;
       `
     },
     {
@@ -109,45 +157,8 @@ foam.CLASS({
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
         PM pm = PM.create(x, true, getClass().getSimpleName(), rule.getDaoKey(), rule.getName());
-        DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
-        DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         try {
-          AbstractSink sink = null;
-          if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
-            sink = new HTTPDigestSink(
-              dugRule.getUrl(),
-              dugRule.evaluateBearerToken(),
-              dugDigestConfig,
-              dugRule.getFormat(),
-              new foam.lib.AndPropertyPredicate(
-                agencyX,
-                new foam.lib.PropertyPredicate[] {
-                  new foam.lib.ExternalPropertyPredicate(),
-                  new foam.lib.NetworkPropertyPredicate(),
-                  new foam.lib.PermissionedPropertyPredicate()
-                }
-              ),
-              true,
-              true
-            );
-          } else {
-            sink = new HTTPSink(
-              dugRule.getUrl(),
-              dugRule.evaluateBearerToken(),
-              dugRule.getFormat(),
-              new foam.lib.AndPropertyPredicate(
-                agencyX,
-                new foam.lib.PropertyPredicate[] {
-                  new foam.lib.ExternalPropertyPredicate(),
-                  new foam.lib.NetworkPropertyPredicate(),
-                  new foam.lib.PermissionedPropertyPredicate()
-                }
-              ),
-              true
-            );
-          }
-
-          sink.setX(agencyX);
+          Sink sink = getDelegateSink(agencyX, rule);
           sink.put(finalObj, null);
         } catch (Throwable t) {
           ((Logger) agencyX.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
