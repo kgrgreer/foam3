@@ -30,7 +30,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nspecId',
+      name: 'delegateNspecId',
     },
     {
       class: 'Proxy',
@@ -68,8 +68,8 @@ foam.CLASS({
       name: 'createDelegate',
       documentation: 'creating delegate when start up',
       javaCode: `
-        Sink sink = (Sink) getX().get(getNspecId());
-        if ( sink == null ) throw new RuntimeException("NspecId: " + getNspecId() + "Not Found!!");
+        Sink sink = (Sink) getX().get(getDelegateNspecId());
+        if ( sink == null ) throw new RuntimeException("NspecId: " + getDelegateNspecId() + "Not Found!!");
         setDelegate(sink);
       `
     },

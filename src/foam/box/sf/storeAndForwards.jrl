@@ -5,7 +5,7 @@ p({
   "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
   "timeWindow": 3600,
   "replayFailEntry": true,
-  "nspecId": "demoHttpSink"
+  "delegateNspecId": "demoHttpSink"
 })
 p({
   "class":"foam.box.sf.SFSink",
@@ -14,5 +14,5 @@ p({
   "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
   "timeWindow": 3600,
   "replayFailEntry": true,
-  "nspecId": "flinksWebHookHttpSink"
+  "delegateNspecId": "flinksWebHookHttpSink"
 })
