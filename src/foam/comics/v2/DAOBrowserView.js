@@ -232,13 +232,14 @@ foam.CLASS({
         var records = await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
-      code: function() {
+      code: function(X) {
         var adao;
         if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
           adao = foam.dao.ArrayDAO.create({ of: this.data.of });
           foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
         }
-        this.add(this.Popup.create().tag({
+
+        this.add(this.Popup.create(null, X).tag({
           class: 'foam.u2.ExportModal',
           exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
@@ -270,8 +271,8 @@ foam.CLASS({
         if ( ! config.importPredicate.f() ) return false;
         return true;
       },
-      code: function() {
-        this.add(this.Popup.create().tag(this.importModal));
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag(this.importModal));
       }
     }
   ],
@@ -311,17 +312,25 @@ foam.CLASS({
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
               data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
+            }, this, self.__subSubContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
 
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, simpleSearch.__subContext__.createSubContext());
+            }, this, self.__subContext__.createSubContext({
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           } else {
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
+            }, this, self.__subContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
@@ -362,8 +371,7 @@ foam.CLASS({
                 this
                   .start(self.Cols).addClass(self.myClass('query-bar'))
                     .startContext({
-                      dao: searchFilterDAO,
-                      controllerMode: foam.u2.ControllerMode.EDIT
+                      dao: searchFilterDAO
                     })
                       .callIf(self.config.searchMode === self.SearchMode.SIMPLE, function() {
                         this.add(simpleSearch);
@@ -374,7 +382,10 @@ foam.CLASS({
                     .endContext()
                     .start(self.Cols)
                       .addClass(self.myClass('buttons'))
-                      .startContext({ data: self })
+                      .startContext({
+                        data: self,
+                        controllerMode: foam.u2.ControllerMode.EDIT
+                      })
                         .start(self.EXPORT, buttonStyle)
                           .addClass(self.myClass('export'))
                         .end()
