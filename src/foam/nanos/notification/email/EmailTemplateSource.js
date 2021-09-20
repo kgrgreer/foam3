@@ -22,7 +22,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'disabled',
+      name: 'enabled',
+      value: true,
       documentation: 'Whether to determine sending email'
     }
   ]

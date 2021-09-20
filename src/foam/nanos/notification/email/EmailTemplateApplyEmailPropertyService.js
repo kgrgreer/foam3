@@ -40,7 +40,7 @@ foam.CLASS({
 
       // STEP 1) Find EmailTemplate
       EmailTemplate emailTemplateObj = DAOResourceLoader.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
-      if ( emailTemplateObj == null || emailTemplateObj.getDisabled() ) {
+      if ( emailTemplateObj == null || ! emailTemplateObj.getEnabled() ) {
         logger.error(this.getClass().getSimpleName(), "EmailTemplate not found or disabled", templateName, group);
         return emailMessage;
       }
