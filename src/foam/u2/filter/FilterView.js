@@ -240,8 +240,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'mementoUpdated',
-      value: false
+      name: 'mementoUpdated'
+    },
+    {
+      class: 'Boolean',
+      name: 'mementoToggle'
     }
   ],
 
@@ -249,7 +252,6 @@ foam.CLASS({
     function init() {
       this.onDetach(this.searchColumns$.sub(this.updateFilters));
       this.onDetach(this.dao$.sub(this.updateFilters));
-      
     },
     async function render() {
       var self = this;
@@ -473,6 +475,7 @@ foam.CLASS({
         }
       }
       this.mementoUpdated = true;
+      this.mementoToggle = ! this.mementoToggle;
       return counter;
     },
     async function updateFilters() {
