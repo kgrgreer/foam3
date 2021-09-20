@@ -148,6 +148,7 @@ FOAM_FILES([
   { name: "foam/swift/Method", flags: ['swift']},
 
 
+  { name: "foam/core/PropertyInfo", flags: ['java'] },
   { name: "foam/java/Argument", flags: ['java'] },
   { name: "foam/java/Class", flags: ['java'] },
   { name: "foam/java/ClassInfo", flags: ['java'] },
@@ -185,6 +186,7 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
+  { name: "foam/util/UIDGeneratorTest" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },

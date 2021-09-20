@@ -236,7 +236,6 @@ foam.CLASS({
       }
       if ( isORBitalDAOed ) {
         //TODO: add necessary constructs to generated java class that needs to be an ORBitalDAO'able
-
       }
 
       if ( this.isEnum ) this.writeDeclarations(o);
@@ -249,11 +248,10 @@ foam.CLASS({
 
       this.methods.forEach(function(f) { o.out(f, '\n'); });
       this.classes.forEach(function(c) { o.out(c, '\n'); });
-      this.extras.forEach(function(c) { o.out(c, '\n'); });
+      this.extras.forEach(function(c)  { o.out(c, '\n'); });
       o.decreaseIndent();
       o.indent();
       o.out('};');
-
     },
 
     function toJavaSource() {

@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.stack.StackBlock',
+    'foam.u2.view.OverlayActionListView',
     'foam.u2.view.ScrollTableView',
     'foam.u2.view.SimpleSearch',
     'foam.u2.view.TabChoiceView'
@@ -335,6 +336,8 @@ foam.CLASS({
           if ( summaryView.selectedObjects )
             self.config.selectedObjs$ = summaryView.selectedObjects$;
 
+          var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
+
           return self.E()
             .start(self.Rows)
             .addClass(this.myClass('wrapper'))
@@ -372,28 +375,30 @@ foam.CLASS({
                     .start(self.Cols)
                       .addClass(self.myClass('buttons'))
                       .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                        .start(self.EXPORT, buttonStyle)
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                        .start(self.IMPORT, buttonStyle)
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                        .start(self.REFRESH_TABLE, buttonStyle)
                           .addClass(self.myClass('refresh'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > 2 ) {
-                            self.start(self.OverlayActionListView, {
-                              label: this.ACTIONS,
-                              data: self.config.DAOActions,
+                          if ( self.config.DAOActions.length > 3 ) {
+                            var extraActions = self.config.DAOActions.splice(2);
+                          }
+                          var actions = this.E().addClass(self.myClass('buttons'));
+                          for ( action of self.config.DAOActions ) {
+                            actions.tag(action, buttonStyle);
+                          }
+                          this.add(actions);
+                          if ( extraActions && extraActions.length ) {
+                            this.start(self.OverlayActionListView, {
+                              label: self.ACTIONS,
+                              data: extraActions,
                               obj: self
                             }).addClass(self.myClass('buttons')).end();
-                          } else {
-                            var actions = this.E().addClass(self.myClass('buttons'));
-                            for ( action of self.config.DAOActions ) {
-                              actions.tag(action);
-                            }
-                            this.add(actions);
                           }
                         })
                       .endContext()

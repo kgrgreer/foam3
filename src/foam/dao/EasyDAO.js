@@ -394,6 +394,20 @@ foam.CLASS({
       generateJava: false
     },
     {
+      documentation: 'Set polling interval for the caching DAO',
+      class: 'Int',
+      name: 'pollingInterval',
+      units: 'ms',
+      generateJava: false
+    },
+    {
+      documentation: 'Set polling property for the caching DAO',
+      class: 'FObjectProperty',
+      of: 'foam.core.Property',
+      name: 'pollingProperty',
+      generateJava: false
+    },
+    {
       documentation: 'Time to wait before purging cache on find().',
       class: 'Long',
       name: 'ttlPurgeTime',
@@ -900,7 +914,9 @@ model from which to test ServiceProvider ID (spid)`,
             dao = this.CachingDAO.create({
               cache: cache,
               src: dao,
-              of: this.model
+              of: this.model,
+              pollingInterval: this.pollingInterval,
+              pollingProperty: this.pollingProperty
             });
           }
 
