@@ -118,7 +118,7 @@ foam.CLASS({
         .add(self.slot(function(section, showTitle, section$title, section$subTitle) {
           if ( ! section ) return;
           return self.Rows.create()
-            .show(section.createIsAvailableFor(self.data$))
+            .show(section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
             .callIf(showTitle && section$title, function() {
               if ( foam.Function.isInstance(self.section.title) ) {
                 const slot$ = foam.core.ExpressionSlot.create({

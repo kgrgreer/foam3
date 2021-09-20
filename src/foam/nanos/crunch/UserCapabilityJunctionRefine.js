@@ -61,6 +61,56 @@ foam.CLASS({
     { name: 'ucjExpirySection' }
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All Expirable',
+      predicateFactory: function(e) {
+        return e.NEQ(
+          foam.nanos.crunch.UserCapabilityJunction.EXPIRY,
+          null
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Renewable',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_IN_RENEWABLE_PERIOD,
+          true
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'In Grace Period',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_IN_GRACE_PERIOD,
+          true
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Expired',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_EXPIRED,
+          true
+        );
+      }
+    },
+  ],
+
   properties: [
     {
       name: 'id',

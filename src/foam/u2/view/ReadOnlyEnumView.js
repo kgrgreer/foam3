@@ -71,7 +71,7 @@ foam.CLASS({
         })
         .callIfElse(isPill,
           () => { this.start().add(data.label).end(); },
-          () => { this.start('p').add(data.label).end(); }
+          () => { this.start().addClass('p').add(data.label).end(); }
         );
     },
     {

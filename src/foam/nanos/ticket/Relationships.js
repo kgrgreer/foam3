@@ -17,7 +17,8 @@ foam.RELATIONSHIP({
   // REVIEW: unable to get owner to display in any section on Ticket.
   sourceProperty: {
     section: 'operationsInformation',
-    order: 70
+    order: 70,
+    columnPermissionRequired: true
   },
   targetProperty: {
     visibility: 'RO',
@@ -67,6 +68,7 @@ foam.RELATIONSHIP({
     section: 'metaSection'
   },
   sourceProperty: {
-    visibility: 'HIDDEN'
+    visibility: 'HIDDEN',
+    columnPermissionRequired: true
   }
 });
