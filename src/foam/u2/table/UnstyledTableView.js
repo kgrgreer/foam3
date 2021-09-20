@@ -271,7 +271,7 @@ foam.CLASS({
       name: 'showPagination',
       value: true
     },
-    'el_',
+    'tableEl_',
     'scrollEl_',
     ['tableHeadHeight', 52]
   ],
@@ -420,7 +420,7 @@ foam.CLASS({
       }
       this.start(this.Rows)
         .enableClass(this.myClass('full-height'), this.showPagination$)
-        .start('', {}, this.el_$).addClass(this.myClass('table-wrapper'))
+        .start('', {}, this.tableEl_$).addClass(this.myClass('table-wrapper'))
         .start().
           addClass(this.myClass()).
           addClass(this.myClass(this.of.id.replace(/\./g, '-'))).
@@ -558,7 +558,7 @@ foam.CLASS({
                 order$: view.order$,
                 rowView: { class: 'foam.u2.table.UnstyledTableRow', data: view },
                 groupHeaderView: { class: 'foam.u2.table.UnstyledTableGroup', data: view },
-                rootElement: this.el_,
+                rootElement: this.tableEl_,
                 ctx: view,
                 prepDAO: view.prepDAO,
                 groupBy$: view.groupBy$,
