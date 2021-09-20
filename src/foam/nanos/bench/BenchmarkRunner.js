@@ -72,8 +72,16 @@
     },
     {
       class: 'Boolean',
-      name: 'clearPms',
+      name: 'clearPMs',
       docmentation: 'clear PMs before executing the benchmark',
+    },
+    {
+      class: 'Float',
+      name: 'ops',
+    },
+    {
+      class: 'Float',
+      name: 'opst',
     }
   ],
 
@@ -133,6 +141,11 @@
           // get start time
           long startTime = System.currentTimeMillis();
 
+          if ( getClearPMs() ) {
+            DAO pmDAO = (DAO) x.get("pmDAO");
+            pmDAO.removeAll();
+          }
+
           // execute all the threads
           for ( int i = 0 ; i < threads ; i++ ) {
             final int tno = i;
@@ -142,10 +155,6 @@
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
-                      if ( getClearPms() ) {
-                        DAO pmDAO = (DAO) x.get("pmDAO");
-                        pmDAO.removeAll();
-                      }
                       benchmark.execute(x);
                       passed++;
                     } catch (Throwable t) {
@@ -182,11 +191,13 @@
           long  endTime  = System.currentTimeMillis();
           float complete = (float) (threads * getInvocationCount());
           float duration = ((float) (endTime - startTime) / 1000.0f);
+          setOps(complete / duration);
+          setOpst(ops_ / (float) threads);
           stats.put(PASS, pass.get());
           stats.put(FAIL, fail.get());
           stats.put(TOTAL, pass.get() + fail.get());
-          stats.put(OPS, String.format("%.02f", (complete / duration)));
-          stats.put(OPSPT, String.format("%.02f", (complete / duration) / (float) threads));
+          stats.put(OPS, String.format("%.02f", getOps()));
+          stats.put(OPSPT, String.format("%.02f", getOpst()));
           stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
 
           BenchmarkResult br = new BenchmarkResult();
@@ -291,7 +302,7 @@
           data: `
             public static String RUN         = "Run";
             public static String THREADCOUNT = "Threads";
-            public static String OPS         = "Operations/s";
+            public static String OPS_         = "Operations/s";
             public static String OPSPT       = "Operations/s/t";
             public static String MEMORY      = "Memory GB";
             public static String TOTAL       = "Total";
