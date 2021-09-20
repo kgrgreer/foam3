@@ -137,6 +137,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.SEC
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.SECTION_BASIC_INFO.title",target:"Basic Info"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.SECTION_UI_SETTINGS.title",target:"Configurações de interface do usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.SECTION_CAPABILITY_RELATIONSHIPS.title",target:"Relacionamentos de recursos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.IS_INTERNAL_CAPABILITY.label",target:"é capacidade interna"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionId.SOURCE_ID.label",target:"ID da fonte"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionId.TARGET_ID.label",target:"Target Id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionRefine.ID.label",target:"id"})
@@ -1063,3 +1065,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.HOUR.plu
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.MINUTE.plural",target:"minutos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.SECOND.plural",target:"segundos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.MILLISECOND.plural",target:"milissegundos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"All Expirable",target:"Tudo Expirável"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Renewable",target:"Renovável"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"In Grace Period",target:"Em período de graça"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})

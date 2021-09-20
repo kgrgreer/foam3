@@ -148,6 +148,7 @@ FOAM_FILES([
   { name: "foam/swift/Method", flags: ['swift']},
 
 
+  { name: "foam/core/PropertyInfo", flags: ['java'] },
   { name: "foam/java/Argument", flags: ['java'] },
   { name: "foam/java/Class", flags: ['java'] },
   { name: "foam/java/ClassInfo", flags: ['java'] },

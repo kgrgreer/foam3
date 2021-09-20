@@ -10,7 +10,6 @@ foam.CLASS({
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
   mixins: ['foam.nanos.controller.MementoMixin'],
 
-
   requires: [
     'foam.core.ArraySlot',
     'foam.nanos.controller.Memento',
@@ -66,7 +65,7 @@ foam.CLASS({
           if ( ! data ) return;
 
           var arraySlot = foam.core.ArraySlot.create({
-            slots: sections.map((s) => s.createIsAvailableFor(self.data$))
+            slots: sections.map((s) => s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
           });
 
           return self.E()
