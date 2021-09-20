@@ -1065,3 +1065,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.HOUR.plu
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.MINUTE.plural",target:"minutos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.SECOND.plural",target:"segundos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.util.date.TimeUnit.MILLISECOND.plural",target:"milissegundos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"All Expirable",target:"Tudo Expirável"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Renewable",target:"Renovável"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"In Grace Period",target:"Em período de graça"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})
