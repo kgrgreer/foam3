@@ -354,6 +354,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/dig/ExternalDataAwareMixin" },
+  { name: "foam/nanos/dig/ExternalDataAware" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
 
