@@ -17,13 +17,18 @@
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
+    'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
-
+    'net.nanopay.tx.bench.BenchmarkPmReportingService',
+    'net.nanopay.tx.bench.BenchmarkReportingService',
+    'java.math.BigDecimal',
+    'java.math.RoundingMode',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
+    'java.util.UUID',
     'java.util.concurrent.CountDownLatch',
     'java.util.concurrent.atomic.AtomicLong'
   ],
@@ -183,6 +188,24 @@
           stats.put(OPS, String.format("%.02f", (complete / duration)));
           stats.put(OPSPT, String.format("%.02f", (complete / duration) / (float) threads));
           stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
+
+          BenchmarkResult br = new BenchmarkResult();
+          br.setId(UUID.randomUUID().toString());
+          br.setRun(run);
+          br.setThreads(threads);
+          br.setPass((int) pass.get());
+          br.setFail((int) fail.get());
+          br.setTotal((int) ( pass.get() + fail.get() ) );
+          br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
+          br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
+          br.setMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
+          br.setName( benchmark.getClass().getSimpleName() );
+
+          //TODO add Transactions (M)
+
+          BenchmarkReportingService reporter = (BenchmarkReportingService) x.get("benchmarkReportingService");
+          System.out.println(reporter);
+          reporter.report(x,br,"benchmarkResultDAO");
 
           logger.info("teardown");
           benchmark.teardown(x, stats);

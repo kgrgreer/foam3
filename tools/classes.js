@@ -262,6 +262,7 @@ var classes = [
   'foam.nanos.app.Mode',
   'foam.nanos.bench.Benchmark',
   'foam.nanos.bench.BenchmarkRunner',
+  'foam.nanos.bench.BenchmarkResult',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
