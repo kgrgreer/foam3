@@ -810,13 +810,13 @@ foam.CLASS({
   methods: [
     function buildMethodInfoInitializer(cls) {
       // Add MethodInfo field for each method
-      initializerString = `new foam.core.MethodInfo(){
+      initializerString = `new foam.core.MethodInfo() {
 @Override
-public String getName(){
+public String getName() {
   return "${this.name}";
 }
 @Override
-public Object call(foam.core.X x, Object receiver, Object[] args){
+public Object call(foam.core.X x, Object receiver, Object[] args) {
 `;
       // See if call needs try catch block
       var exceptions = this.javaThrows.length > 0;
@@ -864,23 +864,23 @@ public Object call(foam.core.X x, Object receiver, Object[] args){
       if ( ! this.javaCode && ! this.abstract ) return;
 
       cls.method({
-        name: this.name,
-        type: this.javaType || 'void',
-        visibility: this.visibility,
-        static: this.isStatic(),
-        abstract: this.abstract,
-        final: this.final,
-        synchronized: this.synchronized,
-        remote: this.remote,
-        throws: this.javaThrows,
+        name:          this.name,
+        type:          this.javaType || 'void',
+        visibility:    this.visibility,
+        static:        this.isStatic(),
+        abstract:      this.abstract,
+        final:         this.final,
+        synchronized:  this.synchronized,
+        remote:        this.remote,
+        throws:        this.javaThrows,
         documentation: this.documentation,
+        body:          this.javaCode || '',
         args: this.args && this.args.map(function(a) {
           return {
             name: a.name,
             type: a.javaType
           };
-        }),
-        body: this.javaCode ? this.javaCode : ''
+        })
       });
 
       var initializerString = this.buildMethodInfoInitializer(cls);
@@ -903,6 +903,37 @@ public Object call(foam.core.X x, Object receiver, Object[] args){
     },
     function isStatic() {
       return false;
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'AbstractMethodJavaRefinement',
+  refines: 'foam.core.internal.InterfaceMethod',
+  flags: ['java'],
+
+  methods: [
+    function buildJavaClass(cls) {
+      if ( ! this.javaSupport ) return;
+//      if ( ! this.javaCode && ! this.abstract ) return;
+
+      cls.interfaceMethod({
+        name:          this.name,
+        type:          this.javaType || 'void',
+        visibility:    this.visibility,
+        remote:        this.remote,
+        throws:        this.javaThrows,
+        documentation: this.documentation,
+        body:          this.javaCode || '',
+        args:          this.args && this.args.map(function(a) {
+          return {
+            name: a.name,
+            type: a.javaType
+          };
+        })
+      });
     }
   ]
 });
@@ -1681,6 +1712,7 @@ foam.CLASS({
       `
     }
   ],
+
   methods: [
     function createJavaPropertyInfo_(cls) {
       var info = this.SUPER(cls);
@@ -1698,6 +1730,7 @@ foam.CLASS({
     }
   ],
 });
+
 
 foam.CLASS({
   package: 'foam.java',
