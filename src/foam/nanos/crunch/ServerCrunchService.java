@@ -554,20 +554,26 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public boolean isRenewable(X x, String capabilityId) {
+    return isRenewable_(x, capabilityId, true);
+  }
+
+  public boolean isRenewable_(X x, String capabilityId, boolean firstCall) {
     DAO capabilityDAO = (DAO) x.get("capabilityDAO");
     CrunchService crunchService = (CrunchService) x.get("crunchService");
-
     Capability capability = (Capability) capabilityDAO.find(capabilityId);
     UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
+
     if ( ! capability.getEnabled() ) return false;
+    // if topLevel capability.isInternalCapability then returns capRenewability
+    // if a preReq capability.isInternalCapability then that capability renewablity is ignored
+    if ( ! firstCall && capability.getIsInternalCapability() ) return false;
+    if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable() ) return true;
 
     var prereqs = getPrereqs(x, capabilityId, ucj);
-    boolean topLevelRenewable = ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable();
-
-    if ( prereqs == null || prereqs.size() == 0 || topLevelRenewable ) return topLevelRenewable;
-
-    for ( var capId : prereqs ) {
-      if ( ! capability.getIsInternalCapability() && isRenewable(x, capId.toString())  ) return true;
+    if ( prereqs != null ) {
+      for ( var capId : prereqs ) {
+        if ( isRenewable_(x, capId.toString(), false)  ) return true;
+      }
     }
     return false;
   }
