@@ -839,10 +839,6 @@ foam.CLASS({
     'foam.blob.IdentifiedBlob'
   ],
 
-  imports: [
-    'sessionID'
-  ],
-
   properties: [
     {
       class: 'String',
@@ -865,7 +861,7 @@ foam.CLASS({
       }
 
       var url = this.address;
-      var sessionId = this.sessionID || localStorage['defaultSession'];
+      var sessionId = localStorage['defaultSession'];
       // attach session id if available
       if ( sessionId ) {
         url += '?sessionId=' + sessionId;
