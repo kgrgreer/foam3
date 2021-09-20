@@ -417,7 +417,7 @@ FOAM_FILES([
   { name: 'foam/nanos/dig/DUGDigestConfig' },
   { name: 'foam/nanos/dig/DUGRule' },
   { name: 'foam/nanos/dig/DUGRuleAction' },
-  { name: 'foam/nanos/dig/ExternalDataInterface' },
+  { name: 'foam/nanos/dig/ExternalDataAware' },
   { name: 'foam/nanos/dig/DigFileUploadView' },
   { name: 'foam/nanos/dig/DigSnippetView' },
   { name: 'foam/nanos/dig/LinkView' },

@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'User',
   plural: 'Users',
 
+  mixins: [
+    'foam.nanos.dig.ExternalDataAwareMixin'
+  ],
+
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
@@ -17,8 +21,7 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.auth.LifecycleAware',
-    'foam.nanos.notification.Notifiable',
-    'foam.nanos.dig.ExternalDataInterface'
+    'foam.nanos.notification.Notifiable'
   ],
 
   requires: [

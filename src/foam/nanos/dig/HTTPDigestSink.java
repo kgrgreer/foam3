@@ -95,8 +95,8 @@ public class HTTPDigestSink extends AbstractSink {
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
 
-      if ( fobj instanceof ExternalDataInterface ) {
-        ExternalDataInterface extDataObj = (ExternalDataInterface) fobj;
+      if ( fobj instanceof ExternalDataAware ) {
+        ExternalDataAware extDataObj = (ExternalDataAware) fobj;
         HashMap<String, String> externalData = (HashMap<String, String>) extDataObj.getExternalData();
         if ( externalData.containsKey("tid") ) {
           conn.addRequestProperty("intuit_tid", externalData.get("tid"));
