@@ -116,14 +116,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeInDigest',
-      factory: function() { return this.property.includeInDigest; },
-      value: true
+      factory: function() { return this.property.includeInDigest; }
     },
     {
       class: 'Boolean',
       name: 'includeInSignature',
-      factory: function() { return this.property.includeInSignature; },
-      value: true
+      factory: function() { return this.property.includeInSignature; }
     },
     {
       class: 'Boolean',
