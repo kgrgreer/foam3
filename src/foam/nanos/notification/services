@@ -68,7 +68,20 @@ p({
       .setEnableInterfaceDecorators(false)
       .build();
   """,
-  "client": "{\"of\":\"foam.nanos.notification.Notification\"}"
+  "client": """
+    {
+      "of": "foam.nanos.notification.Notification",
+      "cache": true,
+      "pollingInterval": 30000,
+      "pollingProperty": {
+        "class": "__Property__",
+        "forClass_": "foam.nanos.notification.Notification",
+        "name": "created"
+      },
+      "ttlPurgeTime": 0,
+      "ttlSelectPurgeTime": 0
+    }
+  """
 })
 
 p({

@@ -19,11 +19,10 @@ foam.CLASS({
 
   imports: [
     'currentMenu',
-    'group',
     'menuDAO',
-    'notificationDAO',
+    'myNotificationDAO',
     'pushMenu',
-    'user'
+    'subject'
   ],
 
   implements: [
@@ -94,9 +93,8 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.notificationDAO.on.sub(this.onDAOUpdate);
-      this.user$.dot('id').sub(this.onDAOUpdate);
-      this.group$.dot('id').sub(this.onDAOUpdate);
+      this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
+      this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
 
       this.addClass()
@@ -127,24 +125,19 @@ foam.CLASS({
       name: 'onDAOUpdate',
       isFramed: true,
       code: function() {
-        if ( ! this.group || ! this.user ) return;
-        if ( this.user.id ) {
-          this.notificationDAO.where(
-            this.AND(
-              this.EQ(this.Notification.READ, false),
-              this.OR(
-                this.EQ(this.Notification.USER_ID, this.user.id),
-                this.EQ(this.Notification.GROUP_ID, this.group.id),
-                this.EQ(this.Notification.BROADCASTED, true)
-              ),
-              this.NOT(this.IN(
-                this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
-            )
-          ).select(this.COUNT()).then((count) => {
-            this.countUnread = count.value;
-          });
-        }
+        if ( ! this.subject.user ) return;
+
+        this.myNotificationDAO.where(
+          this.AND(
+            this.EQ(this.Notification.READ, false),
+            this.EQ(this.Notification.TRANSIENT, false),
+            this.NOT(this.IN(
+              this.Notification.NOTIFICATION_TYPE,
+              this.subject.user.disabledTopics))
+          )
+        ).select(this.COUNT()).then((count) => {
+          this.countUnread = count.value;
+        });
       }
     }
   ]

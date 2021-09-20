@@ -20,10 +20,6 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
-  imports: ['memento'],
-
-  exports: ['currentMemento_ as memento'],
-
   css: `
     ^ {
       padding: 32px

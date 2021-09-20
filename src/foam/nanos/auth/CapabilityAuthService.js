@@ -52,7 +52,7 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
         PM pm = PM.create(getX(), this.getClass(), "check");
         try {
-          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null && checkSpid_(x, permission) );
+          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission) );
         } finally {
           pm.log(getX());
         }
@@ -62,6 +62,7 @@ foam.CLASS({
       name: 'checkSpid_',
       args: [
         { name: 'x', type: 'Context' },
+        { name: 'spid', type: 'String' },
         { name: 'permission', type: 'String' }
       ],
       type: 'Boolean',
@@ -69,7 +70,6 @@ foam.CLASS({
         When there is no user in the context, try to check if the permission is granted by the context spid
       `,
       javaCode: `
-        String spid = (String) x.get("spid");
         if ( ! foam.util.SafetyUtil.isEmpty(spid) ) {
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
@@ -85,7 +85,7 @@ foam.CLASS({
       javaCode: `
         PM pm = PM.create(getX(), this.getClass(), "check");
         try {
-          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null && checkSpid_(x, permission) );
+          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission));
         } finally {
           pm.log(getX());
         }

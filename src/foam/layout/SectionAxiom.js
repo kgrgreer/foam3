@@ -62,7 +62,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function createIsAvailableFor(data$) {
+    function createIsAvailableFor(data$, controllerMode$) {
       var self = this;
       var slot = foam.core.ProxyExpressionSlot.create({
         obj$: data$,
@@ -103,6 +103,7 @@ foam.CLASS({
       var propVisSlot = foam.core.ArraySlot.create({
         slots: props.map(
           p => p.createVisibilityFor(data$,
+            controllerMode$ ||
             data.__subContext__.controllerMode$ ||
             (data.__subContext__.ctrl && data.__subContext__.ctrl.controllerMode$) ||
             foam.core.ConstantSlot.create({value: foam.u2.ControllerMode.CREATE})
@@ -111,7 +112,29 @@ foam.CLASS({
       }).map(arr => arr.some(m => {
         return m != foam.u2.DisplayMode.HIDDEN
       }));
-      availabilitySlots.push(propVisSlot);
+
+      // add check for at least one available action as well (actionAvailSlot)
+      var actions = data.cls_.getAxiomsByClass(foam.core.Action)
+        .filter(a => a.section === this.name);
+
+      var actionAvailSlot = foam.core.ArraySlot.create({
+        slots: actions.map(
+          a => a.createIsAvailable$(data.__subContext__, data)
+        )
+      }).map(arr => arr.some(isAvailable => {
+        return isAvailable;
+      }));
+
+      var atLeastOnePropertyOrActionAvailableSlot = foam.core.ArraySlot.create({
+        slots: [
+          propVisSlot,
+          actionAvailSlot
+        ]
+      }).map(arr => arr.some(isVisibleOrAvailable => {
+        return isVisibleOrAvailable;
+      }));
+
+      availabilitySlots.push(atLeastOnePropertyOrActionAvailableSlot);
 
       var simpleSlot = foam.core.SimpleSlot.create();
       var arrSlot = foam.core.ArraySlot.create({slots: availabilitySlots}).map(arr => {
