@@ -149,8 +149,8 @@ foam.CLASS({
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
-            NOT(INSTANCE_OF(AgentCapabilityJunction.class)),
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
+            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+            NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
           if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
@@ -159,8 +159,8 @@ foam.CLASS({
           // Check if a ucj implies the subject.realUser has this permission
           if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
             userPredicate = AND(
-              NOT(INSTANCE_OF(AgentCapabilityJunction.class)),
-              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
+              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+              NOT(INSTANCE_OF(AgentCapabilityJunction.class))
             );
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
@@ -170,9 +170,9 @@ foam.CLASS({
           // Check if a ucj implies the subject.realUser has this permission in relation to the user
           if ( realUser != null && realUser.getId() != user.getId() ) {
             userPredicate = AND(
-              INSTANCE_OF(AgentCapabilityJunction.class),
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-              EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
+              EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
+              INSTANCE_OF(AgentCapabilityJunction.class)
             );
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;

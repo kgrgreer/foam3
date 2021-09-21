@@ -280,6 +280,7 @@
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.table_$.sub(this.updateRenderedPages_));
       this.updateCount();
     },
 
@@ -402,8 +403,6 @@
           });
         }
       }
-
-      this.onDetach(this.table_$.sub(this.updateRenderedPages_));
     },
     function scrollTable(scroll) {
       if ( this.childNodes && this.childNodes.length > 0 )
