@@ -9,10 +9,6 @@ foam.CLASS({
   name: 'User',
   plural: 'Users',
 
-  mixins: [
-    'foam.nanos.dig.ExternalDataAwareMixin'
-  ],
-
   implements: [
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
