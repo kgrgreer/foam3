@@ -8,6 +8,10 @@
   package: 'foam.nanos.bench',
   name: 'BenchmarkResult',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin'
+  ],
+
   properties: [
     //TODO Transactions (M)
     {
