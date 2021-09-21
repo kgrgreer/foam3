@@ -116,7 +116,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeInDigest',
-      factory: function() { return this.property.includeInDigest; }
+      factory: function() { return this.property.includeInDigest != undefined ?  this.property.includeInDigest : true; }
     },
     {
       class: 'Boolean',
