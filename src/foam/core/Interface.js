@@ -58,7 +58,10 @@ foam.CLASS({
     {
       class: 'AxiomArray',
       name: 'methods',
-      of: 'foam.core.internal.InterfaceMethod'
+      of: 'foam.core.internal.InterfaceMethod',
+      adaptArrayElement: function(m) {
+        return foam.core.internal.InterfaceMethod.create(foam.String.isInstance(m) ? {signature: m} : m);
+      }
     },
     {
       class: 'StringArray',

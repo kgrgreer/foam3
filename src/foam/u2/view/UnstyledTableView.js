@@ -691,9 +691,13 @@ foam.CLASS({
 
                   // Object actions
                   var actions = view.getActionsForRow(obj);
-                  tableRowElement
-                    .start()
-                      .addClass(view.myClass('td')).
+                  tableRowElement.
+                    start().
+                      addClass(view.myClass('td')).
+                      on('dblClick', e => {
+                        e.preventDefault();
+                        e.stopPropogation();
+                      }).
                       attrs({ name: 'contextMenuCell' }).
                       style({ flex: `0 0 ${view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px` }).
                       tag(view.OverlayActionListView, {

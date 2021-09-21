@@ -61,6 +61,7 @@ foam.CLASS({
     'log',
     'merged',
     'requestAnimationFrame',
+    'returnExpandedCSS',
     'setInterval',
     'setTimeout',
     'warn',
@@ -219,6 +220,11 @@ foam.CLASS({
         (owner ? (' owner="' + owner + '"') : '') +
         '>' +
         text + '</style>');
+    },
+
+    function returnExpandedCSS(a) {
+      /* Fallback function for using long form color MACROS in non-nanos apps */
+      return a;
     }
   ]
 });

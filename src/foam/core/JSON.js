@@ -608,23 +608,23 @@ foam.CLASS({
 
       var references = foam.json.references(x, json);;
 
-      return Promise.all(references).then(function() {
+      return Promise.all/*Settled*/(references).then(() => {
         return foam.json.parse(json, undefined, opt_ctx || this.creationContext);
-      }.bind(this));
+      });
     },
     function parseClassFromString(str, opt_cls, opt_ctx) {
       return this.strict ?
-          // JSON.parse() is faster; use it when data format allows.
-          foam.json.parse(
-            JSON.parse(str),
-            opt_cls,
-            opt_ctx || this.creationContext) :
-          // Create new parser iff different context was injected; otherwise
-          // use same parser bound to "creationContext" each time.
-          opt_ctx ? foam.parsers.FON.create({
-            creationContext: opt_ctx || this.creationContext
-          }).parseClassFromString(str, opt_cls) :
-          this.fonParser_.parseClassFromString(str, opt_cls);
+        // JSON.parse() is faster; use it when data format allows.
+        foam.json.parse(
+          JSON.parse(str),
+          opt_cls,
+          opt_ctx || this.creationContext) :
+        // Create new parser iff different context was injected; otherwise
+        // use same parser bound to "creationContext" each time.
+        opt_ctx ? foam.parsers.FON.create({
+          creationContext: opt_ctx || this.creationContext
+        }).parseClassFromString(str, opt_cls) :
+        this.fonParser_.parseClassFromString(str, opt_cls);
     },
     function clone() {
       return this;

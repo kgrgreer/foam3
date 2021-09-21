@@ -225,9 +225,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
-        AppConfig appConfig = (AppConfig) ((AppConfig) x.get("appConfig")).fclone();
-        String url = ! foam.util.SafetyUtil.isEmpty(getUrl()) ? getUrl() : appConfig.getUrl();
-        appConfig.setUrl(url.replaceAll("/$", ""));
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        String url = getUrl();
+        if ( ! foam.util.SafetyUtil.isEmpty(url) ) {
+          appConfig = (AppConfig) appConfig.fclone();
+          appConfig.setUrl(url.replaceAll("/$", ""));
+        }
         return appConfig;
         `
     },

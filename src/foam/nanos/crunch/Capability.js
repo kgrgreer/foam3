@@ -307,12 +307,10 @@ foam.CLASS({
       includeInDigest: false,
     },
     {
-      name: 'labels',
-      class: 'StringArray',
-      documentation: 'List of labels applied to this file',
-      view: {
-        class: 'foam.u2.view.ReferenceArrayView'
-      }
+      name: 'label',
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      documentation: 'File label applied to the document for this capability'
     },
     {
       class: 'Boolean',
@@ -320,6 +318,14 @@ foam.CLASS({
       documentation: 'If false, disable auto save for wizardlets associated to this capability.',
       hidden: true,
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isInternalCapability',
+      documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
+      Disables crunchService.isRenewable from propogating anything else in the heirarchy.
+      Disables user expiry notifications.
+      Disables capability.maybeReOpen()`
     }
   ],
 
@@ -379,12 +385,11 @@ foam.CLASS({
         if ( PredicatedPrerequisiteCapabilityJunctionDAO.PERMISSION.equals(permission) ) return false;
 
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        var prereqs = crunchService.getPrereqs(x, getId(), null);
-
+        List<Capability> prereqs = crunchService.getCapabilityPath(x, getId(), false, false);
         if ( prereqs != null && prereqs.size() > 0 ) {
-          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-          for ( var capId : prereqs ) {
-            Capability capability = (Capability) capabilityDAO.find(capId);
+          for ( Capability capability : prereqs ) {
+            // getCapabilityPath will include the top-level capability in its return list
+            if ( getId().equals(capability.getId()) ) continue;
             if ( capability != null && capability.grantsPermission(permission) ) return true;
           }
         }
@@ -538,6 +543,7 @@ foam.CLASS({
       `,
       javaCode: `
         if ( ! getEnabled() ) return false;
+        if ( getIsInternalCapability() ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
@@ -604,7 +610,8 @@ foam.RELATIONSHIP({
   sourceProperty: {
     section: 'systemInformation',
     order: 20,
-    updateVisibility: 'RO'
+    updateVisibility: 'RO',
+    columnPermissionRequired: true
   }
 });
 

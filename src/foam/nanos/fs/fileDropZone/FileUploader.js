@@ -48,8 +48,9 @@ foam.CLASS({
       name: 'files',
     },
     {
-      class: 'StringArray',
-      name: 'labels'
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      name: 'label'
     },
     {
       class: 'Boolean',
@@ -78,10 +79,9 @@ foam.CLASS({
           .add(this.LABEL_FILE_GROUP)
         .end()
         .tag({
-          class: 'foam.u2.view.ReferenceArrayView',
+          class: 'foam.u2.view.ReferenceView',
           dao: this.fileLabelDAO,
-          allowDuplicates: false,
-          data$: this.labels$
+          data$: this.label$
           })
         .startContext({ data: self })
           .start(this.UPLOAD, { buttonStyle: foam.u2.ButtonStyle.PRIMARY })
@@ -94,13 +94,13 @@ foam.CLASS({
   actions: [
     {
       name: 'upload',
-      code: function(X) {
-        if ( this.files[0] && !! this.labels.length ) {
-          this.files[0].labels = this.labels;
+      code: async function(X) {
+        if ( this.files[0] && !! this.label ) {
+          this.files[0].label = this.label;
           if ( this.owner !== 0 ) {
             this.files[0].owner = this.owner;
           }
-          this.fileDAO.put(this.files[0]);
+          await this.fileDAO.put(this.files[0]);
           X.closeDialog();
         } else {
           this.notify(this.ERROR_FILE_UPLOAD, this.log, this.LogLevel.ERROR, true);

@@ -16,13 +16,15 @@ foam.CLASS({
       of: 'foam.nanos.crunch.CapabilityJunctionPayload',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
-      autoValidate: true
+      autoValidate: true,
+      columnPermissionRequired: true
     },
     {
       name: 'userCapabilityRequirements',
       class: 'StringArray',
       columnPermissionRequired: true,
-      section: 'capabilityInformation'
+      section: 'capabilityInformation',
+      columnPermissionRequired: true
     },
     {
       name: 'isWizardIncomplete',
