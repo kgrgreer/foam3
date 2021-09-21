@@ -29,8 +29,7 @@ foam.CLASS({
     'foam.nanos.dig.HTTPDigestSink',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
-    'foam.util.SafetyUtil',
-    'net.nanopay.partner.intuit.IntuitHTTPDigestSink'
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -115,7 +114,7 @@ foam.CLASS({
         try {
           AbstractSink sink = null;
           if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
-            sink = new IntuitHTTPDigestSink(
+            sink = new HTTPDigestSink(
               dugRule.getUrl(),
               dugRule.evaluateBearerToken(),
               dugDigestConfig,
