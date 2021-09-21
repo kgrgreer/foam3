@@ -421,10 +421,10 @@ foam.CLASS({
                 // TEMPORARY
                 // wait for filterView to set momento before instantianting summaryView
                 if ( mementoUpdated ) return this.E()
-                  .start()
-                    .add(summaryView)
-                    .addClass(self.myClass('browse-view-container'))
-                  .end();
+                .addClass(self.myClass('browse-view-container'))
+                .start()
+                  .add(summaryView)
+                .end();
               }))
             .end();
         }));
