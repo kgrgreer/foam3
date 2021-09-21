@@ -172,7 +172,7 @@ foam.CLASS({
             userPredicate = AND(
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
               EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
-              INSTANCE_OF(AgentCapabilityJunction.class),
+              INSTANCE_OF(AgentCapabilityJunction.class)
             );
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
