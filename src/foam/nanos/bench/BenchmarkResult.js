@@ -60,6 +60,51 @@
     {
       class: 'String',
       name: 'Name'
+    },
+    {
+      class: 'String',
+      name: 'osArch'
+    },
+    {
+      class: 'String',
+      name: 'javaVmInfo'
+    },
+    {
+      class: 'String',
+      name: 'javaVersion'
+    },
+    {
+      class: 'String',
+      name: 'javaCompiler'
+    },
+    {
+      class: 'String',
+      name: 'javaFullversion'
+    },
+
+    {
+      class: 'String',
+      name: 'javaRuntimeVersion'
+    },
+    {
+      class: 'String',
+      name: 'osName'
+    },
+    {
+      class: 'String',
+      name: 'sunArchDataModel'
+    },
+    {
+      class: 'Int',
+      name: 'core'
+    },
+    {
+      class: 'Long',
+      name: 'freeMemory'
+    },
+    {
+      class: 'Long',
+      name: 'maxMemory'
     }
   ]
 });

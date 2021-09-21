@@ -211,6 +211,19 @@
           br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
           br.setMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
           br.setName( benchmark.getClass().getSimpleName() );
+          br.setOsArch(System.getProperty("os.arch"));
+          br.setJavaVmInfo(System.getProperty("java.vm.info"));
+
+          br.setJavaVersion(System.getProperty("java.version"));
+          br.setJavaCompiler(System.getProperty("java.compiler"));
+          br.setJavaFullversion(System.getProperty("java.fullversion"));
+          br.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
+          br.setOsName(System.getProperty("os.name"));
+          br.setSunArchDataModel(System.getProperty("sun.arch.data.model"));
+
+          br.setCore(Runtime.getRuntime().availableProcessors());
+          br.setFreeMemory(Runtime.getRuntime().freeMemory());
+          br.setMaxMemory(Runtime.getRuntime().maxMemory());
 
           //TODO add Transactions (M)
 
