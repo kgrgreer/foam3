@@ -77,11 +77,11 @@
     },
     {
       class: 'Float',
-      name: 'ops',
+      name: 'Operations',
     },
     {
       class: 'Float',
-      name: 'opst',
+      name: 'Operationst',
     }
   ],
 
@@ -191,13 +191,13 @@
           long  endTime  = System.currentTimeMillis();
           float complete = (float) (threads * getInvocationCount());
           float duration = ((float) (endTime - startTime) / 1000.0f);
-          setOps(complete / duration);
-          setOpst(ops_ / (float) threads);
+          setOperations(complete / duration);
+          setOperationst(getOperations() / (float) threads);
           stats.put(PASS, pass.get());
           stats.put(FAIL, fail.get());
           stats.put(TOTAL, pass.get() + fail.get());
-          stats.put(OPS, String.format("%.02f", getOps()));
-          stats.put(OPSPT, String.format("%.02f", getOpst()));
+          stats.put(OPS_, String.format("%.02f", (complete / duration)));
+          stats.put(OPSPT, String.format("%.02f", (complete / duration) / (float) threads));
           stats.put(MEMORY, String.format("%.02f", (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0)));
 
           BenchmarkResult br = new BenchmarkResult();

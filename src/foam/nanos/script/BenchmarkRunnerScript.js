@@ -85,7 +85,7 @@
         }
 
         for ( int i = 0; i < benchmarkArray.size(); i ++ ) {
-          BenchmarkRunner benchmark = (BenchmarkRunner) benchmarkArray.get(i);
+          BenchmarkRunner benchmark = (BenchmarkRunner) ((BenchmarkRunner) benchmarkArray.get(i)).fclone();
 
           if ( selectedBenchmarks != null ) {
             if ( selectedBenchmarks.contains(benchmark.getId()) ) {
