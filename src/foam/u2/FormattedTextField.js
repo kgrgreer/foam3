@@ -43,9 +43,8 @@ foam.CLASS({
       of: 'foam.u2.TextFormatter',
       name: 'formatter',
       documentation: `
-        Array of integers and strings of delimiters used to format the input
-        where integer values represent number of digits at its location
-        e.g., [3, '.', 3, '.', 3, '-', 2]
+        An object of the TextFormatter interface which will be used to apply
+        specific formatting logic to the input.
       `
     },
     // Use a new prop as input data in case the actual data shouldn't include formatting
