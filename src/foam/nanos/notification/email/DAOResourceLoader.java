@@ -18,6 +18,7 @@ import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
 import foam.nanos.notification.email.EmailTemplateSourceEnum;
 import foam.nanos.pm.PM;
+import foam.nanos.pm.PMInfo;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
 import java.io.ByteArrayInputStream;
@@ -117,7 +118,7 @@ public class DAOResourceLoader
       else
         clonedTemplate.setSourceClass(EmailTemplateSourceEnum.UNDEFINED.getLabel());
 
-      PM pm = PM.create(x, source, name);
+      PM pm = PM.create(x, source,  "emailTemplate: " + name);
       pm.log(x);
 
       emailTemplateDAO.put(clonedTemplate);
