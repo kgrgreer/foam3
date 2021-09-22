@@ -12,7 +12,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getExternalData',
-      type: 'java.util.Map'
+      type: 'Map'
     },
     {
       name: 'setExternalData',
@@ -20,7 +20,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'val',
-          type: 'java.util.Map'
+          type: 'Map'
         }
       ]
     },
