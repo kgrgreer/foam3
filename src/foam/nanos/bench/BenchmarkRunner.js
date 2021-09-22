@@ -10,7 +10,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.ContextAgent',
-    'foam.core.ContextAware',
+    'foam.core.ContextAware'
   ],
 
   javaImports: [
