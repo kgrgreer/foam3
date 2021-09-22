@@ -10,7 +10,7 @@
   name: 'UCJDataExpiryRule',
   extends: 'foam.nanos.ruler.Rule',
 
-  documentation: `Rule that set the expiry of ucj renewable data, based on some predicate.`,
+  documentation: `Rule that set the expiry of ucj renewable data.`,
 
   javaImports: [
     'foam.nanos.crunch.RenewableData',
