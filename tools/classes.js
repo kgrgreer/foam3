@@ -885,6 +885,7 @@ var classes = [
   'foam.nanos.crunch.ruler.SetUCJStatusOnPut',
   'foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted',
   'foam.nanos.crunch.ruler.SaveUCJDataOnGranted',
+  'foam.nanos.crunch.ruler.UCJDataExpiryRule',
 
   //crunch extras
   'foam.nanos.crunch.extra.ReviewCapability',
