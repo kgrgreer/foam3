@@ -220,6 +220,8 @@
           br.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
           br.setOsName(System.getProperty("os.name"));
           br.setSunArchDataModel(System.getProperty("sun.arch.data.model"));
+          br.setJavaVmName(System.getProperty("java.vm.name"));
+          br.setJavaVmVersion(System.getProperty("java.vm.version"));
 
           br.setCore(Runtime.getRuntime().availableProcessors());
           br.setFreeMemory(Runtime.getRuntime().freeMemory());

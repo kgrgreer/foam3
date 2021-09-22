@@ -105,6 +105,14 @@
     {
       class: 'Long',
       name: 'maxMemory'
+    },
+    {
+      class: 'String',
+      name: 'JavaVmName'
+    },
+    {
+      class: 'String',
+      name: 'JavaVmVersion'
     }
   ]
 });
