@@ -1062,6 +1062,7 @@ FOAM_FILES([
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
   { name: 'foam/nanos/fs/AgreementView' },
+  { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
   { name: "foam/util/date/TimeUnit" }
 ])
