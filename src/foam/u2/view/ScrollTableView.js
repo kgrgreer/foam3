@@ -215,7 +215,7 @@
       name: 'dblClickListenerAction',
       factory: function() {
         return function(obj, id, title) {
-          if ( ! this.stack ) return;
+          if ( ! this.stack || this.isDetached() ) return;
 
           this.stack.push(this.StackBlock.create({
             view: {
