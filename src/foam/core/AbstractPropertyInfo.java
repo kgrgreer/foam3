@@ -48,11 +48,6 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public void toXML(foam.lib.xml.Outputter outputter, Object value) {
-    outputter.output(value);
-  }
-
-  @Override
   public foam.mlang.Expr partialEval() {
     return this;
   }
@@ -102,19 +97,6 @@ public abstract class AbstractPropertyInfo
 
     // return false if o1 and o2 are same
     return false;
-  }
-
-  @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
-    try {
-      reader.next();
-    } catch (XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of XML file");
-    }
-
-    return "";
   }
 
   public String createStatement() {

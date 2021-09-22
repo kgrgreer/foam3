@@ -60,7 +60,7 @@ foam.INTERFACE({
     'void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) { format(formatter, obj); }',
     'void toCSV(X x, Object obj, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(obj != null ? get(obj) : null); }',
     'void toCSVLabel(X x, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(getName()); }',
-    'void toXML(foam.lib.xml.Outputter outputter, Object value)',
+    'void toXML(foam.lib.xml.Outputter outputter, Object value) { outputter.output(value); }',
     'void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop)',
     {
       signature: 'boolean hardDiff(FObject o1, FObject o2, FObject diff)',
@@ -71,7 +71,17 @@ foam.INTERFACE({
     },
     'Object fromString(String value)',
     'void setFromString(Object obj, String value) { this.set(obj, fromString(value));}',
-    'Object fromXML(X x, XMLStreamReader reader)',
+    `Object fromXML(X x, javax.xml.stream.XMLStreamReader reader) {
+      // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
+      try {
+        reader.next();
+      } catch (javax.xml.stream.XMLStreamException ex) {
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+        logger.error("Premature end of XML file");
+      }
+
+      return "";
+    }`,
     'int comparePropertyToObject(Object key, Object o)',
     'int comparePropertyToValue(Object key, Object value)',
     'String getSQLType()',
