@@ -34,9 +34,9 @@ foam.CLASS({
     'click as dblclick',
     'columns',
     'currentMemento_ as memento',
+    'nestedPropsAndIndexes',
     'props',
     'propertyNamesToQuery',
-    'nestedPropertyNamesAndItsIndexes',
     'selectedObjects'
   ],
 
@@ -257,9 +257,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'nestedPropertyNamesAndItsIndexes',
+      name: 'nestedPropsAndIndexes',
       expression: function(propertyNamesToQuery) {
-        return this.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
+        return this.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
       }
     },
     {

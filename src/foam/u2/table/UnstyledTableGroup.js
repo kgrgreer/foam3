@@ -18,7 +18,7 @@ foam.CLASS({
 
   imports: [
     'canBuildObjfromProj',
-    'nestedPropertyNamesAndItsIndexes',
+    'nestedPropsAndIndexes',
     'propertyNamesToQuery',
     'props'
   ],
@@ -33,8 +33,8 @@ foam.CLASS({
       var self = this;
       var objForCurrentProperty = this.obj;
       var expr = foam.mlang.Expressions.create();
-      var nestedPropertyValues = this.columnHandler.filterOutValuesForNotNestedProperties(this.projection, this.nestedPropertyNamesAndItsIndexes[1]);
-      var nestedPropertiesObjsMap = this.columnHandler.groupObjectsThatAreRelatedToNestedProperties(this.data.of, this.nestedPropertyNamesAndItsIndexes[0], nestedPropertyValues);
+      var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
+      var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       addClasses([this.data.myClass('row-group'), this.data.myClass('row')]).
       // TODO: add functionality to support group multiselect

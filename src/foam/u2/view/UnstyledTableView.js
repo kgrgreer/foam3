@@ -544,7 +544,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -559,7 +559,7 @@ foam.CLASS({
                     .startContext({
                       props: view.props,
                       propertyNamesToQuery: propertyNamesToQuery,
-                      nestedPropertyNamesAndItsIndexes: nastedPropertyNamesAndItsIndexes,
+                      nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
                       canBuildObjfromProj: canObjBeBuildFromProjection
                     })
                       .tag({ class: 'foam.u2.table.UnstyledTableRow', data: view, obj: values.array[i], projection: values.projection[i] })

@@ -21,7 +21,7 @@ foam.CLASS({
     'canBuildObjfromProj',
     'click?',
     'dblclick?',
-    'nestedPropertyNamesAndItsIndexes',
+    'nestedPropsAndIndexes',
     'propertyNamesToQuery',
     'props',
     'stack?'
@@ -37,8 +37,8 @@ foam.CLASS({
       this.SUPER();
       const obj = this.obj;
       var self = this;
-      var nestedPropertyValues = this.columnHandler.filterOutValuesForNotNestedProperties(this.projection, this.nestedPropertyNamesAndItsIndexes[1]);
-      var nestedPropertiesObjsMap = this.columnHandler.groupObjectsThatAreRelatedToNestedProperties(this.data.of, this.nestedPropertyNamesAndItsIndexes[0], nestedPropertyValues);
+      var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
+      var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
         this.on('dblclick', function() {
