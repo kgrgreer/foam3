@@ -14,9 +14,9 @@
 
   requires: [
     'foam.dao.FnSink',
+    'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.controller.Memento',
-    'foam.dao.ProxyDAO'
+    'foam.nanos.controller.Memento'
   ],
 
   implements: [
