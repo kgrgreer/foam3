@@ -41,13 +41,13 @@
       name: 'url',
       section: 'infoSection',
       visibility: 'RO',
-      expression: function(appConfig, requesteeSession) {
-        return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
+      expression: function(appConfig, loginTokenId) {
+        return appConfig.url + '/service/otlogin?otltoken=' + loginTokenId;
       }
     },
     {
       class: 'String',
-      name: 'requesteeSession',
+      name: 'loginTokenId',
       visibility: 'HIDDEN'
     }
   ]
