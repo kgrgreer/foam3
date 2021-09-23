@@ -22,7 +22,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
-    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'java.util.Date',
@@ -59,7 +58,6 @@ foam.CLASS({
           args.put("junctionStatusEn", junction.getStatus().getName());
           args.put("junctionStatus", junctionStatus);
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.RULE.getLabel());
 
           TopLevelCapabilityStatusUpdateNotification notification = new TopLevelCapabilityStatusUpdateNotification();
           notification.setCapabilityName(cap.getName());

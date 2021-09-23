@@ -40,23 +40,29 @@
         User user = ((Subject) x.get("subject")).getUser();
         String spid = null;
         AppConfig appConfig = (AppConfig) x.get("appConfig");
+
         if ( user != null ) {
           appConfig = user.findGroup(x).getAppConfig(x);
           spid = user.getSpid();
         }
+
         if ( theme == null
           || ( user != null && ! user.getSpid().equals(x.get("spid")) )
         ) {
           theme = ((Themes) x.get("themes")).findTheme(x);
         }
+
         if ( spid == null ) {
           spid = theme.getSpid();
         }
+
         if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
           emailMessage.setSpid(user.getSpid());
         }
+
         SupportConfig supportConfig = theme.getSupportConfig();
         EmailConfig emailConfig = supportConfig.getEmailConfig();
+
         // Set ReplyTo, From, DisplayName from support email config
         if ( emailConfig != null ) {
           // REPLY TO:
@@ -72,12 +78,14 @@
             emailMessage.setFrom(emailConfig.getFrom());
           }
         }
+
         // template name check
         String templateName = (String)templateArgs.get("template");
         if ( SafetyUtil.isEmpty(templateName) ) {
           logger.info("No email template name");
           return emailMessage;
         }
+
         String url = appConfig.getUrl().replaceAll("/$", "");
         templateArgs.put("logo", url + "/" + theme.getLogo());
         templateArgs.put("largeLogo", url + "/" + theme.getLargeLogo());
@@ -88,12 +96,14 @@
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());
         templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
         templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
         templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
         templateArgs.put("personalSupportFullName", psUser == null ? "" : psUser.getLegalName());
+
         // system
         templateArgs.put("hostname", System.getProperty("hostname", "localhost"));
         emailMessage.setTemplateArguments(templateArgs);

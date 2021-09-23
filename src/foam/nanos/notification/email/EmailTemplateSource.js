@@ -16,11 +16,6 @@ foam.CLASS({
       tableWidth: 250
     },
     {
-      class: 'String',
-      name: 'sourceType',
-      documentation: 'Source of email generation type - EmailTemplateSourceEnum'
-    },
-    {
       class: 'Boolean',
       name: 'enabled',
       value: true,

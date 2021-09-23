@@ -349,7 +349,6 @@ FOAM_FILES([
   { name: 'foam/nanos/notification/email/EmailService' },
   { name: 'foam/nanos/notification/email/EmailTemplate' },
   { name: 'foam/nanos/notification/email/EmailTemplateSource' },
-  { name: 'foam/nanos/notification/email/EmailTemplateSourceEnum' },
   { name: 'foam/nanos/notification/email/SMTPEmailService' },
   { name: 'foam/nanos/notification/email/Status' },
   { name: 'foam/nanos/notification/push/PushService' },

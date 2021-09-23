@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.util.Emails.EmailsUtility',
@@ -105,7 +104,6 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("sendTo", user.getEmail());
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.WEB_AGENT.getLabel());
 
           out.append(message);
           EmailsUtility.sendEmailFromTemplate(x, user, emailMessage, "verify-email-link", args);

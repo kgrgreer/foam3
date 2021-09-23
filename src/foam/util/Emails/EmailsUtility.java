@@ -12,7 +12,6 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
-import foam.nanos.notification.email.EmailTemplateSourceEnum;
 import foam.nanos.theme.Theme;
 import foam.nanos.theme.Themes;
 import foam.util.SafetyUtil;

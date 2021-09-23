@@ -16,7 +16,6 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
-import foam.nanos.notification.email.EmailTemplateSourceEnum;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMInfo;
 import foam.util.SafetyUtil;
@@ -43,6 +42,16 @@ public class DAOResourceLoader
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
+
+    /*
+    name  group locale spid
+      Y     Y     Y     Y
+      Y     Y     Y     *
+      Y     Y     *     Y
+      Y     Y     *     *
+      Y     *     *     Y
+      Y     *     *     *
+    */
 
     do {
       boolean group_  = ! SafetyUtil.isEmpty(groupId);
@@ -108,15 +117,10 @@ public class DAOResourceLoader
       String sourceType = (String) templateArgs.get("templateSourceType");
       String source = (String) templateArgs.get("templateSource");
 
-      if ( ! SafetyUtil.isEmpty(sourceType) )
-        clonedTemplate.setSourceType(sourceType);
-      else
-        clonedTemplate.setSourceType(EmailTemplateSourceEnum.UNDEFINED.getLabel());
-
       if ( ! SafetyUtil.isEmpty(source) )
         clonedTemplate.setSourceClass(source);
       else
-        clonedTemplate.setSourceClass(EmailTemplateSourceEnum.UNDEFINED.getLabel());
+        clonedTemplate.setSourceClass("emailTemplate");
 
       PM pm = PM.create(x, source,  "emailTemplate: " + name);
       pm.log(x);

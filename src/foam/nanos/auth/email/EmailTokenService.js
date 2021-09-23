@@ -20,7 +20,6 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.token.Token',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.util.Emails.EmailsUtility',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -51,7 +50,6 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
           args.put("templateSource", this.getClass().getName());
-          args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
           EmailsUtility.sendEmailFromTemplate(x, user, message, "verifyEmail", args);
 

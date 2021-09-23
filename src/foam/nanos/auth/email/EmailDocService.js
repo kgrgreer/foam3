@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.nanos.auth.HtmlDoc',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailTemplateSourceEnum',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap'
   ],
@@ -52,7 +51,6 @@ foam.CLASS({
         HashMap<String, Object> args = new HashMap<>();
         args.put("doc", doc.getBody());
         args.put("templateSource", this.getClass().getName());
-        args.put("templateSourceType", EmailTemplateSourceEnum.SERVICE.getLabel());
 
         EmailsUtility.sendEmailFromTemplate(getX(), user, message, "docEmail", args);
         return true;
