@@ -28,10 +28,6 @@ public class OrX
     parent_ = parent;
   }
 
-  public X put(Object name, Object value) {
-    return new OrX(parent_, getX().put(name, value));
-  }
-
   public <T> T get(Class<T> key) {
     T t = getX().get(key);
     if ( t == null ) return (T) parent_.get(this, key);
