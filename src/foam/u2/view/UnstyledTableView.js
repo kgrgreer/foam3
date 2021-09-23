@@ -81,6 +81,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'refDAO',
+      factory: function() {
+        return this.data;
+      }
+    },
+    {
       name: 'order'
     },
     {
@@ -394,8 +401,8 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.inX(ctrl.__subContext__).select().then(function(obj) {
-                     view.selectedObjects[obj.id] = obj;
+                    view.refDAO.select(function(obj) {
+                      view.selectedObjects[obj.id] = obj;
                     });
                   } else {
                     view.selectedObjects = {};
@@ -581,8 +588,8 @@ foam.CLASS({
                           if ( view.importSelection$ ) view.importSelection = v;
                           if ( view.editRecord$ ) view.editRecord(v);
                           view.importSelection = v;
-                          view.click(null, obj.id, v ? v.toSummary() : '');
                         });
+                        view.click(null, obj.id);
                       } else {
                         if ( view.importSelection$ ) view.importSelection = thisObjValue;
                         if ( view.editRecord$ ) view.editRecord(thisObjValue);

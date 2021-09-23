@@ -215,7 +215,7 @@
       name: 'dblClickListenerAction',
       factory: function() {
         return function(obj, id, title) {
-          if ( ! this.stack ) return;
+          if ( ! this.stack || this.isDetached() ) return;
 
           this.stack.push(this.StackBlock.create({
             view: {
@@ -305,6 +305,7 @@
 
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
+        refDAO: this.data,
         columns: this.columns,
         contextMenuActions: this.contextMenuActions,
         selection$: this.selection$,
