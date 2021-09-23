@@ -62,13 +62,6 @@ public abstract class AbstractPropertyInfo
     return get(o);
   }
 
-  @Override
-  public void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop) {
-    if ( prop.compare(o1, o2) != 0 ) {
-      diff.put(prop.getName(), prop.f(o2));
-    }
-  }
-
   public boolean equals(Object obj) {
     try {
       return compareTo(obj) == 0;
@@ -80,23 +73,6 @@ public abstract class AbstractPropertyInfo
   public int compareTo(Object obj) {
     int result = getName().compareTo(((PropertyInfo) obj).getName());
     return result != 0 ? result : getClassInfo().compareTo(((PropertyInfo) obj).getClassInfo());
-  }
-
-  @Override
-  public boolean hardDiff(FObject o1, FObject o2, FObject diff){
-    // compare the property value of o1 and o2
-    // If value is Object reference, only compare reference. (AbstractObjectPropertyInfo will override hardDiff method)
-    // use to compare String and primitive type
-    int same = comparePropertyToValue(this.get(o1), this.get(o2));
-    //return the value of o2 if o1 and o2 are different
-    if ( same != 0 ) {
-      //set o2 prop into diff
-      this.set(diff, this.get(o2));
-      return true;
-    }
-
-    // return false if o1 and o2 are same
-    return false;
   }
 
   public String createStatement() {
