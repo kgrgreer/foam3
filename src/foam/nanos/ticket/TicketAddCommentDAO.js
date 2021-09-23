@@ -25,6 +25,7 @@ foam.CLASS({
     Ticket ticket = (Ticket) obj;
     String comment = ticket.getComment();
     String externalComment = ticket.getExternalComment();
+    Ticket old = (Ticket) getDelegate().find(ticket.getId());
     ticket = (Ticket) getDelegate().put_(x, obj);
   
     if ( ! SafetyUtil.isEmpty(comment) ) {
@@ -33,6 +34,7 @@ foam.CLASS({
         .setTicket(ticket.getId())
         .build();
       ((DAO) x.get("ticketCommentDAO")).put_(x, tc);
+      ticket.createCommentNotification(x, old);
       ticket = (Ticket) ticket.fclone();
       ticket.setComment("");
       ticket = (Ticket) getDelegate().put_(x, ticket);
@@ -45,41 +47,14 @@ foam.CLASS({
         .setTicket(ticket.getId())
         .build();
       ((DAO) x.get("ticketCommentDAO")).put_(x, tc);
+      ticket.createExternalCommentNotification(x, old);
       ticket = (Ticket) ticket.fclone();
       ticket.setExternalComment("");
       ticket = (Ticket) getDelegate().put_(x, ticket);
-      notify(x, ticket, tc);
     }
 
     return ticket;
       `
     },
-    {
-      name: 'notify',
-      args: [
-        {
-          type: 'Context',
-          name: 'x'
-        },
-        {
-          type: 'foam.nanos.ticket.Ticket',
-          name: 'ticket'
-        },
-        {
-          type: 'foam.nanos.ticket.TicketComment',
-          name: 'ticketComment'
-        }
-      ],
-      javaCode: `
-
-      User user = ticket.findCreatedFor(x);
-      Notification notification = new Notification.Builder(x)
-        .setBody(ticketComment.getComment())
-        .setNotificationType("Request Information")
-        .build();
-      user.doNotify(x, notification);
-
-      `
-    }
   ]
 });
