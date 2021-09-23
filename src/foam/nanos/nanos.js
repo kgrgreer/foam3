@@ -406,7 +406,7 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketDAOCreateView' },
   { name: 'foam/nanos/ticket/TicketSummaryView' },
   { name: 'foam/nanos/ticket/SummaryCard' },
-  { name: 'foam/nanos/ticket/RFITicket' },
+  { name: 'foam/nanos/ticket/RfiTicket' },
 
   // Dig
   { name: 'foam/nanos/dig/exception/DigErrorMessage' },
@@ -417,6 +417,7 @@ FOAM_FILES([
   { name: 'foam/nanos/dig/DUGDigestConfig' },
   { name: 'foam/nanos/dig/DUGRule' },
   { name: 'foam/nanos/dig/DUGRuleAction' },
+  { name: 'foam/nanos/dig/ExternalDataAware' },
   { name: 'foam/nanos/dig/DigFileUploadView' },
   { name: 'foam/nanos/dig/DigSnippetView' },
   { name: 'foam/nanos/dig/LinkView' },
@@ -431,6 +432,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/Ruled" },
   { name: "foam/nanos/ruler/Rule" },
   { name: 'foam/nanos/ruler/PermissionedUserRule' },
+  { name: 'foam/nanos/ruler/PermissionedUCJRule' },
   { name: "foam/nanos/ruler/RuleAction" },
   { name: "foam/nanos/ruler/CompositeRuleAction" },
   { name: "foam/nanos/ruler/StopRulerAction" },

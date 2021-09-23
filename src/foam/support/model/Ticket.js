@@ -91,7 +91,10 @@ foam.RELATIONSHIP({
   targetModel: 'foam.support.model.Ticket',
   forwardName: 'tickets',
   inverseName: 'user',
-  sourceProperty: { section: 'systemInformation' }
+  sourceProperty: {
+    section: 'systemInformation',
+    columnPermissionRequired: true
+  }
 });
 
 

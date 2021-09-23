@@ -27,6 +27,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'authenticate',
+      value: true
+    },
+    {
       name: 'nSpecDAO',
       factory: function() {
         // The client completely fails if nSpecDAO fails to load, so infinitely retry
@@ -59,9 +64,9 @@ foam.CLASS({
           // instantiated lazily but there's no reason we can't give contexts
           // the ability to do this too.
           var client = {
-            package: 'foam.nanos.client',
-            name: 'Client',
-            exports: [],
+            package:    'foam.nanos.client',
+            name:       'Client',
+            exports:    [],
             properties: []
           };
 
@@ -93,7 +98,13 @@ foam.CLASS({
             }
           });
 
-          self.nSpecDAO.where(self.EQ(self.NSpec.SERVE, true)).select(
+          var query = self.EQ(self.NSpec.SERVE, true);
+
+          if ( ! self.authenticate ) {
+            query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
+          }
+
+          self.nSpecDAO.where(query).select(
             foam.mlang.Expressions.create().PROJECTION(foam.nanos.boot.NSpec.NAME, foam.nanos.boot.NSpec.CLIENT))
             .then(p => {
               foam.dao.ArrayDAO.create({array: p.array})
@@ -136,7 +147,8 @@ foam.CLASS({
                   }
                 },
                 eof: function() {
-                  Promise.all(references.concat(appConfigPromise)).then(function() {
+                  // disable class-loading
+                  /*Promise.allSettled(references.concat(appConfigPromise))*/appConfigPromise.then(function() {
                     resolve(foam.core.Model.create(client).buildClass());
                   });
                 }

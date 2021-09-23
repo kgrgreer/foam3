@@ -22,6 +22,8 @@ import javax.xml.stream.XMLStreamReader;
 public abstract class AbstractPropertyInfo
   implements PropertyInfo
 {
+  final static String[] EMPTY_STRING_ARRAY = new String[] {};
+
   protected ClassInfo parent;
   protected byte[]    nameAsByteArray_ = null;
 
@@ -36,70 +38,13 @@ public abstract class AbstractPropertyInfo
     return parent;
   }
 
-  @Override
-  public String getShortName() {
-    return null;
-  }
-
-  public boolean getNetworkTransient() {
-    return false;
-  }
-
-  public boolean getExternalTransient() {
-    return false;
-  }
-
-  public boolean getStorageTransient() {
-    return false;
-  }
-
-  public boolean getStorageOptional() {
-    return false;
-  }
-
-  public boolean getClusterTransient() {
-    return false;
-  }
-
-  public boolean getReadPermissionRequired() {
-    return false;
-  }
-
-  public boolean getWritePermissionRequired() {
-    return false;
-  }
-
-  public boolean getXMLAttribute() {
-    return false;
-  }
-
-  public boolean getXMLTextNode() {
-    return false;
-  }
-
-  public boolean getRequired() {
-    return false;
-  }
-
-  public void validateObj(foam.core.X x, foam.core.FObject obj) {
-    /* Template Method: override in subclass if required. */
-    if ( getRequired() && ! isSet(obj) ) {
-      throw new ValidationException(getName() + " required");
-    }
-  }
-
   public String[] getAliases() {
-    return new String[] {};
+    return EMPTY_STRING_ARRAY;
   }
 
   @Override
   public void toJSON(foam.lib.json.Outputter outputter, Object value) {
     outputter.output(value);
-  }
-
-  @Override
-  public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
-    format(formatter, obj);
   }
 
   @Override
@@ -159,10 +104,6 @@ public abstract class AbstractPropertyInfo
     return false;
   }
 
-  public void setFromString(Object obj, String value) {
-    this.set(obj, fromString(value));
-  }
-
   @Override
   public Object fromXML(X x, XMLStreamReader reader) {
     // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
@@ -196,11 +137,7 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public void cloneProperty(FObject source, FObject dest) {
-    set(dest, foam.util.SafetyUtil.deepClone(get(source)));
-  }
-
-  @Override
+  // ???: Is this still used?
   public void validate(X x, FObject obj)
     throws IllegalStateException
   {
@@ -208,16 +145,10 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public boolean includeInID() {
-    return false;
-  }
-
-  @Override
   public boolean includeInDigest() {
-    if ( getStorageTransient() ||
-         getClusterTransient() ) {
+    if ( getStorageTransient() || getClusterTransient() )
       return false;
-    }
+
     return true;
   }
 
@@ -229,21 +160,6 @@ public abstract class AbstractPropertyInfo
   @Override
   public boolean includeInSignature() {
     return includeInDigest();
-  }
-
-  @Override
-  public boolean containsPII(){
-    return false;
-  }
-
-  @Override
-  public boolean containsDeletablePII(){
-    return false;
-  }
-
-  @Override
-  public boolean getSheetsOutput(){
-    return false;
   }
 
   @Override
@@ -278,14 +194,6 @@ public abstract class AbstractPropertyInfo
     return nameAsByteArray_;
   }
 
-  public void toCSV(foam.core.X x, Object obj, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(obj != null ? get(obj) : null);
-  }
-
-  public void toCSVLabel(foam.core.X x, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(getName());
-  }
-
   public void fromCSVLabelMapping(java.util.Map<String, foam.lib.csv.FromCSVSetter> map) {
 
     foam.core.PropertyInfo prop = this;
@@ -294,9 +202,5 @@ public abstract class AbstractPropertyInfo
         prop.set(obj, fromString(str));
       }
     });
-  }
-
-  public Object castObject(Object value) {
-    return value;
   }
 }

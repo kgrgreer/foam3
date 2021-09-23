@@ -28,10 +28,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'visibility'
-    },
-    {
-      class: 'String',
       name: 'documentation'
     },
     'type',
@@ -46,31 +42,7 @@ foam.CLASS({
     },
     {
       name: 'body',
-      documentation: 'Dummy property to silence warnings',
-      setter: function() {},
-      getter: function() {}
-    },
-    {
-      name: 'synchronized',
-      documentation: 'Dummy property to silence warnings',
-      setter: function() {},
-      getter: function() {}
-    },
-    {
-      name: 'static',
-      documentation: 'Dummy property to silence warnings',
-      setter: function() {},
-      getter: function() {}
-    },
-    {
-      name: 'final',
-      documentation: 'Dummy property to silence warnings',
-      setter: function() {},
-      getter: function() {}
-    },
-    {
-      name: 'abstract',
-      getter: function() { return false; }
+      documentation: 'Optional default implementation'
     },
     {
       class: 'Boolean',
@@ -80,23 +52,23 @@ foam.CLASS({
 
   methods: [
     function outputJava(o) {
-
       if ( this.documentation ) {
-       str = foam.java.Util.removeSpacing(this.documentation);
-       lines = foam.java.Util.limitSplit(str, 25);
-       o.indent();
-       o.out('/**\n');
-       for ( i = 0 ; i < lines.length ; i++ ) {
-         o.indent();
-         o.out('* ' + lines[i]);
-         o.out('\n');
-       }
-       o.indent();
-       o.out('*/\n');
+        str = foam.java.Util.removeSpacing(this.documentation);
+        lines = foam.java.Util.limitSplit(str, 25);
+        o.indent();
+        o.out('/**\n');
+        for ( i = 0 ; i < lines.length ; i++ ) {
+          o.indent();
+          o.out('* ' + lines[i]);
+          o.out('\n');
+        }
+        o.indent();
+        o.out('*/\n');
       }
 
       o.indent();
-      o.out(this.visibility, this.visibility ? ' ' : '',
+      o.out(
+        this.body ? 'default ' : '',
         this.type, ' ', this.name, '(');
 
       for ( var i = 0 ; this.args && i < this.args.length ; i++ ) {
@@ -114,7 +86,17 @@ foam.CLASS({
         }
       }
 
-      o.out(';\n');
+      if ( ! this.body ) {
+        o.out(';\n');
+      } else {
+        o.out(' {\n');
+
+        o.increaseIndent();
+        o.out(this.body);
+        o.decreaseIndent();
+        o.indent();
+        o.out('}\n');
+      }
     }
   ]
 });
