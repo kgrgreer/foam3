@@ -10,8 +10,11 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.column.ColumnConfigToPropertyConverter',
-    'foam.nanos.column.CommonColumnHandler'
+    'foam.nanos.column.CommonColumnHandler',
+    'foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder'
   ],
+
+  imports: ['columnConfigToPropertyConverter'],
 
   properties: [
     {
@@ -25,9 +28,9 @@ foam.CLASS({
     {
       name: 'columnConfigToPropertyConverter',
       factory: function() {
-        if ( ! this.__context__.columnConfigToPropertyConverter )
+        if ( ! this.columnConfigToPropertyConverter )
           return foam.nanos.column.ColumnConfigToPropertyConverter.create();
-        return this.__context__.columnConfigToPropertyConverter;
+        return this.columnConfigToPropertyConverter;
       }
     },
     {
@@ -45,7 +48,7 @@ foam.CLASS({
 
   methods: [
     function returnRecords(of, dao, propertyNamesToQuery, useProjection) {
-      var expr = foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder.create().buildProjectionForPropertyNamesArray(of, propertyNamesToQuery, useProjection);
+      var expr = this.ExpressionForArrayOfNestedPropertiesBuilder.create().buildProjectionForPropertyNamesArray(of, propertyNamesToQuery, useProjection);
       return dao.select(expr);
     },
     function doesAllColumnsContainsColumnName(obj, col) {

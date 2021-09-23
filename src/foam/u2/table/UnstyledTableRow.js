@@ -18,12 +18,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'props',
-    'propertyNamesToQuery',
     'canBuildObjfromProj',
-    'nestedPropertyNamesAndItsIndexes',
-    'dblclick?',
     'click?',
+    'dblclick?',
+    'nestedPropertyNamesAndItsIndexes',
+    'propertyNamesToQuery',
+    'props',
     'stack?'
   ],
 

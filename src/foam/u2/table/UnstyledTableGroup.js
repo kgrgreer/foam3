@@ -11,16 +11,16 @@ foam.CLASS({
   mixins: ['foam.u2.table.TableHelperMixin'],
 
   requires: [
-    'foam.u2.CheckBox',
     'foam.core.SimpleSlot',
+    'foam.u2.CheckBox',
     'foam.u2.view.OverlayActionListView'
   ],
 
   imports: [
-    'props',
-    'propertyNamesToQuery',
     'canBuildObjfromProj',
-    'nestedPropertyNamesAndItsIndexes'
+    'nestedPropertyNamesAndItsIndexes',
+    'propertyNamesToQuery',
+    'props'
   ],
 
   properties: [
