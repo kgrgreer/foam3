@@ -177,7 +177,7 @@ foam.CLASS({
     var nav = this.showNav ? self.BreadcrumbView : '';
     this.addClass()
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -190,21 +190,24 @@ foam.CLASS({
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .start(self.Cols)
-                    .callIf( config.browseActions.length && config.browseContext, function() {
-                      if ( config.browseActions.length > 2 ) {
-                        this.start(self.OverlayActionListView, {
-                          label: this.ACTIONS,
-                          data: config.browseActions,
-                          obj: config$browseContext
-                        }).addClass(self.myClass('buttons')).end();
-                      } else {
-                        var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
-                        for ( action of config.browseActions ) {
-                          actions.tag(action, { size: 'LARGE' });
-                        }
-                        this.add(actions.endContext());
-                      }
-                    })
+                    .add(this.slot(function(config$browseContext) {
+                      return this.E()
+                        .callIf( config.browseActions.length && config.browseContext, function() {
+                          if ( config.browseActions.length > 2 ) {
+                            this.start(self.OverlayActionListView, {
+                              label: this.ACTIONS,
+                              data: config.browseActions,
+                              obj: config$browseContext
+                            }).addClass(self.myClass('buttons')).end();
+                          } else {
+                            var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
+                            for ( action of config.browseActions ) {
+                              actions.tag(action, { size: 'LARGE' });
+                            }
+                            this.add(actions.endContext());
+                          }
+                        });
+                    }))
                     .callIf( ! config.detailView, function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {

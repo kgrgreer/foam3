@@ -93,6 +93,8 @@ public class HTTPDigestSink extends AbstractSink {
       String payload = outputter.stringify(fobj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
+
+      setCustomConnectionProperties(fobj, conn);
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
@@ -156,4 +158,6 @@ public class HTTPDigestSink extends AbstractSink {
       throw e;
     }
   }
+
+  protected void setCustomConnectionProperties(FObject fobj, HttpURLConnection conn) {}
 }

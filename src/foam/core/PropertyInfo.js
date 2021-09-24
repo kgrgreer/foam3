@@ -60,18 +60,47 @@ foam.INTERFACE({
     'void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) { format(formatter, obj); }',
     'void toCSV(X x, Object obj, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(obj != null ? get(obj) : null); }',
     'void toCSVLabel(X x, foam.lib.csv.CSVOutputter outputter) { outputter.outputValue(getName()); }',
-    'void toXML(foam.lib.xml.Outputter outputter, Object value)',
-    'void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop)',
+    'void toXML(foam.lib.xml.Outputter outputter, Object value) { outputter.output(value); }',
+    `void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop) {
+      if ( prop.compare(o1, o2) != 0 ) {
+        diff.put(prop.getName(), prop.f(o2));
+      }
+    }`,
     {
       signature: 'boolean hardDiff(FObject o1, FObject o2, FObject diff)',
       documentation: `
         return true if there are difference, then the property value from o2 will set to diff
         return false if there is no differnce, then null will be set to diff
+      `,
+      javaCode: `
+        // compare the property value of o1 and o2
+        // If value is Object reference, only compare reference. (AbstractObjectPropertyInfo will override hardDiff method)
+        // use to compare String and primitive type
+        int same = comparePropertyToValue(this.get(o1), this.get(o2));
+        //return the value of o2 if o1 and o2 are different
+        if ( same != 0 ) {
+          //set o2 prop into diff
+          this.set(diff, this.get(o2));
+          return true;
+        }
+
+        // return false if o1 and o2 are same
+        return false;
       `
     },
     'Object fromString(String value)',
     'void setFromString(Object obj, String value) { this.set(obj, fromString(value));}',
-    'Object fromXML(X x, XMLStreamReader reader)',
+    `Object fromXML(X x, javax.xml.stream.XMLStreamReader reader) {
+      // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
+      try {
+        reader.next();
+      } catch (javax.xml.stream.XMLStreamException ex) {
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+        logger.error("Premature end of XML file");
+      }
+
+      return "";
+    }`,
     'int comparePropertyToObject(Object key, Object o)',
     'int comparePropertyToValue(Object key, Object value)',
     'String getSQLType()',

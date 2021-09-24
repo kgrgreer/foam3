@@ -116,7 +116,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeInDigest',
-      factory: function() { return this.property.includeInDigest; }
+      value: true
+//      factory: function() { return (! this.clusterTransient && ! this.storageTransient)/* && this.property.includeInDigest;*/ }
     },
     {
       class: 'Boolean',
@@ -476,15 +477,17 @@ foam.CLASS({
           });
         }
 
-        // default value is true, only generate if value is false
-        if ( ! this.includeInDigest ) {
+
+/*
+//        if ( ! this.includeInDigest ) {
           m.push({
             name:       'includeInDigest',
             visibility: 'public',
             type:       'boolean',
-            body:       `return ${this.includeInDigest};`
+            body:       'return ${this.includeInDigest};'
           });
-        }
+          */
+//        }
 
         if ( this.includeInID ) {
           m.push({
@@ -496,14 +499,14 @@ foam.CLASS({
         }
 
         // default value is true, only generate if value is false
-        if ( ! this.includeInSignature ) {
+      //  if ( ! this.includeInSignature ) {
           m.push({
             name:       'includeInSignature',
             visibility: 'public',
             type:       'boolean',
-            body:       `return ${this.includeInSignature};`
+            body:       `return ${this.includeInSignature && this.includeInDigest};`
           });
-        }
+      //  }
 
         if ( this.containsPII ) {
           m.push({

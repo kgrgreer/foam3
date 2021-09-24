@@ -417,10 +417,13 @@ foam.CLASS({
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
                 })
-              .start()
-                .add(summaryView)
+              .add(filterView.slot( function(mementoUpdated, mementoToggle) {
+                // TEMPORARY
+                // wait for filterView to set momento before instantianting summaryView
+                if ( mementoUpdated ) return this.E()
                 .addClass(self.myClass('browse-view-container'))
-              .end()
+                .add(summaryView);
+              }))
             .end();
         }));
     }

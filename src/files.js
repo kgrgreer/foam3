@@ -353,6 +353,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
 
@@ -1065,6 +1066,21 @@ FOAM_FILES([
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
   { name: 'foam/nanos/fs/AgreementView' },
+  { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
-  { name: "foam/util/date/TimeUnit" }
+  { name: "foam/util/date/TimeUnit" },
+
+  { name: "foam/nanos/dig/exception/DigErrorMessage" },
+  { name: "foam/nanos/dig/exception/DAONotFoundException" },
+  { name: "foam/nanos/dig/exception/DAORequiredException" },
+  { name: "foam/nanos/dig/exception/ParsingErrorException" },
+  { name: "foam/nanos/dig/exception/DAOPutException" },
+  { name: "foam/nanos/dig/exception/EmptyDataException" },
+  { name: "foam/nanos/dig/exception/UnsupportException" },
+  { name: "foam/nanos/dig/exception/UnknownIdException" },
+  { name: "foam/nanos/dig/exception/DigSuccessMessage" },
+  { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
+  { name: "foam/nanos/dig/exception/EmptyParameterException" },
+  { name: "foam/nanos/dig/exception/ExternalAPIException" },
+  { name: "foam/nanos/dig/exception/GeneralException" }
 ])

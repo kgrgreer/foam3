@@ -39,3 +39,6 @@ p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.approval.ApprovalRequ
 
 //DigErrorMessage
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Success"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"Currency.delimiter",target:","})
+p({class:"foam.i18n.Locale",locale:"en",source:"Currency.decimalCharacter",target:"."})
