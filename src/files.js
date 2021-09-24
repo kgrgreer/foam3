@@ -353,6 +353,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
 
@@ -1062,6 +1063,7 @@ FOAM_FILES([
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
   { name: 'foam/nanos/fs/AgreementView' },
+  { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
   { name: "foam/util/date/TimeUnit" }
 ])

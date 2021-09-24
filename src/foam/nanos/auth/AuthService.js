@@ -91,6 +91,7 @@ foam.INTERFACE({
     {
       name: 'authorizeAnonymous',
       type: 'foam.nanos.auth.Subject',
+      async: true,
       documentation: `
         Authorizes a anonymous user that has no true ownership other than to the system's acting service provider. The assigned anonymous user is relative to a spid,
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
