@@ -4,7 +4,6 @@ p({
   "serviceScript": `
     return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
       .setPrefix("medusa")
-      .setReportingEnabled(true)
       .build();
   `
 })
