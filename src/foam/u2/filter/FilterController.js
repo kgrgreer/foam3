@@ -18,6 +18,10 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  requires: [
+    'foam.core.Lock'
+  ],
+
   properties: [
     {
       class: 'Map',
@@ -84,6 +88,14 @@ foam.CLASS({
       class: 'Int',
       name: 'activeFilterCount',
       defaultValue: 0
+    },
+    {
+      name: 'lock',
+      class: 'FObjectProperty',
+      of: 'foam.core.Lock',
+      factory: function () {
+        return this.Lock.create();
+      }
     }
   ],
 
@@ -342,9 +354,14 @@ foam.CLASS({
       name: 'getResultsCount',
       code: function() {
         var predicate = this.isPreview ? this.previewPredicate : this.finalPredicate;
-        this.dao.where(predicate).select(this.COUNT()).then((count) => {
-          this.resultsCount = count.value;
-        });
+        this.lock.then(() => {
+          return new Promise((resolve) =>{
+            this.dao.where(predicate).select(this.COUNT()).then((count) => {
+              this.resultsCount = count.value;
+              resolve();
+            })
+          })
+        })
       }
     }
   ]

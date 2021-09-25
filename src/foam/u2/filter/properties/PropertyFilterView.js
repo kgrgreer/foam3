@@ -133,6 +133,10 @@ foam.CLASS({
       factory: function() {
         return this.QueryParser.create({ of: this.dao.of || this.__subContext__.lookup(this.property.forClass_) });
       }
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'preSetPredicate'
     }
   ],
 
@@ -161,6 +165,7 @@ foam.CLASS({
         .end();
 
       this.isInit = true;
+      this.checkPresetPredicate();
 
       if ( this.memento && this.memento.head.length != 0 ) {
         var predicate = this.getPredicateFromMemento();
@@ -179,6 +184,11 @@ foam.CLASS({
         if ( predicate ) {
           return predicate.partialEval();
         }
+      }
+    },
+    function checkPresetPredicate() {
+      if ( this.preSetPredicate != null ) {
+        this.switchActive();
       }
     }
   ],
@@ -201,6 +211,10 @@ foam.CLASS({
       // Restore the search view using an existing predicate for that view
       // This requires that every search view implements restoreFromPredicate
       var existingPredicate = this.filterController.getExistingPredicate(this.criteria, this.property);
+
+      if ( ! existingPredicate && this.preSetPredicate != null ) {
+        existingPredicate = this.preSetPredicate;
+      }
 
       if ( existingPredicate ) {
         this.view_.restoreFromPredicate(existingPredicate);

@@ -368,6 +368,14 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'selectedObjs'
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'searchPredicate'
+    },
+    {
+      class: 'Int',
+      name: 'preSelectedCannedQuery'
     }
   ]
 });
