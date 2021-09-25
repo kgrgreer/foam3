@@ -65,6 +65,7 @@ foam.CLASS({
     'setInterval',
     'setTimeout',
     'warn',
+    'params',
     'window'
   ],
 
@@ -78,6 +79,17 @@ foam.CLASS({
     {
       name: 'console',
       factory: function() { return this.window.console; }
+    },
+    {
+      name: 'params',
+      factory: function() {
+        var m = {};
+        this.window.location.search.substring(1).split('&').forEach(p => {
+          var a = p.split('=');
+          m[a[0]] = a[1];
+        });
+        return m;
+      }
     }
   ],
 
