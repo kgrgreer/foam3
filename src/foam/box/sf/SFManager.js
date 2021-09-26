@@ -177,7 +177,7 @@ foam.CLASS({
           public void put(Object obj, Detachable sub) {
             SF sf = (SF) obj;
             sf.setX(context);
-            sf.init(context);
+            sf.initial(context);
           }
         });
         getLogger().info("SFManager Start");

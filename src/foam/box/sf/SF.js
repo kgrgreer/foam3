@@ -227,7 +227,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'init',
+      name: 'initial',
       args: 'Context x',
       documentation: 'when system start, SFManager will call this service to initial re-forward',
       javaCode: `
