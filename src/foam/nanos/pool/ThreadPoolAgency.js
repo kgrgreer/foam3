@@ -106,7 +106,7 @@ foam.CLASS({
     {
       name: 'reportInterval',
       class: 'Long',
-      value: 10000
+      value: 60000
     },
     {
       name: 'stackDepth',
