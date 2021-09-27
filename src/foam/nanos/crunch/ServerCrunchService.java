@@ -156,7 +156,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       }
       grantPath.add(cap);
 
-      // Collect leave nodes in the list
+      // Collect leaf nodes in the list
       if ( collectLeafNodesList != null ) {
         if ( prereqs == null || prereqs.length == 0 ) {
           collectLeafNodesList.add(cap);
@@ -169,6 +169,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       }
     }
 
+    if ( collectLeafNodesList != null ) {
+      Collections.reverse(collectLeafNodesList);
+    }
     Collections.reverse(grantPath);
     pm.log(x);
     return grantPath;
