@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'ActionView',
   extends: 'foam.u2.tag.Button',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [ 'foam.nanos.controller.MementoMixin' ],
 
   documentation: `
     A button View for triggering Actions.
@@ -51,7 +51,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONFIRM', message: 'Confirm' },
+    { name: 'CONFIRM',     message: 'Confirm' },
     { name: 'CONFIRM_MSG', message: 'Are you sure you want to ' }
   ],
 
@@ -117,7 +117,7 @@ foam.CLASS({
     {
       name: 'mementoName',
       factory: function(action) { return this.action.mementoName; }
-    },
+    }
   ],
 
   methods: [

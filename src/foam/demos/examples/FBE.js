@@ -120,6 +120,7 @@ foam.CLASS({
 
       imports: [
         'globalScope',
+        'params',
         'selected'
       ],
 
@@ -138,6 +139,8 @@ foam.CLASS({
       methods: [
         function render() {
           this.SUPER();
+
+          if ( this.params.id && this.params.id !== this.data.id ) return;
 
           var self = this;
 
