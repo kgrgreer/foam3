@@ -102,11 +102,6 @@ foam.CLASS({
     ^iconOnly{
       padding: 0px;
     }
-
-    ^dropdownIcon {
-      margin-left: 4px;
-      width: 1.5em;
-    }
   `,
 
   methods: [
@@ -129,7 +124,7 @@ foam.CLASS({
         this.add(this.shown$.map(function(shown) {
           var e = self.E();
           if ( shown ) {
-            e.start().addClass(self.myClass('dropdownIcon')).callIfElse(self.theme,
+            e.start().callIfElse(self.theme,
               function() {
                 this.add(self.HTMLView.create({ data: self.theme.glyphs.dropdown.expandSVG() }));
               },
