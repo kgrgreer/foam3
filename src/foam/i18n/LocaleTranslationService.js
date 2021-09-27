@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.i18n.Locale',
     'java.util.List',
     'java.util.ArrayList',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*'
   ],
 
@@ -29,7 +30,7 @@ foam.CLASS({
     {
       name: 'getTranslation',
       javaCode: `
-        if ( locale == "" || source == "" ) return defaultText;
+        if ( SafetyUtil.isEmpty(locale) || source == "" ) return defaultText;
 
         DAO localeDAO = (DAO) getX().get("localeDAO");
 
