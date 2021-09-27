@@ -5,7 +5,6 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarmConfigs")
       .setOf(foam.nanos.alarming.AlarmConfig.getOwnClassInfo())
@@ -27,7 +26,6 @@ p({
       .setNullify(true)
       .setSeqNo(true)
       .setPm(true)
-      .setPipelinePm(true)
       .setRuler(true)
       .setIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.MonitoringReport.NAME })
       .build();
@@ -43,7 +41,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
       .setPm(true)
-      .setPipelinePm(true)
       .setDecorator(new foam.nanos.alarming.AddAlarmNameDAO.Builder(x)
         .setDelegate(new foam.nanos.alarming.AlarmLoggingDAO.Builder(x)
         .setDelegate(new foam.nanos.alarming.AlarmNotificationDAO.Builder(x)

@@ -31,7 +31,6 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("PMHourly")
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
@@ -62,7 +61,6 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("PMDaily")
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
@@ -135,6 +133,6 @@ p({
   pm:false,
   service:{
     class:"foam.nanos.pm.PMFactory",
-    percentage:100
+    percentage:1
   }
 })
