@@ -37,7 +37,6 @@ foam.CLASS({
       class: 'Boolean',
       label: '',
       section: 'reviewDataSection',
-      value: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
