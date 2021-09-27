@@ -241,6 +241,11 @@ foam.CLASS({
           .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilityId'
+    }
   ],
   methods: [
     {
