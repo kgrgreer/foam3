@@ -88,6 +88,7 @@ foam.CLASS({
       name: 'inFlightEntries',
       documentation: 'In Flight',
       storageTransient: true,
+      visibility: 'RO',
       javaSetter:`
         inFlightEntriesIsSet_ = true;
         return;
