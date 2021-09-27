@@ -83,16 +83,26 @@ foam.CLASS({
       documentation: 'only reforward unsuccessful entires when system comes up',
       value: false
     },
-    //TODO: todo feature.
     {
-      class: 'Boolean',
-      name: 'storeAfterFirstFail',
-      documentation: 'The SF presist entry only after first time fail',
-      value: false
+      class: 'Int',
+      name: 'inFlightEntries',
+      documentation: 'In Flight',
+      storageTransient: true,
+      javaSetter:`
+        inFlightEntriesIsSet_ = true;
+        return;
+      `,
+      javaGetter:`
+        return inFlight_.get();
+      `
     },
     {
       class: 'Object',
       name: 'delegateObject',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      visibility: 'HIDDEN',
       transient: true,
     },
     // {
@@ -107,6 +117,10 @@ foam.CLASS({
       class: 'Object',
       name: 'nullDao',
       transient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      visibility: 'HIDDEN',
       javaFactory: `
         return new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build();
       `
@@ -164,6 +178,7 @@ foam.CLASS({
         /* Assign initial time and enqueue. */
         e.setScheduledTime(System.currentTimeMillis());
         e.setSf(this);
+        inFlight_.incrementAndGet();
         ((SFManager) getManager()).enqueue(e);
       `
     },
@@ -180,6 +195,7 @@ foam.CLASS({
           Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
           journal.put(getX(), "", (DAO) getNullDao(), e);
         }
+        inFlight_.decrementAndGet();
       `
     },
     {
@@ -200,7 +216,7 @@ foam.CLASS({
             Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
             journal.put(getX(), "", (DAO) getNullDao(), e);
           }
-
+          inFlight_.decrementAndGet();
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
@@ -349,7 +365,8 @@ foam.CLASS({
             protected Logger logger_ = null;
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
-
+            final protected AtomicInteger inFlight_ = new AtomicInteger(0);
+            
             //Make to public because beanshell do not support.
             static public interface StepFunction {
               public int next(int cur);

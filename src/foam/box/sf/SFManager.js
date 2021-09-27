@@ -177,6 +177,7 @@ foam.CLASS({
           public void put(Object obj, Detachable sub) {
             SF sf = (SF) obj;
             sf.setX(context);
+            sf.setInFlightEntries(0);
             sf.initial(context);
           }
         });
