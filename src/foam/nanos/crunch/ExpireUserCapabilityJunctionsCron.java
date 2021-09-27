@@ -66,7 +66,7 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
 
         // update ucj data as renewable
         FObject data = (FObject) activeJunction.getData();
-        if ( data != null || data instanceof RenewableData ) {
+        if ( data != null && data instanceof RenewableData ) {
           RenewableData renewableData = (RenewableData) data;
           renewableData.setRenewable(true);
           activeJunction.setData(renewableData);
