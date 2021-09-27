@@ -263,6 +263,7 @@ foam.CLASS({
 
     ^iconOnly{
       padding: 8px;
+      max-height: inherit;
     }
 
     ^link^small,
@@ -278,6 +279,26 @@ foam.CLASS({
     // TODO: Find a better selector for this
     ^link > .foam-u2-HTMLView > *{
       height: 100%
+    }
+    ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    ^svgIcon svg {
+      height: 100%;
+    }
+
+    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    these ensure those are respected rather than imposing new dimensions */
+    ^imgSVGIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ^imgSVGIcon svg {
+      height: initial;
     }
   `,
 
@@ -354,7 +375,7 @@ foam.CLASS({
 
       this.addContent();
 
-      this.attrs({name: this.name || '', 'aria-label': this.ariaLabel });
+      this.attrs({ name: this.name || '', 'aria-label': this.ariaLabel });
 
       this.addClass(this.slot(function(styleClass_) {
         return this.myClass(styleClass_);
@@ -373,11 +394,11 @@ foam.CLASS({
       /** Add text or icon to button. **/
       var self = this;
       var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
-      var iconStyle = { 'max-width': size, 'object-fit': 'contain' };
+      var iconStyle = { width: size, height: size };
 
       if ( this.themeIcon && this.theme ) {
         var indicator = this.themeIcon.clone(this).expandSVG();
-        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).style(iconStyle).end();
+        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).addClass(this.myClass('SVGIcon')).style(iconStyle).end();
       } else if ( this.icon ) {
         if ( this.icon.endsWith('.svg') ) {
           var req  = this.HTTPRequest.create({
@@ -388,7 +409,11 @@ foam.CLASS({
           await req.send().then(function(payload) {
             return payload.resp.text();
           }).then(x => {
-            self.start(this.HTMLView, { data: x }).attrs({ role: 'presentation' }).style(iconStyle).end();
+            self.start(this.HTMLView, { data: x })
+              .attrs({ role: 'presentation' })
+              .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+              .style(iconStyle)
+            .end();
           });
         } else {
           this.start('img').style(iconStyle).attrs({ src: this.icon$, role: 'presentation' }).end();
