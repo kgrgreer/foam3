@@ -267,7 +267,9 @@ foam.CLASS({
         List leaves = new ArrayList<>();
         CrunchService crunchService = (CrunchService) x.get("crunchService");
         List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        var processCapabilityListPm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "processCapabilityList");
         processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
+        processCapabilityListPm.log(x);
 
         var ret =  find_(x, receivingCapPayload.getId());
         return ret;
@@ -290,6 +292,7 @@ foam.CLASS({
       javaCode: `
         CrunchService crunchService = (CrunchService) x.get("crunchService");
 
+        var loopPm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "processCapabilityList", "updateJunctionDirectly");
         for (Object item : list) {
           if ( item instanceof Capability ) {
             Capability cap = (Capability) item;
@@ -310,16 +313,21 @@ foam.CLASS({
             getLogger().warning("Ignoring unexpected item in grant path ", item);
           }
         }
+        loopPm.log(x);
 
         // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
         if ( leaves != null ) {
+          var leavesPm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "processCapabilityList", "leaves");
           for (Object leaf : leaves) {
             if ( leaf instanceof Capability ) {
               Capability cap = (Capability) leaf;
               UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              var ucjPm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "processCapabilityList", "leaf", cap.getId());
               ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+              ucjPm.log(x);
             }
           }
+          leavesPm.log(x);
         }
       `
     },

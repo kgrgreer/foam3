@@ -129,6 +129,9 @@ foam.CLASS({
           AbstractPredicate predicate = new AbstractPredicate(x) {
             @Override
             public boolean f(Object obj) {
+              PM pm = PM.create(getX(), this.getClass(), "capabilityCheck", "AbstractPredicate");
+              try
+              {
               Logger logger = (Logger) x.get("logger");
               UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
               if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
@@ -144,6 +147,7 @@ foam.CLASS({
                 }
               }
               return false;
+              } catch ( Throwable t ) { throw t; } finally { pm.log(x); }
             }
           };
 

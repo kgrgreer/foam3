@@ -26,7 +26,8 @@ foam.CLASS({
     'foam.nanos.crunch.Capability',
     'java.util.ArrayList',
     'java.util.List',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+    'foam.nanos.pm.PM'
   ],
 
   methods: [
@@ -79,11 +80,14 @@ foam.CLASS({
             }
 
             for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
+              var pm = PM.create(x, true, ReputDependentUCJs.getOwnClassInfo().getId(), "reput", ucjToReput.getTargetId());
               if ( effectiveUserId != null && effectiveX != null &&
-                   ucjToReput.getSourceId() == effectiveUserId )
+                   ucjToReput.getSourceId() == effectiveUserId ) {
                 userCapabilityJunctionDAO.inX(effectiveX).put(ucjToReput);
-              else
+              } else {
                 userCapabilityJunctionDAO.inX(x).put(ucjToReput);
+              }
+              pm.log(x);
             }
           }
         }, "Reput the UCJs of dependent capabilities");

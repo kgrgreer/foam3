@@ -324,6 +324,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public boolean atLeastOneInCategory(X x, String category) {
+    PM pm = PM.create(x, this.getClass().getSimpleName(), "atLeastOneInCategory");
     var categoryJunctionDAO = (DAO) x.get("capabilityCategoryCapabilityJunctionDAO");
 
     var junctions = new ArrayList<>();
@@ -343,6 +344,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         )
       );
 
+    pm.log(x);
     return ucj != null;
   }
 
@@ -395,17 +397,22 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public UserCapabilityJunction[] getAllJunctionsForUser(X x) {
+    PM pm = PM.create(x, this.getClass().getSimpleName(), "getAllJunctionsForUser");
+    try 
+    {
     Predicate associationPredicate = getAssociationPredicate_(x);
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     ArraySink arraySink = (ArraySink) userCapabilityJunctionDAO
       .where(associationPredicate)
       .select(new ArraySink());
     return (UserCapabilityJunction[]) arraySink.getArray().toArray(new UserCapabilityJunction[0]);
+    } catch ( Throwable t ) { throw t; } finally { pm.log(x); }
   }
 
   public UserCapabilityJunction getJunctionForSubject(
     X x, String capabilityId,  Subject subject
   ) {
+    PM pm = PM.create(x, this.getClass().getSimpleName(), "getJunctionForSubject");
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
@@ -415,7 +422,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
-        userCapabilityJunctionDAO.find(AND(associationPredicate,targetPredicate));
+        userCapabilityJunctionDAO.find(AND(targetPredicate,associationPredicate));
       if ( ucj == null ) {
         ucj = buildAssociatedUCJ(x, capabilityId, subject);
       } else {
@@ -430,6 +437,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       // On failure, report that the capability is available
       var ucj = buildAssociatedUCJ(x, capabilityId, subject);
       return ucj;
+    } finally {
+      pm.log(x);
     }
   }
 
@@ -765,6 +774,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   private Predicate getAssociationPredicate_(X x) {
+    PM pm = PM.create(x, this.getClass().getSimpleName(), "getAssociationPredicate_");
+    try 
+    {
     Subject subject = (Subject) x.get("subject");
 
     User user = subject.getUser();
@@ -791,5 +803,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
       )
     );
+    } catch ( Throwable ignore ) 
+    { throw ignore; } finally { pm.log(x); }
+
   }
 }
