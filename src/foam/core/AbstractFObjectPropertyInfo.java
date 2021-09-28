@@ -177,11 +177,4 @@ public abstract class AbstractFObjectPropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
-
-  @Override
-  public Object f(Object o) {
-    var ret = (FObject) super.f(o);
-    ret.setX(((FObject) o).getX());
-    return ret;
-  }
 }
