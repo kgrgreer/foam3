@@ -23,16 +23,16 @@
     }
   ],
 
+  messages: [
+    { name: 'IS_INSTANCE', message: 'Object provided is not an instance of IPAddressInfo' }
+  ],
+
   methods: [
     async function fetchIPInfo(ipAddressInfo) {
-      if ( ! navigator.onLine ) {
-        console.warning('Not connected to a valid network for ip info provider');
-        return;
-      }
       if ( ! this.IPAddressInfo.isInstance(ipAddressInfo) ) {
-        throw new Error('Object provided is not an instance of IPAddressInfo');
+        throw new Error(this.IS_INSTANCE);
       }
-      ipAddressInfo.populateValuesFromJSON(await (await fetch(this.ipInfoProvider)).json());
+      await ipAddressInfo.fetchInfo(this.ipInfoProvider);
       return ipAddressInfo;
     },
   ],

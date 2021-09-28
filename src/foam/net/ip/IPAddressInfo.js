@@ -95,8 +95,18 @@
     }
   ],
 
+  messages: [
+    { name: 'NO_INTERNET_CONNECTION', message: 'Unable to connect to a valid network to retrieve IP address information from the configured provider.' },
+  ],
+
   methods: [
-    function populateValuesFromJSON(obj) {
+    async function fetchInfo(url) {
+      if ( ! navigator.onLine ) {
+        console.warning(this.NO_INTERNET_CONNECTION);
+        return;
+      }
+      var obj = await (await fetch(url)).json();
+
       this.isp = obj.isp;
       this.ipType = obj.ipType;
       this.city = obj.city;
