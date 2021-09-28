@@ -37,7 +37,6 @@ foam.CLASS({
       var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       addClasses([this.data.myClass('row-group'), this.data.myClass('row')]).
-      // TODO: add functionality to support group multiselect
       // If multi-select is enabled, then we show a checkbox in the
       // header that allows you to select all or select none.
       callIf(this.data.multiSelectEnabled, function() {
