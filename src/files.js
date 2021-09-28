@@ -409,6 +409,8 @@ FOAM_FILES([
   { name: "foam/net/node/BaseHTTPRequest", flags: ['node'] },
   { name: "foam/net/node/HTTPResponse", flags: ['node'] },
   { name: "foam/net/node/WebSocketService", flags: ['node'] },
+  { name: "foam/net/ip/IPAddressInfo" },
+  { name: "foam/net/ip/ClientIPAddressInfoFetch" },
   { name: "lib/firebase" },
   { name: "lib/fcm" },
   { name: "foam/core/StubMethod", flags: ['java'] },

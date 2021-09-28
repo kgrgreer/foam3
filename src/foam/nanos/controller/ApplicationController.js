@@ -55,6 +55,7 @@ foam.CLASS({
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.session.SessionTimer',
+    'foam.net.ip.IPAddressInfo',
     'foam.u2.dialog.Popup',
     'foam.core.Latch'
   ],
@@ -75,6 +76,7 @@ foam.CLASS({
     'currentMenu',
     'displayWidth',
     'group',
+    'ipAddressInfo',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'loginSuccess',
@@ -346,6 +348,15 @@ foam.CLASS({
     {
       name: 'styles',
       factory: function() { return {}; }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'ipAddressInfo',
+      of: 'foam.net.ip.IPAddressInfo',
+      documentation: 'Contains fetched information from the applied IP Address information provider.',
+      factory: function() {
+        return this.IPAddressInfo.create();
+      }
     }
   ],
 
@@ -409,7 +420,7 @@ foam.CLASS({
         }
         await self.fetchGroup();
         await self.fetchSubject();
-
+        this.ipAddressInfo = await self.client.ipInfoClientService.fetchIPInfo();
         await self.maybeReinstallLanguage(client);
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility
