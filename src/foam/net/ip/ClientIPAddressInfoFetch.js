@@ -20,22 +20,16 @@
       class: 'URL',
       name: 'ipInfoProvider',
       documentation: `IP information provider url.`
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'ipAddressInfo',
-      of: 'foam.net.ip.IPAddressInfo',
-      documentation: 'Contains fetched information from the applied IP Address information provider.',
-      factory: function() {
-        return this.IPAddressInfo.create();
-      }
     }
   ],
 
   methods: [
-    async function fetchIPInfo() {
-      this.ipAddressInfo.populateValuesFromJSON(await (await fetch(this.ipInfoProvider)).json());
-      return this.ipAddressInfo;
+    async function fetchIPInfo(ipAddressInfo) {
+      if ( ! this.IPAddressInfo.isInstance(ipAddressInfo) ) {
+        throw new Error('Object provided is not an instance of IPAddressInfo');
+      }
+      ipAddressInfo.populateValuesFromJSON(await (await fetch(this.ipInfoProvider)).json());
+      return ipAddressInfo;
     },
   ],
 });
