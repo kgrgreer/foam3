@@ -169,8 +169,12 @@ foam.CLASS({
           }
         }
 
-        if ( getGuid() && getSeqNo() )
-          throw new RuntimeException("EasyDAO GUID and SeqNo are mutually exclusive");
+        if ( (getGuid() && getSeqNo())
+          || (getGuid() && getFuid())
+          || (getFuid() && getSeqNo())
+        ) {
+          throw new RuntimeException("EasyDAO GUID, SeqNo and FUID are mutually exclusive");
+        }
 
         if ( getSeqNo() ) {
           delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
@@ -182,6 +186,9 @@ foam.CLASS({
 
         if ( getGuid() )
           delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
+
+        if ( getFuid() )
+          delegate = new foam.dao.FUIDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {
@@ -361,7 +368,7 @@ foam.CLASS({
       name: 'pipelinePm'
     },
     {
-      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo and .guid features are mutuallyexclusive.',
+      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutuallyexclusive.',
       class: 'Boolean',
       name: 'seqNo'
     },
@@ -371,10 +378,16 @@ foam.CLASS({
       value: 1
     },
     {
-      documentation: 'Have EasyDAO generate guids to index items. Note that .seqNo and .guid features are mutually exclusive',
+      documentation: 'Have EasyDAO generate guids to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive',
       class: 'Boolean',
       name: 'guid',
       label: 'GUID'
+    },
+    {
+      documentation: 'Have EasyDAO generate fuids to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive',
+      class: 'Boolean',
+      name: 'fuid',
+      label: 'FUID'
     },
     {
       class: 'String',
