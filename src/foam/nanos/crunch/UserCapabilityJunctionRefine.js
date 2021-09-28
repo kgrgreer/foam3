@@ -409,6 +409,7 @@ foam.CLASS({
         }
 
         if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
+          // setup user chain
           subject.setUser(currentSubject.getRealUser());
           subject.setUser(currentSubject.getUser());
           return subject;
@@ -423,7 +424,6 @@ foam.CLASS({
           subject.setUser((User) userDAO.find(ucj.getSourceId()));
         }
 
-        subject.setUser((User) userDAO.find(ucj.getSourceId()));
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         return subject;
       `,
