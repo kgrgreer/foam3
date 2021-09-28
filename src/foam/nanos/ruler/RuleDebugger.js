@@ -69,7 +69,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        x = getX();
+        x = ruler.getX();
         DAO rulerDAO = (DAO) x.get("ruleDAO");
         DAO ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
         AuthService auth = (AuthService) x.get("auth");
@@ -100,13 +100,6 @@ foam.CLASS({
         sb.append(" rules");
         for ( Object o : rules ) {
           Rule r = (Rule) o;
-          RuleGroup group = (RuleGroup)ruleGroupDAO.find(r.getRuleGroup());
-          if ( group == null ) {
-            sb.append(" unable to find ruleGroup ");
-            continue;
-          }
-          sb.append(" group: ");
-          sb.append(group.getId());
           if ( ! r.getEnabled() ) {
             sb.append(" Disabled: ");
             sb.append(r.getName());
@@ -118,6 +111,14 @@ foam.CLASS({
           sb.append(r.getName());
           sb.append(" ");
           sb.append(r.getId());
+          RuleGroup group = (RuleGroup)ruleGroupDAO.find(r.getRuleGroup());
+          if ( group == null ) {
+            sb.append(" unable to find ruleGroup ");
+            sb.append(r.getRuleGroup());
+            continue;
+          }
+          sb.append(" group: ");
+          sb.append(group.getId());
           if ( ! group.getEnabled() ) {
             sb.append(" Group is DISABLED");
             continue;
