@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.ruler.RuleDebugger',
+  package: 'foam.nanos.ruler',
   name: 'RuleDebugger',
   extends: 'foam.nanos.ruler.Rule',
   documentation: `Rule to debug and print out all other rules.
