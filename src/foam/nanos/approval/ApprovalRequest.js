@@ -287,7 +287,6 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'HIDDEN'
     },
-    // TODO: shell script to convert classificationEnum to classification in jrls
     {
       class: 'Reference',
       of: 'foam.nanos.approval.ApprovalRequestClassification',
@@ -706,7 +705,7 @@ foam.CLASS({
         return getClassification();
       `
     },
-    // TODO: remove this when we remove classificationENum
+    // TODO: remove this when we remove classificationEnum
     {
       name: 'getClassificationEnumIsSet_',
       type: 'Boolean',
