@@ -34,7 +34,7 @@
           @Override
           public void execute(X x) {
             ApprovalRequest request = (ApprovalRequest) obj;
-            DAO requests = ApprovalRequestUtil.getAllRequests(getX(), request.getObjId(), request.getClassificationEnum());
+            DAO requests = ApprovalRequestUtil.getAllRequests(getX(), request.getObjId(), request.getClassification());
 
             DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
 

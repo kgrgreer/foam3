@@ -18,7 +18,6 @@ import foam.mlang.sink.GroupBy;
 import foam.nanos.NanoService;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestClassificationEnum;
 import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
@@ -624,7 +623,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       .setCreatedFor(subject.getUser().getId())
       // TODO: How can we make this configurable?
       .setGroup(subject.getUser().getSpid() + "-fraud-ops")
-      .setClassificationEnum(ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ)
+      .setClassification("update-on-active-ucj")
       .build();
 
     ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
