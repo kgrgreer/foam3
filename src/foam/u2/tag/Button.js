@@ -290,7 +290,7 @@ foam.CLASS({
       height: 100%;
     }
 
-    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    /* SVGs outside themeGlyphs may have their own heights and widths,
     these ensure those are respected rather than imposing new dimensions */
     ^imgSVGIcon {
       display: flex;
@@ -423,7 +423,7 @@ foam.CLASS({
         this.addClass(this.action.name);
         this.addClass(this.iconFontClass); // required by font package
         this.style(iconStyle);
-        this.attr(role, 'presentation')
+//        this.attr(role, 'presentation')
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }

@@ -33,30 +33,31 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.Latch',
+    'foam.log.LogLevel',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.Memento',
     'foam.nanos.controller.WindowHash',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
+    'foam.nanos.session.SessionTimer',
     'foam.nanos.theme.Theme',
-    'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
-    'foam.nanos.u2.navigation.TopNavigation',
+    'foam.nanos.theme.Themes',
     'foam.nanos.u2.navigation.FooterView',
-    'foam.nanos.crunch.CapabilityIntercept',
+    'foam.nanos.u2.navigation.TopNavigation',
+    'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
-    'foam.u2.borders.MarginBorder',
-    'foam.u2.stack.Stack',
-    'foam.u2.stack.StackBlock',
-    'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.session.SessionTimer',
     'foam.u2.dialog.Popup',
-    'foam.core.Latch'
+    'foam.u2.stack.DesktopStackView',
+    'foam.u2.stack.Stack',
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -783,7 +784,7 @@ foam.CLASS({
       if ( ! this.theme ) throw new Error(this.LOOK_AND_FEEL_NOT_FOUND);
 
       if ( this.theme.topNavigation ) {
-        this.topNavigation_ = this.theme.topNavigation;
+//        this.topNavigation_ = this.theme.topNavigation;
       }
 
       if ( this.theme.footerView ) {
