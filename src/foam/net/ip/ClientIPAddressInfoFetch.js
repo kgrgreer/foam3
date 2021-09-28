@@ -25,6 +25,10 @@
 
   methods: [
     async function fetchIPInfo(ipAddressInfo) {
+      if ( ! navigator.onLine ) {
+        console.warning('Not connected to a valid network for ip info provider');
+        return;
+      }
       if ( ! this.IPAddressInfo.isInstance(ipAddressInfo) ) {
         throw new Error('Object provided is not an instance of IPAddressInfo');
       }
