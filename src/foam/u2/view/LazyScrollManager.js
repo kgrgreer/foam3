@@ -112,7 +112,7 @@
       name: 'scrollToIndex',
       postSet: function () { this.safeScroll(); }
     },
-    'currGroup_',
+    ['currGroup_', undefined],
     'rowObserver',
     { 
       name: 'rootElement',
@@ -242,7 +242,7 @@
             if ( values.array[i] === undefined ) continue;
             if ( this.groupBy ) {
               var group = self.groupBy.f(values.array[i]);
-              if ( group != self.currGroup_ ){
+              if ( group != self.currGroup_ ) {
                 e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
               }
               self.currGroup_ = group;
@@ -292,6 +292,7 @@
       name: 'refresh',
       isFramed: true,
       code: function() {
+        this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);

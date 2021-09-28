@@ -266,7 +266,9 @@ foam.CLASS({
     'groupBy',
     'scrollEl_',
     ['showPagination', true],
-    ['tableHeadHeight', 52]
+    ['tableHeadHeight', 52],
+    'selectColumnsView',
+    'groupByView'
   ],
 
   methods: [
@@ -402,9 +404,10 @@ foam.CLASS({
       }
 
       //otherwise on adding new column creating new EditColumnsView, which is closed by default
-      if ( view.editColumnsEnabled )
-        var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
-
+      if ( view.editColumnsEnabled ) {
+        var editColumnView = this.EditColumnsView.create({ data: view, overlayView: { class: 'foam.u2.view.ColumnConfigPropView' }});
+        var groupByView = this.EditColumnsView.create({ data: view, overlayView: { class: 'foam.u2.view.GroupByView' }});
+      }
       if ( this.filteredTableColumns$ ) {
         this.onDetach(this.filteredTableColumns$.follow(
           //to not export "custom" table columns
@@ -529,22 +532,38 @@ foam.CLASS({
                       'text-align': 'unset!important;',
                     }).
                     callIf(view.editColumnsEnabled, function() {
-                      this.addClass(view.myClass('th-editColumns'))
-                      .on('click', function(e) {
-                        editColumnView.parentId = this.id;
-                        if ( ! editColumnView.selectColumnsExpanded )
-                          editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
-                      }).
-                      tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
-                      addClass(view.myClass('vertDots')).
-                      addClass(view.myClass('noselect'))
-                      ;
+                      this.start('')
+                        .tag(view.OverlayActionListView, {
+                          data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
+                          obj: view,
+                          showDropdownIcon: false,
+                          buttonStyle: 'TERTIARY',
+                          icon: 'images/Icon_More_Resting.svg'
+                        })
+                        .addClass(view.myClass('vertDots'))
+                        .addClass(view.myClass('noselect'))
+                      .end();
+                    
+                      // this.addClass(view.myClass('th-editColumns'))
+                      // .on('click', function(e) {
+                      //   editColumnView.parentId = this.id;
+                      //   if ( ! editColumnView.selectColumnsExpanded )
+                      //     editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
+                      // }).
+                      // tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
+                      // addClass(view.myClass('vertDots')).
+                      // addClass(view.myClass('noselect'))
+                      // ;
                     }).
                   end();
                 });
               })).
           end().
-          callIf(view.editColumnsEnabled, function() {this.add(editColumnView);})
+          callIf(view.editColumnsEnabled, function() {
+            this
+              .tag(view.EditColumnsView, { data: view, overlayView: { class: 'foam.u2.view.ColumnConfigPropView'}}, view.selectColumnsView$)
+              .tag(view.EditColumnsView, { data: view, overlayView: { class: 'foam.u2.view.GroupByView' }}, view.groupByView$);
+            })
           .start().addClass(view.myClass('tbody'))
             .tag(view.LazyScrollManager, {
                 data$: view.data$,
@@ -637,7 +656,26 @@ foam.CLASS({
         parent: this.__subContext__.createSubContext({ memento: this.currentMemento_ && this.currentMemento_.tail })
       }));
     },
+  ],
+  actions: [
+    {
+      name: 'selectColumns', 
+      label: 'Show/Hide Columns',
+      code: function(){
+        this.selectColumnsView.editOverlayExpanded = true;
+      }
+    }, 
+    {
+      name: 'groupByColumns', 
+      label: 'Group by Columns',
+      code: function(){
+        this.groupByView.editOverlayExpanded = true;
+      }
+    }
   ]
+
+
+
 });
 
 

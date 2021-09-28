@@ -11,7 +11,9 @@ foam.CLASS({
   requires: [
     'foam.u2.DetailView',
     'foam.u2.view.ColumnConfigPropView',
-    'foam.u2.view.SubColumnSelectConfig'
+    'foam.u2.view.GroupByView',
+    'foam.u2.view.SubColumnSelectConfig',
+    'foam.u2.view.OverlayActionListView'
   ],
   css: `
     ^drop-down-bg {
@@ -59,34 +61,36 @@ foam.CLASS({
   `,
   properties: [
     {
-      name: 'selectColumnsExpanded',
+      name: 'editOverlayExpanded',
       class: 'Boolean'
     },
     'parentId',
-    'columnConfigPropView'
+    'columnConfigPropView',
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'overlayView'
+    }
   ],
   methods: [
     function closeDropDown(e) {
       e.stopPropagation();
-      this.columnConfigPropView.onClose();
-      this.selectColumnsExpanded = ! this.selectColumnsExpanded;
+      //this.columnConfigPropView.onClose();
+      this.editOverlayExpanded = ! this.editOverlayExpanded;
     },
 
     function render() {
       this.SUPER();
-
       var self = this;
-      this.columnConfigPropView = foam.u2.view.ColumnConfigPropView.create({data:self.data}, this);
       this.start()
       .addClass(this.myClass())
-        .show(this.selectColumnsExpanded$)
+        .show(this.editOverlayExpanded$)
         .addClass(this.myClass('drop-down-bg'))
           .start()
             .addClass(this.myClass('container'))
             .style({
               'max-height': window.innerHeight - 100 > 0 ? window.innerHeight - 100 : window.innerHeight + 'px',
             })
-            .add(this.columnConfigPropView)
+            .tag(this.overlayView, { data: self.data } )
           .end()
       .on('click', this.closeDropDown.bind(this))
       .end();
@@ -98,8 +102,8 @@ foam.CLASS({
       label: '',
       icon: 'images/ic-cancelwhite.svg',
       code: function(X) {
-        this.columnConfigPropView.onClose();
-        this.selectColumnsExpanded = ! this.selectColumnsExpanded;
+        //this.columnConfigPropView.onClose();
+        this.editOverlayExpanded = ! this.editOverlayExpanded;
       }
     }
   ]
