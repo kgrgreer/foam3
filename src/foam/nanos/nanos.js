@@ -462,6 +462,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/predicate/PropertyIsSetPredicate" },
   { name: "foam/nanos/ruler/action/AbstractCheckDAOforMatching" },
   { name: "foam/nanos/ruler/action/ChangePropertyAction" },
+  { name: "foam/nanos/ruler/action/RuleDebugger" },
   { name: "foam/nanos/test/EchoService" },
   { name: "foam/nanos/test/SerializationTestEchoService" },
   { name: "foam/nanos/analytics/Foldable" },

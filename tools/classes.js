@@ -749,6 +749,7 @@ var classes = [
   'foam.nanos.ruler.predicate.PropertyIsSetPredicate',
   'foam.nanos.ruler.action.ChangePropertyAction',
   'foam.nanos.ruler.action.AbstractCheckDAOforMatching',
+  'foam.nanos.ruler.action.RuleDebugger',
   'foam.comics.SearchMode',
 
   // DAO decorators
