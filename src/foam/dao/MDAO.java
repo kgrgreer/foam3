@@ -228,10 +228,6 @@ public class MDAO
 
     if ( state != null && simplePredicate != null && simplePredicate != MLang.TRUE && plan.cost() > 10 && plan.cost() >= index_.size(state) ) {
       pm = new PM(this.getClass(), "MDAO:UnindexedSelect:" + getOf().getId());
-      if ( plan.cost() > 300 ) {
-        Thread.dumpStack();
-        System.err.println("Cost: " + plan.cost());
-      }
       if ( ! unindexed_.contains(getOf().getId())) {
         if ( ! predicate.equals(simplePredicate) && logger != null ) {
           logger.debug(String.format("The original predicate was %s but it was simplified to %s.", predicate.toString(), simplePredicate.toString()));
