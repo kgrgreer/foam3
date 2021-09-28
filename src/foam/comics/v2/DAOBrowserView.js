@@ -420,7 +420,7 @@ foam.CLASS({
               .add(filterView.slot( function(mementoUpdated, mementoToggle) {
                 // TEMPORARY
                 // wait for filterView to set momento before instantianting summaryView
-                if ( mementoUpdated || config$hideQueryBar )
+                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
                   return this.E()
                   .addClass(self.myClass('browse-view-container'))
                   .add(summaryView);
