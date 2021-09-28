@@ -390,7 +390,7 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = this;
         var currentSubject = (Subject) x.get("subject");
-        var userDAO = (DAO) x.get("userDAO");
+        var userDAO = (DAO) x.get("bareUserDAO");
 
         Subject subject = new Subject(x);
         if ( ucj instanceof AgentCapabilityJunction ) {
