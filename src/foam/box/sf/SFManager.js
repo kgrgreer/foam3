@@ -178,6 +178,7 @@ foam.CLASS({
             SF sf = (SF) obj;
             sf.setX(context);
             sf.setInFlightEntries(0);
+            sf.setFailedEntries(0);
             sf.initial(context);
           }
         });

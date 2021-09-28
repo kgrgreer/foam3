@@ -98,6 +98,20 @@ foam.CLASS({
       `
     },
     {
+      class: 'Int',
+      name: 'failedEntries',
+      documentation: 'Failed',
+      storageTransient: true,
+      visibility: 'RO',
+      javaSetter:`
+        failedEntriesIsSet_ = true;
+        return;
+      `,
+      javaGetter:`
+        return failed_.get();
+      `
+    },
+    {
       class: 'Object',
       name: 'delegateObject',
       createVisibility: 'HIDDEN',
@@ -218,6 +232,7 @@ foam.CLASS({
             journal.put(getX(), "", (DAO) getNullDao(), e);
           }
           inFlight_.decrementAndGet();
+          failed_.incrementAndGet();
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
@@ -367,6 +382,7 @@ foam.CLASS({
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
+            final protected AtomicInteger failed_ = new AtomicInteger(0);
             
             //Make to public because beanshell do not support.
             static public interface StepFunction {
