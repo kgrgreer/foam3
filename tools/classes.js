@@ -895,6 +895,7 @@ var classes = [
   'foam.nanos.crunch.extra.ImplyReviewedAction',
 
   //crunch predicates
+  'foam.nanos.crunch.predicate.CapabilityDataUpdated',
   'foam.nanos.crunch.predicate.CapabilityIsStatus',
   'foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted',
   'foam.nanos.crunch.predicate.StatusChangedTo',

@@ -524,6 +524,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ClientCrunchService" },
   { name: "foam/nanos/crunch/ReputDependentUCJs" },
   //predicates
+  { name: 'foam/nanos/crunch/predicate/CapabilityDataUpdated' },
   { name: 'foam/nanos/crunch/predicate/CapabilityIsStatus' },
   { name: 'foam/nanos/crunch/predicate/CapabilityPrerequisitesGranted' },
   { name: 'foam/nanos/crunch/predicate/StatusChangedTo' },
