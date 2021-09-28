@@ -17,9 +17,7 @@
   methods: [
     {
       name: 'getPlaceholder',
-      args: [
-        { name: 'formattedData', type: 'String' }
-      ],
+      args: 'String formattedData',
       documentation: `
         Calculate a placeholder text for the FormattedTextField
         If formattedData is provided, calculate a dynamic placeholder based on existing data
@@ -34,20 +32,14 @@
     },
     {
       name: 'getUnformatted',
-      args: [
-        { name: 'formattedData', type: 'String' }
-      ],
+      args: 'String formattedData',
       documentation: `
         Returns the unformatted version of a formatted String
       `
     },
     {
       name: 'onDelete',
-      args: [
-        { name: 'data', type: 'String' },
-        { name: 'start', type: 'Int' },
-        { name: 'end', type: 'Int' }
-      ],
+      args: 'String data, Int start, Int end',
       documentation: `
         Configure properties for delete, computes and returns a new selection range to
         delete from
@@ -55,13 +47,7 @@
     },
     {
       name: 'formatData',
-      args: [
-        { name: 'data', type: 'String' },
-        { name: 'old', type: 'String' },
-        { name: 'startingPos', type: 'Int' },
-        { name: 'endPos', type: 'Int' },
-        { name: 'isDelete', type: 'Boolean' }
-      ],
+      args: 'String data, String old, Int startingPos, Int endPos, Boolean isDelete',
       documentation: `
         On data input, re-format the data and return an Array containing
         the new formatted data and the position which the cursor should fall on
@@ -76,10 +62,7 @@
     },
     {
       name: 'buildJavaGetFormatted',
-      args: [
-        { name: 'cls', type: 'String' },
-        { name: 'prop', type: 'String' }
-      ],
+      args: 'String cls, String prop',
       documentation: `
         Builds a java method to return a formatted string using this formatter.
         Takes an argument o denoting the source object of the property.
@@ -137,7 +120,7 @@ foam.CLASS({
       // handle inserting data over the formatter portion
       if ( ! isDelete && old && ! data.endsWith(this.formatter) ) {
         var oldVal = old;
-        while (  old && data && data.length > startingPos && data.slice(-1) === old.slice(-1) ) {
+        while ( old && data && data.length > startingPos && data.slice(-1) === old.slice(-1) ) {
           data = data.slice(0, -1);
           old = old.slice(0, -1);
         }
