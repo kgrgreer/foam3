@@ -243,7 +243,7 @@
             if ( values.array[i] === undefined ) continue;
             if ( this.groupBy ) {
               var group = self.groupBy.f(values.array[i]);
-              if ( group != self.currGroup_ ){
+              if ( ! foam.util.equals(group, self.currGroup_) ){
                 e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
               }
               self.currGroup_ = group;
