@@ -501,7 +501,6 @@ foam.CLASS({
                       end().
                       callIf(isFirstLevelProperty && prop.sortable, function() {
                         var currArrow = view.restingIcon;
-                        this.on('contextmenu', function() { view.groupByCol(prop); })
                         this.on('click', function(e) {
                           view.sortBy(prop);
                           }).
