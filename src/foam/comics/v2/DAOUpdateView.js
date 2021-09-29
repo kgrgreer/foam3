@@ -62,6 +62,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'memento',
+    'translationService',
     'stack'
   ],
 
@@ -77,7 +78,8 @@ foam.CLASS({
     { name: 'SECTIONED', message: 'Sectioned' },
     { name: 'MATERIAL', message: 'Material' },
     { name: 'WIZARD', message: 'Wizard' },
-    { name: 'VERTICAL', message: 'Vertical' }
+    { name: 'VERTICAL', message: 'Vertical' },
+    { name: 'UPDATED', message: 'Updated' }
   ],
 
   properties: [
@@ -131,7 +133,9 @@ foam.CLASS({
                 currentFeedback = currentFeedback.next;
               }
             } else {
-              this.ctrl.notify(`${this.data.model_.label} updated.`, '', this.LogLevel.INFO, true);
+              var title = this.translationService.getTranslation(foam.locale, this.config.browseTitle, this.data.model_.label);
+
+              this.ctrl.notify(title + " " + this.UPDATED, '', this.LogLevel.INFO, true);
             }
           }
           this.stack.back();
