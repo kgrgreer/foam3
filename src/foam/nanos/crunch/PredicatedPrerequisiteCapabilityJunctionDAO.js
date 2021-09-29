@@ -41,6 +41,7 @@ foam.CLASS({
         // use a context with group set to null so that grouppermission
         // part of auth check will find the group from the context subject
         try {
+          if ( x instanceof foam.core.OrX ) x = ((foam.core.OrX) x).getX();
           return auth.check(x.put("group", null), PERMISSION);
         } catch ( Exception e ) {
           return false;
