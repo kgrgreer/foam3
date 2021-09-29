@@ -1173,3 +1173,14 @@ p({
   "lazy": false,
   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ipInfoClientService",
+  "serve": true,
+  "client": """
+    {
+      "class": "foam.net.ip.ClientIPAddressInfoFetch",
+    }
+  """
+})

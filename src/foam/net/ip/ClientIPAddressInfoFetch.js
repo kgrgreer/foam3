@@ -29,6 +29,9 @@
 
   methods: [
     async function fetchIPInfo(ipAddressInfo) {
+      if ( ! this.ipInfoProvider ) {
+        return;
+      }
       if ( ! this.IPAddressInfo.isInstance(ipAddressInfo) ) {
         throw new Error(this.IS_INSTANCE);
       }
