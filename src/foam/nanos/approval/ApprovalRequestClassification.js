@@ -43,7 +43,7 @@
       javaCode: `
         TranslationService ts = (TranslationService) getX().get("translationService");
         Subject subject = (Subject) getX().get("subject");
-        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        String locale = (String) getX().get("foam.nanos.auth.LocaleSupport.CONTEXT_KEY");
         return ts.getTranslation(locale, getId() + ".name", getName());
       `
     }
