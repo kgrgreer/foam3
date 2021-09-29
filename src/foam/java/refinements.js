@@ -868,7 +868,7 @@ public Object call(foam.core.X x, Object receiver, Object[] args) {
         type:          this.javaType || 'void',
         visibility:    this.visibility,
         static:        this.isStatic(),
-        abstract:      this.abstract,
+        abstract:      this.abstract && ! this.javaCode,
         final:         this.final,
         synchronized:  this.synchronized,
         remote:        this.remote,
