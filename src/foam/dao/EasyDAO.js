@@ -113,8 +113,8 @@ foam.CLASS({
       javaFactory: `
       if ( getNSpec() != null ) {
         return getNSpec().getName();
-      } else if ( this.getOf() != null ) {
-        return this.getOf().getId();
+      } else if ( getOf() != null ) {
+        return getOf().getId();
       }
       return "";
      `
@@ -154,6 +154,7 @@ foam.CLASS({
             }
             delegate = getMdao();
             if ( getIndex() != null && getIndex().length > 0 ) {
+              logger.warning(getName(), "Deprecated use of setIndex(). Use addPropertyIndex instead.");
               if ( delegate instanceof foam.dao.MDAO ) {
                 ((foam.dao.MDAO) delegate).addIndex(getIndex());
               } else {
@@ -213,7 +214,7 @@ foam.CLASS({
           DAO dao = (DAO) getMdao();
           if ( dao != null &&
                dao instanceof foam.dao.MDAO ) {
-            PropertyInfo pInfo = (PropertyInfo) this.getOf().getAxiomByName("spid");
+            PropertyInfo pInfo = (PropertyInfo) getOf().getAxiomByName("spid");
             if ( pInfo != null ) {
               ((foam.dao.MDAO)dao).addIndex(pInfo);
             } else {
@@ -465,7 +466,7 @@ foam.CLASS({
         return this.of.name.toLowerCase();
       },
       javaFactory: `
-      return this.getOf().getObjClass().getSimpleName().toLowerCase();
+      return getOf().getObjClass().getSimpleName().toLowerCase();
      `
     },
     {
@@ -486,7 +487,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'permissioned',
       javaFactory: `
-      List<PropertyInfo> props = this.getOf().getAxiomsByClass(PropertyInfo.class);
+      List<PropertyInfo> props = getOf().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo info : props ) {
         if ( info.getWritePermissionRequired() ||
              info.getReadPermissionRequired() ) {
@@ -1098,9 +1099,8 @@ model from which to test ServiceProvider ID (spid)`,
       },
       javaCode: `
         DAO dao = (DAO) getMdao();
-        if ( dao != null &&
-             dao instanceof foam.dao.MDAO ) {
-          ((foam.dao.MDAO)dao).addIndex(props);
+        if ( dao != null && dao instanceof foam.dao.MDAO ) {
+          ((foam.dao.MDAO) dao).addIndex(props);
         } else {
           ((Logger) getX().get("logger")).warning(getName(), "Index not added, no access to MDAO");
         }
