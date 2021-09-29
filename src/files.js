@@ -1062,7 +1062,7 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/AgreementView' },
 
   // Table
-  { name: "foam/u2/table/TableHelperMixin", flags: ['web'] },
+  { name: "foam/u2/table/TableComponentView", flags: ['web'] },
   { name: "foam/u2/table/TableView", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },

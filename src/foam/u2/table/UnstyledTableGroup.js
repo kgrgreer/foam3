@@ -7,8 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.table',
   name: 'UnstyledTableGroup',
-  extends: 'foam.u2.View',
-  mixins: ['foam.u2.table.TableHelperMixin'],
+  extends: 'foam.u2.table.TableComponentView',
 
   requires: [
     'foam.core.SimpleSlot',

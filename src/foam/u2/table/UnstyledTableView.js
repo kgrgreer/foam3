@@ -7,8 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.table',
   name: 'UnstyledTableView',
-  extends: 'foam.u2.Element',
-  mixins: ['foam.u2.table.TableHelperMixin'],
+  extends: 'foam.u2.table.TableComponentView',
 
   implements: [
     'foam.mlang.Expressions'

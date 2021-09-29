@@ -6,7 +6,8 @@
 
 foam.CLASS({
   package: 'foam.u2.table',
-  name: 'TableHelperMixin',
+  name: 'TableComponentView',
+  extends: 'foam.u2.View',
 
   requires: [
     'foam.nanos.column.ColumnConfigToPropertyConverter',
