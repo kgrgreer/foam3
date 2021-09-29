@@ -160,6 +160,19 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       if ( collectLeafNodesList != null ) {
         if ( prereqs == null || prereqs.length == 0 ) {
           collectLeafNodesList.add(cap);
+        } else if ( filterGrantedUCJ ) {
+          boolean foundOutstandingCapability = false;
+          for (var capabilityId : prereqs ) {
+            UserCapabilityJunction ucj = getJunction(x, capabilityId);
+            if ( ucj == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED) {
+              foundOutstandingCapability = true;
+              break;
+            }
+          }
+          // When there are no outstanding prerequisites, consider this a leaf node
+          if (!foundOutstandingCapability) {
+            collectLeafNodesList.add(cap);
+          }
         }
       }
 
