@@ -114,12 +114,12 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'foam.u2.TextFormatter',
       name:'formatter',
-      value:[],
+      value: null,
       documentation: `
-        An array of integers and strings of delimiters used to format the property
-        where integer values represent number of digits at its location
-        E.g., [3, '.', 3, '.', 3, '.', 3]
+        A TextFormatter Object to be passed to the FormattedTextField view.
       `
     }
   ],

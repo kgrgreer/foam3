@@ -17,6 +17,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
@@ -63,6 +64,14 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'lifecycleState',
+      class: 'Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      value: 'ACTIVE',
+      visibility: 'RO',
+      includeInDigest: true
+    },
     {
       class: 'String',
       name: 'id',
@@ -232,6 +241,11 @@ foam.CLASS({
           .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilityId'
+    }
   ],
   methods: [
     {

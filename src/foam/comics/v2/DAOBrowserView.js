@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.stack.StackBlock',
+    'foam.u2.view.OverlayActionListView',
     'foam.u2.view.ScrollTableView',
     'foam.u2.view.SimpleSearch',
     'foam.u2.view.TabChoiceView'
@@ -231,13 +232,14 @@ foam.CLASS({
         var records = await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
-      code: function() {
+      code: function(X) {
         var adao;
         if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
           adao = foam.dao.ArrayDAO.create({ of: this.data.of });
           foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
         }
-        this.add(this.Popup.create().tag({
+
+        this.add(this.Popup.create(null, X).tag({
           class: 'foam.u2.ExportModal',
           exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
@@ -269,8 +271,8 @@ foam.CLASS({
         if ( ! config.importPredicate.f() ) return false;
         return true;
       },
-      code: function() {
-        this.add(this.Popup.create().tag(this.importModal));
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag(this.importModal));
       }
     }
   ],
@@ -310,17 +312,25 @@ foam.CLASS({
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
               data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
+            }, this, self.__subSubContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
 
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, simpleSearch.__subContext__.createSubContext());
+            }, this, self.__subContext__.createSubContext({
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           } else {
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
+            }, this, self.__subContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
@@ -334,6 +344,8 @@ foam.CLASS({
 
           if ( summaryView.selectedObjects )
             self.config.selectedObjs$ = summaryView.selectedObjects$;
+
+          var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
           return self.E()
             .start(self.Rows)
@@ -359,8 +371,7 @@ foam.CLASS({
                 this
                   .start(self.Cols).addClass(self.myClass('query-bar'))
                     .startContext({
-                      dao: searchFilterDAO,
-                      controllerMode: foam.u2.ControllerMode.EDIT
+                      dao: searchFilterDAO
                     })
                       .callIf(self.config.searchMode === self.SearchMode.SIMPLE, function() {
                         this.add(simpleSearch);
@@ -371,29 +382,34 @@ foam.CLASS({
                     .endContext()
                     .start(self.Cols)
                       .addClass(self.myClass('buttons'))
-                      .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                      .startContext({
+                        data: self,
+                        controllerMode: foam.u2.ControllerMode.EDIT
+                      })
+                        .start(self.EXPORT, buttonStyle)
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                        .start(self.IMPORT, buttonStyle)
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
+                        .start(self.REFRESH_TABLE, buttonStyle)
                           .addClass(self.myClass('refresh'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > 2 ) {
-                            self.start(self.OverlayActionListView, {
-                              label: this.ACTIONS,
-                              data: self.config.DAOActions,
+                          if ( self.config.DAOActions.length > 3 ) {
+                            var extraActions = self.config.DAOActions.splice(2);
+                          }
+                          var actions = this.E().addClass(self.myClass('buttons'));
+                          for ( action of self.config.DAOActions ) {
+                            actions.tag(action, buttonStyle);
+                          }
+                          this.add(actions);
+                          if ( extraActions && extraActions.length ) {
+                            this.start(self.OverlayActionListView, {
+                              label: self.ACTIONS,
+                              data: extraActions,
                               obj: self
                             }).addClass(self.myClass('buttons')).end();
-                          } else {
-                            var actions = this.E().addClass(self.myClass('buttons'));
-                            for ( action of self.config.DAOActions ) {
-                              actions.tag(action);
-                            }
-                            this.add(actions);
                           }
                         })
                       .endContext()
@@ -401,10 +417,14 @@ foam.CLASS({
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
                 })
-              .start()
-                .add(summaryView)
-                .addClass(self.myClass('browse-view-container'))
-              .end()
+              .add(filterView.slot( function(mementoUpdated, mementoToggle) {
+                // TEMPORARY
+                // wait for filterView to set momento before instantianting summaryView
+                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
+                  return this.E()
+                  .addClass(self.myClass('browse-view-container'))
+                  .add(summaryView);
+              }))
             .end();
         }));
     }

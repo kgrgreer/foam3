@@ -266,9 +266,9 @@ System.out.println("UUID: "+getSpid1());
         try {
           dao.select(sink);
           nss = sink.getArray();
-          test (false, "ReferenceTest DAO select filtered on spid. expected: AuthorizationException, found: "+nss.size());
+          test (nss.size() == 0, "ReferenceTest DAO select filtered on spid. expected: 0, found: "+nss.size());
         } catch (AuthorizationException e) {
-          test (true, "ReferenceTest DAO select filtered on spid.");
+          test (false, "ReferenceTest DAO select filtered on spid error.");
         }
 
         // test that it is found by a user on the new spid 

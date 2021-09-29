@@ -204,6 +204,10 @@
       name: 'renderedPages_'
     },
     {
+      class: 'Map',
+      name: 'renderedPageSlots_'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
@@ -215,7 +219,7 @@
       name: 'dblClickListenerAction',
       factory: function() {
         return function(obj, id, title) {
-          if ( ! this.stack ) return;
+          if ( ! this.stack || this.isDetached() ) return;
 
           this.stack.push(this.StackBlock.create({
             view: {
@@ -280,6 +284,7 @@
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.table_$.sub(this.refresh));
       this.updateCount();
     },
 
@@ -304,6 +309,7 @@
 
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
+        refDAO: this.data,
         columns: this.columns,
         contextMenuActions: this.contextMenuActions,
         selection$: this.selection$,
@@ -402,8 +408,6 @@
           });
         }
       }
-
-      this.onDetach(this.table_$.sub(this.updateRenderedPages_));
     },
     function scrollTable(scroll) {
       if ( this.childNodes && this.childNodes.length > 0 )
@@ -413,11 +417,22 @@
 
   listeners: [
     {
+      name: 'reconnectPages',
+      code: function () {
+        Object.keys(this.renderedPageSlots_).forEach(page => {
+          this.renderedPages_[page] = this.table_.slotE_(this.renderedPageSlots_[page]);
+        });
+      }
+    },
+    {
       name: 'refresh',
       isFramed: true,
       code: async function() {
+        this.reconnectPages();
         Object.keys(this.renderedPages_).forEach(i => {
           this.renderedPages_[i].remove();
+          this.renderedPageSlots_[i].detach();
+          delete this.renderedPageSlots_[i];
           delete this.renderedPages_[i];
         });
         this.updateRenderedPages_();
@@ -456,6 +471,8 @@
         Object.keys(this.renderedPages_).forEach(i => {
           if ( i >= this.currentTopPage_ && i < this.currentTopPage_ + this.NUM_PAGES_TO_RENDER ) return;
           this.renderedPages_[i].remove();
+          this.renderedPageSlots_[i].detach();
+          delete this.renderedPageSlots_[i];
           delete this.renderedPages_[i];
         });
 
@@ -464,7 +481,8 @@
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
           var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
-          var tbody = this.table_.slotE_(this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight));
+          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight) 
+          var tbody = this.table_.slotE_(this.renderedPageSlots_[page]);
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;
         }

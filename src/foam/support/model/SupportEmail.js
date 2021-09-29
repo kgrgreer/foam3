@@ -40,6 +40,7 @@ foam.RELATIONSHIP({
   inverseName: 'user',
   sourceProperty: { 
     section: 'operationsInformation',
-    order: 70
+    order: 70,
+    columnPermissionRequired: true
   }
 });

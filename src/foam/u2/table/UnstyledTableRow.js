@@ -41,7 +41,8 @@ foam.CLASS({
       this.addClass(this.data.myClass('tr')).
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
         this.on('dblclick', function() {
-          self.dblclick(null, obj.id);
+            if ( view.shouldEscapeEvts(evt) ) return;
+            view.dblclick(null, obj.id);
         });
       }).
       callIf( this.click && ! this.data.disableUserSelection, function() {
@@ -54,9 +55,7 @@ foam.CLASS({
           ) {
             return;
           }
-          self.data.data.inX(ctrl.__subContext__).find(obj.id).then(v => {
-            self.click(null, obj.id);
-          });
+          self.click(null, obj.id);
         });
       }).
       addClass(this.data.myClass('row')).
@@ -148,6 +147,10 @@ foam.CLASS({
       self
         .start('')
           .addClass(this.data.myClass('td'))
+          .on('dblClick', e => {
+            e.preventDefault();
+            e.stopPropogation();
+          })
           .attrs({ name: 'contextMenuCell' })
           .style({ flex: `0 0 ${this.data.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px` })
           .startContext({ stack: this.subStack })
