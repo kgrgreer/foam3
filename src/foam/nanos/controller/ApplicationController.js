@@ -29,7 +29,7 @@ foam.CLASS({
   implements: [
     'foam.box.Context',
     'foam.mlang.Expressions',
-    'foam.nanos.controller.AppStyles'
+//    'foam.nanos.controller.AppStyles'
   ],
 
   requires: [

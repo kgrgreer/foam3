@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.layout',
   name: 'MDStackView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.stack.StackView',
 
   requires: [
     'foam.u2.stack.Stack'
@@ -17,22 +17,12 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'data',
-      factory: function() { return this.Stack.create(); }
-    },
-    {
-      class: 'Boolean',
-      name: 'showActions',
-      value: true
-    },
-    {
       name: 'curPos',
       value: 0
     },
     'curView'
   ],
 
-  css: '%CUSTOMCSS%',
 
   methods: [
     // TODO: Why is this init() instead of render()? Investigate and maybe fix.
@@ -79,6 +69,7 @@ foam.CLASS({
           return self.curView;
         }, this.data$, this.data$.dot('top')))
       .end();
+      this.listenStackView();
     }
   ],
 
@@ -97,12 +88,6 @@ foam.CLASS({
     ^ .slide-in {
       left: 0 !important;
       transition: left 300ms ease;
-    }
-
-    ^ .primary-stack {
-      position: absolute;
-      width: 100%;
-      height: 100%;
     }
   `
 });

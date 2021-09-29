@@ -48,7 +48,6 @@ foam.CLASS({
       padding: 2rem;
       font-size: 2.5rem;
       position: relative;
-      bottom: -2rem;
       width: 90%;
       border-radius: 50px;
       background-image: linear-gradient(#604aff, #2e2379);
