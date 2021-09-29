@@ -41,8 +41,13 @@ foam.CLASS({
           obj.promiseE().then(function(view) { this.installView(el, view); });
         } else if ( obj.toE ) {
           this.installView(el, obj.toE({}, obj));
-        } else if ( ! foam.u2.Element.isInstance(view) )  {
-          installView(el, foam.u2.DetailView.create({data: view, showActions: true}));
+        } else if ( ! foam.u2.Element.isInstance(obj) )  {
+          // happens for U3
+          var view = foam.u2.DetailView.create({data: obj, showActions: true});
+          el.appendChild(view.element_);
+          view.load();
+
+//          this.installView(el, foam.u2.DetailView.create({data: obj, showActions: true}));
         }
       }, function(e) {
         console.error(e);

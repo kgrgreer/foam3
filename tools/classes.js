@@ -662,6 +662,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
+  'foam.nanos.dig.ExternalDataAware',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
@@ -702,6 +703,10 @@ var classes = [
   'foam.nanos.dig.exception.UnsupportException',
   'foam.nanos.dig.exception.UnknownIdException',
   'foam.nanos.dig.exception.DigSuccessMessage',
+  'foam.nanos.dig.exception.TemporaryExternalAPIException',
+  'foam.nanos.dig.exception.EmptyParameterException',
+  'foam.nanos.dig.exception.ExternalAPIException',
+  'foam.nanos.dig.exception.GeneralException',
 
   'foam.nanos.dao.Operation',
 
@@ -767,11 +772,6 @@ var classes = [
   'foam.support.model.TicketMessage',
   'foam.support.model.SupportEmail',
   'foam.support.model.Ticket',
-
-  'foam.nanos.dig.exception.ExternalAPIException',
-  'foam.nanos.dig.exception.EmptyParameterException',
-  'foam.nanos.dig.exception.GeneralException',
-  'foam.nanos.dig.exception.TemporaryExternalAPIException',
 
   'foam.nanos.app.SupportConfig',
 
@@ -885,6 +885,7 @@ var classes = [
   'foam.nanos.crunch.ruler.SetUCJStatusOnPut',
   'foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted',
   'foam.nanos.crunch.ruler.SaveUCJDataOnGranted',
+  'foam.nanos.crunch.ruler.UCJDataExpiryRule',
 
   //crunch extras
   'foam.nanos.crunch.extra.ReviewCapability',

@@ -44,6 +44,7 @@ This is the heart of Medusa.`,
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.HashMap',
@@ -140,7 +141,7 @@ This is the heart of Medusa.`,
           Map<String, Map> hashes = existing.getConsensusHashes();
           Map<String, Object> nodes = hashes.get(entry.getHash());
           if ( nodes == null ) {
-            nodes = new HashMap<String, Object>();
+            nodes = new ConcurrentHashMap<String, Object>();
             hashes.put(entry.getHash(), nodes);
           }
           if ( nodes.get(entry.getNode()) == null ) {

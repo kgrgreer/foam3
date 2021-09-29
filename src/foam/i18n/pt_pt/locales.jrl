@@ -1037,3 +1037,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"All Expirable",target:"Tudo Expi
 p({class:"foam.i18n.Locale",locale:"pt",source:"Renewable",target:"Renovável"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"In Grace Period",target:"Em período de graça"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.delimiter",target:"."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.decimalCharacter",target:","})

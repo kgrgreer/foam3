@@ -547,6 +547,21 @@ foam.CLASS({
 log("Is Person a packaged-Person?", com.acme.package.Person.isSubClass(Person));
 log("Is packaged-Person a Person?", Person.isSubClass(com.acme.package.Person));
 
+##  Interface inheritance of Properties
+--
+foam.INTERFACE({
+  name: 'II1',
+  properties: [
+    'id', 'firstName', 'lastName'
+  ]
+});
+foam.CLASS({
+  name: 'IC1',
+  implements: [ 'II1' ]
+});
+
+var c1 = IC1.create({id: 1, firstName: 'John'});
+log(c1.stringify());
 
 ##  Test isSubClass and interfaces
 isSubClass() works for interfaces

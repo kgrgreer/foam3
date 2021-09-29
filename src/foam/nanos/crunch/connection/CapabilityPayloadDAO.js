@@ -264,8 +264,10 @@ foam.CLASS({
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 
-        List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
-        processCapabilityList(x, grantPath, capabilityDataObjects);
+        List leaves = new ArrayList<>();
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
         var ret =  find_(x, receivingCapPayload.getId());
         return ret;
@@ -275,6 +277,50 @@ foam.CLASS({
       } finally {
         pm.log(x);
       }
+      `
+    },
+    {
+      name: 'processCapabilityList',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'list', type: 'List' },
+        { name: 'leaves', type: 'List' },
+        { name: 'capabilityDataObjects', type: 'Map' }
+      ],
+      javaCode: `
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+
+        for (Object item : list) {
+          if ( item instanceof Capability ) {
+            Capability cap = (Capability) item;
+
+            FObject dataObj = null;
+            if ( capabilityDataObjects != null && capabilityDataObjects.containsKey(cap.getName()) ) {
+              // Making sure to cast the of to the object before it gets casted to an fobject
+              dataObj = ( cap.getOf() != null ) ?
+                (FObject) cap.getOf().getObjClass().cast(capabilityDataObjects.get(cap.getName())) :
+                (FObject) capabilityDataObjects.get(cap.getName());  
+            }
+            
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunctionDirectly(x, cap.getId(), dataObj);
+            getLogger().debug("Updated capability", cap.getName(), cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
+          } else if ( item instanceof List ) {
+            processCapabilityList(x, (List) item, null, capabilityDataObjects);
+          } else {
+            getLogger().warning("Ignoring unexpected item in grant path ", item);
+          }
+        }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
       `
     },
     {
@@ -291,44 +337,6 @@ foam.CLASS({
             getLogger().warning("Failed to save record", obj, t);
           }
         }, "Save CapabilityPayloadRecord");
-      `
-    },
-    {
-      name: 'processCapabilityList',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'list', type: 'List' },
-        { name: 'capabilityDataObjects', type: 'Map' }
-      ],
-      javaCode: `
-        for (Object item : list) {
-          if ( item instanceof Capability ) {
-            Capability cap = (Capability) item;
-
-            FObject dataObj = null;
-            if ( capabilityDataObjects != null && capabilityDataObjects.containsKey(cap.getName()) ) {
-              // Making sure to cast the of to the object before it gets casted to an fobject
-              dataObj = ( cap.getOf() != null ) ?
-                (FObject) cap.getOf().getObjClass().cast(capabilityDataObjects.get(cap.getName())) :
-                (FObject) capabilityDataObjects.get(cap.getName());  
-            }
-            
-            CrunchService crunchService = (CrunchService) x.get("crunchService");
-            UserCapabilityJunction oldUcj = crunchService.getJunction(x, cap.getId());
-            FObject currentDataObj = oldUcj.getData();
-            if ( currentDataObj != null && dataObj != null ) {
-              currentDataObj.copyFrom(dataObj);
-              dataObj = currentDataObj;
-            }
-            
-            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
-            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
-          } else if ( item instanceof List ) {
-            processCapabilityList(x, (List) item, capabilityDataObjects);
-          } else {
-            getLogger().warning("Ignoring unexpected item in grant path " + item);
-          }
-        }
       `
     }
   ],

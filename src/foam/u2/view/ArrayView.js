@@ -138,7 +138,8 @@ foam.CLASS({
 
   css: `
     ^value-view {
-      flex: 1; 
+      flex: 1;
+      max-width: 100%;
     }
     ^addButton {
       border: 1.5px dashed /*%GREY4%*/ #DADDE2;

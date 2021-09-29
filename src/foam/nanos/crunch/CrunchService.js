@@ -87,6 +87,12 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'retrieveCapabilityPath',
+      async: true,
+      type: 'List',
+      args: 'Context x, String sourceId, boolean filterGrantedUCJ, boolean groupPrereqAwares, List collectLeafNodesList'
+    },
+    {
       name: 'getCapabilityPath',
       documentation: `
         getGrantPath provides an array of capability objects representing
@@ -216,6 +222,12 @@ foam.INTERFACE({
           type: 'foam.nanos.auth.Subject'
         }
       ],
+    },
+    {
+      name: 'updateJunctionDirectly',
+      async: true,
+      type: 'UserCapabilityJunction',
+      args: 'Context x, String capabilityId, foam.core.FObject data'
     },
     {
       name: 'updateJunction',
