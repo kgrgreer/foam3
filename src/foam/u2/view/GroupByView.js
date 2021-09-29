@@ -15,7 +15,7 @@ foam.CLASS({
     {
       name: 'columns',
       factory: function() {
-        var tc = this.data.of.getAxiomByName('tableColumns').columns;
+        var tc = this.data.allColumns;
         return this.getColumns(tc);
       }
     },
@@ -29,7 +29,6 @@ foam.CLASS({
             prop:columns[i],
             head: { class:'foam.u2.view.GroupByViewHeader' }, 
             body: { class:'foam.u2.view.GroupByViewBody' },
-            //isPropertySelected: false,
             onDragAndDropParentFunction: undefined,
             onSelectionChangedParentFunction: this.onTopPropertiesSelectionChange.bind(this),
             onDragAndDrop: undefined,
@@ -49,17 +48,13 @@ foam.CLASS({
       if ( this.selectCol ) {
         this.selectCol.isPropertySelected = true;
       }
-      console.log("select");
         var tc = views[draggableIndex].prop.rootProperty[0];
-        console.log(tc);
         axiom = this.data.of.getAxiomByName(tc);
-        console.log(axiom);
         this.data.groupBy = axiom; 
         this.selectCol = views[draggableIndex].prop;
         views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
     },
     function onUnSelect(draggableIndex, views) {
-      console.log("unselect");
       this.data.groupBy = undefined;
       this.selectCol = undefined;
       views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
@@ -103,6 +98,11 @@ foam.CLASS({
           topLevelProps.push(rootPropertyName);
         }
       }
+      arr.sort((a, b) => {
+        var aName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(a.rootProperty);
+        var bName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(b.rootProperty);
+        return aName.toLowerCase().localeCompare(bName.toLowerCase());
+      });
       return arr;
     }
   ],
@@ -111,9 +111,11 @@ foam.CLASS({
       name: 'resetColumns',
       label: 'Reset Columns',
       code: function() {
+        if ( this.selectCol ) {
         this.data.groupBy = undefined;
         this.selectCol.isPropertySelected = true;
         this.selectCol = undefined;
+        }
       }
     }
   ]
@@ -209,10 +211,19 @@ foam.CLASS({
     package: 'foam.u2.view',
     name: 'SubColumnGroupByConfig',
     extends: 'foam.u2.view.SubColumnSelectConfig',
+    properties: [
+      {
+        name: 'subProperties',
+        expression: function(prop) {
+          if ( ! this.of || ! this.of.getAxiomByName || this.level >= 1)
+            return [];
+          if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
+            return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
+          return [];
+        }
+      }
+    ],
     methods:[
-      function render(){
-        this.SUPER();
-      },
       function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
         var arr = [];
         if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
@@ -221,52 +232,18 @@ foam.CLASS({
           var r = this.of.getAxiomByName(this.rootProperty[0]);
           if ( ! r )
             return arr;
-  
-          var selectedSubProperties = [];
-          var otherSubProperties = [];
-  
-          var thisRootPropName = this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(this.rootProperty);
-          //find selectedColumn for the root property
-          var selectedColumn = this.selectedColumns.filter(c => {
-            var thisSelectedColumn = foam.String.isInstance(c) ? c : c.name;
-            return ( ! foam.String.isInstance(c) && this.level === 0 && thisSelectedColumn === thisRootPropName ) ||
-            ( foam.String.isInstance(c) && c.split('.').length >= this.level && c.split('.')[this.level] === this.rootProperty[0] );
-          });
-  
+
+          subProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
           for ( var i = 0 ; i < subProperties.length ; i++ ) {
-            //the comparison mentioned above is working with the assumption that columns which are specified in 'tableColumns' are top-level properties and
-            //we are not using nested "custom" table columns
-            if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length > ( this.level + 1 ) && c.split('.')[this.level+1] === subProperties[i][0]) ) {
-              selectedSubProperties.push(subProperties[i]);
-            } else {
-              otherSubProperties.push(subProperties[i]);
-            }
-          }
-          otherSubProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
-  
-          for ( var i = 0 ; i < selectedSubProperties.length ; i++ ) {
             arr.push(this.cls_.create({
               index: i,
-              rootProperty: selectedSubProperties[i],
-              selectedColumns$: this.selectedColumns$,
+              rootProperty: subProperties[i],
               level: l,
               parentExpanded$: this.expanded$,
               of: r.of,
               isPropertySelected: true
             }));
           }
-  
-          for ( var i = 0 ; i < otherSubProperties.length ; i++ ) {
-            arr.push(this.cls_.create({
-              index: selectedSubProperties.length + i,
-              rootProperty: otherSubProperties[i],
-              selectedColumns$: this.selectedColumns$,
-              level:l, parentExpanded$: this.expanded$,
-              of: r.of,
-              isPropertySelected: true
-            }, this));
-          }
-  
           return arr;
       }
     ]
