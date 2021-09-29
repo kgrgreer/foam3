@@ -517,37 +517,32 @@ foam.LIB({
       });
 
       var flagFilter = foam.util.flagFilter(['java']);
-      var axioms = this.getOwnAxioms().filter(flagFilter);
+      var axioms     = this.getOwnAxioms().filter(flagFilter);
 
       for ( var i = 0 ; i < axioms.length ; i++ ) {
         axioms[i].buildJavaClass && axioms[i].buildJavaClass(cls, this);
       }
 
       // TODO: instead of doing this here, we should walk all Axioms
-      // and introuce a new buildJavaAncestorClass() method
+      // and introduce a new buildJavaAncestorClass() method
       var flagFilter = foam.util.flagFilter(['java']);
-      cls.allProperties = this.getAxiomsByClass(foam.core.Property)
-        .filter(flagFilter)
-        .filter(function(p) {
-          return !! p.javaType && p.javaInfoType && p.generateJava;
-        })
-        .filter(flagFilter)
-        .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
-        });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
         .filter(flagFilter)
-        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava)
-        .filter(p => p.javaFactory);
+        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava);
 
-      if ( properties.length > 0 ) {
+      cls.allProperties = properties
+        .map(p => foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash }));
+
+      var javaFactoryProperties = properties.filter(p => p.javaFactory);
+
+      if ( javaFactoryProperties.length > 0 ) {
         cls.method({
           visibility: 'public',
           type: 'void',
           name: 'beforeFreeze',
           body: (this.model_.extends === 'FObject' ? '' : 'super.beforeFreeze();\n') +
-            properties.map(p => `get${foam.String.capitalize(p.name)}();`)
+            javaFactoryProperties.map(p => `get${foam.String.capitalize(p.name)}();`)
               .join('\n')
         });
       }
