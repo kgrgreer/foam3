@@ -138,7 +138,7 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setDecorator(decorator)
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.STATUS });
     return dao;
