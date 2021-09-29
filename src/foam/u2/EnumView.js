@@ -21,10 +21,12 @@ foam.CLASS({
     },
     {
        class: 'Boolean',
-       name: 'permissioned'
+       name: 'permissioned',
+       documentation: 'If enum has permissioned values'
     },
     {
       name: 'permissionResults',
+      documentation: 'Returns permissioned enum values',
       expression: async function(of, permissioned) {
         var results = [];
         if ( of && permissioned ) {
@@ -62,14 +64,15 @@ foam.CLASS({
     },
 
     function permissionedChoices() {
-      this.permissionResults.then((array) => {
+      // Checks the permissionedResults and sets choices to the permissioned enum values
+      this.permissionResults.then(array => {
         var values = [];
         if ( this.of ) {
             var hash = {};
-            for ( var i = 0 ; i < array.length ; i+=1 ) {
+            for ( var i = 0; i < array.length; i+=1 ) {
               hash[array[i]] = i;
             }
-            this.of.VALUES.map((v) => {
+            this.of.VALUES.map(v => {
               var value = [v.label, true];
               if ( hash.hasOwnProperty(value) ) {
                 values.push([v, v.label]);
@@ -77,7 +80,7 @@ foam.CLASS({
             });
         }
         return values;
-      }).then((array) => {
+      }).then(array => {
         this.choices = array;
       });
     }
