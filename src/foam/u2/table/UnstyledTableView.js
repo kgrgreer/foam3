@@ -362,7 +362,7 @@ foam.CLASS({
         this.currentMemento_= this.memento.tail
         var nextViewMemento = this.currentMemento_.tail;
       }
-       
+
       if ( nextViewMemento && nextViewMemento.head.length != 0 ) {
         if ( nextViewMemento.head == 'create' ) {
           this.stack.push(this.StackBlock.create({
@@ -533,6 +533,7 @@ foam.CLASS({
                     }).
                     callIf(view.editColumnsEnabled, function() {
                       this.start('')
+                        this.addClass(view.myClass('th-editColumns'))
                         .tag(view.OverlayActionListView, {
                           data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
                           obj: view,
@@ -543,17 +544,6 @@ foam.CLASS({
                         .addClass(view.myClass('vertDots'))
                         .addClass(view.myClass('noselect'))
                       .end();
-                    
-                      // this.addClass(view.myClass('th-editColumns'))
-                      // .on('click', function(e) {
-                      //   editColumnView.parentId = this.id;
-                      //   if ( ! editColumnView.selectColumnsExpanded )
-                      //     editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
-                      // }).
-                      // tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
-                      // addClass(view.myClass('vertDots')).
-                      // addClass(view.myClass('noselect'))
-                      // ;
                     }).
                   end();
                 });
@@ -659,26 +649,21 @@ foam.CLASS({
   ],
   actions: [
     {
-      name: 'selectColumns', 
+      name: 'selectColumns',
       label: 'Show/Hide Columns',
       code: function(){
         this.selectColumnsView.editOverlayExpanded = true;
       }
-    }, 
+    },
     {
-      name: 'groupByColumns', 
+      name: 'groupByColumns',
       label: 'Group by Columns',
       code: function(){
         this.groupByView.editOverlayExpanded = true;
       }
     }
   ]
-
-
-
 });
-
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'TableViewPropertyRefinement',
@@ -699,8 +684,6 @@ foam.CLASS({
     },
   ]
 });
-
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'PropertyColumnMapping',

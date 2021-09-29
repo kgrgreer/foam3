@@ -29,9 +29,7 @@ foam.CLASS({
             prop:columns[i],
             head: { class:'foam.u2.view.GroupByViewHeader' }, 
             body: { class:'foam.u2.view.GroupByViewBody' },
-            onDragAndDropParentFunction: undefined,
             onSelectionChangedParentFunction: this.onTopPropertiesSelectionChange.bind(this),
-            onDragAndDrop: undefined,
             onSelectionChanged: this.onSelectionChanged.bind(this)
           }));
         }
@@ -195,10 +193,8 @@ foam.CLASS({
               head: { class:'foam.u2.view.GroupByViewHeader' }, 
               body: { class:'foam.u2.view.GroupByViewBody' },
               isPropertySelected: true,
-              onDragAndDrop:this.onDragAndDrop,
               onSelectionChanged:this.onSelectionChanged,
               onSelectionChangedParentFunction:this.onChildrenSelectionChanged.bind(this),
-              onDragAndDropParentFunction: this.onChildrenDragAndDrop.bind(this),
             }));
           }
           return arr;

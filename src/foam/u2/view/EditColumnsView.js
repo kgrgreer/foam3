@@ -69,15 +69,17 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'overlayView'
-    }
+    },
+    'viewSlot_'
   ],
   methods: [
     function closeDropDown(e) {
-      e.stopPropagation();
-      //this.columnConfigPropView.onClose();
+      if ( e )
+        e.stopPropagation();
+      if ( this.viewSlot_ && this.viewSlot_.onClose )
+        this.viewSlot_.onClose();
       this.editOverlayExpanded = ! this.editOverlayExpanded;
     },
-
     function render() {
       this.SUPER();
       var self = this;
@@ -90,7 +92,7 @@ foam.CLASS({
             .style({
               'max-height': window.innerHeight - 100 > 0 ? window.innerHeight - 100 : window.innerHeight + 'px',
             })
-            .tag(this.overlayView, { data: self.data } )
+            .tag(this.overlayView, { data: self.data }, self.viewSlot_$)
           .end()
       .on('click', this.closeDropDown.bind(this))
       .end();
@@ -102,8 +104,7 @@ foam.CLASS({
       label: '',
       icon: 'images/ic-cancelwhite.svg',
       code: function(X) {
-        //this.columnConfigPropView.onClose();
-        this.editOverlayExpanded = ! this.editOverlayExpanded;
+        this.closeDropDown();
       }
     }
   ]
