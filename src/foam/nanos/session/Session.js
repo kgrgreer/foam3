@@ -16,6 +16,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.OrX',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
@@ -152,6 +153,15 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       class: 'Object',
+      name: 'applyContext',
+      type: 'Context',
+      visibility: 'HIDDEN',
+      transient: true,
+      networkTransient: true,
+      clusterTransient: true
+    },
+    {
+      class: 'Object',
       name: 'context',
       type: 'Context',
       javaFactory: 'return reset(getX());',
@@ -274,53 +284,74 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
-      PM pm = PM.create(x, "Session","applyTo");
-      try {
-        // We null out the security-relevant entries in the context since we
-        // don't want whatever was there before to leak through, especially
-        // since the system context (which has full admin privileges) is often
-        // used as the argument to this method.
+      // We null out the security-relevant entries in the context since we
+      // don't want whatever was there before to leak through, especially
+      // since the system context (which has full admin privileges) is often
+      // used as the argument to this method.
+      if ( getUserId() <= 1 ) {
         X rtn = reset(x);
-        if ( getUserId() <= 1 ) {
-          HttpServletRequest req = x.get(HttpServletRequest.class);
-          if ( req == null ) {
-            // null during test runs
-            return rtn;
-          }
-          AppConfig appConfig = (AppConfig) x.get("appConfig");
-          appConfig = (AppConfig) appConfig.fclone();
 
-          Theme theme = ((Themes) x.get("themes")).findTheme(x);
-          rtn = rtn.put("theme", theme);
-
-          // if there is no user, set spid to the theme spid so that spid restrictions can be applied
-          rtn = rtn.put("spid", theme.getSpid());
-
-          AppConfig themeAppConfig = theme.getAppConfig();
-          if ( themeAppConfig != null ) {
-            appConfig.copyFrom(themeAppConfig);
-          }
-          appConfig = appConfig.configure(x, null);
-
-          rtn = rtn.put("appConfig", appConfig);
-          rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-          rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
+        HttpServletRequest req = x.get(HttpServletRequest.class);
+        if ( req == null ) {
+          // null during test runs
           return rtn;
         }
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        appConfig = (AppConfig) appConfig.fclone();
 
-        // Validate
-        validate(x);
+        Theme theme = ((Themes) x.get("themes")).findTheme(x);
+        rtn = rtn.put("theme", theme);
 
-        DAO localUserDAO  = (DAO) x.get("localUserDAO");
-        DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-        AuthService auth  = (AuthService) x.get("auth");
-        User user         = (User) localUserDAO.find(getUserId());
-        User agent        = (User) localUserDAO.find(getAgentId());
+        // if there is no user, set spid to the theme spid so that spid restrictions can be applied
+        rtn = rtn.put("spid", theme.getSpid());
+
+        AppConfig themeAppConfig = theme.getAppConfig();
+        if ( themeAppConfig != null ) {
+          appConfig.copyFrom(themeAppConfig);
+        }
+        appConfig = appConfig.configure(x, null);
+
+        rtn = rtn.put("appConfig", appConfig);
+        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(new OrX(x, rtn), true));
+
+        return rtn;
+      }
+
+      // Validate
+      validate(x);
+
+      X rtn = getApplyContext();
+
+      DAO localUserDAO  = (DAO) x.get("localUserDAO");
+      DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+      AuthService auth  = (AuthService) x.get("auth");
+      User user         = (User) localUserDAO.find(getUserId());
+      User agent        = (User) localUserDAO.find(getAgentId());
+      User subjectUser = null;
+      User subjectAgent = null;
+      if ( rtn != null ) {
+        Subject subject = (Subject) rtn.get("subject");
+        if ( subject != null ) {
+          subjectUser = subject.getUser();
+          subjectAgent = subject.getRealUser();
+        }
+      }
+      if ( rtn == null ||
+           user == null ||
+           ( subjectUser != null &&
+             subjectUser.getId() != user.getId() ) ||
+           ( agent != null && subjectAgent != null &&
+             subjectAgent.getId() != agent.getId() ) ) {
+
+        PM pm = PM.create(x, "Session", "applyTo", "create");
+
+        rtn = new OrX(reset(x));
 
         // Support hierarchical SPID context
         var subX = rtn.cd(user.getSpid());
         if ( subX != null ) {
-          rtn = reset(subX);
+          rtn = new OrX(reset(subX));
         }
 
         Subject subject = null;
@@ -355,12 +386,22 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
-        rtn = rtn.put("logger", foam.nanos.logger.Loggers.logger(rtn, true));
 
-        return rtn;
-      } finally {
+        rtn = rtn.put("localLocalSettingDAO", new foam.dao.MDAO(foam.nanos.session.LocalSetting.getOwnClassInfo()));
+
+        rtn = rtn.put("logger",
+          new foam.nanos.logger.PrefixLogger(
+            new Object[] { "session", getId().split("-")[0] },
+            foam.nanos.logger.Loggers.logger(rtn, true)
+          ));
+
+        // Cache the context changes of applyTo
+        setApplyContext(((OrX) rtn).getX());
         pm.log(x);
+      } else {
+        rtn = new OrX(x, rtn);
       }
+      return rtn;
       `
     },
     {

@@ -33,9 +33,11 @@ public class OrX
   }
 
   public <T> T get(Class<T> key) {
-    T t = getX().get(key);
-    if ( t == null ) return (T) parent_.get(this, key);
-    return t;
+    return (T) get(this, key);
+  }
+
+  public Object get(Object key) {
+    return get(this, key);
   }
 
   public Object get(X x, Object key) {
