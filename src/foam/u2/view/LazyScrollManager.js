@@ -297,6 +297,7 @@
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
+        this.data.cmd_(this, foam.dao.QueryCachingDAODecorator.PURGE);
         this.currentTopPage_ = 0;
         this.updateRenderedPages_();
         if ( ! this.memento ) return;
