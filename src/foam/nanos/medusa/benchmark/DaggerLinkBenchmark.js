@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'DaggerLinkBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.FObject',

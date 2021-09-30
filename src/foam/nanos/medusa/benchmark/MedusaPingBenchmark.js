@@ -7,10 +7,10 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'MedusaPingBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   documentation: `for some sample size, ping all instances in cluster.`,
-  
+
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',

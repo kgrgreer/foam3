@@ -357,6 +357,8 @@ FOAM_FILES([
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
 
+  { name: 'foam/nanos/bench/BenchmarkResult' },
+
   { name: "foam/dao/EasyDAO" },
   { name: "foam/dao/NoSelectAllDAO" },
   { name: "foam/dao/NullDAO" },

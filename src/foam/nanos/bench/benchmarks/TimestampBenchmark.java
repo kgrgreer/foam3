@@ -11,7 +11,7 @@ import foam.nanos.bench.Benchmark;
 import foam.util.FastTimestamper;
 
 public class TimestampBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected FastTimestamper ts_ = new FastTimestamper();
 

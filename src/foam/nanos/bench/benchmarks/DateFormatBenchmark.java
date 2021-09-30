@@ -11,7 +11,7 @@ import foam.nanos.bench.Benchmark;
 import java.text.SimpleDateFormat;
 
 public class DateFormatBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected SimpleDateFormat format_ = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS");
 

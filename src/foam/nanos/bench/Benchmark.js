@@ -4,9 +4,17 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.bench',
   name: 'Benchmark',
+  abstract: true,
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id'
+    }
+  ],
 
   implements: [
     'foam.core.ContextAgent'
@@ -21,7 +29,9 @@ foam.INTERFACE({
           name: 'x',
           type: 'Context'
         }
-      ]
+      ],
+      javaCode: `
+      `
     },
     {
       name: 'teardown',
@@ -35,7 +45,9 @@ foam.INTERFACE({
           name: 'stats',
           type: 'java.util.Map'
         }
-      ]
+      ],
+      javaCode: `
+      `
     }
   ]
 });
