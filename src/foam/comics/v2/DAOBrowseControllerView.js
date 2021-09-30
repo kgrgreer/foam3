@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.stack.BreadcrumbView',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.IconChoiceView',
     'foam.u2.view.OverlayActionListView'
   ],
@@ -101,6 +102,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showNav',
       value: true
+    },
+    {
+      name: 'viewTitle',
+      expression: function(config) {
+        var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
+        return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
+      }
     }
   ],
 
@@ -129,41 +137,47 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView'){
-          this.stack.push({
-            class: this.config.createController.class,
-            data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-            config$: this.config$,
-            of: this.data.of
-          }, this.__subContext__);
-        } else if (this.config.createControllerView) {
-          this.stack.push(this.config.createControllerView, this.__subContext__);
+        if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView' ) {
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.config.createController.class,
+              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this,
+            popup: this.config.createPopup
+          }));
+        } else if ( this.config.createControllerView ) {
+          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this, popup: this.config.createPopup }));
         } else {
-          this.stack.push({
-            class: this.config.createController.class,
-            config$: this.config$,
-            of: this.data.of,
-            data: this.selection,
-            detailView: this.config.detailView.class,
-            menu: this.config.menu,
-            controllerMode: foam.u2.ControllerMode.CREATE,
-            isEdit: true
-          }, this.__subContext__);
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.config.createController.class,
+              config$: this.config$,
+              of: this.data.of,
+              data: this.selection,
+              detailView: this.config.detailView.class,
+              menu: this.config.menu,
+              controllerMode: foam.u2.ControllerMode.CREATE,
+              isEdit: true
+            }, parent: this,
+            popup: this.config.createPopup
+          }));
         }
       }
     }
   ],
 
   methods: [
-    function initE() {
+    function render() {
     this.SUPER();
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     var nav = this.showNav ? self.BreadcrumbView : '';
-    this.addClass(this.myClass())
+    this.addClass()
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -176,21 +190,24 @@ foam.CLASS({
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .start(self.Cols)
-                    .callIf( config.browseActions.length && config.browseContext, function() {
-                      if ( config.browseActions.length > 2 ) {
-                        this.start(self.OverlayActionListView, {
-                          label: this.ACTIONS,
-                          data: config.browseActions,
-                          obj: config$browseContext
-                        }).addClass(self.myClass('buttons')).end();
-                      } else {
-                        var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
-                        for ( action of config.browseActions ) {
-                          actions.tag(action, { size: 'LARGE' });
-                        }
-                        this.add(actions.endContext());
-                      }
-                    })
+                    .add(this.slot(function(config$browseContext) {
+                      return this.E()
+                        .callIf( config.browseActions.length && config.browseContext, function() {
+                          if ( config.browseActions.length > 2 ) {
+                            this.start(self.OverlayActionListView, {
+                              label: this.ACTIONS,
+                              data: config.browseActions,
+                              obj: config$browseContext
+                            }).addClass(self.myClass('buttons')).end();
+                          } else {
+                            var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
+                            for ( action of config.browseActions ) {
+                              actions.tag(action, { size: 'LARGE' });
+                            }
+                            this.add(actions.endContext());
+                          }
+                        });
+                    }))
                     .callIf( ! config.detailView, function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
@@ -227,11 +244,10 @@ foam.CLASS({
                       .addClass(self.myClass('altview-container'))
                     .end();
                 })
-                .call(function(){
-                  var e = this;
+                .call(function() {
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { config$: e.__subContext__.config$ });
-                  }))
+                    return self.E().tag(browseView, { data: data, config: config } );
+                  }));
                 })
               .end()
             .end()

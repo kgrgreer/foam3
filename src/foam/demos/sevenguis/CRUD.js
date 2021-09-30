@@ -104,7 +104,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.nodeName = 'div';
       this.
           addClass(this.myClass()).

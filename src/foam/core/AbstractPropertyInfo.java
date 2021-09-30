@@ -22,6 +22,8 @@ import javax.xml.stream.XMLStreamReader;
 public abstract class AbstractPropertyInfo
   implements PropertyInfo
 {
+  final static String[] EMPTY_STRING_ARRAY = new String[] {};
+
   protected ClassInfo parent;
   protected byte[]    nameAsByteArray_ = null;
 
@@ -36,74 +38,12 @@ public abstract class AbstractPropertyInfo
     return parent;
   }
 
-  @Override
-  public String getShortName() {
-    return null;
-  }
-
-  public boolean getNetworkTransient() {
-    return false;
-  }
-
-  public boolean getExternalTransient() {
-    return false;
-  }
-
-  public boolean getStorageTransient() {
-    return false;
-  }
-
-  public boolean getStorageOptional() {
-    return false;
-  }
-
-  public boolean getClusterTransient() {
-    return false;
-  }
-
-  public boolean getReadPermissionRequired() {
-    return false;
-  }
-
-  public boolean getWritePermissionRequired() {
-    return false;
-  }
-
-  public boolean getXMLAttribute() {
-    return false;
-  }
-
-  public boolean getXMLTextNode() {
-    return false;
-  }
-
-  public boolean getRequired() {
-    return false;
-  }
-
-  public void validateObj(foam.core.X x, foam.core.FObject obj) {
-    /* Template Method: override in subclass if required. */
-    if ( getRequired() && ! isSet(obj) ) {
-      throw new ValidationException(getName() + " required");
-    }
-  }
-
   public String[] getAliases() {
-    return new String[] {};
+    return EMPTY_STRING_ARRAY;
   }
 
   @Override
   public void toJSON(foam.lib.json.Outputter outputter, Object value) {
-    outputter.output(value);
-  }
-
-  @Override
-  public void formatJSON(foam.lib.formatter.FObjectFormatter formatter, FObject obj) {
-    format(formatter, obj);
-  }
-
-  @Override
-  public void toXML(foam.lib.xml.Outputter outputter, Object value) {
     outputter.output(value);
   }
 
@@ -122,13 +62,6 @@ public abstract class AbstractPropertyInfo
     return get(o);
   }
 
-  @Override
-  public void diff(FObject o1, FObject o2, Map diff, PropertyInfo prop) {
-    if ( prop.compare(o1, o2) != 0 ) {
-      diff.put(prop.getName(), prop.f(o2));
-    }
-  }
-
   public boolean equals(Object obj) {
     try {
       return compareTo(obj) == 0;
@@ -140,40 +73,6 @@ public abstract class AbstractPropertyInfo
   public int compareTo(Object obj) {
     int result = getName().compareTo(((PropertyInfo) obj).getName());
     return result != 0 ? result : getClassInfo().compareTo(((PropertyInfo) obj).getClassInfo());
-  }
-
-  @Override
-  public boolean hardDiff(FObject o1, FObject o2, FObject diff){
-    // compare the property value of o1 and o2
-    // If value is Object reference, only compare reference. (AbstractObjectPropertyInfo will override hardDiff method)
-    // use to compare String and primitive type
-    int same = comparePropertyToValue(this.get(o1), this.get(o2));
-    //return the value of o2 if o1 and o2 are different
-    if ( same != 0 ) {
-      //set o2 prop into diff
-      this.set(diff, this.get(o2));
-      return true;
-    }
-
-    // return false if o1 and o2 are same
-    return false;
-  }
-
-  public void setFromString(Object obj, String value) {
-    this.set(obj, fromString(value));
-  }
-
-  @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
-    try {
-      reader.next();
-    } catch (XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of XML file");
-    }
-
-    return "";
   }
 
   public String createStatement() {
@@ -196,11 +95,7 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public void cloneProperty(FObject source, FObject dest) {
-    set(dest, foam.util.SafetyUtil.deepClone(get(source)));
-  }
-
-  @Override
+  // ???: Is this still used?
   public void validate(X x, FObject obj)
     throws IllegalStateException
   {
@@ -208,16 +103,10 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  public boolean includeInID() {
-    return false;
-  }
-
-  @Override
   public boolean includeInDigest() {
-    if ( getStorageTransient() ||
-         getClusterTransient() ) {
+    if ( getStorageTransient() || getClusterTransient() )
       return false;
-    }
+
     return true;
   }
 
@@ -229,21 +118,6 @@ public abstract class AbstractPropertyInfo
   @Override
   public boolean includeInSignature() {
     return includeInDigest();
-  }
-
-  @Override
-  public boolean containsPII(){
-    return false;
-  }
-
-  @Override
-  public boolean containsDeletablePII(){
-    return false;
-  }
-
-  @Override
-  public boolean getSheetsOutput(){
-    return false;
   }
 
   @Override
@@ -278,14 +152,6 @@ public abstract class AbstractPropertyInfo
     return nameAsByteArray_;
   }
 
-  public void toCSV(foam.core.X x, Object obj, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(obj != null ? get(obj) : null);
-  }
-
-  public void toCSVLabel(foam.core.X x, foam.lib.csv.CSVOutputter outputter) {
-    outputter.outputValue(getName());
-  }
-
   public void fromCSVLabelMapping(java.util.Map<String, foam.lib.csv.FromCSVSetter> map) {
 
     foam.core.PropertyInfo prop = this;
@@ -294,10 +160,5 @@ public abstract class AbstractPropertyInfo
         prop.set(obj, fromString(str));
       }
     });
-
-  }
-
-  public Object castObject(Object value) {
-    return value;
   }
 }

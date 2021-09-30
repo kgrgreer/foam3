@@ -96,18 +96,36 @@ foam.CLASS({
           if ( seen.includes(cls) ) return;
           seen.push(cls);
           for ( let p of cls.getAxiomsByClass(foam.core.Property) ) {
-            str += `${p.name} ${p.label} `;
-            if ( foam.core.FObjectProperty.isInstance(p) ) {
-              let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
-              writeClassProps(ofCls);
+            var visibilityEnum = p.visibility;
+            if ( p.visibility instanceof Function ) {
+              // fetching argument values from the property's visibility method 
+              var args = p.visibility.toString().match(/\((?:.+(?=\s*\))|)/)[0]
+                .slice(1)
+                .split(/\s*,\s*/g)
+                .map(argumentStrings => argumentStrings.trim())
+                .map(cleanedArgumentStrings => w.data[cleanedArgumentStrings]);
+              visibilityEnum = p.visibility.apply(w.data, args);
+            }
+
+            if ( ! p.hidden && visibilityEnum !== foam.u2.DisplayMode.HIDDEN ) { 
+              str += `${p.name} ${p.label} `;
+              if ( foam.core.FObjectProperty.isInstance(p) ) {
+                let ofCls = typeof p.of === 'string' ? foam.lookup(p.of) : p.of;
+                writeClassProps(ofCls);
+              }
             }
           }
         };
         writeClassProps(w.of);
+        if ( w.delegates && w.delegates.length > 0 ) {
+          for ( delegate of w.delegates ) {
+            writeClassProps(delegate.of);
+          }
+        }
         array.push(this.SearchableWizardlet.create({
           value: str,
           wizardlet: w,
-        }))
+        }));
       }
       this.searchDAO = this.ArrayDAO.create({
         array: array,

@@ -7,11 +7,13 @@
 package foam.nanos.crunch;
 
 import foam.core.ContextAgent;
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.CapabilityJunctionStatus;
+import foam.nanos.crunch.RenewableData;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import java.util.List;
@@ -27,7 +29,8 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
   @Override
   public void execute(X x) {
     logger = (Logger) x.get("logger");
-    userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+    DAO bareUserCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+    DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     Date today = new Date();
 
     // Find all junctions that are past the expiration date and filter by the following
@@ -57,15 +60,21 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
       if ( activeJunction.getIsInGracePeriod() || activeJunction.getGracePeriod() <= 0 ) {
         activeJunction.setStatus(CapabilityJunctionStatus.EXPIRED);
         activeJunction.setIsExpired(true);
+        userCapabilityJunctionDAO.put(activeJunction);
       } else {
         activeJunction.setIsInGracePeriod(true);
+
+        // update ucj data as renewable
+        FObject data = (FObject) activeJunction.getData();
+        if ( data != null && data instanceof RenewableData ) {
+          RenewableData renewableData = (RenewableData) data;
+          renewableData.setRenewable(true);
+          activeJunction.setData(renewableData);
+        }
+        bareUserCapabilityJunctionDAO.put(activeJunction);
       }
-      if ( activeJunction.getStatus() == CapabilityJunctionStatus.EXPIRED ) {
-        activeJunction.getPayload().clearData();
-      }
-      
+
       logger.debug("Moved UserCapabilityJunction : " + activeJunction.getId() + " into status :" + activeJunction.getStatus());
-      userCapabilityJunctionDAO.put(activeJunction);
     }
   }
 }

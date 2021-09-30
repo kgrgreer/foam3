@@ -12,7 +12,7 @@ foam.CLASS({
   properties: [
     [ 'autoRepaint', true ],
     [ 'width', 800 ],
-    [ 'height', 600 ],
+    [ 'height', 700 ],
     [ 'color', '#f3f3f3' ]
   ]
 });
@@ -102,7 +102,7 @@ foam.CLASS({
       name: 'deleteRow',
       label: 'X',
       code: function deleteRow(X) {
-        X.properties.remove(X.data);
+        X.properties.remove(this);
         X.updateMemento();
       }
     }
@@ -202,6 +202,7 @@ foam.CLASS({
       ^ .foam-u2-Tabs-tabRow { display: flex; }
       ^ { display: flex; }
       ^ > * { padding-left: 16px; padding-right: 16px; }
+      ^tools { width: 100px; }
       ^tools, ^properties, ^sheet { box-shadow: 3px 3px 6px 0 gray; height: 100%; padding: 1px; }
       ^sheet { width: 100%; overflow-y: auto; }
       ^tools thead, ^properties thead { display: none }
@@ -209,7 +210,7 @@ foam.CLASS({
       .foam-u2-TableView { border-collapse: collapse; }
       .foam-u2-TableView td { padding-left: 6px; }
       .foam-u2-TableView-selected { outline: 1px solid red; }
-      ^ canvas { border: none; }
+      ^ canvas { border: none; width: 800px; height: 700px; }
       ^ .foam-u2-ActionView { margin: 10px; }
       ^cmd { box-shadow: 3px 3px 6px 0 gray; width: 100%; margin-bottom: 8px; }
       ^properties { margin-right: 8px; height: auto; }
@@ -406,11 +407,11 @@ foam.CLASS({
           class: 'com.google.flow.TreeView',
           relationship: com.google.flow.PropertyPropertyChildrenRelationship,
           startExpanded: true,
-          formatter: function() {
+          formatter: function(data) {
+            // We can't use the data.DELETE_ROW action directly for some reason
             var X = this.__subSubContext__;
-            this.start('span').add(X.data.name).end().
-              start('span').nbsp().style({ display: 'inline-block', width: '50px' }).end().
-              start('span').add(com.google.flow.Property.DELETE_ROW).end();
+
+            this.start('span').start('span').on('click', () => data.deleteRow(X)).add(' X ').end().add(/*data.DELETE_ROW,*/ ' ', data.name).end();
           }
         };
       },
@@ -510,7 +511,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.timer.start();
 
       this.properties.on.put.sub(this.onPropertyPut);
@@ -585,8 +586,10 @@ foam.CLASS({
         var i = opt_i || 1;
         var prefix = value.cls_.name.toLowerCase();
         this.properties.find(prefix + i).then(function (o) {
-          if ( o == null )           self.addProperty(value, prefix+i, null, opt_parent);
-          else self.addProperty(value, null, i+1, opt_parent);
+          if ( o == null )
+            self.addProperty(value, prefix+i, null, opt_parent);
+          else
+            self.addProperty(value, null, i+1, opt_parent);
         });
       } else {
         var p = this.Property.create({
@@ -704,11 +707,11 @@ foam.CLASS({
 
       if ( c === this.canvas ) {
         var tool = this.currentTool;
-        if ( tool === this.CURRENT_TOOL.value ) return;
+        if ( tool === com.google.flow.Select.model_ ) return;
         var cls = this.__context__.lookup(tool.id);
         var o = cls.create({x: x, y: y}, this.__subContext__);
         var p = this.addProperty(o, null, null, 'canvas1');
-        // TODO: hack because addProperty is asyn
+        // TODO: hack because addProperty is async
         setTimeout(this.updateMemento.bind(this), 100);
       } else {
         for ( ; c !== this.canvas ; c = c.parent ) {

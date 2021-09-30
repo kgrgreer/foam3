@@ -8,9 +8,7 @@ p({
   """
     {
       "of":"foam.nanos.boot.NSpec",
-      "cache":true,
-      "ttlPurgeTime":0,
-      "ttlSelectPurgeTime": 25000
+      "cache":true
      }
   """
 })
@@ -30,9 +28,7 @@ p({
   "client":"""
     {
       "of":"foam.nanos.boot.NSpec",
-      "cache":true,
-      "ttlPurgeTime":0,
-      "ttlSelectPurgeTime": 25000
+      "cache":true
     }
   """,
   documentation:"The authenticated version of nSpecDAO - for dig and docs."
@@ -74,11 +70,6 @@ p({
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
     auth = new foam.nanos.auth.UserAndGroupAuthService(x);
-    auth = new foam.nanos.auth.PMAuthService.Builder(x)
-      .setLabel("uncached")
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.CachingAuthService(auth);
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -91,14 +82,44 @@ p({
     auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
       .setDelegate(auth)
       .build();
+    auth = new foam.nanos.auth.CachingAuthService(auth);
+    auth = new foam.nanos.auth.PMAuthService.Builder(x)
+      .setLabel("uncached")
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
       .setDelegate(auth)
       .build();
     return auth;
   """,
-  "client": "{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
+  "client":"""
+    {
+      "class": "foam.nanos.auth.AuthorizeAnonymousClientDecorator",
+      "delegate":
+      {
+        "class":"foam.nanos.auth.CachedAuthServiceProxy",
+        "delegate":{
+          "class":"foam.nanos.auth.ClientLoginAuthService"
+        }
+      }
+    }
+  """
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "uniqueUserService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
+  "serviceScript": """
+    ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
+    ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
+      .setDelegate(ul)
+      .build();
+    return ul;
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -508,14 +529,22 @@ p({
   """
     return new foam.nanos.auth.AuthorizationDAO.Builder(x)
       .setDelegate((foam.dao.DAO) x.get("localServiceProviderDAO"))
-      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceprovider"))
+      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceproviderdao"))
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.ServiceProvider\"}"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler",                      "lazy":false,  "serve":false, "authenticate": false, "serviceClass":"foam.nanos.http.LiveScriptBundler"})
-p({"class":"foam.nanos.boot.NSpec", "name":"emailToken",                         "serve":true,  "serviceClass":"foam.nanos.auth.email.EmailTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"emailToken",
+  "serve":true,
+  "authenticate": false,
+  "serviceClass":"foam.nanos.auth.email.EmailTokenService",
+  "boxClass":"foam.nanos.auth.token.TokenServiceSkeleton",
+  "client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -636,6 +665,7 @@ p({
   "name": "sugar",
   "lazy": true,
   "serve": false,
+  "authenticate": false,
   "parameters": true,
   "serviceScript": "return new foam.nanos.dig.SugarWebAgent()"
 })
@@ -673,13 +703,14 @@ p({
     dao = new foam.dao.EasyDAO.Builder(x)
       .setEnableInterfaceDecorators(false)
       .setServiceProviderAware(true)
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ruler.Rule.DAO_KEY, foam.nanos.ruler.Rule.PRIORITY })
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setInnerDAO(x.get("localRuleDAO"))
       .setRuler(false)
-      .build();
+      .setPermissioned(true)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY, foam.nanos.ruler.Rule.PRIORITY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
 
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
     dao = new foam.dao.ValidatingDAO(x, dao);
 
     return dao;
@@ -698,7 +729,6 @@ p({
   """
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setGuid(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -708,11 +738,10 @@ p({
       .setRuler(true)
       .setRulerDaoKey("localRuleDAO")
       .setAuthorize(false)
-      .build();
-
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.ENABLED });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.ENABLED });
 
     return dao;
   """
@@ -731,8 +760,9 @@ p({
       .setRuler(false)
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.ruler.RuleGroup.PRIORITY) })
-      .build();
-    ed.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.RuleGroup.PRIORITY });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.RuleGroup.PRIORITY });
+
     return new foam.dao.ValidatingDAO(x, ed);
   """,
   "client": """
@@ -770,9 +800,8 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("groupPermissionJunctions")
       .setPm(true)
-      .build();
-
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.GroupPermissionJunction.SOURCE_ID });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.GroupPermissionJunction.SOURCE_ID });
     return dao;
   """
 })
@@ -820,11 +849,10 @@ p({
       .setOf(foam.core.Currency.getOwnClassInfo())
       .setName("currency")
       .setPm(true)
-      .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("currencies")
-      .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY});
   """
 })
 
@@ -880,7 +908,6 @@ p({
       .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
       .setPm(true)
-      .setPipelinePm(true)
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("approvalRequests")
@@ -892,13 +919,13 @@ p({
           )
         )
       )
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setPredicate(foam.mlang.MLang.NEQ(foam.nanos.approval.ApprovalRequest.STATUS, foam.nanos.approval.ApprovalStatus.REQUESTED))
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED))
         .setSize(10000)
         .build())
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
@@ -1079,9 +1106,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("timezones")
       .setOf(foam.nanos.auth.TimeZone.getOwnClassInfo())
-      .build();
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
 
     return dao;
   """,
@@ -1133,4 +1160,11 @@ p({
       "of":"foam.nanos.auth.AddressConfig"
     }
   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusastatuswatcher",
+  "lazy": false,
+  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })

@@ -61,7 +61,7 @@ foam.CLASS({
         this.right = 'auto';
       }
       this.tooltipStore.style({
-        'max-width': (this.screenWidth / 4)+'px',
+        'max-width': (this.screenWidth / 2)+'px',
           'top':   this.top$,
           'left':  this.left$,
           'right': this.right$
@@ -119,7 +119,7 @@ foam.CLASS({
   documentation: 'Tooltip view to be used by the tooltip handler',
 
   methods: [
-    function initE(data) {
+    function render(data) {
       this.SUPER();
       this
       .add(this.data)

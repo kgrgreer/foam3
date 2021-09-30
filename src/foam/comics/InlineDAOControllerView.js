@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.currentMemento_ = this.memento;
 
       this.

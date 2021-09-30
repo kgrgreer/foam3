@@ -50,14 +50,14 @@ foam.CLASS({
     function fromProperty(p) {
       this.of = p.of;
     },
-    function initE() {
+    function render() {
       var self = this;
 
       this.SUPER();
 
-      this.addClass(this.myClass());
+      this.addClass();
 
-      this.start('foam.u2.view.EmbeddedTableView', { data: this.dao }).end();
+      this.start(this.daoView, { data: this.dao }).end();
     }
   ]
 });

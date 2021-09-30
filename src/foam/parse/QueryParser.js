@@ -17,6 +17,20 @@
 
 foam.CLASS({
   package: 'foam.parse',
+  name: 'PropertySearchableRefinements',
+  refines: 'foam.core.Property',
+
+  properties: [
+    {
+      name: 'searchable',
+      expression: function(transient) { return ! transient; }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.parse',
   name: 'QueryParser',
 
   documentation:
@@ -220,6 +234,9 @@ foam.CLASS({
         var properties = cls.getAxiomsByClass(foam.core.Property);
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
+
+          if ( ! prop.searchable ) continue;
+
           fields.push(this.LiteralIC.create({
             s: prop.name,
             value: prop
@@ -239,15 +256,16 @@ foam.CLASS({
             }
           }
         }
+
         fields.sort(function(a, b) {
-          var d = b.lower.length - a.lower.length;
+          var d = b.length - a.length;
           if ( d !== 0 ) return d;
           if ( a.lower === b.lower ) return 0;
           return a.lower < b.lower ? 1 : -1;
         });
 
         var base = foam.Function.withArgs(this.baseGrammar_,
-          this.Parsers.create(), this);
+         this.Parsers.create(), this);
         var grammar = {
           __proto__: base,
           fieldname: this.Alternate.create({ args: fields })

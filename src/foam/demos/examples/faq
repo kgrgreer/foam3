@@ -1,9 +1,10 @@
+# Top
 ## FAQ
 
-##  Q1
+##  Built-In Constants
 Where can I find built-in constants?
 ex)
-print("Method CODE property constant:", foam.core.Method.CODE);
+log("Method CODE property constant:", foam.core.Method.CODE);
 foam.core.Method.CODE.describe;
 
 Answer: Property constants are copied out of the model into to resulting class and prototype.
@@ -14,12 +15,12 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(Test.P1.name, Test.P2.name);
+log(Test.P1.name, Test.P2.name);
 
 var t = Test.create();
-print(t.P1.name, t.P2.name);
+log(t.P1.name, t.P2.name);
 
-##  Q2
+##  Class Type
 Is class is a kind of type?
 
 Answer:
@@ -39,10 +40,10 @@ foam.CLASS({
 });
 
 var p = foam.json.parse({class: 'some.package2.Test', p1: 42, p2: 'John'});
-print(p.cls_.id);
+log(p.cls_.id);
 
-##  Q3
-Is the Package Interface and how to use this in Foam?
+##  Packages
+How are packages defined in FOAM?
 
 Answer: A classes package is defined with package: and is optional.
 --
@@ -53,7 +54,7 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(Test.create());
+log(Test.create());
 
 // With a package:
 
@@ -63,7 +64,7 @@ foam.CLASS({
   properties: [ 'p1', 'p2' ]
 });
 
-print(some.package2.Test.create());
+log(some.package2.Test.create());
 
 // When used from another class, packaged classes can be required:
 
@@ -75,9 +76,9 @@ foam.CLASS({
   ]
 });
 
-print(Client.create().createTest());
+log(Client.create().createTest());
 
-##  Q4
+##  FOAM Types
 What are all of the types in FOAM?
 Answer:
 In FOAM, "types" are just sub-classes of foam.core.Property.
@@ -85,10 +86,10 @@ Most of the types in FOAM are defined in foam/core/types.js.
 Types are not hard-coded into FOAM and you can create your own by extending Property.
 The following script will find all of the FOAM "types":
 --
-for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
-for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) log(v); } catch(x) {} }
+for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) log(v); } catch(x) {} }
 
-##  Q5
+##  Flags
 What does this code mean? e.g., flags: [&#39;java&#39;], flags[&#39;web&#39;] , flags: [ &#39;node&#39; ]
 <br>
 <br>
@@ -107,7 +108,7 @@ In your HTML file, you can customize the flags by setting FOAM_FLAGS before load
 </pre>
 The set of flags isn't fixed, and you can make up your own for your own purposes.
 
-##  Q6
+##  References
 How do I use References?
 <br>
 <br>
@@ -204,7 +205,7 @@ rt.province2$find.then(function(p) {
 // We can also, just add promises to U2 directly?
 add('find: ').add(rt.province1$find);
 
-##  Q7
+##  Slot.clear()
 What does Slot.clear() do?
 <br><br>
 <b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
@@ -248,7 +249,7 @@ t.clearProperty('defaultValue');
 t.defaultFactory$.clear();
 log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
 
-##  Q8
+##  Property Cloning
 From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
 <br><br>
 <b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
@@ -261,7 +262,7 @@ foam.CLASS({name: 'Person', properties: [ 'name' ]});
 
 p1 = Person.create();
 p2 = Person.create({name:'John'});
-print('Initial:', p1.name, ' ', p2.name);
+log('Initial:', p1.name, ' ', p2.name);
 
 p1.name$.follow(p2.name$);
 log('After follow:', p1.name, ' ', p2.name);
@@ -293,7 +294,7 @@ log('After Update p1:', p1.name, ' ', p2.name);
 p2.name = 'Samantha';
 log('After Update p2:', p1.name, ' ', p2.name);
 
-##  Q9
+##  Literal Views
 What does it mean when I get this error: Use of literal View as ViewSpec: foam.u2.someView?
 <br><br><b>A.</b>
 It means that you've add an actual View object to another View instead of adding a ViewSpec.
@@ -312,7 +313,7 @@ foam.CLASS({
   requires: [ 'foam.u2.ControllerMode', 'foam.u2.view.StringView' ],
 
   methods: [
-    function initE() {
+    function render() {
       this.startContext({controllerMode: this.ControllerMode.VIEW}).
         // works, but generates a warning
         add('literal: ').tag(this.StringView.create({data: 'value1'})).
@@ -326,7 +327,7 @@ foam.CLASS({
 
 add(Test.create());
 
-##  Q10
+##  Property Value Precedence
 What method of determining a property's value takes precedence?
 <br><br><b>A.</b> The order of precedence is:
 <ol>
@@ -380,3 +381,373 @@ foam.CLASS({
 
 var t = Test.create({p1: 2, p2: 2});
 log(`p1: ${t.p1}, p2: ${t.p2}, p3: ${t.p3}, p4: ${t.p4}, p5: ${t.p5}, p6: ${t.p6}`);
+
+##  Mutation not allowed
+Q. What does "Mutation is not allowed in output state" mean and how do I fix it?
+<p>
+A1. In U2, Elements have a lifecycle which goes from INITIAL -> OUTPUT -> LOADED -> UNLOADED.
+When an element is OUTPUT but not yet LOADED, it can't be modified, and if it is, then the
+"Mutation is not allowed in output state." error will occur. U2 is careful to always LOAD elements
+immediately after outputting them, so the way this normally happens is that an element throws
+an exception when being loaded (in its render() method). To solve this problem add a try-catch block
+to your offending element and see if it is throwing an unexpected exception.
+<p>
+A2. U3, U2's replacement, does away with states and this error is not possible.
+--
+
+##  Remote Listener Support
+Q. What is remote listener support?
+<p>
+A. The JS EasyDAO has a boolean property called remoteListenerSupport which defaults to false.
+When set to false, the client DAO communicates with the server over the HTTPBox, which communicates requests and responses
+over the HTTP protocol.
+When set to true, the client DAO communicates with the server over the WebSocket protocol. WebSockets have the advantage
+that they're persistent connections, unlike HTTP, which is only temporary. The persistent nature of the WebSocket protocol
+enables the Client DAO to propagate DAO update events back to the client, something that can't be done over HTTP.
+DAO's normally generate update events when their data is mutated, this lets views know that the data has changed and that
+they should refresh. If however data is updated on the server by a different user, without remoteListenerSupport enabled,
+clients won't know to update.
+WebSocket connections are more expensive to support, so are rarely used.
+--
+
+##  Enum Values
+Q. How does “values” work in the code below and what's the difference of between “properties” and “values"?
+<p>
+foam.ENUM() creates an enumeration, not a regular class. The same as the following code
+which is both valid C and Java:
+
+enum DayOfWeek
+{
+   Sunday,
+   Monday,
+   Tuesday,
+   Wednesday,
+   Thursday,
+   Friday,
+   Saturday
+};
+
+Unlike classes, you can't create new instances of enums, every instance is already
+pre-created and stored as a constant on the enum. Ex.: DayOfWeek.MONDAY, DayOfWeek.TUESDAY...
+
+Because there is only one instance of each enum value (they're essentially singletons),
+you can compare equality with == in Java.
+
+
+--
+foam.ENUM({
+ name: 'DayOfWeek',
+ values: [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+ ]
+});
+
+var e = DayOfWeek.MONDAY;
+log(e.name + ' ' + e.label + ' ' + e.ordinal + ' ' + e.toString());
+log(DayOfWeek.forOrdinal(3).name);
+for ( var day of DayOfWeek.VALUES ) {
+  log(day.ordinal + " " + day.name);
+}
+
+log(DayOfWeek.isInstance(DayOfWeek.MONDAY));
+log(DayOfWeek.isInstance('Sunday'));
+
+
+##  Element.start()
+Q. What are the arguments to “Element.start()“?
+
+--
+
+// If no arguments are provided, a DIV tag is created:
+add(E().start().add("I'm in a div.").end());
+
+// Use a String to specify an HTML tag name
+add(E().start('b').add('bold').end());
+
+// Use a ViewSpec to specify a U2View
+add(E().start({class: 'foam.u2.TextField'}).end());
+
+// Let's create our own view:
+foam.CLASS({
+  name: 'MyView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function render() {
+      this.add('MyView, myData: ', this.data$);
+    }
+  ]
+});
+
+
+// Let's use the second argument to specify the data:
+add(E().start({class: 'MyView'}, {data: 'data1'}).end());
+
+// This also works:
+add(E().start({class: 'MyView', data: 'data2'}).end());
+
+// This also also works:
+add(E().start(MyView, {data: 'data3'}).end());
+
+// You can also use a function:
+var randomTag = function() { return Math.random() < 0.5 ? 'b' : 'i'; };
+
+for ( var i = 0 ; i < 5 ; i++ )
+  add(E().start(randomTag).add('bold or italic').end());
+
+// It can also be a slot, but this option is being removed in U3
+
+// It can also be any object that has a toE() method.
+add(foam.util.Timer.create());
+
+// But the most common cases of objects that implement toE() are
+// Properties and Actions. Ex.:
+
+foam.CLASS({
+  name: 'PropertyAndAction',
+  extends: 'foam.u2.Controller',
+  properties: [ { class: 'Int', name: 'count' } ],
+  actions: [ { name: 'plusOne', code: function() { this.count++; } } ],
+  methods: [ function render() { this.start(this.COUNT).end().start(this.PLUS_ONE).end(); } ]
+});
+
+add(PropertyAndAction.create());
+
+// In the above example, this.add(this.COUNT, this.PLUS_ONE) would also have worked.
+
+// The third argument, if provided, is a slot which is set the the Element
+// that is eventually created as a result of this start(). This is used if
+// you want to store the sub-view in a variable for later reference.
+
+// Ex.: start('div', {}, this.sidePanel$)
+
+// Keep in mind that .tag() is the same as .start().end(), so the following are equivalent:
+add(E().start('input').end());
+add(E().tag('input'));
+
+##  Element.callIf()
+Q. When to use Element.callIf()?
+<p>
+A. call, callIf, callIfElse, and forEach are defined in foam.core.Fluent, and
+are used for creating "fluent interfaces". This is where methods can be chained
+without ever storing intermediate values in variables. U2/U3 are fluent interfaces.
+Ex.:
+--
+add(E().start('div')
+  .style({border: '2px solid red', background: 'pink'})
+  .on('click', function() { log('click') })
+  .start('b').add('bold text').end()
+  .br()
+  .start('i').add('italic text').end()
+  .start('blockquote')
+    .add('inside')
+    .start('blockquote')
+      .style({background: 'white'})
+      .add('in inside')
+    .end()
+  .end()
+.end());
+
+// notice that despite many different elements being created, none were ever
+// stored in variables, and instead the whole structure was created in one
+// chained statement, with each method returning the appropriate object to
+// continue the composition.
+
+// So, callIf(), and the other Fluent methods, provide a convenient way of having
+// 'if' statements without having to break out of the fluent interface.
+
+// Consider:
+
+function sign(isHoliday) {
+  add(E().tag('hr').start()
+    .start('b').add('Acme Widget Store').end()
+    .callIf(isHoliday, function() {
+      this.br().start('b').add("Sorry, we're closed today!").end();
+    })
+  .end());
+}
+
+sign(true);
+sign(false);
+
+##  init() and initE()
+Q. What's the difference of using between initE() and init()?
+<p>
+Since this question was asked, initE() has been renamed to render().
+<p>
+The method init() is defined on FObject, so is shared by all FOAM JS Objects.
+It is called whenever an object is created.
+The method render() is defined on foam.u2.Element, the base class for all U2
+components. 'E' is short for 'Element'. It is called just before a U2 element
+is added to the DOM, which happens after init().
+<p>
+In U3, render has been renamed to render(), to make its purpose clearer.
+<p>
+In U2, Borders need to use init() instead of render(), but in U3 both Borders
+and regular views should use the render method.
+--
+
+foam.CLASS({
+  name: 'Test',
+  methods: [
+    function init() { log('init called on ' + this.cls_.name); },
+    function render() { this.add('element'); log('render called on ' + this.cls_.name); },
+  ]
+});
+
+foam.CLASS({
+  name: 'TestElement',
+  extends: 'foam.u2.Element',
+  methods: [
+    function init() { log('init called on ' + this.cls_.name); },
+    function render() { this.add('element'); log('render called on ' + this.cls_.name); }
+  ]
+});
+
+var test = Test.create();
+var testE = TestElement.create();
+
+log('both objects created');
+add(testE);
+
+##  Service client:
+Q. How should I understand the two “client:” configurations below?
+<pre>
+1.
+“client”:“”"
+ {
+  “class”: “foam.nanos.export.ClientGoogleSheetsExportService”,
+  “delegate”:
+   {
+    “class”: “foam.box.HTTPBox”,
+    “url”: “service/googleSheetsDataExport”
+   }
+ }
+“”"
+
+2.
+“client”:“{\“of\“: \“foam.nanos.auth.GroupPermissionJunction\“}”
+</pre>
+
+A. For the first example, it's useful to look at the code for ClientGoogleSheetsExportService:
+
+<pre>
+foam.CLASS({
+  package: 'foam.nanos.export',
+  name: 'ClientGoogleSheetsExportService',
+
+  implements: [
+    'foam.nanos.export.GoogleSheetsExport'
+  ],
+
+  properties: [
+    {
+      class: 'Stub',
+      of: 'foam.nanos.export.GoogleSheetsExport',
+      name: 'delegate'
+    }
+  ]
+});
+</pre>
+
+This class is what's called a 'Client Stub'. It implements the foam.nanos.export.GoogleSheetsExport interface
+but it does so by converting any method calls on that interface into Box network calls.
+The Box message will then be sent across the network to handled by the 'Server Skeleton'.
+The Skeleton does the reverse and converts the Box message network call into a local method
+call against the service that it's representing. The skeleton is registered at 'service/googleSheetsDataExport', which
+is specified in the code above.
+<p>
+Stubs and Skeletons give the allusion that services are local, even when they're remote by
+abstracting away the network interface.
+<p>
+If on the client you use the userDAO, then underneath every call is converted to a network call.
+But if you use the menuDAO, the data is cached locally, and no network call will be made.
+But in either case, your client code is the same: you just use the DAO interface without knowing
+if the ultimate request is being served locally, remotely, or through a combination of local and
+remote services.
+<p>
+2. The second example doesn't supply the 'class' of the Stub, because this service implements
+the DAO interface, which is the default, so class defaults to foa.dao.ClientDAO in this case.
+
+##  Slot Types
+Q. What are the differences between and when to use: Slot Vs. Simple slot Vs. Expression slot?
+<p>
+A. For review, recall that a Slot is an object with three main methods:
+<pre>
+  void set(value) - set the Slot's value
+  Object get() - get the Slot's value
+  sub(listener) - subscribe to be notified when the value changes
+<pre>
+The most common type of Slot in FOAM is a PropertySlot, which is accessed when you
+suffix the '$' character to a property name.
+<p>
+Ex.:
+--
+foam.CLASS({
+  name: 'Person',
+  properties: [
+    'firstName',
+    'lastName'
+  ]
+});
+
+var p1 = Person.create({firstName: 'Kevin', lastName: 'Greer'});
+log(p1.firstName, p1.firstName$.cls_.name, p1.firstName$.get());
+
+// now, I could update firstName directly:
+
+p1.firstName = 'Logan';
+log(p1.firstName);
+
+// But I could also use the slot:
+p1.firstName$.set('Mark');
+log(p1.firstName);
+
+// And I can subscribe to changes to firstName:
+p1.firstName$.sub(function() {
+  log('firstName change: ', p1.firstName);
+});
+
+// Which will be called if I update the property directly:
+p1.firstName = 'Logan'
+
+// Or through the slot:
+p1.firstName$.set('Kevin');
+
+
+// In the above example firstName$ is a PropertySlot, ie. a Slot bound to a Property value.
+
+// However, if you ever need a Slot not bound to a Property, you can use a SimpleSlot:
+
+var slot = foam.core.SimpleSlot.create({value: 'Tala'});
+log(slot.get());
+slot.set('Janet');
+log(slot.get());
+
+// Normally SimpleSlots are only used by FOAM internals, and as an application developer,
+// you would rarely need to use them. Instead of using SimpleSlot's, you can just declare an extra
+// property on your model and then access it as property$.
+
+// PropertySlot's and SimpleSlot's only access one value, but an ExpressionSlot lets you combine
+// multiple property values into a single Slot.
+
+// Ex.:
+var fullName = p1.slot(function(firstName, lastName) { return firstName + ' ' + lastName; });
+log('fullName', fullName.get());
+
+fullName.sub(function() {
+  log('full name: ', fullName.get());
+});
+
+p1.firstName = 'John';
+p1.lastName = 'Doe';
+
+// Note that ExpressionSlots aren't set()-able:
+fullName.set('Jane Smith');
+log(fullName.get()); // Is still John Doe

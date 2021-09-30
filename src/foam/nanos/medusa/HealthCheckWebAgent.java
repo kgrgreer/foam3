@@ -35,7 +35,7 @@ public class HealthCheckWebAgent
 
       if ( ! config.getEnabled() ) {
         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        out.println("down\n");
+        out.println("down");
       } else {
         if ( config.getType() == MedusaType.MEDIATOR ) {
           if ( config.getStatus() == Status.ONLINE &&
@@ -44,37 +44,33 @@ public class HealthCheckWebAgent
                  ( config.getZone() == 0 &&
                    electoral.getState() == ElectoralServiceState.IN_SESSION ) ) ) {
             response.setStatus(HttpServletResponse.SC_OK);
-            out.println("up\n");
+            out.println("up");
           } else if ( config.getStatus() != Status.ONLINE &&
                       config.getRegionStatus() == RegionStatus.ACTIVE &&
                       config.getZone() == 0 &&
                       info != null ) {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             if ( ! foam.util.SafetyUtil.isEmpty(config.getErrorMessage()) ) {
-              out.println("failed\n");
-              out.println("error: "+config.getErrorMessage());
+              out.println("failed");
             } else {
-              out.println("maint\n");
-              out.println("replaying: "+info.getReplaying()+"\n");
-              out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
-              out.println("percentComplete: "+info.getPercentComplete()+"\n");
+              out.println("maint");
             }
           } else {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            out.println("maint\n");
+            out.println("maint");
           }
         } else if ( config.getStatus() == Status.ONLINE &&
                     config.getRegionStatus() == RegionStatus.ACTIVE ) {
           response.setStatus(HttpServletResponse.SC_OK);
-          out.println("up\n");
+          out.println("up");
         } else {
           response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-          out.println("maint\n");
+          out.println("maint");
         }
       }
     } else {
       response.setStatus(HttpServletResponse.SC_OK);
-      out.println("up\n");
+      out.println("up");
     }
   }
 }

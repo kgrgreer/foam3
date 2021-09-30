@@ -30,7 +30,7 @@ table-layout: fixed;
 }`,
 
   methods: [
-    function initE() {
+    function render() {
       this.onDetach(this.data$.sub(this.updatePreview));
       this.updatePreview();
 

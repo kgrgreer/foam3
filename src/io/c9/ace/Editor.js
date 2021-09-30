@@ -17,7 +17,7 @@ foam.CLASS({
     'warn'
   ],
   reactions: [
-    ['container', 'onload', 'initEditor'],
+    ['container', 'onload', 'renderditor'],
     ['config', 'propertyChange', 'updateEditor'],
     ['', 'propertyChange.data', 'dataToEditor']
   ],
@@ -46,7 +46,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this
         .add(this.slot(function(editor) {
@@ -82,7 +82,7 @@ foam.CLASS({
     }
   ],
   listeners: [
-    function initEditor() {
+    function renderditor() {
       var self = this;
       io.c9.ace.Lib.ACE().then(function(ace) {
         self.editor = ace.edit(self.container.id);

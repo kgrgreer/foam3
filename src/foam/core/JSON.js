@@ -64,7 +64,7 @@ foam.CLASS({
           var clsName = args.forClass_;
           var name = args.name;
 
-          var cls = X.lookup(clsName, true);
+          var cls = X.maybeLookup(clsName);
 
           // If we failed to find the class, try to deserialize the old format
           // where forClass_ contains the full path to the property: foo.bar.Pereson.lastName
@@ -96,7 +96,7 @@ foam.CLASS({
       name: 'create',
       installInClass: function(cls) {
         cls.create = function(args, x) {
-          return foam.lookup(args.forClass_, true);
+          return foam.maybeLookup(args.forClass_);
         };
       }
     }
@@ -567,8 +567,8 @@ foam.CLASS({
     },
 
     function getCls(opt_cls) {
-      return foam.typeOf(opt_cls) === foam.String ? this.__context__.lookup(opt_cls, true) :
-          opt_cls;
+      return foam.typeOf(opt_cls) === foam.String ? this.__context__.maybeLookup(opt_cls) :
+        opt_cls;
     }
   ]
 });
@@ -608,23 +608,23 @@ foam.CLASS({
 
       var references = foam.json.references(x, json);;
 
-      return Promise.all(references).then(function() {
+      return Promise.all/*Settled*/(references).then(() => {
         return foam.json.parse(json, undefined, opt_ctx || this.creationContext);
-      }.bind(this));
+      });
     },
     function parseClassFromString(str, opt_cls, opt_ctx) {
       return this.strict ?
-          // JSON.parse() is faster; use it when data format allows.
-          foam.json.parse(
-            JSON.parse(str),
-            opt_cls,
-            opt_ctx || this.creationContext) :
-          // Create new parser iff different context was injected; otherwise
-          // use same parser bound to "creationContext" each time.
-          opt_ctx ? foam.parsers.FON.create({
-            creationContext: opt_ctx || this.creationContext
-          }).parseClassFromString(str, opt_cls) :
-          this.fonParser_.parseClassFromString(str, opt_cls);
+        // JSON.parse() is faster; use it when data format allows.
+        foam.json.parse(
+          JSON.parse(str),
+          opt_cls,
+          opt_ctx || this.creationContext) :
+        // Create new parser iff different context was injected; otherwise
+        // use same parser bound to "creationContext" each time.
+        opt_ctx ? foam.parsers.FON.create({
+          creationContext: opt_ctx || this.creationContext
+        }).parseClassFromString(str, opt_cls) :
+        this.fonParser_.parseClassFromString(str, opt_cls);
     },
     function clone() {
       return this;

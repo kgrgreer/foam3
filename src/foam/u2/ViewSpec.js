@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'ViewSpec',
-  extends: 'foam.core.JSFObject',
+  extends: 'foam.core.FObjectProperty',
 
   documentation: `
     Set a ViewFactory to be a string containing a class name,
@@ -29,22 +29,24 @@ foam.CLASS({
   axioms: [
     {
       installInClass: function(cls) {
+        var Element, FObject = foam.core.FObject, Str = foam.String;
         cls.createView = function(spec, args, self, ctx, disableWarning) {
-          if ( foam.core.FObject.isInstance(ctx) ) {
+          if ( ! Element ) Element = foam.u2.Element;
+          if ( FObject.isInstance(ctx) ) {
             ctx = ctx.__subContext__;
           }
 
-          if ( foam.String.isInstance(spec) || spec === undefined || spec === null ) {
-            var classes = [];
-            if ( spec && spec.includes('.') ) {
-              var classes = spec.split('.');
-              spec = classes.shift();
+          if ( ! spec || Str.isInstance(spec) ) {
+            if ( args ) {
+              if ( spec ) args.nodeName = spec;
+              return Element.create(args, ctx);
             }
-            return foam.u2.Element.create({nodeName: spec || 'DIV', ...args}, ctx)
-              .addClasses(classes);
+            var e = Element.create(null, ctx);
+            if ( spec ) e.nodeName = spec;
+            return e;
           }
 
-          if ( foam.u2.Element.isInstance(spec) ) {
+          if ( Element.isInstance(spec) ) {
             if ( foam.debug && ! disableWarning ) {
               console.warn('Warning: Use of literal View as ViewSpec: ', spec.cls_.id);
             }
@@ -80,16 +82,16 @@ foam.CLASS({
             }
 
             foam.assert(
-              foam.u2.Element.isInstance(ret) || ret.toE,
+              Element.isInstance(ret) || ret.toE,
               'ViewSpec result must extend foam.u2.Element or be toE()-able.');
 
             return ret;
           }
 
-          if ( foam.core.FObject.isSubClass(spec) ) {
+          if ( FObject.isSubClass(spec) ) {
             var ret = spec.create(args, ctx);
 
-            foam.assert(foam.u2.Element.isInstance(ret), 'ViewSpec class must extend foam.u2.Element or be toE()-able.');
+            foam.assert(Element.isInstance(ret), 'ViewSpec class must extend foam.u2.Element or be toE()-able.');
 
             return ret;
           }
@@ -112,6 +114,7 @@ foam.CLASS({
     [ 'adapt', function(_, spec, prop) {
       return foam.String.isInstance(spec) ? { class: spec } : spec ;
     } ],
+    [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
     [ 'displayWidth', 80 ]
     /*
     TODO: do on the Java side also.

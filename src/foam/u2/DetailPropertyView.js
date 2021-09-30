@@ -54,7 +54,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var prop = this.prop;
 
       this.show(
@@ -65,7 +65,7 @@ foam.CLASS({
       this.add(this.shown$.map(shown => {
         return this.E().
           callIf(shown, () => {
-            this.addClass(this.myClass()).
+            this.addClass().
             addClass('foam-u2-PropertyView').
             addClass('foam-u2-PropertyView-prop-' + prop.name).
             start('td').addClass('foam-u2-PropertyView-label').add(this.label).end().

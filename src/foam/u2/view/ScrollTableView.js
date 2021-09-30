@@ -28,6 +28,7 @@
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ReadWriteView',
+    'foam.u2.stack.StackBlock',
     'foam.u2.view.TableView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.nanos.controller.Memento'
@@ -203,6 +204,10 @@
       name: 'renderedPages_'
     },
     {
+      class: 'Map',
+      name: 'renderedPageSlots_'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
@@ -214,15 +219,16 @@
       name: 'dblClickListenerAction',
       factory: function() {
         return function(obj, id, title) {
-          if ( ! this.stack ) return;
+          if ( ! this.stack || this.isDetached() ) return;
 
-          this.stack.push({
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            config: this.config,
-            idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
-          //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              config: this.config,
+              idOfRecord: id
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+          }));
         }
       }
     },
@@ -278,10 +284,11 @@
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.table_$.sub(this.refresh));
       this.updateCount();
     },
 
-    function initE() {
+    function render() {
       var self = this;
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params
@@ -302,6 +309,7 @@
 
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
+        refDAO: this.data,
         columns: this.columns,
         contextMenuActions: this.contextMenuActions,
         selection$: this.selection$,
@@ -332,7 +340,7 @@
             return showPagination ?
              this.E().start(self.Cols).
               addClass(self.myClass('nav')).
-              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
+              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later.
               startContext({ data: self }).
                 start(self.Cols).
                   style({ gap: '4px', 'box-sizing': 'border-box' }).
@@ -363,12 +371,14 @@
 
       } else if ( this.table_.memento.tail.head.length != 0 ) {
         if ( this.table_.memento.tail.head == 'create' ) {
-          this.stack.push({
-            class: 'foam.comics.v2.DAOCreateView',
-            data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-            config$: this.config$,
-            of: this.data.of
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOCreateView',
+              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento })
+          }));
         } else if ( this.table_.memento.tail.tail && this.table_.memento.tail.tail.head ) {
           var id = this.table_.memento.tail.tail.head;
           if ( ! foam.core.MultiPartID.isInstance(this.data.of.ID) ) {
@@ -387,18 +397,17 @@
           this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
             if ( ! v ) return;
             if ( self.state != self.LOADED ) return;
-            this.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: null,
-              config: this.config,
-              idOfRecord: id
-            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
-            //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
+            this.stack.push(this.StackBlock.create({
+              view: {
+                class: 'foam.comics.v2.DAOSummaryView',
+                data: null,
+                config: this.config,
+                idOfRecord: id
+              }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+            }));
           });
         }
       }
-
-      this.onDetach(this.table_$.sub(this.updateRenderedPages_));
     },
     function scrollTable(scroll) {
       if ( this.childNodes && this.childNodes.length > 0 )
@@ -408,11 +417,22 @@
 
   listeners: [
     {
+      name: 'reconnectPages',
+      code: function () {
+        Object.keys(this.renderedPageSlots_).forEach(page => {
+          this.renderedPages_[page] = this.table_.slotE_(this.renderedPageSlots_[page]);
+        });
+      }
+    },
+    {
       name: 'refresh',
       isFramed: true,
       code: async function() {
+        this.reconnectPages();
         Object.keys(this.renderedPages_).forEach(i => {
           this.renderedPages_[i].remove();
+          this.renderedPageSlots_[i].detach();
+          delete this.renderedPageSlots_[i];
           delete this.renderedPages_[i];
         });
         this.updateRenderedPages_();
@@ -433,7 +453,7 @@
       name: 'updateCount',
       isFramed: true,
       code: function() {
-        var limit = this.data.limit_ || undefined;
+        var limit = ( this.data && this.data.limit_ ) || undefined;
         return this.data$proxy.select(this.Count.create()).then(s => {
           this.daoCount = limit && limit < s.value ? limit : s.value;
           this.refresh();
@@ -451,6 +471,8 @@
         Object.keys(this.renderedPages_).forEach(i => {
           if ( i >= this.currentTopPage_ && i < this.currentTopPage_ + this.NUM_PAGES_TO_RENDER ) return;
           this.renderedPages_[i].remove();
+          this.renderedPageSlots_[i].detach();
+          delete this.renderedPageSlots_[i];
           delete this.renderedPages_[i];
         });
 
@@ -458,8 +480,9 @@
         for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++) {
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
-          var dao = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
-          var tbody = this.table_.slotE_(this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight));
+          var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
+          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight) 
+          var tbody = this.table_.slotE_(this.renderedPageSlots_[page]);
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;
         }
@@ -521,7 +544,7 @@
       name: 'prevPage',
       toolTip: 'Previous Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         if ( this.displayedRowCount_ ) {
@@ -534,7 +557,7 @@
       name: 'firstPage',
       toolTip: 'First Page',
       isEnabled: function(topRow_) {
-        return topRow_ != 1;
+        return topRow_ > 1;
       },
       code: function() {
         this.scrollTable(0);

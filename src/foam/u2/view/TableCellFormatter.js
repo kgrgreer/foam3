@@ -259,6 +259,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceToSummaryCellFormatter',
+  implements: ['foam.u2.view.Formatter'],
 
   methods: [
     function format(e, value, obj, axiom) {

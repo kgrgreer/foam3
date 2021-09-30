@@ -88,14 +88,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
-      this.on('click', function(event) {
-        var obj = self.eToObj(event);
+      this.on('click', async function(event) {
+        var obj = await self.eToObj(event);
         if ( obj ) self.tableView.selection = obj;
       }).
-      on('dblclick', function(event) {
-        var obj = self.eToObj(event);
+      on('dblclick', async function(event) {
+        var obj = await self.eToObj(event);
         if ( obj ) 1;
       });
     },
@@ -225,7 +225,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.nodeName = 'thead';
 
@@ -367,7 +367,7 @@ foam.CLASS({
       console.log('Deprecated use of foam.u2.TableView. Use foam.u2.view.TableView instead.');
     },
 
-    function initE() {
+    function render() {
       // Configure columns if 'config' set.
       if ( this.config ) {
         for ( var i = 0 ; i < this.columns_.length ; i++ ) {

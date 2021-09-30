@@ -34,10 +34,13 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'java.util.Date'
   ],
 
@@ -74,6 +77,10 @@ foam.CLASS({
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this ticket'
+    },
+    {
+      name: 'COMMENT_NOTIFICATION',
+      message: 'A ticket assigned to you has been updated'
     }
   ],
 
@@ -104,8 +111,9 @@ foam.CLASS({
       name: 'id',
       visibility: 'RO',
       section: 'infoSection',
-      order: 1,
-      tableWidth: 100
+      order: 2,
+      tableWidth: 100,
+      gridColumns: 6
     },
     {
       name: 'type',
@@ -120,7 +128,8 @@ foam.CLASS({
     return getClass().getSimpleName();
       `,
       tableWidth: 160,
-      order: 2
+      order: 4,
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -152,6 +161,7 @@ foam.CLASS({
           }
         };
       },
+      gridColumns: 6
     },
     {
       name: 'statusChoices',
@@ -195,32 +205,32 @@ foam.CLASS({
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
-      order: 4
+      order: 1
     },
     {
       class: 'String',
       name: 'comment',
       value: '',
-    // required: true,
       storageTransient: true,
       section: 'infoSection',
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment'],
+          args: ['id', 'title', 'comment', 'externalComment'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
                 e.EQ(foam.nanos.ticket.Ticket.ID, 0),
                 e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
               ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, "")
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
             );
           },
           errorString: 'Please provide a comment.'
         }
       ],
-      order: 5
+      order: 9
     },
     {
       class: 'DateTime',
@@ -242,7 +252,7 @@ foam.CLASS({
           }
         }.bind(this));
       },
-      section: 'infoSection', // until 'owner' showing
+      section: 'metaSection'
     },
     {
       class: 'Reference',
@@ -325,11 +335,126 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'assignedTo',
-      section: 'infoSection'
+      section: 'infoSection',
+      postSet: function(_, n) {
+        if ( n != 0 ) {
+          this.assignedToGroup = '';
+        }
+      },
+      order: 7,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'assignedToGroup',
+      section: 'infoSection',
+      postSet: function(_, n) {
+        if ( n !== '' ) {
+          this.assignedTo = 0;
+        }
+      },
+      order: 8,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdFor',
+      documentation: 'User/business this ticket was created for.',
+      section: 'infoSection',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      order: 6,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'externalComment',
+      storageTransient: true,
+      section: 'infoSection',
+      readVisibility: 'HIDDEN',
+      validationPredicates: [
+        {
+          args: ['id', 'title', 'comment', 'externalComment'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
+                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
+              ),
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
+            );
+          },
+          errorString: 'Please provide a comment.'
+        }
+      ],
+      order: 10
     }
   ],
 
   methods: [
+    {
+      name: 'createExternalCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        Subject subject = (Subject) x.get("subject");
+        if (subject.getUser().getId() == getCreatedFor()) {
+          if ( getAssignedTo() != 0 ) {
+            Notification notification = new Notification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION)
+              .setUserId(getAssignedTo())
+              .setSpid(getSpid())
+              .build();
+            findAssignedTo(x).doNotify(x, notification);
+          } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
+            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+            Notification notification = new Notification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION)
+              .setGroupId(getAssignedToGroup())
+              .setSpid(getSpid())
+              .build();
+            notificationDAO.put(notification);
+          }
+        } else if ( getCreatedFor() != 0 ){
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setUserId(getCreatedFor())
+            .setSpid(getSpid())
+            .build();
+          findCreatedFor(x).doNotify(x, notification);
+        }
+      `
+    },
+    {
+      name: 'createCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( getAssignedTo() != 0 ) {
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setUserId(getAssignedTo())
+            .setSpid(getSpid())
+            .build();
+            findAssignedTo(x).doNotify(x, notification);
+        } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
+          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setGroupId(getAssignedToGroup())
+            .setSpid(getSpid())
+            .build();
+          notificationDAO.put(notification);
+        }
+      `
+    },
     {
       name: 'authorizeOnCreate',
       args: [

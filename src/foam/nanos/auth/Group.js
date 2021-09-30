@@ -14,7 +14,20 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
-  requires: [ 
+  javaImports: [
+    'foam.core.Detachable',
+    'foam.dao.AbstractSink',
+    'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.pm.PM',
+    'foam.util.SafetyUtil',
+    'java.net.InetAddress',
+    'java.util.List',
+    'javax.security.auth.AuthPermission',
+    'static foam.mlang.MLang.EQ'
+  ],
+
+  requires: [
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.PasswordPolicy'
   ],
@@ -32,7 +45,7 @@ foam.CLASS({
       type: 'String'
     }
   ],
-  
+
   properties: [
     {
       class: 'String',
@@ -52,13 +65,14 @@ foam.CLASS({
     {
       class: 'Reference',
       name: 'parent',
+      documentation: 'Parent group to inherit permissions from.',
       targetDAOKey: 'groupDAO',
       of: 'foam.nanos.auth.Group',
       view: {
         class: 'foam.u2.view.ReferenceView',
         placeholder: '--'
       },
-      documentation: 'Parent group to inherit permissions from.'
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Reference',
@@ -142,17 +156,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     */
   ],
 
-  javaImports: [
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
-    'foam.nanos.app.AppConfig',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'java.net.InetAddress',
-    'javax.security.auth.AuthPermission'
-  ],
-
   methods: [
     {
       name: 'implies',
@@ -169,29 +172,37 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
-        List<GroupPermissionJunction> junctions = ((ArraySink) getPermissions(x)
-          .getJunctionDAO()
+        PM        pm      = PM.create(x, this.getClass(), "implies");
+        DAO       dao     = (DAO) x.get("groupDAO");
+        boolean[] granted = { false };
+
+        try {
+          getPermissions(x).getJunctionDAO()
             .where(EQ(GroupPermissionJunction.SOURCE_ID, getId()))
-            .select(new ArraySink())).getArray();
+            .select(new AbstractSink() {
+              public void put(Object o, Detachable d) {
+                GroupPermissionJunction j = (GroupPermissionJunction) o;
 
-        for ( GroupPermissionJunction j : junctions ) {
-          if ( j.getTargetId().isBlank() ) {
-            continue;
-          }
+                if ( j.getTargetId().isBlank() ) return;
 
-          if ( j.getTargetId().startsWith("@") ) {
-            DAO   dao   = (DAO) x.get("groupDAO");
-            Group group = (Group) dao.find(j.getTargetId().substring(1));
+                if ( j.getTargetId().startsWith("@") ) {
+                  Group group = (Group) dao.find(j.getTargetId().substring(1));
 
-            if ( group != null && group.implies(x, permission) ) {
-              return true;
-            }
-          } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
-            return true;
-          }
+                  if ( group != null && group.implies(x, permission) ) {
+                    granted[0] = true;
+                    d.detach();
+                  }
+                } else if ( new AuthPermission(j.getTargetId()).implies(permission) ) {
+                  granted[0] = true;
+                  d.detach();
+                }
+              }
+            });
+
+          return granted[0];
+        } finally {
+          pm.log(x);
         }
-
-        return false;
       `,
       code: async function(x, permissionId) {
         // TODO: Support inheritance via @
@@ -214,9 +225,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
       ],
       javaCode: `
-        AppConfig appConfig = (AppConfig) ((AppConfig) x.get("appConfig")).fclone();
-        String url = ! foam.util.SafetyUtil.isEmpty(getUrl()) ? getUrl() : appConfig.getUrl();
-        appConfig.setUrl(url.replaceAll("/$", ""));
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        String url = getUrl();
+        if ( ! foam.util.SafetyUtil.isEmpty(url) ) {
+          appConfig = (AppConfig) appConfig.fclone();
+          appConfig.setUrl(url.replaceAll("/$", ""));
+        }
         return appConfig;
         `
     },
@@ -271,9 +285,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         DAO localGroupDAO = (DAO) x.get("localGroupDAO");
         User user = (User) ((Subject) x.get("subject")).getUser();
         Group userGroup = (Group) localGroupDAO.find(user.getGroup());
-        while ( userGroup != null ) { 
+        while ( userGroup != null ) {
           if ( getId() == userGroup.getId() ) return;
-          userGroup = getAncestor(x, userGroup);  
+          userGroup = getAncestor(x, userGroup);
         }
 
         AuthService auth = (AuthService) x.get("auth");

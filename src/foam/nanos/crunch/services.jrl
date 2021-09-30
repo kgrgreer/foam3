@@ -125,6 +125,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"bareUserCapabilityJunctionDAO",
+  "lazy": false,
   "serviceScript":"""
     decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
     decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
@@ -136,7 +137,10 @@ p({
       .setEnableInterfaceDecorators(false)
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setDecorator(decorator)
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.STATUS });
     return dao;
   """,
   "client":
@@ -171,7 +175,6 @@ p({
     decorator = new foam.nanos.crunch.PredicatedPrerequisiteCapabilityJunctionDAO.Builder(x).build();
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("prerequisiteCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("prerequisiteCapabilityJunctions")
@@ -250,6 +253,28 @@ p({
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "capabilityPayloadRecordDAO",
+  lazy: true,
+  serve: true,
+  serviceScript: `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setGuid(true)
+      .setOf(foam.nanos.crunch.connection.CapabilityPayloadRecord.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("capabilityPayloadRecords")
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED) )
+        .setSize(10000)
+        .build())
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED})
+      .build();
+  `,
+  client: "{\"of\":\"foam.nanos.crunch.connection.CapabilityPayloadRecord\"}"
 })
 
 p({

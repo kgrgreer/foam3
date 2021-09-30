@@ -61,9 +61,11 @@ foam.CLASS({
     'log',
     'merged',
     'requestAnimationFrame',
+    'returnExpandedCSS',
     'setInterval',
     'setTimeout',
     'warn',
+    'params',
     'window'
   ],
 
@@ -77,6 +79,17 @@ foam.CLASS({
     {
       name: 'console',
       factory: function() { return this.window.console; }
+    },
+    {
+      name: 'params',
+      factory: function() {
+        var m = {};
+        this.window.location.search.substring(1).split('&').forEach(p => {
+          var a = p.split('=');
+          m[a[0]] = a[1];
+        });
+        return m;
+      }
     }
   ],
 
@@ -219,6 +232,11 @@ foam.CLASS({
         (owner ? (' owner="' + owner + '"') : '') +
         '>' +
         text + '</style>');
+    },
+
+    function returnExpandedCSS(a) {
+      /* Fallback function for using long form color MACROS in non-nanos apps */
+      return a;
     }
   ]
 });
@@ -249,7 +267,7 @@ foam.SCRIPT({
   ],
   code: function() {
     foam.__context__ = foam.core.Window.create(
-      { window: global },
+      { window: globalThis },
       foam.__context__
     ).__subContext__;
   }

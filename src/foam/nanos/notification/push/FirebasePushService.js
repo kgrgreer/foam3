@@ -16,7 +16,8 @@ foam.CLASS({
       name: 'deviceToken',
       section: 'deprecatedInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     }
   ]
 });

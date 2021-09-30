@@ -36,7 +36,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.NanoService',
     'foam.nanos.script.ScriptStatus',
-    'foam.nanos.pm.PM',
     'java.util.Date',
     'java.util.Timer'
   ],
@@ -122,7 +121,6 @@ foam.CLASS({
                              @Override
                              public void put(Object obj, Detachable sub) {
                                Cron cron = (Cron) ((FObject) obj).fclone();
-                               PM pm = new PM(this.getClass().getSimpleName(), "cronjob", cron.getId());
                                try {
                                  if ( ! cron.getClusterable() ||
                                       support == null ||
@@ -133,9 +131,6 @@ foam.CLASS({
                                } catch (Throwable t) {
                                  logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);
                                  ((DAO) x.get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), LogLevel.ERROR, AlarmReason.CONFIGURATION));
-                                 pm.error(x, t);
-                               } finally {
-                                 pm.log(x);
                                }
                              }
                            });

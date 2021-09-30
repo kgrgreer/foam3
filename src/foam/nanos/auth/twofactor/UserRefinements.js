@@ -16,7 +16,8 @@ foam.CLASS({
       documentation: 'Two factor enabled flag',
       section: 'operationsInformation',
       order: 50,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -25,7 +26,8 @@ foam.CLASS({
       networkTransient: true,
       section: 'systemInformation',
       order: 80,
-      gridColumns: 6
+      gridColumns: 6,
+      columnPermissionRequired: true
     }
   ]
 });

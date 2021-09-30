@@ -26,7 +26,7 @@ foam.CLASS({
     }
 
     ^container-search {
-      padding: 24px 16px 0px;
+      padding: 16px;
       border-bottom: solid 1px #cbcfd4;
     }
 
@@ -47,7 +47,7 @@ foam.CLASS({
     }
 
     ^label-limit {
-      padding: 4px 0 16px;
+      margin-top: 4px;
     }
 
     ^container-filter {
@@ -139,7 +139,12 @@ foam.CLASS({
       name: 'search',
       postSet: function(_, n) {
         this.isOverLimit = false;
-        this.dao.where(this.STARTS_WITH(this.property, n)).limit(21).select(this.GROUP_BY(this.property)).then((results) => {
+
+        var pred = this.search && this.search.trim().length > 0 
+          ? this.STARTS_WITH(this.property, this.search) 
+          : this.TRUE;
+
+        this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
           this.countByContents = results.groups;
           if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
         });
@@ -206,11 +211,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.onDetach(this.dao$.sub(this.daoUpdate));
 
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',
@@ -242,7 +247,7 @@ foam.CLASS({
                         class: 'foam.u2.CheckBox',
                         data: true,
                         showLabel: true,
-                        label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                        label: self.getLabelWithCount(option)
                       }).end()
                     .end();
                 });
@@ -275,7 +280,7 @@ foam.CLASS({
                         class: 'foam.u2.CheckBox',
                         data: false,
                         showLabel: true,
-                        label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                        label: self.getLabelWithCount(option)
                       }).end()
                     .end();
                 });
@@ -287,7 +292,7 @@ foam.CLASS({
     function getLabelWithCount(option) {
       if ( ! this.countByContents[option] ) console.error('String mismatch: ', option);
       var value = this.countByContents[option].value;
-      if ( value > 1 ) return `[${this.countByContents[option].value}] ${option}`;
+      if ( value > 1 ) return `[${this.countByContents[option].value}] ${option ? option : this.LABEL_EMPTY}`;
       return option;
     },
 
@@ -315,8 +320,11 @@ foam.CLASS({
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
-        var pred = this.search && this.search.trim().length > 0 ? this.STARTS_WITH(this.property, this.search) : this.TRUE;
-        this.dao.where(pred).limit(21).select(this.GROUP_BY(this.property)).then((results) => {
+        var pred = this.search && this.search.trim().length > 0 
+          ? this.STARTS_WITH(this.property, this.search) 
+          : this.TRUE;
+
+        this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
           this.countByContents = results.groups;
           if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
           this.isLoading = false;

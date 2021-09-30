@@ -160,6 +160,7 @@ var classes = [
   'foam.lib.csv.CSVOutputterImpl',
   'foam.lib.csv.ProxyCSVOutputter',
   'foam.lib.csv.FromCSVSetter',
+  'foam.core.PropertyInfo',
   'foam.dao.java.JDAO',
   'foam.dao.CopyFromDAO',
   'foam.dao.FilteredDAO',
@@ -195,6 +196,7 @@ var classes = [
   'foam.dao.MergedResetSink',
   'foam.dao.Sink',
   'foam.dao.ArraySink',
+  'foam.dao.DAOCopySink',
   'foam.dao.AbstractSink',
   'foam.mlang.sink.AbstractUnarySink',
   'foam.dao.PredicatedSink',
@@ -219,6 +221,7 @@ var classes = [
   'foam.dao.PMDAO',
   'foam.dao.PurgeRecordCmd',
   'foam.dao.UniqueConstraintException',
+  'foam.dao.FUIDAO',
   'foam.nanos.pm.PMFactory',
   'foam.nanos.pm.PMInfo',
   'foam.nanos.pm.PMLogger',
@@ -308,6 +311,7 @@ var classes = [
   'foam.nanos.auth.Country',
   'foam.nanos.auth.PropertyType',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.auth.PMAuthService',
   'foam.nanos.auth.UserUserJunction',
   'foam.nanos.auth.ClientAuthService',
@@ -321,6 +325,8 @@ var classes = [
   'foam.nanos.auth.token.TokenService',
   'foam.nanos.auth.token.ClientTokenService',
   'foam.nanos.auth.token.AbstractTokenService',
+  'foam.nanos.auth.token.TokenExpiredException',
+  'foam.nanos.auth.token.TokenInvalidException',
   'foam.nanos.auth.email.EmailTokenService',
   'foam.nanos.auth.email.EmailDocService',
   'foam.nanos.auth.email.EmailDocInterface',
@@ -358,6 +364,7 @@ var classes = [
   'foam.nanos.auth.AddressConfig',
   'foam.nanos.auth.UserNotFoundException',
   'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
+  'foam.nanos.auth.PreventDuplicateEmailLoginService',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.SendErrorHandler',
@@ -384,6 +391,7 @@ var classes = [
   'foam.nanos.logger.AbstractLogger',
   'foam.nanos.logger.DAOLogger',
   'foam.nanos.logger.Logger',
+  'foam.nanos.logger.LoggerUserInfo',
   'foam.nanos.logger.NotificationLogMessageDAO',
   'foam.nanos.logger.RepeatLogMessageDAO',
   'foam.nanos.logger.ProxyLogger',
@@ -447,6 +455,7 @@ var classes = [
   'foam.nanos.medusa.MedusaRegistryService',
   'foam.nanos.medusa.MedusaSigningDAO',
   'foam.nanos.medusa.MedusaSetNodeDAO',
+  'foam.nanos.medusa.MedusaStatusWatcher',
   'foam.nanos.medusa.MedusaTestingDAO',
   'foam.nanos.medusa.MedusaType',
   'foam.nanos.medusa.MedusaUniqueDAO',
@@ -459,6 +468,7 @@ var classes = [
   'foam.nanos.medusa.ReplayDetailsCmd',
   'foam.nanos.medusa.ReplayMediatorDAO',
   'foam.nanos.medusa.ReplayNodeDAO',
+  'foam.nanos.medusa.ReplayRequestCmd',
   'foam.nanos.medusa.ReplayingDAO',
   'foam.nanos.medusa.ReplayingInfo',
   'foam.nanos.medusa.ReplayingInfoDAO',
@@ -468,10 +478,9 @@ var classes = [
   'foam.nanos.medusa.benchmark.DaggerLinkBenchmark',
   'foam.nanos.medusa.benchmark.DaggerVerifyBenchmark',
   'foam.nanos.medusa.benchmark.MedusaBenchmark',
+  'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
-  'foam.box.BackoffBox',
 
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
@@ -632,9 +641,12 @@ var classes = [
   'foam.nanos.demo.relationship.CourseType',
   'foam.nanos.demo.relationship.StudentCourseJunction',
   'foam.nanos.fs.File',
+  'foam.nanos.fs.FileDataClearSink',
   'foam.nanos.fs.FileDataDAO',
+  'foam.nanos.fs.FileLabel',
   'foam.nanos.fs.FileType',
-  'foam.nanos.fs.SupportFileTypeDAO',
+  'foam.nanos.fs.TempFile',
+  'foam.nanos.fs.TempFileDAO',
   'foam.crypto.hash.Hasher',
   'foam.crypto.hash.HashableTest',
 
@@ -650,6 +662,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
+  'foam.nanos.dig.ExternalDataAware',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
@@ -667,6 +680,8 @@ var classes = [
   'foam.lib.parse.Action',
   'foam.lib.parse.ActionParser',
   'foam.lib.parse.SymbolParser',
+  'foam.util.UIDGenerator',
+  'foam.util.UIDGeneratorTest',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
@@ -688,6 +703,10 @@ var classes = [
   'foam.nanos.dig.exception.UnsupportException',
   'foam.nanos.dig.exception.UnknownIdException',
   'foam.nanos.dig.exception.DigSuccessMessage',
+  'foam.nanos.dig.exception.TemporaryExternalAPIException',
+  'foam.nanos.dig.exception.EmptyParameterException',
+  'foam.nanos.dig.exception.ExternalAPIException',
+  'foam.nanos.dig.exception.GeneralException',
 
   'foam.nanos.dao.Operation',
 
@@ -699,6 +718,8 @@ var classes = [
   'foam.nanos.ruler.FindRuledCommand',
   'foam.nanos.ruler.Ruled',
   'foam.nanos.ruler.Rule',
+  'foam.nanos.ruler.PermissionedUserRule',
+  'foam.nanos.ruler.PermissionedUCJRule',
   'foam.nanos.ruler.RuledDAO',
   'foam.nanos.ruler.RulerData',
   'foam.nanos.ruler.test.RuledDAOTest',
@@ -733,7 +754,9 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
+  'foam.nanos.approval.PopulateApprovalRequestSummariesDAO',
   'foam.nanos.approval.RestrictedApprovableDAO',
+  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
@@ -741,7 +764,6 @@ var classes = [
   'foam.nanos.geocode.GoogleMapsGeocodingDAO',
   'foam.dao.history.HistoryDAO',
   'foam.nanos.script.ScriptRunnerDAO',
-  'foam.nanos.approval.SendGroupRequestApprovalDAO',
   'foam.dao.UnreliableDAO',
   'foam.nanos.auth.UserPasswordHashingDAO',
   'foam.dao.ValidatingDAO',
@@ -750,11 +772,6 @@ var classes = [
   'foam.support.model.TicketMessage',
   'foam.support.model.SupportEmail',
   'foam.support.model.Ticket',
-
-  'foam.nanos.dig.exception.ExternalAPIException',
-  'foam.nanos.dig.exception.EmptyParameterException',
-  'foam.nanos.dig.exception.GeneralException',
-  'foam.nanos.dig.exception.TemporaryExternalAPIException',
 
   'foam.nanos.app.SupportConfig',
 
@@ -770,6 +787,7 @@ var classes = [
   'foam.nanos.ticket.TicketAddCommentDAO',
   'foam.nanos.ticket.TicketOwnerDAO',
   'foam.nanos.ticket.TicketCommentOwnerDAO',
+  'foam.nanos.ticket.RfiTicket',
 
   // Testing support
   'foam.test.TestEnum',
@@ -838,6 +856,7 @@ var classes = [
   'foam.nanos.crunch.UCJUpdateApprovable',
 
   'foam.nanos.crunch.connection.CapabilityPayload',
+  'foam.nanos.crunch.connection.CapabilityPayloadRecord',
   'foam.nanos.crunch.connection.GrantPathNode',
 
   //daos
@@ -857,6 +876,7 @@ var classes = [
   // spid
   'foam.nanos.auth.CreateUserCapabilityJunctionOnSpidSet',
   'foam.nanos.auth.SetUserServiceProviderJunctionRuleAction',
+  'foam.nanos.auth.FilterBySpidService',
 
   //ucjdao rules
   'foam.nanos.crunch.ruler.AuthorizeUCJStatusOnPut',
@@ -865,6 +885,7 @@ var classes = [
   'foam.nanos.crunch.ruler.SetUCJStatusOnPut',
   'foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted',
   'foam.nanos.crunch.ruler.SaveUCJDataOnGranted',
+  'foam.nanos.crunch.ruler.UCJDataExpiryRule',
 
   //crunch extras
   'foam.nanos.crunch.extra.ReviewCapability',
@@ -879,6 +900,8 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+
+  'foam.nanos.crunch.document.Document',
 
   //authservice
   'foam.nanos.auth.CapabilityAuthService',
@@ -937,7 +960,8 @@ var classes = [
   // Notification
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
-  'foam.counter.Counter'
+  'foam.counter.Counter',
+  'foam.util.date.TimeUnit'
 ];
 
 var abstractClasses = [
@@ -951,6 +975,7 @@ var skeletons = [
   'foam.nanos.app.AppConfigService',
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.AgentAuthService',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.auth.email.EmailDocInterface',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.token.TokenService',
@@ -981,6 +1006,7 @@ var proxies = [
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.http.WebAgent',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.push.PushService',

@@ -27,9 +27,11 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
+    'java.io.BufferedInputStream',
     'java.io.BufferedOutputStream',
     'java.io.DataInputStream',
     'java.io.DataOutputStream',
+    'java.io.EOFException',
     'java.io.InputStream',
     'java.io.InputStreamReader',
     'java.io.IOException',
@@ -43,7 +45,8 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Collections',
     'java.util.concurrent.atomic.AtomicInteger',
-    'java.util.concurrent.atomic.AtomicLong'
+    'java.util.concurrent.atomic.AtomicLong',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
     
   constants: [
@@ -81,14 +84,17 @@ foam.CLASS({
     {
       documentation: 'Set to false when send exits, triggering execute to exit',
       name: 'valid',
-      class: 'Boolean',
-      value: true,
-      visibility: 'HIDDEN'
+      class: 'Object',
+      javaType: 'AtomicBoolean',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new AtomicBoolean(true);
+      `
     },
     {
       name: 'replyBoxes',
       class: 'Map',
-      javaFactory: `return new HashMap();`,
+      javaFactory: `return new java.util.concurrent.ConcurrentHashMap<String, BoxHolder>();`,
       visibility: 'HIDDEN',
     },
     {
@@ -124,11 +130,13 @@ foam.CLASS({
     setSocket(socket);
 
     out_ = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-    in_ = new DataInputStream(socket.getInputStream());
+    in_ = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+    pending_ = new AtomicLong();
   }
 
   protected DataInputStream in_;
   protected DataOutputStream out_;
+  protected AtomicLong pending_;
 
   protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
     @Override
@@ -146,6 +154,19 @@ foam.CLASS({
       return formatter;
     }
   };
+
+  protected byte [] readBytes (InputStream in, int expectedSize)
+    throws IOException {
+    final byte[] buffer = new byte[expectedSize];
+    int totalReadSize = 0;
+    while (totalReadSize < expectedSize) {
+      int readSize = in.read(buffer, totalReadSize, expectedSize - totalReadSize);
+      if (readSize < 0) throw new EOFException ();
+      totalReadSize += readSize;
+    }
+    return buffer;
+  }
+
         `
         }));
       }
@@ -155,19 +176,19 @@ foam.CLASS({
   methods: [
     {
       documentation: `Send format:
-timestamp: 4 bytes, // used to generate a PM when received. 
 length: 1 byte, // message byte length
 message
 NOTE: duplicated in SocketConnectionReplyBox
 `,
       name: 'send',
       javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), getId()+":send");
+      long pending = pending_.incrementAndGet();
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send");
       Box replyBox = (Box) msg.getAttributes().get("replyBox");
       String replyBoxId = null;
       if ( replyBox != null ) {
         replyBoxId = java.util.UUID.randomUUID().toString();
-        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getOwnClassInfo().getId(), getHost()+":"+getPort()+":roundtrip")));
+        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getClass().getSimpleName(), getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
@@ -193,23 +214,25 @@ NOTE: duplicated in SocketConnectionReplyBox
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
           // getLogger().debug("send", message);
-          out_.writeLong(System.currentTimeMillis());
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
-          // TODO/REVIEW
-          out_.flush();
           omLogger.log(this.getClass().getSimpleName(), getId(), "sent");
+        }
+        // If no other send operations immediately pending, then flush
+        if ( pending == pending_.longValue() ) {
+          out_.flush();
         }
       } catch ( Throwable t ) {
         pm.error(getX(), t);
         // TODO: perhaps report last exception on host port via manager.
         getLogger().error("Error sending message", message, t);
-        setValid(false);
+        getValid().getAndSet(false);
         if ( replyBox != null ) {
          Message reply = new Message();
          reply.getAttributes().put("replyBox", replyBox);
          reply.replyWithException(t);
          getReplyBoxes().remove(replyBoxId);
+         releaseHoldingThread(t);
         } else {
           throw new RuntimeException(t);
         }
@@ -227,58 +250,22 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
       ],
       javaCode: `
-      String pmKey = this.getClass().getSimpleName()+":"+getHost()+":"+getPort();
-      String pmName = "receive"; 
       OMLogger omLogger = (OMLogger) x.get("OMLogger");
       try {
-        while ( getValid() ) {
+        while ( getValid().get() ) {
           PM pm = null;
           try {
-            long sent = in_.readLong();
-            PM p = PM.create(getX(), this.getClass().getSimpleName(), getHost()+":"+getPort()+":network");
-            p.setStartTime(sent);
-            p.log(x);
-
-            pm = PM.create(x, pmKey, pmName);
+            omLogger.log(this.getClass().getSimpleName(), getId(), "receive");
+            pm = PM.create(x, this.getClass().getSimpleName(), getId(), "receive");
 
             int length = in_.readInt();
-            byte[] bytes = new byte[length];
-            StringBuilder data = new StringBuilder();
-            int total = 0;
-            while ( true ) {
-              int bytesRead = 0;
-              try {
-                bytesRead = in_.read(bytes, 0, length - total);
-                if ( bytesRead == -1 ) {
-                  getLogger().debug("eof,-1");
-                  break;
-                }
-              } catch ( java.io.EOFException | java.net.SocketException e ) {
-                getLogger().debug(e.getMessage());
-                break;
-              }
-              data.append(new String(bytes, 0, bytesRead, StandardCharsets.UTF_8));
-              total += bytesRead;
-              if ( total == length ) {
-                break;
-              }
-              if ( total > length ) {
-                // REVIEW: can this happen?
-                getLogger().error("read too much", length, total);
-                break;
-              }
-            }
-            omLogger.log(this.getClass().getSimpleName(), getId(), "received");
-            String message = data.toString();
-            if ( foam.util.SafetyUtil.isEmpty(message) ) {
-              throw new RuntimeException("Received empty message.");
-            }
-            // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-            // getLogger().debug("receive", message);
-            Message msg = (Message) x.create(JSONParser.class).parseString(message);
+            byte[] bytes = readBytes(in_, length);
+            String data = new String(bytes, 0, length, StandardCharsets.UTF_8);
+            Message msg = (Message) x.create(JSONParser.class).parseString(data);
             if ( msg == null ) {
-              throw new RuntimeException("Failed to parse. message: "+message);
+              throw new IllegalArgumentException("Failed to parse. message: "+data);
             }
+  
             String replyBoxId = (String) msg.getAttributes().get(REPLY_BOX_ID);
             if ( replyBoxId != null ) {
               Box replyBox = null;
@@ -294,7 +281,7 @@ NOTE: duplicated in SocketConnectionReplyBox
               if ( replyBox == null ) {
                 getLogger().error("ReplyBox not found", replyBoxId);
                 ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm("ReplyBox not found"));
-                throw new RuntimeException("ReplyBox not found. message: "+message);
+                throw new RuntimeException("ReplyBox not found. message: "+data);
               }
               getReplyBoxes().remove(replyBoxId);
               replyBox.send(msg);
@@ -309,8 +296,8 @@ NOTE: duplicated in SocketConnectionReplyBox
                 }
                 throw new RuntimeException(re.getMessage());
               }
-              getLogger().error("Failed to process reply", message);
-              throw new RuntimeException("Failed to process reply. message: "+message);
+              getLogger().error("Failed to process reply", data);
+              throw new RuntimeException("Failed to process reply. message: "+data);
             }
           } catch ( java.net.SocketTimeoutException e ) {
             // getLogger().debug("SocketTimeoutException", e.getMessage());
@@ -318,6 +305,7 @@ NOTE: duplicated in SocketConnectionReplyBox
           } catch ( Throwable t ) {
             getLogger().error(t);
             if ( pm != null ) pm.error(x, t);
+            releaseHoldingThread(t);
             break;
           } finally {
             if ( pm != null) pm.log(x);
@@ -326,6 +314,27 @@ NOTE: duplicated in SocketConnectionReplyBox
       } finally {
         ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).remove(this);
       }
+      `
+    },
+    {
+      name: 'releaseHoldingThread',
+      args: "Throwable t",
+      synchronized: true,
+      javaCode:`
+        int i = 0;
+        for (Map.Entry<String, BoxHolder> entry : ((Map<String, BoxHolder>) getReplyBoxes()).entrySet()) {
+          BoxHolder holder = entry.getValue();
+          Box replyBox = holder.getBox();
+          if ( replyBox != null ) {
+            Message reply = new Message();
+            reply.getAttributes().put("replyBox", replyBox);
+            reply.replyWithException(t);
+          }
+          getReplyBoxes().remove(entry.getKey());
+          i++;
+        }
+        getLogger().warning("Terminating reply boxes", getKey());
+        getLogger().debug("free reply box: " + i);
       `
     }
   ]

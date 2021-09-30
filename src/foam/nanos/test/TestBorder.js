@@ -40,11 +40,12 @@ foam.CLASS({
     'status',
     { class: 'Int', name: 'total' },
     { class: 'Int', name: 'passed' },
-    { class: 'Int', name: 'failed' }
+    { class: 'Int', name: 'failed' },
+    { class: 'Map', name: 'selectedObjects' }
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this
@@ -56,7 +57,7 @@ foam.CLASS({
           .start('span').add('Failed: ', this.failed$).end()
           .start('span').add('Status: ', this.status$).end()
         .end()
-        .start(this.ScrollTableView, { data$: this.data$ })
+        .start(this.ScrollTableView, { data$: this.data$, selectedObjects$: this.selectedObjects$ })
           .addClass(this.myClass('table'))
         .end();
         

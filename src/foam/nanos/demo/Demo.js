@@ -36,7 +36,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.onDetach(this.demoObjectDAO.where(this.EQ(this.DemoObject.VALUE, 10)).listen({
         put: function(obj) {

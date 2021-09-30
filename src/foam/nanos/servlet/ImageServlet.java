@@ -34,6 +34,7 @@ public class ImageServlet
     EXTS.put("class", "application/java-vm");
     EXTS.put("xml",   "application/xml");
 
+    EXTS.put("ico",   "image/x-icon");
     EXTS.put("gif",   "image/gif");
     EXTS.put("png",   "image/png");
     EXTS.put("svg",   "image/svg+xml");
@@ -60,8 +61,9 @@ public class ImageServlet
       if ( src.isFile() && src.canRead() && src.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
         String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
         try ( BufferedInputStream is = new BufferedInputStream(new FileInputStream(src)) ) {
-          resp.setContentType(!SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
+          resp.setContentType(! SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
           resp.setHeader("Content-Disposition", "filename=\"" + StringEscapeUtils.escapeHtml4(src.getName()) + "\"");
+          resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
           resp.setContentLengthLong(src.length());
 
           IOUtils.copy(is, resp.getOutputStream());

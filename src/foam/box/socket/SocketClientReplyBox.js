@@ -62,7 +62,7 @@ foam.CLASS({
       } else {
         foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
         logger.error(this.getClass().getSimpleName(), "send,Socket not found", "replyBoxId", getReplyBoxId(), "message abandoned", msg, new Exception("Socket not found."));
       }

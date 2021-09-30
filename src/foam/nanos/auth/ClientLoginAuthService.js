@@ -15,8 +15,8 @@ foam.CLASS({
   documentation: 'ClientAuthService which uses custom AuthServiceClientBox as delegate',
 
   requires: [
-    'foam.box.HTTPBox',
     'foam.box.AuthServiceClientBox',
+    'foam.box.HTTPBox'
   ],
 
   properties: [

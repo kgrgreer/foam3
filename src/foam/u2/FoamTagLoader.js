@@ -27,18 +27,27 @@ foam.CLASS({
 
     function loadTag(el) {
       var clsName = el.getAttribute('class');
-
       this.classloader.load(clsName).then(cls => {
         var obj = cls.create(null, foam.__context__);
 
         this.setAttributes(el, obj);
 
-        if ( obj.promiseE ) {
+        if ( obj.element_ ) {
+          el.parentNode.replaceChild(obj.element_, el);
+          obj.load && obj.load();
+          // Store view in global variable if named. Useful for testing.
+          if ( obj.id ) globalThis[obj.id] = obj;
+        } else if ( obj.promiseE ) {
           obj.promiseE().then(function(view) { this.installView(el, view); });
         } else if ( obj.toE ) {
           this.installView(el, obj.toE({}, obj));
-        } else if ( ! foam.u2.Element.isInstance(view) )  {
-          installView(el, foam.u2.DetailView.create({data: view, showActions: true}));
+        } else if ( ! foam.u2.Element.isInstance(obj) )  {
+          // happens for U3
+          var view = foam.u2.DetailView.create({data: obj, showActions: true});
+          el.appendChild(view.element_);
+          view.load();
+
+//          this.installView(el, foam.u2.DetailView.create({data: obj, showActions: true}));
         }
       }, function(e) {
         console.error(e);
@@ -55,13 +64,13 @@ foam.CLASS({
       view.load();
 
       // Store view in global variable if named. Useful for testing.
-      if ( id ) global[id] = view;
+      if ( id ) globalThis[id] = view;
     },
 
     function setAttributes(el, obj) {
       for ( var j = 0 ; j < el.attributes.length ; j++ ) {
         var attr = el.attributes[j];
-        var p    = this.findPropertyIC(obj.cls_, attr.name);
+        var p = this.findPropertyIC(obj.cls_, attr.name);
         if ( p ) p.set(obj, attr.value);
       }
     }

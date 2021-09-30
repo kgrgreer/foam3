@@ -41,7 +41,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       this.SUPER();
@@ -51,7 +51,8 @@ foam.CLASS({
           if ( ! data ) return;
           var grid = self.Grid.create()
             .forEach(sections, function(s) {
-              var slot = s.createIsAvailableFor(self.data$).map(function(isAvailable) {
+              // TODO: figure out why importing controllerMode breaks
+              var slot = s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$).map(function(isAvailable) {
 
                 // NOTE: If we just return undefined here, then Element.slotE_
                 // will put a self.E('SPAN') here. That span will be a child of

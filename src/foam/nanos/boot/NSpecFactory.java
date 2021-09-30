@@ -10,6 +10,7 @@ import foam.core.*;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.*;
+import foam.nanos.auth.ProxyAuthService;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.StdoutLogger;
 import foam.nanos.pm.PM;
@@ -34,7 +35,7 @@ public class NSpecFactory
       logger = (Logger) x.get("logger");
     }
     if ( logger == null ) {
-      logger = new StdoutLogger();
+      logger = StdoutLogger.instance();
     }
 
     // Avoid infinite recursions when creating services
@@ -75,6 +76,8 @@ public class NSpecFactory
         }
         if ( ns instanceof ProxyDAO ) {
           ns = ((ProxyDAO) ns).getDelegate();
+        } else if ( ns instanceof ProxyAuthService ) {
+          ns = ((ProxyAuthService) ns).getDelegate();
         } else {
           ns = null;
         }
@@ -103,7 +106,7 @@ public class NSpecFactory
   public synchronized void invalidate(NSpec spec) {
     Logger logger = (Logger) x_.get("logger");
     if ( logger == null ) {
-      logger = new StdoutLogger();
+      logger = StdoutLogger.instance();
     }
     logger.info("Invalidating Service", spec_.getName());
     if ( ! SafetyUtil.equals(spec.getService(), spec_.getService())

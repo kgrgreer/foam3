@@ -18,9 +18,9 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.lib.json.JSONParser',
     'foam.nanos.pm.PM',
+    'foam.util.concurrent.AssemblyLine',
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
-    'foam.util.concurrent.AssemblyLine',
     'java.util.concurrent.atomic.AtomicInteger'
   ],
 
@@ -45,10 +45,10 @@ foam.CLASS({
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
-        PM pm = new PM(dao.getOf(), "replay."+getFilename());
+        PM pm = new PM(dao.getOf(), "replay." + getFilename());
         AssemblyLine assemblyLine = x.get("threadPool") == null ?
           new foam.util.concurrent.SyncAssemblyLine()   :
-          new foam.util.concurrent.AsyncAssemblyLine(x) ;
+          new foam.util.concurrent.AsyncAssemblyLine(x, "replay") ;
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
@@ -88,11 +88,11 @@ foam.CLASS({
                 }
               });
             } catch ( Throwable t ) {
-              getLogger().error("Error replaying journal entry:", entry, t);
+              getLogger().error("Error replaying journal", dao.getOf().getId(), entry, t);
             }
           }
         } catch ( Throwable t) {
-          getLogger().error("Failed to read from journal", t);
+          getLogger().error("Failed to read journal", dao.getOf().getId(), t);
         } finally {
           assemblyLine.shutdown();
           pm.log(x);

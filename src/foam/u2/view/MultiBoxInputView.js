@@ -72,7 +72,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       for ( let i = 0 ; i < this.numOfParts ; i++ ) {

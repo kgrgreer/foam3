@@ -20,7 +20,9 @@ foam.CLASS({
     }
     ^searchWrapper {
       padding: 0px 8px;
-      padding-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
     ^searchBar{
       width: 100%
@@ -28,99 +30,28 @@ foam.CLASS({
     ^ input[type='search']{
       width: 100%;
     }
+    ^resetButton {
+      float: right;
+      background: none;
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:hover:not(:disabled) {
+      text-decoration: underline;
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:focus {
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+    ^resetButton:disabled {
+      color: /*%GREY2%*/ #6B778C;
+    }
   `,
   properties: [
     'data',
     {
       name: 'columns',
       expression: function(data) {
-        var arr = [];
-        var notSelectedColumns = [];
-        //selectedColumnNames misleading name cause it may contain objects
-        data.selectedColumnNames = data.selectedColumnNames.map(c =>
-          {
-            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
-          });
-        var tableColumns = this.data.columns;
-        tableColumns = tableColumns.filter( c => data.allColumns.includes(this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c))).map(c => this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c));
-        //to keep record of columns that are selected
-        var topLevelProps = [];
-        //or some kind of outputter might be used to convert property to number of nested properties eg 'address' to [ 'address.city', 'address.region', ... ]
-        var columnThatShouldBeDeleted = [];
-
-        for ( var i = 0 ; i < data.selectedColumnNames.length ; i++ ) {
-          var rootProperty;
-          if ( foam.String.isInstance(data.selectedColumnNames[i]) ) {
-            var axiom;
-            if ( data.selectedColumnNames[i].includes('.') )
-              axiom = data.of.getAxiomByName(data.selectedColumnNames[i].split('.')[0]);
-            else {
-              axiom = tableColumns.find(c => c.name === data.selectedColumnNames[i]);
-              if ( ! axiom )
-                axiom = data.of.getAxiomByName(data.selectedColumnNames[i]);
-            }
-            if ( ! axiom ) {
-              continue;
-            }
-            rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
-          } else
-            rootProperty = data.selectedColumnNames[i];
-
-          var rootPropertyName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(rootProperty);
-          if ( ! topLevelProps.includes(rootPropertyName) ) {
-            arr.push(foam.u2.view.SubColumnSelectConfig.create({
-              index:i,
-              rootProperty:rootProperty,
-              level:0,
-              of:data.of,
-              selectedColumns$:data.selectedColumnNames$,
-            }, this));
-            topLevelProps.push(rootPropertyName);
-          }
-        }
-
-        for ( var colToDelete of columnThatShouldBeDeleted) {
-          data.selectedColumnNames.splice(data.selectedColumnNames.indexOf(colToDelete), 1);
-        }
-
-        var notSelectedColumns = data.allColumns.filter(c => {
-          return ! topLevelProps.includes(c);
-        });
-        //to add properties that are specified in 'tableColumns' as an option
-        tableColumns = tableColumns.filter(c => ! topLevelProps.includes(c));
-        for ( var i = 0 ; i < tableColumns.length ; i++ ) {
-          var indexOfTableColumn = notSelectedColumns.indexOf(tableColumns[i]);
-          if ( indexOfTableColumn === -1)
-            notSelectedColumns.push(tableColumns[i]);
-          else
-            notSelectedColumns.splice(indexOfTableColumn, 1, tableColumns[i]);
-        }
-        var nonSelectedViewModels = [];
-        for ( i = 0 ; i < notSelectedColumns.length ; i++ ) {
-          var rootProperty;
-          if ( this.columnHandler.canColumnBeTreatedAsAnAxiom(notSelectedColumns[i]) )
-            rootProperty = notSelectedColumns[i];
-          else {
-            var axiom =  tableColumns.find(c => c.name === notSelectedColumns[i]);
-            axiom = axiom || data.of.getAxiomByName(notSelectedColumns[i]);
-            rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
-          }
-
-          nonSelectedViewModels.push(foam.u2.view.SubColumnSelectConfig.create({
-            index:data.selectedColumnNames.length + i,
-            rootProperty: rootProperty,
-            level:0,
-            of:data.of,
-            selectedColumns$:data.selectedColumnNames$,
-          }, this));
-        }
-        nonSelectedViewModels.sort((a, b) => {
-          var aName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(a.rootProperty);
-          var bName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(b.rootProperty);
-          return aName.toLowerCase().localeCompare(bName.toLowerCase());
-        });
-        arr = arr.concat(nonSelectedViewModels);
-        return arr;
+        return this.getColumns();
       }
     },
     {
@@ -154,9 +85,7 @@ foam.CLASS({
       },
       value: '',
       postSet: function() {
-        for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch);
-        }
+        this.onMenuSearchUpdate();
       }
     },
     {
@@ -169,7 +98,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -179,6 +108,9 @@ foam.CLASS({
           .start()
             .start(this.MENU_SEARCH).addClass(this.myClass('searchBar')).end()
             .addClass(this.myClass('searchWrapper'))
+            .start(self.RESET_COLUMNS, {buttonStyle : 'LINK'})
+              .addClass(this.myClass('resetButton'))
+            .end()
           .end()
           .start()
           .add(this.slot(function(views) {
@@ -196,6 +128,7 @@ foam.CLASS({
           }))
           .end()
       .end();
+      this.data.selectedColumnNames$.sub(this.rebuildSelectedColumns);
     },
     function stopPropagation(e) {
       e.stopPropagation();
@@ -293,6 +226,127 @@ foam.CLASS({
         startUnselectedIndex++;
       }
       return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
+    },
+    function getColumns() {
+      var data = this.data;
+      var arr = [];
+      var notSelectedColumns = [];
+      //selectedColumnNames misleading name cause it may contain objects
+      data.selectedColumnNames = data.selectedColumnNames.map(c =>
+      {
+        return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+      });
+      var tableColumns = this.data.columns;
+      tableColumns = tableColumns.filter( c => data.allColumns.includes(this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c))).map(c => this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c));
+      //to keep record of columns that are selected
+      var topLevelProps = [];
+      //or some kind of outputter might be used to convert property to number of nested properties eg 'address' to [ 'address.city', 'address.region', ... ]
+      var columnThatShouldBeDeleted = [];
+
+      for ( var i = 0 ; i < data.selectedColumnNames.length ; i++ ) {
+        var rootProperty;
+        if ( foam.String.isInstance(data.selectedColumnNames[i]) ) {
+          var axiom;
+          if ( data.selectedColumnNames[i].includes('.') )
+            axiom = data.of.getAxiomByName(data.selectedColumnNames[i].split('.')[0]);
+          else {
+            axiom = tableColumns.find(c => c.name === data.selectedColumnNames[i]);
+            if ( ! axiom )
+              axiom = data.of.getAxiomByName(data.selectedColumnNames[i]);
+          }
+          if ( ! axiom ) {
+            continue;
+          }
+          rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
+        } else {
+          rootProperty = data.selectedColumnNames[i];
+          }
+        var rootPropertyName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(rootProperty);
+        if ( ! topLevelProps.includes(rootPropertyName) ) {
+          arr.push(foam.u2.view.SubColumnSelectConfig.create({
+            index:i,
+            rootProperty:rootProperty,
+            level:0,
+            of:data.of,
+            selectedColumns$:data.selectedColumnNames$,
+          }, this));
+          topLevelProps.push(rootPropertyName);
+        }
+      }
+
+      for ( var colToDelete of columnThatShouldBeDeleted ) {
+        data.selectedColumnNames.splice(data.selectedColumnNames.indexOf(colToDelete), 1);
+      }
+
+      var notSelectedColumns = data.allColumns.filter(c => {
+        return ! topLevelProps.includes(c);
+      });
+      // to add properties that are specified in 'tableColumns' as an option
+      tableColumns = tableColumns.filter(c => ! topLevelProps.includes(c));
+      for ( var i = 0 ; i < tableColumns.length ; i++ ) {
+        var indexOfTableColumn = notSelectedColumns.indexOf(tableColumns[i]);
+        if ( indexOfTableColumn === -1 ) {
+          notSelectedColumns.push(tableColumns[i]);
+        } else {
+          notSelectedColumns.splice(indexOfTableColumn, 1, tableColumns[i]);
+        }
+      }
+        var nonSelectedViewModels = [];
+        for ( i = 0 ; i < notSelectedColumns.length ; i++ ) {
+          var rootProperty;
+          if ( this.columnHandler.canColumnBeTreatedAsAnAxiom(notSelectedColumns[i]) ) {
+            rootProperty = notSelectedColumns[i];
+          }
+          else {
+            var axiom =  tableColumns.find(c => c.name === notSelectedColumns[i]);
+            axiom = axiom || data.of.getAxiomByName(notSelectedColumns[i]);
+            rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
+          }
+
+          nonSelectedViewModels.push(foam.u2.view.SubColumnSelectConfig.create({
+            index:data.selectedColumnNames.length + i,
+            rootProperty: rootProperty,
+            level:0,
+            of:data.of,
+            selectedColumns$:data.selectedColumnNames$,
+          }, this));
+        }
+        nonSelectedViewModels.sort((a, b) => {
+          var aName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(a.rootProperty);
+          var bName = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(b.rootProperty);
+          return aName.toLowerCase().localeCompare(bName.toLowerCase());
+        });
+      arr = arr.concat(nonSelectedViewModels);
+      return arr;
+    }
+  ],
+  listeners: [
+    {
+      name: 'onMenuSearchUpdate',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() {
+        var query = this.menuSearch.trim().toLowerCase()
+        for ( var i = 0 ; i < this.columns.length ; i++ ) {
+          this.columns[i].updateOnSearch(query);
+        }
+      }
+    }
+  ],
+  actions: [
+    {
+      name: 'resetColumns',
+      label: 'Reset Columns',
+      code: function() {
+        localStorage.removeItem(this.data.of.id);
+        this.data.memento.head = '';
+        this.data.selectedColumnNames = undefined;
+        this.data.updateColumns();
+        this.columns = this.getColumns();
+      },
+      isEnabled: function(data$columns, data$selectedColumnNames) {
+        return ! ( this.data.columns.length === this.data.selectedColumnNames.length && this.data.columns.every(i => this.data.selectedColumnNames.includes(i)) );
+      }
     }
   ]
 });
@@ -347,7 +401,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 
@@ -441,7 +495,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
       this
@@ -482,7 +536,7 @@ foam.CLASS({
   listeners: [
     function toggleSelection(e) {
       e.stopPropagation();
-      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) ) {
+      if ( ! this.data.hasSubProperties || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
         if ( ! this.data.isPropertySelected )
           this.data.expanded = false;
         this.onSelectionChangedParentFunction(this.data.isPropertySelected, this.data.index);
@@ -533,19 +587,17 @@ foam.CLASS({
     },
   ],
   methods: [
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
       this
         .start()
         .show(self.data.expanded$)
-        .add(this.slot(function(views) {
-          return this.E().forEach(this.views, function(v) {
-            self
-              .show(self.data.expanded$)
-              .add(v);
-        });
-      }))
+        .forEach(this.views$, function(v) {
+          return this
+            .show(self.data.expanded$)
+            .add(v);
+        })
       .end();
     },
     function updateSubColumnsOrder(selectionChanged) {
@@ -559,7 +611,7 @@ foam.CLASS({
     },
     function onChildrenSelectionChanged(isColumnSelected, index, isColumnSelectionHaventChanged) {
       //isColumnSelectionHaventChanged to be false on either selectionChanged or being undefined
-      if ( ! isColumnSelectionHaventChanged || foam.core.Reference.isInstance(this.data.prop) ) {
+      if ( ! isColumnSelectionHaventChanged || foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
         //to change view
         this.onSelectionChanged(isColumnSelected, index, this.views);
         //to set currentProperty isColumnSelected
@@ -567,7 +619,7 @@ foam.CLASS({
         //to re-check if isPropertySelected changed
         if ( this.data.isPropertySelected !== isColumnSelected ) {
           var anySelected = this.data.subColumnSelectConfig.find(s => s.isPropertySelected);
-          if ( foam.core.Reference.isInstance(this.data.prop) ) {
+          if ( foam.core.Reference.isInstance(this.data.prop) || foam.core.FObjectProperty.isInstance(this.data.prop) ) {
             this.data.isPropertySelected = typeof anySelected !== 'undefined';
             //close if not selected
             if ( ! this.data.isPropertySelected )
@@ -605,7 +657,7 @@ foam.CLASS({
     {
       name: 'prop',
       expression: function(rootProperty) {
-        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty));
+        return this.of.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty)) || {};
       }
     },
     {
@@ -646,19 +698,14 @@ foam.CLASS({
       name: 'parentExpanded',
       class: 'Boolean',
       value: false,
-      postSet: function() {
-        if ( ! this.parentExpanded )
+      postSet: function(_, n) {
+        if ( ! n )
           this.expanded = false;
       }
     },
     {
       name: 'expanded',
-      class: 'Boolean',
-      value: false,
-      postSet: function() {
-        if ( this.subColumnSelectConfig.length == 0 ) 
-          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded);
-      }
+      class: 'Boolean'
     },
     {
       name: 'showOnSearch',
@@ -705,29 +752,26 @@ foam.CLASS({
       return [this.rootProperty[0]];
     },
     function updateOnSearch(query) {
-      if ( ! this.hasSubProperties ) {
-        if ( query.length !== 0 ) {
-          this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query.toLowerCase()) : this.rootProperty.name.toLowerCase().includes(query.toLowerCase());
-        } else
-          this.showOnSearch = true;
-      } else {
-        this.showOnSearch = false;
+      this.showOnSearch = false;
+      this.expanded = false;
+      if ( query.length == 0 ) { this.showOnSearch = true; this.expanded = false; return this.showOnSearch; }
+      this.showOnSearch = foam.Array.isInstance(this.rootProperty) ? this.rootProperty[1].toLowerCase().includes(query) : this.rootProperty.name.toLowerCase().includes(query);
+      if ( this.hasSubProperties && this.level < 2 ) {
+        this.expanded = false;
+        if ( this.subColumnSelectConfig.length == 0 )
+          this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded, true);
         for ( var  i = 0 ; i < this.subColumnSelectConfig.length ; i++ ) {
           if ( this.subColumnSelectConfig[i].updateOnSearch(query) ) {
+            this.expanded = true;
             this.showOnSearch = true;
           }
         }
       }
-      if ( query.length !== 0 && this.showOnSearch )
-        this.expanded = true;
-      if ( query.length === 0 )
-        this.expanded = false;
       return this.showOnSearch;
     },
-    function returnSubColumnSelectConfig(subProperties, level, expanded) {
+    function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
       var arr = [];
-
-      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ! expanded )
+      if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
           return arr;
         var l = level + 1;
         var r = this.of.getAxiomByName(this.rootProperty[0]);

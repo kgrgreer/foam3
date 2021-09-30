@@ -39,6 +39,8 @@ public class AuthWebAgent
   protected String permission_;
   protected SendErrorHandler sendErrorHandler_;
 
+  public AuthWebAgent() {}
+
   public AuthWebAgent(String permission, WebAgent delegate, SendErrorHandler sendErrorHandler) {
     setDelegate(delegate);
     permission_ = permission;
@@ -81,7 +83,7 @@ public class AuthWebAgent
           return x_.get(PrintWriter.class);
         }
       });
-    
+
     try {
       XLocator.set(requestX);
       super.execute(requestX);
@@ -244,7 +246,7 @@ public class AuthWebAgent
              SafetyUtil.isEmpty(email) ) {
           return session;
         }
- 
+
         user = auth.login(session.getContext()
           .put(HttpServletRequest.class,  req)
           .put(HttpServletResponse.class, resp), email, password);
@@ -267,22 +269,10 @@ public class AuthWebAgent
         // user should not be null, any login failure should throw an Exception
         logger.error("AuthService.login returned null user and did not throw AuthenticationException.");
         // TODO: generate stack trace.
-        if ( ! SafetyUtil.isEmpty(authHeader) ) {
-          sendError(x, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Authentication failure.");
-        } else {
-          if ( ! getRedirectToLogin(x) ) {
-            PrintWriter out = x.get(PrintWriter.class);
-            out.println("Authentication failure.");
-          }
-        }
+        sendError(x, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Authentication failure.");
       } catch ( AuthenticationException e ) {
-        if ( ! SafetyUtil.isEmpty(authHeader) ) {
+        if ( sendErrorHandler_ != null ) {
           sendError(x, resp, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        } else {
-          if ( ! getRedirectToLogin(x) ) {
-            PrintWriter out = x.get(PrintWriter.class);
-            out.println("Authentication failure.");
-          }
         }
       }
     } catch (java.io.IOException | IllegalStateException e) { // thrown by HttpServletResponse.sendError
@@ -292,7 +282,7 @@ public class AuthWebAgent
     return null;
   }
 
-  private void sendError(X x, HttpServletResponse resp, int status, String message) throws java.io.IOException
+  protected void sendError(X x, HttpServletResponse resp, int status, String message) throws java.io.IOException
   {
     if ( sendErrorHandler_ == null ) {
       resp.sendError(status, message);
@@ -327,7 +317,7 @@ public class AuthWebAgent
 
   public void templateLogin(X x) {
     // Skip the redirect to login if it is not necessary
-    if ( ! getRedirectToLogin(x) ) return;
+    if ( sendErrorHandler_ != null ) return;
 
     PrintWriter out = x.get(PrintWriter.class);
 
@@ -343,9 +333,5 @@ public class AuthWebAgent
     out.println("<button id=\"login\" type=submit style=\"display:inline-block;margin-top:10px;\";>Log In</button>");
     out.println("</form>");
     out.println("<script>document.getElementById('login').addEventListener('click', checkEmpty); function checkEmpty() { if ( document.getElementById('user').value == '') { alert('Email Required'); } else if ( document.getElementById('password').value == '') { alert('Password Required'); } }</script>");
-  }
-
-  private boolean getRedirectToLogin(X x) {
-    return sendErrorHandler_ == null || sendErrorHandler_.redirectToLogin(x);
   }
 }

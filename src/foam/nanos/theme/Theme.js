@@ -130,13 +130,13 @@ foam.CLASS({
           },
           { class: 'foam.u2.view.ImageView' },
         ]
-      },
+      }
     },
     {
       class: 'Array',
       name: 'domains',
       of: 'String',
-      factory: function(){
+      factory: function() {
         return  ['localhost'];
       },
       javaFactory: 'return new String[] { "localhost" };',
@@ -541,7 +541,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of:'foam.nanos.app.SupportConfig',
       name: 'supportConfig',
-      factory: function() { return foam.nanos.app.SupportConfig.create({},this)},
+      factory: function() { return foam.nanos.app.SupportConfig.create({}, this)},
       javaFactory: `
         return new foam.nanos.app.SupportConfig();
       `
@@ -550,6 +550,12 @@ foam.CLASS({
       class: 'String',
       name: 'customRefinement',
       displayWidth: 80
+    },
+    {
+      class: 'Boolean',
+      name: 'allowDuplicateEmails',
+      section: 'administration',
+      value: false
     },
     {
       class: 'FObjectProperty',
@@ -606,8 +612,7 @@ foam.CLASS({
           if ( foam.core.StringArray.isInstance(props[i])          ) this.mergeArrayProperty(props[i], theme, other);
           else if ( foam.core.Map.isInstance(props[i])             ) this.mergeMapProperty(props[i], theme, other);
           else if ( foam.core.FObjectProperty.isInstance(props[i]) ) this.mergeFObjectProperty(props[i], theme, other);
-          else
-            theme[name] = other[name];
+          else theme[name] = other[name];
         }
         return theme;
       },
@@ -620,8 +625,7 @@ foam.CLASS({
           if ( p.getValueClass().isArray()                            ) mergeArrayProperty(p, theme, other);
           else if ( Map.class.isAssignableFrom(p.getValueClass())     ) mergeMapProperty(p, theme, other);
           else if ( FObject.class.isAssignableFrom(p.getValueClass()) ) mergeFObjectProperty(p, theme, other);
-          else
-            p.set(theme, p.get(other));
+          else p.set(theme, p.get(other));
         }
         return theme;
       `

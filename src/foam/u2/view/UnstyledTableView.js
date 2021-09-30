@@ -23,7 +23,8 @@ foam.CLASS({
     'foam.u2.md.OverlayDropdown',
     'foam.u2.tag.Image',
     'foam.u2.view.EditColumnsView',
-    'foam.u2.view.OverlayActionListView'
+    'foam.u2.view.OverlayActionListView',
+    'foam.u2.table.UnstyledTableRow'
   ],
 
   exports: [
@@ -81,6 +82,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'refDAO',
+      factory: function() {
+        return this.data;
+      }
+    },
+    {
       name: 'order'
     },
     {
@@ -92,7 +100,7 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnNames',
-      expression: function(columns, of, memento) {
+      expression: function(columns, of, memento, memento$head) {
         var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
         return ls || columns;
       }
@@ -256,7 +264,11 @@ foam.CLASS({
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
     },
-    'currentMemento_'
+    'currentMemento_',
+    {
+      class: 'Boolean',
+      name: 'selectColumnsExpanded'
+    }
   ],
 
   methods: [
@@ -305,7 +317,7 @@ foam.CLASS({
       this.isColumnChanged = ! this.isColumnChanged;
     },
 
-    async function initE() {
+    async function render() {
       var view = this;
 
       const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
@@ -390,7 +402,7 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.select(function(obj) {
+                    view.refDAO.select(function(obj) {
                       view.selectedObjects[obj.id] = obj;
                     });
                   } else {
@@ -475,9 +487,8 @@ foam.CLASS({
                   callIf(view.editColumnsEnabled, function() {
                     this.addClass(view.myClass('th-editColumns'))
                     .on('click', function(e) {
-                      editColumnView.parentId = this.id;
-                      if ( ! editColumnView.selectColumnsExpanded )
-                        editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
+                      if ( ! view.selectColumnsExpanded )
+                        view.selectColumnsExpanded = ! view.selectColumnsExpanded;
                     }).
                     tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
                     addClass(view.myClass('vertDots')).
@@ -489,8 +500,15 @@ foam.CLASS({
               });
             })).
         end().
-        callIf(view.editColumnsEnabled, function() {this.add(editColumnView);}).
-        add(this.rowsFrom(this.data$proxy));
+        callIf(view.editColumnsEnabled, function() {
+          this.start(this.EditColumnsView, {
+            data: view,
+            selectColumnsExpanded$: this.selectColumnsExpanded$,
+            parentId: this.id
+            })
+          .end();
+        })
+        .add(this.rowsFrom(this.data$proxy));
     },
     {
       name: 'rowsFrom',
@@ -533,7 +551,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -543,162 +561,16 @@ foam.CLASS({
               }).
               addClass(view.myClass('tbody'));
               valPromises.then(function(values) {
-
                 for ( var i = 0 ; i < values.projection.length ; i++ ) {
-                  const obj = values.array[i];
-                  var nestedPropertyValues = view.columnHandler.filterOutValuesForNotNestedProperties(values.projection[i], nastedPropertyNamesAndItsIndexes[1]);
-                  var nestedPropertiesObjsMap = view.columnHandler.groupObjectsThatAreRelatedToNestedProperties(view.of, nastedPropertyNamesAndItsIndexes[0], nestedPropertyValues);
-                  var thisObjValue;
-                  var tableRowElement = tbodyElement.E();
-                  tableRowElement.
-                  addClass(view.myClass('tr')).
-                  on('mouseover', function() {
-                    view.hoverSelection = obj;
-                  }).
-                  callIf(view.dblclick && ! view.disableUserSelection, function() {
-                    tableRowElement.on('dblclick', function() {
-                      view.dblclick(null, obj.id);
-                    });
-                  }).
-                  callIf( view.click && ! view.disableUserSelection, function() {
-                    tableRowElement.on('click', function(evt) {
-                      // If we're clicking somewhere to close the context menu,
-                      // don't do anything.
-                      if (
-                        evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-                        evt.target.classList.contains(view.myClass('vertDots'))
-                      ) {
-                        return;
-                      }
-
-                      if  ( ! thisObjValue ) {
-                        dao.inX(ctrl.__subContext__).find(obj.id).then(v => {
-                          view.selection = v;
-                          if ( view.importSelection$ ) view.importSelection = v;
-                          if ( view.editRecord$ ) view.editRecord(v);
-                          view.importSelection = v;
-                          view.click(null, obj.id, v ? v.toSummary() : '');
-                        });
-                      } else {
-                        if ( view.importSelection$ ) view.importSelection = thisObjValue;
-                        if ( view.editRecord$ ) view.editRecord(thisObjValue);
-                      }
-                    });
-                  }).
-                  addClass(view.slot(function(selection) {
-                    return selection && foam.util.equals(obj.id, selection.id) ?
-                      view.myClass('selected') : '';
-                  })).
-                  addClass(view.myClass('row')).
-                  style({ 'min-width': view.tableWidth_$ }).
-
-                  // If the multi-select feature is enabled, then we render a
-                  // Checkbox in the first cell of each row.
-                  callIf(view.multiSelectEnabled, function() {
-                    var slot = view.SimpleSlot.create();
-                    tableRowElement
-                      .start()
-                        .addClass(view.myClass('td'))
-                        .tag(view.CheckBox, { data: view.idsOfObjectsTheUserHasInteractedWith_[obj.id] ? !!view.selectedObjects[obj.id] : view.allCheckBoxesEnabled_ }, slot)
-                      .end();
-
-                    // Set up a listener so that when the user checks or unchecks
-                    // a box, we update the `selectedObjects` property.
-                    view.onDetach(slot.value$.dot('data').sub(function(_, __, ___, newValueSlot) {
-                      // If the user is checking or unchecking all boxes at once,
-                      // we only want to publish one propertyChange event, so we
-                      // trigger it from the listener in the table header instead
-                      // of here. This way we prevent a propertyChange being fired
-                      // for every single CheckBox's data changing.
-                      if ( view.togglingCheckBoxes_ ) return;
-
-                      // Remember that the user has interacted with this checkbox
-                      // directly. We need this because the ScrollTableView loads
-                      // tbody's in and out while the user scrolls, so we need to
-                      // handle the case when a user selects all, then unselects
-                      // a particular row, then scrolls far enough that the tbody
-                      // the selection was in unloads, then scrolls back into the
-                      // range where it reloads. We need to know if they've set
-                      // it to something already and we can't simply look at the
-                      // value on `selectedObjects` because then we won't know if
-                      // `selectedObjects[obj.id] === undefined` means they
-                      // haven't interacted with that checkbox or if it means they
-                      // explicitly set it to false. We could keep the key but set
-                      // the value to null, but that clutters up `selectedObjects`
-                      // because some values are objects and some are null. If we
-                      // use a separate set to remember which checkboxes the user
-                      // has interacted with, then we don't need to clutter up
-                      // `selectedObjects`.
-                      view.idsOfObjectsTheUserHasInteractedWith_[obj.id] = true;
-
-                      var checked = newValueSlot.get();
-
-                      if ( checked ) {
-                        var modification = {};
-                        if ( !thisObjValue ) {
-                          dao.find(obj.id).then(v => {
-                            modification[obj.id] = v;
-                            view.selectedObjects = Object.assign({}, view.selectedObjects, modification);
-                          });
-                        } else {
-                          modification[obj.id] = thisObjValue;
-                          view.selectedObjects = Object.assign({}, view.selectedObjects, modification);
-                        }
-
-                      } else {
-                        var temp = Object.assign({}, view.selectedObjects);
-                        delete temp[obj.id];
-                        view.selectedObjects = temp;
-                      }
-                    }));
-
-                    // Store each CheckBox Element in a map so we have a reference
-                    // to them so we can set the `data` property of them when the
-                    // user checks the box to enable or disable all checkboxes.
-                    var checkbox = slot.get();
-                    view.checkboxes_[obj.id] = checkbox;
-                    checkbox.onDetach(function() {
-                      delete view.checkboxes_[obj.id];
-                    });
-                  });
-
-                  for ( var j = 0 ; j < view.columns_.length ; j++  ) {
-                    var objForCurrentProperty = obj;
-                    var propName = view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(view.columns_[j]);
-                    var prop = view.props.find(p => p.fullPropertyName === propName);
-                    //check if current column is a nested property
-                    //if so get object for it
-                    if ( prop && prop.fullPropertyName.includes('.') ) {
-                      objForCurrentProperty = nestedPropertiesObjsMap[view.columnHandler.getNestedPropertyNameExcludingLastProperty(prop.fullPropertyName)];
-                    }
-
-                    prop = objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(view.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : view.of.getAxiomByName(propName);
-                    var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
-
-                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
-                    callOn(prop.tableCellFormatter, 'format', [
-                      prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
-                    ]);
-                    tableRowElement.add(elmt);
-                  }
-
-                  // Object actions
-                  var actions = view.getActionsForRow(obj);
-                  tableRowElement
-                    .start()
-                      .addClass(view.myClass('td')).
-                      attrs({ name: 'contextMenuCell' }).
-                      style({ flex: `0 0 ${view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px` }).
-                      tag(view.OverlayActionListView, {
-                        data: Object.values(actions),
-                        obj: obj,
-                        dao: dao,
-                        showDropdownIcon: false,
-                        buttonStyle: 'TERTIARY',
-                        icon: 'images/Icon_More_Resting.svg'
-                      }).
-                    end();
-                  tbodyElement.add(tableRowElement);
+                  tbodyElement
+                    .startContext({
+                      props: view.props,
+                      propertyNamesToQuery: propertyNamesToQuery,
+                      nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
+                      canBuildObjfromProj: canObjBeBuildFromProjection
+                    })
+                      .tag({ class: 'foam.u2.table.UnstyledTableRow', data: view, obj: values.array[i], projection: values.projection[i] })
+                    .endContext();
                 }
               });
 
@@ -732,13 +604,29 @@ foam.CLASS({
       },
       async function filterUnpermitted(arr) {
         if ( this.auth ) {
-          const results = await Promise.all(arr.map( async p => 
-            p.hidden ? false : 
-            ! p.columnPermissionRequired || 
-            await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
-          return arr.filter((_v, index) => results[index]);
+          var permissionedProperties = [];
+          var unpermissionedProperties = [];
+          for ( prop of arr ) {
+            if ( prop.hidden ) continue;
+            prop.readPermissionRequired ? permissionedProperties.push(prop) : unpermissionedProperties.push(prop);
+          }
+          var grantedProperties = await this.filterPropertiesByReadPermission(permissionedProperties, this.of.name.toLowerCase());
+          var unorderedProperties = unpermissionedProperties.concat(grantedProperties);
+          var orderedProperties = arr.filter(p => unorderedProperties.includes(p));
+          const columnPermissionedProperties = await Promise.all(orderedProperties.map( async p =>
+            ! p.columnPermissionRequired ||
+            await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+          return orderedProperties.filter((_v, index) => columnPermissionedProperties[index]);
         }
         return arr;
+      },
+      async function filterPropertiesByReadPermission(properties, of) {
+        if ( ! properties || ! of ) return [];
+        var perms =  await Promise.all(properties.map( async p => 
+          await this.auth.check(ctrl.__subContext__, of + '.rw.' + p) ||
+          await this.auth.check(ctrl.__subContext__, of + '.ro.' + p)
+        ));
+        return properties.filter((_v, index) => perms[index]);
       },
       {
         name: 'getActionsForRow',
@@ -758,34 +646,38 @@ foam.CLASS({
 
   listeners: [
     {
+      name: 'shouldEscapeEvts',
+      documentation: `Use this function to skip clicks/doubleclicks on table
+                      elements such as checkboxes/context menus`,
+      code: function(evt) {
+        // If we're clicking somewhere to close the context menu or other inputs,
+        // don't do anything.
+        if (
+          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
+          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
+        ) {
+          return true;
+        }
+      }
+    },
+    {
       name: 'updateColumns_',
       isFramed: true,
       code: function() {
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;
-
         var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c => {
-          if ( auth ) {
-            var axiom = self.of.getAxiomByName(c[0]);
-            if ( axiom && axiom.columnPermissionRequired ) {
-              var clsName  = self.of.name.toLowerCase();
-              var propName = axiom.name.toLowerCase();
-              return auth.check(null, `${clsName}.column.${propName}`).then(function(enabled) {
-                return enabled && c;
-              });
-            }
-          }
+        ).map(c =>{
           return c;
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-    }
+      }
   ]
 });
 

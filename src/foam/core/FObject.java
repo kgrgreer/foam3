@@ -11,15 +11,16 @@ import foam.crypto.sign.Signable;
 import foam.lib.json.Outputter;
 import foam.util.SecurityUtil;
 import java.security.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 public interface FObject
   extends Appendable, ContextAware, Comparable, Freezable, Hashable, Signable, Validatable
 {
-  foam.core.MethodInfo APPEND =     new foam.core.MethodInfo(){
+
+  foam.core.MethodInfo APPEND = new foam.core.MethodInfo(){
     @Override
     public String getName(){
       return "append";
@@ -27,7 +28,8 @@ public interface FObject
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
       ((FObject)receiver).append((java.lang.StringBuilder)(args[0]));
-      return null;}
+      return null;
+    }
   };
 
   foam.core.MethodInfo COPY_FROM = new foam.core.MethodInfo(){
@@ -37,7 +39,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).copyFrom((foam.core.FObject)(args[0]));
+      return ((FObject)receiver).copyFrom((foam.core.FObject)(args[0]));
     }
   };
 
@@ -48,7 +50,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).fclone();
+      return ((FObject)receiver).fclone();
     }
   };
 
@@ -59,7 +61,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).deepClone();
+      return ((FObject)receiver).deepClone();
     }
   };
 
@@ -70,7 +72,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).shallowClone();
+      return ((FObject)receiver).shallowClone();
     }
   };
 
@@ -81,7 +83,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).diff((foam.core.FObject)(args[0]));
+      return ((FObject)receiver).diff((foam.core.FObject)(args[0]));
     }
   };
 
@@ -92,7 +94,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).hardDiff((foam.core.FObject)(args[0]));
+      return ((FObject)receiver).hardDiff((foam.core.FObject)(args[0]));
     }
   };
 
@@ -103,7 +105,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).setProperty((String)(args[0]), args[1]);
+      return ((FObject)receiver).setProperty((String)(args[0]), args[1]);
     }
   };
 
@@ -125,7 +127,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).isPropertySet((String)(args[0]));
+      return ((FObject)receiver).isPropertySet((String)(args[0]));
     }
   };
 
@@ -136,7 +138,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).hasDefaultValue((String)(args[0]));
+      return ((FObject)receiver).hasDefaultValue((String)(args[0]));
     }
   };
 
@@ -159,10 +161,11 @@ public interface FObject
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
       ((FObject)receiver).validate((foam.core.X)(args[0]));
-      return null;}
+      return null;
+    }
   };
 
-  foam.core.MethodInfo VERIFY =     new foam.core.MethodInfo(){
+  foam.core.MethodInfo VERIFY = new foam.core.MethodInfo() {
     @Override
     public String getName(){
       return "verify";
@@ -177,7 +180,8 @@ public interface FObject
         logger.error(t.getMessage());
       }
 
-      return null;}
+      return null;
+    }
   };
 
   foam.core.MethodInfo BEFORE_FREEZE =     new foam.core.MethodInfo(){
@@ -188,7 +192,8 @@ public interface FObject
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
       ((FObject)receiver).beforeFreeze();
-      return null;}
+      return null;
+    }
   };
 
   foam.core.MethodInfo HASH =     new foam.core.MethodInfo(){
@@ -198,7 +203,7 @@ public interface FObject
     }
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
-      return     ((FObject)receiver).hash((java.security.MessageDigest)(args[0]));
+      return ((FObject)receiver).hash((java.security.MessageDigest)(args[0]));
     }
   };
 
@@ -210,14 +215,15 @@ public interface FObject
     @Override
     public Object call(foam.core.X x, Object receiver, Object[] args){
       try {
-        return     ((FObject)receiver).sign((java.security.Signature)(args[0]));
+        return ((FObject)receiver).sign((java.security.Signature)(args[0]));
       }
       catch (Throwable t) {
         foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.error(t.getMessage());
       }
 
-      return null;}
+      return null;
+    }
   };
 
   foam.core.MethodInfo TO_JSON =     new foam.core.MethodInfo(){
@@ -261,7 +267,6 @@ public interface FObject
   }
 
   default void append(java.lang.StringBuilder sb) {
-
     var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     var i     = props.iterator();
 
@@ -288,7 +293,6 @@ public interface FObject
         if ( i.hasNext() ) sb.append(", ");
       }
     }
-
   }
 
   default FObject copyFrom(FObject obj) {
@@ -302,7 +306,61 @@ public interface FObject
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
-        } catch (ClassCastException ignore) {}
+        } catch (ClassCastException ignore) {
+          System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
+        }
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Similar to copyFrom, with recursion on nested FObjects, only setting
+   * isSet=true properties.
+   */
+  default FObject overlay(FObject obj) {
+    return overlay_(obj, new java.util.HashSet());
+  }
+
+  default FObject overlay_(FObject obj, java.util.Set visited) {
+    int code = obj.hashCode();
+    if ( visited.contains(code) ) return this;
+    visited.add(code);
+    if ( this.hashCode() == obj.hashCode() ) return this;
+
+    List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    for ( PropertyInfo p : props ) {
+      Object remote = null;
+      try {
+        if ( p.isSet(obj) ) {
+          remote = p.get(obj);
+        }
+      } catch ( ClassCastException e ) {
+        PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
+        if ( p2 != null ) {
+          p = p2;
+          try {
+            if ( p.isSet(obj) ) {
+              remote = p.get(obj);
+            }
+          } catch ( ClassCastException ee ) {
+            System.err.println("FObject.overlay "+p.getName()+" get "+ee);
+          }
+        }
+      }
+      try {
+        if ( p.isSet(obj) ) {
+          Object local = p.get(this);
+          if ( remote instanceof FObject &&
+               local != null &&
+               ! local.equals(remote) ) {
+            p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
+          } else {
+            p.set(this, remote);
+          }
+        }
+      } catch ( ClassCastException e ) {
+        System.err.println("FObject.overlay "+p.getName()+" set "+e);
       }
     }
     return this;
@@ -342,7 +400,7 @@ public interface FObject
 
   default Map diff(FObject obj) {
     var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
-    var i = props.iterator();
+    var i     = props.iterator();
 
     var result = new HashMap();
     while ( i.hasNext() ) {
@@ -354,7 +412,6 @@ public interface FObject
   }
 
   default void beforeFreeze() {
-
   }
 
   // Return is FObject that contain different fields between two FObjects.
@@ -364,7 +421,7 @@ public interface FObject
     try {
       ret = getClass().newInstance();
       var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
-      var i = props.iterator();
+      var i     = props.iterator();
       PropertyInfo prop;
       while ( i.hasNext() ) {
         prop = i.next();
@@ -408,7 +465,6 @@ public interface FObject
   }
 
   default int compareTo(Object o) {
-
     if ( o == this ) return 0;
     if ( o == null ) return 1;
     if ( ! ( o instanceof FObject ) ) return 1;
@@ -418,7 +474,7 @@ public interface FObject
     }
 
     var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
-    var i = props.iterator();
+    var i     = props.iterator();
 
     int result;
     while ( i.hasNext() ) {
@@ -427,7 +483,6 @@ public interface FObject
     }
 
     return 0;
-
   }
 
   default void validate(foam.core.X x) {
@@ -459,8 +514,8 @@ public interface FObject
       verifier.update(prop.getNameAsByteArray());
       prop.updateSignature(this, verifier);
     }
-    return verifier.verify(signature);
 
+    return verifier.verify(signature);
   }
 
   default byte[] hash(java.security.MessageDigest md) {
@@ -475,27 +530,26 @@ public interface FObject
     }
 
     return md.digest();
-
   }
+
 
   default byte[] sign(java.security.Signature signer) throws SignatureException {
 
     var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
-    for (PropertyInfo prop : props) {
+    for ( PropertyInfo prop : props ) {
       if (!prop.includeInDigest()) continue;
       if (!prop.isSet(this)) continue;
       signer.update(prop.getNameAsByteArray());
       prop.updateSignature(this, signer);
     }
-    return signer.sign();
 
+    return signer.sign();
   }
 
-  default String toJSON() {
 
+  default String toJSON() {
     Outputter out = new Outputter(getX());
     return out.stringify(this);
-
   }
 
   static FObject maybeClone(FObject fo) {

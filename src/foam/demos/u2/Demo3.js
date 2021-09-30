@@ -27,7 +27,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.add('child1', 'child2').br().start('b').add('bold').end().br().entity('lt').add('>').add('end');
+      this.add('child1', 'child2').br().start('b').add('bold').end().br().add('>').add('end');
     }
   ]
 });
@@ -124,4 +124,4 @@ foam.CLASS({
   ]
 });
 
-var dt = DynamicTest.create().write();
+//var dt = DynamicTest.create().write();

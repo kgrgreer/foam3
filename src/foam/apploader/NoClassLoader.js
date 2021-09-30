@@ -18,11 +18,11 @@ foam.CLASS({
       factory: function() {
         return {
           load: function(id) {
-            var cls = foam.lookup(id, true);
+            var cls = foam.maybeLookup(id);
             return cls ? Promise.resolve(cls) : Promise.reject('No classloader enabled.');
           },
           addClassPath: function(){},
-          maybeLoad: function() { return this.load().catch(function() { return null; }); },
+          maybeLoad: function(id) { return this.load(id).catch(function() { return null; }); },
           latch: function() {}
         };
       }

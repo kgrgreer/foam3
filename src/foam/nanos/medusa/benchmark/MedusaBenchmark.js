@@ -25,8 +25,7 @@ foam.CLASS({
     'foam.nanos.medusa.MedusaEntry',
     'foam.nanos.medusa.DaggerService',
     'foam.nanos.medusa.test.MedusaTestObject',
-    'static foam.mlang.MLang.EQ',
-    'java.util.UUID'
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -45,7 +44,7 @@ foam.CLASS({
       javaFactory: `
       Logger logger = (Logger) getX().get("logger");
       if ( logger == null ) {
-        logger = new StdoutLogger();
+        logger = StdoutLogger.instance();
       }
       return new PrefixLogger(new Object[] {
         this.getClass().getSimpleName()
@@ -82,11 +81,9 @@ foam.CLASS({
       return;
     }
 
-    DAO dao = (DAO) x.get(getServiceName());
     MedusaTestObject test = new MedusaTestObject();
-    test.setName(UUID.randomUUID().toString());
     test.setDescription("MedusaTestObject");
-    dao.put(test);
+    ((DAO) x.get(getServiceName())).put(test);
       `
     },
     {

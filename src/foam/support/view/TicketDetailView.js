@@ -153,7 +153,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function render(){
       var self = this;
       this.hideSummary = true;
       this.status = this.data.status;
@@ -187,7 +187,7 @@ foam.CLASS({
             .start().addClass('generic-status').addClass(this.status).add(this.status).end()
           .end()
           .start().addClass('subtitle')
-            .add("#", this.data.id, ' ', this.formatDate(this.data.createdAt), ' | ', this.data.requestorName, " <", this.data.requestorEmail, ">", "  |  Via support@mintchip.ca")
+            .add("#", this.data.id, ' ', foam.Date.formatDate(this.data.createdAt, false), ' | ', this.data.requestorName, " <", this.data.requestorEmail, ">", "  |  Via support@mintchip.ca")
           .end()
         .end()
         .start('div')
@@ -204,13 +204,6 @@ foam.CLASS({
           }, this.messages$)).end()
           .end()
         .end();
-    },
-
-    function formatDate(date) {
-      return date.toLocaleString(foam.locale, { month: 'short' }) + ' ' +
-        date.getDate() + ' ' +
-        date.getHours() + ':' +
-        date.getMinutes();
     }
   ],
 

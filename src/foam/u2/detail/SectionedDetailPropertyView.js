@@ -167,8 +167,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-layout-Cols {
-      padding-bottom: 4px;
-      display: flex;
       align-items: center;
     }
 
@@ -198,7 +196,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.SUPER();
 

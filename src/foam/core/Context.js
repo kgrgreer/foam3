@@ -49,19 +49,27 @@ foam.SCRIPT({
 
     /**
      * Lookup a class in the context.  Throws an exception if the value
-     * couldn't be found, unless opt_suppress is true.
+     * couldn't be found.
      *
      * @param id The id of the class to lookup.
-     * @param opt_suppress Suppress throwing an error.
      **/
-    lookup: function(id, opt_suppress) {
+    lookup: function(id) {
       var ret = typeof id === 'string' && this.__cache__[id];
 
-      if ( ! opt_suppress ) {
-        foam.assert(
-          ret,
-          'Could not find any registered class for', id);
-      }
+      foam.assert(
+        ret,
+        'Could not find any registered class for', id);
+
+      return foam.Function.isInstance(ret) ? ret() : ret;
+    },
+
+    /**
+     * Attempt to lookup a class in the context.  Returns null if not found.
+     *
+     * @param id The id of the class to lookup.
+     **/
+    maybeLookup: function(id) {
+      var ret = typeof id === 'string' && this.__cache__[id];
 
       return foam.Function.isInstance(ret) ? ret() : ret;
     },
@@ -228,6 +236,9 @@ foam.SCRIPT({
   // in foam.
   foam.lookup = function(id, opt_suppress) {
     return foam.__context__.lookup(id, opt_suppress);
+  };
+  foam.maybeLookup = function(id, opt_suppress) {
+    return foam.__context__.maybeLookup(id, opt_suppress);
   };
   foam.register = function(cls, opt_id) {
     foam.__context__.register(cls, opt_id);

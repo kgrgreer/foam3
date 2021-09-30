@@ -432,7 +432,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       var self = this;
 
       if ( ! Array.isArray(this.sections) || this.sections.length === 0 ) {
@@ -617,15 +617,19 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       code: function() {
-        if ( this.data ) {
-          this.sections[0].dao.find(this.data).then((result) => {
-            this.fullObject_ = result;
-          });
+        if ( this.data === undefined ) {
+          this.clearSelection();
+          return;
         }
+        this.sections.forEach(section => {
+          section.dao.find(this.data).then(result => {
+            if ( result ) this.fullObject_ = result;
+          });
+        });
       }
     },
     function clearSelection(evt) {
-      evt.stopImmediatePropagation();
+      evt && evt.stopImmediatePropagation();
       this.fullObject_ = undefined;
 
       // If this view is being used for a property, then when the user clears
@@ -663,7 +667,7 @@ foam.CLASS({
       `,
 
       methods: [
-        function initE() {
+        function render() {
           var summary = this.data.toSummary();
           return this
             .start()
@@ -715,7 +719,7 @@ foam.CLASS({
       ],
 
       methods: [
-        function initE() {
+        function render() {
 
           this.style({
             'overflow': 'hidden',

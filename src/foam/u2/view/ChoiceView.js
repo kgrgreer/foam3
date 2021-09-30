@@ -155,6 +155,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'disabledData',
+      documentation: 'Optional slot containing list of choice ids that should be disabled',
+      factory: function() {
+        return [];
+      }
+    },
+    {
       class: 'foam.u2.ViewSpec',
       name: 'selectSpec',
       value: { class: 'foam.u2.tag.Select' }
@@ -206,7 +213,7 @@ foam.CLASS({
       this.onDetach(this.choices$.sub(this.onChoicesUpdate));
     },
 
-    function initE() {
+    function render() {
       this.SUPER();
       var self = this;
 
@@ -231,14 +238,15 @@ foam.CLASS({
               placeholder$:     self.placeholder$,
               mode$:            self.mode$,
               size$:            self.size$,
-              header$:          self.header$
+              header$:          self.header$,
+              disabledData$:    self.disabledData$
             })
               .attrs({name: self.name})
               .enableClass('selection-made', self.index$.map((index) => index !== -1))
             .end();
         }
 
-        return self.E().add(self.text$);
+        return self.E().translate(self.text + ".name", self.text);
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);

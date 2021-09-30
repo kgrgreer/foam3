@@ -30,8 +30,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass()).on('click', this.onClick).add(this.data.name$);
+    function render() {
+      this.addClass().on('click', this.onClick).add(this.data.name$);
     }
   ],
 

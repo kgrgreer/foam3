@@ -24,7 +24,8 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.stack.StackBlock'
   ],
 
   messages: [
@@ -33,7 +34,8 @@ foam.CLASS({
     { name: 'FOOTER_LINK', message: 'Create an account' },
     { name: 'SUB_FOOTER_LINK', message: 'Forgot password?' },
     { name: 'ERROR_MSG', message: 'There was an issue logging in' },
-    { name: 'ERROR_MSG2', message: 'Please enter email or username' }
+    { name: 'ERROR_MSG2', message: 'Please enter email or username' },
+    { name: 'ERROR_MSG3', message: 'Please enter password' }
   ],
 
   properties: [
@@ -78,32 +80,35 @@ foam.CLASS({
       name: 'footerLink',
       code: function(topBarShow_, param) {
         window.history.replaceState(null, null, window.location.origin);
-        this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, this);
+        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, parent: this }));
       }
     },
     {
       name: 'subfooterLink',
       code: function() {
-        this.stack.push({
-          class: 'foam.nanos.auth.ChangePasswordView',
-          modelOf: 'foam.nanos.auth.RetrievePassword'
-        });
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }));
       }
     },
     {
       name: 'nextStep',
-      code: function(X) {
+      code: async function(X) {
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
-          this.stack.push({
-            class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
-          });
+          this.stack.push(this.StackBlock.create({
+            view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
+          }));
         } else {
           if ( ! this.user.emailVerified ) {
-            this.stack.push({
-              class: 'foam.nanos.auth.ResendVerificationEmail'
-            });
+            await this.auth.logout();
+            this.stack.push(this.StackBlock.create({
+              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+            }));
           } else {
             this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
             if ( ! this.memento || this.memento.value.length === 0 )
@@ -123,7 +128,17 @@ foam.CLASS({
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       code: async function(X) {
+        this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {
+          if ( ! this.password ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.ERROR_MSG3,
+              type: this.LogLevel.ERROR
+            }));
+
+            return;
+          }
+
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;

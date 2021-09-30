@@ -47,8 +47,8 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE() {
-      this.addClass(this.myClass());
+    function render() {
+      this.addClass();
       var self = this;
       var menu = this.menu;
       var X    = this.__subContext__;

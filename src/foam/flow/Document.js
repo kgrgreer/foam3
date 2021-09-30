@@ -27,8 +27,7 @@ foam.CLASS({
   methods: [
     function toE(args, x) {
       var f = this.htmlish.parseString(this.markup, this.cls_.id);
-      return f ? f(x) :
-        x.E('span').add(this.htmlish.getLastError());
+      return f ? f(x) : x.E('span').add(this.htmlish.getLastError());
     }
   ],
 
@@ -51,7 +50,12 @@ foam.CLASS({
                                          chars('<')),
                                      anyChar()))),
 
-          'entity': seq1(1, '&', alt('nbsp', 'lt', 'gt', 'amp'), ';'),
+          'entity': seq1(1, '&', alt(
+            literal('nbsp', '\xa0'),
+            literal('lt',   '<'),
+            literal('gt',   '>'),
+            literal('amp',  '&')
+          ), ';'),
 
           'normal-tag': seq('<', sym('tag-identifier'), sym('attributes'), '>', sym('content'), '</', sym('tag-identifier'), '>'),
           'self-closed-tag': seq('<', sym('tag-identifier'), sym('attributes'), '/>'),
@@ -142,11 +146,11 @@ foam.CLASS({
         }
       },
       actions: {
-        "foam.flow.Document": function(v) {
+        'foam.flow.Document': function(v) {
           if ( foam.String.isInstance(v[0]) ) this.title = v[0];
 
           var children = v[1];
-          var self = this;
+          var self     = this;
 
           return function(x) {
             return x.
@@ -176,10 +180,10 @@ foam.CLASS({
         },
 
         'normal-tag': function(v) {
-          var openIdent = v[1];
+          var openIdent  = v[1];
           var closeIdent = v[6];
           var attributes = v[2];
-          var children = v[4];
+          var children   = v[4];
 
           if ( closeIdent !== openIdent ) {
             console.warn("Expected close of", openIdent, "but instead found close of", closeIdent);
@@ -188,8 +192,8 @@ foam.CLASS({
           return function(x) {
             this.
               start(openIdent).
-              attrs(attributes).
-              call(children, [x]).
+                attrs(attributes).
+                call(children, [x]).
               end();
           }
         },
@@ -200,18 +204,18 @@ foam.CLASS({
           return function(x) {
             this.
               start(ident).
-              attrs(attributes).
+                attrs(attributes).
               end();
           };
         },
 
         'section': function(v) {
           var attributes = v[1];
-          var children = v[3];
+          var children   = v[3];
           return function(x) {
             this.
               start('section').
-              call(children, [x]).
+                call(children, [x]).
               end();
           };
         },
@@ -220,25 +224,25 @@ foam.CLASS({
           return function(x) {
             this.
               start('p').
-              call(content, [x]).
+                call(content, [x]).
               end();
           };
         },
 
         'anchor': function(v) {
           var attributes = v[1];
-          var children = v[3];
+          var children   = v[3];
           return function(x) {
             this.
               start('a').
-              callIf(attributes.href, function() { this.setAttribute('href', attributes.href); }).
-              call(children, [x]).
+                callIf(attributes.href, function() { this.setAttribute('href', attributes.href); }).
+                call(children, [x]).
               end();
           };
         },
 
         'entity': function(e) {
-          return function() { this.entity(e); };
+          return function() { this.add(e); };
         },
 
         'h1': function(content) {
@@ -253,7 +257,7 @@ foam.CLASS({
           return function(x) {
             this.start('h2').
               call(v, [x]).
-              end();
+            end();
           };
         },
 
@@ -261,7 +265,7 @@ foam.CLASS({
           return function(x) {
             this.start('h3').
               call(v, [x]).
-              end();
+            end();
           };
         },
 
@@ -269,7 +273,7 @@ foam.CLASS({
           return function(x) {
             this.start('h4').
               call(v, [x]).
-              end();
+            end();
           };
         },
 
@@ -277,7 +281,7 @@ foam.CLASS({
           return function(x) {
             this.start('h5').
               call(v, [x]).
-              end();
+            end();
           };
         },
 
@@ -285,7 +289,7 @@ foam.CLASS({
           return function(x) {
             this.start('h6').
               call(v, [x]).
-              end();
+            end();
           };
         },
 
@@ -294,7 +298,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('b').
-              call(children, [x]).
+                call(children, [x]).
               end();
           };
         },
@@ -304,7 +308,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('i').
-              call(children, [x]).
+                call(children, [x]).
               end();
           };
         },
@@ -314,7 +318,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('ul').
-              forEach(children, function(c) { c.call(this, x); }).
+                forEach(children, function(c) { c.call(this, x); }).
               end();
           };
         },
@@ -325,7 +329,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('ol').
-              forEach(children, function(c) { c.call(this, x); }).
+                forEach(children, function(c) { c.call(this, x); }).
               end();
           };
         },
@@ -335,7 +339,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('li').
-              call(children, [x]).
+                call(children, [x]).
               end();
           };
         },
@@ -352,12 +356,12 @@ foam.CLASS({
 
         'foam': function(attributes) {
           return function(x) {
-            var viewName = attributes.view;
+            var viewName  = attributes.view;
             var className = attributes.class;
 
             // TODO: Reuse FoamTagLoader support
             var promise = Promise.all([
-              viewName ? x.classloader.load(viewName) : Promise.resolve(),
+              viewName  ? x.classloader.load(viewName)  : Promise.resolve(),
               className ? x.classloader.load(className) : Promise.resolve(),
             ])
 
@@ -365,13 +369,11 @@ foam.CLASS({
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
@@ -380,8 +382,7 @@ foam.CLASS({
                   if ( ! viewName ) this.add(obj)
                   else this.tag(view, { data: obj });
                 });
-            }))
-
+            }));
           };
         },
 
@@ -390,26 +391,24 @@ foam.CLASS({
           var attributes = v[0];
           var body = v[1];
           return function(x) {
-            var viewName = attributes.view;
+            var viewName  = attributes.view;
             var className = attributes.class;
 
             // TODO: Reuse FoamTagLoader support
             var promise = Promise.all([
-              viewName ? x.classloader.load(viewName) : Promise.resolve(),
-              className ? x.classloader.load(className) : Promise.resolve(),
+              viewName  ? x.classloader.load(viewName)  : Promise.resolve(),
+              className ? x.classloader.load(className) : Promise.resolve()
             ])
 
             var self = this;
             this.add(promise.then(function(o) {
               return self.E().
                 callIf(o, function() {
-                  var cls = x.lookup(className, true);
-                  var view = x.lookup(viewName, true);
+                  var cls  = x.maybeLookup(className);
+                  var view = x.maybeLookup(viewName);
 
-                  if ( className && ! cls )
-                    this.add('Unknown class', className);
-                  if ( viewName && ! view )
-                    this.add('Unknown view', viewName);
+                  if ( className && ! cls ) this.add('Unknown class', className);
+                  if ( viewName && ! view ) this.add('Unknown view', viewName);
 
                   if ( ! cls && ! view ) return;
 
@@ -429,11 +428,9 @@ foam.CLASS({
                       }, function () {
                         this.add(obj);
                       })
-                    .endContext()
-                    ;
+                    .endContext();
                 });
-            }))
-
+            }));
           };
         },
 
@@ -459,3 +456,59 @@ foam.CLASS({
     }
   ]
 });
+
+/*
+
+If improved entity support is needed, can use this code:
+
+function entity(name) {
+  // Create and add a named entity. Ex. .entity('gt')
+  this.addChild_(this.Entity.create({name: name}));
+  return this;
+},
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'Entity',
+  extends: 'foam.u2.Node',
+
+  documentation: 'U3 Entity Reference',
+
+  constants: {
+    MAP: {
+      lt: '<',
+      gt: '>',
+      amp: '&',
+      nbsp: '\xa0',
+      quot: '"'
+    }
+  },
+
+  properties: [
+    {
+      name: 'name',
+      documentation: `
+        // parser: seq(alphaChar, repeat0(wordChar)),
+        // TODO(adamvy): This should be 'pattern' or 'regex', if those are ever
+        // added.
+      `,
+      assertValue: function(nu) {
+        if ( ! nu.match(/^[a-z#]\w*$/i) ) {
+          throw new Error('Invalid Entity name: ' + nu);
+        }
+      }
+    },
+    {
+      name: 'element_',
+      factory: function() {
+        var char = this.MAP[this.name];
+        if ( char ) return this.document.createTextNode(char);
+        if ( this.name.startsWith('#x') ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(2), 16)));
+        if ( this.name.startsWith('#')  ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(1))));
+        return this.document.createTextNode('&' + this.name + ';');
+      }
+    }
+  ]
+});
+*/

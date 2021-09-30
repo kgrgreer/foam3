@@ -30,7 +30,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function render() {
       var self = this;
       this.
       add(this.slot(function(data, samplequery, url, user) {

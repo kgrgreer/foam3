@@ -17,6 +17,8 @@ foam.CLASS({
     'user'
   ],
 
+  requires: [ 'foam.u2.stack.StackBlock' ],
+
   css: `
     ^ {
       margin-bottom: 24px
@@ -46,32 +48,19 @@ foam.CLASS({
     ^section {
       margin-bottom: 10%;
     }
-    /* title  */
-    ^ ^section h2 {
-      margin-top: 0;
-      margin-bottom: 4vh;
-      font-size: 2.5rem;
-      text-align: center;
-    }
     /* subtitle */
     /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
     ^ ^section .subtitle {
       color: /*%GREY2%*/ #9ba1a6;
-      font-size: 1rem;
-      margin-top: 0;
-      margin-bottom: 3vh;
-      line-height: 1.5;
-      text-align: center;
-    }
-    /* button */
-    ^ ^section .foam-u2-layout-Cols {
-      justify-content: center !important; /* centers button */
     }
     ^link {
       color: /*%PRIMARY3%*/ #604aff;
       cursor: pointer;
       text-align: center;
       padding-top: 1.5vh;
+    }
+    ^ .foam-u2-layout-Cols > .foam-u2-ActionView {
+      width: 100%;
     }
   `,
 
@@ -117,11 +106,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       const self = this;
       const logo = this.theme.largeLogo || this.theme.logo;
 
-      this.addClass(this.myClass())
+      this.addClass()
         // header
         .callIf(this.showHeader, function() {
           this.start().addClass(self.myClass('top-bar'))
@@ -145,7 +134,7 @@ foam.CLASS({
             this.start().addClass(self.myClass('link'))
               .add(self.model.REDIRECTION_TO)
               .on('click', function() {
-                self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+                self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
               })
             .end();
           })

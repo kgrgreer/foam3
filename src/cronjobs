@@ -12,7 +12,7 @@ p({
   "scheduledTime": "2019-09-10T05:00:00.000Z",
   "id": "expired notification",
   "description": "remove expired notifications",
-  "code": 
+  "code":
   """
     import foam.nanos.cron.RemoveExpiredNotificationCronjob;
     cron = new RemoveExpiredNotificationCronjob();
@@ -34,9 +34,9 @@ p({
   "scheduledTime": "2019-09-09T17:00:00.000Z",
   "id": "Renew rule history cron",
   "description": "Cron for renewing rule history - run every hour.",
-  "code": 
+  "code":
   """
-    import foam.nanos.ruler.cron.RenewRuleHistoryCron; 
+    import foam.nanos.ruler.cron.RenewRuleHistoryCron;
     cron = new RenewRuleHistoryCron();
     cron.execute(x);
     print("done");
@@ -56,7 +56,7 @@ p({
   "scheduledTime": "2019-09-09T16:56:00.000Z",
   "id": "expireSessionsCron",
   "description": "Expire sessions every minute based on ttl",
-  "code": 
+  "code":
   """
     import foam.nanos.session.cron.ExpireSessionsCron;
     cron = new ExpireSessionsCron();
@@ -79,7 +79,7 @@ p({
   "scheduledTime": "2019-09-09T16:56:30.000Z",
   "id": "SMTP Email Service",
   "description": "Re-send UNSENT emails in emailMessageDAO",
-  "code": 
+  "code":
   """
     import foam.dao.DAO;
     import foam.dao.ArraySink;
@@ -87,7 +87,7 @@ p({
     import foam.nanos.notification.email.SMTPEmailService;
     import foam.nanos.notification.email.Status;
     import static foam.mlang.MLang.*;
-    
+
     DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
     emailMessages = ((ArraySink)
       emailMessageDAO
@@ -95,18 +95,18 @@ p({
         .select(new ArraySink()))
         .getArray();
     emailService = x.get("email");
-    
-    // SES limit - 10 tps
+
+    // SES limit - 14 tps
     second = 1000;
-    tps = 10;
-    
+    tps = 14;
+
     endtime = System.currentTimeMillis() + second;
     count = 0;
     for ( EmailMessage emailMessage : emailMessages ) {
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
       count++;
       if ( count > tps ) {
-        remaining = endTime - System.currentTimeMillis;
+        remaining = endTime - System.currentTimeMillis();
         if ( remaining > 0 ) {
           Thread.sleep(remaining);
         }
@@ -118,24 +118,36 @@ p({
 })
 
 p({
-  "class": "foam.nanos.cron.Cron",
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "minute": 1,
-    "hour": 0,
-    "dayOfMonth": -1,
-    "month": -1,
-    "dayOfWeek": -1,
-    "second": 1
+  "class":"foam.nanos.cron.Cron",
+  "id":"CleanupTempFileCron",
+  "description":"Cron to clean up files which exist more than 4 hours",
+  schedule:{
+    class:"foam.nanos.cron.CronSchedule",
+    minute: 0,
+    hour: -1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second: -1
   },
-  "scheduledTime": "2019-09-09T16:56:00.000Z",
-  "id": "expireUserCapabilityJunctionsCron",
-  "description": "Check for expired UserCapabilityJunctions daily, and set their status to EXPIRED",
-  "code": 
-  """
-    import foam.nanos.crunch.ExpireUserCapabilityJunctionsCron;
-    cron = new ExpireUserCapabilityJunctionsCron();
-    cron.execute(x);
-    print("done");
-  """
+  "code": """
+    import foam.core.X;
+    import foam.dao.DAO;
+    import foam.mlang.MLang;
+    import foam.nanos.fs.TempFile;
+    import java.time.LocalDateTime;
+    import java.time.ZoneId;
+    import java.util.Date;
+
+    final int TTL = 4;
+
+    DAO tempFileDAO = (DAO) x.get("tempFileDAO");
+
+    Date threshold = Date.from(LocalDateTime.now().minusHours(TTL).atZone(ZoneId.systemDefault()).toInstant());
+
+    tempFileDAO
+      .where(MLang.LT(TempFile.CREATED, threshold))
+      .removeAll();
+  """,
+  "enabled":false
 })

@@ -256,14 +256,18 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      var pm = new PM(CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+      var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+
+      recordCapabilityPayload(x, obj.fclone());
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 
-        List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
-        processCapabilityList(x, grantPath, capabilityDataObjects);
+        List leaves = new ArrayList<>();
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
         var ret =  find_(x, receivingCapPayload.getId());
         return ret;
@@ -280,9 +284,12 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'list', type: 'List' },
+        { name: 'leaves', type: 'List' },
         { name: 'capabilityDataObjects', type: 'Map' }
       ],
       javaCode: `
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+
         for (Object item : list) {
           if ( item instanceof Capability ) {
             Capability cap = (Capability) item;
@@ -295,22 +302,41 @@ foam.CLASS({
                 (FObject) capabilityDataObjects.get(cap.getName());  
             }
             
-            CrunchService crunchService = (CrunchService) x.get("crunchService");
-            UserCapabilityJunction oldUcj = crunchService.getJunction(x, cap.getId());
-            FObject currentDataObj = oldUcj.getData();
-            if ( currentDataObj != null && dataObj != null ) {
-              currentDataObj.copyFrom(dataObj);
-              dataObj = currentDataObj;
-            }
-            
-            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
-            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunctionDirectly(x, cap.getId(), dataObj);
+            getLogger().debug("Updated capability", cap.getName(), cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
           } else if ( item instanceof List ) {
-            processCapabilityList(x, (List) item, capabilityDataObjects);
+            processCapabilityList(x, (List) item, null, capabilityDataObjects);
           } else {
-            getLogger().warning("Ignoring unexpected item in grant path " + item);
+            getLogger().warning("Ignoring unexpected item in grant path ", item);
           }
         }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
       `
     }
   ],

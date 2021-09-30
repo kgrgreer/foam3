@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       this.something.a = 2;
       this
         .start('h1').add('hello').end() // <h1>hello</h1>
@@ -237,11 +237,11 @@ foam.CLASS({
         });
       });
     },
-    function initE() {
+    function render() {
       this.SUPER();
       this.onDetach(this.crunchService.sub('grantedJunction', this.onChange));
       var self = this;
-      window.cstore = self;
+      globalThis.cstore = self;
 
       self
         .addClass(self.myClass())
@@ -482,9 +482,8 @@ foam.CLASS({
       this.wizardOpened = true;
       let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
       let x = null;
-      if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
-        || ucj.status == this.CapabilityJunctionStatus.PENDING
-      ) ) {
+      var editable = ! ucj ||  await this.crunchService.maybeReopen(this.ctrl.__subContext__, cap.id);
+      if ( ! editable ) {
         x = this.__subContext__.createSubContext({
           controllerMode: this.ControllerMode.VIEW
         });

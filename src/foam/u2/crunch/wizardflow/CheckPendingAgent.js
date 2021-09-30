@@ -46,8 +46,9 @@ foam.CLASS({
 
   messages: [
     { name: 'CANNOT_OPEN_GRANTED', message: 'This capability has already been granted to you' },
-    { name: 'CANNOT_OPEN_PENDING', message: 'This capability is awaiting approval, updates are not permitted at this time' },
-    { name: 'CANNOT_OPEN_ACTION_PENDING', message: 'This capability is awaiting review, updates are not permitted at this time' }
+    { name: 'CANNOT_OPEN_PENDING_TITLE', message: 'Pending Approval' },
+    { name: 'CANNOT_OPEN_PENDING', message: 'Updates are not permitted at this time' },
+    { name: 'CANNOT_OPEN_ACTION_PENDING_TITLE', message: 'Pending Review' }
   ],
 
   methods: [
@@ -62,8 +63,8 @@ foam.CLASS({
         if ( ! shouldReopen ) {
           if ( this.showToast ) {
             // checks for PENDING etc to display the correct message
-            var message = statusPending ? this.CANNOT_OPEN_PENDING : this.CANNOT_OPEN_GRANTED;
-            this.ctrl.notify(message, '', this.LogLevel.INFO, true);
+            statusPending ? this.ctrl.notify(this.CANNOT_OPEN_PENDING_TITLE, this.CANNOT_OPEN_PENDING, this.LogLevel.WARN, true) : this.ctrl.notify(this.CANNOT_OPEN_GRANTED, '', this.LogLevel.INFO, true);
+
           }
 
           this.cancelled = true;
@@ -73,7 +74,7 @@ foam.CLASS({
         } else {
           if ( this.showToast && this.capabilities.length < 1 ) {
             // This is here because of a CertifyDataReviewed capability.
-            this.ctrl.notify(this.CANNOT_OPEN_ACTION_PENDING);
+            this.ctrl.notify(this.CANNOT_OPEN_ACTION_PENDING_TITLE, this.CANNOT_OPEN_PENDING, this.LogLevel.WARN, true);
             this.cancelled = true;
             this.sequence.endSequence();
 

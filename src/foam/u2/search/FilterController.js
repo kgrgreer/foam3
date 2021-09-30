@@ -244,13 +244,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    function render() {
       // Assigning to unused variable to keep Closure happy.
       var _ = this.searchMgr_; // Force the factory to run.
       this.filteredDAO$.sub(this.onPredicateChange);
       this.onPredicateChange();
 
-      this.addClass(this.myClass());
+      this.addClass();
       this.startContext({ data: this });
       var searchPanel = this.start().addClass(this.myClass('search-panel'));
       var topPanel = searchPanel.start(this.addingSpec)

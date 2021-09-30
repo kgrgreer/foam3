@@ -14,7 +14,9 @@ foam.CLASS({
     'foam.comics.v2.DAOBrowseControllerView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
-    'foam.u2.view.ScrollTableView'
+    'foam.u2.stack.StackBlock',
+    'foam.u2.view.ScrollTableView',
+    'foam.u2.table.TableView'
   ],
 
   imports: ['stack'],
@@ -57,14 +59,21 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function initE() {
-      this.initMemento();
+    async function render() {
+      this.currentMemento_ = this.memento;
+
+      // Default controller config that would be used for nested tables if no menu config can be found.
+      // Update this  to be a fallback for menuKeys when we have menuKeys for references, DAOproperties and relationships
+      this.config.editPredicate =   foam.mlang.predicate.False.create();
+      this.config.createPredicate = foam.mlang.predicate.False.create();
+      this.config.deletePredicate = foam.mlang.predicate.False.create();
+
       if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
         this.openFullTable();
       } else {
         var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
         this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-          .start(this.ScrollTableView, {
+          .start(this.TableView, {
             data: this.data.limit(this.rowsToDisplay),
             editColumnsEnabled: false,
             multiSelectEnabled: false,
@@ -82,12 +91,12 @@ foam.CLASS({
     },
     function openFullTable() {
       this.memento.head = `&${this.data.of.name}`;
-      var navStackTitle = foam.String.pluralize(foam.String.labelize(this.data.of.name));
-      this.stack.push({
-        class: this.DAOBrowseControllerView,
-        data$: this.data$,
-        config$: this.config$
-      }, this, undefined, { navStackTitle: navStackTitle, mementoHead: `&${this.data.of.name}` });
+      this.stack.push(this.StackBlock.create({
+        view: {
+          class: this.DAOBrowseControllerView,
+          data$: this.data$,
+          config$: this.config$
+        }, parent: this.__subContext__.createSubContext({ controllerMode: 'CREATE' }) }));
     }
   ],
   actions: [
