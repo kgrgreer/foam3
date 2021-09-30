@@ -79,11 +79,6 @@ foam.CLASS({
             }
 
             for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
-              if ( ucjToReput.getStatus() == CapabilityJunctionStatus.GRANTED ) {
-                var cap = (Capability) ucj.findTargetId(x);
-                if ( ucj.getIsInGracePeriod() && ! cap.getIsInternalCapability() ) ucjToReput.setIsInGracePeriod(true);
-                if ( ucj.getIsInRenewablePeriod() && ! cap.getIsInternalCapability() ) ucjToReput.setIsInRenewablePeriod(true);
-              }
               if ( effectiveUserId != null && effectiveX != null &&
                    ucjToReput.getSourceId() == effectiveUserId )
                 userCapabilityJunctionDAO.inX(effectiveX).put(ucjToReput);

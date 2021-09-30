@@ -111,7 +111,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'Creation date.'
+      documentation: 'Creation date.',
+      factory: function() { return new Date(); }
     },
     {
       class: 'Reference',

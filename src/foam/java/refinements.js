@@ -517,37 +517,32 @@ foam.LIB({
       });
 
       var flagFilter = foam.util.flagFilter(['java']);
-      var axioms = this.getOwnAxioms().filter(flagFilter);
+      var axioms     = this.getOwnAxioms().filter(flagFilter);
 
       for ( var i = 0 ; i < axioms.length ; i++ ) {
         axioms[i].buildJavaClass && axioms[i].buildJavaClass(cls, this);
       }
 
       // TODO: instead of doing this here, we should walk all Axioms
-      // and introuce a new buildJavaAncestorClass() method
+      // and introduce a new buildJavaAncestorClass() method
       var flagFilter = foam.util.flagFilter(['java']);
-      cls.allProperties = this.getAxiomsByClass(foam.core.Property)
-        .filter(flagFilter)
-        .filter(function(p) {
-          return !! p.javaType && p.javaInfoType && p.generateJava;
-        })
-        .filter(flagFilter)
-        .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
-        });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
         .filter(flagFilter)
-        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava)
-        .filter(p => p.javaFactory);
+        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava);
 
-      if ( properties.length > 0 ) {
+      cls.allProperties = properties
+        .map(p => foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash }));
+
+      var javaFactoryProperties = properties.filter(p => p.javaFactory);
+
+      if ( javaFactoryProperties.length > 0 ) {
         cls.method({
           visibility: 'public',
           type: 'void',
           name: 'beforeFreeze',
           body: (this.model_.extends === 'FObject' ? '' : 'super.beforeFreeze();\n') +
-            properties.map(p => `get${foam.String.capitalize(p.name)}();`)
+            javaFactoryProperties.map(p => `get${foam.String.capitalize(p.name)}();`)
               .join('\n')
         });
       }
@@ -868,7 +863,7 @@ public Object call(foam.core.X x, Object receiver, Object[] args) {
         type:          this.javaType || 'void',
         visibility:    this.visibility,
         static:        this.isStatic(),
-        abstract:      this.abstract,
+        abstract:      this.abstract && ! this.javaCode,
         final:         this.final,
         synchronized:  this.synchronized,
         remote:        this.remote,
@@ -1621,11 +1616,9 @@ foam.CLASS({
     {
       name: 'javaSetter',
       factory: function() {
-        var formattedName = 'Formatted' + foam.String.capitalize(this.name);
         return `
           assertNotFrozen();
-          // remove all non-numeric characters
-          val = val.replaceAll("[^\\\\\d]", "");
+          ${this.formatter.buildJavaRemoveFormatting(this.name)}
           ${this.name}_ = val;
           ${this.name}IsSet_ = true;`;
       }
@@ -1635,7 +1628,6 @@ foam.CLASS({
   methods: [
     function createJavaPropertyInfo_(cls) {
       var info = this.SUPER(cls);
-      var body = this.buildGetFormatted(cls.name, this.name);
       info.method({
         name: 'getFormatted',
         visibility: 'public',
@@ -1644,28 +1636,9 @@ foam.CLASS({
           { name: 'o', type: 'Object'}
         ],
         documentation: 'Returns a formatted version of this property',
-        body: body
+        body: this.formatter.buildJavaGetFormatted(cls.name, this.name)
       });
       return info;
-    },
-
-    function buildGetFormatted(cls, prop) {
-      var str = `
-        if ( ! ((${cls}) o).${prop}IsSet_ ) return "";
-        StringBuilder ret = new StringBuilder(((${cls}) o).${prop}_);
-      `;
-      var index = 0;
-      this.formatter.forEach(c => {
-        if ( !isNaN(c) ) index += c;
-        else {
-          str += `
-            if ( ret.length() < ${index} ) return ret.toString();
-            ret.insert(${index}, "${c}");
-          `
-          index++;
-        }
-      });
-      return str += `return ret.length() > ${index} ? ret.toString().substring(0, ${index}) : ret.toString();`
     }
   ]
 });

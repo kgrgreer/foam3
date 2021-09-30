@@ -167,8 +167,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-layout-Cols {
-      padding-bottom: 4px;
-      display: flex;
       align-items: center;
     }
 

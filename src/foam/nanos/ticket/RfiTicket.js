@@ -15,6 +15,14 @@
     'appConfig'
   ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       name: 'type',
@@ -49,6 +57,37 @@
       class: 'String',
       name: 'requesteeSession',
       visibility: 'HIDDEN'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'createCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( old == null ) {
+          return;
+        }
+        
+        super.createCommentNotification(x,old);
+      `
+    },
+    {
+      name: 'createExternalCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( old == null ) {
+          return;
+        }
+        
+        super.createExternalCommentNotification(x,old);
+      `
     }
   ]
 

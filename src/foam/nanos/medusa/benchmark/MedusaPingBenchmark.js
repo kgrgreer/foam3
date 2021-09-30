@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterServerDAO',
@@ -79,6 +80,10 @@ foam.CLASS({
         },
       ],
       javaCode: `
+        if ( getConfigs().size() > 0 ) {
+          return;
+        }
+
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
         setConfig(config);
@@ -112,7 +117,8 @@ foam.CLASS({
         },
       ],
       javaCode: `
-      int index = (int) (Math.random() * getClients().length);
+      java.util.Random random = new java.util.Random();
+      int index = random.nextInt(getClients().length);
       DAO client = (DAO) getClients()[index];
       ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
