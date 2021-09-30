@@ -127,7 +127,7 @@ foam.CLASS({
                         e.getSf().successForward(e);
                       } catch ( Throwable t ) {
                         getLogger().warning(t.getMessage());
-                        e.getSf().failForward(e);
+                        e.getSf().failForward(e, t);
                       }
                     }
                   });

@@ -34,13 +34,17 @@ foam.CLASS({
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.mlang.MLang',
     'foam.mlang.predicate.Predicate',
+    'foam.lib.json.Outputter',
+    'foam.lib.json.OutputterMode',
+    'foam.lib.NetworkPropertyPredicate',
     'java.nio.file.*',
     'java.nio.file.attribute.*',
     'java.io.IOException',
     'java.util.concurrent.atomic.AtomicInteger',
     'java.util.concurrent.atomic.AtomicLong',
     'java.util.concurrent.ConcurrentHashMap',
-    'java.util.*'
+    'java.util.*',
+    'org.apache.commons.lang.exception.ExceptionUtils'
   ],
 
   properties: [
@@ -110,6 +114,24 @@ foam.CLASS({
       javaGetter:`
         return failed_.get();
       `
+    },
+    {
+      class: 'Int',
+      name: 'loggingThredhold',
+      documentation: 'Logging after n times retry fail',
+      value: 1
+    },
+    {
+      class: 'Map',
+      name: 'retryCause',
+      documentation: 'Record fail retry reason',
+      storageTransient: true,
+      visibility: 'RO',
+      factory: function() { return {}; },
+      javaFactory: `
+        var map = new java.util.concurrent.ConcurrentHashMap<Long, String>();
+        return map;
+      `,
     },
     {
       class: 'Object',
@@ -211,11 +233,12 @@ foam.CLASS({
           journal.put(getX(), "", (DAO) getNullDao(), e);
         }
         inFlight_.decrementAndGet();
+        cleanRetryCause(e);
       `
     },
     {
       name: 'failForward',
-      args: 'SFEntry e',
+      args: 'SFEntry e, Throwable t',
       documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
@@ -233,9 +256,11 @@ foam.CLASS({
           }
           inFlight_.decrementAndGet();
           failed_.incrementAndGet();
+          cleanRetryCause(e);
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
+          updateRetryCause(e, t);
           ((SFManager) getManager()).enqueue(e);
         }
       `
@@ -362,12 +387,42 @@ foam.CLASS({
       `
     },
     {
+      name: 'createMap',
+      documentation: ``
+    },
+    {
       name: 'updateAttempt',
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
         e.setRetryAttempt(e.getRetryAttempt()+1);
         return e;
+      `
+    },
+    {
+      name: 'updateRetryCause',
+      args: 'SFEntry e, Throwable t',
+      javaCode:`
+        String stackTrace = getStackTrace(e, t);
+        getRetryCause().put(e.getIndex(), stackTrace);
+      `
+    },
+    {
+      name: 'cleanRetryCause',
+      args: 'SFEntry e',
+      javaCode:`
+        getRetryCause().remove(e.getIndex());
+      `
+    },
+    {
+      name: 'getStackTrace',
+      args: 'SFEntry e, Throwable t',
+      javaType: 'String',
+      javaCode:`
+        String stackTrace = ExceptionUtils.getStackTrace(t);
+        Outputter outputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate());
+        String entity = outputter.stringify(e.getObject());
+        return entity + " \\n " + stackTrace;
       `
     }
   ],
