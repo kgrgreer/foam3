@@ -63,6 +63,7 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      if ( support == null ) return;
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
