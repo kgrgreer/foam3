@@ -51,18 +51,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaCode: `
-      // nop
-      `
-    },
-    {
       name: 'execute',
       args: [
         {
@@ -78,22 +66,6 @@ foam.CLASS({
     }
 
     UUID.randomUUID().toString();
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

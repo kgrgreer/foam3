@@ -9,22 +9,15 @@ package foam.nanos.bench.benchmarks;
 import foam.core.X;
 import foam.nanos.bench.Benchmark;
 import foam.util.FastTimestamper;
+import foam.util.SyncFastTimestamper;
 
 public class TimestampBenchmark
   extends Benchmark
 {
-  protected FastTimestamper ts_ = new FastTimestamper();
+  protected FastTimestamper ts_ = new SyncFastTimestamper();
 
   @Override
-  public void setup(X x) {
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
-  }
-
-  @Override
-  public synchronized void execute(X x) {
+  public void execute(X x) {
     ts_.createTimestamp();
   }
 }

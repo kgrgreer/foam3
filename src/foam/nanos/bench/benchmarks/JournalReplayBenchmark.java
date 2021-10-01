@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
 public class JournalReplayBenchmark extends Benchmark {
   protected FileJournal journal_;
@@ -15,7 +16,7 @@ public class JournalReplayBenchmark extends Benchmark {
   }
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     dao_ = new NullDAO();
     journal_ = new FileJournal.Builder(x)
 //      .setDao(new MDAO(User.getOwnClassInfo()))
@@ -29,10 +30,6 @@ public class JournalReplayBenchmark extends Benchmark {
       u.setLastName("testing");
       journal_.put(x, "", dao_, u);
     }
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

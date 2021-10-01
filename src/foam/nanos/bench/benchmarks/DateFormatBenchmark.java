@@ -16,14 +16,6 @@ public class DateFormatBenchmark
   protected SimpleDateFormat format_ = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS");
 
   @Override
-  public void setup(X x) {
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
-  }
-
-  @Override
   public synchronized void execute(X x) {
     format_.format(System.currentTimeMillis());
   }

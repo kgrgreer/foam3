@@ -1,0 +1,12 @@
+p({
+  class: 'foam.nanos.benchmarks.AuthorizerBenchmark',
+  id: 'AuthorizerBenchmark'
+})
+p({
+  class: 'foam.nanos.benchmarks.DateFormatBenchmark',
+  id: 'DateFormatBenchmark'
+})
+p({
+  class: 'foam.nanos.benchmarks.FUIDBenchmark',
+  id: 'FUIDBenchmark'
+})

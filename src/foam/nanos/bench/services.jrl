@@ -1,0 +1,101 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "benchmarkDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.bench.Benchmark.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmarks")
+      .setFuid(true)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.bench.Benchmark"
+    }
+  """
+})
+
+// Jenkins - remove JournalType and nullify
+//        .setNullify(true)
+//        .setDelegate(new foam.nanos.bench.BenchmarkResultReportingDAO())
+//          .setSessionId(...)
+//          .setHost(...)
+//          .setPort(...)
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "benchmarkResultDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.bench.BenchmarkResult.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmarkResults")
+      .setFuid(true)
+      .setDecorator(new foam.nanos.bench.BenchmarkResultSystemDAO.Builder(x)
+        .setDelegate(new foam.nanos.bench.BenchmarkResultReportingDAO())
+        .build())
+      .setCluster(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkResult.CREATED).build()
+      })
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.bench.BenchmarkResult"
+    }
+  """
+})
+// Report server
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "benchmarkResultDAO",
+//   "serve": true,
+//   "serviceScript":
+//   """
+//     return new foam.dao.EasyDAO.Builder(x)
+//       .setOf(foam.nanos.bench.BenchmarkResult.getOwnClassInfo())
+//       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+//       .setJournalName("benchmarkResults")
+//       .setOrder(new foam.mlang.order.Comparator[] {
+//         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkResult.CREATED).build()
+//       })
+//       .build();
+//   """,
+//   "client":
+//   """
+//     {
+//       "of":"foam.nanos.bench.BenchmarkResult"
+//     }
+//   """
+// })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"benchmarkRunnerDAO",
+  "serve":true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.bench.BenchmarkRunner.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("benchmarkRunners")
+      .setFuid(true)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkRunner.ENABLED).build(),
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkRunner.LAST_RUN).build()
+      })
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.bench.BenchmarkRunner"
+    }
+  """
+})

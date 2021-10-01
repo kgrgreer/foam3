@@ -5,24 +5,23 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.script',
+  package: 'foam.nanos.bench',
   name: 'BenchmarkRunnerScript',
   extends: 'foam.nanos.script.Script',
 
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.script.Language',
     'foam.nanos.bench.Benchmark',
     'foam.nanos.bench.BenchmarkRunner',
-    'java.util.*',
     'foam.nanos.logger.LogLevelFilterLogger',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    ' net.nanopay.tx.bench.BepayBenchmark',
-    ' net.nanopay.tx.bench.IntuitBenchmark',
-    ' net.nanopay.tx.bench.TrevisoBenchmark'
+    'java.util.*',
   ],
+
   constants: [
     {
       name: 'CHECK_MARK',
@@ -50,6 +49,7 @@
       value: '\u001B[0m'
     }
   ],
+
   properties: [
     {
       name: 'failedBenchmarksList',
@@ -72,10 +72,10 @@
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
         loggerFilter.setLogDebug(false);
         loggerFilter.setLogInfo(false);
-        loggerFilter.setLogWarning(false);
 
-        DAO benchmarkDAO = (DAO) x.get("benchmarkRunnerDAO");
-        ArraySink benchmarks = (ArraySink) benchmarkDAO.select(new ArraySink());
+        DAO dao = (DAO) x.get("benchmarkRunnerDAO");
+        dao = dao.where(EQ(BenchmarkRunner.ENABLED, true));
+        ArraySink benchmarks = (ArraySink) dao.select(new ArraySink());
         List benchmarkArray = benchmarks.getArray();
 
         List<String> selectedBenchmarks = null;

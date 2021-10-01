@@ -11,34 +11,28 @@ import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
+import foam.nanos.bench.BenchmarkResult;
 
 import java.util.List;
 
 public class HashingBenchmark
   extends Benchmark
 {
-  List users = null;
-  protected DAO userDAO_;
+  List users_ = null;
 
   @Override
-  public void setup(X x) {
-    userDAO_ = (DAO) x.get("localUserDAO");
-
+  public void setup(X x, BenchmarkResult br) {
     Sink sink = new ArraySink();
-    sink = userDAO_.select(sink);
-    users = ((ArraySink) sink).getArray();
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
+    sink = ((DAO) x.get("localUserDAO")).select(sink);
+    users_ = ((ArraySink) sink).getArray();
   }
 
   @Override
   public void execute(X x) {
     try {
       // get random user
-      int n = (int) (Math.random() * users.size());
-      ((User) users.get(n)).hash();
+      int n = (int) (Math.random() * users_.size());
+      ((User) users_.get(n)).hash();
     } catch (Throwable t) {
       t.printStackTrace();
     }

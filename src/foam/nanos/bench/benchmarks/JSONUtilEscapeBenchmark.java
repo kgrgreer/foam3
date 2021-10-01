@@ -15,14 +15,6 @@ public class JSONUtilEscapeBenchmark
   protected StringBuilder b_ = new StringBuilder();
 
   @Override
-  public void setup(X x) {
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
-  }
-
-  @Override
   public void execute(X x) {
     b_.setLength(0);
     for ( int i = 0 ; i < 1000 ; i++ ) {

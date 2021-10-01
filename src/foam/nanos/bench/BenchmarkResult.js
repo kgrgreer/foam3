@@ -12,107 +12,143 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAwareMixin'
   ],
 
-  properties: [
-    //TODO Transactions (M)
-    {
-      class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'Int',
-      name: 'Threads'
-    },
-    {
-      class: 'Float',
-      name: 'MemoryGB'
-    },
-    {
-      class: 'Float',
-      name: 'OperationsST',
-      label: 'Operations/s/t',
-    },
-    {
-      class: 'Int',
-      name: 'Pass'
-    },
-    {
-      class: 'Float',
-      name: 'OperationsS',
-      label: 'Operations/s',
-    },
-    {
-      class: 'Int',
-      name: 'Total'
-    },
-    {
-      class: 'Float',
-      name: 'TransactionsM',
-      label: 'Transactions (M)'
-    },
-    {
-      class: 'Int',
-      name: 'Run'
-    },
-    {
-      class: 'Int',
-      name: 'Fail'
-    },
-    {
-      class: 'String',
-      name: 'Name'
-    },
-    {
-      class: 'String',
-      name: 'osArch'
-    },
-    {
-      class: 'String',
-      name: 'javaVmInfo'
-    },
-    {
-      class: 'String',
-      name: 'javaVersion'
-    },
-    {
-      class: 'String',
-      name: 'javaCompiler'
-    },
-    {
-      class: 'String',
-      name: 'javaFullversion'
-    },
+  tableColumns: [
+    'name',
+    'threads',
+    'operationsST',
+    'operationsS',
+    'fail',
+    'total'
+  ],
 
+  properties: [
     {
       class: 'String',
-      name: 'javaRuntimeVersion'
+      name: 'id',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'osName'
-    },
-    {
-      class: 'String',
-      name: 'sunArchDataModel'
+      name: 'name',
+      visibility: 'RO'
     },
     {
       class: 'Int',
-      name: 'core'
+      name: 'run',
+      visibility: 'RO'
+    },
+    {
+      class: 'Int',
+      name: 'threads',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'operationsST',
+      label: 'Operations/s/t',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'operationsS',
+      label: 'Operations/s',
+      visibility: 'RO'
     },
     {
       class: 'Long',
-      name: 'freeMemory'
+      name: 'pass',
+      visibility: 'RO'
     },
     {
       class: 'Long',
-      name: 'maxMemory'
+      name: 'fail',
+      visibility: 'RO'
+    },
+    {
+      class: 'Long',
+      name: 'total',
+      visibility: 'RO'
+    },
+    {
+      class: 'Map',
+      name: 'extra',
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap();',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'JavaVmName'
+      name: 'osArch',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'JavaVmVersion'
+      name: 'javaVmInfo',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'javaVersion',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'javaCompiler',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'javaFullversion',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'javaRuntimeVersion',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'JavaVmName',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'JavaVmVersion',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'osName',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'sunArchDataModel',
+      visibility: 'RO'
+    },
+    {
+      class: 'Int',
+      name: 'cores',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'usedMemoryGB',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'freeMemoryGB',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'totalMemoryGB',
+      visibility: 'RO'
+    },
+    {
+      class: 'Float',
+      name: 'maxMemoryGB',
+      visibility: 'RO'
     }
   ]
 });

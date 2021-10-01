@@ -10,6 +10,7 @@ import foam.core.X;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
 public class F3FileJournalBenchmark
   extends Benchmark
@@ -18,17 +19,13 @@ public class F3FileJournalBenchmark
   protected DAO         dao_;
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     dao_ = new NullDAO();
     journal_ = new F3FileJournal.Builder(x)
       .setDao(new MDAO(User.getOwnClassInfo()))
       .setFilename("f3journalbenchmark")
       .setCreateFile(true)
       .build();
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

@@ -8,6 +8,7 @@ package foam.nanos.bench.benchmarks;
 
 import foam.core.X;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 import foam.nanos.logger.Logger;
 
 public class LoggingBenchmark
@@ -16,12 +17,8 @@ public class LoggingBenchmark
   protected Logger logger_;
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     logger_ = (Logger) x.get("logger");
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

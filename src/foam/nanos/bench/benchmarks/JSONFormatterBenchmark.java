@@ -11,6 +11,7 @@ import foam.lib.formatter.JSONFObjectFormatter;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
 public class JSONFormatterBenchmark
   extends Benchmark
@@ -19,12 +20,8 @@ public class JSONFormatterBenchmark
   protected User                 u_ = null;
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     u_ = ((Subject) x.get("subject")).getUser();
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

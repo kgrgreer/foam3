@@ -14,6 +14,7 @@ import foam.nanos.auth.AuthorizationDAO;
 import foam.nanos.auth.Authorizer;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 import foam.nanos.dao.Operation;
 import foam.test.TestUtils;
 
@@ -42,7 +43,7 @@ public class AuthorizerBenchmark
   }
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     userAuthorizedContext = TestUtils.createTestContext(x, "foam");
 
     if ( operation != Operation.CREATE ) {
@@ -108,7 +109,7 @@ public class AuthorizerBenchmark
   }
 
   @Override
-  public void teardown(X x, java.util.Map stats) {
+  public void teardown(X x, BenchmarkResult br) {
     dao.inX(x).removeAll();
   }
 }
