@@ -1755,6 +1755,40 @@ return false
               .setArg2(new Constant(arr[0]))
               .build();
           }
+
+          //if we have this exampe in(0,99)
+          //TODO check the arr numerical type
+          if ( arr.length == 2 && ( arr[0] instanceof Integer || arr[0] instanceof Float) ) {
+            Predicate[] newArgs = new Predicate[arr.length];
+
+            newArgs[0] = new Gte.Builder(getX())
+              .setArg1(getArg1())
+                .setArg2(new Constant(arr[0]))
+                .build();
+
+            newArgs[1] = new Lte.Builder(getX())
+              .setArg1(getArg1())
+                .setArg2(new Constant(arr[1]))
+                .build();
+
+            return new And.Builder(getX())
+              .setArgs(newArgs)
+              .build();
+          }
+
+          if ( arr.length > 1 ) {
+            Predicate[] newArgs = new Predicate[arr.length];
+            for ( int i = 0; i < arr.length; i++ ) {
+            newArgs[i] = new Eq.Builder(getX())
+              .setArg1(getArg1())
+                .setArg2(new Constant(arr[i]))
+                .build();
+            }
+
+            return new Or.Builder(getX())
+              .setArgs(newArgs)
+              .build();
+          }
         }
         return this;
       `
