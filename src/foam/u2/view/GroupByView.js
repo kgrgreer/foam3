@@ -51,12 +51,10 @@ foam.CLASS({
         axiom = this.data.of.getAxiomByName(tc);
         this.data.groupBy = axiom;
         this.selectCol = views[draggableIndex].prop;
-        //views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
     },
     function onUnSelect(draggableIndex, views) {
       this.data.groupBy = undefined;
       this.selectCol = undefined;
-      //views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
     },
     function rebuildSelectedColumns() {
       //NO-OP
@@ -246,7 +244,7 @@ foam.CLASS({
               level: l,
               parentExpanded$: this.expanded$,
               of: r.of,
-              isPropertySelected: true
+              isPropertySelected: false
             }));
           }
           return arr;
