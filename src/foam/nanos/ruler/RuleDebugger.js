@@ -103,13 +103,13 @@ foam.CLASS({
           if ( ! r.getEnabled() ) {
             sb.append(" Disabled: ");
             sb.append(r.getName());
-            sb.append(" ");
+            sb.append(' ');
             sb.append(r.getId());
             continue;
           }
           sb.append(" Enabled: ");
           sb.append(r.getName());
-          sb.append(" ");
+          sb.append(' ');
           sb.append(r.getId());
           RuleGroup group = (RuleGroup)ruleGroupDAO.find(r.getRuleGroup());
           if ( group == null ) {
