@@ -47,10 +47,10 @@ foam.CLASS({
       if ( this.selectCol ) {
         this.selectCol.isPropertySelected = false;
       }
-        var tc = views[draggableIndex].prop.rootProperty[0];
-        axiom = this.data.of.getAxiomByName(tc);
-        this.data.groupBy = axiom;
-        this.selectCol = views[draggableIndex].prop;
+      var tc = views[draggableIndex].prop.rootProperty[0];
+      axiom = this.data.of.getAxiomByName(tc);
+      this.data.groupBy = axiom;
+      this.selectCol = views[draggableIndex].prop;
     },
     function onUnSelect(draggableIndex, views) {
       this.data.groupBy = undefined;
@@ -59,7 +59,7 @@ foam.CLASS({
     function rebuildSelectedColumns() {
       //NO-OP
     },
-    function getColumns(tc){
+    function getColumns(tc) {
       var data = this.data;
       var arr = [];
       var tableColumns = tc;
@@ -218,7 +218,7 @@ foam.CLASS({
       {
         name: 'subProperties',
         expression: function(prop) {
-          if ( ! this.of || ! this.of.getAxiomByName || this.level >= 1)
+          if ( ! this.of || ! this.of.getAxiomByName || this.level >= 1 )
             return [];
           if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
             return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
@@ -227,7 +227,7 @@ foam.CLASS({
       }
     ],
     methods:[
-      function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded ) {
+      function returnSubColumnSelectConfig(subProperties, level, expanded, ignoreExpanded) {
         var arr = [];
         if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
             return arr;
@@ -235,7 +235,7 @@ foam.CLASS({
           var r = this.of.getAxiomByName(this.rootProperty[0]);
           if ( ! r )
             return arr;
-
+        
           subProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
           for ( var i = 0 ; i < subProperties.length ; i++ ) {
             arr.push(this.cls_.create({
