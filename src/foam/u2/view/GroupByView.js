@@ -8,10 +8,14 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'GroupByView',
   extends: 'foam.u2.view.ColumnConfigPropView',
-  requires: ['foam.u2.view.GroupByViewRow', 'foam.u2.UnstyledTableView','foam.u2.view.SubColumnSelectConfig'],
+  requires: [
+    'foam.u2.view.GroupByViewRow', 
+    'foam.u2.UnstyledTableView',
+    'foam.u2.view.SubColumnSelectConfig'
+  ],
   properties: [
     'data',
-    'selectedCol',
+    'selectCol',
     {
       name: 'columns',
       factory: function() {
@@ -27,7 +31,7 @@ foam.CLASS({
           arr.push(this.RootColumnConfigPropView.create({
             index: i,
             prop:columns[i],
-            head: { class:'foam.u2.view.GroupByViewHeader' }, 
+            head: { class:'foam.u2.view.GroupByViewHeader' },
             body: { class:'foam.u2.view.GroupByViewBody' },
             onSelectionChangedParentFunction: this.onTopPropertiesSelectionChange.bind(this),
             onSelectionChanged: this.onSelectionChanged.bind(this)
@@ -39,23 +43,20 @@ foam.CLASS({
   ]
   ,
   methods: [
-    function render() {
-      this.SUPER()
-    },
     function onSelect(draggableIndex, views) {
       if ( this.selectCol ) {
-        this.selectCol.isPropertySelected = true;
+        this.selectCol.isPropertySelected = false;
       }
         var tc = views[draggableIndex].prop.rootProperty[0];
         axiom = this.data.of.getAxiomByName(tc);
-        this.data.groupBy = axiom; 
+        this.data.groupBy = axiom;
         this.selectCol = views[draggableIndex].prop;
-        views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
+        //views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
     },
     function onUnSelect(draggableIndex, views) {
       this.data.groupBy = undefined;
       this.selectCol = undefined;
-      views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
+      //views[draggableIndex].prop.isPropertySelected = ! views[draggableIndex].prop.isPropertySelected;
     },
     function rebuildSelectedColumns() {
       //NO-OP
@@ -88,7 +89,7 @@ foam.CLASS({
           arr.push(foam.u2.view.SubColumnGroupByConfig.create({
             index:i,
             rootProperty:rootProperty,
-            isPropertySelected: true,
+            isPropertySelected: false,
             level:0,
             of:data.of,
             selectedColumns$: data.selectedColumnNames$,
@@ -111,7 +112,7 @@ foam.CLASS({
       code: function() {
         if ( this.selectCol ) {
         this.data.groupBy = undefined;
-        this.selectCol.isPropertySelected = true;
+        this.selectCol.isPropertySelected = false;
         this.selectCol = undefined;
         }
       }
@@ -125,7 +126,7 @@ foam.CLASS({
     imports: ['theme'],
     requires: ['foam.u2.tag.Image'],
     methods: [
-      function render() { 
+      function render() {
         var self = this;
         this
           .start()
@@ -137,19 +138,19 @@ foam.CLASS({
             })
             .start()
               .addClass(this.myClass('label'))
-              .callIfElse( this.theme , 
+              .callIfElse( this.theme ,
                 function() {
-                  this.add(self.slot(function( data$isPropertySelected ) { 
+                  this.add(self.slot(function( data$isPropertySelected ) {
                     var image;
-                    if ( ! this.data.isPropertySelected ) {
-                      image = self.theme.glyphs.folderFill.getDataUrl({ fill: self.theme.primary3});
+                    if ( this.data.isPropertySelected ) {
+                      image = self.theme.glyphs.folderFill.getDataUrl({ fill: self.theme.primary3 });
                     } else {
-                      image = self.theme.glyphs.folderOutline.getDataUrl({ fill: self.theme.grey4});
+                      image = self.theme.glyphs.folderOutline.getDataUrl({ fill: self.theme.grey4 });
                     }
-                    return this.E().start(self.Image, { data: image , displayHeight: '1.5em' , displayWidth: '1.5em'}).end() 
+                    return this.E().start(self.Image, { data: image , displayHeight: '1.5em' , displayWidth: '1.5em' }).end()
                   }))
                 },
-                function() { 
+                function() {
                   this.start().add(self.CheckBox.create({ data$: self.data.isPropertySelected$ }))
                 .end()
                 }
@@ -174,6 +175,15 @@ foam.CLASS({
             .end()
           .end();
       }
+    ],
+    listeners: [
+      function toggleSelection(e) {
+        e.stopPropagation();
+        if ( this.theme ) {
+          this.data.isPropertySelected = ! this.data.isPropertySelected;
+        }
+        this.SUPER(e);
+      }
     ]
   });
   foam.CLASS({
@@ -190,9 +200,9 @@ foam.CLASS({
             arr.push(this.RootColumnConfigPropView.create({
               index: i,
               prop:this.data.subColumnSelectConfig[i],
-              head: { class:'foam.u2.view.GroupByViewHeader' }, 
+              head: { class:'foam.u2.view.GroupByViewHeader' },
               body: { class:'foam.u2.view.GroupByViewBody' },
-              isPropertySelected: true,
+              isPropertySelected: false,
               onSelectionChanged:this.onSelectionChanged,
               onSelectionChangedParentFunction:this.onChildrenSelectionChanged.bind(this),
             }));
@@ -202,7 +212,6 @@ foam.CLASS({
       }
     ]
   });
-
   foam.CLASS({
     package: 'foam.u2.view',
     name: 'SubColumnGroupByConfig',

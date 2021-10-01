@@ -404,10 +404,6 @@ foam.CLASS({
       }
 
       //otherwise on adding new column creating new EditColumnsView, which is closed by default
-      if ( view.editColumnsEnabled ) {
-        var editColumnView = this.EditColumnsView.create({ data: view, overlayView: { class: 'foam.u2.view.ColumnConfigPropView' }});
-        var groupByView = this.EditColumnsView.create({ data: view, overlayView: { class: 'foam.u2.view.GroupByView' }});
-      }
       if ( this.filteredTableColumns$ ) {
         this.onDetach(this.filteredTableColumns$.follow(
           //to not export "custom" table columns
