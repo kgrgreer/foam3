@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.ArraySink',
+    'foam.core.ContextAwareAgent',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.AuthService',
@@ -69,10 +70,10 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        x = ruler.getX();
-        DAO rulerDAO = (DAO) x.get("ruleDAO");
-        DAO ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
-        AuthService auth = (AuthService) x.get("auth");
+        X systemX = ruler.getX();
+        DAO rulerDAO = (DAO) systemX.get("ruleDAO");
+        DAO ruleGroupDAO = (DAO) systemX.get("ruleGroupDAO");
+        AuthService auth = (AuthService) systemX.get("auth");
 
         List rules = ((ArraySink) rulerDAO.where(
           AND(
@@ -83,7 +84,7 @@ foam.CLASS({
           )).select(new ArraySink())).getArray();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Performing Rule Debug on DAO: ");
+        sb.append("\\nPerforming Rule Debug on DAO: ");
         sb.append(getDaoKey());
         sb.append(" from rule: ");
         sb.append(getId());
@@ -95,19 +96,19 @@ foam.CLASS({
           logger.error(sb.toString());
           throw new RuntimeException(sb.toString());
         }
-        sb.append("\\nFound ");
+        sb.append("Found ");
         sb.append(rules.size());
         sb.append(" rules");
         for ( Object o : rules ) {
           Rule r = (Rule) o;
           if ( ! r.getEnabled() ) {
-            sb.append(" Disabled: ");
+            sb.append("\\nDisabled: ");
             sb.append(r.getName());
             sb.append(' ');
             sb.append(r.getId());
             continue;
           }
-          sb.append(" Enabled: ");
+          sb.append("\\nEnabled: ");
           sb.append(r.getName());
           sb.append(' ');
           sb.append(r.getId());
@@ -126,7 +127,7 @@ foam.CLASS({
 
           // --- Permission check ---
 
-          User user = r.getUser(x, obj);
+          User user = r.getUser(systemX, obj);
           sb.append("\\nRULE PERMISSION GRANTED: ");
           if ( user != null ) {
             sb.append(auth.checkUser(x, user, "rule.read." + r.getId()));
@@ -140,12 +141,14 @@ foam.CLASS({
           // --- Predicate check ---
 
           sb.append("\\nPREDICATE CHECK: ");
-          sb.append(r.getPredicate().f(obj));
+          X newX = x.put("NEW",obj);
+          newX = newX.put("OLD",oldObj);
+          sb.append(r.getPredicate().f(newX));
           sb.append("\\nGROUP PREDICATE CHECK: ");
-          sb.append(group.getPredicate().f(obj));
+          sb.append(group.getPredicate().f(newX));
         }
+      logger.info(sb.toString());
 
-      logger.debug(sb.toString());
       `
     }
   ]
