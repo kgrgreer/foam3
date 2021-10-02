@@ -4,21 +4,21 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.bench.benchmarks;
+package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.nanos.bench.Benchmark;
-import foam.lib.json.Outputter;
 
-public class JSONOutputterEscapeBenchmark
+public class JSONUtilEscapeBenchmark
   extends Benchmark
 {
-  protected Outputter out_ = new Outputter(null);
+  protected StringBuilder b_ = new StringBuilder();
 
   @Override
   public void execute(X x) {
+    b_.setLength(0);
     for ( int i = 0 ; i < 1000 ; i++ ) {
-      out_.escape("abcdefg\n\t\\\u2605\\u0007xjxjxjxjxjxjxjxjxjxj");
+      foam.lib.json.Util.escape("abcdefg\n\t\\\u2605\\u0007xjxjxjxjxjxjxjxjxjxj", b_);
     }
   }
 }

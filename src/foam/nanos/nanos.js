@@ -161,6 +161,7 @@ FOAM_FILES([
   { name: 'foam/nanos/bench/BenchmarkRunner' },
   { name: "foam/nanos/bench/BenchmarkRunnerScript" },
   { name: "foam/nanos/bench/Relationships" },
+  { name: "foam/nanos/benchmark/AuthorizerBenchmark" },
   { name: "foam/nanos/boot/NSpec" },
   { name: "foam/nanos/boot/NSpecAware" },
   { name: "foam/nanos/boot/DAOConfigSummaryView", flags: ['web'] },

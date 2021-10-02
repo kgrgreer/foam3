@@ -486,7 +486,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
+  'foam.nanos.benchmark.AuthorizerBenchmark',
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
   'foam.comics.v2.CRUDEnabledActionsAuth',

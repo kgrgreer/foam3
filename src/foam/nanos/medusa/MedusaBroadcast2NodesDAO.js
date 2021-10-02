@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.DOP',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',

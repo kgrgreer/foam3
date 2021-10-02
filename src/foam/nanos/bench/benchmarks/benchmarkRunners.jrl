@@ -1,5 +1,0 @@
-p({
-  class: 'foam.nanos.bench.BenchmarkRunner',
-  id: 'FUIDBenchmarkRunner',
-  benchmarkId: 'FUIDBenchmark'
-})
