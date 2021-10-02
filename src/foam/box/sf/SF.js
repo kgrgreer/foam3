@@ -129,8 +129,7 @@ foam.CLASS({
       visibility: 'RO',
       factory: function() { return {}; },
       javaFactory: `
-        var map = new java.util.concurrent.ConcurrentHashMap<Long, String>();
-        return map;
+      return createMap(100);
       `,
     },
     {
@@ -141,8 +140,7 @@ foam.CLASS({
       visibility: 'RO',
       factory: function() { return {}; },
       javaFactory: `
-        var map = new java.util.concurrent.ConcurrentHashMap<Long, String>();
-        return map;
+        return createMap(100);
       `,
     },
     {
@@ -208,14 +206,14 @@ foam.CLASS({
         SFEntry entry = new SFEntry.Builder(getX())
                               .setObject(fobject)
                               .build();
-        
+
         entry.setCreated(new Date());
         long index = entryIndex_.incrementAndGet();
         long fileIndex = index / ((long) getFileCapacity());
         entry.setIndex(index);
         String filename = getFileName() + "." + fileIndex;
         Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
-        
+
         return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
       `
     },
@@ -254,7 +252,7 @@ foam.CLASS({
       documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
-        if ( getRetryStrategy().maxRetries() > -1 && 
+        if ( getRetryStrategy().maxRetries() > -1 &&
               e.getRetryAttempt() >= getRetryStrategy().maxRetries() )  {
           logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getRetryStrategy().maxRetries(), e.toString());
 
@@ -285,7 +283,7 @@ foam.CLASS({
         if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
         else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
         else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
-        else throw new RuntimeException("DelegateObject do not support"); 
+        else throw new RuntimeException("DelegateObject do not support");
       `
     },
     {
@@ -329,7 +327,7 @@ foam.CLASS({
           Calendar rightNow = Calendar.getInstance();
           rightNow.add(Calendar.SECOND, -getTimeWindow());
           timeWindow = rightNow.getTime();
-  
+
           for ( String filename : filenames ) {
             BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
             Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
@@ -340,7 +338,7 @@ foam.CLASS({
           if ( availableFilenames.size() == 0 ) {
             availableFilenames.add(filenames.get(filenames.size() - 1));
           }
-        
+
         }
 
         //Create predicate depends on condition.
@@ -436,7 +434,17 @@ foam.CLASS({
     {
       name: 'createMap',
       documentation: `helper function to create thread safe LRU map`,
-      args: 'int cap',
+      args: 'int capacity',
+      javaType: 'Map',
+      javaCode:`
+        LinkedHashMap<Integer, String> map;
+        map = new LinkedHashMap<Integer, String>(capacity, 0.75f, false) {
+          protected boolean removeEldestEntry(Map.Entry eldest) {
+            return size() > capacity;
+          }
+        };
+        return Collections.synchronizedMap(map);
+      `
     }
   ],
 
@@ -451,7 +459,7 @@ foam.CLASS({
             final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
-            
+
             //Make to public because beanshell do not support.
             static public interface StepFunction {
               public int next(int cur);
