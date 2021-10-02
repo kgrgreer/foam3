@@ -119,12 +119,24 @@ foam.CLASS({
       class: 'Int',
       name: 'loggingThredhold',
       documentation: 'Logging after n times retry fail',
-      value: 1
+      value: 4
     },
     {
       class: 'Map',
       name: 'retryCause',
       documentation: 'Record fail retry reason',
+      storageTransient: true,
+      visibility: 'RO',
+      factory: function() { return {}; },
+      javaFactory: `
+        var map = new java.util.concurrent.ConcurrentHashMap<Long, String>();
+        return map;
+      `,
+    },
+    {
+      class: 'Map',
+      name: 'failCause',
+      documentation: 'Record fail reason',
       storageTransient: true,
       visibility: 'RO',
       factory: function() { return {}; },
@@ -387,10 +399,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'createMap',
-      documentation: ``
-    },
-    {
       name: 'updateAttempt',
       args: 'SFEntry e',
       javaType: 'SFEntry',
@@ -424,6 +432,11 @@ foam.CLASS({
         String entity = outputter.stringify(e.getObject());
         return entity + " \\n " + stackTrace;
       `
+    },
+    {
+      name: 'createMap',
+      documentation: `helper function to create thread safe LRU map`,
+      args: 'int cap',
     }
   ],
 
