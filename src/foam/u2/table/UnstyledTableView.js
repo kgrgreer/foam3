@@ -41,7 +41,7 @@ foam.CLASS({
 
   imports: [
     'auth?',
-    'config?',
+    'config? as importedConfig',
     'filteredTableColumns?',
     'memento',
     'stack?'
@@ -87,6 +87,8 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
+        if ( this.importedConfig )
+          return this.importedConfig;
         return this.DAOControllerConfig.create({ dao: this.data });
       }
     },
