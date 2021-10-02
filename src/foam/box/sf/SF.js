@@ -267,10 +267,14 @@ foam.CLASS({
           inFlight_.decrementAndGet();
           failed_.incrementAndGet();
           cleanRetryCause(e);
+          updateFailCause(e, t);
         } else {
+          if ( e.getRetryAttempt() > getLoggingThredhold() )
+          {
+            updateRetryCause(e, t);
+          }
           updateNextScheduledTime(e);
           updateAttempt(e);
-          updateRetryCause(e, t);
           ((SFManager) getManager()).enqueue(e);
         }
       `
@@ -404,6 +408,15 @@ foam.CLASS({
         e.setRetryAttempt(e.getRetryAttempt()+1);
         return e;
       `
+    },
+    {
+      name: 'updateFailCause',
+      args: 'SFEntry e, Throwable t',
+      javaCode: `
+        String stackTrace = getStackTrace(e, t);
+        getFailCause().put(e.getIndex(), stackTrace);
+      `
+
     },
     {
       name: 'updateRetryCause',
