@@ -5,11 +5,13 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.bench',
-  name: 'BenchmarkRunnerScript',
-  extends: 'foam.nanos.script.Script',
+   package: 'foam.nanos.bench',
+   name: 'BenchmarkRunnerScript',
+   extends: 'foam.nanos.script.Script',
 
-  javaImports: [
+   documentation: `Executes command line BenchmarkRunner requests.  ./build.sh -BbenchmarkRunnerId`,
+
+   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'static foam.mlang.MLang.EQ',
@@ -52,7 +54,7 @@
 
   properties: [
     {
-      name: 'failedBenchmarksList',
+      name: 'failedBenchmarkRunnersList',
       class: 'FObjectArray',
       of: 'BenchmarkRunner'
     }
@@ -75,70 +77,68 @@
 
         DAO dao = (DAO) x.get("benchmarkRunnerDAO");
         dao = dao.where(EQ(BenchmarkRunner.ENABLED, true));
-        ArraySink benchmarks = (ArraySink) dao.select(new ArraySink());
-        List benchmarkArray = benchmarks.getArray();
+        List<BenchmarkRunner> runners = ((ArraySink) dao.select(new ArraySink())).getArray();
 
-        List<String> selectedBenchmarks = null;
+        List<String> selectedBenchmarkRunners = null;
         if ( ! SafetyUtil.isEmpty(System.getProperty("foam.benchmarks")) ){
           String t = System.getProperty("foam.benchmarks");
-          selectedBenchmarks = Arrays.asList(t.split(","));
+          selectedBenchmarkRunners = Arrays.asList(t.split(","));
         }
 
-        for ( int i = 0; i < benchmarkArray.size(); i ++ ) {
-          BenchmarkRunner benchmark = (BenchmarkRunner) ((BenchmarkRunner) benchmarkArray.get(i)).fclone();
-
-          if ( selectedBenchmarks != null ) {
-            if ( selectedBenchmarks.contains(benchmark.getId()) ) {
-              runBenchmark(x, benchmark);
+        for ( BenchmarkRunner runner : runners ) {
+          if ( selectedBenchmarkRunners != null ) {
+            if ( selectedBenchmarkRunners.contains(runner.getId()) ||
+                 selectedBenchmarkRunners.contains(runner.getName()) ) {
+              executeBenchmarkRunner(x, runner);
             } else {
               continue;
             }
           } else {
-            runBenchmark(x, benchmark);
+            executeBenchmarkRunner(x, runner);
           }
         }
 
-        int result = selectedBenchmarks != null ? selectedBenchmarks.size() : benchmarkArray.size();
-        System.out.println("DONE RUNNING " + result + " Benchmarks");
+        int result = selectedBenchmarkRunners != null ? selectedBenchmarkRunners.size() : runners.size();
+        System.out.println("DONE RUNNING " + result + " BenchmarkRunners");
         System.exit(0);
       `
     },
     {
-      name: 'runBenchmark',
+      name: 'executeBenchmarkRunner',
       args: [
         {
           name: 'x', type: 'Context'
         },
         {
-          name: 'benchmark', type: 'foam.nanos.bench.BenchmarkRunner'
+          name: 'runner', type: 'foam.nanos.bench.BenchmarkRunner'
         }
       ],
       javaCode: `
         try {
-          benchmark.execute(x);
+          runner.execute(x);
         }
         catch ( Exception e ) {
           Logger logger = (Logger) x.get("logger");
           logger.error(e);
-          addToFailedBenchmarksList(benchmark);
+          addToFailedBenchmarkRunnersList(runner);
         }
       `
     },
     {
-      name: 'addToFailedBenchmarksList',
+      name: 'addToFailedBenchmarkRunnersList',
       args: [
         {
-          name: 'benchmark', javaType: 'BenchmarkRunner'
+          name: 'runner', javaType: 'BenchmarkRunner'
         }
       ],
       javaCode: `
-        BenchmarkRunner[] failedBenchmarks = getFailedBenchmarksList();
-        BenchmarkRunner[] temp = new BenchmarkRunner[failedBenchmarks.length+1];
-        for ( int i = 0;i < failedBenchmarks.length; i++ ) {
-          temp[i] = failedBenchmarks[i];
+        BenchmarkRunner[] failedBenchmarkRunners = getFailedBenchmarkRunnersList();
+        BenchmarkRunner[] temp = new BenchmarkRunner[failedBenchmarkRunners.length+1];
+        for ( int i = 0; i < failedBenchmarkRunners.length; i++ ) {
+          temp[i] = failedBenchmarkRunners[i];
         }
-        temp[failedBenchmarks.length]=benchmark;
-        setFailedBenchmarksList(temp);`
+        temp[failedBenchmarkRunners.length]=runner;
+        setFailedBenchmarkRunnersList(temp);`
     },
     {
       name: 'printBold',
