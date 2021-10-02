@@ -23,17 +23,17 @@ foam.CLASS({
       javaCode: `
       BenchmarkResult br = (BenchmarkResult) obj;
 
-      br.setOsArch(System.getProperty("os.arch"));
-      br.setJavaVmInfo(System.getProperty("java.vm.info"));
+      // br.setJavaVmInfo(System.getProperty("java.vm.info"));
 
-      br.setJavaVersion(System.getProperty("java.version"));
-      br.setJavaCompiler(System.getProperty("java.compiler"));
+      // br.setJavaVersion(System.getProperty("java.version"));
+      // br.setJavaCompiler(System.getProperty("java.compiler"));
       br.setJavaFullversion(System.getProperty("java.fullversion"));
-      br.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
+      // br.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
+      br.setOsArch(System.getProperty("os.arch"));
       br.setOsName(System.getProperty("os.name"));
-      br.setSunArchDataModel(System.getProperty("sun.arch.data.model"));
-      br.setJavaVmName(System.getProperty("java.vm.name"));
-      br.setJavaVmVersion(System.getProperty("java.vm.version"));
+      // br.setSunArchDataModel(System.getProperty("sun.arch.data.model"));
+      // br.setJavaVmName(System.getProperty("java.vm.name"));
+      // br.setJavaVmVersion(System.getProperty("java.vm.version"));
 
       br.setCores(Runtime.getRuntime().availableProcessors());
 

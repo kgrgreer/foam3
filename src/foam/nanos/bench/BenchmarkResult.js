@@ -21,20 +21,22 @@ foam.CLASS({
     'total'
   ],
 
+  ids: ['uid', 'run'],
+
   properties: [
     {
       class: 'String',
-      name: 'id',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'name',
+      name: 'uid',
       visibility: 'RO'
     },
     {
       class: 'Int',
       name: 'run',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'name',
       visibility: 'RO'
     },
     {
@@ -77,42 +79,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'osArch',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'javaVmInfo',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'javaVersion',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'javaCompiler',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'javaFullversion',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'javaRuntimeVersion',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'JavaVmName',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'JavaVmVersion',
+      name: 'hostname',
       visibility: 'RO'
     },
     {
@@ -122,7 +89,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'sunArchDataModel',
+      name: 'osArch',
       visibility: 'RO'
     },
     {
@@ -148,6 +115,11 @@ foam.CLASS({
     {
       class: 'Float',
       name: 'maxMemoryGB',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'javaFullversion',
       visibility: 'RO'
     }
   ]

@@ -14,25 +14,11 @@ foam.RELATIONSHIP({
     section: 'benchmarkResultsSection',
     createVisibility: 'HIDDEN',
     updateVisibility: 'RO',
-    readVisibility: 'RO',
-    tableCellFormatter: function(value, obj, axiom) {
-      var dao = this.__subSubContext__[foam.String.daoize(this.type)];
-      if ( dao ) {
-        dao
-        .find(value)
-        .then((entry) => this.add(entry.id))
-        .catch((error) => {
-          this.add(value);
-        });
-      }
-    }
+    readVisibility: 'RO'
   },
   targetProperty: {
     label: 'Benchmark Runner Id',
     visibility: 'HIDDEN',
-    tableWidth: 300,
-    // javaPostSet: `
-    //   setBenchmarkRunnerId(val);
-    // `
+    tableWidth: 300
   }
 });

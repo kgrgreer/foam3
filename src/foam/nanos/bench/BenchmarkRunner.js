@@ -7,15 +7,11 @@
 foam.CLASS({
   package: 'foam.nanos.bench',
   name: 'BenchmarkRunner',
+  extends: 'foam.nanos.script.Script',
 
   implements: [
     'foam.core.ContextAgent',
-    'foam.core.ContextAware',
-    'foam.nanos.auth.EnabledAware',
-  ],
-
-  mixins: [
-    'foam.nanos.auth.LastModifiedAwareMixin'
+    'foam.core.ContextAware'
   ],
 
   imports: [
@@ -23,6 +19,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
@@ -31,6 +28,15 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.pm.PM',
+    'foam.nanos.script.BeanShellExecutor',
+    'foam.nanos.script.JShellExecutor',
+    'foam.nanos.script.Language',
+    'foam.nanos.script.ScriptEvent',
+    'foam.nanos.script.ScriptStatus',
+    'foam.util.SafetyUtil',
+    'foam.util.UIDGenerator',
+    'java.io.IOException',
     'java.math.BigDecimal',
     'java.math.RoundingMode',
     'java.util.ArrayList',
@@ -77,23 +83,22 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'id',
+    'lastRun',
+    'status',
+    'threadCount',
+    'runPerThread',
+    'invocationCount',
+    'benchmarkId'
+  ],
+
   properties: [
     {
-      class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    },
-    {
-      class: 'Boolean',
-      name: 'enabled',
-      value: true,
-    },
-    {
       class: 'Int',
-      name: 'threadCount'
+      name: 'threadCount',
+      value: 4,
+      javaFactory: 'return Runtime.getRuntime().availableProcessors();'
     },
     {
       class: 'Boolean',
@@ -105,19 +110,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'invocationCount'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.bench.Benchmark',
-      name: 'benchmarkId'
-    },
-    {
-      documentation: 'Used by scripts which create a benchmark inline.',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.bench.Benchmark',
-      name: 'benchmark',
-      storageTransient: true
+      name: 'invocationCount',
+      value: 1000
     },
     {
       class: 'Boolean',
@@ -125,25 +119,52 @@ foam.CLASS({
       docmentation: 'clear PMs before executing the benchmark',
     },
     {
-      class: 'Object',
+      class: 'Reference',
+      of: 'foam.nanos.bench.Benchmark',
+      name: 'benchmarkId'
+    },
+    {
+      class: 'List',
       name: 'results',
       javaFactory: 'return new ArrayList();',
       storageTransient: true,
       visibility: 'HIDDEN'
     },
     {
-      class: 'DateTime',
-      name: 'lastRun',
-      documentation: 'Date and time the script ran last.',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      tableWidth: 140,
-      storageTransient: true,
-      storageOptional: true
+      class: 'String',
+      name: 'daoKey',
+      value: 'benchmarkRunnerDAO'
     },
+    {
+      class: 'String',
+      name: 'eventDaoKey',
+      value: 'benchmarkRunnerEventDAO'
+    }
   ],
 
   methods: [
+    {
+      name: 'runScript',
+      javaCode: `
+      canRun(x);
+      PM pm = new PM(this.getClass(), getId());
+      try {
+        execute(x);
+      } finally {
+        setLastRun(new java.util.Date());
+        setLastDuration(pm.getTime());
+        ScriptEvent event = new ScriptEvent(x);
+        event.setLastRun(this.getLastRun());
+        event.setLastDuration(this.getLastDuration());
+        event.setOutput(this.getOutput());
+        event.setOwner(this.getId());
+        event.setScriptId(this.getId());
+        event.setHostname(System.getProperty("hostname", "localhost"));
+        event.setClusterable(this.getClusterable());
+        ((DAO) x.get(getEventDaoKey())).put(event);
+      }
+      `
+    },
     {
       name: 'execute',
       type: 'Void',
@@ -154,17 +175,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      final Benchmark benchmark;
-      if ( getBenchmark() != null ) {
-        benchmark = getBenchmark();
-      } else {
-        benchmark = (Benchmark) this.findBenchmarkId(x);
-      }
       Logger log = (Logger) x.get("logger");
       if ( log != null ) {
         log = new foam.nanos.logger.StdoutLogger();
       }
-      final Logger logger = new PrefixLogger(new String[] { benchmark.getClass().getSimpleName() }, log);
+      final Logger logger = new PrefixLogger(new String[] { getId() }, log);
 
       AppConfig config = (AppConfig) x.get("appConfig");
       if ( config.getMode() == Mode.PRODUCTION ) {
@@ -172,7 +187,14 @@ foam.CLASS({
         return;
       }
 
+    try {
+      final Benchmark benchmark = getBenchmark(x);
+
       logger.info("execute", benchmark.getClass().getSimpleName());
+      UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
+          .setSalt("benchmarkResultDAO")
+          .build();
+      String uid = String.valueOf(uidGenerator.getNextLong());
 
       int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
       int run = 1;
@@ -183,16 +205,19 @@ foam.CLASS({
         threads = availableThreads;
       }
 
-      try {
+        setStatus(ScriptStatus.RUNNING);
+        ((DAO) x.get("benchmarkRunnerDAO")).put_(x, this);
+
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
           final AtomicLong fail = new AtomicLong();
-          ThreadGroup group = new ThreadGroup(name_);
+          ThreadGroup group = new ThreadGroup("BenchmarkRunner");
           BenchmarkResult br = new BenchmarkResult();
-          br.setOwner(getId());
-          br.setName(benchmark.getClass().getSimpleName());
+          br.setUid(uid);
           br.setRun(run);
+          br.setHostname(System.getProperty("hostname", "localhost"));
+          br.setName(benchmark.getName());
           br.setThreads(threads);
 
           // set up the benchmark
@@ -235,7 +260,7 @@ foam.CLASS({
               }) {
                 @Override
                 public String toString() {
-                  return getName() + "-Thread " + tno;
+                  return getId() + "-Thread " + tno;
                 }
               };
             // start the thread
@@ -260,13 +285,13 @@ foam.CLASS({
           logger.info("teardown");
           benchmark.teardown(x, br);
 
-          br = (BenchmarkResult) ((DAO) x.get("benchmarkResultDAO")).put(br);
+          br = (BenchmarkResult) getBenchmarkResults(x).put(br);
 
-          ((List)getResults()).add(br);
+          getResults().add(br);
 
-          String results = formatResults(x, (List) getResults());
+          String results = formatResults(x, getResults());
+          setOutput(results);
           logger.info(results);
-          System.out.println(results);
 
           if ( getRunPerThread() ) {
             if ( reverseThreads_ ) {
@@ -284,11 +309,17 @@ foam.CLASS({
             break;
           }
         }
+        setStatus(ScriptStatus.UNSCHEDULED);
       } catch (Throwable t) {
-        t.printStackTrace();
+        setStatus(ScriptStatus.RUNNING);
         logger.error(t);
       } finally {
         setLastRun(new java.util.Date());
+        try {
+          ((DAO) x.get("benchmarkRunnerDAO")).put_(x, this);
+        } catch (RuntimeException e) {
+          logger.error(e);
+        }
       }
       `
     },
@@ -306,9 +337,8 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-      String benchmarkName = getBenchmark() == null ? String.valueOf(getBenchmarkId()) : getBenchmark().getClass().getSimpleName();
       StringBuilder csv = new StringBuilder();
-      csv.append(benchmarkName);
+      csv.append(getId());
       csv.append(",");
       csv.append(new java.util.Date().toString());
       csv.append("\\n");
@@ -330,6 +360,38 @@ foam.CLASS({
 
       return csv.toString();
       `
+    },
+    {
+      name: 'getBenchmark',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'foam.nanos.bench.Benchmark',
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(getBenchmarkId()) ) {
+          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId());
+        }
+
+        Language l = getLanguage();
+        if ( l == foam.nanos.script.Language.JSHELL )
+          return (Benchmark) new JShellExecutor().runExecutor(x, null, getCode());
+        else if ( l == foam.nanos.script.Language.BEANSHELL )
+          return (Benchmark) new BeanShellExecutor(null).execute(x, null, getCode());
+        else
+          throw new RuntimeException("Script language not supported");
+      `,
+      javaThrows: [
+        'java.lang.ClassNotFoundException',
+        'java.lang.InstantiationException',
+        'java.lang.IllegalAccessException',
+        'SecurityException',
+        'NoSuchFieldException',
+        'IOException',
+        'Exception'
+      ]
     }
   ]
 });

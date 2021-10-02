@@ -35,7 +35,6 @@ p({
       .setOf(foam.nanos.bench.BenchmarkResult.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("benchmarkResults")
-      .setFuid(true)
       .setDecorator(new foam.nanos.bench.BenchmarkResultSystemDAO.Builder(x)
         .setDelegate(new foam.nanos.bench.BenchmarkResultReportingDAO())
         .build())
@@ -86,9 +85,10 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("benchmarkRunners")
       .setFuid(true)
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(new foam.dao.NullDAO(x, foam.nanos.bench.BenchmarkRunner.getOwnClassInfo())))
       .setOrder(new foam.mlang.order.Comparator[] {
-        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkRunner.ENABLED).build(),
-        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkRunner.LAST_RUN).build()
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build()
       })
       .build();
   """,
@@ -98,4 +98,28 @@ p({
       "of":"foam.nanos.bench.BenchmarkRunner"
     }
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"benchmarkRunnerEventDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.script.ScriptEvent.getOwnClassInfo())
+      .setFuid(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.script.ScriptEvent.LAST_RUN))
+        .setSize(10000)
+        .build())
+      .setCluster(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.ScriptEvent.LAST_RUN).build()
+      })
+      .setRuler(false)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.OWNER})
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.LAST_RUN});
+  """,
+  "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })
