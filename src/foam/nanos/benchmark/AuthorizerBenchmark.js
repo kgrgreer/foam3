@@ -35,7 +35,9 @@ foam.CLASS({
   properties: [
     {
       name: 'dao',
-      class: 'foam.dao.DAOProperty'
+      class: 'foam.dao.DAOProperty',
+      javaFactory: 'return new MDAO(User.getOwnClassInfo());'
+
     },
     {
       name: 'authorizer',
