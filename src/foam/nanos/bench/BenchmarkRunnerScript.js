@@ -4,16 +4,17 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
-   package: 'foam.nanos.bench',
-   name: 'BenchmarkRunnerScript',
-   extends: 'foam.nanos.script.Script',
+foam.CLASS({
+  package: 'foam.nanos.bench',
+  name: 'BenchmarkRunnerScript',
+  extends: 'foam.nanos.script.Script',
 
-   documentation: `Executes command line BenchmarkRunner requests.  ./build.sh -BbenchmarkRunnerId`,
+  documentation: `Executes command line BenchmarkRunner requests.  ./build.sh -BbenchmarkRunnerId`,
 
-   javaImports: [
+  javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.script.Language',
     'foam.nanos.bench.Benchmark',
@@ -57,6 +58,13 @@
       name: 'failedBenchmarkRunnersList',
       class: 'FObjectArray',
       of: 'BenchmarkRunner'
+    },
+    {
+      description: 'Minimum log level to log',
+      name: 'logLevel',
+      class: 'Enum',
+      of: 'foam.log.LogLevel',
+      value: 'WARN'
     }
   ],
 
@@ -72,8 +80,15 @@
 
         // turn off logging to get rid of clutter.
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
-        loggerFilter.setLogDebug(false);
-        loggerFilter.setLogInfo(false);
+        if ( getLogLevel().getOrdinal() > LogLevel.DEBUG.getOrdinal() ) {
+          loggerFilter.setLogDebug(false);
+        }
+        if ( getLogLevel().getOrdinal() > LogLevel.INFO.getOrdinal() ) {
+          loggerFilter.setLogInfo(false);
+        }
+        if ( getLogLevel().getOrdinal() > LogLevel.WARN.getOrdinal() ) {
+          loggerFilter.setLogWarning(false);
+        }
 
         DAO dao = (DAO) x.get("benchmarkRunnerDAO");
         dao = dao.where(EQ(BenchmarkRunner.ENABLED, true));
