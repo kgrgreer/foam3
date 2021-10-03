@@ -29,7 +29,7 @@ foam.CLASS({
     },
     {
       documentation: 'Address of remote server',
-      name: 'host',
+      name: 'hostname',
       class: 'String'
     },
     {
@@ -37,6 +37,11 @@ foam.CLASS({
       name: 'port',
       class: 'Int',
       value: 8443,
+    },
+    {
+      name: 'serviceName',
+      class: 'String',
+      value: 'benchmarkResultDAOServer'
     }
   ],
 
@@ -46,7 +51,7 @@ foam.CLASS({
       javaCode: `
       var result = getDelegate().put_(x, obj);
       if ( SafetyUtil.isEmpty(getSessionId()) ||
-           SafetyUtil.isEmpty(getHost()) ) {
+           SafetyUtil.isEmpty(getHostname()) ) {
         return result;
       }
       DAO dao = new ClientDAO.Builder(x)
@@ -54,13 +59,17 @@ foam.CLASS({
         .setDelegate(new SessionClientBox.Builder(x)
           .setSessionID(getSessionId())
           .setDelegate(new SocketClientBox.Builder(x)
-            .setHost(getHost())
+            .setHost(getHostname())
             .setPort(getPort() + SocketServer.PORT_OFFSET)
-            .setServiceName("benchmarkResultDAO")
+            .setServiceName(getServiceName())
             .build())
           .build())
         .build();
-      dao.put(obj);
+      try {
+        dao.put(result);
+      } catch (Throwable t) {
+        foam.nanos.logger.Loggers.logger(x, this).warning(t);
+      }
 
       return result;
       `
