@@ -1125,6 +1125,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'com.google.flow.Vector3',
       name: 'position',
+      hidden: true,
       factory: function() { return this.Vector3.create(); }
     },
     {
@@ -1206,13 +1207,16 @@ foam.CLASS({
     },
 
     function paint(ctx) {
+//      this.x = this.y = this.z = 0;
       // Transform so that turtle appears in the right spot.
       var x  = this.position.x, y = this.position.y, z = this.position.z;
       var x2 = this.parent.width/2 - x + y;
       var y2 = this.parent.height/2 + x + y - z * Math.SQRT2;
 
+
       ctx.save();
       ctx.translate(x2-x, y2-y);
+      console.log('xyz: ', x,y,z, 'p.w, p.h: ', this.parent.width, this.parent.height, x2,y2);
       this.SUPER(ctx);
       ctx.restore();
     },
