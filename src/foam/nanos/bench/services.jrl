@@ -19,36 +19,6 @@ p({
   """
 })
 
-// Jenkins - remove JournalType and nullify
-// p({
-//   "class": "foam.nanos.boot.NSpec",
-//   "name": "benchmarkResultDAO",
-//   "serve": true,
-//   "serviceScript":
-//   """
-//     return new foam.dao.EasyDAO.Builder(x)
-//       .setOf(foam.nanos.bench.BenchmarkResult.getOwnClassInfo())
-//       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-//       .setJournalName("benchmarkResults")
-//       .setDecorator(new foam.nanos.bench.BenchmarkResultSystemDAO.Builder(x)
-//        .setDelegate(new foam.nanos.bench.BenchmarkResultReportingDAO())
-//          .setSessionId(...)
-//          .setHost("jenkins.nanopay.net")
-//          .setPort(8443)
-//         .build())
-//       .setCluster(false)
-//       .setOrder(new foam.mlang.order.Comparator[] {
-//         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.bench.BenchmarkResult.CREATED).build()
-//       })
-//       .build();
-//   """,
-//   "client":
-//   """
-//     {
-//       "of":"foam.nanos.bench.BenchmarkResult"
-//     }
-//   """
-// })
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "benchmarkResultDAO",
