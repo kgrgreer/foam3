@@ -23,9 +23,6 @@ import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
-import foam.nanos.crunch.lite.Capable;
-import foam.nanos.crunch.CapabilityJunctionPayload;
-import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
 import foam.nanos.dao.Operation;
@@ -325,7 +322,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     var ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO"))
       .find(AND(
-          getAssociationPredicate_(x),
+          getAssociationPredicate_(x, null),
           IN(UserCapabilityJunction.TARGET_ID, junctions),
           EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
         )
@@ -383,7 +380,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public UserCapabilityJunction[] getAllJunctionsForUser(X x) {
-    Predicate associationPredicate = getAssociationPredicate_(x);
+    Predicate associationPredicate = getAssociationPredicate_(x, null);
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     ArraySink arraySink = (ArraySink) userCapabilityJunctionDAO
       .where(associationPredicate)
@@ -399,7 +396,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
       x = x.put("subject", subject);
-      Predicate associationPredicate = getAssociationPredicate_(x);
+      Predicate associationPredicate = getAssociationPredicate_(x, capabilityId);
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
@@ -726,7 +723,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     return granted.toArray(new String[0]);
   }
 
-  private Predicate getAssociationPredicate_(X x) {
+  private Predicate getAssociationPredicate_(X x, String capabilityId) {
     Subject subject = (Subject) x.get("subject");
 
     User user = subject.getUser();
@@ -734,15 +731,16 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     Predicate acjPredicate = INSTANCE_OF(AgentCapabilityJunction.class);
 
-    return OR(
+    // default search result - however updates need to be more specific
+    Predicate result = OR(
       AND(
         NOT(acjPredicate),
         ( user != realUser )
           // Check if a ucj implies the subject.user has this permission
           ? OR(
-              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-              EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
-            )
+            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+            EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
+          )
           // Check if a ucj implies the subject.realUser has this permission
           : EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
       ),
@@ -753,5 +751,25 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
       )
     );
+    // Consider the capability that is being referenced,
+    // and assign correct predicate
+    if ( capabilityId != null ) {
+      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      Capability cap = (Capability) capabilityDAO.find(capabilityId);
+      if ( cap == null ) return result;
+      if ( cap.getAssociatedEntity() == AssociatedEntity.USER )
+          return EQ(UserCapabilityJunction.SOURCE_ID, user.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.REAL_USER )
+          return EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.ACTING_USER )
+        return AND(
+          acjPredicate,
+          // Check if a ucj implies the subject.realUser has this permission in relation to the user
+          EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+          EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
+        );
+      }
+    
+    return result;
   }
 }
