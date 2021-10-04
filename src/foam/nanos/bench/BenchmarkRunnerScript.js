@@ -103,6 +103,8 @@ foam.CLASS({
         for ( BenchmarkRunner runner : runners ) {
           if ( selectedBenchmarkRunners != null ) {
             if ( selectedBenchmarkRunners.contains(runner.getId()) ||
+                 selectedBenchmarkRunners.contains(runner.getId().replace("Runner", "")) ||
+                 selectedBenchmarkRunners.contains(runner.getBenchmarkId()) ||
                  selectedBenchmarkRunners.contains(runner.getClass().getSimpleName()) ||
                  selectedBenchmarkRunners.contains(runner.getClass().getSimpleName().replace("Runner", "")) ) {
               executeBenchmarkRunner(x, runner);

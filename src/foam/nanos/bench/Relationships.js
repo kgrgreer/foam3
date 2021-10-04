@@ -17,8 +17,9 @@ foam.RELATIONSHIP({
     readVisibility: 'RO'
   },
   targetProperty: {
-    label: 'Benchmark Runner Id',
-    visibility: 'HIDDEN',
-    tableWidth: 300
+    label: 'Benchmark Runner',
+    createVisibility: 'HIDDEN',
+    updateVisibility: 'RO',
+    readVisibility: 'RO'
   }
 });
