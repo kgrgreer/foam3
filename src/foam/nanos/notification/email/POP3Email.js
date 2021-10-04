@@ -18,5 +18,6 @@ foam.INTERFACE({
       type: 'String',
       async: true,
       args: 'String requestor, String subject, String body'
+    }
   ]
 });
