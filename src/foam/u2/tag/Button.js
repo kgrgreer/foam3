@@ -35,48 +35,38 @@ foam.CLASS({
       outline: none;
       text-align: center;
     }
-
     ^iconAfter {
       flex-direction: row-reverse;
     }
-
     ^ + ^ {
       margin-left: 8px;
     }
-
     ^:hover:not(:disabled) {
       cursor: pointer;
     }
-
     ^unavailable {
       display: none;
     }
-
     ^ img {
       vertical-align: middle;
     }
-
     ^ svg {
       width: 100%;
       max-height: 100%;
       vertical-align: middle;
     }
-
     ^.material-icons {
       cursor: pointer;
     }
-
     ^ > .foam-u2-HTMLView{
       padding: 0;
     }
-
     /* Unstyled */
     ^unstyled {
       background: none;
       border: none;
       color: inherit;
     }
-
     /* Primary */
     ^primary, ^primary svg {
       background-color: /*%PRIMARY3%*/ #406dea;
@@ -84,195 +74,148 @@ foam.CLASS({
       color: /*%WHITE%*/ white;
       fill: /*%WHITE%*/ white;
     }
-
     ^primary:hover:not(:disabled) {
       background-color: /*%PRIMARY2%*/ #144794;
     }
-
     ^primary:focus {
       background-color: /*%PRIMARY2%*/ #144794;
       border-color: /*%PRIMARY1%*/ #202341;
     }
-
     ^primary:disabled {
       background-color: /*%PRIMARY4%*/ #C6D2FF;
     }
-
     /* Primary destructive */
-
     ^primary-destructive,^primary-destructive svg {
       background-color: /*%DESTRUCTIVE3%*/ #d9170e;
       color: /*%WHITE%*/ white;
       fill: /*%WHITE%*/ white;
     }
-
     ^primary-destructive:hover:not(:disabled) {
       background-color: /*%DESTRUCTIVE2%*/ #a61414;
     }
-
     ^primary-destructive:focus {
       background-color: /*%DESTRUCTIVE2%*/ #a61414;
       border: 1px solid /*%DESTRUCTIVE1%*/ #631414;
       box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
     }
-
     ^primary-destructive:disabled {
       background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
     }
-
-
     /* Secondary */
-
     ^secondary{
       background-color: /*%WHITE%*/ white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%GREY1%*/ #494F59;
     }
-
     ^secondary svg { fill: /*%GREY1%*/ #494F59; }
-
     ^secondary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #B2B6BD;
     }
-
     ^secondary:focus {
       background-color: /*%GREY5%*/ #B2B6BD;
       border: 1px solid /*%PRIMARY3%*/ #406DEA;
     }
-
     ^secondary:disabled{
       background-color: /*%GREY5%*/ #F5F7FA;
       border-color: /*%GREY4%*/ #DADDE2;
       color: /*%GREY4%*/ #DADDE2;
     }
-
     ^secondary:disabled svg { fill: /*%GREY4%*/ #DADDE2; }
-
     /* Secondary destructive */
-
     ^secondary-destructive{
       background-color: white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%DESTRUCTIVE2%*/ #a61414;
     }
-
     ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
-
     ^secondary-destructive:hover {
       background-color: /*%GREY5%*/ #B2B6BD;
     }
-
     ^secondary-destructive:focus {
       background-color: /*%GREY5%*/ #B2B6BD;
       border-color: /*%DESTRUCTIVE2%*/ #a61414;
     }
-
     ^secondary-destructive:disabled {
       background-color: /*%GREY5%*/ #F5F7FA;
       border-color: /*%GREY4%*/ #DADDE2;
       color: /*%DESTRUCTIVE5%*/ #E5D2D0;
     }
-
     ^secondary-destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
-
     /* Tertiary */
-
     ^tertiary{
       background: none;
       border: 1px solid transparent;
       color: /*%GREY1%*/ #5E6061;
     }
-
     ^tertiary svg { fill: /*%GREY1%*/ #5E6061; }
-
     ^tertiary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
     }
-
     ^tertiary:focus,^tertiary:focus svg {
       background-color: /*%GREY5%*/ #F5F7FA;
       color: /*%PRIMARY3%*/ #494F59;
       fill: /*%PRIMARY3%*/ #494F59;
     }
-
     ^tertiary:disabled,^tertiary:disabled svg {
       color: /*%GREY4%*/ #DADDE2;
       fill: /*%GREY4%*/ #DADDE2;
     }
-
-
     /* Tertiary destructive */
-
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
       color: /*%DESTRUCTIVE3%*/ #D9170E;
     }
-
     ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
-
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
     }
-
     ^tertiary-destructive:focus,^tertiary-destructive:focus svg {
       background-color: /*%GREY5%*/ #F5F7FA;
       color: /*%DESTRUCTIVE3%*/ #494F59;
       fill: /*%DESTRUCTIVE3%*/ #494F59;
     }
-
     ^tertiary-destructive:disabled,^tertiary-destructive:diabled svg {
       color: /*%GREY4%*/ #DADDE2;
       fill: /*%GREY4%*/ #DADDE2;
     }
-
     /* Link */
-
     ^link,^link svg {
       background: none;
       color: /*%GREY1%*/ #5E6061;
       fill: /*%GREY1%*/ #5E6061;
     }
-
     ^link:hover:not(:disabled),^link:hover svg {
       text-decoration: underline;
       color: /*%GREY2%*/ #6B778C;
       fill: /*%GREY2%*/ #6B778C;
     }
-
     ^link:focus,^link:focus svg {
       color: /*%PRIMARY3%*/ #406DEA;
       fill: /*%PRIMARY3%*/ #406DEA;
     }
-
     /* Sizes */
-
     ^small {
       padding: 6px 10px;
     }
-
     ^medium {
       padding: 8px 12px;
       max-height: 34px;
     }
-
     ^large {
       min-width: 100px;
       padding: 12px 12px;
     }
-
     ^iconOnly{
       padding: 8px;
       max-height: inherit;
     }
-
     ^link^small,
     ^link^medium,
     ^link^large {
       padding-left: 0;
       padding-right: 0;
     }
-
     ^link > .foam-u2-HTMLView{
       height: 1em;
     }
@@ -285,11 +228,9 @@ foam.CLASS({
       max-width: 100%;
       object-fit: contain;
     }
-
     ^svgIcon svg {
       height: 100%;
     }
-
     ^imgSVGIcon {
       display: flex;
       align-items: center;
