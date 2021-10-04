@@ -41,7 +41,7 @@ foam.CLASS({
     {
       name: 'serviceName',
       class: 'String',
-      value: 'benchmarkResultDAOServer'
+      value: 'benchmarkResultServerDAO'
     }
   ],
 
