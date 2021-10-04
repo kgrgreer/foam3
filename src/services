@@ -1161,10 +1161,3 @@ p({
     }
   """
 })
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "medusastatuswatcher",
-  "lazy": false,
-  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
-})
