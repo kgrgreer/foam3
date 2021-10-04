@@ -186,6 +186,7 @@ foam.CLASS({
                   .tag(self.stack.BACK, {
                     buttonStyle: foam.u2.ButtonStyle.LINK,
                     icon: 'images/back-icon.svg',
+                    themeIcon: 'back',
                     label: this.BACK
                   })
                 .endContext()
