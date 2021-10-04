@@ -1163,13 +1163,6 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "medusastatuswatcher",
-  "lazy": false,
-  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
-})
-
-p({
   "class":"foam.nanos.boot.NSpec",
   "name":"approvalRequestClassificationDAO",
   "serve":true,
