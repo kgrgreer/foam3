@@ -646,28 +646,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   public WizardState getWizardState(X x, String capabilityId) {
     var subject = (Subject) x.get("subject");
-
-    DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-    Capability capability = (Capability) capabilityDAO.find(capabilityId);
-
-    if ( ! subject.isAgent() ) {
-      return getWizardStateFor_(x, subject, capabilityId);
-    }
-
-    var realUser = new Subject();
-    realUser.setUser(subject.getRealUser());
-    realUser.setUser(subject.getRealUser());
-    var realUserWizardState = getWizardStateFor_(x, realUser, capabilityId);
-    var effectiveUser = new Subject();
-    effectiveUser.setUser(subject.getUser());
-    effectiveUser.setUser(subject.getUser());
-    var userWizardState = getWizardStateFor_(x, effectiveUser, capabilityId);
-
     var subjectWizardState = getWizardStateFor_(x, subject, capabilityId);
 
-    return capability.getAssociatedEntity() == AssociatedEntity.USER ? userWizardState :
-      capability.getAssociatedEntity() == AssociatedEntity.REAL_USER ? realUserWizardState :
-      subjectWizardState;
+    return subjectWizardState;
   }
 
   private WizardState getWizardStateFor_(X x, Subject s, String capabilityId) {
