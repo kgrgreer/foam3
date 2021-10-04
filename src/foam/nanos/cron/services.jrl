@@ -20,7 +20,9 @@ p({
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build()
       })
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.STATUS });
   """,
   "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
 })

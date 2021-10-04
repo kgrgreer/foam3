@@ -570,6 +570,7 @@ FOAM_FILES([
   { name: "foam/u2/view/MultiBoxInputView", flags: ['web'] },
   { name: "foam/u2/FragmentedTextField", flags: ['web'] },
   { name: "foam/u2/FragmentedTextFieldFragment", flags: ['web'] },
+  { name: "foam/u2/TextFormatter", flags: ['web'] },
   { name: "foam/u2/FormattedTextField", flags: ['web'] },
   { name: "foam/u2/view/UserPropertyAvailabilityView", flags: ['web'] },
   { name: "foam/u2/view/FObjectView", flags: ['web'] },
@@ -621,6 +622,7 @@ FOAM_FILES([
   { name: "foam/u2/view/FnFormatter", flags: ['js'] },
   { name: "foam/u2/view/TableCellFormatter", flags: ['js'] },
   { name: "foam/u2/view/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/view/LazyScrollManager", flags: ['web'] },
   { name: "foam/u2/view/TableView", flags: ['web'] },
   { name: "foam/u2/view/EditColumnsView", flags: ['web'] },
   { name: "foam/u2/view/ColumnConfigView", flags: ['web'] },
@@ -1065,6 +1067,13 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/AgreementView' },
   { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
+  // Table
+  { name: "foam/u2/table/TableComponentView", flags: ['web'] },
+  { name: "foam/u2/table/TableView", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
+
   { name: "foam/util/date/TimeUnit" },
 
   { name: "foam/nanos/dig/exception/DigErrorMessage" },
@@ -1080,4 +1089,5 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" }
+
 ])

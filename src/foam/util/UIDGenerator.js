@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'getNextString',
       type: 'String',
       javaCode: `
-        return generate();
+        return String.valueOf(getNextLong());
       `
     },
     {
