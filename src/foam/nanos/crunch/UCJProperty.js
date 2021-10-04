@@ -43,19 +43,28 @@ foam.CLASS({
         if ( ! foam.Object.isInstance(o) && ! foam.Array.isInstance(o) ) {
           throw new Error('valid UCJProperty values are: Predicate, string, object');
         }
-        if ( ! o.hasOwnProperty('sourceId') || ! o.hasOwnProperty('targetId') ) {
+        if ( ! o.hasOwnProperty('sourceId') ) {
           throw new Error('an object value for UCJProperty must have ' +
-            'properties sourceId and targetId.');
+            'properties sourceId.');
         }
 
         const UserCapabilityJunction = foam.nanos.crunch.UserCapabilityJunction;
         const AgentCapabilityJunction = foam.nanos.crunch.AgentCapabilityJunction;
 
-        var predicate = e.AND(
+        var predicate = e.OR(
           e.EQ(UserCapabilityJunction.SOURCE_ID, o.sourceId),
-          e.EQ(UserCapabilityJunction.TARGET_ID, o.targetId)
-        );
+          e.AND(
+            e.INSTANCE_OF(AgentCapabilityJunction),
+            e.EQ(AgentCapabilityJunction.EFFECTIVE_USER, o.sourceId)
+            )
+          );
 
+        if ( o.hasOwnProperty('targetId') ) {
+          predicate = e.AND(
+            e.EQ(UserCapabilityJunction.SOURCE_ID, o.sourceId),
+            e.EQ(UserCapabilityJunction.TARGET_ID, o.targetId)
+          );
+        }
         if ( o.hasOwnProperty('effectiveUser') ) {
           predicate = e.AND(
             predicate,
