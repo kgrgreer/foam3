@@ -421,7 +421,7 @@ foam.CLASS({
     function assignPredicate(property) {
       var predicate = this.filterController.finalPredicate;
       if ( predicate ) {
-        if ( foam.mlang.predicate.Or.isInstance(predicate) ) {
+        if ( foam.mlang.predicate.And.isInstance(predicate) ) {
           var subPredicates = predicate.args;
           for ( subPredicate of subPredicates ) {
             if ( subPredicate.toString().includes(property.name) ) return subPredicate;

@@ -341,6 +341,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.View',
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
       value: null

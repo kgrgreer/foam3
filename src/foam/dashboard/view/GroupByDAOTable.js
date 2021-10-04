@@ -9,71 +9,111 @@
   name: 'GroupByDAOTable',
   extends: 'foam.dashboard.view.DAOTable',
 
+  documentation: `
+    A DAOTable view that groups and counts dao entries that share the same value for groupByPropertyName.
+  `,
+
+  imports: [
+    'dashboardController'
+  ],
+
+  css: `
+    ^no-entry {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  `,
+
   properties: [
     {
       class: 'String',
-      name: 'groupByProperty'
+      name: 'groupByPropertyName',
+      documentation: 'The property by which grouping will be done'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.menu.Menu',
-      name: 'redirectMenu'
+      name: 'redirectMenu',
+      documentation: 'The menu that will be pushed when an individual grouping is selected.'
     },
     {
-      name: 'categoryCount',
+      name: 'noEntriesMessage',
+      type: 'foam.box.Message'
+    },
+    {
+      name: 'groupingsCount',
+      documentation: `
+        A map that stores the possible groups and the number of dao entries that belong to the individual groups.
+      `,
       factory: function() {
         return new Map();
       }
+    },
+    {
+      name: 'customizeKey'
     }
   ],
   methods: [
     function init() {
-      this.data$.dot('dao').sub(this.populateCategoryCount);
+      this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
+        this.update();
+      }.bind(this)));
+      this.onDetach(this.data$.dot('dao').sub(this.populateGroupingsCount));
     },
     async function render() {
       var self = this;
 
-      await this.populateCategoryCount();
+      await this.populateGroupingsCount();
 
       this
         .addClass(this.myClass())
-        .add(this.slot(function(categoryCount) {
+        .add(this.slot(function(groupingsCount) {
           var e = self.E();
           return e
-            .addClass(this.myClass())
-            .forEach(Array.from(this.categoryCount.entries()), function(ent) {
-
-            // })
-          //   .select(self.data$dao, function(obj) {
+            .callIf(groupingsCount.size == 0, function() {
+              e.start().addClass(self.myClass('no-entry')).add(self.noEntriesMessage).end();
+            })
+            .forEach(Array.from(this.groupingsCount.entries()), function(grouping) {
               e.start()
                 .addClass('table-row')
-                  // .add(ent[1])
                 .start({
                   class: self.citationView,
-                  data: ent,
-                  groupByProperty: self.groupByProperty,
+                  data: grouping,
+                  groupByPropertyName: self.groupByPropertyName,
                   redirectMenu: self.redirectMenu,
-                  of: self.data.dao.of
+                  dao: self.data.dao,
+                  customizeKey: self.customizeKey
                 })
-               .end();
+              .end();
            });
         }));
     }
   ],
   listeners: [
     {
-      name: 'populateCategoryCount',
+      name: 'populateGroupingsCount',
       code: async function() {
+        var map_ = new Map();
         var out = await this.data.dao.select();
         for ( v of out.array ) {
-          var key = v[this.groupByProperty];
-          if ( this.categoryCount.has(key)) {
-            var count = this.categoryCount.get(key);
-            this.categoryCount.set(key, count + 1);
+          var key = v[this.groupByPropertyName];
+          if ( map_.has(key)) {
+            var count = map_.get(key);
+            map_.set(key, count + 1);
             continue;
           }
-          this.categoryCount.set(key, 1);
+          map_.set(key, 1);
         }
+        this.groupingsCount = map_;
+      }
+    },
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        this.populateGroupingsCount();
       }
     }
   ]

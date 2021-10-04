@@ -165,7 +165,6 @@ foam.CLASS({
         .end();
 
       this.isInit = true;
-      this.checkPresetPredicate();
 
       if ( this.memento && this.memento.head.length != 0 ) {
         var predicate = this.getPredicateFromMemento();
@@ -176,6 +175,7 @@ foam.CLASS({
 
       this.isFiltering();
       this.isInit = false;
+      this.checkPresetPredicate();
     },
 
     function getPredicateFromMemento() {
@@ -226,6 +226,8 @@ foam.CLASS({
 
       // Prevents rerendering the view.
       this.firstTime_ = false;
+
+      if ( this.preSetPredicate != null ) this.isFiltering();
 
       this.onDetach(this.view_$.dot('predicate').sub(this.isFiltering));
     },
