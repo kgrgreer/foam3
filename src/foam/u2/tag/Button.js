@@ -231,6 +231,20 @@ foam.CLASS({
     ^svgIcon svg {
       height: 100%;
     }
+    ^small svg {
+      width: 1.15em;
+      height: 1.15em;
+    }
+    ^medium svg {
+      width: 1.71em;
+      height: 1.71em;
+    }
+    ^large svg {
+      width: 2.25em;
+      height: 2.25em;
+    }
+    /* SVGs outside themeGlyphs may have their own heights and widths,
+    these ensure those are respected rather than imposing new dimensions */
     ^imgSVGIcon {
       display: flex;
       align-items: center;
@@ -358,12 +372,7 @@ foam.CLASS({
         this.nodeName = 'i';
         this.addClass(this.action.name);
         this.addClass(this.iconFontClass); // required by font package
-<<<<<<< HEAD
-        this.style(iconStyle);
-//        this.attr(role, 'presentation')
-=======
         this.attr(role, 'presentation')
->>>>>>> 483470176b00a22c63c05d6640b594aa266e86d9
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }
