@@ -116,7 +116,7 @@ foam.CLASS({
             .flat());
           return [args, function() {
             for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
-              var vp = validationPredicates[i];
+              var vp   = validationPredicates[i];
               var self = this;
               if ( vp.jsFunc.call(this) ) return vp.jsErr.call(self, self);
             }
@@ -127,7 +127,7 @@ foam.CLASS({
           function() {
             const axiom = this.cls_.getAxiomByName(name);
             return axiom.isDefaultValue(this[name]) && (`${this.PLEASE_ENTER} ${label.toLowerCase()}`);
-          }]
+          }];
       }
     }
   ]
@@ -542,6 +542,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.core',
   name: 'URLValidationRefinement',
@@ -575,6 +576,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.core',
