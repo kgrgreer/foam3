@@ -290,8 +290,6 @@ foam.CLASS({
       height: 100%;
     }
 
-    /* SVGs outside themeGlyphs may have their own heights and widths,
-    these ensure those are respected rather than imposing new dimensions */
     ^imgSVGIcon {
       display: flex;
       align-items: center;
@@ -393,12 +391,10 @@ foam.CLASS({
     async function addContent() {
       /** Add text or icon to button. **/
       var self = this;
-      var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
-      var iconStyle = { width: size, height: size };
 
       if ( this.themeIcon && this.theme ) {
         var indicator = this.themeIcon.clone(this).expandSVG();
-        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).addClass(this.myClass('SVGIcon')).style(iconStyle).end();
+        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).addClass(this.myClass('SVGIcon')).end();
       } else if ( this.icon ) {
         if ( this.icon.endsWith('.svg') ) {
           var req  = this.HTTPRequest.create({
@@ -412,18 +408,21 @@ foam.CLASS({
             self.start(this.HTMLView, { data: x })
               .attrs({ role: 'presentation' })
               .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
-              .style(iconStyle)
             .end();
           });
         } else {
-          this.start('img').style(iconStyle).attrs({ src: this.icon$, role: 'presentation' }).end();
+          this.start('img').attrs({ src: this.icon$, role: 'presentation' }).end();
         }
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.addClass(this.action.name);
         this.addClass(this.iconFontClass); // required by font package
+<<<<<<< HEAD
         this.style(iconStyle);
 //        this.attr(role, 'presentation')
+=======
+        this.attr(role, 'presentation')
+>>>>>>> 483470176b00a22c63c05d6640b594aa266e86d9
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }
