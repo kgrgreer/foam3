@@ -506,6 +506,13 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       ? subject.getUser()
       : subject.getRealUser()
       ;
+    // Setup default data
+    FObject dataa = null;
+    try {
+      dataa = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
+    } catch ( Exception ex ) {
+      throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
+    }
     var ucj = isAssociation
       ? new AgentCapabilityJunction.Builder(x)
         .setSourceId(associatedUser.getId())
@@ -518,6 +525,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         .build()
       ;
     ucj.setStatus(CapabilityJunctionStatus.AVAILABLE);
+    ucj.setData(dataa);
     return ucj;
   }
 
