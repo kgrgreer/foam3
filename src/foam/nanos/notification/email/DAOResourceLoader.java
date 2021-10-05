@@ -17,15 +17,15 @@ import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
 import foam.nanos.pm.PM;
-import foam.nanos.pm.PMInfo;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static foam.mlang.MLang.*;
@@ -53,38 +53,49 @@ public class DAOResourceLoader
       Y     *     *     *
     */
 
-    do {
-      boolean group_  = ! SafetyUtil.isEmpty(groupId);
-      boolean spid_   = ! SafetyUtil.isEmpty(spid);
+    List<String> groupIdList = new ArrayList<>();
+    while ( ! SafetyUtil.isEmpty(groupId) ) {
+      groupIdList.add(groupId);
 
-      if ( group_ && spid_ )
+      if ( ! SafetyUtil.isEmpty(spid) )
         emailTemplate = findTemplateHelper(x, name, groupId, locale, spid, templateArgs);
-
-      if ( emailTemplate == null && group_ )
-        emailTemplate = findTemplateHelper(x, name, groupId, locale, "", templateArgs);
-
-      if ( emailTemplate == null && spid_ )
-        emailTemplate = findTemplateHelper(x, name, groupId, "en", spid, templateArgs);
-
-      if ( emailTemplate == null && group_ )
-        emailTemplate = findTemplateHelper(x, name, groupId, "en",   "", templateArgs);
-
-      if ( emailTemplate == null && spid_ )
-        emailTemplate = findTemplateHelper(x, name,"", "en", spid, templateArgs);
-
-      if ( emailTemplate == null )
-        findTemplateHelper(x, name, "", "en", "", templateArgs);
 
       if ( emailTemplate != null ) return emailTemplate;
 
-      // exit condition, no emails even with wildcard group so return null
-      if ( "*".equals(groupId) ) return null;
-
+      // next group setup
       Group group = (Group) groupDAO.find(groupId);
-      groupId = ( group != null && ! SafetyUtil.isEmpty(group.getParent()) ) ? group.getParent() : "*";
-    } while ( ! SafetyUtil.isEmpty(groupId) );
+      groupId = ( group != null && ! SafetyUtil.isEmpty(group.getParent()) ) ? group.getParent() : "";
+    }
 
-    return null;
+    // loop through grps again without spid
+    for ( String group : groupIdList ) {
+      emailTemplate = findTemplateHelper(x, name, group, locale, "", templateArgs);
+
+      if ( emailTemplate != null ) return emailTemplate;
+    }
+
+    // loop through grps again without locale - default 'en'
+    for ( String group : groupIdList ) {
+      emailTemplate = findTemplateHelper(x, name, group, "en", spid, templateArgs);
+
+      if ( emailTemplate != null ) return emailTemplate;
+    }
+
+    // loop through grps again without locale or spid
+    for ( String group : groupIdList ) {
+      emailTemplate = findTemplateHelper(x, name, group, "en", "", templateArgs);
+
+      if ( emailTemplate != null ) return emailTemplate;
+    }
+
+    // check spid no locale or group
+    emailTemplate = findTemplateHelper(x, name,"", "en", spid, templateArgs);
+
+    //check just name - if not null
+    if ( emailTemplate == null )
+      emailTemplate = findTemplateHelper(x, name, "", "en", "", templateArgs);
+
+    return emailTemplate;
   }
 
   public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid) {
