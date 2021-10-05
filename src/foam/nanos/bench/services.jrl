@@ -65,7 +65,7 @@ p({
 //        .setDelegate(new foam.nanos.bench.BenchmarkResultReportingDAO())
 //          .setSessionId("45BD0A0D-D2D4-4CF6-9B63-3508A7190A42")
 //          .setHostname("localhost")
-//          .setPort(8443)
+//          .setPort(8080)
 //          .setServiceName("benchmarkResultServerDAO")
 //         .build())
 //       .setCluster(false)
