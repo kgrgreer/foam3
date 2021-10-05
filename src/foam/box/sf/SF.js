@@ -458,6 +458,44 @@ foam.CLASS({
         };
         return Collections.synchronizedMap(map);
       `
+    },
+    {
+      name: 'getFileAttributes',
+      documentation: `helper function to get BaiscFileAttributes object for a file`,
+      args: 'String fileName',
+      javaType: 'BasicFileAttributes',
+      javaCode: `
+        try {
+          Path file = Paths.get(fileName);
+          return Files.readAttributes(file, BasicFileAttributes.class);
+        } catch ( IOException e ) {
+          throw new RuntimeException(e);
+        }
+      `
+    },
+    {
+      name: 'getLastAccessTime',
+      documentation: `helper function to get file Atime`,
+      args: 'String fileName',
+      javaType: 'long',
+      javaCode: `
+        BasicFileAttributes attr = getFileAttributes(fileName);
+        return attr.lastAccessTime().toMillis();
+      `
+    },
+    {
+      name: 'setLastAccessTime',
+      documentation: `helper function to set file Atime`,
+      args: 'String fileName, Long atime',
+      javaCode: `
+      try {
+        Path file = Paths.get(fileName);
+        FileTime fileTime = FileTime.fromMillis(atime);
+        Files.setAttribute(file, "lastAccessTime", fileTime);
+      } catch ( IOException ioe ) {
+        throw new RuntimeException(ioe);
+      }
+      `
     }
   ],
 
