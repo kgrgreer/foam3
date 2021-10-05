@@ -63,8 +63,8 @@ foam.CLASS({
     'ctrl',
     'currentMenu?',
     'memento',
+    'stack',
     'translationService',
-    'stack'
   ],
 
   exports: [

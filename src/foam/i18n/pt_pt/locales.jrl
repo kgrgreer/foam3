@@ -687,6 +687,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.VER
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.BACK",target:"VOLTAR"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.UPDATED",target:"Atualizado"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOCreateView.CREATED",target:"Criado"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER1",target:"Controlador 1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER2",target:"Controlador 2"})
 
