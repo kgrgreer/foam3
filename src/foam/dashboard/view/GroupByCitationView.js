@@ -53,7 +53,7 @@
       this.addClass(this.myClass())
         .on('click', function() {
           var config = self.redirectMenu.handler.config;
-          var propertyValue = foam.String.isInstance(self.data[0]) ? self.data[0] : self.data[0].name;
+          var propertyValue = self.data[0];
 
           var predicate = self.EQ(self.dao.of.getAxiomByName(self.groupByPropertyName), propertyValue);
          
