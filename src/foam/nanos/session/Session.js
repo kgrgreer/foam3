@@ -343,8 +343,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
              subjectUser.getId() != user.getId() ) ||
            ( agent != null && subjectAgent != null &&
              subjectAgent.getId() != agent.getId() ) ||
-           ! user.equals(subjectUser) ||
-           agent != null && ! agent.equals(subjectAgent) ) {
+           ( subjectUser != null &&
+             ! user.equals(subjectUser) ||
+             agent != null && subjectAgent != null &&
+             ! agent.equals(subjectAgent) ) ) {
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
