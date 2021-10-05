@@ -43,6 +43,20 @@
       class: 'String',
       name: 'documentType',
       section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'url',
+      section: 'infoSection',
+      visibility: 'RO',
+      expression: function(appConfig, requesteeSession) {
+        return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
+      }
+    },
+    {
+      class: 'String',
+      name: 'sessionToken',
+      visibility: 'HIDDEN'
     }
   ],
 
