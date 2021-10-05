@@ -510,6 +510,15 @@ foam.CLASS({
         throw new RuntimeException(ioe);
       }
       `
+    },
+    {
+      name: 'isFileProcessComplete',
+      documentation: 'helper function to determine if file is processed completed',
+      args: 'String fileName',
+      javaType: 'boolean',
+      javaCode: `
+        return getFileSize(fileName) == getLastAccessTime(fileName) ? true : false;
+      `
     }
   ],
 
