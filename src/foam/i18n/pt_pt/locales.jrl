@@ -685,6 +685,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.MAT
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.WIZARD",target:"Mago"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.VERTICAL",target:"Vertical"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.BACK",target:"VOLTAR"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.UPDATED",target:"Atualizado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER1",target:"Controlador 1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER2",target:"Controlador 2"})
