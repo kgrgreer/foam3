@@ -82,7 +82,7 @@ foam.CLASS({
       return false;
       `,
       code: function() {
-        return !! this.userPath.filter(u => u.id == idCheck);
+        return !! this.userPath.find(u => u.id == idCheck);
       }
     },
     {
