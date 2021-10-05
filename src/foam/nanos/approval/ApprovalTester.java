@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestClassificationEnum;
 
 /**
  * This class provides support for getting approval state (combined status) of
@@ -40,7 +39,7 @@ public class ApprovalTester {
    * there are approval requests for "class1" that have 2 approval points and
    * total required points is 5.
    */
-  protected Map<ApprovalRequestClassificationEnum, int[]> approval_ = new HashMap<>();
+  protected Map<String, int[]> approval_ = new HashMap<>();
 
   /**
    * State is the combined status of approval requests.
@@ -92,7 +91,7 @@ public class ApprovalTester {
   }
 
   private void incrApproval(ApprovalRequest request) {
-    ApprovalRequestClassificationEnum key = request.getClassificationEnum();
+    String key = request.getClassification();
     int[] value = approval_.get(key);
     if ( value == null ) {
       value = new int[] { 0, request.getRequiredPoints() };

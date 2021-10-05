@@ -21,7 +21,6 @@ foam.CLASS({
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovableAware',
     'foam.nanos.approval.ApprovalRequest',
-    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.LifecycleAware',
@@ -330,7 +329,7 @@ foam.CLASS({
           .setDaoKey(getServiceName())
           .setServerDaoKey(getDaoKey())
           .setObjId(String.valueOf(obj.getProperty("id")))
-          .setClassificationEnum(ApprovalRequestClassificationEnum.APPROVABLE_REQUEST)
+          .setClassification("approvable-request")
           .setOperation(operation)
           .setCreatedBy(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
@@ -371,7 +370,7 @@ foam.CLASS({
         approvalRequest = new ApprovalRequest.Builder(x)
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.APPROVABLE_REQUEST)
+          .setClassification("approvable-request")
           .setOperation(operation)
           .setCreatedBy(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
