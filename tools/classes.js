@@ -923,6 +923,7 @@ var classes = [
 
   // approval
   'foam.nanos.approval.ApprovalRequest',
+  'foam.nanos.approval.ApprovalRequestClassification',
   'foam.nanos.approval.ApprovalRequestNotification',
   'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.approval.Approvable',
