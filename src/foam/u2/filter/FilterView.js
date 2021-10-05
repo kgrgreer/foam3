@@ -425,11 +425,11 @@ foam.CLASS({
         if ( foam.mlang.predicate.And.isInstance(predicate) ) {
           var subPredicates = predicate.args;
           for ( subPredicate of subPredicates ) {
-            if ( subPredicate.toString().includes(property.name) ) return subPredicate;
+            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
           }
         }
         else {
-          if ( predicate.toString().includes(property.name) ) return predicate;
+          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
         }
       }
       return null;
