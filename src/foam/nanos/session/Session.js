@@ -309,6 +309,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         if ( themeAppConfig != null ) {
           appConfig.copyFrom(themeAppConfig);
         }
+        // test appConfig url, if not default, set to domain
+        if ( req != null && ! SafetyUtil.isEmpty(req.getServerName()) ) {
+          appConfig.setUrl(((Request) req).getRootURL().toString());
+        }
         appConfig = appConfig.configure(x, null);
 
         rtn = rtn.put("appConfig", appConfig);
