@@ -9,13 +9,16 @@ foam.CLASS({
   name: 'GroupByView',
   extends: 'foam.u2.view.ColumnConfigPropView',
   requires: [
-    'foam.u2.view.GroupByViewRow', 
+    'foam.u2.view.GroupByViewRow',
     'foam.u2.UnstyledTableView',
     'foam.u2.view.SubColumnSelectConfig'
   ],
   properties: [
     'data',
-    'selectCol',
+    {
+      name: 'selectCol',
+      value: []
+    },
     {
       name: 'columns',
       factory: function() {
@@ -43,18 +46,22 @@ foam.CLASS({
   ]
   ,
   methods: [
-    function onSelect(draggableIndex, views) {
-      if ( this.selectCol ) {
-        this.selectCol.isPropertySelected = false;
+    function onSelect(draggableIndex, views, isChild) {
+      if ( this.selectCol && ! isChild ) {
+        this.selectCol.forEach(element => element.isPropertySelected = false);
+        this.selectCol = [];
       }
       var tc = views[draggableIndex].prop.rootProperty[0];
-      axiom = this.data.of.getAxiomByName(tc);
-      this.data.groupBy = axiom;
-      this.selectCol = views[draggableIndex].prop;
+      if ( ! isChild ) {
+        axiom = this.data.of.getAxiomByName(tc);
+        this.data.groupBy = axiom;
+      }
+      this.selectCol.push(views[draggableIndex].prop);
     },
-    function onUnSelect(draggableIndex, views) {
+    function onUnSelect(draggableIndex, views, isChild) {
       this.data.groupBy = undefined;
-      this.selectCol = undefined;
+      this.selectCol = [];
+
     },
     function rebuildSelectedColumns() {
       //NO-OP
@@ -109,12 +116,11 @@ foam.CLASS({
       label: 'Reset Columns',
       code: function() {
         if ( this.selectCol ) {
-        this.data.groupBy = undefined;
-        this.selectCol.isPropertySelected = false;
-        this.selectCol = undefined;
-        }
+          this.selectCol.forEach(element => element.isPropertySelected = false);
+          this.selectCol = [];
       }
     }
+  }
   ]
   });
   foam.CLASS({
@@ -235,7 +241,7 @@ foam.CLASS({
           var r = this.of.getAxiomByName(this.rootProperty[0]);
           if ( ! r )
             return arr;
-        
+
           subProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
           for ( var i = 0 ; i < subProperties.length ; i++ ) {
             arr.push(this.cls_.create({

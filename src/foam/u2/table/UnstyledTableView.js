@@ -402,8 +402,6 @@ foam.CLASS({
           });
         }
       }
-
-      //otherwise on adding new column creating new EditColumnsView, which is closed by default
       if ( this.filteredTableColumns$ ) {
         this.onDetach(this.filteredTableColumns$.follow(
           //to not export "custom" table columns

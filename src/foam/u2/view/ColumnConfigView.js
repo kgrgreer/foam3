@@ -141,9 +141,9 @@ foam.CLASS({
     function onTopLevelPropertiesDragAndDrop(targetIndex, draggableIndex) {
       this.onDragAndDrop(this.views, targetIndex, draggableIndex);
     },
-    function onTopPropertiesSelectionChange(isColumnSelected, index, isColumnSelectionHaventChanged) {
+    function onTopPropertiesSelectionChange(isColumnSelected, index, isColumnSelectionHaventChanged, fromChild) {
       if ( ! isColumnSelectionHaventChanged )
-        this.onSelectionChanged(isColumnSelected, index, this.views);
+        this.onSelectionChanged(isColumnSelected, index, this.views, fromChild);
       this.data.selectedColumnNames = this.rebuildSelectedColumns();
       this.data.updateColumns();
     },
@@ -187,15 +187,15 @@ foam.CLASS({
       }
       return arr;
     },
-    function onSelectionChanged(isColumnSelected, index, views) {
+    function onSelectionChanged(isColumnSelected, index, views, isChild) {
       if ( isColumnSelected ) {
-        this.onSelect(index, views);
+        this.onSelect(index, views, isChild);
       } else if ( ! isColumnSelected ) {
-        this.onUnSelect(index, views);
+        this.onUnSelect(index, views, isChild);
       }
     },
 
-    function onSelect(draggableIndex, views) {
+    function onSelect(draggableIndex, views, isChild) {
       var startUnselectedIndex = views.find(v => ! v.prop.isPropertySelected);
       if ( ! startUnselectedIndex )
         return;
@@ -204,7 +204,7 @@ foam.CLASS({
       if ( draggableIndex > startUnselectedIndex )
         return this.resetProperties(views, startUnselectedIndex, draggableIndex);
     },
-    function onUnSelect(draggableIndex, views) {
+    function onUnSelect(draggableIndex, views, isChild) {
       var startUnselectedIndex = views.find(v => ! v.prop.isPropertySelected && v.index !== draggableIndex);
       if ( ! startUnselectedIndex )
         return this.resetProperties(views, views.length - 1, draggableIndex);
@@ -602,7 +602,7 @@ foam.CLASS({
     function updateSubColumnsOrder(selectionChanged) {
       //re-order subproperties
       this.data.subColumnSelectConfig.sort((a, b) => a.index > b.index ? 1 : -1);
-      this.onSelectionChangedParentFunction(this.data.isPropertySelected, this.data.index, selectionChanged);
+      this.onSelectionChangedParentFunction(this.data.isPropertySelected, this.data.index, selectionChanged, true);
     },
     function onChildrenDragAndDrop(targetIndex, draggableIndex) {
       this.onDragAndDrop(this.views, targetIndex, draggableIndex);
