@@ -571,6 +571,7 @@ FOAM_FILES([
   // approval
   { name: 'foam/nanos/approval/ApprovalRequest' },
   { name: 'foam/nanos/approval/ApprovalRequestNotification' },
+  { name: 'foam/nanos/approval/ApprovalRequestClassification' },
   { name: 'foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView', flags: ['web'] },
   { name: 'foam/nanos/approval/ApprovalStatus' },
   { name: 'foam/nanos/approval/ApprovableAware'},

@@ -399,7 +399,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         setApplyContext(((OrX) rtn).getX());
         pm.log(x);
       } else {
-        rtn = new OrX(x, rtn);
+        rtn = new OrX(reset(x), rtn);
       }
       return rtn;
       `

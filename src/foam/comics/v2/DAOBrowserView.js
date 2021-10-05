@@ -76,6 +76,11 @@ foam.CLASS({
       overflow: hidden;
     }
 
+    ^actions svg {
+      height: 1em;
+      width: 1em;
+    }
+
     /*
       Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
@@ -387,13 +392,13 @@ foam.CLASS({
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
                         .start(self.EXPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.IMPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.REFRESH_TABLE, buttonStyle)
-                          .addClass(self.myClass('refresh'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
                           if ( self.config.DAOActions.length > 3 ) {
@@ -401,7 +406,7 @@ foam.CLASS({
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
                           for ( action of self.config.DAOActions ) {
-                            actions.tag(action, buttonStyle);
+                            actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
                           this.add(actions);
                           if ( extraActions && extraActions.length ) {
