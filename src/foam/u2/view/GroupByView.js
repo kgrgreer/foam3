@@ -118,6 +118,7 @@ foam.CLASS({
         if ( this.selectCol ) {
           this.selectCol.forEach(element => element.isPropertySelected = false);
           this.selectCol = [];
+          this.data.groupBy = undefined;
       }
     }
   }
