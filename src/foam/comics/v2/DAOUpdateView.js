@@ -61,6 +61,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'currentMenu?',
     'memento',
     'translationService',
     'stack'
@@ -133,7 +134,8 @@ foam.CLASS({
                 currentFeedback = currentFeedback.next;
               }
             } else {
-              var title = this.translationService.getTranslation(foam.locale, this.config.browseTitle, this.data.model_.label);
+              var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+              var title = this.translationService.getTranslation(foam.locale, menuId + '.browseTitle', this.config.browseTitle);
 
               this.ctrl.notify(title + " " + this.UPDATED, '', this.LogLevel.INFO, true);
             }
