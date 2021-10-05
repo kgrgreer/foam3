@@ -7,10 +7,10 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'MedusaPingBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   documentation: `for some sample size, ping all instances in cluster.`,
-  
+
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
@@ -73,12 +73,6 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
         if ( getConfigs().size() > 0 ) {
           return;
@@ -124,22 +118,6 @@ foam.CLASS({
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
       client.cmd(ClusterServerDAO.PING);
       pm.log(x);
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

@@ -482,6 +482,11 @@ foam.CLASS({
       confirmationRequired: function() {
         return true;
       },
+      isAvailable: function(enabled, status) {
+        return enabled &&
+          ( status == this.ScriptStatus.UNSCHEDULED ||
+            status == this.ScriptStatus.ERROR );
+      },
       code: function() {
         var self = this;
         this.output = '';

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'DaggerVerifyBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.FObject',
@@ -61,12 +61,6 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
     DAO dao = (DAO) x.get("languageDAO");
     for ( int i = 0; i < getSampleSize(); i++ ) {
@@ -116,22 +110,6 @@ foam.CLASS({
     } else {
       getLogger().warning("Failed to find entry");
     }
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

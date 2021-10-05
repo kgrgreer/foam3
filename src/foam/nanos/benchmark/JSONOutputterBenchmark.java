@@ -4,27 +4,24 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.bench.benchmarks;
+package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.lib.json.Outputter;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
 public class JSONOutputterBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected Outputter o_ = new Outputter(null);
   protected User      u_ = null;
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     u_ = ((Subject) x.get("subject")).getUser();
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

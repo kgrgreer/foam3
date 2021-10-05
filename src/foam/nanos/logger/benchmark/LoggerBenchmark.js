@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.logger.benchmark',
   name: 'LoggerBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.X',

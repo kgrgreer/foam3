@@ -49,13 +49,13 @@
       name: 'url',
       section: 'infoSection',
       visibility: 'RO',
-      expression: function(appConfig, requesteeSession) {
-        return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
+      expression: function(appConfig, sessionToken) {
+        return appConfig.url + '?sessionId=' + sessionToken + '#request-information';
       }
     },
     {
       class: 'String',
-      name: 'requesteeSession',
+      name: 'sessionToken',
       visibility: 'HIDDEN'
     }
   ],
