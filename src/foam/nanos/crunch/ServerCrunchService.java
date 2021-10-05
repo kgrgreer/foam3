@@ -646,9 +646,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   public WizardState getWizardState(X x, String capabilityId) {
     var subject = (Subject) x.get("subject");
-    var subjectWizardState = getWizardStateFor_(x, subject, capabilityId);
-
-    return subjectWizardState;
+    return getWizardStateFor_(x, subject, capabilityId);
   }
 
   private WizardState getWizardStateFor_(X x, Subject s, String capabilityId) {
@@ -727,9 +725,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         ( user != realUser )
           // Check if a ucj implies the subject.user has this permission
           ? OR(
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-            EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
-          )
+              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+              EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
+            )
           // Check if a ucj implies the subject.realUser has this permission
           : EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId())
       ),
@@ -744,8 +742,13 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     // and assign correct predicate
     if ( capabilityId != null ) {
       DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-      Capability cap = (Capability) capabilityDAO.find(capabilityId);
-      if ( cap == null ) return result;
+      Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
+      if ( cap == null ) {
+        throw new RuntimeException(String.format(
+          "Attempting a UCJ find and asked Capability not found - Capid: %s, subject.user(ucj.effectiveUser): %s, subject.realUser(ucj.sourceId): %s",
+          capabilityId, user.getId(), realUser.getId()
+        ));
+      }
       if ( cap.getAssociatedEntity() == AssociatedEntity.USER )
           return EQ(UserCapabilityJunction.SOURCE_ID, user.getId());
       if ( cap.getAssociatedEntity() == AssociatedEntity.REAL_USER )
