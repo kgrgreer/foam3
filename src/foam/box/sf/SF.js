@@ -496,6 +496,20 @@ foam.CLASS({
         throw new RuntimeException(ioe);
       }
       `
+    },
+    {
+      name: 'getFileSize',
+      documentation: 'helper function to get file size',
+      args: 'String fileName',
+      javaType: 'long',
+      javaCode: `
+      try {
+        Path file = Paths.get(fileName);
+        return Files.size(file);
+      } catch ( IOException ioe ) {
+        throw new RuntimeException(ioe);
+      }
+      `
     }
   ],
 
