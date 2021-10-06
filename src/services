@@ -141,7 +141,10 @@ p({
   "name": "threadPool",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .build();
+  `
 })
 
 p({
