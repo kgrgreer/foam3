@@ -256,6 +256,8 @@ foam.CLASS({
                       }
                       logger.error(e.getMessage());
                       logger.debug(e);
+                    } finally {
+                      XLocator.set(null);
                     }
                   }
                   pass.addAndGet(passed++);
