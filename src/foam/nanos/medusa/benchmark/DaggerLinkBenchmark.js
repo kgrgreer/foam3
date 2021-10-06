@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'DaggerLinkBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.FObject',
@@ -57,12 +57,6 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
     DAO dao = (DAO) x.get("languageDAO");
 //    for ( int i = 0; i < getSampleSize(); i++ ) {
@@ -83,30 +77,9 @@ foam.CLASS({
         },
       ],
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) {
-      return;
-    }
     DaggerService dagger = (DaggerService) x.get("daggerService");
     MedusaEntry entry = x.create(MedusaEntry.class);
     entry = dagger.link(x, entry);
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]
