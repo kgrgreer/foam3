@@ -40,11 +40,21 @@ foam.CLASS({
     {
       documentation: 'This/self cluster config',
       name: 'config',
-      class: 'FObjectProperty'
+      class: 'FObjectProperty',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      config_ = val;
+      configIsSet_ = true;
+      `
     },
     {
       name: 'clients',
-      class: 'Array'
+      class: 'Array',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      clients_ = val;
+      clientsIsSet_ = true;
+      `
     },
     {
       name: 'configs',
