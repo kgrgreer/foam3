@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'MedusaBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.FObject',
@@ -15,7 +15,6 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.bench.Benchmark',
     'foam.nanos.boot.NSpec',
@@ -55,18 +54,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaCode: `
-      // nop
-      `
-    },
-    {
       name: 'execute',
       args: [
         {
@@ -75,31 +62,9 @@ foam.CLASS({
         },
       ],
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) {
-      return;
-    }
-
     MedusaTestObject test = new MedusaTestObject();
     test.setDescription("MedusaTestObject");
     ((DAO) x.get(getServiceName())).put(test);
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

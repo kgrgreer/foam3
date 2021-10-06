@@ -103,6 +103,7 @@ foam.CLASS({
       fill: initial;
       transform: rotate(0deg);
       transition: all 0.5s ease;
+      font-size: 6px;
     }
 
     ^filter-button-active{
@@ -294,7 +295,7 @@ foam.CLASS({
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()

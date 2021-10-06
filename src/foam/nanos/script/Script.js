@@ -213,9 +213,8 @@ foam.CLASS({
       name: 'status',
       documentation: 'Status of script.',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
+      updateVisibility: 'RW',
       value: 'UNSCHEDULED',
-      javaValue: 'ScriptStatus.UNSCHEDULED',
       tableWidth: 120,
       storageTransient: true,
       storageOptional: true
@@ -481,6 +480,11 @@ foam.CLASS({
       tableWidth: 90,
       confirmationRequired: function() {
         return true;
+      },
+      isAvailable: function(enabled, status) {
+        return enabled &&
+          ( status == this.ScriptStatus.UNSCHEDULED ||
+            status == this.ScriptStatus.ERROR );
       },
       code: function() {
         var self = this;
