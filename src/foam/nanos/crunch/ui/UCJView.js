@@ -11,6 +11,7 @@ foam.CLASS({
 
   imports: [
     'approvalRequestDAO',
+    'capabilityDAO',
     'crunchController',
     'notify',
     'pushMenu',
@@ -25,13 +26,28 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.ControllerMode',
     'foam.u2.DisplayMode',
     'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
+    'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
+    'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
+    'foam.u2.crunch.wizardflow.StepWizardAgent',
+    'foam.u2.crunch.wizardflow.DetachAgent',
+    'foam.u2.crunch.wizardflow.SpinnerAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
+    'foam.u2.crunch.wizardflow.SubmitAgent',
+    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
+    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
+    'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'foam.u2.wizard.StepWizardConfig'
+    'foam.u2.wizard.StepWizardConfig',
+    'foam.util.async.Sequence'
   ],
 
   css: `
@@ -49,7 +65,7 @@ foam.CLASS({
     }
   `,
 
-  messages:[
+  messages: [
     { name: 'BACK_LABEL', message: 'Back'},
     { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated'},
     { name: 'SUCCESS_REMOVED', message: 'Data successfuly removed'}
@@ -63,16 +79,28 @@ foam.CLASS({
       factory: function () {
         return this.EasyCrunchWizard.create();
       }
+    },
+    {
+      name: 'capabilitiesList',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.Capability'
+    },
+    {
+      name: 'isSettingCapabilities',
+      class: 'Boolean'
     }
   ],
 
   methods: [
     async function render() {
-      var user = await this.userDAO.find(this.data.effectiveUser);
+      var user = undefined;
       var realUser = await this.userDAO.find(this.data.sourceId);
+      if ( this.data.effectiveUser ) {
+        user = await this.userDAO.find(this.data.effectiveUser);
+      }
       if ( ! user ) user = realUser;
-      var subject = this.Subject.create({ user: user, realUser: realUser });
-      var stack = this.Stack.create();
+      let subject = this.Subject.create({ user: user, realUser: realUser });
+      let stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
         stack: stack,
         subject: subject,
@@ -82,41 +110,61 @@ foam.CLASS({
             : this.ControllerMode.VIEW
       });
 
-      var sequence = this.crunchController.createWizardSequence(this.data.targetId, x);
-      this.config.applyTo(sequence);
-      sequence
-        .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject })
-        .reconfigure('ConfigureFlowAgent', {
-          popupMode: false
-        })
-        .remove('LoadTopConfig')
-        .remove('RequirementsPreviewAgent')
-        .remove('SkipGrantedAgent')
-        .remove('WizardStateAgent')
-        .remove('AutoSaveWizardletsAgent')
-        .remove('PutFinalJunctionsAgent')
-        .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
-        .execute();
+      if ( this.isSettingCapabilities ) {
+        x = x.createSubContext({
+          capabilities: this.capabilitiesList
+        });
+        let sequence1 = this.Sequence.create(null, x)
+        .add(this.ConfigureFlowAgent, { popupMode: false })
+        .add(this.WAOSettingAgent)
+        .add(this.CreateWizardletsAgent)
+        .add(this.LoadWizardletsAgent)
+        .add(this.StepWizardAgent)
+        .add(this.DetachAgent)
+        .add(this.SpinnerAgent)
+        .add(this.SaveAllAgent)
+        .add(this.SubmitAgent)
+        .add(this.DetachSpinnerAgent)
+        .add(this.CapabilityStoreAgent);
 
-        //add back button and 'View Reference' title
-        this.addClass()
-          .startContext({ data: this })
-            .tag(this.BACK, {
-              buttonStyle: foam.u2.ButtonStyle.LINK,
-              themeIcon: 'back',
-              label: this.BACK_LABEL
-            })
-          .endContext()
-          .addClass(this.myClass('stack-container'))
-            .tag(this.StackView.create({ data: stack, showActions: false }, x))
+        this.config.applyTo(sequence1);
+        sequence1.execute();
+      } else {
+        let sequence2 = this.crunchController.createWizardSequence(this.data.targetId, x);
+        this.config.applyTo(sequence2);
+        sequence2
+          .reconfigure('LoadCapabilitiesAgent', {
+            subject: subject })
+          .reconfigure('ConfigureFlowAgent', {
+            popupMode: false
+          })
+          .remove('LoadTopConfig')
+          .remove('RequirementsPreviewAgent')
+          .remove('SkipGrantedAgent')
+          .remove('WizardStateAgent')
+          .remove('AutoSaveWizardletsAgent')
+          .remove('PutFinalJunctionsAgent')
+          .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
+          .execute();
+      }
+      // add back button and 'View Reference' title
+      this.addClass()
+        .startContext({ data: this })
+          .tag(this.BACK, {
+            buttonStyle: foam.u2.ButtonStyle.LINK,
+            themeIcon: 'back',
+            label: this.BACK_LABEL
+          })
+        .endContext()
+        .addClass(this.myClass('stack-container'))
+          .tag(this.StackView.create({ data: stack, showActions: false }, x))
     },
     async function onSave(isValid, ucj) {
-      if ( isValid && ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+      if ( isValid &&
+        ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
         this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
         this.stack.back();
-      }
-      else {
+      } else {
         let { rejectOnInvalidatedSave, approval } = this.config;
         if ( rejectOnInvalidatedSave && approval ) {
           let rejectedApproval = approval.clone();

@@ -14,13 +14,21 @@ foam.CLASS({
     instead of updating UCJs directly.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
+    'capabilityDAO',
     'crunchController',
     'userCapabilityJunctionDAO'
   ],
 
   requires: [
     'foam.nanos.crunch.ui.UCJView',
+    'foam.nanos.crunch.Capability',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.stack.Stack',
@@ -36,30 +44,54 @@ foam.CLASS({
   properties: [
     {
       name: 'localStack',
-      factory: function () {
+      factory: function() {
         return this.Stack.create();
       }
     },
     {
       name: 'ucj',
       transient: true
+    },
+    {
+      name: 'ucjPropertyList',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.UserCapabilityJunction',
+      transient: true,
+      documentation: 'set this property too display these ucj\'s in wizard'
+    },
+    {
+      name: 'capabilityList',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.Capability',
+      transient: true,
+      documentation: 'set this property too display these ucj\'s in wizard'
     }
   ],
 
   methods: [
     async function render() {
+      // the variable ucj in this function acts as the root capaiblity.
+      // Also takes the subject from ucj and sets it through the wizard.
+      // TODO this only works for ONE signing officer
       this
-        .add(this.slot(function (ucj) {
-          if ( ! ucj ) return this.E();
+        .add(this.slot(async function(ucjPropertyList) {
+          var ucj = this.ucjPropertyList.filter(u => this.AgentCapabilityJunction.isInstance(u) );
+          this.capabilityList = (
+            await this.capabilityDAO.where(this.AND(
+              this.IN(this.Capability.ID, this.ucjPropertyList.map(u => u.targetId)),
+              this.NEQ(this.Capability.OF, null))).select()
+          ).array;
           return this.UCJView.create({
-            data: ucj,
-            mode: this.mode
+            isSettingCapabilities: true,
+            data: ucj.length > 0 ? ucj[0] : this.ucjPropertyList[0],
+            mode: this.mode,
+            capabilitiesList: this.capabilityList
           });
-        }))
+        }));
 
-      this.ucj = (
+      this.ucjPropertyList = (
         await this.userCapabilityJunctionDAO.where(this.data).select()
-      ).array[0];
+      ).array;
     }
   ]
 });
