@@ -141,7 +141,10 @@ p({
   "name": "threadPool",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .build();
+  `
 })
 
 p({
@@ -1158,6 +1161,25 @@ p({
   """
     {
       "of":"foam.nanos.auth.AddressConfig"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"approvalRequestClassificationDAO",
+  "serve":true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("approvalRequestClassifications")
+      .setOf(foam.nanos.approval.ApprovalRequestClassification.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "foam.nanos.approval.ApprovalRequestClassification"
     }
   """
 })

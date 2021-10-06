@@ -342,7 +342,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
            ( subjectUser != null &&
              subjectUser.getId() != user.getId() ) ||
            ( agent != null && subjectAgent != null &&
-             subjectAgent.getId() != agent.getId() ) ) {
+             subjectAgent.getId() != agent.getId() ) ||
+           ( subjectUser != null &&
+             ! user.equals(subjectUser) ||
+             agent != null && subjectAgent != null &&
+             ! agent.equals(subjectAgent) ) ) {
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
@@ -399,7 +403,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         setApplyContext(((OrX) rtn).getX());
         pm.log(x);
       } else {
-        rtn = new OrX(x, rtn);
+        rtn = new OrX(reset(x), rtn);
       }
       return rtn;
       `

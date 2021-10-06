@@ -261,7 +261,12 @@ var classes = [
   'foam.nanos.boot.NSpecAware',
   'foam.nanos.boot.DAONSpecMenu',
   'foam.nanos.app.Mode',
+  'foam.nanos.bench.BenchmarkResult',
   'foam.nanos.bench.Benchmark',
+  'foam.nanos.bench.BenchmarkResultReportingDAO',
+  'foam.nanos.bench.BenchmarkResultSystemDAO',
+  'foam.nanos.bench.BenchmarkRunner',
+  'foam.nanos.bench.BenchmarkRunnerScript',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
@@ -481,7 +486,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
+  'foam.nanos.benchmark.AuthorizerBenchmark',
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
   'foam.comics.v2.CRUDEnabledActionsAuth',
@@ -923,6 +928,7 @@ var classes = [
 
   // approval
   'foam.nanos.approval.ApprovalRequest',
+  'foam.nanos.approval.ApprovalRequestClassification',
   'foam.nanos.approval.ApprovalRequestNotification',
   'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.approval.Approvable',
