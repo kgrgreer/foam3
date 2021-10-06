@@ -101,7 +101,6 @@ foam.CLASS({
       documentation: `Icon color. Defaults to 'type' background or white`
     },
     {
-      class: 'Boolean',
       name: 'isVisible',
       value: true,
       documentation: 'Can be used to hide the view in case this.content is not populated synchronously'
