@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-
+// TODO: Maybe promote to Notifications
  foam.ENUM({
   package: 'foam.u2.dialog',
   name: 'InlineNotificationStyles',
@@ -59,7 +59,6 @@ foam.CLASS({
 
   requires: [
     'foam.u2.ControllerMode',
-    'foam.u2.layout.Cols',
     'foam.u2.tag.CircleIndicator'
   ],
 
@@ -73,9 +72,9 @@ foam.CLASS({
         // Colors flipped to make sure icon backgrounds have the right color inside circle indicator
         var props = {
           size: 16,
-          backgroundColor: this.color,
+          backgroundColor: this.accentColor,
           icon: this.type.glyph.clone(this).getDataUrl({
-            fill: this.background
+            fill: this.iconColor
           })
         };
         console.log(props);
@@ -88,26 +87,36 @@ foam.CLASS({
       name: 'type'
     },
     {
-      name: 'color',
+      name: 'accentColor',
       factory: function() {
         return this.type && this.returnExpandedCSS(this.type.color);
-      }
+      },
+      documentation: `Border color for the view and icon background. Defaults to type color prop`
     },
     {
-      name: 'background',
+      name: 'iconColor',
       factory: function() {
         return this.returnExpandedCSS(this.type.background) || '#FFFFFF';
-      }
+      },
+      documentation: `Icon color. Defaults to 'type' background or white`
+    },
+    {
+      class: 'Boolean',
+      name: 'isVisible',
+      value: true,
+      documentation: 'Can be used to hide the view in case this.content is not populated synchronously'
     }
   ],
 
   css: `
     ^outer {
-      box-sizing: border-box;
-      border-radius: 3px;
+      align-items: center;
       border: 1px solid;
+      border-radius: 3px;
       border-left-width: 8px;
-      margin: auto;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
       padding: 8px 16px;
     }
     ^outer > * + * {
@@ -125,26 +134,23 @@ foam.CLASS({
     function init() {
       var self = this;
       this
-        .addClass(this.myClass())
-        .start(this.Cols)
-          .addClass(this.myClass('outer'))
-          .style({ 'border-color': this.color$ })
-          .call(function() {
-            if ( ! self.icon ) return;
-            if ( foam.core.String.isInstance(this.icon) == 'String' ) {
-              // replace with foam image
-              this.start('img')
-              .addClass(self.myClass('status-icon'))
-              .attrs({ src: self.icon$ })
-              .end();
-            } else {
-              this.tag(self.icon)
-            }
-          })
-          .startContext({ controllerMode: this.ControllerMode.VIEW })
-            .start('', null, this.content$).addClass(this.myClass('content')).end()
-          .endContext()
-        .end();
+        .show(this.isVisible$)
+        .addClass(this.myClass('outer'))
+        .style({ 'border-color': this.accentColor$ })
+        .call(function() {
+          if ( ! self.icon ) return;
+          if ( foam.core.String.isInstance(this.icon) == 'String' ) {
+            this.start('img')
+            .addClass(self.myClass('status-icon'))
+            .attrs({ src: self.icon$ })
+            .end();
+          } else {
+            this.tag(self.icon)
+          }
+        })
+        .startContext({ controllerMode: this.ControllerMode.VIEW })
+          .start('', null, this.content$).addClass(this.myClass('content')).end()
+        .endContext();
     }
   ]
 });
