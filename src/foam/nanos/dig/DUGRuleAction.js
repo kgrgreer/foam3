@@ -113,6 +113,7 @@ foam.CLASS({
         DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         try {
           AbstractSink sink = null;
+          // Use HTTPDigestSink if dugDigestConfig is enabled, containing hashed secretKey
           if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
             sink = new HTTPDigestSink(
               dugRule.getUrl(),
