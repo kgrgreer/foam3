@@ -18,33 +18,17 @@ foam.CLASS({
     'rootCapability'
   ],
   exports: [
-    'capabilities',
-    'getWAO',
+    'caps as capabilities',
     'subject as wizardSubject'
-  ],
-
-  requires: [
-    'foam.nanos.crunch.ui.ApprovableUserCapabilityJunctionWAO',
-    'foam.nanos.crunch.ui.UserCapabilityJunctionWAO',
-    'foam.nanos.crunch.ui.CapableWAO',
-  ],
-
-  enums: [
-    {
-      name: 'WAOSetting',
-      values: ['UCJ','CAPABLE','APPROVAL']
-    }
   ],
 
   properties: [
     {
-      name: 'capabilities',
-      class: 'Array'
-    },
-    {
-      name: 'waoSetting',
-      factory: function () {
-        return this.WAOSetting.UCJ;
+      name: 'caps',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.Capability',
+      factory: function() {
+        if ( this.capabilities.length > 0 ) this.caps = this.capabilities;
       }
     },
     {
@@ -63,22 +47,10 @@ foam.CLASS({
     function execute() {
       if ( this.subject ) {
         return this.crunchService.getCapabilityPathFor(null, this.rootCapability.id, false, this.subject.user, this.subject.realUser)
-          .then(capabilities => { this.capabilities = capabilities });
+          .then(capabilities => this.caps = capabilities);
       }
       return this.crunchService.getCapabilityPath(null, this.rootCapability.id, false, true)
-        .then(capabilities => { this.capabilities = capabilities });
-    },
-    function getWAO() {
-      switch ( this.waoSetting ) {
-        case this.WAOSetting.UCJ:
-          return this.UserCapabilityJunctionWAO.create({ subject: this.subject }, this.__context__);
-        case this.WAOSetting.CAPABLE:
-          return this.CapableWAO.create({}, this.__context__);
-        case this.WAOSetting.APPROVAL:
-          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.subject });
-        default:
-          throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
-      }
+        .then(capabilities => this.caps = capabilities);
     }
   ]
 });

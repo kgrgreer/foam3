@@ -18,7 +18,7 @@ foam.CLASS({
 
   imports: [
     'capabilities',
-    'getWAO' // Provided  by LoadCapabilitiesAgent
+    'getWAO' // Provided by WAOSettingAgent
   ],
 
   exports: [

@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.SkipMode'
   ],
 
@@ -42,8 +43,8 @@ foam.CLASS({
           return;
         }
         this.sequence
-          .reconfigure('LoadCapabilitiesAgent', {
-            waoSetting: this.LoadCapabilitiesAgent.WAOSetting.APPROVAL
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.APPROVAL
           })
           .remove('LoadTopConfig')
           .remove('CheckPendingAgent')

@@ -61,6 +61,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.SpinnerAgent',
     'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
+    'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.util.async.Sequence',
     'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -118,6 +119,7 @@ foam.CLASS({
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
           .add(this.GrantedEditAgent)
+          .add(this.WAOSettingAgent)
           .add(this.LoadCapabilitiesAgent)
           // TODO: remove CheckRootIdAgent after phase 2 fix on PENDING
           .add(this.CheckRootIdAgent)
@@ -162,8 +164,8 @@ foam.CLASS({
           capable: capable
         });
         return this.createWizardSequence(capable && capable.capabilityIds[0], x)
-          .reconfigure('LoadCapabilitiesAgent', {
-            waoSetting: this.LoadCapabilitiesAgent.WAOSetting.CAPABLE })
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
