@@ -133,12 +133,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'daoKey',
-      value: 'benchmarkRunnerDAO'
+      value: 'benchmarkRunnerDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'eventDaoKey',
-      value: 'benchmarkRunnerEventDAO'
+      value: 'benchmarkRunnerEventDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -311,7 +315,7 @@ foam.CLASS({
         }
         setStatus(ScriptStatus.UNSCHEDULED);
       } catch (Throwable t) {
-        setStatus(ScriptStatus.RUNNING);
+        setStatus(ScriptStatus.ERROR);
         logger.error(t);
       } finally {
         setLastRun(new java.util.Date());
