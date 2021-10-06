@@ -57,7 +57,7 @@ foam.CLASS({
       javaCode: `
       if ( x.get("auth") != null ) {
         if ( predicate != null ) predicate.authorize(x);
-        // don't decorate the sink if it's a Count or GroupBy(Count())
+        // don't decorate the sink if it's a Count
         if ( ! ( sink instanceof Count ) ) {
           foam.dao.Sink sink2 = ( sink != null ) ? new HidePropertiesSink(x, sink, this) : sink;
           super.select_(x, sink2, skip, limit, order, predicate);
