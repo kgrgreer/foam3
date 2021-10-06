@@ -7,6 +7,7 @@
   package: 'foam.net.ip',
   name: 'IPAddressInfo',
   documentation: `Represents information fetched by an IP information provider.`,
+  ids: ['provider'],
 
   requires: [
     'foam.dao.PromisedDAO',
@@ -31,6 +32,11 @@
   ],
 
   properties: [
+    {
+      class: 'URL',
+      name: 'provider',
+      documentation: `Provider of IP address information.`
+    },
     {
       class: 'String',
       name: 'isp',
@@ -100,12 +106,12 @@
   ],
 
   methods: [
-    async function fetchInfo(url) {
+    async function fetchInfo() {
       if ( ! navigator.onLine ) {
         console.warning(this.NO_INTERNET_CONNECTION);
         return;
       }
-      var obj = await (await fetch(url)).json();
+      var obj = await (await fetch(this.provider)).json();
 
       this.isp = obj.isp;
       this.ipType = obj.ipType;

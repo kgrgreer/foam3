@@ -410,6 +410,7 @@ FOAM_FILES([
   { name: "foam/net/node/HTTPResponse", flags: ['node'] },
   { name: "foam/net/node/WebSocketService", flags: ['node'] },
   { name: "foam/net/ip/IPAddressInfo" },
+  { name: "foam/net/ip/FetchIPAddressInfo" },
   { name: "foam/net/ip/ClientIPAddressInfoFetch" },
   { name: "lib/firebase" },
   { name: "lib/fcm" },
