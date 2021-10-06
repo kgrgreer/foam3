@@ -310,9 +310,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           appConfig.copyFrom(themeAppConfig);
         }
 
-        if ( req != null ) {
-          appConfig.setUrl(((Request) req).getRootURL().toString());
-        }
+        appConfig.setUrl(((Request) req).getRootURL().toString());
+
         appConfig = appConfig.configure(x, null);
 
         rtn = rtn.put("appConfig", appConfig);
