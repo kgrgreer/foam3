@@ -1,0 +1,16 @@
+p({
+  class: "foam.nanos.medusa.benchmark.DaggerLinkBenchmark",
+  id: "DaggerLinkBenchmark"
+})
+p({
+  class: "foam.nanos.medusa.benchmark.DaggerVerifyBenchmark",
+  id: "DaggerVerifyBenchmark"
+})
+p({
+  class: "foam.nanos.medusa.benchmark.MedusaBenchmark",
+  id: "MedusaBenchmark"
+})
+p({
+  class: "foam.nanos.medusa.benchmark.MedusaPingBenchmark",
+  id: "MedusaPingBenchmark"
+})
