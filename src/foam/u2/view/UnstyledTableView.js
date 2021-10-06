@@ -82,6 +82,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'refDAO',
+      factory: function() {
+        return this.data;
+      }
+    },
+    {
       name: 'order'
     },
     {
@@ -395,8 +402,8 @@ foam.CLASS({
 
                   if ( checked ) {
                     view.selectedObjects = {};
-                    view.data.inX(ctrl.__subContext__).select().then(function(obj) {
-                     view.selectedObjects[obj.id] = obj;
+                    view.refDAO.select(function(obj) {
+                      view.selectedObjects[obj.id] = obj;
                     });
                   } else {
                     view.selectedObjects = {};
@@ -544,7 +551,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -559,7 +566,7 @@ foam.CLASS({
                     .startContext({
                       props: view.props,
                       propertyNamesToQuery: propertyNamesToQuery,
-                      nestedPropertyNamesAndItsIndexes: nastedPropertyNamesAndItsIndexes,
+                      nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
                       canBuildObjfromProj: canObjBeBuildFromProjection
                     })
                       .tag({ class: 'foam.u2.table.UnstyledTableRow', data: view, obj: values.array[i], projection: values.projection[i] })
@@ -597,13 +604,29 @@ foam.CLASS({
       },
       async function filterUnpermitted(arr) {
         if ( this.auth ) {
-          const results = await Promise.all(arr.map( async p =>
-            p.hidden ? false :
+          var permissionedProperties = [];
+          var unpermissionedProperties = [];
+          for ( prop of arr ) {
+            if ( prop.hidden ) continue;
+            prop.readPermissionRequired ? permissionedProperties.push(prop) : unpermissionedProperties.push(prop);
+          }
+          var grantedProperties = await this.filterPropertiesByReadPermission(permissionedProperties, this.of.name.toLowerCase());
+          var unorderedProperties = unpermissionedProperties.concat(grantedProperties);
+          var orderedProperties = arr.filter(p => unorderedProperties.includes(p));
+          const columnPermissionedProperties = await Promise.all(orderedProperties.map( async p =>
             ! p.columnPermissionRequired ||
             await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
-          return arr.filter((_v, index) => results[index]);
+          return orderedProperties.filter((_v, index) => columnPermissionedProperties[index]);
         }
         return arr;
+      },
+      async function filterPropertiesByReadPermission(properties, of) {
+        if ( ! properties || ! of ) return [];
+        var perms =  await Promise.all(properties.map( async p => 
+          await this.auth.check(ctrl.__subContext__, of + '.rw.' + p) ||
+          await this.auth.check(ctrl.__subContext__, of + '.ro.' + p)
+        ));
+        return properties.filter((_v, index) => perms[index]);
       },
       {
         name: 'getActionsForRow',

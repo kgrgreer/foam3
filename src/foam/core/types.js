@@ -114,12 +114,12 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'foam.u2.TextFormatter',
       name:'formatter',
-      value:[],
+      value: null,
       documentation: `
-        An array of integers and strings of delimiters used to format the property
-        where integer values represent number of digits at its location
-        E.g., [3, '.', 3, '.', 3, '.', 3]
+        A TextFormatter Object to be passed to the FormattedTextField view.
       `
     }
   ],
@@ -940,16 +940,19 @@ foam.CLASS({
     {
       name: 'value',
       expression: function(of) {
+        if ( of && ! of.ID ) {
+          console.warn('of.ID not found for: ' + of + '.' +this.name);
+        }
         var ret = of ? of.ID.value : null;
 
 
-        if ( ! of ){
-          console.warn('Of not found for: ' + this.name)
-          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name)
+        if ( ! of ) {
+          console.warn('Of not found for: ' + this.name);
+          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name);
         }
 
-        if ( ret === undefined ){
-          console.warn('Default value is undefined for: ' + of.name + '.' + this.name)
+        if ( ret === undefined ) {
+          console.warn('Default value is undefined for: ' + of.name + '.' + this.name);
           ret = null;
         }
 

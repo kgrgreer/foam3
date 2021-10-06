@@ -120,7 +120,8 @@ foam.CLASS({
     'query',
     {
       class: 'Boolean',
-      name: 'showThisRootOnSearch'
+      name: 'showThisRootOnSearch',
+      value: true
     },
     {
       class: 'Array',
@@ -151,7 +152,7 @@ foam.CLASS({
       if ( this.query ) {
         this.query.sub(function() {
           self.updateThisRoot = true;
-          self.showThisRootOnSearch = false;
+          self.showThisRootOnSearch = true;
           controlledSearchSlot.set(self.query.get());
           self.updateThisRoot = false;
         });
@@ -187,7 +188,7 @@ foam.CLASS({
             'width':         '12px',
             'padding-top':   '4px',
             'padding-left':  self.expanded$.map(function(c) { return c ? '0px' : '4px'; }),
-            'padding-right':  self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
+            'padding-right': self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
             'transform':     self.expanded$.map(function(c) { return c ? 'rotate(0deg)' : 'rotate(90deg)'; })
           }).
           on('click', this.toggleExpanded).
@@ -214,14 +215,14 @@ foam.CLASS({
             isThisItemRelatedToSearch = self.query.get() ? ( self.doesThisIncludeSearch && ( ! hasChildren || self.data.parent !== '' ) ) || ( hasChildren && showThisRootOnSearch ) : true;
             if ( self.showRootOnSearch )
               self.showRootOnSearch.set(self.showRootOnSearch.get() || isThisItemRelatedToSearch);
-          }
-          else {
+          } else {
             isThisItemRelatedToSearch = true;
           }
-          if ( ! self.query.get() )
+          if ( ! self.query.get() ) {
             self.expanded = false;
-          else if ( self.query.get() && isThisItemRelatedToSearch )
+          } else if ( self.query.get() && isThisItemRelatedToSearch ) {
             self.expanded = true;
+          }
           return isThisItemRelatedToSearch;
         })).
         addClass(this.slot(function(selected, id) {
@@ -252,17 +253,18 @@ foam.CLASS({
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
-            addClass(this.myClass('button')).
-            style({
-              'fill': this.slot(function(selected, id) {
-                if ( selected && foam.util.equals(selected.id, id) ) {
-                  return (self.returnExpandedCSS || (a => a))('/*%PRIMARY3%*/ #604aff') ;
-                }
-                return (self.returnExpandedCSS || (a => a))('/*%GREY2%*/ #9ba1a6');
-              }, this.selection$, this.data$.dot('id'))
-            }).
+              // make not be a button so that other buttons can be nested              setNodeName('span').
+              addClass(this.myClass('button')).
+              style({
+                'fill': this.slot(function(selected, id) {
+                  if ( selected && foam.util.equals(selected.id, id) ) {
+                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
+                  }
+                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
+                }, this.selection$, this.data$.dot('id'))
+              }).
+            end().
           endContext().
-          end().
         end().
         start().
           show(this.expanded$).
@@ -272,7 +274,7 @@ foam.CLASS({
                 data:             obj,
                 formatter:        self.formatter,
                 relationship:     self.relationship,
-                expanded:         self.startExpanded,
+                expanded:         true, //self.startExpanded,
                 showRootOnSearch: self.showThisRootOnSearch$,
                 query:            controlledSearchSlot,
                 onClickAddOn:     self.onClickAddOn,

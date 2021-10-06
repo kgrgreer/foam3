@@ -7,10 +7,10 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'MedusaPingBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   documentation: `for some sample size, ping all instances in cluster.`,
-  
+
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterServerDAO',
@@ -39,11 +40,21 @@ foam.CLASS({
     {
       documentation: 'This/self cluster config',
       name: 'config',
-      class: 'FObjectProperty'
+      class: 'FObjectProperty',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      config_ = val;
+      configIsSet_ = true;
+      `
     },
     {
       name: 'clients',
-      class: 'Array'
+      class: 'Array',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      clients_ = val;
+      clientsIsSet_ = true;
+      `
     },
     {
       name: 'configs',
@@ -72,13 +83,11 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
+        if ( getConfigs().size() > 0 ) {
+          return;
+        }
+
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
         setConfig(config);
@@ -112,28 +121,13 @@ foam.CLASS({
         },
       ],
       javaCode: `
-      int index = (int) (Math.random() * getClients().length);
+      java.util.Random random = new java.util.Random();
+      int index = random.nextInt(getClients().length);
       DAO client = (DAO) getClients()[index];
       ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
       client.cmd(ClusterServerDAO.PING);
       pm.log(x);
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

@@ -113,8 +113,8 @@ foam.CLASS({
       javaFactory: `
       if ( getNSpec() != null ) {
         return getNSpec().getName();
-      } else if ( this.getOf() != null ) {
-        return this.getOf().getId();
+      } else if ( getOf() != null ) {
+        return getOf().getId();
       }
       return "";
      `
@@ -154,6 +154,7 @@ foam.CLASS({
             }
             delegate = getMdao();
             if ( getIndex() != null && getIndex().length > 0 ) {
+              logger.warning(getName(), "Deprecated use of setIndex(). Use addPropertyIndex instead.");
               if ( delegate instanceof foam.dao.MDAO ) {
                 ((foam.dao.MDAO) delegate).addIndex(getIndex());
               } else {
@@ -169,8 +170,12 @@ foam.CLASS({
           }
         }
 
-        if ( getGuid() && getSeqNo() )
-          throw new RuntimeException("EasyDAO GUID and SeqNo are mutually exclusive");
+        if ( (getGuid() && getSeqNo())
+          || (getGuid() && getFuid())
+          || (getFuid() && getSeqNo())
+        ) {
+          throw new RuntimeException("EasyDAO GUID, SeqNo and FUID are mutually exclusive");
+        }
 
         if ( getSeqNo() ) {
           delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
@@ -182,6 +187,9 @@ foam.CLASS({
 
         if ( getGuid() )
           delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
+
+        if ( getFuid() )
+          delegate = new foam.dao.FUIDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {
@@ -206,7 +214,7 @@ foam.CLASS({
           DAO dao = (DAO) getMdao();
           if ( dao != null &&
                dao instanceof foam.dao.MDAO ) {
-            PropertyInfo pInfo = (PropertyInfo) this.getOf().getAxiomByName("spid");
+            PropertyInfo pInfo = (PropertyInfo) getOf().getAxiomByName("spid");
             if ( pInfo != null ) {
               ((foam.dao.MDAO)dao).addIndex(pInfo);
             } else {
@@ -361,7 +369,7 @@ foam.CLASS({
       name: 'pipelinePm'
     },
     {
-      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo and .guid features are mutuallyexclusive.',
+      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutuallyexclusive.',
       class: 'Boolean',
       name: 'seqNo'
     },
@@ -371,10 +379,16 @@ foam.CLASS({
       value: 1
     },
     {
-      documentation: 'Have EasyDAO generate guids to index items. Note that .seqNo and .guid features are mutually exclusive',
+      documentation: 'Have EasyDAO generate guids to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive',
       class: 'Boolean',
       name: 'guid',
       label: 'GUID'
+    },
+    {
+      documentation: 'Have EasyDAO generate fuids to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive',
+      class: 'Boolean',
+      name: 'fuid',
+      label: 'FUID'
     },
     {
       class: 'String',
@@ -391,6 +405,20 @@ foam.CLASS({
       documentation: 'Enable local in-memory caching of the DAO',
       class: 'Boolean',
       name: 'cache',
+      generateJava: false
+    },
+    {
+      documentation: 'Set polling interval for the caching DAO',
+      class: 'Int',
+      name: 'pollingInterval',
+      units: 'ms',
+      generateJava: false
+    },
+    {
+      documentation: 'Set polling property for the caching DAO',
+      class: 'FObjectProperty',
+      of: 'foam.core.Property',
+      name: 'pollingProperty',
       generateJava: false
     },
     {
@@ -438,7 +466,7 @@ foam.CLASS({
         return this.of.name.toLowerCase();
       },
       javaFactory: `
-      return this.getOf().getObjClass().getSimpleName().toLowerCase();
+      return getOf().getObjClass().getSimpleName().toLowerCase();
      `
     },
     {
@@ -459,7 +487,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'permissioned',
       javaFactory: `
-      List<PropertyInfo> props = this.getOf().getAxiomsByClass(PropertyInfo.class);
+      List<PropertyInfo> props = getOf().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo info : props ) {
         if ( info.getWritePermissionRequired() ||
              info.getReadPermissionRequired() ) {
@@ -900,7 +928,9 @@ model from which to test ServiceProvider ID (spid)`,
             dao = this.CachingDAO.create({
               cache: cache,
               src: dao,
-              of: this.model
+              of: this.model,
+              pollingInterval: this.pollingInterval,
+              pollingProperty: this.pollingProperty
             });
           }
 
@@ -1069,9 +1099,8 @@ model from which to test ServiceProvider ID (spid)`,
       },
       javaCode: `
         DAO dao = (DAO) getMdao();
-        if ( dao != null &&
-             dao instanceof foam.dao.MDAO ) {
-          ((foam.dao.MDAO)dao).addIndex(props);
+        if ( dao != null && dao instanceof foam.dao.MDAO ) {
+          ((foam.dao.MDAO) dao).addIndex(props);
         } else {
           ((Logger) getX().get("logger")).warning(getName(), "Index not added, no access to MDAO");
         }

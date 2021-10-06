@@ -109,7 +109,6 @@ foam.CLASS({
           class: 'foam.u2.table.TableView',
           editColumnsEnabled: true,
           columns: tableColumns,
-          multiSelectEnabled: true,
           css: {
             width: '100%'
           }

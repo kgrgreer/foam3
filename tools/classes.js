@@ -160,6 +160,7 @@ var classes = [
   'foam.lib.csv.CSVOutputterImpl',
   'foam.lib.csv.ProxyCSVOutputter',
   'foam.lib.csv.FromCSVSetter',
+  'foam.core.PropertyInfo',
   'foam.dao.java.JDAO',
   'foam.dao.CopyFromDAO',
   'foam.dao.FilteredDAO',
@@ -260,7 +261,12 @@ var classes = [
   'foam.nanos.boot.NSpecAware',
   'foam.nanos.boot.DAONSpecMenu',
   'foam.nanos.app.Mode',
+  'foam.nanos.bench.BenchmarkResult',
   'foam.nanos.bench.Benchmark',
+  'foam.nanos.bench.BenchmarkResultReportingDAO',
+  'foam.nanos.bench.BenchmarkResultSystemDAO',
+  'foam.nanos.bench.BenchmarkRunner',
+  'foam.nanos.bench.BenchmarkRunnerScript',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
@@ -480,7 +486,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
+  'foam.nanos.benchmark.AuthorizerBenchmark',
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
   'foam.comics.v2.CRUDEnabledActionsAuth',
@@ -645,6 +651,7 @@ var classes = [
   'foam.nanos.fs.FileLabel',
   'foam.nanos.fs.FileType',
   'foam.nanos.fs.TempFile',
+  'foam.nanos.fs.TempFileDAO',
   'foam.crypto.hash.Hasher',
   'foam.crypto.hash.HashableTest',
 
@@ -660,6 +667,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
+  'foam.nanos.dig.ExternalDataAware',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
@@ -678,6 +686,7 @@ var classes = [
   'foam.lib.parse.ActionParser',
   'foam.lib.parse.SymbolParser',
   'foam.util.UIDGenerator',
+  'foam.util.UIDGeneratorTest',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
@@ -699,6 +708,10 @@ var classes = [
   'foam.nanos.dig.exception.UnsupportException',
   'foam.nanos.dig.exception.UnknownIdException',
   'foam.nanos.dig.exception.DigSuccessMessage',
+  'foam.nanos.dig.exception.TemporaryExternalAPIException',
+  'foam.nanos.dig.exception.EmptyParameterException',
+  'foam.nanos.dig.exception.ExternalAPIException',
+  'foam.nanos.dig.exception.GeneralException',
 
   'foam.nanos.dao.Operation',
 
@@ -710,6 +723,8 @@ var classes = [
   'foam.nanos.ruler.FindRuledCommand',
   'foam.nanos.ruler.Ruled',
   'foam.nanos.ruler.Rule',
+  'foam.nanos.ruler.PermissionedUserRule',
+  'foam.nanos.ruler.PermissionedUCJRule',
   'foam.nanos.ruler.RuledDAO',
   'foam.nanos.ruler.RulerData',
   'foam.nanos.ruler.test.RuledDAOTest',
@@ -763,11 +778,6 @@ var classes = [
   'foam.support.model.SupportEmail',
   'foam.support.model.Ticket',
 
-  'foam.nanos.dig.exception.ExternalAPIException',
-  'foam.nanos.dig.exception.EmptyParameterException',
-  'foam.nanos.dig.exception.GeneralException',
-  'foam.nanos.dig.exception.TemporaryExternalAPIException',
-
   'foam.nanos.app.SupportConfig',
 
   'foam.nanos.test.StockSnapshot',
@@ -782,7 +792,7 @@ var classes = [
   'foam.nanos.ticket.TicketAddCommentDAO',
   'foam.nanos.ticket.TicketOwnerDAO',
   'foam.nanos.ticket.TicketCommentOwnerDAO',
-  'foam.nanos.ticket.RFITicket',
+  'foam.nanos.ticket.RfiTicket',
 
   // Testing support
   'foam.test.TestEnum',
@@ -880,6 +890,7 @@ var classes = [
   'foam.nanos.crunch.ruler.SetUCJStatusOnPut',
   'foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted',
   'foam.nanos.crunch.ruler.SaveUCJDataOnGranted',
+  'foam.nanos.crunch.ruler.UCJDataExpiryRule',
 
   //crunch extras
   'foam.nanos.crunch.extra.ReviewCapability',
@@ -917,6 +928,7 @@ var classes = [
 
   // approval
   'foam.nanos.approval.ApprovalRequest',
+  'foam.nanos.approval.ApprovalRequestClassification',
   'foam.nanos.approval.ApprovalRequestNotification',
   'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.approval.Approvable',

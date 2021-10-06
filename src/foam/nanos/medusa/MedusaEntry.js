@@ -143,7 +143,7 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       class: 'Map',
       visibility: 'HIDDEN',
       factory: function() { return {}; },
-      javaFactory: 'return new java.util.HashMap();',
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap();',
       transient: true
     },
     {

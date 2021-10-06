@@ -37,7 +37,7 @@ foam.CLASS({
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
         Notification notif = (Notification) obj;
-    
+
         if ( notif.getBroadcasted() ) {
           userDAO.select(new AbstractSink() {
             @Override
@@ -48,10 +48,10 @@ foam.CLASS({
           });
         } else if ( ! SafetyUtil.isEmpty(notif.getGroupId()) ) {
           DAO receivers = userDAO.where(
-                                        AND(
-                                            EQ(User.GROUP, notif.getGroupId()),
-                                            EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
-                ));
+            AND(
+                EQ(User.GROUP, notif.getGroupId()),
+                EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+          ));
           Count count = (Count) receivers.select(new Count());
           Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           if ( count.getValue() == 0 ) {

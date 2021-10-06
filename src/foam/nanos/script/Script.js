@@ -213,9 +213,8 @@ foam.CLASS({
       name: 'status',
       documentation: 'Status of script.',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
+      updateVisibility: 'RW',
       value: 'UNSCHEDULED',
-      javaValue: 'ScriptStatus.UNSCHEDULED',
       tableWidth: 120,
       storageTransient: true,
       storageOptional: true
@@ -482,6 +481,11 @@ foam.CLASS({
       confirmationRequired: function() {
         return true;
       },
+      isAvailable: function(enabled, status) {
+        return enabled &&
+          ( status == this.ScriptStatus.UNSCHEDULED ||
+            status == this.ScriptStatus.ERROR );
+      },
       code: function() {
         var self = this;
         this.output = '';
@@ -496,7 +500,7 @@ foam.CLASS({
             notification.toastState = self.ToastState.REQUESTED;
             notification.severity = foam.log.LogLevel.INFO;
             notification.transient = true;
-            self.__subContext__.notificationDAO.put(notification);
+            self.__subContext__.myNotificationDAO.put(notification);
             self.copyFrom(script);
             if ( script.status === self.ScriptStatus.SCHEDULED ) {
               self.poll();
@@ -510,7 +514,7 @@ foam.CLASS({
             notification.toastState = self.ToastState.REQUESTED;
             notification.severity = foam.log.LogLevel.WARN;
             notification.transient = true;
-            self.__subContext__.notificationDAO.put(notification);
+            self.__subContext__.myNotificationDAO.put(notification);
           });
         } else {
           this.status = this.ScriptStatus.RUNNING;
@@ -523,7 +527,7 @@ foam.CLASS({
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
               notification.transient = true;
-              this.__subContext__.notificationDAO.put(notification);
+              this.__subContext__.myNotificationDAO.put(notification);
 
               this.status = this.ScriptStatus.UNSCHEDULED;
               this.__context__[this.daoKey].put(this);
@@ -537,7 +541,7 @@ foam.CLASS({
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.WARN;
               notification.transient = true;
-              this.__subContext__.notificationDAO.put(notification);
+              this.__subContext__.myNotificationDAO.put(notification);
 
               this.output += '\n' + e.stack;
               console.log(e);

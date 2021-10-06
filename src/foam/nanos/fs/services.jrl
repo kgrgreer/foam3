@@ -73,9 +73,14 @@ p({
   serve: false,
   serviceScript:
   """
+    dao = new foam.nanos.fs.TempFileDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.fs.TempFile.getOwnClassInfo()))
+      .build();
     return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setAuthorize(false)
       .setPm(true)
+      .setDecorator(dao)
       .setOf(foam.nanos.fs.TempFile.getOwnClassInfo())
       .setGuid(true)
       .build();

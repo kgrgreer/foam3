@@ -7,8 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.table',
   name: 'UnstyledTableRow',
-  extends: 'foam.u2.View',
-  mixins: ['foam.u2.table.TableHelperMixin'],
+  extends: 'foam.u2.table.TableComponentView',
 
   requires: [
     'foam.core.SimpleSlot',
@@ -18,12 +17,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'props',
-    'propertyNamesToQuery',
     'canBuildObjfromProj',
-    'nestedPropertyNamesAndItsIndexes',
-    'dblclick?',
     'click?',
+    'dblclick?',
+    'nestedPropsAndIndexes',
+    'propertyNamesToQuery',
+    'props',
     'stack?'
   ],
 
@@ -37,12 +36,13 @@ foam.CLASS({
       this.SUPER();
       const obj = this.obj;
       var self = this;
-      var nestedPropertyValues = this.columnHandler.filterOutValuesForNotNestedProperties(this.projection, this.nestedPropertyNamesAndItsIndexes[1]);
-      var nestedPropertiesObjsMap = this.columnHandler.groupObjectsThatAreRelatedToNestedProperties(this.data.of, this.nestedPropertyNamesAndItsIndexes[0], nestedPropertyValues);
+      var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
+      var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
         this.on('dblclick', function() {
-          self.dblclick(null, obj.id);
+            if ( view.shouldEscapeEvts(evt) ) return;
+            view.dblclick(null, obj.id);
         });
       }).
       callIf( this.click && ! this.data.disableUserSelection, function() {
@@ -55,9 +55,7 @@ foam.CLASS({
           ) {
             return;
           }
-          self.data.data.inX(ctrl.__subContext__).find(obj.id).then(v => {
-            self.click(null, obj.id);
-          });
+          self.click(null, obj.id);
         });
       }).
       addClass(this.data.myClass('row')).
@@ -149,6 +147,10 @@ foam.CLASS({
       self
         .start('')
           .addClass(this.data.myClass('td'))
+          .on('dblClick', e => {
+            e.preventDefault();
+            e.stopPropogation();
+          })
           .attrs({ name: 'contextMenuCell' })
           .style({ flex: `0 0 ${this.data.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px` })
           .startContext({ stack: this.subStack })

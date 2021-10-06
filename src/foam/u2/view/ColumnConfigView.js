@@ -227,7 +227,7 @@ foam.CLASS({
       }
       return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
     },
-    function getColumns(){
+    function getColumns() {
       var data = this.data;
       var arr = [];
       var notSelectedColumns = [];
@@ -281,15 +281,16 @@ foam.CLASS({
       var notSelectedColumns = data.allColumns.filter(c => {
         return ! topLevelProps.includes(c);
       });
-      //to add properties that are specified in 'tableColumns' as an option
+      // to add properties that are specified in 'tableColumns' as an option
       tableColumns = tableColumns.filter(c => ! topLevelProps.includes(c));
       for ( var i = 0 ; i < tableColumns.length ; i++ ) {
         var indexOfTableColumn = notSelectedColumns.indexOf(tableColumns[i]);
-        if ( indexOfTableColumn === -1)
+        if ( indexOfTableColumn === -1 ) {
           notSelectedColumns.push(tableColumns[i]);
-        else
+        } else {
           notSelectedColumns.splice(indexOfTableColumn, 1, tableColumns[i]);
         }
+      }
         var nonSelectedViewModels = [];
         for ( i = 0 ; i < notSelectedColumns.length ; i++ ) {
           var rootProperty;

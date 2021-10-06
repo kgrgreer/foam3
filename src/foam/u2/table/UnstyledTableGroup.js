@@ -7,19 +7,19 @@
 foam.CLASS({
   package: 'foam.u2.table',
   name: 'UnstyledTableGroup',
-  extends: 'foam.u2.View',
-  mixins: ['foam.u2.table.TableHelperMixin'],
+  extends: 'foam.u2.table.TableComponentView',
 
   requires: [
+    'foam.core.SimpleSlot',
     'foam.u2.CheckBox',
     'foam.u2.view.OverlayActionListView'
   ],
 
   imports: [
-    'props',
-    'propertyNamesToQuery',
     'canBuildObjfromProj',
-    'nestedPropertyNamesAndItsIndexes'
+    'nestedPropsAndIndexes',
+    'propertyNamesToQuery',
+    'props'
   ],
 
   properties: [
@@ -29,15 +29,50 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this;
       var objForCurrentProperty = this.obj;
-      var nestedPropertyValues = this.columnHandler.filterOutValuesForNotNestedProperties(this.projection, this.nestedPropertyNamesAndItsIndexes[1]);
-      var nestedPropertiesObjsMap = this.columnHandler.groupObjectsThatAreRelatedToNestedProperties(this.data.of, this.nestedPropertyNamesAndItsIndexes[0], nestedPropertyValues);
+      var expr = foam.mlang.Expressions.create();
+      var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
+      var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       addClasses([this.data.myClass('row-group'), this.data.myClass('row')]).
-      // TODO: add functionality to support group multiselect
+      // If multi-select is enabled, then we show a checkbox in the
+      // header that allows you to select all or select none.
+      callIf(this.data.multiSelectEnabled, function() {
+        var slot = self.SimpleSlot.create();
+        this.start().
+          addClass(self.data.myClass('th')).
+          tag(self.CheckBox, {}, slot).
+          style({ width: '42px' }).
+        end();
+
+        // Set up a listener so we can update the existing CheckBox
+        // views when a user wants to select all or select none.
+        self.onDetach(slot.value.dot('data').sub(function(_, __, ___, newValueSlot) {
+          var checked = newValueSlot.get();
+
+          if ( checked ) {
+            self.data.selectedObjects = {};
+            self.data.data.where(expr.EQ(self.data.groupBy, self.data.groupBy.f(objForCurrentProperty))).select(function(obj) {
+              self.data.selectedObjects[obj.id] = obj;
+              self.data.idsOfObjectsTheUserHasInteractedWith_[obj.id] = true;
+              if ( self.data.checkboxes_[obj.id] )
+                self.data.checkboxes_[obj.id].data = checked;
+            });
+          } else {
+            Object.keys(self.data.checkboxes_).forEach(function(key) {
+              if ( self.data.selectedObjects[key] && self.data.groupBy.f(self.data.selectedObjects[key]) == self.data.groupBy.f(objForCurrentProperty) )
+                self.data.checkboxes_[key].data = checked;
+            });
+            self.data.selectedObjects = {};
+          }
+        }));
+      }).
+
       style({ 'min-width': this.data.tableWidth_$ });
       prop = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
-      var elmt = this.E().addClasses(['h500', this.data.myClass('td')])
+      var elmt = this.E().style({ flex: '3 0 0' })
+        .addClasses(['h500', this.data.myClass('td')])
         .call(function() {
           prop.tableCellFormatter.format(
             this,
