@@ -103,9 +103,8 @@ foam.CLASS({
       padding: 0px;
     }
 
-    ^dropdownIcon {
-      margin-left: 4px;
-      width: 1.5em;
+    ^dropdown svg {
+      font-size: 6px; 
     }
   `,
 
@@ -129,14 +128,16 @@ foam.CLASS({
         this.add(this.shown$.map(function(shown) {
           var e = self.E();
           if ( shown ) {
-            e.start().addClass(self.myClass('dropdownIcon')).callIfElse(self.theme,
+            e.callIfElse(self.theme,
               function() {
-                this.add(self.HTMLView.create({ data: self.theme.glyphs.dropdown.expandSVG() }));
+                this.start(self.HTMLView, { data: self.theme.glyphs.dropdown.expandSVG() })
+                  .addClasses([self.myClass('SVGIcon'), self.myClass('dropdown')])
+                .end();
               },
               function() {
                 this.start('img').attr('src', this.dropdownIcon$).end();
               }
-            ).end();
+            );
           }
           return e;
         }));

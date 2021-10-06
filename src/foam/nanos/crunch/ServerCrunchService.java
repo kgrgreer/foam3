@@ -18,7 +18,6 @@ import foam.mlang.sink.GroupBy;
 import foam.nanos.NanoService;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestClassificationEnum;
 import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
@@ -156,10 +155,23 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       }
       grantPath.add(cap);
 
-      // Collect leave nodes in the list
+      // Collect leaf nodes in the list
       if ( collectLeafNodesList != null ) {
         if ( prereqs == null || prereqs.length == 0 ) {
           collectLeafNodesList.add(cap);
+        } else if ( filterGrantedUCJ ) {
+          boolean foundOutstandingCapability = false;
+          for (var capabilityId : prereqs ) {
+            UserCapabilityJunction ucj = getJunction(x, capabilityId);
+            if ( ucj == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED) {
+              foundOutstandingCapability = true;
+              break;
+            }
+          }
+          // When there are no outstanding prerequisites, consider this a leaf node
+          if (!foundOutstandingCapability) {
+            collectLeafNodesList.add(cap);
+          }
         }
       }
 
@@ -169,6 +181,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       }
     }
 
+    if ( collectLeafNodesList != null ) {
+      Collections.reverse(collectLeafNodesList);
+    }
     Collections.reverse(grantPath);
     pm.log(x);
     return grantPath;
@@ -659,7 +674,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       .setCreatedFor(subject.getUser().getId())
       // TODO: How can we make this configurable?
       .setGroup(subject.getUser().getSpid() + "-fraud-ops")
-      .setClassificationEnum(ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ)
+      .setClassification("update-on-active-ucj")
       .build();
 
     ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);

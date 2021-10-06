@@ -106,7 +106,7 @@ foam.CLASS({
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
-          class: 'foam.u2.view.ScrollTableView',
+          class: 'foam.u2.table.TableView',
           editColumnsEnabled: true,
           columns: tableColumns,
           css: {

@@ -8,9 +8,7 @@ p({
   """
     {
       "of":"foam.nanos.boot.NSpec",
-      "cache":true,
-      "ttlPurgeTime":0,
-      "ttlSelectPurgeTime": 25000
+      "cache":true
      }
   """
 })
@@ -30,9 +28,7 @@ p({
   "client":"""
     {
       "of":"foam.nanos.boot.NSpec",
-      "cache":true,
-      "ttlPurgeTime":0,
-      "ttlSelectPurgeTime": 25000
+      "cache":true
     }
   """,
   documentation:"The authenticated version of nSpecDAO - for dig and docs."
@@ -145,7 +141,10 @@ p({
   "name": "threadPool",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .build();
+  `
 })
 
 p({
@@ -707,14 +706,14 @@ p({
     dao = new foam.dao.EasyDAO.Builder(x)
       .setEnableInterfaceDecorators(false)
       .setServiceProviderAware(true)
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ruler.Rule.DAO_KEY, foam.nanos.ruler.Rule.PRIORITY })
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setInnerDAO(x.get("localRuleDAO"))
       .setRuler(false)
       .setPermissioned(true)
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY, foam.nanos.ruler.Rule.PRIORITY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
 
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
     dao = new foam.dao.ValidatingDAO(x, dao);
 
     return dao;
@@ -742,11 +741,10 @@ p({
       .setRuler(true)
       .setRulerDaoKey("localRuleDAO")
       .setAuthorize(false)
-      .build();
-
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.ENABLED });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.DAO_KEY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.ENABLED });
 
     return dao;
   """
@@ -765,8 +763,9 @@ p({
       .setRuler(false)
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.ruler.RuleGroup.PRIORITY) })
-      .build();
-    ed.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.RuleGroup.PRIORITY });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.RuleGroup.PRIORITY });
+
     return new foam.dao.ValidatingDAO(x, ed);
   """,
   "client": """
@@ -804,9 +803,8 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("groupPermissionJunctions")
       .setPm(true)
-      .build();
-
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.GroupPermissionJunction.SOURCE_ID });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.GroupPermissionJunction.SOURCE_ID });
     return dao;
   """
 })
@@ -856,8 +854,8 @@ p({
       .setPm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("currencies")
-      .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY});
   """
 })
 
@@ -924,13 +922,13 @@ p({
           )
         )
       )
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setPredicate(foam.mlang.MLang.NEQ(foam.nanos.approval.ApprovalRequest.STATUS, foam.nanos.approval.ApprovalStatus.REQUESTED))
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED))
         .setSize(10000)
         .build())
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
@@ -1111,9 +1109,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("timezones")
       .setOf(foam.nanos.auth.TimeZone.getOwnClassInfo())
-      .build();
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
 
     return dao;
   """,
@@ -1168,10 +1166,22 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "medusastatuswatcher",
-  "lazy": false,
-  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
+  "class":"foam.nanos.boot.NSpec",
+  "name":"approvalRequestClassificationDAO",
+  "serve":true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("approvalRequestClassifications")
+      .setOf(foam.nanos.approval.ApprovalRequestClassification.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "foam.nanos.approval.ApprovalRequestClassification"
+    }
+  """
 })
 
 p({
