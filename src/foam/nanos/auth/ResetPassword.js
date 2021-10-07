@@ -20,7 +20,8 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.u2.stack.StackBlock'
   ],
 
   messages: [
@@ -137,7 +138,12 @@ foam.CLASS({
         this.resetPasswordToken.processToken(null, user, this.token)
         .then((_) => {
           location = window.location.origin;
-          this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: 'foam.u2.view.LoginView',
+              mode_: 'SignIn'
+            }
+          }));
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         }).catch((err) => {
           this.notify(err.message, '', this.LogLevel.ERROR, true);
