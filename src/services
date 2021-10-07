@@ -141,7 +141,10 @@ p({
   "name": "threadPool",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .build();
+  `
 })
 
 p({
@@ -1107,7 +1110,7 @@ p({
       .setJournalName("timezones")
       .setOf(foam.nanos.auth.TimeZone.getOwnClassInfo())
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
 
     return dao;

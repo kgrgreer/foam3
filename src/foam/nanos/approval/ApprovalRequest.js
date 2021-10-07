@@ -699,10 +699,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.classification.id;
+        return this.classification$find.then(classification => classification.toSummary());
       },
       javaCode: `
-        return getClassification();
+        return findClassification(getX()).toSummary();
       `
     },
     // TODO: remove this when we remove classificationEnum

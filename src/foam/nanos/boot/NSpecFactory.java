@@ -45,8 +45,8 @@ public class NSpecFactory
     }
     creatingThread_ = Thread.currentThread();
 
-    PM     pm     = new PM(this.getClass(), spec_.getName());
-    X      nx     = x_ instanceof SubX ? x_ : x_.getX();
+    PM pm = new PM(this.getClass(), spec_.getName());
+    X  nx = x_ instanceof SubX ? x_ : x_.getX();
 
     try {
       logger.info("Creating Service", spec_.getName());

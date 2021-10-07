@@ -37,12 +37,14 @@ public class HealthCheckWebAgent
         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         out.println("down");
       } else {
+        boolean cluster = "true".equals(System.getProperty("CLUSTER", "false"));
         if ( config.getType() == MedusaType.MEDIATOR ) {
           if ( config.getStatus() == Status.ONLINE &&
                config.getRegionStatus() == RegionStatus.ACTIVE &&
                ( config.getZone() > 0 ||
                  ( config.getZone() == 0 &&
-                   electoral.getState() == ElectoralServiceState.IN_SESSION ) ) ) {
+                   electoral.getState() == ElectoralServiceState.IN_SESSION  &&
+                   cluster ) ) ) {
             response.setStatus(HttpServletResponse.SC_OK);
             out.println("up");
           } else if ( config.getStatus() != Status.ONLINE &&

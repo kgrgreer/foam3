@@ -20,6 +20,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.XLocator',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
@@ -133,12 +134,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'daoKey',
-      value: 'benchmarkRunnerDAO'
+      value: 'benchmarkRunnerDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'eventDaoKey',
-      value: 'benchmarkRunnerEventDAO'
+      value: 'benchmarkRunnerEventDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -240,6 +245,7 @@ foam.CLASS({
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
+                      XLocator.set(x);
                       benchmark.execute(x);
                       passed++;
                     } catch (Throwable t) {
@@ -250,6 +256,8 @@ foam.CLASS({
                       }
                       logger.error(e.getMessage());
                       logger.debug(e);
+                    } finally {
+                      XLocator.set(null);
                     }
                   }
                   pass.addAndGet(passed++);
@@ -311,7 +319,7 @@ foam.CLASS({
         }
         setStatus(ScriptStatus.UNSCHEDULED);
       } catch (Throwable t) {
-        setStatus(ScriptStatus.RUNNING);
+        setStatus(ScriptStatus.ERROR);
         logger.error(t);
       } finally {
         setLastRun(new java.util.Date());
