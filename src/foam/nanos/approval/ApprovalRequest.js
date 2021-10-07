@@ -761,7 +761,7 @@ foam.CLASS({
       code: function(X) {
         var objToAdd = X.objectSummaryView ?
           X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.add(this.Popup.create().tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.approveWithMemoL.bind(this, X)
         }));
@@ -777,7 +777,7 @@ foam.CLASS({
       code: function(X) {
         var objToAdd = X.objectSummaryView ?
           X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.add(this.Popup.create().tag({
           class: 'foam.u2.MemoModal',
           isMemoRequired: true,
           onExecute: this.addMemoL.bind(this, X)
@@ -796,7 +796,7 @@ foam.CLASS({
         var objToAdd = X.objectSummaryView ?
           X.objectSummaryView : X.summaryView;
 
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.add(this.Popup.create().tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.rejectWithMemo.bind(this, X),
           isMemoRequired: true
