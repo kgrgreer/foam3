@@ -420,7 +420,7 @@ foam.CLASS({
         }
         await self.fetchGroup();
         await self.fetchSubject();
-        this.ipAddressInfo = await self.client.ipInfoClientService.fetchIPInfo(this.ipAddressInfo);
+
         await self.maybeReinstallLanguage(client);
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility

@@ -1186,18 +1186,7 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "ipInfoClientService",
-  "serve": true,
-  "client": """
-    {
-      "class": "foam.net.ip.ClientIPAddressInfoFetch",
-    }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "ipInfoDAO",
+  "name": "ipAddressInfoDAO",
   "serve": true,
   "lazy": false,
   "description": "A read-only dao which will return information based on the request IP Address",
@@ -1207,8 +1196,7 @@ p({
       .setAuthorize(false)
       .setReadOnly(true)
       .setRuler(false)
-      .setMdao(true)
-      .setDecorator(new foam.net.ip.FetchIPAddress.Builder(x).build())
+      .setDecorator(new foam.net.ip.FetchIPAddressInfo.Builder(x).build())
       .setEnableInterfaceDecorators(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("ipAddressInfos")

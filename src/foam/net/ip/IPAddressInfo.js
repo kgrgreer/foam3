@@ -22,6 +22,20 @@
     'regionDAO'
   ],
 
+  javaImports: [
+    'java.io.IOException',
+    'foam.core.FObject',
+    'foam.lib.json.JSONParser',
+    'foam.net.IPSupport',
+    'java.net.URI',
+    'java.net.http.HttpClient',
+    'java.net.http.HttpRequest',
+    'java.net.http.HttpRequest.BodyPublishers',
+    'java.net.http.HttpResponse',
+    'java.net.http.HttpResponse.BodyHandlers',
+    'java.time.Duration'
+  ],
+
   tableColumns: [
     'isp',
     'city',
@@ -106,24 +120,74 @@
   ],
 
   methods: [
-    async function fetchInfo() {
-      if ( ! navigator.onLine ) {
-        console.warning(this.NO_INTERNET_CONNECTION);
-        return;
-      }
-      var obj = await (await fetch(this.provider)).json();
+    {
+      name: 'fetchInfo',
+      type: 'foam.net.ip.IPAddressInfo',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        }
+      ],
+      javaCode: `
+        String remoteIp = foam.net.IPSupport.instance().getRemoteIp(x);
 
-      this.isp = obj.isp;
-      this.ipType = obj.ipType;
-      this.city = obj.city;
-      this.country = obj.country;
-      this.countryCode = obj.countryCode;
-      this.region = obj.region;
-      this.continent = obj.continent;
-      this.businessName = obj.businessName;
-      this.businessWebsite = obj.businessWebsite;
-      this.organization = obj.org;
-      this.ipAddress = obj.query;
+        HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(getProvider() + remoteIp))
+          .method("GET", BodyPublishers.noBody())
+          .build();
+
+        HttpClient httpClient = HttpClient.newBuilder()
+          .connectTimeout(Duration.ofSeconds(10))
+          .build();
+        try {
+          HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+
+          if ( response.statusCode() == 200 ) {
+            JSONParser jsonParser = new JSONParser();
+            jsonParser.setX(x);
+
+            var info = (IPAddressInfo) jsonParser.parseString(response.body(), IPAddressInfo.class);
+            this.copyFrom(info);
+          }
+        } catch ( IOException | InterruptedException e ) {
+          throw new RuntimeException("Issue fetching IP address information.");
+        }
+        return this;
+      `,
+      code: async function() {
+        if ( ! navigator.onLine ) {
+          console.warning(this.NO_INTERNET_CONNECTION);
+          return;
+        }
+        var obj = await (await fetch(this.provider)).json();
+        this.copyObj(obj);
+      },
+    },
+    {
+      name: 'copyObj',
+      args: [
+        {
+          type: 'Object',
+          name: 'obj'
+        }
+      ],
+      javaCode: `
+        // noop
+      `,
+      code: function(obj) {
+        this.isp = obj.isp;
+        this.ipType = obj.ipType;
+        this.city = obj.city;
+        this.country = obj.country;
+        this.countryCode = obj.countryCode;
+        this.region = obj.region;
+        this.continent = obj.continent;
+        this.businessName = obj.businessName;
+        this.businessWebsite = obj.businessWebsite;
+        this.organization = obj.org;
+        this.ipAddress = obj.query;
+      }
     }
   ]
 });

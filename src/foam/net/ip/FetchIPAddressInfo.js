@@ -26,6 +26,13 @@
   `,
 
   javaImports: [
+    'java.net.URI',
+    'java.net.http.HttpClient',
+    'java.net.http.HttpRequest',
+    'java.net.http.HttpRequest.BodyPublishers',
+    'java.net.http.HttpResponse.BodyHandlers',
+    'foam.net.IPSupport',
+    'foam.core.FObject',
     'foam.net.ip.IPAddressInfo',
     'foam.core.Detachable',
     'foam.dao.ArraySink',
@@ -41,11 +48,15 @@
       name: 'find_',
       javaCode: `
         FObject obj = getDelegate().find_(x, id);
+        IPAddressInfo ipInfo = null;
         if ( obj == null ) {
-          return obj;
+          ipInfo = (IPAddressInfo) ((ArraySink) getDelegate().select(new ArraySink())).getArray().get(0);
+          if ( obj == null ) {
+            return obj;
+          }
         }
-        IPAddressInfo ipInfo = (IPAddressInfo) obj.fclone();
-        return fetch(ipInfo);
+        ipInfo = (IPAddressInfo) obj.fclone();
+        return (IPAddressInfo) ipInfo.fetchInfo(x);
       `
     },
     {
@@ -54,24 +65,12 @@
         Sink s = sink != null ? sink : new ArraySink();
         ProxySink proxy = new ProxySink(x, s) {
           public void put(Object o, Detachable d) {
-            IPAddressInfo ipInfo = (IPAddressInfo) fetch((IPAddressInfo) o);
+            IPAddressInfo ipInfo = (IPAddressInfo) ((IPAddressInfo) o).fetchInfo(x);
             getDelegate().put(ipInfo, d);
           }
         };
         getDelegate().select_(x, proxy, skip, limit, order, predicate);
         return proxy.getDelegate();
-      `
-    },
-    {
-      name: 'fetch',
-      type: 'foam.net.ip.IPAddressInfo',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'ipInfo', type: 'foam.net.ip.IPAddressInfo' }
-      ],
-      javaCode: `
-
-        return ipInfo;
       `
     }
   ]
