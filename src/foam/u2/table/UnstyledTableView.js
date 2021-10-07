@@ -536,13 +536,15 @@ foam.CLASS({
                     callIf(view.editColumnsEnabled, function() {
                       this.start('')
                         this.addClass(view.myClass('th-editColumns'))
-                        .tag(view.OverlayActionListView, {
-                          data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
-                          obj: view,
-                          showDropdownIcon: false,
-                          buttonStyle: 'TERTIARY',
-                          icon: 'images/Icon_More_Resting.svg'
-                        })
+                        this.tag(view.GROUP_BY_COLUMNS)
+                        this.tag(view.SELECT_COLUMNS)
+                        // .tag(view.OverlayActionListView, {
+                        //   data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
+                        //   obj: view,
+                        //   showDropdownIcon: false,
+                        //   buttonStyle: 'TERTIARY',
+                        //   icon: 'images/Icon_More_Resting.svg'
+                        // })
                         .addClass(view.myClass('vertDots'))
                         .addClass(view.myClass('noselect'))
                       .end();
