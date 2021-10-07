@@ -54,10 +54,8 @@ foam.CLASS({
     'ctrl',
     'currentMenu',
     'notify',
-    'objectSummaryView?',
     'stack',
     'subject',
-    'summaryView?',
     'translationService'
   ],
 
@@ -699,10 +697,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.classification.id;
+        return this.classification$find.then(classification => classification.toSummary());
       },
       javaCode: `
-        return getClassification();
+        return findClassification(getX()).toSummary();
       `
     },
     // TODO: remove this when we remove classificationEnum
@@ -759,9 +757,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.approveWithMemoL.bind(this, X)
         }));
@@ -775,9 +771,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           isMemoRequired: true,
           onExecute: this.addMemoL.bind(this, X)
@@ -793,10 +787,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.rejectWithMemo.bind(this, X),
           isMemoRequired: true
@@ -970,8 +961,7 @@ foam.CLASS({
         "approval.assign.*"
       ],
       code: function(X) {
-        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.tag({
+        X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,

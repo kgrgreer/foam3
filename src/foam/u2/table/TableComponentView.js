@@ -87,7 +87,12 @@ foam.CLASS({
       if ( prop && prop.fullPropertyName.includes('.') ) {
         objForCurrentProperty = nestedPropertiesObjsMap[this.columnHandler.getNestedPropertyNameExcludingLastProperty(prop.fullPropertyName)];
       }
-      return objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(this.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : this.data.of.getAxiomByName(propName);
+      return [
+        (objForCurrentProperty ?
+        objForCurrentProperty.cls_.getAxiomByName(this.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) :
+        prop && prop.property ? prop.property : this.data.of.getAxiomByName(propName)),
+        objForCurrentProperty
+      ];
     }
   ]
 });

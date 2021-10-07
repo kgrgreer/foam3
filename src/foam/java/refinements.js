@@ -3,6 +3,15 @@
  * Copyright 2017,2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * To debug in browser, load with ?java=true flag, then run something like:
+ *   c = foam.java.Class.create();
+ *   foam.nanos.auth.Region.buildJavaClass(c);
+ *   c.toString();
+ * from the console.
+**/
+
 foam.INTERFACE({
   package: 'foam.lib.csv',
   name: 'FromCSVSetter',
@@ -407,7 +416,7 @@ ${isSet} = false;`
       if ( this.javaFactory ) {
         cls.method({
           name: factoryName,
-          visibility: 'protected',
+          visibility: 'public',
           type: this.javaType,
           body: this.javaFactory
         });

@@ -111,11 +111,8 @@ foam.CLASS({
         return this.nSpec && this.nSpec.name || (this.of && this.of.id);
       },
       javaFactory: `
-      if ( getNSpec() != null ) {
-        return getNSpec().getName();
-      } else if ( getOf() != null ) {
-        return getOf().getId();
-      }
+      if ( getNSpec() != null ) return getNSpec().getName();
+      if ( getOf()    != null ) return getOf().getId();
       return "";
      `
     },
@@ -816,10 +813,8 @@ model from which to test ServiceProvider ID (spid)`,
          System.exit(1);
        }
 
-       if ( getInnerDAO() == null &&
-            getMdao() == null &&
-            ! getNullify() ) {
-         setMdao(new foam.dao.MDAO(of_));
+       if ( getInnerDAO() == null && getMdao() == null && ! getNullify() ) {
+         setMdao(new foam.dao.MDAO(getOf()));
        }
      `
     },
@@ -1125,8 +1120,7 @@ model from which to test ServiceProvider ID (spid)`,
       },
       javaCode: `
         DAO dao = (DAO) getMdao();
-        if ( dao != null &&
-             dao instanceof foam.dao.MDAO ) {
+        if ( dao != null && dao instanceof foam.dao.MDAO ) {
           ((foam.dao.MDAO)dao).addIndex(index);
         } else {
           ((Logger) getX().get("logger")).warning(getName(), "Index not added, no access to MDAO");
