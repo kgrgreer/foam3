@@ -20,12 +20,32 @@
 
   requires: [
     'foam.comics.v2.DAOBrowseControllerView',
+    'foam.u2.ActionView',
     'foam.u2.stack.StackBlock'
   ],
 
   implements: [
     'foam.mlang.Expressions'
   ],
+
+  css: `
+    ^ {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      align-items: center;
+    }
+    ^ .foam-u2-ActionView {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      padding: 15px 15px;
+    }
+    ^row-label {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  `,
 
   properties: [
     {
@@ -45,38 +65,41 @@
     async function render() {
       this.initMemento();
 
-      var self = this;
-
       var label = this.customizeKey ? await this.customizeKey(this.data[0]) : this.data[0];
       var count = this.data[1];
 
       this.addClass(this.myClass())
-        .on('click', function() {
-          var config = self.redirectMenu.handler.config;
-          var propertyValue = self.data[0];
+        .tag(this.ActionView, { 
+          action: this.CLICK,
+          label: this.E().addClass(this.myClass('row-label')).start().add(label).end().start().add(count).end(),
+          data: this,
+          buttonStyle: foam.u2.ButtonStyle.UNSTYLED,
+        });
+    }
+  ],
+  actions: [
+    {
+      name: 'click',
+      code: function(X) {
+        var config = this.redirectMenu.handler.config;
+        var propertyValue = this.data[0];
 
-          var predicate = self.EQ(self.dao.of.getAxiomByName(self.groupByPropertyName), propertyValue);
-         
-          config.searchPredicate = predicate;
-          config.browseTitle = self.translationService.getTranslation(foam.locale, `${self.redirectMenu.id}.browseTitle`, self.redirectMenu.handler.config.browseTitle);
-          config.dao = self.dao;
-          
-          self.currentMemento_.head = self.redirectMenu.id;
+        var predicate = this.EQ(this.dao.of.getAxiomByName(this.groupByPropertyName), propertyValue);
+      
+        config.searchPredicate = predicate;
+        config.browseTitle = this.translationService.getTranslation(foam.locale, `${this.redirectMenu.id}.browseTitle`, this.redirectMenu.handler.config.browseTitle);
+        config.dao = this.dao;
+        
+        this.currentMemento_.head = this.redirectMenu.id;
 
-          self.stack.push(self.StackBlock.create({
-            view: {
-              class: self.DAOBrowseControllerView,
-              data$: self.dao$,
-              config: config
-            }, parent: self.__subContext__ 
-          }));
-        })
-        .start()
-          .add(label)
-        .end()
-        .start()
-          .add(count)
-        .end();
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: this.DAOBrowseControllerView,
+            data$: this.dao$,
+            config: config
+          }, parent: this.__subContext__ 
+        }));
+      }
     }
   ]
 });

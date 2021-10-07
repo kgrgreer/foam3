@@ -24,6 +24,10 @@
       align-items: center;
       justify-content: center;
     }
+    ^ .table-row {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
   `,
 
   properties: [
@@ -57,9 +61,7 @@
   ],
   methods: [
     function init() {
-      this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
-        this.update();
-      }.bind(this)));
+      // this.onDetach(this.dashboardController.sub('dashboard', 'update',  this.populateGroupingsCount));
       this.onDetach(this.data$.dot('dao').sub(this.populateGroupingsCount));
     },
     async function render() {
@@ -107,13 +109,6 @@
           map_.set(key, 1);
         }
         this.groupingsCount = map_;
-      }
-    },
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        this.populateGroupingsCount();
       }
     }
   ]
