@@ -48,10 +48,8 @@ foam.CLASS({
     'ctrl',
     'currentMenu',
     'notify',
-    'objectSummaryView?',
     'stack',
     'subject',
-    'summaryView?',
     'ticketDAO',
     'ticketStatusDAO',
     'userDAO'
@@ -539,8 +537,7 @@ foam.CLASS({
         "ticket.assign.*"
       ],
       code: function(X) {        
-        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.tag({
+        X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,
