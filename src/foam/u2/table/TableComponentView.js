@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder'
   ],
 
-  imports: ['columnConfigToPropertyConverter'],
+  imports: ['columnConfigToPropertyConverter as importedColumnConfigConverter'],
 
   properties: [
     {
@@ -29,9 +29,9 @@ foam.CLASS({
     {
       name: 'columnConfigToPropertyConverter',
       factory: function() {
-        if ( ! this.columnConfigToPropertyConverter )
+        if ( ! this.importedColumnConfigConverter )
           return foam.nanos.column.ColumnConfigToPropertyConverter.create();
-        return this.columnConfigToPropertyConverter;
+        return this.importedColumnConfigConverter;
       }
     },
     {
@@ -64,9 +64,6 @@ foam.CLASS({
     },
     function shouldColumnBeSorted(c) {
       return c[c.length - 1] === this.DESCENDING_ORDER_CHAR || c[c.length - 1] === this.ASCENDING_ORDER_CHAR;
-    },
-    function returnMementoColumnNameDisregardSorting(c) {
-      return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
     },
     function returnMementoColumnNameDisregardSorting(c) {
       return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;

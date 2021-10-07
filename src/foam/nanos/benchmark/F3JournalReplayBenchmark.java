@@ -1,21 +1,32 @@
-package foam.nanos.bench.benchmarks;
+/**
+ * @license
+ * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
-public class F3JournalReplayBenchmark implements Benchmark {
+public class F3JournalReplayBenchmark extends Benchmark {
   protected F3FileJournal journal_;
   protected DAO dao_;
   protected int userCount;
+
+  public F3JournalReplayBenchmark() {
+    this(1000);
+  }
 
   public F3JournalReplayBenchmark(int userCount) {
     this.userCount = userCount;
   }
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     dao_ = new NullDAO();
     journal_ = new F3FileJournal.Builder(x)
 //      .setDao(new MDAO(User.getOwnClassInfo()))
@@ -30,10 +41,6 @@ public class F3JournalReplayBenchmark implements Benchmark {
       u.setLastName("testing");
       journal_.put(x, "", dao_, u);
     }
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

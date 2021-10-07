@@ -284,6 +284,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         to do so.
       `,
       javaCode: `
+      AppConfig appConfig = (AppConfig) ((AppConfig) x.get("appConfig")).fclone();
+
       // We null out the security-relevant entries in the context since we
       // don't want whatever was there before to leak through, especially
       // since the system context (which has full admin privileges) is often
@@ -296,8 +298,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           // null during test runs
           return rtn;
         }
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-        appConfig = (AppConfig) appConfig.fclone();
 
         Theme theme = ((Themes) x.get("themes")).findTheme(x);
         rtn = rtn.put("theme", theme);
@@ -309,7 +309,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         if ( themeAppConfig != null ) {
           appConfig.copyFrom(themeAppConfig);
         }
-        appConfig = appConfig.configure(x, null);
+        appConfig = appConfig.configure(rtn, null);
 
         rtn = rtn.put("appConfig", appConfig);
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
@@ -342,7 +342,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
            ( subjectUser != null &&
              subjectUser.getId() != user.getId() ) ||
            ( agent != null && subjectAgent != null &&
-             subjectAgent.getId() != agent.getId() ) ) {
+             subjectAgent.getId() != agent.getId() ) ||
+           ( subjectUser != null &&
+             ! user.equals(subjectUser) ||
+             agent != null && subjectAgent != null &&
+             ! agent.equals(subjectAgent) ) ) {
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
@@ -375,8 +379,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         if ( group != null ) {
           rtn = rtn
-            .put("group", group)
-            .put("appConfig", group.getAppConfig(rtn));
+            .put("group", group);
         }
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(rtn);
         rtn = rtn.put("theme", theme);
@@ -384,6 +387,16 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
              theme != null && ! SafetyUtil.isEmpty(theme.getSpid()) ) {
           rtn = rtn.put("spid", theme.getSpid());
         }
+
+        AppConfig themeAppConfig = theme.getAppConfig();
+        if ( themeAppConfig != null ) {
+          appConfig.copyFrom(themeAppConfig);
+        }
+        if ( group != null ) {
+          appConfig = group.getAppConfig(rtn.put("appConfig", appConfig));
+        }
+        appConfig = appConfig.configure(rtn, null);
+        rtn = rtn.put("appConfig", appConfig);
 
         rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
 
@@ -399,7 +412,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         setApplyContext(((OrX) rtn).getX());
         pm.log(x);
       } else {
-        rtn = new OrX(x, rtn);
+        rtn = new OrX(reset(x), rtn);
       }
       return rtn;
       `

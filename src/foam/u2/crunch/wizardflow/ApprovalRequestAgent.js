@@ -24,7 +24,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.approval.ApprovalRequest',
-    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.CompositeApprovable',
     'foam.nanos.crunch.UCJUpdateApprovable',
     'foam.nanos.dao.Operation'
