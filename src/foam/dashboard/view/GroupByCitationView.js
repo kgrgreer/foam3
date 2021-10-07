@@ -20,7 +20,6 @@
 
   requires: [
     'foam.comics.v2.DAOBrowseControllerView',
-    'foam.u2.ActionView',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -69,12 +68,12 @@
       var count = this.data[1];
 
       this.addClass(this.myClass())
-        .tag(this.ActionView, { 
-          action: this.CLICK,
-          label: this.E().addClass(this.myClass('row-label')).start().add(label).end().start().add(count).end(),
-          data: this,
-          buttonStyle: foam.u2.ButtonStyle.UNSTYLED,
-        });
+        .startContext({ data : this })
+          .tag(this.CLICK, { 
+            label: this.E().addClass(this.myClass('row-label')).start().add(label).end().start().add(count).end(),
+            buttonStyle: foam.u2.ButtonStyle.UNSTYLED,
+          })
+        .endContext();
     }
   ],
   actions: [

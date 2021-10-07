@@ -61,7 +61,7 @@
   ],
   methods: [
     function init() {
-      // this.onDetach(this.dashboardController.sub('dashboard', 'update',  this.populateGroupingsCount));
+      this.onDetach(this.dashboardController.sub('dashboard', 'update',  this.populateGroupingsCount));
       this.onDetach(this.data$.dot('dao').sub(this.populateGroupingsCount));
     },
     async function render() {
