@@ -88,7 +88,7 @@ foam.CLASS({
             .add(value ? ' Y' : '-')
           .end();
       },
-      documentation: 'If true, this service is served over the network.'
+      documentation: 'If true, this service is served over the network via boxes. If the service is a WebAgent, it will be served as a WebAgent only if this is false.'
     },
     {
       class: 'Boolean',
