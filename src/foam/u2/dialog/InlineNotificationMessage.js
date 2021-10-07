@@ -77,7 +77,6 @@ foam.CLASS({
             fill: this.iconColor
           })
         };
-        console.log(props);
         return { class: 'foam.u2.tag.CircleIndicator', ...props }
       }
     },
@@ -91,14 +90,14 @@ foam.CLASS({
       factory: function() {
         return this.type && this.returnExpandedCSS(this.type.color);
       },
-      documentation: `Border color for the view and icon background. Defaults to type color prop`
+      documentation: 'Border color for the view and icon background. Defaults to type color'
     },
     {
       name: 'iconColor',
       factory: function() {
         return this.returnExpandedCSS(this.type.background) || '#FFFFFF';
       },
-      documentation: `Icon color. Defaults to 'type' background or white`
+      documentation: 'Icon color. Defaults to type background or white'
     },
     {
       name: 'isVisible',
