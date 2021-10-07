@@ -257,7 +257,7 @@ foam.CLASS({
         }
       },
       code: function() {
-        this.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        this.add(this.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: this.config.dao,
           onDelete: () => {
