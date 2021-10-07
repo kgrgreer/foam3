@@ -69,19 +69,11 @@ public class AddressUtil {
   }
 
   public static String normalizeRegion(X x, String country, String regionCode) {
-    if ( SafetyUtil.isEmpty(regionCode) ) {
-      return regionCode;
-    }
-    
     String[] normalizedRegion = { country + "-" + regionCode };
     DAO regionDAO = (DAO) x.get("regionDAO");
     Region found = (Region) regionDAO.find(regionCode);
     if ( found != null )
       return found.getCode();
-
-    if ( SafetyUtil.isEmpty(country) ) {
-      return regionCode;
-    }
 
     regionDAO.where(AND(
       EQ(Region.COUNTRY_ID, country),
@@ -103,10 +95,6 @@ public class AddressUtil {
   }
 
   public static String normalizeCountry(X x, String countryCode) {
-    if ( SafetyUtil.isEmpty(countryCode) ) {
-      return countryCode;
-    }
-    
     String[] normalizedCountry = { countryCode };
     DAO countryDAO = (DAO) x.get("countryDAO");
     Country found = (Country) countryDAO.find(countryCode);
