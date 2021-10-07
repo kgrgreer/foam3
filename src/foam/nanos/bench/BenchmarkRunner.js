@@ -20,6 +20,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.XLocator',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
@@ -244,6 +245,7 @@ foam.CLASS({
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
+                      XLocator.set(x);
                       benchmark.execute(x);
                       passed++;
                     } catch (Throwable t) {
@@ -254,6 +256,8 @@ foam.CLASS({
                       }
                       logger.error(e.getMessage());
                       logger.debug(e);
+                    } finally {
+                      XLocator.set(null);
                     }
                   }
                   pass.addAndGet(passed++);

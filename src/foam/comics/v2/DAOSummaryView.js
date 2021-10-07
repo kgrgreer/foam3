@@ -65,7 +65,6 @@ foam.CLASS({
 
   exports: [
     'controllerMode',
-    'as objectSummaryView',
     'currentMemento_ as memento'
   ],
 

@@ -50,7 +50,7 @@ foam.CLASS({
       /** factory quick lookup */
       name: 'delegateMap_',
       factory: function() { return {}; }
-    },
+    }
   ],
 
   methods: [
@@ -61,8 +61,7 @@ foam.CLASS({
       for ( var i = 0; i < this.delegates.length; i++ ) {
         cost = Math.min(
           cost,
-          this.delegates[i].estimate(
-            size, sink, skip, limit, order, predicate)
+          this.delegates[i].estimate(size, sink, skip, limit, order, predicate)
         );
       }
       return cost;
@@ -71,16 +70,17 @@ foam.CLASS({
     function toPrettyString(indent) {
       var ret = "";
       for ( var i = 0; i < this.delegates.length; i++ ) {
-          ret += this.delegates[i].toPrettyString(indent + 1);
+        ret += this.delegates[i].toPrettyString(indent + 1);
       }
       return ret;
     },
 
     function toString() {
       return 'Alt([' + (this.delegates.join(',')) + '])';
-    },
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao.index',
@@ -92,7 +92,7 @@ foam.CLASS({
       /** the delegate instances for each Alt instance */
       class: 'Simple',
       name: 'delegates'
-    },
+    }
   ],
 
   methods: [
@@ -102,8 +102,9 @@ foam.CLASS({
 
     function addIndex(index) {
       // check for existing factory
-      var dfmap = this.index.delegateMap_;
+      var dfmap    = this.index.delegateMap_;
       var indexKey = index.toString();
+
       if ( ! dfmap[indexKey] ) {
         this.index.delegates.push(index);
         dfmap[indexKey] = index;
@@ -142,10 +143,11 @@ foam.CLASS({
       // for each factory for this ordering
       if ( ! c ) {
         var nullSink = this.index.NullSink.create();
-        var dfs = this.index.delegates;
-        var bestEst = Number.MAX_VALUE;
+        var dfs      = this.index.delegates;
+        var bestEst  = Number.MAX_VALUE;
+
         // Pick the best factory for the ordering, cache it
-        for ( var i = 0; i < dfs.length; i++ ) {
+        for ( var i = 0 ; i < dfs.length ; i++ ) {
           var est = dfs[i].estimate(1000, nullSink, undefined, undefined, order);
           if ( est < bestEst ) {
             c = dfs[i];
@@ -156,7 +158,7 @@ foam.CLASS({
       }
 
       // check if we have a delegate instance for the best factory
-      for ( var i = 0; i < delegates.length; i++ ) {
+      for ( var i = 0 ; i < delegates.length ; i++ ) {
         // if we do, it's the best one
         if ( delegates[i].index === c ) return delegates[i];
       }
@@ -170,7 +172,6 @@ foam.CLASS({
 
       return newSubInst;
     },
-
 
     function select(sink, skip, limit, order, predicate, cache) {
       // find and cache the correct subindex to use
@@ -212,6 +213,6 @@ foam.CLASS({
 
     function toString() {
       return 'Alt([' + (this.index.delegates.join(',')) + this.size() + '])';
-    },
+    }
   ]
 });
