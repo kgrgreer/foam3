@@ -45,7 +45,4 @@ p({
   "name": "themes",
   "serve": false,
   "serviceClass": "foam.nanos.theme.Themes",
-  "client":"""
-    {"of":"foam.nanos.theme.Themes"}
-    """
 })
