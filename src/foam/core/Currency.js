@@ -12,6 +12,7 @@
   documentation: `The base model for storing, using and managing currency information.`,
 
   javaImports: [
+    'foam.core.XLocator',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil'
   ],

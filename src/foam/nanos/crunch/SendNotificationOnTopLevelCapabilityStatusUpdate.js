@@ -57,6 +57,7 @@ foam.CLASS({
           args.put("capName", capabilityName);
           args.put("junctionStatusEn", junction.getStatus().getName());
           args.put("junctionStatus", junctionStatus);
+          args.put("templateSource", this.getClass().getName());
 
           TopLevelCapabilityStatusUpdateNotification notification = new TopLevelCapabilityStatusUpdateNotification();
           notification.setCapabilityName(cap.getName());
@@ -77,6 +78,6 @@ foam.CLASS({
         }
       }, "Send Notification On Top Level Capability Status Update");
       `
-    }
+    },
   ]
 });

@@ -502,6 +502,7 @@ var classes = [
   'foam.nanos.notification.email.EmailMessage',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.email.EmailTemplate',
+  'foam.nanos.notification.email.EmailTemplateSource',
   'foam.nanos.notification.email.EmailPropertyService',
   'foam.nanos.notification.email.Status',
   'foam.nanos.notification.email.EmailTemplateEngine',
@@ -517,6 +518,7 @@ var classes = [
   'foam.nanos.notification.email.EmailConfig',
   'foam.nanos.notification.email.EmailConfigEmailPropertyService',
   'foam.nanos.notification.email.EmailMessageValidationPropertyService',
+  'foam.nanos.notification.email.ApplyBaseArgumentsEmailPropertyService',
   // EmailMessageDAO(service) decorator
   'foam.nanos.notification.email.EmailServiceDAO',
 

@@ -15,8 +15,8 @@ p({
         .setPredicate(foam.mlang.MLang.EQ(foam.nanos.notification.sms.SMSMessage.STATUS, foam.nanos.notification.sms.SMSStatus.SENT))
         .setSize(1000)
         .build())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.sms.SMSMessage.CREATED})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.sms.SMSMessage.CREATED});
   """
 })
 
@@ -48,8 +48,8 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"twilioConfig",                     
-  "lazy":false,  
+  "class":"foam.nanos.boot.NSpec",
+  "name":"twilioConfig",
+  "lazy":false,
   "service":{"class":"foam.nanos.notification.sms.TwilioConfig"}
 })
