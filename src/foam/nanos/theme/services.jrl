@@ -43,7 +43,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "themes",
-  "serve": true,
+  "serve": false,
   "serviceClass": "foam.nanos.theme.Themes",
   "client":"""
     {"of":"foam.nanos.theme.Themes"}

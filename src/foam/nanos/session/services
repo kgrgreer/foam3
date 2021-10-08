@@ -36,7 +36,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "sessionService",
-  "serve": true,
+  "serve": false,
   "serviceClass": "foam.nanos.session.SimpleSessionService"
 })
 
