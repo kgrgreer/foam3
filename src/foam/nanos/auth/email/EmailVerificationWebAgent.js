@@ -14,6 +14,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.Subject',
@@ -21,6 +22,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
+    'foam.nanos.session.Session',
     'foam.util.Emails.EmailsUtility',
     'java.io.PrintWriter',
     'java.util.HashMap',
@@ -94,7 +96,7 @@ foam.CLASS({
             args.put("appName", theme.getAppName());
           }
           if ( user != null ) {
-            String url = user.findGroup(x).getAppConfig(x).getUrl();
+            String url = ((AppConfig) new Session.Builder(x).setUserId(user.getId()).build().applyTo(x).get("appConfig")).getUrl();
             args.put("logo", url + "/" + theme.getLoginImage());
           }
 

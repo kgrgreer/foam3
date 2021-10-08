@@ -34,7 +34,7 @@ foam.CLASS({
         try {
           DAO tokenDAO = (DAO) getX().get("localTokenDAO");
           DAO userDAO  = (DAO) getX().get("localUserDAO");
-          AppConfig appConfig = user.findGroup(getX()).getAppConfig(x);
+          AppConfig appConfig = (AppConfig) new foam.nanos.session.Session.Builder(x).setUserId(user.getId()).build().applyTo(x).get("appConfig");
           String url = appConfig.getUrl();
 
           Token token = new Token();
@@ -55,7 +55,7 @@ foam.CLASS({
 
           return true;
         } catch(Throwable t) {
-          t.printStackTrace();
+          foam.nanos.logger.Loggers.logger(x, this).warning("template", "verifyEmail", t);
           return false;
         }
       `

@@ -23,6 +23,7 @@
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailConfig',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.session.Session',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
@@ -36,28 +37,20 @@
       type: 'foam.nanos.notification.email.EmailMessage',
       javaCode: `
         Logger logger = (Logger) x.get("logger");
-        Theme theme = (Theme) x.get("theme");
+        X userX = x;
         User user = ((Subject) x.get("subject")).getUser();
-        String spid = null;
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-
         if ( user != null ) {
-          appConfig = user.findGroup(x).getAppConfig(x);
-          spid = user.getSpid();
+          userX = new Session.Builder(x).setUserId(user.getId()).build().applyTo(x);
         }
-
-        if ( theme == null
-          || ( user != null && ! user.getSpid().equals(x.get("spid")) )
-        ) {
-          theme = ((Themes) x.get("themes")).findTheme(x);
-        }
-
+        AppConfig appConfig = (AppConfig) userX.get("appConfig");
+        Theme theme = (Theme) userX.get("theme");
+        String spid = (String) userX.get("spid");
         if ( spid == null ) {
           spid = theme.getSpid();
         }
 
         if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-          emailMessage.setSpid(user.getSpid());
+          emailMessage.setSpid(spid);
         }
 
         SupportConfig supportConfig = theme.getSupportConfig();
@@ -86,9 +79,12 @@
           return emailMessage;
         }
 
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        String url = appConfig.getUrl();
         templateArgs.put("logo", url + "/" + theme.getLogo());
         templateArgs.put("largeLogo", url + "/" + theme.getLargeLogo());
+        if ( ! templateArgs.containsKey("link") ) {
+          templateArgs.put("link", url);
+        }
         templateArgs.put("appLink", url);
         templateArgs.put("appName", theme.getAppName());
         templateArgs.put("locale", user.getLanguage().getCode().toString());

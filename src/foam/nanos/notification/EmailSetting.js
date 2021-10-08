@@ -81,32 +81,37 @@ foam.CLASS({
         message.setTo(new String[] { user.getEmail() });
         notification = (Notification) notification.fclone();
 
+        if ( SafetyUtil.isEmpty(notification.getEmailName()) ) {
+          logger.warning("No email template found");
+          return;
+        }
+
         if ( notification.getEmailArgs() != null ) {
-          Map<String, Object> emailArgs = resolveNotificationArguments(x, notification.getEmailArgs(), user);
+          Map<String, Object> emailArgs = notification.getEmailArgs();
+          String url = ((AppConfig) new foam.nanos.session.Session.Builder(x).setUserId(user.getId()).build().applyTo(x).get("appConfig")).getUrl();
+foam.nanos.logger.Loggers.logger(x, this).info("url", url);
+          if ( ! emailArgs.containsKey("link") ) {
+            emailArgs.put("link", url); 
+          }
+          if ( ! emailArgs.containsKey("appLink") ) {
+            emailArgs.put("appLink", url); 
+          }
+          if ( "notification".equals(notification.getEmailName()) ) {
+            emailArgs.put("type", notification.getNotificationType());
+          }
+          if ( ! SafetyUtil.isEmpty(notification.getBody()) ) {
+            emailArgs.put("body", notification.getBody());
+          }
+          emailArgs = resolveNotificationArguments(x, emailArgs, user);
           notification.setEmailArgs(emailArgs);
-        }
 
-        if ( "notification".equals(notification.getEmailName()) ) {
-          notification.getEmailArgs().put("type", notification.getNotificationType());
-
-          AppConfig config = user.findGroup(x).getAppConfig(x);
-          if ( config != null ) {
-            notification.getEmailArgs().put("link", config.getUrl());
-          }
-        }
-
-        if ( ! SafetyUtil.isEmpty(notification.getBody()) ) {
-          notification.getEmailArgs().put("body", notification.getBody());
-        }
-
-        try {
-          if ( ! SafetyUtil.isEmpty(notification.getEmailName()) ) {
+          try {
             EmailsUtility.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
-          } else {
-            logger.warning("No email template found");
+          } catch(Throwable t) {
+            logger.error("Error sending notification email message: " + message + ". Error: " + t);
           }
-        } catch(Throwable t) {
-          logger.error("Error sending notification email message: " + message + ". Error: " + t);
+        } else {
+          logger.warning("No email args");
         }
       `
     }

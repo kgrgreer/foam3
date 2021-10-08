@@ -12,6 +12,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
+import foam.nanos.session.Session;
 import foam.nanos.theme.Theme;
 import foam.nanos.theme.Themes;
 import foam.util.SafetyUtil;
@@ -52,26 +53,17 @@ public class EmailsUtility {
 
     X userX = x;
     String group = "";
-    AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
-      userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+      Session session = new Session.Builder(x).setUserId(user.getId()).build();
+      userX = session.applyTo(x);
+      session.setContext(userX);
+      userX.put(Session.class, session);
       Group userGroup = user.findGroup(x);
       group = userGroup.getId();
-      userX = userX.put("group", user.findGroup(userX));
-      appConfig = userGroup.getAppConfig(x);
     }
-
-    Theme theme = (Theme) x.get("theme");
-    if ( theme == null
-      || ( user != null && ! user.getSpid().equals(x.get("spid")) )
-    ) {
-      theme = ((Themes) x.get("themes")).findTheme(userX);
-    }
-
-    if ( theme.getAppConfig() != null ) {
-      appConfig.copyFrom(theme.getAppConfig());
-    }
-    userX = userX.put("appConfig", appConfig);
+    AppConfig appConfig = (AppConfig) userX.get("appConfig");
+    Theme theme = (Theme) userX.get("theme");
+    String spid = theme.getSpid();
 
     // Add template name to templateArgs, to avoid extra parameter passing
     if ( ! SafetyUtil.isEmpty(templateName) ) {
@@ -79,6 +71,12 @@ public class EmailsUtility {
         templateArgs = new HashMap<>();
 
       templateArgs.put("template", templateName);
+    }
+    if ( ! templateArgs.containsKey("link") ) {
+      templateArgs.put("link", appConfig.getUrl());
+    }
+    if ( ! templateArgs.containsKey("appLink") ) {
+      templateArgs.put("link", appConfig.getUrl());
     }
 
     // SERVICE CALL: to fill in email properties.
