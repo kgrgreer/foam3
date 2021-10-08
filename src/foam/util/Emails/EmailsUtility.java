@@ -80,6 +80,12 @@ public class EmailsUtility {
 
       templateArgs.put("template", templateName);
     }
+    if ( ! templateArgs.containsKey("link") ) {
+      templateArgs.put("link", appConfig.getUrl());
+    }
+    if ( ! templateArgs.containsKey("appLink") ) {
+      templateArgs.put("appLink", appConfig.getUrl());
+    }
 
     // SERVICE CALL: to fill in email properties.
     EmailPropertyService cts = (EmailPropertyService) x.get("emailPropertyService");
