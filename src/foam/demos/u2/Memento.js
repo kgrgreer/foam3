@@ -13,7 +13,9 @@ foam.CLASS({
     },
     'bound',
     {
+      class: 'String',
       name: 'str',
+      displayWidth: 100,
       postSet: function(_, s) {
         var m = {};
         s.split('&').forEach(p => {
@@ -21,6 +23,16 @@ foam.CLASS({
           m[k] = v;
         });
         this.bindings = m;
+
+        // Update frame bindings
+        for ( var i = 0 ; i < this.frames.length ; i++ ) {
+          var frame = this.frames[i];
+          for ( var key in frame) {
+            var slot = frame[key];
+
+            if ( m.hasOwnProperty(key) ) slot.set(m[key]);
+          }
+        }
       }
     }
   ],
@@ -72,7 +84,8 @@ foam.CLASS({
   listeners: [
     {
       name: 'update',
-      isFramed: true,
+      isMerged: true,
+      mergeDelay: 160,
       code: function() {
         this.str = this.toString();
       }
@@ -142,7 +155,8 @@ foam.CLASS({
   methods: [
     function render() {
       // this.subMemento.str = 'q=something';
-      this.add('mementotest #');
+      this.startContext({data: this.memento}).add(this.memento.STR).endContext();
+      this.br();
       this.add(this.memento.str$);
       this.br();
       this.add('skip: ', this.SKIP);
