@@ -454,8 +454,8 @@ foam.CLASS({
 
                     if ( checked ) {
                       view.selectedObjects = {};
-                      view.data.inX(ctrl.__subContext__).select().then(function(obj) {
-                      view.selectedObjects[obj.id] = obj;
+                      view.data.select(function(obj) {
+                        view.selectedObjects[obj.id] = obj;
                       });
                     } else {
                       view.selectedObjects = {};
