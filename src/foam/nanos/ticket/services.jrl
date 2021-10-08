@@ -23,7 +23,6 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.ID})
       .setAuthorize(false)
       .setPm(true)
       .setGuid(true)
