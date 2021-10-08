@@ -96,8 +96,7 @@ p({
       .setOrder(new foam.mlang.order.Comparator[] {
           foam.nanos.ticket.TicketStatus.ORDINAL
       })
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.TicketStatus.ID});
+      .build();
   """
 })
 p({
@@ -156,10 +155,7 @@ p({
           new foam.nanos.ticket.TicketCommentOwnerDAO.Builder(x).setDelegate(
             new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.ticket.TicketComment.getOwnClassInfo()).build()).build())
       )
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] {
-         foam.nanos.ticket.TicketComment.ID
-      });
+      .build();
   """
 })
 p({
