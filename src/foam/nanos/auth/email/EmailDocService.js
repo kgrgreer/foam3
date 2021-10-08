@@ -44,20 +44,21 @@ foam.CLASS({
         htmlDocDAO = htmlDocDAO.where(MLang.EQ(HtmlDoc.NAME, docName));
         ArraySink listSink = (ArraySink) htmlDocDAO.orderBy(new foam.mlang.order.Desc(HtmlDoc.ID)).limit(1).select(new ArraySink());
         HtmlDoc doc = (HtmlDoc) listSink.getArray().get(0);
-        
+
         EmailMessage message = new EmailMessage();
         message.setTo(new String[] { user.getEmail() });
-      
+
         HashMap<String, Object> args = new HashMap<>();
         args.put("doc", doc.getBody());
-      
+        args.put("templateSource", this.getClass().getName());
+
         EmailsUtility.sendEmailFromTemplate(getX(), user, message, "docEmail", args);
         return true;
-      }catch(Throwable t){
+      } catch(Throwable t){
         ((Logger) getLogger()).error("Error retrieving Terms and Conditions.", t);
       }
       return false;
-         
+
        `
     },]
 });

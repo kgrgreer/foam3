@@ -301,15 +301,18 @@ foam.CLASS({
       height: initial;
     }
 
-    ^small svg {
+    ^small svg,
+    ^small img {
       width: 1.15em;
       height: 1.15em;
     }
-    ^medium svg {
+    ^medium svg,
+    ^medium img {
       width: 1.71em;
       height: 1.71em;
     }
-    ^large svg {
+    ^large svg,
+    ^large img {
       width: 2.25em;
       height: 2.25em;
     }
