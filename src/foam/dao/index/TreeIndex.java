@@ -90,9 +90,6 @@ public class TreeIndex
           state = statePredicate[0];
           arg   = (Predicate) statePredicate[1];
         }
-        if ( arg == null ) {
-          ((And) predicate).getArgs()[i] = new True();
-        }
       }
       // use partialEval to simplify predicate themselves.
       predicate = predicate.partialEval();
