@@ -270,8 +270,8 @@ p({
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED) )
         .setSize(10000)
         .build())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED});
   `,
   client: "{\"of\":\"foam.nanos.crunch.connection.CapabilityPayloadRecord\"}"
 })
