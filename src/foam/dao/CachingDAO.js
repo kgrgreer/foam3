@@ -83,14 +83,9 @@ foam.CLASS({
         // Preload src into cache, then proxy everything to cache that we
         // don't override explicitly.
         var self = this;
-        if ( self.src.of.name == 'Currency' ) console.log('**********************');
         var cacheFilled = cache.removeAll().then(function() {
           // First clear cache, then load the src into the cache
           return src.select(self.DAOSink.create({dao: cache})).then(function() {
-            if ( self.src.of.name == 'Currency' ) {
-              // cache.select(console.log);
-              // debugger;
-            }
             return cache;
           });
         });
