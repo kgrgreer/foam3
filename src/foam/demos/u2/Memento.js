@@ -1,9 +1,13 @@
+// TODO:
+//   name collision support
+//   feedback elimination?
+
 foam.CLASS({
   name: 'Memento',
 
   properties: [
-    'parent',
     {
+      // stores all bindings, even those that aren't currently being used
       name: 'bindings',
       factory: function() { return {}; }
     },
@@ -11,7 +15,6 @@ foam.CLASS({
       name: 'frames',
       factory: function() { return []; }
     },
-    'bound',
     {
       class: 'String',
       name: 'str',
@@ -39,13 +42,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.str = this.toString();
-      /*
-      for ( var key in this.bound ) {
-        var slot = this.bound[key];
-        this.onDetach(slot.sub(this.update));
-        if ( this.bound[key] ) slot.set(this.bound[key]);
-      }*/
+//      this.str = this.toString();
     },
 
     function bind(memorable) {
@@ -64,7 +61,7 @@ foam.CLASS({
     },
 
     function toString() {
-      var str = this.parent ? this.parent.toString() : '';
+      var str = '';
 
       for ( var i = 0 ; i < this.frames.length ; i++ ) {
         var frame = this.frames[i];
