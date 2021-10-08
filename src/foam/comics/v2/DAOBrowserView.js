@@ -303,6 +303,7 @@ foam.CLASS({
         }, parent: this.__subContext__ }));
     },
     function render() {
+      this.config.dao = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
