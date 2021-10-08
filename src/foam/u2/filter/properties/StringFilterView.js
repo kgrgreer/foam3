@@ -213,6 +213,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.onDetach(this.dao$.sub(this.daoUpdate));
+      this.daoUpdate();
 
       var self = this;
       this.addClass()

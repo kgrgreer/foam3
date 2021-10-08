@@ -18,11 +18,10 @@ foam.CLASS({
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.DAOResourceLoader',
-    'foam.nanos.notification.email.EmailTemplate',
-    'foam.nanos.notification.email.EmailTemplateEngine',
+    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
+    'foam.util.Emails.EmailsUtility',
     'java.io.PrintWriter',
     'java.util.HashMap',
     'javax.servlet.http.HttpServletRequest',
@@ -87,10 +86,10 @@ foam.CLASS({
           translatedMsg = ts.getTranslation(local, getClassInfo().getId()+ ".EMAIL_VERIFIED_ERROR", this.EMAIL_VERIFIED_ERROR);
           message = translatedMsg + "<br>" + msg;
         } finally {
-          EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
           foam.nanos.theme.Theme theme = getTheme(x, user);
           HashMap args = new HashMap();
           args.put("msg", message);
+
           if ( theme != null ) {
             args.put("appName", theme.getAppName());
           }
@@ -98,14 +97,17 @@ foam.CLASS({
             String url = user.findGroup(x).getAppConfig(x).getUrl();
             args.put("logo", url + "/" + theme.getLoginImage());
           }
-          EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(
-            x,
-            "verify-email-link",
-            (String) user.getGroup(),
-            user.getLanguage().getCode().toString()
-          );
-          StringBuilder templateBody = templateEngine.renderTemplate(x, emailTemplate.getBody(), args);
-          out.write(templateBody.toString());
+
+          EmailMessage emailMessage = new EmailMessage();
+          emailMessage.setTo(new String[] { user.getEmail() });
+
+          args.put("name", user.getFirstName());
+          args.put("sendTo", user.getEmail());
+          args.put("templateSource", this.getClass().getName());
+
+          out.append(message);
+          EmailsUtility.sendEmailFromTemplate(x, user, emailMessage, "verify-email-link", args);
+
           if ( ! redirect.equals("null") ){
             try {
               response.addHeader("REFRESH","2;URL="+redirect);

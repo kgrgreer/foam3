@@ -28,6 +28,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
@@ -214,6 +215,23 @@ Later themes:
         Theme userTheme = user.findTheme(x);
         if ( userTheme != null && ! SafetyUtil.equals(theme, userTheme) ) {
           theme = theme.merge(userTheme);
+        }
+      }
+
+      // test appConfig url, if not default, set to domain
+      AppConfig appConfig = theme.getAppConfig();
+      if ( appConfig == null ) {
+        appConfig = new AppConfig();
+        theme.setAppConfig(appConfig);
+      }
+      if ( ! AppConfig.URL.isSet(appConfig) ||
+           // isDefaultValue does not test the models default property
+           // AppConfig.URL.isDefaultValue(appConfig) )  {
+           SafetyUtil.compare(appConfig.getUrl(), "http://localhost") == 0 ) {
+        if ( req != null ) {
+          appConfig.setUrl(((Request) req).getRootURL().toString());
+        } else if ( ! SafetyUtil.isEmpty(domain) ) {
+          appConfig.setUrl("https://"+domain);
         }
       }
 

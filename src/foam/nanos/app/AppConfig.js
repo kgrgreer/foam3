@@ -56,7 +56,7 @@ foam.CLASS({
       documentation: 'Set by Theme',
       class: 'String',
       name: 'url',
-      value: 'http://localhost:8080/'
+      value: 'http://localhost:8080'
     },
     {
       class: 'String',

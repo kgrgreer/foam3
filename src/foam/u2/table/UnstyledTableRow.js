@@ -41,8 +41,8 @@ foam.CLASS({
       this.addClass(this.data.myClass('tr')).
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
         this.on('dblclick', function() {
-            if ( view.shouldEscapeEvts(evt) ) return;
-            view.dblclick(null, obj.id);
+            if ( self.data.shouldEscapeEvts(evt) ) return;
+            self.data.dblclick(null, obj.id);
         });
       }).
       callIf( this.click && ! this.data.disableUserSelection, function() {
@@ -126,7 +126,7 @@ foam.CLASS({
       });
 
       for ( var j = 0 ; j < this.data.columns_.length ; j++ ) {
-        prop = this.getCellData(obj, this.data.columns_[j], nestedPropertiesObjsMap);
+        [prop, objReturned] = this.getCellData(obj, this.data.columns_[j], nestedPropertiesObjsMap);
         var tableWidth = this.columnHandler.returnPropertyForColumn(this.props, this.data.of, this.data.columns_[j], 'tableWidth');
 
         var elmt = self.E('').addClass(this.data.myClass('td'))
@@ -135,7 +135,7 @@ foam.CLASS({
             prop.tableCellFormatter.format(
               this,
               prop.f ? prop.f(obj) : null,
-              obj,
+              objReturned,
               prop
             );
           });

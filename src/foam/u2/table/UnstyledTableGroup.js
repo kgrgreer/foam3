@@ -70,14 +70,14 @@ foam.CLASS({
       }).
 
       style({ 'min-width': this.data.tableWidth_$ });
-      prop = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
+      [prop, objRendered] = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
       var elmt = this.E().style({ flex: '3 0 0' })
         .addClasses(['h500', this.data.myClass('td')])
         .call(function() {
           prop.tableCellFormatter.format(
             this,
             prop.f ? prop.f(objForCurrentProperty) : null,
-            objForCurrentProperty,
+            objRendered,
             prop
           );
         });

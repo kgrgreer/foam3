@@ -15,133 +15,140 @@
  * limitations under the License.
  */
 
+// TODO: Maybe promote to Notifications
+ foam.ENUM({
+  package: 'foam.u2.dialog',
+  name: 'InlineNotificationStyles',
+
+  values: [
+    {
+      name: 'DEFAULT',
+      color: '/*%PRIMARY3%*/ #406DEA',
+      glyph: 'checkmark'
+    },
+    {
+      name: 'ERROR',
+      color: '/*%DESTRUCTIVE3%*/ #A61414',
+      glyph: 'exclamation'
+    },
+    {
+      name: 'WARN',
+      color: '/*%WARNING3%*/ #EEDC00',
+      glyph: 'exclamation'
+    },
+    {
+      name: 'SUCCESS',
+      color: ' /*%APPROVAL3%*/ #117A41',
+      glyph: 'checkmark'
+    },
+    {
+      name: 'UNSTYLED',
+      color: ' /*%WHITE%*/ #FFFFFF'
+    }
+  ]
+});
+
 foam.CLASS({
   package: 'foam.u2.dialog',
   name: 'InlineNotificationMessage',
   extends: 'foam.u2.View',
 
   documentation: `
-    Inline notification message container.
+    Inline RO notification message container.
   `,
 
   requires: [
-    'foam.u2.ControllerMode'
+    'foam.u2.ControllerMode',
+    'foam.u2.tag.CircleIndicator'
   ],
+
+  imports: [ 'returnExpandedCSS' ],
 
   properties: [
     {
-      class: 'String',
+      name: 'icon',
+      factory: function() {
+        if ( ! this.type.glyph ) return undefined;
+        // Colors flipped to make sure icon backgrounds have the right color inside circle indicator
+        var props = {
+          size: 16,
+          backgroundColor: this.accentColor,
+          icon: this.type.glyph.clone(this).getDataUrl({
+            fill: this.iconColor
+          })
+        };
+        return { class: 'foam.u2.tag.CircleIndicator', ...props }
+      }
+    },
+    {
+      class: 'Enum',
+      of: 'foam.u2.dialog.InlineNotificationStyles',
       name: 'type'
     },
     {
-      name: 'isEmpty',
-      expression: function(message) {
-        return ! message || message.length === 0;
-      }
+      name: 'accentColor',
+      factory: function() {
+        return this.type && this.returnExpandedCSS(this.type.color);
+      },
+      documentation: 'Border color for the view and icon background. Defaults to type color'
     },
     {
-      name: 'isError',
-      expression: function(type) {
-        return type === 'error';
-      }
+      name: 'iconColor',
+      factory: function() {
+        return this.returnExpandedCSS(this.type.background) || '#FFFFFF';
+      },
+      documentation: 'Icon color. Defaults to type background or white'
     },
     {
-      name: 'isWarning',
-      expression: function(type) {
-        return type === 'warning';
-      }
-    },
-    {
-      name: 'iconImage',
-      expression: function(isError, isWarning) {
-        return isError ? this.ERROR_ICON : isWarning ?
-            this.WARNING_ICON : this.SUCCESS_ICON;
-      }
-    },
-    'message',
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'customView',
-      documentation: `enable to custom the view`
-    },
+      name: 'isVisible',
+      value: true,
+      documentation: 'Can be used to hide the view in case this.content is not populated synchronously'
+    }
   ],
 
-  constants: {
-    ERROR_ICON: 'images/inline-error-icon.svg',
-    WARNING_ICON: 'images/baseline-warning-yellow.svg',
-    SUCCESS_ICON: 'images/checkmark-small-green.svg'
-  },
-
   css: `
-    ^ {
-      position: relative;
-      justify-content: center;
-      z-index: 15000;
-    }
-    ^inner {
-      margin: auto;
-      padding: 8px 24px;
-      animation-name: fade;
-      animation-duration: 10s;
-      font-size: 14px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
+    ^outer {
+      align-items: center;
+      border: 1px solid;
       border-radius: 3px;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
-      background: #f6fff2;
-      border: 1px solid #03cf1f;
+      border-left-width: 8px;
+      box-sizing: border-box;
+      display: flex;
       justify-content: space-between;
+      padding: 8px 16px;
+    }
+    ^outer > * + * {
+      padding-left: 16px;
     }
     ^status-icon {
-      margin-right: 10px;
-      vertical-align: middle;
+      flex: 0 0 16px;
     }
-    ^message {
-      display: inline-block;
-      vertical-align: middle;
-      width: 85%;
-      margin-left: 10px;
-    }
-    ^error-background {
-      background: /*%GREY5%*/ #f5f4ff;
-      border: 1px solid /*%DESTRUCTIVE3%*/ #f91c1c;
-    }
-    ^warning-background {
-      background: /*%GREY5%*/ #f5f4ff;
-      border: 1px solid /*%WARNING3%*/ #604aff;
-    }
-    ^icon {
-      display: inline-block;
+    ^content {
+      flex: 1;
     }
   `,
 
   methods: [
-    function render() {
-      var self = this
+    function init() {
+      var self = this;
       this
-        .hide(this.isEmpty$)
-        .addClass(this.myClass())
-        .start().addClass(this.myClass('inner'))
-          .enableClass(this.myClass('error-background'), this.isError$)
-          .enableClass(this.myClass('warning-background'), this.isWarning$)
-          .start()
-            .start().addClass(this.myClass('icon'))
-              .start('img')
-                .addClass(this.myClass('status-icon'))
-                .attrs({ src: this.iconImage$ })
-              .end()
-            .end()
-            .startContext({ controllerMode: this.ControllerMode.VIEW })
-              .addClass(this.myClass('message'))
-              .callIf(this.customView, function() {
-                this.tag(self.customView,{ data$: self.message$})
-              })
-              .callIf(! this.customView, function() {
-                this.tag(self.message$)
-              })
-            .endContext()
-          .end()
-        .end();
+        .show(this.isVisible$)
+        .addClass(this.myClass('outer'))
+        .style({ 'border-color': this.accentColor$ })
+        .call(function() {
+          if ( ! self.icon ) return;
+          if ( foam.core.String.isInstance(this.icon) == 'String' ) {
+            this.start('img')
+            .addClass(self.myClass('status-icon'))
+            .attrs({ src: self.icon$ })
+            .end();
+          } else {
+            this.tag(self.icon)
+          }
+        })
+        .startContext({ controllerMode: this.ControllerMode.VIEW })
+          .start('', null, this.content$).addClass(this.myClass('content')).end()
+        .endContext();
     }
   ]
 });
