@@ -78,13 +78,19 @@ foam.CLASS({
       hidden: true,
       topics: [ 'on' ],
       forwards: [ 'find_', 'select_' ],
-      expression: function(src, cache) {
+      expression: function(src) {
+        var cache = this.cache;
         // Preload src into cache, then proxy everything to cache that we
         // don't override explicitly.
         var self = this;
+        if ( self.src.of.name == 'Currency' ) console.log('**********************');
         var cacheFilled = cache.removeAll().then(function() {
           // First clear cache, then load the src into the cache
           return src.select(self.DAOSink.create({dao: cache})).then(function() {
+            if ( self.src.of.name == 'Currency' ) {
+              // cache.select(console.log);
+              // debugger;
+            }
             return cache;
           });
         });
@@ -152,14 +158,15 @@ foam.CLASS({
 
     function cmd_(x, obj) {
       if ( obj == this.PURGE ) {
-        this.cache.removeAll();
-        delete this.private_['delegate'];
+        // Temporary fix for infinite loop caused by LazyScrollManager
+//        this.delegate = undefined;
+//        this.cache.removeAll();
       } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
         // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
-      } else {
-        this.SUPER(x, obj);
       }
+
+      this.SUPER(x, obj);
     }
   ],
 
