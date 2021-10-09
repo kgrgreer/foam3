@@ -1,41 +1,88 @@
+// TODO:
+//   name collision support
+//   feedback elimination?
+
 foam.CLASS({
   name: 'Memento',
 
   properties: [
-    'parent',
-    'unbound',
-    'bound',
-    'str'
+    {
+      // stores all bindings, even those that aren't currently being used
+      name: 'bindings',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'frames',
+      factory: function() { return []; }
+    },
+    {
+      class: 'String',
+      name: 'str',
+      displayWidth: 100,
+      postSet: function(_, s) {
+        var m = {};
+        s.split('&').forEach(p => {
+          var [k,v] = p.split('=');
+          m[k] = v;
+        });
+        this.bindings = m;
+
+        // Update frame bindings
+        for ( var i = 0 ; i < this.frames.length ; i++ ) {
+          var frame = this.frames[i];
+          for ( var key in frame) {
+            var slot = frame[key];
+
+            if ( m.hasOwnProperty(key) ) slot.set(m[key]);
+          }
+        }
+      }
+    }
   ],
 
   methods: [
     function init() {
-      this.str = this.toString();
-      for ( var key in this.bound ) {
-        this.onDetach(this.bound[key].sub(this.update));
-      }
+//      this.str = this.toString();
     },
 
-    function bind(map) {
+    function bind(memorable) {
+      var bindings = {};
+
+      memorable.cls_.getAxiomsByClass(foam.core.Property).filter(p => p.memorable).forEach(p => {
+        console.log('**** MEMORABLE ', p.name);
+        var slot = memorable.slot(p.name)
+        bindings[p.shortName || p.name] = slot;
+        memorable.onDetach(memorable.sub(this.update));
+      });
+
+      var l = this.bindings.length;
+      memorable.onDetach(() => this.frames.length = l);
+      this.frames.push(bindings);
     },
 
     function toString() {
-      var str = this.parent ? this.parent.toString() : '';
-      for ( var key in this.bound ) {
-        var slot = this.bound[key];
-        if ( slot.get() ) {
-          if ( str ) str = str + '&';
-          str = str + key + '=' + slot.get();
+      var str = '';
+
+      for ( var i = 0 ; i < this.frames.length ; i++ ) {
+        var frame = this.frames[i];
+        for ( var key in frame) {
+          var slot = frame[key];
+          if ( slot.get() ) {
+            if ( str ) str = str + '&';
+            str = str + key + '=' + slot.get();
+          }
         }
       }
-      return str;j
+
+      return str;
     }
   ],
 
   listeners: [
     {
       name: 'update',
-      isFramed: true,
+      isMerged: true,
+      mergeDelay: 160,
       code: function() {
         this.str = this.toString();
       }
@@ -60,27 +107,13 @@ foam.CLASS({
 foam.CLASS({
   name: 'Memorable',
 
-  exports: [
-    'subMemento'
-  ],
-
   properties: [
     {
       name: 'memento',
-      hidden: true
-    },
-    {
-      name: 'subMemento',
       hidden: true,
+      factory: function() { return this.__context__.memento || Memento.create(); },
       initObject: function(memorable) {
-        var bindings = {};
-
-        this.sourceCls_.getAxiomsByClass(foam.core.Property).filter(p => p.memorable).forEach(p => {
-          console.log('**** MEMORABLE ', p.name);
-          bindings[p.shortName || p.name] = memorable.slot(p.name);
-        });
-
-        memorable.subMemento = Memento.create({bound: bindings});
+        memorable.memento.bind(memorable);
       }
     }
   ]
@@ -109,7 +142,6 @@ foam.CLASS({
     {
       name: 'query',
       shortName: 'q',
-      value: 'something',
       memorable: true
     },
     {
@@ -119,8 +151,17 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.add('mementotest #');
-      this.add(this.subMemento.str$);
+      // this.subMemento.str = 'q=something';
+      this.startContext({data: this.memento}).add(this.memento.STR).endContext();
+      this.br();
+      this.add(this.memento.str$);
+      this.br();
+      this.add('skip: ', this.SKIP);
+      this.br();
+      this.add('limit: ', this.LIMIT);
+      this.br();
+      this.add('query: ', this.QUERY);
+      this.br();
     }
   ]
 });
