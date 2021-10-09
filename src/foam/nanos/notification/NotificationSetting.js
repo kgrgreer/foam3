@@ -86,15 +86,7 @@ foam.CLASS({
         X userX = x;
         Subject subject = (Subject) x.get("subject");
         if ( subject.getRealUser().getId() != user.getId() ) {
-          userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-          AppConfig appConfig = user.findGroup(x).getAppConfig(x);
-          Theme theme = (Theme) x.get("theme");
-          if ( theme == null ) {
-            theme = ((Themes) x.get("themes")).findTheme(userX);
-            if ( theme.getAppConfig() != null ) {
-              appConfig.copyFrom(theme.getAppConfig());
-            }}
-          userX.put("appConfig", appConfig);
+          userX = new foam.nanos.session.Session.Builder(x).setUserId(user.getId()).build().applyTo(x);
         }
         // Proxy to sendNotification method
         sendNotification(userX, user, notification);

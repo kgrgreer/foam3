@@ -180,24 +180,27 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'cannedPredicate',
-      expression: function(config$cannedQueries) {
+      expression: function(config$cannedQueries, config$preSelectedCannedQuery) {
         return config$cannedQueries && config$cannedQueries.length
-          ? config$cannedQueries[0].predicate
-          : foam.mlang.predicate.True.create();
+          ? config$preSelectedCannedQuery != null 
+            ? config$cannedQueries[config$preSelectedCannedQuery].predicate
+              : config$cannedQueries[1].predicate
+                : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'searchPredicate',
-      expression: function() {
-        return foam.mlang.predicate.True.create();
+      expression: function(config$searchPredicate) {
+        return config$searchPredicate ? config$searchPredicate : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'predicatedDAO',
       expression: function(config, cannedPredicate, searchPredicate) {
-        return config.dao$proxy.where(this.AND(cannedPredicate, searchPredicate));
+        var predicate = this.AND(cannedPredicate, searchPredicate);
+        return config.dao$proxy.where(predicate);
       }
     },
     {
@@ -300,6 +303,7 @@ foam.CLASS({
         }, parent: this.__subContext__ }));
     },
     function render() {
+      this.config.dao = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
@@ -316,7 +320,7 @@ foam.CLASS({
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
-              data$: self.searchPredicate$,
+              data$: self.searchPredicate$
             }, this, self.__subSubContext__.createSubContext({
               memento: self.currentMemento_,
               controllerMode: foam.u2.ControllerMode.EDIT
