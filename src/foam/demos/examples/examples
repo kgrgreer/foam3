@@ -1368,6 +1368,8 @@ log("Person name:", dyn.get());
 ##  Slot set
 set() is used to set a Slot's value
 --
+var p = Person.create({ name: 'Bob' });
+var dyn = p.name$;
 dyn.set('John'); // sets p.name implicitly
 log("Name after set:", p.name, "get():", dyn.get());
 
