@@ -69,10 +69,11 @@ foam.CLASS({
               UserCapabilityJunction ucjToReput = (UserCapabilityJunction) filteredUserCapabilityJunctionDAO
                 .find(EQ(UserCapabilityJunction.TARGET_ID, dependentId));
 
-              // Skip null and AVAILABLE UCJs
+              // Skip null, AVAILABLE and ACTION_REQUIRED UCJs
               if (
                 ucjToReput == null
                 || ucjToReput.getStatus() == CapabilityJunctionStatus.AVAILABLE
+                || ucjToReput.getStatus() == CapabilityJunctionStatus.ACTION_REQUIRED
               ) continue;
 
               ucjsToReput.add((UserCapabilityJunction) ucjToReput.fclone());
