@@ -511,7 +511,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     try {
       payload = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
     } catch ( Exception ex ) {
-      throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
+      throw new RuntimeException("UCJ payload default setup ERROR: " + ex.getMessage(), ex);
     }
     var ucj = isAssociation
       ? new AgentCapabilityJunction.Builder(x)
