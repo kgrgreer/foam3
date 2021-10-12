@@ -507,9 +507,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       : subject.getRealUser()
       ;
     // Setup default data
-    FObject dataa = null;
+    FObject payload = null;
     try {
-      dataa = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
+      payload = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
     } catch ( Exception ex ) {
       throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
     }
@@ -525,7 +525,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         .build()
       ;
     ucj.setStatus(CapabilityJunctionStatus.AVAILABLE);
-    ucj.setData(dataa);
+    ucj.setData(payload);
     return ucj;
   }
 
