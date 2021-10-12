@@ -229,9 +229,6 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      // clearing any values that may linger in memento - such as SignOut
-      this.memento.value = '';
-      location.hash = '';
 
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
