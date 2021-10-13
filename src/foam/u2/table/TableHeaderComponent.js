@@ -147,6 +147,7 @@ foam.CLASS({
       code: function(evt) {
         this.drag(evt);
         this.isDragging_ = false;
+        this.showResize = false;
       }
     },
     function onMouseEnter() {
