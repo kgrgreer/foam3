@@ -15,13 +15,13 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-        Notification notification = (Notification) obj;
-        if ( notification.getTransient() == true ) {
-          return notification;
+      code: function(x, obj) {
+        if ( obj.transient ) {
+          return obj;
         }
-        return getDelegate().put_(x, notification);
-      `
+
+        return this.delegate.put_(x, obj);
+      }
     }
   ]
 });
