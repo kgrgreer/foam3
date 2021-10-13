@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'ctrl',
     'notify',
     'resetPasswordToken',
     'stack',
@@ -21,6 +22,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -126,11 +128,9 @@ foam.CLASS({
       name: 'resetPassword',
       label: 'Confirm',
       section: 'resetPasswordSection',
-
       isEnabled: function(errors_) {
         return ! errors_;
       },
-
       code: function() {
         const user = this.User.create({
           desiredPassword: this.newPassword
@@ -144,7 +144,12 @@ foam.CLASS({
               mode_: 'SignIn'
             }
           }));
-          this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_MSG_TITLE,
+            description: this.SUCCESS_MSG,
+            type: this.LogLevel.INFO,
+            transient: true
+          }));
         }).catch((err) => {
           this.notify(err.message, '', this.LogLevel.ERROR, true);
         });
