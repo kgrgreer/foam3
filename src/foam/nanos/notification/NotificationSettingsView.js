@@ -45,7 +45,6 @@ foam.CLASS({
     }
     ^ h1{
       opacity: 0.6;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 2.0rem;
       font-weight: 300;
       line-height: 1;
@@ -56,7 +55,6 @@ foam.CLASS({
     }
     ^ h2{
       width: 150px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -68,7 +66,6 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -95,7 +92,6 @@ foam.CLASS({
     ^ .status-Text{
       width: 90px;
       height: 14px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.2rem;
       letter-spacing: 0.2px;
       text-align: left;
@@ -123,7 +119,6 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.2rem;
       font-weight: normal;
       display: inline-block;

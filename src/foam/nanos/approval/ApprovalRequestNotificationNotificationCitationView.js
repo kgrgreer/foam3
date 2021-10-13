@@ -122,20 +122,17 @@ foam.CLASS({
       width: 100%;
     }
     ^ .userSummary {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: 600;
       color: #1e1f21;
       margin-left: 16px;
     }
     ^ .created {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.1rem;
       color: #5e6061;
       margin-left: 16px;
     }
     ^ .classification {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       padding-left: 8px;
       padding-right: 8px;
       min-width: 84px;
@@ -151,14 +148,12 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .description {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       color: #1e1f21;
       margin-left: 32px;
       display: inline-block;
     }
     ^ .status {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 94px;
       height: 20px;
       line-height: 20px;

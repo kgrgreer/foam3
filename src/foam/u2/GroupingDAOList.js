@@ -32,7 +32,6 @@ foam.CLASS({
       padding: 32px 24px;
     }
     ^group-title {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 3.5rem;
       font-weight: 600;
       color: #1e1f21;

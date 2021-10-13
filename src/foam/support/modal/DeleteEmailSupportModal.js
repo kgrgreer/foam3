@@ -32,7 +32,6 @@ foam.CLASS({
     ^ .label1 {
       width: 338px;
       height: 16px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
@@ -58,7 +57,6 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: normal;
       font-style: normal;
@@ -73,7 +71,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #59a5d5;
       float: right;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: normal;
       font-style: normal;

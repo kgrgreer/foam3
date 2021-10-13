@@ -76,14 +76,12 @@ foam.CLASS({
       ^content {
         display: inline-block;
         vertical-align: middle;
-        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 2.5em;
         font-weight: 800;
         color: #19402e;
         letter-spacing: normal;
       }
       ^description {
-        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 1.4rem;
         font-weight: normal;
         line-height: 1.43;

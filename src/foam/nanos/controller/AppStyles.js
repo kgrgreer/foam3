@@ -143,7 +143,6 @@ foam.CLASS({
     }
     ^ .generic-status {
       display: inline-block;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;

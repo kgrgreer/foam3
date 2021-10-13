@@ -47,7 +47,6 @@ foam.CLASS({
       align-items: center;
     }
     ^dropdown span, ^dropdown svg {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.5rem;
       font-weight: 500;
       color: /*%WHITE%*/ #ffffff;

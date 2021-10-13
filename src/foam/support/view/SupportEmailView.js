@@ -35,7 +35,6 @@ foam.CLASS({
       background-color: #59a5d5;
       margin-top: 30px;
       margin-right: 600px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: normal;
       font-style: normal;
@@ -64,7 +63,6 @@ foam.CLASS({
       width: 100%;
       height: 20px;
       opacity: 0.6;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
@@ -95,7 +93,6 @@ foam.CLASS({
     ^ .No-support-email-con {
       width: 183px;
       height: 16px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: 300;
       font-style: normal;

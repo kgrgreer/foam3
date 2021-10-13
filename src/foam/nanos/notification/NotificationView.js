@@ -48,7 +48,6 @@ foam.CLASS({
     ^ .title {
       width: 208px;
       height: 40px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 3.5rem;
       font-weight: 600;
       font-stretch: normal;

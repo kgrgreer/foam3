@@ -33,7 +33,6 @@ foam.CLASS({
     ^ h2 {
       height: 20px;
       opacity: 0.6;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
