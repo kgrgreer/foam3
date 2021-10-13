@@ -598,6 +598,12 @@ foam.CLASS({
   ],
 
   listeners: [
+    function resetColWidths() {
+      this.selectedColumnsWidth = {};
+      for ( var s of this.selectedColumnNames ) {
+        this.selectedColumnsWidth[s] = this.columnHandler.returnPropertyForColumn(this.props, this.of, s, 'tableWidth') || null;
+      }
+    },
     { 
       name: 'updateLocalStorage',
       isMerged: true,

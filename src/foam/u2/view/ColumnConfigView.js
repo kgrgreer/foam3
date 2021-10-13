@@ -174,6 +174,7 @@ foam.CLASS({
     },
     function rebuildSelectedColumns() {
       var arr = [];
+      if ( ! this.views ) return;
       for ( var i = 0 ; i < this.views.length ; i++ ) {
         if ( this.views[i].prop.isPropertySelected ) {
           var propSelectedTraversed = this.views[i].prop.returnSelectedProps();
@@ -341,6 +342,7 @@ foam.CLASS({
         localStorage.removeItem(this.data.of.id);
         this.data.memento.head = '';
         this.data.selectedColumnNames = undefined;
+        this.data.resetColWidths();
         this.data.updateColumns();
         this.columns = this.getColumns();
       },
