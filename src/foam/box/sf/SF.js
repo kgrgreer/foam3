@@ -124,28 +124,34 @@ foam.CLASS({
       documentation: 'Logging after n times retry fail',
       value: 4
     },
-    {
-      class: 'Map',
-      name: 'retryCause',
-      documentation: 'Record fail retry reason',
-      storageTransient: true,
-      visibility: 'RO',
-      factory: function() { return {}; },
-      javaFactory: `
-      return createMap(100);
-      `,
-    },
-    {
-      class: 'Map',
-      name: 'failCause',
-      documentation: 'Record fail reason',
-      storageTransient: true,
-      visibility: 'RO',
-      factory: function() { return {}; },
-      javaFactory: `
-        return createMap(100);
-      `,
-    },
+    // {
+    //   class: 'Map',
+    //   name: 'retryCause',
+    //   documentation: 'Record fail retry reason',
+    //   storageTransient: true,
+    //   visibility: 'RO',
+    //   factory: function() { return {}; },
+    //   javaSetter: `
+    //     retryCauseIsSet_ = true;
+    //   `,
+    //   javaGetter: `
+    //     return retryCauseMap_;
+    //   `
+    // },
+    // {
+    //   class: 'Map',
+    //   name: 'failCause',
+    //   documentation: 'Record fail reason',
+    //   storageTransient: true,
+    //   visibility: 'RO',
+    //   factory: function() { return {}; },
+    //   javaSetter: `
+    //     failCauseIsSet_ = true;
+    //   `,
+    //   javaGetter: `
+    //     return failCauseMap_;
+    //   `,
+    // },
     {
       class: 'Object',
       name: 'delegateObject',
@@ -227,7 +233,8 @@ foam.CLASS({
       documentation: 'do store without linux a-time',
       javaType: 'SFEntry',
       javaCode: `
-        Journal journal = getJournal(toFileName(entry));
+        SFFileJournal journal = getJournal(toFileName(entry));
+        System.out.println("AAAAA size: " + journal.calculateSize(entry));
         return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
       `
     },
@@ -275,7 +282,7 @@ foam.CLASS({
           maybeUpdateAtime(e);
         }
         inFlight_.decrementAndGet();
-        cleanRetryCause(e);
+        //cleanRetryCause(e);
       `
     },
     {
@@ -302,13 +309,13 @@ foam.CLASS({
           }
           inFlight_.decrementAndGet();
           failed_.incrementAndGet();
-          cleanRetryCause(e);
-          updateFailCause(e, t);
+          //cleanRetryCause(e);
+          //updateFailCause(e, t);
         } else {
-          if ( e.getRetryAttempt() > getLoggingThredhold() )
-          {
-            updateRetryCause(e, t);
-          }
+          // if ( e.getRetryAttempt() > getLoggingThredhold() )
+          // {
+          //   updateRetryCause(e, t);
+          // }
           updateNextScheduledTime(e);
           updateAttempt(e);
           ((SFManager) getManager()).enqueue(e);
@@ -446,30 +453,30 @@ foam.CLASS({
         return e;
       `
     },
-    {
-      name: 'updateFailCause',
-      args: 'SFEntry e, Throwable t',
-      javaCode: `
-        String stackTrace = getStackTrace(e, t);
-        getFailCause().put(e.getIndex(), stackTrace);
-      `
+    // {
+    //   name: 'updateFailCause',
+    //   args: 'SFEntry e, Throwable t',
+    //   javaCode: `
+    //     String stackTrace = getStackTrace(e, t);
+    //     getFailCause().put(e.getIndex(), stackTrace);
+    //   `
 
-    },
-    {
-      name: 'updateRetryCause',
-      args: 'SFEntry e, Throwable t',
-      javaCode:`
-        String stackTrace = getStackTrace(e, t);
-        getRetryCause().put(e.getIndex(), stackTrace);
-      `
-    },
-    {
-      name: 'cleanRetryCause',
-      args: 'SFEntry e',
-      javaCode:`
-        getRetryCause().remove(e.getIndex());
-      `
-    },
+    // },
+    // {
+    //   name: 'updateRetryCause',
+    //   args: 'SFEntry e, Throwable t',
+    //   javaCode:`
+    //     String stackTrace = getStackTrace(e, t);
+    //     getRetryCause().put(e.getIndex(), stackTrace);
+    //   `
+    // },
+    // {
+    //   name: 'cleanRetryCause',
+    //   args: 'SFEntry e',
+    //   javaCode:`
+    //     getRetryCause().remove(e.getIndex());
+    //   `
+    // },
     {
       name: 'getStackTrace',
       args: 'SFEntry e, Throwable t',
@@ -487,13 +494,13 @@ foam.CLASS({
       args: 'int capacity',
       javaType: 'Map',
       javaCode:`
-        LinkedHashMap<Integer, String> map;
-        map = new LinkedHashMap<Integer, String>(capacity, 0.75f, false) {
+        LinkedHashMap<Integer, String> lruMap;
+        lruMap = new LinkedHashMap<Integer, String>(capacity, 0.75f, false) {
           protected boolean removeEldestEntry(Map.Entry eldest) {
             return size() > capacity;
           }
         };
-        return Collections.synchronizedMap(map);
+        return (Map<Integer, String>) Collections.synchronizedMap(lruMap);
       `
     },
     {
@@ -541,6 +548,8 @@ foam.CLASS({
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
             final protected Object writeLock_ = new Object();
+            // final Map<Integer, String> retryCauseMap_ = createMap(100);
+            // final Map<Integer, String> failCauseMap_ = createMap(100);
 
             //Make to public because beanshell do not support.
             static public interface StepFunction {
