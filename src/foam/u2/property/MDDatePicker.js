@@ -424,7 +424,7 @@ foam.CLASS({
 
     ^header {
       cursor: pointer;
-      font-size: 25px;
+      font-size: 2.5rem;
       padding: 12px 16px;
       font-weight: 500;
     }
@@ -438,13 +438,13 @@ foam.CLASS({
       margin: 8px 0;
     }
     ^header-date {
-      font-size: 24px;
+      font-size: 2.4rem;
       font-weight: bolder;
     }
 
     ^body {
       cursor: pointer;
-      font-size: 16px;
+      font-size: 1.6rem;
       height: 40rem;
       width: 100%;
       overflow: hidden;
@@ -496,7 +496,7 @@ foam.CLASS({
     }
     ^years-year^selected {
       color: #3e50b4;
-      font-size: 24px;
+      font-size: 2.4rem;
       font-weight: bold;
     }
   `

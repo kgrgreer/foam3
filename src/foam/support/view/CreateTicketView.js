@@ -61,7 +61,7 @@ foam.CLASS({
     ^ .label{
       height: 16px;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 300;
       font-style: normal;
       font-stretch: normal;
@@ -99,7 +99,7 @@ foam.CLASS({
       height: 20px;
       opacity: 0.6;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 20px;
+      font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
       font-stretch: normal;
@@ -128,7 +128,7 @@ foam.CLASS({
       height: 35px;
       z-index: 10000
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -144,7 +144,7 @@ foam.CLASS({
       color: white;
       display: inline-block;
       text-align: center;
-      font-size: 10px;
+      font-size: 1rem;
       line-height: 20px;
     }
     ^ .Submit-as{

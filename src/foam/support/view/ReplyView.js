@@ -56,7 +56,7 @@ foam.CLASS({
     }
     ^ .Public-Reply {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -71,7 +71,7 @@ foam.CLASS({
     }
     ^ .Internal-Note {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;

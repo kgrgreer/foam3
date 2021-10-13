@@ -90,7 +90,7 @@ foam.CLASS({
       overflow: hidden;
     }
     ^header {
-      font-size: 20px;
+      font-size: 2.0rem;
       font-weight: 500;
     }
     ^padding {

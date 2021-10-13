@@ -20,13 +20,13 @@ foam.CLASS({
     }
     ^ .created {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 11px;
+      font-size: 1.1rem;
       color: #5e6061;
       margin-left: 16px;
     }
     ^ .description {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       color: #1e1f21;
       white-space: nowrap;
       text-overflow:ellipsis;

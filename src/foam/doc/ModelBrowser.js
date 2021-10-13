@@ -102,7 +102,7 @@ foam.CLASS({
         .select(this.modelDAO, function(model) {
           var cls = foam.lookup(model.id);
           return self.E().
-              start().style({ 'font-size': '20px', 'margin-top': '20px' }).
+              start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
                 add('Model ' + model).
               end().
               start(self.UMLDiagram, { data: cls }).end().

@@ -25,7 +25,7 @@ foam.CLASS({
       vertical-align: top;
       border-radius: 2px;
       overflow: auto;
-      font-size: 12px;
+      font-size: 1.2rem;
       padding-left: 20px;
       padding-right: 20px;
       z-index: 0;
@@ -34,7 +34,7 @@ foam.CLASS({
       height: 20px;
       opacity: 0.6;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 20px;
+      font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
       font-stretch: normal;

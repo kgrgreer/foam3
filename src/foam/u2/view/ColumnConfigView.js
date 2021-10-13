@@ -466,7 +466,7 @@ foam.CLASS({
   }
   ^some-padding {
     text-align: left;
-    font-size: 14px;
+    font-size: 1.4rem;
     line-height: 24px;
     padding: 4px 16px;
     display: flex;

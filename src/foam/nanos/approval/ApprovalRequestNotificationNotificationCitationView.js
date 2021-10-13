@@ -123,14 +123,14 @@ foam.CLASS({
     }
     ^ .userSummary {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 600;
       color: #1e1f21;
       margin-left: 16px;
     }
     ^ .created {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 11px;
+      font-size: 1.1rem;
       color: #5e6061;
       margin-left: 16px;
     }
@@ -146,13 +146,13 @@ foam.CLASS({
       color: #5e6061;
       text-align: center;
       line-height: 20px;
-      font-size: 12px;
+      font-size: 1.2rem;
       margin-left: 32px;
       display: inline-block;
     }
     ^ .description {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       color: #1e1f21;
       margin-left: 32px;
       display: inline-block;
@@ -164,7 +164,7 @@ foam.CLASS({
       line-height: 20px;
       border-radius: 3px;
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
-      font-size: 12px;
+      font-size: 1.2rem;
       text-align: center;
       float: right;
       margin-right: 145px;

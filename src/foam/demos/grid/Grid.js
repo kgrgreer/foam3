@@ -88,7 +88,7 @@ foam.CLASS({
     }
     ^ .foam-u2-DetailView tr {
       display: inline;
-      font-size: 16px;
+      font-size: 1.6rem;
     }
   `,
 
