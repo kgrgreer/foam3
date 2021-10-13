@@ -612,7 +612,7 @@ foam.CLASS({
         localStorage.removeItem(this.of.id);
         localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
           var name = foam.String.isInstance(c) ? c : c.name;
-          var size = this.selectedColumnsWidth[name] || null;
+          var size = this.selectedColumnsWidth[name] == undefined ? undefined : this.selectedColumnsWidth[name];
           return [name, size];
         })));
       }

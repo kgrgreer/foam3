@@ -119,6 +119,10 @@
       right: 0;
     }
 
+    ^resizeButton:hover:not(:disabled), ^resizeCursor {
+      cursor: col-resize;
+    }
+
     ^resizeButton svg{
       width: 0.8em;
       height: 0.8em;
