@@ -16,9 +16,7 @@ foam.CLASS({
     {
       name: 'put_',
       code: function(x, obj) {
-        if ( obj.transient ) {
-          return obj;
-        }
+        if ( obj.transient ) return obj;
 
         return this.delegate.put_(x, obj);
       }
