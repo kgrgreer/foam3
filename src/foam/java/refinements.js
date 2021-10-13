@@ -1608,8 +1608,29 @@ foam.CLASS({
         return 'VARCHAR(' + width + ')';
       }
     }
+  ],
+
+  methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      if ( this.value != '' ) {
+        info.method({
+          name: 'isDefaultValue',
+          visibility: 'public',
+          args: [
+            { name: 'o', type: 'Object'}
+          ],
+          type: 'boolean',
+          body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
+        });
+      }
+
+      return info;
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',
@@ -1934,7 +1955,7 @@ foam.CLASS({
   properties: [
     ['javaType', 'ArrayList'],
     ['javaInfoType', 'foam.core.AbstractPropertyInfo'],
-    ['javaJSONParser', 'oam.lib.json.ArrayParser.instance()']
+    ['javaJSONParser', 'foam.lib.json.ArrayParser.instance()']
   ],
 
   methods: [

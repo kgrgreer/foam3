@@ -39,6 +39,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'loginSuccess?',
     'setInterval'
   ],
 
@@ -80,18 +81,15 @@ foam.CLASS({
       forwards: [ 'find_', 'select_' ],
       expression: function(src) {
         var cache = this.cache;
-        // Preload src into cache, then proxy everything to cache that we
-        // don't override explicitly.
-        var self = this;
-        var cacheFilled = cache.removeAll().then(function() {
-          // First clear cache, then load the src into the cache
-          return src.select(self.DAOSink.create({dao: cache})).then(function() {
-            return cache;
-          });
-        });
+
         // The PromisedDAO resolves as our delegate when the cache is ready to use
         return this.PromisedDAO.create({
-          promise: cacheFilled
+          promise: (async function() {
+            var a = await src.select();
+            await cache.removeAll();
+            a.array.forEach(o => cache.put(o));
+            return cache;
+          })()
         });
       }
     },
@@ -110,6 +108,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+
+      if ( this.loginSuccess$ ) {
+        this.loginSuccess$.sub(this.onSrcReset);
+      }
 
       var proxy = this.src$proxy;
       proxy.listen(this.QuickSink.create({
@@ -153,9 +155,7 @@ foam.CLASS({
 
     function cmd_(x, obj) {
       if ( obj == this.PURGE ) {
-        // Temporary fix for infinite loop caused by LazyScrollManager
-//        this.delegate = undefined;
-//        this.cache.removeAll();
+        this.onSrcReset();
       } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
         // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
@@ -181,7 +181,10 @@ foam.CLASS({
     /** Keeps the cache in sync with changes from the source.
       @private */
     function onSrcReset() {
-      // TODO: Should this removeAll from the cache?
+      this.clearPrivate_('delegate');
+
+      // Not necessary, but frees up memory
+      this.cache.removeAll();
     },
 
     /** Polls updates from the source. */

@@ -44,7 +44,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmHourlyReduceManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOReduceManager.Builder(x)
       .setSourceDAO((foam.dao.DAO) x.get("pm1MinuteDAO"))
@@ -75,7 +75,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmDailyReduceManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOReduceManager.Builder(x)
       .setSourceDAO((foam.dao.DAO) x.get("pmHourlyDAO"))
@@ -89,7 +89,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmFoldManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao((foam.dao.DAO) x.get("pm1MinuteDAO"))

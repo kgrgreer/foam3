@@ -662,10 +662,8 @@ foam.CLASS({
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
-        .select().then(ableToAccessMenus => {
-          ableToAccessMenus.array[0].launch(this);
-          return ableToAccessMenus.array[0];
-        }).catch(e => console.error(e.message || e));
+        .select().then(a => a.array.length && a.array[0])
+        .catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {

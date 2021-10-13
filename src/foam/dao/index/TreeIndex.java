@@ -8,9 +8,9 @@ import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.dao.AbstractDAO;
 import foam.dao.Sink;
+import foam.mlang.Expr;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.*;
-import foam.mlang.predicate.Binary;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.GroupBy;
 import java.util.Arrays;
@@ -44,6 +44,7 @@ public class TreeIndex
    * @return Return an Object[] which contains two elements, first one is update state and second one is update predicate.
    */
   protected Object[] simplifyPredicate(Object state, Predicate predicate) {
+    Predicate p = predicate;
     if ( predicate == null || prop_ == null ) {
       return new Object[]{state, predicate};
     }
@@ -82,6 +83,8 @@ public class TreeIndex
       }
     } else if ( predicate instanceof And ) {
       int length = ((And) predicate).getArgs().length;
+      // Just deepClone the predicate to not alter the original predicate
+      p = (Predicate) ( (And) predicate ).shallowClone();
       for ( int i = 0; i < length; i++ ) {
         Predicate arg = ( (And) predicate ).getArgs()[i];
         if ( arg != null && state != null ) {
@@ -90,16 +93,18 @@ public class TreeIndex
           state = statePredicate[0];
           arg   = (Predicate) statePredicate[1];
         }
+        
         if ( arg == null ) {
-          ((And) predicate).getArgs()[i] = new True();
+          ((And) p).getArgs()[i] = new True();
         }
       }
+
       // use partialEval to simplify predicate themselves.
-      predicate = predicate.partialEval();
+      p = p.partialEval();
     }
 
-    if ( predicate instanceof True ) predicate = null;
-    return new Object[]{state, predicate};
+    if ( p instanceof True ) p = null;
+    return new Object[]{state, p};
   }
 
   public Object put(Object state, FObject value) {
