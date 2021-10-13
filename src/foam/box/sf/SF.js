@@ -22,6 +22,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.ClassInfo',
     'foam.box.Box',
     'foam.box.Message',
     'foam.dao.*',
@@ -37,6 +38,8 @@ foam.CLASS({
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
     'foam.lib.NetworkPropertyPredicate',
+    'foam.lib.formatter.JSONFObjectFormatter',
+    'foam.lib.StoragePropertyPredicate',
     'java.nio.file.*',
     'java.nio.file.attribute.*',
     'java.io.IOException',
@@ -84,7 +87,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'replayFailEntry',
-      documentation: 'only reforward unsuccessful entires when system comes up',
+      documentation: 'only reforward unsuccessful entires when system comes up, will need to write journal twice for each entry',
       value: false
     },
     {
@@ -186,9 +189,9 @@ foam.CLASS({
       name: 'createWriteJournal',
       args: 'String fileName',
       documentation: 'help function for create a journal',
-      javaType: 'Journal',
+      javaType: 'SFFileJournal',
       javaCode: `
-        return new foam.dao.WriteOnlyF3FileJournal.Builder(getX())
+        return new SFFileJournal.Builder(getX())
                 .setFilename(fileName)
                 .setCreateFile(true)
                 .setDao(new foam.dao.NullDAO())
@@ -209,12 +212,41 @@ foam.CLASS({
 
         entry.setCreated(new Date());
         long index = entryIndex_.incrementAndGet();
-        long fileIndex = index / ((long) getFileCapacity());
         entry.setIndex(index);
-        String filename = getFileName() + "." + fileIndex;
-        Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
 
+        if ( getReplayFailEntry() == true ) {
+          return storeToJournal(entry);
+        } else {
+          return storeToJournalAndRecordFileOffset(entry);
+        }
+      `
+    },
+    {
+      name: 'storeToJournal',
+      args: 'SFEntry entry',
+      documentation: 'do store without linux a-time',
+      javaType: 'SFEntry',
+      javaCode: `
+        Journal journal = getJournal(toFileName(entry));
         return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+      `
+    },
+    {
+      name: 'storeToJournalAndRecordFileOffset',
+      documentation: 'persist SFEntry into file, return the offset of the entry in file',
+      args: 'SFEntry entry',
+      javaType: 'SFEntry',
+      javaCode: `
+        // JSONFObjectFormatter fmt = getFormatter(getX());
+        // ClassInfo of = SFEntry.getOwnClassInfo();
+        // fmt.output(entry, of);
+
+        SFFileJournal journal = getJournal(toFileName(entry));
+
+        synchronized(writeLock_) {
+          //TODO: override put method.
+          return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+        }
       `
     },
     {
@@ -236,14 +268,21 @@ foam.CLASS({
       javaCode: `
         if ( getReplayFailEntry() == true ) {
           e.setStatus(SFStatus.COMPLETED);
-          long index = e.getIndex();
-          long fileIndex = index / ((long) getFileCapacity());
-          String filename = getFileName() + "." + fileIndex;
-          Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
+          Journal journal = getJournal(toFileName(e));
           journal.put(getX(), "", (DAO) getNullDao(), e);
+        } else {
+          //update file a-time.
+          maybeUpdateAtime(e);
         }
         inFlight_.decrementAndGet();
         cleanRetryCause(e);
+      `
+    },
+    {
+      name: 'maybeUpdateAtime',
+      args: 'SFEntry e',
+      documentation: 'try to update byte offset to atime',
+      javaCode: `
       `
     },
     {
@@ -258,10 +297,7 @@ foam.CLASS({
 
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
-            long index = e.getIndex();
-            long fileIndex = index / ((long) getFileCapacity());
-            String filename = getFileName() + "." + fileIndex;
-            Journal journal = journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
+            Journal journal = getJournal(toFileName(e));
             journal.put(getX(), "", (DAO) getNullDao(), e);
           }
           inFlight_.decrementAndGet();
@@ -367,7 +403,7 @@ foam.CLASS({
         MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
         for ( String filename : availableFilenames ) {
 
-          Journal journal = new F3FileJournal.Builder(x)
+          Journal journal = new SFFileJournal.Builder(x)
                               .setDao(tempDAO)
                               .setFilename(filename)
                               .setCreateFile(false)
@@ -378,6 +414,7 @@ foam.CLASS({
         //Find entry index;
         Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
         entryIndex_.set((Long)max.getValue());
+        successEntryIndex_.set((Long)max.getValue());
 
         tempDAO.where(predicate).select(sink);
         List<SFEntry> sfEntryList = sink.getArray();
@@ -460,64 +497,33 @@ foam.CLASS({
       `
     },
     {
-      name: 'getFileAttributes',
-      documentation: `helper function to get BaiscFileAttributes object for a file`,
-      args: 'String fileName',
-      javaType: 'BasicFileAttributes',
-      javaCode: `
-        try {
-          Path file = Paths.get(fileName);
-          return Files.readAttributes(file, BasicFileAttributes.class);
-        } catch ( IOException e ) {
-          throw new RuntimeException(e);
-        }
-      `
-    },
-    {
-      name: 'getLastAccessTime',
-      documentation: `helper function to get file Atime`,
-      args: 'String fileName',
-      javaType: 'long',
-      javaCode: `
-        BasicFileAttributes attr = getFileAttributes(fileName);
-        return attr.lastAccessTime().toMillis();
-      `
-    },
-    {
-      name: 'setLastAccessTime',
-      documentation: `helper function to set file Atime`,
-      args: 'String fileName, Long atime',
-      javaCode: `
-      try {
-        Path file = Paths.get(fileName);
-        FileTime fileTime = FileTime.fromMillis(atime);
-        Files.setAttribute(file, "lastAccessTime", fileTime);
-      } catch ( IOException ioe ) {
-        throw new RuntimeException(ioe);
-      }
-      `
-    },
-    {
-      name: 'getFileSize',
-      documentation: 'helper function to get file size',
-      args: 'String fileName',
-      javaType: 'long',
-      javaCode: `
-      try {
-        Path file = Paths.get(fileName);
-        return Files.size(file);
-      } catch ( IOException ioe ) {
-        throw new RuntimeException(ioe);
-      }
-      `
-    },
-    {
       name: 'isFileProcessComplete',
       documentation: 'helper function to determine if file is processed completed',
       args: 'String fileName',
       javaType: 'boolean',
       javaCode: `
-        return getFileSize(fileName) == getLastAccessTime(fileName) ? true : false;
+        SFFileJournal journal = getJournal(fileName);
+        return journal.getFileSize() == journal.getFileLastAccessTime() ? true : false;
+      `
+    },
+    {
+      name: 'toFileName',
+      documentation: 'shot-cut help method to calculate filename from SFEntry',
+      args: 'SFEntry entry',
+      javaType: 'String',
+      javaCode: `
+        long index = entry.getIndex();
+        long fileIndex = index / ((long) getFileCapacity());
+        return getFileName() + "." + fileIndex;
+      `
+    },
+    {
+      name: 'getJournal',
+      documentation: 'short-cut help method to get journal.',
+      args: 'String filename',
+      javaType: 'SFFileJournal',
+      javaCode: `
+        return journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
       `
     }
   ],
@@ -530,9 +536,11 @@ foam.CLASS({
           data: `
             protected Logger logger_ = null;
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
-            final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
+            final protected AtomicLong successEntryIndex_ = new AtomicLong(0);
+            final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
+            final protected Object writeLock_ = new Object();
 
             //Make to public because beanshell do not support.
             static public interface StepFunction {
@@ -550,6 +558,27 @@ foam.CLASS({
                 super(x, delegate);
               }
             }
+
+            // protected static ThreadLocal<JSONFObjectFormatter> formatter = new ThreadLocal<JSONFObjectFormatter>() {
+            //   @Override
+            //   protected JSONFObjectFormatter initialValue() {
+            //     return new JSONFObjectFormatter();
+            //   }
+            //   @Override
+            //   public JSONFObjectFormatter get() {
+            //     JSONFObjectFormatter b = super.get();
+            //     b.reset();
+            //     b.setPropertyPredicate(new StoragePropertyPredicate());
+            //     b.setOutputShortNames(true);
+            //     return b;
+            //   }
+            // };
+  
+            // protected JSONFObjectFormatter getFormatter(X x) {
+            //   JSONFObjectFormatter f = formatter.get();
+            //   f.setX(x);
+            //   return f;
+            // }
           `
         }));
       }

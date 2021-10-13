@@ -51,6 +51,10 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      class: 'Long',
+      name: 'fileOffset',
+    },
+    {
       name: 'status',
       class: 'Enum',
       of: 'foam.box.sf.SFStatus',
