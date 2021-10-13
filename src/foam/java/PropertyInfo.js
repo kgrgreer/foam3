@@ -155,6 +155,23 @@ foam.CLASS({
       documentation: 'The sheetsOutput specifies if property shoud be written to Google Sheet on import. eg on Transaction import in case there is Status column transaction\'s status will be written there'
     },
     {
+      class: 'Boolean',
+      name: 'smfIsOptionable',
+      factory: function() { return this.property.smfIsOptionable; },
+      documentation: 'Identifies SMF Message tag that can contain one of multiple format options'
+    },
+    {
+      class: 'Boolean',
+      name: 'smfIsRepeatable',
+      factory: function() { return this.property.smfIsRepeatable; },
+      documentation: 'Identifies SMF Message tag that can be repeated within a single message'
+    },
+    {
+      name: 'smfTag',
+      factory: function() { return this.property.smfTag; },
+      documentation: 'The actual SMF tag identifier from an SMF message for this property'
+    },
+    {
       name: 'methods',
       factory: function() {
         var fullName = this.sourceCls.package ? this.sourceCls.package + '.' + this.sourceCls.name : this.sourceCls.name;
@@ -551,6 +568,29 @@ foam.CLASS({
               }
             ],
             body: this.formatJSON + ';'
+          });
+        }
+
+        m.push({
+          name: 'getSMFIsOptionable',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.smfIsOptionable + ';'
+        });
+
+        m.push({
+          name: 'getSMFIsRepeatable',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.smfIsRepeatable + ';'
+        });
+
+        if ( this.smfTag ) {
+          m.push({
+            name: 'getSMFTag',
+            type: 'String',
+            visibility: 'public',
+            body: 'return "' + this.smfTag + '";'
           });
         }
 

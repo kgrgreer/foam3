@@ -66,6 +66,9 @@ foam.INTERFACE({
         diff.put(prop.getName(), prop.f(o2));
       }
     }`,
+    'boolean getSMFIsOptionable() { return false; }',
+    'boolean getSMFIsRepeatable() { return false; }',
+    'String getSMFTag() { return null; }',
     {
       signature: 'boolean hardDiff(FObject o1, FObject o2, FObject diff)',
       documentation: `
