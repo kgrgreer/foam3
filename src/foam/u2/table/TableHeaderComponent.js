@@ -40,7 +40,9 @@ foam.CLASS({
       name: 'overrides',
       documentation: 'overrides to be applied on given column'
     },
-    // Used internally to control dragging funcitonality
+    // Used internally to control dragging funcitonality.
+    // All these and the listeners can be removed in
+    // favour of css `resize: horizontal` if flexbox support is added
     'propName',
     'oldX_',
     'oldCW_',
