@@ -47,6 +47,7 @@ foam.CLASS({
     'oldX_',
     'oldCW_',
     ['isDragging_', false],
+    'dragImg_'
   ],
 
   methods: [
@@ -60,7 +61,9 @@ foam.CLASS({
       
       if ( ! prop ) return;
 
-      this.colWidth = this.selectedColumnsWidth && this.selectedColumnsWidth[this.propName];
+      this.dragImg_ = document.createElement('img');
+      this.dragImg_.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+
       var colData = this.columnConfigToPropertyConverter.returnColumnHeader(this.data.of, this.col);
       var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
       var colTooltip = colData.colPath.join( '/' );
@@ -79,41 +82,42 @@ foam.CLASS({
           'word-wrap': 'break-word'
         })
         .start()
-        .style({ display: 'flex',overflow: 'hidden' })
-          .start('', { tooltip: colTooltip })
-            .addClass('h600')
-            .style({
-              overflow: 'hidden',
-              'text-overflow': 'ellipsis'
+          .style({ display: 'flex',overflow: 'hidden' })
+            .start('', { tooltip: colTooltip })
+              .addClass('h600')
+              .style({
+                overflow: 'hidden',
+                'text-overflow': 'ellipsis'
+              })
+              .add(colHeader)
+            .end()
+            .callIf(isFirstLevelProperty && prop.sortable, function() {
+              var currArrow = view.restingIcon;
+              this.on('click', function(e) {
+                view.sortBy(prop);
+              }).
+              callIf(prop.label !== '', function() {
+                this.start()
+                  .start('img')
+                    .attr('src', this.slot(function(view$order) {
+                      var order = view$order;
+                      if ( prop === order ) {
+                        currArrow = view.ascIcon;
+                      } else {
+                        if ( view.Desc.isInstance(order) && order.arg1 === prop )
+                        currArrow = view.descIcon;
+                      }
+                      return currArrow;
+                    }, view.order$))
+                  .end()
+                .end();
+              });
             })
-            .add(colHeader)
-          .end()
-          .callIf(isFirstLevelProperty && prop.sortable, function() {
-            var currArrow = view.restingIcon;
-            this.on('click', function(e) {
-              view.sortBy(prop);
-            }).
-            callIf(prop.label !== '', function() {
-              this.start()
-                .start('img')
-                  .attr('src', this.slot(function(view$order) {
-                    var order = view$order;
-                    if ( prop === order ) {
-                      currArrow = view.ascIcon;
-                    } else {
-                      if ( view.Desc.isInstance(order) && order.arg1 === prop )
-                      currArrow = view.descIcon;
-                    }
-                    return currArrow;
-                  }, view.order$))
-                .end()
-              .end();
-            });
-          })
         .end()
         .startContext({data: this})
           .start(this.DRAG, { buttonStyle: 'TERTIARY', themeIcon: 'drag', size: 'SMALL' })
             .addClass(this.data.myClass('resizeButton'))
+            .enableClass(this.data.myClass('resizeCursor'), this.showResize$)
             .attrs({ draggable: 'true' })
             .on('dragstart', self.dragStart.bind(self))
             .on('drag', self.drag.bind(self))
@@ -131,6 +135,7 @@ foam.CLASS({
         this.isDragging_ = true;
         evt.dataTransfer.effectAllowed = 'none';
         evt.dataTransfer.dropEffect = 'none';
+        evt.dataTransfer.setDragImage(this.dragImg_, 0, 0);
         this.oldX_ = evt.clientX;
         this.oldCW_ = ! this.colWidth ? this.el_() && this.el_().getBoundingClientRect().width : this.colWidth;
       }
@@ -139,7 +144,10 @@ foam.CLASS({
       name: 'drag',
       code: function(evt) {
         evt.preventDefault();
-        this.colWidth = this.oldCW_ + evt.clientX - this.oldX_;
+        var w = this.oldCW_ + evt.clientX - this.oldX_;
+        if ( w > this.data.MIN_COLUMN_WIDTH_FALLBACK ) {
+          this.colWidth = w;
+        }
       }
     },
     {
