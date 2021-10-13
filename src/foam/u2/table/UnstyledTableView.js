@@ -19,27 +19,27 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.nanos.column.TableColumnOutputter',
     'foam.u2.CheckBox',
-    'foam.u2.tag.Image',
-    'foam.u2.view.EditColumnsView',
-    'foam.u2.view.OverlayActionListView',
-    'foam.u2.view.LazyScrollManager',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
     'foam.u2.stack.StackBlock',
-    'foam.u2.table.TableHeaderComponent'
+    'foam.u2.table.TableHeaderComponent',
+    'foam.u2.tag.Image',
+    'foam.u2.view.EditColumnsView',
+    'foam.u2.view.LazyScrollManager',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   exports: [
     'click',
     'click as dblclick',
     'columns',
+    'colWidthUpdated',
     'currentMemento_ as memento',
     'nestedPropsAndIndexes',
     'props',
     'propertyNamesToQuery',
-    'selectedObjects',
     'selectedColumnsWidth',
-    'colWidthUpdated'
+    'selectedObjects'
   ],
 
   imports: [
@@ -103,7 +103,7 @@ foam.CLASS({
     {
       name: 'order'
     },
-    //TODO: CLEAN UP ALL THESE COLUMN PROPS... - SARTHAK
+    //TODO: CLEAN UP ALL THESE COLUMN PROPS...
     {
       name: 'columns_',
       factory: function() { return []; }
@@ -132,10 +132,11 @@ foam.CLASS({
         return local; 
       }
     },
-    // TODO: is there a better way to trigger column width listeners?
     {
       class: 'Boolean',
-      name: 'colWidthUpdated'
+      name: 'colWidthUpdated',
+      documentation: `used to trigger/listen to columnWidth changes as they are stored 
+        in an object where value cahnges do not trigger slots`
     },
     {
       name: 'columns',
@@ -605,7 +606,7 @@ foam.CLASS({
         localStorage.removeItem(this.of.id);
         localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
           var name = foam.String.isInstance(c) ? c : c.name;
-          var size = this.selectedColumnsWidth[name] ?? null;
+          var size = this.selectedColumnsWidth[name] || null;
           return [name, size];
         })));
       }

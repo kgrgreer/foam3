@@ -162,9 +162,9 @@ foam.CLASS({
   extends: 'foam.u2.table.TableComponentView',
 
   imports: [
+    'colWidthUpdated',
     'props',
-    'selectedColumnsWidth',
-    'colWidthUpdated'
+    'selectedColumnsWidth'
   ],
 
   properties: [
@@ -176,9 +176,7 @@ foam.CLASS({
         this.columnHandler.returnPropertyForColumn(this.props, this.data.of, this.col, 'tableWidth');
       },
     },
-    {
-      name: 'col'
-    },
+    'col',
     'propName',
     'nestedPropertiesObjsMap',
     'obj'

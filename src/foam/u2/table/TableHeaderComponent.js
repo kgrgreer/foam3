@@ -10,9 +10,9 @@ foam.CLASS({
   extends: 'foam.u2.table.TableComponentView',
 
   imports: [
+    'colWidthUpdated',
     'props',
-    'selectedColumnsWidth',
-    'colWidthUpdated'
+    'selectedColumnsWidth'
   ],
 
   properties: [
@@ -33,15 +33,18 @@ foam.CLASS({
       }
     },
     {
-      name: 'col'
+      name: 'col',
+      documentation: 'column name for which header needs to be rendered'
     },
     {
-      name: 'overrides'
+      name: 'overrides',
+      documentation: 'overrides to be applied on given column'
     },
+    // Used internally to control dragging funcitonality
+    'propName',
     'oldX_',
     'oldCW_',
     ['isDragging_', false],
-    'propName'
   ],
 
   methods: [
