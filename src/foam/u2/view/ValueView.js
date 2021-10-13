@@ -28,8 +28,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var prop = this.prop;
-      var unitPropSlot = self.__subContext__.objData.slot(prop.unitPropName);
       if ( prop && prop.unitPropValueToString ) {
+        var unitPropSlot = self.__subContext__.objData?.slot(prop.unitPropName);
         this.add(
           unitPropSlot ?
           unitPropSlot.map(unitProp => this.slot(function(data) {
