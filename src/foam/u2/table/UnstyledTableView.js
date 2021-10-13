@@ -129,7 +129,6 @@ foam.CLASS({
           local[c[0]] = c[1] : 
           local[c] = undefined;
         });
-        console.log(local);
         return local; 
       }
     },
