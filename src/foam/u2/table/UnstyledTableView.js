@@ -25,7 +25,8 @@ foam.CLASS({
     'foam.u2.view.LazyScrollManager',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
-    'foam.u2.stack.StackBlock'
+    'foam.u2.stack.StackBlock',
+    'foam.u2.table.TableHeaderComponent'
   ],
 
   exports: [
@@ -36,7 +37,9 @@ foam.CLASS({
     'nestedPropsAndIndexes',
     'props',
     'propertyNamesToQuery',
-    'selectedObjects'
+    'selectedObjects',
+    'selectedColumnsWidth',
+    'colWidthUpdated'
   ],
 
   imports: [
@@ -57,6 +60,11 @@ foam.CLASS({
       type: 'Int',
       name: 'EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH',
       value: 60
+    },
+    {
+      type: 'Int',
+      name: 'CHECKBOX_CONTAINER_WIDTH',
+      value: 42
     },
     {
       type: 'Char',
@@ -204,10 +212,15 @@ foam.CLASS({
       class: 'Int',
       name: 'tableWidth_',
       documentation: 'Width of the whole table. Used to get proper scrolling on narrow screens.',
-      expression: function(props) {
+      expression: function(props, colWidthUpdated, multiSelectEnabled, editColumnsEnabled) {
+        var self = this;
+        var base = 0;
+        if ( this.multiSelectEnabled ) base += this.CHECKBOX_CONTAINER_WIDTH;
+        if ( this.editColumnsEnabled ) base += this.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH;
         return this.columns_.reduce((acc, col) => {
-          return acc + (this.columnHandler.returnPropertyForColumn(this.props, this.of, col, 'tableWidth') || this.MIN_COLUMN_WIDTH_FALLBACK);
-        }, this.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH) + 'px';
+          var width = this.selectedColumnsWidth[self.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col)];
+          return acc + (width || this.columnHandler.returnPropertyForColumn(this.props, this.of, col, 'tableWidth') || this.MIN_COLUMN_WIDTH_FALLBACK);
+        }, base) + 'px';
       }
     },
     {
@@ -271,6 +284,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showPagination',
       value: true
+    },
+    {
+      name: 'selectedColumnsWidth',
+      factory: function() { return {}; }
+    },
+    // TODO: is there a better way to trigger column width listeners?
+    {
+      class: 'Boolean',
+      name: 'colWidthUpdated'
     },
     'tableEl_',
     'scrollEl_',
@@ -443,7 +465,7 @@ foam.CLASS({
                   this.start().
                     addClass(view.myClass('th')).
                     tag(view.CheckBox, {}, slot).
-                    style({ width: '42px' }).
+                    style({ width: `${this.CHECKBOX_CONTAINER_WIDTH}px`, 'min-width': `${this.CHECKBOX_CONTAINER_WIDTH}px` }).
                   end();
 
                   // Set up a listener so we can update the existing CheckBox
@@ -472,57 +494,7 @@ foam.CLASS({
 
                 // Render the table headers for the property columns.
                 forEach(columns_, function([col, overrides]) {
-                  var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                  var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                  var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
-
-                  if ( ! prop ) return;
-
-                  var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
-                  var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
-                  var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
-                  var colTooltip = colData.colPath.join( '/' );
-
-                  this.start().
-                    addClass(view.myClass('th')).
-                    addClass(view.myClass('th-' + prop.name))
-                      .style({
-                        'align-items': 'center',
-                        display: 'flex',
-                        flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
-                        'justify-content': 'start',
-                        'word-wrap': 'break-word',
-                      })
-                      .start('', { tooltip: colTooltip })
-                        .addClass('h600')
-                        .style({
-                          overflow: 'hidden',
-                          'text-overflow': 'ellipsis'
-                        })
-                        .add(colHeader).
-                      end().
-                      callIf(isFirstLevelProperty && prop.sortable, function() {
-                        var currArrow = view.restingIcon;
-                        this.on('click', function(e) {
-                          view.sortBy(prop);
-                          }).
-                          callIf(prop.label !== '', function() {
-                            this.start()
-                              .start('img')
-                                .attr('src', this.slot(function(order) {
-                                  if ( prop === order ) {
-                                    currArrow = view.ascIcon;
-                                  } else {
-                                    if ( view.Desc.isInstance(order) && order.arg1 === prop )
-                                    currArrow = view.descIcon;
-                                  }
-                                  return currArrow;
-                                }, view.order$))
-                              .end()
-                            .end();
-                        });
-                      }).
-                  end();
+                  this.tag(view.TableHeaderComponent, { data: view, col: col, overrides: overrides });
                 }).
 
                 // Render a th at the end for the column that contains the context
@@ -533,6 +505,7 @@ foam.CLASS({
                     addClass(view.myClass('th')).
                     style({
                       flex: `0 0 ${view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px`,
+                      'min-width': view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH,
                       'text-align': 'unset!important;',
                     }).
                     callIf(view.editColumnsEnabled, function() {
@@ -569,7 +542,7 @@ foam.CLASS({
         .add(this.slot(showPagination => {
           var buttonStyle = { label: '', buttonStyle: 'TERTIARY', size: 'SMALL' };
           return showPagination ?
-           this.E().start(view.Cols).addClass(view.myClass('nav')).style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later
+          this.E().start(view.Cols).addClass(view.myClass('nav')).style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later
             startContext({ data: view.scrollEl_ }).
               start(view.Cols).
                 style({ gap: '4px', 'box-sizing': 'border-box' }).
@@ -682,6 +655,164 @@ foam.CLASS({
       name: 'property',
       class: 'FObjectProperty',
       of: 'Property'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.table',
+  name: 'TableHeaderComponent',
+  extends: 'foam.u2.table.TableComponentView',
+
+  imports: [
+    'props',
+    'selectedColumnsWidth',
+    'colWidthUpdated'
+  ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'showResize'
+    },
+    {
+      name: 'colWidth',
+      factory: function() {
+        return this.columnHandler.returnPropertyForColumn(this.props, this.data.of, [this.col, this.overrides], 'tableWidth');
+      },
+      postSet: function(o, n) {
+        this.selectedColumnsWidth[this.propName] = n;
+        this.colWidthUpdated = ! this.colWidthUpdated;
+      }
+    },
+    {
+      name: 'col'
+    },
+    {
+      name: 'overrides'
+    },
+    'oldX_',
+    'oldCW_',
+    ['isDragging_', false],
+    'propName'
+  ],
+
+  methods: [
+    function render() {
+      var self = this;
+      var view = this.data;
+      console.log(this.col)
+      this.propName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(this.col);
+      console.log(this.propName)
+      var found = this.props.find(p => p.fullPropertyName === self.propName);
+      var prop = found ? found.property : this.data.of.getAxiomByName(self.propName);
+      var isFirstLevelProperty = this.columnHandler.canColumnBeTreatedAsAnAxiom(this.col) ? true : this.col.indexOf('.') === -1;
+      
+      if ( ! prop ) return;
+
+      this.colWidth = this.selectedColumnsWidth && this.selectedColumnsWidth[this.propName];
+      var colData = this.columnConfigToPropertyConverter.returnColumnHeader(this.data.of, this.col);
+      var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
+      var colTooltip = colData.colPath.join( '/' );
+      this
+        .addClass(view.myClass('th'))
+        .on('mouseenter', this.onMouseEnter)
+        .on('mouseleave', this.onMouseLeave)
+        .addClass(view.myClass('th-' + prop.name))
+        .style({
+          'align-items': 'center',
+          display: 'flex',
+          flex: this.slot(function(colWidth) {
+            return colWidth ? `1 0 ${colWidth}px` : `1 0 ${this.data.MIN_COLUMN_WIDTH_FALLBACK}px`
+          }),
+          'justify-content': 'space-between',
+          'word-wrap': 'break-word'
+        })
+        .start()
+        .style({ display: 'flex',overflow: 'hidden' })
+          .start('', { tooltip: colTooltip })
+            .addClass('h600')
+            .style({
+              overflow: 'hidden',
+              'text-overflow': 'ellipsis'
+            })
+            .add(colHeader)
+          .end()
+          .callIf(isFirstLevelProperty && prop.sortable, function() {
+            var currArrow = view.restingIcon;
+            this.on('click', function(e) {
+              view.sortBy(prop);
+            }).
+            callIf(prop.label !== '', function() {
+              this.start()
+                .start('img')
+                  .attr('src', this.slot(function(view$order) {
+                    var order = view$order
+                    if ( prop === order ) {
+                      currArrow = view.ascIcon;
+                    } else {
+                      if ( view.Desc.isInstance(order) && order.arg1 === prop )
+                      currArrow = view.descIcon;
+                    }
+                    return currArrow;
+                  }, view.order$))
+                .end()
+              .end();
+            });
+          })
+        .end()
+        .startContext({data: this})
+          .start(this.DRAG, { buttonStyle: 'TERTIARY', themeIcon: 'drag', size: 'SMALL' })
+            .addClass(this.data.myClass('resizeButton'))
+            .attrs({ draggable: 'true' })
+            .on('dragstart', self.dragStart.bind(self))
+            .on('drag', self.drag.bind(self))
+            .on('dragend', self.dragEnd.bind(self))
+            .style({ position: 'sticky', right: 0 }) 
+            .show(this.showResize$)
+          .end()
+        .endContext();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'dragStart',
+      code: function(evt) {
+        this.isDragging_ = true;
+        evt.dataTransfer.effectAllowed = 'none';
+        evt.dataTransfer.dropEffect = 'none';
+        this.oldX_ = evt.clientX;
+        this.oldCW_ = ! this.colWidth ? this.el_() && this.el_().getBoundingClientRect().width : this.colWidth;
+      }
+    },
+    {
+      name: 'drag',
+      code: function(evt) {
+        evt.preventDefault();
+        this.colWidth = this.oldCW_ + evt.clientX - this.oldX_;
+      }
+    },
+    {
+      name: 'dragEnd',
+      code: function(evt) {
+        this.drag(evt);
+        this.isDragging_ = false
+      }
+    },
+    function onMouseEnter() {
+      this.showResize = true;
+    },
+    function onMouseLeave() {
+      if ( this.isDragging_ ) return;
+      this.showResize = false;
+    }
+  ],
+  actions: [
+    {
+      name: 'drag',
+      label: '',
+      code: function() {}
     }
   ]
 });
