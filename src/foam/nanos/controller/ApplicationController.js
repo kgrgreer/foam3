@@ -674,7 +674,6 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-        debugger;
           self.stack.push(self.StackBlock.create({ view: {
             class: 'foam.nanos.auth.ChangePasswordView',
             modelOf: 'foam.nanos.auth.ResetPassword'
