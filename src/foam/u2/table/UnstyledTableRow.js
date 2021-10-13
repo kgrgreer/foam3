@@ -191,8 +191,8 @@ foam.CLASS({
       [prop, objReturned] = this.getCellData(this.obj, this.col, this.nestedPropertiesObjsMap);
 
       this.onDetach(this.colWidthUpdated$.sub(function() {
-        if ( ! self.selectedColumnsWidth[self.propName] ) return;
-        self.colWidth = self.selectedColumnsWidth[self.propName];
+        if ( self.selectedColumnsWidth[self.propName] ) 
+          self.colWidth = self.selectedColumnsWidth[self.propName];
       }));
       this
         .addClass(this.data.myClass('td'))

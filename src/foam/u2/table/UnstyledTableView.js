@@ -103,6 +103,7 @@ foam.CLASS({
     {
       name: 'order'
     },
+    //TODO: CLEAN UP ALL THESE COLUMN PROPS... - SARTHAK
     {
       name: 'columns_',
       factory: function() { return []; }
@@ -113,9 +114,29 @@ foam.CLASS({
     {
       name: 'selectedColumnNames',
       expression: function(columns, of, memento) {
-        var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
+        var ls = memento && memento.head.length != 0 ? 
+          memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) :
+          JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
         return ls || columns;
       }
+    },
+    {
+      name: 'selectedColumnsWidth',
+      factory: function() { 
+        var local = {};
+        JSON.parse(localStorage.getItem(this.of.id))?.map(c => {
+          foam.Array.isInstance(c) ?
+          local[c[0]] = c[1] : 
+          local[c] = undefined;
+        });
+        console.log(local);
+        return local; 
+      }
+    },
+    // TODO: is there a better way to trigger column width listeners?
+    {
+      class: 'Boolean',
+      name: 'colWidthUpdated'
     },
     {
       name: 'columns',
@@ -285,15 +306,6 @@ foam.CLASS({
       name: 'showPagination',
       value: true
     },
-    {
-      name: 'selectedColumnsWidth',
-      factory: function() { return {}; }
-    },
-    // TODO: is there a better way to trigger column width listeners?
-    {
-      class: 'Boolean',
-      name: 'colWidthUpdated'
-    },
     'tableEl_',
     'scrollEl_',
     ['tableHeadHeight', 52]
@@ -324,9 +336,7 @@ foam.CLASS({
       this.groupBy = column;
     },
     function updateColumns() {
-      localStorage.removeItem(this.of.id);
-      localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => foam.String.isInstance(c) ? c : c.name )));
-
+      this.updateLocalStorage();
       if ( ! this.memento )
         return;
 
@@ -364,6 +374,7 @@ foam.CLASS({
       this.allColumns$.sub(this.updateColumns_);
       this.updateColumns_();
 
+      this.onDetach(this.colWidthUpdated$.sub(this.updateLocalStorage));
       //set memento's selected columns
       if ( this.memento ) {
         if ( this.memento.head.length != 0 ) {
@@ -587,6 +598,19 @@ foam.CLASS({
   ],
 
   listeners: [
+    { 
+      name: 'updateLocalStorage',
+      isMerged: true,
+      mergeDelay: 5000,
+      code: function() {
+        localStorage.removeItem(this.of.id);
+        localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
+          var name = foam.String.isInstance(c) ? c : c.name;
+          var size = this.selectedColumnsWidth[name] ?? null;
+          return [name, size];
+        })));
+      }
+    },
     {
       name: 'updateColumns_',
       isFramed: true,
@@ -678,7 +702,9 @@ foam.CLASS({
     {
       name: 'colWidth',
       factory: function() {
-        return this.columnHandler.returnPropertyForColumn(this.props, this.data.of, [this.col, this.overrides], 'tableWidth');
+        return this.selectedColumnsWidth && this.selectedColumnsWidth[this.propName] ?
+        this.selectedColumnsWidth[this.propName] :
+        this.columnHandler.returnPropertyForColumn(this.props, this.data.of, [this.col, this.overrides], 'tableWidth');
       },
       postSet: function(o, n) {
         this.updateWidths(n);
