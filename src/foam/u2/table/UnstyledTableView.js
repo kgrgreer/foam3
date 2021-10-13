@@ -681,8 +681,7 @@ foam.CLASS({
         return this.columnHandler.returnPropertyForColumn(this.props, this.data.of, [this.col, this.overrides], 'tableWidth');
       },
       postSet: function(o, n) {
-        this.selectedColumnsWidth[this.propName] = n;
-        this.colWidthUpdated = ! this.colWidthUpdated;
+        this.updateWidths(n);
       }
     },
     {
@@ -797,7 +796,7 @@ foam.CLASS({
       name: 'dragEnd',
       code: function(evt) {
         this.drag(evt);
-        this.isDragging_ = false
+        this.isDragging_ = false;
       }
     },
     function onMouseEnter() {
@@ -806,6 +805,14 @@ foam.CLASS({
     function onMouseLeave() {
       if ( this.isDragging_ ) return;
       this.showResize = false;
+    },
+    {
+      name: 'updateWidths',
+      isFramed: true,
+      code: function(width) {
+        this.selectedColumnsWidth[this.propName] = width;
+        this.colWidthUpdated = ! this.colWidthUpdated;
+      }
     }
   ],
   actions: [
