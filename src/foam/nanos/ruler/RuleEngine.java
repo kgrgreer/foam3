@@ -60,16 +60,23 @@ public class RuleEngine extends ContextAwareSupport {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
+    RuleTracer            tracer         = (RuleTracer) getX().get("ruleTracer");
+    if ( tracer == null ) {
+      tracer = new NullRuleTracer();
+      logger.debug("WARNING! No Rule Tracer Specified, using Null tracer");
+    }
+    tracer.preExecute();
 
     for ( Rule rule : rules ) {
+      tracer.preRule();
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
       try {
         if ( stops_.get() ) break;
-        if ( ! isRuleActive(rule, rule.getAction()) ) continue;
-        if ( ! checkPermission(rule, obj)           ) continue;
-        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+        if ( ! isRuleActive(rule, rule.getAction(), tracer)       ) continue;
+        if ( ! checkPermission(rule, obj, tracer)                 ) continue;
+        if ( ! checkPredicate(rule, userX_, obj, oldObj, tracer)  ) continue;
 
-        applyRule(rule, obj, oldObj, agency);
+        applyRule(rule, obj, oldObj, agency, tracer);
         agency.submit(x_, x -> saveHistory(rule, obj), "Save history. Rule id:" + rule.getId());
       } catch (Exception e) {
         // To be expected if a rule blocks an operation. Not an error.
@@ -77,6 +84,7 @@ public class RuleEngine extends ContextAwareSupport {
         throw e;
       } finally {
         pm.log(x_);
+        tracer.postRule();
       }
     }
 
@@ -101,6 +109,7 @@ public class RuleEngine extends ContextAwareSupport {
     }
 
     asyncApplyRules(rules, obj, oldObj);
+    tracer.postExecute();
   }
 
   /**
@@ -116,10 +125,13 @@ public class RuleEngine extends ContextAwareSupport {
     PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
 
     try {
+      RuleTracer tracer = getX().get("ruleTracer");
+      if ( tracer == null ) tracer = new NullRuleTracer();
+
       for ( Rule rule : rules ) {
-        if ( ! isRuleActive(rule, rule.getAction()) ) continue;
-        if ( ! checkPermission(rule, obj)           ) continue;
-        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+        if ( ! isRuleActive(rule, rule.getAction(), tracer) ) continue;
+        if ( ! checkPermission(rule, obj, tracer)           ) continue;
+        if ( ! checkPredicate(rule, userX_, obj, oldObj, tracer)  ) continue;
 
         TestedRule agent = new TestedRule();
         agent.setRule(rule.getId());
@@ -176,12 +188,18 @@ public class RuleEngine extends ContextAwareSupport {
     return results_.get(ruleId);
   }
 
-  private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
+  private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency, RuleTracer tracer) {
     ProxyX readOnlyX = new ReadOnlyDAOContext(userX_);
     rule.apply(readOnlyX, obj, oldObj, this, rule, agency);
   }
+  private boolean checkPredicate (Rule rule, X userX_, FObject obj, FObject oldObj, RuleTracer tracer) {
+    boolean passed = rule.f(userX_, obj, oldObj);
+    tracer.tracePredicate();
+    return passed;
 
-  private boolean isRuleActive(Rule rule, RuleAction action) {
+  }
+
+  private boolean isRuleActive(Rule rule, RuleAction action, RuleTracer tracer) {
     currentRule_ = rule;
 
     // Check if the rule is in an ACTIVE state
@@ -189,11 +207,11 @@ public class RuleEngine extends ContextAwareSupport {
     if (rule instanceof LifecycleAware) {
       isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
     }
-
+    tracer.traceActive(isActive);
     return isActive && action != null;
   }
 
-  private boolean checkPermission(Rule rule, FObject obj) {
+  private boolean checkPermission(Rule rule, FObject obj, RuleTracer tracer) {
     var user = rule.getUser(getX(), obj);
 
     if ( user != null ) {
