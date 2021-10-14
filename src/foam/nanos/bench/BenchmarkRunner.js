@@ -139,8 +139,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'oneTimeSetup',
-      value: false
+      name: 'oneTimeSetup'
     },
     {
       class: 'Reference',
