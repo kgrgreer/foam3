@@ -14,14 +14,16 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.DAOResourceLoader',
+    'foam.nanos.notification.email.EmailTemplate',
+    'foam.nanos.notification.email.EmailTemplateEngine',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
-    'foam.util.Emails.EmailsUtility',
     'java.io.PrintWriter',
     'java.util.HashMap',
     'javax.servlet.http.HttpServletRequest',
@@ -53,6 +55,7 @@ foam.CLASS({
         String             userId           = request.getParameter("userId");
         String             redirect         = request.getParameter("redirect");
         User               user             = (User) userDAO.find(Long.valueOf(userId));
+        AppConfig          appConfig        = (AppConfig) new foam.nanos.session.Session.Builder(x).setUserId(user.getId()).build().applyTo(x).get("appConfig");
 
         TranslationService ts = (TranslationService) x.get("translationService");
         Subject subject = (Subject) x.get("subject");
@@ -86,6 +89,7 @@ foam.CLASS({
           translatedMsg = ts.getTranslation(local, getClassInfo().getId()+ ".EMAIL_VERIFIED_ERROR", this.EMAIL_VERIFIED_ERROR);
           message = translatedMsg + "<br>" + msg;
         } finally {
+          EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
           foam.nanos.theme.Theme theme = getTheme(x, user);
           HashMap args = new HashMap();
           args.put("msg", message);
@@ -94,19 +98,20 @@ foam.CLASS({
             args.put("appName", theme.getAppName());
           }
           if ( user != null ) {
-            String url = user.findGroup(x).getAppConfig(x).getUrl();
-            args.put("logo", url + "/" + theme.getLoginImage());
+            String url = appConfig.getUrl();
+            args.put("largeLogo", url + "/" + theme.getLargeLogo());
           }
 
-          EmailMessage emailMessage = new EmailMessage();
-          emailMessage.setTo(new String[] { user.getEmail() });
-
-          args.put("name", user.getFirstName());
-          args.put("sendTo", user.getEmail());
-          args.put("templateSource", this.getClass().getName());
-
-          out.append(message);
-          EmailsUtility.sendEmailFromTemplate(x, user, emailMessage, "verify-email-link", args);
+          EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(
+            x,
+            "verify-email-link",
+            (String) user.getGroup(),
+            user.getLanguage().getCode().toString(),
+            user.getSpid(),
+            args
+          );
+          StringBuilder templateBody = templateEngine.renderTemplate(x, emailTemplate.getBody(), args);
+          out.write(templateBody.toString());
 
           if ( ! redirect.equals("null") ){
             try {
