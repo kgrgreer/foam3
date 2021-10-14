@@ -58,7 +58,7 @@ foam.CLASS({
     function render() {
       var self = this;
       var view = this.data;
-      this.propName = this.columnHandler.returnPropertyNamesForColumnArray(this.col);
+      this.propName = this.columnHandler.propertyNamesForColumnArray(this.col);
       var found = this.props.find(p => p.fullPropertyName === self.propName);
       var prop = found ? found.property : this.data.of.getAxiomByName(self.propName);
       var isFirstLevelProperty = this.columnHandler.canColumnBeTreatedAsAnAxiom(this.col) ? true : this.col.indexOf('.') === -1;

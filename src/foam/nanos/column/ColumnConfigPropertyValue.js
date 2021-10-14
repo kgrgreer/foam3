@@ -70,7 +70,7 @@ foam.CLASS({
         if ( foam.String.isInstance(propName) ) {
           var propNames = propName.split('.');
           for ( var i = 0 ; i < propNames.length ; i++ ) {
-            axiom = cls.getAxiomByName(this.columnHandler.returnPropertyNamesForColumnArray(propNames[i]));
+            axiom = cls.getAxiomByName(this.columnHandler.propertyNamesForColumnArray(propNames[i]));
             if ( ! axiom )
               return '';
             colPath.push( axiom.label || foam.String.labelize(axiom.name) );
