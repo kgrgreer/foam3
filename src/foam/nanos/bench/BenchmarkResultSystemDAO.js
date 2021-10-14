@@ -37,6 +37,7 @@ foam.CLASS({
 
       br.setCores(Runtime.getRuntime().availableProcessors());
 
+      Runtime.getRuntime().gc();
       br.setUsedMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
       br.setFreeMemoryGB(new BigDecimal(((Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
       br.setTotalMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());

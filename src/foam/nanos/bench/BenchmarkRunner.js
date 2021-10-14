@@ -94,6 +94,24 @@ foam.CLASS({
     'benchmarkId'
   ],
 
+  constants: [
+    {
+      documentation: 'Context key to benchmark access to the runner.',
+      name: 'RUNNER',
+      value: 'RUNNER'
+    },
+    {
+      documentation: 'Context key informating the execute method which Thread number the current run is.',
+      name: 'THREAD',
+      value: 'THREAD'
+    },
+    {
+      documentation: 'Context key informaing the execute method which invocation the current run is.',
+      name: 'INVOCATION',
+      value: 'INVOCATION'
+    }
+  ],
+
   properties: [
     {
       class: 'Int',
@@ -118,6 +136,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'clearPMs',
       docmentation: 'clear PMs before executing the benchmark',
+    },
+    {
+      class: 'Boolean',
+      name: 'oneTimeSetup',
+      value: false
     },
     {
       class: 'Reference',
@@ -154,7 +177,7 @@ foam.CLASS({
       canRun(x);
       PM pm = new PM(this.getClass(), getId());
       try {
-        execute(x);
+        execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
         setLastDuration(pm.getTime());
@@ -212,7 +235,7 @@ foam.CLASS({
 
         setStatus(ScriptStatus.RUNNING);
         ((DAO) x.get("benchmarkRunnerDAO")).put_(x, this);
-
+        boolean setup = false;
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
@@ -222,13 +245,17 @@ foam.CLASS({
           br.setUid(uid);
           br.setRun(run);
           br.setHostname(System.getProperty("hostname", "localhost"));
-          br.setName(benchmark.getName());
+          // br.setName(benchmark.getName());
+          br.setName(this.getId());
           br.setThreads(threads);
 
-          // set up the benchmark
-          logger.info("setup");
-          benchmark.setup(x, br);
-
+          if ( ! getOneTimeSetup() ||
+               getOneTimeSetup() && ! setup ) {
+            // set up the benchmark
+            logger.info("setup");
+            benchmark.setup(x, br);
+            setup = true;
+          }
           if ( getClearPMs() ) {
             ((DAO) x.get("pmInfoDAO")).removeAll();
           }
@@ -245,8 +272,9 @@ foam.CLASS({
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
-                      XLocator.set(x);
-                      benchmark.execute(x);
+                      X y = x.put(THREAD, tno).put(INVOCATION, j);
+                      XLocator.set(y);
+                      benchmark.execute(y);
                       passed++;
                     } catch (Throwable t) {
                       fail.incrementAndGet();
