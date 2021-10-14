@@ -174,7 +174,7 @@ foam.CLASS({
         return this.selectedColumnsWidth && this.selectedColumnsWidth[this.propName] ?
         this.selectedColumnsWidth[this.propName] :
         this.columnHandler.returnPropertyForColumn(this.props, this.data.of, this.col, 'tableWidth');
-      },
+      }
     },
     'col',
     'propName',

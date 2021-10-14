@@ -517,7 +517,7 @@ foam.CLASS({
                     style({
                       flex: `0 0 ${view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px`,
                       'min-width': view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH,
-                      'text-align': 'unset!important;',
+                      'text-align': 'unset!important;'
                     }).
                     callIf(view.editColumnsEnabled, function() {
                       this.addClass(view.myClass('th-editColumns'))

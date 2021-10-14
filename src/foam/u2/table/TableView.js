@@ -75,7 +75,6 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       min-width: 40px; /* So when the table's width decreases, columns aren't hidden completely */
-      height: 100%;
     }
 
     ^th:not(:last-child) > img {
