@@ -354,8 +354,11 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
+
+  { name: 'foam/nanos/bench/BenchmarkResult' },
 
   { name: "foam/dao/EasyDAO" },
   { name: "foam/dao/NoSelectAllDAO" },
@@ -570,6 +573,7 @@ FOAM_FILES([
   { name: "foam/u2/view/MultiBoxInputView", flags: ['web'] },
   { name: "foam/u2/FragmentedTextField", flags: ['web'] },
   { name: "foam/u2/FragmentedTextFieldFragment", flags: ['web'] },
+  { name: "foam/u2/TextFormatter", flags: ['web'] },
   { name: "foam/u2/FormattedTextField", flags: ['web'] },
   { name: "foam/u2/view/UserPropertyAvailabilityView", flags: ['web'] },
   { name: "foam/u2/view/FObjectView", flags: ['web'] },
@@ -621,6 +625,7 @@ FOAM_FILES([
   { name: "foam/u2/view/FnFormatter", flags: ['js'] },
   { name: "foam/u2/view/TableCellFormatter", flags: ['js'] },
   { name: "foam/u2/view/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/view/LazyScrollManager", flags: ['web'] },
   { name: "foam/u2/view/TableView", flags: ['web'] },
   { name: "foam/u2/view/EditColumnsView", flags: ['web'] },
   { name: "foam/u2/view/ColumnConfigView", flags: ['web'] },
@@ -890,6 +895,8 @@ FOAM_FILES([
   { name: "foam/dashboard/view/Bar" },
   { name: "foam/dashboard/view/Line" },
   { name: "foam/dashboard/view/DAOTable" },
+  { name: "foam/dashboard/view/GroupByDAOTable" },
+  { name: "foam/dashboard/view/GroupByCitationView" },
   { name: "foam/dashboard/view/Card" },
   { name: "foam/dashboard/view/Dashboard"},
   { name: "foam/build/Library" },
@@ -1063,6 +1070,30 @@ FOAM_FILES([
   { name: 'foam/dashboard/view/DashboardCitationView' },
   { name: 'foam/dashboard/view/DateRangeChoiceView' },
   { name: 'foam/nanos/fs/AgreementView' },
+  { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
-  { name: "foam/util/date/TimeUnit" }
+  // Table
+  { name: "foam/u2/table/TableComponentView", flags: ['web'] },
+  { name: "foam/u2/table/TableView", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
+
+  { name: "foam/util/date/TimeUnit" },
+
+  { name: "foam/nanos/dig/exception/DigErrorMessage" },
+  { name: "foam/nanos/dig/exception/DAONotFoundException" },
+  { name: "foam/nanos/dig/exception/DAORequiredException" },
+  { name: "foam/nanos/dig/exception/ParsingErrorException" },
+  { name: "foam/nanos/dig/exception/DAOPutException" },
+  { name: "foam/nanos/dig/exception/EmptyDataException" },
+  { name: "foam/nanos/dig/exception/UnsupportException" },
+  { name: "foam/nanos/dig/exception/UnknownIdException" },
+  { name: "foam/nanos/dig/exception/DigSuccessMessage" },
+  { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
+  { name: "foam/nanos/dig/exception/EmptyParameterException" },
+  { name: "foam/nanos/dig/exception/ExternalAPIException" },
+  { name: "foam/nanos/dig/exception/GeneralException" }
+
 ])

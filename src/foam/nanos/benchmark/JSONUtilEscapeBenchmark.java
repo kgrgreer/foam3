@@ -4,23 +4,15 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.bench.benchmarks;
+package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.nanos.bench.Benchmark;
 
 public class JSONUtilEscapeBenchmark
-  implements Benchmark
+  extends Benchmark
 {
   protected StringBuilder b_ = new StringBuilder();
-
-  @Override
-  public void setup(X x) {
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
-  }
 
   @Override
   public void execute(X x) {

@@ -15,6 +15,14 @@
     'appConfig'
   ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       name: 'type',
@@ -41,14 +49,45 @@
       name: 'url',
       section: 'infoSection',
       visibility: 'RO',
-      expression: function(appConfig, requesteeSession) {
-        return appConfig.url + '?sessionId=' + requesteeSession + '#request-information';
+      expression: function(appConfig, sessionToken) {
+        return appConfig.url + '?sessionId=' + sessionToken + '#request-information';
       }
     },
     {
       class: 'String',
-      name: 'requesteeSession',
+      name: 'sessionToken',
       visibility: 'HIDDEN'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'createCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( old == null ) {
+          return;
+        }
+        
+        super.createCommentNotification(x,old);
+      `
+    },
+    {
+      name: 'createExternalCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( old == null ) {
+          return;
+        }
+        
+        super.createExternalCommentNotification(x,old);
+      `
     }
   ]
 

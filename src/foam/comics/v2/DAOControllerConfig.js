@@ -106,7 +106,7 @@ foam.CLASS({
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
-          class: 'foam.u2.view.ScrollTableView',
+          class: 'foam.u2.table.TableView',
           editColumnsEnabled: true,
           columns: tableColumns,
           css: {
@@ -341,6 +341,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.View',
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
       value: null
@@ -368,6 +369,14 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'selectedObjs'
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'searchPredicate'
+    },
+    {
+      class: 'Int',
+      name: 'preSelectedCannedQuery'
     }
   ]
 });

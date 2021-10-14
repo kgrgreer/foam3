@@ -1,0 +1,11 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"FUIDGenerator",
+  description: "Generate FUIDs",
+  code:"""
+    import foam.util.UIDGenerator;
+    g = new UIDGenerator();
+    g.setSalt("benchmarkDAO");
+    print("id: "+g.getNextLong());
+  """
+})

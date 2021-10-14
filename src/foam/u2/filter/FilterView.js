@@ -28,6 +28,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'searchColumns'
   ],
 
@@ -102,6 +103,7 @@ foam.CLASS({
       fill: initial;
       transform: rotate(0deg);
       transition: all 0.5s ease;
+      font-size: 6px;
     }
 
     ^filter-button-active{
@@ -186,46 +188,7 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'filters',
-      factory: null,
-      expression: function(dao, searchColumns) {
-        var of = dao && dao.of;
-
-        if ( ! of ) return [];
-
-        if ( searchColumns && searchColumns.length > 0 ) return searchColumns;
-
-        var columns = of.getAxiomByName('searchColumns');
-        columns = columns && columns.columns;
-        if ( columns ) return columns;
-
-        columns = of.getAxiomByName('tableColumns');
-        columns = columns && columns.columns;
-        if ( columns ) {
-          return columns.filter(function(c) {
-          //  to account for nested columns like approver.legalName
-          if ( c.split('.').length > 1 ) return false;
-
-          var a = of.getAxiomByName(c);
-
-          if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-
-          return a
-            && ! a.storageTransient
-            && ! a.networkTransient
-            && a.searchView
-            && ! a.hidden
-          });
-        }
-
-        return of.getAxiomsByClass(foam.core.Property)
-          .filter((p) => {
-            return ! p.storageTransient
-            && ! p.networkTransient
-            && p.searchView
-            && ! p.hidden
-          })
-          .map(foam.core.Property.NAME.f);
-      }
+      factory: null
     },
     {
       name: 'generalSearchField',
@@ -275,18 +238,32 @@ foam.CLASS({
       expression: function(filterController$isAdvanced) {
         return filterController$isAdvanced ? this.LINK_SIMPLE : this.LINK_ADVANCED;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'mementoUpdated'
+    },
+    {
+      class: 'Boolean',
+      name: 'mementoToggle'
     }
   ],
 
   methods: [
-    function render() {
+    function init() {
+      this.onDetach(this.searchColumns$.sub(this.updateFilters));
+      this.onDetach(this.dao$.sub(this.updateFilters));
+    },
+    async function render() {
       var self = this;
+
+      await this.updateFilters();
 
       // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
       var counter = 0;
       counter = this.updateCurrentMementoAndReturnCounter(counter);
 
-      counter = this.filters.length;
+      counter = this.filters ? this.filters.length : 0;
       //memento which will be exported to table view
       if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
 
@@ -297,7 +274,7 @@ foam.CLASS({
 
           counter = self.updateCurrentMementoAndReturnCounter.call(self, counter);
 
-          self.generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
+          var generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
             onKey: true
@@ -305,7 +282,7 @@ foam.CLASS({
 
           if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
 
-          self.show(filters.length);
+          self.show(filters && filters.length);
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
@@ -313,12 +290,12 @@ foam.CLASS({
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()
-              .add(self.generalSearchField)
+              .add(generalSearchField)
               .addClass(self.myClass('general-field'))
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -329,6 +306,7 @@ foam.CLASS({
             .end()
           .end();
           self.filtersContainer = this.E().add(self.filterController.slot(function (criterias) {
+            if ( ! filters ) return self.E();
             return self.E().start().addClass(self.myClass('container-drawer'))
               .enableClass(self.myClass('container-drawer-open'), self.isOpen$)
                 .start().addClass(self.myClass('container-filters'))
@@ -340,7 +318,8 @@ foam.CLASS({
                         criteria: 0,
                         searchView: axiom.searchView,
                         property: axiom,
-                        dao: self.dao
+                        dao: self.dao,
+                        preSetPredicate: self.assignPredicate(axiom)
                       },  self, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
 
                       counter--;
@@ -385,6 +364,8 @@ foam.CLASS({
                 .end()
             .end();
           }));
+          //set here to avoid prematured finalPredicate override
+          self.generalSearchField = generalSearchField;
 
           return e;
         }, this.filters$));
@@ -414,6 +395,44 @@ foam.CLASS({
       });
 
       return range? range : 'Value too large';
+    },
+    async function filterPropertiesByReadPermission(properties, of) {
+      if ( ! properties || ! of ) return [];
+      var split = of.split('.');
+      var modelName = split[split.length - 1].toLowerCase();
+
+      var permissionedProperties = [];
+      var unpermissionedProperties = [];
+
+      var classProperties = foam.lookup(of).getAxiomsByClass(foam.core.Property);
+      for ( prop of classProperties ) {
+        if ( properties.includes(prop.name) && ! prop.hidden ) {
+          prop.readPermissionRequired ? permissionedProperties.push(prop.name) : unpermissionedProperties.push(prop.name);
+        }
+      }
+
+      var perms =  await Promise.all(permissionedProperties.map( async p => 
+        await this.auth.check(ctrl.__subContext__, modelName + '.rw.' + p) ||
+        await this.auth.check(ctrl.__subContext__, modelName + '.ro.' + p)
+      ));
+      var grantedProperties =  permissionedProperties.filter((_v, index) => perms[index]);
+      var unorderedProperties = grantedProperties.concat(unpermissionedProperties);
+      return properties.filter(v => unorderedProperties.includes(v));
+    },
+    function assignPredicate(property) {
+      var predicate = this.filterController.finalPredicate;
+      if ( predicate ) {
+        if ( foam.mlang.predicate.And.isInstance(predicate) ) {
+          var subPredicates = predicate.args;
+          for ( subPredicate of subPredicates ) {
+            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
+          }
+        }
+        else {
+          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
+        }
+      }
+      return null;
     }
   ],
 
@@ -444,6 +463,7 @@ foam.CLASS({
     },
 
     function updateCurrentMementoAndReturnCounter() {
+      if ( ! this.filters ) return 0;
       if ( this.memento ) {
         var m = this.memento;
         //i + 1 as there is a textSearch that we also need for memento
@@ -473,7 +493,59 @@ foam.CLASS({
             continue;
         }
       }
+      this.mementoUpdated = true;
+      this.mementoToggle = ! this.mementoToggle;
       return counter;
+    },
+    async function updateFilters() {
+      var of = this.dao && this.dao.of;
+
+      if ( ! of ) this.filters = [];
+      
+      var searchColumns_ = await this.filterPropertiesByReadPermission(this.searchColumns, of.id);
+      if ( searchColumns_ && searchColumns_.length > 0 ) {
+        this.filters =  searchColumns_;
+        return;
+      }
+
+      var columns = of.getAxiomByName('searchColumns');
+      columns = columns && columns.columns;
+      columns = await this.filterPropertiesByReadPermission(columns, of.id);
+      if ( columns ) {
+        this.filters = columns;
+        return;
+      }
+
+      columns = of.getAxiomByName('tableColumns');
+      columns = columns && columns.columns;
+      columns = await this.filterPropertiesByReadPermission(columns, of.id);
+      if ( columns ) {
+        this.columns = columns.filter(function(c) {
+        //  to account for nested columns like approver.legalName
+        if ( c.split('.').length > 1 ) return false;
+
+        var a = of.getAxiomByName(c);
+
+        if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
+
+        return a
+          && ! a.storageTransient
+          && ! a.networkTransient
+          && a.searchView
+          && ! a.hidden
+        });
+        return;
+      }
+
+      columns = of.getAxiomsByClass(foam.core.Property)
+        .filter((p) => {
+          return ! p.storageTransient
+          && ! p.networkTransient
+          && p.searchView
+          && ! p.hidden
+        })
+        .map(foam.core.Property.NAME.f);
+      this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
     }
   ],
 

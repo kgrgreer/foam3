@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.bench.benchmarks;
+package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.dao.FileJournal;
@@ -13,25 +13,22 @@ import foam.dao.MDAO;
 import foam.dao.NullDAO;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.bench.BenchmarkResult;
 
 public class FileJournalBenchmark
-  implements Benchmark
+ extends Benchmark
 {
   protected FileJournal journal_;
   protected DAO         dao_;
 
   @Override
-  public void setup(X x) {
+  public void setup(X x, BenchmarkResult br) {
     dao_ = new NullDAO();
     journal_ = new FileJournal.Builder(x)
       .setDao(new MDAO(User.getOwnClassInfo()))
       .setFilename("journalbenchmark")
       .setCreateFile(true)
       .build();
-  }
-
-  @Override
-  public void teardown(X x, java.util.Map stats) {
   }
 
   @Override

@@ -54,15 +54,14 @@ foam.CLASS({
     'ctrl',
     'currentMenu',
     'notify',
-    'objectSummaryView?',
     'stack',
     'subject',
-    'summaryView?'
+    'translationService'
   ],
 
   searchColumns: [
     'id',
-    'classificationEnum',
+    'classification',
     'createdFor',
     'status'
   ],
@@ -70,7 +69,7 @@ foam.CLASS({
   tableColumns: [
     'id',
     'referenceSummary',
-    'classificationEnum',
+    'classification',
     'createdForSummary',
     'assignedTo.legalName',
     'status',
@@ -287,55 +286,30 @@ foam.CLASS({
       updateVisibility: 'HIDDEN'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.approval.ApprovalRequestClassification',
       name: 'classification',
+      label: 'Approval Type',
       section: 'approvalRequestInformation',
       order: 80,
       gridColumns: 6,
       columnPermissionRequired: true,
-      includeInDigest: false,
-      tableWidth: 450,
-      documentation: `Should be unique to a certain type of requests and created within a single rule.
-      For example "IdentityMind Business approval".
-      When retrieving approval requests from a dao, do not use daoKey, use classification instead:
-      mlang.AND(
-        EQ(ApprovalRequest.OBJ_ID, objectId),
-        EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
-      )`,
-      storageTransient: true,
-      hidden: true,
-      javaSetter: `
-        // for legacy property(classification) migration
-        classification_ = val;
-        if ( ! SafetyUtil.isEmpty(classification_) ) {
-          classificationIsSet_ = true;
-          if ( ! getClassificationEnumIsSet_() ) {
-            var e = ApprovalRequestClassificationEnum.forLabel(classification_);
-            if ( e != null ) {
-              setClassificationEnum(e);
-            }
-          }
-        }
-      `,
-      javaGetter: `
-        // returning enum val to legacy propery(classification)
-        if ( getClassificationEnumIsSet_() )
-          return getClassificationEnum().getLabel();
-
-        return classification_;
-      `
+      includeInDigest: true,
+      tableWidth: 300,
+      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
     },
+    // TODO: remove after migration script is run
     {
       class: 'foam.core.Enum',
       of: 'foam.nanos.approval.ApprovalRequestClassificationEnum',
       name: 'classificationEnum',
-      label: 'Approval Type',
       section: 'approvalRequestInformation',
       order: 90,
       gridColumns: 6,
       columnPermissionRequired: true,
-      includeInDigest: true,
-      tableWidth: 300
+      transient: true,
+      tableWidth: 300,
+      hidden: true
     },
     {
       class: 'DateTime',
@@ -723,12 +697,13 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.classificationEnum.label;
+        return this.classification$find.then(classification => classification.toSummary());
       },
       javaCode: `
-        return getClassificationEnum().getLabel();
+        return findClassification(getX()).toSummary();
       `
     },
+    // TODO: remove this when we remove classificationEnum
     {
       name: 'getClassificationEnumIsSet_',
       type: 'Boolean',
@@ -782,9 +757,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.approveWithMemoL.bind(this, X)
         }));
@@ -798,9 +771,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           isMemoRequired: true,
           onExecute: this.addMemoL.bind(this, X)
@@ -816,10 +787,7 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
-        var objToAdd = X.objectSummaryView ?
-          X.objectSummaryView : X.summaryView;
-
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        X.ctrl.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: 'foam.u2.MemoModal',
           onExecute: this.rejectWithMemo.bind(this, X),
           isMemoRequired: true
@@ -993,8 +961,7 @@ foam.CLASS({
         "approval.assign.*"
       ],
       code: function(X) {
-        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.tag({
+        X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,

@@ -12,6 +12,8 @@
   documentation: `The base model for storing, using and managing currency information.`,
 
   javaImports: [
+    'foam.core.XLocator',
+    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil'
   ],
 
@@ -157,9 +159,12 @@
           }
         }
 
-        formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, this.delimiter) || '0';
+        var delimiter = this.translationService.getTranslation(foam.locale, 'Currency.delimiter', this.delimiter);
+        var decimal = this.translationService.getTranslation(foam.locale, 'Currency.decimalCharacter', this.decimalCharacter)
+
+        formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) || '0';
         if ( this.precision > 0 ) {
-          formatted += this.decimalCharacter;
+          formatted += decimal;
           formatted += amount.substring(amount.length - this.precision);
         }
 
@@ -206,12 +211,19 @@
           }
         }
 
+        X x = XLocator.get();
+        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
+        String locale = (String) XLocator.get().get("locale.language");
+
+        String delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
+        String decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+
         formatted += beforeDecimal.length() > 0 ?
-          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
+          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", delimiter) :
           "0";
 
         if ( this.getPrecision() > 0 ) {
-          formatted += this.getDecimalCharacter();
+          formatted += decimalCharacter;
           formatted += amountStr.substring(amountStr.length() - this.getPrecision());
         }
 

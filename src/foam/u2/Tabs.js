@@ -36,6 +36,8 @@ foam.CLASS({
     ^tabRow {
       border-bottom: 1px solid #e7eaec;
       background-color: white;
+      overflow-x: auto;
+      white-space: nowrap;
     }
     ^tab {
       border-top: 3px solid transparent;
@@ -67,6 +69,8 @@ foam.CLASS({
       display: flex;
       gap: 12px 24px;
       padding: 12px;
+      overflow-x: auto;
+      white-space: nowrap;
     }
     ^tab {
       align-items: center;

@@ -76,6 +76,11 @@ foam.CLASS({
       overflow: hidden;
     }
 
+    ^actions svg {
+      height: 1em;
+      width: 1em;
+    }
+
     /*
       Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
@@ -175,24 +180,27 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'cannedPredicate',
-      expression: function(config$cannedQueries) {
+      expression: function(config$cannedQueries, config$preSelectedCannedQuery) {
         return config$cannedQueries && config$cannedQueries.length
-          ? config$cannedQueries[0].predicate
-          : foam.mlang.predicate.True.create();
+          ? config$preSelectedCannedQuery != null 
+            ? config$cannedQueries[config$preSelectedCannedQuery].predicate
+              : config$cannedQueries[1].predicate
+                : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'searchPredicate',
-      expression: function() {
-        return foam.mlang.predicate.True.create();
+      expression: function(config$searchPredicate) {
+        return config$searchPredicate ? config$searchPredicate : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'predicatedDAO',
       expression: function(config, cannedPredicate, searchPredicate) {
-        return config.dao$proxy.where(this.AND(cannedPredicate, searchPredicate));
+        var predicate = this.AND(cannedPredicate, searchPredicate);
+        return config.dao$proxy.where(predicate);
       }
     },
     {
@@ -295,6 +303,7 @@ foam.CLASS({
         }, parent: this.__subContext__ }));
     },
     function render() {
+      this.config.dao = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
@@ -311,7 +320,7 @@ foam.CLASS({
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
-              data$: self.searchPredicate$,
+              data$: self.searchPredicate$
             }, this, self.__subSubContext__.createSubContext({
               memento: self.currentMemento_,
               controllerMode: foam.u2.ControllerMode.EDIT
@@ -387,13 +396,13 @@ foam.CLASS({
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
                         .start(self.EXPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.IMPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.REFRESH_TABLE, buttonStyle)
-                          .addClass(self.myClass('refresh'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
                           if ( self.config.DAOActions.length > 3 ) {
@@ -401,7 +410,7 @@ foam.CLASS({
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
                           for ( action of self.config.DAOActions ) {
-                            actions.tag(action, buttonStyle);
+                            actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
                           this.add(actions);
                           if ( extraActions && extraActions.length ) {
@@ -417,10 +426,14 @@ foam.CLASS({
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
                 })
-              .start()
-                .add(summaryView)
-                .addClass(self.myClass('browse-view-container'))
-              .end()
+              .add(filterView.slot( function(mementoUpdated, mementoToggle) {
+                // TEMPORARY
+                // wait for filterView to set momento before instantianting summaryView
+                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
+                  return this.E()
+                  .addClass(self.myClass('browse-view-container'))
+                  .add(summaryView);
+              }))
             .end();
         }));
     }

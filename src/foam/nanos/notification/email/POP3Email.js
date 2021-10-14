@@ -17,20 +17,7 @@ foam.INTERFACE({
       name: 'sendEmail',
       type: 'String',
       async: true,
-      args: [
-        {
-          type:'String',
-          name:'requestor'
-        },
-        {
-          type:'String',
-          name:'subject'
-        },
-        {
-          type:'String',
-          name:'body'
-        }
-      ]
+      args: 'String requestor, String subject, String body'
     }
   ]
 });

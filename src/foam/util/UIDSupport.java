@@ -70,24 +70,28 @@ public class UIDSupport {
   }
 
   /**
-   * Calculate the hash value of a generated long integer unique id.
-   *
-   * @param uid Generated unique id
-   * @return Hash of the unique id
-   */
-  public static int hash(long uid) {
-    return hash(Long.toHexString(uid));
-  }
-
-  /**
    * Calculate the hash value of a generated string unique id.
    *
    * @param uid Generated unique id
    * @return Hash of the unique id
    */
   public static int hash(String uid) {
-    var hex = undoPermutate(uid);
-    return mod(Long.parseLong(hex, 16));
+    return hash(Long.parseLong(uid));
+  }
+
+  /**
+   * Calculate the hash value of a generated long integer unique id.
+   *
+   * @param uid Generated unique id
+   * @return Hash of the unique id
+   */
+  public static int hash(long uid) {
+    return hash_(Long.toHexString(uid));
+  }
+
+  private static int hash_(String hex) {
+    var id = undoPermutate(hex);
+    return mod(Long.parseLong(id, 16));
   }
 
   /**

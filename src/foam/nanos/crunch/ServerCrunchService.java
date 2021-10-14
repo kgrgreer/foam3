@@ -18,7 +18,6 @@ import foam.mlang.sink.GroupBy;
 import foam.nanos.NanoService;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestClassificationEnum;
 import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
@@ -62,9 +61,11 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     return this.getCapabilityPath(x, rootId, filterGrantedUCJ, true);
   }
 
-  public List getCapabilityPath(
-    X x, String rootId, boolean filterGrantedUCJ, boolean groupPrereqAwares
-  ) {
+  public List getCapabilityPath(X x, String rootId, boolean filterGrantedUCJ, boolean groupPrereqAwares) {
+    return retrieveCapabilityPath(x, rootId, filterGrantedUCJ, groupPrereqAwares, null);
+  }
+
+  public List retrieveCapabilityPath(X x, String rootId, boolean filterGrantedUCJ, boolean groupPrereqAwares, List collectLeafNodesList) {
     Logger logger = (Logger) x.get("logger");
     PM pm = PM.create(x, this.getClass().getSimpleName(), "getCapabilityPath");
 
@@ -154,12 +155,35 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       }
       grantPath.add(cap);
 
+      // Collect leaf nodes in the list
+      if ( collectLeafNodesList != null ) {
+        if ( prereqs == null || prereqs.length == 0 ) {
+          collectLeafNodesList.add(cap);
+        } else if ( filterGrantedUCJ ) {
+          boolean foundOutstandingCapability = false;
+          for (var capabilityId : prereqs ) {
+            UserCapabilityJunction ucj = getJunction(x, capabilityId);
+            if ( ucj == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED) {
+              foundOutstandingCapability = true;
+              break;
+            }
+          }
+          // When there are no outstanding prerequisites, consider this a leaf node
+          if (!foundOutstandingCapability) {
+            collectLeafNodesList.add(cap);
+          }
+        }
+      }
+
       // Enqueue prerequisites for adding to grant path
       for ( int i = prereqs.length - 1 ; i >= 0 ; i-- ) {
         nextSources.add(prereqs[i]);
       }
     }
 
+    if ( collectLeafNodesList != null ) {
+      Collections.reverse(collectLeafNodesList);
+    }
     Collections.reverse(grantPath);
     pm.log(x);
     return grantPath;
@@ -420,6 +444,32 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       return ucj;
     }
   }
+
+  public UserCapabilityJunction updateJunctionDirectly(X x, String capabilityId, FObject data) {
+    Subject subject = (Subject) x.get("subject");
+    UserCapabilityJunction ucj = this.getJunction(x, capabilityId);
+
+    if ( ucj.getStatus() == AVAILABLE ) {
+      ucj.setStatus(ACTION_REQUIRED);
+    }
+
+    if ( data != null ) {
+      // Use existing data if it exists
+      FObject existingData = ucj.getData();
+      if ( existingData != null ) {
+        existingData.copyFrom(data);
+        data = existingData;
+      }
+
+      ucj.setData(data);
+    }
+
+    ucj.setLastUpdatedRealUser(subject.getRealUser().getId());
+
+    DAO bareUserCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+    return (UserCapabilityJunction) bareUserCapabilityJunctionDAO.inX(x).put(ucj);
+  }
+
   public UserCapabilityJunction updateJunction(
     X x, String capabilityId, FObject data,
     CapabilityJunctionStatus status
@@ -554,20 +604,26 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public boolean isRenewable(X x, String capabilityId) {
+    return isRenewable_(x, capabilityId, true);
+  }
+
+  public boolean isRenewable_(X x, String capabilityId, boolean firstCall) {
     DAO capabilityDAO = (DAO) x.get("capabilityDAO");
     CrunchService crunchService = (CrunchService) x.get("crunchService");
-
     Capability capability = (Capability) capabilityDAO.find(capabilityId);
     UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
+
     if ( ! capability.getEnabled() ) return false;
+    // if topLevel capability.isInternalCapability then returns capRenewability
+    // if a preReq capability.isInternalCapability then that capability renewablity is ignored
+    if ( ! firstCall && capability.getIsInternalCapability() ) return false;
+    if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable() ) return true;
 
     var prereqs = getPrereqs(x, capabilityId, ucj);
-    boolean topLevelRenewable = ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable();
-
-    if ( prereqs == null || prereqs.size() == 0 || topLevelRenewable ) return topLevelRenewable;
-
-    for ( var capId : prereqs ) {
-      if ( isRenewable(x, capId.toString())  ) return true;
+    if ( prereqs != null ) {
+      for ( var capId : prereqs ) {
+        if ( isRenewable_(x, capId.toString(), false)  ) return true;
+      }
     }
     return false;
   }
@@ -618,7 +674,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       .setCreatedFor(subject.getUser().getId())
       // TODO: How can we make this configurable?
       .setGroup(subject.getUser().getSpid() + "-fraud-ops")
-      .setClassificationEnum(ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ)
+      .setClassification("update-on-active-ucj")
       .build();
 
     ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);

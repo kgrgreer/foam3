@@ -30,7 +30,15 @@ foam.CLASS({
       name: 'renewable',
       class: 'Boolean',
       section: 'reviewDataSection',
-      hidden: true
+      hidden: true,
+      javaSetter: `
+        // Reset reviwed when a ucj goes into renewable period
+        if ( ! getRenewable() && val ) {
+          setReviewed(false);
+        }
+        renewable_ = val;
+        renewableIsSet_ = true;
+      `
     },
     {
       name: 'reviewed',

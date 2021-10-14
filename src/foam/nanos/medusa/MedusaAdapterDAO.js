@@ -174,6 +174,17 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         if ( DOP.REMOVE == dop ) return getDelegate().remove_(x, obj);
       }
 
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( replaying.getReplaying() ) {
+        // getLogger().debug("update", dop, obj, new Exception("stacktrace"));
+        // NOTE: On restart of mediators, preexisting admin logins will
+        // be reset and attempt to load the login view triggering
+        // a session update from SessionServerBox. The session dao
+        // is clustered and the put arrives here to be clustered.
+        // During replay the operation can not be supported.
+        throw new MedusaException("Replaying");
+      }
+
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
 
@@ -203,12 +214,12 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       javaType: 'foam.core.FObject',
       javaCode: `
       ClusterCommand cmd = new ClusterCommand(x, getNSpec().getName(), dop, obj);
-      getLogger().debug("update", "secondary", dop, obj.getProperty("id"), "send");
+      // getLogger().debug("update", "secondary", dop, obj.getProperty("id"), "send");
       PM pm = PM.create(x, this.getClass().getSimpleName(), "secondary", "cmd");
       cmd = (ClusterCommand) getClientDAO().cmd_(x, cmd);
       pm.log(x);
       cmd.logHops(x);
-      getLogger().debug("update", "secondary", dop, obj.getProperty("id"), "receive", cmd.getMedusaEntryId());
+      // getLogger().debug("update", "secondary", dop, obj.getProperty("id"), "receive", cmd.getMedusaEntryId());
       if ( cmd.getMedusaEntryId() > 0 ) {
         pm = PM.create(x, this.getClass().getSimpleName(), "secondary", "registry", "wait");
         MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
@@ -290,7 +301,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
           if ( ! SafetyUtil.isEmpty(data) ||
                ! SafetyUtil.isEmpty(transientData) ) {
             MedusaEntry entry = (MedusaEntry) submit(x, data, transientData, dop);
-            getLogger().debug("updatePrimary", "primary", dop, nu.getProperty("id"), "entry", entry.toSummary());
+            // getLogger().debug("updatePrimary", "primary", dop, nu.getProperty("id"), "entry", entry.toSummary());
             if ( cmd != null ) {
               cmd.setMedusaEntryId((Long) entry.getId());
             }
@@ -469,7 +480,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
           entry.setTransientData(transientData);
         }
         pmLink.log(x);
-        getLogger().debug("submit", entry.getId());
+        // getLogger().debug("submit", entry.getId());
         MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
         registry.register(x, (Long) entry.getId());
         PM pmPut = new PM(this.getClass().getSimpleName(), "submit", "put");

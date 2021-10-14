@@ -34,10 +34,13 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'java.util.Date'
   ],
 
@@ -45,10 +48,8 @@ foam.CLASS({
     'ctrl',
     'currentMenu',
     'notify',
-    'objectSummaryView?',
     'stack',
     'subject',
-    'summaryView?',
     'ticketDAO',
     'ticketStatusDAO',
     'userDAO'
@@ -74,6 +75,10 @@ foam.CLASS({
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this ticket'
+    },
+    {
+      name: 'COMMENT_NOTIFICATION',
+      message: 'A ticket assigned to you has been updated'
     }
   ],
 
@@ -389,6 +394,66 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'createExternalCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        Subject subject = (Subject) x.get("subject");
+        if (subject.getUser().getId() == getCreatedFor()) {
+          if ( getAssignedTo() != 0 ) {
+            Notification notification = new Notification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION)
+              .setUserId(getAssignedTo())
+              .setSpid(getSpid())
+              .build();
+            findAssignedTo(x).doNotify(x, notification);
+          } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
+            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+            Notification notification = new Notification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION)
+              .setGroupId(getAssignedToGroup())
+              .setSpid(getSpid())
+              .build();
+            notificationDAO.put(notification);
+          }
+        } else if ( getCreatedFor() != 0 ){
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setUserId(getCreatedFor())
+            .setSpid(getSpid())
+            .build();
+          findCreatedFor(x).doNotify(x, notification);
+        }
+      `
+    },
+    {
+      name: 'createCommentNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'old', type: 'Ticket' }
+      ],
+      javaCode: `
+        if ( getAssignedTo() != 0 ) {
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setUserId(getAssignedTo())
+            .setSpid(getSpid())
+            .build();
+            findAssignedTo(x).doNotify(x, notification);
+        } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
+          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+          Notification notification = new Notification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION)
+            .setGroupId(getAssignedToGroup())
+            .setSpid(getSpid())
+            .build();
+          notificationDAO.put(notification);
+        }
+      `
+    },
+    {
       name: 'authorizeOnCreate',
       args: [
         { name: 'x', type: 'Context' }
@@ -472,8 +537,7 @@ foam.CLASS({
         "ticket.assign.*"
       ],
       code: function(X) {        
-        var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.tag({
+        X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,

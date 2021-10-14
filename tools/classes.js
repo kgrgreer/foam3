@@ -263,7 +263,12 @@ var classes = [
   'foam.nanos.boot.NSpecAware',
   'foam.nanos.boot.DAONSpecMenu',
   'foam.nanos.app.Mode',
+  'foam.nanos.bench.BenchmarkResult',
   'foam.nanos.bench.Benchmark',
+  'foam.nanos.bench.BenchmarkResultReportingDAO',
+  'foam.nanos.bench.BenchmarkResultSystemDAO',
+  'foam.nanos.bench.BenchmarkRunner',
+  'foam.nanos.bench.BenchmarkRunnerScript',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',
@@ -483,7 +488,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
   'foam.nanos.benchmark.UUIDBenchmark',
-
+  'foam.nanos.benchmark.AuthorizerBenchmark',
   'foam.comics.v2.EnabledActionsAuth',
   'foam.comics.v2.BasicEnabledActionsAuth',
   'foam.comics.v2.CRUDEnabledActionsAuth',
@@ -499,6 +504,7 @@ var classes = [
   'foam.nanos.notification.email.EmailMessage',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.email.EmailTemplate',
+  'foam.nanos.notification.email.EmailTemplateSource',
   'foam.nanos.notification.email.EmailPropertyService',
   'foam.nanos.notification.email.Status',
   'foam.nanos.notification.email.EmailTemplateEngine',
@@ -514,6 +520,7 @@ var classes = [
   'foam.nanos.notification.email.EmailConfig',
   'foam.nanos.notification.email.EmailConfigEmailPropertyService',
   'foam.nanos.notification.email.EmailMessageValidationPropertyService',
+  'foam.nanos.notification.email.ApplyBaseArgumentsEmailPropertyService',
   // EmailMessageDAO(service) decorator
   'foam.nanos.notification.email.EmailServiceDAO',
 
@@ -664,6 +671,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
+  'foam.nanos.dig.ExternalDataAware',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
@@ -704,6 +712,10 @@ var classes = [
   'foam.nanos.dig.exception.UnsupportException',
   'foam.nanos.dig.exception.UnknownIdException',
   'foam.nanos.dig.exception.DigSuccessMessage',
+  'foam.nanos.dig.exception.TemporaryExternalAPIException',
+  'foam.nanos.dig.exception.EmptyParameterException',
+  'foam.nanos.dig.exception.ExternalAPIException',
+  'foam.nanos.dig.exception.GeneralException',
 
   'foam.nanos.dao.Operation',
 
@@ -769,11 +781,6 @@ var classes = [
   'foam.support.model.TicketMessage',
   'foam.support.model.SupportEmail',
   'foam.support.model.Ticket',
-
-  'foam.nanos.dig.exception.ExternalAPIException',
-  'foam.nanos.dig.exception.EmptyParameterException',
-  'foam.nanos.dig.exception.GeneralException',
-  'foam.nanos.dig.exception.TemporaryExternalAPIException',
 
   'foam.nanos.app.SupportConfig',
 
@@ -887,6 +894,7 @@ var classes = [
   'foam.nanos.crunch.ruler.SetUCJStatusOnPut',
   'foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted',
   'foam.nanos.crunch.ruler.SaveUCJDataOnGranted',
+  'foam.nanos.crunch.ruler.UCJDataExpiryRule',
 
   //crunch extras
   'foam.nanos.crunch.extra.ReviewCapability',
@@ -924,6 +932,7 @@ var classes = [
 
   // approval
   'foam.nanos.approval.ApprovalRequest',
+  'foam.nanos.approval.ApprovalRequestClassification',
   'foam.nanos.approval.ApprovalRequestNotification',
   'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.approval.Approvable',
