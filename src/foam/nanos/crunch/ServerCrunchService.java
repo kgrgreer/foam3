@@ -760,7 +760,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
           EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
           EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
         );
-      }
+    }
     
     return result;
   }
