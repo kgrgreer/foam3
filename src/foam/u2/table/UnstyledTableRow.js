@@ -13,7 +13,8 @@ foam.CLASS({
     'foam.core.SimpleSlot',
     'foam.u2.CheckBox',
     'foam.u2.tag.Image',
-    'foam.u2.view.OverlayActionListView'
+    'foam.u2.view.OverlayActionListView',
+    'foam.u2.table.UnstyledTableRowComponent'
   ],
 
   imports: [
@@ -126,20 +127,7 @@ foam.CLASS({
       });
 
       for ( var j = 0 ; j < this.data.columns_.length ; j++ ) {
-        [prop, objReturned] = this.getCellData(obj, this.data.columns_[j], nestedPropertiesObjsMap);
-        var tableWidth = this.columnHandler.returnPropertyForColumn(this.props, this.data.of, this.data.columns_[j], 'tableWidth');
-
-        var elmt = self.E('').addClass(this.data.myClass('td'))
-        .style({ flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0' })
-          .call(function() {
-            prop.tableCellFormatter.format(
-              this,
-              prop.f ? prop.f(obj) : null,
-              objReturned,
-              prop
-            );
-          });
-        self.add(elmt);
+        self.tag(self.UnstyledTableRowComponent, { data: self.data, col: this.data.columns_[j], nestedPropertiesObjsMap: nestedPropertiesObjsMap, obj: obj });
       }
 
       // Object actions
@@ -164,6 +152,64 @@ foam.CLASS({
           })
           .endContext()
         .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.table',
+  name: 'UnstyledTableRowComponent',
+  extends: 'foam.u2.table.TableComponentView',
+
+  imports: [
+    'colWidthUpdated',
+    'props',
+    'selectedColumnsWidth'
+  ],
+
+  properties: [
+    {
+      name: 'colWidth',
+      factory: function() {
+        return this.selectedColumnsWidth && this.selectedColumnsWidth[this.propName] ?
+        this.selectedColumnsWidth[this.propName] :
+        this.columnHandler.returnPropertyForColumn(this.props, this.data.of, this.col, 'tableWidth');
+      }
+    },
+    'col',
+    'propName',
+    'nestedPropertiesObjsMap',
+    'obj'
+  ],
+
+  methods: [
+    function render() {
+      var self = this;
+      this.propName = this.columnHandler.propertyNamesForColumnArray(this.col);
+      [prop, objReturned] = this.getCellData(this.obj, this.col, this.nestedPropertiesObjsMap);
+
+      // Added to maintain support for ScrollTableView that does not support resizable columns
+      if ( this.colWidthUpdated$ && this.selectedColumnsWidth$ ) {
+        this.onDetach(this.colWidthUpdated$.sub(function() {
+          if ( self.selectedColumnsWidth[self.propName] ) 
+            self.colWidth = self.selectedColumnsWidth[self.propName];
+        }));
+      }
+
+      this
+        .addClass(this.data.myClass('td'))
+        .style({ flex: this.slot(function(colWidth) {
+            return colWidth ? `1 0 ${colWidth}px` : `1 0 ${this.data.MIN_COLUMN_WIDTH_FALLBACK}px`;
+          })
+        })
+        .call(function() {
+          prop.tableCellFormatter.format(
+            this,
+            prop.f ? prop.f(this.obj) : null,
+            objReturned,
+            prop
+          );
+        });
     }
   ]
 });
