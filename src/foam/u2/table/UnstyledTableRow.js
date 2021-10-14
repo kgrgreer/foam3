@@ -188,10 +188,14 @@ foam.CLASS({
       this.propName = this.columnHandler.propertyNamesForColumnArray(this.col);
       [prop, objReturned] = this.getCellData(this.obj, this.col, this.nestedPropertiesObjsMap);
 
-      this.onDetach(this.colWidthUpdated$.sub(function() {
-        if ( self.selectedColumnsWidth[self.propName] ) 
-          self.colWidth = self.selectedColumnsWidth[self.propName];
-      }));
+      // Added to maintain support for ScrollTableView that does not support resizable columns
+      if ( this.colWidthUpdated$ && this.selectedColumnsWidth$ ) {
+        this.onDetach(this.colWidthUpdated$.sub(function() {
+          if ( self.selectedColumnsWidth[self.propName] ) 
+            self.colWidth = self.selectedColumnsWidth[self.propName];
+        }));
+      }
+
       this
         .addClass(this.data.myClass('td'))
         .style({ flex: this.slot(function(colWidth) {
