@@ -59,7 +59,7 @@ foam.CLASS({
       return columns.filter( c => obj.allColumns.includes( obj.columnHandler.checkIfArrayAndReturnFirstLevelColumnName(c) ));
     },
     function returnPropertiesForColumns(obj, columns_) {
-      var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
+      var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.propertyNamesForColumnArray(c)))).map(c => obj.columnHandler.propertyNamesForColumnArray(c)));
       return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
     },
     function shouldColumnBeSorted(c) {
@@ -80,7 +80,7 @@ foam.CLASS({
     },
     function getCellData(obj, prop, nestedPropertiesObjsMap) {
       var objForCurrentProperty = obj;
-      var propName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(prop);
+      var propName = this.columnHandler.propertyNamesForColumnArray(prop);
       var prop = this.props.find(p => p.fullPropertyName === propName);
       //check if current column is a nested property
       //if so get object for it
