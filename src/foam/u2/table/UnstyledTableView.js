@@ -239,7 +239,7 @@ foam.CLASS({
         if ( this.multiSelectEnabled ) base += this.CHECKBOX_CONTAINER_WIDTH;
         if ( this.editColumnsEnabled ) base += this.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH;
         return this.columns_.reduce((acc, col) => {
-          var width = this.selectedColumnsWidth[self.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col)];
+          var width = this.selectedColumnsWidth[self.columnHandler.returnPropertyNamesForColumnArray(col)];
           return acc + (width || this.columnHandler.returnPropertyForColumn(this.props, this.of, col, 'tableWidth') || this.MIN_COLUMN_WIDTH_FALLBACK);
         }, base) + 'px';
       }
@@ -392,7 +392,7 @@ foam.CLASS({
           }
         } else {
           this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+            return this.columnHandler.returnPropertyNamesForColumnArray(c);
           }).join(',');
         }
         if ( ! this.memento.tail ) {

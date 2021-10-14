@@ -16,7 +16,7 @@ foam.CLASS({
       }
       return propNames[n];
     },
-    function checkIfArrayAndReturnPropertyNamesForColumn(col) {
+    function returnPropertyNamesForColumnArray(col) {
       return this.returnPropertyNamesForColumn(this.returnNElementIfArray(col, 0));
     },
     function returnPropertyNamesForColumn(col) {
@@ -41,7 +41,7 @@ foam.CLASS({
       return foam.core.Property.isInstance(col) || foam.core.Action.isInstance(col) || foam.Object.isInstance(col);
     },
     function mapArrayColumnsToArrayOfColumnNames(cols) {
-      return cols.map(c => this.checkIfArrayAndReturnPropertyNamesForColumn(c));
+      return cols.map(c => this.returnPropertyNamesForColumnArray(c));
     },
     function checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty) {
       return this.returnPropertyNameForRootProperty(this.returnNElementIfArray(rootProperty, 0));

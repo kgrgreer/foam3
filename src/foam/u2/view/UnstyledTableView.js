@@ -351,7 +351,7 @@ foam.CLASS({
           }
         } else {
           this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+            return this.columnHandler.returnPropertyNamesForColumnArray(c);
           }).join(',');
         }
         if ( ! this.memento.tail ) {
@@ -420,8 +420,8 @@ foam.CLASS({
 
               // Render the table headers for the property columns.
               forEach(columns_, function([col, overrides]) {
-                var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
+                var found = view.props.find(p => p.fullPropertyName === view.columnHandler.returnPropertyNamesForColumnArray(col));
+                var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.returnPropertyNamesForColumnArray(col));
                 var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
 
                 if ( ! prop ) return;
@@ -590,7 +590,7 @@ foam.CLASS({
         return columns.filter( c => obj.allColumns.includes( obj.columnHandler.checkIfArrayAndReturnFirstLevelColumnName(c) ));
       },
       function returnPropertiesForColumns(obj, columns_) {
-        var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
+        var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.returnPropertyNamesForColumnArray(c)))).map(c => obj.columnHandler.returnPropertyNamesForColumnArray(c)));
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
       function shouldColumnBeSorted(c) {

@@ -185,7 +185,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.propName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(this.col);
+      this.propName = this.columnHandler.returnPropertyNamesForColumnArray(this.col);
       [prop, objReturned] = this.getCellData(this.obj, this.col, this.nestedPropertiesObjsMap);
 
       this.onDetach(this.colWidthUpdated$.sub(function() {
