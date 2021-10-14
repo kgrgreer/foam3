@@ -15,6 +15,10 @@ foam.CLASS({
     'selectedColumnsWidth'
   ],
 
+  messages: [
+    { name: 'TOOLTIP', message: 'Drag to Resize' }
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -115,7 +119,7 @@ foam.CLASS({
             })
         .end()
         .startContext({data: this})
-          .start(this.DRAG, { buttonStyle: 'TERTIARY', themeIcon: 'drag', size: 'SMALL' })
+          .start(this.DRAG_TO_RESIZE, { buttonStyle: 'TERTIARY', themeIcon: 'drag', size: 'SMALL' })
             .addClass(this.data.myClass('resizeButton'))
             .enableClass(this.data.myClass('resizeCursor'), this.showResize$)
             .attrs({ draggable: 'true' })
@@ -137,7 +141,7 @@ foam.CLASS({
         evt.dataTransfer.dropEffect = 'none';
         evt.dataTransfer.setDragImage(this.dragImg_, 0, 0);
         this.oldX_ = evt.clientX;
-        this.oldCW_ = ! this.colWidth ? this.el_() && this.el_().getBoundingClientRect().width : this.colWidth;
+        this.oldCW_ = this.el_() && this.el_().getBoundingClientRect().width;
       }
     },
     {
@@ -176,8 +180,9 @@ foam.CLASS({
   ],
   actions: [
     {
-      name: 'drag',
+      name: 'DragToResize',
       label: '',
+      toolTip: 'Drag to resize',
       code: function() {}
     }
   ]
