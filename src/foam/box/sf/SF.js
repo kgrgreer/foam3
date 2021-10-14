@@ -217,42 +217,19 @@ foam.CLASS({
                               .build();
 
         entry.setCreated(new Date());
-        long index = entryIndex_.incrementAndGet();
-        entry.setIndex(index);
 
         if ( getReplayFailEntry() == true ) {
-          return storeToJournal(entry);
-        } else {
-          return storeToJournalAndRecordFileOffset(entry);
-        }
-      `
-    },
-    {
-      name: 'storeToJournal',
-      args: 'SFEntry entry',
-      documentation: 'do store without linux a-time',
-      javaType: 'SFEntry',
-      javaCode: `
-        SFFileJournal journal = getJournal(toFileName(entry));
-        System.out.println("AAAAA size: " + journal.calculateSize(entry));
-        return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
-      `
-    },
-    {
-      name: 'storeToJournalAndRecordFileOffset',
-      documentation: 'persist SFEntry into file, return the offset of the entry in file',
-      args: 'SFEntry entry',
-      javaType: 'SFEntry',
-      javaCode: `
-        // JSONFObjectFormatter fmt = getFormatter(getX());
-        // ClassInfo of = SFEntry.getOwnClassInfo();
-        // fmt.output(entry, of);
-
-        SFFileJournal journal = getJournal(toFileName(entry));
-
-        synchronized(writeLock_) {
-          //TODO: override put method.
+          long index = entryIndex_.incrementAndGet();
+          entry.setIndex(index);
+          SFFileJournal journal = getJournal(toFileName(entry));
           return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+        } else {
+          synchronized(writeLock_) {
+            long index = entryIndex_.incrementAndGet();
+            entry.setIndex(index);
+            SFFileJournal journal = getJournal(toFileName(entry));
+            return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+          }
         }
       `
     },
