@@ -205,7 +205,7 @@ foam.CLASS({
         .call(function() {
           prop.tableCellFormatter.format(
             this,
-            prop.f ? prop.f(this.obj) : null,
+            prop.f ? prop.f(objReturned) : null,
             objReturned,
             prop
           );
