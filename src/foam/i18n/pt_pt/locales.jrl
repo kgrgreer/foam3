@@ -678,6 +678,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.FIR
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.PREV_PAGE.toolTip",target:"Página anterior"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.LAST_PAGE.toolTip",target:"Última página"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableHeaderComponent.DRAG_TO_RESIZE.toolTip",target:"Arraste para redimensionar"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.DETAIL",target:"Detalhe"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.TABBED",target:"Tabbed"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.SECTIONED",target:"Seccionado"})

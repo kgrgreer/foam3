@@ -48,8 +48,6 @@
     }
 
     ^thead {
-      overflow: hidden;
-      overflow-x: auto;
       position: sticky;
       top: 0;
     }
@@ -58,6 +56,8 @@
       border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
+      width: 100%;
+      position: relative;
     }
 
     ^td,
@@ -111,6 +111,21 @@
 
     ^row-group{
       background: /*%GREY5%*/ #F5F7FA;
+    }
+
+    ^resizeButton {
+      padding: 4px;
+      position: sticky;
+      right: 4px;
+    }
+
+    ^resizeButton:hover:not(:disabled), ^resizeCursor {
+      cursor: col-resize;
+    }
+
+    ^resizeButton svg{
+      width: 0.8em;
+      height: 0.8em;
     }
 
     /* PAGINATION */

@@ -174,6 +174,7 @@ foam.CLASS({
     },
     function rebuildSelectedColumns() {
       var arr = [];
+      if ( ! this.views ) return;
       for ( var i = 0 ; i < this.views.length ; i++ ) {
         if ( this.views[i].prop.isPropertySelected ) {
           var propSelectedTraversed = this.views[i].prop.returnSelectedProps();
@@ -234,10 +235,10 @@ foam.CLASS({
       //selectedColumnNames misleading name cause it may contain objects
       data.selectedColumnNames = data.selectedColumnNames.map(c =>
       {
-        return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+        return this.columnHandler.propertyNamesForColumnArray(c);
       });
       var tableColumns = this.data.columns;
-      tableColumns = tableColumns.filter( c => data.allColumns.includes(this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c))).map(c => this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c));
+      tableColumns = tableColumns.filter( c => data.allColumns.includes(this.columnHandler.propertyNamesForColumnArray(c))).map(c => this.columnHandler.propertyNamesForColumnArray(c));
       //to keep record of columns that are selected
       var topLevelProps = [];
       //or some kind of outputter might be used to convert property to number of nested properties eg 'address' to [ 'address.city', 'address.region', ... ]
@@ -261,7 +262,7 @@ foam.CLASS({
         } else {
           rootProperty = data.selectedColumnNames[i];
           }
-        var rootPropertyName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(rootProperty);
+        var rootPropertyName = this.columnHandler.propertyNamesForColumnArray(rootProperty);
         if ( ! topLevelProps.includes(rootPropertyName) ) {
           arr.push(foam.u2.view.SubColumnSelectConfig.create({
             index:i,
@@ -341,6 +342,7 @@ foam.CLASS({
         localStorage.removeItem(this.data.of.id);
         this.data.memento.head = '';
         this.data.selectedColumnNames = undefined;
+        this.data.resetColWidths();
         this.data.updateColumns();
         this.columns = this.getColumns();
       },
