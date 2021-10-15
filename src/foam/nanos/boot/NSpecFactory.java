@@ -93,7 +93,7 @@ public class NSpecFactory
 
   public Object create(X x) {
     synchronized (this) {
-        if ( ns_ == null ||
+      if ( ns_ == null ||
            ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
         buildService(x);
       }
