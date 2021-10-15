@@ -47,6 +47,7 @@ foam.CLASS({
 
             Long effectiveUserId = ( ucj instanceof AgentCapabilityJunction ) ? ((AgentCapabilityJunction) ucj).getEffectiveUser() : null;
             DAO filteredUserCapabilityJunctionDAO = (DAO) userCapabilityJunctionDAO
+              .where(NEQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED))
               .where(OR(
                 EQ(UserCapabilityJunction.SOURCE_ID, ucj.getSourceId()),
                 // TODO: is it really a good idea to update capabilities of a
