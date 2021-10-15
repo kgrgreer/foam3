@@ -1,6 +1,11 @@
 // TODO:
 //   name collision support
+//   output empty/default names when collision occurs
+//   support path vs. param mementos
+//   support "sticky" localStorage/config properties
 //   feedback elimination?
+//   eliminate need for implementing Memorable by having property install!
+
 
 foam.CLASS({
   name: 'Memento',
@@ -133,7 +138,14 @@ foam.CLASS({
       name: 'skip',
       shortName: 's',
       value: 10,
-      memorable: true
+      memorable: true,
+      sticky: true
+    },
+    {
+      class: 'StringArray',
+      name: 'columns',
+      memorable: true,
+      sticky: true
     },
     {
       name: 'limit',
