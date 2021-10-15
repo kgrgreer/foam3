@@ -91,16 +91,16 @@ public class NSpecFactory
     }
   }
 
-  public synchronized Object create(X x) {
-    if ( ns_ == null ||
-         ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-      buildService(x);
+  public Object create(X x) {
+    synchronized (this) {
+        if ( ns_ == null ||
+           ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+        buildService(x);
+      }
     }
-
     if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
 
     return ns_;
-
   }
 
   public synchronized void invalidate(NSpec spec) {
