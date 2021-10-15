@@ -62,23 +62,14 @@ foam.CLASS({
               ));
 
             String[] dependentIds = crunchService.getDependentIds(effectiveX, ucj.getTargetId());
-
-            List<UserCapabilityJunction> ucjsToReput = new ArrayList<UserCapabilityJunction>();
-
-            for ( String dependentId : dependentIds ) {
-              UserCapabilityJunction ucjToReput = (UserCapabilityJunction) filteredUserCapabilityJunctionDAO
-                .find(EQ(UserCapabilityJunction.TARGET_ID, dependentId));
-
+            for ( var dependentId : dependentIds ) {
+              var ucjToReput = (UserCapabilityJunction) filteredUserCapabilityJunctionDAO.find(EQ(UserCapabilityJunction.TARGET_ID, dependentId));
               // Skip null and AVAILABLE UCJs
-              if (
-                ucjToReput == null
+              if ( ucjToReput == null
                 || ucjToReput.getStatus() == CapabilityJunctionStatus.AVAILABLE
               ) continue;
 
-              ucjsToReput.add((UserCapabilityJunction) ucjToReput.fclone());
-            }
-
-            for ( UserCapabilityJunction ucjToReput : ucjsToReput ) {
+              ucjToReput = (UserCapabilityJunction) ucjToReput.fclone();
               if ( effectiveUserId != null && effectiveX != null &&
                    ucjToReput.getSourceId() == effectiveUserId )
                 userCapabilityJunctionDAO.inX(effectiveX).put(ucjToReput);
