@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -119,7 +119,7 @@ keytool -importpass \
  -storetype PKCS12 \
  <<<"$SECRET"
 `,
-      name: 'getSecretKey',
+      name: 'getSecret',
       type: 'String',
       javaThrows: [
         'java.lang.IllegalArgumentException',
@@ -133,6 +133,11 @@ keytool -importpass \
         },
         {
           name: 'alias',
+          type: 'String'
+        },
+        {
+          documentation: 'A PBE Algorithm. See https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#keystore-types',
+          name: 'algorithm',
           type: 'String'
         }
       ]

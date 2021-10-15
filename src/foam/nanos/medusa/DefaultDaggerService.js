@@ -194,7 +194,7 @@ foam.CLASS({
       String alias = BOOTSTRAP_HASH.toLowerCase();
       try {
         KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
-        return manager.getSecretKey(x, alias);
+        return manager.getSecret(x, alias, "PBEWithHmacSHA256AndAES_128");
       } catch (java.security.GeneralSecurityException | java.io.IOException e) {
         getLogger().warning("Keystore error", alias, e.getMessage());
       } catch (IllegalArgumentException e) {
