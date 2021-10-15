@@ -8,7 +8,24 @@ foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'RuleActionMergeDecorator',
 
-  documentation: 'Merge calls occurring within mergeDelay period to the delegate rule action.',
+  documentation: `
+    Merge calls occurring within mergeDelay period to the delegate rule action.
+
+    Usage: Add RuleActionMergeDecorator to the asyncAction of a rule to merge
+    repeated calls to the underlying rule action. For example,
+
+      {
+        class: 'foam.nanos.ruler.Rule',
+        ...,
+        asyncAction: {
+          class: 'foam.nanos.ruler.RuleActionMergeDecorator',
+          mergeDelay: 1000,
+          delegate: {
+            class: 'MyRuleAction'
+          }
+        }
+      }
+  `,
 
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
