@@ -28,7 +28,14 @@ foam.CLASS({
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.nio.charset.StandardCharsets',
+    'net.nanopay.security.KeyStoreManager',
+    'java.security.KeyStore',
+    'static java.security.KeyStore.PasswordProtection',
+    'static java.security.KeyStore.SecretKeyEntry',
     'java.security.MessageDigest',
+    'java.security.spec.KeySpec',
+    'javax.crypto.spec.PBEKeySpec',
+    'javax.crypto.SecretKeyFactory',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -54,6 +61,19 @@ foam.CLASS({
           `
         }));
       }
+    }
+  ],
+
+  constants: [
+    {
+      name: 'BOOTSTRAP_HASH',
+      type: 'String',
+      value: 'BOOTSTRAP_HASH'
+    },
+    {
+      name: 'BOOTSTRAP_HASH_DEFAULT',
+      type: 'String',
+      value: '466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534'
     }
   ],
 
@@ -177,9 +197,23 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
+      String alias = BOOTSTRAP_HASH.toLowerCase();
+      try {
+        KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
+        String key = manager.getSecretKey(x, alias);
+        if ( BOOTSTRAP_HASH_DEFAULT.equals(key) ) {
+getLogger().info("Alias found");
+          return key;
+        }
+        getLogger().warning("Invalid alias value", "expected", BOOTSTRAP_HASH_DEFAULT, "found", key);
+      } catch (java.security.GeneralSecurityException | java.io.IOException e) {
+        getLogger().warning("Keystore error", alias, e.getMessage());
+      } catch (IllegalArgumentException e) {
+        getLogger().warning("Keystore alias not found", alias);
+      }
       return System.getProperty(
-                "BOOTSTRAP_HASH",
-                "466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534"
+                BOOTSTRAP_HASH,
+                BOOTSTRAP_HASH_DEFAULT
              );
       `
     },
