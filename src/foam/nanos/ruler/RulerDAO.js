@@ -140,7 +140,6 @@ if ( oldObj == null ) {
 // If the object was modified in an 'after' rule, then it is 'put'.
 FObject ret =  getDelegate().put_(x, obj);
 if ( ret != null ) {
-  ret = ret.fclone();
   FObject before = ret.fclone();
   if ( oldObj == null ) {
     applyRules(x, ret, oldObj, getCreateAfter());
