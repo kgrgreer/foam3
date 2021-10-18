@@ -16,12 +16,7 @@ foam.CLASS({
     {
       name: 'put_',
       code: function(x, obj) {
-        if ( obj.transient ) {
-          // Need to publish put so that a toast message is still created
-          // in the onUserAgentAndGroupLoaded method in Application Controller
-          this.on.put.pub(obj);
-          return obj;
-        }
+        if ( obj.transient ) return obj;
 
         return this.delegate.put_(x, obj);
       }
