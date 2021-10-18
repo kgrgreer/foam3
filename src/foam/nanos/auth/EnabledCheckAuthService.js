@@ -35,7 +35,7 @@ foam.CLASS({
 
         // Check if group and all ancestor groups are enabled.
         Group group = getCurrentGroup(x);
-        DAO localGroupDAO = ((DAO) x.get("localGroupDAO")).inX(x);
+        DAO localGroupDAO = (DAO) x.get("groupDAO");
         while ( group != null ) {
           if ( ! group.getEnabled() ) return false;
           group = (Group) localGroupDAO.find(group.getParent());

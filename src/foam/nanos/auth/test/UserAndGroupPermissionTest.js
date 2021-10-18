@@ -39,9 +39,9 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("test").build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("test2").build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("fail").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("test").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("test2").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("fail").build());
 
         testUserPermissions(x);
         testUserSpidPermissions(x);

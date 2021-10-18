@@ -205,9 +205,11 @@ p({
   "name":"groupDAO",
   "serve":true,
   "serviceScript":"""
+  grDAO = x.get("localGroupDAO");
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setInnerDAO(x.get("localGroupDAO"))
+      .setInnerDAO(grDAO)
+      .setInternalAccessDAO(grDAO)
       .setOf(foam.nanos.auth.Group.getOwnClassInfo())
       .build();
   """,

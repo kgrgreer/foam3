@@ -50,7 +50,7 @@ foam.CLASS({
       javaFactory: 'return java.util.UUID.randomUUID().toString().toLowerCase().split("-")[0];'
     }
   ],
-  
+
   methods: [
     {
       name: 'runTest',
@@ -59,10 +59,10 @@ foam.CLASS({
 System.out.println("UUID: "+getSpid1());
         ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId(getSpid1()).build());
         ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId(getSpid2()).build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("test").build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("test2").build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId(getSpid2()).build());
-        ((DAO) x.get("localGroupDAO")).put(new Group.Builder(x).setId("fail").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("test").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("test2").build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId(getSpid2()).build());
+        ((DAO) x.get("groupDAO")).put(new Group.Builder(x).setId("fail").build());
 
         DAO groupPermissionJunctionDAO = (DAO) x.get("localGroupPermissionJunctionDAO");
         groupPermissionJunctionDAO.where(EQ(GroupPermissionJunction.SOURCE_ID, "test")).removeAll();
@@ -233,10 +233,10 @@ System.out.println("UUID: "+getSpid1());
         groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(y).setSourceId("test").setTargetId("serviceprovider.update."+getSpid2()).build());
         test(ns3.getSpid().equals(getSpid1()), "before ns3.spid = "+ns3.getSpid());
         ns3 = (DummySp) ns3.fclone();
-        ns3.setSpid(getSpid2()); 
+        ns3.setSpid(getSpid2());
         ns3 = (DummySp) dao.put(ns3);
         test(ns3.getSpid().equals(getSpid2()), "after ns3.spid = "+ns3.getSpid());
-      
+
         y = Auth.sudo(y, user1);
         dao = dao.inX(y);
 
@@ -271,7 +271,7 @@ System.out.println("UUID: "+getSpid1());
           test (false, "ReferenceTest DAO select filtered on spid error.");
         }
 
-        // test that it is found by a user on the new spid 
+        // test that it is found by a user on the new spid
         groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId(getSpid2()).setTargetId("serviceprovider.read."+getSpid2()).build());
         groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId(getSpid2()).setTargetId("service.DummySpDAO").build());
         groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId(getSpid2()).setTargetId("dummysp.read.*").build());
