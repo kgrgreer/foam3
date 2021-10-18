@@ -722,9 +722,12 @@ foam.CLASS({
             description: obj.toastSubMessage,
             icon: obj.icon
           }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
+          // only update and save non-transient messages
+          if ( ! obj.transient ) {
+            var clonedNotification = obj.clone();
+            clonedNotification.toastState = this.ToastState.DISPLAYED;
+            this.__subSubContext__.notificationDAO.put(clonedNotification);
+          }
         }
       });
 
