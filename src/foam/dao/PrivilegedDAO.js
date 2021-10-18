@@ -7,7 +7,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'RemoteDAO',
+  name: 'PrivilegedDAO',
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
@@ -21,7 +21,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-            public RemoteDAO(X x, DAO delegate, DAO internalAccessPoint) {
+            public PrivilegedDAO(X x, DAO delegate, DAO internalAccessPoint) {
               setX(x);
               setDelegate(delegate);
               setInternalAccessDelegate(internalAccessPoint);

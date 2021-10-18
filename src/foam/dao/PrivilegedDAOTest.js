@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'RemoteDAOTest',
+  name: 'PrivilegedDAOTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
