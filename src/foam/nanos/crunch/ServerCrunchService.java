@@ -509,7 +509,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     // Setup default data
     FObject payload = null;
     try {
-      payload = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
+      if ( cap.getOf() != null ) {
+        payload = (FObject) cap.getOf().newInstance();
+      }
     } catch ( Exception ex ) {
       throw new RuntimeException("UCJ payload default setup ERROR: " + ex.getMessage(), ex);
     }
