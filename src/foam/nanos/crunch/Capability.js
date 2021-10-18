@@ -250,6 +250,7 @@ foam.CLASS({
       name: 'associatedEntity',
       class: 'Enum',
       of: 'foam.nanos.crunch.AssociatedEntity',
+      hidden: true,
       permissionRequired: true,
       includeInDigest: true,
       documentation: `

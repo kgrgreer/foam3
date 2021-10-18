@@ -132,7 +132,6 @@ foam.CLASS({
 
   requires: [
     'foam.core.ExpressionSlot',
-    'foam.u2.ControllerMode',
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.tag.CircleIndicator',
     'foam.u2.wizard.WizardPosition',
@@ -164,14 +163,13 @@ foam.CLASS({
       });
       this
         .addClass(this.myClass())
-        .startContext({ controllerMode: this.ControllerMode.EDIT })
-        // despite visibility of wizard, always enable search
+        .start()
           .addClass(this.myClass('search'))
           .tag(foam.u2.SearchField, {
             data$: this.searchController.data$,
             onKey: true
           })
-        .endContext()
+        .end()
         .add(this.slot(function (
           data$wizardlets,
           data$wizardPosition,
