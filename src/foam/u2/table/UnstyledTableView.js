@@ -56,7 +56,7 @@ foam.CLASS({
     {
       type: 'Int',
       name: 'EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH',
-      value: 60
+      value: 120
     },
     {
       type: 'Char',
@@ -536,8 +536,12 @@ foam.CLASS({
                     callIf(view.editColumnsEnabled, function() {
                       this.start('')
                         this.addClass(view.myClass('th-editColumns'))
-                        this.tag(view.GROUP_BY_COLUMNS)
-                        this.tag(view.SELECT_COLUMNS)
+                        this.startContext({ data: view })
+                        this.tag(view.GROUP_BY_COLUMNS, { themeIcon: 'folderOutline', label: '', buttonStyle: 'TERTIARY', size: 'SMALL' })
+                        this.tag(view.SELECT_COLUMNS, { themeIcon: 'show', label: '', buttonStyle: 'TERTIARY' })
+                        .endContext()
+                        //this.tag(view.GROUP_BY_COLUMNS, {label: 'X', buttonStyle: 'TERTIARY' })
+                        //this.tag(view.SELECT_COLUMNS, {label: 'Y', buttonStyle: 'TERTIARY' })
                         // .tag(view.OverlayActionListView, {
                         //   data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
                         //   obj: view,
