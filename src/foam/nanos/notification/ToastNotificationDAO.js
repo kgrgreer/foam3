@@ -16,7 +16,11 @@ foam.CLASS({
     {
       name: 'put_',
       code: function(x, obj) {
-        if ( obj.transient ) return obj;
+        if ( obj.transient ) {
+          // Need to publish put so that toast messages are created in the notify method
+          this.on.put.pub(obj);
+          return obj;
+        }
 
         return this.delegate.put_(x, obj);
       }
