@@ -13,7 +13,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.test.Test', 
-    'foam.u2.view.ScrollTableView'
+    'foam.u2.table.TableView'
   ],
 
   css: `
@@ -57,7 +57,7 @@ foam.CLASS({
           .start('span').add('Failed: ', this.failed$).end()
           .start('span').add('Status: ', this.status$).end()
         .end()
-        .start(this.ScrollTableView, { data$: this.data$, selectedObjects$: this.selectedObjects$ })
+        .start(this.TableView, { data$: this.data$, selectedObjects$: this.selectedObjects$ })
           .addClass(this.myClass('table'))
         .end();
         

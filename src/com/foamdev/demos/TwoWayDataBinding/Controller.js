@@ -27,7 +27,7 @@ foam.CLASS({
       padding-right: .4em;
     }
     .temperature-converter ^.arrows {
-      font-size: 20px;
+      font-size: 2.0rem;
       vertical-align: middle;
     }
     .temperature-converter ^input:focus {

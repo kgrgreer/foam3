@@ -126,12 +126,10 @@ public class DAOResourceLoader
     if ( ! name.equals("header") && emailTemplate_ != null ) {
       EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
       String sourceType = (String) templateArgs.get("templateSourceType");
-      String source = (String) templateArgs.get("templateSource");
+      String templateSource = (String) templateArgs.get("templateSource");
+      String source = templateSource != null ? templateSource : "emailTemplate";
 
-      if ( ! SafetyUtil.isEmpty(source) )
-        clonedTemplate.setSourceClass(source);
-      else
-        clonedTemplate.setSourceClass("emailTemplate");
+      clonedTemplate.setSourceClass(source);
 
       PM pm = PM.create(x, source,  "emailTemplate: " + name);
       pm.log(x);

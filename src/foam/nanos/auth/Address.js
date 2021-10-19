@@ -954,8 +954,10 @@ foam.CLASS({
         }
       ],
       javaSetter: `
-        postalCode_ = val.toUpperCase();
-        postalCodeIsSet_ = true;
+        if ( val != null ) {
+          postalCode_ = val.toUpperCase();
+          postalCodeIsSet_ = true;
+        }
       `
     },
     {

@@ -78,7 +78,7 @@ foam.CLASS({
       height: 20px;
       display: flex;
       align-items: center;
-      font-size: 17px;
+      font-size: 1.7rem;
       justify-content: space-between;
     }
   `,

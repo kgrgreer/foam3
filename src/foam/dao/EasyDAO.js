@@ -186,7 +186,8 @@ foam.CLASS({
           delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getFuid() )
-          delegate = new foam.dao.FUIDAO.Builder(getX()).setDelegate(delegate).build();
+          delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
+          // delegate = new foam.dao.FUIDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {

@@ -23,7 +23,7 @@ foam.CLASS({
       content: attr(data-placeholder);
       pointer-events: none;
       opacity: 0.7;
-      font-size: 14px;
+      font-size: 1.4rem;
       letter-spacing: normal;
       inline-size: fit-content;
     }
