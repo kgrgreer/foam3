@@ -1,6 +1,11 @@
 // TODO:
 //   name collision support
+//   output empty/default names when collision occurs
+//   support path vs. param mementos
+//   support "sticky" localStorage/config properties
 //   feedback elimination?
+//   eliminate need for implementing Memorable by having property install!
+//     -- maybe a bad idea
 
 foam.CLASS({
   name: 'Memento',
@@ -109,11 +114,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'memento',
+      name: 'memento_',
       hidden: true,
-      factory: function() { return this.__context__.memento || Memento.create(); },
-      initObject: function(memorable) {
-        memorable.memento.bind(memorable);
+      factory: function() { return this.__context__.memento_ || Memento.create(); },
+      initObject: function(o) {
+        o.memento_.bind(o);
       }
     }
   ]
@@ -133,7 +138,14 @@ foam.CLASS({
       name: 'skip',
       shortName: 's',
       value: 10,
-      memorable: true
+      memorable: true,
+      sticky: true
+    },
+    {
+      class: 'StringArray',
+      name: 'columns',
+      memorable: true,
+      sticky: true
     },
     {
       name: 'limit',
@@ -152,9 +164,9 @@ foam.CLASS({
   methods: [
     function render() {
       // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento}).add(this.memento.STR).endContext();
+      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento.str$);
+      this.add(this.memento_.str$);
       this.br();
       this.add('skip: ', this.SKIP);
       this.br();

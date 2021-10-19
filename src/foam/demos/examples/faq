@@ -752,12 +752,160 @@ p1.lastName = 'Doe';
 fullName.set('Jane Smith');
 log(fullName.get()); // Is still John Doe
 
+##  Sink
+What is the difference between ArraySink and AbstractSink and when to use?
+Answer:
+AbstractSink is an abstract base class for implementing the Sink interface.
+ArraySink is one of the possible implementation of AbstractSink. ArraySink is the default Sink used if you don't explicitly provide a Sink to the DAO select() method.
+The ArraySink has a property called 'array' which stores all values obtained from the select().
+
+However, if you can just process each record in-line in the AbstractSink, then that's better because it won't allocate the memory for an array.
+Also, you can start processing the records sooner, ie. when the first one is available, but with an ArraySink, you don't get to start until all of the data has been copied into the array.
+Also, if you terminate the selection early, then you don't do any more work with an AbstractSink, but with ArraySink, you've already copied all of the data into the array.
+
+ArraySink sink = (ArraySink) dao.select(new ArraySink());
+or just:
+ArraySink sink = (ArraySink) dao.select(new ArraySink());
+
+for ( int i = 0; i < sink.getArray().size(); i++ ) {
+  SomeObject obj = (SomeObject) sink.getArray().get(i);
+
+  if ( obj.something() ) break;
+}
+
+vs.
+
+dao. select(new AbstractSink() {
+  public void put(Object o, Detachable d) {
+    SomeObject obj = (SomeObject) o;
+    if ( o.something() ) d.detach();
+  }
+});
+
+In the above examples, the first case uses an ArraySink, while the second uses
+an in-lined sub-class of AbstractSink. Both examples abort the select when
+they find an object that meets some criteria, but the second AbstractSink is
+more efficient because it aborts the select() early and doesn't have to process
+the remaining objects, whereas the ArraySink has already select()-ed them and
+copied them into the ArraySink array.
+
+##  JavaExtras
+What is javaExtras and how to use it?
+Answer:
+When you would want to add extra Java code to your generated java class, you can just add it with javaExtras.
+For example:
+axioms: [
+  {
+    name: 'javaExtras',
+    buildJavaClass: function(cls) {
+      cls.extras.push(foam.java.Code.create({
+        data: `
+          public CompoundException(String message) {
+            super(message);
+          }
+
+          public CompoundException(String message, java.lang.Exception cause) {
+            super(message, cause);
+          }
+          `
+      }));
+    }
+  }
+],
+
+The following code, taken from CompoundException, is used to add two convenience constructors
+to the generated CompoundException.java class. The above code makes use of FOAM's axiom support.
+FOAM models are just collections of axioms. Everything that you think of as being a unique attribute
+of a model, is just a different type of axiom. Properties, methods, actions, imports, exports, etc., are all
+just axioms. Each axiom has methods for build its part into the generated Javascript class and prototype or Java or Swift code.
+For Javascript installInProto() and installInClass() are used, and for Java, buildJavaClass is used.
+Besides the provided axioms types provided by FOAM, you can always write your own, which is what the above code is doing.
+It's just creating custom axiom to add a bit of code to the java class. It's naming it 'javaExtras', by convention, but it
+could have named it anything.
+
+The above code is a bit ugly, so let's add this as a built-in feature to FOAM by refining model:
+
+--
+// First create a class for java code:
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'JavaCode',
+
+  properties: [
+    'name',
+    'code'
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      cls.extras.push(foam.java.Code.create({data: this.code}));
+      }
+  ]
+});
+
+Now we could do:
+
+axioms: [ foam.java.JavaCode.create({name: 'constructors', code: `
+public CompoundException(String message) {
+  super(message);
+}
+
+public CompoundException(String message, java.lang.Exception cause) {
+  super(message, cause);
+}
+
+`})],
+
+Which is better, but we could do better still by refining foam.core.CLASS to add
+a javaCode property.
+
+foam.CLASS({
+  refines: 'foam.core.Model',
+  package: 'foam.java',
+  name: 'JavaCodeModelRefine',
+
+  properties: [
+    {
+      class: 'AxiomArray',
+      of: 'JavaCode',
+      name: 'javaCode'
+      adaptArrayElement: function(o) {
+        if ( foam.String.isInstance(o) ) {
+          return foam.java.JavaCode.create({name: 'code', code: o});
+        }
+        return foam.java.JavaCode.create(o);
+      }
+    },
+
+});
+
+Now we can just do:
+
+javaCode: `
+  public CompoundException(String message) {
+    super(message);
+  }
+
+  public CompoundException(String message, java.lang.Exception cause) {
+    super(message, cause);
+  }
+`
+
+Which is much nicer than the original.
+
+##  Journals type
+What is the difference between runtime journals(e.g. UserCapabilityJunctions) and static journals( e.g. UserCapabilityJunctions.0). Also, journals end with .jrl. How do we differentiate those?
+Answer:
+static journals are the initial configuration of the system. The date that the system have in each deployment.
+runtime journals are the data that are created at the runtime.
+
 <br><br>
 ## Axioms
 Q.
 When should I use axioms with javaExtras?
 </br>
-A.
+Answer:
 Anything you can define on a model is defined as an axiom of that model.
 Better reading of axioms here https://github.com/kgrgreer/foam3/blob/5ceaacfa6abf370cfb08f31cc7c24fc2f44197fe/src/foam/core/Boot.js#L79
 Axioms include methods, properties, listeners, refines, imports, javaExtras …
@@ -786,7 +934,7 @@ Example 2)
     return this;
   }
 <br></br>
-A.
+Answer:
 The idea behind freezing objects is for the concept of maintaining consistent data in our data structures- primarily in foam DAOs.
 We want to save the original object once it is in the DAO and only modify it through another DAO put.
 Without freezable, a service could still have access to an object and save some modification of an object in a DAO.

@@ -47,14 +47,13 @@ foam.CLASS({
     }
 
     ^ .foam-u2-ModalHeader-title {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-spacing: 0;
     }
 
     ^label-subtitle {
       margin: 0;
       margin-bottom: 24px;
-      font-size: 16px;
+      font-size: 1.6rem;
       font-weight: 300;
     }
 
@@ -157,7 +156,7 @@ foam.CLASS({
 
     ^label-results {
       margin: 0;
-      font-size: 12px;
+      font-size: 1.2rem;
       padding: 0 8px;
       flex: 1;
       align-self: center;
