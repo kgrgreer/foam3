@@ -17,9 +17,7 @@
     {
       name: 'preExecute',
       args: [
-        {
-          name: 'x', type: 'Context'
-        }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         //NOP
@@ -28,9 +26,7 @@
     {
       name: 'postExecute',
       args: [
-        {
-          name: 'x', type: 'Context'
-        }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         //NOP
@@ -39,18 +35,9 @@
     {
       name: 'preRule',
       args: [
-        {
-          name: 'x', type: 'Context'
-        },
-        {
-          name: 'rule', type: 'foam.nanos.ruler.Rule'
-        },
-        {
-          name: 'obj', type: 'foam.core.FObject'
-        },
-        {
-          name: 'oldObj', type: 'foam.core.FObject'
-        }
+        { name: 'rule', type: 'foam.nanos.ruler.Rule' },
+        { name: 'obj', type: 'foam.core.FObject' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       javaCode: `
         //NOP
@@ -59,18 +46,9 @@
     {
       name: 'postRule',
       args: [
-        {
-          name: 'x', type: 'Context'
-        },
-        {
-          name: 'rule', type: 'foam.nanos.ruler.Rule'
-        },
-        {
-          name: 'obj', type: 'foam.core.FObject'
-        },
-        {
-          name: 'oldObj', type: 'foam.core.FObject'
-        }
+        { name: 'rule', type: 'foam.nanos.ruler.Rule' },
+        { name: 'obj', type: 'foam.core.FObject' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       javaCode: `
         //NOP
@@ -79,12 +57,7 @@
     {
       name: 'tracePermission',
       args: [
-        {
-          name: 'x', type: 'Context'
-        },
-        {
-          name: 'result', type: 'Boolean'
-        },
+        { name: 'result', type: 'Boolean' },
       ],
       type: 'Boolean',
       javaCode: `
@@ -94,12 +67,7 @@
     {
       name: 'tracePredicate',
       args: [
-        {
-          name: 'x', type: 'Context'
-        },
-        {
-          name: 'result', type: 'Boolean'
-        }
+        { name: 'result', type: 'Boolean' },
       ],
       type: 'Boolean',
       javaCode: `
@@ -109,12 +77,7 @@
     {
       name: 'traceActive',
       args: [
-        {
-          name: 'x', type: 'Context'
-        },
-        {
-          name: 'result', type: 'Boolean'
-        }
+        { name: 'result', type: 'Boolean' },
       ],
       type: 'Boolean',
       javaCode: `
