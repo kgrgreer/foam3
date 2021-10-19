@@ -33,7 +33,7 @@ foam.CLASS({
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
     { name: 'PASSWORD_NOT_MATCH', message: 'Passwords do not match' },
-    { name: 'ERROR_MSG', message: 'There was a problem to resetting your password' },
+    { name: 'ERROR_MSG', message: 'There was a problem resetting your password' },
   ],
 
   sections: [
