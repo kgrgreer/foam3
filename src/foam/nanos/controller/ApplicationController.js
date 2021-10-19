@@ -566,9 +566,10 @@ foam.CLASS({
 
         var promptlogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
-        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
+        if ( ! result || ! result.user ) throw new Error();
 
       } catch (err) {
+        if ( ! promptlogin || authResult ) return;
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
