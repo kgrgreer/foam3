@@ -5,12 +5,12 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.ruler',
+  package: 'foam.nanos.ruler.tracer',
   name: 'NullTracer',
   documentation: 'Rule Tracer, which does nothing',
 
   implements: [
-    'foam.nanos.ruler.RuleTracer'
+    'foam.nanos.ruler.tracer.RuleTracer'
   ],
 
   methods: [

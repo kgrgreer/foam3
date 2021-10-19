@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.nanos.ruler',
+  package: 'foam.nanos.ruler.tracer',
   name: 'RuleTracer',
 
   documentation: `

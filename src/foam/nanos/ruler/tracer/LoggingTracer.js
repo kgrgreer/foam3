@@ -5,12 +5,12 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.ruler',
+  package: 'foam.nanos.ruler.tracer',
   name: 'LoggingTracer',
   documentation: 'Rule Tracer, which logs everything that happens during rule evaluation',
 
   implements: [
-    'foam.nanos.ruler.RuleTracer'
+    'foam.nanos.ruler.tracer.RuleTracer'
   ],
 
   methods: [
