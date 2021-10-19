@@ -474,11 +474,9 @@ foam.CLASS({
         this.fetchTheme().then(() => {
           this
             .addClass(this.myClass())
-            .start()
               .add(this.slot(function (topNavigation_) {
                 return this.E().tag(topNavigation_);
               }))
-            .end()
             .start()
               .addClass('stack-wrapper')
               .tag({
@@ -793,8 +791,7 @@ foam.CLASS({
     },
     {
       name: 'updateDisplayWidth',
-      isMerged: true,
-      mergeDelay: 1000,
+      isFramed: true,
       code: function() {
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()
