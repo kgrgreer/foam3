@@ -4,44 +4,44 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.INTERFACE({
+ foam.CLASS({
   package: 'foam.nanos.ruler',
-  name: 'RuleTracer',
+  name: 'NullTracer',
+  documentation: 'Rule Tracer, which does nothing',
 
-  documentation: `
-    A model should implement this interface if it is to act as a Rule Tracer, meaning it is
-    called upon by the rule engine during certain operations.
-  `,
+  implements: [
+    'foam.nanos.ruler.RuleTracer'
+  ],
 
   methods: [
     {
       name: 'preExecute',
-      documentation: `
-        This method happens when the rule permission is checked
-      `,
       args: [
         {
           name: 'x', type: 'Context'
         }
-      ]
+      ],
+      javaCode: `
+        //NOP
+      `
     },
     {
       name: 'postExecute',
-      documentation: `
-        This method happens when the rule permission is checked
-      `,
       args: [
         {
           name: 'x', type: 'Context'
         }
-      ]
+      ],
+      javaCode: `
+        //NOP
+      `
     },
     {
       name: 'preRule',
-      documentation: `
-        This method happens when the rule permission is checked
-      `,
       args: [
+        {
+          name: 'x', type: 'Context'
+        },
         {
           name: 'rule', type: 'foam.nanos.ruler.Rule'
         },
@@ -51,14 +51,17 @@ foam.INTERFACE({
         {
           name: 'oldObj', type: 'foam.core.FObject'
         }
-      ]
+      ],
+      javaCode: `
+        //NOP
+      `
     },
     {
       name: 'postRule',
-      documentation: `
-        This method happens when the rule permission is checked
-      `,
       args: [
+        {
+          name: 'x', type: 'Context'
+        },
         {
           name: 'rule', type: 'foam.nanos.ruler.Rule'
         },
@@ -68,48 +71,60 @@ foam.INTERFACE({
         {
           name: 'oldObj', type: 'foam.core.FObject'
         }
-      ]
+      ],
+      javaCode: `
+        //NOP
+      `
     },
     {
       name: 'tracePermission',
-      documentation: `
-        This method happens when the rule permission is checked
-      `,
       args: [
+        {
+          name: 'x', type: 'Context'
+        },
         {
           name: 'result', type: 'Boolean'
         },
       ],
-      type: 'Boolean'
+      type: 'Boolean',
+      javaCode: `
+        return result;
+      `
     },
     {
       name: 'tracePredicate',
-      documentation: `
-        This method happens after the rule predicate is checked
-      `,
       args: [
+        {
+          name: 'x', type: 'Context'
+        },
         {
           name: 'result', type: 'Boolean'
         }
       ],
-      type: 'Boolean'
+      type: 'Boolean',
+      javaCode: `
+        return result;
+      `
     },
     {
       name: 'traceActive',
-      documentation: `
-        This method happens after the rule active field is checked
-      `,
       args: [
+        {
+          name: 'x', type: 'Context'
+        },
         {
           name: 'result', type: 'Boolean'
         }
       ],
-      type: 'Boolean'
+      type: 'Boolean',
+      javaCode: `
+        return result;
+      `
     },
     {
       name: 'traceAction',
-      documentation: `
-        This method happens when the rule permission is checked
+      javaCode: `
+        //NOP
       `
     },
   ]

@@ -60,15 +60,15 @@ public class RuleEngine extends ContextAwareSupport {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
-    RuleTracer            tracer         = (RuleTracer) getX().get("ruleTracer");
+    RuleTracer            tracer         = (RuleTracer) ((RuleTracer) getX().get("ruleTracer")).fclone();
     if ( tracer == null ) {
       tracer = new NullRuleTracer();
       logger.debug("WARNING! No Rule Tracer Specified, using Null tracer");
     }
-    tracer.preExecute();
+    tracer.preExecute(getX());
 
     for ( Rule rule : rules ) {
-      tracer.preRule();
+      tracer.preRule(rule, obj, oldObj);
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
       try {
         if ( stops_.get() ) break;
@@ -84,7 +84,7 @@ public class RuleEngine extends ContextAwareSupport {
         throw e;
       } finally {
         pm.log(x_);
-        tracer.postRule();
+        tracer.postRule(rule, obj, oldObj);
       }
     }
 
@@ -109,7 +109,7 @@ public class RuleEngine extends ContextAwareSupport {
     }
 
     asyncApplyRules(rules, obj, oldObj);
-    tracer.postExecute();
+    tracer.postExecute(getX());
   }
 
   /**
@@ -191,12 +191,10 @@ public class RuleEngine extends ContextAwareSupport {
   private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency, RuleTracer tracer) {
     ProxyX readOnlyX = new ReadOnlyDAOContext(userX_);
     rule.apply(readOnlyX, obj, oldObj, this, rule, agency);
+    tracer.traceAction();
   }
   private boolean checkPredicate (Rule rule, X userX_, FObject obj, FObject oldObj, RuleTracer tracer) {
-    boolean passed = rule.f(userX_, obj, oldObj);
-    tracer.tracePredicate();
-    return passed;
-
+    return tracer.tracePredicate(rule.f(userX_, obj, oldObj));
   }
 
   private boolean isRuleActive(Rule rule, RuleAction action, RuleTracer tracer) {
@@ -207,19 +205,17 @@ public class RuleEngine extends ContextAwareSupport {
     if (rule instanceof LifecycleAware) {
       isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
     }
-    tracer.traceActive(isActive);
-    return isActive && action != null;
+    return tracer.traceActive(isActive && action != null);
   }
 
   private boolean checkPermission(Rule rule, FObject obj, RuleTracer tracer) {
     var user = rule.getUser(getX(), obj);
-
+    boolean permission = true;
     if ( user != null ) {
       var auth = (AuthService) getX().get("auth");
-      return auth.checkUser(getX(), user, "rule.read." + rule.getId());
+      permission = auth.checkUser(getX(), user, "rule.read." + rule.getId());
     }
-
-    return true;
+    return tracer.tracePermision(permission);
   }
 
   private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj) {
