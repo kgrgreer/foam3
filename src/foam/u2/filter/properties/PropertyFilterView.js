@@ -49,7 +49,7 @@ foam.CLASS({
 
     ^label-property {
       margin: 0;
-      font-size: 14px;
+      font-size: 1.4rem;
       line-height: 1.43;
       color: #5e6061;
       flex: 1;

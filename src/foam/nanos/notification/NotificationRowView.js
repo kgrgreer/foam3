@@ -52,7 +52,7 @@
         margin-top: 5px;
       }
       ^ .msg {
-        font-size: 12px;
+        font-size: 1.2rem;
         word-wrap: break-word;
         line-height: 1.4;
         width: 414px;

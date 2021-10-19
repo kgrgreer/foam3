@@ -34,8 +34,7 @@ foam.CLASS({
     ^ .company-name {
       margin-right: 10px;
       float: left;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: bold;
       font-style: normal;
       font-stretch: normal;
@@ -48,8 +47,7 @@ foam.CLASS({
       padding-right: 0px;
     }
     ^ .date {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -61,8 +59,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .text {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -101,7 +98,7 @@ foam.CLASS({
       border-radius: 100px;
       background-color: #1cc2b7;
       color: white;
-      font-size: 12px;
+      font-size: 1.2rem;
       line-height: 1.2;
     }
   `,

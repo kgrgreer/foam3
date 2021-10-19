@@ -17,7 +17,7 @@ foam.CLASS({
     ^pill{
       border-radius: 11.2px;
       border: 1px solid;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: 500;
       letter-spacing: normal;
       line-height: 2.1em;

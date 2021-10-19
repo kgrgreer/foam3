@@ -25,7 +25,7 @@ foam.CLASS({
       background: #999;
       box-shadow: 3px 3px 6px 0 gray;
       color: white;
-      font-size: 18px;
+      font-size: 1.8rem;
       opacity: 0.9;
       position: absolute;
       box-sizing: border-box;

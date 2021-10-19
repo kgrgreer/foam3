@@ -16,7 +16,7 @@ foam.CLASS({
         ^row {
           background: white;
           padding: 1px 2px;
-          font-size: 12px;
+          font-size: 1.2rem;
         }
 
         ^row:hover {
