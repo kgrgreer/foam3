@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'ctrl',
     'notify',
     'resetPasswordToken',
     'stack',
@@ -21,6 +22,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -30,7 +32,8 @@ foam.CLASS({
     { name: 'SUCCESS_MSG', message: 'Your password was successfully updated' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
-    { name: 'PASSWORD_NOT_MATCH', message: 'Passwords do not match' }
+    { name: 'PASSWORD_NOT_MATCH', message: 'Passwords do not match' },
+    { name: 'ERROR_MSG', message: 'There was a problem to reset your password' },
   ],
 
   sections: [
@@ -118,6 +121,13 @@ foam.CLASS({
         this.NEW_PASSWORD.gridColumns = 6;
         this.CONFIRMATION_PASSWORD.gridColumns = 6;
       }
+    },
+    {
+      name: 'finalRedirectionCall',
+      code: function() {
+        window.history.replaceState(null, null, window.location.origin);
+        location.reload();
+      }
     }
   ],
 
@@ -126,29 +136,33 @@ foam.CLASS({
       name: 'resetPassword',
       label: 'Confirm',
       section: 'resetPasswordSection',
-
       isEnabled: function(errors_) {
         return ! errors_;
       },
-
       code: function() {
         const user = this.User.create({
           desiredPassword: this.newPassword
         });
+
         this.resetPasswordToken.processToken(null, user, this.token)
         .then((_) => {
-          location = window.location.origin;
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: 'foam.u2.view.LoginView',
-              mode_: 'SignIn'
-            }
+          this.finalRedirectionCall();
+
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_MSG_TITLE,
+            description: this.SUCCESS_MSG,
+            type: this.LogLevel.INFO,
+            transient: true
           }));
-          this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         }).catch((err) => {
-          this.notify(err.message, '', this.LogLevel.ERROR, true);
+          this.ctrl.add(this.NotificationMessage.create({
+              err: err.data,
+              message: this.ERROR_MSG,
+              type: this.LogLevel.ERROR,
+              transient: true
+            }));
         });
       }
-    },
+    }
   ]
 });
