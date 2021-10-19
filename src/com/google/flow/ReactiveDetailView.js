@@ -95,7 +95,7 @@ foam.CLASS({
         color: #444;
         display: block;
         float: left;
-        font-size: 13px;
+        font-size: 1.3rem;
         padding-left: 6px;
         padding-top: 6px;
         text-align: right;
@@ -114,7 +114,7 @@ foam.CLASS({
       }
       ^units  {
         color: #444;
-        font-size: 12px;
+        font-size: 1.2rem;
         padding: 4px;
         text-align: right;
       }

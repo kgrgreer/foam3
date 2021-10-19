@@ -45,7 +45,7 @@ foam.CLASS({
       padding-left: 4px;
     }
     .foam-u2-ActionView-medium {
-      font-size: 10px !important;
+      font-size: 1rem !important;
       vertical-align: middle !important;
     }
     ^row:hover {

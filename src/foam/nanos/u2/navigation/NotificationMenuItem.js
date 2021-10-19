@@ -61,7 +61,7 @@ foam.CLASS({
       position: relative;
       right: 10px;
       text-align: center;
-      font-size: 8px;
+      font-size: 0.8rem;
     }
     ^ .dot > span {
       padding-top: 3px;

@@ -13,7 +13,7 @@ foam.CLASS({
 
   css: `
     :root{
-      font-size: 10px; // sets default to 10px so 14px would be 1.4rem
+      font-size: 62.5%; // sets default to 10px so 14px would be 1.4rem
     }
 
     body {
@@ -168,7 +168,6 @@ foam.CLASS({
     }
     ^ .generic-status {
       display: inline-block;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;

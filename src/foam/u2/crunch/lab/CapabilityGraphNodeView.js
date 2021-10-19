@@ -44,10 +44,10 @@ foam.CLASS({
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     }
     ^segment.title {
-      font-size: 20px;
+      font-size: 2.0rem;
     }
     ^segment.tiny {
-      font-size: 9px;
+      font-size: 0.9rem;
       width: inherit;
     }
   `,
