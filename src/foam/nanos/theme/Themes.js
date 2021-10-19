@@ -102,6 +102,7 @@ Later themes:
               theme = theme && theme.merge(groupTheme) || groupTheme;
               break;
             }
+            if ( !! theme ) break;
             group = await group.parent$find;
           }
 
