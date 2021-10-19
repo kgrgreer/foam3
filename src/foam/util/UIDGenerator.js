@@ -55,7 +55,6 @@ foam.CLASS({
     },
     {
       name: 'generate',
-      synchronized: true,
       type: 'String',
       documentation: `
         Generate a Unique ID. The Unique ID consists of :
@@ -65,20 +64,23 @@ foam.CLASS({
         permutationSeq. In most cases, the generated ID should be 13 digits long.
       `,
       javaCode: `
+
         var id = new StringBuilder();
 
         // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
         id.append(toHexString(curSec));
 
-        // 2 bits sequence
-        if ( curSec != getLastSecondCalled() ) {
-          setSeqNo(0);
-          setLastSecondCalled(curSec);
+        synchronized (this) {
+          // 2 bits sequence
+          if ( curSec != getLastSecondCalled() ) {
+            setSeqNo(0);
+            setLastSecondCalled(curSec);
+          }
+          int seqNo = getSeqNo();
+          id.append(toHexString(seqNo, 2));
+          setSeqNo(seqNo + 1);
         }
-        int seqNo = getSeqNo();
-        id.append(toHexString(seqNo, 2));
-        setSeqNo(seqNo + 1);
 
         // 3 bits checksum
         var checksum = toHexString(calcChecksum(id.toString()), 3);
