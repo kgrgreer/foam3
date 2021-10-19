@@ -98,11 +98,14 @@ Later themes:
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
-            if ( ! theme && groupTheme && ! foam.util.equals(theme, groupTheme) ) {
-              theme = theme && theme.merge(groupTheme) || groupTheme;
+            if ( groupTheme ) {
+              if ( theme && ! foam.util.equals(theme, groupTheme) ) {
+                theme = theme.merge(groupTheme);
+              } else {
+                theme = groupTheme;
+              }
               break;
             }
-
             group = await group.parent$find;
           }
 
