@@ -751,3 +751,60 @@ p1.lastName = 'Doe';
 // Note that ExpressionSlots aren't set()-able:
 fullName.set('Jane Smith');
 log(fullName.get()); // Is still John Doe
+
+<br><br>
+## Axioms
+Q.
+When should I use axioms with javaExtras?
+</br>
+A.
+Anything you can define on a model is defined as an axiom of that model.
+Better reading of axioms here https://github.com/kgrgreer/foam3/blob/5ceaacfa6abf370cfb08f31cc7c24fc2f44197fe/src/foam/core/Boot.js#L79
+Axioms include methods, properties, listeners, refines, imports, javaExtras …
+<br>
+From above link “Axioms can be added either during the initial creation of a class and prototype, or anytime after.“
+Which implies that there is no notable difference in the model definitions.
+If you define an axiom_ in a model for javaExtra or
+if you add an axiom_ to axioms on the model and then define the javaExtra’s there - you are doing the samething.
+The build will instantiate the model then proceed to build it up.
+<br></br>
+
+## Freezable
+Q.
+“Freeze” meaning we don’t want to modify an object? Why do we need this function?
+Example 1)
+  public void beforeFreeze() {
+    getStatus();
+    getServerDaoKey();
+    getAdditionalGroups();
+  }
+<br>
+Example 2)
+  public foam.core.FObject freeze() {
+    beforeFreeze();
+    __frozen__ = true;
+    return this;
+  }
+<br></br>
+A.
+The idea behind freezing objects is for the concept of maintaining consistent data in our data structures- primarily in foam DAOs.
+We want to save the original object once it is in the DAO and only modify it through another DAO put.
+Without freezable, a service could still have access to an object and save some modification of an object in a DAO.
+So yes, a frozen object means that no modifications to this object are suppose to happen.
+<br>
+We implement this idea with an interface Freezable that is implemented on all FObjects.
+The default implementation of beforeFreeze() is a noop function. https://github.com/kgrgreer/foam3/blob/5ceaacfa6abf370cfb08f31cc7c24fc2f44197fe/src/foam/core/FObject.java#L414
+Then have a refinement here https://github.com/kgrgreer/foam3/blob/5ceaacfa6abf370cfb08f31cc7c24fc2f44197fe/src/foam/java/refinements.js#L552
+</br>
+So the idea behind beforeFreeze is that if an object needs to do something before the object is frozen, it can. 
+In the example 1, we see an implementation definition from the refinement.
+The properties that are being called are javaFactoryProperties.
+A factory on a property has many uses to instantiate a model with some predefined value.
+A javaFactory is specific to the java model, and a factory to a client js model.
+So we ensure that the property is called, to ensure that the default code - written in the javaFactory - for this property is run.
+If we didn’t run default javeFactory code and the property was never set, then the object is not complete
+and its predefined values would be ignored - virtually breaking javaFactory on all properties.
+<br>
+In example 2 you have the default behaviour setting for the freeze function of any FObject that is built on server(java).
+Defined https://github.com/kgrgreer/foam3/blob/5ceaacfa6abf370cfb08f31cc7c24fc2f44197fe/src/foam/java/refinements.js#L600
+which is what is building the java Object code.
