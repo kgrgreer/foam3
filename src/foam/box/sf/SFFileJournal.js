@@ -57,6 +57,20 @@ foam.CLASS({
       `
     },
     {
+      class: 'Boolean',
+      name: 'fileExist',
+      javaGetter: `
+        try {
+          FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+          File file = fileSystemStorage.get(getFilename());
+          Path path = file.toPath();
+          return Files.exists(path);
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       class: 'Long',
       name: 'fileLastAccessTime',
       javaGetter: `
@@ -134,6 +148,20 @@ foam.CLASS({
       });
 
       return obj;
+      `
+    },
+    {
+      name: 'createJournalFile',
+      args: '',
+      javaCode: `
+      try {
+        FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+        File file = fileSystemStorage.get(getFilename());
+        Path path = file.toPath();
+        Files.createFile(path);
+      } catch ( Throwable t ) {
+        throw new RuntimeException(t);
+      }
       `
     },
     {

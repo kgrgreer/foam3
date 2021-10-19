@@ -45,6 +45,7 @@ foam.CLASS({
     'java.io.IOException',
     'java.util.concurrent.atomic.AtomicInteger',
     'java.util.concurrent.atomic.AtomicLong',
+    'java.util.concurrent.atomic.AtomicBoolean',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.*',
     'org.apache.commons.lang.exception.ExceptionUtils'
@@ -197,12 +198,18 @@ foam.CLASS({
       documentation: 'help function for create a journal',
       javaType: 'SFFileJournal',
       javaCode: `
-        return new SFFileJournal.Builder(getX())
-                .setFilename(fileName)
-                .setCreateFile(true)
-                .setDao(new foam.dao.NullDAO())
-                .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
-                .build();
+        boolean createFile = getReplayFailEntry() ? true : false;
+        SFFileJournal journal = new SFFileJournal.Builder(getX())
+                                  .setFilename(fileName)
+                                  .setCreateFile(createFile)
+                                  .setDao(new foam.dao.NullDAO())
+                                  .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
+                                  .build();
+        if ( getReplayFailEntry() == false && journal.getFileExist() == false ) {
+          journal.createJournalFile();
+          journal.setFileLastAccessTime(0);
+        }
+        return journal;
 
       `
     },
@@ -212,6 +219,9 @@ foam.CLASS({
       javaType: 'SFEntry',
       documentation: 'Persist SFEntry into Journal.',
       javaCode: `
+        // Wait for the SF ready to serve.
+        while ( isReady_.get() == false ) {}
+
         SFEntry entry = new SFEntry.Builder(getX())
                               .setObject(fobject)
                               .build();
@@ -224,7 +234,7 @@ foam.CLASS({
           SFFileJournal journal = getJournal(toFileName(entry));
           return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
         } else {
-          synchronized(writeLock_) {
+          synchronized ( writeLock_ ) {
             long index = entryIndex_.incrementAndGet();
             entry.setIndex(index);
             SFFileJournal journal = getJournal(toFileName(entry));
@@ -265,8 +275,39 @@ foam.CLASS({
     {
       name: 'maybeUpdateAtime',
       args: 'SFEntry e',
-      documentation: 'try to update byte offset to atime',
+      documentation: 'try to update byte offset to file atime',
       javaCode: `
+        synchronized ( updateAtimeLock_ ) {
+          if ( e.getIndex() < processEntryIndex_.get() ) throw new RuntimeException("SF Index Error");
+          if ( e.getIndex() > processEntryIndex_.get() ) {
+            completedEntries_.offer(e);
+            return;
+          }
+
+          SFFileJournal journal = getJournal(toFileName(e));
+          long atime = journal.getFileLastAccessTime();
+          long entrySize = journal.calculateSize(e);
+          if ( entrySize == 0 ) throw new RuntimeException("SF format error");
+
+          long offset = atime + entrySize;
+          journal.setFileLastAccessTime(offset);
+          processEntryIndex_.incrementAndGet();
+
+          while ( completedEntries_.size() > 0 && processEntryIndex_.get() == completedEntries_.peek().getIndex() ) {
+            
+            SFEntry next = completedEntries_.poll();
+
+            journal = getJournal(toFileName(next));
+            atime = journal.getFileLastAccessTime();
+            entrySize = journal.calculateSize(e);
+            if ( entrySize == 0 ) throw new RuntimeException("SF format error");
+            
+            offset = atime + entrySize;
+            journal.setFileLastAccessTime(offset);
+            processEntryIndex_.incrementAndGet();
+          }
+        }
+      
       `
     },
     {
@@ -283,6 +324,9 @@ foam.CLASS({
             e.setStatus(SFStatus.CANCELLED);
             Journal journal = getJournal(toFileName(e));
             journal.put(getX(), "", (DAO) getNullDao(), e);
+          } else {
+            //update file a-time.
+            maybeUpdateAtime(e);
           }
           inFlight_.decrementAndGet();
           failed_.incrementAndGet();
@@ -386,6 +430,7 @@ foam.CLASS({
 
         MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
         for ( String filename : availableFilenames ) {
+          //TODO: need to record atime.
 
           Journal journal = new SFFileJournal.Builder(x)
                               .setDao(tempDAO)
@@ -398,7 +443,7 @@ foam.CLASS({
         //Find entry index;
         Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
         entryIndex_.set((Long)max.getValue());
-        successEntryIndex_.set((Long)max.getValue());
+        processEntryIndex_.set((Long)max.getValue());
 
         tempDAO.where(predicate).select(sink);
         List<SFEntry> sfEntryList = sink.getArray();
@@ -406,6 +451,7 @@ foam.CLASS({
         for ( SFEntry entry : sfEntryList ) {
           forward((SFEntry) entry.fclone());
         }
+        isReady_.getAndSet(true);
       `
     },
     {
@@ -520,11 +566,22 @@ foam.CLASS({
           data: `
             protected Logger logger_ = null;
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
-            final protected AtomicLong successEntryIndex_ = new AtomicLong(0);
+            final protected AtomicLong processEntryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
             final protected Object writeLock_ = new Object();
+            final protected Object updateAtimeLock_ = new Object();
+            final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
+            final protected PriorityQueue<SFEntry> completedEntries_ = new PriorityQueue<SFEntry>(16, (n, p) -> {
+                                                                if ( n.getIndex() < p.getIndex() ) {
+                                                                  return -1;
+                                                                }
+                                                                if ( n.getIndex() > p.getIndex() ) {
+                                                                  return 1;
+                                                                }
+                                                                return 0;
+                                                              });
             // final Map<Integer, String> retryCauseMap_ = createMap(100);
             // final Map<Integer, String> failCauseMap_ = createMap(100);
 
