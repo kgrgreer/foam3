@@ -237,10 +237,18 @@ foam.CLASS({
           synchronized ( writeLock_ ) {
             long index = entryIndex_.incrementAndGet();
             entry.setIndex(index);
-            //SFFileJournal journal = getJournal(toFileName(entry));
-            if ( entryCounter_.incrementAndGet() > getFileCapacity() ) {
-              //TODO: create file.
+            SFFileJournal journal = null;
+            int count = entryCounter_.incrementAndGet();
+
+            if ( count > getFileCapacity() ) {
               entryCounter_.set(1);
+              String filename = makeFileName(fileIndex_.incrementAndGet());
+              entry.setFileName(filename);
+              journal = getJournal(filename);
+            } else {
+              String filename = makeFileName(fileIndex_.get());
+              entry.setFileName(filename);
+              journal = journalMap_.get(filename);
             }
             return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
           }
@@ -301,7 +309,7 @@ foam.CLASS({
             
             SFEntry next = completedEntries_.poll();
 
-            journal = getJournal(toFileName(next));
+            journal = fetchJournal(next);
             atime = journal.getFileLastAccessTime();
             entrySize = journal.calculateSize(e);
             if ( entrySize == 0 ) throw new RuntimeException("SF format error");
@@ -470,7 +478,7 @@ foam.CLASS({
                                     .setCreateFile(false)
                                     .build();
 
-            if ( filename.equals(filenames.get(filenames.size() - 1)) ) curJournal_ = journal;
+            journalMap_.put(filename, journal);
             if ( journal.getFileLastAccessTime() == journal.getFileSize() ) continue;
 
             MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
@@ -490,7 +498,7 @@ foam.CLASS({
               SFEntry e = (SFEntry) entry.fclone();
               long index = entryIndex_.incrementAndGet();
               e.setIndex(index);
-              e.setJournal(journal);
+              e.setFileName(filename);
               forward(e);
             }
 
@@ -610,7 +618,15 @@ foam.CLASS({
       args: 'SFEntry entry',
       javaType: 'SFFileJournal',
       javaCode: `
-        return entry.getJournal();
+        return journalMap_.get(entry.getFileName());
+      `
+    },
+    {
+      name: 'makeFileName',
+      args: 'int suffix',
+      javaType: 'String',
+      javaCode: `
+        return getFileName() + "." + suffix;
       `
     },
     {
@@ -641,7 +657,6 @@ foam.CLASS({
             final protected Object writeLock_ = new Object();
             final protected Object updateAtimeLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
-            protected volatile F3FileJournal curJournal_ = null;
             final protected PriorityQueue<SFEntry> completedEntries_ = new PriorityQueue<SFEntry>(16, (n, p) -> {
                                                                 if ( n.getIndex() < p.getIndex() ) {
                                                                   return -1;

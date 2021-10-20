@@ -57,6 +57,11 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      class: 'String',
+      name: 'fileName',
+      storageTransient: true
+    },
+    {
       class: 'Long',
       name: 'fileOffset',
     },
