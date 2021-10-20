@@ -1608,26 +1608,26 @@ foam.CLASS({
         return 'VARCHAR(' + width + ')';
       }
     }
-  ],
+  // ],
 
-  methods: [
-    function createJavaPropertyInfo_(cls) {
-      var info = this.SUPER(cls);
+  // methods: [
+  //   function createJavaPropertyInfo_(cls) {
+  //     var info = this.SUPER(cls);
 
-      if ( this.value != '' ) {
-        info.method({
-          name: 'isDefaultValue',
-          visibility: 'public',
-          args: [
-            { name: 'o', type: 'Object'}
-          ],
-          type: 'boolean',
-          body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
-        });
-      }
+  //     if ( this.value != '' ) {
+  //       info.method({
+  //         name: 'isDefaultValue',
+  //         visibility: 'public',
+  //         args: [
+  //           { name: 'o', type: 'Object'}
+  //         ],
+  //         type: 'boolean',
+  //         body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
+  //       });
+  //     }
 
-      return info;
-    }
+  //     return info;
+  //   }
   ]
 });
 
