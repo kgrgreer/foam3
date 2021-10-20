@@ -90,17 +90,16 @@ public class NSpecFactory
       creatingThread_ = null;
     }
   }
-  
+
   private  ThreadLocal<Object> threadLocalNS_ = new ThreadLocal<Object>() {
     @Override
     protected Object initialValue() {
       synchronized ( this ) {
-        if ( ns_ == null ||
-            ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+        if ( ns_ == null ) {
           buildService(x_);
         }
-        return ns_;
       }
+      return ns_;
     }
 
     @Override
@@ -108,12 +107,10 @@ public class NSpecFactory
       return super.get();
     }
   };
-  
+
   public Object create(X x) {
-    ns_ = this.threadLocalNS_.get();
-
+    threadLocalNS_.get();
     if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
-
     return ns_;
   }
 
