@@ -107,7 +107,6 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-
       this
       .on('click', this.stopPropagation)
         .start()
@@ -156,7 +155,7 @@ foam.CLASS({
     function onTopPropertiesGroupByChange(isColumnSelected, index, isColumnSelectionHaventChanged, isChild) {
       if ( ! isColumnSelectionHaventChanged )
         this.onGroupChanged(isColumnSelected, index, this.views, isChild);
-        this.data.updateColumns();
+      this.data.updateColumns();
     },
     function onDragAndDrop(views, targetIndex, draggableIndex) {
       this.resetProperties(views, targetIndex, draggableIndex);
@@ -198,14 +197,14 @@ foam.CLASS({
       }
       return arr;
     },
-    function onSelectionChanged(isColumnSelected, index, views)  {
+    function onSelectionChanged(isColumnSelected, index, views) {
       if ( isColumnSelected ) {
         this.onSelect(index, views)
       } else if ( ! isColumnSelected ) {
         this.onUnSelect(index, views);
       }
     },
-    function onGroupChanged(isColumnSelected, index, views, isChild){
+    function onGroupChanged(isColumnSelected, index, views, isChild) {
       if ( isColumnSelected ) {
         this.onSelectGroup(index, views, isChild)
       } else if ( ! isColumnSelected ) {
@@ -222,40 +221,39 @@ foam.CLASS({
         return this.resetProperties(views, startUnselectedIndex, draggableIndex);
     },
     function onSelectGroup(draggableIndex, views, isChild) {
-      if ( this.groupByColumns.length > 0  && ! isChild ) {
-      this.groupByColumns.forEach(element => {
-      console.log(element.rootProperty[0]);
-        element.isPropertyGrouped = false
-        if ( ! element.isPropertySelected ) {
-               this.onUnSelect(element.index, views);
-            }
-            });
+      var el = views[draggableIndex].prop;
+      if ( this.groupByColumns.length > 0 ) {
+        this.groupByColumns.forEach(element => {
+           if ( ! isChild )
+             element.isPropertyGrouped = false;
+           if ( ! element.isPropertySelected )
+             this.onUnSelect(element.index, views);
+         });
               this.groupByColumns = [];
-              }
-
-      var tc = views[draggableIndex].prop.rootProperty[0];
+      }
+      var currEl = views.find(v => v.prop.rootProperty == el.rootProperty);
+      var tc = currEl.prop.rootProperty[0];
       if ( ! isChild ) {
         axiom = this.data.of.getAxiomByName(tc);
         this.data.groupBy = axiom;
-       // this.resetProperties(views, 0, draggableIndex);
       }
-      this.groupByColumns.push(views[draggableIndex].prop);
-      this.resetProperties(views, 0, draggableIndex);
+      this.groupByColumns.push(currEl.prop);
+      this.resetProperties(views, 0, currEl.index);
     },
     function onUnSelect(draggableIndex, views) {
       if ( views[draggableIndex].prop.isPropertyGrouped ) return;
-      var startUnselectedIndex = views.find(v => ! v.prop.isPropertySelected && v.index !== draggableIndex);
-      if ( ! startUnselectedIndex )
+      var startUnselectedIndex = views.find(v => ! v.prop.isPropertyGrouped && ! v.prop.isPropertySelected && v.index !== draggableIndex);
+      if ( ! startUnselectedIndex ) {
         return this.resetProperties(views, views.length - 1, draggableIndex);
-      debugger;
+      }
       startUnselectedIndex =  startUnselectedIndex.index;
       if ( startUnselectedIndex - draggableIndex === 1 ) {
         var currentProp = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(views[draggableIndex].prop.rootProperty);
         var comparedToProp =  this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(views[startUnselectedIndex].prop.rootProperty);
-        if ( currentProp.toLowerCase().localeCompare(comparedToProp.toLowerCase()) < 1 )
+        if ( currentProp.toLowerCase().localeCompare(comparedToProp.toLowerCase()) < 1 ) {
           return this.resetProperties(views, startUnselectedIndex-1, draggableIndex);
+        }
       }
-
       while ( startUnselectedIndex < views.length ) {
         var currentProp = this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(views[draggableIndex].prop.rootProperty);
         var comparedToProp =  this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(views[startUnselectedIndex].prop.rootProperty);
@@ -443,12 +441,10 @@ foam.CLASS({
       name: 'onSelectionChanged',
       documentation: 'to reuse onSelectionChanged function'
     },
-        {
-          name: 'onGroupChanged',
-          documentation: 'to reuse onSelectionChanged function'
-        }
-
-
+    {
+       name: 'onGroupChanged',
+       documentation: 'to reuse onSelectionChanged function'
+    }
   ],
   constants: [
     {
@@ -461,9 +457,7 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
-
       this
-
         .add(self.slot(function(prop) {
           return self.E()
           .attrs({ draggable: prop.isPropertySelected$ ? 'true' : 'false' })
@@ -520,7 +514,6 @@ foam.CLASS({
   'foam.u2.tag.Image'
   ],
   css: `
-
   ^selected {
     background: #cfdbff;
   }
@@ -658,7 +651,6 @@ foam.CLASS({
   requires: [
     'foam.u2.view.RootColumnConfigPropView'
   ],
-
   properties: [
     {
       name: 'views',
@@ -690,8 +682,8 @@ foam.CLASS({
       documentation: 'to reuse onSelectionChanged function'
     },
     {
-       name: 'onGroupChanged',
-       documentation: 'to reuse onGroupChanged function'
+      name: 'onGroupChanged',
+      documentation: 'to reuse onGroupChanged function'
      },
   ],
   methods: [
@@ -825,7 +817,6 @@ foam.CLASS({
     {
       name: 'isPropertyGrouped',
       class: 'Boolean',
-      value: false
     },
     {
       name: 'level',
