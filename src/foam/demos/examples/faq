@@ -751,3 +751,174 @@ p1.lastName = 'Doe';
 // Note that ExpressionSlots aren't set()-able:
 fullName.set('Jane Smith');
 log(fullName.get()); // Is still John Doe
+
+##  Sink
+What is the difference between ArraySink and AbstractSink and when to use?
+Answer:
+AbstractSink is an abstract base class for implementing the Sink interface.
+ArraySink is one of the possible implementation of AbstractSink. ArraySink is the default Sink used if you don't explicitly provide a Sink to the DAO select() method.
+The ArraySink has a property called 'array' which stores all values obtained from the select().
+
+However, if you can just process each record in-line in the AbstractSink, then that's better because it won't allocate the memory for an array.
+Also, you can start processing the records sooner, ie. when the first one is available, but with an ArraySink, you don't get to start until all of the data has been copied into the array.
+Also, if you terminate the selection early, then you don't do any more work with an AbstractSink, but with ArraySink, you've already copied all of the data into the array.
+
+ArraySink sink = (ArraySink) dao.select(new ArraySink());
+or just:
+ArraySink sink = (ArraySink) dao.select(new ArraySink());
+
+for ( int i = 0; i < sink.getArray().size(); i++ ) {
+  SomeObject obj = (SomeObject) sink.getArray().get(i);
+
+  if ( obj.something() ) break;
+}
+
+vs.
+
+dao. select(new AbstractSink() {
+  public void put(Object o, Detachable d) {
+    SomeObject obj = (SomeObject) o;
+    if ( o.something() ) d.detach();
+  }
+});
+
+In the above examples, the first case uses an ArraySink, while the second uses
+an in-lined sub-class of AbstractSink. Both examples abort the select when
+they find an object that meets some criteria, but the second AbstractSink is
+more efficient because it aborts the select() early and doesn't have to process
+the remaining objects, whereas the ArraySink has already select()-ed them and
+copied them into the ArraySink array.
+
+##  JavaExtras
+What is javaExtras and how to use it?
+Answer:
+When you would want to add extra Java code to your generated java class, you can just add it with javaExtras.
+For example:
+axioms: [
+  {
+    name: 'javaExtras',
+    buildJavaClass: function(cls) {
+      cls.extras.push(foam.java.Code.create({
+        data: `
+          public CompoundException(String message) {
+            super(message);
+          }
+
+          public CompoundException(String message, java.lang.Exception cause) {
+            super(message, cause);
+          }
+          `
+      }));
+    }
+  }
+],
+
+The following code, taken from CompoundException, is used to add two convenience constructors
+to the generated CompoundException.java class. The above code makes use of FOAM's axiom support.
+FOAM models are just collections of axioms. Everything that you think of as being a unique attribute
+of a model, is just a different type of axiom. Properties, methods, actions, imports, exports, etc., are all
+just axioms. Each axiom has methods for build its part into the generated Javascript class and prototype or Java or Swift code.
+For Javascript installInProto() and installInClass() are used, and for Java, buildJavaClass is used.
+Besides the provided axioms types provided by FOAM, you can always write your own, which is what the above code is doing.
+It's just creating custom axiom to add a bit of code to the java class. It's naming it 'javaExtras', by convention, but it
+could have named it anything.
+
+Custom axioms are used for things which aren't typically used enough to warrant adding a first-class axiom type to the FOAM core.
+However, if we check how many times the above pattern is used in the foam codebase:
+
+$ find ./ -name "*.js" -exec grep javaExtras \{} \; | wc -l
+110
+
+We see that it's used 110 times, which is enough to warrant promotion to first-class built-in status.
+
+The above code is a bit ugly, so let's add this as a built-in feature to FOAM by refining model:
+
+// First create a class for java code:
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'JavaCode',
+
+  documentation: `
+    Axiom for adding java code to a model.
+    The supplied code will be added to the generated .java code generated for the model.
+  `,
+
+  properties: [
+    'name',
+    'code'
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      cls.extras.push(foam.java.Code.create({data: this.code}));
+    }
+  ]
+});
+
+Now we could do:
+
+axioms: [ foam.java.JavaCode.create({name: 'constructors', code: `
+public CompoundException(String message) {
+  super(message);
+}
+
+public CompoundException(String message, java.lang.Exception cause) {
+  super(message, cause);
+}
+
+`})],
+
+Which is better, but we could do better still by refining foam.core.Model to add
+a javaCode property.
+
+foam.CLASS({
+  refines: 'foam.core.Model',
+  package: 'foam.java',
+  name: 'JavaCodeModelRefine',
+
+  requires: [ 'foam.java.JavaCode' ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'javaCode',
+      postSet: function(_, code) {
+        this.axioms_.push(this.JavaCode.create({
+          name: 'JavaCode_' + this.name,
+          code: code
+        }));
+      }
+    }
+  ]
+});
+
+Now we can just do:
+
+javaCode: `
+  public CompoundException(String message) {
+    super(message);
+  }
+
+  public CompoundException(String message, java.lang.Exception cause) {
+    super(message, cause);
+  }
+`
+
+Which is much nicer than the original.
+
+The above improvement has been added to FOAM:
+
+commit d2e4f11a323e8afc6c176a513215745083c5f4d6
+Author: Kevin Greer <kgrgreer@gmail.com>
+Date:  Tue Oct 19 11:34:04 2021 -0400
+  Convert from javaExtras custom Axiom to javaCode:.
+
+
+##  Journals type
+What is the difference between runtime journals(e.g. UserCapabilityJunctions) and static journals( e.g. UserCapabilityJunctions.0). Also, journals end with .jrl. How do we differentiate those?
+
+Answer:
+Static journals are the initial configuration that the system is shipped with when when it is built, and is creating by combining the .jrl files found in the source code repository. Static journals end with the .0 extension.
+Runtime journals contain data that is created (or modified or deleted) by the system one it is deployed.
+The state of the system is determined by starting with the static journals and then applying the changes listed in the runtime journals.

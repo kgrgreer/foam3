@@ -33,7 +33,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 

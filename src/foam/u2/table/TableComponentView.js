@@ -23,7 +23,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.column.CommonColumnHandler',
       factory: function() {
-        return foam.nanos.column.CommonColumnHandler.create();
+        return foam.nanos.column.CommonColumnHandler.create({}, this);
       }
     },
     {

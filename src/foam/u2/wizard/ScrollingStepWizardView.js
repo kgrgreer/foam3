@@ -86,7 +86,7 @@ foam.CLASS({
       background-color: %DESTRUCTIVE2%f0;
       color: %WHITE%;
       height: 30px;
-      font-size: 18px;
+      font-size: 1.8rem;
       line-height: 30px;
       text-align: center;
       z-index: 1000;

@@ -19,7 +19,7 @@ foam.CLASS({
       /*
         note: "pixels" are relative to SVG viewport
       */
-      font-size: 10px;
+      font-size: 1rem;
       text-align: center;
     }
   `,

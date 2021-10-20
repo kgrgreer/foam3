@@ -53,7 +53,7 @@ foam.CLASS({
           border:1px solid #cbcfd4;
           color: #5e6061;
           padding: 6px 7px 6px 7px;
-          font-size: 14px;
+          font-size: 1.4rem;
           font-weight: 300;
         }
 
@@ -64,7 +64,7 @@ foam.CLASS({
         }
 
         ^calendar_table tbody > tr > th {
-          font-size: 10px;
+          font-size: 1rem;
           color: #5e6061;
           font-weight: 300;
           font-style: normal;

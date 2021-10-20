@@ -87,7 +87,7 @@ foam.CLASS({
     ^label-title {
       margin: 0;
 
-      font-size: 32px;
+      font-size: 3.2rem;
       font-weight: bold;
       letter-spacing: 1;
     }
@@ -95,7 +95,7 @@ foam.CLASS({
       margin: 0;
       margin-top: 8px;
 
-      font-size: 16px;
+      font-size: 1.6rem;
       color: #5e6061;
     }
     ^label-subtitle:last-child {
@@ -104,7 +104,7 @@ foam.CLASS({
     ^label-cap {
       margin: 0;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 1.2rem;
     }
     ^detail-container .foam-u2-crunch-Style-mode-circle {
       width: 100%;

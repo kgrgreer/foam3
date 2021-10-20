@@ -30,13 +30,13 @@ foam.CLASS({
     }
 
     ^ .makeBold {
-      font-size: 22px;
+      font-size: 2.2rem;
       font-weight: 600;
       padding-bottom: 2vh;
     }
 
     ^ .subTitle {
-      font-size: 20px;
+      font-size: 2.0rem;
       color: #7f8385;
       width: 85%;
       display: inline-block;
@@ -51,7 +51,7 @@ foam.CLASS({
     }
 
     ^ .table-content {
-      font-size: 14px;
+      font-size: 1.4rem;
       color: #7f8385;
       padding-left: 1.5vw;
       margin-top: -19px;
