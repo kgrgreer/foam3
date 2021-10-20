@@ -34,7 +34,7 @@
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        setLog(getLog().append("\\nPerforming Rule Debug on DAO: "));
+        setLog(getLog().append("\\nPerforming Rule Debug. ")));
       `
     },
     {
@@ -55,7 +55,10 @@
         { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       javaCode: `
-        //NOP
+        setLog(getLog().append("\\nRule: "));
+        setLog(getLog().append(rule.getName()));
+        setLog(getLog().append(", id: "));
+        setLog(getLog().append(rule.getId()));
       `
     },
     {
@@ -76,6 +79,8 @@
       ],
       type: 'Boolean',
       javaCode: `
+        setLog(getLog().append("\\nPermission: "));
+        setLog(getLog().append(result));
         return result;
       `
     },
@@ -86,6 +91,8 @@
       ],
       type: 'Boolean',
       javaCode: `
+        setLog(getLog().append("\\nPredicate: "));
+        setLog(getLog().append(result));
         return result;
       `
     },
@@ -96,12 +103,15 @@
       ],
       type: 'Boolean',
       javaCode: `
+        setLog(getLog().append("\\nActive: "));
+        setLog(getLog().append(result));
         return result;
       `
     },
     {
       name: 'traceAction',
       javaCode: `
+        setLog(getLog().append("\\nAction executed. "));
         //NOP
       `
     }
