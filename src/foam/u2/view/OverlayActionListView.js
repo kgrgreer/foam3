@@ -104,7 +104,7 @@ foam.CLASS({
     }
 
     ^dropdown svg {
-      font-size: 6px; 
+      font-size: 0.6rem; 
     }
   `,
 

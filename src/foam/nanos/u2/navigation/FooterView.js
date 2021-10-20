@@ -59,8 +59,7 @@ foam.CLASS({
     ^ .mode {
       background: transparent;
       opacity: 0.6;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 300;
       font-style: normal;
       font-stretch: normal;

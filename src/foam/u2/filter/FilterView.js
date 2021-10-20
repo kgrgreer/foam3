@@ -103,7 +103,7 @@ foam.CLASS({
       fill: initial;
       transform: rotate(0deg);
       transition: all 0.5s ease;
-      font-size: 6px;
+      font-size: 0.6rem;
     }
 
     ^filter-button-active{
@@ -117,7 +117,7 @@ foam.CLASS({
     }
 
     ^link-mode {
-      font-size: 14px;
+      font-size: 1.4rem;
       margin-left: 16px;
       cursor: pointer;
     }

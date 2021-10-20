@@ -86,7 +86,7 @@ foam.CLASS({
       }).catch(this.reportNetworkFailure.bind(this, wizardlet, 'load', null));
     },
     function save_(wizardlet, options) {
-      var wData = wizardlet.data ? wizardlet.data.clone() : null;
+      var wData = wizardlet.data ? wizardlet.data : null;
       wizardlet.loading = true;
       if ( wizardlet.reloadAfterSave && options.reloadData ) {
         wizardlet.loadingLevel = this.LoadingLevel.LOADING;

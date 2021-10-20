@@ -71,7 +71,7 @@ foam.CLASS({
       justify-content: center;
     }
     ^caption {
-      font-size: 10px;
+      font-size: 1rem;
       color: #525455;
     }
     ^browse-container{

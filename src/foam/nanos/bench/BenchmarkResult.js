@@ -18,7 +18,8 @@ foam.CLASS({
     'operationsST',
     'operationsS',
     'fail',
-    'total'
+    'total',
+    'created'
   ],
 
   ids: ['uid', 'run'],

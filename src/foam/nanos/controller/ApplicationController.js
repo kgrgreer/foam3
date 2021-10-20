@@ -154,8 +154,7 @@ foam.CLASS({
     body {
       background: /*%GREY5%*/ #f5f7fa;
       color: #373a3c;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       letter-spacing: 0.2px;
       margin: 0;
       overscroll-behavior: none;
@@ -474,11 +473,9 @@ foam.CLASS({
         this.fetchTheme().then(() => {
           this
             .addClass(this.myClass())
-            .start()
               .add(this.slot(function (topNavigation_) {
                 return this.E().tag(topNavigation_);
               }))
-            .end()
             .start()
               .addClass('stack-wrapper')
               .tag({
@@ -662,10 +659,8 @@ foam.CLASS({
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
-        .select().then(ableToAccessMenus => {
-          ableToAccessMenus.array[0].launch(this);
-          return ableToAccessMenus.array[0];
-        }).catch(e => console.error(e.message || e));
+        .select().then(a => a.array.length && a.array[0])
+        .catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {
@@ -724,9 +719,12 @@ foam.CLASS({
             description: obj.toastSubMessage,
             icon: obj.icon
           }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
+          // only update and save non-transient messages
+          if ( ! obj.transient ) {
+            var clonedNotification = obj.clone();
+            clonedNotification.toastState = this.ToastState.DISPLAYED;
+            this.__subSubContext__.notificationDAO.put(clonedNotification);
+          }
         }
       });
 
@@ -792,8 +790,7 @@ foam.CLASS({
     },
     {
       name: 'updateDisplayWidth',
-      isMerged: true,
-      mergeDelay: 1000,
+      isFramed: true,
       code: function() {
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()

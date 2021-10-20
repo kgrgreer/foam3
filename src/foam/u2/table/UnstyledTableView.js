@@ -19,23 +19,26 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.nanos.column.TableColumnOutputter',
     'foam.u2.CheckBox',
-    'foam.u2.tag.Image',
-    'foam.u2.view.EditColumnsView',
-    'foam.u2.view.OverlayActionListView',
-    'foam.u2.view.LazyScrollManager',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
-    'foam.u2.stack.StackBlock'
+    'foam.u2.stack.StackBlock',
+    'foam.u2.table.TableHeaderComponent',
+    'foam.u2.tag.Image',
+    'foam.u2.view.EditColumnsView',
+    'foam.u2.view.LazyScrollManager',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   exports: [
     'click',
     'click as dblclick',
     'columns',
+    'colWidthUpdated',
     'currentMemento_ as memento',
     'nestedPropsAndIndexes',
     'props',
     'propertyNamesToQuery',
+    'selectedColumnsWidth',
     'selectedObjects'
   ],
 
@@ -57,6 +60,11 @@ foam.CLASS({
       type: 'Int',
       name: 'EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH',
       value: 60
+    },
+    {
+      type: 'Int',
+      name: 'CHECKBOX_CONTAINER_WIDTH',
+      value: 42
     },
     {
       type: 'Char',
@@ -95,6 +103,7 @@ foam.CLASS({
     {
       name: 'order'
     },
+    //TODO: CLEAN UP ALL THESE COLUMN PROPS...
     {
       name: 'columns_',
       factory: function() { return []; }
@@ -105,9 +114,29 @@ foam.CLASS({
     {
       name: 'selectedColumnNames',
       expression: function(columns, of, memento) {
-        var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
+        var ls = memento && memento.head.length != 0 ? 
+          memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) :
+          JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
         return ls || columns;
       }
+    },
+    {
+      name: 'selectedColumnsWidth',
+      factory: function() { 
+        var local = {};
+        JSON.parse(localStorage.getItem(this.of.id))?.map(c => {
+          foam.Array.isInstance(c) ?
+          local[c[0]] = c[1] : 
+          local[c] = undefined;
+        });
+        return local; 
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'colWidthUpdated',
+      documentation: `used to trigger/listen to columnWidth changes as they are stored 
+        in an object where value cahnges do not trigger slots`
     },
     {
       name: 'columns',
@@ -204,10 +233,15 @@ foam.CLASS({
       class: 'Int',
       name: 'tableWidth_',
       documentation: 'Width of the whole table. Used to get proper scrolling on narrow screens.',
-      expression: function(props) {
+      expression: function(props, colWidthUpdated, multiSelectEnabled, editColumnsEnabled) {
+        var self = this;
+        var base = 0;
+        if ( this.multiSelectEnabled ) base += this.CHECKBOX_CONTAINER_WIDTH;
+        if ( this.editColumnsEnabled ) base += this.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH;
         return this.columns_.reduce((acc, col) => {
-          return acc + (this.columnHandler.returnPropertyForColumn(this.props, this.of, col, 'tableWidth') || this.MIN_COLUMN_WIDTH_FALLBACK);
-        }, this.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH) + 'px';
+          var width = this.selectedColumnsWidth[self.columnHandler.propertyNamesForColumnArray(col)];
+          return acc + (width || this.columnHandler.returnPropertyForColumn(this.props, this.of, col, 'tableWidth') || this.MIN_COLUMN_WIDTH_FALLBACK);
+        }, base) + 'px';
       }
     },
     {
@@ -302,9 +336,7 @@ foam.CLASS({
       this.groupBy = column;
     },
     function updateColumns() {
-      localStorage.removeItem(this.of.id);
-      localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => foam.String.isInstance(c) ? c : c.name )));
-
+      this.updateLocalStorage();
       if ( ! this.memento )
         return;
 
@@ -342,6 +374,7 @@ foam.CLASS({
       this.allColumns$.sub(this.updateColumns_);
       this.updateColumns_();
 
+      this.onDetach(this.colWidthUpdated$.sub(this.updateLocalStorage));
       //set memento's selected columns
       if ( this.memento ) {
         if ( this.memento.head.length != 0 ) {
@@ -359,7 +392,7 @@ foam.CLASS({
           }
         } else {
           this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+            return this.columnHandler.propertyNamesForColumnArray(c);
           }).join(',');
         }
         if ( ! this.memento.tail ) {
@@ -443,7 +476,7 @@ foam.CLASS({
                   this.start().
                     addClass(view.myClass('th')).
                     tag(view.CheckBox, {}, slot).
-                    style({ width: '42px' }).
+                    style({ width: `${this.CHECKBOX_CONTAINER_WIDTH}px`, 'min-width': `${this.CHECKBOX_CONTAINER_WIDTH}px` }).
                   end();
 
                   // Set up a listener so we can update the existing CheckBox
@@ -472,57 +505,7 @@ foam.CLASS({
 
                 // Render the table headers for the property columns.
                 forEach(columns_, function([col, overrides]) {
-                  var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                  var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                  var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
-
-                  if ( ! prop ) return;
-
-                  var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
-                  var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
-                  var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
-                  var colTooltip = colData.colPath.join( '/' );
-
-                  this.start().
-                    addClass(view.myClass('th')).
-                    addClass(view.myClass('th-' + prop.name))
-                      .style({
-                        'align-items': 'center',
-                        display: 'flex',
-                        flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
-                        'justify-content': 'start',
-                        'word-wrap': 'break-word',
-                      })
-                      .start('', { tooltip: colTooltip })
-                        .addClass('h600')
-                        .style({
-                          overflow: 'hidden',
-                          'text-overflow': 'ellipsis'
-                        })
-                        .add(colHeader).
-                      end().
-                      callIf(isFirstLevelProperty && prop.sortable, function() {
-                        var currArrow = view.restingIcon;
-                        this.on('click', function(e) {
-                          view.sortBy(prop);
-                          }).
-                          callIf(prop.label !== '', function() {
-                            this.start()
-                              .start('img')
-                                .attr('src', this.slot(function(order) {
-                                  if ( prop === order ) {
-                                    currArrow = view.ascIcon;
-                                  } else {
-                                    if ( view.Desc.isInstance(order) && order.arg1 === prop )
-                                    currArrow = view.descIcon;
-                                  }
-                                  return currArrow;
-                                }, view.order$))
-                              .end()
-                            .end();
-                        });
-                      }).
-                  end();
+                  this.tag(view.TableHeaderComponent, { data: view, col: col, overrides: overrides });
                 }).
 
                 // Render a th at the end for the column that contains the context
@@ -533,7 +516,8 @@ foam.CLASS({
                     addClass(view.myClass('th')).
                     style({
                       flex: `0 0 ${view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px`,
-                      'text-align': 'unset!important;',
+                      'min-width': view.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH,
+                      'text-align': 'unset!important;'
                     }).
                     callIf(view.editColumnsEnabled, function() {
                       this.addClass(view.myClass('th-editColumns'))
@@ -569,7 +553,7 @@ foam.CLASS({
         .add(this.slot(showPagination => {
           var buttonStyle = { label: '', buttonStyle: 'TERTIARY', size: 'SMALL' };
           return showPagination ?
-           this.E().start(view.Cols).addClass(view.myClass('nav')).style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later
+          this.E().start(view.Cols).addClass(view.myClass('nav')).style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later
             startContext({ data: view.scrollEl_ }).
               start(view.Cols).
                 style({ gap: '4px', 'box-sizing': 'border-box' }).
@@ -614,6 +598,25 @@ foam.CLASS({
   ],
 
   listeners: [
+    function resetColWidths() {
+      this.selectedColumnsWidth = {};
+      for ( var s of this.selectedColumnNames ) {
+        this.selectedColumnsWidth[s] = this.columnHandler.returnPropertyForColumn(this.props, this.of, s, 'tableWidth') || null;
+      }
+    },
+    { 
+      name: 'updateLocalStorage',
+      isMerged: true,
+      mergeDelay: 5000,
+      code: function() {
+        localStorage.removeItem(this.of.id);
+        localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
+          var name = foam.String.isInstance(c) ? c : c.name;
+          var size = this.selectedColumnsWidth[name] == undefined ? undefined : this.selectedColumnsWidth[name];
+          return [name, size];
+        })));
+      }
+    },
     {
       name: 'updateColumns_',
       isFramed: true,

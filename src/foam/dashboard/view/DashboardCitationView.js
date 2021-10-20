@@ -71,12 +71,12 @@ foam.CLASS({
 
     ^id {
       font-weight: 300;
-      font-size: 13px;
+      font-size: 1.3rem;
       color: gray;
     }
 
     ^value {
-      font-size: 13px;
+      font-size: 1.3rem;
       font-weight: 500;
     }
   `

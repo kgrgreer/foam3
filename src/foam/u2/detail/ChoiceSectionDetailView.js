@@ -40,7 +40,7 @@ foam.CLASS({
 
     ^ .action-button {
       border-radius: 10px;
-      font-size: 20px;
+      font-size: 2.0rem;
       font-weight: bold;
       padding: 5px;
       width: 100px;

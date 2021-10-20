@@ -16,7 +16,7 @@ foam.CLASS({
       }
       return propNames[n];
     },
-    function checkIfArrayAndReturnPropertyNamesForColumn(col) {
+    function propertyNamesForColumnArray(col) {
       return this.returnPropertyNamesForColumn(this.returnNElementIfArray(col, 0));
     },
     function returnPropertyNamesForColumn(col) {
@@ -41,7 +41,7 @@ foam.CLASS({
       return foam.core.Property.isInstance(col) || foam.core.Action.isInstance(col) || foam.Object.isInstance(col);
     },
     function mapArrayColumnsToArrayOfColumnNames(cols) {
-      return cols.map(c => this.checkIfArrayAndReturnPropertyNamesForColumn(c));
+      return cols.map(c => this.propertyNamesForColumnArray(c));
     },
     function checkIfArrayAndReturnPropertyNameForRootProperty(rootProperty) {
       return this.returnPropertyNameForRootProperty(this.returnNElementIfArray(rootProperty, 0));
@@ -104,7 +104,7 @@ foam.CLASS({
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
         var objsClass = this.getClassForNestedPropertyObject(of, arrayOfNestedPropertiesName[i].split('.'));
         if( ! map[key] ) {
-          map[key] = objsClass.create();
+          map[key] = objsClass.create({}, this);
         }
         if ( arrayOfValues[i] )
           objsClass.getAxiomByName(this.getNameOfLastPropertyForNestedProperty(arrayOfNestedPropertiesName[i])).set(map[key], arrayOfValues[i]);

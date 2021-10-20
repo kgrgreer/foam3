@@ -93,7 +93,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 1.6rem;
       line-height: 1.25;
       letter-spacing: 0.3px;
       width: 100%;
