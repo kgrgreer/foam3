@@ -274,10 +274,7 @@ foam.CLASS({
     },
     'tableEl_',
     'scrollEl_',
-    ['showPagination', true],
     ['tableHeadHeight', 52],
-    'selectColumnsView',
-    'groupByView'
   ],
 
   methods: [
@@ -411,6 +408,9 @@ foam.CLASS({
           });
         }
       }
+      if ( view.editColumnsEnabled )
+        var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
+
       if ( this.filteredTableColumns$ ) {
         this.onDetach(this.filteredTableColumns$.follow(
           //to not export "custom" table columns
@@ -534,34 +534,22 @@ foam.CLASS({
                       'text-align': 'unset!important;',
                     }).
                     callIf(view.editColumnsEnabled, function() {
-                      this.start('')
-                        this.addClass(view.myClass('th-editColumns'))
-                        this.startContext({ data: view })
-                        this.tag(view.GROUP_BY_COLUMNS, { themeIcon: 'folderOutline', label: '', buttonStyle: 'TERTIARY', size: 'SMALL' })
-                        this.tag(view.SELECT_COLUMNS, { themeIcon: 'show', label: '', buttonStyle: 'TERTIARY' })
-                        .endContext()
-                        //this.tag(view.GROUP_BY_COLUMNS, {label: 'X', buttonStyle: 'TERTIARY' })
-                        //this.tag(view.SELECT_COLUMNS, {label: 'Y', buttonStyle: 'TERTIARY' })
-                        // .tag(view.OverlayActionListView, {
-                        //   data: [view.GROUP_BY_COLUMNS , view.SELECT_COLUMNS],
-                        //   obj: view,
-                        //   showDropdownIcon: false,
-                        //   buttonStyle: 'TERTIARY',
-                        //   icon: 'images/Icon_More_Resting.svg'
-                        // })
-                        .addClass(view.myClass('vertDots'))
-                        .addClass(view.myClass('noselect'))
-                      .end();
+                      this.addClass(view.myClass('th-editColumns'))
+                      .on('click', function(e) {
+                        editColumnView.parentId = this.id;
+                        if ( ! editColumnView.selectColumnsExpanded )
+                          editColumnView.selectColumnsExpanded = ! editColumnView.selectColumnsExpanded;
+                      }).
+                      tag(view.Image, { data: '/images/Icon_More_Resting.svg' }).
+                      addClass(view.myClass('vertDots')).
+                      addClass(view.myClass('noselect'))
+                      ;
                     }).
                   end();
                 });
               })).
           end().
-          callIf(view.editColumnsEnabled, function() {
-            this
-              .tag(view.EditColumnsView, { data: view, overlayView: { class: 'foam.u2.view.ColumnConfigPropView'}}, view.selectColumnsView$)
-              .tag(view.EditColumnsView, { data: view, overlayView: { class: 'foam.u2.view.GroupByView' }}, view.groupByView$);
-            })
+          callIf(view.editColumnsEnabled, function() {this.add(editColumnView);})
           .start().addClass(view.myClass('tbody'))
             .tag(view.LazyScrollManager, {
                 data$: view.data$,
@@ -655,23 +643,8 @@ foam.CLASS({
       }));
     },
   ],
-  actions: [
-    {
-      name: 'selectColumns',
-      label: 'Show/Hide Columns',
-      code: function(){
-        this.selectColumnsView.editOverlayExpanded = true;
-      }
-    },
-    {
-      name: 'groupByColumns',
-      label: 'Group by Columns',
-      code: function(){
-        this.groupByView.editOverlayExpanded = true;
-      }
-    }
-  ]
 });
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'TableViewPropertyRefinement',
