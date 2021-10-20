@@ -237,7 +237,11 @@ foam.CLASS({
           synchronized ( writeLock_ ) {
             long index = entryIndex_.incrementAndGet();
             entry.setIndex(index);
-            SFFileJournal journal = getJournal(toFileName(entry));
+            //SFFileJournal journal = getJournal(toFileName(entry));
+            if ( entryCounter_.incrementAndGet() > getFileCapacity() ) {
+              //TODO: create file.
+              entryCounter_.set(1);
+            }
             return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
           }
         }
@@ -284,7 +288,7 @@ foam.CLASS({
             return;
           }
 
-          SFFileJournal journal = getJournal(toFileName(e));
+          SFFileJournal journal = fetchJournal(e);
           long atime = journal.getFileLastAccessTime();
           long entrySize = journal.calculateSize(e);
           if ( entrySize == 0 ) throw new RuntimeException("SF format error");
@@ -384,7 +388,6 @@ foam.CLASS({
           return l1 > l2 ? -1 : 1;
         });
 
-        ArraySink sink = new ArraySink(x);
         Date timeWindow = null;
 
         if ( getTimeWindow() == -1 ) {
@@ -399,6 +402,7 @@ foam.CLASS({
           for ( String filename : filenames ) {
             BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
             Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
+            //TODO: mark journal as finished if unneed.
             if ( fileLastModifiedDate.before(timeWindow) ) break;
             availableFilenames.add(0, filename);
           }
@@ -409,48 +413,93 @@ foam.CLASS({
 
         }
 
-        //Create predicate depends on condition.
-        Predicate predicate = null;
-        if ( getTimeWindow() == -1 ) {
-          if ( getReplayFailEntry() == true ) {
-            predicate = MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE);
+        if ( getReplayFailEntry() == true ) {
+          //TODO: find a way to mark the entry done. avoid huge replay.
+          ArraySink sink = new ArraySink(x);
+
+          //Create predicate depends on condition.
+          Predicate predicate = null;
+          if ( getTimeWindow() == -1 ) {
+            if ( getReplayFailEntry() == true ) {
+              predicate = MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE);
+            } else {
+              predicate = MLang.TRUE;
+            }
           } else {
-            predicate = MLang.TRUE;
+            if ( getReplayFailEntry() == true ) {
+              predicate = MLang.AND(
+                MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE),
+                MLang.GTE(SFEntry.CREATED, timeWindow)
+              );
+            } else {
+              predicate = MLang.GTE(SFEntry.CREATED, timeWindow);
+            }
+          }
+  
+          MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
+          for ( String filename : availableFilenames ) {
+  
+            Journal journal = new SFFileJournal.Builder(x)
+                                .setDao(tempDAO)
+                                .setFilename(filename)
+                                .setCreateFile(false)
+                                .build();
+            journal.replay(x, tempDAO);
+          }
+  
+          //Find entry index;
+          Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
+          entryIndex_.set((Long)max.getValue());
+  
+          tempDAO.where(predicate).select(sink);
+          List<SFEntry> sfEntryList = sink.getArray();
+          logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
+          for ( SFEntry entry : sfEntryList ) {
+            if ( entry.getIndex() < processEntryIndex_.get() ) processEntryIndex_.set(entry.getIndex());
+            forward((SFEntry) entry.fclone());
           }
         } else {
-          if ( getReplayFailEntry() == true ) {
-            predicate = MLang.AND(
-              MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE),
-              MLang.GTE(SFEntry.CREATED, timeWindow)
-            );
-          } else {
-            predicate = MLang.GTE(SFEntry.CREATED, timeWindow);
+
+          fileIndex_.set(getFileSuffix(filenames.get(filenames.size() - 1)));
+          Predicate predicate = getTimeWindow() == -1 ? MLang.TRUE : MLang.GTE(SFEntry.CREATED, timeWindow);
+
+          for ( String filename : availableFilenames ) {
+
+            SFFileJournal journal = new SFFileJournal.Builder(x)
+                                    .setFilename(filename)
+                                    .setCreateFile(false)
+                                    .build();
+
+            if ( filename.equals(filenames.get(filenames.size() - 1)) ) curJournal_ = journal;
+            if ( journal.getFileLastAccessTime() == journal.getFileSize() ) continue;
+
+            MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
+            ArraySink sink = new ArraySink(x);
+
+            
+            // Record atime, because read will change the atime.
+            long offset = journal.getFileLastAccessTime();
+
+            journal.replayFrom(x, tempDAO, offset);
+
+            tempDAO.where(predicate).select(sink);
+            List<SFEntry> sfEntryList = sink.getArray();
+            logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
+            
+            for ( SFEntry entry : sfEntryList ) {
+              SFEntry e = (SFEntry) entry.fclone();
+              long index = entryIndex_.incrementAndGet();
+              e.setIndex(index);
+              e.setJournal(journal);
+              forward(e);
+            }
+
+            // Set back the offset.
+            journal.setFileLastAccessTime(offset);
           }
+
         }
 
-        MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
-        for ( String filename : availableFilenames ) {
-          //TODO: need to record atime.
-
-          Journal journal = new SFFileJournal.Builder(x)
-                              .setDao(tempDAO)
-                              .setFilename(filename)
-                              .setCreateFile(false)
-                              .build();
-          journal.replay(x, tempDAO);
-        }
-
-        //Find entry index;
-        Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
-        entryIndex_.set((Long)max.getValue());
-        processEntryIndex_.set((Long)max.getValue());
-
-        tempDAO.where(predicate).select(sink);
-        List<SFEntry> sfEntryList = sink.getArray();
-        logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
-        for ( SFEntry entry : sfEntryList ) {
-          forward((SFEntry) entry.fclone());
-        }
         isReady_.getAndSet(true);
       `
     },
@@ -555,6 +604,23 @@ foam.CLASS({
       javaCode: `
         return journalMap_.computeIfAbsent(filename, k -> createWriteJournal(k));
       `
+    },
+    {
+      name: 'fetchJournal',
+      args: 'SFEntry entry',
+      javaType: 'SFFileJournal',
+      javaCode: `
+        return entry.getJournal();
+      `
+    },
+    {
+      name: 'getFileSuffix',
+      documentation: 'help method to get suffix from file name',
+      javaType: 'int',
+      args: 'String filename',
+      javaCode: `
+        return Integer.parseInt(filename.split("\\\\.")[1]);
+      `
     }
   ],
 
@@ -565,14 +631,17 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             protected Logger logger_ = null;
+            final protected AtomicInteger fileIndex_ = new AtomicInteger(0);
+            final protected AtomicInteger entryCounter_ = new AtomicInteger(0);
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
-            final protected AtomicLong processEntryIndex_ = new AtomicLong(0);
+            final protected AtomicLong processEntryIndex_ = new AtomicLong(1);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
             final protected Object writeLock_ = new Object();
             final protected Object updateAtimeLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
+            protected volatile F3FileJournal curJournal_ = null;
             final protected PriorityQueue<SFEntry> completedEntries_ = new PriorityQueue<SFEntry>(16, (n, p) -> {
                                                                 if ( n.getIndex() < p.getIndex() ) {
                                                                   return -1;

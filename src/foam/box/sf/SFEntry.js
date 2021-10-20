@@ -51,6 +51,12 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.box.sf.SFFileJournal',
+      name: 'journal',
+      storageTransient: true
+    },
+    {
       class: 'Long',
       name: 'fileOffset',
     },
