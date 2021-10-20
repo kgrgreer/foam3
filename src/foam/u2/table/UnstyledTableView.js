@@ -274,7 +274,7 @@ foam.CLASS({
     },
     'tableEl_',
     'scrollEl_',
-    ['tableHeadHeight', 52],
+    ['tableHeadHeight', 52]
   ],
 
   methods: [
@@ -642,7 +642,7 @@ foam.CLASS({
         parent: this.__subContext__.createSubContext({ memento: this.currentMemento_ && this.currentMemento_.tail })
       }));
     },
-  ],
+  ]
 });
 
 foam.CLASS({
@@ -662,7 +662,7 @@ foam.CLASS({
         value of this property in a table column.
       `,
       name: 'columnPermissionRequired'
-    },
+    }
   ]
 });
 foam.CLASS({
