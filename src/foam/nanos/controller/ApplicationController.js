@@ -394,8 +394,6 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
-        await self.fetchGroup();
-
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.memento.head ) {
           var menu = await self.__subContext__.menuDAO.find(self.memento.head);
@@ -403,13 +401,12 @@ foam.CLASS({
           // since if there is a user session on refresh, this would also
           // find authenticated menus to try to push before fetching subject
           if ( menu && menu.authenticate === false ) {
-            await self.fetchSubject(false);
             self.pushMenu(menu);
             self.languageInstalled.resolve();
             return;
           }
         }
-
+        await self.fetchGroup();
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -558,18 +555,17 @@ foam.CLASS({
       }
     },
 
-    async function fetchSubject(promptLogin = true) {
+    async function fetchSubject() {
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
         this.subject = result;
 
-        var promptlogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
+        var promptlogin = await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
-        if ( ! result || ! result.user ) throw new Error();
+        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
 
       } catch (err) {
-        if ( ! promptlogin || authResult ) return;
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
