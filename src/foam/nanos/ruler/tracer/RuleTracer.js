@@ -61,8 +61,7 @@ foam.INTERFACE({
       `,
       args: [
         { name: 'result', type: 'Boolean' }
-      ],
-      type: 'Boolean'
+      ]
     },
     {
       name: 'tracePredicate',
@@ -71,8 +70,7 @@ foam.INTERFACE({
       `,
       args: [
         { name: 'result', type: 'Boolean' }
-      ],
-      type: 'Boolean'
+      ]
     },
     {
       name: 'traceActive',
@@ -81,8 +79,7 @@ foam.INTERFACE({
       `,
       args: [
         { name: 'result', type: 'Boolean' }
-      ],
-      type: 'Boolean'
+      ]
     },
     {
       name: 'traceAction',

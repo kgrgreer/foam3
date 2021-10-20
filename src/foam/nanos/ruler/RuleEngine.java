@@ -200,7 +200,9 @@ public class RuleEngine extends ContextAwareSupport {
     tracer.traceAction();
   }
   private boolean checkPredicate (Rule rule, X userX_, FObject obj, FObject oldObj, RuleTracer tracer) {
-    return tracer.tracePredicate(rule.f(userX_, obj, oldObj));
+    boolean result = rule.f(userX_, obj, oldObj);
+    tracer.tracePredicate(result);
+    return result;
   }
 
   private boolean isRuleActive(Rule rule, RuleAction action, RuleTracer tracer) {
@@ -211,7 +213,8 @@ public class RuleEngine extends ContextAwareSupport {
     if (rule instanceof LifecycleAware) {
       isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
     }
-    return tracer.traceActive(isActive && action != null);
+    tracer.traceActive(isActive && action != null);
+    return isActive && action != null;
   }
 
   private boolean checkPermission(Rule rule, FObject obj, RuleTracer tracer) {
@@ -221,7 +224,8 @@ public class RuleEngine extends ContextAwareSupport {
       var auth = (AuthService) getX().get("auth");
       permission = auth.checkUser(getX(), user, "rule.read." + rule.getId());
     }
-    return tracer.tracePermission(permission);
+    tracer.tracePermission(permission);
+    return permission;
   }
 
   private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj, RuleTracer tracer) {

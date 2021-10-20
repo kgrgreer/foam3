@@ -59,9 +59,8 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
-        return result;
+        //NOP
       `
     },
     {
@@ -69,9 +68,8 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
-        return result;
+        //NOP
       `
     },
     {
@@ -79,9 +77,8 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
-        return result;
+        //NOP
       `
     },
     {

@@ -34,7 +34,7 @@
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        setLog(getLog().append("\\nPerforming Rule Debug. ")));
+        setLog(getLog().append("\\nPerforming Rule Debug. "));
       `
     },
     {
@@ -77,11 +77,9 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
         setLog(getLog().append("\\nPermission: "));
         setLog(getLog().append(result));
-        return result;
       `
     },
     {
@@ -89,11 +87,9 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
         setLog(getLog().append("\\nPredicate: "));
         setLog(getLog().append(result));
-        return result;
       `
     },
     {
@@ -101,18 +97,15 @@
       args: [
         { name: 'result', type: 'Boolean' },
       ],
-      type: 'Boolean',
       javaCode: `
         setLog(getLog().append("\\nActive: "));
         setLog(getLog().append(result));
-        return result;
       `
     },
     {
       name: 'traceAction',
       javaCode: `
         setLog(getLog().append("\\nAction executed. "));
-        //NOP
       `
     }
   ]
