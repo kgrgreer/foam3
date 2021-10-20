@@ -9,6 +9,11 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'PrivilegedDAO',
   extends: 'foam.dao.ProxyDAO',
+  documentation: `PrivilegedDAO is meant to be a wrapper for another DAO.
+    internalAccessPoint DAO property defines the DAO that would be returned for users in "admin" and "system" groups.
+    Created to automatically bypass DAOs that are not necessary for fully authorized users(system, admin).
+    Another way to call someDAO vs localSomeDAO. If the service is wrapped around PrivilegedDAO, then client should not
+    care which one to call and always call for someDAO and the PrivilegedDAO would decide whether it needs to be authenticated dao or not.`,
 
   javaImports: [
     'foam.nanos.auth.Subject',
