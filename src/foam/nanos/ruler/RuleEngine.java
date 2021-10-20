@@ -62,10 +62,12 @@ public class RuleEngine extends ContextAwareSupport {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
-    RuleTracer            tracer         = (RuleTracer) ((FObject) getX().get("ruleTracer")).fclone();
+    RuleTracer            tracer         = (RuleTracer) getX().get("ruleTracer");
     if ( tracer == null ) {
       tracer = new NullTracer();
-      logger.debug("WARNING! No Rule Tracer Specified, using Null tracer");
+    }
+    else {
+      tracer = (RuleTracer) ((FObject) tracer).fclone();
     }
     tracer.preExecute(getX());
 
@@ -224,7 +226,7 @@ public class RuleEngine extends ContextAwareSupport {
       var auth = (AuthService) getX().get("auth");
       permission = auth.checkUser(getX(), user, "rule.read." + rule.getId());
     }
-    tracer.tracePermission(permission);
+    tracer.tracePermission(user, permission);
     return permission;
   }
 

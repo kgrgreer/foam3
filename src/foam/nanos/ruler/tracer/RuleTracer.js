@@ -60,6 +60,7 @@ foam.INTERFACE({
         This method happens when the rule permission is checked
       `,
       args: [
+        { name: 'user', type: 'foam.nanos.auth.User' },
         { name: 'result', type: 'Boolean' }
       ]
     },

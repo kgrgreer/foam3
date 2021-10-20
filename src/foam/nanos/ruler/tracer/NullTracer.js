@@ -57,6 +57,7 @@
     {
       name: 'tracePermission',
       args: [
+        { name: 'user', type: 'foam.nanos.auth.User' },
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `

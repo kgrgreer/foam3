@@ -75,11 +75,19 @@
     {
       name: 'tracePermission',
       args: [
+        { name: 'user', type: 'foam.nanos.auth.User' },
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
         setLog(getLog().append("\\nPermission: "));
-        setLog(getLog().append(result));
+        if ( user != null ) {
+          setLog(getLog().append(result));
+          setLog(getLog().append(" for User: "));
+          setLog(getLog().append(user.getId()));
+        }
+        else {
+          setLog(getLog().append("Not Required"));
+        }
       `
     },
     {
