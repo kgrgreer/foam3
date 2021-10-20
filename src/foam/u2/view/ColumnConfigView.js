@@ -508,8 +508,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
   imports: ['theme'],
   requires: [
-  'foam.u2.CheckBox',
-  'foam.u2.tag.Image'
+    'foam.u2.CheckBox',
+    'foam.u2.tag.Image'
   ],
   css: `
   ^selected {
@@ -534,7 +534,7 @@ foam.CLASS({
     justify-content: start;
   }
   ^selection-buttons + ^selection-buttons {
-  padding: 8px;
+    padding: 8px;
   }
   `,
   properties: [
@@ -578,7 +578,7 @@ foam.CLASS({
                        if ( self.data.isPropertyGrouped ) {
                          image = self.theme.glyphs.folderFill.getDataUrl({ fill: self.theme.primary3 });
                        } else {
-                         image = self.theme.glyphs.folderOutline.getDataUrl({ fill: self.theme.grey4 });
+                         image = self.theme.glyphs.folderOutline.getDataUrl({ fill: self.theme.grey2 });
                        }
                        return this.E()
                        .start(self.Image, { data: image , displayHeight: '1.5em' , displayWidth: '1.5em' })
