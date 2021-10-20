@@ -11,6 +11,8 @@ import foam.dao.DAO;
 import foam.nanos.auth.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
+import foam.nanos.ruler.tracer.RuleTracer;
+import foam.nanos.ruler.tracer.NullTracer;
 import foam.util.SafetyUtil;
 import java.lang.Exception;
 import java.time.Duration;
@@ -60,9 +62,9 @@ public class RuleEngine extends ContextAwareSupport {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
-    RuleTracer            tracer         = (RuleTracer) ((RuleTracer) getX().get("ruleTracer")).fclone();
+    RuleTracer            tracer         = (RuleTracer) ((FObject) getX().get("ruleTracer")).fclone();
     if ( tracer == null ) {
-      tracer = new NullRuleTracer();
+      tracer = new NullTracer();
       logger.debug("WARNING! No Rule Tracer Specified, using Null tracer");
     }
     tracer.preExecute(getX());
@@ -108,7 +110,7 @@ public class RuleEngine extends ContextAwareSupport {
       // throw new RuntimeException(message, e);
     }
 
-    asyncApplyRules(rules, obj, oldObj);
+    asyncApplyRules(rules, obj, oldObj, tracer);
     tracer.postExecute(getX());
   }
 
@@ -124,11 +126,13 @@ public class RuleEngine extends ContextAwareSupport {
   public void probe(List<Rule> rules, RulerProbe rulerProbe, FObject obj, FObject oldObj) {
     PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
 
-    try {
-      RuleTracer tracer = getX().get("ruleTracer");
-      if ( tracer == null ) tracer = new NullRuleTracer();
+    RuleTracer tracer = (RuleTracer) ((FObject) getX().get("ruleTracer")).fclone();
+    if ( tracer == null ) tracer = new NullTracer();
 
+    try {
+      tracer.preExecute(getX());
       for ( Rule rule : rules ) {
+        tracer.preRule(rule, obj, oldObj);
         if ( ! isRuleActive(rule, rule.getAction(), tracer) ) continue;
         if ( ! checkPermission(rule, obj, tracer)           ) continue;
         if ( ! checkPredicate(rule, userX_, obj, oldObj, tracer)  ) continue;
@@ -143,7 +147,7 @@ public class RuleEngine extends ContextAwareSupport {
         }
 
         try {
-          applyRule(rule, obj, oldObj, agent);
+          applyRule(rule, obj, oldObj, agent, tracer);
           agent.setMessage("Successfully applied");
         } catch (Exception e ) {
           agent.setPassed(false);
@@ -151,12 +155,13 @@ public class RuleEngine extends ContextAwareSupport {
         }
 
         rulerProbe.getAppliedRules().add(agent);
+        tracer.postRule(rule, obj, oldObj);
       }
 
       for ( Rule rule : rules ) {
-        if ( isRuleActive(rule, rule.getAsyncAction())
-          && checkPermission(rule, obj)
-          && rule.f(x_, obj, oldObj)
+        if ( isRuleActive(rule, rule.getAsyncAction(), tracer)
+          && checkPermission(rule, obj, tracer)
+          && checkPredicate(rule, x_, obj, oldObj, tracer)
         ) {
           TestedRule asyncAgent = new TestedRule();
           asyncAgent.setRule(rule.getId());
@@ -166,6 +171,7 @@ public class RuleEngine extends ContextAwareSupport {
       }
     } finally {
       pm.log(x_);
+      tracer.postExecute(getX());
     }
   }
 
@@ -215,10 +221,10 @@ public class RuleEngine extends ContextAwareSupport {
       var auth = (AuthService) getX().get("auth");
       permission = auth.checkUser(getX(), user, "rule.read." + rule.getId());
     }
-    return tracer.tracePermision(permission);
+    return tracer.tracePermission(permission);
   }
 
-  private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj) {
+  private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj, RuleTracer tracer) {
     if (rules.isEmpty()) return;
 
     ((Agency) getX().get("threadPool")).submit(userX_, x -> {
@@ -226,9 +232,9 @@ public class RuleEngine extends ContextAwareSupport {
       for ( Rule rule : rules ) {
         if ( stops_.get() ) return;
 
-        if ( isRuleActive(rule, rule.getAsyncAction())
-          && checkPermission(rule, obj)
-          && rule.f(x, obj, oldObj)
+        if ( isRuleActive(rule, rule.getAsyncAction(), tracer)
+          && checkPermission(rule, obj, tracer)
+          && checkPredicate(rule, x, obj, oldObj, tracer)
         ) {
           // We assume the original object `obj` is stale when running after rules.
           // For that, greedy mode is used for object reload. For before rules,
