@@ -961,7 +961,12 @@ var classes = [
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
   'foam.counter.Counter',
-  'foam.util.date.TimeUnit'
+  'foam.util.date.TimeUnit',
+
+  'com.toSql.Dept',
+  'com.toSql.SalGrade',  
+  'com.toSql.Emp'
+
 ];
 
 var abstractClasses = [
