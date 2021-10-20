@@ -12,7 +12,6 @@ foam.CLASS({
     'foam.u2.view.ColumnViewHeader',
     'foam.u2.view.ColumnViewBody',
     'foam.u2.view.RootColumnConfigPropView',
-
   ],
   css: `
     ^ {
@@ -199,14 +198,14 @@ foam.CLASS({
     },
     function onSelectionChanged(isColumnSelected, index, views) {
       if ( isColumnSelected ) {
-        this.onSelect(index, views)
+        this.onSelect(index, views);
       } else if ( ! isColumnSelected ) {
         this.onUnSelect(index, views);
       }
     },
     function onGroupChanged(isColumnSelected, index, views, isChild) {
       if ( isColumnSelected ) {
-        this.onSelectGroup(index, views, isChild)
+        this.onSelectGroup(index, views, isChild);
       } else if ( ! isColumnSelected ) {
         this.onUnSelectGroup(index, views, isChild);
       }
@@ -224,12 +223,12 @@ foam.CLASS({
       var el = views[draggableIndex].prop;
       if ( this.groupByColumns.length > 0 ) {
         this.groupByColumns.forEach(element => {
-           if ( ! isChild )
-             element.isPropertyGrouped = false;
-           if ( ! element.isPropertySelected )
-             this.onUnSelect(element.index, views);
-         });
-              this.groupByColumns = [];
+          if ( ! isChild )
+            element.isPropertyGrouped = false;
+          if ( ! element.isPropertySelected )
+            this.onUnSelect(element.index, views);
+        });
+        if ( ! isChild ) this.groupByColumns = [];
       }
       var currEl = views.find(v => v.prop.rootProperty == el.rootProperty);
       var tc = currEl.prop.rootProperty[0];
@@ -503,7 +502,6 @@ foam.CLASS({
   ]
 });
 
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ColumnViewHeader',
@@ -644,6 +642,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ColumnViewBody',
@@ -684,7 +683,7 @@ foam.CLASS({
     {
       name: 'onGroupChanged',
       documentation: 'to reuse onGroupChanged function'
-     },
+    }
   ],
   methods: [
     function render() {
