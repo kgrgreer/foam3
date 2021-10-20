@@ -430,7 +430,7 @@ foam.CLASS({
     },
     {
       name: 'onGroupByChangedParentFunction',
-      documentation: 'parent\'s on this onSelectionChanged function'
+      documentation: 'parent\'s on this onGroupChanged function'
     },
     {
       name: 'onDragAndDrop',
@@ -442,7 +442,7 @@ foam.CLASS({
     },
     {
        name: 'onGroupChanged',
-       documentation: 'to reuse onSelectionChanged function'
+       documentation: 'to reuse onGroupChanged function'
     }
   ],
   constants: [

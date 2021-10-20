@@ -137,11 +137,5 @@
       height: auto;
       border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
     }
-    ^th-editColumns {
-      display: flex; 
-      justify-content: end;
-      align-items: center; 
-    }
-
   `,
 });

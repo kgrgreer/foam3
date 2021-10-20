@@ -56,7 +56,7 @@ foam.CLASS({
     {
       type: 'Int',
       name: 'EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH',
-      value: 120
+      value: 60
     },
     {
       type: 'Char',
