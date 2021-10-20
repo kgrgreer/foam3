@@ -11,7 +11,7 @@ foam.CLASS({
   requires: [
     'foam.u2.DetailView',
     'foam.u2.view.ColumnConfigPropView',
-    'foam.u2.view.SubColumnSelectConfig',
+    'foam.u2.view.SubColumnSelectConfig'
   ],
   css: `
     ^drop-down-bg {
