@@ -62,11 +62,11 @@ foam.CLASS({
             index: i,
             prop:columns[i],
             onDragAndDropParentFunction:this.onTopLevelPropertiesDragAndDrop.bind(this),
-            onSelectionChangedParentFunction: this.onTopPropertiesSelectionChange.bind(this),
-            onGroupByChangedParentFunction: this.onTopPropertiesGroupByChange.bind(this),
-            onDragAndDrop: this.onDragAndDrop.bind(this),//for parent to call on its views on child drag and drop
-            onSelectionChanged: this.onSelectionChanged.bind(this),//for parent to call on its views on child selectionChanged
-            onGroupChanged: this.onGroupChanged.bind(this)
+            onSelectionChangedParentFunction:this.onTopPropertiesSelectionChange.bind(this),
+            onGroupByChangedParentFunction:this.onTopPropertiesGroupByChange.bind(this),
+            onDragAndDrop:this.onDragAndDrop.bind(this),//for parent to call on its views on child drag and drop
+            onSelectionChanged:this.onSelectionChanged.bind(this),//for parent to call on its views on child selectionChanged
+            onGroupChanged:this.onGroupChanged.bind(this)
           }));
         }
         return arr;
@@ -470,10 +470,10 @@ foam.CLASS({
           .style({'cursor': prop.isPropertySelected$ ? 'pointer' : 'default'})
           .show(self.prop.showOnSearch$)
           .start()
-            .add(foam.u2.ViewSpec.createView(self.head, {data$:self.prop$, onSelectionChangedParentFunction:self.onSelectionChangedParentFunction, onGroupByChangedParentFunction:self.onGroupByChangedParentFunction, },  self, self.__subSubContext__))
+            .add(foam.u2.ViewSpec.createView(self.head, {data$:self.prop$, onSelectionChangedParentFunction:self.onSelectionChangedParentFunction, onGroupByChangedParentFunction:self.onGroupByChangedParentFunction },  self, self.__subSubContext__))
           .end()
           .start()
-            .add(foam.u2.ViewSpec.createView(self.body, {data$:self.prop$, onSelectionChangedParentFunction: this.onSelectionChangedParentFunction,onSelectionChangedParentFunction:self.onSelectionChangedParentFunction, onGroupByChangedParentFunction:self.onGroupByChangedParentFunction,  onDragAndDrop: this.onDragAndDrop, onSelectionChanged: this.onSelectionChanged, onGroupChanged: this.onGroupChanged },  self, self.__subSubContext__))
+            .add(foam.u2.ViewSpec.createView(self.body, {data$:self.prop$, onSelectionChangedParentFunction: this.onSelectionChangedParentFunction, onGroupByChangedParentFunction: this.onGroupByChangedParentFunction,  onDragAndDrop: this.onDragAndDrop, onSelectionChanged: this.onSelectionChanged, onGroupChanged: this.onGroupChanged },  self, self.__subSubContext__))
           .end();
         }));
     }
@@ -664,7 +664,7 @@ foam.CLASS({
             onGroupChanged:this.onGroupChanged,
             onSelectionChangedParentFunction:this.onChildrenSelectionChanged.bind(this),
             onGroupByChangedParentFunction:this.onChildrenGroupByChanged.bind(this),
-            onDragAndDropParentFunction: this.onChildrenDragAndDrop.bind(this),
+            onDragAndDropParentFunction:this.onChildrenDragAndDrop.bind(this),
           }));
         }
         return arr;
@@ -749,7 +749,7 @@ foam.CLASS({
               this.data.expanded = false;
           }
         }
-        this.updateSubColumnsOrder( hasPropertySelectionChanged === this.data.isPropertyGrouped);
+        this.updateSubColumnsOrder(hasPropertySelectionChanged === this.data.isPropertyGrouped);
       } else {
         this.updateSubColumnsOrder(true);
       }
@@ -815,7 +815,7 @@ foam.CLASS({
     },
     {
       name: 'isPropertyGrouped',
-      class: 'Boolean',
+      class: 'Boolean'
     },
     {
       name: 'level',
@@ -957,7 +957,6 @@ foam.CLASS({
             isPropertyGrouped: false
           }, this));
         }
-
         return arr;
     }
   ]
