@@ -63,7 +63,7 @@ foam.CLASS({
       class: 'Boolean'
     },
     'parentId',
-    'columnConfigPropView',
+    'columnConfigPropView'
   ],
   methods: [
     function closeDropDown(e) {
