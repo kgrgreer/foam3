@@ -60,13 +60,13 @@ foam.CLASS({
         for ( var i = 0 ; i < columns.length ; i++ ) {
           arr.push(this.RootColumnConfigPropView.create({
             index: i,
-            prop:columns[i],
-            onDragAndDropParentFunction:this.onTopLevelPropertiesDragAndDrop.bind(this),
-            onSelectionChangedParentFunction:this.onTopPropertiesSelectionChange.bind(this),
-            onGroupByChangedParentFunction:this.onTopPropertiesGroupByChange.bind(this),
-            onDragAndDrop:this.onDragAndDrop.bind(this),//for parent to call on its views on child drag and drop
-            onSelectionChanged:this.onSelectionChanged.bind(this),//for parent to call on its views on child selectionChanged
-            onGroupChanged:this.onGroupChanged.bind(this)
+            prop: columns[i],
+            onDragAndDropParentFunction: this.onTopLevelPropertiesDragAndDrop.bind(this),
+            onSelectionChangedParentFunction: this.onTopPropertiesSelectionChange.bind(this),
+            onGroupByChangedParentFunction: this.onTopPropertiesGroupByChange.bind(this),
+            onDragAndDrop: this.onDragAndDrop.bind(this),//for parent to call on its views on child drag and drop
+            onSelectionChanged: this.onSelectionChanged.bind(this),//for parent to call on its views on child selectionChanged
+            onGroupChanged: this.onGroupChanged.bind(this)
           }));
         }
         return arr;
@@ -306,11 +306,11 @@ foam.CLASS({
         var rootPropertyName = this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(rootProperty);
         if ( ! topLevelProps.includes(rootPropertyName) ) {
           arr.push(foam.u2.view.SubColumnSelectConfig.create({
-            index:i,
-            rootProperty:rootProperty,
-            level:0,
-            of:data.of,
-            selectedColumns$:data.selectedColumnNames$,
+            index: i,
+            rootProperty: rootProperty,
+            level: 0,
+            of: data.of,
+            selectedColumns$: data.selectedColumnNames$,
           }, this));
           topLevelProps.push(rootPropertyName);
         }
@@ -346,11 +346,11 @@ foam.CLASS({
           }
 
           nonSelectedViewModels.push(foam.u2.view.SubColumnSelectConfig.create({
-            index:data.selectedColumnNames.length + i,
+            index: data.selectedColumnNames.length + i,
             rootProperty: rootProperty,
-            level:0,
-            of:data.of,
-            selectedColumns$:data.selectedColumnNames$,
+            level: 0,
+            of: data.of,
+            selectedColumns$: data.selectedColumnNames$,
           }, this));
         }
         nonSelectedViewModels.sort((a, b) => {
@@ -658,13 +658,13 @@ foam.CLASS({
         for ( var i = 0 ; i < this.data.subColumnSelectConfig.length ; i++ ) {
           arr.push(this.RootColumnConfigPropView.create({
             index: i,
-            prop:this.data.subColumnSelectConfig[i],
-            onDragAndDrop:this.onDragAndDrop,
-            onSelectionChanged:this.onSelectionChanged,
-            onGroupChanged:this.onGroupChanged,
-            onSelectionChangedParentFunction:this.onChildrenSelectionChanged.bind(this),
-            onGroupByChangedParentFunction:this.onChildrenGroupByChanged.bind(this),
-            onDragAndDropParentFunction:this.onChildrenDragAndDrop.bind(this),
+            prop: this.data.subColumnSelectConfig[i],
+            onDragAndDrop: this.onDragAndDrop,
+            onSelectionChanged: this.onSelectionChanged,
+            onGroupChanged: this.onGroupChanged,
+            onSelectionChangedParentFunction: this.onChildrenSelectionChanged.bind(this),
+            onGroupByChangedParentFunction: this.onChildrenGroupByChanged.bind(this),
+            onDragAndDropParentFunction: this.onChildrenDragAndDrop.bind(this),
           }));
         }
         return arr;
