@@ -151,7 +151,6 @@ foam.CLASS({
             e.preventDefault();
             e.stopPropogation();
           })
-          .addClass(self.data.myClass('th-editColumns'))
           .attrs({ name: 'contextMenuCell' })
           .style({ flex: `0 0 ${this.data.EDIT_COLUMNS_BUTTON_CONTAINER_WIDTH}px` })
           .startContext({ stack: this.subStack })
