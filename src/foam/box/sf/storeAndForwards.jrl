@@ -9,6 +9,14 @@ p({
 })
 p({
   "class":"foam.box.sf.SFSink",
+  "id":"constFourSecondHttpSinkDemoUsingAtime",
+  "fileName":"httpSFSinkDemoUsingAtime",
+  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
+  "timeWindow": 3600,
+  "delegateNspecId": "demoHttpSinkUsingAtime"
+})
+p({
+  "class":"foam.box.sf.SFSink",
   "id":"flinksWebHook",
   "fileName":"flinksWebHook",
   "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
