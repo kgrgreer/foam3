@@ -101,6 +101,7 @@ foam.CLASS({
     { name: 'EXECUTION_DISABLED', message: 'execution disabled' },
     { name: 'EXECUTION_INVOKED', message: 'execution invoked' },
     { name: 'EXECUTION_FAILED', message: 'execution failed' },
+    { name: 'EXECUTION_COMPLETED', message: 'execution completed' },
     { name: 'ENABLED_YES', message: 'Y' },
     { name: 'ENABLED_NO', message: 'N' },
     { name: 'PRIORITY_LOW', message: 'Low' },
@@ -419,7 +420,7 @@ foam.CLASS({
 
           Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
-          if ( thrown != null ) {
+          if ( thrown == null ) {
             ScriptEvent event = new ScriptEvent(x);
             event.setLastRun(this.getLastRun());
             event.setLastDuration(this.getLastDuration());
@@ -449,7 +450,8 @@ foam.CLASS({
               if ( self.notify ) {
                 // create notification
                 var notification = self.ScriptRunNotification.create({
-                  userId: self.user.id,
+                  userId: self.subject && self.subject.realUser ?
+                    self.subject.realUser.id : self.user.id,
                   scriptId: script.id,
                   notificationType: 'Script Execution',
                   body: `Status: ${script.status}
@@ -460,6 +462,18 @@ foam.CLASS({
                 });
                 self.notificationDAO.put(notification);
               }
+              var notification = self.Notification.create();
+              notification.userId = self.subject && self.subject.realUser ?
+                self.subject.realUser.id : self.user.id;
+              if ( script.status === self.ScriptStatus.UNSCHEDULED ) {
+                notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_COMPLETED;
+              } else {
+                notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_FAILED;
+              }
+              notification.toastState = self.ToastState.REQUESTED;
+              notification.severity = foam.log.LogLevel.INFO;
+              notification.transient = true;
+              self.__subContext__.myNotificationDAO.put(notification);
             }
           }).catch(function() {
             clearInterval(interval);
@@ -487,15 +501,15 @@ foam.CLASS({
         this.status = this.ScriptStatus.SCHEDULED;
         if ( this.language == this.Language.BEANSHELL ||
              this.language == this.Language.JSHELL ) {
+          var notification = self.Notification.create();
+          notification.userId = self.subject && self.subject.realUser ?
+            self.subject.realUser.id : self.user.id;
+          notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_INVOKED;
+          notification.toastState = self.ToastState.REQUESTED;
+          notification.severity = foam.log.LogLevel.INFO;
+          notification.transient = true;
+          self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
-            var notification = self.Notification.create();
-            notification.userId = self.subject && self.subject.realUser ?
-              self.subject.realUser.id : self.user.id;
-            notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_INVOKED;
-            notification.toastState = self.ToastState.REQUESTED;
-            notification.severity = foam.log.LogLevel.INFO;
-            notification.transient = true;
-            self.__subContext__.myNotificationDAO.put(notification);
             self.copyFrom(script);
             if ( script.status === self.ScriptStatus.SCHEDULED ) {
               self.poll();
@@ -512,21 +526,29 @@ foam.CLASS({
             self.__subContext__.myNotificationDAO.put(notification);
           });
         } else {
+          var notification = this.Notification.create();
+          notification.userId = this.subject && this.subject.realUser ?
+            this.subject.realUser.id : this.user.id;
+          notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
+          notification.toastState = this.ToastState.REQUESTED;
+          notification.severity = foam.log.LogLevel.INFO;
+          notification.transient = true;
+          this.__subContext__.myNotificationDAO.put(notification);
+
           this.status = this.ScriptStatus.RUNNING;
           this.runScript().then(
             () => {
+              this.status = this.ScriptStatus.UNSCHEDULED;
+              this.__context__[this.daoKey].put(this);
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
                 this.subject.realUser.id : this.user.id;
-              notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
+              notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_COMPLETED;
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
               notification.transient = true;
               this.__subContext__.myNotificationDAO.put(notification);
-
-              this.status = this.ScriptStatus.UNSCHEDULED;
-              this.__context__[this.daoKey].put(this);
-            },
+           },
             (e) => {
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
