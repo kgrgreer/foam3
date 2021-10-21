@@ -19,10 +19,16 @@ import foam.util.SafetyUtil;
 public class NSpecFactory
   implements XFactory
 {
-  NSpec  spec_;
-  ProxyX x_;
-  Thread creatingThread_ = null;
-  Object ns_             = null;
+  NSpec       spec_;
+  ProxyX      x_;
+  Thread      creatingThread_ = null;
+  Object      ns_             = null;
+  ThreadLocal tlService_      = new ThreadLocal() {
+    // TODO: add timer to invalidate
+    protected Object initialValue() {
+      return maybeBuildService();
+    }
+  };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
     x_    = x;
@@ -92,14 +98,17 @@ public class NSpecFactory
   }
 
   public Object create(X x) {
-    synchronized (this) {
-      if ( ns_ == null ||
-           ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-        buildService(x);
-      }
-    }
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
+    Object ns = tlService_.get();
 
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
+
+    return ns;
+  }
+
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
+    }
     return ns_;
   }
 
@@ -118,6 +127,7 @@ public class NSpecFactory
         logger.warning("Invalidation of DAO Service not supported.", spec_.getName());
         // ((ProxyDAO) ns_).setDelegate(null);
       } else {
+        // TODO: create and if same class then do a copyFrom()
         ns_ = null;
       }
     }
