@@ -69,7 +69,7 @@ foam.CLASS({
         if ( task != null
           && task.scheduledExecutionTime() - System.currentTimeMillis() > 0
         ) {
-          task.cancel();InetAddress
+          task.cancel();
           ((Logger) x.get("logger")).debug(
             "Merge repeated execution of Rule id:" + rule.getId(), obj);
         }
