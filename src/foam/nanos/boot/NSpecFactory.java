@@ -109,7 +109,7 @@ public class NSpecFactory
   };
 
   public Object create(X x) {
-    Object ns = threadLocalNS_.get();
+    Object ns_ = threadLocalNS_.get();
     if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
     return ns_;
   }
