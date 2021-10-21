@@ -96,8 +96,8 @@ foam.CLASS({
       label: '',
       icon: 'images/ic-cancelwhite.svg',
       code: function(X) {
-         this.columnConfigPropView.onClose();
-         this.selectColumnsExpanded = ! this.selectColumnsExpanded;
+        this.columnConfigPropView.onClose();
+        this.selectColumnsExpanded = ! this.selectColumnsExpanded;
       }
     }
   ]

@@ -11,7 +11,7 @@ foam.CLASS({
   requires: [
     'foam.u2.view.ColumnViewHeader',
     'foam.u2.view.ColumnViewBody',
-    'foam.u2.view.RootColumnConfigPropView',
+    'foam.u2.view.RootColumnConfigPropView'
   ],
   css: `
     ^ {
