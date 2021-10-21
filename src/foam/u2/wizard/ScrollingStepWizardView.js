@@ -68,10 +68,7 @@ foam.CLASS({
       display: flex;
       flex-grow: 0;
       justify-content: flex-end;
-      min-height: calc(
-        var(--actionBarHeight) - var(--actionBarTbPadding));
       padding: var(--actionBarTbPadding) var(--lrPadding);
-      width: calc(100% - 2*var(--lrPadding));
     }
 
     ^heading {
