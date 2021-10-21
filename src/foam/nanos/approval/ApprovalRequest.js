@@ -235,52 +235,6 @@ foam.CLASS({
       gridColumns: 6,
       columnPermissionRequired: true,
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
-      view: function(_, X) {
-        let slot = foam.core.SimpleSlot.create();
-        let data = X.data;
-        let approver = data.approver;
-
-        X.userDAO.find(approver).then(user => {
-          if ( data.status != foam.nanos.approval.ApprovalStatus.REQUESTED ) {
-            slot.set(user ? user.toSummary() : `User #${approver}`);
-          } else if ( data.isTrackingRequest ) {
-            slot.set(data.TRACKING);
-          } else if ( user ) {
-            if ( X.user.id != user.id ) {
-              slot.set(user.toSummary());
-            } else {
-              slot.set(data.PENDING);
-            }
-          } else {
-            slot.set(`User #${approver}`);
-          }
-        });
-
-        return {
-          class: 'foam.u2.view.ValueView',
-          data$: slot
-        };
-      },
-      tableCellFormatter: function(approver, data) {
-        let self = this;
-        try {
-          this.__subSubContext__.userDAO.find(approver).then(user => {
-            if ( data.status != foam.nanos.approval.ApprovalStatus.REQUESTED ) {
-              self.add(user ? user.toSummary() : `User #${approver}`);
-            } else if ( data.isTrackingRequest ) {
-              self.add(data.TRACKING);
-            } else if ( user ) {
-              if ( self.__subSubContext__.user.id != user.id ) {
-                self.add(user.toSummary());
-              } else {
-                self.add(data.PENDING);
-              }
-            } else {
-              self.add(`User #${approver}`);
-            }
-          });
-        } catch (x) {}
-      },
       readVisibility: 'RO',
       createVisibility: 'HIDDEN',
       updateVisibility: 'HIDDEN'
