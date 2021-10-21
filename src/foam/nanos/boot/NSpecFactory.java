@@ -23,6 +23,12 @@ public class NSpecFactory
   ProxyX      x_;
   Thread      creatingThread_ = null;
   Object      ns_             = null;
+  ThreadLocal tlService_      = new ThreadLocal() {
+    // TODO: add timer to invalidate
+    protected Object initialValue() {
+      return maybeBuildService();
+    }
+  };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
     x_    = x;
@@ -92,12 +98,17 @@ public class NSpecFactory
   }
 
   public Object create(X x) {
-    synchronized ( this ) {
-      if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-        buildService(x_);
-      }
+    Object ns = tlService_.get();
+
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
+
+    return ns;
+  }
+
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
     }
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
     return ns_;
   }
 
