@@ -37,6 +37,10 @@ foam.CLASS({
 
       br.setCores(Runtime.getRuntime().availableProcessors());
 
+      // NOTE: mulitiple gc calls to trigger stages of gc process - Mark and Sweep, Finalizers, ...
+      Runtime.getRuntime().gc();
+      Runtime.getRuntime().gc();
+
       br.setUsedMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
       br.setFreeMemoryGB(new BigDecimal(((Runtime.getRuntime().freeMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());
       br.setTotalMemoryGB(new BigDecimal(((Runtime.getRuntime().totalMemory())) / 1024.0 / 1024.0 / 1024.0).setScale(2, RoundingMode.HALF_UP).floatValue());

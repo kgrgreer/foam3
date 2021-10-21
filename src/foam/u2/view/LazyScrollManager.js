@@ -170,14 +170,13 @@
     },
 
     function render() {
-      this.data = foam.dao.QueryCachingDAODecorator.create({ delegate: this.data });
       this.initMemento();
       var self = this;
       var resize = new ResizeObserver (this.checkPageSize_);
       let options = {
         root: this.rootElement?.el_() ?? null,
         rootMargin: `-${this.offsetTop}px 0px 0px`,
-        threshold: [0.05, 0.5, 0.95]
+        threshold: [0.25, 0.5, 0.75]
       };
       resize.observe(this.rootElement?.el_());
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
@@ -298,8 +297,9 @@
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
-        this.data.cmd_(this, foam.dao.QueryCachingDAODecorator.PURGE);
         this.currentTopPage_ = 0;
+        this.topRow = 0;
+        this.bottomRow = 0;
         this.updateRenderedPages_();
         if ( ! this.memento ) return;
         if ( this.memento.head.length != 0 ) {
@@ -344,13 +344,18 @@
     },
     {
       name: 'onRowIntersect',
+      isFramed: true,
       code: function(entries, self){
         entries.forEach((entry) => {
           if ( entry.intersectionRatio == 0 ) return;
-          var index = entry.target.dataset.idx;
+          var index = Number(entry.target.dataset.idx);
           if ( entry.boundingClientRect.top <= entry.rootBounds.top ) {
+            if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) <= entry.rootBounds.top )
+              index += 1;
             self.topRow = index;
-          } else if( entry.boundingClientRect.top > entry.rootBounds.top ) {
+          } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
+            if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
+              index -= 1;
             self.bottomRow = index;
           }
         });

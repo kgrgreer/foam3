@@ -42,8 +42,10 @@ foam.CLASS({
     { name: 'USERNAME_EMPTY_ERR', message: 'Username required' },
     { name: 'USERNAME_AVAILABILITY_ERR', message: 'This username is taken. Please try another.' },
     //TODO: Find out better way to deal with PASSWORD_ERR
-    { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters.' },
-    { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak.' }
+    { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters' },
+    { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak' },
+    { name: 'SUCCESS_MSG', message: 'Account successfully created' },
+    { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
   ],
 
   properties: [
@@ -212,6 +214,7 @@ foam.CLASS({
       },
       code: function(x) {
         this.isLoading_ = true;
+
         this.dao_
           .put(this.User.create({
             userName: this.userName,
@@ -223,6 +226,13 @@ foam.CLASS({
           .then(async (user) => {
             this.user.copyFrom(user);
             await this.updateUser(x);
+
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.SUCCESS_MSG_TITLE,
+              description: this.SUCCESS_MSG,
+              type: this.LogLevel.INFO,
+              transient: true
+            }));
           }).catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
               err: err.data,

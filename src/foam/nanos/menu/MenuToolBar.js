@@ -30,7 +30,7 @@ foam.CLASS({
     }
     ^title {
       margin: 24px;
-      font-size: 24px;
+      font-size: 2.4rem;
       font-weight: 900;
     }
     ^options {
@@ -58,7 +58,7 @@ foam.CLASS({
     }
     ^option-title {
       text-align: center;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: 600;
       line-height: 1.5;
     }

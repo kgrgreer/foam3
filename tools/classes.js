@@ -485,6 +485,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaBenchmark',
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.test.MedusaTestObject',
+  'foam.nanos.security.KeyStoreManager',
   'foam.nanos.benchmark.UUIDBenchmark',
   'foam.nanos.benchmark.AuthorizerBenchmark',
   'foam.comics.v2.EnabledActionsAuth',
@@ -502,6 +503,7 @@ var classes = [
   'foam.nanos.notification.email.EmailMessage',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.email.EmailTemplate',
+  'foam.nanos.notification.email.EmailTemplateSource',
   'foam.nanos.notification.email.EmailPropertyService',
   'foam.nanos.notification.email.Status',
   'foam.nanos.notification.email.EmailTemplateEngine',
@@ -517,6 +519,7 @@ var classes = [
   'foam.nanos.notification.email.EmailConfig',
   'foam.nanos.notification.email.EmailConfigEmailPropertyService',
   'foam.nanos.notification.email.EmailMessageValidationPropertyService',
+  'foam.nanos.notification.email.ApplyBaseArgumentsEmailPropertyService',
   // EmailMessageDAO(service) decorator
   'foam.nanos.notification.email.EmailServiceDAO',
 

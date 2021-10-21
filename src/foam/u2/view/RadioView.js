@@ -38,7 +38,7 @@ foam.CLASS({
       align-items: center;
     }
     ^ .choice {
-      font-size: 16px;
+      font-size: 1.6rem;
       margin-bottom: 16px;
       white-space: nowrap;
     }

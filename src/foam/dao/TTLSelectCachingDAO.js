@@ -103,9 +103,9 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( obj == this.PURGE ) {
         this.cache = {};
-      } else {
-        this.SUPER(x, obj);
       }
+
+      this.SUPER(x, obj);
     }
   ]
 });
