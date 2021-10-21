@@ -110,7 +110,7 @@ public class NSpecFactory
 
   public Object create(X x) {
     Object ns = threadLocalNS_.get();
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
     return ns_;
   }
 
