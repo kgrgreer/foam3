@@ -24,9 +24,10 @@ public class NSpecFactory
   Thread      creatingThread_ = null;
   Object      ns_             = null;
   ThreadLocal tlService_      = new ThreadLocal() {
+    // TODO: add timer to invalidate
     protected Object initialValue() {
       return maybeBuildService();
-     }
+    }
   };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
@@ -126,6 +127,7 @@ public class NSpecFactory
         logger.warning("Invalidation of DAO Service not supported.", spec_.getName());
         // ((ProxyDAO) ns_).setDelegate(null);
       } else {
+        // TODO: create and if same class then do a copyFrom()
         ns_ = null;
       }
     }
