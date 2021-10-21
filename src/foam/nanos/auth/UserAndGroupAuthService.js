@@ -89,7 +89,7 @@ foam.CLASS({
         session.setAgentId(0);
         session.setContext(session.applyTo(session.getContext()));
         ((DAO) getLocalSessionDAO()).inX(x).put(session);
-        return ((Subject) x.get("subject"));
+        return ((Subject) session.getContext().get("subject"));
       `
     },
     {

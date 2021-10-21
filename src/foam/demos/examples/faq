@@ -823,14 +823,26 @@ Besides the provided axioms types provided by FOAM, you can always write your ow
 It's just creating custom axiom to add a bit of code to the java class. It's naming it 'javaExtras', by convention, but it
 could have named it anything.
 
+Custom axioms are used for things which aren't typically used enough to warrant adding a first-class axiom type to the FOAM core.
+However, if we check how many times the above pattern is used in the foam codebase:
+
+$ find ./ -name "*.js" -exec grep javaExtras \{} \; | wc -l
+110
+
+We see that it's used 110 times, which is enough to warrant promotion to first-class built-in status.
+
 The above code is a bit ugly, so let's add this as a built-in feature to FOAM by refining model:
 
---
 // First create a class for java code:
 
 foam.CLASS({
   package: 'foam.java',
   name: 'JavaCode',
+
+  documentation: `
+    Axiom for adding java code to a model.
+    The supplied code will be added to the generated .java code generated for the model.
+  `,
 
   properties: [
     'name',
@@ -840,7 +852,7 @@ foam.CLASS({
   methods: [
     function buildJavaClass(cls) {
       cls.extras.push(foam.java.Code.create({data: this.code}));
-      }
+    }
   ]
 });
 
@@ -857,7 +869,7 @@ public CompoundException(String message, java.lang.Exception cause) {
 
 `})],
 
-Which is better, but we could do better still by refining foam.core.CLASS to add
+Which is better, but we could do better still by refining foam.core.Model to add
 a javaCode property.
 
 foam.CLASS({
@@ -865,19 +877,20 @@ foam.CLASS({
   package: 'foam.java',
   name: 'JavaCodeModelRefine',
 
+  requires: [ 'foam.java.JavaCode' ],
+
   properties: [
     {
-      class: 'AxiomArray',
-      of: 'JavaCode',
-      name: 'javaCode'
-      adaptArrayElement: function(o) {
-        if ( foam.String.isInstance(o) ) {
-          return foam.java.JavaCode.create({name: 'code', code: o});
-        }
-        return foam.java.JavaCode.create(o);
+      class: 'String',
+      name: 'javaCode',
+      postSet: function(_, code) {
+        this.axioms_.push(this.JavaCode.create({
+          name: 'JavaCode_' + this.name,
+          code: code
+        }));
       }
-    },
-
+    }
+  ]
 });
 
 Now we can just do:
@@ -894,13 +907,22 @@ javaCode: `
 
 Which is much nicer than the original.
 
+The above improvement has been added to FOAM:
+
+commit d2e4f11a323e8afc6c176a513215745083c5f4d6
+Author: Kevin Greer <kgrgreer@gmail.com>
+Date:  Tue Oct 19 11:34:04 2021 -0400
+  Convert from javaExtras custom Axiom to javaCode:.
+
+
 ##  Journals type
 What is the difference between runtime journals(e.g. UserCapabilityJunctions) and static journals( e.g. UserCapabilityJunctions.0). Also, journals end with .jrl. How do we differentiate those?
-Answer:
-static journals are the initial configuration of the system. The date that the system have in each deployment.
-runtime journals are the data that are created at the runtime.
 
-<br><br>
+Answer:
+Static journals are the initial configuration that the system is shipped with when when it is built, and is creating by combining the .jrl files found in the source code repository. Static journals end with the .0 extension.
+Runtime journals contain data that is created (or modified or deleted) by the system one it is deployed.
+The state of the system is determined by starting with the static journals and then applying the changes listed in the runtime journals.
+
 ## Axioms
 Q.
 When should I use axioms with javaExtras?

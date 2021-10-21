@@ -23,31 +23,18 @@ foam.CLASS({
       max-height: 75vh;
       overflow: auto;
       margin: 24px;
-    }
-
-    ^ .titles {
       text-align: center;
     }
 
-    ^ .makeBold {
-      font-size: 2.2rem;
-      font-weight: 600;
-      padding-bottom: 2vh;
+    ^title {
+      padding-bottom: 1em;
     }
 
-    ^ .subTitle {
-      font-size: 2.0rem;
-      color: #7f8385;
+    ^subTitle {
+      color: /*%GREY1%*/ #494F59;
       width: 85%;
       display: inline-block;
-      padding-bottom: 4vh;
-    }
-
-    ^ p {
-      display: inline-block;
-      position: relative;
-      bottom: 5px;
-      left: 10px;
+      padding-bottom: 1em;
     }
 
     ^ .table-content {
@@ -60,24 +47,14 @@ foam.CLASS({
     }
 
     ^ .circle-center {
-      padding-top: 3vh;
-      padding-bottom: 2vh;
+      padding-top: 1em;
+      padding-bottom: 1em;
       text-align: center;
-      height: 80px;
-    }
-
-    ^ .list-position {
-      padding-left: 5vw;
-      padding-right: 5vw;
-    }
-
-    ^ .img-position {
-      width: 16px;
     }
 
     ^ .actionPosition {
       float: right;
-      padding: 3vh;
+      padding: 1em;
     }
   `,
 
@@ -133,9 +110,9 @@ foam.CLASS({
 
         .start().addClass('titles')
           // title
-          .start().addClass('makeBold').translate(mainCapability[0].id+'.name', mainCapability[0].name).end()
+          .start().addClasses([this.myClass('title'), 'h400']).translate(mainCapability[0].id+'.name', mainCapability[0].name).end()
           // subTitle
-          .start().addClass('subTitle')
+          .start().addClasses([this.myClass('subTitle'), 'p-lg'])
             .translate(mainCapability[0].id + '.requirementViewTitle' , mainCapability[0].requirementViewTitle || this.INTRO_TEXT)
           .end()
         .end()

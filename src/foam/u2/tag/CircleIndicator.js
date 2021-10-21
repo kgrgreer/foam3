@@ -103,7 +103,6 @@ foam.CLASS({
           'border-color': this.stateBorderColor_$,
           'width': this.size + 'px',
           'height': this.size + 'px',
-          'line-height': this.size + 'px',
           'font-size': this.size * 0.65,
           'color': this.textColor$,
           'border': this.borderThickness + 'px solid',
