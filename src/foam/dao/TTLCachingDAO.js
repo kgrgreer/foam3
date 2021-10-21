@@ -124,13 +124,10 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( obj == this.PURGE ) {
         this.cache = {};
-      } 
-      else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+      } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
         delete this.cache[obj.id];
       }
-      else {
-        this.SUPER(x, obj);
-      }
+      this.SUPER(x, obj);
     }
   ]
 });

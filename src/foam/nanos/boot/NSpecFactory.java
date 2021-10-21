@@ -19,10 +19,15 @@ import foam.util.SafetyUtil;
 public class NSpecFactory
   implements XFactory
 {
-  NSpec  spec_;
-  ProxyX x_;
-  Thread creatingThread_ = null;
-  Object ns_             = null;
+  NSpec       spec_;
+  ProxyX      x_;
+  Thread      creatingThread_ = null;
+  Object      ns_             = null;
+  ThreadLocal tlService_      = new ThreadLocal() {
+    protected Object initialValue() {
+      return maybeBuildService();
+     }
+  };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
     x_    = x;
@@ -91,16 +96,19 @@ public class NSpecFactory
     }
   }
 
-  public synchronized Object create(X x) {
-    if ( ns_ == null ||
-         ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-      buildService(x);
+  public Object create(X x) {
+    Object ns = tlService_.get();
+
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
+
+    return ns;
+  }
+
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
     }
-
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
-
     return ns_;
-
   }
 
   public synchronized void invalidate(NSpec spec) {

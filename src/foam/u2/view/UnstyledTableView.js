@@ -569,7 +569,7 @@ foam.CLASS({
                       nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
                       canBuildObjfromProj: canObjBeBuildFromProjection
                     })
-                      .tag({ class: 'foam.u2.table.UnstyledTableRow', data: view, obj: values.array[i], projection: values.projection[i] })
+                      .tag(view.UnstyledTableRow, { data: view, obj: values.array[i], projection: values.projection[i], actionDAO: view.refDAO })
                     .endContext();
                 }
               });

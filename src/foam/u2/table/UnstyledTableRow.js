@@ -29,7 +29,12 @@ foam.CLASS({
 
   properties: [
     'obj',
-    'projection'
+    'projection',
+    // Added for scrollTableView support
+    {
+      name: 'actionDAO',
+      factory: function () { return this.data.data; } 
+    }
   ],
 
   methods: [
@@ -145,7 +150,7 @@ foam.CLASS({
           .tag(this.OverlayActionListView, {
             data: Object.values(actions),
             obj: obj,
-            dao: self.data.data,
+            dao: self.actionDAO,
             showDropdownIcon: false,
             buttonStyle: 'TERTIARY',
             icon: 'images/Icon_More_Resting.svg'
@@ -205,7 +210,7 @@ foam.CLASS({
         .call(function() {
           prop.tableCellFormatter.format(
             this,
-            prop.f ? prop.f(this.obj) : null,
+            prop.f ? prop.f(objReturned) : null,
             objReturned,
             prop
           );

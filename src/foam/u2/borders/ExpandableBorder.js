@@ -29,7 +29,7 @@
       padding: 24px;
     }
     ^ h6{
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 600;
       margin: 0px;
       padding-bottom: 12px;

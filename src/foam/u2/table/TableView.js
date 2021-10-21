@@ -66,8 +66,7 @@
       box-sizing: border-box;
       color: /*%BLACK%*/ #1e1f21;
       display: block;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       line-height: 1.5;
       overflow: hidden;
       padding-left: 16px;
