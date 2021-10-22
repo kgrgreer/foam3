@@ -402,7 +402,7 @@ foam.CLASS({
         this.currentMemento_= this.memento.tail
         var nextViewMemento = this.currentMemento_.tail;
       }
-       
+
       if ( nextViewMemento && nextViewMemento.head.length != 0 ) {
         if ( nextViewMemento.head == 'create' ) {
           this.stack.push(this.StackBlock.create({
@@ -442,8 +442,6 @@ foam.CLASS({
           });
         }
       }
-
-      //otherwise on adding new column creating new EditColumnsView, which is closed by default
       if ( view.editColumnsEnabled )
         var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
 
@@ -651,5 +649,3 @@ foam.CLASS({
     },
   ]
 });
-
-
