@@ -265,7 +265,6 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        int a = 8;
         // FileUpdateDecorator will return the same object if it is update operation
         // No changes will be made
       `
