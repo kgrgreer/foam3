@@ -10,6 +10,8 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'java.net.InetAddress',
+    'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
   ],
 
@@ -26,6 +28,24 @@ foam.CLASS({
     {
       name: 'salt',
       class: 'String'
+    },
+    {
+      name: 'machineId',
+      class: 'Int',
+      javaFactory: `
+        try {
+          return Integer.parseInt(System.getProperty("MACHINE_ID"));
+        } catch ( Exception e ) {
+          try {
+            var ipAddress = InetAddress.getLocalHost();
+            var bytes     = ipAddress.getAddress();
+            var length    = bytes.length;
+            return (bytes[length - 1] & 0xff) +
+                   (bytes[length - 2] & 0xff) * (1<<8);
+          } catch ( UnknownHostException ex ) { /* Ignored */ }
+        }
+        return 0;
+      `
     }
   ],
 
@@ -64,15 +84,14 @@ foam.CLASS({
         permutationSeq. In most cases, the generated ID should be 13 digits long.
       `,
       javaCode: `
-
         var id = new StringBuilder();
 
         // 8 bits timestamp
         long curSec = System.currentTimeMillis() / 1000;
         id.append(toHexString(curSec));
 
+        // At least 2 bits sequence
         synchronized (this) {
-          // 2 bits sequence
           if ( curSec != getLastSecondCalled() ) {
             setSeqNo(0);
             setLastSecondCalled(curSec);
@@ -81,6 +100,9 @@ foam.CLASS({
           id.append(toHexString(seqNo, 2));
           setSeqNo(seqNo + 1);
         }
+
+        // 2 bits machine id
+        id.append(toHexString(getMachineId() % 0xff, 2));
 
         // 3 bits checksum
         var checksum = toHexString(calcChecksum(id.toString()), 3);
