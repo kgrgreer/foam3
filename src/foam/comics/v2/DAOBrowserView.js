@@ -128,7 +128,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'click',
     'config',
     'data as dao',
     'filteredTableColumns',
@@ -291,16 +290,6 @@ foam.CLASS({
       this.onDetach(this.cannedPredicate$.sub(() => {
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
-    },
-    function click(obj, id) {
-      if ( ! this.stack ) return;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          config: this.config,
-          idOfRecord: id
-        }, parent: this.__subContext__ }));
     },
     function render() {
       this.data = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
