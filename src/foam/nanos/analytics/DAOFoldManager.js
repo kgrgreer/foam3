@@ -85,11 +85,9 @@ setCloseTimeExpr(new foam.glang.EndOfTimeSpan.Builder(getX())
             c.setCloseTime(id.getCloseTime());
             c.setKey(key);
             c.init_();
+            getDao().put(c);
           }
-
           c.add(value, time);
-
-          getDao().put(c);
         }
       `
     }
