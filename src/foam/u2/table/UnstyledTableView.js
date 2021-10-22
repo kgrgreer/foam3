@@ -308,7 +308,8 @@ foam.CLASS({
     },
     'tableEl_',
     'scrollEl_',
-    ['tableHeadHeight', 52]
+    ['tableHeadHeight', 52],
+    'overrideClick'
   ],
 
   methods: [
@@ -636,6 +637,7 @@ foam.CLASS({
       }
     },
     function click(obj, id) {
+      if ( this.overrideClick ) return this.overrideClick.call(this, obj, id);
       if ( ! this.stack ) return;
       this.stack.push(this.StackBlock.create({
         view: {
@@ -651,40 +653,3 @@ foam.CLASS({
 });
 
 
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'TableViewPropertyRefinement',
-  refines: 'foam.core.Property',
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'columnHidden'
-    },
-    {
-      class: 'Boolean',
-      documentation: `
-        When set to true, the '<model>.column.<property>' permission is required for a
-        user to be able to read this property. If false, any user can see the
-        value of this property in a table column.
-      `,
-      name: 'columnPermissionRequired'
-    },
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'PropertyColumnMapping',
-  properties: [
-    {
-      name: 'fullPropertyName',
-      class: 'String'
-    },
-    {
-      name: 'property',
-      class: 'FObjectProperty',
-      of: 'Property'
-    }
-  ]
-});
