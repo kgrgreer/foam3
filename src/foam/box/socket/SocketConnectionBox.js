@@ -213,7 +213,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-          // getLogger().debug("send", message);
+          // getLogger().debug("send", "replyBoxId", replyBoxId, message);
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
           omLogger.log(this.getClass().getSimpleName(), getId(), "sent");
@@ -284,6 +284,7 @@ NOTE: duplicated in SocketConnectionReplyBox
                 throw new RuntimeException("ReplyBox not found. message: "+data);
               }
               getReplyBoxes().remove(replyBoxId);
+              // getLogger().debug("receive", "replyBoxId", replyBoxId, data);
               replyBox.send(msg);
             } else {
               Object o = msg.getObject();
@@ -318,9 +319,9 @@ NOTE: duplicated in SocketConnectionReplyBox
     },
     {
       name: 'releaseHoldingThread',
-      args: "Throwable t",
+      args: 'Throwable t',
       synchronized: true,
-      javaCode:`
+      javaCode: `
         int i = 0;
         for (Map.Entry<String, BoxHolder> entry : ((Map<String, BoxHolder>) getReplyBoxes()).entrySet()) {
           BoxHolder holder = entry.getValue();
