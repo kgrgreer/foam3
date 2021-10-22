@@ -101,6 +101,16 @@ foam.CLASS({
   ],
   methods: [
     {
+      name: 'fclone',
+      type: 'foam.core.FObject',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'freeze',
+      type: 'foam.core.FObject',
+      javaCode: ' return this; '
+    },
+    {
       name: 'add',
       args: [
         {

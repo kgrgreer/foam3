@@ -23,6 +23,21 @@ public class NSpecFactory
   ProxyX      x_;
   Thread      creatingThread_ = null;
   Object      ns_             = null;
+  ThreadLocal tlService_      = new ThreadLocal() {
+      long since = 0L;
+      protected Object initialValue() {
+        since = System.currentTimeMillis();
+        return maybeBuildService();
+      }
+
+      public Object get() {
+        if ( System.currentTimeMillis() - since > 1000 ) {
+          // invalidate - force initialValue to be called on next get()
+          super.remove();
+        }
+        return super.get();
+      }
+    };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
     x_    = x;
@@ -92,12 +107,22 @@ public class NSpecFactory
   }
 
   public Object create(X x) {
-    synchronized ( this ) {
-      if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-        buildService(x_);
-      }
+    Object ns = null;
+    if ( spec_.getThreadLocalEnabled() ) {
+      ns = tlService_.get();
+    } else {
+      ns = maybeBuildService();
     }
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
+
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
+
+    return ns;
+  }
+
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
+    }
     return ns_;
   }
 
@@ -113,10 +138,15 @@ public class NSpecFactory
     ) {
       logger.info("Invalidated Service", spec_.getName());
       if ( ns_ instanceof DAO ) {
-        logger.warning("Invalidation of DAO Service not supported.", spec_.getName());
-        // ((ProxyDAO) ns_).setDelegate(null);
+        // Clustered MDAOs are not reloadable as replay is handled by medusa.
+        boolean cluster = "true".equals(System.getProperty("CLUSTER", "false"));
+        if ( ! cluster ||
+             cluster && ((DAO) ns_).cmd(foam.dao.DAO.LAST_CMD) == null ) {
+          ((ProxyDAO) ns_).setDelegate(null);
+        } else {
+          logger.warning("Invalidation of Clustered MDAOs not supported", spec_.getName());
+        }
       } else {
-        // TODO: create and if same class then do a copyFrom()
         ns_ = null;
       }
     }
