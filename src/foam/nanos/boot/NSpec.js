@@ -149,7 +149,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'serviceClass',
-      view: 'foam.u2.view.FObjectView',
       shortName: 'sc',
       displayWidth: 80,
       readPermissionRequired: true,
