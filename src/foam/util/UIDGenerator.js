@@ -10,6 +10,7 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'java.net.InetAddress',
     'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
@@ -42,7 +43,11 @@ foam.CLASS({
             var length    = bytes.length;
             return (bytes[length - 1] & 0xff) +
                    (bytes[length - 2] & 0xff) * (1<<8);
-          } catch ( UnknownHostException ex ) { /* Ignored */ }
+          } catch ( UnknownHostException ex ) {
+            System.err.println("Unable to determine machine ID");
+            Logger logger = (Logger) getX().get("logger");
+            if ( logger != null ) logger.error(ex);
+          }
         }
         return 0;
       `
