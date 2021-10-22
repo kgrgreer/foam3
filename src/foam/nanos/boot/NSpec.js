@@ -134,6 +134,12 @@ foam.CLASS({
       }
     },
     {
+      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, so as to avoid the overhead of context 'create' on each use`,
+      class: 'Boolean',
+      name: 'threadLocalEnabled',
+      value: false
+    },
+    {
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
@@ -143,6 +149,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'serviceClass',
+      view: 'foam.u2.view.FObjectView',
       shortName: 'sc',
       displayWidth: 80,
       readPermissionRequired: true,
