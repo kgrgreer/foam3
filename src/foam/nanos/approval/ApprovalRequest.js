@@ -538,17 +538,19 @@ foam.CLASS({
       section: 'approvalRequestInformation',
       columnPermissionRequired: true,
       gridColumns: 6,
-      order: 65
+      order: 70
     },
     {
       class: 'StringArray',
       name: 'additionalGroups',
       columnPermissionRequired: true,
+      section: 'approvalRequestInformation',
+      gridColumns: 6,
+      order: 65,
       documentation: `
         Optional field to specify the request to be sent to multiple  groups.
         Should remain non-transient to handle fulfilled requests being visible to different groups.
       `,
-      hidden: true
     }
   ],
 
