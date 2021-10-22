@@ -31,7 +31,7 @@ public class NSpecFactory
       }
 
       public Object get() {
-        if ( System.currentTimeMillis() - since > 10000 ) {
+        if ( System.currentTimeMillis() - since > 1000 ) {
           // invalidate - force initialValue to be called on next get()
           super.remove();
         }
