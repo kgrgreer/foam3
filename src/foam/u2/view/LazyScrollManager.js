@@ -78,13 +78,13 @@
       name: 'topRow',
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
-        if ( this.scrollToIndex != undefined || o == n ) return;
+        if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
         }
         if ( this.memento ) {
-          this.memento.head = this.topRow || 0;
+          this.memento.head = this.topRow || 1;
         }
       }
     },
@@ -93,7 +93,7 @@
       name: 'bottomRow',
       documentation: 'Stores the index of last row that is currently displayed in the table',
       postSet: function(o, n) {
-        if ( this.scrollToIndex != undefined || o == n ) return;
+        if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ ++;
@@ -109,7 +109,9 @@
       }
     },
     {
+      class: 'Int',
       name: 'scrollToIndex',
+      value: null,
       postSet: function () { this.safeScroll(); }
     },
     'currGroup_',
@@ -197,7 +199,7 @@
     },
 
     function safeScroll(){
-      if ( this.scrollToIndex == undefined ) return;
+      if ( ! this.scrollToIndex ) return;
       var page = Math.floor(this.scrollToIndex/this.pageSize);
       if ( this.renderedPages_[page] ) {
         var el = document.querySelector(`[data-idx='${this.scrollToIndex}']`);
@@ -269,7 +271,7 @@
         if ( ! isSet ) { this.appendTo.add(e); isSet = true; }
         self.renderedPages_[page] = e;
         // If there is a scroll in progress and all pages have been loaded, try to scroll again
-        if ( this.scrollToIndex != undefined && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
+        if ( this.scrollToIndex && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
           self.safeScroll();
         if ( this.displayedRowCount_ <= 0 ) this.bottomRow = this.daoCount
       });
@@ -302,7 +304,7 @@
         this.bottomRow = 0;
         this.updateRenderedPages_();
         if ( ! this.memento ) return;
-        if ( this.memento.head.length != 0 ) {
+        if ( this.memento.head.length != 0 && Number(this.memento.head)) {
           this.scrollToIndex = this.memento.head;
         } else {
           this.scrollToIndex = 1;
