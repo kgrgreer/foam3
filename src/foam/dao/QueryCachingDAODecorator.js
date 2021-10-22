@@ -10,13 +10,6 @@ foam.CLASS({
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',
 
-  constants: [
-    {
-      name: 'PURGE',
-      value: 'PURGE'
-    }
-  ],
-
   properties: [
     {
       // The cache for local storage and fast access
@@ -78,7 +71,7 @@ foam.CLASS({
     },
 
     function cmd_(x, obj) {
-      if ( obj === this.PURGE ) {
+      if ( DAO.PURGE_CMD === obj ) {
         this.cache = {};
       }
 

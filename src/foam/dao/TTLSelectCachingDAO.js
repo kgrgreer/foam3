@@ -21,13 +21,6 @@ foam.CLASS({
 
   imports: [ 'merged' ],
 
-  constants: [
-    {
-      name: 'PURGE',
-      value: 'PURGE'
-    }
-  ],
-
   properties: [
     {
       /** The cache to read items quickly. */
@@ -101,7 +94,7 @@ foam.CLASS({
     },
 
     function cmd_(x, obj) {
-      if ( obj == this.PURGE ) {
+      if ( DAO.PURGE_CMD == obj ) {
         this.cache = {};
       }
 
