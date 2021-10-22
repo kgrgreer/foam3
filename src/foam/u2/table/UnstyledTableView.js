@@ -30,10 +30,9 @@ foam.CLASS({
   ],
 
   exports: [
-    'click',
-    'click as dblclick',
     'columns',
     'colWidthUpdated',
+    'config',
     'currentMemento_ as memento',
     'nestedPropsAndIndexes',
     'props',
@@ -632,19 +631,7 @@ foam.CLASS({
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-    },
-    function click(obj, id) {
-      if ( ! this.stack ) return;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          config: this.config,
-          idOfRecord: id
-        },
-        parent: this.__subContext__.createSubContext({ memento: this.currentMemento_ && this.currentMemento_.tail })
-      }));
-    },
+    }
   ]
 });
 
