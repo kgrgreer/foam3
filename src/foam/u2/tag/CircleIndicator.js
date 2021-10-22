@@ -119,26 +119,16 @@ foam.CLASS({
         .on('mouseout', () => {
           this.hasMouseOver = false;
         })
-        .attr('border')
-        ;
+        .attr('border');
 
       if ( this.icon ) {
         this.start('img')
           .attr('src', this.icon$)
-          .style({
-            'width': this.size + 'px',
-            'height': this.size + 'px'
-          })
         .end();
       }
 
       if ( this.indicateProcessing ) {
-        this.start(this.LoadingSpinner)
-          .style({
-            'width': this.size + 'px',
-            'height': this.size + 'px'
-          })
-        .end();
+        this.tag(this.LoadingSpinner);
       }
 
       if ( this.label ) {
@@ -146,4 +136,5 @@ foam.CLASS({
       }
     }
   ]
-})
+});
+
