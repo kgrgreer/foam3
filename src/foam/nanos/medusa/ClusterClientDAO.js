@@ -116,10 +116,6 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-      if ( obj == null ) {
-        getLogger().warning("cmd", "null");
-        throw new NullPointerException("cmd obj null");
-      }
       if ( obj instanceof ClusterCommand ) {
         getLogger().debug("cmd", "ClusterCommand");
         return submit(x, DOP.CMD, (FObject) obj);
