@@ -185,6 +185,7 @@ FOAM_FILES([
   { name: "foam/util/PasswordTest" },
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
+  { name: "foam/util/TwoUIDGeneratorTest" },
   { name: "foam/util/UIDGenerator" },
   { name: "foam/util/UIDGeneratorTest" },
   { name: "foam/log/LogLevel" },
