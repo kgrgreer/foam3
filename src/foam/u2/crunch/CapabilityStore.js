@@ -510,7 +510,7 @@ foam.CLASS({
         this.junctions = juncs;
         this.daoUpdate();
         // Attempting to reset menuDAO incase of menu permission grantings.
-        this.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+        this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
       }
     }
   ]

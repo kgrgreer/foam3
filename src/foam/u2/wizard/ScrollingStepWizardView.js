@@ -78,18 +78,16 @@ foam.CLASS({
     }
 
     ^network-failure-banner {
-      position: sticky;
-      top: 0;
-      background-color: %DESTRUCTIVE2%f0;
-      color: %WHITE%;
-      height: 30px;
-      font-size: 1.8rem;
-      line-height: 30px;
-      text-align: center;
-      z-index: 1000;
-      padding: 15px;
-      border-radius: 8px;
       backdrop-filter: blur(10px);
+      background-color: /*%DESTRUCTIVE2%*/ #A61414;
+      border-radius: 8px;
+      color: /*%WHITE%*/ white;
+      margin-bottom: 16px;
+      padding: 8px;
+      position: sticky;
+      text-align: center;
+      top: 0;
+      z-index: 1000;
     }
 
     ^hide {
@@ -245,7 +243,7 @@ foam.CLASS({
               .add(this.slot(function (data$someFailures) {
                 return data$someFailures
                   ? this.E()
-                    .addClass(this.myClass('network-failure-banner'))
+                    .addClasses(['p', this.myClass('network-failure-banner')])
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))

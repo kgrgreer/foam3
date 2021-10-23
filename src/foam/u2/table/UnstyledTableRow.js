@@ -53,14 +53,7 @@ foam.CLASS({
       }).
       callIf( this.click && ! this.data.disableUserSelection, function() {
         this.on('click', function(evt) {
-          // If we're clicking somewhere to close the context menu,
-          // don't do anything.
-          if (
-            evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-            evt.target.classList.contains(self.data.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-          ) {
-            return;
-          }
+          if ( self.data.shouldEscapeEvts(evt) ) return;
           self.click.call(self, null, obj.id);
         });
       }).

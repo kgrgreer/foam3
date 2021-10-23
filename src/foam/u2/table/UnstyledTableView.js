@@ -636,7 +636,7 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  package: 'foam.u2.view',
+  package: 'foam.u2.table',
   name: 'TableViewPropertyRefinement',
   refines: 'foam.core.Property',
   properties: [
@@ -658,7 +658,7 @@ foam.CLASS({
 
 
 foam.CLASS({
-  package: 'foam.u2.view',
+  package: 'foam.u2.table',
   name: 'PropertyColumnMapping',
   properties: [
     {
