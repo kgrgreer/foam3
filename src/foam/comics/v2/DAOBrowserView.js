@@ -263,8 +263,8 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
-        this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
         this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
