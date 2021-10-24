@@ -192,17 +192,24 @@ foam.CLASS({
       javaFactory: `
         return new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build();
       `
+    },
+    {
+      class: 'Object',
+      name: 'manager',
+      javaType: 'SFManager',
+      transient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      visibility: 'HIDDEN',
+      javaSetter: `
+        managerIsSet_ = true;
+        manager_ = val;
+      `
     }
   ],
 
   methods: [
-    {
-      name: 'getManager',
-      javaType: 'SFManager',
-      javaCode: `
-        return (SFManager) getX().get("SFManager");
-      `
-    },
     {
       name: 'createWriteJournal',
       args: 'String fileName',

@@ -170,6 +170,7 @@ foam.CLASS({
       javaCode: `
         X context = getX();
         initForwarder(x_);
+        final SFManager manager = this;
 
         DAO sfDAO = (DAO) getX().get("SFDAO");
         sfDAO.select(new AbstractSink() {
@@ -179,6 +180,7 @@ foam.CLASS({
             sf.setX(context);
             sf.setInFlightEntries(0);
             sf.setFailedEntries(0);
+            sf.setManager(manager);
             sf.initial(context);
             sf.setReady(true);
             getLogger().info("Initialize successfully: " + sf.getId());
