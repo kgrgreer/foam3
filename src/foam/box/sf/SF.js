@@ -505,10 +505,13 @@ foam.CLASS({
 
             journal.replayFrom(x, tempDAO, offset);
 
+            // Set back the offset.
+            journal.setFileLastAccessTime(offset);
+
             tempDAO.where(predicate).select(sink);
             List<SFEntry> sfEntryList = sink.getArray();
             logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
-            
+
             for ( SFEntry entry : sfEntryList ) {
               SFEntry e = (SFEntry) entry.fclone();
               long index = entryIndex_.incrementAndGet();
@@ -517,8 +520,6 @@ foam.CLASS({
               forward(e);
             }
 
-            // Set back the offset.
-            journal.setFileLastAccessTime(offset);
           }
 
         }
