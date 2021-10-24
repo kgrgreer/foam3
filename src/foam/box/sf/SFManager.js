@@ -180,6 +180,8 @@ foam.CLASS({
             sf.setInFlightEntries(0);
             sf.setFailedEntries(0);
             sf.initial(context);
+            sf.setReady(true);
+            getLogger().info("Initialize successfully: " + sf.getId());
           }
         });
         getLogger().info("SFManager Start");

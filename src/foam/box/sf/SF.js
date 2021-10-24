@@ -125,6 +125,17 @@ foam.CLASS({
       documentation: 'Logging after n times retry fail',
       value: 4
     },
+    {
+      class: 'Boolean',
+      name: 'ready',
+      storageTransient: true,
+      value: false,
+      javaSetter:`
+        readyIsSet_ = true;
+        ready_ = val;
+        return;
+      `,
+    },
     // {
     //   class: 'Map',
     //   name: 'retryCause',
@@ -220,7 +231,7 @@ foam.CLASS({
       documentation: 'Persist SFEntry into Journal.',
       javaCode: `
         // Wait for the SF ready to serve.
-        while ( isReady_.get() == false ) {}
+        //while ( isReady_.get() == false ) {}
 
         SFEntry entry = new SFEntry.Builder(getX())
                               .setObject(fobject)
@@ -248,7 +259,7 @@ foam.CLASS({
             } else {
               String filename = makeFileName(fileIndex_.get());
               entry.setFileName(filename);
-              journal = journalMap_.get(filename);
+              journal = getJournal(filename);
             }
             return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
           }
@@ -385,9 +396,13 @@ foam.CLASS({
         createDelegate();
         FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
-        // Do nothing if no file
-        if ( filenames.size() == 0 ) return;
 
+        if ( filenames.size() == 0 ) {
+          isReady_.getAndSet(true);
+          return;
+        }
+
+        //TODO: use atime to avoid re-read for mode1.
         List<String> availableFilenames = null;
         //Sort file from high index to low.
         filenames.sort((f1, f2) -> {

@@ -11,8 +11,9 @@ p({
   "class":"foam.box.sf.SFSink",
   "id":"constFourSecondHttpSinkDemoUsingAtime",
   "fileName":"httpSFSinkDemoUsingAtime",
-  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
+  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy","maxRetryAttempts":40},
   "timeWindow": 3600,
+  "fileCapacity": 4,
   "delegateNspecId": "demoHttpSinkUsingAtime"
 })
 p({
