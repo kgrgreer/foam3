@@ -19,6 +19,14 @@ foam.CLASS({
   package: 'foam.java',
   name: 'Class',
 
+  constants: [
+    {
+      name: 'SUPER_CLASSES',
+      value: {
+      }
+    }
+  ],
+
   requires: [
     'foam.java.Argument',
     'foam.java.Method'
@@ -114,17 +122,26 @@ foam.CLASS({
   ],
 
   methods: [
-    function fromModel(model) {
-      this.name     = model.name;
-      this.package  = model.package;
-      this.abstract = model.abstract;
+//    function init() {
+//      this.SUPER();
+////      this.SUPER_CLASSES[this.name] = this;
+////      console.log("+++TEST " + typeof(this));
+////      console.log("+++NAmE " + this.id);
+//    },
 
-      cls.extends = this.model_.extends === 'FObject' ?
-        undefined : this.model_.extends;
-
-      if ( this.model_.javaExtends )
-        cls.extends = this.model_.javaExtends;
-    },
+//    function fromModel(model) {
+//      this.name     = model.name;
+//      this.package  = model.package;
+//      this.abstract = model.abstract;
+//
+//      cls.extends = this.model_.extends === 'FObject' ?
+//        undefined : this.model_.extends;
+//
+//      if ( this.model_.javaExtends )
+//        cls.extends = this.model_.javaExtends;
+//
+//      this.SUPER_CLASSES[this.name] = this;
+//    },
 
     function getField(name) {
       for ( var i  = 0 ; this.fields && i < this.fields.length ; i++ ) {
@@ -246,7 +263,19 @@ foam.CLASS({
         return foam.Number.compare(o1.order, o2.order);
       }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
 
-      this.methods.forEach(function(f) { o.out(f, '\n'); });
+      var self = this;
+      this.methods.forEach(function(f) {
+      console.log("**********************" + (Object.keys(self.SUPER_CLASSES).length));
+//      console.log("**********************" + (Object.keys(self.SUPER_CLASSES)[0]));
+        if ( self.SUPER_CLASSES[this.extends] != undefined ) {
+          console.log("**********************" + self.SUPER_CLASSES);
+          self.SUPER_CLASSES[this.extends].methods.forEach(function(s) {
+            console.log(s.body);
+            console.log(f.body);
+          })
+        }
+        o.out(f, '\n');
+      });
       this.classes.forEach(function(c) { o.out(c, '\n'); });
       this.extras.forEach(function(c)  { o.out(c, '\n'); });
       o.decreaseIndent();
