@@ -60,6 +60,10 @@ foam.CLASS({
     'foam.nanos.zac.MissingStuff'
   ],
 
+  imports: [
+    'window'
+  ],
+
   exports: [
     'as ctrl',
     'sessionID'
@@ -75,10 +79,13 @@ foam.CLASS({
       name: 'sessionID',
       factory: function() {
         var urlSession = '';
+
         try {
-          urlSession = window.location.search.substring(1).split('&')
+          urlSession = this.window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
-        } catch { };
+        } catch {
+        }
+
         return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
           ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
