@@ -289,9 +289,8 @@ public class QueryParser
       for ( int i = 0; i < value.length; i++ ) {
         Binary binary = values[2].equals("=") ? new Eq() : new Contains();
         binary.setArg1(prop);
-        var test = ( value[i] instanceof Expr ) ?
-          ( Expr ) value[i] : new foam.mlang.Constant (value[i].equals("null") ? null : value[i]);
-        binary.setArg2(test);
+        binary.setArg2(( value[i] instanceof Expr ) ?
+          ( Expr ) value[i] : new foam.mlang.Constant (value[i].equals("null") ? null : value[i]));
         vals[i] = binary;
       }
       or.setArgs(vals);
