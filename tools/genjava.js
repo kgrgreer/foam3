@@ -177,7 +177,7 @@ function loadClass(c) {
 }
 
 function generateClass(cls) {
-console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
+//console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
 //  if ( typeof cls === 'object' ) {
 //  console.log("OOOOOOOOOOOOOOO");
 //
@@ -190,13 +190,14 @@ console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
 //    cls = cls.buildJavaClass();
 //  }
 logger.debug('call/generateClass:cls', ''+cls);
-    if ( foam.Array.isInstance(cls) ) {
-      cls = cls[1];
-    }
-    if ( typeof cls === 'string' ) {
-      cls = foam.lookup(cls);
-      cls = cls.buildJavaClass();
-    }
+//    if ( foam.Array.isInstance(cls) ) {
+//      cls = cls[1];
+//    }
+//    if ( typeof cls === 'string' ) {
+//      cls = foam.lookup(cls);
+////      cls = cls.buildJavaClass();
+//      console.log("BUILD JAVA CLASS");
+//    }
   logger.debug('call/generateClass:cls.id', cls.id);
 
 //  console.log("###########" + cls);
@@ -219,7 +220,8 @@ logger.debug('call/generateClass:cls', ''+cls);
     (cls.package + "." + cls.name).replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
-  console.log("+++++++++++    " + cls.name);
+//  console.log("+++++++++++    " + cls.name);
+  if ( ! foam.java.Class.isInstance(cls) ) cls = cls.buildJavaClass();
   writeFileIfUpdated(outfile, cls.toJavaSource());
 }
 
@@ -263,7 +265,7 @@ function generateProxy(intf) {
   var existing = foam.lookup(intf.package + '.Proxy' + intf.name, true);
 
   if ( existing ) {
-    generateClass(existing.id);
+    generateClass(existing.buildJavaClass());
     return;
   }
 
@@ -391,11 +393,15 @@ addDepsToClasses().then(function() {
     return cls.buildJavaClass();
   });
 
+  console.log("KKKKKKKKKKKKK");
   javaClasses.forEach(generateClass);
+  console.log("NNNNNNNNNNNNNNN");
   abstractClasses.forEach(generateAbstractClass);
   console.log("-------------");
   skeletons.forEach(generateSkeleton);
+  console.log("^^^^^^^^^^^^^^");
   proxies.forEach(generateProxy);
+  console.log("8888888888888888");
 }).then(function () {
   var notFound = Object.keys(classesNotFound).length;
   var found = Object.keys(classesFound).length;
