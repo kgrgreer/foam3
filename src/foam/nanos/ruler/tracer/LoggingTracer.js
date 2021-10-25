@@ -55,10 +55,11 @@
         { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       javaCode: `
-        setLog(getLog().append("\\nRule: "));
-        setLog(getLog().append(rule.getName()));
-        setLog(getLog().append(", id: "));
-        setLog(getLog().append(rule.getId()));
+        StringBuilder log = getLog();
+        log.append("\\nRule: "));
+        log.append(rule.getName()));
+        log.append(", id: "));
+        setLog(log.append(rule.getId()));
       `
     },
     {
@@ -79,14 +80,15 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        setLog(getLog().append("\\nPermission: "));
+        StringBuilder log = getLog();
+        log.append("\\nPermission: "));
         if ( user != null ) {
-          setLog(getLog().append(result));
-          setLog(getLog().append(" for User: "));
-          setLog(getLog().append(user.getId()));
+          log.append(result));
+          log.append(" for User: "));
+          setLog(log.append(user.getId()));
         }
         else {
-          setLog(getLog().append("Not Required"));
+          setLog(log.append("Not Required"));
         }
       `
     },
@@ -96,8 +98,9 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        setLog(getLog().append("\\nPredicate: "));
-        setLog(getLog().append(result));
+        StringBuilder log = getLog();
+        log.append("\\nPredicate: "));
+        setLog(log.append(result));
       `
     },
     {
@@ -106,8 +109,9 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        setLog(getLog().append("\\nActive: "));
-        setLog(getLog().append(result));
+        StringBuilder log = getLog();
+        log.append("\\nActive: "));
+        setLog(log.append(result));
       `
     },
     {
