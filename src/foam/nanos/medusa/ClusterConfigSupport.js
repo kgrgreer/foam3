@@ -41,6 +41,8 @@ configuration for contacting the primary node.`,
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.medusa.ElectoralService',
+    'foam.nanos.medusa.ElectoralServiceState',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.net.Host',
@@ -806,7 +808,10 @@ configuration for contacting the primary node.`,
       `
     },
     {
-      documentation: 'Crontrol which instances cron jobs run.  Clusterable cron jobs should only run one the primary mediator.',
+      documentation: `
+        Returns true if the cron job should be enabled. Returns false otherwise.
+        Note that clusterable cron jobs should only run on the primary mediator.
+      `,
       name: 'cronEnabled',
       type: 'Boolean',
       args: [
@@ -814,13 +819,31 @@ configuration for contacting the primary node.`,
           name: 'x',
           type: 'Context'
         },
+        {
+          name: 'clusterable',
+          type: 'boolean',
+          documentation: 'true if the cron job is clusterable'
+        }
       ],
       javaCode: `
       try {
+        ElectoralService electoral = (ElectoralService) x.get("electoralService");
+        // System must be ready before running cron jobs
+        if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
+          return false;
+        }
+        
+        // Non-clusterable cron jobs can run if the system is ready
+        if ( ! clusterable ) {
+          return true;
+        } 
+
         ClusterConfig config = getConfig(x, getConfigId());
         if ( config == null ) {
           return true;
         }
+
+        // Clusterable cron jobs should only run on the primary mediator.
         if ( config.getType() == MedusaType.MEDIATOR ) {
           if ( getMediatorCount() == 1 ) {
             return true;
