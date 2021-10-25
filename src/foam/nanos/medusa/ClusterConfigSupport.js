@@ -827,24 +827,24 @@ configuration for contacting the primary node.`,
       ],
       javaCode: `
       try {
-        ElectoralService electoral = (ElectoralService) x.get("electoralService");
-        // System must be ready before running cron jobs
-        if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
-          return false;
-        }
-        
-        // Non-clusterable cron jobs can run if the system is ready
-        if ( ! clusterable ) {
-          return true;
-        } 
-
         ClusterConfig config = getConfig(x, getConfigId());
         if ( config == null ) {
           return true;
         }
-
-        // Clusterable cron jobs should only run on the primary mediator.
+        
         if ( config.getType() == MedusaType.MEDIATOR ) {
+          ElectoralService electoral = (ElectoralService) x.get("electoralService");
+          // System must be ready before running cron jobs
+          if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
+            return false;
+          }
+        
+          // Non-clusterable cron jobs can run if the system is ready
+          if ( ! clusterable ) {
+            return true;
+          }
+
+          // Clusterable cron jobs should only run on the primary mediator
           if ( getMediatorCount() == 1 ) {
             return true;
           }
