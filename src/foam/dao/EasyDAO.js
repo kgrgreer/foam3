@@ -344,6 +344,9 @@ foam.CLASS({
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
+        if ( internalAccessDAOIsSet_ )
+          delegate = new foam.dao.PrivilegedDAO(getX(), delegate, getInternalAccessDAO());
+
         // see comments above regarding DAOs with init_
         ((ProxyDAO) delegate_).setDelegate(delegate);
 
@@ -786,6 +789,11 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'approvableAwareRelationshipName',
       class: 'String',
       documentation: 'If the DAO is approvable aware, this sets the ApprovableAwareDAO RelationshipName field'
+    },
+    {
+      name: 'internalAccessDAO',
+      class: 'foam.dao.DAOProperty',
+      documentation: 'dao to be added '
     }
   ],
 

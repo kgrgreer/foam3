@@ -324,7 +324,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       X rtn = getApplyContext();
 
       DAO localUserDAO  = (DAO) x.get("localUserDAO");
-      DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+      DAO localGroupDAO = (DAO) x.get("groupDAO");
       AuthService auth  = (AuthService) x.get("auth");
       User user         = (User) localUserDAO.find(getUserId());
       User agent        = (User) localUserDAO.find(getAgentId());

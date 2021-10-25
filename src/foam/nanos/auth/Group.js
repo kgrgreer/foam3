@@ -282,7 +282,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       javaCode: `
         // if the group is the group of the user, or an ancestor of the group of the user,
         // then user should be authorized to read
-        DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+        DAO localGroupDAO = (DAO) x.get("groupDAO");
         User user = (User) ((Subject) x.get("subject")).getUser();
         Group userGroup = (Group) localGroupDAO.find(user.getGroup());
         while ( userGroup != null ) {
@@ -362,8 +362,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         if ( SafetyUtil.isEmpty(ancestorGroupId) ) return null;
 
-        DAO localGroupDAO = ((DAO) x.get("localGroupDAO")).inX(x);
-        Group ancestor = (Group) localGroupDAO.inX(x).find(ancestorGroupId);
+        DAO localGroupDAO = ((DAO) x.get("groupDAO"));
+        Group ancestor = (Group) localGroupDAO.find(ancestorGroupId);
 
         if ( ancestor == null ) {
           throw new RuntimeException("The '" + group.getId() + "' group has a null ancestor named '" + ancestorGroupId + "'.");
