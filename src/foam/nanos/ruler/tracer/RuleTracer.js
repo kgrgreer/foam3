@@ -17,7 +17,7 @@ foam.INTERFACE({
     {
       name: 'preExecute',
       documentation: `
-        This method happens when the rule permission is checked
+        This method occurs before any rules are evaluated
       `,
       args: [
         { name: 'x', type: 'Context' }
@@ -26,7 +26,7 @@ foam.INTERFACE({
     {
       name: 'postExecute',
       documentation: `
-        This method happens when the rule permission is checked
+        This method happens after all rules are evaluated
       `,
       args: [
         { name: 'x', type: 'Context' }
@@ -35,7 +35,7 @@ foam.INTERFACE({
     {
       name: 'preRule',
       documentation: `
-        This method happens when the rule permission is checked
+        This method happens before a rule is checked
       `,
       args: [
         { name: 'rule', type: 'foam.nanos.ruler.Rule' },
@@ -46,7 +46,7 @@ foam.INTERFACE({
     {
       name: 'postRule',
       documentation: `
-        This method happens when the rule permission is checked
+        This method happens after a rule is checked
       `,
       args: [
         { name: 'rule', type: 'foam.nanos.ruler.Rule' },
@@ -85,7 +85,7 @@ foam.INTERFACE({
     {
       name: 'traceAction',
       documentation: `
-        This method happens when the rule permission is checked
+        This method happens after a rule action is executed
       `
     },
   ]
