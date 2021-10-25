@@ -111,7 +111,6 @@
     {
       class: 'Int',
       name: 'scrollToIndex',
-      value: null,
       postSet: function () { this.safeScroll(); }
     },
     'currGroup_',
