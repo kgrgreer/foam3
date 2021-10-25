@@ -107,7 +107,7 @@ public class RuleEngine extends ContextAwareSupport {
       // throw new RuntimeException(message, e);
     }
 
-    asyncApplyRules(rules, obj, oldObj, tracer);
+    asyncApplyRules(rules, obj, oldObj);
     tracer.postExecute(getX());
   }
 
@@ -201,6 +201,10 @@ public class RuleEngine extends ContextAwareSupport {
     tracer.tracePredicate(result);
     return result;
   }
+  private boolean checkPredicate (Rule rule, X userX_, FObject obj, FObject oldObj) {
+    boolean result = rule.f(userX_, obj, oldObj);
+    return result;
+  }
 
   private boolean isRuleActive(Rule rule, RuleAction action, RuleTracer tracer) {
     currentRule_ = rule;
@@ -211,6 +215,16 @@ public class RuleEngine extends ContextAwareSupport {
       isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
     }
     tracer.traceActive(isActive && action != null);
+    return isActive && action != null;
+  }
+  private boolean isRuleActive(Rule rule, RuleAction action) {
+    currentRule_ = rule;
+
+    // Check if the rule is in an ACTIVE state
+    boolean isActive = true;
+    if (rule instanceof LifecycleAware) {
+      isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
+    }
     return isActive && action != null;
   }
 
@@ -224,8 +238,17 @@ public class RuleEngine extends ContextAwareSupport {
     tracer.tracePermission(user, permission);
     return permission;
   }
+  private boolean checkPermission(Rule rule, FObject obj) {
+    var user = rule.getUser(getX(), obj);
+    boolean permission = true;
+    if ( user != null ) {
+      var auth = (AuthService) getX().get("auth");
+      permission = auth.checkUser(getX(), user, "rule.read." + rule.getId());
+    }
+    return permission;
+  }
 
-  private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj, RuleTracer tracer) {
+  private void asyncApplyRules(List<Rule> rules, FObject obj, FObject oldObj) {
     if (rules.isEmpty()) return;
 
     ((Agency) getX().get("threadPool")).submit(userX_, x -> {
@@ -233,9 +256,9 @@ public class RuleEngine extends ContextAwareSupport {
       for ( Rule rule : rules ) {
         if ( stops_.get() ) return;
 
-        if ( isRuleActive(rule, rule.getAsyncAction(), tracer)
-          && checkPermission(rule, obj, tracer)
-          && checkPredicate(rule, x, obj, oldObj, tracer)
+        if ( isRuleActive(rule, rule.getAsyncAction())
+          && checkPermission(rule, obj)
+          && checkPredicate(rule, x, obj, oldObj)
         ) {
           // We assume the original object `obj` is stale when running after rules.
           // For that, greedy mode is used for object reload. For before rules,
