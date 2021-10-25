@@ -1048,3 +1048,17 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.delimiter",target:"."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.decimalCharacter",target:","})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.REMOVE_NOTIFICATION.label",target:"Remover Notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.HIDE_NOTIFICATION_TYPE.label",target:"Ocultar tipo de notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_READ.label",target:"Marcar como Lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD.label",target:"Marcar como não lido"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NO_TOKEN",target:"Insira um código de verificação."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_LABEL",target:"Insira o código de verificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_ERROR",target:"Código incorreto. Tente novamente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_TITLE",target:"Autenticação de dois fatores"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_EXPLANATION",target:"Abra o aplicativo Google Authenticator em seu dispositivo móvel para visualizar o código de 6 dígitos e verificar sua identidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_1",target:"Precisa de outra forma de autenticação?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_2",target:"Fale conosco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.VERIFY.label",target:"Verifique"})
