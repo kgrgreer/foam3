@@ -265,16 +265,20 @@ foam.CLASS({
 
       var self = this;
       this.methods.forEach(function(f) {
-      console.log("**********************" + (Object.keys(self.SUPER_CLASSES).length));
+//      console.log("**********************" + (Object.keys(self.SUPER_CLASSES).length));
 //      console.log("**********************" + (Object.keys(self.SUPER_CLASSES)[0]));
-        if ( self.SUPER_CLASSES[this.extends] != undefined ) {
-          console.log("**********************" + self.SUPER_CLASSES);
-          self.SUPER_CLASSES[this.extends].methods.forEach(function(s) {
-            console.log(s.body);
-            console.log(f.body);
+//      console.log("********************** HEHEHEHEH " + self.SUPER_CLASSES[self.extends]);
+//      console.log("********************** EXTENDS " + self.extends);
+//        while ( )
+        if ( self.SUPER_CLASSES[self.extends] != undefined ) {
+//          console.log("!!1!!!!!!!" + self.SUPER_CLASSES);
+          self.SUPER_CLASSES[self.extends].methods.forEach(function(s) {
+//            console.log("!!1!!!!!!!" + s.javaCode);
+            if ( s.name == f.name && s.javaCode != f.javaCode ) {
+              o.out(f, '\n');
+            }
           })
         }
-        o.out(f, '\n');
       });
       this.classes.forEach(function(c) { o.out(c, '\n'); });
       this.extras.forEach(function(c)  { o.out(c, '\n'); });

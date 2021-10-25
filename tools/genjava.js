@@ -177,15 +177,29 @@ function loadClass(c) {
 }
 
 function generateClass(cls) {
-  logger.debug('call/generateClass:cls', ''+cls);
-  if ( foam.Array.isInstance(cls) ) {
-    cls = cls[1];
-  }
-  if ( typeof cls === 'string' )
-    cls = foam.lookup(cls);
-
+console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
+//  if ( typeof cls === 'object' ) {
+//  console.log("OOOOOOOOOOOOOOO");
+//
+//    logger.debug('call/generateClass:cls', ''+cls);
+//    if ( foam.Array.isInstance(cls) ) {
+//      cls = cls[1];
+//    }
+//    if ( typeof cls === 'string' )
+//      cls = foam.lookup(cls);
+//    cls = cls.buildJavaClass();
+//  }
+logger.debug('call/generateClass:cls', ''+cls);
+    if ( foam.Array.isInstance(cls) ) {
+      cls = cls[1];
+    }
+    if ( typeof cls === 'string' ) {
+      cls = foam.lookup(cls);
+      cls = cls.buildJavaClass();
+    }
   logger.debug('call/generateClass:cls.id', cls.id);
 
+//  console.log("###########" + cls);
   if ( fileWhitelist !== null ) {
     let src = cls.model_.source;
     logger.debug('call/generateClass:src', cls.id, src);
@@ -202,11 +216,11 @@ function generateClass(cls) {
   logger.debug('call/generateClass:cls.id,build?', cls.id, 'true');
 
   var outfile = outdir + path_.sep +
-    cls.id.replace(/\./g, path_.sep) + '.java';
+    (cls.package + "." + cls.name).replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
-
-  writeFileIfUpdated(outfile, cls.buildJavaClass().toJavaSource());
+  console.log("+++++++++++    " + cls.name);
+  writeFileIfUpdated(outfile, cls.toJavaSource());
 }
 
 function generateAbstractClass(cls) {
@@ -367,8 +381,19 @@ addDepsToClasses().then(function() {
   skeletons.forEach(loadClass);
   proxies.forEach(loadClass);
 
-  classes.forEach(generateClass);
+  var javaClasses = classes.map(function(cls) {
+    logger.debug('call/generateClass:cls', ''+cls);
+    if ( foam.Array.isInstance(cls) ) {
+      cls = cls[1];
+    }
+    if ( typeof cls === 'string' )
+      cls = foam.lookup(cls);
+    return cls.buildJavaClass();
+  });
+
+  javaClasses.forEach(generateClass);
   abstractClasses.forEach(generateAbstractClass);
+  console.log("-------------");
   skeletons.forEach(generateSkeleton);
   proxies.forEach(generateProxy);
 }).then(function () {
