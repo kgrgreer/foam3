@@ -289,8 +289,9 @@ public class QueryParser
       for ( int i = 0; i < value.length; i++ ) {
         Binary binary = values[2].equals("=") ? new Eq() : new Contains();
         binary.setArg1(prop);
-        binary.setArg2(( value[i] instanceof Expr ) ?
-          ( Expr ) value[i] : new foam.mlang.Constant (value[i].equals("null") ? null : value[i]));
+        var test = ( value[i] instanceof Expr ) ?
+          ( Expr ) value[i] : new foam.mlang.Constant (value[i].equals("null") ? null : value[i]);
+        binary.setArg2(test);
         vals[i] = binary;
       }
       or.setArgs(vals);
@@ -460,10 +461,10 @@ public class QueryParser
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER")
-      ),
-      //YYYY
-      new Seq(
-        grammar.sym("NUMBER"))
+      )
+      //YYYY: NOT SUPPORTED
+//      new Seq(
+//        grammar.sym("NUMBER"))
     ));
     grammar.addAction("LITERAL_DATE", (val, x) -> {
       Calendar start = new GregorianCalendar();
@@ -586,7 +587,11 @@ public class QueryParser
     grammar.addAction("NUMBER", (val, x) -> {
       String num = compactToString(val);
       if ( num.length() == 0 ) return val;
-      return Integer.parseInt(num);
+      try {
+        return Integer.parseInt(num);
+      } catch (NumberFormatException e) {
+        return Long.parseLong(num);
+      }
     });
 
     return grammar;
