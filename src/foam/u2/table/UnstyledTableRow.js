@@ -29,7 +29,12 @@ foam.CLASS({
 
   properties: [
     'obj',
-    'projection'
+    'projection',
+    // Added for scrollTableView support
+    {
+      name: 'actionDAO',
+      factory: function () { return this.data.data; } 
+    }
   ],
 
   methods: [
@@ -43,20 +48,13 @@ foam.CLASS({
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
         this.on('dblclick', function() {
             if ( self.data.shouldEscapeEvts(evt) ) return;
-            self.data.dblclick(null, obj.id);
+            self.dblclick.call(self, null, obj.id);
         });
       }).
       callIf( this.click && ! this.data.disableUserSelection, function() {
         this.on('click', function(evt) {
-          // If we're clicking somewhere to close the context menu,
-          // don't do anything.
-          if (
-            evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-            evt.target.classList.contains(self.data.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-          ) {
-            return;
-          }
-          self.click(null, obj.id);
+          if ( self.data.shouldEscapeEvts(evt) ) return;
+          self.click.call(self, null, obj.id);
         });
       }).
       addClass(this.data.myClass('row')).
@@ -145,7 +143,7 @@ foam.CLASS({
           .tag(this.OverlayActionListView, {
             data: Object.values(actions),
             obj: obj,
-            dao: self.data.data,
+            dao: self.actionDAO,
             showDropdownIcon: false,
             buttonStyle: 'TERTIARY',
             icon: 'images/Icon_More_Resting.svg'

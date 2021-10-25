@@ -1214,8 +1214,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'int'],
-    ['javaInfoType',   'foam.core.AbstractIntPropertyInfo']
+    ['javaType',     'int'],
+    ['javaInfoType', 'foam.core.AbstractIntPropertyInfo']
   ]
 });
 
@@ -2456,6 +2456,50 @@ foam.CLASS({
         `
       });
       return;
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'JavaCode',
+
+  documentation: `
+    Axiom for adding java code to a model.
+    The supplied code will be added to the generated .java code generated for the model.
+  `,
+
+  properties: [
+    'name',
+    'code'
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      cls.extras.push(foam.java.Code.create({data: this.code}));
+    }
+  ]
+});
+
+
+foam.CLASS({
+  refines: 'foam.core.Model',
+  package: 'foam.java',
+  name: 'JavaCodeModelRefine',
+
+  requires: [ 'foam.java.JavaCode' ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'javaCode',
+      postSet: function(_, code) {
+        this.axioms_.push(this.JavaCode.create({
+          name: 'JavaCode_' + this.name,
+          code: code
+        }));
+      }
     }
   ]
 });

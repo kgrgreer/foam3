@@ -128,7 +128,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'click',
     'config',
     'data as dao',
     'filteredTableColumns',
@@ -264,8 +263,8 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
-        this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
         this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
@@ -292,18 +291,8 @@ foam.CLASS({
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
     },
-    function click(obj, id) {
-      if ( ! this.stack ) return;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          config: this.config,
-          idOfRecord: id
-        }, parent: this.__subContext__ }));
-    },
     function render() {
-      this.config.dao = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
+      this.data = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;

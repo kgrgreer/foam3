@@ -25,6 +25,7 @@ foam.CLASS({
   exports: [
     'config',
     'memento',
+    'click'
   ],
 
   requires: [
@@ -109,6 +110,23 @@ foam.CLASS({
         var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
         return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
       }
+    },
+    {
+      name: 'click',
+      expression: function(config$click) {
+        if ( this.config.click && typeof this.config.click === 'function' )
+          return this.config.click;
+        return function(obj, id) {
+          if ( ! this.stack ) return;
+          this.stack.push(foam.u2.stack.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
+            config: this.__context__.config,
+            idOfRecord: id
+          }, parent: this.__subContext__ }, this));
+        };
+      }
     }
   ],
 
@@ -170,12 +188,12 @@ foam.CLASS({
 
   methods: [
     function render() {
-    this.SUPER();
+      this.SUPER();
 
-    var self = this;
-    var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
-    var nav = this.showNav ? self.BreadcrumbView : '';
-    this.addClass()
+      var self = this;
+      var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+      var nav = this.showNav ? self.BreadcrumbView : '';
+      this.addClass()
 
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()

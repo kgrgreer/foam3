@@ -45,7 +45,6 @@ foam.CLASS({
           indicateProcessing: true,
           borderColor: 'rgba(0,0,0,0)',
           borderColorHover: 'rgba(0,0,0,0)',
-          label: '' + number
         };
       } else {
         args = {
@@ -86,7 +85,6 @@ foam.CLASS({
       margin-right: 24px;
       vertical-align: middle;
       min-width: 24px;
-      line-height: 26px !important;
     }
     ^sub-item {
       padding-left: calc(24px + 24px + 4px);
