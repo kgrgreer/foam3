@@ -15,7 +15,7 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      height: 34px;
+      height: /*%INPUTHEIGHT%*/ 34px;
       justify-content: center;
       position: relative;
       width: 100%;
