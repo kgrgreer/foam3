@@ -58,8 +58,12 @@ public class SimpleFacetManager
         if ( f != null ) {
           obj = ((XArgsFactory<T>) f).getInstance(args, x);
         }
-
       } catch (NoSuchMethodException e) {
+        // nop
+      } catch (NullPointerException e) {
+        System.err.println("Unable to create "+type.getName());
+        Thread.dumpStack();
+        throw e;
       }
 
       if ( obj == null ) {

@@ -400,7 +400,7 @@ foam.CLASS({
       type: 'foam.nanos.bench.Benchmark',
       javaCode: `
         if ( ! SafetyUtil.isEmpty(getBenchmarkId()) ) {
-          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId());
+          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId()).fclone();
         }
 
         Language l = getLanguage();
