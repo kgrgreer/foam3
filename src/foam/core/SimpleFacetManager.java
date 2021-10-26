@@ -27,6 +27,7 @@ public class SimpleFacetManager
       System.err.println("Unable to create FObject.");
       return null;
     }
+
     try {
       // Automatically load FooImpl if Foo is abstract.
       // KGR: Why/where do we do this?
