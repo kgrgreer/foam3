@@ -45,7 +45,6 @@ foam.CLASS({
           indicateProcessing: true,
           borderColor: 'rgba(0,0,0,0)',
           borderColorHover: 'rgba(0,0,0,0)',
-          label: '' + number
         };
       } else {
         args = {

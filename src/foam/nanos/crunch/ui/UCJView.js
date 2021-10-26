@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
@@ -123,10 +122,10 @@ foam.CLASS({
           rejectedApproval.status = this.ApprovalStatus.REJECTED;
           rejectedApproval.memo = 'Outdated Approval.';
           this.approvalRequestDAO.put(rejectedApproval).then(o => {
-            this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-            this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-            this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-            this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+            this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+            this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
             
             this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
