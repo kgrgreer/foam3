@@ -511,6 +511,7 @@ foam.CLASS({
         this.daoUpdate();
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+        this.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
       }
     }
   ]
