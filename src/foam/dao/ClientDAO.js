@@ -173,6 +173,7 @@ return sink
              ! foam.dao.DAO.RESET_CMD.equals(obj) ) {
           return super.cmd_(null, obj);
         }
+        return obj;
       `,
       swiftCode: 'return try super.cmd_(nil, obj)'
     },
