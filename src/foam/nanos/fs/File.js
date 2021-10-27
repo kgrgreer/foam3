@@ -265,7 +265,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        // KeyValueDAO will return the same object if it is update operation
+        // FileUpdateDecorator will return the same object if it is update operation
         // No changes will be made
       `
     },

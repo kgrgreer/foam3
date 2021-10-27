@@ -267,7 +267,7 @@ foam.CLASS({
     function returnPropertyColumnMappings(of, propertyNamesToQuery) {
       var result = [];
       for ( var propName of propertyNamesToQuery ) {
-        result.push(foam.u2.view.PropertyColumnMapping.create({ fullPropertyName: propName, property: this.returnProperty(of, propName) }));
+        result.push(foam.u2.table.PropertyColumnMapping.create({ fullPropertyName: propName, property: this.returnProperty(of, propName) }));
       }
       return result;
     },

@@ -47,7 +47,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'externalTransient'
+      name: 'externalTransient',
+      factory: function() { return this.property.externalTransient; }
     },
     {
       class: 'Boolean',

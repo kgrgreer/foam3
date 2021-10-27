@@ -141,7 +141,7 @@ foam.CLASS({
         evt.dataTransfer.dropEffect = 'none';
         evt.dataTransfer.setDragImage(this.dragImg_, 0, 0);
         this.oldX_ = evt.clientX;
-        this.oldCW_ = this.el_() && this.el_().getBoundingClientRect().width;
+        this.oldCW_ = this.colWidth || this.data.MIN_COLUMN_WIDTH_FALLBACK;
       }
     },
     {

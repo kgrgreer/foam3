@@ -30,7 +30,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 234px;
+      width: fit-content;
     }
   `,
 
