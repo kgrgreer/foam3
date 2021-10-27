@@ -168,7 +168,12 @@ return sink
       code: function cmd_(x, obj) {
         return this.SUPER(null, obj);
       },
-      javaCode: 'return super.cmd_(null, obj);',
+      javaCode: `
+        if ( ! foam.dao.DAO.PURGE_CMD.equals(obj) &&
+             ! foam.dao.DAO.RESET_CMD.equals(obj) ) {
+          return super.cmd_(null, obj);
+        }
+      `,
       swiftCode: 'return try super.cmd_(nil, obj)'
     },
     {
