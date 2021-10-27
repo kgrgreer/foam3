@@ -25,8 +25,8 @@ foam.CLASS({
         this.delegate.put_(x, obj).then((obj) => {
           if ( this.daoKey ) {
             var dao = this.__subContext__[this.daoKey];
-            dao.cmd(this.DAO.PURGE_CMD);
-            dao.cmd(this.DAO.RESET_CMD);
+            dao.cmd(foam.doa.DAO.PURGE_CMD);
+            dao.cmd(foam.dao.DAO.RESET_CMD);
           }
           return obj;
         });
