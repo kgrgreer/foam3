@@ -157,7 +157,7 @@ foam.CLASS({
     {
       name: 'updatePassword',
       section: 'updatePasswordSection',
-
+      buttonStyle: 'PRIMARY',
       isEnabled: function(errors_) {
         return ! errors_;
       },

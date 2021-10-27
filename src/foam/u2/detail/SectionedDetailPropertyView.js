@@ -84,12 +84,6 @@ foam.CLASS({
       encode these changes in the actual foam files
     */
 
-    ^ .foam-u2-TextField,
-    ^ .foam-u2-tag-Select,
-    ^ .foam-u2-tag-TextArea,
-    ^ .foam-u2-IntView {
-      width: 100%;
-    }
 
     ^ .foam-u2-view-date-DateTimePicker {
       cursor: pointer;
