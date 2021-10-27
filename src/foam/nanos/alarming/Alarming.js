@@ -22,19 +22,18 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-    
+
       DAO configDAO = (DAO) x.get("alarmConfigDAO");
       Logger logger = (Logger) x.get("logger");
 
       Alarm old = (Alarm) oldObj;
       Alarm newAlarm = (Alarm) obj;
       AlarmConfig config = (AlarmConfig) configDAO.find(EQ(AlarmConfig.NAME, newAlarm.getName()));
-      
-      if ( config == null || ! config.getEnabled() ) {
-        logger.warning("No Alarm config found for " + newAlarm.getName());
+
+      if ( config != null && ! config.getEnabled() ) {
         return;
       }
-      
+
       if ( old == null && newAlarm.getIsActive() || old != null && (! old.getIsActive()) && newAlarm.getIsActive() ) {
         agency.submit(x, new ContextAgent() {
           @Override
@@ -49,7 +48,7 @@ foam.CLASS({
               if ( user != null )
                 user.doNotify(x, notification);
               // Notify a group when set
-              if ( foam.util.SafetyUtil.isEmpty(config.getAlertGroup()) ) 
+              if ( foam.util.SafetyUtil.isEmpty(config.getAlertGroup()) )
                 return;
               notification.setGroupId(config.getAlertGroup());
               ((DAO) x.get("localNotificationDAO")).put(notification);
