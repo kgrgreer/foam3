@@ -99,18 +99,20 @@ foam.CLASS({
       name: 'monitorType'
     },
     {
+      // deprecated - replaced by Notificaiton
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'alertGroup',
       menuKeys: ['admin.groups']
     },
     {
+      // deprecated - replaced by Notificaiton
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'alertUser'
     },
     {
-      // deprecated.
+      // deprecated - replaced by Notificaiton
       class: 'Boolean',
       name: 'sendEmail',
       label: 'Notify',

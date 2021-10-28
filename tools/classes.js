@@ -247,7 +247,6 @@ var classes = [
   'foam.nanos.alarming.AlarmConfigOMNameSink',
   'foam.nanos.alarming.AlarmHostnameRuleAction',
   'foam.nanos.alarming.AlarmIdRefines',
-  'foam.nanos.alarming.Alarming',
   'foam.nanos.alarming.AlarmingUniqueNameDAO',
   'foam.nanos.alarming.AlarmLoggingDAO',
   'foam.nanos.alarming.AlarmNotificationDAO',

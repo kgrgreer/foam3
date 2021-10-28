@@ -334,7 +334,7 @@ foam.CLASS({
           Interpreter shell = new Interpreter();
           try {
             shell.set("currentScript", this);
-            shell.set("x", x);
+            shell.set("x", x.put("out", ps));
             shell.eval("runScript(String name) { script = x.get("+getDaoKey()+").find(name); if ( script != null ) eval(script.code); }");
             shell.eval("foam.core.X sudo(String user) { foam.util.Auth.sudo(x, (String) user); }");
             shell.eval("foam.core.X sudo(Object id) { foam.util.Auth.sudo(x, id); }");
@@ -385,13 +385,13 @@ foam.CLASS({
         Language         l           = getLanguage();
         ByteArrayOutputStream baos   = new ByteArrayOutputStream();
         PrintStream            ps    = new PrintStream(baos);
-        PM               pm          = new PM(this.getClass(), getId());
+        PM                     pm    = new PM(this.getClass(), getId());
 
         try {
           Thread.currentThread().setPriority(getPriority());
 
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
-            Interpreter shell = (Interpreter) createInterpreter(x, null);
+            Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
             shell.setOut(ps);
             shell.eval(getCode());
