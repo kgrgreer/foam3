@@ -150,7 +150,7 @@
       padding: 0px;
       height: auto;
       border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
-    },
+    }
   `,
 
   messages: [
