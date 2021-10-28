@@ -86,7 +86,9 @@
           return emailMessage;
         }
 
-        templateArgs.put("sendTo", user.getEmail());
+        String sendTo = (String)templateArgs.get("sendTo");
+        if ( SafetyUtil.isEmpty(sendTo) )
+          templateArgs.put("sendTo", user.getEmail());
 
         String url = appConfig.getUrl().replaceAll("/$", "");
         templateArgs.put("logo", url + "/" + theme.getLogo());
