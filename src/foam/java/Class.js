@@ -265,19 +265,35 @@ foam.CLASS({
 
       var self = this;
       this.methods.forEach(function(f) {
+//        if ( self.name == 'ProxyBox') {
+//          console.log("000000000000000");
+//          console.log("");
+//        }
+//        o.out(f, '\n');
 //      console.log("**********************" + (Object.keys(self.SUPER_CLASSES).length));
 //      console.log("**********************" + (Object.keys(self.SUPER_CLASSES)[0]));
 //      console.log("********************** HEHEHEHEH " + self.SUPER_CLASSES[self.extends]);
 //      console.log("********************** EXTENDS " + self.extends);
 //        while ( )
-        if ( self.SUPER_CLASSES[self.extends] != undefined ) {
+        var extendedCls = self.SUPER_CLASSES[self.extends];
+        if ( extendedCls != undefined ) {
+          var superMethod = extendedCls.methods.find(obj => {
+            return obj.name == f.name && foam.util.equals(obj.args, f.args) && obj.type == f.type && ! obj.abstract;
+          });
+          if ( superMethod == undefined ) {
+            o.out(f, '\n');
+            return;
+          }
+          if ( superMethod.javaCode != f.javaCode ) o.out(f, '\n');
 //          console.log("!!1!!!!!!!" + self.SUPER_CLASSES);
-          self.SUPER_CLASSES[self.extends].methods.forEach(function(s) {
-//            console.log("!!1!!!!!!!" + s.javaCode);
-            if ( s.name == f.name && s.javaCode != f.javaCode ) {
-              o.out(f, '\n');
-            }
-          })
+//          extendedCls.methods.forEach(function(s) {
+////            console.log("!!1!!!!!!!" + s.javaCode);
+//            if ( s.name == f.name && s.javaCode != undefined && f.javaCode != undefined && s.javaCode != f.javaCode ) {
+//              o.out(f, '\n');
+//            }
+//          })
+        } else {
+          o.out(f, '\n');
         }
       });
       this.classes.forEach(function(c) { o.out(c, '\n'); });

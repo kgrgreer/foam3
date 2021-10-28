@@ -176,20 +176,20 @@ function loadClass(c) {
   return cls;
 }
 
-function generateClass(cls) {
-//console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
-//  if ( typeof cls === 'object' ) {
-//  console.log("OOOOOOOOOOOOOOO");
-//
-//    logger.debug('call/generateClass:cls', ''+cls);
-//    if ( foam.Array.isInstance(cls) ) {
-//      cls = cls[1];
-//    }
-//    if ( typeof cls === 'string' )
-//      cls = foam.lookup(cls);
-//    cls = cls.buildJavaClass();
-//  }
-logger.debug('call/generateClass:cls', ''+cls);
+//function generateClass(cls) {
+////console.log("HITHITHITHIHTIHTIHTIHITHITHITH: " + typeof(cls));
+////  if ( typeof cls === 'object' ) {
+////  console.log("OOOOOOOOOOOOOOO");
+////
+////    logger.debug('call/generateClass:cls', ''+cls);
+////    if ( foam.Array.isInstance(cls) ) {
+////      cls = cls[1];
+////    }
+////    if ( typeof cls === 'string' )
+////      cls = foam.lookup(cls);
+////    cls = cls.buildJavaClass();
+////  }
+//logger.debug('call/generateClass:cls', ''+cls);
 //    if ( foam.Array.isInstance(cls) ) {
 //      cls = cls[1];
 //    }
@@ -198,9 +198,47 @@ logger.debug('call/generateClass:cls', ''+cls);
 ////      cls = cls.buildJavaClass();
 //      console.log("BUILD JAVA CLASS");
 //    }
+//  logger.debug('call/generateClass:cls.id', cls.id);
+//
+////  console.log("###########" + cls);
+//  if ( fileWhitelist !== null ) {
+//    let src = cls.model_.source;
+//    logger.debug('call/generateClass:src', cls.id, src);
+//    if ( ! src ) {
+//      classesNotFound[cls.id] = true;
+//    } else {
+//      delete classesNotFound[cls.id];
+//      classesFound[cls.id] = true;
+//      if ( ! fileWhitelist[src] ) {
+//        return;
+//      }
+//    }
+//  }
+//  logger.debug('call/generateClass:cls.id,build?', cls.id, 'true');
+//
+//  var outfile = outdir + path_.sep +
+//    (cls.package + "." + cls.name).replace(/\./g, path_.sep) + '.java';
+//
+//  ensurePath(outfile);
+////  console.log("+++++++++++    " + cls.name);
+//  if ( ! foam.java.Class.isInstance(cls) ) {
+//      console.log("+++++++++++    " + cls.name);
+//      console.log("+++++++++++ typeof    " + typeof(cls));
+//    cls = cls.buildJavaClass();
+//  }
+//  writeFileIfUpdated(outfile, cls.toJavaSource());
+//}
+function generateClass(cls) {
+  logger.debug('call/generateClass:cls', ''+cls);
+  if ( foam.Array.isInstance(cls) ) {
+    cls = cls[1];
+  }
+  if ( typeof cls === 'string' ) {
+    cls = foam.lookup(cls);
+    cls = cls.buildJavaClass();
+}
   logger.debug('call/generateClass:cls.id', cls.id);
 
-//  console.log("###########" + cls);
   if ( fileWhitelist !== null ) {
     let src = cls.model_.source;
     logger.debug('call/generateClass:src', cls.id, src);
@@ -220,8 +258,7 @@ logger.debug('call/generateClass:cls', ''+cls);
     (cls.package + "." + cls.name).replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
-//  console.log("+++++++++++    " + cls.name);
-  if ( ! foam.java.Class.isInstance(cls) ) cls = cls.buildJavaClass();
+
   writeFileIfUpdated(outfile, cls.toJavaSource());
 }
 
@@ -284,7 +321,7 @@ function generateProxy(intf) {
 
   proxy.source = intf.model_.source;
 
-  generateClass(proxy.buildClass());
+  generateClass(proxy.buildClass().buildJavaClass());
 }
 
 function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
