@@ -79,7 +79,7 @@ foam.CLASS({
         var source = this.sourceModel.substring(this.sourceModel.lastIndexOf('.') + 1);
         var target = this.targetModel.substring(this.targetModel.lastIndexOf('.') + 1);
 
-        return  source + target + 'Junction';
+        return source + target + 'Junction';
       }
     },
     {
@@ -131,7 +131,7 @@ foam.CLASS({
 
           return target;
         };
-        }
+      }
     },
     {
       class: 'Boolean',
@@ -368,28 +368,34 @@ foam.LIB({
       // class first for some reason.
       r.initJunction();
 
-      if ( foam.isDefined(r.sourceModel) ) r.initSource();
-      else
+      if ( foam.isDefined(r.sourceModel) ) {
+        r.initSource();
+      } else {
         foam.pubsub.sub("defineClass", r.sourceModel, function(s) {
           s && s.detach();
 
           r.initSource();
         });
+      }
 
-      if ( foam.isDefined(r.targetModel) ) r.initTarget();
-      else
+      if ( foam.isDefined(r.targetModel) ) {
+        r.initTarget();
+      } else {
         foam.pubsub.sub("defineClass", r.targetModel, function(s) {
           s && s.detach();
 
           r.initTarget();
         });
+      }
     }
   ]
 });
 
+
 foam.INTERFACE({
   package: 'foam.dao',
   name: 'ManyToManyRelationship',
+
   methods: [
     {
       name: 'add',
@@ -419,14 +425,16 @@ foam.INTERFACE({
     {
       name: 'getTargetDAO',
       type: 'foam.dao.DAO'
-    },
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipImpl',
   implements: ['foam.dao.ManyToManyRelationship'],
+
   properties: [
     {
       class: 'Class',
@@ -600,6 +608,7 @@ return junction`
       code: function getDAO() { return this.dao; }
     }
   ],
+
   actions: [
     {
       name: 'addItem',
@@ -663,19 +672,22 @@ return junction`
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.dao',
   name: 'OneToManyRelationshipAxiom',
+
   requires: [
     'foam.dao.OneToManyRelationshipMethod',
     'foam.dao.OneToManyRelationshipProperty',
   ],
+
   properties: [
     {
       name: 'name',
       expression: function(propertyName) {
         return propertyName + 'Axiom';
-      },
+      }
     },
     'propertyName',
     {
@@ -717,6 +729,7 @@ foam.CLASS({
       name: 'methodOverrides'
     },
   ],
+
   methods: [
     function installInClass(cls) {
       cls.installAxiom(this.OneToManyRelationshipMethod.create({
@@ -735,10 +748,12 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.dao',
   name: 'OneToManyRelationshipProperty',
   extends: 'foam.dao.DAOProperty',
+
   properties: [
     {
       name: 'visibility',
@@ -759,23 +774,26 @@ foam.CLASS({
         return function() {
           return this[methodName](this.__context__);
         };
-      },
+      }
     },
     {
       name: 'swiftGetter',
       flags: ['swift'],
       expression: function(methodName) {
         return `return ${methodName}(__context__) as? (foam_dao_DAO & foam_core_FObject)`
-      },
+      }
     },
-    ['copyValueFrom', function() { return false; } ],
-  ],
+    [ 'copyValueFrom', function() { return false; } ],
+    [ 'cloneProperty', function() { /* NOP */ } ]
+  ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
   name: 'OneToManyRelationshipMethod',
   extends: 'foam.core.Method',
+
   properties: [
     {
       class: 'String',
@@ -819,7 +837,7 @@ foam.CLASS({
             unauthorizedTargetDAOKey: this.unauthorizedTargetDAOKey
           }, x);
         }
-      },
+      }
     },
     {
       name: 'swiftCode',
@@ -833,7 +851,7 @@ foam.CLASS({
             "unauthorizedTargetDAOKey": "${unauthorizedTargetDAOKey}"
           ])!;
         `
-      },
+      }
     },
     {
       name: 'javaCode',
@@ -847,31 +865,34 @@ foam.CLASS({
               .setUnauthorizedTargetDAOKey("${unauthorizedTargetDAOKey}")
               .build();
         `
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipAxiom',
+
   requires: [
     'foam.dao.ManyToManyRelationshipProperty',
     'foam.dao.ManyToManyRelationshipMethod',
   ],
+
   properties: [
     {
       name: 'name',
       expression: function(propertyName) {
         return propertyName + 'Axiom';
-      },
+      }
     },
     'propertyName',
     {
       name: 'methodName',
       expression: function(propertyName) {
         return 'get' + foam.String.capitalize(propertyName);
-      },
+      }
     },
     ['of', 'foam.dao.ManyToManyRelationship'],
     ['transient', true],
@@ -913,7 +934,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'methodOverrides'
-    },
+    }
   ],
 
   methods: [
@@ -931,14 +952,16 @@ foam.CLASS({
         name: this.propertyName,
         methodName: this.methodName,
       }).copyFrom(this.propertyOverrides));
-    },
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipMethod',
   extends: 'foam.core.Method',
+
   properties: [
     {
       class: 'String',
@@ -973,7 +996,7 @@ foam.CLASS({
             type: 'Context'
           }
         ];
-      },
+      }
     },
     {
       name: 'type',
@@ -994,7 +1017,7 @@ foam.CLASS({
             junction: x.lookup(self.junction)
           }, x);
         };
-      },
+      }
     },
     {
       name: 'swiftCode',
@@ -1011,7 +1034,7 @@ foam.CLASS({
             "junction": ${foam.swift.toSwiftName(junction)}.classInfo()
           ])!;
         `
-      },
+      }
     },
     {
       name: 'javaCode',
@@ -1028,10 +1051,11 @@ foam.CLASS({
               .setJunction(${junction}.getOwnClassInfo())
               .build();
         `
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
@@ -1059,7 +1083,7 @@ foam.CLASS({
         return function() {
           return this[methodName](this.__context__);
         };
-      },
+      }
     },
     {
       name: 'setter',
@@ -1070,7 +1094,7 @@ foam.CLASS({
       flags: ['swift'],
       expression: function(methodName) {
         return `return ${methodName}(__context__)`
-      },
+      }
     },
     {
       name: 'swiftSetter',
@@ -1087,6 +1111,8 @@ foam.CLASS({
         class: 'foam.u2.view.FObjectPropertyView',
         readView: { class: 'foam.u2.view.ReadManyToManyRelationshipPropertyView' }
       }
-    }
-  ],
+    },
+    [ 'copyValueFrom', function() { return false; } ],
+    [ 'cloneProperty', function() { /* NOP */ } ]
+  ]
 });
