@@ -768,6 +768,7 @@ foam.CLASS({
         return `return ${methodName}(__context__) as? (foam_dao_DAO & foam_core_FObject)`
       },
     },
+    ['copyValueFrom', function() { return false; } ],
   ],
 });
 
