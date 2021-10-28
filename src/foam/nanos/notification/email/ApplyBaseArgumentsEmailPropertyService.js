@@ -80,13 +80,13 @@
         }
 
         // template name check
-        String templateName = (String)templateArgs.get("template");
+        String templateName = (String) templateArgs.get("template");
         if ( SafetyUtil.isEmpty(templateName) ) {
           logger.info("No email template name");
           return emailMessage;
         }
 
-        String sendTo = (String)templateArgs.get("sendTo");
+        String sendTo = (String) templateArgs.get("sendTo");
         if ( SafetyUtil.isEmpty(sendTo) )
           templateArgs.put("sendTo", user.getEmail());
 
