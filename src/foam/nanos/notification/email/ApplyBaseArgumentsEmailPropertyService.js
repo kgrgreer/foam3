@@ -86,6 +86,8 @@
           return emailMessage;
         }
 
+        templateArgs.put("sendTo", user.getEmail());
+
         String url = appConfig.getUrl().replaceAll("/$", "");
         templateArgs.put("logo", url + "/" + theme.getLogo());
         templateArgs.put("largeLogo", url + "/" + theme.getLargeLogo());
