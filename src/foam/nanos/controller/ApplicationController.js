@@ -28,12 +28,12 @@ foam.CLASS({
 
   implements: [
     'foam.box.Context',
-    'foam.mlang.Expressions',
-    'foam.nanos.controller.AppStyles'
+    'foam.mlang.Expressions'
   ],
 
   requires: [
     'foam.nanos.client.ClientBuilder',
+    'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Memento',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
@@ -151,14 +151,6 @@ foam.CLASS({
   ],
 
   css: `
-    body {
-      background: /*%GREY5%*/ #f5f7fa;
-      color: #373a3c;
-      font-size: 1.4rem;
-      letter-spacing: 0.2px;
-      margin: 0;
-      overscroll-behavior: none;
-    }
     .stack-wrapper {
       min-height: calc(80% - 60px);
     }
@@ -452,6 +444,7 @@ foam.CLASS({
     },
 
     function render() {
+      var self = this;
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
@@ -474,6 +467,9 @@ foam.CLASS({
 
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
+          // Work around to ensure wrapCSS is exported into context before
+          // calling AppStyles which needs theme replacement
+          self.AppStyles.create();
           this
             .addClass(this.myClass())
               .add(this.slot(function (topNavigation_) {
@@ -597,7 +593,6 @@ foam.CLASS({
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       var M = m.toUpperCase();
-
       return this.theme[m] ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^;!]*', 'g'),
         '/*%' + M + '%*/ ' + this.theme[m]) : css;
