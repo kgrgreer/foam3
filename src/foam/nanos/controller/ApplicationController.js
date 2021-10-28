@@ -105,6 +105,11 @@ foam.CLASS({
       'customCSS',
       'logoBackgroundColour',
       'font1',
+      'displayWidthXS',
+      'displayWidthSM',
+      'displayWidthMD',
+      'displayWidthLG',
+      'displayWidthXL',
       'primary1',
       'primary2',
       'primary3',
@@ -594,7 +599,7 @@ foam.CLASS({
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       var M = m.toUpperCase();
       return this.theme[m] ? css.replace(
-        new RegExp('/\\*%' + M + '%\\*/[^;!]*', 'g'),
+        new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
         '/*%' + M + '%*/ ' + this.theme[m]) : css;
     },
 

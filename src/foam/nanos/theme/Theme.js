@@ -29,7 +29,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeGlyphs'
+    'foam.nanos.theme.ThemeGlyphs',
+    'foam.u2.layout.DisplayWidth'
   ],
 
   javaImports: [
@@ -425,6 +426,31 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'displayWidthXS',
+      section: 'CSS'
+    },
+    {
+      class: 'String',
+      name: 'displayWidthSM',
+      section: 'CSS'
+    },
+    {
+      class: 'String',
+      name: 'displayWidthMD',
+      section: 'CSS'
+    },
+    {
+      class: 'String',
+      name: 'displayWidthLG',
+      section: 'CSS'
+    },
+    {
+      class: 'String',
+      name: 'displayWidthXL',
+      section: 'CSS'
+    },
+    {
+      class: 'String',
       name: 'inputHeight',
       documentation: 'Used to enforce consistent height across text-based inputs.',
       section: 'inputs'
@@ -588,6 +614,13 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      var self = this;
+      foam.u2.layout.DisplayWidth.VALUES.forEach(function(v) {
+        if ( ! self[`displayWidth${v.name}$`] ) return;
+        self[`displayWidth${v.name}`] = `${v.minWidth}px`;
+      });
+    },
     {
       name: 'toSummary',
       type: 'String',
