@@ -184,6 +184,8 @@ foam.CLASS({
     function poll() {
       var self = this;
 
+      if ( ! this.loginSuccess ) return;
+
       self.delegate
         .orderBy(this.DESC(self.pollingProperty)).limit(1)
         .select().then(function(data) {

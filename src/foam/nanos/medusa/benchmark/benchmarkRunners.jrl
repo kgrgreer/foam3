@@ -4,7 +4,8 @@ p({
   description: "Medusa Dagger Link",
   benchmarkId: "DaggerLinkBenchmark",
   invocationCount: 10000,
-  runPerThread: true
+  runPerThread: true,
+  oneTimeSetup: true
 })
 p({
   class: "foam.nanos.bench.BenchmarkRunner",
@@ -12,7 +13,8 @@ p({
   description: "Medusa Dagger Verify",
   benchmarkId: "DaggerVerifyBenchmark",
   invocationCount: 10000,
-  runPerThread: true
+  runPerThread: true,
+  oneTimeSetup: true
 })
 p({
   class: "foam.nanos.bench.BenchmarkRunner",

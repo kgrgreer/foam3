@@ -160,7 +160,8 @@ foam.CLASS({
                 .startContext({ data: self.stack })
                     .tag(self.stack.BACK, {
                       buttonStyle: foam.u2.ButtonStyle.LINK,
-                      icon: 'images/back-icon.svg'
+                      icon: 'images/back-icon.svg',
+                      themeIcon: 'back'
                     })
                 .endContext()
                 .start(self.Cols).style({ 'align-items': 'center' })

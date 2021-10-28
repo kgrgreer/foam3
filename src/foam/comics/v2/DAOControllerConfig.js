@@ -98,7 +98,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'createView',
       factory: function() {
-        return { class: 'foam.u2.view.FObjectView' };
+        return {
+          class: 'foam.u2.view.FObjectView',
+          detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
       }
     },
     {

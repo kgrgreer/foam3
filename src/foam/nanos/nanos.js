@@ -51,7 +51,6 @@ FOAM_FILES([
   { name: 'foam/nanos/alarming/AddAlarmNameDAO' },
   { name: 'foam/nanos/alarming/Alarm' },
   { name: 'foam/nanos/alarming/AlarmAndMonitoring' },
-  { name: 'foam/nanos/alarming/Alarming' },
   { name: 'foam/nanos/alarming/AlarmingUniqueNameDAO' },
   { name: 'foam/nanos/alarming/AlarmConfig' },
   { name: 'foam/nanos/alarming/AlarmReason' },

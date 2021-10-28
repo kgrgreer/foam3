@@ -121,10 +121,17 @@ foam.CLASS({
         },
       ],
       javaCode: `
+      if ( getClients().length == 0 ) {
+        throw new RuntimeException("No clients found");
+      }
       java.util.Random random = new java.util.Random();
       int index = random.nextInt(getClients().length);
+getLogger().info("execute,index", index);
       DAO client = (DAO) getClients()[index];
       ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
+      if ( cfg == null ) {
+       throw new RuntimeException("Client not found "+index);
+      }
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
       client.cmd(ClusterServerDAO.PING);
       pm.log(x);
