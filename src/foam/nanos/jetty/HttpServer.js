@@ -459,6 +459,7 @@ foam.CLASS({
       javaCode: `
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       PrintStream           ps   = new PrintStream(baos);
+      PrintStream           out  = (PrintStream) x.get("out");
       try {
         if ( server == null ) {
           server = (org.eclipse.jetty.server.Server) getServer();
@@ -481,7 +482,12 @@ foam.CLASS({
             } else {
               ps.printf("stats null%n");
             }
-            getLogger().info(baos.toString("UTF8"));
+            if ( out != null ) {
+              // support output to caller
+              out.print(baos.toString("UTF8"));
+            } else {
+              getLogger().info(baos.toString("UTF8"));
+            }
           }
         }
       } catch ( Exception e ) {
