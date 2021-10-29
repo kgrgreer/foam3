@@ -296,10 +296,7 @@ foam.CLASS({
             if ( ! axiom )
               axiom = data.of.getAxiomByName(data.selectedColumnNames[i]);
           }
-          if ( ! axiom ) {
-            continue;
-          }
-          if ( foam.dao.DAOProperty.isInstance(axiom) ) {
+          if ( ! axiom  || foam.dao.DAOProperty.isInstance(axiom) ) {
             continue;
           }
             rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
