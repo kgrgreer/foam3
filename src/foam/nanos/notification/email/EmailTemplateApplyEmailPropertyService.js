@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.StdoutLogger',
     'foam.util.SafetyUtil'
@@ -42,7 +43,7 @@ foam.CLASS({
       EmailTemplate emailTemplateObj = DAOResourceLoader.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
       if ( emailTemplateObj == null ) {
         logger.error(this.getClass().getSimpleName(), "EmailTemplate not found", templateName, group);
-        return emailMessage;
+        throw new ValidationException("EmailTemplate not found");
       }
 
       // STEP 2) Apply Template to emailMessage
