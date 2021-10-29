@@ -11,20 +11,13 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public AccessDeniedException() {
-    super();
-  }
-
-  public AccessDeniedException(Throwable cause) {
-    super(cause);
-  }
-        `);
-      }
+  javaCode: `
+    public AccessDeniedException() {
+      super();
     }
-  ]
+
+    public AccessDeniedException(Throwable cause) {
+      super(cause);
+    }
+  `
 });

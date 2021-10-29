@@ -11,28 +11,21 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public AuthenticationException() {
-    super();
-  }
-
-  public AuthenticationException(String message) {
-    super(message);
-  }
-
-  public AuthenticationException(Throwable cause) {
-    super(cause);
-  }
-
-  public AuthenticationException(String message, Throwable cause) {
-    super(message, cause);
-  }
-        `);
-      }
+  javaCode: `
+    public AuthenticationException() {
+      super();
     }
-  ]
+
+    public AuthenticationException(String message) {
+      super(message);
+    }
+
+    public AuthenticationException(Throwable cause) {
+      super(cause);
+    }
+
+    public AuthenticationException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });
