@@ -185,6 +185,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/AccessMode' },
   { name: 'foam/nanos/medusa/ClientElectoralService' },
   { name: 'foam/nanos/medusa/Clusterable' },
+  { name: 'foam/nanos/medusa/ClusterableMixin' },
   { name: 'foam/nanos/medusa/ClusterClientDAO' },
   { name: 'foam/nanos/medusa/ClusterCommand' },
   { name: 'foam/nanos/medusa/ClusterCommandHop' },
