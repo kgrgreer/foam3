@@ -17,29 +17,21 @@ foam.CLASS({
     'java.io.Writer'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
-  @Override
-  protected StringBuilder initialValue() {
-    return new StringBuilder();
-  }
-
-  @Override
-  public StringBuilder get() {
-    StringBuilder b = super.get();
-    b.setLength(0);
-    return b;
-  }
-};`
-        }));
+  javaCode: `
+    protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
       }
-    }
-  ],
+
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+  `,
 
   methods: [
     {

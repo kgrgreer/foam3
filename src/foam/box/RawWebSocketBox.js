@@ -108,27 +108,19 @@ try {
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-protected class Outputter extends foam.lib.json.Outputter {
-  public Outputter(foam.core.X x) {
-    super(x);
-    setPropertyPredicate(new foam.lib.AndPropertyPredicate(x, new foam.lib.PropertyPredicate[] {new foam.lib.NetworkPropertyPredicate(), new foam.lib.PermissionedPropertyPredicate()}));
-  }
+  javaCode: `
+    protected class Outputter extends foam.lib.json.Outputter {
+      public Outputter(foam.core.X x) {
+        super(x);
+        setPropertyPredicate(new foam.lib.AndPropertyPredicate(x, new foam.lib.PropertyPredicate[] {new foam.lib.NetworkPropertyPredicate(), new foam.lib.PermissionedPropertyPredicate()}));
+      }
 
-  protected void outputFObject(foam.core.FObject o) {
-    if ( o == getMe() ) {
-      o = getX().create(foam.box.ReturnBox.class);
-    }
-    super.outputFObject(o);
-  }
-}
-`}));
+      protected void outputFObject(foam.core.FObject o) {
+        if ( o == getMe() ) {
+          o = getX().create(foam.box.ReturnBox.class);
+        }
+        super.outputFObject(o);
       }
     }
-  ]
+  `
 });

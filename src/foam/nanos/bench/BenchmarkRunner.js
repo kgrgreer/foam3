@@ -48,28 +48,19 @@ foam.CLASS({
     'java.util.concurrent.atomic.AtomicLong'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  // legacy support so not to break 'scripts'. This suppresses
-  // output to logger, which results in duplicate output, as
-  // this runner already outputs the results.
+  javaCode: `
+    // legacy support so not to break 'scripts'. This suppresses
+    // output to logger, which results in duplicate output, as
+    // this runner already outputs the results.
 
-  public String getResult() {
-    return "";
-  }
-
-  public String formatResults() {
-    return "";
-  }
-          `
-        }));
-      }
+    public String getResult() {
+      return "";
     }
-  ],
+
+    public String formatResults() {
+      return "";
+    }
+  `,
 
   sections: [
     {

@@ -329,11 +329,7 @@ for ( var groupId : groupIds ) {
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
+  javaCode: `
     public RulerDAO(foam.core.X x, foam.dao.DAO delegate, String serviceName) {
       setX(x);
       setDelegate(delegate);
@@ -342,9 +338,5 @@ for ( var groupId : groupIds ) {
       //   it must be called manually in this case.
       updateRules(x);
     }
-      `
-         );
-      }
-    }
-  ]
+  `
 });
