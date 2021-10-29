@@ -135,7 +135,7 @@ foam.CLASS({
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then((result) => {
           if ( result ) {
-            this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
+            this.menuDAO.cmd_(X, foam.dao.DAO.PURGE_CMD);
             this.loginSuccess = true;
           } else {
             this.incorrectCode = true;

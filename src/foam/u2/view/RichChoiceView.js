@@ -617,7 +617,7 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       code: function() {
-        if ( this.data === undefined ) {
+        if ( ! this.data ) {
           this.clearSelection();
           return;
         }

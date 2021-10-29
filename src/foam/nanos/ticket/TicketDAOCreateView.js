@@ -16,7 +16,8 @@ foam.CLASS({
       expression: function() {
         return {
           class: 'foam.u2.view.FObjectView',
-          of: 'foam.nanos.ticket.Ticket'
+          of: 'foam.nanos.ticket.Ticket',
+          detailView: { class: 'foam.u2.detail.SectionedDetailView' }
         };
       }
     }

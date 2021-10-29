@@ -77,7 +77,7 @@ foam.CLASS({
           prop.tableCellFormatter.format(
             this,
             prop.f ? prop.f(objReturned) : null,
-            objRendered,
+            objReturned,
             prop
           );
         });

@@ -79,6 +79,7 @@ foam.CLASS({
         EmailMessage message = new EmailMessage();
         message.setSpid(user.getSpid());
         message.setTo(new String[] { user.getEmail() });
+        message.setClusterable(notification.getClusterable());
         notification = (Notification) notification.fclone();
 
         if ( notification.getEmailArgs() != null ) {

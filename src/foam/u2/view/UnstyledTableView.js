@@ -262,7 +262,7 @@ foam.CLASS({
         // so if such an action is called from DAOSummaryView we go back to TableView
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
-      },
+      }
     },
     'currentMemento_',
     {
@@ -370,6 +370,7 @@ foam.CLASS({
           this.columns_$.map((cols) => this.columnHandler.mapArrayColumnsToArrayOfColumnNames(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols)))
         ));
       }
+
       this.
         addClass(this.myClass()).
         addClass(this.myClass(this.of.id.replace(/\./g, '-'))).
@@ -549,9 +550,9 @@ foam.CLASS({
               }
             }
 
-            var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
-            var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
+            var propertyNamesToQuery             = view.columnHandler.returnPropNamesToQuery(view.props);
+            var valPromises                      = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
+            var nestedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -565,9 +566,9 @@ foam.CLASS({
                   tbodyElement
                     .startContext({
                       props: view.props,
-                      propertyNamesToQuery: propertyNamesToQuery,
-                      nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
-                      canBuildObjfromProj: canObjBeBuildFromProjection
+                      propertyNamesToQuery:  propertyNamesToQuery,
+                      nestedPropsAndIndexes: nestedPropertyNamesAndItsIndexes,
+                      canBuildObjfromProj:   canObjBeBuildFromProjection
                     })
                       .tag(view.UnstyledTableRow, { data: view, obj: values.array[i], projection: values.projection[i], actionDAO: view.refDAO })
                     .endContext();
@@ -622,7 +623,7 @@ foam.CLASS({
       },
       async function filterPropertiesByReadPermission(properties, of) {
         if ( ! properties || ! of ) return [];
-        var perms =  await Promise.all(properties.map( async p => 
+        var perms =  await Promise.all(properties.map( async p =>
           await this.auth.check(ctrl.__subContext__, of + '.rw.' + p) ||
           await this.auth.check(ctrl.__subContext__, of + '.ro.' + p)
         ));
@@ -677,45 +678,6 @@ foam.CLASS({
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-      }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'TableViewPropertyRefinement',
-  refines: 'foam.core.Property',
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'columnHidden'
-    },
-    {
-      class: 'Boolean',
-      documentation: `
-        When set to true, the '<model>.column.<property>' permission is required for a
-        user to be able to read this property. If false, any user can see the
-        value of this property in a table column.
-      `,
-      name: 'columnPermissionRequired'
-    },
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'PropertyColumnMapping',
-  properties: [
-    {
-      name: 'fullPropertyName',
-      class: 'String'
-    },
-    {
-      name: 'property',
-      class: 'FObjectProperty',
-      of: 'Property'
     }
   ]
 });
