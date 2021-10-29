@@ -55,7 +55,6 @@ foam.CLASS({
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.session.SessionTimer',
-    'foam.net.ip.IPAddressInfo',
     'foam.u2.dialog.Popup',
     'foam.core.Latch'
   ],
@@ -353,10 +352,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'ipAddressInfo',
       of: 'foam.net.ip.IPAddressInfo',
-      documentation: 'Contains fetched information from the applied IP Address information provider.',
-      factory: function() {
-        return this.IPAddressInfo.create();
-      }
+      documentation: 'Contains fetched information from the applied IP Address information provider.'
     }
   ],
 
