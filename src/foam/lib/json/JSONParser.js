@@ -20,40 +20,31 @@ foam.CLASS({
     'foam.lib.parse.StringPStream'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected Parser         parser   = ExprParser.instance();
-  protected StringPStream stringps = new StringPStream();
+  javaCode: `
+    protected Parser         parser   = ExprParser.instance();
+    protected StringPStream stringps = new StringPStream();
 
-  public FObject parseString(String data, Class defaultClass) {
-    StringPStream ps = stringps;
+    public FObject parseString(String data, Class defaultClass) {
+      StringPStream ps = stringps;
 
-    ps.setString(data);
-    ParserContext x = new ParserContextImpl();
-    x.set("X", getX());
-    ps = (StringPStream) ps.apply(defaultClass == null ? parser : ExprParser.create(defaultClass), x);
+      ps.setString(data);
+      ParserContext x = new ParserContextImpl();
+      x.set("X", getX());
+      ps = (StringPStream) ps.apply(defaultClass == null ? parser : ExprParser.create(defaultClass), x);
 
-    return ps == null ? null : (FObject) ps.value();
-  }
-
-  public Object[] parseStringForArray(String data, Class defaultClass) {
-    StringPStream ps = stringps;
-    ps.setString(data);
-    ParserContext x = new ParserContextImpl();
-    x.set("X", getX());
-
-    ps = (StringPStream) ps.apply(FObjectArrayParser.create(defaultClass), x);
-    return ps == null ? null : (Object[]) ps.value();
-  }
-       `
-        }));
-      }
+      return ps == null ? null : (FObject) ps.value();
     }
-  ],
+
+    public Object[] parseStringForArray(String data, Class defaultClass) {
+      StringPStream ps = stringps;
+      ps.setString(data);
+      ParserContext x = new ParserContextImpl();
+      x.set("X", getX());
+
+      ps = (StringPStream) ps.apply(FObjectArrayParser.create(defaultClass), x);
+      return ps == null ? null : (Object[]) ps.value();
+    }
+ `,
 
   methods: [
     {

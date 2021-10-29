@@ -18,28 +18,21 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public DuplicateEmailException() {
-    super();
-  }
-
-  public DuplicateEmailException(String message) {
-    super(message);
-  }
-
-  public DuplicateEmailException(Throwable cause) {
-    super(cause);
-  }
-
-  public DuplicateEmailException(String message, Throwable cause) {
-    super(message, cause);
-  }
-        `);
-      }
+  javaCode: `
+    public DuplicateEmailException() {
+      super();
     }
-  ]
+
+    public DuplicateEmailException(String message) {
+      super(message);
+    }
+
+    public DuplicateEmailException(Throwable cause) {
+      super(cause);
+    }
+
+    public DuplicateEmailException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

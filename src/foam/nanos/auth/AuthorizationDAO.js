@@ -22,23 +22,14 @@ foam.CLASS({
     'static foam.mlang.MLang.IS_AUTHORIZED_TO_DELETE'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data:`
-  public AuthorizationDAO(X x, DAO delegate, Authorizer authorizer) {
-    foam.nanos.logger.Logger log = (foam.nanos.logger.Logger) x.get("logger");
-    setX(x);
-    setDelegate(delegate);
-    setAuthorizer(authorizer);
-  }
-`
-        }));
-      }
+  javaCode: `
+    public AuthorizationDAO(X x, DAO delegate, Authorizer authorizer) {
+      foam.nanos.logger.Logger log = (foam.nanos.logger.Logger) x.get("logger");
+      setX(x);
+      setDelegate(delegate);
+      setAuthorizer(authorizer);
     }
-  ],
+  `,
 
   properties: [
     {
@@ -88,7 +79,7 @@ foam.CLASS({
 
     FObject obj = super.find_(x, id);
     try {
-      if ( obj != null ) 
+      if ( obj != null )
         getAuthorizer().authorizeOnRead(x, obj);
       return obj;
     } catch (AuthorizationException ae) {
