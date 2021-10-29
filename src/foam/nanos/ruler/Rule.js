@@ -140,6 +140,14 @@
       documentation: 'Defines if the rule needs to be applied before or after operation is completed'+
       'E.g. on dao.put: before object was stored in a dao or after.'
     },
+    {
+      class: 'Boolean',
+      name: 'async',
+      value: false,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
+      documentation: 'Defines if the rule is async. Async rule always runs after DAO put/remove, the after flag on the rule will be ignored.'
+    },
     'predicate',
     {
       class: 'FObjectProperty',
@@ -147,13 +155,6 @@
       name: 'action',
       view: { class: 'foam.u2.view.JSONTextView' },
       documentation: 'The action to be executed if predicates returns true for passed object.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.ruler.RuleAction',
-      name: 'asyncAction',
-      hidden: true,
-      documentation: 'The action to be executed asynchronously if predicates returns true for passed object.'
     },
     {
       name: 'enabled',
@@ -387,6 +388,9 @@
       ],
       javaCode: `
         getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        try {
+          ruler.saveHistory(this, obj);
+        } catch ( Exception e ) { /* Ignored */ }
       `
     },
     {
@@ -414,9 +418,12 @@
         },
       ],
       javaCode: `
-        getAsyncAction().applyAction(x, obj, oldObj, ruler, rule, new DirectAgency());
-        if ( ! getAfter() ) {
-          ruler.getDelegate().cmd_(x.put("OBJ", obj), getCmd());
+        try {
+          apply(x, obj, oldObj, ruler, rule, new DirectAgency());
+        } catch ( Exception e ) {
+          new RetryManager(rule.getName()).submit(x, userX -> {
+            apply(x, obj, oldObj, ruler, rule, new DirectAgency());
+          });
         }
       `
     },

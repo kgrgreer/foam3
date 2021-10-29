@@ -49,6 +49,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'createBefore',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   OR(
     EQ(Rule.OPERATION, Operation.CREATE),
     EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
@@ -61,6 +62,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'createAfter',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   OR(
     EQ(Rule.OPERATION, Operation.CREATE),
     EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
@@ -73,6 +75,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'updateBefore',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   OR(
     EQ(Rule.OPERATION, Operation.UPDATE),
     EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
@@ -85,6 +88,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'updateAfter',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   OR(
     EQ(Rule.OPERATION, Operation.UPDATE),
     EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
@@ -97,6 +101,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'removeBefore',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   EQ(Rule.OPERATION, Operation.REMOVE),
   EQ(Rule.AFTER, false)
 );`
@@ -106,8 +111,42 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'removeAfter',
       javaFactory: `return AND(
+  EQ(Rule.ASYNC, false),
   EQ(Rule.OPERATION, Operation.REMOVE),
   EQ(Rule.AFTER, true)
+);`
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'createAsync',
+      javaFactory: `return AND(
+  EQ(Rule.ASYNC, true),
+  OR(
+    EQ(Rule.OPERATION, Operation.CREATE),
+    EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
+  )
+);`
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'updateAsync',
+      javaFactory: `return AND(
+  EQ(Rule.ASYNC, true),
+  OR(
+    EQ(Rule.OPERATION, Operation.UPDATE),
+    EQ(Rule.OPERATION, Operation.CREATE_OR_UPDATE)
+  )
+);`
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'removeAsync',
+      javaFactory: `return AND(
+  EQ(Rule.ASYNC, true),
+  EQ(Rule.OPERATION, Operation.REMOVE)
 );`
     },
     {
@@ -153,6 +192,14 @@ if ( ret != null ) {
     ret = getDelegate().put_(x, ret);
   }
 }
+
+// Apply async rules
+if ( oldObj == null ) {
+  applyRules(x, ret, oldObj, getCreateAsync());
+} else {
+  applyRules(x, ret, oldObj, getUpdateAsync());
+}
+
 return ret;`
     },
     {
@@ -161,6 +208,7 @@ return ret;`
 applyRules(x, obj, oldObj, getRemoveBefore());
 FObject ret =  getDelegate().remove_(x, obj);
 applyRules(x, ret, oldObj, getRemoveAfter());
+applyRules(x, ret, oldObj, getRemoveAsync());
 return ret;`
     },
     {
@@ -230,6 +278,9 @@ addRuleList(localRuleDAO, getRemoveBefore());
 addRuleList(localRuleDAO, getCreateAfter());
 addRuleList(localRuleDAO, getUpdateAfter());
 addRuleList(localRuleDAO, getRemoveAfter());
+addRuleList(localRuleDAO, getCreateAsync());
+addRuleList(localRuleDAO, getUpdateAsync());
+addRuleList(localRuleDAO, getRemoveAsync());
 
 // RuleGroup listener
 var ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
@@ -242,6 +293,9 @@ ruleGroupDAO.listen(new AbstractSink() {
     updateRuleGroups(getCreateAfter());
     updateRuleGroups(getUpdateAfter());
     updateRuleGroups(getRemoveAfter());
+    updateRuleGroups(getCreateAsync());
+    updateRuleGroups(getUpdateAsync());
+    updateRuleGroups(getRemoveAsync());
   }
 }, null);`
     },
