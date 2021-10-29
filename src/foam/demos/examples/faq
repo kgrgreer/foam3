@@ -922,3 +922,68 @@ Answer:
 Static journals are the initial configuration that the system is shipped with when when it is built, and is creating by combining the .jrl files found in the source code repository. Static journals end with the .0 extension.
 Runtime journals contain data that is created (or modified or deleted) by the system one it is deployed.
 The state of the system is determined by starting with the static journals and then applying the changes listed in the runtime journals.
+
+##  NSpec Service Initialization
+I don’t understand exactly when to use the properties like “service” vs “serviceClass” vs “serviceScript”. What are the differences between those?
+
+Answer:
+When creating NSpec services, there are three methods for defining the service. The methods are attempted in the following order:
+1. service - if the service property is set, it is an FObject which is the actual service.
+Ex.:
+"service":{
+  "class":"foam.nanos.jetty.HttpServer",
+  "port":8080
+}
+In the above example, the foam.nanos.jetty.HttpServer service is modelled and can be just created and configured in-line.
+This does not work for non-modelled services.
+
+An advantage of this method is that if edited through the GUI, a DetailView for the service will be embedded in the NSpec GUI
+allowing for this service to be easily configured.
+
+2. serviceClass
+If the class of the service is known and it doesn't require any configuration, then you can just provide the serviceClass.
+Ex.:
+"serviceClass":"foam.nanos.http.NanoRouter"
+
+Unlike with the HttpServer example above, the NanoRouter does not require any configuration, so it is okay to just provide the class name.
+Note that doing:
+"service":{
+  "class":"foam.nanos.http.NanoRouter"
+}
+wouldn't work in this case because NanoRouter isn't modelled and therefore isn't an FObject. This is because in needs to extend the Java HttpServlet class.
+
+3. serviceScript
+The third method is to provide a script which creates and initializes the services.
+Ex.:
+"serviceScript": """
+  auth = new foam.nanos.auth.UserAndGroupAuthService(x);
+  auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
+    .setDelegate(auth)
+    .build();
+  auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x)
+    .setDelegate(auth)
+    .build();
+  auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
+    .setDelegate(auth)
+    .build();
+  auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
+    .setDelegate(auth)
+    .build();
+  auth = new foam.nanos.auth.CachingAuthService(auth);
+  auth = new foam.nanos.auth.PMAuthService.Builder(x)
+    .setLabel("uncached")
+    .setDelegate(auth)
+    .build();
+  auth = new foam.nanos.auth.SystemAuthService.Builder(x)
+    .setDelegate(auth)
+    .build();
+  return auth;
+""",
+
+This method is suitable when you need to create multiple composed objects all of which need to be configured.
+You can even check the AppConfig status and use it to create deployment specific configurations.
+
+The default language for the serviceScript is BeanShell, a Java-like interpreted language, but you can change
+the scripting language to JSHELL, which provides real compiled Java. Do do this, include:
+"language":2
+in your service config (or select JSHELL if configuring from the GUI).
