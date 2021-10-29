@@ -83,10 +83,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'allowCustom',
-      expression: function(choices) {
-        return choices.length == 0;
-      }
+      name: 'allowCustom'
     },
     {
       class: 'Function',
@@ -158,6 +155,11 @@ foam.CLASS({
           }, X);
         }
       `
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'detailView',
+      value: { class: 'foam.u2.detail.VerticalDetailView' }
     }
   ],
 
@@ -174,7 +176,7 @@ foam.CLASS({
       // populate the list of choices using models related to 'of' via the
       // implements and extends relations.
       if ( this.strategizer != null ) {
-        this.strategizer.query(null, this.of.id, null, this.predicate).then((strategyReferences) => {
+        this.strategizer.query(null, this.of.id, null, this.predicate).then(strategyReferences => {
           if ( ! Array.isArray(strategyReferences) || strategyReferences.length === 0 ) {
             this.choices = this.skipBaseClass ? [] : [[this.of.id, this.of.model_.label]];
             this.choicesLoaded.resolve();
@@ -244,15 +246,15 @@ foam.CLASS({
         start(this.OBJECT_CLASS).
           // If we were using a DetailView, this would be done for us, but since
           // we aren't, we need to connect the 'visibility' property ourself.
-          show(this.OBJECT_CLASS.createVisibilityFor(foam.core.SimpleSlot.create({value: this}), this.controllerMode$).map(function(m) {
+          show(this.OBJECT_CLASS.createVisibilityFor(foam.core.SimpleSlot.create({ value: this }), this.controllerMode$).map(function(m) {
             return m != foam.u2.DisplayMode.HIDDEN;
           })).
         end().
         start().
           show(this.objectClass$).
-          tag(foam.u2.detail.VerticalDetailView, {
+          tag(this.detailView, {
             data$: this.data$,
-            config: this.config
+            config$: this.config$
           }).
         end();
     },

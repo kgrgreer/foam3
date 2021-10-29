@@ -10,6 +10,9 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
+    'java.net.InetAddress',
+    'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
   ],
 
@@ -26,6 +29,28 @@ foam.CLASS({
     {
       name: 'salt',
       class: 'String'
+    },
+    {
+      name: 'machineId',
+      class: 'Int',
+      javaFactory: `
+        try {
+          return Integer.parseInt(System.getProperty("MACHINE_ID"));
+        } catch ( Exception e ) {
+          try {
+            var ipAddress = InetAddress.getLocalHost();
+            var bytes     = ipAddress.getAddress();
+            var length    = bytes.length;
+            return (bytes[length - 1] & 0xff) +
+                   (bytes[length - 2] & 0xff) * (1<<8);
+          } catch ( UnknownHostException ex ) {
+            System.err.println("Unable to determine machine ID");
+            Logger logger = (Logger) getX().get("logger");
+            if ( logger != null ) logger.error(ex);
+          }
+        }
+        return 0;
+      `
     }
   ],
 
@@ -55,7 +80,6 @@ foam.CLASS({
     },
     {
       name: 'generate',
-      synchronized: true,
       type: 'String',
       documentation: `
         Generate a Unique ID. The Unique ID consists of :
@@ -71,14 +95,19 @@ foam.CLASS({
         long curSec = System.currentTimeMillis() / 1000;
         id.append(toHexString(curSec));
 
-        // 2 bits sequence
-        if ( curSec != getLastSecondCalled() ) {
-          setSeqNo(0);
-          setLastSecondCalled(curSec);
+        // At least 2 bits sequence
+        synchronized (this) {
+          if ( curSec != getLastSecondCalled() ) {
+            setSeqNo(0);
+            setLastSecondCalled(curSec);
+          }
+          int seqNo = getSeqNo();
+          id.append(toHexString(seqNo, 2));
+          setSeqNo(seqNo + 1);
         }
-        int seqNo = getSeqNo();
-        id.append(toHexString(seqNo, 2));
-        setSeqNo(seqNo + 1);
+
+        // 2 bits machine id
+        id.append(toHexString(getMachineId() % 0xff, 2));
 
         // 3 bits checksum
         var checksum = toHexString(calcChecksum(id.toString()), 3);

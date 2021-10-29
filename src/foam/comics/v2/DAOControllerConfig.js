@@ -12,10 +12,6 @@ foam.CLASS({
     A customizable model to configure any DAOController
   `,
 
-  imports: [
-    'translationService'
-  ],
-
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.CannedQuery',
@@ -28,6 +24,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'click',
+      documentation: 'Used to override the default click listener exported by DAOController'
+    },
     {
       class: 'String',
       name: 'daoKey'
@@ -98,7 +98,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'createView',
       factory: function() {
-        return { class: 'foam.u2.view.FObjectView' };
+        return {
+          class: 'foam.u2.view.FObjectView',
+          detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
       }
     },
     {

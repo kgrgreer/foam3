@@ -71,10 +71,8 @@ foam.CLASS({
       this.columnConfigPropView.onClose();
       this.selectColumnsExpanded = ! this.selectColumnsExpanded;
     },
-
     function render() {
       this.SUPER();
-
       var self = this;
       this.columnConfigPropView = foam.u2.view.ColumnConfigPropView.create({data:self.data}, this);
       this.start()

@@ -15,6 +15,12 @@ foam.CLASS({
     { class: 'foam.u2.TextInputCSS' }
   ],
 
+  css: `
+    ^ {
+      width: fit-content;
+    }
+  `,
+
   methods: [
     function render() {
       this.SUPER();

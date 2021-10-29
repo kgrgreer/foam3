@@ -14,7 +14,7 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       border: none;
-      font-size: 13px;
+      font-size: 1.3rem;
       color: gray;
       padding: 0;
     }

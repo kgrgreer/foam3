@@ -9,23 +9,42 @@ foam.CLASS({
   name: 'FormattedTextField',
   extends: 'foam.u2.View',
 
+  requires: ['foam.u2.TextField'],
+
   css: `
     ^ {
       display: flex;
-      position: relative;
-      width: fit-content;
       flex-direction: column;
+      height: /*%INPUTHEIGHT%*/ 34px;
       justify-content: center;
+      position: relative;
+      width: 100%;
     }
-    ^placeholder::after {
-      position: absolute;
-      left: 9px;
-      content: attr(data-placeholder);
-      pointer-events: none;
-      opacity: 0.7;
-      font-size: 14px;
-      letter-spacing: normal;
+    ^placeholder {
+      bottom: 0;
+      font-size: 1.4rem;
       inline-size: fit-content;
+      left: 0;
+      letter-spacing: normal;
+      opacity: 0.7;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      /* TODO: Remove important when CSS Class loading for requires is fixed */
+      width: fit-content !important;
+    }
+    ^real-input {
+      z-index: 1;
+      /* TODO: Remove important when CSS Class loading for requires is fixed */
+      background-color: transparent !important;
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      /* TODO: Remove important when CSS Class loading for requires is fixed */
+      width: fit-content !important;
     }
   `,
 
@@ -80,13 +99,14 @@ foam.CLASS({
       this.formattedData$.sub((detachable) => { this.formatData(detachable.src.oldValue); });
       this.formattedData = this.data || '';
 
-      var input = foam.u2.TextField.create({ onKey: true, data$: this.formattedData$, mode$: this.mode$ });
-
       return this
-        .setAttribute('data-placeholder', this.dynamicPlaceholder$)
         .addClass(this.myClass())
-        .addClass(this.myClass('placeholder'))
-        .tag(input)
+        .start(this.TextField, { onKey: true, data$: this.formattedData$, mode$: this.mode$ })
+          .addClass(this.myClass('real-input'))
+        .end()
+        .start(this.TextField, { autocomplete: false, data$: this.dynamicPlaceholder$, mode$: this.mode$ })
+          .addClass(this.myClass('placeholder'))
+        .end()
         .on('paste', evt => {
           if ( ! evt.clipboardData.types.includes('text/plain') || ! evt.clipboardData.getData('text').trim() ) {
             evt.preventDefault();
@@ -110,13 +130,6 @@ foam.CLASS({
     },
 
     async function resetState() {
-      var el = await this.el();
-      if ( el && window.getComputedStyle(el, ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
-        // workaround for Safari isssue where attr(data-placeholder) is not
-        // being recalculated on data-placeholder changes
-        this.removeClass(this.myClass('placeholder'));
-        this.addClass(this.myClass('placeholder'));
-      }
       this.isDelete = false;
       this.formatted = false;
       this.formatter.reset && this.formatter.reset();

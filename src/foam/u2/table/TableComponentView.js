@@ -23,7 +23,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.column.CommonColumnHandler',
       factory: function() {
-        return foam.nanos.column.CommonColumnHandler.create();
+        return foam.nanos.column.CommonColumnHandler.create({}, this);
       }
     },
     {
@@ -93,6 +93,22 @@ foam.CLASS({
         prop && prop.property ? prop.property : this.data.of.getAxiomByName(propName)),
         objForCurrentProperty
       ];
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'shouldEscapeEvts',
+      documentation: `Use this function to skip clicks/doubleclicks on table
+                      elements such as checkboxes/context menus`,
+      code: function(evt) {
+        if (
+          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
+          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
+        ) {
+          return true;
+        }
+      }
     }
   ]
 });

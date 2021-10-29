@@ -78,13 +78,13 @@
       name: 'topRow',
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
-        if ( this.scrollToIndex != undefined || o == n ) return;
+        if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
         }
         if ( this.memento ) {
-          this.memento.head = this.topRow || 0;
+          this.memento.head = this.topRow || 1;
         }
       }
     },
@@ -93,7 +93,7 @@
       name: 'bottomRow',
       documentation: 'Stores the index of last row that is currently displayed in the table',
       postSet: function(o, n) {
-        if ( this.scrollToIndex != undefined || o == n ) return;
+        if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ ++;
@@ -108,13 +108,14 @@
         return bottomRow - topRow;
       }
     },
-    { 
+    {
+      class: 'Int',
       name: 'scrollToIndex',
       postSet: function () { this.safeScroll(); }
     },
     'currGroup_',
     'rowObserver',
-    { 
+    {
       name: 'rootElement',
       documentation: 'FOAM element that is used as the observation bounds for intersectionManager'
     },
@@ -136,17 +137,17 @@
       name: 'order',
       documentation: 'Optional order used to sort citations within a group'
     },
-    { 
+    {
       name: 'ctx',
       documentation: 'A context variable that is passed to the prepDAO function'
     },
-    { 
+    {
       class: 'Function',
       name:'prepDAO',
       documentation: `Function that is run before each page is loaded on a limited DAO,
       should always return a promise, can be used to create projections`
     },
-    { 
+    {
       name: 'appendTo',
       factory: function() { return this.parentNode; },
       documentation: 'FOAM element that the ScrollManager adds rows to. Defaults to parentNode to avoid layout shifts'
@@ -176,7 +177,7 @@
       let options = {
         root: this.rootElement?.el_() ?? null,
         rootMargin: `-${this.offsetTop}px 0px 0px`,
-        threshold: [0.05, 0.5, 0.95]
+        threshold: [0.25, 0.5, 0.75]
       };
       resize.observe(this.rootElement?.el_());
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
@@ -197,7 +198,7 @@
     },
 
     function safeScroll(){
-      if ( this.scrollToIndex == undefined ) return;
+      if ( ! this.scrollToIndex ) return;
       var page = Math.floor(this.scrollToIndex/this.pageSize);
       if ( this.renderedPages_[page] ) {
         var el = document.querySelector(`[data-idx='${this.scrollToIndex}']`);
@@ -213,7 +214,7 @@
         } else if ( page != this.currentTopPage_ + 1 ) {
           this.currentTopPage_ = page - 1;
           return;
-        } 
+        }
       }
     },
 
@@ -232,7 +233,7 @@
       var sortParams = [];
       if ( this.groupBy ) sortParams.push(this.groupBy)
       if ( this.order ) sortParams.push(this.order)
-      if ( sortParams.length ) proxy = proxy.orderBy(sortParams); 
+      if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
       promise = this.prepDAO(proxy, this.ctx);
       var e = this.E();
 
@@ -269,7 +270,7 @@
         if ( ! isSet ) { this.appendTo.add(e); isSet = true; }
         self.renderedPages_[page] = e;
         // If there is a scroll in progress and all pages have been loaded, try to scroll again
-        if ( this.scrollToIndex != undefined && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) ) 
+        if ( this.scrollToIndex && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
           self.safeScroll();
         if ( this.displayedRowCount_ <= 0 ) this.bottomRow = this.daoCount
       });
@@ -292,14 +293,17 @@
       name: 'refresh',
       isFramed: true,
       code: function() {
+        this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
         this.currentTopPage_ = 0;
+        this.topRow = 0;
+        this.bottomRow = 0;
         this.updateRenderedPages_();
         if ( ! this.memento ) return;
-        if ( this.memento.head.length != 0 ) {
+        if ( this.memento.head.length != 0 && Number(this.memento.head)) {
           this.scrollToIndex = this.memento.head;
         } else {
           this.scrollToIndex = 1;
@@ -341,13 +345,18 @@
     },
     {
       name: 'onRowIntersect',
+      isFramed: true,
       code: function(entries, self){
         entries.forEach((entry) => {
           if ( entry.intersectionRatio == 0 ) return;
-          var index = entry.target.dataset.idx;
+          var index = Number(entry.target.dataset.idx);
           if ( entry.boundingClientRect.top <= entry.rootBounds.top ) {
+            if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) <= entry.rootBounds.top )
+              index += 1;
             self.topRow = index;
-          } else if( entry.boundingClientRect.top > entry.rootBounds.top ) {
+          } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
+            if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
+              index -= 1;
             self.bottomRow = index;
           }
         });

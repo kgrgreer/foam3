@@ -104,7 +104,7 @@ foam.CLASS({
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
         var objsClass = this.getClassForNestedPropertyObject(of, arrayOfNestedPropertiesName[i].split('.'));
         if( ! map[key] ) {
-          map[key] = objsClass.create();
+          map[key] = objsClass.create({}, this);
         }
         if ( arrayOfValues[i] )
           objsClass.getAxiomByName(this.getNameOfLastPropertyForNestedProperty(arrayOfNestedPropertiesName[i])).set(map[key], arrayOfValues[i]);

@@ -101,6 +101,7 @@ foam.CLASS({
     { name: 'EXECUTION_DISABLED', message: 'execution disabled' },
     { name: 'EXECUTION_INVOKED', message: 'execution invoked' },
     { name: 'EXECUTION_FAILED', message: 'execution failed' },
+    { name: 'EXECUTION_COMPLETED', message: 'execution completed' },
     { name: 'ENABLED_YES', message: 'Y' },
     { name: 'ENABLED_NO', message: 'N' },
     { name: 'PRIORITY_LOW', message: 'Low' },
@@ -333,7 +334,7 @@ foam.CLASS({
           Interpreter shell = new Interpreter();
           try {
             shell.set("currentScript", this);
-            shell.set("x", x);
+            shell.set("x", x.put("out", ps));
             shell.eval("runScript(String name) { script = x.get("+getDaoKey()+").find(name); if ( script != null ) eval(script.code); }");
             shell.eval("foam.core.X sudo(String user) { foam.util.Auth.sudo(x, (String) user); }");
             shell.eval("foam.core.X sudo(Object id) { foam.util.Auth.sudo(x, id); }");
@@ -380,62 +381,57 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        canRun(x);
-        PM               pm          = new PM(this.getClass(), getId());
-        RuntimeException thrown     = null;
+        RuntimeException thrown      = null;
         Language         l           = getLanguage();
-        Thread.currentThread().setPriority(getPriority());
+        ByteArrayOutputStream baos   = new ByteArrayOutputStream();
+        PrintStream            ps    = new PrintStream(baos);
+        PM                     pm    = new PM(this.getClass(), getId());
 
         try {
-            ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-            PrintStream           ps    = new PrintStream(baos);
+          Thread.currentThread().setPriority(getPriority());
 
-            try {
-              if ( l == foam.nanos.script.Language.BEANSHELL ) {
-                Interpreter shell = (Interpreter) createInterpreter(x, null);
-                setOutput("");
-                shell.setOut(ps);
-                shell.eval(getCode());
-              } else if ( l == foam.nanos.script.Language.JSHELL ) {
-                String print = null;
-                JShell jShell = (JShell) createInterpreter(x,ps);
-                print = new JShellExecutor().execute(x, jShell, getCode());
-                ps.print(print);
-              } else {
-                throw new RuntimeException("Script language not supported");
-              }
-            } catch (Throwable t) {
-              thrown = new RuntimeException(t);
-              ps.println();
-              t.printStackTrace(ps);
-              Logger logger = (Logger) x.get("logger");
-              logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
-              pm.error(x, t);
-            } finally {
-              pm.log(x);
-            }
-
+          if ( l == foam.nanos.script.Language.BEANSHELL ) {
+            Interpreter shell = (Interpreter) createInterpreter(x, ps);
+            setOutput("");
+            shell.setOut(ps);
+            shell.eval(getCode());
+          } else if ( l == foam.nanos.script.Language.JSHELL ) {
+            String print = null;
+            JShell jShell = (JShell) createInterpreter(x,ps);
+            print = new JShellExecutor().execute(x, jShell, getCode());
+            ps.print(print);
+          } else {
+            throw new RuntimeException("Script language not supported");
+          }
+          pm.log(x);
+        } catch (Throwable t) {
+          thrown = new RuntimeException(t);
+          pm.error(x, t);
+          ps.println();
+          t.printStackTrace(ps);
+          Logger logger = (Logger) x.get("logger");
+          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
+          throw thrown;
+        } finally {
           setLastRun(new Date());
           setLastDuration(pm.getTime());
           ps.flush();
           setOutput(baos.toString());
 
-          ScriptEvent event = new ScriptEvent(x);
-          event.setLastRun(this.getLastRun());
-          event.setLastDuration(this.getLastDuration());
-          event.setOutput(this.getOutput());
-          event.setScriptType(this.getClass().getSimpleName());
-          event.setOwner(this.getId());
-          event.setScriptId(this.getId());
-          event.setHostname(System.getProperty("hostname", "localhost"));
-          event.setClusterable(this.getClusterable());
-          ((DAO) x.get(getEventDaoKey())).put(event);
-
-          if ( thrown != null) {
-            throw thrown;
-          }
-        } finally {
           Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+          if ( thrown == null ) {
+            ScriptEvent event = new ScriptEvent(x);
+            event.setLastRun(this.getLastRun());
+            event.setLastDuration(this.getLastDuration());
+            event.setOutput(this.getOutput());
+            event.setScriptType(this.getClass().getSimpleName());
+            event.setOwner(this.getId());
+            event.setScriptId(this.getId());
+            event.setHostname(System.getProperty("hostname", "localhost"));
+            event.setClusterable(this.getClusterable());
+            ((DAO) x.get(getEventDaoKey())).put(event);
+          }
         }
     `
     },
@@ -454,7 +450,8 @@ foam.CLASS({
               if ( self.notify ) {
                 // create notification
                 var notification = self.ScriptRunNotification.create({
-                  userId: self.user.id,
+                  userId: self.subject && self.subject.realUser ?
+                    self.subject.realUser.id : self.user.id,
                   scriptId: script.id,
                   notificationType: 'Script Execution',
                   body: `Status: ${script.status}
@@ -465,6 +462,18 @@ foam.CLASS({
                 });
                 self.notificationDAO.put(notification);
               }
+              var notification = self.Notification.create();
+              notification.userId = self.subject && self.subject.realUser ?
+                self.subject.realUser.id : self.user.id;
+              if ( script.status === self.ScriptStatus.UNSCHEDULED ) {
+                notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_COMPLETED;
+              } else {
+                notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_FAILED;
+              }
+              notification.toastState = self.ToastState.REQUESTED;
+              notification.severity = foam.log.LogLevel.INFO;
+              notification.transient = true;
+              self.__subContext__.myNotificationDAO.put(notification);
             }
           }).catch(function() {
             clearInterval(interval);
@@ -492,15 +501,15 @@ foam.CLASS({
         this.status = this.ScriptStatus.SCHEDULED;
         if ( this.language == this.Language.BEANSHELL ||
              this.language == this.Language.JSHELL ) {
+          var notification = self.Notification.create();
+          notification.userId = self.subject && self.subject.realUser ?
+            self.subject.realUser.id : self.user.id;
+          notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_INVOKED;
+          notification.toastState = self.ToastState.REQUESTED;
+          notification.severity = foam.log.LogLevel.INFO;
+          notification.transient = true;
+          self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
-            var notification = self.Notification.create();
-            notification.userId = self.subject && self.subject.realUser ?
-              self.subject.realUser.id : self.user.id;
-            notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_INVOKED;
-            notification.toastState = self.ToastState.REQUESTED;
-            notification.severity = foam.log.LogLevel.INFO;
-            notification.transient = true;
-            self.__subContext__.myNotificationDAO.put(notification);
             self.copyFrom(script);
             if ( script.status === self.ScriptStatus.SCHEDULED ) {
               self.poll();
@@ -517,21 +526,29 @@ foam.CLASS({
             self.__subContext__.myNotificationDAO.put(notification);
           });
         } else {
+          var notification = this.Notification.create();
+          notification.userId = this.subject && this.subject.realUser ?
+            this.subject.realUser.id : this.user.id;
+          notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
+          notification.toastState = this.ToastState.REQUESTED;
+          notification.severity = foam.log.LogLevel.INFO;
+          notification.transient = true;
+          this.__subContext__.myNotificationDAO.put(notification);
+
           this.status = this.ScriptStatus.RUNNING;
           this.runScript().then(
             () => {
+              this.status = this.ScriptStatus.UNSCHEDULED;
+              this.__context__[this.daoKey].put(this);
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
                 this.subject.realUser.id : this.user.id;
-              notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
+              notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_COMPLETED;
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
               notification.transient = true;
               this.__subContext__.myNotificationDAO.put(notification);
-
-              this.status = this.ScriptStatus.UNSCHEDULED;
-              this.__context__[this.daoKey].put(this);
-            },
+           },
             (e) => {
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?

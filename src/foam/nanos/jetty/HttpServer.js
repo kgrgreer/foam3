@@ -25,6 +25,8 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.FileInputStream',
     'java.io.InputStream',
+    'java.io.IOException',
+    'java.io.PrintStream',
     'java.security.KeyStore',
     'java.util.Set',
     'java.util.HashSet',
@@ -33,6 +35,7 @@ foam.CLASS({
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
     'org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter',
@@ -118,6 +121,13 @@ foam.CLASS({
       name: 'filterMappings',
       of: 'foam.nanos.servlet.FilterMapping',
       javaFactory: 'return new foam.nanos.servlet.FilterMapping[0];'
+    },
+    {
+      documentation: 'hold reference to server for dumpStats',
+      class: 'Object',
+      name: 'server',
+      hidden: true,
+      transient: true
     },
     {
       name: 'logger',
@@ -278,6 +288,7 @@ foam.CLASS({
         this.configHttps(server);
 
         server.start();
+        setServer(server);
       } catch(Exception e) {
         getLogger().error(e);
       }
@@ -298,6 +309,7 @@ foam.CLASS({
           @Override
           public void run() {
             try {
+              dumpStats(getX(), server);
               System.out.println("Shutting down Jetty server with the shutdown hook.");
               server.stop();
             } catch (Exception e) {
@@ -402,6 +414,7 @@ foam.CLASS({
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
             new HttpConnectionFactory(https));
           sslConnector.setPort(port);
+          sslConnector.addBean(new ConnectorStatistics());
 
           server.addConnector(sslConnector);
 
@@ -429,6 +442,59 @@ foam.CLASS({
       ],
       javaCode: `
         return Arrays.binarySearch(getHostDomains(), domain) >= 0;
+      `
+    },
+    {
+      name: 'dumpStats',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'server',
+          type: 'org.eclipse.jetty.server.Server'
+        }
+      ],
+      javaCode: `
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      PrintStream           ps   = new PrintStream(baos);
+      PrintStream           out  = (PrintStream) x.get("out");
+      try {
+        if ( server == null ) {
+          server = (org.eclipse.jetty.server.Server) getServer();
+        }
+        if ( server == null ) {
+          getLogger().warning("dumpStats,server,null");
+          return;
+        }
+
+        ps.printf("HttpServer stats%n");
+
+        // Dump status
+        for ( Connector connector : server.getConnectors() ) {
+          if ( connector instanceof Container ) {
+            Container container = (Container)connector;
+            ConnectorStatistics stats = container.getBean(ConnectorStatistics.class);
+            ps.printf("Connector: %s%n",connector);
+            if ( stats != null ) {
+              stats.dump(ps,"  ");
+            } else {
+              ps.printf("stats null%n");
+            }
+            if ( out != null ) {
+              // support output to caller
+              out.print(baos.toString("UTF8"));
+            } else {
+              getLogger().info(baos.toString("UTF8"));
+            }
+          }
+        }
+      } catch ( Exception e ) {
+        getLogger().warning("dumpStats", e);
+      } finally {
+        ps.close();
+      }
       `
     }
   ]
