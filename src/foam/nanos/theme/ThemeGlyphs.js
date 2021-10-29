@@ -501,7 +501,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'circle.slash',
+      name: 'circleSlash',
       class: 'GlyphProperty',
       of: 'foam.core.Glyph',
       factory: () => {
@@ -513,7 +513,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'clipboard.check',
+      name: 'clipboardCheck',
       class: 'GlyphProperty',
       of: 'foam.core.Glyph',
       factory: () => {
