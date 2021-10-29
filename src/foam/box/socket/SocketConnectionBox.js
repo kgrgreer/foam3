@@ -8,7 +8,7 @@ foam.CLASS({
   name: 'SocketConnectionBox',
 
   documentation: `Establishes a socket connection managed by the SocketConnectionBoxManager, with synchronous 'send' and asychronous 'receive'.`,
-  
+
   implements: [
     'foam.box.Box',
     'foam.core.ContextAgent'
@@ -48,7 +48,7 @@ foam.CLASS({
     'java.util.concurrent.atomic.AtomicLong',
     'java.util.concurrent.atomic.AtomicBoolean'
   ],
-    
+
   constants: [
     {
       name: 'REPLY_BOX_ID',
@@ -114,64 +114,54 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
+  javaCode: `
+    public SocketConnectionBox(X x, String key, Socket socket, String host, int port)
+      throws IOException
     {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public SocketConnectionBox(X x, String key, Socket socket, String host, int port)
-    throws IOException
-  {
-    setX(x);
-    setKey(key);
-    setHost(host);
-    setPort(port);
-    setSocket(socket);
+      setX(x);
+      setKey(key);
+      setHost(host);
+      setPort(port);
+      setSocket(socket);
 
-    out_ = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-    in_ = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-    pending_ = new AtomicLong();
-  }
-
-  protected DataInputStream in_;
-  protected DataOutputStream out_;
-  protected AtomicLong pending_;
-
-  protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
-    @Override
-    protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
-      foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
-      formatter.setQuoteKeys(true);
-      formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
-      return formatter;
+      out_ = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+      in_ = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+      pending_ = new AtomicLong();
     }
 
-    @Override
-    public foam.lib.formatter.FObjectFormatter get() {
-      foam.lib.formatter.FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
+    protected DataInputStream in_;
+    protected DataOutputStream out_;
+    protected AtomicLong pending_;
 
-  protected byte [] readBytes (InputStream in, int expectedSize)
-    throws IOException {
-    final byte[] buffer = new byte[expectedSize];
-    int totalReadSize = 0;
-    while (totalReadSize < expectedSize) {
-      int readSize = in.read(buffer, totalReadSize, expectedSize - totalReadSize);
-      if (readSize < 0) throw new EOFException ();
-      totalReadSize += readSize;
-    }
-    return buffer;
-  }
-
-        `
-        }));
+    protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
+      @Override
+      protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
+        foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
+        formatter.setQuoteKeys(true);
+        formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
+        return formatter;
       }
+
+      @Override
+      public foam.lib.formatter.FObjectFormatter get() {
+        foam.lib.formatter.FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+
+    protected byte [] readBytes (InputStream in, int expectedSize)
+      throws IOException {
+      final byte[] buffer = new byte[expectedSize];
+      int totalReadSize = 0;
+      while (totalReadSize < expectedSize) {
+        int readSize = in.read(buffer, totalReadSize, expectedSize - totalReadSize);
+        if (readSize < 0) throw new EOFException ();
+        totalReadSize += readSize;
+      }
+      return buffer;
     }
-  ],
+  `,
 
   methods: [
     {
@@ -265,7 +255,7 @@ NOTE: duplicated in SocketConnectionReplyBox
             if ( msg == null ) {
               throw new IllegalArgumentException("Failed to parse. message: "+data);
             }
-  
+
             String replyBoxId = (String) msg.getAttributes().get(REPLY_BOX_ID);
             if ( replyBoxId != null ) {
               Box replyBox = null;

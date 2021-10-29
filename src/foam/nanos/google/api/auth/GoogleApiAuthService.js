@@ -18,7 +18,7 @@ foam.CLASS({
     'com.google.api.client.json.JsonFactory',
     'com.google.api.client.json.jackson2.JacksonFactory',
     'com.google.api.client.util.store.FileDataStoreFactory',
-    
+
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
@@ -41,14 +41,9 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`protected Logger getLogger(X x) { return new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, (Logger) x.get("logger")); }`);
-      }
-    }
-  ],
+  javaCode: `
+    protected Logger getLogger(X x) { return new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, (Logger) x.get("logger")); }
+  `,
 
   methods: [
     {
@@ -74,7 +69,7 @@ foam.CLASS({
       javaCode: `
         HttpServletRequest req = (HttpServletRequest)x.get(HttpServletRequest.class);
         GoogleApiCredentials credentialsConfig = (GoogleApiCredentials) ((DAO)getX().get("googleApiCredentialsDAO")).find(req.getServerName());
-        
+
         if ( credentialsConfig == null ) {
           getLogger(x).error("Missing GoogleApiCredential for " + req.getServerName());
           return null;
@@ -86,13 +81,13 @@ foam.CLASS({
                 .setAuthUri(credentialsConfig.getAuthUri())
                 .setTokenUri(credentialsConfig.getTokenUri())
                 .setRedirectUris(Arrays.asList(credentialsConfig.getRedirectUris()));
-    
+
         GoogleClientSecrets clientSecrets = new GoogleClientSecrets().setInstalled(details);
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                   HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes)
                   .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(credentialsConfig.getTokensFolderPath() + "/tokens/")))
                   .build();
-        
+
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(credentialsConfig.getPort()).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
       `

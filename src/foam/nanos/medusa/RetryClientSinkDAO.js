@@ -58,20 +58,11 @@ foam.CLASS({
       `
     }
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public RetryClientSinkDAO(X x, DAO delegate) {
-    super(x, delegate);
-  }
-         `
-        }));
-      }
+  javaCode: `
+    public RetryClientSinkDAO(X x, DAO delegate) {
+      super(x, delegate);
     }
-  ],
+  `,
 
   methods: [
     {

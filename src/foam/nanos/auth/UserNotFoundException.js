@@ -11,28 +11,21 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public UserNotFoundException() {
-    super();
-  }
-
-  public UserNotFoundException(String message) {
-    super(message);
-  }
-
-  public UserNotFoundException(Throwable cause) {
-    super(cause);
-  }
-
-  public UserNotFoundException(String message, Throwable cause) {
-    super(message, cause);
-  }
-        `);
-      }
+  javaCode: `
+    public UserNotFoundException() {
+      super();
     }
-  ]
+
+    public UserNotFoundException(String message) {
+      super(message);
+    }
+
+    public UserNotFoundException(Throwable cause) {
+      super(cause);
+    }
+
+    public UserNotFoundException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

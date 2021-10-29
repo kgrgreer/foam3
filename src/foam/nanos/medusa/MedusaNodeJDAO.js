@@ -18,21 +18,14 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          public MedusaNodeJDAO(foam.core.X x, foam.dao.DAO mdao, foam.dao.DAO jdao) {
-            setX(x);
-            setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo());
-            setMdao(mdao);
-            setDelegate(jdao);
-          }
-        `);
-      }
+  javaCode: `
+    public MedusaNodeJDAO(foam.core.X x, foam.dao.DAO mdao, foam.dao.DAO jdao) {
+      setX(x);
+      setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo());
+      setMdao(mdao);
+      setDelegate(jdao);
     }
-  ],
+  `,
 
   methods: [
     {
