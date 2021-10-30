@@ -34,10 +34,6 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
-  constants: {
-    PUT_CMD: 'PUT_CMD'
-  },
-
   properties: [
     {
       class: 'String',
@@ -301,11 +297,10 @@ ruleGroupDAO.listen(new AbstractSink() {
     },
     {
       name: 'cmd_',
-      javaCode: `if ( PUT_CMD == obj ) {
-  getDelegate().put((FObject) x.get("OBJ"));
-  return true;
-}
-if ( ! ( obj instanceof RulerProbe ) ) return getDelegate().cmd_(x, obj);
+      javaCode: `
+  if ( ! ( obj instanceof RulerProbe ) )
+    return getDelegate().cmd_(x, obj);
+
   RulerProbe probe = (RulerProbe) obj;
   switch ( probe.getOperation() ) {
     case UPDATE :

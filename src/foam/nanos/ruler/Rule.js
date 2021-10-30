@@ -193,21 +193,6 @@
       }
     },
     {
-      class: 'Object',
-      name: 'cmd',
-      transient: true,
-      hidden: true,
-      javaFactory: `
-        if ( Operation.CREATE == getOperation()
-          || Operation.UPDATE == getOperation()
-          || Operation.CREATE_OR_UPDATE == getOperation()
-        ) {
-          return RulerDAO.PUT_CMD;
-        }
-        return null;
-      `
-    },
-    {
       class: 'DateTime',
       name: 'created',
       section: 'basicInfo',
