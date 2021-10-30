@@ -27,7 +27,6 @@ public class RuleEngine extends ContextAwareSupport {
   private AtomicBoolean            stops_            = new AtomicBoolean(false);
   private Map<String, Object>      results_          = new HashMap<>();
   private Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
-  private Rule                     currentRule_      = null;
   private X                        userX_;
   private ExecutorService          asyncExecutor_    = Executors.newSingleThreadExecutor();
 
@@ -165,11 +164,11 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   /**
-   * Store result of current rule execution
+   * Store result of a rule execution
    * @param result
    */
-  public void putResult(Object result) {
-    results_.put(currentRule_.getId(), result);
+  public void putResult(String ruleId, Object result) {
+    results_.put(ruleId, result);
   }
 
   public Object getResult(String ruleId) {
@@ -177,10 +176,10 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
-    ProxyX readOnlyX = new ReadOnlyDAOContext(userX_);
     if ( rule.getAsync() ) {
       applyAsyncRule(rule, obj, oldObj);
     } else {
+      ProxyX readOnlyX = new ReadOnlyDAOContext(userX_);
       rule.apply(readOnlyX, obj, oldObj, this, rule, agency);
     }
   }
@@ -192,8 +191,6 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   private boolean isRuleActive(Rule rule, RuleAction action) {
-    currentRule_ = rule;
-
     // Check if the rule is in an ACTIVE state
     boolean isActive = true;
     if (rule instanceof LifecycleAware) {
