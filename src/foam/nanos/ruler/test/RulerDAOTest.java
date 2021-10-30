@@ -18,7 +18,7 @@ import java.util.List;
 import static foam.mlang.MLang.*;
 
 public class RulerDAOTest extends Test {
-  Rule rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10;
+  Rule rule1, rule2, rule3, rule4, rule5, rule5_async, rule6, rule6_async, rule7, rule8, rule9, rule10;
   User user1, user2;
   DAO localRuleDAO, userDAO, ruleHistoryDAO,rgDAO;
   int asyncWait = 1000;
@@ -220,11 +220,6 @@ public class RulerDAOTest extends Test {
       user.setEmail("foam@nanos.net");
     };
     rule2.setAction(action2);
-// FIXME: asyncAction was replaced with async flag
-//    RuleAction asyncAction2 = (x13, obj, oldObj, ruler, rule2, agent) -> {
-//      throw new RuntimeException("this async action is not supposed to be executed.");
-//    };
-//    rule2.setAsyncAction(asyncAction2);
     rule2 = (Rule) localRuleDAO.put_(x, rule2);
 
     //the rule has lower priority than the first one => should never be executed
@@ -260,9 +255,6 @@ public class RulerDAOTest extends Test {
       user.setLastName("Smirnova");
     };
     rule4.setAction(action4);
-// FIXME: asyncAction was replaced with async flag
-//    RuleAction asyncAction4 = (x16, obj, oldObj, ruler, rule4, agent) -> ruler.stop();
-//    rule4.setAsyncAction(asyncAction4);
     rule4 = (Rule) localRuleDAO.put_(x, rule4);
 
     //the rule has lower priority than the first one but has different group so should be executed
@@ -296,18 +288,22 @@ public class RulerDAOTest extends Test {
 
     };
     rule5.setAction(action5);
-// FIXME: asyncAction was replaced with async flag
-//    RuleAction asyncAction5 = (x18, obj, oldObj, ruler, rule5, agent) -> {
-//      // simulate async
-//      try {
-//        Thread.sleep(asyncWait);
-//      } catch (InterruptedException e) { }
-//
-//      User user = (User) obj;
-//      user.setLastName("Smith");
-//    };
-//    rule5.setAsyncAction(asyncAction5);
     rule5 = (Rule) localRuleDAO.put_(x, rule5);
+
+    rule5_async = (Rule) rule5.fclone();
+    rule5_async.setId("5_async");
+    rule5_async.setAsync(true);
+    RuleAction asyncAction5 = (x18, obj, oldObj, ruler, rule5, agent) -> {
+      // simulate async
+      try {
+        Thread.sleep(asyncWait);
+      } catch (InterruptedException e) { }
+
+      User user = (User) obj;
+      user.setLastName("Smith");
+    };
+    rule5_async.setAction(asyncAction5);
+    rule5_async = (Rule) localRuleDAO.put_(x, rule5_async);
 
     //the rule only applied to user2
     rule6 = new Rule();
@@ -322,19 +318,23 @@ public class RulerDAOTest extends Test {
     rule6.setSaveHistory(true);
     rule6.setLifecycleState(LifecycleState.ACTIVE);
     rule6.setPredicate(EQ(DOT(NEW_OBJ, foam.nanos.auth.User.EMAIL), "user2@nanos.net"));
-    RuleAction action6 = (x19, obj, oldObj, ruler, rule6, agent) -> ruler.putResult("Pending");
+    RuleAction action6 = (x19, obj, oldObj, ruler, rule6, agent) -> ruler.putResult(rule6.getId(), "Pending");
     rule6.setAction(action6);
-// FIXME: asyncAction was replaced with async flag
-//    RuleAction asyncAction6 = (x110, obj, oldObj, ruler, rule6, agent) -> {
-//      // simulate async
-//      try {
-//        Thread.sleep(asyncWait);
-//      } catch (InterruptedException e) { }
-//
-//      ruler.putResult("Done");
-//    };
-//    rule6.setAsyncAction(asyncAction6);
     rule6 = (Rule) localRuleDAO.put_(x, rule6);
+
+    rule6_async = (Rule) rule6.fclone();
+    rule6_async.setId("6_async");
+    rule6_async.setAsync(true);
+    RuleAction asyncAction6 = (x110, obj, oldObj, ruler, rule6, agent) -> {
+      // simulate async
+      try {
+        Thread.sleep(asyncWait);
+      } catch (InterruptedException e) { }
+
+      ruler.putResult(rule6_async.getId(), "Done");
+    };
+    rule6_async.setAction(asyncAction6);
+    rule6_async = (Rule) localRuleDAO.put_(x, rule6_async);
 
     //the rule with erroneous predicate
     rule8 = new Rule();
