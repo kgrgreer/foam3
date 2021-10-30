@@ -129,6 +129,12 @@ public class RuleEngine extends ContextAwareSupport {
           continue;
         }
 
+        if ( rule.getAsync() ) {
+          agent.setMessage("Async rule, action not executed.");
+          rulerProbe.getAppliedRules().add(agent);
+          continue;
+        }
+
         try {
           applyRule(rule, obj, oldObj, agent);
           agent.setMessage("Successfully applied");
@@ -139,18 +145,6 @@ public class RuleEngine extends ContextAwareSupport {
 
         rulerProbe.getAppliedRules().add(agent);
       }
-// TODO: Fix probing async rules
-//      for ( Rule rule : rules ) {
-//        if ( isRuleActive(rule, rule.getAsyncAction())
-//          && checkPermission(rule, obj)
-//          && rule.f(x_, obj, oldObj)
-//        ) {
-//          TestedRule asyncAgent = new TestedRule();
-//          asyncAgent.setRule(rule.getId());
-//          asyncAgent.setMessage("AsyncAction.");
-//          rulerProbe.appliedRules_.add(asyncAgent);
-//        }
-//      }
     } finally {
       pm.log(x_);
     }

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'RulerProbe',
   documentation: `A helper model used to test dao operation for provided "obj".
   Returned with populated appliedRules(Map<Rule, boolean>) property that describes what rules will be applied successfully/unsuccessfully.
-  Does not probe async actions. 
+  Does not probe async actions.
   Usage example:
       user = new User();
       rulerProbe = new RulerProbe();
@@ -35,6 +35,16 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.dao.Operation',
       name: 'operation'
+    },
+    {
+      class: 'Boolean',
+      name: 'after',
+      value: false,
+    },
+    {
+      class: 'Boolean',
+      name: 'async',
+      value: false
     },
     {
       name: 'passed',

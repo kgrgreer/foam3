@@ -304,13 +304,16 @@ ruleGroupDAO.listen(new AbstractSink() {
   RulerProbe probe = (RulerProbe) obj;
   switch ( probe.getOperation() ) {
     case UPDATE :
-    probeRules(x, probe, getUpdateBefore());
+      probeRules(x, probe, probe.getAsync() ? getUpdateAsync()
+        : probe.getAfter() ? getUpdateAfter() : getUpdateBefore());
       break;
     case CREATE :
-      probeRules(x, probe, getCreateBefore());
+      probeRules(x, probe, probe.getAsync() ? getCreateAsync()
+        : probe.getAfter() ? getCreateAfter() : getCreateBefore());
       break;
     case REMOVE :
-      probeRules(x, probe, getRemoveBefore());
+      probeRules(x, probe, probe.getAsync() ? getRemoveAsync()
+        : probe.getAfter() ? getRemoveAfter() : getRemoveBefore());
       break;
     default :
       throw new RuntimeException("Unsupported operation type " + probe.getOperation() + " on dao.cmd(RulerProbe)");
