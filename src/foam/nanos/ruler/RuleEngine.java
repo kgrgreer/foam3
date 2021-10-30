@@ -46,8 +46,9 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   /**
-   * Executes rules by applying their actions synchronously then submitting
-   * a chain of their async actions to thread pool for execution.
+   * Executes rules by applying their actions. Async rules will be submitted to
+   * 'asyncExecutor_' which will execute all rule actions sequentially in a
+   * separate thread.
    *
    * Each rule would check object applicability before applying action.
    *
@@ -205,6 +206,12 @@ public class RuleEngine extends ContextAwareSupport {
     return true;
   }
 
+  /**
+   * Save rule execution history to DAO.
+   *
+   * @param rule Reference to the executed rule
+   * @param obj Reference to the object for the rule execution
+   */
   public void saveHistory(Rule rule, FObject obj) {
     if ( ! rule.getSaveHistory() ) return;
 
