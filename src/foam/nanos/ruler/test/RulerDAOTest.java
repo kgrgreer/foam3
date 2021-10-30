@@ -67,7 +67,7 @@ public class RulerDAOTest extends Test {
     test(executeRule.getRuleGroup().equals("fake test group"), "Test rule's group name is fake test group.");
 
     int i = 0;
-    while ( i < 10 ) {
+    while ( i++ < 10 ) {
       // wait for async
       try {
         Thread.sleep(asyncWait + 100);
@@ -266,7 +266,10 @@ public class RulerDAOTest extends Test {
     rule5.setOperation(Operation.UPDATE);
     rule5.setAfter(false);
     rule5.setLifecycleState(LifecycleState.ACTIVE);
-    Predicate predicate5 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
+    Predicate predicate5 = AND(
+      EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true),
+      NEQ(DOT(NEW_OBJ, User.LAST_NAME), "Smith")
+    );
     rule5.setPredicate(predicate5);
     RuleAction action5 = (x17, obj, oldObj, ruler, rule5, agency) -> {
       User user = (User) obj;
@@ -301,6 +304,7 @@ public class RulerDAOTest extends Test {
 
       User user = (User) obj;
       user.setLastName("Smith");
+      userDAO.put(user);
     };
     rule5_async.setAction(asyncAction5);
     rule5_async = (Rule) localRuleDAO.put_(x, rule5_async);
