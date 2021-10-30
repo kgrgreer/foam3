@@ -47,8 +47,8 @@ public class RuleEngine extends ContextAwareSupport {
 
   /**
    * Executes rules by applying their actions. Async rules will be submitted to
-   * 'asyncExecutor_' which will execute all rule actions sequentially in a
-   * separate thread.
+   * 'asyncExecutor_' which will execute all rule actions sequentially in a new
+   * thread.
    *
    * Each rule would check object applicability before applying action.
    *
