@@ -328,13 +328,13 @@ ruleGroupDAO.listen(new AbstractSink() {
         { name: 'predicate', type: 'foam.mlang.predicate.Predicate' }
       ],
       javaCode: `GroupBy groups;
-RuleEngine engine = new RuleEngine(x, getX(), this);
 Map rulesList = getRulesList();
-FObject oldObj = getDelegate().find_(x, probe.getObject());
+FObject obj = (FObject) probe.getObject();
+FObject oldObj = getDelegate().find_(x, obj);
 groups = (GroupBy) rulesList.get(predicate);
 for ( Object key : groups.getGroupKeys() ) {
   List<Rule> rules = ((ArraySink)(groups.getGroups().get(key))).getArray();
-  engine.probe(rules, probe, (FObject)probe.getObject(), oldObj);
+  new RuleEngine(x, getX(), this).probe(rules, probe, obj, oldObj);
 }`
     },
     {
