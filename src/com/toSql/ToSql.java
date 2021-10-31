@@ -8,7 +8,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 
 public class ToSql {
-  
+
   //SQL version
   //https://www.orafaq.com/wiki/SCOTT
   //http://jailer.sourceforge.net/scott-tiger.sql.html
@@ -29,12 +29,40 @@ public class ToSql {
     //select * from dept;
     res = ( (ArraySink) deptDao.select(new ArraySink()) ).getArray();
     print(res);
-    
+
     //select * from emp where sal<1000
     res = ( (ArraySink) empDao.
         where(LT(com.toSql.Emp.SAL, 1000.0)).
         select(new ArraySink()) ).getArray();
     print(res);
+
+    //TODO
+    //select ename, job,sal from Emp
+    //use alias
+
+    // slect ename, sal*12 from Emp
+
+    // select ename from emp where comm is not null
+
+    // select ename from emp where comm is null
+
+    // select ename from emp where sal between 800 and 3000
+
+    // select empno, ename, job, sal from emp where job in ('CLERK','ANALYST')
+
+    // select ename from emp where ename like 'M%'
+
+    // select ename from emp where ename like '__A%'//3rd position
+
+    // select ename from emp where job = any ('CLERK','ANALYST')
+
+    // select ename from emp where sal! = any (1000,2000,3000,40000)
+
+    // select ename,job , sal from emp order by job, sal desc
+
+    // select distinct job from emp
+
+
   }
 
   private static void setup(DAO deptDao, DAO salGradeDao, DAO empDao) {
@@ -123,7 +151,7 @@ public class ToSql {
     e1.setHireDate(new GregorianCalendar(1980, 12, 17).getTime());
     e1.setSal(800);
     e1.setComm(0);
-    
+
 
     Emp e2 = new Emp();
     e2.setId(1);
@@ -133,7 +161,7 @@ public class ToSql {
     e2.setHireDate(new GregorianCalendar(1981, 2, 20).getTime());
     e2.setSal(1600);
     e2.setComm(300);
-    
+
 
     Emp e3 = new Emp();
     e3.setId(2);
@@ -248,7 +276,7 @@ public class ToSql {
     e3.setDeptNo(d3.getId());
     e4.setDeptNo(d2.getId());
     e5.setDeptNo(d3.getId());
-    
+
     e6.setDeptNo(d3.getId());
     e7.setDeptNo(d1.getId());
     e8.setDeptNo(d2.getId());
