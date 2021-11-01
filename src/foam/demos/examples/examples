@@ -2433,6 +2433,11 @@ log(foam.String.multiline(function(){/*This is
 a
 multi-line
 string*/}));
+log(foam.String.multiline(function(){`This is
+a
+multi-line
+string`}));
+
 
 
 ##  String pad

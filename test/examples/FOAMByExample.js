@@ -3098,6 +3098,11 @@ var examples = [
       a
       multi-line
       string*/}));
+
+      console.log(foam.String.multiline(function(){`This is
+      a
+      multi-line
+      string`}));
     },
   },
   {
