@@ -62,6 +62,11 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+        if ( getMergeDelay() <= 0 ) {
+          getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
+          return;
+        }
+
         var key = obj.hashCode();
         var task = (TimerTask) getTaskQueue().get(key);
 
