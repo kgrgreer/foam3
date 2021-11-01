@@ -59,7 +59,7 @@ foam.CLASS({
       name: 'getNextString',
       type: 'String',
       javaCode: `
-        return String.valueOf(getNextLong());
+        return generate();
       `
     },
     {
@@ -126,7 +126,9 @@ foam.CLASS({
       ],
       javaCode: `
         var targetMod = mod(getSalt());
-        var idMod     = mod(Long.parseLong(id + "000", 16));
+        // Breaking the multiplication to avoid overflow before mod-ing,
+        // (ab mod m) = ((a mod m) * (b mod m)) mod m.
+        var idMod     = mod(mod(Long.parseLong(id, 16)) * mod(0x1000));
 
         return (int) (UIDSupport.CHECKSUM_MOD - idMod + targetMod);
       `
