@@ -20,24 +20,15 @@ foam.CLASS({
     'java.security.spec.X509EncodedKeySpec'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-            static {
-              // add bouncy castle provider
-              BouncyCastleProvider provider = new BouncyCastleProvider();
-              if ( Security.getProvider(provider.getName()) == null ) {
-                Security.addProvider(provider);
-              }
-            }
-          `
-        }));
+  javaCode: `
+    static {
+      // add bouncy castle provider
+      BouncyCastleProvider provider = new BouncyCastleProvider();
+      if ( Security.getProvider(provider.getName()) == null ) {
+        Security.addProvider(provider);
       }
     }
-  ],
+  `,
 
   constants: [
     {

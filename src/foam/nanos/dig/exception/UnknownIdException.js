@@ -9,23 +9,15 @@ foam.CLASS({
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
   javaGenerateDefaultConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public UnknownIdException() {
-            super();
-          }
-
-          public UnknownIdException(String message) {
-            super(message);
-          }
-        `
-        );
-      }
+  javaCode: `
+    public UnknownIdException() {
+      super();
     }
-  ],
+
+    public UnknownIdException(String message) {
+      super(message);
+    }
+  `,
 
   properties: [
     {

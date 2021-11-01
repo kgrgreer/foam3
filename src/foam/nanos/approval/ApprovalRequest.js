@@ -40,7 +40,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.dao.AbstractDAO',
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
@@ -538,17 +537,19 @@ foam.CLASS({
       section: 'approvalRequestInformation',
       columnPermissionRequired: true,
       gridColumns: 6,
-      order: 65
+      order: 70
     },
     {
       class: 'StringArray',
       name: 'additionalGroups',
       columnPermissionRequired: true,
+      section: 'approvalRequestInformation',
+      gridColumns: 6,
+      order: 65,
       documentation: `
         Optional field to specify the request to be sent to multiple  groups.
         Should remain non-transient to handle fulfilled requests being visible to different groups.
       `,
-      hidden: true
     }
   ],
 
@@ -681,10 +682,10 @@ foam.CLASS({
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
           this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
@@ -761,10 +762,10 @@ foam.CLASS({
         cancelledApprovalRequest.status = this.ApprovalStatus.CANCELLED;
 
         X.approvalRequestDAO.put(cancelledApprovalRequest).then(o => {
-          X.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          X.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          X.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          X.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          X.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          X.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          X.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          X.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
 
@@ -937,10 +938,10 @@ foam.CLASS({
         assignedApprovalRequest.assignedTo = X.subject.user.id;
 
         this.approvalRequestDAO.put(assignedApprovalRequest).then(req => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
@@ -967,10 +968,10 @@ foam.CLASS({
         unassignedApprovalRequest.assignedTo = 0;
 
         this.approvalRequestDAO.put(unassignedApprovalRequest).then(req => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED_TITLE, this.SUCCESS_UNASSIGNED, this.LogLevel.INFO, true);
@@ -997,10 +998,10 @@ foam.CLASS({
         approvedApprovalRequest.memo = memo;
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           
           this.finished.pub();
           this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
@@ -1024,10 +1025,10 @@ foam.CLASS({
         newMemoRequest.memo = memo;
 
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
           this.notify(this.SUCCESS_MEMO_TITLE, this.SUCCESS_MEMO, this.LogLevel.INFO, true);
@@ -1052,10 +1053,10 @@ foam.CLASS({
         rejectedApprovalRequest.memo = memo;
 
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           
           this.finished.pub();
           this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
@@ -1078,10 +1079,10 @@ foam.CLASS({
         var assignedApprovalRequest = this.clone();
 
         this.approvalRequestDAO.put(assignedApprovalRequest).then(_ => {
-          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.tableViewApprovalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-          this.approvalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
-          this.tableViewApprovalRequestDAO.cmd(foam.dao.CachingDAO.PURGE);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);

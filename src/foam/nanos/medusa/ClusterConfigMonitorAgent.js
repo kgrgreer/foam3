@@ -156,6 +156,7 @@ foam.CLASS({
         if ( alarms != null ) {
           DAO alarmDAO = (DAO) x.get("alarmDAO");
           for (Alarm alarm : alarms ) {
+            alarm.setClusterable(false);
             alarmDAO.put(alarm);
           }
         }

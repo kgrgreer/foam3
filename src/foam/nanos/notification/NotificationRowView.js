@@ -10,7 +10,6 @@
     extends: 'foam.u2.View',
 
     requires: [
-      'foam.dao.AbstractDAO',
       'foam.log.LogLevel',
       'foam.nanos.auth.User',
       'foam.nanos.notification.NotificationCitationView',
@@ -120,7 +119,7 @@
           var self = X.rowView;
           X.notificationDAO.remove(self.data).then(_ => {
             self.finished.pub();
-            X.myNotificationDAO.cmd(foam.dao.CachingDAO.PURGE);
+            X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
           });
         },
         confirmationRequired: function() {
@@ -142,7 +141,7 @@
         self.userDAO.put(userClone).then(user => {
           self.finished.pub();
           self.user = user;
-          X.myNotificationDAO.cmd(foam.dao.CachingDAO.PURGE);
+          X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
         }).catch(e => {
           self.throwError.pub(e);
@@ -169,7 +168,7 @@
             self.data.read = true;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              X.myNotificationDAO.cmd(foam.dao.CachingDAO.PURGE);
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
             });
           }
         }
@@ -185,7 +184,7 @@
             self.data.read = false;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              X.myNotificationDAO.cmd(foam.dao.CachingDAO.PURGE);
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
             })
           }
         }

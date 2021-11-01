@@ -10,22 +10,13 @@ foam.CLASS({
   extends: 'foam.core.FOAMException',
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public UniqueConstraintException(String message) {
-    super(message);
-  }
-
-  public UniqueConstraintException(String message, Throwable cause) {
-    super(message, cause);
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public UniqueConstraintException(String message) {
+      super(message);
     }
-  ]
+
+    public UniqueConstraintException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

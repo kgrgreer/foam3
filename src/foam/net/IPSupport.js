@@ -15,19 +15,10 @@ foam.CLASS({
     'javax.servlet.http.HttpServletRequest'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  private final static IPSupport instance__ = new IPSupport();
-  public static IPSupport instance() { return instance__; }
-          `
-        }));
-      }
-    }
-  ],
+  javaCode: `
+    private final static IPSupport instance__ = new IPSupport();
+    public static IPSupport instance() { return instance__; }
+  `,
 
   methods: [
     {

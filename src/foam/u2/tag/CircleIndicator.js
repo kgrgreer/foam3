@@ -24,13 +24,12 @@ foam.CLASS({
       position: relative;
       border-radius: 50%;
       text-align: center;
-      display: inline-block;
+      display: inline-flex;
       overflow: hidden;
+      align-items: center;
+      justify-content: center;
     }
     ^ > img {
-      position: absolute;
-      top: 0;
-      left: 0;
       pointer-events: none;
     }
   `,

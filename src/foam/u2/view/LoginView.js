@@ -238,7 +238,7 @@ foam.CLASS({
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
-        .start().show(logo).addClass('topBar-logo-Back')
+        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')

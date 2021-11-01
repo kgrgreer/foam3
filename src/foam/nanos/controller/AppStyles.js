@@ -17,12 +17,13 @@ foam.CLASS({
     }
 
     body {
+      background: /*%GREY5%*/ #f5f7fa;
+      color: /*%BLACK%*/ #1E1F21;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       letter-spacing: 0.014em;
-      color: /*%BLACK%*/ #1E1F21;
-      background: /*%GREY5%*/ #f5f7fa;
       margin: 0;
+      overscroll-behavior: none;
     }
 
     /* TYPOGRAPHY */ 

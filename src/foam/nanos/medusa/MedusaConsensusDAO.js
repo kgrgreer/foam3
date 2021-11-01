@@ -53,18 +53,9 @@ This is the heart of Medusa.`,
     'java.util.Timer'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected Object promoterLock_ = new Object();
-          `
-        }));
-      }
-    }
-  ],
+  javaCode: `
+    protected Object promoterLock_ = new Object();
+  `,
 
   properties: [
     {
@@ -647,6 +638,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
             alarm.setClusterable(false);
             alarm.setIsActive(true);
             alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
+            config = (ClusterConfig) config.fclone();
             config.setErrorMessage("gap detected, investigating...");
             ((DAO) x.get("clusterConfigDAO")).put(config);
             // Test for gap index dependencies - of course can only look
@@ -677,6 +669,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               replaying.updateIndex(x, index);
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
+              config = (ClusterConfig) config.fclone();
               config.setErrorMessage("");
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
@@ -684,6 +677,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
                 alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
                 alarm.setSeverity(foam.log.LogLevel.ERROR);
+                config = (ClusterConfig) config.fclone();
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
                 // throw new MedusaException("gap with dependencies");

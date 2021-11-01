@@ -93,24 +93,17 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public FOAMExceptionTestTestException() {
-    super();
-  }
-
-  public FOAMExceptionTestTestException(String message) {
-    super(message);
-  }
-
-  public FOAMExceptionTestTestException(String message, String errorCode) {
-    super(message, errorCode);
-  }
-        `);
-      }
+  javaCode: `
+    public FOAMExceptionTestTestException() {
+      super();
     }
-  ],
+
+    public FOAMExceptionTestTestException(String message) {
+      super(message);
+    }
+
+    public FOAMExceptionTestTestException(String message, String errorCode) {
+      super(message, errorCode);
+    }
+  `
 });
