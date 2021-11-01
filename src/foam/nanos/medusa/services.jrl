@@ -38,6 +38,15 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntrySupport",
+  "lazy": false,
+  "serve": false,
+  "authenticate": false,
+  "serviceClass": "foam.nanos.medusa.MedusaEntrySupport"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "localClusterConfigDAO",
   "serviceScript": """
     dao = new foam.dao.EasyDAO.Builder(x)
@@ -121,32 +130,15 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localClusterConfigDAO"))
-      .setDecorator(new foam.nanos.medusa.ClusterConfigReplayingInfoDAO.Builder(x).build())
+      .setDecorator(new foam.nanos.medusa.benchmark.PingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.ClusterConfigReplayingInfoDAO.Builder(x).build())
+      .build())
       .setCluster(false)
       .setRuler(false)
       .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client": "{\"of\":\"foam.nanos.medusa.ClusterConfig\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "cluster",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.medusa.ClusterServerDAO.getOwnClassInfo())
-      .setInnerDAO(new foam.nanos.medusa.ClusterServerDAO.Builder(x)
-         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterServerDAO.getOwnClassInfo()))
-         .build())
-      .setCluster(false)
-      .setNullify(true)
-      .setEnableInterfaceDecorators(false)
-      .setRuler(false)
-      .setAuthorize(false)
-      .build();
-  """
 })
 
 p({
