@@ -152,4 +152,8 @@
       border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
     }
   `,
+
+  messages: [
+    { name: 'MESSAGE_OF', message: 'of'}
+  ]
 });

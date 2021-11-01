@@ -45,21 +45,12 @@ foam.CLASS({
     'java.util.Random'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  private Object electionLock_ = new Object();
-  private Object voteLock_ = new Object();
-  protected ThreadPoolExecutor pool_ = null;
-        `
-        }));
-      }
-    }
-  ],
-  
+  javaCode: `
+    private Object electionLock_ = new Object();
+    private Object voteLock_ = new Object();
+    protected ThreadPoolExecutor pool_ = null;
+  `,
+
   properties: [
     {
       name: 'state',
@@ -282,7 +273,7 @@ foam.CLASS({
         return;
       }
       getLogger().debug("callVote", getState().getLabel(), "achieved mediator and node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum());
- 
+
       try {
         setVotes(0);
 
@@ -348,7 +339,7 @@ foam.CLASS({
 
       try {
         if ( getState() == ElectoralServiceState.ELECTION &&
-            time > 0L && 
+            time > 0L &&
             time <= getElectionTime() ) {
           // abandon our election.
           getLogger().info("vote", id, time, "abandon own election", getState().getLabel(), "->", ElectoralServiceState.VOTING.getLabel());
@@ -362,7 +353,7 @@ foam.CLASS({
           setElectionTime(0L);
           setCurrentSeq(0L);
         }
-        if ( getState() == ElectoralServiceState.VOTING ) { 
+        if ( getState() == ElectoralServiceState.VOTING ) {
           v = generateVote(getX());
         }
       } catch (Throwable t) {
@@ -424,7 +415,7 @@ foam.CLASS({
 
         report(getWinner());
         Agency agency = (Agency) x.get(support.getThreadPoolName());
- 
+
         for (int j = 0; j < voters.size(); j++) {
           ClusterConfig clientConfig2 = (ClusterConfig) voters.get(j);
           if ( clientConfig2.getId().equals(config.getId())) {

@@ -735,11 +735,11 @@ foam.CLASS({
         User user = subject.getUser();
         User agent = subject.getRealUser();
         AuthService auth = (AuthService) x.get("auth");
-        boolean findSelf = SafetyUtil.equals(this.getId(), user.getId()) ||
-          (
-            agent != null &&
-            SafetyUtil.equals(agent.getId(), this.getId())
-          );
+        boolean findSelf =
+          ( user != null &&
+            SafetyUtil.equals(this.getId(), user.getId()) ) ||
+          ( agent != null &&
+            SafetyUtil.equals(agent.getId(), this.getId()) );
 
         if ( ! findSelf &&
              ! auth.check(x, "user.read." + this.getId()) &&
@@ -763,11 +763,11 @@ foam.CLASS({
 
         Subject subject = (Subject) x.get("subject");
         User agent = subject.getRealUser();
-        boolean updatingSelf = SafetyUtil.equals(this.getId(), user.getId()) ||
-          (
-            agent != null &&
-            SafetyUtil.equals(agent.getId(), this.getId())
-          );
+        boolean updatingSelf =
+          ( user != null &&
+            SafetyUtil.equals(this.getId(), user.getId()) ) ||
+          ( agent != null &&
+            SafetyUtil.equals(agent.getId(), this.getId()) );
         boolean hasUserEditPermission = auth.check(x, "user.update." + this.getId());
 
         if (
@@ -803,6 +803,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
 
         if (
+          user == null ||
           ! SafetyUtil.equals(this.getId(), user.getId()) &&
           ! auth.check(x, "user.remove." + this.getId())
         ) {

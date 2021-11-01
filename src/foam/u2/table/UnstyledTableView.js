@@ -113,7 +113,7 @@ foam.CLASS({
     {
       name: 'selectedColumnNames',
       expression: function(columns, of, memento) {
-        var ls = memento && memento.head.length != 0 ? 
+        var ls = memento && memento.head.length != 0 ?
           memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) :
           JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
         return ls || columns;
@@ -121,20 +121,20 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnsWidth',
-      factory: function() { 
+      factory: function() {
         var local = {};
         JSON.parse(localStorage.getItem(this.of.id))?.map(c => {
           foam.Array.isInstance(c) ?
-          local[c[0]] = c[1] : 
+          local[c[0]] = c[1] :
           local[c] = undefined;
         });
-        return local; 
+        return local;
       }
     },
     {
       class: 'Boolean',
       name: 'colWidthUpdated',
-      documentation: `used to trigger/listen to columnWidth changes as they are stored 
+      documentation: `used to trigger/listen to columnWidth changes as they are stored
         in an object where value cahnges do not trigger slots`
     },
     {
@@ -557,7 +557,7 @@ foam.CLASS({
                 start('').add(view.scrollEl_$.dot('topRow')).addClass(this.myClass('counters')).end().
                 add('-').
                 start('').add(view.scrollEl_$.dot('bottomRow')).addClass(this.myClass('counters')).end().
-                start().addClass(view.myClass('separator')).add('of').end().add(view.scrollEl_.daoCount$).
+                start().addClass(view.myClass('separator')).translate(this.cls_.id + '.MESSAGE_OF', this.MESSAGE_OF).end().add(view.scrollEl_.daoCount$).
               end().
               start(view.scrollEl_.FIRST_PAGE, { ...buttonStyle, themeIcon: 'first' }).
               addClass(view.myClass('buttons')).end().
@@ -601,7 +601,7 @@ foam.CLASS({
         this.selectedColumnsWidth[s] = this.columnHandler.returnPropertyForColumn(this.props, this.of, s, 'tableWidth') || null;
       }
     },
-    { 
+    {
       name: 'updateLocalStorage',
       isMerged: true,
       mergeDelay: 5000,

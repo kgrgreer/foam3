@@ -17,20 +17,11 @@ foam.CLASS({
     'foam.nanos.logger.StdoutLogger'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          ` 
-            public ScriptRunnerDAO(DAO delegate) {
-              setDelegate(delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public ScriptRunnerDAO(DAO delegate) {
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -70,7 +61,7 @@ foam.CLASS({
               logger = new PrefixLogger(new Object[] {
                 this.getClass().getSimpleName()
               }, logger);
-    
+
               try {
                 script.runScript(x);
                 script.setStatus(ScriptStatus.UNSCHEDULED);
@@ -88,4 +79,3 @@ foam.CLASS({
     }
   ]
 });
-

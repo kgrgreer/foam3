@@ -22,21 +22,12 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public ApprovalDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public ApprovalDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {

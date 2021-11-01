@@ -18,21 +18,13 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public AccountDisabledException() {
-    super();
-  }
-
-  public AccountDisabledException(Exception cause) {
-    super(cause);
-  }
-
-        `);
-      }
+  javaCode: `
+    public AccountDisabledException() {
+      super();
     }
-  ]
+
+    public AccountDisabledException(Exception cause) {
+      super(cause);
+    }
+  `
 });

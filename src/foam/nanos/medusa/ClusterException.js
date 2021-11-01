@@ -9,22 +9,13 @@ foam.CLASS({
   package: 'foam.nanos.medusa',
   javaExtends: 'foam.core.FOAMException',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public ClusterException(String message) {
-    super(message);
-  }
-
-  public ClusterException(String message, Throwable cause) {
-    super(message, cause);
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public ClusterException(String message) {
+      super(message);
     }
-  ]
+
+    public ClusterException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

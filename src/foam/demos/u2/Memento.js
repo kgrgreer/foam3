@@ -146,6 +146,130 @@ foam.CLASS({
   ]
 });
 
+/////////////////////////////////////////////////////////////////// DEMO
+
+foam.CLASS({
+  name: 'Menu',
+  extends: 'foam.u2.Controller',
+
+  mixins: [
+    'Memorable'
+  ],
+
+  properties: [
+    {
+      name: 'menu',
+      shortName: 'm',
+      memorable: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      // this.subMemento.str = 'q=something';
+      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.br();
+      this.add(this.memento_.str$);
+      this.br();
+      this.add('skip: ', this.SKIP);
+      this.br();
+      this.add('limit: ', this.LIMIT);
+      this.br();
+      this.add('query: ', this.QUERY);
+      this.br();
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'Controller',
+  extends: 'foam.u2.Controller',
+
+  mixins: [
+    'Memorable'
+  ],
+
+  properties: [
+    {
+      name: 'mode',
+      shortName: 'm',
+      value: 'edit',
+      memorable: true
+    },
+    {
+      name: 'id',
+      memorable: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      // this.subMemento.str = 'q=something';
+      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.br();
+      this.add(this.memento_.str$);
+      this.br();
+      this.add('skip: ', this.SKIP);
+      this.br();
+      this.add('limit: ', this.LIMIT);
+      this.br();
+      this.add('query: ', this.QUERY);
+      this.br();
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'Table',
+  extends: 'foam.u2.Controller',
+
+  mixins: [
+    'Memorable'
+  ],
+
+  properties: [
+    {
+      name: 'skip',
+      shortName: 's',
+      value: 10,
+      memorable: true
+    },
+    {
+      class: 'StringArray',
+      name: 'columns',
+      memorable: true,
+      sticky: true
+    },
+    {
+      name: 'limit',
+      memorable: true
+    },
+    {
+      name: 'query',
+      shortName: 'q',
+      memorable: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      // this.subMemento.str = 'q=something';
+      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.br();
+      this.add(this.memento_.str$);
+      this.br();
+      this.add('skip: ', this.SKIP);
+      this.br();
+      this.add('limit: ', this.LIMIT);
+      this.br();
+      this.add('query: ', this.QUERY);
+      this.br();
+    }
+  ]
+});
+
 
 foam.CLASS({
   name: 'MementoTest',

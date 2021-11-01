@@ -49,37 +49,28 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
-              @Override
-              protected StringBuilder initialValue() {
-                return new StringBuilder();
-              }
-          
-              @Override
-              public StringBuilder get() {
-                StringBuilder b = super.get();
-                b.setLength(0);
-                return b;
-              }
-            };
-          
-            public GoogleMapsGeocodingDAO(X x, String apiKey, PropertyInfo prop, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-              setApiKey(apiKey);
-              setProp(prop);
-            }
-          `
-        );
+  javaCode: `
+    protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
       }
+
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+
+    public GoogleMapsGeocodingDAO(X x, String apiKey, PropertyInfo prop, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
+      setApiKey(apiKey);
+      setProp(prop);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -93,14 +84,14 @@ foam.CLASS({
             if ( result == null ) {
               return;
             }
-    
+
             // don't geocode if no address property
             FObject cloned = result.fclone();
             Address address = (Address) getProp().get(cloned);
             if ( address == null ) {
               return;
             }
-    
+
             // check if address updated
             if ( address.getLatitude() != 0 && address.getLongitude() != 0 ) {
               FObject stored = getDelegate().find(cloned.getProperty("id"));
@@ -116,78 +107,78 @@ foam.CLASS({
                 }
               }
             }
-    
+
             StringBuilder builder = sb.get().append(API_HOST);
             // append address
             if ( ! SafetyUtil.isEmpty(address.getAddress()) ) {
               builder.append(address.getAddress()).append(",");
             }
-    
+
             // append city
             if ( ! SafetyUtil.isEmpty(address.getCity()) ) {
               builder.append(address.getCity()).append(",");
             }
-    
+
             // append province
             if ( ! SafetyUtil.isEmpty((String) address.getRegionId()) ) {
               builder.append((String) address.getRegionId()).append(",");
             }
-    
+
             // append postal code
             if ( ! SafetyUtil.isEmpty(address.getPostalCode()) ) {
               builder.append(address.getPostalCode()).append(",");
             }
-    
+
             // append country id
             if ( ! SafetyUtil.isEmpty((String) address.getCountryId()) ) {
               builder.append((String) address.getCountryId());
             }
-    
+
             // append api key
             builder.append("&key=").append(getApiKey());
-    
+
             String line = null;
             HttpURLConnection conn = null;
-    
+
             try {
               URL url = new URL(builder.toString().replace(" ", "+"));
               conn = (HttpURLConnection) url.openConnection();
               conn.setConnectTimeout(5 * 1000);
               conn.setRequestMethod("GET");
               conn.connect();
-    
+
               builder.setLength(0);
               try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 while ( (line = reader.readLine()) != null ) {
                   builder.append(line);
-                } 
+                }
               }
-    
+
               GoogleMapsGeocodeResponse response = (GoogleMapsGeocodeResponse) getX().create(JSONParser.class)
                   .parseString(builder.toString(), GoogleMapsGeocodeResponse.class);
               if ( response == null ) {
                 throw new java.lang.Exception(INVALID_RESPONSE_ERROR_MSG);
               }
-    
+
               if ( ! "OK".equals(response.getStatus()) ) {
                 throw new java.lang.Exception(! SafetyUtil.isEmpty(response.getError_message()) ? response.getError_message() : INVALID_RESPONSE_ERROR_MSG);
               }
-    
+
               GoogleMapsGeocodeResult[] results = response.getResults();
               if ( results == null || results.length == 0 ) {
                 throw new java.lang.Exception(NOT_FOUND_ERROR_MSG);
               }
-    
+
               GoogleMapsGeometry geometry = results[0].getGeometry();
               if ( geometry == null ) {
                 throw new java.lang.Exception(GEOMETRY_ERROR_MSG);
               }
-    
+
               GoogleMapsCoordinates coords = geometry.getLocation();
               if ( coords == null ) {
                 throw new java.lang.Exception(GEOMETRY_ERROR_MSG);
               }
-    
+
               // set latitude and longitude
               address.setLatitude(coords.getLat());
               address.setLongitude(coords.getLng());
@@ -199,7 +190,7 @@ foam.CLASS({
             }
           }
         }, "GoogleMaps Geocoding DAO");
-    
+
         return result;
       `
     }

@@ -25,22 +25,14 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected ThreadLocal<Boolean> initializing = new ThreadLocal<Boolean>() {
-    @Override
-    protected Boolean initialValue() {
-      return false;
-    }
-  };
-      ` }));
+  javaCode: `
+    protected ThreadLocal<Boolean> initializing = new ThreadLocal<Boolean>() {
+      @Override
+      protected Boolean initialValue() {
+        return false;
       }
-    }
-  ],
+    };
+  `,
 
   methods: [
     {

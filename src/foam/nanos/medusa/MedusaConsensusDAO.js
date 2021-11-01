@@ -53,18 +53,9 @@ This is the heart of Medusa.`,
     'java.util.Timer'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected Object promoterLock_ = new Object();
-          `
-        }));
-      }
-    }
-  ],
+  javaCode: `
+    protected Object promoterLock_ = new Object();
+  `,
 
   properties: [
     {

@@ -68,24 +68,15 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public ClusterCommand(X x, String serviceName, DOP dop, FObject data) {
-    setServiceName(serviceName);
-    setDop(dop);
-    setData(data);
-    java.util.Random r = ThreadLocalRandom.current();
-    setId(new UUID(r.nextLong(), r.nextLong()).toString());
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public ClusterCommand(X x, String serviceName, DOP dop, FObject data) {
+      setServiceName(serviceName);
+      setDop(dop);
+      setData(data);
+      java.util.Random r = ThreadLocalRandom.current();
+      setId(new UUID(r.nextLong(), r.nextLong()).toString());
     }
-  ],
+  `,
 
   methods: [
     {
