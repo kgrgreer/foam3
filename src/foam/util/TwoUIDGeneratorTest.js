@@ -13,29 +13,13 @@ foam.CLASS({
     'foam.core.ContextAware',
     'foam.core.X',
     'foam.util.UIDGenerator',
-    'java.util.HashMap',
-    'java.util.Map'
+    'java.io.IOException',
+    'java.util.concurrent.CountDownLatch',
+    'java.util.HashSet',
+    'java.util.Set'
   ],
 
   properties: [
-    {
-      class: 'Map',
-      name: 'uids1',
-      documentation: 'Store UIDGenerator.',
-      javaType: 'Map<Integer, UIDGenerator>',
-      javaFactory: `
-        return new HashMap<Integer, UIDGenerator>();
-      `
-    },
-    {
-      class: 'Map',
-      name: 'uids2',
-      documentation: 'Store UIDGenerator.',
-      javaType: 'Map<Integer, UIDGenerator>',
-      javaFactory: `
-        return new HashMap<Integer, UIDGenerator>();
-      `
-    },
     {
       class: 'Int',
       name: 'size',
@@ -47,119 +31,87 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        TwoUIDGeneratorTest_MachineIDDuplicateFoundTest(x);
-        TwoUIDGeneratorTest_MachineIDDuplicateNotFoundTest(x);
+        var uids1 = new HashSet<String>();
+        var uids2 = new HashSet<String>();
+        TwoUIDGeneratorTest_UIDDuplicateFoundTest(x, uids1, uids2);
+        TwoUIDGeneratorTest_UIDDuplicateNotFoundTest(x, uids1, uids2);
       `
     },
     {
-      name: 'TwoUIDGeneratorTest_MachineIDDuplicateFoundTest',
-      args: 'Context x',
+      name: 'addUids',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
+      documentation: 'Create two threads and add uids to each set',
       javaCode: `
-        Map<Integer, UIDGenerator> uids1 = ( Map<Integer, UIDGenerator> ) getUids1();
-        Map<Integer, UIDGenerator> uids2 = ( Map<Integer, UIDGenerator> ) getUids2();
-
-        Thread t1 = new Thread(new Runnable() {
-          public void run() {
-            int n = getSize();
-            try {
-              for ( int i = 0; i < n; i++ ) {
-                var uid = new UIDGenerator.Builder(x).setSalt("foobar").build();
-                uids1.put(Integer.valueOf(i + 1), uid);
+        var numOfThread = 2;
+        final CountDownLatch latch = new CountDownLatch(numOfThread);
+        for ( int i = 0; i < numOfThread; i++ ) {
+          final int tno = i;
+          Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+              int n = getSize();
+              try {
+                for ( int j = 0; j < n; j++ ) {
+                  var uidGenerator = new UIDGenerator.Builder(x).setSalt("foobar").build();
+                  String uid = uidGenerator.generate();
+                  if ( tno == 0 ) {
+                    uids1.add(uid);
+                  } else if ( tno == 1 ) {
+                    uids2.add(uid);
+                  }
+                }
+              } catch (Throwable t) {
+                throw new RuntimeException(t);
               }
-            } catch (Throwable t) {
-              throw new RuntimeException(t);
+              // Count down the latch when finished
+              latch.countDown();
             }
-          }
-        });
-        t1.start();
-
-        Thread t2 = new Thread(new Runnable() {
-          public void run() {
-            int n = getSize();
-            try {
-              for ( int i = 0; i < n; i++ ) {
-                var uid = new UIDGenerator.Builder(x).setSalt("foobar").build();
-                uids2.put(Integer.valueOf(i + 1), uid);
-              }
-            } catch (Throwable t) {
-              throw new RuntimeException(t);
-            }
-          }
-        });
-        t2.start();
-
-        var isDuplicated = false;
-        var it1 = uids1.entrySet().iterator();
-        var it2 = uids2.entrySet().iterator();
-        while ( it1.hasNext() && it2.hasNext() ) {
-          // Get each machine ID from two UIdGenerator objs
-          Map.Entry uid1 = (Map.Entry)it1.next();
-          int mid1 = ((UIDGenerator) uid1.getValue()).getMachineId();
-
-          Map.Entry uid2 = (Map.Entry) it2.next();
-          int mid2 = ((UIDGenerator) uid2.getValue()).getMachineId();
-
-          // Compare two machine IDs from each map (uids1, uids2)
-          isDuplicated = mid1 == mid2 ? true : false;
-          if ( isDuplicated )  break;
+          });
+          thread.start();
         }
 
+        // Wait until latch reaches 0
+        try {
+          latch.await();
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      `
+    },
+    {
+      name: 'TwoUIDGeneratorTest_UIDDuplicateFoundTest',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
+      javaCode: `
+        addUids(x, uids1, uids2);
+
+        // TODO: compare each machine Id of the uids1 and uids2 (if same)
+        var isDuplicated = false;
+        if ( uids1.size() == uids2.size() ) {
+          for ( var uid : uids1 ) {
+            if ( uids2.contains(uid) ) {
+              isDuplicated = true;
+              break;
+            }
+          }
+        }
         test(isDuplicated, (isDuplicated ? "Passed: A Duplicate Found" : "Failed: A Duplicate Not Found"));
       `
     },
     {
-      name: 'TwoUIDGeneratorTest_MachineIDDuplicateNotFoundTest',
-      args: 'Context x',
+      name: 'TwoUIDGeneratorTest_UIDDuplicateNotFoundTest',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
       javaCode: `
-        Map<Integer, UIDGenerator> uids1 = ( Map<Integer, UIDGenerator> ) getUids1();
-        Map<Integer, UIDGenerator> uids2 = ( Map<Integer, UIDGenerator> ) getUids2();
-
-        Thread t1 = new Thread(new Runnable() {
-          public void run() {
-            int n = getSize();
-            try {
-              for ( int i = 0; i < n; i++ ) {
-                var uid = new UIDGenerator.Builder(x).setSalt("foobar").build();
-                uids1.put(Integer.valueOf(i + 1), uid);
-              }
-            } catch (Throwable t) {
-              throw new RuntimeException(t);
-            }
-          }
-        });
-        t1.start();
-
-        Thread t2 = new Thread(new Runnable() {
-          int n = getSize();
-          public void run() {
-            try {
-              for ( int i = 0; i < n; i++ ) {
-                var uid = new UIDGenerator.Builder(x).setSalt("foobar").build();
-                uids2.put(Integer.valueOf(i + 1), uid);
-              }
-            } catch (Throwable t) {
-              throw new RuntimeException(t);
-            }
-          }
-        });
-        t2.start();
-
+        addUids(x, uids1, uids2);
+        // TODO: compare each machine Id of the uids1 and uids2 (if different)
         var isNotDuplicated = false;
-        var it1 = uids1.entrySet().iterator();
-        var it2 = uids2.entrySet().iterator();
-        while ( it1.hasNext() && it2.hasNext() ) {
-          // Get each machine ID from two UIdGenerator objs
-          Map.Entry uid1 = (Map.Entry) it1.next();
-          int mid1 = ((UIDGenerator) uid1.getValue()).getMachineId();
-
-          Map.Entry uid2 = (Map.Entry) it2.next();
-          int mid2 = ((UIDGenerator) uid2.getValue()).getMachineId();
-
-          // Compare two machine IDs from each map (uids1, uids2)
-          isNotDuplicated = mid1 != mid2 ? true : false;
-          if ( isNotDuplicated )  break;
+        if ( uids1.size() == uids2.size() ) {
+          for ( var uid : uids1 ) {
+            if ( ! uids2.contains(uid) ) {
+              isNotDuplicated = true;
+              break;
+            }
+          }
         }
-
         test(isNotDuplicated, (isNotDuplicated ? "Passed: No Duplicate Found" : "Failed: A Duplicate Found"));
       `
     }
