@@ -23,7 +23,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'size',
-      value: 1000
+      value: 100000
     }
   ],
 
@@ -44,7 +44,7 @@ foam.CLASS({
 
         /*
           Test case 2:
-          When machine Id is same(isDifferent = true),
+          When machine Id is different(isDifferent = true),
           the test passes if no duplicate is found.
         */
         UIDUniquenessTest_UIDDuplicateNotFoundTest(x, uids1, uids2, true);
