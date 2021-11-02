@@ -831,9 +831,7 @@ foam.LIB({
           for ( var i = 0 ; i < o.length ; i++ ) {
             foam.json.references(x, o[i], r);
           }
-          // TODO: Should just be foam.core.FObject.isSubClass(o), but its broken #1023
-        } else if ( ( o && o.prototype && foam.core.FObject.prototype.isPrototypeOf(o.prototype) ) ||
-                    foam.core.FObject.isInstance(o) ) {
+        } else if ( foam.core.FObject.isSubClass(o) ) {
           return r;
         } else if ( foam.Object.isInstance(o) ) {
           for ( var key in o ) {
