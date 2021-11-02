@@ -295,7 +295,7 @@ describe('foam.Function', function() {
     expect(foam.Function.functionComment(function() { })).toEqual('');
     expect(foam.Function.functionComment(function() {/**/ })).toEqual('');
     expect(foam.Function.functionComment(function() {/* hello */ })).toEqual('hello ');
-    // expect(foam.Function.functionComment(function() {` hello ` })).toEqual('hello ');
+    expect(foam.Function.functionComment(function() {` hello ` })).toEqual('');
 
     /* jshint -W014 */
     /* jshint laxcomma:true */
@@ -552,13 +552,6 @@ describe('foam.String', function() {
         function
     */}))
       .toEqual("\n        multiline\n        function\n    ");
-
-      // expect(foam.String.multiline(function(
-      // ) {`
-      //     multiline
-      //     function
-      // `}))
-      //   .toEqual("\n        multiline\n        function\n    ");
 
     expect(foam.String.multiline(function() {}))
       .toEqual('');

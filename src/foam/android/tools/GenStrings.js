@@ -61,7 +61,7 @@ foam.CLASS({
     {
       name: 'genResource',
       args: ['resources'],
-      template: function(resources) {`
+      template: `
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <% for (var i = 0, r; r = resources[i]; i++) { %>
@@ -70,7 +70,7 @@ foam.CLASS({
   </string>
 <% } %>
 </resources>
-      `}
+      `
     }
   ]
 });
