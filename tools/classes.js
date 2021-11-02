@@ -266,6 +266,7 @@ var classes = [
   'foam.nanos.bench.BenchmarkResultSystemDAO',
   'foam.nanos.bench.BenchmarkRunner',
   'foam.nanos.bench.BenchmarkRunnerScript',
+  'foam.nanos.bench.TestScriptBenchmark',
   'foam.nanos.auth.AccessDeniedException',
   'foam.nanos.auth.AccountDisabledException',
   'foam.nanos.auth.AccountLockedException',

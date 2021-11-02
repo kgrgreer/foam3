@@ -133,6 +133,10 @@ foam.CLASS({
       name: 'oneTimeSetup'
     },
     {
+      class: 'Boolean',
+      name: 'oneTimeTeardown'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.bench.Benchmark',
       name: 'benchmarkId'
@@ -224,6 +228,7 @@ foam.CLASS({
         }
 
         boolean setup = false;
+        boolean teardown = false;
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
@@ -310,8 +315,12 @@ foam.CLASS({
           br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
           br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
 
-          logger.info("teardown");
-          benchmark.teardown(x, br);
+          if ( ! getOneTimeTeardown() ||
+               getOneTimeTeardown() && ! teardown ) {
+            logger.info("teardown");
+            benchmark.teardown(x, br);
+            teardown = true;
+          }
 
           br = (BenchmarkResult) getBenchmarkResults(x).put(br);
 
