@@ -40,23 +40,14 @@
     'static foam.mlang.MLang.CONTAINS_IC',
     'static foam.mlang.MLang.EQ'
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-            public static Pattern alphabeticalCharsRegex = Pattern.compile("[a-zA-Z]{1,}");
-            public static Pattern digitAppearenceRegex = Pattern.compile("(\\\\d){1}");
-            public static Pattern twoDecimalPointsNumberRegex = Pattern.compile("\\\\d+(\\\\.\\\\d{1,2})?");
-            public static String dateFormat  = "yyyy-MM-dd";
-            public static String dateTimeFormat = "EEE MMM d yyyy HH/mm/ss zZ (zzzz)";
-            public static String nameOfIdProperty  = "id";
-          `
-        }));
-      }
-    }
-  ],
+  javaCode: `
+    public static Pattern alphabeticalCharsRegex = Pattern.compile("[a-zA-Z]{1,}");
+    public static Pattern digitAppearenceRegex = Pattern.compile("(\\\\d){1}");
+    public static Pattern twoDecimalPointsNumberRegex = Pattern.compile("\\\\d+(\\\\.\\\\d{1,2})?");
+    public static String dateFormat  = "yyyy-MM-dd";
+    public static String dateTimeFormat = "EEE MMM d yyyy HH/mm/ss zZ (zzzz)";
+    public static String nameOfIdProperty  = "id";
+  `,
   methods: [
     {
       name: 'getColumns',
@@ -110,7 +101,7 @@
         ImportDataMessage result = new ImportDataMessage();
         try {
           values = googleSheetsAPIEnabler.getFormatedValues(x, importConfig.getGoogleSpreadsheetId(), importConfig.getGoogleSheetId());
-          
+
           importConfig.setCellsRange(values.getRange().split("!")[1]);
 
           List<List<Object>> data = values.getValues();
@@ -124,7 +115,7 @@
           for ( int i = 0 ; i < parsedObjs.size() ; i++ ) {
             parsedObjs.get(i).validate(x);
           }
-          
+
           int recordsAdded = addRecordsToDAO(x, importConfig.getDAO(), parsedObjs);
           result.setResult(recordsAdded);
 
@@ -132,7 +123,7 @@
             result.setSuccess(false);
             return result;
           }
-            
+
           List<String> columnHeaders = new ArrayList<>();
           for ( Object header : data.get(0) ) {
             columnHeaders.add(header.toString());
@@ -215,7 +206,7 @@
         columnHeaders.add(data.get(0).get(i).toString());
       }
       List<FObject> objs = new ArrayList<>();
-      
+
       for ( int i = 1 ; i < data.size() ; i++ ) {
         Object obj = importConfig.getImportClassInfo().newInstance();
         for ( int j = 0 ; j < Math.min(importConfig.getColumnHeaderPropertyMappings().length, data.get(i).size()) ; j++ ) {
@@ -393,7 +384,7 @@
           sb.append(":");
           sb.append(startColumnForCurrenctHeader);
           sb.append(endRow);
-          
+
           cellsRange.add(sb.toString());
 
           List<List<Object>> updatedValues = new ArrayList<>();

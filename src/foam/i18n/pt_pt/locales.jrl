@@ -1062,3 +1062,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFac
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_1",target:"Precisa de outra forma de autenticação?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_2",target:"Fale conosco"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.VERIFY.label",target:"Verifique"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableView.MESSAGE_OF",target:"do"})

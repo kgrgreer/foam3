@@ -19,19 +19,10 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  private Object replayingLock_ = new Object();
-          `
-        }));
-      }
-    }
-  ],
-  
+  javaCode: `
+    private Object replayingLock_ = new Object();
+  `,
+
   properties: [
     {
       name: 'logger',
@@ -148,4 +139,3 @@ foam.CLASS({
     }
   ]
 });
- 

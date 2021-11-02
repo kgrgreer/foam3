@@ -42,71 +42,64 @@ foam.CLASS({
     'java.util.TimeZone'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
+  javaCode: `
+    protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
 
-          protected static ThreadLocal<JSONFObjectFormatter> formatter = new ThreadLocal<JSONFObjectFormatter>() {
-            @Override
-            protected JSONFObjectFormatter initialValue() {
-              return new JSONFObjectFormatter();
-            }
-            @Override
-            public JSONFObjectFormatter get() {
-              JSONFObjectFormatter b = super.get();
-              b.reset();
-              b.setPropertyPredicate(new StoragePropertyPredicate());
-              b.setOutputShortNames(true);
-              return b;
-            }
-          };
-
-          protected JSONFObjectFormatter getFormatter(X x) {
-            JSONFObjectFormatter f = formatter.get();
-            f.setX(x);
-            return f;
-          }
-
-          protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-
-          // used for reading, and is shared across threads
-          protected StringBuilder stringBuilder = new StringBuilder();
-
-          protected static ThreadLocal<foam.lib.json.JSONParser> jsonParser = new ThreadLocal<foam.lib.json.JSONParser>() {
-            @Override
-            protected foam.lib.json.JSONParser initialValue() {
-              return new JSONParser();
-            }
-            @Override
-            public foam.lib.json.JSONParser get() {
-              foam.lib.json.JSONParser parser = super.get();
-              return parser;
-            }
-          };
-
-          protected foam.lib.json.JSONParser getParser(X x) {
-            foam.lib.json.JSONParser p = jsonParser.get();
-            p.setX(x);
-            return p;
-          }
-        `);
+    protected static ThreadLocal<JSONFObjectFormatter> formatter = new ThreadLocal<JSONFObjectFormatter>() {
+      @Override
+      protected JSONFObjectFormatter initialValue() {
+        return new JSONFObjectFormatter();
       }
+      @Override
+      public JSONFObjectFormatter get() {
+        JSONFObjectFormatter b = super.get();
+        b.reset();
+        b.setPropertyPredicate(new StoragePropertyPredicate());
+        b.setOutputShortNames(true);
+        return b;
+      }
+    };
+
+    protected JSONFObjectFormatter getFormatter(X x) {
+      JSONFObjectFormatter f = formatter.get();
+      f.setX(x);
+      return f;
     }
-  ],
+
+    protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
+      }
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+
+    // used for reading, and is shared across threads
+    protected StringBuilder stringBuilder = new StringBuilder();
+
+    protected static ThreadLocal<foam.lib.json.JSONParser> jsonParser = new ThreadLocal<foam.lib.json.JSONParser>() {
+      @Override
+      protected foam.lib.json.JSONParser initialValue() {
+        return new JSONParser();
+      }
+      @Override
+      public foam.lib.json.JSONParser get() {
+        foam.lib.json.JSONParser parser = super.get();
+        return parser;
+      }
+    };
+
+    protected foam.lib.json.JSONParser getParser(X x) {
+      foam.lib.json.JSONParser p = jsonParser.get();
+      p.setX(x);
+      return p;
+    }
+  `,
 
   properties: [
     {

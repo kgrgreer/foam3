@@ -32,19 +32,12 @@ foam.CLASS({
     Omit results from the capabilityDAO based on availablilityPredicate of capability.
   `,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public CapabilityAvailabilityDAO(X x, DAO delegate) {
-            setX(x);
-            setDelegate(delegate);
-          }
-        `);
-      }
+  javaCode: `
+    public CapabilityAvailabilityDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   constants: [
     {

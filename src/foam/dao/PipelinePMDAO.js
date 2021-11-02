@@ -80,13 +80,8 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data:
-    `public PipelinePMDAO(X x, NSpec nspec, DAO delegate, int level) {
+  javaCode: `
+    public PipelinePMDAO(X x, NSpec nspec, DAO delegate, int level) {
       setX(x);
       setNSpec(nspec);
       setLevel(level);
@@ -105,10 +100,7 @@ foam.CLASS({
        return dao;
      }
           `
-        }));
-      }
-    }
-  ],
+        ,
 
   methods: [
     {
@@ -272,20 +264,11 @@ If the delegate of that is also a ProxyDAO, creates a new PipelinePMDAO in the c
         'foam.nanos.pm.PM'
       ],
 
-      axioms: [
-        {
-          name: 'javaExtras',
-          buildJavaClass: function(cls) {
-            cls.extras.push(foam.java.Code.create({
-              data:`
-     public EndPipelinePMDAO(X x, DAO delegate) {
-       super(x, delegate);
-     }
-          `
-            }));
-          }
+      javaCode: `
+        public EndPipelinePMDAO(X x, DAO delegate) {
+          super(x, delegate);
         }
-      ],
+      `,
 
       methods: [
         {
