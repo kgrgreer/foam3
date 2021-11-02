@@ -15,8 +15,7 @@ foam.CLASS({
     'foam.util.UIDGenerator',
     'java.io.IOException',
     'java.util.concurrent.CountDownLatch',
-    'java.util.HashSet',
-    'java.util.Set'
+    'java.util.HashSet'
   ],
 
   properties: [
