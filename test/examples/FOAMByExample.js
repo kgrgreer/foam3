@@ -3090,17 +3090,6 @@ var examples = [
     }
   },
   {
-    name: 'String multiline',
-    description: 'foam.String.multiline lets you build multi-line strings from function comments',
-    dependencies: [  ],
-    code: function() {
-      console.log(foam.String.multiline(function(){`This is
-      a
-      multi-line
-      string`}));
-    },
-  },
-  {
     name: 'String pad',
     description: 'foam.String.pad() pads a string to the specified length',
     dependencies: [  ],

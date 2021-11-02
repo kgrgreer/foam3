@@ -2426,16 +2426,6 @@ log(foam.String.labelize('firstName'));
 log(foam.String.labelize('someLongName'));
 
 
-##  String multiline
-foam.String.multiline lets you build multi-line strings from function comments
---
-log(function(){`This is
-a
-multi-line
-string`});
-
-
-
 ##  String pad
 foam.String.pad() pads a string to the specified length
 --
