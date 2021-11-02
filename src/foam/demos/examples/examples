@@ -2429,14 +2429,10 @@ log(foam.String.labelize('someLongName'));
 ##  String multiline
 foam.String.multiline lets you build multi-line strings from function comments
 --
-log(foam.String.multiline(function(){/*This is
+log(function(){`This is
 a
 multi-line
-string*/}));
-log(foam.String.multiline(function(){`This is
-a
-multi-line
-string`}));
+string`});
 
 
 

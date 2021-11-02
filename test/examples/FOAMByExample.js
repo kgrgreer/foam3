@@ -3094,11 +3094,6 @@ var examples = [
     description: 'foam.String.multiline lets you build multi-line strings from function comments',
     dependencies: [  ],
     code: function() {
-      console.log(foam.String.multiline(function(){/*This is
-      a
-      multi-line
-      string*/}));
-
       console.log(foam.String.multiline(function(){`This is
       a
       multi-line
