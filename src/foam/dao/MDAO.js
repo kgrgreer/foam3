@@ -210,7 +210,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
-      sink = sink || this.ArraySink.create();
+      sink = this.toSink(sink);
       var plan;
 //console.log("----select");
       if ( this.Explain.isInstance(sink) ) {

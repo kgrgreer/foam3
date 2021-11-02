@@ -158,6 +158,16 @@ return new SkipDAO(this.getX(), count, this);
 
     {
       /**
+        Returns an adapted sink by adding no existent sink as well as ad hoc sinks
+      */
+      name: 'toSink',
+      code: function toSink(/* sink */ s) {
+        return this.prepareSink_(s)
+      }
+    },
+
+    {
+      /**
         Returns a filtered DAO that stops producing items after the
         given count on a select().
       */
