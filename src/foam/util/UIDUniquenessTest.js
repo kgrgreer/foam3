@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.util',
-  name: 'TwoUIDGeneratorTest',
+  name: 'UIDUniquenessTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
@@ -23,7 +23,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'size',
-      value: 100000
+      value: 1000
     }
   ],
 
@@ -31,29 +31,46 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        var uids1 = new HashSet<String>();
-        var uids2 = new HashSet<String>();
-        TwoUIDGeneratorTest_UIDDuplicateFoundTest(x, uids1, uids2);
-        TwoUIDGeneratorTest_UIDDuplicateNotFoundTest(x, uids1, uids2);
+        // To store unique ids
+        HashSet<String> uids1 = null;
+        HashSet<String> uids2 = null;
+
+        /*
+          Test case 1:
+          When machine Id is same(isDifferent = false),
+          the test passes if a duplicate is found.
+        */
+        UIDUniquenessTest_UIDDuplicateFoundTest(x, uids1, uids2, false);
+
+        /*
+          Test case 2:
+          When machine Id is same(isDifferent = true),
+          the test passes if no duplicate is found.
+        */
+        UIDUniquenessTest_UIDDuplicateNotFoundTest(x, uids1, uids2, true);
       `
     },
     {
       name: 'addUids',
-      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2, boolean isDifferent',
       documentation: 'Create two threads and add uids to each set',
       javaCode: `
         var numOfThread = 2;
         final CountDownLatch latch = new CountDownLatch(numOfThread);
+
         for ( int i = 0; i < numOfThread; i++ ) {
           final int tno = i;
           Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-              int n = getSize();
+              var uidGenerator = new UIDGenerator.Builder(x).setSalt("foobar").build();
+              if ( isDifferent ) {
+                uidGenerator.setMachineId(uidGenerator.getMachineId() + tno);
+              }
               try {
-                for ( int j = 0; j < n; j++ ) {
-                  var uidGenerator = new UIDGenerator.Builder(x).setSalt("foobar").build();
+                for ( int j = 0; j < getSize(); j++ ) {
                   String uid = uidGenerator.generate();
+                  // Add a unique id into a set according to tno.
                   if ( tno == 0 ) {
                     uids1.add(uid);
                   } else if ( tno == 1 ) {
@@ -79,12 +96,13 @@ foam.CLASS({
       `
     },
     {
-      name: 'TwoUIDGeneratorTest_UIDDuplicateFoundTest',
-      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
+      name: 'UIDUniquenessTest_UIDDuplicateFoundTest',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2, boolean isDifferent',
       javaCode: `
-        addUids(x, uids1, uids2);
+        uids1 = new HashSet<String>();
+        uids2 = new HashSet<String>();
+        addUids(x, uids1, uids2, isDifferent);
 
-        // TODO: compare each machine Id of the uids1 and uids2 (if same)
         var isDuplicated = false;
         if ( uids1.size() == uids2.size() ) {
           for ( var uid : uids1 ) {
@@ -94,15 +112,17 @@ foam.CLASS({
             }
           }
         }
-        test(isDuplicated, (isDuplicated ? "Passed: A Duplicate Found" : "Failed: A Duplicate Not Found"));
+        test(isDuplicated, (isDuplicated ? " A Duplicate Found" : " Duplicates Not Found"));
       `
     },
     {
-      name: 'TwoUIDGeneratorTest_UIDDuplicateNotFoundTest',
-      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2',
+      name: 'UIDUniquenessTest_UIDDuplicateNotFoundTest',
+      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2, boolean isDifferent',
       javaCode: `
-        addUids(x, uids1, uids2);
-        // TODO: compare each machine Id of the uids1 and uids2 (if different)
+        uids1 = new HashSet<String>();
+        uids2 = new HashSet<String>();
+        addUids(x, uids1, uids2, isDifferent);
+
         var isNotDuplicated = false;
         if ( uids1.size() == uids2.size() ) {
           for ( var uid : uids1 ) {
@@ -112,7 +132,7 @@ foam.CLASS({
             }
           }
         }
-        test(isNotDuplicated, (isNotDuplicated ? "Passed: No Duplicate Found" : "Failed: A Duplicate Found"));
+        test(isNotDuplicated, (isNotDuplicated ? "No duplicate Found" : " Duplicates Found"));
       `
     }
   ]
