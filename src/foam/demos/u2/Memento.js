@@ -11,6 +11,9 @@
 // traverse from top-level object?
 //   what about intermediate objects that don't know they're memorable?
 //   ?? two modes: properties vs subContext?
+// use sub-context?
+//   What about when merging more than one memorable child?
+// What if frames were memorable objects?
 
 
 foam.CLASS({
