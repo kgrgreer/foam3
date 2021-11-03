@@ -76,7 +76,8 @@ public class UIDSupport {
    * @return Hash of the unique id
    */
   public static int hash(String uid) {
-    return hash(Long.parseLong(uid));
+    var hex = undoPermutate(uid);
+    return mod(Long.parseLong(hex, 16));
   }
 
   /**
@@ -86,12 +87,7 @@ public class UIDSupport {
    * @return Hash of the unique id
    */
   public static int hash(long uid) {
-    return hash_(Long.toHexString(uid));
-  }
-
-  private static int hash_(String hex) {
-    var id = undoPermutate(hex);
-    return mod(Long.parseLong(id, 16));
+    return hash(Long.toHexString(uid));
   }
 
   /**
