@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.util',
+  package: 'foam.util.test',
   name: 'UIDUniquenessTest',
   extends: 'foam.nanos.test.Test',
 
