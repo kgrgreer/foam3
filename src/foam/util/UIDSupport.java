@@ -24,9 +24,11 @@ public class UIDSupport {
   };
 
   /**
-   * Permutate id string according to the {@link #PERMUTATION_SEQ}.
+   * Permutate id string according to the {@link #PERMUTATION_SEQ} then shift
+   * the id based on the checksum to further randomize the generated id because
+   * the {@link #PERMUTATION_SEQ} is fixed.
    *
-   * The checksum in the id string will be shifted to the beginning of the
+   * The checksum in the id string will be replaced at the beginning of the
    * output string and its value is bumped up to avoid leading zeros since they
    * could be lost during long integer uid conversion from and to hex string
    * then mess up the length and permutation sequence when calculating its hash.
@@ -42,11 +44,22 @@ public class UIDSupport {
 
     for ( int i = 0 ; i < l ; i++ ) {
       int newI = PERMUTATION_SEQ[i];
-      char c = id[newI];
+      char c   = id[newI];
       id[newI] = id[i];
-      id[i] = c;
+      id[i]    = c;
+    }
+
+    // shift id based on the checksum
+    var n = checksum % 16;
+    for ( int i = 0 ; i < l ; i++ ) {
+      id[i] = shift(id[i], n);
     }
     return toHexString(checksum, 3) + String.valueOf(id);
+  }
+
+  private static char shift(char c, int n) {
+    int digit = Character.digit(c, 16);
+    return Character.forDigit ((digit + n) % 16, 16);
   }
 
   /**
@@ -60,13 +73,24 @@ public class UIDSupport {
     var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
     var id = idStr.substring(3).toCharArray();
 
+    // un-shift id based on the checksum
+    var n = checksum % 16;
+    for ( int i = 0 ; i < id.length ; i++ ) {
+      id[i] = unshift(id[i], n);
+    }
+
     for ( int i = id.length - 1; i >= 0; i-- ) {
       int newI = PERMUTATION_SEQ[i];
-      char c = id[newI];
+      char c   = id[newI];
       id[newI] = id[i];
-      id[i] = c;
+      id[i]    = c;
     }
     return String.valueOf(id) + toHexString(checksum, 3);
+  }
+
+  private static char unshift(char c, int n) {
+    int digit = Character.digit(c, 16);
+    return Character.forDigit ((digit - n + 16) % 16, 16);
   }
 
   /**
