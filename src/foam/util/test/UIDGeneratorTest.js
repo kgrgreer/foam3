@@ -5,13 +5,15 @@
  */
 
 foam.CLASS({
-  package: 'foam.util',
+  package: 'foam.util.test',
   name: 'UIDGeneratorTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'static foam.util.UIDSupport.*',
-    'java.util.HashSet'
+    'foam.util.UIDGenerator',
+    'foam.util.UIDSupport',
+    'java.util.HashSet',
+    'static foam.util.UIDSupport.*'
   ],
 
   methods: [
