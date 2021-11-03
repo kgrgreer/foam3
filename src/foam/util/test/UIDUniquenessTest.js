@@ -28,7 +28,12 @@ foam.CLASS({
     {
       name: 'isDuplicate',
       class: 'Boolean',
-      value: true
+      value: false
+    },
+    {
+      name: 'isNotDuplicate',
+      class: 'Boolean',
+      value: false
     }
   ],
 
@@ -53,7 +58,7 @@ foam.CLASS({
     },
     {
       name: 'addUids',
-      args: 'Context x, boolean isDifferent',
+      args: 'Context x, boolean isDifferent, boolean isDuplicate, boolean isNotDuplicate',
       documentation: 'Create two threads and add uids to each set',
       javaCode: `
         // To store unique ids into a set in the 1st thread.
@@ -77,11 +82,11 @@ foam.CLASS({
                   if ( tno == 0 ) {
                     uids.add(uid);
                   } else if ( tno == 1 ) {
-                    if ( uids.contains(uid) ) {
+                    if ( ! isDuplicate && uids.contains(uid) ) {
                       setIsDuplicate(true);
                       break;
-                    } else if ( ! uids.contains(uid) ) {
-                      setIsDuplicate(false);
+                    } else if ( ! isNotDuplicate && ! uids.contains(uid) ) {
+                      setIsNotDuplicate(true);
                       break;
                     }
                   }
@@ -108,7 +113,8 @@ foam.CLASS({
       name: 'UIDUniquenessTest_UIDDuplicateFoundTest',
       args: 'Context x, boolean isDifferent',
       javaCode: `
-        addUids(x, isDifferent);
+        setIsNotDuplicate(true);
+        addUids(x, isDifferent, getIsDuplicate(), getIsNotDuplicate());
         test(getIsDuplicate(), (getIsDuplicate() ? "A Duplicate Found" : "Duplicates Not Found"));
       `
     },
@@ -116,8 +122,9 @@ foam.CLASS({
       name: 'UIDUniquenessTest_UIDDuplicateNotFoundTest',
       args: 'Context x, boolean isDifferent',
       javaCode: `
-        addUids(x, isDifferent);
-        test(! getIsDuplicate(), (! getIsDuplicate() ? "No duplicate Found" : "Duplicates Found"));
+        setIsDuplicate(true);
+        addUids(x, isDifferent, getIsDuplicate(), getIsNotDuplicate());
+        test(getIsNotDuplicate(), (getIsNotDuplicate() ? "No duplicate Found" : "Duplicates Found"));
       `
     }
   ]
