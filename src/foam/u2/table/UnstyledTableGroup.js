@@ -22,6 +22,10 @@ foam.CLASS({
     'props'
   ],
 
+  messages: [
+    { name: 'EMPTY_MSG',  message: 'No' }
+  ],
+
   properties: [
     'obj',
     'projection',
@@ -80,6 +84,9 @@ foam.CLASS({
             objReturned,
             prop
           );
+          if ( ! prop.f(objReturned) ) {
+            this.add(self.EMPTY_MSG + " " + prop.label);
+          }
         });
       this.add(elmt);
     }
