@@ -161,22 +161,21 @@ foam.CLASS({
       name: 'menu',
       shortName: 'm',
       memorable: true
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'controller',
+      of: 'Controller',
+      factory: function() { return Controller.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.add("MENU");
       this.br();
-      this.add(this.memento_.str$);
-      this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Menu: ', this.MENU);
+      this.add(this.controller);
     }
   ]
 });
@@ -198,24 +197,25 @@ foam.CLASS({
       memorable: true
     },
     {
+      class: 'Int',
       name: 'id',
       memorable: true
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'table',
+      of: 'Table',
+      factory: function() { return Table.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.add("CONTROLLER");
       this.br();
-      this.add(this.memento_.str$);
-      this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Mode: ', this.MODE);
+      this.add('Id: ', this.ID);
+      this.add(this.table);
     }
   ]
 });
@@ -237,9 +237,11 @@ foam.CLASS({
       memorable: true
     },
     {
-      class: 'StringArray',
+      //class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
+
       sticky: true
     },
     {
@@ -255,17 +257,12 @@ foam.CLASS({
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.add("TABLE");
       this.br();
-      this.add(this.memento_.str$);
-      this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Skip: ',    this.SKIP);
+      this.add('Columns: ', this.COLUMNS);
+      this.add('Limit: ',   this.LIMIT);
+      this.add('Query: ',   this.QUERY);
     }
   ]
 });
@@ -275,11 +272,12 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',
 
-  mixins: [
-    'Memorable'
-  ],
+  exports: [ 'memento_' ],
+
+  mixins: [ 'Memorable' ],
 
   properties: [
+    /*
     {
       name: 'skip',
       shortName: 's',
@@ -287,7 +285,8 @@ foam.CLASS({
       memorable: true
     },
     {
-      class: 'StringArray',
+      // class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
       sticky: true
@@ -303,6 +302,12 @@ foam.CLASS({
     },
     {
       name: 'abc'
+    },*/
+    {
+      class: 'FObjectProperty',
+      name: 'menu',
+      of: 'Menu',
+      factory: function() { return Menu.create({}, this); }
     }
   ],
 
@@ -312,13 +317,15 @@ foam.CLASS({
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
       this.add(this.memento_.str$);
-      this.br();
+/*      this.br();
       this.add('skip: ', this.SKIP);
       this.br();
       this.add('limit: ', this.LIMIT);
       this.br();
       this.add('query: ', this.QUERY);
       this.br();
+      */
+      this.add(this.menu);
     }
   ]
 });
