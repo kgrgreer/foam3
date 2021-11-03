@@ -24,6 +24,12 @@ foam.CLASS({
         var hash   = mod("foobar");
         UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(uidgen, hash);
         UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(uidgen, hash);
+        // UIDs similarity tests
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x100, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x1000, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x10000, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x100000, 32);
       `
     },
     {
@@ -66,6 +72,43 @@ foam.CLASS({
           verified = hash == UIDSupport.hash(id);
         }
         test(verified, "Should generated unique string ids be verifiable" + (verified ? "" : ", but " + id + " failed verification"));
+      `
+    },
+    {
+      name: 'calcSimilarityScore',
+      type: 'Integer',
+      args: [ 'String id1', 'String id2' ],
+      javaCode: `
+        var score = 0;
+        var id1Arr = id1.toCharArray();
+        var id2Arr = id2.toCharArray();
+        var l = Math.min(id1Arr.length, id2Arr.length);
+        var diff = 0;
+        for ( var i = 0; i < l; i++ ) {
+          if ( id1Arr[i] == id2Arr[i] ) {
+            diff++;
+          } else {
+            if ( diff > 0 ) score += Math.pow(2, diff - 1);
+            diff = 0;
+          }
+        }
+        if ( diff > 0 ) {
+          score += Math.pow(2, diff - 1);
+        }
+        return score;
+      `
+    },
+    {
+      name: 'UIDGeneratorTest_CheckGeneratedUIDsSimilarity',
+      args: [ 'UIDGenerator uidgen', 'int startSeqNo', 'int threshold' ],
+      javaCode: `
+        uidgen.setSeqNo(startSeqNo);
+        uidgen.setLastSecondCalled(System.currentTimeMillis() / 1000);
+
+        var id1 = uidgen.getNextString();
+        var id2 = uidgen.getNextString();
+        var score = calcSimilarityScore(id1, id2);
+        test(score <= threshold, "[startSeqNo: " + startSeqNo + "] Should not generated very similar unique ids [" + id1 + ", " + id2 + "].");
       `
     }
   ]
