@@ -83,7 +83,7 @@ foam.CLASS({
       type: 'String',
       documentation: `
         Generate a Unique ID. The Unique ID consists of :
-        8 hexits timestamp(s) + at least 2 hexits sequence inside second + 3 hexits checksum.
+        8 hexits timestamp(s) + at least 2 hexits sequence inside second + 2 hexits machine ID + 3 hexits checksum.
 
         After the checksum is added, the ID is permutated based on the
         permutationSeq. In most cases, the generated ID should be 13 digits long.
