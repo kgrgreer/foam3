@@ -53,7 +53,7 @@ foam.CLASS({
       swiftCode: '// NOOP',
       javaCode: `
       SFEntry e = this.store((FObject) obj);
-      this.forward(e);
+      this.storeAndForward(e);
       
       `
     },

@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'SFFileJournal',
   extends: 'foam.dao.F3FileJournal',
   documentation: `A implementation of Journal interface provide better support for SAF`,
-  
+
   javaImports: [
     'foam.core.ClassInfo',
     'foam.core.FObject',
@@ -97,7 +97,7 @@ foam.CLASS({
       `
     }
   ],
-  
+
   methods: [
     {
       name: 'put',
@@ -191,9 +191,7 @@ foam.CLASS({
       // NOTE: explicitly calling PM constructor as create only creates
       // a percentage of PMs, but we want all replay statistics
       PM pm = new PM(dao.getOf(), "replay." + getFilename());
-      AssemblyLine assemblyLine = x.get("threadPool") == null ?
-        new foam.util.concurrent.SyncAssemblyLine()   :
-        new foam.util.concurrent.AsyncAssemblyLine(x, "replay") ;
+      AssemblyLine assemblyLine = new foam.util.concurrent.SyncAssemblyLine();
 
       try ( BufferedReader reader = getReader() ) {
         if ( reader == null ) {
@@ -243,7 +241,7 @@ foam.CLASS({
         assemblyLine.shutdown();
         pm.log(x);
         getLogger().log("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
-      }        
+      }
       `
     }
   ],

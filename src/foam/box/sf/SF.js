@@ -136,34 +136,6 @@ foam.CLASS({
         return;
       `,
     },
-    // {
-    //   class: 'Map',
-    //   name: 'retryCause',
-    //   documentation: 'Record fail retry reason',
-    //   storageTransient: true,
-    //   visibility: 'RO',
-    //   factory: function() { return {}; },
-    //   javaSetter: `
-    //     retryCauseIsSet_ = true;
-    //   `,
-    //   javaGetter: `
-    //     return retryCauseMap_;
-    //   `
-    // },
-    // {
-    //   class: 'Map',
-    //   name: 'failCause',
-    //   documentation: 'Record fail reason',
-    //   storageTransient: true,
-    //   visibility: 'RO',
-    //   factory: function() { return {}; },
-    //   javaSetter: `
-    //     failCauseIsSet_ = true;
-    //   `,
-    //   javaGetter: `
-    //     return failCauseMap_;
-    //   `,
-    // },
     {
       class: 'Object',
       name: 'delegateObject',
@@ -173,14 +145,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       transient: true,
     },
-    // {
-    //   class: 'Object',
-    //   name: 'manager',
-    //   transient: true,
-    //   javaFactory: `
-    //     return (SFManager) getX().get("SFManager");
-    //   `
-    // },
     {
       class: 'Object',
       name: 'nullDao',
@@ -255,19 +219,8 @@ foam.CLASS({
           synchronized ( writeLock_ ) {
             long index = entryIndex_.incrementAndGet();
             entry.setIndex(index);
-            SFFileJournal journal = null;
-            int count = entryCounter_.incrementAndGet();
-
-            if ( count > getFileCapacity() ) {
-              entryCounter_.set(1);
-              String filename = makeFileName(fileIndex_.incrementAndGet());
-              entry.setFileName(filename);
-              journal = getJournal(filename);
-            } else {
-              String filename = makeFileName(fileIndex_.get());
-              entry.setFileName(filename);
-              journal = getJournal(filename);
-            }
+            entry.setFileName(toFileName(entry));
+            SFFileJournal journal = getJournal(toFileName(entry));
             return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
           }
         }
@@ -286,6 +239,42 @@ foam.CLASS({
       `
     },
     {
+      name: 'storeAndForward',
+      args: 'FObject fobject',
+      documentation: 'write entry to journal and forward',
+      javaCode: `
+        SFEntry entry = new SFEntry.Builder(getX())
+                            .setObject(fobject)
+                            .build();
+        entry.setCreated(new Date());
+
+        if ( getReplayFailEntry() == true ) {
+          long index = entryIndex_.incrementAndGet();
+          entry.setIndex(index);
+          SFFileJournal journal = getJournal(toFileName(entry));
+          entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+          forward(entry);
+        } else {
+          synchronized ( writeLock_ ) {
+            long index = entryIndex_.incrementAndGet();
+            entry.setIndex(index);
+            entry.setFileName(toFileName(entry));
+            SFFileJournal journal = getJournal(toFileName(entry));
+            entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+
+            synchronized ( onHoldListLock_ ) {
+              if ( onHoldList_.size() == 0 ) {
+                onHoldList_.add(entry);
+                forward(entry);
+              } else {
+                onHoldList_.add(entry);
+              }
+            }
+          }
+        }
+      `
+    },
+    {
       name: 'successForward',
       args: 'SFEntry e',
       documentation: 'handle entry when retry success',
@@ -295,49 +284,35 @@ foam.CLASS({
           Journal journal = getJournal(toFileName(e));
           journal.put(getX(), "", (DAO) getNullDao(), e);
         } else {
-          //update file a-time.
-          maybeUpdateAtime(e);
+          updateJournalOffsetAndForwardNext(e);
         }
         inFlight_.decrementAndGet();
-        //cleanRetryCause(e);
       `
     },
     {
-      name: 'maybeUpdateAtime',
+      name: 'updateJournalOffsetAndForwardNext',
+      args: 'SFEntry e',
+      javaCode: `
+        updateJournalOffset(e);
+
+        synchronized ( onHoldListLock_ ) {
+          onHoldList_.remove(0);
+          if ( onHoldList_.size() != 0 ) {
+            forward(onHoldList_.get(0));
+          }
+        }
+      `
+    },
+    {
+      name: 'updateJournalOffset',
       args: 'SFEntry e',
       documentation: 'try to update byte offset to file atime',
       javaCode: `
-        synchronized ( updateAtimeLock_ ) {
-          if ( e.getIndex() < processEntryIndex_.get() ) throw new RuntimeException("SF Index Error");
-          if ( e.getIndex() > processEntryIndex_.get() ) {
-            completedEntries_.offer(e);
-            return;
-          }
-
-          SFFileJournal journal = fetchJournal(e);
-          long atime = journal.getFileLastAccessTime();
-          long entrySize = journal.calculateSize(e);
-          if ( entrySize == 0 ) throw new RuntimeException("SF format error");
-
-          long offset = atime + entrySize;
-          journal.setFileLastAccessTime(offset);
-          processEntryIndex_.incrementAndGet();
-
-          while ( completedEntries_.size() > 0 && processEntryIndex_.get() == completedEntries_.peek().getIndex() ) {
-            
-            SFEntry next = completedEntries_.poll();
-
-            journal = fetchJournal(next);
-            atime = journal.getFileLastAccessTime();
-            entrySize = journal.calculateSize(e);
-            if ( entrySize == 0 ) throw new RuntimeException("SF format error");
-            
-            offset = atime + entrySize;
-            journal.setFileLastAccessTime(offset);
-            processEntryIndex_.incrementAndGet();
-          }
-        }
-      
+        SFFileJournal journal = fetchJournal(e);
+        long atime = journal.getFileLastAccessTime();
+        long entrySize = journal.calculateSize(e);
+        long offset = atime + entrySize;
+        journal.setFileLastAccessTime(offset);
       `
     },
     {
@@ -356,17 +331,11 @@ foam.CLASS({
             journal.put(getX(), "", (DAO) getNullDao(), e);
           } else {
             //update file a-time.
-            maybeUpdateAtime(e);
+            updateJournalOffsetAndForwardNext(e);
           }
           inFlight_.decrementAndGet();
           failed_.incrementAndGet();
-          //cleanRetryCause(e);
-          //updateFailCause(e, t);
         } else {
-          // if ( e.getRetryAttempt() > getLoggingThredhold() )
-          // {
-          //   updateRetryCause(e, t);
-          // }
           updateNextScheduledTime(e);
           updateAttempt(e);
           ((SFManager) getManager()).enqueue(e);
@@ -409,7 +378,6 @@ foam.CLASS({
           return;
         }
 
-        //TODO: use atime to avoid re-read for mode1.
         List<String> availableFilenames = null;
         //Sort file from high index to low.
         filenames.sort((f1, f2) -> {
@@ -437,14 +405,13 @@ foam.CLASS({
             availableFilenames.add(0, filename);
           }
 
-          if ( availableFilenames.size() == 0 ) {
-            availableFilenames.add(filenames.get(filenames.size() - 1));
-          }
-
         }
 
         if ( getReplayFailEntry() == true ) {
-          //TODO: find a way to mark the entry done. avoid huge replay.
+
+          if ( availableFilenames.size() == 0 ) {
+            availableFilenames.add(filenames.get(filenames.size() - 1));
+          }
           ArraySink sink = new ArraySink(x);
 
           //Create predicate depends on condition.
@@ -465,10 +432,9 @@ foam.CLASS({
               predicate = MLang.GTE(SFEntry.CREATED, timeWindow);
             }
           }
-  
+
           MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
           for ( String filename : availableFilenames ) {
-  
             Journal journal = new SFFileJournal.Builder(x)
                                 .setDao(tempDAO)
                                 .setFilename(filename)
@@ -476,59 +442,69 @@ foam.CLASS({
                                 .build();
             journal.replay(x, tempDAO);
           }
-  
+
           //Find entry index;
           Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
           entryIndex_.set((Long)max.getValue());
-  
+
           tempDAO.where(predicate).select(sink);
           List<SFEntry> sfEntryList = sink.getArray();
           logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
           for ( SFEntry entry : sfEntryList ) {
-            if ( entry.getIndex() < processEntryIndex_.get() ) processEntryIndex_.set(entry.getIndex());
             forward((SFEntry) entry.fclone());
           }
         } else {
 
-          fileIndex_.set(getFileSuffix(filenames.get(filenames.size() - 1)));
-          Predicate predicate = getTimeWindow() == -1 ? MLang.TRUE : MLang.GTE(SFEntry.CREATED, timeWindow);
+          synchronized ( onHoldListLock_ ) {
 
-          for ( String filename : availableFilenames ) {
+            int maxFileIndex = getFileSuffix(filenames.get(filenames.size() - 1));
 
-            SFFileJournal journal = new SFFileJournal.Builder(x)
-                                    .setFilename(filename)
-                                    .setCreateFile(false)
-                                    .build();
+            for ( String filename : availableFilenames ) {
 
-            journalMap_.put(filename, journal);
-            if ( journal.getFileLastAccessTime() == journal.getFileSize() ) continue;
+              SFFileJournal journal = new SFFileJournal.Builder(x)
+                                      .setFilename(filename)
+                                      .setCreateFile(false)
+                                      .build();
 
-            MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
-            ArraySink sink = new ArraySink(x);
+              journalMap_.put(filename, journal);
+              if ( journal.getFileLastAccessTime() == journal.getFileSize() ) continue;
 
-            
-            // Record atime, because read will change the atime.
-            long offset = journal.getFileLastAccessTime();
+              List<SFEntry> list = new LinkedList<SFEntry>();
+              DAO tempDAO = new TempDAO(x, list);
 
-            journal.replayFrom(x, tempDAO, offset);
 
-            // Set back the offset.
-            journal.setFileLastAccessTime(offset);
+              // Record atime, because read will change the atime.
+              long offset = journal.getFileLastAccessTime();
 
-            tempDAO.where(predicate).select(sink);
-            List<SFEntry> sfEntryList = sink.getArray();
-            logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
+              journal.replayFrom(x, tempDAO, offset);
 
-            for ( SFEntry entry : sfEntryList ) {
-              SFEntry e = (SFEntry) entry.fclone();
-              long index = entryIndex_.incrementAndGet();
-              e.setIndex(index);
-              e.setFileName(filename);
-              forward(e);
+              // Set back the offset.
+              journal.setFileLastAccessTime(offset);
+
+              for ( int i = 0 ; i < list.size() ; i++ ) {
+                SFEntry e = list.get(i);
+                e.setFileName(filename);
+                onHoldList_.add(e);
+              }
+
+              logger_.log("Successfully read " + list.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
             }
 
-          }
+            if ( getTimeWindow() == -1 ) {
+              for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
+                SFEntry e = onHoldList_.get(i);
+                if ( e.getCreated().before(timeWindow) ) {
+                  updateJournalOffset(e);
+                  onHoldList_.remove(0);
+                } else {
+                  break;
+                }
+              }
+            }
 
+            entryIndex_.set(maxFileIndex * getFileCapacity());
+            if ( onHoldList_.size() != 0 ) forward(onHoldList_.get(0));
+          }
         }
 
         isReady_.getAndSet(true);
@@ -556,30 +532,6 @@ foam.CLASS({
         return e;
       `
     },
-    // {
-    //   name: 'updateFailCause',
-    //   args: 'SFEntry e, Throwable t',
-    //   javaCode: `
-    //     String stackTrace = getStackTrace(e, t);
-    //     getFailCause().put(e.getIndex(), stackTrace);
-    //   `
-
-    // },
-    // {
-    //   name: 'updateRetryCause',
-    //   args: 'SFEntry e, Throwable t',
-    //   javaCode:`
-    //     String stackTrace = getStackTrace(e, t);
-    //     getRetryCause().put(e.getIndex(), stackTrace);
-    //   `
-    // },
-    // {
-    //   name: 'cleanRetryCause',
-    //   args: 'SFEntry e',
-    //   javaCode:`
-    //     getRetryCause().remove(e.getIndex());
-    //   `
-    // },
     {
       name: 'getStackTrace',
       args: 'SFEntry e, Throwable t',
@@ -589,31 +541,6 @@ foam.CLASS({
         Outputter outputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate());
         String entity = outputter.stringify(e.getObject());
         return entity + " \\n " + stackTrace;
-      `
-    },
-    {
-      name: 'createMap',
-      documentation: `helper function to create thread safe LRU map`,
-      args: 'int capacity',
-      javaType: 'Map',
-      javaCode:`
-        LinkedHashMap<Integer, String> lruMap;
-        lruMap = new LinkedHashMap<Integer, String>(capacity, 0.75f, false) {
-          protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > capacity;
-          }
-        };
-        return (Map<Integer, String>) Collections.synchronizedMap(lruMap);
-      `
-    },
-    {
-      name: 'isFileProcessComplete',
-      documentation: 'helper function to determine if file is processed completed',
-      args: 'String fileName',
-      javaType: 'boolean',
-      javaCode: `
-        SFFileJournal journal = getJournal(fileName);
-        return journal.getFileSize() == journal.getFileLastAccessTime() ? true : false;
       `
     },
     {
@@ -673,13 +600,13 @@ foam.CLASS({
             final protected AtomicInteger fileIndex_ = new AtomicInteger(0);
             final protected AtomicInteger entryCounter_ = new AtomicInteger(0);
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
-            final protected AtomicLong processEntryIndex_ = new AtomicLong(1);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected AtomicInteger inFlight_ = new AtomicInteger(0);
             final protected AtomicInteger failed_ = new AtomicInteger(0);
             final protected Object writeLock_ = new Object();
-            final protected Object updateAtimeLock_ = new Object();
+            final protected Object onHoldListLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
+            final protected List<SFEntry> onHoldList_ = new LinkedList<SFEntry>();
             final protected PriorityQueue<SFEntry> completedEntries_ = new PriorityQueue<SFEntry>(16, (n, p) -> {
                                                                 if ( n.getIndex() < p.getIndex() ) {
                                                                   return -1;
@@ -689,46 +616,21 @@ foam.CLASS({
                                                                 }
                                                                 return 0;
                                                               });
-            // final Map<Integer, String> retryCauseMap_ = createMap(100);
-            // final Map<Integer, String> failCauseMap_ = createMap(100);
 
-            //Make to public because beanshell do not support.
-            static public interface StepFunction {
-              public int next(int cur);
-            }
-
-            static private class FilterDAO extends ProxyDAO {
+            static private class TempDAO extends ProxyDAO {
+              protected List<SFEntry> list;
               @Override
               public FObject put_(X x, FObject obj) {
                 SFEntry entry = (SFEntry) obj;
+                list.add(entry);
                 return obj;
               }
 
-              public FilterDAO(X x, DAO delegate) {
-                super(x, delegate);
+              public TempDAO(X x, List<SFEntry> l) {
+                super(x, null);
+                this.list = l;
               }
             }
-
-            // protected static ThreadLocal<JSONFObjectFormatter> formatter = new ThreadLocal<JSONFObjectFormatter>() {
-            //   @Override
-            //   protected JSONFObjectFormatter initialValue() {
-            //     return new JSONFObjectFormatter();
-            //   }
-            //   @Override
-            //   public JSONFObjectFormatter get() {
-            //     JSONFObjectFormatter b = super.get();
-            //     b.reset();
-            //     b.setPropertyPredicate(new StoragePropertyPredicate());
-            //     b.setOutputShortNames(true);
-            //     return b;
-            //   }
-            // };
-  
-            // protected JSONFObjectFormatter getFormatter(X x) {
-            //   JSONFObjectFormatter f = formatter.get();
-            //   f.setX(x);
-            //   return f;
-            // }
           `
         }));
       }
