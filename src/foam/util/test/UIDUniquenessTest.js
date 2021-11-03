@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.util.UIDGenerator',
     'java.io.IOException',
+    'java.util.Collections',
     'java.util.concurrent.CountDownLatch',
     'java.util.HashSet'
   ],
@@ -23,6 +24,11 @@ foam.CLASS({
       class: 'Int',
       name: 'size',
       value: 100000
+    },
+    {
+      name: 'isDuplicate',
+      class: 'Boolean',
+      value: true
     }
   ],
 
@@ -47,9 +53,11 @@ foam.CLASS({
     },
     {
       name: 'addUids',
-      args: 'Context x, HashSet<String> uids1, HashSet<String> uids2, boolean isDifferent',
+      args: 'Context x, boolean isDifferent',
       documentation: 'Create two threads and add uids to each set',
       javaCode: `
+        // To store unique ids into a set in the 1st thread.
+        var uids = Collections.synchronizedSet(new HashSet());
         var numOfThread = 2;
         final CountDownLatch latch = new CountDownLatch(numOfThread);
 
@@ -67,9 +75,15 @@ foam.CLASS({
                   String uid = uidGenerator.getNextString();
                   // Add a unique id into a set according to tno.
                   if ( tno == 0 ) {
-                    uids1.add(uid);
+                    uids.add(uid);
                   } else if ( tno == 1 ) {
-                    uids2.add(uid);
+                    if ( uids.contains(uid) ) {
+                      setIsDuplicate(true);
+                      break;
+                    } else if ( ! uids.contains(uid) ) {
+                      setIsDuplicate(false);
+                      break;
+                    }
                   }
                 }
               } catch (Throwable t) {
@@ -94,42 +108,16 @@ foam.CLASS({
       name: 'UIDUniquenessTest_UIDDuplicateFoundTest',
       args: 'Context x, boolean isDifferent',
       javaCode: `
-        // To store unique ids
-        var uids1 = new HashSet<String>();
-        var uids2 = new HashSet<String>();
-        addUids(x, uids1, uids2, isDifferent);
-
-        var isDuplicated = false;
-        if ( uids1.size() == uids2.size() ) {
-          for ( var uid : uids1 ) {
-            if ( uids2.contains(uid) ) {
-              isDuplicated = true;
-              break;
-            }
-          }
-        }
-        test(isDuplicated, (isDuplicated ? "A Duplicate Found" : "Duplicates Not Found"));
+        addUids(x, isDifferent);
+        test(getIsDuplicate(), (getIsDuplicate() ? "A Duplicate Found" : "Duplicates Not Found"));
       `
     },
     {
       name: 'UIDUniquenessTest_UIDDuplicateNotFoundTest',
       args: 'Context x, boolean isDifferent',
       javaCode: `
-        // To store unique ids
-        var uids1 = new HashSet<String>();
-        var uids2 = new HashSet<String>();
-        addUids(x, uids1, uids2, isDifferent);
-
-        var isNotDuplicated = false;
-        if ( uids1.size() == uids2.size() ) {
-          for ( var uid : uids1 ) {
-            if ( ! uids2.contains(uid) ) {
-              isNotDuplicated = true;
-              break;
-            }
-          }
-        }
-        test(isNotDuplicated, (isNotDuplicated ? "No duplicate Found" : "Duplicates Found"));
+        addUids(x, isDifferent);
+        test(! getIsDuplicate(), (! getIsDuplicate() ? "No duplicate Found" : "Duplicates Found"));
       `
     }
   ]
