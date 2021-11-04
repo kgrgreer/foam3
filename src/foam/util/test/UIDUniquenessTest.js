@@ -11,8 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.UIDGenerator',
-    'java.util.Collections',
-    'java.util.HashSet',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.atomic.AtomicBoolean'
   ],
 
@@ -37,7 +36,7 @@ foam.CLASS({
       name: 'testDuplicateFound',
       args: [ 'Boolean expected', 'String message', 'UIDGenerator... uidGenerators' ],
       javaCode: `
-        var uids = Collections.synchronizedSet(new HashSet<String>());
+        var uids = new ConcurrentHashMap<String, String>();
         var duplicateFound = new AtomicBoolean(false);
         var threads = new Thread[uidGenerators.length];
         for ( var i = 0; i < uidGenerators.length; i++ ) {
@@ -46,7 +45,9 @@ foam.CLASS({
             for ( var j = 0; j < getSize(); j++ ) {
               if ( duplicateFound.get() ) return;
               var uid = uidgen.getNextString();
-              if ( ! uids.add(uid) ) {
+              if ( ! uids.containsKey(uid) ) {
+                uids.put(uid, uid);
+              } else {
                 duplicateFound.set(true);
               }
             }
