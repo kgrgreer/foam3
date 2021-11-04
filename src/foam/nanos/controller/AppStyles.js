@@ -263,9 +263,7 @@ foam.CLASS({
     }
   }
 
-
-  .large-subtitle {
-    font-size: 2.4rem;
+  .larger-line-height {
     line-height: 1.67;
   }
 
@@ -273,12 +271,6 @@ foam.CLASS({
     text-align: center;
     font-weight: bold;
     font-size: 2.8rem;
-  }
-  @media only screen and (max-width: 320px) {
-    :root {
-      font-size: 50%;
-    }
-    .large-title { font-size: 2.8rem; }
   }
   @media only screen and (min-width: 321px) {
     .large-title { font-size: 3.5rem; }
