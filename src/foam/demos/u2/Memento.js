@@ -7,6 +7,12 @@
 //   eliminate need for implementing Memorable by having property install!
 //     -- maybe a bad idea
 
+// IDEA:
+// traverse from top-level object?
+//   what about intermediate objects that don't know they're memorable?
+//   ?? two modes: properties vs subContext?
+
+
 foam.CLASS({
   name: 'Memento',
 
@@ -27,6 +33,7 @@ foam.CLASS({
       name: 'str',
       displayWidth: 100,
       postSet: function(_, s) {
+        console.log('STR: ', s);
         // parser & separated string of key=value bindings and store in this.bindings
         var m = [];
         s.split('&').forEach(p => {
@@ -68,7 +75,7 @@ foam.CLASS({
 //      this.str = this.toString();
     },
 
-    function bind(memorable) {
+    function remember(memorable) {
       /** Bind a memorable object to the memento by:
        *    1. setting memorable property values to available bindings
        *    2. listening for property updates
@@ -83,16 +90,17 @@ foam.CLASS({
       });
 
       var l = this.bindings.length;
-      memorable.onDetach(() => this.frames.length = l);
+      memorable.onDetach(() => this.frames.length = l );
       this.frames.push(bindings);
     },
 
     function toString() {
       var str = '';
 
+      console.log("************* TOSTRING " + this.frames.length, this.frames);
       for ( var i = 0 ; i < this.frames.length ; i++ ) {
         var frame = this.frames[i];
-        for ( var key in frame) {
+        for ( var key in frame ) {
           var slot = frame[key];
           if ( slot.get() ) {
             if ( str ) str = str + '&';
@@ -140,7 +148,7 @@ foam.CLASS({
       hidden: true,
       factory: function() { return this.__context__.memento_ || Memento.create(); },
       initObject: function(o) {
-        o.memento_.bind(o);
+        o.memento_.remember(o);
       }
     }
   ]
@@ -160,23 +168,31 @@ foam.CLASS({
     {
       name: 'menu',
       shortName: 'm',
-      memorable: true
+      memorable: true,
+      postSet: function(_, m) {
+        this.controller = Controller.create({daoKey: m}, this);
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'controller',
+      of: 'Controller',
+      factory: function() { return Controller.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("MENU");
       this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Menu: ', this.MENU);
+      //this.add(this.controller$);
+      /*
+      this.add(this.slot(function(menu) {
+        return this.E().add(this.controller);
+      });
+      */
     }
   ]
 });
@@ -192,30 +208,34 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'daoKey'
+    },
+    {
       name: 'mode',
-      shortName: 'm',
       value: 'edit',
       memorable: true
     },
     {
+      class: 'Int',
       name: 'id',
       memorable: true
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'table',
+      of: 'Table',
+      factory: function() { return Table.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("CONTROLLER: ", this.daoKey);
       this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Mode: ', this.MODE);
+      this.add('Id: ', this.ID);
+      this.add(this.table);
     }
   ]
 });
@@ -237,9 +257,11 @@ foam.CLASS({
       memorable: true
     },
     {
-      class: 'StringArray',
+      //class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
+
       sticky: true
     },
     {
@@ -255,17 +277,13 @@ foam.CLASS({
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("TABLE");
       this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
+      this.add('Skip: ',    this.SKIP);
+      this.add('Columns: ', this.COLUMNS);
+      this.add('Limit: ',   this.LIMIT);
+      this.add('Query: ',   this.QUERY);
     }
   ]
 });
@@ -275,11 +293,12 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',
 
-  mixins: [
-    'Memorable'
-  ],
+  exports: [ 'memento_' ],
+
+  mixins: [ 'Memorable' ],
 
   properties: [
+    /*
     {
       name: 'skip',
       shortName: 's',
@@ -287,7 +306,8 @@ foam.CLASS({
       memorable: true
     },
     {
-      class: 'StringArray',
+      // class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
       sticky: true
@@ -303,6 +323,12 @@ foam.CLASS({
     },
     {
       name: 'abc'
+    },*/
+    {
+      class: 'FObjectProperty',
+      name: 'menu',
+      of: 'Menu',
+      factory: function() { return Menu.create({}, this); }
     }
   ],
 
@@ -310,15 +336,17 @@ foam.CLASS({
     function render() {
       // this.subMemento.str = 'q=something';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
-      this.br();
+      this.br().br();
       this.add(this.memento_.str$);
-      this.br();
+/*      this.br();
       this.add('skip: ', this.SKIP);
       this.br();
       this.add('limit: ', this.LIMIT);
       this.br();
       this.add('query: ', this.QUERY);
       this.br();
+      */
+      this.add(this.menu);
     }
   ]
 });
