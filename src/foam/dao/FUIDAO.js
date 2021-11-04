@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'foam.util.UIDGenerator'
   ],
 
@@ -65,7 +66,7 @@ foam.CLASS({
       javaCode: `
         var id = getPropertyInfo().get(obj);
         var klass = getPropertyInfo().getValueClass();
-        if ( klass == String.class && ((String) id).isBlank() ) {
+        if ( klass == String.class && SafetyUtil.isEmpty((String) id) ) {
           getPropertyInfo().set(obj, getUIDGenerator().getNextString());
         } else if ( klass == long.class && ((long) id) == 0L ) {
           getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
