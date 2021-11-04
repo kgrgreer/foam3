@@ -361,6 +361,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'lastModifiedByAgentName',
+      includeInDigest: true,
+      section: 'additionalInformation',
+      order: 130,
+      gridColumns: 6,
+      columnPermissionRequired: true,
+      readPermissionRequired: true
+    },
+    {
+      class: 'String',
       name: 'memo',
       view: { class: 'foam.u2.tag.TextArea', rows: 3, cols: 60 },
       documentation: 'Meant to be used for explanation on why request was approved/rejected',
