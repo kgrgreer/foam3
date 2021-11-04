@@ -106,7 +106,7 @@ foam.CLASS({
     }
     .p-legal-light {
       font-style: normal;
-      font-weight: 300;
+      font-weight: 400;
       font-size: 1.2rem;
       line-height: 1.17;
       margin: 0;
@@ -272,6 +272,7 @@ foam.CLASS({
   .large-title {
     text-align: center;
     font-weight: bold;
+    font-size: 2.8rem;
   }
   @media only screen and (max-width: 320px) {
     :root {
@@ -279,10 +280,10 @@ foam.CLASS({
     }
     .large-title { font-size: 2.8rem; }
   }
-  @media only screen and (min-width: 321px) and (max-width: 767px) {
+  @media only screen and (min-width: 321px) {
     .large-title { font-size: 3.5rem; }
   }
-  @media only screen and (min-width: 768px) and (max-width: 959px) {
+  @media only screen and (min-width: 768px) {
     .large-title { font-size: 6.4rem; }
   }
   @media only screen and (min-width: 960px) {
