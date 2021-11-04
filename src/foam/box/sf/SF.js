@@ -618,6 +618,9 @@ foam.CLASS({
                                                               });
 
             static private class TempDAO extends ProxyDAO {
+              public foam.core.ClassInfo getOf() {
+                return SFEntry.getOwnClassInfo();
+              }
               protected List<SFEntry> list;
               @Override
               public FObject put_(X x, FObject obj) {
