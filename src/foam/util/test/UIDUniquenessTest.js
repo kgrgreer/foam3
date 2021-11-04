@@ -43,12 +43,16 @@ foam.CLASS({
           var uidgen = uidGenerators[i];
           threads[i] = new Thread(() -> {
             for ( var j = 0; j < getSize(); j++ ) {
-              if ( duplicateFound.get() ) return;
-              var uid = uidgen.getNextString();
-              if ( ! uids.containsKey(uid) ) {
-                uids.put(uid, uid);
-              } else {
-                duplicateFound.set(true);
+              try {
+                if ( duplicateFound.get() ) return;
+                var uid = uidgen.getNextString();
+                if ( ! uids.containsKey(uid) ) {
+                  uids.put(uid, uid);
+                } else {
+                  duplicateFound.set(true);
+                }
+              } catch (Throwable t) {
+                throw new RuntimeException(t);
               }
             }
           });
