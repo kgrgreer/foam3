@@ -21,7 +21,9 @@ foam.CLASS({
             obj.lastModifiedBy = x.subject.user.id;
             if ( x.subject.realUser && x.subject.user.id !== x.subject.realUser.id ) {
               obj.lastModifiedByAgent = x.subject.realUser.id;
-              obj.lastModifiedByAgentName = x.subject.realUser.toSummary();
+              if ( foam.nanos.auth.LastModifiedByAgentNameAware.isInstance(obj) ) {
+                obj.lastModifiedByAgentName = x.subject.realUser.toSummary();
+              }
             }
           }
           return this.delegate.put_(x, obj);
@@ -36,7 +38,9 @@ foam.CLASS({
           ((LastModifiedByAware) obj).setLastModifiedBy(user.getId());
           if ( user.getId() != realUser.getId() ) {
             ((LastModifiedByAware) obj).setLastModifiedByAgent(realUser.getId());
-            ((LastModifiedByAware) obj).setLastModifiedByAgentName(realUser.toSummary());
+            if ( obj instanceof LastModifiedByAgentNameAware ) {
+              ((LastModifiedByAgentNameAware) obj).setLastModifiedByAgentName(realUser.toSummary());
+            }
           }
         }
         return super.put_(x, obj);

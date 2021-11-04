@@ -26,7 +26,14 @@ foam.INTERFACE({
       updateVisibility: 'RO',
       documentation: 'Agent acting as User who last modified entry',
       storageOptional: true
-    },
+    }
+  ]
+});
+
+foam.INTERFACE({
+  package: 'foam.nanos.auth',
+  name: 'LastModifiedByAgentNameAware',
+  properties: [
     {
       class: 'String',
       name: 'lastModifiedByAgentName',
@@ -68,15 +75,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       documentation: 'Agent acting as user who last modified entry',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      section: 'userInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'lastModifiedByAgentName',
-      documentation: 'The name of the agent acting as User who last modified entry',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'userInformation',
