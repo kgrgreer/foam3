@@ -53,7 +53,8 @@ foam.CLASS({
         // UIDUniquenessTest_UIDDuplicateNotFoundTest(x, true);
 
         UIDUniquenessTest_No_duplicate_on_same_instance(x);
-        UIDUniquenessTest_Could_generate_duplicate_on_different_instance_with_same_machineId(x);
+        UIDUniquenessTest_Could_generate_duplicate_on_instances_with_same_machineId(x);
+        UIDUniquenessTest_No_duplicate_on_instances_with_different_machineId(x);
       `
     },
 //    {
@@ -164,12 +165,21 @@ foam.CLASS({
       `
     },
     {
-      name: 'UIDUniquenessTest_Could_generate_duplicate_on_different_instance_with_same_machineId',
+      name: 'UIDUniquenessTest_Could_generate_duplicate_on_instances_with_same_machineId',
       args: [ 'Context x' ],
       javaCode: `
         var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
         var uidgen2 = new UIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(true, "Could generate duplicate uid on different instance with the same machine id.", uidgen1, uidgen2);
+        testDuplicateFound(true, "Could generate duplicate uid on instances with the same machine id.", uidgen1, uidgen2);
+      `
+    },
+    {
+      name: 'UIDUniquenessTest_No_duplicate_on_instances_with_different_machineId',
+      args: [ 'Context x' ],
+      javaCode: `
+        var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen2 = new UIDGenerator.Builder(x).setMachineId(2).build();
+        testDuplicateFound(false, "Should not generate duplicate uid on instances with the different machine id.", uidgen1, uidgen2);
       `
     }
   ]
