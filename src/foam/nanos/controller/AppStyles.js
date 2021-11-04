@@ -104,6 +104,13 @@ foam.CLASS({
       line-height: 1.17;
       margin: 0;
     }
+    .p-legal-light {
+      font-style: normal;
+      font-weight: 300;
+      font-size: 1.2rem;
+      line-height: 1.17;
+      margin: 0;
+    }
     .p-label{
       font-style: normal;
       font-weight: 600;
@@ -254,6 +261,32 @@ foam.CLASS({
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+
+
+  .large-subtitle {
+    font-size: 2.4rem;
+    line-height: 1.67;
+  }
+
+  .large-title {
+    text-align: center;
+    font-weight: bold;
+  }
+  @media only screen and (max-width: 320px) {
+    :root {
+      font-size: 50%;
+    }
+    .large-title { font-size: 2.8rem; }
+  }
+  @media only screen and (min-width: 321px) and (max-width: 767px) {
+    .large-title { font-size: 3.5rem; }
+  }
+  @media only screen and (min-width: 768px) and (max-width: 959px) {
+    .large-title { font-size: 6.4rem; }
+  }
+  @media only screen and (min-width: 960px) {
+    .large-title { font-size: 8.4rem; }
   }
   `
 });
