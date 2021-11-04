@@ -241,14 +241,14 @@
         if ( foam.mlang.sink.Projection.isInstance( values ) ) {
           for (var i = 0 ; i < values.projection.length ; i++) {
             if ( values.array[i] === undefined ) continue;
+            var index = (page*this.pageSize) + i + 1;
             if ( this.groupBy ) {
               var group = self.groupBy.f(values.array[i]);
-              if ( ! foam.util.equals(group, self.currGroup_) ){
+              if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
                 e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
               }
               self.currGroup_ = group;
             }
-            var index = (page*this.pageSize) + i + 1
             var rowEl = this.E().tag(self.rowView, { obj: values.array[i], projection: values.projection[i] })
                 .attr('data-idx', index);
             e.add(rowEl)
