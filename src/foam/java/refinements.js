@@ -2500,3 +2500,16 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'FuidJavaRefinement',
+  refines: 'foam.core.Fuid',
+  flags: ['java'],
+  mixins: [ 'foam.java.JavaCompareImplementor' ],
+
+  properties: [
+    ['javaType',     'Long'],
+    ['javaInfoType', 'foam.core.AbstractFuidPropertyInfo']
+  ]
+});
