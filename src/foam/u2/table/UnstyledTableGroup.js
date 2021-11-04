@@ -85,7 +85,7 @@ foam.CLASS({
             prop
           );
           if ( ! prop.f(objReturned) ) {
-            this.add(self.EMPTY_MSG + " " + prop.label);
+            this.add(self.EMPTY_MSG + ' ' + prop.label);
           }
         });
       this.add(elmt);
