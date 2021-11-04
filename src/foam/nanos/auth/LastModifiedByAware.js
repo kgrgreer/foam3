@@ -30,20 +30,6 @@ foam.INTERFACE({
   ]
 });
 
-foam.INTERFACE({
-  package: 'foam.nanos.auth',
-  name: 'LastModifiedByAgentNameAware',
-  properties: [
-    {
-      class: 'String',
-      name: 'lastModifiedByAgentName',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      documentation: 'The name of the agent acting as User who last modified entry',
-      storageOptional: true
-    }
-  ]
-});
 
 /**
  * This refinement is necessary because of the way the class loader works.
