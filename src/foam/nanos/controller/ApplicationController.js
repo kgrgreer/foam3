@@ -28,12 +28,12 @@ foam.CLASS({
 
   implements: [
     'foam.box.Context',
-    'foam.mlang.Expressions',
-    'foam.nanos.controller.AppStyles'
+    'foam.mlang.Expressions'
   ],
 
   requires: [
     'foam.nanos.client.ClientBuilder',
+    'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Memento',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
@@ -151,15 +151,6 @@ foam.CLASS({
   ],
 
   css: `
-    body {
-      background: /*%GREY5%*/ #f5f7fa;
-      color: #373a3c;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.2px;
-      margin: 0;
-      overscroll-behavior: none;
-    }
     .stack-wrapper {
       min-height: calc(80% - 60px);
     }
@@ -395,6 +386,8 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        await self.fetchGroup();
+
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.memento.head ) {
           var menu = await self.__subContext__.menuDAO.find(self.memento.head);
@@ -402,12 +395,13 @@ foam.CLASS({
           // since if there is a user session on refresh, this would also
           // find authenticated menus to try to push before fetching subject
           if ( menu && menu.authenticate === false ) {
+            await self.fetchSubject(false);
             self.pushMenu(menu);
             self.languageInstalled.resolve();
             return;
           }
         }
-        await self.fetchGroup();
+
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -450,6 +444,7 @@ foam.CLASS({
     },
 
     function render() {
+      var self = this;
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
@@ -472,13 +467,14 @@ foam.CLASS({
 
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
+          // Work around to ensure wrapCSS is exported into context before
+          // calling AppStyles which needs theme replacement
+          self.AppStyles.create();
           this
             .addClass(this.myClass())
-            .start()
               .add(this.slot(function (topNavigation_) {
                 return this.E().tag(topNavigation_);
               }))
-            .end()
             .start()
               .addClass('stack-wrapper')
               .tag({
@@ -558,17 +554,18 @@ foam.CLASS({
       }
     },
 
-    async function fetchSubject() {
+    async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
         this.subject = result;
 
-        var promptlogin = await this.client.auth.check(this, 'auth.promptlogin');
+        var promptlogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
-        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
+        if ( ! result || ! result.user ) throw new Error();
 
       } catch (err) {
+        if ( ! promptlogin || authResult ) return;
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
@@ -596,7 +593,6 @@ foam.CLASS({
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       var M = m.toUpperCase();
-
       return this.theme[m] ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^;!]*', 'g'),
         '/*%' + M + '%*/ ' + this.theme[m]) : css;
@@ -662,10 +658,8 @@ foam.CLASS({
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
-        .select().then(ableToAccessMenus => {
-          ableToAccessMenus.array[0].launch(this);
-          return ableToAccessMenus.array[0];
-        }).catch(e => console.error(e.message || e));
+        .select().then(a => a.array.length && a.array[0])
+        .catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {
@@ -724,9 +718,12 @@ foam.CLASS({
             description: obj.toastSubMessage,
             icon: obj.icon
           }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
+          // only update and save non-transient messages
+          if ( ! obj.transient ) {
+            var clonedNotification = obj.clone();
+            clonedNotification.toastState = this.ToastState.DISPLAYED;
+            this.__subSubContext__.notificationDAO.put(clonedNotification);
+          }
         }
       });
 
@@ -792,8 +789,7 @@ foam.CLASS({
     },
     {
       name: 'updateDisplayWidth',
-      isMerged: true,
-      mergeDelay: 1000,
+      isFramed: true,
       code: function() {
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()

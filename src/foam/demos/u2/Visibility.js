@@ -160,7 +160,6 @@ foam.CLASS({
 
   css: `
     body {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.5;
     }
 

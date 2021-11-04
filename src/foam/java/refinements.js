@@ -3,6 +3,15 @@
  * Copyright 2017,2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * To debug in browser, load with ?java=true flag, then run something like:
+ *   c = foam.java.Class.create();
+ *   foam.nanos.auth.Region.buildJavaClass(c);
+ *   c.toString();
+ * from the console.
+**/
+
 foam.INTERFACE({
   package: 'foam.lib.csv',
   name: 'FromCSVSetter',
@@ -407,7 +416,7 @@ ${isSet} = false;`
       if ( this.javaFactory ) {
         cls.method({
           name: factoryName,
-          visibility: 'protected',
+          visibility: 'public',
           type: this.javaType,
           body: this.javaFactory
         });
@@ -1202,8 +1211,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'int'],
-    ['javaInfoType',   'foam.core.AbstractIntPropertyInfo']
+    ['javaType',     'int'],
+    ['javaInfoType', 'foam.core.AbstractIntPropertyInfo']
   ]
 });
 
@@ -1599,8 +1608,29 @@ foam.CLASS({
         return 'VARCHAR(' + width + ')';
       }
     }
+  ],
+
+  methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      if ( this.value != '' ) {
+        info.method({
+          name: 'isDefaultValue',
+          visibility: 'public',
+          args: [
+            { name: 'o', type: 'Object'}
+          ],
+          type: 'boolean',
+          body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
+        });
+      }
+
+      return info;
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',
@@ -1925,7 +1955,7 @@ foam.CLASS({
   properties: [
     ['javaType', 'ArrayList'],
     ['javaInfoType', 'foam.core.AbstractPropertyInfo'],
-    ['javaJSONParser', 'oam.lib.json.ArrayParser.instance()']
+    ['javaJSONParser', 'foam.lib.json.ArrayParser.instance()']
   ],
 
   methods: [
@@ -2423,6 +2453,50 @@ foam.CLASS({
         `
       });
       return;
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'JavaCode',
+
+  documentation: `
+    Axiom for adding java code to a model.
+    The supplied code will be added to the generated .java code generated for the model.
+  `,
+
+  properties: [
+    'name',
+    'code'
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      cls.extras.push(foam.java.Code.create({data: this.code}));
+    }
+  ]
+});
+
+
+foam.CLASS({
+  refines: 'foam.core.Model',
+  package: 'foam.java',
+  name: 'JavaCodeModelRefine',
+
+  requires: [ 'foam.java.JavaCode' ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'javaCode',
+      postSet: function(_, code) {
+        this.axioms_.push(this.JavaCode.create({
+          name: 'JavaCode_' + this.name,
+          code: code
+        }));
+      }
     }
   ]
 });

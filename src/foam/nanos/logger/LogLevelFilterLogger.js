@@ -76,6 +76,30 @@ foam.CLASS({
         }
       ],
       javaCode: 'if ( getLogDebug() ) getDelegate().debug(args);'
+    },
+    {
+      name: 'isEnabled',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'level',
+          type: 'foam.log.LogLevel'
+        }
+      ],
+      javaCode: `
+      switch ( level ) {
+        case ERROR:
+          return getLogError();
+        case WARN:
+          return getLogWarning();
+        case INFO:
+          return getLogInfo();
+        case DEBUG:
+          return getLogDebug();
+        default:
+          return false;
+      }
+      `
     }
   ]
 });

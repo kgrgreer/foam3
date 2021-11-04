@@ -31,31 +31,23 @@ foam.CLASS({
     'org.apache.commons.lang3.StringUtils',
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data:
-            `private class SMTPAuthenticator extends javax.mail.Authenticator {
-              protected String username_;
-              protected String password_;
+  javaCode: `
 
-              public SMTPAuthenticator(String username, String password) {
-                this.username_ = username;
-                this.password_ = password;
-              }
+    private class SMTPAuthenticator extends javax.mail.Authenticator {
+      protected String username_;
+      protected String password_;
 
-              @Override
-              protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(this.username_, this.password_);
-              }
-            }
-            `
-        }));
+      public SMTPAuthenticator(String username, String password) {
+        this.username_ = username;
+        this.password_ = password;
+      }
+
+      @Override
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(this.username_, this.password_);
       }
     }
-  ],
+  `,
 
   properties: [
     {

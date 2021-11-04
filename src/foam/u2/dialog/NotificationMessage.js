@@ -42,7 +42,7 @@ foam.CLASS({
       position: fixed;
       /* TODO: reduce max width when notification messages are updated */
       max-width: max(30vw, 480px);
-      min-width: max(20vw, 300px);
+      min-width: max(16vw, 300px);
       right: 32px;
       top: 24px;
       z-index: 15000;
@@ -79,7 +79,7 @@ foam.CLASS({
       align-items: center;
       height: 32px;
       justify-content: center;
-      padding-right: 1em; 
+      margin-right: 1em; 
       max-width: max(10%, 32px);
       width: 32px;
     }

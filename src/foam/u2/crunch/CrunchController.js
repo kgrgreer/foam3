@@ -312,12 +312,12 @@ foam.CLASS({
     },
 
     function purgeCachedCapabilityDAOs() {
-      this.capabilityDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.capabilityDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
-      this.capabilityCategoryDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.capabilityCategoryDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
-      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+      this.capabilityDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.capabilityDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      this.capabilityCategoryDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.capabilityCategoryDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
     },
 
     // CRUNCH Lite Methods

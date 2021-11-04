@@ -11,11 +11,6 @@ foam.CLASS({
 
   documentation: `DAO decorator that resets the given dao and clears it's cache after put.`,
   
-  requires: [
-    'foam.dao.AbstractDAO',
-    'foam.dao.TTLSelectCachingDAO'
-  ],
-
   properties: [
     {
       class: 'String',
@@ -30,8 +25,8 @@ foam.CLASS({
         this.delegate.put_(x, obj).then((obj) => {
           if ( this.daoKey ) {
             var dao = this.__subContext__[this.daoKey];
-            dao.cmd(this.TTLSelectCachingDAO.PURGE);
-            dao.cmd(this.AbstractDAO.RESET_CMD);
+            dao.cmd(foam.dao.DAO.PURGE_CMD);
+            dao.cmd(foam.dao.DAO.RESET_CMD);
           }
           return obj;
         });

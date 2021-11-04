@@ -19,19 +19,12 @@ foam.CLASS({
   ],
 
   // ???: Should this be the default for ProxyDAOs?
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public RestrictedApprovableDAO(X x, DAO delegate) {
-            setX(x);
-            setDelegate(delegate);
-          }
-        `);
-      }
+  javaCode: `
+    public RestrictedApprovableDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   properties: [
     {

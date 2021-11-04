@@ -64,9 +64,9 @@ public class OrX
     return (boolean) o;
   }
 
-  public X cd(X x, String path) {
-    X o = getX().cd(x, path);
-    if ( o == null ) return parent_.cd(x, path);
+  public X cd(String path) {
+    X o = getX().cd(path);
+    if ( o == null ) return parent_.cd(path);
     return o;
   }
 }

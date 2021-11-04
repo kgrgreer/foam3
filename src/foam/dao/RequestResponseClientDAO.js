@@ -102,11 +102,14 @@ Suitable for usage against backends that don't support listen(), such as plain H
       name: 'cmd_',
       code: function cmd_(x, obj) {
         /** Force the DAO to publish a 'reset' notification. **/
-        if ( this.RESET_CMD == obj ) {
+        if ( foam.dao.DAO.RESET_CMD === obj ) {
           this.on.reset.pub();
           return true;
         }
-        return this.SUPER(x, obj);
+        if ( ! foam.dao.DAO.PURGE_CMD === obj ) {
+          return this.SUPER(x, obj);
+        }
+        return obj;
       }
     }
   ]

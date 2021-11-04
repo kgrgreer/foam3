@@ -88,7 +88,7 @@ foam.CLASS({
             .add(value ? ' Y' : '-')
           .end();
       },
-      documentation: 'If true, this service is served over the network.'
+      documentation: 'If true, this service is served over the network via boxes. If the service is a WebAgent, it will be served as a WebAgent only if this is false.'
     },
     {
       class: 'Boolean',
@@ -132,6 +132,12 @@ foam.CLASS({
             .add(value ? ' Y' : '-')
           .end();
       }
+    },
+    {
+      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, o as to avoid the synchronization overhead associated with accessing the created singleton service.`,
+      class: 'Boolean',
+      name: 'threadLocalEnabled',
+      value: false
     },
     {
       class: 'FObjectProperty',

@@ -651,6 +651,20 @@ start('a').add('click to add more data').on('click', function() {
 
 ##    select()
 ##   startContext() / endContext()
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'a', 'b' ]
+});
+
+var t = Test.create();
+
+start().
+  startContext({data: t}).
+    add('A: ', t.A, ' B: ', t.B).
+  endContext().
+end();
+
 ##   i18n
 ##    Messages
 ##    translate()

@@ -31,7 +31,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 
@@ -65,7 +65,6 @@ foam.CLASS({
 
   exports: [
     'controllerMode',
-    'as objectSummaryView',
     'currentMemento_ as memento'
   ],
 

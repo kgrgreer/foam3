@@ -110,7 +110,6 @@ foam.CLASS({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
           } else {
-            this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
             if ( ! this.memento || this.memento.value.length === 0 )
               window.location.hash = '';
             this.loginSuccess = !! this.user;

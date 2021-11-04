@@ -48,8 +48,6 @@
     }
 
     ^thead {
-      overflow: hidden;
-      overflow-x: auto;
       position: sticky;
       top: 0;
     }
@@ -58,6 +56,8 @@
       border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
+      width: 100%;
+      position: relative;
     }
 
     ^td,
@@ -66,8 +66,7 @@
       box-sizing: border-box;
       color: /*%BLACK%*/ #1e1f21;
       display: block;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       line-height: 1.5;
       overflow: hidden;
       padding-left: 16px;
@@ -113,6 +112,21 @@
       background: /*%GREY5%*/ #F5F7FA;
     }
 
+    ^resizeButton {
+      padding: 4px;
+      position: sticky;
+      right: 4px;
+    }
+
+    ^resizeButton:hover:not(:disabled), ^resizeCursor {
+      cursor: col-resize;
+    }
+
+    ^resizeButton svg{
+      width: 0.8em;
+      height: 0.8em;
+    }
+
     /* PAGINATION */
     ^nav{
       align-items: center;
@@ -138,4 +152,8 @@
       border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
     }
   `,
+
+  messages: [
+    { name: 'MESSAGE_OF', message: 'of'}
+  ]
 });

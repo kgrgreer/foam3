@@ -22,6 +22,10 @@ foam.CLASS({
     'props'
   ],
 
+  messages: [
+    { name: 'EMPTY_MSG',  message: 'No' }
+  ],
+
   properties: [
     'obj',
     'projection',
@@ -70,16 +74,19 @@ foam.CLASS({
       }).
 
       style({ 'min-width': this.data.tableWidth_$ });
-      prop = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
+      [prop, objReturned] = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
       var elmt = this.E().style({ flex: '3 0 0' })
         .addClasses(['h500', this.data.myClass('td')])
         .call(function() {
           prop.tableCellFormatter.format(
             this,
-            prop.f ? prop.f(objForCurrentProperty) : null,
-            objForCurrentProperty,
+            prop.f ? prop.f(objReturned) : null,
+            objReturned,
             prop
           );
+          if ( ! prop.f(objReturned) ) {
+            this.add(self.EMPTY_MSG + ' ' + prop.label);
+          }
         });
       this.add(elmt);
     }

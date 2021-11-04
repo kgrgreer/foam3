@@ -16,27 +16,19 @@ foam.CLASS({
     permission to access.
   `,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public AuthorizationException() {
-            super("Permission denied.");
-          }
-
-          public AuthorizationException(String message) {
-            super(message);
-          }
-
-          public AuthorizationException(String message, Throwable cause) {
-            super(message, cause);
-          } 
-        `
-        );
-      }
+  javaCode: `
+    public AuthorizationException() {
+      super("Permission denied.");
     }
-  ],
+
+    public AuthorizationException(String message) {
+      super(message);
+    }
+
+    public AuthorizationException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `,
 
   properties: [
     {

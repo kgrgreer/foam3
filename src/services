@@ -141,7 +141,10 @@ p({
   "name": "threadPool",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .build();
+  `
 })
 
 p({
@@ -258,7 +261,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"countryService",
-  "serve":true,
+  "serve":false,
   "serviceClass":"foam.nanos.auth.CountryService"
 })
 
@@ -299,7 +302,7 @@ p({
   "documentation": "A DAO which contains information about regions in countries. A region is a province or a state, for example.",
   "authNotes": "The \"authenticate\" flag is explicitly set to false because we want to be able to use the regionDAO to populate a dropdown in the sign up form. The DAO is decorated with an AuthenticatedDAO decorator with \"authenticateRead\" set to false so that anyone can read from regionDAO but only those with permission can write to or remove from it."
 })
-p({"class":"foam.nanos.boot.NSpec", "name":"regionService",                      "serve":true, "serviceClass":"foam.nanos.auth.RegionService"})
+p({"class":"foam.nanos.boot.NSpec", "name":"regionService",                      "serve":false, "serviceClass":"foam.nanos.auth.RegionService"})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -1107,7 +1110,7 @@ p({
       .setJournalName("timezones")
       .setOf(foam.nanos.auth.TimeZone.getOwnClassInfo())
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
 
     return dao;

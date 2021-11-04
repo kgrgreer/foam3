@@ -24,7 +24,7 @@ foam.CLASS({
         ^ {
           min-width: 64px;
           height: /*%INPUTHEIGHT%*/ 34px;
-          font-size: 14px;
+          font-size: 1.4rem;
           padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
           padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
           border: 1px solid;
@@ -32,6 +32,7 @@ foam.CLASS({
           color: /*%BLACK%*/ #1e1f21;
           background-color: white;
           border-color: /*%GREY3%*/ #cbcfd4;
+          width: 100%;
         }
 
         ^:hover {

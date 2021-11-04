@@ -43,7 +43,7 @@ foam.CLASS({
     ^ span{
       position: relative;
       font-weight: 300;
-      font-size: 16px;
+      font-size: 1.6rem;
       margin-left: 10px;
     }
     ^business-name{

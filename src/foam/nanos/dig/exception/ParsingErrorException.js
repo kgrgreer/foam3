@@ -8,19 +8,11 @@ foam.CLASS({
   name: 'ParsingErrorException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public ParsingErrorException(String message) {
-            super(message);
-          } 
-        `
-        );
-      }
+  javaCode: `
+    public ParsingErrorException(String message) {
+      super(message);
     }
-  ],
+  `,
 
   properties: [
     {

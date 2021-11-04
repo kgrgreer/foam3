@@ -21,6 +21,11 @@ foam.CLASS({
 
   imports: ['stack'],
 
+  exports: [
+    'click',
+    'config'
+  ],
+
   documentation: `A summary view for tables that shows the first n rows 
   in a table with an action to expand the table to DAOBrowseControllerView`,
 
@@ -55,6 +60,23 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ dao: this.data });
+      }
+    },
+    {
+      name: 'click',
+      expression: function(config$click) {
+        if ( config$click && typeof config$click === 'function' )
+          return config$click;
+        return function(obj, id) {
+          if ( ! this.stack ) return;
+          this.stack.push(foam.u2.stack.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
+            config: this.__context__.config,
+            idOfRecord: id
+          }, parent: this.__subContext__ }, this));
+        };
       }
     }
   ],

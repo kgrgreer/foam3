@@ -19,10 +19,25 @@ import foam.util.SafetyUtil;
 public class NSpecFactory
   implements XFactory
 {
-  NSpec  spec_;
-  ProxyX x_;
-  Thread creatingThread_ = null;
-  Object ns_             = null;
+  NSpec       spec_;
+  ProxyX      x_;
+  Thread      creatingThread_ = null;
+  Object      ns_             = null;
+  ThreadLocal tlService_      = new ThreadLocal() {
+      long since = 0L;
+      protected Object initialValue() {
+        since = System.currentTimeMillis();
+        return maybeBuildService();
+      }
+
+      public Object get() {
+        if ( System.currentTimeMillis() - since > 1000 ) {
+          // invalidate - force initialValue to be called on next get()
+          super.remove();
+        }
+        return super.get();
+      }
+    };
 
   public NSpecFactory(ProxyX x, NSpec spec) {
     x_    = x;
@@ -45,8 +60,8 @@ public class NSpecFactory
     }
     creatingThread_ = Thread.currentThread();
 
-    PM     pm     = new PM(this.getClass(), spec_.getName());
-    X      nx     = x_ instanceof SubX ? x_ : x_.getX();
+    PM pm = new PM(this.getClass(), spec_.getName());
+    X  nx = x_ instanceof SubX ? x_ : x_.getX();
 
     try {
       logger.info("Creating Service", spec_.getName());
@@ -91,16 +106,24 @@ public class NSpecFactory
     }
   }
 
-  public synchronized Object create(X x) {
-    if ( ns_ == null ||
-         ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
-      buildService(x);
+  public Object create(X x) {
+    Object ns = null;
+    if ( spec_.getThreadLocalEnabled() ) {
+      ns = tlService_.get();
+    } else {
+      ns = maybeBuildService();
     }
 
-    if ( ns_ instanceof XFactory ) return ((XFactory) ns_).create(x);
+    if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
 
+    return ns;
+  }
+
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
+    }
     return ns_;
-
   }
 
   public synchronized void invalidate(NSpec spec) {
@@ -115,8 +138,14 @@ public class NSpecFactory
     ) {
       logger.info("Invalidated Service", spec_.getName());
       if ( ns_ instanceof DAO ) {
-        logger.warning("Invalidation of DAO Service not supported.", spec_.getName());
-        // ((ProxyDAO) ns_).setDelegate(null);
+        // Clustered MDAOs are not reloadable as replay is handled by medusa.
+        boolean cluster = "true".equals(System.getProperty("CLUSTER", "false"));
+        if ( ! cluster ||
+             cluster && ((DAO) ns_).cmd(foam.dao.DAO.LAST_CMD) == null ) {
+          ((ProxyDAO) ns_).setDelegate(null);
+        } else {
+          logger.warning("Invalidation of Clustered MDAOs not supported", spec_.getName());
+        }
       } else {
         ns_ = null;
       }

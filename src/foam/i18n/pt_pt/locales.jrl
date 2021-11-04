@@ -368,6 +368,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.DESIRED_PASSWORD.label",target:"Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.LOGIN.label",target:"iniciar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.USER_NAME.label",target:"Nome do usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.SUCCESS_MSG",target:"Conta criada com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.SUCCESS_MSG_TITLE",target:"Sucesso"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"*.foam.nanos.auth.Address.REGION.label",target:"Região"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"*.foam.nanos.auth.Address.REGION.error",target:"Região requerido"})
@@ -572,6 +574,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PA
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.NEW_PASSWORD.label",target:"Nova Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.CONFIRMATION_PASSWORD.label",target:"Confirme a Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD.label",target:"Confirme"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.ERROR_MSG",target:"Ocorreu um problema ao redefinir sua senha"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.Notification.model_.plural",target:"notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"notificações"})
@@ -677,6 +680,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.NEX
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.FIRST_PAGE.toolTip",target:"Primeira página"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.PREV_PAGE.toolTip",target:"Página anterior"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.LAST_PAGE.toolTip",target:"Última página"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableHeaderComponent.DRAG_TO_RESIZE.toolTip",target:"Arraste para redimensionar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.DETAIL",target:"Detalhe"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.TABBED",target:"Tabbed"})
@@ -1043,3 +1048,21 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.delimiter",target:"."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.decimalCharacter",target:","})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.REMOVE_NOTIFICATION.label",target:"Remover Notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.HIDE_NOTIFICATION_TYPE.label",target:"Ocultar tipo de notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_READ.label",target:"Marcar como Lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD.label",target:"Marcar como não lido"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NO_TOKEN",target:"Insira um código de verificação."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_LABEL",target:"Insira o código de verificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_ERROR",target:"Código incorreto. Tente novamente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_TITLE",target:"Autenticação de dois fatores"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_EXPLANATION",target:"Abra o aplicativo Google Authenticator em seu dispositivo móvel para visualizar o código de 6 dígitos e verificar sua identidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_1",target:"Precisa de outra forma de autenticação?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_2",target:"Fale conosco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.VERIFY.label",target:"Verifique"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableView.MESSAGE_OF",target:"do"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.UnstyledTableGroup.EMPTY_MSG",target:"Não"})

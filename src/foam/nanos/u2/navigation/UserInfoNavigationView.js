@@ -31,12 +31,12 @@ foam.CLASS({
     ^userName {
       color: /*%GREY4%*/ #e7eaec;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 1.2rem;
     }
     ^agentName{
       color: /*%GREY3%*/ #cbcfd4;
       font-weight: 400;
-      font-size: 11px;
+      font-size: 1.1rem;
     }
     ^name-container {
       max-width: 90px;

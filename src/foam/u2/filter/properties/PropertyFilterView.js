@@ -49,7 +49,7 @@ foam.CLASS({
 
     ^label-property {
       margin: 0;
-      font-size: 14px;
+      font-size: 1.4rem;
       line-height: 1.43;
       color: #5e6061;
       flex: 1;
@@ -133,6 +133,10 @@ foam.CLASS({
       factory: function() {
         return this.QueryParser.create({ of: this.dao.of || this.__subContext__.lookup(this.property.forClass_) });
       }
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'preSetPredicate'
     }
   ],
 
@@ -171,6 +175,7 @@ foam.CLASS({
 
       this.isFiltering();
       this.isInit = false;
+      this.checkPresetPredicate();
     },
 
     function getPredicateFromMemento() {
@@ -179,6 +184,11 @@ foam.CLASS({
         if ( predicate ) {
           return predicate.partialEval();
         }
+      }
+    },
+    function checkPresetPredicate() {
+      if ( this.preSetPredicate != null ) {
+        this.switchActive();
       }
     }
   ],
@@ -202,6 +212,10 @@ foam.CLASS({
       // This requires that every search view implements restoreFromPredicate
       var existingPredicate = this.filterController.getExistingPredicate(this.criteria, this.property);
 
+      if ( ! existingPredicate && this.preSetPredicate != null ) {
+        existingPredicate = this.preSetPredicate;
+      }
+
       if ( existingPredicate ) {
         this.view_.restoreFromPredicate(existingPredicate);
       }
@@ -212,6 +226,8 @@ foam.CLASS({
 
       // Prevents rerendering the view.
       this.firstTime_ = false;
+
+      if ( this.preSetPredicate != null ) this.isFiltering();
 
       this.onDetach(this.view_$.dot('predicate').sub(this.isFiltering));
     },

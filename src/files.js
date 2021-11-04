@@ -186,7 +186,7 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
-  { name: "foam/util/UIDGeneratorTest" },
+  { name: "foam/util/test/UIDGeneratorTest" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -895,6 +895,8 @@ FOAM_FILES([
   { name: "foam/dashboard/view/Bar" },
   { name: "foam/dashboard/view/Line" },
   { name: "foam/dashboard/view/DAOTable" },
+  { name: "foam/dashboard/view/GroupByDAOTable" },
+  { name: "foam/dashboard/view/GroupByCitationView" },
   { name: "foam/dashboard/view/Card" },
   { name: "foam/dashboard/view/Dashboard"},
   { name: "foam/build/Library" },
@@ -1076,6 +1078,7 @@ FOAM_FILES([
   { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
   { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" },
 

@@ -464,6 +464,65 @@ foam.CLASS({
         </svg>
         ` };
       }
+    },
+    {
+      name: 'folderOutline',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: function() {
+        return { template: `<svg width="100%" viewBox="0 0 20 16" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 2H10L8 0H2C0.9 0 0.00999999 0.9 0.00999999 2L0 14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V4C20 2.9 19.1 2 18 2ZM18 14H2V4H18V14Z"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'folderFill',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: function() {
+        return { template: `<svg width="100%" viewBox="0 0 20 16" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 0H2C0.9 0 0.00999999 0.9 0.00999999 2L0 14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V4C20 2.9 19.1 2 18 2H10L8 0Z"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'drag',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg height="100%" viewBox="0 0 3 5" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 4.84376C2.99999 3.01318 3 0.312509 3 0.156259C3 9.25362e-06 2.99999 9.91716e-06 2.5 9.8152e-06C2 9.71324e-06 2 1.0998e-05 2 0.156261C2 0.312511 2 3.01318 2 4.84376C2 5.00001 2.06338 5.00001 2.49999 5.00001C2.93661 5.00001 3 5.00001 3 4.84376Z"/>
+        <path d="M0.999942 4.84375C0.999934 3.01317 0.999941 0.312499 0.999943 0.156249C0.999944 -6.83472e-07 0.999933 -7.20942e-09 0.499937 -1.09169e-07C-6.01113e-05 -2.11128e-07 -5.79357e-05 1.06096e-06 -5.86578e-05 0.156251C-5.93799e-05 0.312501 -5.7643e-05 3.01317 -5.7909e-05 4.84375C-5.79317e-05 5 0.0633186 5 0.499934 5C0.936552 5 0.999943 5 0.999942 4.84375Z"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'circleSlash',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 20 20" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM2 10C2 5.58 5.58 2 10 2C11.85 2 13.55 2.63 14.9 3.69L3.69 14.9C2.63 13.55 2 11.85 2 10ZM10 18C8.15 18 6.45 17.37 5.1 16.31L16.31 5.1C17.37 6.45 18 8.15 18 10C18 14.42 14.42 18 10 18Z" />
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'clipboardCheck',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 18 20" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M16 2H11.82C11.4 0.84 10.3 0 9 0C7.7 0 6.6 0.84 6.18 2H2C0.9 2 0 2.9 0 4V18C0 19.1 0.9 20 2 20H16C17.1 20 18 19.1 18 18V4C18 2.9 17.1 2 16 2ZM9 2C9.55 2 10 2.45 10 3C10 3.55 9.55 4 9 4C8.45 4 8 3.55 8 3C8 2.45 8.45 2 9 2ZM6.29 15.29L3.7 12.7C3.31 12.31 3.31 11.68 3.7 11.29C4.09 10.9 4.72 10.9 5.11 11.29L7 13.17L12.88 7.29C13.27 6.9 13.9 6.9 14.29 7.29C14.68 7.68 14.68 8.31 14.29 8.7L7.7 15.29C7.32 15.68 6.68 15.68 6.29 15.29Z"/>
+        </svg>
+        ` };
+      }
     }
   ]
 });

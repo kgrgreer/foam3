@@ -22,7 +22,7 @@ foam.CLASS({
       padding: 8px 24px 24px;
     }
     ^ .bold-label {
-      font-size: 16px;
+      font-size: 1.6rem;
       font-weight: bold;
       padding-bottom: 8px;
     }

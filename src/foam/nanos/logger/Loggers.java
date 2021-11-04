@@ -45,4 +45,16 @@ public class Loggers {
 
     return logger;
   }
+
+  /**
+   * For expensive debug output - where parameters may be expanded during the call to the logger, first wrap in a test if the debug logging is enabled.
+   */
+  public static boolean isEnabled(X x, foam.log.LogLevel level) {
+    LogLevelFilterLogger filter = (LogLevelFilterLogger) x.get("logLevelFilterLogger");
+    return filter.isEnabled(level);
+  }
+
+  public static boolean isDebugEnabled(X x) {
+    return isEnabled(x, foam.log.LogLevel.DEBUG);
+  }
 }

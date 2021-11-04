@@ -15,6 +15,7 @@ foam.CLASS({
     {
       class: 'Proxy',
       of: 'foam.nanos.logger.Logger',
+      view: 'foam.u2.view.FObjectView',
       name: 'delegate'
     }
   ]

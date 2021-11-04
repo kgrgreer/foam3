@@ -73,16 +73,9 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          private DAO dao_;
-          private FObject enabled_;
-          private FObject disabled_;
-        `);
-      }
-    }
-  ]
+  javaCode: `
+    private DAO dao_;
+    private FObject enabled_;
+    private FObject disabled_;
+  `
 });

@@ -20,6 +20,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.XLocator',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
@@ -47,28 +48,19 @@ foam.CLASS({
     'java.util.concurrent.atomic.AtomicLong'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  // legacy support so not to break 'scripts'. This suppresses
-  // output to logger, which results in duplicate output, as
-  // this runner already outputs the results.
+  javaCode: `
+    // legacy support so not to break 'scripts'. This suppresses
+    // output to logger, which results in duplicate output, as
+    // this runner already outputs the results.
 
-  public String getResult() {
-    return "";
-  }
-
-  public String formatResults() {
-    return "";
-  }
-          `
-        }));
-      }
+    public String getResult() {
+      return "";
     }
-  ],
+
+    public String formatResults() {
+      return "";
+    }
+  `,
 
   sections: [
     {
@@ -91,6 +83,24 @@ foam.CLASS({
     'runPerThread',
     'invocationCount',
     'benchmarkId'
+  ],
+
+  constants: [
+    {
+      documentation: 'Context key to benchmark access to the runner.',
+      name: 'RUNNER',
+      value: 'RUNNER'
+    },
+    {
+      documentation: 'Context key informating the execute method which Thread number the current run is.',
+      name: 'THREAD',
+      value: 'THREAD'
+    },
+    {
+      documentation: 'Context key informaing the execute method which invocation the current run is.',
+      name: 'INVOCATION',
+      value: 'INVOCATION'
+    }
   ],
 
   properties: [
@@ -119,6 +129,10 @@ foam.CLASS({
       docmentation: 'clear PMs before executing the benchmark',
     },
     {
+      class: 'Boolean',
+      name: 'oneTimeSetup'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.bench.Benchmark',
       name: 'benchmarkId'
@@ -133,12 +147,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'daoKey',
-      value: 'benchmarkRunnerDAO'
+      value: 'benchmarkRunnerDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'eventDaoKey',
-      value: 'benchmarkRunnerEventDAO'
+      value: 'benchmarkRunnerEventDAO',
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -146,13 +164,13 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
-      canRun(x);
       PM pm = new PM(this.getClass(), getId());
       try {
-        execute(x);
+        execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
         setLastDuration(pm.getTime());
+
         ScriptEvent event = new ScriptEvent(x);
         event.setLastRun(this.getLastRun());
         event.setLastDuration(this.getLastDuration());
@@ -187,27 +205,25 @@ foam.CLASS({
         return;
       }
 
-    try {
-      final Benchmark benchmark = getBenchmark(x);
+      try {
+        final Benchmark benchmark = getBenchmark(x);
 
-      logger.info("execute", benchmark.getClass().getSimpleName());
-      UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
-          .setSalt("benchmarkResultDAO")
-          .build();
-      String uid = String.valueOf(uidGenerator.getNextLong());
+        logger.info("execute", benchmark.getClass().getSimpleName());
+        UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
+            .setSalt("benchmarkResultDAO")
+            .build();
+        String uid = String.valueOf(uidGenerator.getNextLong());
 
-      int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
-      int run = 1;
-      int threads = 1;
+        int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
+        int run = 1;
+        int threads = 1;
 
-      if ( ! getRunPerThread() ||
-           reverseThreads_ ) {
-        threads = availableThreads;
-      }
+        if ( ! getRunPerThread() ||
+             reverseThreads_ ) {
+          threads = availableThreads;
+        }
 
-        setStatus(ScriptStatus.RUNNING);
-        ((DAO) x.get("benchmarkRunnerDAO")).put_(x, this);
-
+        boolean setup = false;
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
@@ -217,13 +233,17 @@ foam.CLASS({
           br.setUid(uid);
           br.setRun(run);
           br.setHostname(System.getProperty("hostname", "localhost"));
-          br.setName(benchmark.getName());
+          // br.setName(benchmark.getName());
+          br.setName(this.getId());
           br.setThreads(threads);
 
-          // set up the benchmark
-          logger.info("setup");
-          benchmark.setup(x, br);
-
+          if ( ! getOneTimeSetup() ||
+               getOneTimeSetup() && ! setup ) {
+            // set up the benchmark
+            logger.info("setup");
+            benchmark.setup(x, br);
+            setup = true;
+          }
           if ( getClearPMs() ) {
             ((DAO) x.get("pmInfoDAO")).removeAll();
           }
@@ -240,7 +260,9 @@ foam.CLASS({
                   long passed = 0;
                   for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
                     try {
-                      benchmark.execute(x);
+                      X y = x.put(THREAD, tno).put(INVOCATION, j);
+                      XLocator.set(y);
+                      benchmark.execute(y);
                       passed++;
                     } catch (Throwable t) {
                       fail.incrementAndGet();
@@ -250,6 +272,8 @@ foam.CLASS({
                       }
                       logger.error(e.getMessage());
                       logger.debug(e);
+                    } finally {
+                      XLocator.set(null);
                     }
                   }
                   pass.addAndGet(passed++);
@@ -268,7 +292,11 @@ foam.CLASS({
           }
 
           // wait until latch reaches 0
-          latch.await();
+          try {
+            latch.await();
+          } catch (InterruptedException e) {
+            break;
+          }
 
           // calculate length taken
           // get number of threads completed and duration
@@ -309,17 +337,8 @@ foam.CLASS({
             break;
           }
         }
-        setStatus(ScriptStatus.UNSCHEDULED);
-      } catch (Throwable t) {
-        setStatus(ScriptStatus.RUNNING);
-        logger.error(t);
-      } finally {
-        setLastRun(new java.util.Date());
-        try {
-          ((DAO) x.get("benchmarkRunnerDAO")).put_(x, this);
-        } catch (RuntimeException e) {
-          logger.error(e);
-        }
+      } catch (Throwable e) {
+        throw new RuntimeException(e);
       }
       `
     },
@@ -372,7 +391,7 @@ foam.CLASS({
       type: 'foam.nanos.bench.Benchmark',
       javaCode: `
         if ( ! SafetyUtil.isEmpty(getBenchmarkId()) ) {
-          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId());
+          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId()).fclone();
         }
 
         Language l = getLanguage();

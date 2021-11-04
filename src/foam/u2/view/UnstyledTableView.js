@@ -262,7 +262,7 @@ foam.CLASS({
         // so if such an action is called from DAOSummaryView we go back to TableView
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
-      },
+      }
     },
     'currentMemento_',
     {
@@ -351,7 +351,7 @@ foam.CLASS({
           }
         } else {
           this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
+            return this.columnHandler.propertyNamesForColumnArray(c);
           }).join(',');
         }
         if ( ! this.memento.tail ) {
@@ -370,6 +370,7 @@ foam.CLASS({
           this.columns_$.map((cols) => this.columnHandler.mapArrayColumnsToArrayOfColumnNames(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols)))
         ));
       }
+
       this.
         addClass(this.myClass()).
         addClass(this.myClass(this.of.id.replace(/\./g, '-'))).
@@ -420,8 +421,8 @@ foam.CLASS({
 
               // Render the table headers for the property columns.
               forEach(columns_, function([col, overrides]) {
-                var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
-                var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
+                var found = view.props.find(p => p.fullPropertyName === view.columnHandler.propertyNamesForColumnArray(col));
+                var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.propertyNamesForColumnArray(col));
                 var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
 
                 if ( ! prop ) return;
@@ -549,9 +550,9 @@ foam.CLASS({
               }
             }
 
-            var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
-            var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
+            var propertyNamesToQuery             = view.columnHandler.returnPropNamesToQuery(view.props);
+            var valPromises                      = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
+            var nestedPropertyNamesAndItsIndexes = view.columnHandler.buildPropNameAndIndexArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -565,11 +566,11 @@ foam.CLASS({
                   tbodyElement
                     .startContext({
                       props: view.props,
-                      propertyNamesToQuery: propertyNamesToQuery,
-                      nestedPropsAndIndexes: nastedPropertyNamesAndItsIndexes,
-                      canBuildObjfromProj: canObjBeBuildFromProjection
+                      propertyNamesToQuery:  propertyNamesToQuery,
+                      nestedPropsAndIndexes: nestedPropertyNamesAndItsIndexes,
+                      canBuildObjfromProj:   canObjBeBuildFromProjection
                     })
-                      .tag({ class: 'foam.u2.table.UnstyledTableRow', data: view, obj: values.array[i], projection: values.projection[i] })
+                      .tag(view.UnstyledTableRow, { data: view, obj: values.array[i], projection: values.projection[i], actionDAO: view.refDAO })
                     .endContext();
                 }
               });
@@ -590,7 +591,7 @@ foam.CLASS({
         return columns.filter( c => obj.allColumns.includes( obj.columnHandler.checkIfArrayAndReturnFirstLevelColumnName(c) ));
       },
       function returnPropertiesForColumns(obj, columns_) {
-        var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
+        var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.propertyNamesForColumnArray(c)))).map(c => obj.columnHandler.propertyNamesForColumnArray(c)));
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
       function shouldColumnBeSorted(c) {
@@ -622,7 +623,7 @@ foam.CLASS({
       },
       async function filterPropertiesByReadPermission(properties, of) {
         if ( ! properties || ! of ) return [];
-        var perms =  await Promise.all(properties.map( async p => 
+        var perms =  await Promise.all(properties.map( async p =>
           await this.auth.check(ctrl.__subContext__, of + '.rw.' + p) ||
           await this.auth.check(ctrl.__subContext__, of + '.ro.' + p)
         ));
@@ -677,45 +678,6 @@ foam.CLASS({
         }))
         .then(columns => this.columns_ = columns.filter(c => c));
       }
-      }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'TableViewPropertyRefinement',
-  refines: 'foam.core.Property',
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'columnHidden'
-    },
-    {
-      class: 'Boolean',
-      documentation: `
-        When set to true, the '<model>.column.<property>' permission is required for a
-        user to be able to read this property. If false, any user can see the
-        value of this property in a table column.
-      `,
-      name: 'columnPermissionRequired'
-    },
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2.view',
-  name: 'PropertyColumnMapping',
-  properties: [
-    {
-      name: 'fullPropertyName',
-      class: 'String'
-    },
-    {
-      name: 'property',
-      class: 'FObjectProperty',
-      of: 'Property'
     }
   ]
 });

@@ -17,20 +17,11 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public FreezingDAO(X x, DAO delegate) {
-              super(x, delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public FreezingDAO(X x, DAO delegate) {
+      super(x, delegate);
     }
-  ],
+  `,
 
   methods: [
     {
