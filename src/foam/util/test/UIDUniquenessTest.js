@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'foam.util.UIDGenerator',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.atomic.AtomicBoolean'
@@ -38,12 +39,13 @@ foam.CLASS({
       javaCode: `
         var uids = new ConcurrentHashMap<String, String>();
         var duplicateFound = new AtomicBoolean(false);
+        var isInterrupted = new AtomicBoolean(false);
         var threads = new Thread[uidGenerators.length];
         for ( var i = 0; i < uidGenerators.length; i++ ) {
           var uidgen = uidGenerators[i];
           threads[i] = new Thread(() -> {
-            for ( var j = 0; j < getSize(); j++ ) {
-              try {
+            try {
+              for ( var j = 0; j < getSize(); j++ ) {
                 if ( duplicateFound.get() ) return;
                 var uid = uidgen.getNextString();
                 if ( ! uids.containsKey(uid) ) {
@@ -51,9 +53,10 @@ foam.CLASS({
                 } else {
                   duplicateFound.set(true);
                 }
-              } catch (Throwable t) {
-                throw new RuntimeException(t);
               }
+            } catch ( Exception e ) {
+              getLogger().error(e);
+              isInterrupted.set(true);
             }
           });
           threads[i].start();
@@ -63,7 +66,11 @@ foam.CLASS({
         for ( var t : threads ) {
           try { t.join(); } catch ( InterruptedException e ) { /* Ignored */ }
         }
-        test( duplicateFound.get() == expected, message);
+        if ( ! isInterrupted.get() ) {
+          test( duplicateFound.get() == expected, message);
+        } else {
+          getLogger().error("An unexpected exception was thrown. Some tests might not have been executed");
+        }
       `
     },
     {
