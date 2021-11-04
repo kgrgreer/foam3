@@ -271,12 +271,14 @@ foam.CLASS({
 
                   long passed = 0;
                   for ( int j = 0 ; j < getExecutionCount() ; j++ ) {
+                    PM pm = new PM("BenchmarkRunner", finalBr.getId());
                     try {
                       X y = x.put(THREAD, tno).put(EXECUTION, j);
                       XLocator.set(y);
                       benchmark.execute(y);
                       passed++;
                     } catch (Throwable t) {
+                      pm.error(x, t.getMessage());
                       fail.incrementAndGet();
                       Throwable e = t;
                       if ( t instanceof RuntimeException && t.getCause() != null ) {
@@ -285,6 +287,7 @@ foam.CLASS({
                       logger.error("thread", tno, "execution", j, e.getMessage());
                       logger.debug(e);
                     } finally {
+                      pm.log(x);
                       XLocator.set(null);
                     }
                   }
