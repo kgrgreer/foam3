@@ -63,7 +63,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.OrderedDAO',
     'foam.dao.PromisedDAO',
-    'foam.dao.QueryCachingDAODecorator',
+    'foam.dao.QueryCachingDAO',
     'foam.dao.TTLCachingDAO',
     'foam.dao.TTLSelectCachingDAO',
     'foam.dao.RequestResponseClientDAO',
@@ -949,7 +949,7 @@ model from which to test ServiceProvider ID (spid)`,
 
       if ( this.queryCache ) {
         //* Query cache ****
-        dao = this.QueryCachingDAODecorator.create({
+        dao = this.QueryCachingDAO.create({
           delegate: dao
         });
       }
