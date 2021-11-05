@@ -26,6 +26,10 @@ foam.CLASS({
       overscroll-behavior: none;
     }
 
+    @media screen and (min-width: /*%DisplayWidth.MD%*/ 123px) {
+      body { background: red; }
+    }
+
     /* TYPOGRAPHY */ 
     .h100{
       font-style: normal;

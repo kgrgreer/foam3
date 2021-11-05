@@ -23,11 +23,14 @@ foam = {
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   util:     {
-    path: function(root, path, opt_ensure) {
+    path: function(root, path, opt_ensure, strict) {
       var a = path.split('.');
       var i;
 
       for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( strict && ! root[a[i]] ) {
+          return false;
+        }
         root = root[a[i]] || ( root[a[i]] = {} );
         if ( opt_ensure && root == undefined ) {
           root = root[a[i]] = {};
