@@ -16,8 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.auth.LastModifiedByAgentNameAware'
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   javaImports: [
@@ -167,7 +166,7 @@ foam.CLASS({
       columnPermissionRequired: true
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       section: 'approvalRequestInformation',
       order: 10,
@@ -353,16 +352,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
-      includeInDigest: true,
-      section: 'additionalInformation',
-      order: 130,
-      gridColumns: 6,
-      columnPermissionRequired: true,
-      readPermissionRequired: true
-    },
-    {
-      class: 'String',
-      name: 'lastModifiedByAgentName',
       includeInDigest: true,
       section: 'additionalInformation',
       order: 130,
@@ -1013,7 +1002,7 @@ foam.CLASS({
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
           this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-          
+
           this.finished.pub();
           this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
@@ -1068,7 +1057,7 @@ foam.CLASS({
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
           this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-          
+
           this.finished.pub();
           this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
 
