@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'FUIDAO',
+  name: 'FUIDDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.util.SafetyUtil',
     'foam.util.UIDGenerator'
   ],
@@ -52,13 +53,25 @@ foam.CLASS({
       class: 'Object',
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
-      javaFactory: `
-        return new UIDGenerator.Builder(getX())
-          .setSalt(getNSpec().getName())
-          .build();
-      `
+      javaFactory: 'return new UIDGenerator(getX(), getNSpec().getName());',
+    },
+    {
+      name: 'nSpec',
+      class: 'FObjectProperty',
+      type: 'foam.nanos.boot.NSpec'
     }
   ],
+
+  javaCode: `
+  public FUIDDAO(DAO delegate) {
+    setDelegate(delegate);
+  }
+
+  public FUIDDAO(X x, String salt, DAO delegate) {
+    super(x, delegate);
+    setUIDGenerator(new UIDGenerator(x, salt));
+  }
+  `,
 
   methods: [
     {
@@ -74,17 +87,5 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       `
     },
-  ],
-
-  axioms: [
-    {
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public FUIDAO(DAO delegate) {
-            setDelegate(delegate);
-          }
-        `);
-      },
-    },
-  ],
+  ]
 });
