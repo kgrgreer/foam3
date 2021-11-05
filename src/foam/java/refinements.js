@@ -2503,13 +2503,14 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.java',
-  name: 'FuidJavaRefinement',
-  refines: 'foam.core.Fuid',
+  name: 'FUIDJavaRefinement',
+  refines: 'foam.core.FUIDProperty',
   flags: ['java'],
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',     'Long'],
-    ['javaInfoType', 'foam.core.AbstractFuidPropertyInfo']
+    ['javaType',     'long'],
+    ['value',        0],
+    ['javaInfoType', 'foam.core.AbstractFUIDPropertyInfo']
   ]
 });

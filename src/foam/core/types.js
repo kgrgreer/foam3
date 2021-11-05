@@ -1094,27 +1094,20 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core',
-  name: 'Fuid',
+  name: 'FUIDProperty',
   extends: 'Property',
 
   properties: [
     {
       name: 'adapt',
       value: function(_, a, p) {
-        if ( foam.Object.isInstance(a) ) {
-          if ( a[foam.locale] !== undefined )
-            return a[foam.locale];
-          if ( a[foam.locale.substring(0, foam.locale.indexOf('-'))] !== undefined )
-            return a[foam.locale.substring(0, foam.locale.indexOf('-'))];
-          return a['en'];// default language.
-        }
-        var s = typeof a === 'function' ||
-                typeof a === 'number'   ? String(a)                :
+        var s = typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
         return p.trim ? s.trim() : s;
       }
     },
-    [ 'type', 'String' ]
+    [ 'type', 'String' ],
+    [ 'value', '' ],
   ]
 });
