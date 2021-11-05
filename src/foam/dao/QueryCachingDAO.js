@@ -5,7 +5,7 @@
  */
 foam.CLASS({
   package: 'foam.dao',
-  name: 'QueryCachingDAODecorator',
+  name: 'QueryCachingDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',

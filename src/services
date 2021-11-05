@@ -882,7 +882,7 @@ p({
   """
 })
 
- p({
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "userQueryService",
   "serve": true,
