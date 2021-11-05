@@ -16,33 +16,24 @@ foam.CLASS({
     'foam.lib.NetworkPropertyPredicate'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
-    @Override
-    protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
-      foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
-      formatter.setQuoteKeys(true);
-      formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {new foam.lib.NetworkPropertyPredicate(), new foam.lib.PermissionedPropertyPredicate()}));
-      return formatter;
-    }
-
-    @Override
-    public foam.lib.formatter.FObjectFormatter get() {
-      foam.lib.formatter.FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
-        `
-        }));
+  javaCode: `
+    protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
+      @Override
+      protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
+        foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
+        formatter.setQuoteKeys(true);
+        formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {new foam.lib.NetworkPropertyPredicate(), new foam.lib.PermissionedPropertyPredicate()}));
+        return formatter;
       }
-    }
-  ],
+
+      @Override
+      public foam.lib.formatter.FObjectFormatter get() {
+        foam.lib.formatter.FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+  `,
 
   methods: [
     {
@@ -58,4 +49,3 @@ foam.CLASS({
     }
   ]
 });
-

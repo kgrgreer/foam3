@@ -81,15 +81,8 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          private DAO sessionDAO_;
-          private AuthService auth_;
-        `);
-      }
-    }
-  ],
+  javaCode: `
+    private DAO sessionDAO_;
+    private AuthService auth_;
+  `
 });

@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.dao.DOP',
     'foam.nanos.pm.PM'
   ],
-  
+
   properties: [
     {
       name: 'hostname',
@@ -27,21 +27,12 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public ClusterCommandHop(String hostname, DOP dop, String op) {
-    setHostname(hostname);
-    setPm(new PM(this.getClass().getSimpleName(), hostname, dop.getLabel(), op));
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public ClusterCommandHop(String hostname, DOP dop, String op) {
+      setHostname(hostname);
+      setPm(new PM(this.getClass().getSimpleName(), hostname, dop.getLabel(), op));
     }
-  ],
+  `,
 
   methods: [
     {

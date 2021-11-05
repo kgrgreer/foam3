@@ -175,8 +175,9 @@ foam.CLASS({
                 approvalRequest = decorateApprovalRequest(x, approvalRequest, obj, capablePayload);
 
                 approvalRequestDAO.put_(getX(), approvalRequest);
-              } catch (Exception e){
-                throw new RuntimeException(e);
+              } catch (Exception e) {
+                foam.nanos.logger.Loggers.logger(x, this).warning(e);
+                throw new RuntimeException(e.getMessage());
               }
             }
 

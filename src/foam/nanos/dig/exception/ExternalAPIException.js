@@ -8,19 +8,11 @@ foam.CLASS({
   name: 'ExternalAPIException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public ExternalAPIException(String message) {
-            super(message);
-          } 
-        `
-        );
-      }
+  javaCode: `
+    public ExternalAPIException(String message) {
+      super(message);
     }
-  ],
+  `,
 
   properties: [
     {

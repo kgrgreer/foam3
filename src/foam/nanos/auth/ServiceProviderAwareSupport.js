@@ -317,17 +317,9 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public ServiceProviderAwareSupport(String spid) {
-            setSpid(spid);
-          }
-        `);
-      }
+  javaCode: `
+    public ServiceProviderAwareSupport(String spid) {
+      setSpid(spid);
     }
-  ]
+  `
 });
-

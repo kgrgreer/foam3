@@ -19,28 +19,21 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public InvalidPasswordException() {
-    super();
-  }
-
-  public InvalidPasswordException(String message) {
-    super(message);
-  }
-
-  public InvalidPasswordException(Throwable cause) {
-    super(cause);
-  }
-
-  public InvalidPasswordException(String message, Throwable cause) {
-    super(message, cause);
-  }
-        `);
-      }
+  javaCode: `
+    public InvalidPasswordException() {
+      super();
     }
-  ]
+
+    public InvalidPasswordException(String message) {
+      super(message);
+    }
+
+    public InvalidPasswordException(Throwable cause) {
+      super(cause);
+    }
+
+    public InvalidPasswordException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

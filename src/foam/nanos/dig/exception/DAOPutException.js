@@ -8,23 +8,15 @@ foam.CLASS({
   name: 'DAOPutException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public DAOPutException(String message) {
-            super(message);
-          }
-
-          public DAOPutException(String message, Throwable cause) {
-            super(message, cause);
-          }
-        `
-        );
-      }
+  javaCode: `
+    public DAOPutException(String message) {
+      super(message);
     }
-  ],
+
+    public DAOPutException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `,
 
   properties: [
     {

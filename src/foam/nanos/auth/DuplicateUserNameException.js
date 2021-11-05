@@ -18,28 +18,21 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public DuplicateUserNameException() {
-    super();
-  }
-
-  public DuplicateUserNameException(String message) {
-    super(message);
-  }
-
-  public DuplicateUserNameException(Throwable cause) {
-    super(cause);
-  }
-
-  public DuplicateUserNameException(String message, Throwable cause) {
-    super(message, cause);
-  }
-        `);
-      }
+  javaCode: `
+    public DuplicateUserNameException() {
+      super();
     }
-  ]
+
+    public DuplicateUserNameException(String message) {
+      super(message);
+    }
+
+    public DuplicateUserNameException(Throwable cause) {
+      super(cause);
+    }
+
+    public DuplicateUserNameException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

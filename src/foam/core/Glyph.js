@@ -20,7 +20,7 @@ foam.CLASS({
       class: 'String',
       expression: function(themeName) {
         if ( ! this.theme ) return '';
-        return this.theme.glyphs[themeName].template;
+        return this.theme.glyphs[themeName] ? this.theme.glyphs[themeName].template : '';
       }
     },
     {
@@ -32,6 +32,7 @@ foam.CLASS({
   methods: [
     function expandSVG(values) {
       var val = this.template;
+      if ( ! val ) return;
       for ( k in values ) if ( values.hasOwnProperty(k) ) {
         let K = k.toUpperCase();
         val = val.replace(

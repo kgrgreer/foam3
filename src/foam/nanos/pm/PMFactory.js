@@ -50,16 +50,7 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-          public final static PM NULLPM__ = new NullPM();
-          `
-        }));
-      }
-    }
-  ]
+  javaCode: `
+    public final static PM NULLPM__ = new NullPM();
+  `
 });

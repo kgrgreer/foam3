@@ -25,31 +25,24 @@ In this current implementation setDelegate must be called last.`,
     'foam.dao.WriteOnlyF3FileJournal'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          // TODO: These convenience constructors should be removed and done using the facade pattern.
-          public JDAO(X x, foam.core.ClassInfo classInfo, String filename) {
-            this(x, new MDAO(classInfo), filename, false);
-          }
-
-          public JDAO(X x, DAO delegate, String filename) {
-            this(x, delegate, filename, false);
-          }
-
-          public JDAO(X x, DAO delegate, String filename, Boolean cluster) {
-            setX(x);
-            setOf(delegate.getOf());
-            setFilename(filename);
-            setCluster(cluster);
-            setDelegate(delegate);
-          }
-        `);
-      }
+  javaCode: `
+    // TODO: These convenience constructors should be removed and done using the facade pattern.
+    public JDAO(X x, foam.core.ClassInfo classInfo, String filename) {
+      this(x, new MDAO(classInfo), filename, false);
     }
-  ],
+
+    public JDAO(X x, DAO delegate, String filename) {
+      this(x, delegate, filename, false);
+    }
+
+    public JDAO(X x, DAO delegate, String filename, Boolean cluster) {
+      setX(x);
+      setOf(delegate.getOf());
+      setFilename(filename);
+      setCluster(cluster);
+      setDelegate(delegate);
+    }
+  `,
 
   properties: [
     {

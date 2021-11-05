@@ -71,57 +71,48 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
-    @Override
-    protected JSONFObjectFormatter initialValue() {
-      JSONFObjectFormatter formatter = new JSONFObjectFormatter();
-      formatter.setOutputShortNames(true);
-      formatter.setOutputDefaultClassNames(false);
-      formatter.setPropertyPredicate(
-        new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
-          new foam.lib.StoragePropertyPredicate(),
-          new foam.lib.ClusterPropertyPredicate()
-        }));
-      formatter.setCalculateDeltaForNestedFObjects(true);
-      return formatter;
-    }
-
-    @Override
-    public FObjectFormatter get() {
-      FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
-
-  protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
-    @Override
-    protected MedusaTransientJSONFObjectFormatter initialValue() {
-      MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
-      formatter.setOutputShortNames(true);
-      formatter.setOutputDefaultClassNames(false);
-      formatter.setCalculateDeltaForNestedFObjects(true);
-      return formatter;
-    }
-
-    @Override
-    public FObjectFormatter get() {
-      FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
-          `
-        }));
+  javaCode: `
+    protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
+      @Override
+      protected JSONFObjectFormatter initialValue() {
+        JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+        formatter.setOutputShortNames(true);
+        formatter.setOutputDefaultClassNames(false);
+        formatter.setPropertyPredicate(
+          new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
+            new foam.lib.StoragePropertyPredicate(),
+            new foam.lib.ClusterPropertyPredicate()
+          }));
+        formatter.setCalculateDeltaForNestedFObjects(true);
+        return formatter;
       }
-    }
-  ],
+
+      @Override
+      public FObjectFormatter get() {
+        FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+
+    protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
+      @Override
+      protected MedusaTransientJSONFObjectFormatter initialValue() {
+        MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
+        formatter.setOutputShortNames(true);
+        formatter.setOutputDefaultClassNames(false);
+        formatter.setCalculateDeltaForNestedFObjects(true);
+        return formatter;
+      }
+
+      @Override
+      public FObjectFormatter get() {
+        FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+  `,
 
   methods: [
     {

@@ -11,18 +11,9 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public PrimaryNotFoundException() {
-    super();
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public PrimaryNotFoundException() {
+      super();
     }
-  ]
+  `
 });
