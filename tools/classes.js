@@ -691,6 +691,7 @@ var classes = [
   'foam.lib.parse.SymbolParser',
   'foam.util.UIDGenerator',
   'foam.util.test.UIDGeneratorTest',
+  'foam.util.test.UIDUniquenessTest',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
