@@ -16,7 +16,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.LastModifiedByAgentNameAware'
   ],
 
   javaImports: [
@@ -352,6 +353,16 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'additionalInformation',
+      order: 130,
+      gridColumns: 6,
+      columnPermissionRequired: true,
+      readPermissionRequired: true
+    },
+    {
+      class: 'String',
+      name: 'lastModifiedByAgentName',
       includeInDigest: true,
       section: 'additionalInformation',
       order: 130,
