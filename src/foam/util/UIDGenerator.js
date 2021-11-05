@@ -65,7 +65,7 @@ foam.CLASS({
     {
       name: 'getNextLong',
       type: 'Long',
-      documentation: `Support 1000 uids per second (1 uid per millisecond).
+      documentation: `Support generating up to 4096 uids per second (3 hex digits, 16^3 = 4096).
                       Use getNextString if throughput is expected to be higher.`,
       javaCode: `
         // TODO: When a ID is longer than 15 digits, it might overflow the long type. Need to figure out what to do in the overflow case.
