@@ -166,7 +166,7 @@ foam.CLASS({
       columnPermissionRequired: true
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       section: 'approvalRequestInformation',
       order: 10,
@@ -1002,7 +1002,7 @@ foam.CLASS({
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
           this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-          
+
           this.finished.pub();
           this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
@@ -1057,7 +1057,7 @@ foam.CLASS({
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
           this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-          
+
           this.finished.pub();
           this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
 
