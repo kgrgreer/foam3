@@ -22,6 +22,21 @@ foam = {
   ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
+  util:     {
+    path: function(root, path, opt_ensure) {
+      var a = path.split('.');
+      var i;
+
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        root = root[a[i]] || ( root[a[i]] = {} );
+        if ( opt_ensure && root == undefined ) {
+          root = root[a[i]] = {};
+        }
+      }
+
+      return root;
+    }
+  },
   language: typeof navigator === 'undefined' ? 'en' : navigator.language,
   next$UID: (function() {
     /* Return a unique id. */
@@ -36,8 +51,7 @@ foam = {
     // capture the details of the script if need be.
 
     // Only execute if the script's flags match the curren runtime flags.
-    if ( m.flags &&
-         globalThis.FOAM_FLAGS ) {
+    if ( m.flags && globalThis.FOAM_FLAGS ) {
       for ( var i = 0 ; i < m.flags.length ; i++ ) {
         if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
           m.code();
@@ -105,13 +119,7 @@ foam.network.sendPacket();
  * @memberof module:foam
  */
 foam.LIB = function LIB(model) {
-  var root = globalThis;
-  var path = model.name.split('.');
-  var i;
-
-  for ( i = 0 ; i < path.length ; i++ ) {
-    root = root[path[i]] || ( root[path[i]] = {} );
-  }
+  var root = foam.util.path(globalThis, model.name, true);
 
   if ( model.constants ) {
     foam.assert(
