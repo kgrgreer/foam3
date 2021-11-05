@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'FUIDAO',
+  name: 'FUIDDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
@@ -30,6 +30,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
+    'foam.util.SafetyUtil',
     'foam.util.UIDGenerator'
   ],
 
@@ -51,11 +53,7 @@ foam.CLASS({
       class: 'Object',
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
-      javaFactory: `
-        return new UIDGenerator.Builder(getX())
-          .setSalt(getNSpec().getName())
-          .build();
-      `
+      javaFactory: 'return new UIDGenerator(getX(), getNSpec().getName());',
     },
     {
       name: 'nSpec',
@@ -64,33 +62,30 @@ foam.CLASS({
     }
   ],
 
+  javaCode: `
+  public FUIDDAO(DAO delegate) {
+    setDelegate(delegate);
+  }
+
+  public FUIDDAO(X x, String salt, DAO delegate) {
+    super(x, delegate);
+    setUIDGenerator(new UIDGenerator(x, salt));
+  }
+  `,
+
   methods: [
     {
       name: 'put_',
       javaCode: `
         var id = getPropertyInfo().get(obj);
         var klass = getPropertyInfo().getValueClass();
-        synchronized (this) {
-          if ( klass == String.class && ((String) id).isBlank() ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextString());
-          } else if ( klass == long.class && ((long) id) == 0L ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
-          }
+        if ( klass == String.class && SafetyUtil.isEmpty((String) id) ) {
+          getPropertyInfo().set(obj, getUIDGenerator().getNextString());
+        } else if ( klass == long.class && ((long) id) == 0L ) {
+          getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
         }
         return getDelegate().put_(x, obj);
       `
     },
-  ],
-
-  axioms: [
-    {
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public FUIDAO(DAO delegate) {
-            setDelegate(delegate);
-          }
-        `);
-      },
-    },
-  ],
+  ]
 });

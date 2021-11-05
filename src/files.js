@@ -187,6 +187,7 @@ FOAM_FILES([
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
   { name: "foam/util/test/UIDGeneratorTest" },
+  { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -312,7 +313,7 @@ FOAM_FILES([
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
   { name: "foam/dao/SyncDAO" },
-  { name: "foam/dao/FUIDAO" },
+  { name: "foam/dao/FUIDDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
   { name: 'foam/nanos/approval/UCJApprovable' },
@@ -353,6 +354,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
   { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },

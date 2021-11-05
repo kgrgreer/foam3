@@ -123,7 +123,7 @@ public class DAOResourceLoader
           EQ(EmailTemplate.LOCALE, locale)
         ));
 
-    if ( ! name.equals("header") && emailTemplate_ != null ) {
+    if ( emailTemplate_ != null ) {
       EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
       String sourceType = (String) templateArgs.get("templateSourceType");
       String templateSource = (String) templateArgs.get("templateSource");
