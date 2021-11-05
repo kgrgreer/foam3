@@ -285,7 +285,6 @@ foam.CLASS({
       var topLevelProps = [];
       //or some kind of outputter might be used to convert property to number of nested properties eg 'address' to [ 'address.city', 'address.region', ... ]
       var columnThatShouldBeDeleted = [];
-
       for ( var i = 0 ; i < data.selectedColumnNames.length ; i++ ) {
         var rootProperty;
         if ( foam.String.isInstance(data.selectedColumnNames[i]) ) {
@@ -297,7 +296,7 @@ foam.CLASS({
             if ( ! axiom )
               axiom = data.of.getAxiomByName(data.selectedColumnNames[i]);
           }
-          if ( ! axiom ) {
+          if ( ! axiom  || foam.dao.DAOProperty.isInstance(axiom) ) {
             continue;
           }
           rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
@@ -343,6 +342,9 @@ foam.CLASS({
           else {
             var axiom =  tableColumns.find(c => c.name === notSelectedColumns[i]);
             axiom = axiom || data.of.getAxiomByName(notSelectedColumns[i]);
+            if ( foam.dao.DAOProperty.isInstance(axiom) ) {
+              continue;
+            }
             rootProperty = [ axiom.name, this.columnHandler.returnAxiomHeader(axiom) ];
           }
 
@@ -791,7 +793,7 @@ foam.CLASS({
         if ( ! this.of || ! this.of.getAxiomByName )
           return [];
         if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
-          return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
+          return prop.of.getAxiomsByClass(foam.core.Property).map(p => { if ( ! foam.dao.DAOProperty.isInstance(p) )  return [p.name, this.columnHandler.returnAxiomHeader(p)] }).filter(e => e != undefined);
         return [];
       }
     },

@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'foam.util.UIDGenerator'
   ],
 
@@ -56,11 +57,6 @@ foam.CLASS({
           .setSalt(getNSpec().getName())
           .build();
       `
-    },
-    {
-      name: 'nSpec',
-      class: 'FObjectProperty',
-      type: 'foam.nanos.boot.NSpec'
     }
   ],
 
@@ -70,12 +66,10 @@ foam.CLASS({
       javaCode: `
         var id = getPropertyInfo().get(obj);
         var klass = getPropertyInfo().getValueClass();
-        synchronized (this) {
-          if ( klass == String.class && ((String) id).isBlank() ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextString());
-          } else if ( klass == long.class && ((long) id) == 0L ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
-          }
+        if ( klass == String.class && SafetyUtil.isEmpty((String) id) ) {
+          getPropertyInfo().set(obj, getUIDGenerator().getNextString());
+        } else if ( klass == long.class && ((long) id) == 0L ) {
+          getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
         }
         return getDelegate().put_(x, obj);
       `

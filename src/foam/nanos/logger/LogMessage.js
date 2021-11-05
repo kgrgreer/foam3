@@ -29,24 +29,15 @@ foam.CLASS({
     'message'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected static ThreadLocal<foam.util.FastTimestamper> timestamper_ = new ThreadLocal<foam.util.FastTimestamper>() {
-    @Override
-    protected foam.util.FastTimestamper initialValue() {
-      foam.util.FastTimestamper ft = new foam.util.FastTimestamper();
-      return ft;
-    }
-  };
-          `
-        }));
+  javaCode: `
+    protected static ThreadLocal<foam.util.FastTimestamper> timestamper_ = new ThreadLocal<foam.util.FastTimestamper>() {
+      @Override
+      protected foam.util.FastTimestamper initialValue() {
+        foam.util.FastTimestamper ft = new foam.util.FastTimestamper();
+        return ft;
       }
-    }
-  ],
+    };
+  `,
 
   properties: [
     {

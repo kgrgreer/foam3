@@ -23,22 +23,13 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public EmailVerificationDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-              setEmailToken((EmailTokenService) x.get("emailToken"));
-            }
-          `
-        );
-      }
+  javaCode: `
+    public EmailVerificationDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
+      setEmailToken((EmailTokenService) x.get("emailToken"));
     }
-  ],
+  `,
 
   methods: [
     {
@@ -51,7 +42,7 @@ foam.CLASS({
         if ( result != null && newUser && ! result.getEmailVerified() ) {
           getEmailToken().generateToken(x, result);
         }
-    
+
         return result;
       `
     }

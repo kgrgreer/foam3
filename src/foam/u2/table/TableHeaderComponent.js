@@ -103,6 +103,7 @@ foam.CLASS({
               callIf(prop.label !== '', function() {
                 this.start()
                   .start('img')
+                    .style({ 'max-width': 'initial' })
                     .attr('src', this.slot(function(view$order) {
                       var order = view$order;
                       if ( prop === order ) {

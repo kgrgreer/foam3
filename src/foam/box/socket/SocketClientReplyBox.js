@@ -29,21 +29,12 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public SocketClientReplyBox(String replyBoxId) {
-    setReplyBoxId(replyBoxId);
-    setCreated(new java.util.Date());
-  }
-        `
-        }));
-      }
+  javaCode: `
+    public SocketClientReplyBox(String replyBoxId) {
+      setReplyBoxId(replyBoxId);
+      setCreated(new java.util.Date());
     }
-  ],
+  `,
 
   methods: [
     {

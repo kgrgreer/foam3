@@ -126,7 +126,6 @@ foam.CLASS({
       }
       java.util.Random random = new java.util.Random();
       int index = random.nextInt(getClients().length);
-getLogger().info("execute,index", index);
       DAO client = (DAO) getClients()[index];
       ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
       if ( cfg == null ) {

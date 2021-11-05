@@ -49,38 +49,29 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public SocketConnectionReplyBox(X x, String key) {
-    setX(x);
-    setKey(key);
-  }
-
-  protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
-    @Override
-    protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
-      foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
-      formatter.setQuoteKeys(true);
-      formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
-      return formatter;
+  javaCode: `
+    public SocketConnectionReplyBox(X x, String key) {
+      setX(x);
+      setKey(key);
     }
 
-    @Override
-    public foam.lib.formatter.FObjectFormatter get() {
-      foam.lib.formatter.FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
-        `
-        }));
+    protected static final ThreadLocal<foam.lib.formatter.FObjectFormatter> formatter_ = new ThreadLocal<foam.lib.formatter.FObjectFormatter>() {
+      @Override
+      protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
+        foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
+        formatter.setQuoteKeys(true);
+        formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
+        return formatter;
       }
-    }
-  ],
+
+      @Override
+      public foam.lib.formatter.FObjectFormatter get() {
+        foam.lib.formatter.FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+  `,
 
   methods: [
     {

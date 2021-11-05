@@ -16,28 +16,19 @@ foam.CLASS({
     'java.util.Arrays'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-  public CapabilityIntercept(String message) {
-    super(message);
-  }
-
-  public CapabilityIntercept(Throwable cause) {
-    super(cause);
-  }
-
-  public CapabilityIntercept(String message, Throwable cause) {
-    super(message, cause);
-  }
-          `
-        );
-      }
+  javaCode: `
+    public CapabilityIntercept(String message) {
+      super(message);
     }
-  ],
+
+    public CapabilityIntercept(Throwable cause) {
+      super(cause);
+    }
+
+    public CapabilityIntercept(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `,
 
   properties: [
     {
