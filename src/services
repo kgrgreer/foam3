@@ -911,7 +911,7 @@ p({
       .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
       .setPm(true)
-      .setSeqNo(true)
+      .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("approvalRequests")
       .setValidated(true)
