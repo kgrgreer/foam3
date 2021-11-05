@@ -579,6 +579,7 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
+      const M = m.toUpperCase(); 
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false, true);
 
@@ -592,17 +593,18 @@ foam.CLASS({
       // CSS because it's already in long form. By checking if */ follows the
       // macro, we can tell if it's already in long form and skip it.
       return val ? css.replace(
-        new RegExp('%' + m + '%(?!\\*/)', 'gi'),
-        '/*%' + m + '%*/ ' + val) : css;
+        new RegExp('%' + M + '%(?!\\*/)', 'g'),
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
+      const M = m.toUpperCase(); 
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false, true);
       return val ? css.replace(
-        new RegExp('/\\*%' + m + '%\\*/[^);!]*', 'gi'),
-        '/*%' + m + '%*/ ' + val) : css;
+        new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function wrapCSS(text, id) {
