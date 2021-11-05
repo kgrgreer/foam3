@@ -28,7 +28,7 @@ public class UIDSupport {
    * the id based on the checksum to further randomize the generated id because
    * the {@link #PERMUTATION_SEQ} is fixed.
    *
-   * The checksum in the id string will be placed at the beginning of the
+   * The checksum in the id string will be replaced at the beginning of the
    * output string and its value is bumped up to avoid leading zeros since they
    * could be lost during long integer uid conversion from and to hex string
    * then mess up the length and permutation sequence when calculating its hash.
