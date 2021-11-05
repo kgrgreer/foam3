@@ -10,11 +10,19 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'java.net.InetAddress',
     'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
   ],
+
+  javaCode: `
+  public UIDGenerator(X x, String salt) {
+    setX(x);
+    setSalt(salt);
+  }
+  `,
 
   properties: [
     {
