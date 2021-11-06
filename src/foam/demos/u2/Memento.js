@@ -32,9 +32,8 @@
 foam.CLASS({
   name: 'Memento',
 
-  imports: [ 'memento_?' ],
-
   properties: [
+    'memento_',
     {
       // memorable object
       name: 'obj'
@@ -118,7 +117,6 @@ foam.CLASS({
       var s = '', set = {};
 
       if ( this.tail ) {
-        s   = this.tail.toString();
         set = this.getBoundNames();
       }
 
@@ -126,9 +124,19 @@ foam.CLASS({
         var value = this.obj[p.name];
         if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
           if ( s ) s += '&';
-          s += (p.shortName || p.name) + '=' + this.obj[p.name];
+          var val = this.obj[p.name];
+          if ( val === undefined ) val = '';
+          s += (p.shortName || p.name) + '=' + val;
         }
       });
+
+      if ( this.tail ) {
+        var s2 = this.tail.toString();
+        if ( s2 ) {
+          if ( s ) return s + '&' + s2;
+          return s2;
+        }
+      }
 
       return s;
     }
@@ -142,6 +150,7 @@ foam.CLASS({
       code: function() {
         /* Called when a memento property is updated. */
         this.usedStr = this.toString();
+        if ( this.memento_ ) this.memento_.update();
       }
     }
   ]
@@ -164,11 +173,20 @@ foam.CLASS({
 foam.CLASS({
   name: 'Memorable',
 
+  imports: [ 'memento_? as parentMemento_' ],
+  exports: [ 'memento_' ],
+
   properties: [
     {
       name: 'memento_',
       hidden: true,
-      factory: function() { return Memento.create({obj: this}, this); }
+      factory: function() { return Memento.create({obj: this, memento_: this.parentMemento_}); }
+    }
+  ],
+
+  methods: [
+    function removeMementoTail() {
+      // TODO
     }
   ]
 });
@@ -206,8 +224,14 @@ foam.CLASS({
       this.br();
       this.add("MENU");
       this.br();
+      this.add('str: ', this.memento_.str$);
+      this.br();
+      this.add('tailStr: ', this.memento_.tailStr$);
+      this.br();
+      this.add('usedStr: ', this.memento_.usedStr$);
+      this.br();
       this.add('Menu: ', this.MENU);
-      //this.add(this.controller$);
+      this.add(this.controller$);
       /*
       this.add(this.slot(function(menu) {
         return this.E().add(this.controller);
@@ -253,6 +277,12 @@ foam.CLASS({
       this.br();
       this.add("CONTROLLER: ", this.daoKey);
       this.br();
+      this.add('str: ', this.memento_.str$);
+      this.br();
+      this.add('tailStr: ', this.memento_.tailStr$);
+      this.br();
+      this.add('usedStr: ', this.memento_.usedStr$);
+      this.br();
       this.add('Mode: ', this.MODE);
       this.add('Id: ', this.ID);
       this.add(this.table);
@@ -297,6 +327,12 @@ foam.CLASS({
       this.br();
       this.add("TABLE");
       this.br();
+      this.add('str: ', this.memento_.str$);
+      this.br();
+      this.add('tailStr: ', this.memento_.tailStr$);
+      this.br();
+      this.add('usedStr: ', this.memento_.usedStr$);
+      this.br();
       this.add('Skip: ',    this.SKIP);
       this.add('Columns: ', this.COLUMNS);
       this.add('Query: ',   this.QUERY);
@@ -335,13 +371,12 @@ foam.CLASS({
     {
       name: 'abc'
     },
-    /*
     {
       class: 'FObjectProperty',
       name: 'menu',
       of: 'Menu',
       factory: function() { return Menu.create({}, this); }
-    }*/
+    }
   ],
 
   methods: [
@@ -360,7 +395,7 @@ foam.CLASS({
       this.br();
       this.add('query: ', this.QUERY);
       this.br();
-//      this.add(this.menu);
+      this.add(this.menu);
     }
   ]
 });
