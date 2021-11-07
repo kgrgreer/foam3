@@ -168,7 +168,6 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
-      PM pm = new PM(this.getClass(), getId());
       try {
         execute(x.put(RUNNER, this));
       } finally {
@@ -216,7 +215,7 @@ foam.CLASS({
         UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
             .setSalt("benchmarkResultDAO")
             .build();
-        String uid = String.valueOf(uidGenerator.getNextLong());
+        String uid = uidGenerator.getNextString();
 
         int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
         int run = 1;
@@ -247,7 +246,9 @@ foam.CLASS({
           if ( getOneTimeSetup() && ! setup ) {
             // set up the benchmark
             logger.info("setup");
+            PM pm = new PM("BenchmarkRunner", benchmark.getId(), "setup");
             benchmark.setup(x, br);
+            pm.log(x);
             setup = true;
           }
           if ( getClearPMs() ) {
@@ -266,12 +267,14 @@ foam.CLASS({
                   if ( ! getOneTimeSetup() ) {
                     // set up the benchmark
                     logger.info("setup");
+                    PM pm = new PM("BenchmarkRunner", benchmark.getId(), "setup");
                     benchmark.setup(x, finalBr);
+                    pm.log(x);
                   }
 
                   long passed = 0;
                   for ( int j = 0 ; j < getExecutionCount() ; j++ ) {
-                    PM pm = new PM("BenchmarkRunner", finalBr.getId());
+                    PM pm = new PM("BenchmarkRunner", benchmark.getId(), "execute");
                     try {
                       X y = x.put(THREAD, tno).put(EXECUTION, j);
                       XLocator.set(y);
