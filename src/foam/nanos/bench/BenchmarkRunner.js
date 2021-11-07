@@ -168,11 +168,12 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
+      long startTime = System.currentTimeMillis();
       try {
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
-        setLastDuration(pm.getTime());
+        setLastDuration(System.currentTimeMillis() - startTime);
 
         ScriptEvent event = new ScriptEvent(x);
         event.setLastRun(this.getLastRun());
