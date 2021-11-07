@@ -91,6 +91,13 @@ foam.CLASS({
       if ( this.memento_ ) {
         this.memento_.tail = this;
         this.str           = this.memento_.tailStr;
+        this.obj.onDetach(() => {
+          // TODO: make own method
+          if ( this.memento_.tail == this ) {
+            this.memento_.tail = null;
+            this.memento_.update();
+          }
+        });
       }
     },
 
