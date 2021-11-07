@@ -1014,7 +1014,7 @@ foam.LIB({
 
       var formattedTime = date.toLocaleTimeString(foam.locale, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
       return  ( timeFirst ? formattedTime + ' ' : '' )
-            + formattedDate 
+            + formattedDate
             + ( ! timeFirst ? ' ' + formattedTime : '' );
     }
   ]
@@ -1266,14 +1266,7 @@ foam.LIB({
       foam.assert(typeof path === 'string',
           'Cannot make a package path of a non-string');
 
-      path = path.split('.');
-      var node = root;
-
-      for ( var i = 0 ; i < path.length ; i++ ) {
-        node = node[path[i]] || ( node[path[i]] = {} );
-      }
-
-      return node;
+      return foam.util.path(root, path, true);
     }
   ]
 });

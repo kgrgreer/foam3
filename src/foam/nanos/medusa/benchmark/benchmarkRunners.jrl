@@ -3,7 +3,7 @@ p({
   id: "DaggerLinkBenchmarkRunner",
   description: "Medusa Dagger Link",
   benchmarkId: "DaggerLinkBenchmark",
-  invocationCount: 10000,
+  executionCount: 10000,
   runPerThread: true,
   oneTimeSetup: true
 })
@@ -12,7 +12,7 @@ p({
   id: "DaggerVerifyBenchmarkRunner",
   description: "Medusa Dagger Verify",
   benchmarkId: "DaggerVerifyBenchmark",
-  invocationCount: 10000,
+  executionCount: 10000,
   runPerThread: true,
   oneTimeSetup: true
 })
@@ -29,6 +29,6 @@ p({
   id: "MedusaPingBenchmarkRunner",
   description: "Medusa Ping",
   benchmarkId: "MedusaPingBenchmark",
-  invocationCount: 10000,
+  executionCount: 10000,
   runPerThread: true
 })
