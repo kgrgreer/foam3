@@ -95,6 +95,16 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
       `
+    },
+    {
+      class: 'Long',
+      name: 'fileOffset',
+      javaGetter: `
+        return getFileLastAccessTime();
+      `,
+      javaSetter: `
+        setFileLastAccessTime(val);
+      `
     }
   ],
 

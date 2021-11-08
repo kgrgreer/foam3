@@ -59,6 +59,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'fileName',
+      storageTransient: true
     },
     {
       class: 'Long',

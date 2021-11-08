@@ -93,34 +93,6 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'inFlightEntries',
-      documentation: 'In Flight',
-      storageTransient: true,
-      visibility: 'RO',
-      javaSetter:`
-        inFlightEntriesIsSet_ = true;
-        return;
-      `,
-      javaGetter:`
-        return inFlight_.get();
-      `
-    },
-    {
-      class: 'Int',
-      name: 'failedEntries',
-      documentation: 'Failed',
-      storageTransient: true,
-      visibility: 'RO',
-      javaSetter:`
-        failedEntriesIsSet_ = true;
-        return;
-      `,
-      javaGetter:`
-        return failed_.get();
-      `
-    },
-    {
-      class: 'Int',
       name: 'loggingThredhold',
       documentation: 'Logging after n times retry fail',
       value: 4
@@ -189,41 +161,10 @@ foam.CLASS({
                                   .build();
         if ( getReplayFailEntry() == false && journal.getFileExist() == false ) {
           journal.createJournalFile();
-          journal.setFileLastAccessTime(0);
+          journal.setFileOffset(0);
         }
         return journal;
 
-      `
-    },
-    {
-      name: 'store',
-      args: 'FObject fobject',
-      javaType: 'SFEntry',
-      documentation: 'Persist SFEntry into Journal.',
-      javaCode: `
-        // Wait for the SF ready to serve.
-        //while ( isReady_.get() == false ) {}
-
-        SFEntry entry = new SFEntry.Builder(getX())
-                              .setObject(fobject)
-                              .build();
-
-        entry.setCreated(new Date());
-
-        if ( getReplayFailEntry() == true ) {
-          long index = entryIndex_.incrementAndGet();
-          entry.setIndex(index);
-          SFFileJournal journal = getJournal(toFileName(entry));
-          return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
-        } else {
-          synchronized ( writeLock_ ) {
-            long index = entryIndex_.incrementAndGet();
-            entry.setIndex(index);
-            entry.setFileName(toFileName(entry));
-            SFFileJournal journal = getJournal(toFileName(entry));
-            return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
-          }
-        }
       `
     },
     {
@@ -234,7 +175,6 @@ foam.CLASS({
         /* Assign initial time and enqueue. */
         e.setScheduledTime(System.currentTimeMillis());
         e.setSf(this);
-        inFlight_.incrementAndGet();
         ((SFManager) getManager()).enqueue(e);
       `
     },
@@ -243,6 +183,8 @@ foam.CLASS({
       args: 'FObject fobject',
       documentation: 'write entry to journal and forward',
       javaCode: `
+        // Wait for the SF ready to serve.
+        //while ( isReady_.get() == false ) {}
         SFEntry entry = new SFEntry.Builder(getX())
                             .setObject(fobject)
                             .build();
@@ -286,7 +228,6 @@ foam.CLASS({
         } else {
           updateJournalOffsetAndForwardNext(e);
         }
-        inFlight_.decrementAndGet();
       `
     },
     {
@@ -309,10 +250,10 @@ foam.CLASS({
       documentation: 'try to update byte offset to file atime',
       javaCode: `
         SFFileJournal journal = fetchJournal(e);
-        long atime = journal.getFileLastAccessTime();
+        long atime = journal.getFileOffset();
         long entrySize = journal.calculateSize(e);
         long offset = atime + entrySize;
-        journal.setFileLastAccessTime(offset);
+        journal.setFileOffset(offset);
       `
     },
     {
@@ -333,8 +274,6 @@ foam.CLASS({
             //update file a-time.
             updateJournalOffsetAndForwardNext(e);
           }
-          inFlight_.decrementAndGet();
-          failed_.incrementAndGet();
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
@@ -467,19 +406,19 @@ foam.CLASS({
                                       .build();
 
               journalMap_.put(filename, journal);
-              if ( journal.getFileLastAccessTime() == journal.getFileSize() ) continue;
+              if ( journal.getFileOffset() == journal.getFileSize() ) continue;
 
               List<SFEntry> list = new LinkedList<SFEntry>();
               DAO tempDAO = new TempDAO(x, list);
 
 
               // Record atime, because read will change the atime.
-              long offset = journal.getFileLastAccessTime();
+              long offset = journal.getFileOffset();
 
               journal.replayFrom(x, tempDAO, offset);
 
               // Set back the offset.
-              journal.setFileLastAccessTime(offset);
+              journal.setFileOffset(offset);
 
               for ( int i = 0 ; i < list.size() ; i++ ) {
                 SFEntry e = list.get(i);
@@ -597,12 +536,9 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             protected Logger logger_ = null;
-            final protected AtomicInteger fileIndex_ = new AtomicInteger(0);
             final protected AtomicInteger entryCounter_ = new AtomicInteger(0);
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
-            final protected AtomicInteger inFlight_ = new AtomicInteger(0);
-            final protected AtomicInteger failed_ = new AtomicInteger(0);
             final protected Object writeLock_ = new Object();
             final protected Object onHoldListLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);

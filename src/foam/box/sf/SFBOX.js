@@ -50,8 +50,8 @@ foam.CLASS({
     {
       name: 'send',
       javaCode: `
-      SFEntry e = this.store((FObject) msg);
-      this.forward(e);
+      // SFEntry e = this.store((FObject) msg);
+      // this.forward(e);
       `
     },
     {
