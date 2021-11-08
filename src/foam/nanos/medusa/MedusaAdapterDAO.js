@@ -144,7 +144,7 @@ and waits on a response.`,
           entry.setDop(dop);
           entry.setObject(obj);
           entry.setObjectId(id);
-          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(x, entry);
+          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
           PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
           registry.wait(x, (Long) entry.getId());
           pmWait.log(x);
@@ -171,7 +171,7 @@ and waits on a response.`,
           entry.setDop(dop);
           entry.setObject(obj);
           entry.setObjectId(id);
-          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(x, entry);
+          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
           registry.wait(x, (Long) entry.getId());
 
           if ( getDelegate().find_(x, id) != null ) {
