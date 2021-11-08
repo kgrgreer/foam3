@@ -275,7 +275,17 @@ foam.CLASS({
 //      console.log("********************** HEHEHEHEH " + self.SUPER_CLASSES[self.extends]);
 //      console.log("********************** EXTENDS " + self.extends);
 //        while ( )
+//        console.log("OUTPUTEROUTPUTEROUTPUTEROUTPUTER " + o.class);
         var extendedCls = self.SUPER_CLASSES[self.extends];
+        if ( self.name == 'AbstractSink' && f.name == 'put') {
+//          console.log("lplplplplplplplplplplplplplplplplplplp ARRAYSINK ");
+//          console.log("super method: " + superMethod);
+          console.log("f method: " + f.name);
+//          console.log("method name " + superMethod.name);
+//          console.log("super code: " + superMethod.javaCode);
+          console.log("f code: " + f.javaCode);
+//            console.log("equal?: " + superMethod.javaCode != f.javaCode);
+        }
         if ( extendedCls != undefined ) {
           var superMethod = extendedCls.methods.find(obj => {
             return obj.name == f.name && foam.util.equals(obj.args, f.args) && obj.type == f.type && ! obj.abstract;
@@ -284,7 +294,17 @@ foam.CLASS({
             o.out(f, '\n');
             return;
           }
-          if ( superMethod.javaCode != f.javaCode ) o.out(f, '\n');
+
+          if ( self.name == 'ArraySink' && superMethod.name == 'put') {
+                      console.log("lplplplplplplplplplplplplplplplplplplp ARRAYSINK ");
+                      console.log("super method: " + superMethod);
+                      console.log("f method: " + f.name);
+                      console.log("method name " + superMethod.name);
+                      console.log("super code: " + superMethod.body.data);
+                      console.log("f code: " + f.body.data);
+          //            console.log("equal?: " + superMethod.javaCode != f.javaCode);
+                    }
+          if ( superMethod.body.data != f.body.data ) o.out(f, '\n');
 //          console.log("!!1!!!!!!!" + self.SUPER_CLASSES);
 //          extendedCls.methods.forEach(function(s) {
 ////            console.log("!!1!!!!!!!" + s.javaCode);
