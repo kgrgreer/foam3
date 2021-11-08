@@ -30,6 +30,7 @@ foam.INTERFACE({
   ]
 });
 
+
 /**
  * This refinement is necessary because of the way the class loader works.
  * There wasn't a way in which User could implement LastModifiedByAware and the

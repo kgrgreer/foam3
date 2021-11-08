@@ -81,7 +81,7 @@ foam.CLASS({
     'status',
     'threadCount',
     'runPerThread',
-    'invocationCount',
+    'executionCount',
     'benchmarkId'
   ],
 
@@ -97,9 +97,9 @@ foam.CLASS({
       value: 'THREAD'
     },
     {
-      documentation: 'Context key informaing the execute method which invocation the current run is.',
-      name: 'INVOCATION',
-      value: 'INVOCATION'
+      documentation: 'Context key informaing the execute method which execution the current run is.',
+      name: 'EXECUTION',
+      value: 'EXECUTION'
     }
   ],
 
@@ -120,7 +120,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'invocationCount',
+      name: 'executionCount',
       value: 1000
     },
     {
@@ -131,6 +131,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'oneTimeSetup'
+    },
+    {
+      class: 'Boolean',
+      name: 'oneTimeTeardown'
     },
     {
       class: 'Reference',
@@ -164,12 +168,12 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
-      PM pm = new PM(this.getClass(), getId());
+      long startTime = System.currentTimeMillis();
       try {
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
-        setLastDuration(pm.getTime());
+        setLastDuration(System.currentTimeMillis() - startTime);
 
         ScriptEvent event = new ScriptEvent(x);
         event.setLastRun(this.getLastRun());
@@ -212,7 +216,7 @@ foam.CLASS({
         UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
             .setSalt("benchmarkResultDAO")
             .build();
-        String uid = String.valueOf(uidGenerator.getNextLong());
+        String uid = uidGenerator.getNextString();
 
         int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
         int run = 1;
@@ -224,6 +228,7 @@ foam.CLASS({
         }
 
         boolean setup = false;
+        boolean teardown = false;
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
@@ -237,11 +242,14 @@ foam.CLASS({
           br.setName(this.getId());
           br.setThreads(threads);
 
-          if ( ! getOneTimeSetup() ||
-               getOneTimeSetup() && ! setup ) {
+          final BenchmarkResult finalBr = br;
+
+          if ( getOneTimeSetup() && ! setup ) {
             // set up the benchmark
             logger.info("setup");
+            PM pm = new PM("BenchmarkRunner", benchmark.getId(), "setup");
             benchmark.setup(x, br);
+            pm.log(x);
             setup = true;
           }
           if ( getClearPMs() ) {
@@ -257,22 +265,33 @@ foam.CLASS({
             Thread thread = new Thread(group, new Runnable() {
                 @Override
                 public void run() {
+                  if ( ! getOneTimeSetup() ) {
+                    // set up the benchmark
+                    logger.info("setup");
+                    PM pm = new PM("BenchmarkRunner", benchmark.getId(), "setup");
+                    benchmark.setup(x, finalBr);
+                    pm.log(x);
+                  }
+
                   long passed = 0;
-                  for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
+                  for ( int j = 0 ; j < getExecutionCount() ; j++ ) {
+                    PM pm = new PM("BenchmarkRunner", benchmark.getId(), "execute");
                     try {
-                      X y = x.put(THREAD, tno).put(INVOCATION, j);
+                      X y = x.put(THREAD, tno).put(EXECUTION, j);
                       XLocator.set(y);
                       benchmark.execute(y);
                       passed++;
                     } catch (Throwable t) {
+                      pm.error(x, t.getMessage());
                       fail.incrementAndGet();
                       Throwable e = t;
                       if ( t instanceof RuntimeException && t.getCause() != null ) {
                         e = t.getCause();
                       }
-                      logger.error(e.getMessage());
+                      logger.error("thread", tno, "execution", j, e.getMessage());
                       logger.debug(e);
                     } finally {
+                      pm.log(x);
                       XLocator.set(null);
                     }
                   }
@@ -280,6 +299,11 @@ foam.CLASS({
 
                   // count down the latch when finished
                   latch.countDown();
+
+                  if ( ! getOneTimeTeardown() ) {
+                    logger.info("teardown");
+                    benchmark.teardown(x, finalBr);
+                  }
                 }
               }) {
                 @Override
@@ -302,7 +326,7 @@ foam.CLASS({
           // get number of threads completed and duration
           // print out transactions per second
           long  endTime  = System.currentTimeMillis();
-          float complete = (float) (threads * getInvocationCount());
+          float complete = (float) (threads * getExecutionCount());
           float duration = ((float) (endTime - startTime) / 1000.0f);
           br.setPass(pass.get());
           br.setFail(fail.get());
@@ -310,8 +334,11 @@ foam.CLASS({
           br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
           br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
 
-          logger.info("teardown");
-          benchmark.teardown(x, br);
+          if ( getOneTimeTeardown() && ! teardown ) {
+            logger.info("teardown");
+            benchmark.teardown(x, br);
+            teardown = true;
+          }
 
           br = (BenchmarkResult) getBenchmarkResults(x).put(br);
 

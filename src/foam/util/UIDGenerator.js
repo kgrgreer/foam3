@@ -10,11 +10,19 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'java.net.InetAddress',
     'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
   ],
+
+  javaCode: `
+  public UIDGenerator(X x, String salt) {
+    setX(x);
+    setSalt(salt);
+  }
+  `,
 
   properties: [
     {
@@ -65,6 +73,8 @@ foam.CLASS({
     {
       name: 'getNextLong',
       type: 'Long',
+      documentation: `Support generating up to 4096 uids per second (3 hex digits, 16^3 = 4096).
+                      Use getNextString if throughput is expected to be higher.`,
       javaCode: `
         // TODO: When a ID is longer than 15 digits, it might overflow the long type. Need to figure out what to do in the overflow case.
         try {
