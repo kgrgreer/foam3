@@ -95,7 +95,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['Throwable'],
       code: function(x) {
-        return eval(this.code);
+        return eval('(async () => {' + this.code + '})()');
       },
       args: [
         {
@@ -168,7 +168,7 @@ foam.CLASS({
             };
 
             with ( { log: log, print: log, x: this.__context__, test: test } ) {
-              Promise.resolve(eval(this.code)).then(() => {
+              Promise.resolve(eval('(async () => {' + this.code + '})()')).then(() => {
                 updateStats();
                 resolve();
               }, (err) => {
