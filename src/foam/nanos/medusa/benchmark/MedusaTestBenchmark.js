@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
-  name: 'MedusaBenchmark',
+  name: 'MedusaTestBenchmark',
   extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [

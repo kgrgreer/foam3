@@ -7,8 +7,8 @@ p({
   id: "DaggerVerifyBenchmark"
 })
 p({
-  class: "foam.nanos.medusa.benchmark.MedusaBenchmark",
-  id: "MedusaBenchmark"
+  class: "foam.nanos.medusa.benchmark.MedusaTestBenchmark",
+  id: "MedusaTestBenchmark"
 })
 p({
   class: "foam.nanos.medusa.benchmark.MedusaPingBenchmark",

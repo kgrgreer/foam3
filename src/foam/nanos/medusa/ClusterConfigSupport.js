@@ -103,12 +103,6 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
-      documentation: 'Debugging tool to build the list of instances an command passes through.',
-      name: 'trace',
-      class: 'Boolean',
-      value: true
-    },
-    {
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',

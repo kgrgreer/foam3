@@ -18,10 +18,10 @@ p({
 })
 p({
   class: "foam.nanos.bench.BenchmarkRunner",
-  id: "MedusaBenchmarkRunner",
+  id: "MedusaTestBenchmarkRunner",
   description: "Medusa Test Entry Creation",
-  benchmarkId: "MedusaBenchmark",
-  executionCount: 10000,
+  benchmarkId: "MedusaTestBenchmark",
+  invocationCount: 10000,
   runPerThread: true
 })
 p({

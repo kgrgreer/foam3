@@ -233,7 +233,7 @@ This is the heart of Medusa.`,
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
-          ((DAO) x.get("localMedusaEntryDAO")).cmd(new ReplayCompleteCmd());
+          ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
       } finally {
         pm.log(x);
