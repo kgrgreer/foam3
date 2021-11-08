@@ -119,8 +119,7 @@ foam.CLASS({
     'query',
     {
       class: 'Boolean',
-      name: 'showThisRootOnSearch',
-      value: true
+      name: 'showThisRootOnSearch'
     },
     {
       class: 'Array',
