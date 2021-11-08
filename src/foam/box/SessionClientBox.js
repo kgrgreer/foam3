@@ -14,9 +14,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
     'group',
-    'auth',
     'loginSuccess',
     'requestLogin',
     'sessionTimer',
@@ -58,7 +58,7 @@ foam.CLASS({
           // session. Therefore we reset the client state and ask them to log
           // in again.
           var promptlogin = await this.auth.check(null, 'auth.promptlogin');
-          var authResult =  await this.auth.check(null, '*');
+          var authResult  = await this.auth.check(null, '*');
 
           if ( this.loginSuccess && ( ! promptlogin || authResult ) ) {
             if ( this.ctrl ) this.ctrl.remove();
