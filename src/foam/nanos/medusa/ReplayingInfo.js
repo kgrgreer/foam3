@@ -13,7 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.util.HashMap',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Map'
   ],
 
@@ -175,7 +175,7 @@ foam.CLASS({
     {
       name: 'replayNodes',
       class: 'Map',
-      javaFactory: 'return new HashMap();',
+      javaFactory: 'return new ConcurrentHashMap();',
       visibility: 'RO'
     },
     {

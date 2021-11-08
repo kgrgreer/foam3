@@ -129,7 +129,7 @@ foam.CLASS({
     {
       name: 'send',
       code: function send(msg) {
-        msg.attributes[this.SESSION_KEY] = this.jsSessionID;
+        msg.attributes[this.SESSION_KEY] = this.sessionID;
 
         msg.attributes.replyBox.localBox = this.SessionReplyBox.create({
           msg:       msg,

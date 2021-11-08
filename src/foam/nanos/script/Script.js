@@ -369,7 +369,7 @@ foam.CLASS({
         };
         try {
           with ({ log: log, print: log, x: this.__context__ })
-          return Promise.resolve(eval(this.code));
+            return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
           return Promise.reject(err);
