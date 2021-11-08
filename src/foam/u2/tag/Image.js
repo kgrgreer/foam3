@@ -66,8 +66,8 @@ foam.CLASS({
       name: 'displayHeight',
       attribute: true
     },
-    ['alpha', 1.0], 
-    ['role', 'presentation']
+    ['alpha', 1.0],
+    'role'
   ],
 
   methods: [
