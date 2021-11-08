@@ -1092,6 +1092,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.core',
   name: 'FUIDProperty',
@@ -1100,14 +1101,11 @@ foam.CLASS({
   properties: [
     {
       name: 'adapt',
-      value: function(_, a, p) {
-        var s = typeof a === 'number'   ? String(a)                :
-                a && a.toString         ? a.toString()             :
-                                          ''                       ;
-        return s.trim();
+      value: function(_, a) {
+        return a ? a.toString().trim() : '';
       }
     },
     [ 'type', 'String' ],
-    [ 'value', '' ],
+    [ 'value', '' ]
   ]
 });
