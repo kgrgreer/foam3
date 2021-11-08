@@ -1104,7 +1104,7 @@ foam.CLASS({
         var s = typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
-        return p.trim ? s.trim() : s;
+        return s.trim();
       }
     },
     [ 'type', 'String' ],
