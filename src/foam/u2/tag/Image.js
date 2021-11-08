@@ -20,8 +20,44 @@ foam.CLASS({
   name: 'Image',
   extends: 'foam.u2.View',
 
+  imports: [ 'theme' ], //needed?
+
+  requires: [
+    'foam.net.HTTPRequest',
+    'foam.u2.HTMLView'
+  ],
+
+  css: `
+    ^ .foam-u2-HTMLView{
+      padding: 0;
+    }
+
+    ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    ^svgIcon svg {
+      height: 100%;
+    }
+
+    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    these ensure those are respected rather than imposing new dimensions */
+    ^imgSVGIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ^imgSVGIcon svg {
+      height: initial;
+    }
+  `,
+
   properties: [
-    ['nodeName', 'img'],
+    {
+      class: 'GlyphProperty',
+      name: 'glyph'
+    },
     {
       name: 'displayWidth',
       attribute: true
@@ -30,18 +66,50 @@ foam.CLASS({
       name: 'displayHeight',
       attribute: true
     },
-    ['alpha', 1.0]
+    ['alpha', 1.0],
+    'role'
   ],
 
   methods: [
     function render() {
-      this.
-        attrs({ src: this.data$ }).
-        style({
-          height:  this.displayHeight$,
-          width:   this.displayWidth$,
-          opacity: this.alpha$
-        });
+      this
+        .addClass(this.myClass())
+        .add(this.slot(function(data, glyph, displayWidth, displayHeight, alpha) {
+          if ( glyph ) {
+            var indicator = glyph.clone(this).expandSVG();
+            this.start(this.HTMLView, { data: indicator })
+              .attrs({ role: this.role })
+              .addClass(this.myClass('SVGIcon'))
+              .end();
+          } else if ( data?.endsWith('svg') ) {
+            var req = this.HTTPRequest.create({
+              method: 'GET',
+              path: data,
+              cache: true
+            });
+            var res = req.send().then(payload => payload.resp.text());
+            return this.E()
+              .start(this.HTMLView, { data: res })
+                .style({
+                  height:  displayHeight,
+                  width:   displayWidth,
+                  opacity: alpha
+                })
+                .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+                .attrs({ role: this.role })
+              .end()
+          } else {
+            return this.E()
+              .start('img')
+                .attrs({ src: data, role: this.role })
+                .style({
+                  height:  displayHeight,
+                  width:   displayWidth,
+                  opacity: alpha
+                })
+              .end();
+          }
+        }));
     }
   ]
 });
