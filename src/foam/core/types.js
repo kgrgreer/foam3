@@ -1087,6 +1087,7 @@ foam.CLASS({
         if ( ! foam.core.FObject.isInstance(v) ) {
           return prop.Glyph.create(v);
         }
+        return v;
       }
     }
   ]
