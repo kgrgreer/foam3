@@ -45,9 +45,10 @@ c.select().then(function(a1) {
     'sessionID as jsSessionID'
   ],
 
-  exports: [
-    'sessionId as sessionID'
-  ],
+  // NOTE: Do not export, will invalidate the browser's current session
+  // exports: [
+  //   'sessionId as sessionID'
+  // ],
 
   requires: [
     'foam.box.SessionClientBox',
@@ -93,20 +94,22 @@ c.select().then(function(a1) {
       code: function() {
         this.SUPER();
 
+        // Create explicit sub context rather than an 'export'.
+        // 'export' will invalidate the browser's current session.
+        var x = this.__subContext__.createSubContext({
+          sessionID: this.sessionId
+        });
+
         var box = this.HTTPBox.create({
           authorizationType: this.HTTPAuthorizationType.BEARER,
           url: 'service/'+this.serviceName
-        });
-
-        box = this.SessionClientBox.create({
-          delegate: box
-        });
+        }, x);
 
         this.delegate = this.ClientDAO.create({
           name: this.serviceName,
           of: this.__subContext__[this.serviceName].of,
           delegate: box
-        });
+        }, x);
       },
       javaCode: `
       X x = getX();
