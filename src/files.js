@@ -301,6 +301,7 @@ FOAM_FILES([
   { name: "foam/dao/grid/ManyToManyGridRecord" },
   { name: "foam/dao/grid/ManyToManyGridDAO" },
   { name: "foam/dao/LazyCacheDAO" },
+  { name: "foam/dao/SessionClientDAO" },
   { name: "foam/dao/TTLCachingDAO"},
   { name: "foam/dao/TTLSelectCachingDAO"},
   { name: "foam/dao/CachingDAO" },
