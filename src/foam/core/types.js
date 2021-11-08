@@ -1091,3 +1091,23 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'FUIDProperty',
+  extends: 'Property',
+
+  properties: [
+    {
+      name: 'adapt',
+      value: function(_, a, p) {
+        var s = typeof a === 'number'   ? String(a)                :
+                a && a.toString         ? a.toString()             :
+                                          ''                       ;
+        return s.trim();
+      }
+    },
+    [ 'type', 'String' ],
+    [ 'value', '' ],
+  ]
+});
