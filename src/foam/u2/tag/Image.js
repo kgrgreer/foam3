@@ -20,6 +20,8 @@ foam.CLASS({
   name: 'Image',
   extends: 'foam.u2.View',
 
+  imports: [ 'theme' ], //needed?
+
   requires: [
     'foam.net.HTTPRequest',
     'foam.u2.HTMLView'
@@ -53,6 +55,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'GlyphProperty',
+      name: 'glyph'
+    },
+    {
       name: 'displayWidth',
       attribute: true
     },
@@ -68,8 +74,14 @@ foam.CLASS({
     function render() {
       this
         .addClass(this.myClass())
-        .add(this.slot(function(data, displayWidth, displayHeight, alpha) {
-          if ( data.endsWith('svg') ) {
+        .add(this.slot(function(data, glyph, displayWidth, displayHeight, alpha) {
+          if ( glyph ) {
+            var indicator = glyph.clone(this).expandSVG();
+            this.start(this.HTMLView, { data: indicator })
+              .attrs({ role: this.role })
+              .addClass(this.myClass('SVGIcon'))
+              .end();
+          } else if ( data?.endsWith('svg') ) {
             var req = this.HTTPRequest.create({
               method: 'GET',
               path: data,

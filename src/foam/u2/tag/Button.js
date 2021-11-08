@@ -385,12 +385,10 @@ foam.CLASS({
     async function addContent() {
       /** Add text or icon to button. **/
       var self = this;
-
-      if ( this.themeIcon && this.theme ) {
-        var indicator = this.themeIcon.clone(this).expandSVG();
-        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).addClass(this.myClass('SVGIcon')).end();
+      if ( ( this.themeIcon && this.theme ) ) {
+        this.tag({ class: 'foam.u2.tag.Image', glyph: this.themeIcon });
       } else if ( this.icon ) {
-        this.tag({ class: 'foam.u2.tag.Image', data: this.icon});
+        this.tag({ class: 'foam.u2.tag.Image', data: this.icon });
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.addClass(this.action.name);
