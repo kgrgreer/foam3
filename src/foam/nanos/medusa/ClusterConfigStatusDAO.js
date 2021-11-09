@@ -142,10 +142,9 @@ foam.CLASS({
       int group = 0;
       int groups = support.getNodeGroups();
       for ( ClusterConfig node : nodes ) {
-       int index = group % groups;
-       group = (group + 1) % groups;
-
-       if ( node.getBucket() > 0 ) {
+        int index = group % groups;
+        group = (group + 1) % groups;
+        if ( node.getBucket() > 0 ) {
           index = node.getBucket() -1;
         }
         if ( index >= buckets.size() ) {
