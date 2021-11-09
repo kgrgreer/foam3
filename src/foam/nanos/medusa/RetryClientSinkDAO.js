@@ -138,7 +138,7 @@ foam.CLASS({
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
       Alarm alarm = null;
       try {
-//        while ( true ) {
+        while ( true ) {
           try {
             if ( DOP.PUT == dop ) {
               return getDelegate().put_(x, (FObject)obj);
@@ -155,39 +155,37 @@ foam.CLASS({
             throw e;
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
-            pm.error(x, t);
-            throw t;
-            // if ( getMaxRetryAttempts() > -1 &&
-            //      retryAttempt >= getMaxRetryAttempts() ) {
-            //   getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
-            //   if ( alarm == null ) {
-            //     alarm = new Alarm(this.getClass().getSimpleName()+"."+getName(), AlarmReason.TIMEOUT);
-            //    ((DAO) x.get("alarmDAO")).put_(x, alarm);
-            //   }
-            //   pm.error(x, "Retry limit reached.", t);
-            //   throw new RuntimeException("Rejected, retry limit reached.", t);
-            // }
-            // retryAttempt += 1;
+            if ( getMaxRetryAttempts() > -1 &&
+                 retryAttempt >= getMaxRetryAttempts() ) {
+              getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
+              if ( alarm == null ) {
+                alarm = new Alarm(this.getClass().getSimpleName()+"."+getName(), AlarmReason.TIMEOUT);
+               ((DAO) x.get("alarmDAO")).put_(x, alarm);
+              }
+              pm.error(x, "Retry limit reached.", t);
+              throw new RuntimeException("Rejected, retry limit reached.", t);
+            }
+            retryAttempt += 1;
 
-            // // delay
-            // try {
-            //   retryDelay *= 2;
-            //   if ( retryDelay > getMaxRetryDelay() ) {
-            //     retryDelay = 10;
-            //   }
-            //   getLogger().info("retry attempt", retryAttempt, "delay", retryDelay);
-            //   Thread.sleep(retryDelay);
-            // } catch(InterruptedException e) {
-            //   Thread.currentThread().interrupt();
-            //   pm.error(x, t);
-            //   throw t;
-            // }
+            // delay
+            try {
+              retryDelay *= 2;
+              if ( retryDelay > getMaxRetryDelay() ) {
+                retryDelay = 10;
+              }
+              getLogger().info("retry attempt", retryAttempt, "delay", retryDelay);
+              Thread.sleep(retryDelay);
+            } catch(InterruptedException e) {
+              Thread.currentThread().interrupt();
+              pm.error(x, t);
+              throw t;
+            }
           }
-          // if ( alarm != null ) {
-          //   alarm.setIsActive(false);
-          //   ((DAO) x.get("alarmDAO")).put_(x, alarm);
-          // }
-//        }
+          if ( alarm != null ) {
+            alarm.setIsActive(false);
+            ((DAO) x.get("alarmDAO")).put_(x, alarm);
+          }
+        }
       } finally {
         pm.log(x);
       }
