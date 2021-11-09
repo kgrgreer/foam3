@@ -306,7 +306,7 @@ foam.CLASS({
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
         if ( d ) self.data = d;
       });
-      if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
+      if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) {
         self.edit();
       } else {
         if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
