@@ -536,7 +536,6 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             protected Logger logger_ = null;
-            final protected AtomicInteger entryCounter_ = new AtomicInteger(0);
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected Object writeLock_ = new Object();
