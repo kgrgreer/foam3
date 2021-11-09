@@ -189,6 +189,8 @@ foam.CLASS({
       },
       code: function() {
         if ( ! this.stack ) return;
+        // Wait to get data before loading edit
+        if ( ! this.data ) return;
 
         this.stack.push(this.StackBlock.create({
           view: {
@@ -304,7 +306,11 @@ foam.CLASS({
       // Get a fresh copy of the data, especially when we've been returned
       // to this view from the edit view on the stack.
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
-        if ( d ) self.data = d;
+        if ( d ) { 
+          self.data = d;
+          if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) 
+            self.edit();
+        }
       });
       if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) {
         self.edit();
