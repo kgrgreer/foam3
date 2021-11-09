@@ -24,6 +24,15 @@ foam.CLASS({
   }
   `,
 
+  constants: [
+    {
+      documentation: 'Epoch of this feature - 2021 Nov 1',
+      name: 'EPOCH',
+      type: 'Long',
+      value: 1635739200000
+    }
+  ],
+
   properties: [
     {
       name: 'seqNo',
@@ -32,7 +41,7 @@ foam.CLASS({
     {
       name: 'lastSecondCalled',
       class: 'Long',
-      javaFactory: 'return System.currentTimeMillis() / 1000;'
+      javaFactory: 'return (System.currentTimeMillis() - EPOCH) / 1000;'
     },
     {
       name: 'salt',
@@ -102,8 +111,8 @@ foam.CLASS({
         var id = new StringBuilder();
 
         // 8 bits timestamp
-        long curSec = System.currentTimeMillis() / 1000;
-        id.append(toHexString(curSec));
+        long curSec = (System.currentTimeMillis() - EPOCH) / 1000;
+        id.append(toHexString(curSec, 8));
 
         // At least 2 bits sequence
         synchronized (this) {
