@@ -375,7 +375,7 @@ foam.CLASS({
         field({
           name: isSet,
           type: 'boolean',
-          visibility: 'private',
+          visibility: 'protected',
           initializer: 'false;'
         }).
         method({

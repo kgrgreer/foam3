@@ -263,7 +263,21 @@ foam.CLASS({
 
       this.fields.sort(function(o1, o2) {
         return foam.Number.compare(o1.order, o2.order);
-      }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
+      }).forEach(function(f) {
+        if ( ! self.isEnum || ! f.static ) {
+          if ( extendedCls != undefined ) {
+            var superField = extendedCls.fields.find(obj => {
+              return obj.name == f.name && obj.type == f.type;
+            });
+            if ( superField == undefined ) {
+              o.out(f, '\n');
+              return;
+            }
+          } else {
+            o.out(f, '\n');
+          }
+        }
+      });
 
       var self = this;
       this.methods.forEach(function(f) {
