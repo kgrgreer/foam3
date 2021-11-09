@@ -306,6 +306,8 @@
       code: function() {
         this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
+        // Don't clear loadingPages_ here since they are being 
+        // loaded and will have latest data anyway
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
