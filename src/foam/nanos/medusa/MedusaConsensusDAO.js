@@ -257,7 +257,11 @@ This is the heart of Medusa.`,
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
-       `
+      // verify medusaEntryMediatorDAO is available.
+      if ( getX().get("medusaEntryMediatorDAO") == null ) {
+        throw new RuntimeException("DAO not found: medusaEntryMediatorDAO");
+      }
+      `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
