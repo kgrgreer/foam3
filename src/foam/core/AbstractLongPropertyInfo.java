@@ -101,7 +101,7 @@ public abstract class AbstractLongPropertyInfo
   }
 
   public boolean isDefaultValue(Object o) {
-    return foam.util.SafetyUtil.compare(get_(o), 0) == 0;
+    return foam.util.SafetyUtil.compare(get_(o), 0L) == 0;
   }
 
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {

@@ -1064,3 +1064,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFac
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.VERIFY.label",target:"Verifique"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableView.MESSAGE_OF",target:"do"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.UnstyledTableGroup.EMPTY_MSG",target:"Não"})

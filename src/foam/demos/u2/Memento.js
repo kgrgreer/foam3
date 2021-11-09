@@ -7,101 +7,145 @@
 //   eliminate need for implementing Memorable by having property install!
 //     -- maybe a bad idea
 
+// IDEA:
+// traverse from top-level object?
+//   what about intermediate objects that don't know they're memorable?
+//   ?? two modes: properties vs subContext?
+// use sub-context?
+//   What about when merging more than one memorable child?
+// What if frames were memorable objects?
+// Can we merge Memento and Memorable and avoid having two objects?
+// Memorable: mementoStr_, mementoBindings_, mementoFreeBindings_, memento_ (parent memento), exports as memento_
+// memProps_, memStr_, memBindings_, memFreeBindings_, memento_, exports as memento_
+
+// Workable?
+// if str updates -> bindings update -> free bindings update -> pass to child bindings
+// if property updates, how to update top-level String?
+// if property changes, update bindings -> update parent free bindings -> recursively, at top, update str
+
+// Maybe get rid of bindings and freebindings and just use str and tail?
+// need a top-level updateStr method? or tail goes down and then back up?
+
+// explicitly create multiple sub-contexts (siblings) when required?
+
+
 foam.CLASS({
   name: 'Memento',
 
   properties: [
+    'memento_',
     {
-      // Stores all bindings, even those that aren't currently being used.
-      // Store as an array of [key, value] pairs.
-      // An array is used instead of a map because duplicates are allowed.
-      name: 'bindings',
-      factory: function() { return []; }
+      // memorable object
+      name: 'obj'
     },
     {
-      name: 'frames',
-      factory: function() { return []; }
+      name: 'props',
+      factory: function() {
+        return this.obj.cls_.getAxiomsByClass(foam.core.Property).filter(p => p.memorable);
+      }
     },
     {
       class: 'String',
       name: 'str',
       displayWidth: 100,
       postSet: function(_, s) {
-        // parser & separated string of key=value bindings and store in this.bindings
-        var m = [];
+        console.log('STR: ', s);
+        // parser & separated string of key=value bindings and store in b
+        var bs = [];
+
         s.split('&').forEach(p => {
           var [k,v] = p.split('=');
-          m.push([k, v]);
+          bs.push([k, v]);
         });
-        this.bindings = m;
 
-        // Map of key->start pos bindings, is updated as bindings are consumed.
-        var ps = {};
-
-        // Update frame bindings
-        for ( var i = 0 ; i < this.frames.length ; i++ ) {
-          var frame = this.frames[i];
-
-          for ( var key in frame ) {
-            var slot  = frame[key];
-            var value = this.get(key, ps);
-            if ( value !== undefined ) slot.set(value);
+        function consumeBinding(k) {
+          // find and remove a binding from bindings 'b'
+          for ( var i = 0 ; i < bs.length ; i++ ) {
+            var kv = bs[i];
+            if ( kv[0] == k ) {
+              bs.splice(i,1);
+              return kv[1];
+            }
           }
         }
+
+        // Remove bindings for 'obj' properties and set remaining bindings in 'tail'
+        this.props.forEach(p => {
+          var value = consumeBinding(p.shortName || p.name);
+          this.obj[p.name] = value;
+        });
+
+        this.tailStr = this.encodeBindings(bs);
       }
-    }
+    },
+    'tail',
+    'tailStr',
+    'usedStr'
   ],
 
   methods: [
-    function get(k, ps /* map of key->start pos bindings */) {
-      var start = ps[k] || 0;
-      for ( var i = start ; i < this.bindings.length ; i++ ) {
-        if ( this.bindings[i][0] === k ) {
-          ps[k] = start + 1;
-          return this.bindings[i][1];
-        }
-      }
-      return undefined;
-    },
-
     function init() {
-//      this.str = this.toString();
+      this.props.forEach(p => {
+        this.obj.slot(p.name).sub(this.update);
+      });
+      if ( this.memento_ ) {
+        this.memento_.tail = this;
+        this.str           = this.memento_.tailStr;
+        this.obj.onDetach(() => {
+          // TODO: make own method
+          if ( this.memento_.tail == this ) {
+            this.memento_.tail = null;
+            this.memento_.update();
+          }
+        });
+      }
     },
 
-    function bind(memorable) {
-      /** Bind a memorable object to the memento by:
-       *    1. setting memorable property values to available bindings
-       *    2. listening for property updates
-       */
-      var bindings = {};
+    function getBoundNames(opt_set) {
+      var s = opt_set || {};
 
-      memorable.cls_.getAxiomsByClass(foam.core.Property).filter(p => p.memorable).forEach(p => {
-        console.log('**** MEMORABLE ', p.name);
-        var slot = memorable.slot(p.name)
-        bindings[p.shortName || p.name] = slot;
-        memorable.onDetach(memorable.sub(this.update));
+      this.props.forEach(p => s[p.shortName || p.name] = true);
+
+      if ( this.tail ) this.tail.getBoundNames(s);
+
+      return s;
+    },
+
+    function encodeBindings(bs) {
+      var s = '';
+      bs.forEach(b => {
+        if ( s ) s += '&';
+        s += b[0] + '=' + b[1];
       });
-
-      var l = this.bindings.length;
-      memorable.onDetach(() => this.frames.length = l);
-      this.frames.push(bindings);
+      return s;
     },
 
     function toString() {
-      var str = '';
+      var s = '', set = {};
 
-      for ( var i = 0 ; i < this.frames.length ; i++ ) {
-        var frame = this.frames[i];
-        for ( var key in frame) {
-          var slot = frame[key];
-          if ( slot.get() ) {
-            if ( str ) str = str + '&';
-            str = str + key + '=' + slot.get();
-          }
+      if ( this.tail ) {
+        set = this.getBoundNames();
+      }
+
+      this.props.forEach(p => {
+        var value = this.obj[p.name];
+        if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
+          if ( s ) s += '&';
+          var val = this.obj[p.name];
+          if ( val === undefined ) val = '';
+          s += (p.shortName || p.name) + '=' + val;
+        }
+      });
+
+      if ( this.tail ) {
+        var s2 = this.tail.toString();
+        if ( s2 ) {
+          if ( s ) return s + '&' + s2;
+          return s2;
         }
       }
 
-      return str;
+      return s;
     }
   ],
 
@@ -109,9 +153,11 @@ foam.CLASS({
     {
       name: 'update',
       isMerged: true,
-      mergeDelay: 160,
+      mergeDelay: 32,
       code: function() {
-        this.str = this.toString();
+        /* Called when a memento property is updated. */
+        this.usedStr = this.toString();
+        if ( this.memento_ ) this.memento_.update();
       }
     }
   ]
@@ -134,17 +180,24 @@ foam.CLASS({
 foam.CLASS({
   name: 'Memorable',
 
+  imports: [ 'memento_? as parentMemento_' ],
+  exports: [ 'memento_' ],
+
   properties: [
     {
       name: 'memento_',
       hidden: true,
-      factory: function() { return this.__context__.memento_ || Memento.create(); },
-      initObject: function(o) {
-        o.memento_.bind(o);
-      }
+      factory: function() { return Memento.create({obj: this, memento_: this.parentMemento_}); }
+    }
+  ],
+
+  methods: [
+    function removeMementoTail() {
+      // TODO
     }
   ]
 });
+
 
 /////////////////////////////////////////////////////////////////// DEMO
 
@@ -160,23 +213,37 @@ foam.CLASS({
     {
       name: 'menu',
       shortName: 'm',
-      memorable: true
+      memorable: true,
+      postSet: function(_, m) {
+        this.controller = Controller.create({daoKey: m}, this);
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'controller',
+      of: 'Controller',
+      factory: function() { return Controller.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("MENU");
       this.br();
-      this.add('skip: ', this.SKIP);
+      this.add('str: ', this.memento_.str$);
       this.br();
-      this.add('limit: ', this.LIMIT);
+      this.add('tailStr: ', this.memento_.tailStr$);
       this.br();
-      this.add('query: ', this.QUERY);
+      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
+      this.add('Menu: ', this.MENU);
+      this.add(this.controller$);
+      /*
+      this.add(this.slot(function(menu) {
+        return this.E().add(this.controller);
+      });
+      */
     }
   ]
 });
@@ -192,30 +259,40 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'daoKey'
+    },
+    {
       name: 'mode',
-      shortName: 'm',
       value: 'edit',
       memorable: true
     },
     {
+      class: 'Int',
       name: 'id',
       memorable: true
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'table',
+      of: 'Table',
+      factory: function() { return Table.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("CONTROLLER: ", this.daoKey);
       this.br();
-      this.add('skip: ', this.SKIP);
+      this.add('str: ', this.memento_.str$);
       this.br();
-      this.add('limit: ', this.LIMIT);
+      this.add('tailStr: ', this.memento_.tailStr$);
       this.br();
-      this.add('query: ', this.QUERY);
+      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
+      this.add('Mode: ', this.MODE);
+      this.add('Id: ', this.ID);
+      this.add(this.table);
     }
   ]
 });
@@ -231,20 +308,19 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Int',
       name: 'skip',
       shortName: 's',
       value: 10,
       memorable: true
     },
     {
-      class: 'StringArray',
+      //class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
+
       sticky: true
-    },
-    {
-      name: 'limit',
-      memorable: true
     },
     {
       name: 'query',
@@ -255,17 +331,18 @@ foam.CLASS({
 
   methods: [
     function render() {
-      // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br();
-      this.add(this.memento_.str$);
+      this.add("TABLE");
       this.br();
-      this.add('skip: ', this.SKIP);
+      this.add('str: ', this.memento_.str$);
       this.br();
-      this.add('limit: ', this.LIMIT);
+      this.add('tailStr: ', this.memento_.tailStr$);
       this.br();
-      this.add('query: ', this.QUERY);
+      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
+      this.add('Skip: ',    this.SKIP);
+      this.add('Columns: ', this.COLUMNS);
+      this.add('Query: ',   this.QUERY);
     }
   ]
 });
@@ -275,9 +352,9 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',
 
-  mixins: [
-    'Memorable'
-  ],
+  exports: [ 'memento_' ],
+
+  mixins: [ 'Memorable' ],
 
   properties: [
     {
@@ -287,14 +364,11 @@ foam.CLASS({
       memorable: true
     },
     {
-      class: 'StringArray',
+      // class: 'StringArray',
+      class: 'String',
       name: 'columns',
       memorable: true,
       sticky: true
-    },
-    {
-      name: 'limit',
-      memorable: true
     },
     {
       name: 'query',
@@ -303,6 +377,12 @@ foam.CLASS({
     },
     {
       name: 'abc'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'menu',
+      of: 'Menu',
+      factory: function() { return Menu.create({}, this); }
     }
   ],
 
@@ -310,15 +390,36 @@ foam.CLASS({
     function render() {
       // this.subMemento.str = 'q=something';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.br().br();
+      this.add('str: ', this.memento_.str$);
       this.br();
-      this.add(this.memento_.str$);
+      this.add('tailStr: ', this.memento_.tailStr$);
+      this.br();
+      this.add('usedStr: ', this.memento_.usedStr$);
+      this.br();
       this.br();
       this.add('skip: ', this.SKIP);
       this.br();
-      this.add('limit: ', this.LIMIT);
-      this.br();
       this.add('query: ', this.QUERY);
       this.br();
+      this.add(this.menu);
     }
   ]
 });
+
+
+/*
+// Map of key->start pos bindings, is updated as bindings are consumed.
+var ps = {};
+
+// Update frame bindings
+for ( var i = 0 ; i < this.frames.length ; i++ ) {
+  var frame = this.frames[i];
+
+  for ( var key in frame ) {
+    var slot  = frame[key];
+    var value = this.get(key, ps);
+    if ( value !== undefined ) slot.set(value);
+  }
+}
+*/

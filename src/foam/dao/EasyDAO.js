@@ -63,7 +63,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.OrderedDAO',
     'foam.dao.PromisedDAO',
-    'foam.dao.QueryCachingDAODecorator',
+    'foam.dao.QueryCachingDAO',
     'foam.dao.TTLCachingDAO',
     'foam.dao.TTLSelectCachingDAO',
     'foam.dao.RequestResponseClientDAO',
@@ -186,7 +186,7 @@ foam.CLASS({
           delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getFuid() )
-          delegate = new foam.dao.FUIDAO.Builder(getX()).setDelegate(delegate).build();
+          delegate = new foam.dao.FUIDDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {
@@ -949,7 +949,7 @@ model from which to test ServiceProvider ID (spid)`,
 
       if ( this.queryCache ) {
         //* Query cache ****
-        dao = this.QueryCachingDAODecorator.create({
+        dao = this.QueryCachingDAO.create({
           delegate: dao
         });
       }

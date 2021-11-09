@@ -26,7 +26,7 @@ foam.CLASS({
       align-items: center;
       cursor: pointer;
     }
-    ^ .logo {
+    ^ img, ^ svg {
       max-height: 40px;
       height: 27px;
     }
@@ -41,7 +41,6 @@ foam.CLASS({
             return theme$largeLogoEnabled ? theme$largeLogo : theme$logo;
           })
         })
-          .addClass('logo')
         .end();
     }
   ]

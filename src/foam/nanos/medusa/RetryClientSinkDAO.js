@@ -154,8 +154,7 @@ foam.CLASS({
             pm.error(x, e);
             throw e;
           } catch ( Throwable t ) {
-            getLogger().warning(t.getMessage());
-
+            getLogger().warning("submit", t.getMessage());
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
