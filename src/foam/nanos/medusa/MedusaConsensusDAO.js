@@ -257,10 +257,6 @@ This is the heart of Medusa.`,
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
-      // verify medusaEntryMediatorDAO is available.
-      if ( getX().get("medusaEntryMediatorDAO") == null ) {
-        throw new RuntimeException("DAO not found: medusaEntryMediatorDAO");
-      }
       `
     },
     {
