@@ -96,12 +96,12 @@ This is the heart of Medusa.`,
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       try {
-        if ( replaying.getReplaying() ) {
-          // getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          if ( entry.getIndex() % 10000 == 0 ) {
-            getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          }
-        }
+        // if ( replaying.getReplaying() ) {
+        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   if ( entry.getIndex() % 10000 == 0 ) {
+        //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   }
+        // }
         if ( replaying.getIndex() > entry.getIndex() ) {
           // getLogger().debug("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "discarding");
           return entry;
@@ -111,6 +111,12 @@ This is the heart of Medusa.`,
         if ( existing != null &&
              existing.getPromoted() ) {
           return existing;
+        }
+
+        // REVIEW: for troubleshooting...
+        if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
+          getLogger().warning("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "missing hash", "discarding");
+          return entry;
         }
 
         synchronized ( entry.getId().toString().intern() ) {
@@ -276,12 +282,10 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( replaying.getReplaying() ) {
-              if ( nextIndex % 10000 == 0 ) {
-                getLogger().info("promoter", "next", nextIndex);
-              }
-            } else {
-               getLogger().debug("promoter", "next", nextIndex);
+            if ( nextIndex % 1000 == 0 ) {
+              getLogger().info("promoter", "next", nextIndex);
+            } else if ( ! replaying.getReplaying() ) {
+              getLogger().debug("promoter", "next", nextIndex);
             }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
