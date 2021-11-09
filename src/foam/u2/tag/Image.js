@@ -77,7 +77,7 @@ foam.CLASS({
         .add(this.slot(function(data, glyph, displayWidth, displayHeight, alpha) {
           if ( glyph ) {
             var indicator = glyph.clone(this).expandSVG();
-            this.start(this.HTMLView, { data: indicator })
+            return this.E().start(this.HTMLView, { data: indicator })
               .attrs({ role: this.role })
               .addClass(this.myClass('SVGIcon'))
               .end();
