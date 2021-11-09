@@ -16,6 +16,7 @@ foam.CLASS({
   css: `
     ^ {
       max-width: 200px;
+      overflow: auto;
     }
     ^searchWrapper {
       padding: 0px 8px;
@@ -108,7 +109,6 @@ foam.CLASS({
       var self = this;
       this
       .on('click', this.stopPropagation)
-        .start()
           .start()
             .start(this.MENU_SEARCH).addClass(this.myClass('searchBar')).end()
             .addClass(this.myClass('searchWrapper'))
@@ -116,11 +116,10 @@ foam.CLASS({
               .addClass(this.myClass('resetButton'))
             .end()
           .end()
-          .start()
           .add(this.slot(function(views) {
             var i = 0;
             return this.E()
-              .style({'overflow': 'auto', 'padding-bottom': '20px', 'max-height': window.innerHeight - 300 > 0 ? window.innerHeight - 300 : window.innerHeight + 'px'})
+              .style({ 'overflow': 'auto', 'height': '100%', 'flex': '1' })
               .forEach(views, function(view) {
                 view.prop.index = i;
                 this
@@ -129,9 +128,7 @@ foam.CLASS({
                   .end();
                 i++;
               });
-          }))
-          .end()
-      .end();
+          }));
       this.data.selectedColumnNames$.sub(this.rebuildSelectedColumns);
     },
     function stopPropagation(e) {
@@ -536,6 +533,10 @@ foam.CLASS({
     display: flex;
     align-items: center;
     justify-content: start;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
   }
   ^selection-buttons + ^selection-buttons {
     padding: 8px;
