@@ -112,7 +112,7 @@ foam.CLASS({
 
         // 8 bits timestamp
         long curSec = (System.currentTimeMillis() - EPOCH) / 1000;
-        id.append(toHexString(curSec));
+        id.append(toHexString(curSec, 8));
 
         // At least 2 bits sequence
         synchronized (this) {
