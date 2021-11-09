@@ -396,8 +396,8 @@ foam.CLASS({
           // find authenticated menus to try to push before fetching subject
           if ( menu && menu.authenticate === false ) {
             await self.fetchSubject(false);
-            if ( ! self.subject ) {
-              // only push the unauthenticated menu if there is no subject to be found
+            if ( ! self.subject || ( await self.__subContext__.auth.isAnonymous() ) ) {
+              // only push the unauthenticated menu if there is no subject
               // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
               self.pushMenu(menu);
               self.languageInstalled.resolve();
