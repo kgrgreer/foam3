@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'static foam.nanos.crunch.AssociatedEntity.*'
   ],
 
@@ -291,7 +292,7 @@ foam.CLASS({
           throw new RuntimeException("UserCapabilityJunction data not submitted for capability: " + getTargetId());
 
         String daoKey = capability.getDaoKey();
-        if ( daoKey == null ) return null;
+        if ( SafetyUtil.isEmpty(daoKey) ) return null;
 
         DAO dao = (DAO) x.get(daoKey);
         if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
@@ -305,7 +306,7 @@ foam.CLASS({
           logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - contextdaofindkey", contextDAOFindKey);
         }
 
-        if ( contextDAOFindKey != null && ! contextDAOFindKey.isEmpty() ) {
+        if ( ! SafetyUtil.isEmpty(contextDAOFindKey) ) {
           if ( contextDAOFindKey.toLowerCase().contains("subject") ) {         // 1- Case if subject lookup
             String[] words = foam.util.StringUtil.split(contextDAOFindKey, '.');
             objectToSave = getSubject(x);
