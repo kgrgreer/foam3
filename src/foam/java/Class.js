@@ -259,33 +259,14 @@ foam.CLASS({
 
       this.constants.forEach(function(c) { o.out(c, '\n'); });
 
+      var extendedCls = self.SUPER_CLASSES[self.extends];
+
       this.fields.sort(function(o1, o2) {
         return foam.Number.compare(o1.order, o2.order);
       }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
 
       var self = this;
       this.methods.forEach(function(f) {
-//        if ( self.name == 'ProxyBox') {
-//          console.log("000000000000000");
-//          console.log("");
-//        }
-//        o.out(f, '\n');
-//      console.log("**********************" + (Object.keys(self.SUPER_CLASSES).length));
-//      console.log("**********************" + (Object.keys(self.SUPER_CLASSES)[0]));
-//      console.log("********************** HEHEHEHEH " + self.SUPER_CLASSES[self.extends]);
-//      console.log("********************** EXTENDS " + self.extends);
-//        while ( )
-//        console.log("OUTPUTEROUTPUTEROUTPUTEROUTPUTER " + o.class);
-        var extendedCls = self.SUPER_CLASSES[self.extends];
-        if ( self.name == 'AbstractSink' && f.name == 'put') {
-//          console.log("lplplplplplplplplplplplplplplplplplplp ARRAYSINK ");
-//          console.log("super method: " + superMethod);
-          console.log("f method: " + f.name);
-//          console.log("method name " + superMethod.name);
-//          console.log("super code: " + superMethod.javaCode);
-          console.log("f code: " + f.javaCode);
-//            console.log("equal?: " + superMethod.javaCode != f.javaCode);
-        }
         if ( extendedCls != undefined ) {
           var superMethod = extendedCls.methods.find(obj => {
             return obj.name == f.name && foam.util.equals(obj.args, f.args) && obj.type == f.type && ! obj.abstract;
@@ -294,24 +275,7 @@ foam.CLASS({
             o.out(f, '\n');
             return;
           }
-
-          if ( self.name == 'ArraySink' && superMethod.name == 'put') {
-                      console.log("lplplplplplplplplplplplplplplplplplplp ARRAYSINK ");
-                      console.log("super method: " + superMethod);
-                      console.log("f method: " + f.name);
-                      console.log("method name " + superMethod.name);
-                      console.log("super code: " + superMethod.body.data);
-                      console.log("f code: " + f.body.data);
-          //            console.log("equal?: " + superMethod.javaCode != f.javaCode);
-                    }
           if ( superMethod.body.data != f.body.data ) o.out(f, '\n');
-//          console.log("!!1!!!!!!!" + self.SUPER_CLASSES);
-//          extendedCls.methods.forEach(function(s) {
-////            console.log("!!1!!!!!!!" + s.javaCode);
-//            if ( s.name == f.name && s.javaCode != undefined && f.javaCode != undefined && s.javaCode != f.javaCode ) {
-//              o.out(f, '\n');
-//            }
-//          })
         } else {
           o.out(f, '\n');
         }
