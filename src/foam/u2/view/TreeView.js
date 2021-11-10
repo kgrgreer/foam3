@@ -150,7 +150,7 @@ foam.CLASS({
       if ( this.query ) {
         this.query.sub(function() {
           self.updateThisRoot = true;
-          self.showThisRootOnSearch = true;
+          self.showThisRootOnSearch = false;
           controlledSearchSlot.set(self.query.get());
           self.updateThisRoot = false;
         });
