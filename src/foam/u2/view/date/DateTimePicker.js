@@ -20,8 +20,8 @@ foam.CLASS({
   ],
 
   css: `
-    ^date_time_picker input,
-    ^date_time_picker select {
+    ^ input,
+    ^ select {
       font-size: inherit;
     }
 
@@ -56,10 +56,13 @@ foam.CLASS({
       position: absolute;
     }
 
-    .time-of-day {
-      display: block;
+    .time-of-day-container {
+      display: flex;
       justify-content: center;
-      font-size: medium;
+      align-items: center;
+    }
+    .time-of-day {
+      padding: 1.5em 0.1em;
     }
 
     ^ .colon {
@@ -71,11 +74,10 @@ foam.CLASS({
       border-radius: 5px 5px 0px 0px;
       background-color: /*%PRIMARY3%*/ #406dea;
       color: #ffffff;
-      display: inline-block;
+      display: flex;
+      justify-content: space-evenly;
       align-items: center;
       height: 47px;
-      width: 333px;
-      text-align: center;
     }
 
     ^ .year .property-year {
@@ -83,7 +85,7 @@ foam.CLASS({
     }
 
     ^ .year .property-year .foam-u2-IntView {
-      width: 70px;
+      width: 5em;
       text-align: center;
     }
 
@@ -92,29 +94,13 @@ foam.CLASS({
       border: none;
       color: white;
       display: inline-block;
-      font-size: large;
-    }
-
-    ^ .arrow-left {
-      float: left;
-      padding: 10px;
-      margin-top: 10px;
-      margin-left: 23px;
-    }
-
-    ^ .arrow-right {
-      float: right;
-      padding: 10px;
-      margin-top: 10px;
-      margin-right: 23px;
     }
 
     ^ .month {
-      display: inline-block;
-      display: block;
+      display: flex;
+      justify-content: space-around;
       align-items: center;
-      padding-top: 24px;
-      padding-bottom: 24px;
+      padding: 1.71em 0;
       text-align: center;
     }
 
@@ -126,12 +112,14 @@ foam.CLASS({
     }
 
     ^ .arrow-container {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
+      display: flex;
       background-image: linear-gradient(#ffffff, #e7eaec);
       text-align: center;
       border: 1px solid #cbcfd4;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+      padding: 1%;
     }
 
     ^ .arrow-container-left{
@@ -148,17 +136,9 @@ foam.CLASS({
       float:right;
     }
 
-    ^ .arrow-black {
-      padding-top: 6px;
-    }
-
     ^ .calendar {
       display: inline-block;
       text-align: center;
-    }
-
-    ^ .time-of-day {
-      display: inline-block;
     }
 
     ^overlay {
@@ -173,7 +153,6 @@ foam.CLASS({
     ^ .date-display-box {
       height: 36px;
       width: 216px;
-      font-size: 1.4rem;
       background-color: #ffffff;
       border: 1px solid #cbcfd4;
       border-radius: 3px;
@@ -330,6 +309,7 @@ foam.CLASS({
               .end()
               .start(this.YEAR, {type: ''})
                 .addClass('year-number')
+                .addClass('p-lg')
               .end()
               .start('img')
                 .attrs({ src: '/images/arrow-right-white.svg' })
@@ -347,7 +327,6 @@ foam.CLASS({
                 .on('click', function() { self.monthIndex--; })
                 .start('img')
                   .attrs({ src: '/images/arrow-left-black.svg' })
-                  .addClass('arrow-black')
                 .end()
               .end()
               .start()
@@ -360,7 +339,6 @@ foam.CLASS({
                 .on('click', function() { self.monthIndex++; })
                 .start('img')
                   .attrs({ src: '/images/arrow-right-black.svg' })
-                  .addClass('arrow-black')
                 .end()
               .end()
             .end()
@@ -376,7 +354,8 @@ foam.CLASS({
             .end()
 
             .start()
-              .addClass('time-of-day')
+              .addClass('p-md')
+              .addClass('time-of-day-container')
               .show(this.showTimeOfDay$)
               .start(this.ChoiceView, {
                 choices: zeroLeadingNumArray(1, 12),
