@@ -186,7 +186,8 @@ foam.CLASS({
       gridColumns: 6,
       columnPermissionRequired: true,
       documentation: 'id of the object that needs approval.',
-      tableWidth: 150
+      tableWidth: 150,
+      javaFormatJSON: 'formatter.output(String.valueOf(get_(obj)));'
     },
     {
       class: 'Enum',

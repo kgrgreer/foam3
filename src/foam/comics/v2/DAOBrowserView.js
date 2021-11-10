@@ -181,7 +181,7 @@ foam.CLASS({
       name: 'cannedPredicate',
       expression: function(config$cannedQueries, config$preSelectedCannedQuery) {
         return config$cannedQueries && config$cannedQueries.length
-          ? config$preSelectedCannedQuery != null 
+          ? config$preSelectedCannedQuery != null
             ? config$cannedQueries[config$preSelectedCannedQuery].predicate
               : config$cannedQueries[1].predicate
                 : foam.mlang.predicate.True.create();
@@ -292,7 +292,7 @@ foam.CLASS({
       }));
     },
     function render() {
-      this.data = foam.dao.QueryCachingDAODecorator.create({ delegate: this.config.dao });
+      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;

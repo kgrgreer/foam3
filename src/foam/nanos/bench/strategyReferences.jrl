@@ -1,0 +1,12 @@
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "foam.nanos.bench.Benchmark",
+  "desiredModelId": "foam.nanos.bench.Benchmark",
+  "strategy": "foam.nanos.bench.Benchmark"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "foam.nanos.bench.TestScriptBenchmark",
+  "desiredModelId": "foam.nanos.bench.Benchmark",
+  "strategy": "foam.nanos.bench.TestScriptBenchmark"
+})
