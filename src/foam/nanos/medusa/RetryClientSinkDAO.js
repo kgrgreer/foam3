@@ -136,7 +136,8 @@ foam.CLASS({
       int retryDelay = 10;
 
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
-      Alarm alarm = null;
+      String alarmId = this.getClass().getSimpleName()+"."+getName();
+      Alarm alarm = ((DAO) x.get("alarmDAO")).find(alarmId);
       try {
         while ( true ) {
           try {
@@ -155,14 +156,11 @@ foam.CLASS({
             throw e;
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
-            if ( t instanceof NullPointerException ) {
-             getLogger().error("submit", t);
-            }
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
               if ( alarm == null ) {
-                alarm = new Alarm(this.getClass().getSimpleName()+"."+getName(), AlarmReason.TIMEOUT);
+                alarm = new Alarm(alarmId, AlarmReason.TIMEOUT);
                ((DAO) x.get("alarmDAO")).put_(x, alarm);
               }
               pm.error(x, "Retry limit reached.", t);
