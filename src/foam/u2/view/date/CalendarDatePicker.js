@@ -29,8 +29,11 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: `
+        ^ {
+          color: /*%GREY1%*/ #5e6061;
+        }
         ^selected_day_cell {
-          background-color: #e5f1fc;
+          background-color: /*%PRIMARY5%*/ #e5f1fc;
         }
         ^prev_month_cell, ^next_month_cell {
           color: lightgray !important;
@@ -46,31 +49,16 @@ foam.CLASS({
         }
 
         ^calendar_table td:hover {
-          background-color: #F5F7FA;
+          background-color: /*%GREY5%*/ #F5F7FA;
         }
 
         ^calendar_table tr > td {
-          border:1px solid #cbcfd4;
-          color: #5e6061;
-          padding: 6px 7px 6px 7px;
-          font-size: 1.4rem;
-          font-weight: 300;
+          border:1px solid /*%GREY3%*/ #cbcfd4;
+          padding: 0.5em;
         }
 
-        ^calendar_table  {
+        ^calendar_table {
           border-collapse: collapse;
-          width: 224px;
-          height: 160px;
-        }
-
-        ^calendar_table tbody > tr > th {
-          font-size: 1rem;
-          color: #5e6061;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: 1.5;
-          letter-spacing: normal;
         }
       `
     })
@@ -106,7 +94,9 @@ foam.CLASS({
     function render() {
       var self = this;
       this.startContext({ data: this.data }).
+        addClass(this.myClass()).
         addClass(this.myClass('calendar_table')).
+        addClass('p').
         add(this.slot(function(data) {
           data = data || new Date();
 
@@ -168,7 +158,7 @@ foam.CLASS({
           return this.E('tbody').
               start('tr').
                 forEach(self.Weekday.VALUES, function(wd) {
-                  this.start('th').add(wd.label).end();
+                  this.start('th').addClass('p-xs').add(wd.label).end();
                 }).
               end().
               forEach(weeks, function(w) {
