@@ -158,12 +158,11 @@ foam.CLASS({
       expression: function(data) {
         var self = this;
         var maybePromise = data?.toSummary() ?? '';
-        if (maybePromise.then) { 
+        if ( maybePromise.then ) { 
           maybePromise.then( v => { self.viewTitle = v })
           return '';
-        } else {
-          return maybePromise;
         }
+        return maybePromise;
       }
     }
   ],
