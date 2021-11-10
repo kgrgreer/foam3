@@ -76,6 +76,13 @@ foam.CLASS({
       line-height: 1.71;
       margin: 0;
     }
+    .p-md{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.6rem;
+      line-height: 1.71;
+      margin: 0;
+    }
     .p-lg{
       font-size: 1.8rem;
       font-style: normal;
