@@ -79,7 +79,6 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      debugger;
       window.addEventListener('resize', this.resize);
       this.resize();
       this.start()

@@ -23,6 +23,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+      width: 100%;
     }
     ^searchBar{
       width: 100%
@@ -44,6 +45,13 @@ foam.CLASS({
     }
     ^resetButton:disabled {
       color: /*%GREY2%*/ #6B778C;
+    }
+    ^colContainer {
+      overflow-x: hidden;
+      height: 100%;
+      flex: 1;
+      width: -webkit-fill-available;
+      width: -moz-fill-available;
     }
   `,
   properties: [
@@ -119,7 +127,7 @@ foam.CLASS({
           .add(this.slot(function(views) {
             var i = 0;
             return this.E()
-              .style({ 'overflow': 'auto', 'height': '100%', 'flex': '1' })
+              .addClass(self.myClass('colContainer'))
               .forEach(views, function(view) {
                 view.prop.index = i;
                 this
@@ -533,13 +541,21 @@ foam.CLASS({
     display: flex;
     align-items: center;
     justify-content: start;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     width: 100%;
   }
   ^selection-buttons + ^selection-buttons {
     padding: 8px;
+  }
+  ^labelText {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  ^labelText:hover {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-all;
   }
   `,
   properties: [
@@ -600,6 +616,7 @@ foam.CLASS({
                .end()
                .start()
                 .style({'padding-left' : '8px'})
+                .addClass(self.myClass('labelText'))
                 .add(this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(this.data.rootProperty))
               .end()
             .end()
