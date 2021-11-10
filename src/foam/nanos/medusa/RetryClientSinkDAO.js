@@ -155,6 +155,9 @@ foam.CLASS({
             throw e;
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
+            if ( t instanceof NullPointerException ) {
+             getLogger().error("submit", t);
+            }
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
