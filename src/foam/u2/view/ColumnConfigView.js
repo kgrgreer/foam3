@@ -520,10 +520,7 @@ foam.CLASS({
     background: #cfdbff;
   }
   ^some-padding {
-    text-align: left;
-    font-size: 1.4rem;
-    line-height: 24px;
-    padding: 4px 16px;
+    padding: 0.3em 1.14em;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -539,6 +536,13 @@ foam.CLASS({
   }
   ^selection-buttons + ^selection-buttons {
     padding: 8px;
+  }
+  ^sub-properties-arrow {
+    font-weight: bold;
+    transform: rotate(90deg);
+  }
+  ^sub-properties-arrow-expanded {
+    transform: rotate(180deg);
   }
   `,
   properties: [
@@ -604,14 +608,8 @@ foam.CLASS({
             .end()
             .start()
               .show(this.data.hasSubProperties)
-              .style({
-                'vertical-align': 'middle',
-                'font-weight':    'bold',
-                'visibility':     'visible',
-                'font-size':      '16px',
-                'float':          'right',
-                'transform':      this.data.expanded$.map(function(c) { return c ? 'rotate(180deg)' : 'rotate(90deg)'; })
-              })
+              .addClass(this.myClass('sub-properties-arrow'))
+              .enableClass(this.myClass('sub-properties-arrow-expanded'), this.data.expanded$)
               .on('click', this.toggleExpanded)
               .add('\u2303')
             .end()

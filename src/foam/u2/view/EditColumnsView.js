@@ -15,7 +15,6 @@ foam.CLASS({
   ],
   css: `
     ^drop-down-bg {
-      font-size:        12px;
       position:         fixed;
       width:            100%;
       height:           100%;
