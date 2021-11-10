@@ -156,7 +156,13 @@ foam.CLASS({
       class: 'String',
       name: 'viewTitle',
       expression: function(data) {
-        return data?.toSummary() ?? '';
+        var self = this;
+        var maybePromise = data?.toSummary() ?? '';
+        if ( maybePromise.then ) { 
+          maybePromise.then( v => { self.viewTitle = v })
+          return '';
+        }
+        return maybePromise;
       }
     }
   ],
