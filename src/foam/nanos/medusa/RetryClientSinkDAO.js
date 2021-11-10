@@ -137,7 +137,7 @@ foam.CLASS({
 
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
       String alarmId = this.getClass().getSimpleName()+"."+getName();
-      Alarm alarm = ((DAO) x.get("alarmDAO")).find(alarmId);
+      Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(alarmId);
       try {
         while ( true ) {
           try {
