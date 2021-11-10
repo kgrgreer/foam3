@@ -9,6 +9,11 @@
   name: 'ScrollTableView',
   extends: 'foam.u2.Element',
 
+  documentation: `
+  WARNING:This table view is not recieving functionality updates
+              Use foam/u2/table/UnstyledTableView.js instead
+  `,
+
   imports: [
     'getElementById',
     'memento?',
