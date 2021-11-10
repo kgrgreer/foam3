@@ -97,6 +97,13 @@ foam.CLASS({
       line-height: 1.78;
       margin: 0;
     }
+    .p-xl{
+      font-size: 2.4rem;
+      font-style: normal;
+      font-weight: normal;
+      line-height: 1.78;
+      margin: 0;
+    }
     .p-semiBold{
       font-size: 1.4rem;
       font-style: normal;
