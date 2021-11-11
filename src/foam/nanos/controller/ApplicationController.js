@@ -396,9 +396,13 @@ foam.CLASS({
           // find authenticated menus to try to push before fetching subject
           if ( menu && menu.authenticate === false ) {
             await self.fetchSubject(false);
-            self.pushMenu(menu);
-            self.languageInstalled.resolve();
-            return;
+            if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
+              // only push the unauthenticated menu if there is no subject
+              // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+              self.pushMenu(menu);
+              self.languageInstalled.resolve();
+              return;
+            }
           }
         }
 
@@ -560,12 +564,12 @@ foam.CLASS({
         var result = await this.client.auth.getCurrentSubject(null);
         this.subject = result;
 
-        var promptlogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
+        promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
 
       } catch (err) {
-        if ( ! promptlogin || authResult ) return;
+        if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();

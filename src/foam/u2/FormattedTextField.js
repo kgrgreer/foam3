@@ -20,7 +20,7 @@ foam.CLASS({
       position: relative;
       width: 100%;
     }
-    ^placeholder {
+    ^placeholder.foam-u2-TextField {
       bottom: 0;
       font-size: 1.4rem;
       inline-size: fit-content;
@@ -31,20 +31,17 @@ foam.CLASS({
       position: absolute;
       right: 0;
       top: 0;
-      /* TODO: Remove important when CSS Class loading for requires is fixed */
-      width: fit-content !important;
+      width: fit-content;
     }
-    ^real-input {
+    ^real-input.foam-u2-TextField {
       z-index: 1;
-      /* TODO: Remove important when CSS Class loading for requires is fixed */
-      background-color: transparent !important;
+      background-color: transparent;
       bottom: 0;
       left: 0;
       position: absolute;
       right: 0;
       top: 0;
-      /* TODO: Remove important when CSS Class loading for requires is fixed */
-      width: fit-content !important;
+      width: fit-content;
     }
   `,
 

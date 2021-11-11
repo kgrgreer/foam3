@@ -54,6 +54,7 @@ foam.CLASS({
       callIf( this.click && ! this.data.disableUserSelection, function() {
         this.on('click', function(evt) {
           if ( self.data.shouldEscapeEvts(evt) ) return;
+          self.data.selection = obj.id;
           self.click.call(self, null, obj.id);
         });
       }).

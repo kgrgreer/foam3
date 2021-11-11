@@ -139,8 +139,11 @@ foam.CLASS({
           ))
         .select(new ArraySink())).getArray();
       ArrayList<Set> buckets = new ArrayList();
+      int group = 0;
+      int groups = support.getNodeGroups();
       for ( ClusterConfig node : nodes ) {
-       int index = Math.abs(foam.util.SafetyUtil.hashCode(node.getId())) % support.getNodeGroups();
+        int index = group % groups;
+        group = (group + 1) % groups;
         if ( node.getBucket() > 0 ) {
           index = node.getBucket() -1;
         }
