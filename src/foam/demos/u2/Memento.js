@@ -48,7 +48,6 @@ foam.CLASS({
       name: 'str',
       displayWidth: 100,
       postSet: function(_, s) {
-        console.log('STR: ', s);
         // parser & separated string of key=value bindings and store in b
         var bs = [];
 
@@ -58,12 +57,13 @@ foam.CLASS({
           s = s.substring(i+1);
           s = route.map(p => 'route=' + p).join('&') + (s ? '&' + s : '');
         }
-        console.log('STR2: ', s);
 
-        s.split('&').forEach(p => {
-          var [k,v] = p.split('=');
-          bs.push([k, v]);
-        });
+        if ( s ) {
+          s.split('&').forEach(p => {
+            var [k,v] = p.split('=');
+            bs.push([k, v]);
+          });
+        }
 
         function consumeBinding(k) {
           // find and remove a binding from bindings 'b'
@@ -86,7 +86,12 @@ foam.CLASS({
       }
     },
     'tail',
-    'tailStr',
+    {
+      name: 'tailStr',
+      postSet: function(_, s) {
+        if ( this.tail ) this.tail.str = s;
+      }
+    },
     'usedStr'
   ],
 
