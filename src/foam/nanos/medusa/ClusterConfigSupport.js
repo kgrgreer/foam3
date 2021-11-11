@@ -951,6 +951,53 @@ configuration for contacting the primary node.`,
         }
       }
       `
+    },
+    {
+      documentation: 'Determine the number of nodes which contain and entry.',
+      name: 'getEntryOnNodes',
+      args: [
+        {
+          name: 'x',
+          type: 'X'
+        },
+        {
+          name: 'index',
+          type: 'Long'
+        }
+      ],
+      javaType: 'java.util.List',
+      javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "countEntryOnNodes");
+
+      List entries = new ArrayList();
+      try {
+        List<ClusterConfig> configs = ((ArraySink) ((DAO) x.get("clusterConfigDAO"))
+            .where(
+                AND(
+                    EQ(ClusterConfig.TYPE, MedusaType.NODE),
+                    EQ(ClusterConfig.ZONE, 0L),
+                    EQ(ClusterConfig.ENABLED, true)
+                )
+            )
+            .select(new ArraySink())).getArray();
+        for ( ClusterConfig config : configs ) {
+          DAO client = getClientDAO(x, "medusaEntryDAO", config, config);
+          MedusaEntry found = (MedusaEntry) client.find(index);
+          if ( found != null ) {
+            entries.add(found);
+            getLogger().debug("getEntryOnNodes", "found", config.getId(), found);
+          }
+        }
+      } catch (Throwable t) {
+        pm.error(x, t);
+        getLogger().error(t);
+        throw t;
+      } finally {
+        pm.log(x);
+      }
+      getLogger().info("getEntryOnNodes", "index", index, "count", entries.size());
+      return entries;
+      `
     }
   ]
 });

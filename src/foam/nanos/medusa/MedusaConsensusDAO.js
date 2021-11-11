@@ -674,7 +674,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
               config = (ClusterConfig) config.fclone();
-              config.setErrorMessage("");
+              ClusterConfig.ERROR_MESSAGE.clear(config);
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
               if ( ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
