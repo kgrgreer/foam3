@@ -1,7 +1,6 @@
 // TODO:
 //   name collision support
 //   output empty/default names when collision occurs
-//   support path vs. param mementos
 //   support "sticky" localStorage/config properties
 //   feedback elimination?
 //   eliminate need for implementing Memorable by having property install!
@@ -52,6 +51,14 @@ foam.CLASS({
         console.log('STR: ', s);
         // parser & separated string of key=value bindings and store in b
         var bs = [];
+
+        var i = s.indexOf('?');
+        if ( i != -1 ) {
+          var route = s.substring(0, i).split('/');
+          s = s.substring(i+1);
+          s = route.map(p => 'route=' + p).join('&') + (s ? '&' + s : '');
+        }
+        console.log('STR2: ', s);
 
         s.split('&').forEach(p => {
           var [k,v] = p.split('=');
@@ -112,6 +119,7 @@ foam.CLASS({
     },
 
     function encodeBindings(bs) {
+      /** Encode an array of bindings as a & deliminted key=value string. **/
       var s = '';
       bs.forEach(b => {
         if ( s ) s += '&';
@@ -121,7 +129,17 @@ foam.CLASS({
     },
 
     function toString() {
-      var s = '', set = {};
+      var p = this.encode();
+      var s = p.route;
+      if ( p.params ) {
+        if ( s ) s += '?';
+        s += p.params;
+      }
+      return s;
+    },
+
+    function encode() {
+      var s = '', route = '', set = {};
 
       if ( this.tail ) {
         set = this.getBoundNames();
@@ -129,23 +147,30 @@ foam.CLASS({
 
       this.props.forEach(p => {
         var value = this.obj[p.name];
-        if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
-          if ( s ) s += '&';
-          var val = this.obj[p.name];
-          if ( val === undefined ) val = '';
-          s += (p.shortName || p.name) + '=' + val;
+        if ( p.name === 'route' ) {
+          route = this.obj.route;
+        } else {
+          if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
+            if ( s ) s += '&';
+            var val = this.obj[p.name];
+            if ( val === undefined ) val = '';
+            s += (p.shortName || p.name) + '=' + val;
+          }
         }
       });
 
       if ( this.tail ) {
-        var s2 = this.tail.toString();
+        var e2 = this.tail.encode();
+        var s2 = e2.params;
+        if ( e2.route ) {
+          route += '/' + e2.route;
+        }
         if ( s2 ) {
-          if ( s ) return s + '&' + s2;
-          return s2;
+          if ( s ) { s = s + '&' + s2; } else { s = s2; }
         }
       }
 
-      return s;
+      return {route: route, params: s};
     }
   ],
 
@@ -211,8 +236,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'menu',
-      shortName: 'm',
+      name: 'route',
       memorable: true,
       postSet: function(_, m) {
         this.controller = Controller.create({daoKey: m}, this);
@@ -237,7 +261,7 @@ foam.CLASS({
       this.br();
       this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
-      this.add('Menu: ', this.MENU);
+      this.add('Menu/Route: ', this.ROUTE);
       this.add(this.controller$);
       /*
       this.add(this.slot(function(menu) {
@@ -262,7 +286,7 @@ foam.CLASS({
       name: 'daoKey'
     },
     {
-      name: 'mode',
+      name: 'route',
       value: 'edit',
       memorable: true
     },
@@ -290,7 +314,7 @@ foam.CLASS({
       this.br();
       this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
-      this.add('Mode: ', this.MODE);
+      this.add('Mode/Route: ', this.ROUTE);
       this.add('Id: ', this.ID);
       this.add(this.table);
     }
