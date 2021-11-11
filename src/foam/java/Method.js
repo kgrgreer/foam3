@@ -32,7 +32,11 @@ foam.CLASS({
       name: 'args'
     },
     { class: 'StringArray', name: 'throws' },
-    { class: 'foam.java.CodeProperty', name: 'body' }
+    { class: 'foam.java.CodeProperty', name: 'body' },
+    { class: 'Boolean',
+      name: 'forceJavaOutputter',
+      documentation: 'if true, outputs method regardless of whether it is already in the super class'
+    }
   ],
 
   methods: [
