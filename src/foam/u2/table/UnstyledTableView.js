@@ -38,7 +38,8 @@ foam.CLASS({
     'props',
     'propertyNamesToQuery',
     'selectedColumnsWidth',
-    'selectedObjects'
+    'selectedObjects',
+    'selection'
   ],
 
   imports: [
@@ -46,7 +47,8 @@ foam.CLASS({
     'config? as importedConfig',
     'filteredTableColumns?',
     'memento',
-    'stack?'
+    'stack?',
+    'selection? as importSelection'
   ],
 
   constants: [
@@ -98,6 +100,10 @@ foam.CLASS({
           return this.importedConfig;
         return this.DAOControllerConfig.create({ dao: this.data });
       }
+    },
+    {
+      name: 'selection',
+      expression: function(importSelection) { return importSelection || null; },
     },
     {
       name: 'order'

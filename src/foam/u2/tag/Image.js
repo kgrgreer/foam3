@@ -67,7 +67,14 @@ foam.CLASS({
       attribute: true
     },
     ['alpha', 1.0],
-    'role'
+    { 
+      class: 'String',
+      name: 'role'
+    },
+    {
+      class: 'Boolean',
+      name: 'embedSVG'
+    }
   ],
 
   methods: [
@@ -77,11 +84,11 @@ foam.CLASS({
         .add(this.slot(function(data, glyph, displayWidth, displayHeight, alpha) {
           if ( glyph ) {
             var indicator = glyph.clone(this).expandSVG();
-            this.start(this.HTMLView, { data: indicator })
+            return this.E().start(this.HTMLView, { data: indicator })
               .attrs({ role: this.role })
               .addClass(this.myClass('SVGIcon'))
               .end();
-          } else if ( data?.endsWith('svg') ) {
+          } else if ( this.embedSVG && data?.endsWith('svg') ) {
             var req = this.HTTPRequest.create({
               method: 'GET',
               path: data,

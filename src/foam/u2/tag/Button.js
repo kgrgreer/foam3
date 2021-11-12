@@ -386,9 +386,9 @@ foam.CLASS({
       /** Add text or icon to button. **/
       var self = this;
       if ( ( this.themeIcon && this.theme ) ) {
-        this.tag({ class: 'foam.u2.tag.Image', glyph: this.themeIcon });
+        this.tag({ class: 'foam.u2.tag.Image', glyph: this.themeIcon, role: 'presentation' });
       } else if ( this.icon ) {
-        this.tag({ class: 'foam.u2.tag.Image', data: this.icon });
+        this.tag({ class: 'foam.u2.tag.Image', data: this.icon, role: 'presentation', embedSVG: true });
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.addClass(this.action.name);

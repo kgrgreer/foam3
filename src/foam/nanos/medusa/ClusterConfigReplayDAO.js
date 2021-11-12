@@ -170,7 +170,7 @@ foam.CLASS({
                  ( myConfig.getType() == MedusaType.NERF &&
                    support.getHasMediatorQuorum() ) ) {
               // special intial case - no data, or baseline
-              ((DAO) x.get("localMedusaEntryDAO")).cmd(new ReplayCompleteCmd());
+              ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
             }
           }
 
