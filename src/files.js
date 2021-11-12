@@ -1084,7 +1084,7 @@ FOAM_FILES([
 
   { name: "foam/util/date/TimeUnit" },
 
-  { name: "foam/nanos/dig/DIGClientDAO" },
+  { name: "foam/nanos/dig/DIGDAOClient" },
   { name: "foam/nanos/dig/exception/DigErrorMessage" },
   { name: "foam/nanos/dig/exception/DAONotFoundException" },
   { name: "foam/nanos/dig/exception/DAORequiredException" },

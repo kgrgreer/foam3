@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.dig',
-  name: 'DIGClientDAO',
+  name: 'DIGDAOClient',
   extends: 'foam.dao.NullDAO',
 
   documentation: 'Java HTTP client hitting service/dig. Intented for performance testing.',
