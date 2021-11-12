@@ -9,37 +9,30 @@ foam.CLASS({
   name: 'DIGClientDAO',
   extends: 'foam.dao.NullDAO',
 
+  documentation: 'Java HTTP client hitting service/dig. Intented for performance testing.',
+
   javaImports: [
-    'foam.box.Box',
-    'foam.box.HTTPAuthorizationType',
-    'foam.box.HTTPBox',
-    'foam.box.ReplyBox',
-    'foam.box.RPCMessage',
-    'foam.box.RPCReturnBox',
-    'foam.box.Message',
-    'foam.box.SessionClientBox',
+    'foam.box.socket.SslContextFactory',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.dao.DOP',
     'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
+    'foam.lib.json.JSONParser',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
-    'java.io.UnsupportedEncodingException',
-    'java.net.URLEncoder',
-    'javax.servlet.http.HttpServletRequest'
+    'java.net.Authenticator',
+    'java.net.http.HttpClient',
+    'java.net.http.HttpRequest',
+    'java.net.http.HttpResponse',
+    'java.net.URI',
+    'java.time.Duration',
+    'javax.net.ssl.SSLContext',
+    'javax.servlet.http.HttpServletRequest',
   ],
-
-  imports: [
-    'sessionID as jsSessionID'
-  ],
-
-  // NOTE: Do not export, will invalidate the browser's current session
-  // exports: [
-  //   'sessionId as sessionID'
-  // ],
 
   constants: [
     {
@@ -68,25 +61,42 @@ foam.CLASS({
       `
     },
     {
-      // FIXME: getServerName or getLocalName return ipv6 address
-      // which fails java.net.URL(url) creation.
-      name: 'domain',
-      class: 'String',
-      javaFactory: `
-      HttpServletRequest req = getX().get(HttpServletRequest.class);
-      if ( req != null ) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(req.getScheme());
-        sb.append("://");
-        // sb.append(req.getLocalName());
-        sb.append(req.getServerName());
-        sb.append(":");
-        sb.append(req.getServerPort());
-        return sb.toString();
-      }
-      return "http://"+System.getProperty("hostname", "localhost")+":8080";
-      `,
-    }
+      documentation: 'Connection timeout in seconds',
+      name: 'connectionTimeout',
+      class: 'Int',
+      value: 20
+    },
+    {
+      documentation: 'Connection timeout in seconds',
+      name: 'requestTimeout',
+      class: 'Int',
+      value: 60
+    },
+    {
+      name: 'secure',
+      class: 'Boolean',
+      javaFactory: `return getUrl().contains("https");`
+    },
+    // {
+    //   // FIXME: getServerName or getLocalName return ipv6 address
+    //   // which fails java.net.URL(url) creation.
+    //   name: 'domain',
+    //   class: 'String',
+    //   javaFactory: `
+    //   HttpServletRequest req = getX().get(HttpServletRequest.class);
+    //   if ( req != null ) {
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.append(req.getScheme());
+    //     sb.append("://");
+    //     // sb.append(req.getLocalName());
+    //     sb.append(req.getServerName());
+    //     sb.append(":");
+    //     sb.append(req.getServerPort());
+    //     return sb.toString();
+    //   }
+    //   return "http://"+System.getProperty("hostname", "localhost")+":8080";
+    //   `,
+    // }
   ],
 
   javaCode: `
@@ -94,6 +104,7 @@ foam.CLASS({
     @Override
     protected JSONFObjectFormatter initialValue() {
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+      formatter.setQuoteKeys(true);
       return formatter;
     }
 
@@ -104,22 +115,49 @@ foam.CLASS({
       return formatter;
     }
   };
+
+  protected final ThreadLocal<HttpClient> client_ = new ThreadLocal<HttpClient>() {
+    @Override
+    protected HttpClient initialValue() {
+      HttpClient.Builder builder = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_1_1)
+        .followRedirects(HttpClient.Redirect.NORMAL)
+        .connectTimeout(Duration.ofSeconds(getConnectionTimeout()));
+        // .authenticator(Authenticator.getDefault());
+
+      if ( getSecure() ) {
+        SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
+        if ( contextFactory != null && contextFactory.getEnableSSL() ) {
+          SSLContext sslContext = contextFactory.getSSLContext();
+          builder = builder.sslContext(sslContext);
+        }
+      }
+      return builder.build();
+    }
+  };
   `,
 
   methods: [
     {
-      name: 'buildUrl',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-      ],
-      type: 'String',
+      name: 'find_',
       javaCode: `
-      String url = getUrl()+"/service/"+DIG_SERVICE;
-      Loggers.logger(x, this).info("url", url);
-      return url;
+      Object result = submit(x, DOP.FIND, "id="+id.toString());
+      Loggers.logger(x, this).info("find", "response", result);
+      if ( result != null ) {
+        return (FObject) unAdapt(x, DOP.FIND, result);
+      }
+      throw new RuntimeException("Empty response");
+      `
+    },
+    {
+      name: 'put_',
+      javaCode: `
+      Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
+      Loggers.logger(x, this).info("put", "response", result);
+      if ( result != null ) {
+        return (FObject) unAdapt(x, DOP.PUT, result);
+      }
+      throw new RuntimeException("Empty response");
       `
     },
     {
@@ -128,6 +166,10 @@ foam.CLASS({
         {
           name: 'x',
           type: 'Context'
+        },
+        {
+          name: 'dop',
+          type: 'foam.dao.DOP'
         },
         {
           name: 'obj',
@@ -142,7 +184,8 @@ foam.CLASS({
       `
     },
     {
-      name: 'prepare',
+      // TODO: support SELECT
+      name: 'unAdapt',
       args: [
         {
           name: 'x',
@@ -154,59 +197,28 @@ foam.CLASS({
         },
         {
           name: 'data',
-          type: 'String'
+          type: 'Object'
         }
       ],
-      type: 'String',
+      type: 'Object',
       javaCode: `
-      StringBuilder sb = new StringBuilder();
-      sb.append("dao=");
-      sb.append(getNSpecName());
-      sb.append("&format=JSON");
-      sb.append("&cmd=");
-      sb.append(dop.getLabel());
-
-      switch ( dop ) {
-        case PUT:
-          sb.append("&data=p(");
-          // TODO: encodeuricomponent
-          sb.append(data);
-          sb.append(")");
-          break;
-        case FIND:
-          sb.append("&id=");
-          // TODO: encodeuricomponent
-          sb.append(data);
-          break;
-        // case SELECT:
-        //  sb.append("&q=");
-        //  skip, limit,
-        //  break;
-        case CMD:
-          sb.append("&cmd=");
-          // TODO: encodeuricomponent
-          sb.append(data);
-          break;
+      Class cls = null;
+      try {
+        DAO dao = (DAO) x.get(getNSpecName());
+        if ( dao instanceof foam.dao.ProxyDAO ) {
+          cls = ((foam.dao.ProxyDAO) dao).getOf().getObjClass();
+        } else if ( dao instanceof foam.dao.MDAO ) {
+          cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
+        }
+        return x.create(JSONParser.class).parseString(data.toString(), cls);
+      } catch ( RuntimeException e ) {
+        Throwable cause = e.getCause();
+        while ( cause.getCause() != null ) {
+          cause = cause.getCause();
+        }
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), cls, data, cause);
+        throw e;
       }
-      return sb.toString();
-      `
-    },
-    {
-      name: 'put_',
-      javaCode: `
-      String data = adapt(x, obj);
-      // try {
-      //  data = URLEncoder.encode(data, "UTF-8");
-      // } catch (UnsupportedEncodingException e) {
-      //   Loggers.logger(x, this).error(e);
-      // }
-      Loggers.logger(x, this).info("object", obj);
-      Loggers.logger(x, this).info("adapted", data);
-      data = prepare(x, DOP.PUT, data);
-      Loggers.logger(x, this).info("prepared", data);
-      Object result = submit(x, DOP.PUT, data);
-      Loggers.logger(x, this).info("response", result);
-      return null;
       `
     },
     {
@@ -225,31 +237,38 @@ foam.CLASS({
           type: 'String'
         },
       ],
-      type: 'Object',
+      type: 'String',
       javaCode: `
-      Box box = new SessionClientBox.Builder(x)
-        .setSessionID(getSessionId())
-        .setDelegate(new HTTPBox.Builder(x)
-          .setAuthorizationType(HTTPAuthorizationType.BEARER)
-          .setSessionID(getSessionId())
-          .setUrl(buildUrl(x))
-          .build())
+      StringBuilder sb = new StringBuilder();
+      sb.append(getUrl());
+      sb.append("/service/");
+      sb.append(DIG_SERVICE);
+      sb.append("?dao=");
+      sb.append(getNSpecName());
+      sb.append("&format=JSON");
+      sb.append("&cmd=");
+      sb.append(dop.getLabel());
+
+      Loggers.logger(x, this).info("url", sb.toString());
+
+      HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(sb.toString()))
+        .timeout(Duration.ofSeconds(getRequestTimeout()))
+        .header("Accept-Language", "en-US,en;q=0.5")
+        .header("Authorization", "BEARER "+getSessionId())
+        .header("Content-Type", "application/json")
+        .header("User-Agent", "Mozilla/5.0")
+        .POST(HttpRequest.BodyPublishers.ofString(data))
         .build();
-      // ReplyBox replyBox = x.create(ReplyBox.class);
-      RPCReturnBox replyBox = x.create(RPCReturnBox.class);
-      Message msg = x.create(Message.class);
-      msg.getAttributes().put("replyBox", replyBox);
-      msg.setObject(data);
-      box.send(msg);
+
       try {
-        replyBox.getSemaphore().acquire();
+        HttpClient client = client_.get();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Loggers.logger(x, this).info("response", response.statusCode(), response.body());
+        return response.body();
       } catch (Throwable t) {
         throw new RuntimeException(t);
       }
-
-      Object reply = replyBox.getMessage().getObject();
-      Object result = reply; //unAdapt(x, DOP.PUT, reply);
-      return result;
       `
     }
   ]
