@@ -15,7 +15,6 @@ foam.CLASS({
     'foam.core.ConstantSlot',
     'foam.core.ExpressionSlot',
     'foam.u2.md.OverlayDropdown',
-    'foam.u2.HTMLView',
     'foam.u2.LoadingSpinner'
   ],
 
@@ -104,7 +103,8 @@ foam.CLASS({
     }
 
     ^dropdown svg {
-      font-size: 0.6rem; 
+      width: 1rem;
+      height: 1rem;
     }
   `,
 
@@ -130,12 +130,10 @@ foam.CLASS({
           if ( shown ) {
             e.callIfElse(self.theme,
               function() {
-                this.start(self.HTMLView, { data: self.theme.glyphs.dropdown.expandSVG() })
-                  .addClasses([self.myClass('SVGIcon'), self.myClass('dropdown')])
-                .end();
+                this.tag({ class: 'foam.u2.tag.Image', glyph: 'dropdown' }).addClass(self.myClass('dropdown'));
               },
               function() {
-                this.start('img').attr('src', this.dropdownIcon$).end();
+                this.tag({ class: 'foam.u2.tag.Image', data$: self.dropdownIcon$ }).addClass(self.myClass('dropdown'));
               }
             );
           }
