@@ -38,7 +38,6 @@ foam.CLASS({
       align-items: center;
     }
     ^ .choice {
-      font-size: 1.6rem;
       margin-bottom: 16px;
       white-space: nowrap;
     }
@@ -112,6 +111,7 @@ foam.CLASS({
       this.add(this.choices.map(c => {
         var isChecked = self.slot(function(data) { return data == c[0]; });
         return this.E('div').
+          addClass('p-md').
           addClass('choice').
             callIf(this.columns != -1, function() { this.style({'flex-basis': (100 / self.columns) + '%'}) }).
           start('input').

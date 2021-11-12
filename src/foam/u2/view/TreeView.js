@@ -44,14 +44,10 @@ foam.CLASS({
     }
 
     ^label {
-      font-weight: 300;
       min-width: 120px;
       padding: 4px;
-      font-weight: normal;
       display: inline-block;
       color: /*%GREY1%*/ #5E6061;
-      font-size: 1.4rem;
-      font-weight: normal;
     }
 
     ^heading {
@@ -172,7 +168,7 @@ foam.CLASS({
           'text-align':    'left'
         }).
         start()
-          .addClass(self.myClass('label')).
+          .addClasses([self.myClass('label'), 'p']).
           call(this.formatter, [self.data]).
         end().
         start('span').

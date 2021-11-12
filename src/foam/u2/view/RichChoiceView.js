@@ -166,8 +166,6 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 1.2rem;
-      font-weight: 900;
       padding: 1px 2px;
     }
 
@@ -178,7 +176,6 @@ foam.CLASS({
       width: 100%;
 
       height: /*%INPUTHEIGHT%*/ 34px;
-      font-size: 1.4rem;
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       border: 1px solid;
@@ -497,7 +494,7 @@ foam.CLASS({
               })
               .addClass(this.myClass())
               .start()
-                .addClass(this.myClass('selection-view'))
+                .addClasses([this.myClass('selection-view'), 'p'])
                 .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
                 .on('click', function() {
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
@@ -558,7 +555,7 @@ foam.CLASS({
                       return this.E().forEach(sections, function(section) {
                         this.addClass(self.myClass('setAbove'))
                           .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                            .addClass(self.myClass('heading'))
+                            .addClasses([self.myClass('heading'), 'p-legal'])
                             .translate(section.heading, section.heading)
                           .end()
                           .start()
@@ -584,7 +581,7 @@ foam.CLASS({
                     if ( action && actionData) {
                       return this.E()
                         .start(self.DefaultActionView, { action: action, data: actionData })
-                          .addClass(self.myClass('action'))
+                          .addClasses([self.myClass('action'), 'p-legal-light'])
                         .end();
                     }
                     if ( action ) {
@@ -657,7 +654,6 @@ foam.CLASS({
         ^row {
           background: white;
           padding: 1px 2px;
-          font-size: 1.2rem;
         }
 
         ^row:hover {
@@ -671,7 +667,7 @@ foam.CLASS({
           var summary = this.data.toSummary();
           return this
             .start()
-              .addClasses(['p', this.myClass('row')])
+              .addClasses([this.myClass('row'), 'p-legal-light'])
               .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
             .end();
         }
@@ -752,9 +748,7 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
-          font-size: 1.2rem;
           justify-content: flex-start;
-          text-align: left;
           width: 100%;
         }
 

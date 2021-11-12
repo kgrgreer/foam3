@@ -82,9 +82,7 @@ foam.CLASS({
 
   /* TITLE TXT ON MODEL */
   ^ .title-top {
-    font-size: 2.5em;
     padding-top: 2vh;
-    font-weight: bold;
   }
 
   /* ON MODEL */
@@ -115,11 +113,6 @@ foam.CLASS({
   /* ON TXT IN TOP-TOP NAV */
   ^ .topBar-txt-link {
     cursor: pointer;
-    font-size: 2.5vh;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
     color: #8e9090;
     margin-left: 2vw;
     margin-top: 1vw;
@@ -129,10 +122,8 @@ foam.CLASS({
       /* ON NO IMG SPLIT & IMG SPLIT */
   ^ .disclaimer-login {
     width: 35vw;
-    font-size: 0.75em;
     color: #8e9090;
     margin-left: 12vw;
-    line-height: 1.5;
     background: transparent;
   }
 
@@ -245,7 +236,7 @@ foam.CLASS({
           .end()
         .end()
       // Title txt and Model
-        .start().addClass('title-top').add(this.model.TITLE).end()
+        .start().addClass('h100').addClass('title-top').add(this.model.TITLE).end()
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .enableClass(self.myClass('fullWidth'), self.shouldResize$)
@@ -277,15 +268,18 @@ foam.CLASS({
         var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
-        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.model.DISCLAIMER).end();
+        right.addClass('centerVertical').start().addClass('p-xs').addClass('disclaimer-login').add(this.model.DISCLAIMER).end();
       }
 
       // RENDER EVERYTHING ONTO PAGE
       this.addClass()
       // full width bar with navigation to app landing page
-        .start().addClass('top-bar-nav').show(this.topBarShow_)
+        .start().addClass('top-bar-nav')
+        .show(this.topBarShow_)
           .start()
-            .start().addClass('topBar-txt-link')
+            .start()
+              .addClass('p-xl')
+              .addClass('topBar-txt-link')
               .start('span')
                 .addClass('horizontal-flip')
                 .addClass('inline-block')
@@ -310,6 +304,7 @@ foam.CLASS({
             .end()
             // add a disclaimer under img
             .start('p')
+              .addClass('p-xs')
               .addClass('disclaimer-login').addClass('disclaimer-login-img')
               .add(this.model.DISCLAIMER)
             .end();

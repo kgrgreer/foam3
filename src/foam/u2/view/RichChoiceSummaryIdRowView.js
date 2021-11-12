@@ -16,7 +16,6 @@ foam.CLASS({
         ^row {
           background: white;
           padding: 1px 2px;
-          font-size: 1.2rem;
         }
 
         ^row:hover {
@@ -30,7 +29,7 @@ foam.CLASS({
       var summary = this.data.toSummary() + ' ('+this.data.id+')';
       return this
         .start()
-        .addClass(this.myClass('row'))
+        .addClasses([this.myClass('row'), 'p-legal-light'])
         .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
         .end();
     }

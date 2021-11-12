@@ -56,7 +56,6 @@ foam.CLASS({
     }
 
     ^count {
-      font-size: 12pt;
       color: #555;
       margin: 20px 20px 0 20px;
     }
@@ -243,7 +242,7 @@ foam.CLASS({
           return e;
         }, this.filters$))
         .start()
-          .addClass(self.myClass('count'))
+          .addClasses([self.myClass('count'), 'p-md'])
           .add(self.countText$)
         .end()
         .tag(this.CLEAR, { buttonStyle: 'SECONDARY' });
