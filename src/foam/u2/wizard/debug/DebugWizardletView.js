@@ -37,7 +37,6 @@ foam.CLASS({
       background-color: /*%DESTRUCTIVE3%*/ #C00;
       color: #FFF;
       padding: 2pt 8pt;
-      font-size: 12pt;
     }
     ^ .foam-u2-borders-CollapseBorder.expanded {
       border-bottom: 0;
@@ -103,6 +102,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('title'))
+          .addClass('p-md')
           .add('Developer Tools: ')
           .add(this.wizardlet.title$)
         .end()
