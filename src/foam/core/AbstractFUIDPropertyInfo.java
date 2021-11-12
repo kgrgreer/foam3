@@ -21,4 +21,19 @@ public abstract class AbstractFUIDPropertyInfo
   public void format(FObjectFormatter formatter, FObject obj) {
     formatter.output(String.valueOf(get_(obj)));
   }
+
+  @Override
+  public foam.lib.parse.Parser jsonParser() {
+    return foam.lib.json.AnyParser.instance();
+  }
+
+  @Override
+  public foam.lib.parse.Parser queryParser() {
+    return foam.lib.json.AnyParser.instance();
+  }
+
+  @Override
+  public foam.lib.parse.Parser csvParser() {
+    return foam.lib.json.AnyParser.instance();
+  }
 }
