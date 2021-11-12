@@ -331,97 +331,76 @@ foam.CLASS({
           }
         }
 
-        if ( this.networkTransient ) {
           m.push({
             name: 'getNetworkTransient',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.networkTransient + ';'
           });
-        }
 
-        if ( this.externalTransient ) {
           m.push({
             name: 'getExternalTransient',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.externalTransient + ';'
           });
-        }
 
-        if ( this.storageTransient ) {
           m.push({
             name: 'getStorageTransient',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.storageTransient + ';'
           });
-        }
 
-        if ( this.storageOptional ) {
           m.push({
             name: 'getStorageOptional',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.storageOptional + ';'
           });
-        }
 
-        if ( this.clusterTransient ) {
           m.push({
             name: 'getClusterTransient',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.clusterTransient + ';'
           });
-        }
 
-        if ( this.readPermissionRequired ) {
           m.push({
             name: 'getReadPermissionRequired',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.readPermissionRequired + ';'
           });
-        }
 
-        if ( this.writePermissionRequired ) {
           m.push({
             name: 'getWritePermissionRequired',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.writePermissionRequired + ';'
           });
-        }
 
-        if ( this.xmlAttribute ) {
           m.push({
             name: 'getXMLAttribute',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.xmlAttribute + ';'
           });
-        }
 
-        if ( this.xmlTextNode ) {
           m.push({
             name: 'getXMLTextNode',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.xmlTextNode + ';'
           });
-        }
 
-        if ( this.propRequired ) {
           m.push({
             name: 'getRequired',
             visibility: 'public',
             type: 'boolean',
             body: 'return ' + Boolean(this.propRequired) + ';'
           });
-        }
 
-        if ( this.validateObj ) {
           m.push({
             name: 'validateObj',
             visibility: 'public',
@@ -432,9 +411,7 @@ foam.CLASS({
             ],
             body: this.validateObj
           });
-        }
 
-        if ( this.propShortName ) {
           m.push({
             name: 'getShortName',
             visibility: 'public',
@@ -443,16 +420,15 @@ foam.CLASS({
               'return "' + this.propShortName + '";' :
               'return null;'
           });
-        }
 
-        if ( this.propAliases.length ) {
+//        if ( this.propAliases.length ) {
           m.push({
             name: 'getAliases',
             visibility: 'public',
             type: 'String[]',
             body: 'return ' + this.getAliasesBody
           });
-        }
+//        }
 
         if ( this.cloneProperty != null ) {
           m.push({
@@ -490,14 +466,12 @@ foam.CLASS({
           */
 //        }
 
-        if ( this.includeInID ) {
           m.push({
             name:       'includeInID',
             visibility: 'public',
             type:       'boolean',
             body:       'return true;'
           });
-        }
 
         // default value is true, only generate if value is false
       //  if ( ! this.includeInSignature ) {
@@ -509,32 +483,26 @@ foam.CLASS({
           });
       //  }
 
-        if ( this.containsPII ) {
           m.push({
             name:       'containsPII',
             visibility: 'public',
             type:       'boolean',
             body:       `return ${this.containsPII};`
           });
-        }
 
-        if ( this.containsDeletablePII ) {
           m.push({
             name:       'containsDeletablePII',
             visibility: 'public',
             type:       'boolean',
             body:       `return ${this.containsDeletablePII};`
           });
-        }
 
-        if ( this.sheetsOutput ) {
           m.push({
             name: 'getSheetsOutput',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.sheetsOutput + ';'
           });
-        }
 
         if ( this.formatJSON != null ) {
           m.push({
