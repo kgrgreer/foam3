@@ -51,11 +51,8 @@ foam.CLASS({
       box-sizing: border-box;
       color: /*%BLACK%*/ #1e1f21;
       display: block;
-      font-size: 1.4rem;
-      line-height: 1.5;
       overflow: hidden;
       padding-left: 16px;
-      text-align: left;
       text-overflow: ellipsis;
       white-space: nowrap;
       min-width: 40px; /* So when the table's width decreases, columns aren't hidden completely */
