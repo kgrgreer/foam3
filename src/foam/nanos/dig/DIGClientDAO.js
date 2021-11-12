@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.json.JSONParser',
+    'foam.nanos.dig.exception.DigErrorMessage',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
@@ -57,6 +58,7 @@ foam.CLASS({
       name: 'url',
       class: 'String',
       javaFactory: `
+      // see 'domain' below - which is not working.
       return "http://"+System.getProperty("hostname", "localhost")+":8080";
       `
     },
@@ -123,7 +125,6 @@ foam.CLASS({
         .version(HttpClient.Version.HTTP_1_1)
         .followRedirects(HttpClient.Redirect.NORMAL)
         .connectTimeout(Duration.ofSeconds(getConnectionTimeout()));
-        // .authenticator(Authenticator.getDefault());
 
       if ( getSecure() ) {
         SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
@@ -249,7 +250,7 @@ foam.CLASS({
       sb.append("&cmd=");
       sb.append(dop.getLabel());
 
-      Loggers.logger(x, this).info("url", sb.toString());
+      Loggers.logger(x, this).debug("submit", "request", sb.toString());
 
       HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(sb.toString()))
@@ -264,10 +265,19 @@ foam.CLASS({
       try {
         HttpClient client = client_.get();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        Loggers.logger(x, this).info("response", response.statusCode(), response.body());
-        return response.body();
-      } catch (Throwable t) {
-        throw new RuntimeException(t);
+        if ( response.statusCode() == 200 ) {
+          return response.body();
+        }
+        Loggers.logger(x, this).warning("submit", "response", response.statusCode(), response.body());
+        try {
+          throw (DigErrorMessage) unAdapt(x, dop, response.body());
+        } catch ( Throwable t ) {
+          // nop
+          Loggers.logger(x, this).debug("submit", "response", "failed to parse dig excetpion", t.getMessage(), response.statusCode(), response.body(), t);
+        }
+        throw new RuntimeException(String.valueOf(response.statusCode()));
+      } catch (java.io.IOException | InterruptedException e) {
+        throw new RuntimeException(e);
       }
       `
     }
