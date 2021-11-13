@@ -14,7 +14,15 @@
   ],
 
   axioms: [
-    foam.pattern.Singleton.create()
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+         private final static NullTracer instance__ = new NullTracer();
+
+         public static NullTracer instance() { return instance__; }
+       `)
+      }
+    }
   ],
 
   methods: [
