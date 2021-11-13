@@ -13,17 +13,11 @@
     'foam.nanos.ruler.tracer.RuleTracer'
   ],
 
-  axioms: [
-    {
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-         private final static NullTracer instance__ = new NullTracer();
+  javaCode: `
+    private final static NullTracer instance__ = new NullTracer();
 
-         public static NullTracer instance() { return instance__; }
-       `)
-      }
-    }
-  ],
+    public static NullTracer instance() { return instance__; }
+  `,
 
   methods: [
     {
