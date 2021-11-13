@@ -15,9 +15,9 @@
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'java.lang.StringBuilder',
-
+    'java.lang.StringBuilder'
   ],
+
   properties: [
     {
       class: 'Object',
@@ -34,7 +34,7 @@
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        setLog(getLog().append("\\nPerforming Rule Debug. "));
+        getLog().append("\\nPerforming Rule Debug. ");
       `
     },
     {
@@ -55,11 +55,10 @@
         { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       javaCode: `
-        StringBuilder log = getLog();
-        log.append("\\nRule: "));
-        log.append(rule.getName()));
-        log.append(", id: "));
-        setLog(log.append(rule.getId()));
+        getLog().append("\\nRule: ")
+        .append(rule.getName())
+        .append(", id: ")
+        .append(rule.getId());
       `
     },
     {
@@ -80,15 +79,14 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        StringBuilder log = getLog();
-        log.append("\\nPermission: "));
+        getLog().append("\\nPermission: ");
         if ( user != null ) {
-          log.append(result));
-          log.append(" for User: "));
-          setLog(log.append(user.getId()));
+          getLog().append(result)
+          .append(" for User: ")
+          .append(user.getId());
         }
         else {
-          setLog(log.append("Not Required"));
+          getLog().append("Not Required");
         }
       `
     },
@@ -98,9 +96,8 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        StringBuilder log = getLog();
-        log.append("\\nPredicate: "));
-        setLog(log.append(result));
+        getLog().append("\\nPredicate: ")
+        .append(result);
       `
     },
     {
@@ -109,15 +106,14 @@
         { name: 'result', type: 'Boolean' },
       ],
       javaCode: `
-        StringBuilder log = getLog();
-        log.append("\\nActive: "));
-        setLog(log.append(result));
+        getLog().append("\\nActive: ")
+        .append(result);
       `
     },
     {
       name: 'traceAction',
       javaCode: `
-        setLog(getLog().append("\\nAction executed. "));
+        getLog().append("\\nAction executed. ");
       `
     }
   ]
