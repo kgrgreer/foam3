@@ -13,6 +13,10 @@
     'foam.nanos.ruler.tracer.RuleTracer'
   ],
 
+  axioms: [
+    foam.pattern.Singleton.create()
+  ],
+
   methods: [
     {
       name: 'preExecute',
