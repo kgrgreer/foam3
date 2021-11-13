@@ -63,7 +63,7 @@ public class RuleEngine extends ContextAwareSupport {
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
     RuleTracer            tracer         = (RuleTracer) getX().get("ruleTracer");
-    tracer = ( tracer == null ) ? new NullTracer() : (RuleTracer) ((FObject) tracer).fclone();
+    tracer = ( tracer == null ) ? NullTracer.instance() : (RuleTracer) ((FObject) tracer).fclone();
     tracer.preExecute(getX());
 
     for ( Rule rule : rules ) {
@@ -124,7 +124,7 @@ public class RuleEngine extends ContextAwareSupport {
     PM pm = PM.create(getX(), RulerProbe.getOwnClassInfo(), "Probe:" + obj.getClassInfo());
 
     RuleTracer tracer = (RuleTracer) getX().get("ruleTracer");
-    tracer = ( tracer == null ) ? new NullTracer() : (RuleTracer) ((FObject) tracer).fclone();
+    tracer = ( tracer == null ) ? NullTracer.instance() : (RuleTracer) ((FObject) tracer).fclone();
 
     try {
       tracer.preExecute(getX());
