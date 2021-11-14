@@ -71,7 +71,7 @@ foam.CLASS({
       javaFactory: `
 return getOf() == null ? null : (foam.core.PropertyInfo) getOf().getAxiomByName("id");
       `,
-    },
+    }
   ],
 
   methods: [
