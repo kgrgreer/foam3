@@ -181,7 +181,26 @@ public class RuleEngine extends ContextAwareSupport {
 
   private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
     asyncExecutor_.submit(new ContextAgentRunnable(userX_, x -> {
-      rule.asyncApply(x, obj, oldObj, RuleEngine.this, rule);
+      if ( stops_.get() ) asyncExecutor_.shutdownNow();
+
+      // REVIEW: Rule isActive, permission and predicate checks have already
+      // been done before it get to here (i.e., applyAsyncRule) nonetheless
+      // since async rules are run asynchronously the "rule" and "obj" might
+      // have been changed.
+      //
+      // Do we need to reload the "obj" and recheck the rule isActive,
+      // permission and predicate again before executing the rule action?
+      //
+      // If not, it may be executing the rule action on a stale "obj".
+      var nu = getDelegate().find_(x, obj).fclone();
+      if ( ! isRuleActive(rule)        ) return;
+      if ( ! checkPermission(rule, nu) ) return;
+      if ( ! rule.f(x, nu, oldObj)     ) return;
+
+      PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC: " + rule.getDaoKey() + ": " + rule.getId());
+      ProxyX readOnlyX = new ReadOnlyDAOContext(x);
+      rule.asyncApply(readOnlyX, nu, oldObj, RuleEngine.this, rule);
+      pm.log(x_);
     }, "Async apply rule id: " + rule.getId()));
   }
 
