@@ -13,16 +13,13 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.AssignedToAware',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.AssignableAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.ServiceProviderAware'
-  ],
-
-  mixins: [
-    'foam.nanos.auth.AssignedToAwareMixin'
   ],
 
   topics: [
