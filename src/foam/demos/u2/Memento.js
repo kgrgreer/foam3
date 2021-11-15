@@ -51,6 +51,8 @@ foam.CLASS({
         // parser & separated string of key=value bindings and store in b
         var bs = [];
 
+        if ( s && s.indexOf('=') == -1 ) s += '?';
+
         var i = s.indexOf('?');
         if ( i != -1 ) {
           var route = s.substring(0, i).split('/');
@@ -144,7 +146,7 @@ foam.CLASS({
     },
 
     function encode() {
-      var s = '', route = '', set = {};
+      var s = '', route = '', hasRoute = false, set = {};
 
       if ( this.tail ) {
         set = this.getBoundNames();
@@ -154,6 +156,7 @@ foam.CLASS({
         var value = this.obj[p.name];
         if ( p.name === 'route' ) {
           route = this.obj.route;
+          hasRoute = true;
         } else {
           if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
             if ( s ) s += '&';
@@ -168,7 +171,8 @@ foam.CLASS({
         var e2 = this.tail.encode();
         var s2 = e2.params;
         if ( e2.route ) {
-          route += '/' + e2.route;
+          if ( hasRoute ) route += '/';
+          route += e2.route;
         }
         if ( s2 ) {
           if ( s ) { s = s + '&' + s2; } else { s = s2; }
@@ -188,6 +192,54 @@ foam.CLASS({
         /* Called when a memento property is updated. */
         this.usedStr = this.toString();
         if ( this.memento_ ) this.memento_.update();
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'WindowHashMemento',
+  extends: 'Memento',
+
+  imports: [ 'window' ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'feedback_'
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+
+      this.onHashChange();
+      this.window.onpopstate = this.onHashChange;
+      this.usedStr$.sub(this.onMementoChange);
+    },
+
+    function deFeedback(fn) {
+      if ( this.feedback_ ) return;
+      this.feedback_ = true;
+      try { fn(); } catch(x) {}
+      this.feedback_ = false;
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onHashChange',
+      code: function() {
+        this.deFeedback(() => this.str = this.window.location.hash.substring(1));
+      }
+    },
+
+    {
+      name: 'onMementoChange',
+      code: function() {
+        this.deFeedback(() => this.window.location.hash = '#' + this.usedStr);
       }
     }
   ]
@@ -381,11 +433,22 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',
 
-  exports: [ 'memento_' ],
+  exports: [ 'memento_', 'window' ],
 
-  mixins: [ 'Memorable' ],
+  //mixins: [ 'Memorable' ],
 
   properties: [
+    {
+      name: 'memento_',
+      hidden: true,
+      factory: function() { return WindowHashMemento.create({obj: this, memento_: this.parentMemento_}); }
+    },
+    {
+      name: 'window',
+      factory: function() {
+        return window;
+      }
+    },
     {
       name: 'skip',
       shortName: 's',
@@ -417,6 +480,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+
       // this.subMemento.str = 'q=something';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br().br();
