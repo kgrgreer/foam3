@@ -292,7 +292,8 @@ foam.CLASS({
       }));
     },
     function render() {
-      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
+      // TEMPORARY: Disable QueryCachingDAO to test summaryView bugs 
+      // this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
