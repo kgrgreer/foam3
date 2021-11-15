@@ -255,5 +255,50 @@ foam.CLASS({
       scroll-behavior: auto !important;
     }
   }
+
+  /* mobile */
+  @media only screen and (min-width: 321px)        and (max-width: 767px) {
+    .foam-u2-dialog-Popup-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .foam-u2-wizard-ScrollingStepWizardView-hide-X-status {
+      display: none !important;
+    }
+    .foam-u2-wizard-ScrollingStepWizardView {
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+    }
+    .side-nav-view,
+    .side-nav-view .foam-u2-view-TreeViewRow {
+      width: 100%;
+    }
+    .foam-nanos-menu-VerticalMenu-search {
+      width: 100% !important;
+    }
+    .foam-u2-ActionView-refreshTable {
+      display: none !important;
+    }
+    .foam-comics-v2-DAOBrowseControllerView-container {
+      padding: 0 !important;
+    }
+    .foam-comics-v2-DAOBrowseControllerView-header-container {
+      padding-top: 32px;
+    }
+  }
+
+  /* tablet */
+  @media only screen and (min-width: 768px)        and (max-width: 959px) {
+    .foam-u2-dialog-Popup-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
   `
 });
