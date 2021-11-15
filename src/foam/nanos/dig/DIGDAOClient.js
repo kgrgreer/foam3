@@ -340,7 +340,7 @@ foam.CLASS({
       `
     },
     {
-      // Quiet a rigamaroll to create a session. Have to go through SUGAR
+      // Quite a rigamaroll to create a session. Have to go through SUGAR
       name: 'createSession',
       args: [
         {
