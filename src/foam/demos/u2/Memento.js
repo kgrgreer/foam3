@@ -157,16 +157,18 @@ foam.CLASS({
     },
 
     function toString() {
-      var p = this.encode();
-      var s = p.route;
-      if ( p.params ) {
+      /** Converts this Memento (and tail) to path?params encoded String. **/
+      var e = this.encode();
+      var s = e.route;
+      if ( e.params ) {
         if ( s ) s += '?';
-        s += p.params;
+        s += e.params;
       }
       return s;
     },
 
     function encode() {
+      /** Recursively encode memento as a {route: "route1/route2/...", params: "key1=value1&key2=value2..."} map. **/
       var s = '', route = '', hasRoute = false, set = {};
 
       if ( this.tail ) {
