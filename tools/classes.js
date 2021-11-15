@@ -286,6 +286,7 @@ var classes = [
   'foam.nanos.auth.CheckPermissionsSink',
   'foam.nanos.auth.Group',
   'foam.nanos.auth.PasswordPolicy',
+  'foam.nanos.auth.AssignedToAware',
   'foam.nanos.auth.CreatedAware',
   'foam.nanos.auth.CreatedAwareDAO',
   'foam.nanos.auth.CreatedByAware',

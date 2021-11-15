@@ -353,6 +353,7 @@ FOAM_FILES([
   // Auth Mixins
   { name: "foam/nanos/auth/CreatedAwareMixin" },
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
+  { name: "foam/nanos/auth/AssignedToAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
