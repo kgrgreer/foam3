@@ -62,6 +62,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
       .setAuthorize(true)
+      .setAuthorizer(new foam.nanos.auth.AssignedToAuthorizer("ticket"))
       .setEnableInterfaceDecorators(false)
       .setInnerDAO((foam.dao.DAO) x.get("localTicketDAO"))
       .build();
