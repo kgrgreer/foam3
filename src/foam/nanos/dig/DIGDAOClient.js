@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.dig',
   name: 'DIGDAOClient',
-  extends: 'foam.dao.NullDAO',
+  extends: 'foam.dao.AbstractDAO',
 
   documentation: 'Java HTTP client hitting service/dig. Intented for performance testing.',
 
@@ -33,14 +33,6 @@ foam.CLASS({
     'java.time.Duration',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
-  ],
-
-  constants: [
-    {
-      name: 'DIG_SERVICE',
-      type: 'String',
-      value: 'dig'
-    }
   ],
 
   properties: [
@@ -99,6 +91,24 @@ foam.CLASS({
     //   return "http://"+System.getProperty("hostname", "localhost")+":8080";
     //   `,
     // }
+    {
+      name: 'serviceName',
+      class: 'String',
+      value: 'dig'
+    },
+    {
+      name: 'of',
+      class: 'Class',
+      javaFactory: `
+        DAO dao = (DAO) getX().get(getNSpecName());
+        if ( dao instanceof foam.dao.ProxyDAO ) {
+          return ((foam.dao.ProxyDAO) dao).getOf();
+        } else if ( dao instanceof foam.dao.MDAO ) {
+          return ((foam.dao.MDAO) dao).getOf();
+        }
+        return null;
+      `
+    }
   ],
 
   javaCode: `
@@ -127,6 +137,7 @@ foam.CLASS({
         .connectTimeout(Duration.ofSeconds(getConnectionTimeout()));
 
       if ( getSecure() ) {
+        System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
         SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
         if ( contextFactory != null && contextFactory.getEnableSSL() ) {
           SSLContext sslContext = contextFactory.getSSLContext();
@@ -143,7 +154,7 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
       Object result = submit(x, DOP.FIND, "id="+id.toString());
-      Loggers.logger(x, this).info("find", "response", result);
+      // Loggers.logger(x, this).debug("find", "response", result);
       if ( result != null ) {
         return (FObject) unAdapt(x, DOP.FIND, result);
       }
@@ -153,12 +164,33 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      // Special support for Sessions as they must go through SUGAR
+      if ( obj instanceof Session ) {
+        Session session = (Session) obj;
+        String id = createSession(x, session);
+        session.setId(id);
+        return session;
+      }
+
       Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
-      Loggers.logger(x, this).info("put", "response", result);
+      // Loggers.logger(x, this).debug("put", "response", result);
       if ( result != null ) {
         return (FObject) unAdapt(x, DOP.PUT, result);
       }
       throw new RuntimeException("Empty response");
+      `
+    },
+    {
+      name: 'select_',
+      // select_(X,Sink,long,long,Comparator,Predicate)
+      javaCode: `
+      return null;
+      `
+    },
+    {
+      name: 'remove_',
+      javaCode: `
+      return null;
       `
     },
     {
@@ -203,23 +235,58 @@ foam.CLASS({
       ],
       type: 'Object',
       javaCode: `
-      Class cls = null;
       try {
-        DAO dao = (DAO) x.get(getNSpecName());
-        if ( dao instanceof foam.dao.ProxyDAO ) {
-          cls = ((foam.dao.ProxyDAO) dao).getOf().getObjClass();
-        } else if ( dao instanceof foam.dao.MDAO ) {
-          cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
-        }
-        return x.create(JSONParser.class).parseString(data.toString(), cls);
+        return x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
       } catch ( RuntimeException e ) {
         Throwable cause = e.getCause();
         while ( cause.getCause() != null ) {
           cause = cause.getCause();
         }
-        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), cls, data, cause);
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getOf(), data, cause);
         throw e;
       }
+      `
+    },
+    {
+      name: 'buildUrl',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'dop',
+          type: 'foam.dao.DOP'
+        },
+        {
+          name: 'data',
+          type: 'String'
+        },
+      ],
+      type: 'String',
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      sb.append(getUrl());
+      sb.append("/service/");
+      sb.append(getServiceName());
+      if ( ! SafetyUtil.isEmpty(getNSpecName()) ) {
+        sb.append("?dao=");
+        sb.append(getNSpecName());
+        sb.append("&format=JSON");
+      } else {
+        sb.append("?format=JSON");
+      }
+
+      if ( dop == DOP.FIND ) {
+        sb.append("&");
+        sb.append(data);
+      } else {
+        sb.append("&cmd=");
+        sb.append(dop.getLabel());
+      }
+
+      // Loggers.logger(x, this).debug("submit", "request", sb.toString());
+      return sb.toString();
       `
     },
     {
@@ -240,27 +307,18 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-      StringBuilder sb = new StringBuilder();
-      sb.append(getUrl());
-      sb.append("/service/");
-      sb.append(DIG_SERVICE);
-      sb.append("?dao=");
-      sb.append(getNSpecName());
-      sb.append("&format=JSON");
-      sb.append("&cmd=");
-      sb.append(dop.getLabel());
-
-      Loggers.logger(x, this).debug("submit", "request", sb.toString());
-
-      HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(sb.toString()))
+      HttpRequest.Builder builder = HttpRequest.newBuilder()
+        .uri(URI.create(buildUrl(x, dop, data)))
         .timeout(Duration.ofSeconds(getRequestTimeout()))
         .header("Accept-Language", "en-US,en;q=0.5")
         .header("Authorization", "BEARER "+getSessionId())
         .header("Content-Type", "application/json")
-        .header("User-Agent", "Mozilla/5.0")
-        .POST(HttpRequest.BodyPublishers.ofString(data))
-        .build();
+        .header("User-Agent", "Mozilla/5.0");
+      if ( dop == DOP.PUT ||
+           dop == DOP.REMOVE ) {
+        builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
+      }
+      HttpRequest request = builder.build();
 
       try {
         HttpClient client = client_.get();
@@ -279,6 +337,51 @@ foam.CLASS({
       } catch (java.io.IOException | InterruptedException e) {
         throw new RuntimeException(e);
       }
+      `
+    },
+    {
+      // Quiet a rigamaroll to create a session. Have to go through SUGAR
+      name: 'createSession',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'session',
+          type: 'foam.nanos.session.Session'
+        },
+      ],
+      type: 'String',
+      javaCode: `
+      // TODO: model this
+      StringBuilder sb = new StringBuilder();
+      sb.append("{");
+      sb.append("\\"service\\":\\"sessionService\\",");
+      sb.append("\\"interfaceName\\":\\"foam.nanos.session.SessionService\\",");
+      sb.append("\\"method\\":\\"createSessionWithTTL\\",");
+      sb.append("\\"userId\\":");
+      sb.append(session.getUserId());
+      sb.append(",\\"agentId\\":");
+      sb.append(session.getAgentId());
+      sb.append(",\\"ttl\\":");
+      sb.append(session.getTtl());
+      sb.append("}");
+
+      DIGDAOClient client = new DIGDAOClient.Builder(x)
+        .setServiceName("sugar")
+        .setOf(Session.getOwnClassInfo())
+        .setUrl(getUrl())
+        .setSessionId(getSessionId())
+        .build();
+
+     String id = client.submit(x, DOP.PUT, sb.toString());
+      // HttpRequest or SUGAR response is quoted, need to strip.
+      if ( ! SafetyUtil.isEmpty(id) &&
+           id.startsWith("\\"") ) {
+        id = id.substring(1, id.length() - 2);
+      }
+      return id;
       `
     }
   ]
