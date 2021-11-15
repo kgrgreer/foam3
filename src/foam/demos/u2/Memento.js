@@ -205,6 +205,11 @@ foam.CLASS({
   name: 'WindowHashMemento',
   extends: 'Memento',
 
+  documentation: `
+    A Memento with support for binding to the windows location hash.
+    The top-level Memento in the system should be a WindowHashMemento.
+  `,
+
   imports: [ 'window' ],
 
   properties: [
@@ -249,6 +254,7 @@ foam.CLASS({
 });
 
 
+
 foam.CLASS({
   name: 'MemorablePropertyRefinement',
   refines: 'foam.core.Property',
@@ -272,7 +278,13 @@ foam.CLASS({
     {
       name: 'memento_',
       hidden: true,
-      factory: function() { return Memento.create({obj: this, memento_: this.parentMemento_}); }
+      factory: function() {
+        // If no top-level Memento found, then create a WindowHashMemento to be
+        // the top-level one.
+        return this.parentMemento_ ?
+          Memento.create({obj: this, memento_: this.parentMemento_}, this) :
+          WindowHashMemento.create({obj: this}, this);
+      }
     }
   ],
 
@@ -438,14 +450,15 @@ foam.CLASS({
 
   exports: [ 'memento_', 'window' ],
 
-  //mixins: [ 'Memorable' ],
+  mixins: [ 'Memorable' ],
 
   properties: [
+    /*
     {
       name: 'memento_',
       hidden: true,
       factory: function() { return WindowHashMemento.create({obj: null, memento_: this.parentMemento_}); }
-    },
+    },*/
     {
       name: 'window',
       factory: function() {
