@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
     'foam.mlang.predicate.Predicate',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.Capability',
@@ -122,10 +123,11 @@ foam.CLASS({
           DAO capabilityDAO = ( x.get("localCapabilityDAO") == null ) ? (DAO) x.get("capabilityDAO") : (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-          Predicate capabilityScope = OR(
+          Predicate capabilityScope = AND(
+            EQ(UserCapabilityJunction.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+            OR(
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
-              NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
-          );
+              NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))));
           AbstractPredicate predicate = new AbstractPredicate(x) {
             @Override
             public boolean f(Object obj) {
