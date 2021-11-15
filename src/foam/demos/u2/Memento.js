@@ -38,7 +38,10 @@ foam.CLASS({
   `,
 
   properties: [
-    'memento_',
+    {
+      name: 'memento_',
+      documentation: 'The parent Memento for this Mementio (memento_.tail == this).'
+    },
     {
       name: 'obj',
       documentation: 'Object to be made memorable. Can be null if this is the top-level memento.'
@@ -53,6 +56,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'str',
+      documentation: 'String input memento. Used to set the memento from a String.',
       displayWidth: 100,
       postSet: function(_, s) {
         // parser & separated string of key=value bindings and store in b
@@ -107,7 +111,7 @@ foam.CLASS({
     },
     {
       name: 'usedStr',
-      documentation: 'Only the bindings from "str" that are used by this Memorable or sub-Mementos.'
+      documentation: 'Only the bindings from "str" that are used by this Memorable or sub-Mementos. Should be used when storing memento as a String.'
     }
   ],
 
@@ -115,15 +119,17 @@ foam.CLASS({
     function init() {
       if ( ! this.obj ) return;
 
+      // Listen for changes to any memorable Properties
       this.props.forEach(p => {
         this.obj.slot(p.name).sub(this.update);
       });
 
+      // Connect to parent Memento if it exists.
       if ( this.memento_ ) {
         this.memento_.tail = this;
         this.str           = this.memento_.tailStr;
         this.obj.onDetach(() => {
-          // TODO: make own method
+          // TODO?: make own method
           if ( this.memento_.tail == this ) {
             this.memento_.tail = null;
             this.memento_.update();
@@ -145,7 +151,7 @@ foam.CLASS({
     },
 
     function encodeBindings(bs) {
-      /** Encode an array of bindings as a & deliminted key=value string. **/
+      /** Encode an array of [key,value] bindings as a & deliminted key=value string. **/
       var s = '';
       bs.forEach(b => {
         if ( s ) s += '&';
@@ -205,10 +211,13 @@ foam.CLASS({
   listeners: [
     {
       name: 'update',
+      documentation: `
+        Called when a Memento Property is updated.
+        Causes usedStr of this Memento and parents to be updated.
+      `,
       isMerged: true,
       mergeDelay: 32,
       code: function() {
-        /* Called when a memento property is updated. */
         this.usedStr = this.toString();
         if ( this.memento_ ) this.memento_.update();
       }
@@ -245,6 +254,7 @@ foam.CLASS({
     },
 
     function deFeedback(fn) {
+      /** Call the supplied function with feedback elimination. **/
       if ( this.feedback_ ) return;
       this.feedback_ = true;
       try { fn(); } catch(x) {}
@@ -255,6 +265,7 @@ foam.CLASS({
   listeners: [
     {
       name: 'onHashChange',
+      documentation: 'Called when the window hash is updated, causes update to memento.',
       code: function() {
         this.deFeedback(() => this.str = this.window.location.hash.substring(1));
       }
@@ -262,6 +273,7 @@ foam.CLASS({
 
     {
       name: 'onMementoChange',
+      documentation: 'Called when the memento changes, causes update to hash.',
       code: function() {
         this.deFeedback(() => this.window.location.hash = '#' + this.usedStr);
       }
@@ -297,6 +309,7 @@ foam.CLASS({
   properties: [
     {
       name: 'memento_',
+      documentation: 'Memento bound to this object.',
       hidden: true,
       factory: function() {
         // If no top-level Memento found, then create a WindowHashMemento to be
