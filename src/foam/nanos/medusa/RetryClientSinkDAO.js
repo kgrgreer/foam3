@@ -185,6 +185,9 @@ foam.CLASS({
             }
           }
           if ( alarm != null ) {
+            if ( alarm.isFrozen() ) {
+              alarm = (Alarm) alarm.fclone();
+            }
             alarm.setIsActive(false);
             ((DAO) x.get("alarmDAO")).put_(x, alarm);
           }
