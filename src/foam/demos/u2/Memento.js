@@ -34,7 +34,7 @@ foam.CLASS({
   properties: [
     'memento_',
     {
-      // memorable object
+      // memorable object, can be null
       name: 'obj'
     },
     {
@@ -99,6 +99,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      if ( ! this.obj ) return;
       this.props.forEach(p => {
         this.obj.slot(p.name).sub(this.update);
       });
@@ -118,9 +119,11 @@ foam.CLASS({
     function getBoundNames(opt_set) {
       var s = opt_set || {};
 
-      this.props.forEach(p => s[p.shortName || p.name] = true);
+      if ( this.obj ) {
+        this.props.forEach(p => s[p.shortName || p.name] = true);
 
-      if ( this.tail ) this.tail.getBoundNames(s);
+        if ( this.tail ) this.tail.getBoundNames(s);
+      }
 
       return s;
     },
@@ -152,7 +155,7 @@ foam.CLASS({
         set = this.getBoundNames();
       }
 
-      this.props.forEach(p => {
+      if ( this.obj ) this.props.forEach(p => {
         var value = this.obj[p.name];
         if ( p.name === 'route' ) {
           route = this.obj.route;
@@ -441,7 +444,7 @@ foam.CLASS({
     {
       name: 'memento_',
       hidden: true,
-      factory: function() { return WindowHashMemento.create({obj: this, memento_: this.parentMemento_}); }
+      factory: function() { return WindowHashMemento.create({obj: null, memento_: this.parentMemento_}); }
     },
     {
       name: 'window',
