@@ -138,16 +138,12 @@ foam.CLASS({
       }
     },
 
-    function getBoundNames(opt_set) {
-      var s = opt_set || {};
-
+    function getBoundNames(set) {
       if ( this.obj ) {
-        this.props.forEach(p => s[p.shortName || p.name] = true);
+        this.props.forEach(p => set[p.shortName || p.name] = true);
 
-        if ( this.tail ) this.tail.getBoundNames(s);
+        if ( this.tail ) this.tail.getBoundNames(set);
       }
-
-      return s;
     },
 
     function encodeBindings(bs) {
@@ -174,7 +170,7 @@ foam.CLASS({
       var s = '', route = '', hasRoute = false, set = {};
 
       if ( this.tail ) {
-        set = this.getBoundNames();
+        this.getBoundNames(set);
       }
 
       if ( this.obj ) this.props.forEach(p => {
@@ -548,20 +544,3 @@ foam.CLASS({
     }
   ]
 });
-
-
-/*
-// Map of key->start pos bindings, is updated as bindings are consumed.
-var ps = {};
-
-// Update frame bindings
-for ( var i = 0 ; i < this.frames.length ; i++ ) {
-  var frame = this.frames[i];
-
-  for ( var key in frame ) {
-    var slot  = frame[key];
-    var value = this.get(key, ps);
-    if ( value !== undefined ) slot.set(value);
-  }
-}
-*/
