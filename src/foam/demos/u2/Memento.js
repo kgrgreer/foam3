@@ -1,35 +1,7 @@
-// TODO:
-//   name collision support
-//   output empty/default names when collision occurs
-//   support "sticky" localStorage/config properties
-//   feedback elimination?
-//   eliminate need for implementing Memorable by having property install!
-//     -- maybe a bad idea
-
-// IDEA:
-// traverse from top-level object?
-//   what about intermediate objects that don't know they're memorable?
-//   ?? two modes: properties vs subContext?
-// use sub-context?
-//   What about when merging more than one memorable child?
-// What if frames were memorable objects?
-// Can we merge Memento and Memorable and avoid having two objects?
-// Memorable: mementoStr_, mementoBindings_, mementoFreeBindings_, memento_ (parent memento), exports as memento_
-// memProps_, memStr_, memBindings_, memFreeBindings_, memento_, exports as memento_
-
-// Workable?
-// if str updates -> bindings update -> free bindings update -> pass to child bindings
-// if property updates, how to update top-level String?
-// if property changes, update bindings -> update parent free bindings -> recursively, at top, update str
-
-// Maybe get rid of bindings and freebindings and just use str and tail?
-// need a top-level updateStr method? or tail goes down and then back up?
-
-// explicitly create multiple sub-contexts (siblings) when required?
-
-
 foam.CLASS({
   name: 'Memento',
+
+  // IDEA: support "sticky" localStorage/config properties
 
   documentation: `
     A hierarchical implementation of the Memento pattern.
@@ -303,6 +275,8 @@ foam.CLASS({
   name: 'MemorablePropertyRefinement',
   refines: 'foam.core.Property',
 
+  documentation: 'Add "memorable" Property to Property.',
+
   properties: [
     {
       class: 'Boolean',
@@ -314,6 +288,8 @@ foam.CLASS({
 
 foam.CLASS({
   name: 'Memorable',
+
+  documentation: 'Mixin to make a model Memorable',
 
   imports: [ 'memento_? as parentMemento_' ],
   exports: [ 'memento_' ],
