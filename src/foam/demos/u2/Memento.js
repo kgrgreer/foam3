@@ -31,14 +31,49 @@
 foam.CLASS({
   name: 'Memento',
 
+  documentation: `
+    A hierarchical implementation of the Memento pattern.
+    Used encode UI states/routes in a string form that can be stored and later
+    reverted to. Can be used to implement back/forth support or bookmarking.
+    Can be two-way linked to the window location hash.
+
+    Memento mapping is handled automatically by marking properties as memorable: true.
+    Memorable properties are automatically encoded-into / extracted-from the string
+    form of the memento.
+
+    If a Property specifies a 'shortName', it will be used as the properties key
+    instead of the properties 'name'.
+
+    If a Property is named 'route', it will be encoded as part of the memento
+    path, rather than as a keyed paramater.
+
+    The format for memento strings is:
+    #path1/path2/...pathn?key1=value1&key2=value2...&keyn=valuen
+
+    Which is short form for:
+    #route=path1&route=path2&route=path3&key1=value1&key2=value2...&keyn=valuen
+
+    Notice that you can have more than one key=value pair for the same key.
+    In the event of duplicates bindings are assigned from top-down.
+
+    To make a model memorable, just add:
+
+    mixins: [
+      'Memorable'
+    ],
+
+    And then add "memorable: true" to properties you wish to memorable.
+  `,
+
   properties: [
     'memento_',
     {
-      // memorable object, can be null
-      name: 'obj'
+      name: 'obj',
+      documentation: 'Object to be made memorable. Can be null if this is the top-level memento.'
     },
     {
       name: 'props',
+      documentation: 'The properties of "obj" that have the Property.memorable: true.',
       factory: function() {
         return this.obj.cls_.getAxiomsByClass(foam.core.Property).filter(p => p.memorable);
       }
@@ -87,22 +122,31 @@ foam.CLASS({
         this.tailStr = this.encodeBindings(bs);
       }
     },
-    'tail',
+    {
+      name: 'tail',
+      documentation: 'Sub-Memento, if it exists.'
+    },
     {
       name: 'tailStr',
+      documentation: 'Bindings from "str" with used bindings removed. Becomes "str" of "tail".',
       postSet: function(_, s) {
         if ( this.tail ) this.tail.str = s;
       }
     },
-    'usedStr'
+    {
+      name: 'usedStr',
+      documentation: 'Only the bindings from "str" that are used by this Memorable or sub-Mementos.'
+    }
   ],
 
   methods: [
     function init() {
       if ( ! this.obj ) return;
+
       this.props.forEach(p => {
         this.obj.slot(p.name).sub(this.update);
       });
+
       if ( this.memento_ ) {
         this.memento_.tail = this;
         this.str           = this.memento_.tailStr;
