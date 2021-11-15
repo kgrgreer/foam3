@@ -103,12 +103,6 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
-      documentation: 'Debugging tool to build the list of instances an command passes through.',
-      name: 'trace',
-      class: 'Boolean',
-      value: true
-    },
-    {
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',
@@ -214,15 +208,16 @@ configuration for contacting the primary node.`,
     },
     {
       // NOTE: replace all the quorum logic with a plug in quorum strategy
-      documentation: 'Enabled and Online nodes to achieve quorum. Entries are written out one to each bucket, so quorum requires a reply from at least x buckets.',
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeQuorum',
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
-      return (int) Math.floor(getNodeGroups() / 2) + 1;
+      return (int) Math.floor(getNodeCount() / getNodeGroups() / 2) + 1;
       `
     },
     {
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeGroups',
       class: 'Int',
       visibility: 'RO',
@@ -301,7 +296,7 @@ configuration for contacting the primary node.`,
         return true;
       }
 
-      int minNodesInBucket = (int) Math.max(1, Math.floor(getNodeCount() / getNodeGroups()) - 1);
+      int minNodesInBucket = getNodeQuorum();
 
       List<Set<String>> buckets = getNodeBuckets();
       if ( buckets.size() < getNodeQuorum() ) {
@@ -420,8 +415,6 @@ configuration for contacting the primary node.`,
         }
         List<ClusterConfig> configs = ((ArraySink) dao.select(new ArraySink())).getArray();
         if ( configs.size() > 0 ) {
-          // return configs.get(0);
-          // return configs.get(configs.size() -1);
           ClusterConfig cfg = configs.get(0);
           getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary(), cfg.getPingTime());
           for ( ClusterConfig c : configs ) {

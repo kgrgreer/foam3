@@ -104,6 +104,13 @@ foam.CLASS({
       line-height: 1.17;
       margin: 0;
     }
+    .p-legal-light {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 1.2rem;
+      line-height: 1.17;
+      margin: 0;
+    }
     .p-label{
       font-style: normal;
       font-weight: 600;
@@ -256,8 +263,20 @@ foam.CLASS({
     }
   }
 
+  .larger-line-height {
+    line-height: 1.67;
+  }
+
+  .large-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2.8rem;
+  }
+
   /* mobile */
-  @media only screen and (min-width: 321px)        and (max-width: 767px) {
+  @media only screen and (min-width: 321px) and (max-width: 767px) {
+    .large-title { font-size: 3.5rem; }
+
     .foam-u2-dialog-Popup-inner {
       height: 100%;
       width: 100%;
@@ -291,7 +310,8 @@ foam.CLASS({
   }
 
   /* tablet */
-  @media only screen and (min-width: 768px)        and (max-width: 959px) {
+  @media only screen and (min-width: 768px) and (max-width: 959) {
+    .large-title { font-size: 6.4rem; }
     .foam-u2-dialog-Popup-inner {
       height: 100%;
       width: 100%;
@@ -299,6 +319,9 @@ foam.CLASS({
       justify-content: center;
       align-items: center;
     }
+  }
+  @media only screen and (min-width: 960px) {
+    .large-title { font-size: 8.4rem; }
   }
   `
 });

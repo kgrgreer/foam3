@@ -23,7 +23,6 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.medusa.ClusterConfig',
-    'foam.nanos.medusa.ClusterServerDAO',
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.Status',
     'foam.nanos.pm.PM',
@@ -37,6 +36,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'serviceName',
+      class: 'String',
+      value: 'clusterConfigDAO'
+    },
     {
       documentation: 'This/self cluster config',
       name: 'config',
@@ -104,7 +108,7 @@ foam.CLASS({
             .select(new ArraySink())).getArray();
         List<DAO> clients = new ArrayList();
         for ( ClusterConfig cfg : configs ) {
-          DAO client = support.getClientDAO(x, "clusterConfigDAO", config, cfg);
+          DAO client = support.getClientDAO(x, getServiceName(), config, cfg);
           clients.add(client);
           getConfigs().put(client, cfg);
           getLogger().info("created,client", cfg.getId());
@@ -132,7 +136,7 @@ foam.CLASS({
        throw new RuntimeException("Client not found "+index);
       }
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
-      client.cmd(ClusterServerDAO.PING);
+      client.cmd(PingDAO.PING);
       pm.log(x);
       `
     }

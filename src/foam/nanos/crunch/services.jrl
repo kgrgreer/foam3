@@ -84,16 +84,21 @@ p({
         .build())
       .build();
   """,
-  "client":"{
-    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
-     \"remoteListenerSupport\": false,
-     \"decorators\": [
+  "client":"""
+    {
+      "of":"foam.nanos.crunch.UserCapabilityJunction",
+      "remoteListenerSupport": false,
+      "decorators": [
         {
-          \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
-          \"skipToData\": true
+          "class":"foam.nanos.fs.FileArrayDAODecorator",
+          "skipToData": true
+        },
+        {
+          "class":"foam.dao.LockDAO"
         }
       ]
-     }"
+    }
+  """
 })
 
 p({

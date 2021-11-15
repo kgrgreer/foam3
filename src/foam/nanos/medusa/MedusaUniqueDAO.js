@@ -47,7 +47,11 @@ foam.CLASS({
           .setNote(entry.toString())
           .build();
         ((DAO) x.get("alarmDAO")).put(alarm);
-        throw new UniqueConstraintException("Medusa Duplicate Index: "+entry.getIndex());
+        throw new UniqueConstraintException("MedusaEntry duplicate index: "+entry.getIndex());
+      }
+      // test for missing hash
+      if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
+        throw new java.lang.IllegalArgumentException("MedusaEntry missing hash: "+entry.getIndex());
       }
       return getDelegate().put_(x, entry);
       `
