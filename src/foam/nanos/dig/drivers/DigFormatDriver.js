@@ -263,17 +263,22 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
       FObject nu = obj;
-      
-      // adding system context in case if user has permission to update but not to read
-      FObject old = dao.inX(getX()).find(obj);
-      if ( old != null ) {
-        nu = old.fclone();
-        nu.copyFrom(obj);
-      }
 
       try {
+        if ( ! dao.getOf().isInstance(obj) )
+          throw new ClassCastException(obj.getClass() + " isn't instance of " + dao.getOf());
+
+        // adding system context in case if user has permission to update but not to read
+        FObject old = dao.inX(getX()).find(obj);
+        if ( old != null ) {
+          nu = old.fclone();
+          nu.copyFrom(obj);
+        }
+
         return dao.put(nu);
-      } catch ( ValidationException ve ) {
+      } catch ( ClassCastException cc ) {
+        throw new DAOPutException(cc.getMessage(), cc);
+      }  catch ( ValidationException ve ) {
         throw new DAOPutException(ve.getMessage(), ve);
       } catch ( CompoundException ce ) {
         // FObject.validate(x) can collect all validation exceptions into a
