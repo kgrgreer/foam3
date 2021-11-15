@@ -171,9 +171,8 @@ foam.CLASS({
       /** Recursively encode memento as a {route: "route1/route2/...", params: "key1=value1&key2=value2..."} map. **/
       var s = '', route = '', hasRoute = false, set = {};
 
-      if ( this.tail ) {
+      if ( this.tail )
         this.getBoundNames(set);
-      }
 
       if ( this.obj ) this.props.forEach(p => {
         var value = this.obj[p.name];
@@ -212,6 +211,7 @@ foam.CLASS({
       documentation: `
         Called when a Memento Property is updated.
         Causes usedStr of this Memento and parents to be updated.
+        Is merged to avoid multiple updates when multiple properties update at once.
       `,
       isMerged: true,
       mergeDelay: 32,
@@ -290,6 +290,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
+      documentation: "If true, this Property will be included in Mementos and it's value will be copied from Mementos.",
       name: 'memorable'
     }
   ]
