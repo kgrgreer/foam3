@@ -229,7 +229,7 @@ public class RuleEngine extends ContextAwareSupport {
     if ( reloaded == null ) {
       return obj;
     }
-    return reloaded;
+    return reloaded.fclone();
   }
 
   /**
