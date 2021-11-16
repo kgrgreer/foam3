@@ -14,7 +14,7 @@ public class CreatedByAuthorizer extends StandardAuthorizer {
     if ( obj instanceof CreatedByAware ) {
       final var ata = (CreatedByAware) obj;
 
-      final var subject = x.get(Subject.class);
+      final var subject = (Subject) x.get("subject");
       if ( subject != null && subject.getUser() != null ) {
         if ( subject.getUser().getId() == ata.getCreatedBy() )
           return;
