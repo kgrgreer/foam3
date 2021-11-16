@@ -79,7 +79,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      window.addEventListener('resize', this.resize);
+      this.window.addEventListener('resize', this.resize);
       this.resize();
       this.start()
       .addClass(this.myClass())
@@ -97,7 +97,7 @@ foam.CLASS({
   ],
   listeners: [
     function resize() {
-      this.height = window.innerHeight - 200 > 0 ? window.innerHeight - 200 + 'px' : window.innerHeight + 'px';
+      this.height = this.window.innerHeight - 200 > 0 ? this.window.innerHeight - 200 + 'px' : this.window.innerHeight + 'px';
     }
   ],
   actions: [
