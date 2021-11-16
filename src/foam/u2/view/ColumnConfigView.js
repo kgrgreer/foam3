@@ -549,6 +549,7 @@ foam.CLASS({
   ^labelText {
     flex: 1;
     overflow: hidden;
+    padding-left: 8px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -610,7 +611,6 @@ foam.CLASS({
                  .on('click', this.toggleGroup)
                .end()
                .start()
-                .style({'padding-left' : '8px'})
                 .addClass(self.myClass('labelText'))
                 .add(this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(this.data.rootProperty))
               .end()
