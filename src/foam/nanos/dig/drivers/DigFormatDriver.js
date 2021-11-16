@@ -115,7 +115,7 @@ foam.CLASS({
           return;
 
         for ( int i = 0 ; i < fobjects.size() ; i++ ) {
-          fobjects.set(i, daoPut(dao, (FObject) fobjects.get(i)));
+          fobjects.set(i, daoPut(x, dao, (FObject) fobjects.get(i)));
         }
 
         outputFObjects(x, dao, fobjects);
@@ -259,14 +259,16 @@ foam.CLASS({
     {
       name: 'daoPut',
       type: 'FObject',
-      args: [ { name: 'dao', type: 'DAO' }, { name: 'obj', type: 'FObject' } ],
+      args: [ { name: 'x', type: 'Context'}, { name: 'dao', type: 'DAO' }, { name: 'obj', type: 'FObject' } ],
       synchronized: true,
       javaCode: `
       FObject nu = obj;
 
       try {
-        if ( ! dao.getOf().isInstance(obj) )
-          throw new ClassCastException(obj.getClass() + " isn't instance of " + dao.getOf());
+        if ( ! dao.getOf().isInstance(obj) ) {
+          foam.nanos.logger.Loggers.logger(x, this).warning("Possible ClassCastException", obj.getClass(), "not instance of", dao.getOf());
+          // throw new ClassCastException(obj.getClass() + " isn't instance of " + dao.getOf());
+        }
 
         // adding system context in case if user has permission to update but not to read
         FObject old = dao.inX(getX()).find(obj);
