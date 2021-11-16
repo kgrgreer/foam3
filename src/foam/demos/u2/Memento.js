@@ -268,7 +268,6 @@ foam.CLASS({
         this.deFeedback(() => this.str = this.window.location.hash.substring(1));
       }
     },
-
     {
       name: 'onMementoChange',
       documentation: 'Called when the memento changes, causes update to hash.',
@@ -278,7 +277,6 @@ foam.CLASS({
     }
   ]
 });
-
 
 
 foam.CLASS({
