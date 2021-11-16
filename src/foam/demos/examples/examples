@@ -815,6 +815,33 @@ log('Before: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 's
 foam.CLASS({ refines: 'SuperClass', properties: [ { name: 'p1', value: 42 } ]});
 log('Refined: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
 
+##  Interface Refinement
+Although rarely required, Interfaces can also be refined.
+--
+foam.INTERFACE({
+  name: 'Somethingable',
+
+  methods: [
+    'int method1()',
+    'String method2(int)'
+  ]
+});
+
+log('Pre-Refinement');
+Somethingable.model_.methods.forEach(m => log(m.name));
+
+foam.INTERFACE({
+  refines: 'Somethingable',
+  name: 'SomethingRefinement',
+
+  methods: [
+    'int method1()', // duplicate, maybe just refining to add java type or docs
+    'void method3(int, int)'
+  ]
+});
+
+log('Post-Refinement');
+Somethingable.model_.methods.forEach(m => log(m.name));
 
 ##  Create Listeners
 Listeners are pre-bound Methods, suitable for use as callbacks (DOM, or otherwise).
