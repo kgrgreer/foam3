@@ -115,15 +115,16 @@ foam.CLASS({
         id.append(toHexString(curSec, 8));
 
         // At least 2 bits sequence
+        int seqNo = 0;
         synchronized (this) {
           if ( curSec != getLastSecondCalled() ) {
             setSeqNo(0);
             setLastSecondCalled(curSec);
           }
-          int seqNo = getSeqNo();
-          id.append(toHexString(seqNo, 2));
+          seqNo = getSeqNo();
           setSeqNo(seqNo + 1);
         }
+        id.append(toHexString(seqNo, 2));
 
         // 2 bits machine id
         id.append(toHexString(getMachineId() % 0xff, 2));
