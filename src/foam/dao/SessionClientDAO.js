@@ -8,8 +8,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'SessionClientDAO',
   extends: 'foam.dao.ProxyDAO',
-  // javaGenerateConvenienceConstructor: false,
-  // javaGenerateDefaultConstructor: false,
+
+  flags: ['web'],
 
   documentation: `Support for calling DAO web services with explicit session id.
 use:
