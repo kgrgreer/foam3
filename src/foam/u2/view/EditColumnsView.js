@@ -13,6 +13,9 @@ foam.CLASS({
     'foam.u2.view.ColumnConfigPropView',
     'foam.u2.view.SubColumnSelectConfig'
   ],
+  imports: [
+    'window'
+  ],
   css: `
     ^drop-down-bg {
       font-size:        12px;
@@ -51,6 +54,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       height: fit-content;
+      max-width: 20vw;
       padding: 16px 8px;
       position: fixed;
       right: 60px;
@@ -63,7 +67,8 @@ foam.CLASS({
       class: 'Boolean'
     },
     'parentId',
-    'columnConfigPropView'
+    'columnConfigPropView',
+    'height'
   ],
   methods: [
     function closeDropDown(e) {
@@ -74,20 +79,25 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.columnConfigPropView = foam.u2.view.ColumnConfigPropView.create({data:self.data}, this);
+      this.window.addEventListener('resize', this.resize);
+      this.resize();
       this.start()
       .addClass(this.myClass())
         .show(this.selectColumnsExpanded$)
         .addClass(this.myClass('drop-down-bg'))
-          .start()
+          .start({ class: 'foam.u2.view.ColumnConfigPropView', data: self.data }, { } ,this.columnConfigPropView$ )
             .addClass(this.myClass('container'))
             .style({
-              'max-height': window.innerHeight - 100 > 0 ? window.innerHeight - 100 : window.innerHeight + 'px',
+              'max-height': this.height$
             })
-            .add(this.columnConfigPropView)
           .end()
       .on('click', this.closeDropDown.bind(this))
       .end();
+    }
+  ],
+  listeners: [
+    function resize() {
+      this.height = this.window.innerHeight - 200 > 0 ? this.window.innerHeight - 200 + 'px' : this.window.innerHeight + 'px';
     }
   ],
   actions: [

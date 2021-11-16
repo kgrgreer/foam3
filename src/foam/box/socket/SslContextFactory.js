@@ -59,7 +59,9 @@ foam.CLASS({
       javaCloneProperty: '//noop',
       javaFactory: `
       return new PrefixLogger(new Object[] {
-        this.getClass().getSimpleName()
+        this.getClass().getSimpleName(),
+        getKeyStorePath(),
+        getStoreType()
       }, (Logger) getX().get("logger"));
       `
     },
@@ -186,6 +188,7 @@ foam.CLASS({
       name: 'getSSLContext',
       javaType: 'SSLContext',
       javaCode: `
+        // getLogger().debug("getSSLContext");
         SSLContext sslContext = null;
         try {
           sslContext = SSLContext.getInstance(getProtocol());

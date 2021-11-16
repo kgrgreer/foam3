@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.jetty.JettyThreadPoolConfig',
+    'foam.nanos.security.KeyStoreManager',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.io.FileInputStream',
@@ -359,45 +360,53 @@ foam.CLASS({
         ByteArrayOutputStream baos = null;
         ByteArrayInputStream bais = null;
         try {
-          // 1. load the keystore to verify the keystore path and password.
-          KeyStore keyStore = KeyStore.getInstance("JKS");
+          KeyStore keyStore = null;
+          KeyStoreManager keyStoreManager = (KeyStoreManager) getX().get("keyStoreManager");
+          if ( keyStoreManager != null ) {
+            keyStoreManager.unlock();
+            keyStore = keyStoreManager.getKeyStore();
+            getLogger().debug("HttpServer","configHttps","KeyStoreManager",keyStoreManager.getKeyStore());
+          } else {
+            getLogger().debug("HttpServer","configHttps","KeyStore.instance()");
+            // 1. load the keystore to verify the keystore path and password.
+            keyStore = KeyStore.getInstance("JKS");
 
-          if ( System.getProperty("resource.journals.dir") != null ) {
-            X resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
-              new ResourceStorage(System.getProperty("resource.journals.dir")));
-            InputStream is = resourceStorageX.get(foam.nanos.fs.Storage.class).getInputStream(getKeystoreFileName());
-            if ( is != null ) {
-              baos = new ByteArrayOutputStream();
+            if ( System.getProperty("resource.journals.dir") != null ) {
+              X resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
+                new ResourceStorage(System.getProperty("resource.journals.dir")));
+              InputStream is = resourceStorageX.get(foam.nanos.fs.Storage.class).getInputStream(getKeystoreFileName());
+              if ( is != null ) {
+                baos = new ByteArrayOutputStream();
 
-              byte[] buffer = new byte[8192];
-              int len;
-              while ((len = is.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = is.read(buffer)) != -1) {
+                  baos.write(buffer, 0, len);
+                }
+                bais = new ByteArrayInputStream(baos.toByteArray());
+              } else {
+                getLogger().warning("Keystore not found. Resource: "+getKeystoreFileName());
               }
+            }
+            // Fall back to fileDAO if resource not found, this will
+            // occur when keystore updated/replaced in production.
+            if ( bais == null ) {
+              File file = (File) fileDAO.find(getKeystoreFileName());
+              if ( file == null ) {
+                throw new java.io.FileNotFoundException("Keystore not found. File: "+getKeystoreFileName());
+              }
+
+              Blob blob = file.getData();
+              if ( blob == null ) {
+                throw new java.io.FileNotFoundException("Keystore empty");
+              }
+
+              baos = new ByteArrayOutputStream((int) file.getFilesize());
+              blob.read(baos, 0, file.getFilesize());
               bais = new ByteArrayInputStream(baos.toByteArray());
-            } else {
-              getLogger().warning("Keystore not found. Resource: "+getKeystoreFileName());
             }
+            keyStore.load(bais, this.getKeystorePassword().toCharArray());
           }
-          // Fall back to fileDAO if resource not found, this will
-          // occur when keystore updated/replaced in production.
-          if ( bais == null ) {
-            File file = (File) fileDAO.find(getKeystoreFileName());
-            if ( file == null ) {
-              throw new java.io.FileNotFoundException("Keystore not found. File: "+getKeystoreFileName());
-            }
-
-            Blob blob = file.getData();
-            if ( blob == null ) {
-              throw new java.io.FileNotFoundException("Keystore empty");
-            }
-
-            baos = new ByteArrayOutputStream((int) file.getFilesize());
-            blob.read(baos, 0, file.getFilesize());
-            bais = new ByteArrayInputStream(baos.toByteArray());
-          }
-
-          keyStore.load(bais, this.getKeystorePassword().toCharArray());
 
           // 2. enable https
           HttpConfiguration https = new HttpConfiguration();

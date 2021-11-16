@@ -450,6 +450,9 @@ This is the heart of Medusa.`,
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
+              if ( ! old.getClassInfo().isInstance(nu) ) {
+                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+              }
               nu = old.fclone().overlay(nu);
             }
           }
@@ -466,6 +469,9 @@ This is the heart of Medusa.`,
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
+                  if ( ! old.getClassInfo().isInstance(nu) ) {
+                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                  }
                   nu = old.fclone().overlay(nu);
                 }
               } else {

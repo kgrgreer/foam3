@@ -8,8 +8,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'SessionClientDAO',
   extends: 'foam.dao.ProxyDAO',
-  javaGenerateConvenienceConstructor: false,
-  javaGenerateDefaultConstructor: false,
+
+  flags: ['web'],
 
   documentation: `Support for calling DAO web services with explicit session id.
 use:
@@ -25,21 +25,6 @@ c.select().then(function(a1) {
   console.log('a1', a1 && a1.array);
 });
 `,
-
-  javaImports: [
-    'foam.core.X',
-    'foam.dao.ClientDAO',
-    'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.box.HTTPAuthorizationType',
-    'foam.box.HTTPBox',
-    'foam.box.SessionClientBox',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.Loggers',
-    'foam.nanos.pm.PM',
-    'foam.nanos.session.Session',
-    'foam.util.SafetyUtil'
-  ],
 
   imports: [
     'sessionID as jsSessionID'
@@ -70,24 +55,6 @@ c.select().then(function(a1) {
     }
   ],
 
-  javaCode: `
-  public SessionClientDAO() {
-  }
-
-  public SessionClientDAO(X x, String serviceName) {
-    setX(x);
-    setServiceName(serviceName);
-    setSessionId(x.get(Session.class).getId());
-    init();
-  }
-  public SessionClientDAO(X x, String serviceName, String sessionId) {
-    setX(x);
-    setServiceName(serviceName);
-    setSessionId(sessionId);
-    init();
-  }
-  `,
-
   methods: [
     {
       name: 'init',
@@ -110,22 +77,7 @@ c.select().then(function(a1) {
           of: this.__subContext__[this.serviceName].of,
           delegate: box
         }, x);
-      },
-      javaCode: `
-      X x = getX();
-      ProxyDAO proxy = (ProxyDAO) x.get(getServiceName());
-      setDelegate(new ClientDAO.Builder(x)
-        .setOf(proxy.getOf())
-        .setDelegate(new SessionClientBox.Builder(x)
-        .setSessionID(getSessionId())
-        .setDelegate(new HTTPBox.Builder(x)
-          .setAuthorizationType(HTTPAuthorizationType.BEARER)
-          .setSessionID(getSessionId())
-          .setUrl("service/"+getServiceName())
-          .build())
-        .build())
-        .build());
-      `
+      }
     }
   ]
 });
