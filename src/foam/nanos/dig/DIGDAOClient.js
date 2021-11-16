@@ -55,16 +55,16 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Connection timeout in seconds',
+      documentation: 'Connection timeout in milliseconds',
       name: 'connectionTimeout',
-      class: 'Int',
-      value: 20
+      class: 'Long',
+      value: 20000
     },
     {
-      documentation: 'Connection timeout in seconds',
+      documentation: 'Connection timeout in milliseconds',
       name: 'requestTimeout',
-      class: 'Int',
-      value: 60
+      class: 'Long',
+      value: 10000
     },
     {
       name: 'secure',
@@ -134,7 +134,7 @@ foam.CLASS({
       HttpClient.Builder builder = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_1_1)
         .followRedirects(HttpClient.Redirect.NORMAL)
-        .connectTimeout(Duration.ofSeconds(getConnectionTimeout()));
+        .connectTimeout(Duration.ofMillis(getConnectionTimeout()));
 
       if ( getSecure() ) {
         System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
@@ -309,7 +309,7 @@ foam.CLASS({
       javaCode: `
       HttpRequest.Builder builder = HttpRequest.newBuilder()
         .uri(URI.create(buildUrl(x, dop, data)))
-        .timeout(Duration.ofSeconds(getRequestTimeout()))
+        .timeout(Duration.ofMillis(getRequestTimeout()))
         .header("Accept-Language", "en-US,en;q=0.5")
         .header("Authorization", "BEARER "+getSessionId())
         .header("Content-Type", "application/json")
