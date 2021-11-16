@@ -53,8 +53,7 @@ foam.CLASS({
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
-      height: fit-content;
-      max-width: 20vw;
+      max-width: clamp(300px, 20vw, 600px);
       padding: 16px 8px;
       position: fixed;
       right: 60px;
