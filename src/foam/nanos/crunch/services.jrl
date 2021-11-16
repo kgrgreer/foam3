@@ -79,7 +79,6 @@ p({
       .setAuthorize(false)
       .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setLifeCycleAware(false)
       .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
         .build())
