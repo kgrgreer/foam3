@@ -38,11 +38,11 @@ foam.CLASS({
           // forward on to next mediator
           ClusterConfig serverConfig = support.getNextServer();
           DAO dao = support.getClientDAO(x, getServiceName(), config, serverConfig);
-          dao = new RetryClientSinkDAO.Builder(x)
-                      .setDelegate(dao)
-                      .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                      .setMaxRetryDelay(support.getMaxRetryDelay())
-                      .build();
+          // dao = new RetryClientSinkDAO.Builder(x)
+          //             .setDelegate(dao)
+          //             .setMaxRetryAttempts(support.getMaxRetryAttempts())
+          //             .setMaxRetryDelay(support.getMaxRetryDelay())
+          //             .build();
           Loggers.logger(x, this).debug("put", "request", "to", serverConfig.getId(), getServiceName());
           return dao.put_(x, obj);
         }
