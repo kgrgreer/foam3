@@ -78,11 +78,11 @@ foam.CLASS({
               DAO dao = (DAO) getClients().get(config.getId());
               if ( dao == null ) {
                 dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                dao = new RetryClientSinkDAO.Builder(x)
-                          .setDelegate(dao)
-                          .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                          .setMaxRetryDelay(support.getMaxRetryDelay())
-                          .build();
+                // dao = new RetryClientSinkDAO.Builder(x)
+                //           .setDelegate(dao)
+                //           .setMaxRetryAttempts(support.getMaxRetryAttempts())
+                //           .setMaxRetryDelay(support.getMaxRetryDelay())
+                //           .build();
                 getClients().put(config.getId(), dao);
               }
 
