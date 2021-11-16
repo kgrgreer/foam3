@@ -139,7 +139,7 @@ foam.CLASS({
   //   7. lastModified
   properties: [
     {
-      class: 'Long',
+      class: 'FUIDProperty',
       name: 'id',
       documentation: 'The ID for the User.',
       tableWidth: 100,

@@ -257,7 +257,7 @@ foam.CLASS({
                           })
                         .end()
                         .start()
-                          .style({ 'flex-grow': 1 })
+                          .style({ 'flex': 1 })
                           .add(errorSlot.map(s => {
                             return self.E().add(s);
                           }))

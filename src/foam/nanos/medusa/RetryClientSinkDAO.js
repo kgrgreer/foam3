@@ -17,6 +17,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.DOP',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.PrefixLogger',
@@ -137,7 +139,7 @@ foam.CLASS({
 
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
       String alarmId = this.getClass().getSimpleName()+"."+getName();
-      Alarm alarm = ((DAO) x.get("alarmDAO")).find(alarmId);
+      Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmId), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
       try {
         while ( true ) {
           try {
@@ -183,6 +185,9 @@ foam.CLASS({
             }
           }
           if ( alarm != null ) {
+            if ( alarm.isFrozen() ) {
+              alarm = (Alarm) alarm.fclone();
+            }
             alarm.setIsActive(false);
             ((DAO) x.get("alarmDAO")).put_(x, alarm);
           }
