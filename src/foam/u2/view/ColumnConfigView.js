@@ -552,11 +552,6 @@ foam.CLASS({
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  ^labelText:hover {
-    text-overflow: clip;
-    white-space: normal;
-    word-break: break-all;
-  }
   `,
   properties: [
     'onSelectionChangedParentFunction',
