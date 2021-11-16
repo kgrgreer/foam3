@@ -2,16 +2,18 @@ foam.CLASS({
   name: 'Memento',
 
   // IDEA: support "sticky" localStorage/config properties
+  // TODO: do we need to generate memento_ on init?
 
   documentation: `
     A hierarchical implementation of the Memento pattern.
-    Used encode UI states/routes in a string form that can be stored and later
+    Used to encode UI states/routes in a string form that can be stored and later
     reverted to. Can be used to implement back/forth support or bookmarking.
     Can be two-way linked to the window location hash.
 
     Memento mapping is handled automatically by marking properties as memorable: true.
     Memorable properties are automatically encoded-into / extracted-from the string
-    form of the memento.
+    form of the memento and a sub-Memento with the used bindings removed is exported
+    for children to consume.
 
     If a Property specifies a 'shortName', it will be used as the properties key
     instead of the properties 'name'.
