@@ -102,7 +102,6 @@
               true
             );
           }
-
           sink.setX(agencyX);
           return sink;
       `
