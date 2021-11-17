@@ -232,12 +232,12 @@ foam.CLASS({
           query = true;
           url += "dao=" + daoKey;
         }
-        if ( fieldNameMapping ) {
+        if ( Object.keys(fieldNameMapping).length != 0 ) {
           url += query ? "&" : "?";
           query = true;
           url += "nameMapping=" + JSON.stringify(fieldNameMapping);
         }
-        if ( fieldDefaultValue ) {
+        if ( Object.keys(fieldDefaultValue).length != 0 ) {
           url += query ? "&" : "?";
           query = true;
           url += "fieldValue=" + JSON.stringify(fieldDefaultValue);
