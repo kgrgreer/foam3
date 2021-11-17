@@ -120,6 +120,7 @@ foam.CLASS({
 
       imports: [
         'globalScope',
+        'params',
         'selected'
       ],
 
@@ -138,6 +139,8 @@ foam.CLASS({
       methods: [
         function render() {
           this.SUPER();
+
+          if ( this.params.id && this.params.id !== this.data.id ) return;
 
           var self = this;
 
@@ -341,28 +344,17 @@ foam.CLASS({
     async function render() {
       this.SUPER();
 
-      this.testData += await fetch('u2').then(function(response) {
-        return response.text();
-      });
-/*
-      this.testData += await fetch('faq').then(function(response) {
-        return response.text();
-      });
-
-      this.testData = await fetch('validation').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('examples').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('dao').then(function(response) {
-        return response.text();
-      });
-      */
-
       var self = this;
+
+      async function load(section) {
+        self.testData += await fetch(section).then(response => response.text())
+      }
+      await load('u2');
+      await load('faq');
+      await load('validation');
+      await load('examples');
+      await load('dao');
+
       this.
         addClass(this.myClass()).
         start('h1').

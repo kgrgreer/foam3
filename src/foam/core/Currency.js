@@ -12,6 +12,7 @@
   documentation: `The base model for storing, using and managing currency information.`,
 
   javaImports: [
+    'foam.core.XLocator',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil'
   ],
@@ -32,8 +33,8 @@
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public String format(long amount) {
-            return format(amount, false);
+          public String format(X x, long amount) {
+            return format(x, amount, false);
           }
         `);
       }
@@ -182,6 +183,10 @@
       },
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           class: 'foam.core.UnitValue',
           name: 'amount'
         },
@@ -210,12 +215,17 @@
           }
         }
 
-        X x = XLocator.get();
-        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-        String locale = (String) XLocator.get().get("locale.language");
+        String delimiter = getDelimiter();
+        String decimalCharacter = getDecimalCharacter();
+        try {
+          TranslationService ts = (TranslationService) x.get("translationService");
+          String locale = (String) x.get("locale.language");
 
-        String delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
-        String decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+          delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
+          decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+        } catch (NullPointerException e) {
+          foam.nanos.logger.Loggers.logger(x, this).debug(e);
+        }
 
         formatted += beforeDecimal.length() > 0 ?
           beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", delimiter) :
@@ -223,17 +233,15 @@
 
         if ( this.getPrecision() > 0 ) {
           formatted += decimalCharacter;
-          formatted += amountStr.substring(amountStr.length() - this.getPrecision());
+          formatted += amountStr.substring(amountStr.length() - getPrecision());
         }
 
-        if ( ! hideId && SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
-          if ( this.getShowSpace() ) {
+        if ( ! hideId && SafetyUtil.equals(getLeftOrRight(), "right") ) {
+          if ( getShowSpace() ) {
             formatted += " ";
           }
-          formatted += this.getSymbol();
+          formatted += getSymbol();
         }
-
-
         return formatted;
       `
     },
@@ -249,6 +257,10 @@
         return (amount/Math.pow(2, this.precision)).toFixed(this.precision);
       },
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           class: 'foam.core.UnitValue',
           name: 'amount'

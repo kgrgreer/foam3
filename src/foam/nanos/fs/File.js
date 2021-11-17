@@ -241,6 +241,11 @@ foam.CLASS({
           .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilityId'
+    }
   ],
   methods: [
     {
@@ -260,7 +265,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        // KeyValueDAO will return the same object if it is update operation
+        // FileUpdateDecorator will return the same object if it is update operation
         // No changes will be made
       `
     },

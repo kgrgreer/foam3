@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.nanos.dig',
   name: 'DUGRuleAction',
 
@@ -111,47 +111,34 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       final var dugRule = (DUGRule) rule;
-
       if ( dugRule.getActAsUser() ) {
         // If the actingUser is set, we want to refind the obj with that user as the subject
         // The goal with this is to filter the permissioned properties based on acting user
         // Instead of the user that triggered the rule
-
         final var actingUserId = dugRule.getActingUser();
-
         getLogger(x).debug(this.getClass().getSimpleName(), "Checking actingUser on DUG webhook", actingUserId, obj.getProperty("id"));
-
         if ( actingUserId != 0 ) {
           final var userDAO = (DAO) x.get("bareUserDAO");
           final var actingUser = (User) userDAO.find(actingUserId);
-
           if ( actingUser == null ) {
             getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but user couldn't be found");
             return;
           }
-
           if ( SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ) {
             getLogger(x).debug("DUGRule ", dugRule.getId(), " has acting user but secure DAO key couldn't be found");
           }
-
           final var daoKey = SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ? dugRule.getDaoKey() : dugRule.getSecureDaoKey();
-
           final var actingX = x.put("group", null).put("subject", new Subject.Builder(x).setUser(actingUser).build());
-
           final var objDAO = (DAO) actingX.get(daoKey);
-
           if ( objDAO == null ) {
             getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but ", dugRule.getSecureDaoKey(), " wasn't in context");
             return;
           }
-
           obj = objDAO.inX(actingX).find(obj.getProperty("id"));
         }
-
         if ( obj == null )
           return;
       }
-
       getLogger(x).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
       
       final var finalObj = obj;

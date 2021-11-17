@@ -651,6 +651,20 @@ start('a').add('click to add more data').on('click', function() {
 
 ##    select()
 ##   startContext() / endContext()
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'a', 'b' ]
+});
+
+var t = Test.create();
+
+start().
+  startContext({data: t}).
+    add('A: ', t.A, ' B: ', t.B).
+  endContext().
+end();
+
 ##   i18n
 ##    Messages
 ##    translate()
@@ -798,5 +812,16 @@ provide a view for some other piece of data, a Controller provides a view for it
 however create sub-Views which it includes in its own rendering.
 ##   Views
 ##    ActionView
+Create an ActionView directly.
+--
+var timer = foam.util.Timer.create();
+var av = foam.u2.ActionView.create({data: timer, action: timer.START});
+tag(foam.u2.DetailView.create({data: timer}));
+add(timer.time$);
+tag('hr');
+tag(av);
+tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
+this.startContext({data: timer}).add(timer.I);
+
 ##   StackView
 ##   More

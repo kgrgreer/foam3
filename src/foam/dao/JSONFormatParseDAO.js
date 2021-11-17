@@ -18,34 +18,25 @@ foam.CLASS({
     'foam.lib.json.JSONParser',
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
-    @Override
-    protected JSONFObjectFormatter initialValue() {
-      JSONFObjectFormatter formatter = new JSONFObjectFormatter();
-      formatter.setOutputDefaultValues(false);
-      formatter.setOutputReadableDates(false);
-      formatter.setPropertyPredicate(new foam.lib.StoragePropertyPredicate());
-      return formatter;
-    }
-
-    @Override
-    public FObjectFormatter get() {
-      FObjectFormatter formatter = super.get();
-      formatter.reset();
-      return formatter;
-    }
-  };
-          `
-        }));
+  javaCode: `
+    protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
+      @Override
+      protected JSONFObjectFormatter initialValue() {
+        JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+        formatter.setOutputDefaultValues(false);
+        formatter.setOutputReadableDates(false);
+        formatter.setPropertyPredicate(new foam.lib.StoragePropertyPredicate());
+        return formatter;
       }
-    }
-  ],
+
+      @Override
+      public FObjectFormatter get() {
+        FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+  `,
 
   methods: [
     {

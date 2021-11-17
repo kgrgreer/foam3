@@ -48,8 +48,7 @@ foam.CLASS({
     ^card-title {
       margin: 0;
       min-height: 20px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 16px;
+      font-size: 1.6rem;
       font-weight: 600;
       font-style: normal;
       font-stretch: normal;
@@ -60,8 +59,7 @@ foam.CLASS({
 
     ^card-subtitle {
       margin: 0;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 11px;
+      font-size: 1.1rem;
       font-weight: normal;
       font-stretch: normal;
       line-height: 1.27;
@@ -71,8 +69,7 @@ foam.CLASS({
 
     ^card-description {
       margin-top: 9px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -156,8 +153,7 @@ foam.CLASS({
       padding: 0 8px;
       background-color: #b5b5b5;
 
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: 500;
       font-style: normal;
       font-stretch: normal;
@@ -184,8 +180,7 @@ foam.CLASS({
       height: 24px;
       padding: 2px 8px;
       background-color: /*%WHITE%*/ #ffffff;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: 500;
       font-style: normal;
       font-stretch: normal;
@@ -221,7 +216,7 @@ foam.CLASS({
       border-radius: 5px;
 
       padding: 16px;
-      font-size: 12px;
+      font-size: 1.2rem;
 
       position: absolute;
       z-index: 101;

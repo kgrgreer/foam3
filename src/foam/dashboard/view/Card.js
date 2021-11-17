@@ -24,12 +24,13 @@ foam.CLASS({
     {
       name: 'SIZES',
       value: {
-        TINY:   [176, 358],
-        SMALL:  [312, '-'],
-        SMEDIUM:  [312, 358],
-        MEDIUM: [624, 528],
-        LARGE:  [936, 528],
-        XLARGE: [1580, 698],
+        TINY:    [176, 358],
+        SMALL:   [312, '-'],
+        SMEDIUM: [312, 358],
+        MEDIUM:  [424, 356],
+        LMEDIUM: [624, 528],
+        LARGE:   [936, 528],
+        XLARGE:  [1580, 698],
       }
     }
   ],
@@ -77,7 +78,7 @@ foam.CLASS({
       height: 20px;
       display: flex;
       align-items: center;
-      font-size: 17px;
+      font-size: 1.7rem;
       justify-content: space-between;
     }
   `,

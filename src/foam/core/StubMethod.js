@@ -106,8 +106,13 @@ Object result = replyBox.getMessage().getObject();
         code += `if ( result instanceof java.lang.Throwable )
   throw new RuntimeException((java.lang.Throwable)result);
 
-if ( result instanceof foam.box.RPCErrorMessage )
-  throw new RuntimeException(((foam.box.RPCErrorMessage)result).getData().toString());
+if ( result instanceof foam.box.RPCErrorMessage ) {
+  foam.box.RPCErrorMessage error = (foam.box.RPCErrorMessage) result;
+  if ( error.getData() != null ) {
+    throw new RuntimeException(error.getData().toString());
+  }
+  throw new RuntimeException(error.getMessage());
+}
 `;
 
         if ( this.javaType && this.javaType !== 'void') {

@@ -4,12 +4,50 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.bench',
   name: 'Benchmark',
 
-  implements: [
-    'foam.core.ContextAgent'
+  implements: [ 'foam.core.ContextAgent' ],
+
+  abstract: true,
+
+  javaImports: [
+    'foam.core.X'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      createVisibility: 'RW',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'name',
+      factory: function() {
+        return this.type;
+      },
+      javaFactory: `
+        return getType();
+      `
+    },
+    {
+      class: 'String',
+      name: 'type',
+      tableWidth: 190,
+      storageTransient: true,
+      getter: function() {
+         return this.cls_.name;
+      },
+      javaToCSVLabel: 'outputter.outputValue("Type");',
+      javaGetter: `
+        return getClass().getSimpleName();
+      `,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    },
   ],
 
   methods: [
@@ -20,8 +58,15 @@ foam.INTERFACE({
         {
           name: 'x',
           type: 'Context'
+        },
+        {
+          name: 'br',
+          type: 'foam.nanos.bench.BenchmarkResult'
         }
-      ]
+      ],
+      javaCode: `
+        // noop
+      `
     },
     {
       name: 'teardown',
@@ -32,10 +77,13 @@ foam.INTERFACE({
           type: 'Context'
         },
         {
-          name: 'stats',
-          type: 'java.util.Map'
+          name: 'br',
+          type: 'foam.nanos.bench.BenchmarkResult'
         }
-      ]
+      ],
+      javaCode: `
+        // noop
+      `
     }
   ]
 });

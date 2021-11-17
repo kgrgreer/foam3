@@ -19,16 +19,15 @@ p({
   "lazy":true,
   "serve":false,
   "serviceScript":"""
-    dao = new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilities")
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
-      .build();
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
 
-    return dao;
   """
 })
 
@@ -85,16 +84,21 @@ p({
         .build())
       .build();
   """,
-  "client":"{
-    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
-     \"remoteListenerSupport\": false,
-     \"decorators\": [
+  "client":"""
+    {
+      "of":"foam.nanos.crunch.UserCapabilityJunction",
+      "remoteListenerSupport": false,
+      "decorators": [
         {
-          \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
-          \"skipToData\": true
+          "class":"foam.nanos.fs.FileArrayDAODecorator",
+          "skipToData": true
+        },
+        {
+          "class":"foam.dao.LockDAO"
         }
       ]
-     }"
+    }
+  """
 })
 
 p({
@@ -137,8 +141,10 @@ p({
       .setEnableInterfaceDecorators(false)
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setDecorator(decorator)
-      .setIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.STATUS })
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.STATUS });
     return dao;
   """,
   "client":
@@ -269,8 +275,8 @@ p({
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED) )
         .setSize(10000)
         .build())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED});
   `,
   client: "{\"of\":\"foam.nanos.crunch.connection.CapabilityPayloadRecord\"}"
 })

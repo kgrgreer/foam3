@@ -11,21 +11,13 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public TokenExpiredException() {
-    super();
-  }
-
-  public TokenExpiredException(Exception cause) {
-    super(cause);
-  }
-
-        `);
-      }
+  javaCode: `
+    public TokenExpiredException() {
+      super();
     }
-  ]
+
+    public TokenExpiredException(Exception cause) {
+      super(cause);
+    }
+  `
 });

@@ -44,6 +44,7 @@ This is the heart of Medusa.`,
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.HashMap',
@@ -52,18 +53,9 @@ This is the heart of Medusa.`,
     'java.util.Timer'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected Object promoterLock_ = new Object();
-          `
-        }));
-      }
-    }
-  ],
+  javaCode: `
+    protected Object promoterLock_ = new Object();
+  `,
 
   properties: [
     {
@@ -104,12 +96,12 @@ This is the heart of Medusa.`,
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       try {
-        if ( replaying.getReplaying() ) {
-          // getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          if ( entry.getIndex() % 10000 == 0 ) {
-            getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          }
-        }
+        // if ( replaying.getReplaying() ) {
+        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   if ( entry.getIndex() % 10000 == 0 ) {
+        //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   }
+        // }
         if ( replaying.getIndex() > entry.getIndex() ) {
           // getLogger().debug("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "discarding");
           return entry;
@@ -119,6 +111,12 @@ This is the heart of Medusa.`,
         if ( existing != null &&
              existing.getPromoted() ) {
           return existing;
+        }
+
+        // REVIEW: for troubleshooting...
+        if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
+          getLogger().warning("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "missing hash", "discarding");
+          return entry;
         }
 
         synchronized ( entry.getId().toString().intern() ) {
@@ -140,7 +138,7 @@ This is the heart of Medusa.`,
           Map<String, Map> hashes = existing.getConsensusHashes();
           Map<String, Object> nodes = hashes.get(entry.getHash());
           if ( nodes == null ) {
-            nodes = new HashMap<String, Object>();
+            nodes = new ConcurrentHashMap<String, Object>();
             hashes.put(entry.getHash(), nodes);
           }
           if ( nodes.get(entry.getNode()) == null ) {
@@ -241,7 +239,7 @@ This is the heart of Medusa.`,
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
-          ((DAO) x.get("localMedusaEntryDAO")).cmd(new ReplayCompleteCmd());
+          ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
       } finally {
         pm.log(x);
@@ -259,7 +257,7 @@ This is the heart of Medusa.`,
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
-       `
+      `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
@@ -284,12 +282,10 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( replaying.getReplaying() ) {
-              if ( nextIndex % 10000 == 0 ) {
-                getLogger().info("promoter", "next", nextIndex);
-              }
-            } else {
-               getLogger().debug("promoter", "next", nextIndex);
+            if ( nextIndex % 1000 == 0 ) {
+              getLogger().info("promoter", "next", nextIndex);
+            } else if ( ! replaying.getReplaying() ) {
+              getLogger().debug("promoter", "next", nextIndex);
             }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
@@ -454,6 +450,9 @@ This is the heart of Medusa.`,
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
+              if ( ! old.getClassInfo().isInstance(nu) ) {
+                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+              }
               nu = old.fclone().overlay(nu);
             }
           }
@@ -470,6 +469,9 @@ This is the heart of Medusa.`,
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
+                  if ( ! old.getClassInfo().isInstance(nu) ) {
+                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                  }
                   nu = old.fclone().overlay(nu);
                 }
               } else {
@@ -646,6 +648,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
             alarm.setClusterable(false);
             alarm.setIsActive(true);
             alarm.setNote("Index: "+index+"\\n"+"Dependencies: UNKNOWN");
+            config = (ClusterConfig) config.fclone();
             config.setErrorMessage("gap detected, investigating...");
             ((DAO) x.get("clusterConfigDAO")).put(config);
             // Test for gap index dependencies - of course can only look
@@ -676,6 +679,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               replaying.updateIndex(x, index);
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
+              config = (ClusterConfig) config.fclone();
               config.setErrorMessage("");
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
@@ -683,6 +687,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().error("gap", "index", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
                 alarm.setNote("Index: "+index+"\\n"+"Dependencies: YES");
                 alarm.setSeverity(foam.log.LogLevel.ERROR);
+                config = (ClusterConfig) config.fclone();
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
                 // throw new MedusaException("gap with dependencies");

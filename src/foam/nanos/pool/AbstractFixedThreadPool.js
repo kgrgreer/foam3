@@ -21,10 +21,11 @@ foam.CLASS({
       value: 8
     },
     {
+      description: `Calculate total threads based on available cores.  Set minimum threads to avoid resource exhaustion in small VMs and small development hardware.`,
       class: 'Int',
       name: 'numberOfThreads',
       javaFactory: `
-      return getThreadsPerCore() * Runtime.getRuntime().availableProcessors();
+      return Math.max(32, getThreadsPerCore() * Runtime.getRuntime().availableProcessors());
       `
     },
     {

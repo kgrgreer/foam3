@@ -504,16 +504,9 @@
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-        public static Rule findById(Collection<Rule> listRule, String passedId) {
-          return listRule.stream().filter(rule -> passedId.equals(rule.getId())).findFirst().orElse(null);
-        }
-        `);
-      }
+  javaCode: `
+    public static Rule findById(Collection<Rule> listRule, String passedId) {
+      return listRule.stream().filter(rule -> passedId.equals(rule.getId())).findFirst().orElse(null);
     }
-  ]
+  `
 });

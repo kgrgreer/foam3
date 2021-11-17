@@ -22,8 +22,9 @@ p({
     appConfig.setMode(m);
   }
 
-  logger.log(new Object[] {"AppConfig", appConfig});
-  print(appConfig);
+  logger.log(new Object[] {"AppConfig", "version", version});
+  print("AppConfig,version,"+version);
   """
 })
 p({"class": "foam.nanos.script.TestRunnerScript", "id":"testRunnerScript"})
+p({"class": "foam.nanos.bench.BenchmarkRunnerScript", "id":"benchmarkRunnerScript"})

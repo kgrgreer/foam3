@@ -76,6 +76,11 @@ foam.CLASS({
       overflow: hidden;
     }
 
+    ^actions svg {
+      height: 1em;
+      width: 1em;
+    }
+
     /*
       Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
@@ -123,7 +128,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'click',
     'config',
     'data as dao',
     'filteredTableColumns',
@@ -175,24 +179,27 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'cannedPredicate',
-      expression: function(config$cannedQueries) {
+      expression: function(config$cannedQueries, config$preSelectedCannedQuery) {
         return config$cannedQueries && config$cannedQueries.length
-          ? config$cannedQueries[0].predicate
-          : foam.mlang.predicate.True.create();
+          ? config$preSelectedCannedQuery != null
+            ? config$cannedQueries[config$preSelectedCannedQuery].predicate
+              : config$cannedQueries[1].predicate
+                : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'searchPredicate',
-      expression: function() {
-        return foam.mlang.predicate.True.create();
+      expression: function(config$searchPredicate) {
+        return config$searchPredicate ? config$searchPredicate : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'predicatedDAO',
       expression: function(config, cannedPredicate, searchPredicate) {
-        return config.dao$proxy.where(this.AND(cannedPredicate, searchPredicate));
+        var predicate = this.AND(cannedPredicate, searchPredicate);
+        return config.dao$proxy.where(predicate);
       }
     },
     {
@@ -256,8 +263,8 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
-        this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
         this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
@@ -284,17 +291,8 @@ foam.CLASS({
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
     },
-    function click(obj, id) {
-      if ( ! this.stack ) return;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          config: this.config,
-          idOfRecord: id
-        }, parent: this.__subContext__ }));
-    },
     function render() {
+      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
@@ -311,7 +309,7 @@ foam.CLASS({
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
-              data$: self.searchPredicate$,
+              data$: self.searchPredicate$
             }, this, self.__subSubContext__.createSubContext({
               memento: self.currentMemento_,
               controllerMode: foam.u2.ControllerMode.EDIT
@@ -387,13 +385,13 @@ foam.CLASS({
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
                         .start(self.EXPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.IMPORT, buttonStyle)
-                          .addClass(self.myClass('export'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .start(self.REFRESH_TABLE, buttonStyle)
-                          .addClass(self.myClass('refresh'))
+                          .addClass(self.myClass('actions'))
                         .end()
                         .callIf( self.config.DAOActions.length, function() {
                           if ( self.config.DAOActions.length > 3 ) {
@@ -401,7 +399,7 @@ foam.CLASS({
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
                           for ( action of self.config.DAOActions ) {
-                            actions.tag(action, buttonStyle);
+                            actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
                           this.add(actions);
                           if ( extraActions && extraActions.length ) {
@@ -420,9 +418,10 @@ foam.CLASS({
               .add(filterView.slot( function(mementoUpdated, mementoToggle) {
                 // TEMPORARY
                 // wait for filterView to set momento before instantianting summaryView
-                if ( mementoUpdated ) return this.E()
-                .addClass(self.myClass('browse-view-container'))
-                .add(summaryView);
+                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
+                  return this.E()
+                  .addClass(self.myClass('browse-view-container'))
+                  .add(summaryView);
               }))
             .end();
         }));

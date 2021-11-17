@@ -18,20 +18,11 @@ foam.CLASS({
     'foam.nanos.medusa.MedusaRegistry'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public PurgeSink(X x, Sink delegate) {
-    super(x, delegate);
-  }
-         `
-        }));
-      }
+  javaCode: `
+    public PurgeSink(X x, Sink delegate) {
+      super(x, delegate);
     }
-  ],
+ `,
 
   properties: [
     {

@@ -18,7 +18,7 @@
     ],
 
     imports: [
-      'summaryView?',
+      'myNotificationDAO',
       'notificationDAO',
       'notify',
       'stack',
@@ -51,7 +51,7 @@
         margin-top: 5px;
       }
       ^ .msg {
-        font-size: 12px;
+        font-size: 1.2rem;
         word-wrap: break-word;
         line-height: 1.4;
         width: 414px;
@@ -117,16 +117,10 @@
         name: 'removeNotification',
         code: function(X) {
           var self = X.rowView;
-          self.notificationDAO.remove(self.data).then(_ => {
+          X.notificationDAO.remove(self.data).then(_ => {
             self.finished.pub();
-            if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-              self.summaryView.update();
-            } else {
-              self.stack.push({
-                class: 'foam.nanos.notification.NotificationView'
-              });
-            }
-          })
+            X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          });
         },
         confirmationRequired: function() {
           return true;
@@ -147,14 +141,8 @@
         self.userDAO.put(userClone).then(user => {
           self.finished.pub();
           self.user = user;
+          X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
 
-          if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-            self.summaryView.update();
-          } else {
-            self.stack.push({
-              class: 'foam.nanos.notification.NotificationView'
-            });
-          }
         }).catch(e => {
           self.throwError.pub(e);
 
@@ -180,13 +168,7 @@
             self.data.read = true;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-                self.summaryView.update();
-              } else {
-                self.stack.push({
-                  class: 'foam.nanos.notification.NotificationView'
-                });
-              }
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
             });
           }
         }
@@ -202,13 +184,7 @@
             self.data.read = false;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-                self.summaryView.update();
-              } else {
-                self.stack.push({
-                  class: 'foam.nanos.notification.NotificationView'
-                });
-              }
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
             })
           }
         }

@@ -186,7 +186,8 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
-  { name: "foam/util/UIDGeneratorTest" },
+  { name: "foam/util/test/UIDGeneratorTest" },
+  { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -300,19 +301,20 @@ FOAM_FILES([
   { name: "foam/dao/grid/ManyToManyGridRecord" },
   { name: "foam/dao/grid/ManyToManyGridDAO" },
   { name: "foam/dao/LazyCacheDAO" },
+  { name: "foam/dao/SessionClientDAO" },
   { name: "foam/dao/TTLCachingDAO"},
   { name: "foam/dao/TTLSelectCachingDAO"},
   { name: "foam/dao/CachingDAO" },
   { name: "foam/dao/DeDupDAO" },
   { name: "foam/dao/LRUDAOManager" },
-  { name: "foam/dao/QueryCachingDAODecorator" },
+  { name: "foam/dao/QueryCachingDAO" },
   { name: "foam/dao/SequenceNumberDAO" },
   { name: "foam/dao/SequenceNumberDAOTest" },
   { name: "foam/dao/ContextualizingDAO" },
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
   { name: "foam/dao/SyncDAO" },
-  { name: "foam/dao/FUIDAO" },
+  { name: "foam/dao/FUIDDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
   { name: 'foam/nanos/approval/UCJApprovable' },
@@ -353,9 +355,12 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
   { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
+
+  { name: 'foam/nanos/bench/BenchmarkResult' },
 
   { name: "foam/dao/EasyDAO" },
   { name: "foam/dao/NoSelectAllDAO" },
@@ -573,6 +578,7 @@ FOAM_FILES([
   { name: "foam/u2/view/MultiBoxInputView", flags: ['web'] },
   { name: "foam/u2/FragmentedTextField", flags: ['web'] },
   { name: "foam/u2/FragmentedTextFieldFragment", flags: ['web'] },
+  { name: "foam/u2/TextFormatter", flags: ['web'] },
   { name: "foam/u2/FormattedTextField", flags: ['web'] },
   { name: "foam/u2/view/UserPropertyAvailabilityView", flags: ['web'] },
   { name: "foam/u2/view/FObjectView", flags: ['web'] },
@@ -624,6 +630,7 @@ FOAM_FILES([
   { name: "foam/u2/view/FnFormatter", flags: ['js'] },
   { name: "foam/u2/view/TableCellFormatter", flags: ['js'] },
   { name: "foam/u2/view/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/view/LazyScrollManager", flags: ['web'] },
   { name: "foam/u2/view/TableView", flags: ['web'] },
   { name: "foam/u2/view/EditColumnsView", flags: ['web'] },
   { name: "foam/u2/view/ColumnConfigView", flags: ['web'] },
@@ -893,6 +900,8 @@ FOAM_FILES([
   { name: "foam/dashboard/view/Bar" },
   { name: "foam/dashboard/view/Line" },
   { name: "foam/dashboard/view/DAOTable" },
+  { name: "foam/dashboard/view/GroupByDAOTable" },
+  { name: "foam/dashboard/view/GroupByCitationView" },
   { name: "foam/dashboard/view/Card" },
   { name: "foam/dashboard/view/Dashboard"},
   { name: "foam/build/Library" },
@@ -1068,8 +1077,17 @@ FOAM_FILES([
   { name: 'foam/nanos/fs/AgreementView' },
   { name: 'foam/nanos/crunch/ruler/UCJDataExpiryRule' },
 
+  // Table
+  { name: "foam/u2/table/TableComponentView", flags: ['web'] },
+  { name: "foam/u2/table/TableView", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableGroup", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableRow", flags: ['web'] },
+  { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
+  { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
+
   { name: "foam/util/date/TimeUnit" },
 
+  { name: "foam/nanos/dig/DIGDAOClient" },
   { name: "foam/nanos/dig/exception/DigErrorMessage" },
   { name: "foam/nanos/dig/exception/DAONotFoundException" },
   { name: "foam/nanos/dig/exception/DAORequiredException" },
@@ -1083,4 +1101,5 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" }
-])
+
+]);

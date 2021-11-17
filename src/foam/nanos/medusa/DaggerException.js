@@ -9,26 +9,17 @@ foam.CLASS({
   package: 'foam.nanos.medusa',
   javaExtends: 'foam.core.FOAMException',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public DaggerException(String message) {
-    super(message);
-  }
-
-  public DaggerException(Throwable cause) {
-    super(cause.getMessage(), cause);
-  }
-
-  public DaggerException(String message, Throwable cause) {
-    super(message, cause);
-  } 
-          `
-        }));
-      }
+  javaCode: `
+    public DaggerException(String message) {
+      super(message);
     }
-  ]
+
+    public DaggerException(Throwable cause) {
+      super(cause.getMessage(), cause);
+    }
+
+    public DaggerException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  `
 });

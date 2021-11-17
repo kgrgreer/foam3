@@ -3,6 +3,15 @@
  * Copyright 2017,2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * To debug in browser, load with ?java=true flag, then run something like:
+ *   c = foam.java.Class.create();
+ *   foam.nanos.auth.Region.buildJavaClass(c);
+ *   c.toString();
+ * from the console.
+**/
+
 foam.INTERFACE({
   package: 'foam.lib.csv',
   name: 'FromCSVSetter',
@@ -407,7 +416,7 @@ ${isSet} = false;`
       if ( this.javaFactory ) {
         cls.method({
           name: factoryName,
-          visibility: 'protected',
+          visibility: 'public',
           type: this.javaType,
           body: this.javaFactory
         });
@@ -517,37 +526,32 @@ foam.LIB({
       });
 
       var flagFilter = foam.util.flagFilter(['java']);
-      var axioms = this.getOwnAxioms().filter(flagFilter);
+      var axioms     = this.getOwnAxioms().filter(flagFilter);
 
       for ( var i = 0 ; i < axioms.length ; i++ ) {
         axioms[i].buildJavaClass && axioms[i].buildJavaClass(cls, this);
       }
 
       // TODO: instead of doing this here, we should walk all Axioms
-      // and introuce a new buildJavaAncestorClass() method
+      // and introduce a new buildJavaAncestorClass() method
       var flagFilter = foam.util.flagFilter(['java']);
-      cls.allProperties = this.getAxiomsByClass(foam.core.Property)
-        .filter(flagFilter)
-        .filter(function(p) {
-          return !! p.javaType && p.javaInfoType && p.generateJava;
-        })
-        .filter(flagFilter)
-        .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
-        });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
         .filter(flagFilter)
-        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava)
-        .filter(p => p.javaFactory);
+        .filter(p => !! p.javaType && p.javaInfoType && p.generateJava);
 
-      if ( properties.length > 0 ) {
+      cls.allProperties = properties
+        .map(p => foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash }));
+
+      var javaFactoryProperties = properties.filter(p => p.javaFactory);
+
+      if ( javaFactoryProperties.length > 0 ) {
         cls.method({
           visibility: 'public',
           type: 'void',
           name: 'beforeFreeze',
           body: (this.model_.extends === 'FObject' ? '' : 'super.beforeFreeze();\n') +
-            properties.map(p => `get${foam.String.capitalize(p.name)}();`)
+            javaFactoryProperties.map(p => `get${foam.String.capitalize(p.name)}();`)
               .join('\n')
         });
       }
@@ -868,7 +872,7 @@ public Object call(foam.core.X x, Object receiver, Object[] args) {
         type:          this.javaType || 'void',
         visibility:    this.visibility,
         static:        this.isStatic(),
-        abstract:      this.abstract,
+        abstract:      this.abstract && ! this.javaCode,
         final:         this.final,
         synchronized:  this.synchronized,
         remote:        this.remote,
@@ -1207,8 +1211,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'int'],
-    ['javaInfoType',   'foam.core.AbstractIntPropertyInfo']
+    ['javaType',     'int'],
+    ['javaInfoType', 'foam.core.AbstractIntPropertyInfo']
   ]
 });
 
@@ -1604,8 +1608,29 @@ foam.CLASS({
         return 'VARCHAR(' + width + ')';
       }
     }
+  ],
+
+  methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      if ( this.value != '' ) {
+        info.method({
+          name: 'isDefaultValue',
+          visibility: 'public',
+          args: [
+            { name: 'o', type: 'Object'}
+          ],
+          type: 'boolean',
+          body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
+        });
+      }
+
+      return info;
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',
@@ -1621,11 +1646,9 @@ foam.CLASS({
     {
       name: 'javaSetter',
       factory: function() {
-        var formattedName = 'Formatted' + foam.String.capitalize(this.name);
         return `
           assertNotFrozen();
-          // remove all non-numeric characters
-          val = val.replaceAll("[^\\\\\d]", "");
+          ${this.formatter.buildJavaRemoveFormatting(this.name)}
           ${this.name}_ = val;
           ${this.name}IsSet_ = true;`;
       }
@@ -1635,7 +1658,6 @@ foam.CLASS({
   methods: [
     function createJavaPropertyInfo_(cls) {
       var info = this.SUPER(cls);
-      var body = this.buildGetFormatted(cls.name, this.name);
       info.method({
         name: 'getFormatted',
         visibility: 'public',
@@ -1644,28 +1666,9 @@ foam.CLASS({
           { name: 'o', type: 'Object'}
         ],
         documentation: 'Returns a formatted version of this property',
-        body: body
+        body: this.formatter.buildJavaGetFormatted(cls.name, this.name)
       });
       return info;
-    },
-
-    function buildGetFormatted(cls, prop) {
-      var str = `
-        if ( ! ((${cls}) o).${prop}IsSet_ ) return "";
-        StringBuilder ret = new StringBuilder(((${cls}) o).${prop}_);
-      `;
-      var index = 0;
-      this.formatter.forEach(c => {
-        if ( !isNaN(c) ) index += c;
-        else {
-          str += `
-            if ( ret.length() < ${index} ) return ret.toString();
-            ret.insert(${index}, "${c}");
-          `
-          index++;
-        }
-      });
-      return str += `return ret.length() > ${index} ? ret.toString().substring(0, ${index}) : ret.toString();`
     }
   ]
 });
@@ -1952,7 +1955,7 @@ foam.CLASS({
   properties: [
     ['javaType', 'ArrayList'],
     ['javaInfoType', 'foam.core.AbstractPropertyInfo'],
-    ['javaJSONParser', 'oam.lib.json.ArrayParser.instance()']
+    ['javaJSONParser', 'foam.lib.json.ArrayParser.instance()']
   ],
 
   methods: [
@@ -2451,5 +2454,63 @@ foam.CLASS({
       });
       return;
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'JavaCode',
+
+  documentation: `
+    Axiom for adding java code to a model.
+    The supplied code will be added to the generated .java code generated for the model.
+  `,
+
+  properties: [
+    'name',
+    'code'
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      cls.extras.push(foam.java.Code.create({data: this.code}));
+    }
+  ]
+});
+
+
+foam.CLASS({
+  refines: 'foam.core.Model',
+  package: 'foam.java',
+  name: 'JavaCodeModelRefine',
+
+  requires: [ 'foam.java.JavaCode' ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'javaCode',
+      postSet: function(_, code) {
+        this.axioms_.push(this.JavaCode.create({
+          name: 'JavaCode_' + this.name,
+          code: code
+        }));
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'FUIDJavaRefinement',
+  refines: 'foam.core.FUIDProperty',
+  flags: ['java'],
+  mixins: [ 'foam.java.JavaCompareImplementor' ],
+
+  properties: [
+    ['javaType',     'long'],
+    ['value',        0],
+    ['javaInfoType', 'foam.core.AbstractFUIDPropertyInfo']
   ]
 });

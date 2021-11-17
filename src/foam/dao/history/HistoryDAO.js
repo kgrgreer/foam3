@@ -53,44 +53,35 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            private static final PropertyPredicate PROPERTY_PREDICATE = new StoragePropertyPredicate();
-            private static final PropertyPredicate OPTIONAL_PREDICATE = new StorageOptionalPropertyPredicate();
+  javaCode: `
+    private static final PropertyPredicate PROPERTY_PREDICATE = new StoragePropertyPredicate();
+    private static final PropertyPredicate OPTIONAL_PREDICATE = new StorageOptionalPropertyPredicate();
 
-            protected static final ThreadLocal<FObjectFormatter> formatter__ = new ThreadLocal<FObjectFormatter>() {
-              @Override
-              protected JSONFObjectFormatter initialValue() {
-                JSONFObjectFormatter formatter = new JSONFObjectFormatter();
-                formatter.setPropertyPredicate(PROPERTY_PREDICATE);
-                return formatter;
-              }
-              
-              @Override
-              public FObjectFormatter get() {
-                FObjectFormatter formatter = super.get();
-                formatter.reset();
-                return formatter;
-              }
-            };
-
-            public HistoryDAO(X x, String historyDAO, DAO delegate) {
-              this(x, (DAO) x.get(historyDAO), delegate);
-            }
-          
-            public HistoryDAO(X x, DAO historyDAO, DAO delegate) {
-              super(x, delegate);
-              setHistoryDAO(historyDAO);
-            } 
-          `
-        );
+    protected static final ThreadLocal<FObjectFormatter> formatter__ = new ThreadLocal<FObjectFormatter>() {
+      @Override
+      protected JSONFObjectFormatter initialValue() {
+        JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+        formatter.setPropertyPredicate(PROPERTY_PREDICATE);
+        return formatter;
       }
+
+      @Override
+      public FObjectFormatter get() {
+        FObjectFormatter formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+
+    public HistoryDAO(X x, String historyDAO, DAO delegate) {
+      this(x, (DAO) x.get(historyDAO), delegate);
     }
-  ],
+
+    public HistoryDAO(X x, DAO historyDAO, DAO delegate) {
+      super(x, delegate);
+      setHistoryDAO(historyDAO);
+    }
+  `,
 
   methods: [
     {
