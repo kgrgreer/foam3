@@ -76,7 +76,7 @@ foam.CLASS({
       args: [ 'Context x' ],
       javaCode: `
         var uidgen = new UIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.", uidgen, uidgen);
+        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.", uidgen, uidgen, uidgen, uidgen);
       `
     },
     {
@@ -85,7 +85,9 @@ foam.CLASS({
       javaCode: `
         var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
         var uidgen2 = new UIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(true, "Could generate duplicate uid on instances with the same machine id.", uidgen1, uidgen2);
+        var uidgen3 = new UIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen4 = new UIDGenerator.Builder(x).setMachineId(1).build();
+        testDuplicateFound(true, "Could generate duplicate uid on instances with the same machine id.", uidgen1, uidgen2, uidgen3, uidgen4);
       `
     },
     {
@@ -94,7 +96,9 @@ foam.CLASS({
       javaCode: `
         var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
         var uidgen2 = new UIDGenerator.Builder(x).setMachineId(2).build();
-        testDuplicateFound(false, "Should not generate duplicate uid on instances with the different machine id.", uidgen1, uidgen2);
+        var uidgen3 = new UIDGenerator.Builder(x).setMachineId(3).build();
+        var uidgen4 = new UIDGenerator.Builder(x).setMachineId(4).build();
+        testDuplicateFound(false, "Should not generate duplicate uid on instances with the different machine id.", uidgen1, uidgen2, uidgen3, uidgen4);
       `
     }
   ]
