@@ -224,7 +224,7 @@ public class RuleEngine extends ContextAwareSupport {
 
   private FObject reloadObject(FObject obj) {
     var reloaded = getDelegate().find_(userX_, obj);
-    // For async rules with operation=REMOVE, the object is no longer exist so
+    // For rules with operation=REMOVE, the object was removed from the DAO thus
     // returning the original object.
     if ( reloaded == null ) {
       return obj;
