@@ -153,7 +153,7 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-      Object result = submit(x, DOP.FIND, "id="+id.toString());
+      Object result = submit(x, DOP.SELECT, "id="+id.toString());
       // Loggers.logger(x, this).debug("find", "response", result);
       if ( result != null ) {
         return (FObject) unAdapt(x, DOP.FIND, result);
@@ -182,15 +182,22 @@ foam.CLASS({
     },
     {
       name: 'select_',
-      // select_(X,Sink,long,long,Comparator,Predicate)
+      // select_(X,Sink,Skip,Limit,Comparator,Predicate)
       javaCode: `
-      return null;
+      throw new UnsupportedOperationException();
       `
     },
     {
       name: 'remove_',
       javaCode: `
-      return null;
+      throw new UnsupportedOperationException();
+      // NOTE: untested
+      // Object result = submit(x, DOP.REMOVE, "id="+obj.getProperty("id"));
+      // Loggers.logger(x, this).debug("remove", "response", result);
+      // if ( result != null ) {
+      //   return (FObject) unAdapt(x, DOP.REMOVE, result);
+      // }
+      // return null;
       `
     },
     {
@@ -269,21 +276,19 @@ foam.CLASS({
       sb.append(getUrl());
       sb.append("/service/");
       sb.append(getServiceName());
+      sb.append("?cmd=");
+      sb.append(dop.getLabel());
       if ( ! SafetyUtil.isEmpty(getNSpecName()) ) {
-        sb.append("?dao=");
+        sb.append("&dao=");
         sb.append(getNSpecName());
-        sb.append("&format=JSON");
-      } else {
-        sb.append("?format=JSON");
       }
-
-      if ( dop == DOP.FIND ) {
+      if ( dop == DOP.FIND ||
+           dop == DOP.SELECT ||
+           dop == DOP.REMOVE ) {
         sb.append("&");
         sb.append(data);
-      } else {
-        sb.append("&cmd=");
-        sb.append(dop.getLabel());
       }
+      sb.append("&format=JSON");
 
       // Loggers.logger(x, this).debug("submit", "request", sb.toString());
       return sb.toString();
@@ -314,8 +319,7 @@ foam.CLASS({
         .header("Authorization", "BEARER "+getSessionId())
         .header("Content-Type", "application/json")
         .header("User-Agent", "Mozilla/5.0");
-      if ( dop == DOP.PUT ||
-           dop == DOP.REMOVE ) {
+      if ( dop == DOP.PUT ) {
         builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
       }
       HttpRequest request = builder.build();
