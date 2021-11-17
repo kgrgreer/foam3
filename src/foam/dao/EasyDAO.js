@@ -196,7 +196,7 @@ foam.CLASS({
         if ( getMdao() != null && ! getEnableInterfaceDecorators() ) {
           logger.warning(getName(),
             'Interface decorators need to be disabled on the higher level of the decorator chain' +
-            'if your intention is to prevent the decorators to be triggered twice
+            'if you are trying to prevent the decorators to be triggered twice
           );
         }
 
