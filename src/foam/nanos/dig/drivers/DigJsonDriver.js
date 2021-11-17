@@ -16,6 +16,8 @@ foam.CLASS({
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
     'foam.lib.json.JSONParser',
+    'foam.lib.json.MapParser',
+    'foam.nanos.auth.Group',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
@@ -27,7 +29,11 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Arrays',
     'java.util.List',
-    'javax.servlet.http.HttpServletResponse'
+    'java.util.Map',
+    'javax.servlet.http.HttpServletResponse',
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream'
   ],
 
   properties: [
@@ -43,6 +49,16 @@ foam.CLASS({
       javaCode: `
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
+
+      if ( ((Group)x.get("group")).getId().equals("admin") && x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
+        StringPStream mapStr = new StringPStream();
+        mapStr.setString(x.get(HttpParameters.class).getParameter("nameMapping"));
+        var mapParser = MapParser.instance();
+        var ret = mapParser.parse(mapStr, new ParserContextImpl());
+        if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
+          data = new FieldNameMapGrammar().replaceFields(data, (Map) ret.value());
+        }
+      }
 
       // Attempt to parse array
       ClassInfo cInfo = dao.getOf();

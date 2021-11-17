@@ -195,6 +195,24 @@ foam.CLASS({
       }
     },
     {
+      class: 'Map',
+      name: 'fieldNameMapping',
+      section: 'details',
+      view: { class: 'foam.u2.view.MapView' },
+      visibility: function(cmd) {
+        return (cmd == 'PUT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Map',
+      name: 'fieldDefaultValue',
+      section: 'details',
+      view: { class: 'foam.u2.view.MapView' },
+      visibility: function(cmd) {
+        return (cmd == 'PUT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
       class: 'URL',
       name: 'postURL',
       hidden: true
@@ -205,7 +223,7 @@ foam.CLASS({
       documentation: 'show a specific type of request would look like in a given language.',
       section: 'details',
       view: { class: 'foam.nanos.dig.DigSnippetView' },
-      expression: function(key, data, daoKey, cmd, format, q, limit, skip) {
+      expression: function(key, data, nameMapping, daoKey, cmd, format, q, limit, skip) {
         var query = false;
         var url = "/service/dig";
 
@@ -213,6 +231,11 @@ foam.CLASS({
           url += "?";
           query = true;
           url += "dao=" + daoKey;
+        }
+        if ( nameMapping ) {
+          url += query ? "&" : "?";
+          query = true;
+          url += "nameMapping=" + JSON.stringify(nameMapping);
         }
         if ( cmd ) {
           url += query ? "&" : "?";
