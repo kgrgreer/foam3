@@ -223,7 +223,7 @@ foam.CLASS({
       documentation: 'show a specific type of request would look like in a given language.',
       section: 'details',
       view: { class: 'foam.nanos.dig.DigSnippetView' },
-      expression: function(key, data, nameMapping, daoKey, cmd, format, q, limit, skip) {
+      expression: function(key, data, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
         var query = false;
         var url = "/service/dig";
 
@@ -232,10 +232,15 @@ foam.CLASS({
           query = true;
           url += "dao=" + daoKey;
         }
-        if ( nameMapping ) {
+        if ( fieldNameMapping ) {
           url += query ? "&" : "?";
           query = true;
-          url += "nameMapping=" + JSON.stringify(nameMapping);
+          url += "nameMapping=" + JSON.stringify(fieldNameMapping);
+        }
+        if ( fieldDefaultValue ) {
+          url += query ? "&" : "?";
+          query = true;
+          url += "fieldValue=" + JSON.stringify(fieldDefaultValue);
         }
         if ( cmd ) {
           url += query ? "&" : "?";
