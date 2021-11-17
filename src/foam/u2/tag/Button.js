@@ -272,9 +272,25 @@ foam.CLASS({
     ^link > .foam-u2-HTMLView{
       height: 1em;
     }
-    // TODO: Find a better selector for this
-    ^link > .foam-u2-HTMLView > *{
-      height: 100%
+
+    ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    ^svgIcon svg {
+      height: 100%;
+    }
+
+    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    these ensure those are respected rather than imposing new dimensions */
+    ^imgSVGIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ^imgSVGIcon svg {
+      height: initial;
     }
 
     ^small svg,
@@ -291,6 +307,10 @@ foam.CLASS({
     ^large img {
       width: 2.25em;
       height: 2.25em;
+    }
+    ^link svg, link img {
+      width: 1em;
+      height: 1em;
     }
   `,
 
@@ -386,9 +406,15 @@ foam.CLASS({
       /** Add text or icon to button. **/
       var self = this;
       if ( ( this.themeIcon && this.theme ) ) {
-        this.tag({ class: 'foam.u2.tag.Image', glyph: this.themeIcon, role: 'presentation' });
+        this
+          .start({ class: 'foam.u2.tag.Image', glyph: this.themeIcon, role: 'presentation' })
+            .addClass(this.myClass('SVGIcon'))
+          .end();
       } else if ( this.icon ) {
-        this.tag({ class: 'foam.u2.tag.Image', data: this.icon, role: 'presentation', embedSVG: true });
+        this
+          .start({ class: 'foam.u2.tag.Image', data: this.icon, role: 'presentation', embedSVG: true })
+            .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+          .end();
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.addClass(this.action.name);
