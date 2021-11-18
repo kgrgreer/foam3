@@ -274,19 +274,23 @@ foam.CLASS({
   }
 
 
+  /* mobile */
+  @media only screen and (min-width: 321px) {
+    .large-title { font-size: 3.5rem; }
+  }
+
+  /* tablet */
+  @media only screen and (min-width: 768px) {
+    .large-title { font-size: 6.4rem; }
+  }
+
   /* desktop */
   @media only screen and (min-width: 960px) {
     .large-title { font-size: 8.4rem; }
   }
 
-  /* tablet */
-  @media only screen and (max-width: 959px) {
-    .large-title { font-size: 6.4rem; }
-  }
-
   /* mobile */
   @media only screen and (max-width: 767px) {
-    .large-title { font-size: 3.5rem; }
     .foam-u2-wizard-ScrollingStepWizardView-hide-X-status {
       display: none !important;
     }
