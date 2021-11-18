@@ -291,13 +291,6 @@ foam.CLASS({
 
   /* mobile */
   @media only screen and (max-width: 767px) {
-    .side-nav-view,
-    .side-nav-view .foam-u2-view-TreeViewRow {
-      width: 100%;
-    }
-    .foam-nanos-menu-VerticalMenu-search {
-      width: 100% !important;
-    }
     .foam-u2-ActionView-refreshTable {
       display: none !important;
     }
