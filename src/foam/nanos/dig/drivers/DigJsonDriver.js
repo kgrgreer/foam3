@@ -17,7 +17,6 @@ foam.CLASS({
     'foam.lib.json.MapParser',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',
-    'foam.nanos.auth.Group',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
     'foam.nanos.http.*',
@@ -43,8 +42,7 @@ foam.CLASS({
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
 
-      boolean isAdmin = ((Group)x.get("group")).getId().equals("admin") || ((Group)x.get("group")).getId().equals("system");
-      if ( isAdmin && x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
+      if ( x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
         StringPStream mapStr = new StringPStream();
         mapStr.setString(x.get(HttpParameters.class).getParameter("nameMapping"));
         var mapParser = MapParser.instance();
@@ -76,7 +74,7 @@ foam.CLASS({
         list.add(o);
       }
 
-      if ( isAdmin && x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
+      if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
         StringPStream mapStr = new StringPStream();
         mapStr.setString(x.get(HttpParameters.class).getParameter("fieldValue"));
         var mapParser = MapParser.instance();
