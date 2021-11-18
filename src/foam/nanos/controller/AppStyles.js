@@ -291,13 +291,6 @@ foam.CLASS({
 
   /* mobile */
   @media only screen and (max-width: 767px) {
-    .foam-u2-wizard-ScrollingStepWizardView-hide-X-status {
-      display: none !important;
-    }
-    .foam-u2-wizard-ScrollingStepWizardView {
-      max-width: 100vw !important;
-      max-height: 100vh !important;
-    }
     .side-nav-view,
     .side-nav-view .foam-u2-view-TreeViewRow {
       width: 100%;

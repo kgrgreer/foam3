@@ -55,8 +55,9 @@ foam.CLASS({
       position: relative;
       background-color: /*%GREY5%*/ #f5f7fa;
       height: 100%;
-      max-height: 85vh;
-      max-width: 85vw;
+      width: 100%;
+      max-height: 100vh;
+      max-width: 100vw;
     }
     ^fullscreen {
       display: flex;
@@ -86,7 +87,7 @@ foam.CLASS({
       background-color: %WHITE%;
       padding: 50px;
       overflow-y: auto;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: space-between;
     }
@@ -148,6 +149,18 @@ foam.CLASS({
     ^fix-grid.foam-u2-layout-Grid {
       grid-gap: 0;
     }
+
+    /* tablet and desktop */
+    @media only screen and (min-width: 768px) {
+      ^ {
+        max-height: 85vh;
+        max-width: 85vw;
+        width: auto;
+      }
+      ^hide-X-status {
+        display: flex;
+      }
+    }
   `,
 
   properties: [
@@ -200,7 +213,8 @@ foam.CLASS({
         .start(this.Grid)
           .addClass(this.myClass('fix-grid'))
           .start(this.GUnit, { columns: 4 })
-            .addClass(this.hideX ? this.myClass('hide-X-status') : this.myClass('status'))
+            .enableClass(this.myClass('hide-X-status'), this.hideX$)
+            .enableClass(this.myClass('status'), this.hideX$, true)
             .add(
               this.slot(function (data, data$currentWizardlet) {
                 return this.StepWizardletStepsView.create({
