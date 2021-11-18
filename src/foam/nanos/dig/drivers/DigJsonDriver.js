@@ -30,6 +30,7 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'java.util.Map',
+    'java.util.Set',
     'javax.servlet.http.HttpServletResponse',
     'foam.lib.parse.PStream',
     'foam.lib.parse.ParserContextImpl',
@@ -80,6 +81,28 @@ foam.CLASS({
       } else {
         list = new ArrayList();
         list.add(o);
+      }
+
+      if ( ((Group)x.get("group")).getId().equals("admin") && x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
+        StringPStream mapStr =   new StringPStream();
+        mapStr.setString(x.get(HttpParameters.class).getParameter("fieldValue"));
+        var mapParser = MapParser.instance();
+        var ret = mapParser.parse(mapStr, new ParserContextImpl());
+        if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
+          Map map = (Map)ret.value();
+          Set keys = map.entrySet();
+          for ( Object ob : list ) {
+            if ( ob instanceof FObject ) {
+              FObject f = (FObject) ob;
+              map.forEach((k,v) -> {
+                PropertyInfo prop = (PropertyInfo) f.getClassInfo().getAxiomByName((String)k);
+                if ( ! prop.isSet(f) ) {
+                  prop.set(f, map.get(k));
+                }
+              });
+            }
+          }
+        }
       }
 
       return list;
