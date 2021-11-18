@@ -288,12 +288,5 @@ foam.CLASS({
   @media only screen and (min-width: 960px) {
     .large-title { font-size: 8.4rem; }
   }
-
-  /* mobile */
-  @media only screen and (max-width: 767px) {
-    .foam-u2-ActionView-refreshTable {
-      display: none !important;
-    }
-  }
   `
 });

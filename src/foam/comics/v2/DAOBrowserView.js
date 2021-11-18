@@ -123,6 +123,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'displayWidth',
     'exportDriverRegistryDAO',
     'stack?'
   ],
@@ -258,7 +259,8 @@ foam.CLASS({
       label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
-      isAvailable: function(config) {
+      isAvailable: function(config, displayWidth) {
+        if ( displayWidth.minWidth < foam.u2.layout.DisplayWidth.MD.minWidth ) return false;
         if ( ! config.refreshPredicate.f() ) return false;
         return true;
       },
