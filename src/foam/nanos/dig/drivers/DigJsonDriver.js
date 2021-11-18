@@ -13,28 +13,20 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'foam.dao.DAO',
-    'foam.lib.csv.CSVOutputter',
-    'foam.lib.json.OutputterMode',
     'foam.lib.json.JSONParser',
     'foam.lib.json.MapParser',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
     'foam.nanos.auth.Group',
-    'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
     'foam.nanos.http.*',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.util.SafetyUtil',
     'java.io.PrintWriter',
     'java.util.ArrayList',
     'java.util.Arrays',
     'java.util.List',
     'java.util.Map',
-    'java.util.Set',
-    'javax.servlet.http.HttpServletResponse',
-    'foam.lib.parse.PStream',
-    'foam.lib.parse.ParserContextImpl',
-    'foam.lib.parse.StringPStream'
+    'java.util.Set'
   ],
 
   properties: [

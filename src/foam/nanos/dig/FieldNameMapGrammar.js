@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.dig',
   name: 'FieldNameMapGrammar',
+  documentation: `replaces fieldnames in a JSON with fieldnames specified in the map provided as an argument`,
 
   javaImports: [
     'foam.lib.json.*',
@@ -19,7 +20,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.lib.parse.Grammar',
       name: 'grammar',
-      documentation: ``,
       javaFactory: `
         Grammar grammar = new Grammar();
         grammar.addSymbol("START", grammar.sym("markup"));
