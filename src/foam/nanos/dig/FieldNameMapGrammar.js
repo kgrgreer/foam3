@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -9,19 +9,9 @@ foam.CLASS({
   name: 'FieldNameMapGrammar',
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
-    'foam.lib.parse.Action',
-    'foam.lib.parse.Grammar',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
-    'foam.nanos.notification.email.DAOResourceLoader',
-    'java.lang.StringBuilder',
-    'java.util.HashMap',
-    'java.util.Map',
-    'static foam.mlang.MLang.EQ'
+    'java.util.Map'
   ],
 
   properties: [
@@ -34,15 +24,7 @@ foam.CLASS({
         Grammar grammar = new Grammar();
         grammar.addSymbol("START", grammar.sym("markup"));
 
-        // markup symbol defines the pattern for the whole string
         grammar.addSymbol("markup", new Repeat0(new Alt(grammar.sym("FIELD_NAME"), grammar.sym("ANY_CHAR"))));
-        Action markup = new Action() {
-          @Override
-          public Object execute(Object value, ParserContext x) {
-            return (StringBuilder) x.get("sb");
-          }
-        };
-        grammar.addAction("markup", markup);
 
         // ANY_KEY symbol applies to any char that doesn't match any other pattern
         grammar.addSymbol("ANY_CHAR", AnyChar.instance());
@@ -55,7 +37,7 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
-        // simple value syntax: "qwerty {{ simple_value }} qwerty"
+        // json fieldname syntax
         grammar.addSymbol("FIELD_NAME", new Seq1(1, Literal.create("\\\""), new Until(Literal.create("\\\"")), Whitespace.instance(),Literal.create(":")));
         Action fieldNameAction = new Action() {
           @Override
@@ -72,8 +54,6 @@ foam.CLASS({
           }
         };
         grammar.addAction("FIELD_NAME", fieldNameAction);
-
-
 
         return grammar;
       `
@@ -100,26 +80,17 @@ foam.CLASS({
       `
     }
   ],
-
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          protected static ThreadLocal<StringBuilder> sb_ = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-        `);
-      }
-    }
-  ]
+  javaCode:
+    `protected static ThreadLocal<StringBuilder> sb_ = new ThreadLocal<StringBuilder>() {
+       @Override
+       protected StringBuilder initialValue() {
+         return new StringBuilder();
+       }
+       @Override
+       public StringBuilder get() {
+         StringBuilder b = super.get();
+         b.setLength(0);
+         return b;
+       }
+     };`
 });

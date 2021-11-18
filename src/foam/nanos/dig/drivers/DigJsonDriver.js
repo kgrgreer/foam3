@@ -51,7 +51,8 @@ foam.CLASS({
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
 
-      if ( ((Group)x.get("group")).getId().equals("admin") && x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
+      boolean isAdmin = ((Group)x.get("group")).getId().equals("admin") || ((Group)x.get("group")).getId().equals("system");
+      if ( isAdmin && x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
         StringPStream mapStr = new StringPStream();
         mapStr.setString(x.get(HttpParameters.class).getParameter("nameMapping"));
         var mapParser = MapParser.instance();
@@ -83,8 +84,8 @@ foam.CLASS({
         list.add(o);
       }
 
-      if ( ((Group)x.get("group")).getId().equals("admin") && x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
-        StringPStream mapStr =   new StringPStream();
+      if ( isAdmin && x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
+        StringPStream mapStr = new StringPStream();
         mapStr.setString(x.get(HttpParameters.class).getParameter("fieldValue"));
         var mapParser = MapParser.instance();
         var ret = mapParser.parse(mapStr, new ParserContextImpl());
@@ -96,7 +97,7 @@ foam.CLASS({
               FObject f = (FObject) ob;
               map.forEach((k,v) -> {
                 PropertyInfo prop = (PropertyInfo) f.getClassInfo().getAxiomByName((String)k);
-                if ( ! prop.isSet(f) ) {
+                if ( prop != null ) {
                   prop.set(f, map.get(k));
                 }
               });
