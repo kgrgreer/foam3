@@ -120,6 +120,7 @@ foam.INTERFACE({
     }`,
     'void fromCSVLabelMapping(java.util.Map<String,foam.lib.csv.FromCSVSetter> map)',
     'boolean getSheetsOutput() { return false; }',
-    'Object castObject(Object value) { return value; }'
+    'Object castObject(Object value) { return value; }',
+    'Object adapt(Object value) { return value; }'
   ]
 });

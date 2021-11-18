@@ -3052,7 +3052,8 @@ foam.CLASS({
           a[CLS_OR_OBJ_INDEX] = ((FObject) obj).getClassInfo();
         }
         for ( int i = 0 ; i < getExprs().length ; i++ )
-          a[i+this.PROJECTION_VALUES_OFFSET] = getExprs()[i].f(obj);
+          // is the expr ever not propertyinfo?
+          a[i+this.PROJECTION_VALUES_OFFSET] = ((PropertyInfo) getExprs()[i]).adapt(getExprs()[i].f(obj));
 
         getProjectionWithClass().add(a);
       `

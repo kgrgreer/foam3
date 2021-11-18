@@ -161,4 +161,7 @@ public abstract class AbstractPropertyInfo
       }
     });
   }
+
+  @Override
+  public Object adapt(Object value) { return value; }
 }

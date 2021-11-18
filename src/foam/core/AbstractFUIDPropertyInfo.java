@@ -22,8 +22,9 @@ public abstract class AbstractFUIDPropertyInfo
     formatter.output(adapt(get_(obj)));
   }
 
-  protected String adapt(Object value) {
-    return value != null ? String.valueOf(value) : "0";
+  @Override
+  public Object adapt(Object value) {
+    return value != null && value instanceof Number ? String.valueOf(value) : "0";
   }
 
   @Override
