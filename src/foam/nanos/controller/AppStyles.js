@@ -282,26 +282,11 @@ foam.CLASS({
   /* tablet */
   @media only screen and (max-width: 959px) {
     .large-title { font-size: 6.4rem; }
-    .foam-u2-dialog-Popup-inner {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
   }
 
   /* mobile */
   @media only screen and (max-width: 767px) {
     .large-title { font-size: 3.5rem; }
-
-    .foam-u2-dialog-Popup-inner {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
     .foam-u2-wizard-ScrollingStepWizardView-hide-X-status {
       display: none !important;
     }
