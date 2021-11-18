@@ -2,16 +2,18 @@ foam.CLASS({
   name: 'Memento',
 
   // IDEA: support "sticky" localStorage/config properties
+  // TODO: do we need to generate memento_ on init?
 
   documentation: `
     A hierarchical implementation of the Memento pattern.
-    Used encode UI states/routes in a string form that can be stored and later
+    Used to encode UI states/routes in a string form that can be stored and later
     reverted to. Can be used to implement back/forth support or bookmarking.
     Can be two-way linked to the window location hash.
 
     Memento mapping is handled automatically by marking properties as memorable: true.
     Memorable properties are automatically encoded-into / extracted-from the string
-    form of the memento.
+    form of the memento and a sub-Memento with the used bindings removed is exported
+    for children to consume.
 
     If a Property specifies a 'shortName', it will be used as the properties key
     instead of the properties 'name'.
@@ -130,11 +132,13 @@ foam.CLASS({
         this.str           = this.memento_.tailStr;
         this.obj.onDetach(() => {
           // TODO?: make own method
-          if ( this.memento_.tail == this ) {
+          if ( this.memento_.tail === this ) {
+            console.log('Detaching tail ', this.obj?.cls_.name);
             this.memento_.tail = null;
             this.memento_.update();
           }
         });
+//         this.memento_.update();
       }
     },
 
@@ -268,7 +272,6 @@ foam.CLASS({
         this.deFeedback(() => this.str = this.window.location.hash.substring(1));
       }
     },
-
     {
       name: 'onMementoChange',
       documentation: 'Called when the memento changes, causes update to hash.',
@@ -278,7 +281,6 @@ foam.CLASS({
     }
   ]
 });
-
 
 
 foam.CLASS({
@@ -345,19 +347,13 @@ foam.CLASS({
       postSet: function(_, m) {
         this.controller = Controller.create({daoKey: m}, this);
       }
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'controller',
-      of: 'Controller',
-      factory: function() { return Controller.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
       this.br();
-      this.add("MENU");
+      this.start('h1').add("MENU").end();
       this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
@@ -366,12 +362,7 @@ foam.CLASS({
       this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Menu/Route: ', this.ROUTE);
-      this.add(this.controller$);
-      /*
-      this.add(this.slot(function(menu) {
-        return this.E().add(this.controller);
-      });
-      */
+      this.add(this.slot(route => Controller.create({daoKey: route})));
     }
   ]
 });
@@ -393,24 +384,13 @@ foam.CLASS({
       name: 'route',
       value: 'edit',
       memorable: true
-    },
-    {
-      class: 'Int',
-      name: 'id',
-      memorable: true
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'table',
-      of: 'Table',
-      factory: function() { return Table.create({}, this); }
     }
   ],
 
   methods: [
     function render() {
       this.br();
-      this.add("CONTROLLER: ", this.daoKey);
+      this.start('h1').add("CONTROLLER: ", this.daoKey).end();
       this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
@@ -419,8 +399,7 @@ foam.CLASS({
       this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Mode/Route: ', this.ROUTE);
-      this.add('Id: ', this.ID);
-      this.add(this.table);
+      this.add(this.route$.map((mode) => { return ( mode == 'browse' ) ? Table.create({}, this) : Detail.create({}, this);}));
     }
   ]
 });
@@ -447,7 +426,6 @@ foam.CLASS({
       class: 'String',
       name: 'columns',
       memorable: true,
-
       sticky: true
     },
     {
@@ -460,7 +438,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.br();
-      this.add("TABLE");
+      this.start('h1').add("TABLE").end();
       this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
@@ -475,6 +453,38 @@ foam.CLASS({
   ]
 });
 
+
+foam.CLASS({
+  name: 'Detail',
+  extends: 'foam.u2.Controller',
+
+  mixins: [
+    'Memorable'
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'route',
+      memorable: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.br();
+      this.start('h1').add("DETAIL").end();
+      this.br();
+      this.add('str: ', this.memento_.str$);
+      this.br();
+      this.add('tailStr: ', this.memento_.tailStr$);
+      this.br();
+      this.add('usedStr: ', this.memento_.usedStr$);
+      this.br();
+      this.add('ID: ',    this.ROUTE);
+    }
+  ]
+});
 
 foam.CLASS({
   name: 'MementoTest',
@@ -528,6 +538,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.memento_.str = 'menu1/browse/123?q=foobar';
 
       // this.subMemento.str = 'q=something';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();

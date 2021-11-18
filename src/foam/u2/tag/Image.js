@@ -28,28 +28,8 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .foam-u2-HTMLView{
+    ^ .foam-u2-HTMLView {
       padding: 0;
-    }
-
-    ^svgIcon {
-      max-height: 100%;
-      max-width: 100%;
-      object-fit: contain;
-    }
-    ^svgIcon svg {
-      height: 100%;
-    }
-
-    /* SVGs outside themeGlyphs may have their own heights and widths, 
-    these ensure those are respected rather than imposing new dimensions */
-    ^imgSVGIcon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    ^imgSVGIcon svg {
-      height: initial;
     }
   `,
 
@@ -86,7 +66,6 @@ foam.CLASS({
             var indicator = glyph.clone(this).expandSVG();
             return this.E().start(this.HTMLView, { data: indicator })
               .attrs({ role: this.role })
-              .addClass(this.myClass('SVGIcon'))
               .end();
           } else if ( this.embedSVG && data?.endsWith('svg') ) {
             var req = this.HTTPRequest.create({
@@ -97,12 +76,6 @@ foam.CLASS({
             var res = req.send().then(payload => payload.resp.text());
             return this.E()
               .start(this.HTMLView, { data: res })
-                .style({
-                  height:  displayHeight,
-                  width:   displayWidth,
-                  opacity: alpha
-                })
-                .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
                 .attrs({ role: this.role })
               .end()
           } else {
