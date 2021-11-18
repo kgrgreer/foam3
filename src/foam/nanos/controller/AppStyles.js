@@ -294,12 +294,6 @@ foam.CLASS({
     .foam-u2-ActionView-refreshTable {
       display: none !important;
     }
-    .foam-comics-v2-DAOBrowseControllerView-container {
-      padding: 0 !important;
-    }
-    .foam-comics-v2-DAOBrowseControllerView-header-container {
-      padding-top: 32px;
-    }
   }
   `
 });
