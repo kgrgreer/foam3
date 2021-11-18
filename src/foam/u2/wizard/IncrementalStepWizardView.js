@@ -59,21 +59,6 @@ foam.CLASS({
       max-height: 100vh;
       max-width: 100vw;
     }
-    ^fullscreen {
-      display: flex;
-      flex-direction: column;
-      background-color: white !important;
-      position: fixed !important;
-      top: 0;
-      left: 0;
-      height: 100vh !important;
-      width: 100vw;
-      max-height: 100vh;
-      max-width: 100vw;
-      z-index: 950;
-      margin: 0;
-      padding: 0;
-    }
     ^status {
       background-color: %WHITE%;
       padding: 50px;
@@ -153,6 +138,8 @@ foam.CLASS({
     /* tablet and desktop */
     @media only screen and (min-width: 768px) {
       ^ {
+        height: 85vh;
+        width: 85vw;
         max-height: 85vh;
         max-width: 85vw;
         width: auto;
@@ -160,6 +147,21 @@ foam.CLASS({
       ^hide-X-status {
         display: flex;
       }
+    }
+    ^fullscreen {
+      display: flex;
+      flex-direction: column;
+      background-color: white !important;
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw;
+      max-height: 100vh;
+      max-width: 100vw;
+      z-index: 950;
+      margin: 0;
+      padding: 0;
     }
   `,
 
