@@ -41,13 +41,12 @@ foam.CLASS({
 
   css: `
     ^container {
-      padding: 0;
+      padding: 36px 16px 8px 16px;
       height: 100%;
       box-sizing: border-box;
     }
 
     ^header-container {
-      padding-top: 32px;
       padding-bottom: 32px;
       align-items: center;
     }
@@ -74,9 +73,6 @@ foam.CLASS({
     @media only screen and (min-width: 768px) {
       ^container {
         padding: 24px 32px 16px 32px;
-      }
-      ^header-container {
-        padding-top: 0;
       }
     }
   `,
