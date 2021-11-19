@@ -11,7 +11,6 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
-    'foam.core.FOAMException',
     'foam.core.X',
     'foam.nanos.logger.Logger',
     'java.net.InetAddress',
@@ -102,7 +101,7 @@ foam.CLASS({
       javaCode: `
         if ( type == String.class ) return getNextString();
         if ( type == long.class   ) return getNextLong();
-        throw new FOAMException("Not support generating uid of type " + type.getSimpleName());
+        throw new UnsupportedOperationException("Not support generating uid of type " + type.getSimpleName());
       `
     },
     {

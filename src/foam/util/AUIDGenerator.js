@@ -13,7 +13,6 @@ foam.CLASS({
   documentation: 'Alpha-numeric unique ID generator',
 
   javaImports: [
-    'foam.core.FOAMException',
     'foam.core.X',
     'static foam.util.UIDSupport.*'
   ],
@@ -50,7 +49,7 @@ foam.CLASS({
     {
       name: 'getNextLong',
       javaCode: `
-        throw new FOAMException("AUIDGenerator: not support generating long uid.");
+        throw new UnsupportedOperationException("AUIDGenerator: not support generating long uid.");
       `
     },
     {
