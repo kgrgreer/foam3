@@ -669,11 +669,12 @@ var classes = [
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.dig.DIG',
+  'foam.nanos.dig.DIGDAOClient',
   'foam.nanos.dig.SUGAR',
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
-  'foam.nanos.dig.ExternalDataAware',
+  'foam.nanos.dig.FieldNameMapGrammar',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',

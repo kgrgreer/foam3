@@ -102,6 +102,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'registrationGroup'
+    },
+    {
+      class: 'String',
       name: 'description',
       section: 'infoSection',
     },

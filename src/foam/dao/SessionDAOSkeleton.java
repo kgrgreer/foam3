@@ -39,6 +39,8 @@ public class SessionDAOSkeleton
     if ( "put_".equals(n) ) {
       synchronized ( this ) {
         FObject obj = (foam.core.FObject)(rpc.getArgs() != null && rpc.getArgs().length > 1 ? rpc.getArgs()[1] : null);
+        if ( ! getDelegate().getOf().isInstance(obj) )
+          throw new ClassCastException(obj.getClass() + " isn't instance of " + getDelegate().getOf());
         if ( obj != null ) {
           FObject oldObj = getDelegate().find(obj);
           if ( oldObj != null ) {

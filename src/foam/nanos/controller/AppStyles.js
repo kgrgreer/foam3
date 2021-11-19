@@ -272,14 +272,59 @@ foam.CLASS({
     font-weight: bold;
     font-size: 2.8rem;
   }
-  @media only screen and (min-width: 321px) {
-    .large-title { font-size: 3.5rem; }
-  }
-  @media only screen and (min-width: 768px) {
-    .large-title { font-size: 6.4rem; }
-  }
+
+
+  /* desktop */
   @media only screen and (min-width: 960px) {
     .large-title { font-size: 8.4rem; }
+  }
+
+  /* tablet */
+  @media only screen and (max-width: 959px) {
+    .large-title { font-size: 6.4rem; }
+    .foam-u2-dialog-Popup-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  /* mobile */
+  @media only screen and (max-width: 767px) {
+    .large-title { font-size: 3.5rem; }
+
+    .foam-u2-dialog-Popup-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .foam-u2-wizard-ScrollingStepWizardView-hide-X-status {
+      display: none !important;
+    }
+    .foam-u2-wizard-ScrollingStepWizardView {
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+    }
+    .side-nav-view,
+    .side-nav-view .foam-u2-view-TreeViewRow {
+      width: 100%;
+    }
+    .foam-nanos-menu-VerticalMenu-search {
+      width: 100% !important;
+    }
+    .foam-u2-ActionView-refreshTable {
+      display: none !important;
+    }
+    .foam-comics-v2-DAOBrowseControllerView-container {
+      padding: 0 !important;
+    }
+    .foam-comics-v2-DAOBrowseControllerView-header-container {
+      padding-top: 32px;
+    }
   }
   `
 });
