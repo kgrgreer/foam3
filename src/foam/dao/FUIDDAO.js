@@ -31,6 +31,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
     'foam.util.UIDGenerator',
     'foam.util.AUIDGenerator',
@@ -77,7 +78,10 @@ foam.CLASS({
 
   public FUIDDAO(X x, String salt, DAO delegate) {
     super(x, delegate);
-    setUIDGenerator(new NUIDGenerator(x, salt));
+    var id = (PropertyInfo) delegate.getOf().getAxiomByName("id");
+    setUIDGenerator(id.getValueClass() == String.class
+      ? new AUIDGenerator(x, salt)
+      : new NUIDGenerator(x, salt));
   }
   `,
 
