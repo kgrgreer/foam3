@@ -694,6 +694,7 @@ var classes = [
   'foam.util.UIDGenerator',
   'foam.util.AUIDGenerator',
   'foam.util.NUIDGenerator',
+  'foam.util.test.DummyNuid',
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
   'foam.util.EmailTest',
