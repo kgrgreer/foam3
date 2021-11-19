@@ -11,6 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
     'foam.util.UIDSupport',
     'java.util.HashSet',
     'static foam.util.UIDSupport.*'
@@ -20,7 +21,7 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        var uidgen = new UIDGenerator.Builder(x).setSalt("foobar").build();
+        var uidgen = new AUIDGenerator.Builder(x).setSalt("foobar").build();
         var hash   = mod("foobar");
         UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(uidgen, hash);
         UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(uidgen, hash);
@@ -100,7 +101,7 @@ foam.CLASS({
     },
     {
       name: 'UIDGeneratorTest_CheckGeneratedUIDsSimilarity',
-      args: [ 'UIDGenerator uidgen', 'int startSeqNo', 'int threshold' ],
+      args: [ 'AUIDGenerator uidgen', 'int startSeqNo', 'int threshold' ],
       javaCode: `
         uidgen.setSeqNo(startSeqNo);
         uidgen.setLastSecondCalled(System.currentTimeMillis() / 1000);

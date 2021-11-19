@@ -186,6 +186,7 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
+  { name: "foam/util/AUIDGenerator" },
   { name: "foam/util/test/UIDGeneratorTest" },
   { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/log/LogLevel" },
