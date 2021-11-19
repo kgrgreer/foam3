@@ -26,16 +26,19 @@ foam.CLASS({
   public NUIDGenerator(X x, String salt) {
     setX(x);
     setSalt(salt);
-    setDao((DAO) x.get(salt));
-    assertLongId();
   }
   `,
 
   properties: [
     {
+      name: 'salt',
+      javaPostSet: 'setDao((DAO) getX().get(getSalt()));'
+    },
+    {
       class: 'Object',
       name: 'dao',
-      javaType: 'foam.dao.DAO'
+      javaType: 'foam.dao.DAO',
+      javaPostSet: 'assertLongId();'
     },
     {
       class: 'Int',
