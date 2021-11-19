@@ -65,7 +65,7 @@ public class RuleEngine extends ContextAwareSupport {
     Logger                logger         = (Logger) getX().get("logger");
 
     for ( Rule rule : rules ) {
-      PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey() + ": " + rule.getId());
+      PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey(), rule.getId());
       try {
         if ( stops_.get() ) break;
         if ( ! isRuleActive(rule)                   ) continue;
