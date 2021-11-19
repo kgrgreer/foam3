@@ -124,7 +124,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/ResetPassword" },
   { name: "foam/nanos/auth/RetrievePassword" },
   { name: "foam/nanos/auth/UpdatePassword" },
-  { name: "foam/nanos/auth/AssignedToAware" },
   { name: "foam/nanos/auth/CreatedByAware" },
   { name: "foam/nanos/auth/CreatedByAwareDAO" },
   { name: "foam/nanos/auth/Subject" },
