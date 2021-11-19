@@ -38,8 +38,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'after',
-      value: false,
+      name: 'after'
     },
     {
       class: 'Boolean',
