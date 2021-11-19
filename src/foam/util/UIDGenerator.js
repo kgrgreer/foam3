@@ -59,7 +59,7 @@ foam.CLASS({
             var bytes     = ipAddress.getAddress();
             var length    = bytes.length;
             return (bytes[length - 1] & 0xff) +
-                   (bytes[length - 2] & 0xff) * (1<<8);
+                  ((bytes[length - 2] & 0xff) << 8);
           } catch ( UnknownHostException ex ) {
             System.err.println("Unable to determine machine ID");
             Logger logger = (Logger) getX().get("logger");
