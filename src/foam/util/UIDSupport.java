@@ -43,7 +43,7 @@ public class UIDSupport {
     idStr.getChars(0, l, id, 0);
 
     for ( int i = 0 ; i < l ; i++ ) {
-      int newI = PERMUTATION_SEQ[i];
+      int newI = PERMUTATION_SEQ[i] % l;
       char c   = id[newI];
       id[newI] = id[i];
       id[i]    = c;
@@ -80,7 +80,7 @@ public class UIDSupport {
     }
 
     for ( int i = id.length - 1; i >= 0; i-- ) {
-      int newI = PERMUTATION_SEQ[i];
+      int newI = PERMUTATION_SEQ[i] % id.length;
       char c   = id[newI];
       id[newI] = id[i];
       id[i]    = c;
