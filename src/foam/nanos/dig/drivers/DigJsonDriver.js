@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.lib.json.MapParser',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',
+    'foam.lib.parse.PStream',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
     'foam.nanos.http.*',
@@ -43,10 +44,7 @@ foam.CLASS({
       jsonParser.setX(x);
 
       if ( x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
-        StringPStream mapStr = new StringPStream();
-        mapStr.setString(x.get(HttpParameters.class).getParameter("nameMapping"));
-        var mapParser = MapParser.instance();
-        var ret = mapParser.parse(mapStr, new ParserContextImpl());
+        var ret = parseMap(x.get(HttpParameters.class).getParameter("nameMapping"));
         if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
           data = new FieldNameMapGrammar().replaceFields(data, (Map) ret.value());
         }
@@ -75,11 +73,8 @@ foam.CLASS({
       }
 
       if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
-        StringPStream mapStr = new StringPStream();
-        mapStr.setString(x.get(HttpParameters.class).getParameter("fieldValue"));
-        var mapParser = MapParser.instance();
-        var ret = mapParser.parse(mapStr, new ParserContextImpl());
-        if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
+        var ret = parseMap(x.get(HttpParameters.class).getParameter("fieldValue"));
+        if ( ret != null && ((Map)ret.value()).size() != 0 ) {
           Map map = (Map)ret.value();
           Set keys = map.entrySet();
           for ( Object ob : list ) {
@@ -130,6 +125,20 @@ foam.CLASS({
 
       // Output the formatted data
       out.println(outputterJson.toString());
+      `
+    },
+    {
+      name: 'parseMap',
+      args: [
+        { type: 'String', name: 'data' }
+      ],
+      type: 'PStream',
+      javaCode: `
+      StringPStream mapStr = new StringPStream();
+      mapStr.setString(data);
+      var mapParser = MapParser.instance();
+      var ret = mapParser.parse(mapStr, new ParserContextImpl());
+      return ret;
       `
     }
   ]

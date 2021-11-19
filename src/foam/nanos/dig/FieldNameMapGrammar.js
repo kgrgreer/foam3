@@ -20,6 +20,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.lib.parse.Grammar',
       name: 'grammar',
+      documentation: `the syntax for a JSON is "fieldname": value. The grammar finds all the occurrences of fieldnames in
+        a JSON formatted string and replaces them with alternative field name provided in the map`,
       javaFactory: `
         Grammar grammar = new Grammar();
         grammar.addSymbol("START", grammar.sym("markup"));
