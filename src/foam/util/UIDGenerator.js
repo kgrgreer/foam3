@@ -134,7 +134,7 @@ foam.CLASS({
         id.append(checksum);
 
         // permutation
-        return permutate(id.toString());
+        return permute(id.toString());
       `
     },
     {
