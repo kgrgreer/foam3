@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.core.PropertyInfo',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'static foam.util.UIDSupport.*'
@@ -25,8 +26,8 @@ foam.CLASS({
   public NUIDGenerator(X x, String salt) {
     setX(x);
     setSalt(salt);
-    // TODO: check if typeof (dao.of.pk) === number
     setDao((DAO) x.get(salt));
+    assertLongId();
   }
   `,
 
@@ -79,6 +80,17 @@ foam.CLASS({
           }
         });
         return getValue();
+      `
+    },
+    {
+      name: 'assertLongId',
+      javaThrows: [ 'java.lang.UnsupportedOperationException' ],
+      javaCode: `
+        var id = (PropertyInfo) getDao().getOf().getAxiomByName("id");
+        if ( id.getValueClass() != long.class ) {
+          throw new UnsupportedOperationException(
+            "NUIDGenerator: not support " + getSalt() + " with id of type: " + id.getValueClass().getSimpleName());
+        }
       `
     }
   ]
