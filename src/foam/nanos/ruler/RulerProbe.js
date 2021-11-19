@@ -43,8 +43,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'async',
-      value: false
+      name: 'async'
     },
     {
       name: 'passed',
