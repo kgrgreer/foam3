@@ -362,7 +362,7 @@ foam.CLASS({
       this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Menu/Route: ', this.ROUTE);
-      this.add(this.slot(route => Controller.create({daoKey: route})));
+      this.add(this.slot(route => Controller.create({daoKey: route}, this)));
     }
   ]
 });
