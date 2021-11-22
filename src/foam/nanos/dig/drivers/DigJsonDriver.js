@@ -13,21 +13,20 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'foam.dao.DAO',
-    'foam.lib.csv.CSVOutputter',
-    'foam.lib.json.OutputterMode',
     'foam.lib.json.JSONParser',
-    'foam.nanos.boot.NSpec',
+    'foam.lib.json.MapParser',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.lib.parse.PStream',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
     'foam.nanos.http.*',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.util.SafetyUtil',
     'java.io.PrintWriter',
     'java.util.ArrayList',
     'java.util.Arrays',
     'java.util.List',
-    'javax.servlet.http.HttpServletResponse'
+    'java.util.Map',
+    'java.util.Set'
   ],
 
   properties: [
@@ -43,6 +42,13 @@ foam.CLASS({
       javaCode: `
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
+
+      if ( x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
+        var ret = parseMap(x.get(HttpParameters.class).getParameter("nameMapping"));
+        if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
+          data = new FieldNameMapGrammar().replaceFields(data, (Map) ret.value());
+        }
+      }
 
       // Attempt to parse array
       ClassInfo cInfo = dao.getOf();
@@ -64,6 +70,25 @@ foam.CLASS({
       } else {
         list = new ArrayList();
         list.add(o);
+      }
+
+      if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
+        var ret = parseMap(x.get(HttpParameters.class).getParameter("fieldValue"));
+        if ( ret != null && ((Map)ret.value()).size() != 0 ) {
+          Map map = (Map)ret.value();
+          Set keys = map.entrySet();
+          for ( Object ob : list ) {
+            if ( ob instanceof FObject ) {
+              FObject f = (FObject) ob;
+              map.forEach((k,v) -> {
+                PropertyInfo prop = (PropertyInfo) f.getClassInfo().getAxiomByName((String)k);
+                if ( prop != null ) {
+                  prop.set(f, map.get(k));
+                }
+              });
+            }
+          }
+        }
       }
 
       return list;
@@ -100,6 +125,20 @@ foam.CLASS({
 
       // Output the formatted data
       out.println(outputterJson.toString());
+      `
+    },
+    {
+      name: 'parseMap',
+      args: [
+        { type: 'String', name: 'data' }
+      ],
+      type: 'PStream',
+      javaCode: `
+      StringPStream mapStr = new StringPStream();
+      mapStr.setString(data);
+      var mapParser = MapParser.instance();
+      var ret = mapParser.parse(mapStr, new ParserContextImpl());
+      return ret;
       `
     }
   ]

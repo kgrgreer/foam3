@@ -10,10 +10,27 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'java.net.InetAddress',
     'java.net.UnknownHostException',
     'static foam.util.UIDSupport.*'
+  ],
+
+  javaCode: `
+  public UIDGenerator(X x, String salt) {
+    setX(x);
+    setSalt(salt);
+  }
+  `,
+
+  constants: [
+    {
+      documentation: 'Epoch of this feature - 2021 Nov 1',
+      name: 'EPOCH',
+      type: 'Long',
+      value: 1635739200000
+    }
   ],
 
   properties: [
@@ -24,7 +41,7 @@ foam.CLASS({
     {
       name: 'lastSecondCalled',
       class: 'Long',
-      javaFactory: 'return System.currentTimeMillis() / 1000;'
+      javaFactory: 'return (System.currentTimeMillis() - EPOCH) / 1000;'
     },
     {
       name: 'salt',
@@ -65,6 +82,8 @@ foam.CLASS({
     {
       name: 'getNextLong',
       type: 'Long',
+      documentation: `Support generating up to 4096 uids per second (3 hex digits, 16^3 = 4096).
+                      Use getNextString if throughput is expected to be higher.`,
       javaCode: `
         // TODO: When a ID is longer than 15 digits, it might overflow the long type. Need to figure out what to do in the overflow case.
         try {
@@ -92,19 +111,20 @@ foam.CLASS({
         var id = new StringBuilder();
 
         // 8 bits timestamp
-        long curSec = System.currentTimeMillis() / 1000;
-        id.append(toHexString(curSec));
+        long curSec = (System.currentTimeMillis() - EPOCH) / 1000;
+        id.append(toHexString(curSec, 8));
 
         // At least 2 bits sequence
+        int seqNo = 0;
         synchronized (this) {
           if ( curSec != getLastSecondCalled() ) {
             setSeqNo(0);
             setLastSecondCalled(curSec);
           }
-          int seqNo = getSeqNo();
-          id.append(toHexString(seqNo, 2));
+          seqNo = getSeqNo();
           setSeqNo(seqNo + 1);
         }
+        id.append(toHexString(seqNo, 2));
 
         // 2 bits machine id
         id.append(toHexString(getMachineId() % 0xff, 2));

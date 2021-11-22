@@ -96,12 +96,12 @@ This is the heart of Medusa.`,
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       try {
-        if ( replaying.getReplaying() ) {
-          // getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          if ( entry.getIndex() % 10000 == 0 ) {
-            getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-          }
-        }
+        // if ( replaying.getReplaying() ) {
+        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   if ( entry.getIndex() % 10000 == 0 ) {
+        //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //   }
+        // }
         if ( replaying.getIndex() > entry.getIndex() ) {
           // getLogger().debug("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "discarding");
           return entry;
@@ -111,6 +111,12 @@ This is the heart of Medusa.`,
         if ( existing != null &&
              existing.getPromoted() ) {
           return existing;
+        }
+
+        // REVIEW: for troubleshooting...
+        if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
+          getLogger().warning("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "missing hash", "discarding");
+          return entry;
         }
 
         synchronized ( entry.getId().toString().intern() ) {
@@ -233,7 +239,7 @@ This is the heart of Medusa.`,
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
-          ((DAO) x.get("localMedusaEntryDAO")).cmd(new ReplayCompleteCmd());
+          ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
       } finally {
         pm.log(x);
@@ -251,7 +257,7 @@ This is the heart of Medusa.`,
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
-       `
+      `
     },
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
@@ -276,12 +282,10 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( replaying.getReplaying() ) {
-              if ( nextIndex % 10000 == 0 ) {
-                getLogger().info("promoter", "next", nextIndex);
-              }
-            } else {
-               getLogger().debug("promoter", "next", nextIndex);
+            if ( nextIndex % 1000 == 0 ) {
+              getLogger().info("promoter", "next", nextIndex);
+            } else if ( ! replaying.getReplaying() ) {
+              getLogger().debug("promoter", "next", nextIndex);
             }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
@@ -446,6 +450,9 @@ This is the heart of Medusa.`,
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
+              if ( ! old.getClassInfo().isInstance(nu) ) {
+                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+              }
               nu = old.fclone().overlay(nu);
             }
           }
@@ -462,6 +469,9 @@ This is the heart of Medusa.`,
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
+                  if ( ! old.getClassInfo().isInstance(nu) ) {
+                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                  }
                   nu = old.fclone().overlay(nu);
                 }
               } else {

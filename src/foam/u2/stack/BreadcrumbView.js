@@ -78,7 +78,8 @@ foam.CLASS({
           if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
             self.start(jumpAction, {
               themeIcon: themeIcon,
-              buttonStyle: 'LINK'
+              buttonStyle: 'LINK',
+              size: 'SMALL'
             }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
           } else if ( i == self.maxHead ) {
             self.tag(this.OverlayActionListView, {
