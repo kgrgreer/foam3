@@ -470,7 +470,7 @@ foam.CLASS({
             name:       'includeInID',
             visibility: 'public',
             type:       'boolean',
-            body:       'return true;'
+            body:       `return ${this.includeInID};`
           });
 
         // default value is true, only generate if value is false
