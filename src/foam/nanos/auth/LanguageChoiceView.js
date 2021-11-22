@@ -32,22 +32,8 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   css: `
-    ^container {
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-    ^container:hover {
-      cursor: pointer;
-    }
-    ^container span {
-      font-size: 1.2rem;
-    }
-    ^ .foam-nanos-u2-navigation-TopNavigation-LanguageChoiceView {
-      align-items: center;
-    }
     ^dropdown span, ^dropdown svg {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 500;
       color: /*%WHITE%*/ #ffffff;
     }
@@ -88,7 +74,6 @@ foam.CLASS({
               user.language = c.id;
               await self.userDAO.put(user);
               location.reload();
-              // TODO: Figure out a better way to store user preferences
               localStorage.setItem('localeLanguage', c.toString());
             }
           });
