@@ -14,19 +14,19 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.View',
+    'foam.core.Action',
     'foam.nanos.auth.Language',
     'foam.u2.view.OverlayActionListView',
-    'foam.core.Action'
+    'foam.u2.View'
   ],
 
   imports: [
-    'stack',
-    'languageDAO',
-    'subject',
-    'userDAO',
     'countryDAO',
-    'translationService'
+    'languageDAO',
+    'stack',
+    'subject',
+    'translationService',
+    'userDAO'
   ],
 
   exports: [ 'as data' ],
@@ -50,7 +50,7 @@ foam.CLASS({
         let language = this.supportedLanguages.find( e => e.toString() === foam.locale )
         language = language === undefined ? this.defaultLanguage : language
         localStorage.setItem('localeLanguage', language.toString());
-        return language
+        return language;
       }
     }
   ],
@@ -79,14 +79,14 @@ foam.CLASS({
           });
         });
 
-        var label = this.formatLabel(this.lastLanguage);
+      var label = this.formatLabel(this.lastLanguage);
 
       this
         .addClass(this.myClass())
         .start(this.OverlayActionListView, {
-          label: label,
-          data: actionArray,
-          obj: self,
+          label:       label,
+          data:        actionArray,
+          obj:         self,
           buttonStyle: 'UNSTYLED'
         })
           .addClass(this.myClass('dropdown'))
@@ -96,12 +96,11 @@ foam.CLASS({
 
     async function formatLabel(language) {
       let country = await this.countryDAO.find(language.variant);
-      let label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label   = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }
       return label;
     }
-  ],
-
+  ]
 });

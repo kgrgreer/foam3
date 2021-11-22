@@ -13,15 +13,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
-    'foam.lib.parse.Action',
-    'foam.lib.parse.Grammar',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.notification.email.DAOResourceLoader',
-    'java.lang.StringBuilder',
-    'java.util.HashMap',
-    'java.util.Map',
-    'static foam.mlang.MLang.EQ'
+    'java.util.Map'
   ],
 
   properties: [
