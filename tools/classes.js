@@ -276,7 +276,6 @@ var classes = [
   'foam.nanos.auth.AuthorizationDAO',
   'foam.nanos.auth.AuthenticationException',
   'foam.nanos.auth.AuthorizationException',
-  'foam.nanos.auth.AssignableAware',
   'foam.nanos.auth.DuplicateEmailException',
   'foam.nanos.auth.DuplicateUserNameException',
   'foam.nanos.auth.EnabledAware',
@@ -674,7 +673,7 @@ var classes = [
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
-  'foam.nanos.dig.ExternalDataAware',
+  'foam.nanos.dig.FieldNameMapGrammar',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
