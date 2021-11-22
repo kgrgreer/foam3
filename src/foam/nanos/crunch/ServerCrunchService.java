@@ -22,8 +22,6 @@ import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
-import foam.nanos.crunch.lite.Capable;
-import foam.nanos.crunch.CapabilityJunctionPayload;
 import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
@@ -349,7 +347,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     var ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO"))
       .find(AND(
-          getAssociationPredicate_(x),
+          getAssociationPredicate_(x, null),
           IN(UserCapabilityJunction.TARGET_ID, junctions),
           EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
         )
@@ -407,7 +405,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   public UserCapabilityJunction[] getAllJunctionsForUser(X x) {
-    Predicate associationPredicate = getAssociationPredicate_(x);
+    Predicate associationPredicate = getAssociationPredicate_(x, null);
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     ArraySink arraySink = (ArraySink) userCapabilityJunctionDAO
       .where(associationPredicate)
@@ -423,7 +421,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
       x = x.put("subject", subject);
-      Predicate associationPredicate = getAssociationPredicate_(x);
+      Predicate associationPredicate = getAssociationPredicate_(x, capabilityId);
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
@@ -559,6 +557,13 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       ? subject.getUser()
       : subject.getRealUser()
       ;
+    // Setup default data
+    FObject payload = null;
+    try {
+      payload = cap.getOf() != null ? (FObject) cap.getOf().newInstance() : null;
+    } catch ( Exception ex ) {
+      throw new RuntimeException("UCJ payload default setup ERROR: " + ex.getMessage(), ex);
+    }
     var ucj = isAssociation
       ? new AgentCapabilityJunction.Builder(x)
         .setSourceId(associatedUser.getId())
@@ -571,6 +576,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         .build()
       ;
     ucj.setStatus(CapabilityJunctionStatus.AVAILABLE);
+    ucj.setData(payload);
     return ucj;
   }
 
@@ -691,28 +697,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   public WizardState getWizardState(X x, String capabilityId) {
     var subject = (Subject) x.get("subject");
-
-    DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-    Capability capability = (Capability) capabilityDAO.find(capabilityId);
-
-    if ( ! subject.isAgent() ) {
-      return getWizardStateFor_(x, subject, capabilityId);
-    }
-
-    var realUser = new Subject();
-    realUser.setUser(subject.getRealUser());
-    realUser.setUser(subject.getRealUser());
-    var realUserWizardState = getWizardStateFor_(x, realUser, capabilityId);
-    var effectiveUser = new Subject();
-    effectiveUser.setUser(subject.getUser());
-    effectiveUser.setUser(subject.getUser());
-    var userWizardState = getWizardStateFor_(x, effectiveUser, capabilityId);
-
-    var subjectWizardState = getWizardStateFor_(x, subject, capabilityId);
-
-    return capability.getAssociatedEntity() == AssociatedEntity.USER ? userWizardState :
-      capability.getAssociatedEntity() == AssociatedEntity.REAL_USER ? realUserWizardState :
-      subjectWizardState;
+    return getWizardStateFor_(x, subject, capabilityId);
   }
 
   private WizardState getWizardStateFor_(X x, Subject s, String capabilityId) {
@@ -776,7 +761,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     return granted.toArray(new String[0]);
   }
 
-  private Predicate getAssociationPredicate_(X x) {
+  private Predicate getAssociationPredicate_(X x, String capabilityId) {
     Subject subject = (Subject) x.get("subject");
 
     User user = subject.getUser();
@@ -784,7 +769,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     Predicate acjPredicate = INSTANCE_OF(AgentCapabilityJunction.class);
 
-    return OR(
+    // default search result - however updates need to be more specific
+    Predicate result = OR(
       AND(
         NOT(acjPredicate),
         ( user != realUser )
@@ -803,5 +789,30 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
       )
     );
+    // Consider the capability that is being referenced,
+    // and assign correct predicate
+    if ( capabilityId != null ) {
+      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
+      if ( cap == null ) {
+        throw new RuntimeException(String.format(
+          "Attempting a UCJ find and asked Capability, not found - Capid: %s, subject.user(ucj.effectiveUser): %s, subject.realUser(ucj.sourceId): %s",
+          capabilityId, user.getId(), realUser.getId()
+        ));
+      }
+      if ( cap.getAssociatedEntity() == AssociatedEntity.USER )
+          return EQ(UserCapabilityJunction.SOURCE_ID, user.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.REAL_USER )
+          return EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.ACTING_USER )
+        return AND(
+          acjPredicate,
+          // Check if a ucj implies the subject.realUser has this permission in relation to the user
+          EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+          EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
+        );
+      }
+    
+    return result;
   }
 }

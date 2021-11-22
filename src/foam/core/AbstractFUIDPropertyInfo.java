@@ -14,11 +14,30 @@ public abstract class AbstractFUIDPropertyInfo
 {
   @Override
   public void toJSON(Outputter outputter, Object value) {
-    outputter.outputString(String.valueOf(value));
+    outputter.output(adapt(value));
   }
 
   @Override
   public void format(FObjectFormatter formatter, FObject obj) {
-    formatter.output(String.valueOf(get_(obj)));
+    formatter.output(adapt(get_(obj)));
+  }
+
+  protected String adapt(Object value) {
+    return value != null ? String.valueOf(value) : "0";
+  }
+
+  @Override
+  public foam.lib.parse.Parser jsonParser() {
+    return foam.lib.json.AnyParser.instance();
+  }
+
+  @Override
+  public foam.lib.parse.Parser queryParser() {
+    return foam.lib.json.AnyParser.instance();
+  }
+
+  @Override
+  public foam.lib.parse.Parser csvParser() {
+    return foam.lib.json.AnyParser.instance();
   }
 }
