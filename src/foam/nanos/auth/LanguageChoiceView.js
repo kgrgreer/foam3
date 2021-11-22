@@ -64,20 +64,20 @@ foam.CLASS({
           arg2: true
         })).select()).array;
 
-        var actionArray = this.supportedLanguages.map( c => {
-          var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
-          return self.Action.create({
-            name: c.name,
-            label$: labelSlot,
-            code: async function() {
-              let user = self.subject.realUser;
-              user.language = c.id;
-              await self.userDAO.put(user);
-              location.reload();
-              localStorage.setItem('localeLanguage', c.toString());
-            }
-          });
+      var actionArray = this.supportedLanguages.map( c => {
+        var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
+        return self.Action.create({
+          name: c.name,
+          label$: labelSlot,
+          code: async function() {
+            let user = self.subject.realUser;
+            user.language = c.id;
+            await self.userDAO.put(user);
+            location.reload();
+            localStorage.setItem('localeLanguage', c.toString());
+          }
         });
+      });
 
       var label = this.formatLabel(this.lastLanguage);
 
