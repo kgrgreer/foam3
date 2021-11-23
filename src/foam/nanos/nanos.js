@@ -298,7 +298,7 @@ FOAM_FILES([
   { name: "foam/nanos/cron/Schedule" },
   { name: "foam/nanos/cron/TimeHMS" },
   { name: "foam/nanos/cron/TimeOfDaySchedule" },
-  { name: "foam/nanos/cron/AdvIntervalSchedule"},
+  { name: "foam/nanos/cron/DateIntervalSchedule"},
   { name: "foam/nanos/cron/test/IntervalScheduleTest" },
   { name: "foam/nanos/cron/test/TimeOfDayScheduleTest" },
   { name: "foam/nanos/export/ClientGoogleSheetsExportService" },

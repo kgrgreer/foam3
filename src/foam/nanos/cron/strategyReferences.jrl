@@ -26,5 +26,5 @@ p({
   "class": "foam.strategy.StrategyReference",
   "id": "02ef9899-80e4-483f-9c97-127017f515b1",
   "desiredModelId": "foam.nanos.cron.Schedule",
-  "strategy": "foam.nanos.cron.AdvIntervalSchedule"
+  "strategy": "foam.nanos.cron.DateIntervalSchedule"
 })

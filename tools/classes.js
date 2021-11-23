@@ -572,7 +572,7 @@ var classes = [
   'foam.nanos.cron.CronSchedule',
   'foam.nanos.cron.CronScheduler',
   'foam.nanos.cron.CronScheduleDAO',
-  'foam.nanos.cron.AdvIntervalSchedule',
+  'foam.nanos.cron.DateIntervalSchedule',
   'foam.nanos.cron.IntervalSchedule',
   'foam.nanos.cron.TimeOfDaySchedule',
   'foam.nanos.cron.test.IntervalScheduleTest',

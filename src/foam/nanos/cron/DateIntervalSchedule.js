@@ -6,7 +6,7 @@
 
  foam.CLASS({
   package: 'foam.nanos.cron',
-  name: 'AdvIntervalSchedule',
+  name: 'DateIntervalSchedule',
   implements: [
     'foam.nanos.cron.Schedule'
   ],
@@ -41,7 +41,7 @@
         {
           args: ['intervalModifier'],
           predicateFactory: function(e) {
-            return e.GTE(foam.nanos.cron.AdvIntervalSchedule.INTERVAL_MODIFIER, 1);
+            return e.GTE(foam.nanos.cron.DateIntervalSchedule.INTERVAL_MODIFIER, 1);
           },
           errorString: 'Please enter a number greater than 1.'
         }
