@@ -105,7 +105,13 @@ p({
   "serviceScript":`
     return x.get("pmLogger").asDAO().orderBy(foam.mlang.MLang.DESC(foam.nanos.pm.PMInfo.TOTAL_TIME));
   `,
-  "client":"{\"of\":\"foam.nanos.pm.PMInfo\", \"remoteListenerSupport\": false}"
+  "client":"""
+  {
+    "of":"foam.nanos.pm.PMInfo",
+    "remoteListenerSupport": false,
+    "ttlPurgeTime": 0
+  }
+  """
 })
 
 p({

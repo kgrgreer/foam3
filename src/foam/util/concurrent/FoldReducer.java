@@ -68,6 +68,10 @@ public abstract class FoldReducer {
     return local;
   }
 
+  public Object getLocalStateState() {
+    return getLocalState().getState();
+  }
+
 
 	public void fold(Object op) {
     getLocalState().fold(op);

@@ -7,18 +7,21 @@
 package foam.nanos.pm;
 
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.MDAO;
 
 /**
- * MDAO for storing PMInfo's which which disables cloneing and freezing
+ * MDAO for storing PMInfo's which disables cloning and freezing
  * so PMInfo's can be updated more quickly.
  **/
-public class PMInfoMDAO
-  extends MDAO
+public class PMInfoMDAO extends MDAO
 {
+  private final FoldReducePMLogger frpmlogger_;
 
-  public PMInfoMDAO() {
+  public PMInfoMDAO(FoldReducePMLogger frpmlogger) {
     super(PMInfo.getOwnClassInfo());
+
+    frpmlogger_ = frpmlogger;
   }
 
   public FObject objIn(FObject obj) {
@@ -29,4 +32,10 @@ public class PMInfoMDAO
     return obj;
   }
 
+  public foam.core.FObject put_(X x, FObject obj) {
+    PMInfo pmi = (PMInfo) obj;
+    frpmlogger_.putCaptureEnabledPM(pmi);
+
+    return super.put_(x, obj);
+  }
 }

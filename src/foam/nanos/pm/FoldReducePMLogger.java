@@ -6,7 +6,6 @@
 
 package foam.nanos.pm;
 
-import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
@@ -14,13 +13,14 @@ import foam.dao.ProxyDAO;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.util.concurrent.FoldReducer;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class FoldReducePMLogger
   extends    FoldReducer
   implements PMLogger
 {
+  private final Set<String> captureEnabledList_ = new HashSet<>();
 
   public FoldReducePMLogger() {
   }
@@ -45,23 +45,30 @@ public class FoldReducePMLogger
       pi = new PMInfo();
       pi.setKey(pm.getKey());
       pi.setName(pm.getName());
+      pi.setCapture(captureEnabledList_.contains(key));
       map.put(key, pi);
     }
 
     pi.fold(pm);
-    if ( pi.getCapture() ) capture(pi);
+    if ( pi.getCapture() ) {
+      capture(pi);
+    }
   }
 
 
   public void capture(PMInfo pi) {
-    StringBuilder trace = new StringBuilder();
+    StringBuilder trace = new StringBuilder("// Captured at: ");
+    trace.append(new Date().toString());
+    trace.append(System.lineSeparator());
+
     for ( StackTraceElement j : Thread.currentThread().getStackTrace() ) {
       trace.append(j.toString());
-      trace.append(System.getProperty("line.separator"));
+      trace.append(System.lineSeparator());
     }
 
     pi.setCapture(false);
     pi.setCaptureTrace(trace.toString());
+    putCaptureEnabledPM(pi);
   }
 
 
@@ -72,6 +79,7 @@ public class FoldReducePMLogger
 
     for ( PMInfo pi2 : m2.values() ) {
       String key = pi2.getKey() + ":" + pi2.getName();
+      pi2.setCapture(captureEnabledList_.contains(key));
       PMInfo pi1 = m1.get(key);
 
       if ( pi1 == null ) {
@@ -84,6 +92,35 @@ public class FoldReducePMLogger
     return state1;
   }
 
+  /** Manage keys for maintaining capture flag between state and LocalState **/
+  public void putCaptureEnabledPM(PMInfo pmi) {
+    if ( pmi == null ) return;
+
+    String key = pmi.getKey() + ":" + pmi.getName();
+
+    // Get local state copy if it exists
+    Map map = (Map) getLocalStateState();
+    PMInfo pmiLocal  = (PMInfo) map.get(key);
+
+    if ( pmi.getCapture() ) {
+      captureEnabledList_.add(key);
+
+      // Create local state only for capture set
+      if ( pmiLocal == null ) {
+        pmiLocal = new PMInfo();
+        pmiLocal.setKey(pmi.getKey());
+        pmiLocal.setName(pmi.getName());
+        map.put(key, pmiLocal);
+      }
+    } else {
+      captureEnabledList_.remove(key);
+    }
+
+    if ( pmiLocal != null ) {
+      // Update local state
+      pmiLocal.setCapture(pmi.getCapture());
+    }
+  }
 
   @Override
   public void log(PM pm) {
@@ -108,7 +145,7 @@ public class FoldReducePMLogger
       public DAO getDelegate() {
         synchronized ( FoldReducePMLogger.this ) {
           Map  m   = (Map) getState();
-          MDAO dao = new MDAO(foam.nanos.pm.PMInfo.getOwnClassInfo());
+          MDAO dao = new PMInfoMDAO(FoldReducePMLogger.this);
 
           for ( Object pi : m.values() ) dao.put((PMInfo) pi);
 
