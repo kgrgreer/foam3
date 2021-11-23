@@ -24,7 +24,7 @@ public class UIDSupport {
   };
 
   /**
-   * Permutate id string according to the {@link #PERMUTATION_SEQ} then shift
+   * Permute id string according to the {@link #PERMUTATION_SEQ} then shift
    * the id based on the checksum to further randomize the generated id because
    * the {@link #PERMUTATION_SEQ} is fixed.
    *
@@ -33,17 +33,17 @@ public class UIDSupport {
    * could be lost during long integer uid conversion from and to hex string
    * then mess up the length and permutation sequence when calculating its hash.
    *
-   * @param idStr Source id string to permutate
+   * @param idStr Source id string to permute
    * @return Generated unique ID
    */
-  public static String permutate(String idStr) {
+  public static String permute(String idStr) {
     var l = idStr.length() - 3;
     var checksum = Integer.parseInt(idStr.substring(l), 16) + 256;
     var id = new char[l];
     idStr.getChars(0, l, id, 0);
 
     for ( int i = 0 ; i < l ; i++ ) {
-      int newI = PERMUTATION_SEQ[i];
+      int newI = PERMUTATION_SEQ[i] % l;
       char c   = id[newI];
       id[newI] = id[i];
       id[i]    = c;
@@ -63,13 +63,13 @@ public class UIDSupport {
   }
 
   /**
-   * Undo/reverse permutate the generated unique id returned from
-   * {@code permutate(idStr) }.
+   * Undo/reverse permute the generated unique id returned from
+   * {@code permute(idStr) }.
    *
    * @param idStr Generated unique id
    * @return Source id string
    */
-  public static String undoPermutate(String idStr) {
+  public static String undoPermute(String idStr) {
     var checksum = Integer.parseInt(idStr.substring(0, 3), 16) - 256;
     var id = idStr.substring(3).toCharArray();
 
@@ -80,7 +80,7 @@ public class UIDSupport {
     }
 
     for ( int i = id.length - 1; i >= 0; i-- ) {
-      int newI = PERMUTATION_SEQ[i];
+      int newI = PERMUTATION_SEQ[i] % id.length;
       char c   = id[newI];
       id[newI] = id[i];
       id[i]    = c;
@@ -100,7 +100,7 @@ public class UIDSupport {
    * @return Hash of the unique id
    */
   public static int hash(String uid) {
-    var hex = undoPermutate(uid);
+    var hex = undoPermute(uid);
     return mod(Long.parseLong(hex, 16));
   }
 
