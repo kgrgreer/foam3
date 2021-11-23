@@ -33,7 +33,8 @@ public class DigWebAgent extends ContextAwareSupport
     PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format.getName());
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
-    logger.debug("data", p.get("data"));
+    logger.debug("data", p.get("data")
+    );
 
     try {
       // Find the operation
