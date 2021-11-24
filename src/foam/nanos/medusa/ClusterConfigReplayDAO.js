@@ -61,7 +61,7 @@ foam.CLASS({
            nu.getRealm() == myConfig.getRealm() &&
            nu.getRegion() == myConfig.getRegion() ) {
 
-        getLogger().info(nu.getName(), old.getStatus().getLabel(), "->", nu.getStatus().getLabel().toUpperCase());
+        getLogger().info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 
         ClusterConfig config = nu;
 
@@ -209,16 +209,17 @@ foam.CLASS({
           c.setDetails(details);
 
           DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-          clientDAO = new RetryClientSinkDAO.Builder(x)
-            .setName("medusaEntryDAO")
-            .setDelegate(clientDAO)
-            .setMaxRetryAttempts(support.getMaxRetryAttempts())
-            .setMaxRetryDelay(support.getMaxRetryDelay())
-            .build();
+          // clientDAO = new RetryClientSinkDAO.Builder(x)
+          //   .setName("medusaEntryDAO")
+          //   .setDelegate(clientDAO)
+          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
+          //   .setMaxRetryDelay(support.getMaxRetryDelay())
+          //   .build();
           clientDAO.cmd_(x, c);
         }
+        return obj;
       }
-      return obj;
+      return getDelegate().cmd_(x, obj);
       `
     }
   ]
