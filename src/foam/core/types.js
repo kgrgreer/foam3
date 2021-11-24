@@ -1087,7 +1087,26 @@ foam.CLASS({
         if ( ! foam.core.FObject.isInstance(v) ) {
           return prop.Glyph.create(v);
         }
+        return v;
       }
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'FUIDProperty',
+  extends: 'Property',
+
+  properties: [
+    {
+      name: 'adapt',
+      value: function(_, a) {
+        return a ? a.toString().trim() : '';
+      }
+    },
+    [ 'type', 'String' ],
+    [ 'value', '' ]
   ]
 });

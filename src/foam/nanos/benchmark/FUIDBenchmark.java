@@ -8,12 +8,12 @@ package foam.nanos.benchmark;
 
 import foam.core.X;
 import foam.nanos.bench.Benchmark;
-import foam.util.UIDGenerator;
+import foam.util.AUIDGenerator;
 
 public class FUIDBenchmark
   extends Benchmark
 {
-  protected UIDGenerator generator_ = new UIDGenerator();
+  protected AUIDGenerator generator_ = new AUIDGenerator();
 
   @Override
   public void execute(X x) {

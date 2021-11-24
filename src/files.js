@@ -186,7 +186,11 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
+  { name: "foam/util/AUIDGenerator" },
+  { name: "foam/util/NUIDGenerator" },
+  { name: "foam/util/test/DummyNuid" },
   { name: "foam/util/test/UIDGeneratorTest" },
+  { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -300,19 +304,20 @@ FOAM_FILES([
   { name: "foam/dao/grid/ManyToManyGridRecord" },
   { name: "foam/dao/grid/ManyToManyGridDAO" },
   { name: "foam/dao/LazyCacheDAO" },
+  { name: "foam/dao/SessionClientDAO" },
   { name: "foam/dao/TTLCachingDAO"},
   { name: "foam/dao/TTLSelectCachingDAO"},
   { name: "foam/dao/CachingDAO" },
   { name: "foam/dao/DeDupDAO" },
   { name: "foam/dao/LRUDAOManager" },
-  { name: "foam/dao/QueryCachingDAODecorator" },
+  { name: "foam/dao/QueryCachingDAO" },
   { name: "foam/dao/SequenceNumberDAO" },
   { name: "foam/dao/SequenceNumberDAOTest" },
   { name: "foam/dao/ContextualizingDAO" },
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
   { name: "foam/dao/SyncDAO" },
-  { name: "foam/dao/FUIDAO" },
+  { name: "foam/dao/FUIDDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
   { name: 'foam/nanos/approval/UCJApprovable' },
@@ -353,6 +358,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/CreatedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
+  { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
   { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
@@ -1081,6 +1087,7 @@ FOAM_FILES([
 
   { name: "foam/util/date/TimeUnit" },
 
+  { name: "foam/nanos/dig/DIGDAOClient" },
   { name: "foam/nanos/dig/exception/DigErrorMessage" },
   { name: "foam/nanos/dig/exception/DAONotFoundException" },
   { name: "foam/nanos/dig/exception/DAORequiredException" },
@@ -1095,4 +1102,4 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" }
 
-])
+]);

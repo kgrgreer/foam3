@@ -9,7 +9,10 @@ p({
       .setOf(foam.strategy.StrategyReference.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("strategyReferences")
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.strategy.StrategyReference.DESIRED_MODEL_ID } )
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.strategy.StrategyReference.TARGET } );
+
   """,
   "client": """
     {

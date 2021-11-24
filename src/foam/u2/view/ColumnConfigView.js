@@ -16,12 +16,14 @@ foam.CLASS({
   css: `
     ^ {
       max-width: 200px;
+      overflow: auto;
     }
     ^searchWrapper {
       padding: 0px 8px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+      width: 100%;
     }
     ^searchBar{
       width: 100%
@@ -43,6 +45,13 @@ foam.CLASS({
     }
     ^resetButton:disabled {
       color: /*%GREY2%*/ #6B778C;
+    }
+    ^colContainer {
+      overflow-x: hidden;
+      height: 100%;
+      flex: 1;
+      width: -webkit-fill-available;
+      width: -moz-fill-available;
     }
   `,
   properties: [
@@ -108,7 +117,6 @@ foam.CLASS({
       var self = this;
       this
       .on('click', this.stopPropagation)
-        .start()
           .start()
             .start(this.MENU_SEARCH).addClass(this.myClass('searchBar')).end()
             .addClass(this.myClass('searchWrapper'))
@@ -116,11 +124,10 @@ foam.CLASS({
               .addClass(this.myClass('resetButton'))
             .end()
           .end()
-          .start()
           .add(this.slot(function(views) {
             var i = 0;
             return this.E()
-              .style({'overflow': 'auto', 'padding-bottom': '20px', 'max-height': window.innerHeight - 300 > 0 ? window.innerHeight - 300 : window.innerHeight + 'px'})
+              .addClass(self.myClass('colContainer'))
               .forEach(views, function(view) {
                 view.prop.index = i;
                 this
@@ -129,9 +136,7 @@ foam.CLASS({
                   .end();
                 i++;
               });
-          }))
-          .end()
-      .end();
+          }));
       this.data.selectedColumnNames$.sub(this.rebuildSelectedColumns);
     },
     function stopPropagation(e) {
@@ -536,9 +541,17 @@ foam.CLASS({
     display: flex;
     align-items: center;
     justify-content: start;
+    width: 100%;
   }
   ^selection-buttons + ^selection-buttons {
     padding: 8px;
+  }
+  ^labelText {
+    flex: 1;
+    overflow: hidden;
+    padding-left: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   `,
   properties: [
@@ -598,7 +611,7 @@ foam.CLASS({
                  .on('click', this.toggleGroup)
                .end()
                .start()
-                .style({'padding-left' : '8px'})
+                .addClass(self.myClass('labelText'))
                 .add(this.columnHandler.checkIfArrayAndReturnRootPropertyHeader(this.data.rootProperty))
               .end()
             .end()
