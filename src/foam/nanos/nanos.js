@@ -253,6 +253,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/ReplayingInfoDetailCView' },
   { name: 'foam/nanos/medusa/RetryClientSinkDAO' },
   { name: 'foam/nanos/medusa/Status' },
+  { name: 'foam/nanos/medusa/TimeoutDAO' },
   { name: 'foam/nanos/medusa/ZoneCView' },
   { name: 'foam/nanos/medusa/benchmark/DaggerLinkBenchmark' },
   { name: 'foam/nanos/medusa/benchmark/DaggerVerifyBenchmark' },
