@@ -203,7 +203,7 @@ function generateClass(cls) {
   logger.debug('call/generateClass:cls.id,build?', cls.id, 'true');
 
   var outfile = outdir + path_.sep +
-    (cls.package + "." + cls.name).replace(/\./g, path_.sep) + '.java';
+    cls.id.replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
 
