@@ -137,7 +137,7 @@ foam.CLASS({
         .connectTimeout(Duration.ofMillis(getConnectionTimeout()));
 
       if ( getSecure() ) {
-        System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
+        // System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
         SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
         if ( contextFactory != null && contextFactory.getEnableSSL() ) {
           SSLContext sslContext = contextFactory.getSSLContext();
