@@ -612,7 +612,7 @@ configuration for contacting the primary node.`,
         primaryConfig = configs.get(0);
         if ( configs.size() > 1 ) {
           getLogger().error("muliple primaries", configs.get(0), configs.get(1));
-          throw new RuntimeException("Multiple primaries found.");
+          throw new MultiplePrimariesException();
         }
         return primaryConfig;
       } else {
@@ -695,10 +695,12 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      ClusterConfig myConfig = getConfig(x, getConfigId());
       return
         config.getEnabled() &&
         config.getType() == MedusaType.MEDIATOR &&
-        config.getZone() == 0L;
+        config.getZone() == 0L &&
+        config.getRegion() == myConfig.getRegion();
       `
     },
     {
