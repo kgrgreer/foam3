@@ -74,22 +74,27 @@ foam.CLASS({
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      // Loggers.logger(x, this).debug("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", support.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
+      boolean block = false;
 
-      if ( replaying.getReplaying() ) return true;
-
-      if ( myConfig.getStatus() == Status.OFFLINE &&
-           support.getIsPrimary() ) return true;
-
-      if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
+      if ( replaying.getReplaying() ) {
+        block = true;
+      } else if ( myConfig.getStatus() == Status.OFFLINE &&
+           support.getIsPrimary() ) {
+        block = true;
+      } else if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
         try {
           support.getPrimary(x);
         } catch (PrimaryNotFoundException e) {
-          return true;
+          block = true;
         }
       }
 
-      return false;
+      if ( block ) {
+        // Just log when blocking to monitor primary announce/renounce periods.
+        Loggers.logger(x, this).info("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", support.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
+      }
+
+      return block;
       `
     },
     {
