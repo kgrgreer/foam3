@@ -118,7 +118,6 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      label: 'Since',
       visibility: 'RO',
       tableWidth: 150,
       includeInDigest: false,
