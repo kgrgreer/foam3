@@ -115,7 +115,7 @@ foam.CLASS({
       // REVIEW - this is failing on caller.  Currently testing/troubleshooting
       // with multiple cmd objects.
       if ( "MAX".equals(obj) ||
-           obj instanceof foam.dao.sink.Max ) {
+           obj instanceof foam.mlang.sink.Max ) {
         getLogger().debug("Max", "received");
         Max max = (Max) getDelegate().select(MAX(MedusaEntry.INDEX));
         if ( max != null ) {
