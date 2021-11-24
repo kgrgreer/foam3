@@ -131,6 +131,7 @@ foam.CLASS({
             getLogger().debug(t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
+            cfg.setIsPrimary(false);
             config = (ClusterConfig) getDao().put_(x, cfg);
           }
           Throwable cause = t.getCause();
