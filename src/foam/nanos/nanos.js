@@ -539,6 +539,7 @@ FOAM_FILES([
   { name: 'foam/nanos/crunch/predicate/IsAgent' },
   { name: 'foam/nanos/crunch/predicate/CapabilityJunctionTransitionToStatus' },
   { name: 'foam/nanos/crunch/predicate/IsAgentUpdate' },
+  { name: 'foam/nanos/crunch/predicate/IsCapabilityJunctionOf' },
   //spid
   { name: "foam/nanos/auth/CreateUserCapabilityJunctionOnSpidSet" },
   { name: "foam/nanos/auth/SetUserServiceProviderJunctionRuleAction" },
