@@ -9,52 +9,58 @@ foam.CLASS({
   name: 'ClusterConfigStatusDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  implements: [
+    'foam.core.ContextAgent',
+    'foam.nanos.NanoService'
+  ],
+
   documentation: `Monitor the ClusterConfig status and on mediator quorum change, call election, and on node quorum change, re-bucket nodes.`,
 
   javaImports: [
+    'foam.core.AgencyTimerTask',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.HashMap',
     'java.util.HashSet',
     'java.util.Map',
-    'java.util.Set'
+    'java.util.Set',
+    'java.util.Timer'
   ],
 
   properties: [
     {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
+      name: 'initialTimerDelay',
+      class: 'Long',
+      value: 60000
     },
+    {
+      name: 'timerInterval',
+      class: 'Long',
+      value: 10000
+    }
   ],
 
   methods: [
     {
       name: 'put_',
       javaCode: `
+      Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      if ( support.getStandAlone() ) {
-        return getDelegate().put_(x, nu);
-      }
-
+      ElectoralService electoralService = (ElectoralService) x.get("electoralService");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
+
+      // if ( support.getStandAlone() ) {
+      //   return nu;
+      // }
 
       if ( nu.getId() == myConfig.getId() ) {
         support.setStatus(nu.getStatus());
@@ -62,25 +68,19 @@ foam.CLASS({
 
       if ( old != null &&
            old.getStatus() != nu.getStatus() &&
-           myConfig.getType() == MedusaType.MEDIATOR &&
-           myConfig.getZone() == 0 &&
-           nu.getType() == MedusaType.MEDIATOR &&
-           myConfig.getRegion() == nu.getRegion() &&
-           nu.getZone() == 0 ) {
-        getLogger().info(nu.getName(), old.getStatus().getLabel(), "->", nu.getStatus().getLabel().toUpperCase());
+           support.canVote(x, nu) &&
+           support.canVote(x, myConfig) ) {
 
-        ElectoralService electoralService = (ElectoralService) x.get("electoralService");
-        if ( electoralService != null ) {
-          if ( support.canVote(x, nu) &&
-               support.canVote(x, myConfig) ) {
+        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
+
             Boolean hasQuorum = support.hasQuorum(x);
             if ( electoralService.getState() == ElectoralServiceState.IN_SESSION ||
-                 electoralService.getState() == ElectoralServiceState.ADJOURNED) {
+                 electoralService.getState() == ElectoralServiceState.DISMISSED ) {
               if ( hadQuorum && ! hasQuorum) {
-                getLogger().warning("mediator quorum lost");
+                logger.warning("mediator quorum lost");
                 electoralService.dissolve(x);
-              } else if ( ! hadQuorum && hasQuorum) {
-                getLogger().warning("mediator quorum acquired");
+              } else if ( ! hadQuorum && hasQuorum ) {
+                logger.warning("mediator quorum acquired");
                 electoralService.dissolve(x);
               } else if ( hasQuorum ) {
                 try {
@@ -95,8 +95,6 @@ foam.CLASS({
                 }
               }
             }
-          }
-        }
       }
 
       if ( old != null &&
@@ -160,5 +158,43 @@ foam.CLASS({
       support.outputBuckets(x);
       `
     },
+    {
+      documentation: 'NanoService implementation.',
+      name: 'start',
+      javaCode: `
+      Loggers.logger(getX(), this).info("start");
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      Timer timer = new Timer(this.getClass().getSimpleName());
+      timer.schedule(
+        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        getInitialTimerDelay(), getTimerInterval());
+      `
+    },
+    {
+      documentation: 'Check for multiple primaries.  Can occur when the primary is issolated, the others vote, then the primary comes back - and was unaware that it was issolated.',
+      name: 'execute',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      ClusterConfig config = support.getConfig(x, support.getConfigId());
+      if ( config.getIsPrimary() &&
+           config.getStatus() == Status.ONLINE ) {
+        try {
+          support.getPrimary(x);
+        } catch (MultiplePrimariesException e) {
+          ElectoralService electoralService = (ElectoralService) x.get("electoralService");
+          electoralService.dissolve(x);
+        } catch (PrimaryNotFoundException e) {
+          // should have found self!
+          Loggers.logger(x, this).warning("Unexpected exception", e);
+        }
+      }
+      `
+    }
   ]
 });
