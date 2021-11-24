@@ -1064,3 +1064,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFac
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableView.MESSAGE_OF",target:"do"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.UnstyledTableGroup.EMPTY_MSG",target:"Não"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_READ_MSG",target:"Marcado com sucesso como lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD_MSG",target:"Marcado com sucesso como não lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_READ_MSG",target:"Falha ao marcar como lida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_UNREAD_MSG",target:"Falha ao marcar como não lida"})
