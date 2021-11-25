@@ -15,7 +15,6 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.AssignableAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.ServiceProviderAware'
@@ -474,7 +473,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && ! auth.check(x, "ticket.read." + this.getId()) ) {
+        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.read." + this.getId()) ) {
           throw new AuthorizationException("You don't have permission to read this ticket.");
         }
       `
@@ -491,7 +490,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && ! auth.check(x, "ticket.update." + this.getId()) ) {
+        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
           throw new AuthorizationException("You don't have permission to update this ticket.");
         }
       `

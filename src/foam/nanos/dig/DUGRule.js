@@ -183,14 +183,11 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
-      name: 'action',
-      documentation: `Action is not used for DUGRules, see asyncAction instead`,
-      hidden: true,
-      section: 'basicInfo',
-      networkTransient: true
+      name: 'async',
+      value: true,
     },
     {
-      name: 'asyncAction',
+      name: 'action',
       documentation: `All DUGRules use the same rule action, so a default one is created on demand instead of being configured`,
       section: 'dugInfo',
       view: { class: 'foam.u2.tag.TextArea' },

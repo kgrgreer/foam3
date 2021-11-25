@@ -45,6 +45,7 @@ foam.CLASS({
     'foam.nanos.script.ScriptStatus',
     'foam.util.SafetyUtil',
     'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
     'java.io.IOException',
     'java.math.BigDecimal',
     'java.math.RoundingMode',
@@ -230,7 +231,7 @@ foam.CLASS({
         }, log);
         logger.info("execute");
 
-        UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
+        AUIDGenerator uidGenerator = new AUIDGenerator.Builder(getX())
             .setSalt("benchmarkResultDAO")
             .build();
         String uid = uidGenerator.getNextString();

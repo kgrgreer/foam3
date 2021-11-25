@@ -12,7 +12,6 @@ foam.CLASS({
   'represent a single approval request for a single user.',
 
   implements: [
-    'foam.nanos.auth.AssignableAware',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
