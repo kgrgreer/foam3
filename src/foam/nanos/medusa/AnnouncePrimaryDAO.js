@@ -88,6 +88,15 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
+      // FIXME: Wait 10s for ClusterConfigMonitorAgents to run until we fix the MAX request below.
+      try {
+        logger.warning("Artificial delay of 12s to allow ClusterConfigMonitorAgents to run");
+        Thread.currentThread().sleep(12000);
+      } catch (InterruptedException e) {
+        // nop;
+        return;
+      }
+
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> map = new ConcurrentHashMap();
       List<ClusterConfig> nodes = support.getReplayNodes();
@@ -95,25 +104,28 @@ foam.CLASS({
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
             DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
+            Max max = new Max(0, MedusaEntry.INDEX);
+            Long m = 0L;
             try {
               // FIXME: this is failing with NullPointerException - from the client I believe.
-              Max max = (Max) client.select(MAX(MedusaEntry.INDEX));
+              max = (Max) client.select(max);
               if ( max != null ) {
-                Long m = (Long) max.getValue();
-                logger.info(cfg.getId(), "max", m);
-                synchronized ( this ) {
-                  Long count = map.get(m);
-                  if ( count == null ) {
-                    count = new Long(0);
-                  }
-                  count = new Long(count.longValue() + 1);
-                  map.put(m, count);
-                }
-              } else {
-                logger.warning(cfg.getId(), "max", "null");
+                m = (Long) max.getValue();
               }
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
+              // Fallback for now - it's many seconds stall but better than nothing
+              ReplayingInfo replaying = cfg.getReplayingInfo();
+              m = replaying.getIndex();
+            }
+            logger.info(cfg.getId(), "max", m);
+            synchronized ( this ) {
+              Long count = map.get(m);
+              if ( count == null ) {
+                count = new Long(0);
+              }
+              count = new Long(count.longValue() + 1);
+              map.put(m, count);
             }
           }
         });
@@ -132,12 +144,10 @@ foam.CLASS({
       if ( count == null ||
            count < support.getNodeQuorum() ) {
         // Halt the system.
-        logger.error("Index verification", "max index does not have quorum", "PAUSING");
-        logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
+        logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
         // just stay in replay mode - admin can take primary OFFLINE to force this process to repeat.
-
-        // TODO: until client check is working - allow system to continue.
-      // } else {
+        logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
+      } else {
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         logger.debug("max", max, "index", replaying.getIndex());
         replaying.updateIndex(x, max);
