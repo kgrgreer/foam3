@@ -88,21 +88,6 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
-      name: 'isPrimary',
-      class: 'Boolean',
-      value: false,
-      // value: true, // STANDALONE
-      visibility: 'RO'
-    },
-    {
-      documentation: 'Setting instance to true (ONLINE) will make this instance visible to the cluster.',
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.nanos.medusa.Status',
-      value: 'OFFLINE',
-      visibility: 'RO'
-    },
-    {
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',
@@ -682,6 +667,7 @@ configuration for contacting the primary node.`,
      `
     },
     {
+      documentation: 'Mediator is a potential voter - depending on eventual status.',
       name: 'canVote',
       type: 'Boolean',
       args: [

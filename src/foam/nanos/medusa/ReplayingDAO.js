@@ -54,10 +54,9 @@ foam.CLASS({
             logger.info("replayComplete", replaying.getReplayIndex(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
             ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
-            DAO dao = (DAO) x.get("localClusterConfigDAO");
-            ClusterConfig config = (ClusterConfig) dao.find(support.getConfigId()).fclone();
+            ClusterConfig config = support.getConfig(x, support.getConfigId());
             config.setStatus(Status.ONLINE);
-            dao.put(config);
+            ((DAO) x.get("localClusterConfigDAO")).put(config);
           }
         }
         return super.cmd_(x, BlockingDAO.UNBLOCK_CMD);
@@ -79,7 +78,7 @@ foam.CLASS({
       if ( replaying.getReplaying() ) {
         block = true;
       } else if ( myConfig.getStatus() == Status.OFFLINE &&
-           support.getIsPrimary() ) {
+           myConfig.getIsPrimary() ) {
         block = true;
       } else if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
         try {
@@ -91,7 +90,7 @@ foam.CLASS({
 
       if ( block ) {
         // Just log when blocking to monitor primary announce/renounce periods.
-        Loggers.logger(x, this).info("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", support.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
+        Loggers.logger(x, this).info("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", myConfig.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
       }
 
       return block;

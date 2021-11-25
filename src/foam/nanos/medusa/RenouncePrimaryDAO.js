@@ -104,7 +104,6 @@ foam.CLASS({
         nu = (ClusterConfig) nu.fclone();
         nu.setIsPrimary(false);
         nu = (ClusterConfig) getDelegate().put_(x, nu);
-        support.setIsPrimary(false);
 
         electoralService.dissolve(x);
 

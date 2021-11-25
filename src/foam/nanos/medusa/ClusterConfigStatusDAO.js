@@ -62,14 +62,10 @@ foam.CLASS({
       //   return nu;
       // }
 
-      if ( nu.getId() == myConfig.getId() ) {
-        support.setStatus(nu.getStatus());
-      }
-
       if ( old != null &&
            old.getStatus() != nu.getStatus() &&
-           support.canVote(x, nu) &&
-           support.canVote(x, myConfig) ) {
+           ( support.canVote(x, nu) ||
+             support.canVote(x, myConfig) ) ) {
 
         logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 
@@ -187,8 +183,12 @@ foam.CLASS({
         try {
           support.getPrimary(x);
         } catch (MultiplePrimariesException e) {
-          ElectoralService electoralService = (ElectoralService) x.get("electoralService");
-          electoralService.dissolve(x);
+          Loggers.logger(x, this).warning("Multiple Primaries detected");
+          config = (ClusterConfig) config.fclone();
+          config.setStatus(Status.OFFLINE);
+          ((DAO) x.get("localClusterConfigDAO")).put(config);
+          // ElectoralService electoralService = (ElectoralService) x.get("electoralService");
+          // electoralService.dissolve(x);
         } catch (PrimaryNotFoundException e) {
           // should have found self!
           Loggers.logger(x, this).warning("Unexpected exception", e);

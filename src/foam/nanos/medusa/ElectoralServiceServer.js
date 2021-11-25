@@ -168,7 +168,6 @@ foam.CLASS({
 
       if ( ! support.hasQuorum(x) ) {
         setState(ElectoralServiceState.DISMISSED);
-        support.setIsPrimary(false);
         ClusterConfig config = support.getConfig(getX(), support.getConfigId());
         if ( config.getIsPrimary() ) {
           config.setIsPrimary(false);
@@ -466,11 +465,9 @@ foam.CLASS({
         return;
       }
 
+      getLogger().info("report", getState(), "primary", "winner", winnerId);
 
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
-      getLogger().info("report", getState(), "primary", "winner", winner.getId());
-      support.setIsPrimary(config.getId().equals(winnerId));
-
       ClusterConfig primary = null;
       try {
         primary = support.getPrimary(getX());

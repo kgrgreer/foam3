@@ -124,7 +124,7 @@ foam.CLASS({
         }
         queue.enqueue(new AbstractAssembly() {
           public void executeUnderLock() {
-            logger.info("AssemblyLine", "executeUnderLock", id);
+            // logger.debug("AssemblyLine", "executeUnderLock", id);
             ((DAO) getClients().get(id)).put_(x, entry);
             inFlight_.getAndDecrement();
             om.log(this.getClass().getSimpleName(), "response");
