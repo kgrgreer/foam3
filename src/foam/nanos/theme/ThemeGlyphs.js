@@ -523,6 +523,30 @@ foam.CLASS({
         </svg>
         ` };
       }
+    },
+    {
+      name: 'hamburger',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+          <svg width="100%" viewBox="0 0 18 12" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 12H18V10H0V12ZM0 7H18V5H0V7ZM0 0V2H18V0H0Z"/>
+          </svg>        
+        ` };
+      }
+    },
+    {
+      name: 'bell',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 16 20" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 20C9.1 20 10 19.1 10 18H6C6 19.1 6.9 20 8 20ZM14 14V9C14 5.93 12.37 3.36 9.5 2.68V2C9.5 1.17 8.83 0.5 8 0.5C7.17 0.5 6.5 1.17 6.5 2V2.68C3.64 3.36 2 5.92 2 9V14L0 16V17H16V16L14 14ZM12 15H4V9C4 6.52 5.51 4.5 8 4.5C10.49 4.5 12 6.52 12 9V15Z" />
+        </svg>        
+        ` };
+      }
     }
   ]
 });
