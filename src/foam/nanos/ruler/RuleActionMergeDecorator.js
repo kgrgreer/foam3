@@ -33,7 +33,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.logger.Logger',
     'java.util.Timer',
-    'java.util.TimerTask'
+    'java.util.TimerTask',
+    'java.util.concurrent.ConcurrentHashMap'
   ],
 
   properties: [
@@ -55,7 +56,8 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'taskQueue'
+      name: 'taskQueue',
+      javaFactory: 'return new ConcurrentHashMap();'
     }
   ],
 
