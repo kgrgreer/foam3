@@ -95,15 +95,19 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.u2.ViewSpec',
       name: 'topNav'
     },
     {
+      class: 'foam.u2.ViewSpec',
       name: 'sideNav'
     },
     {
+      class: 'foam.u2.ViewSpec',
       name: 'footer'
     },
     {
+      class: 'foam.u2.ViewSpec',
       name: 'mainView'
     }
   ],
