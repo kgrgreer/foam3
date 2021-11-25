@@ -59,6 +59,7 @@ public class RuleEngine extends ContextAwareSupport {
    * @param obj - FObject supplied to rules for execution
    * @param oldObj - Old FObject supplied to rules for execution
    */
+
   public void execute(List<Rule> rules, FObject obj, FObject oldObj) {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
