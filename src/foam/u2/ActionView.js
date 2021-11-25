@@ -98,6 +98,10 @@ foam.CLASS({
       factory: function(action) { return this.action.label; }
     },
     {
+      name: 'ariaLabel',
+      factory: function() { return this.action.ariaLabel; }
+    },
+    {
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle',
@@ -141,7 +145,7 @@ foam.CLASS({
           this.onDetach(cRSlot$.sub(() => this.setConfirm(cRSlot$.get())));
           this.setConfirm(cRSlot$.get());
         }
-        this.attrs({name: this.action.name, 'aria-label': this.action.ariaLabel });
+        this.attrs({name: this.action.name, 'aria-label': this.ariaLabel });
 
         this.enableClass(this.myClass('unavailable'), this.action.createIsAvailable$(this.__context__, this.data), true);
         this.attrs({ disabled: this.action.createIsEnabled$(this.__context__, this.data).map((e) => e ? false : 'disabled') });
