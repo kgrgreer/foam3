@@ -41,9 +41,6 @@ foam.CLASS({
     ^bell svg {
       fill: /*%GREY2%*/ #6B778C;
     }
-    ^ .selected-icon {
-      border-bottom: 1px solid white;
-    }
     ^ .dot {
       border-radius: 50%;
       display: inline-block;
@@ -92,9 +89,6 @@ foam.CLASS({
         .addClass('icon-container')
         .startContext({ data: this })
         .start(this.NOTIFICATIONS, { themeIcon: 'bell', label: '', buttonStyle: 'TERTIARY' })
-          .enableClass('selected-icon', this.currentMenu$.map((menu) => {
-            return this.Menu.isInstance(menu) && menu.id === 'notifications';
-          }))
           .addClass(this.myClass('bell'))
         .end()
         .endContext()

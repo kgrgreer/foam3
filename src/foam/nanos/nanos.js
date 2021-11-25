@@ -263,6 +263,8 @@ FOAM_FILES([
   { name: 'foam/nanos/security/KeyStoreManager' },
   { name: 'foam/nanos/benchmark/UUIDBenchmark' },
   { name: "foam/nanos/u2/navigation/TopNavigation", flags: ['web'] },
+  { name: "foam/nanos/u2/navigation/ResponsiveTopNav", flags: ['web'] },
+  { name: "foam/nanos/u2/navigation/NavigationController", flags: ['web'] },
   { name: "foam/nanos/u2/navigation/FooterView", flags: ['web'] },
   { name: "foam/nanos/u2/navigation/SideNavigation", flags: ['web'] },
   { name: "foam/nanos/u2/navigation/SideNavigationItemView", flags: ['web'] },
