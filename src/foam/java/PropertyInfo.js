@@ -331,104 +331,102 @@ foam.CLASS({
           }
         }
 
-          m.push({
-            name: 'getNetworkTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.networkTransient + ';'
-          });
+        m.push({
+          name: 'getNetworkTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.networkTransient + ';'
+        });
 
-          m.push({
-            name: 'getExternalTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.externalTransient + ';'
-          });
+        m.push({
+          name: 'getExternalTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.externalTransient + ';'
+        });
 
-          m.push({
-            name: 'getStorageTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.storageTransient + ';'
-          });
+        m.push({
+          name: 'getStorageTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.storageTransient + ';'
+        });
 
-          m.push({
-            name: 'getStorageOptional',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.storageOptional + ';'
-          });
+        m.push({
+          name: 'getStorageOptional',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.storageOptional + ';'
+        });
 
-          m.push({
-            name: 'getClusterTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.clusterTransient + ';'
-          });
+        m.push({
+          name: 'getClusterTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.clusterTransient + ';'
+        });
 
-          m.push({
-            name: 'getReadPermissionRequired',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.readPermissionRequired + ';'
-          });
+        m.push({
+          name: 'getReadPermissionRequired',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.readPermissionRequired + ';'
+        });
 
-          m.push({
-            name: 'getWritePermissionRequired',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.writePermissionRequired + ';'
-          });
+        m.push({
+          name: 'getWritePermissionRequired',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.writePermissionRequired + ';'
+        });
 
-          m.push({
-            name: 'getXMLAttribute',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.xmlAttribute + ';'
-          });
+        m.push({
+          name: 'getXMLAttribute',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.xmlAttribute + ';'
+        });
 
-          m.push({
-            name: 'getXMLTextNode',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.xmlTextNode + ';'
-          });
+        m.push({
+          name: 'getXMLTextNode',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.xmlTextNode + ';'
+        });
 
-          m.push({
-            name: 'getRequired',
-            visibility: 'public',
-            type: 'boolean',
-            body: 'return ' + Boolean(this.propRequired) + ';'
-          });
+        m.push({
+          name: 'getRequired',
+          visibility: 'public',
+          type: 'boolean',
+          body: 'return ' + Boolean(this.propRequired) + ';'
+        });
 
-          m.push({
-            name: 'validateObj',
-            visibility: 'public',
-            type: 'void',
-            args: [
-              { name: 'x', type: 'foam.core.X' },
-              { name: 'obj', type: 'foam.core.FObject' }
-            ],
-            body: this.validateObj
-          });
+        m.push({
+          name: 'validateObj',
+          visibility: 'public',
+          type: 'void',
+          args: [
+            { name: 'x', type: 'foam.core.X' },
+            { name: 'obj', type: 'foam.core.FObject' }
+          ],
+          body: this.validateObj
+        });
 
-          m.push({
-            name: 'getShortName',
-            visibility: 'public',
-            type: 'String',
-            body: this.propShortName ?
-              'return "' + this.propShortName + '";' :
-              'return null;'
-          });
+        m.push({
+          name: 'getShortName',
+          visibility: 'public',
+          type: 'String',
+          body: this.propShortName ?
+            'return "' + this.propShortName + '";' :
+            'return null;'
+        });
 
-//        if ( this.propAliases.length ) {
-          m.push({
-            name: 'getAliases',
-            visibility: 'public',
-            type: 'String[]',
-            body: 'return ' + this.getAliasesBody
-          });
-//        }
+        m.push({
+          name: 'getAliases',
+          visibility: 'public',
+          type: 'String[]',
+          body: 'return ' + this.getAliasesBody
+        });
 
         if ( this.cloneProperty != null ) {
           m.push({

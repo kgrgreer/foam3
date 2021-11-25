@@ -507,8 +507,7 @@ foam.LIB({
       cls.extends = this.model_.extends === 'FObject' ?
         undefined : this.model_.extends;
 
-//      console.log("+++"+cls.package +'.' + cls.name);
-      cls.SUPER_CLASSES[cls.package +'.' + cls.name] = cls;
+      cls.SUPER_CLASSES[cls.id] = cls;
 
       if ( this.model_.javaExtends )
         cls.extends = this.model_.javaExtends;

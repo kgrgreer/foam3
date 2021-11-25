@@ -22,6 +22,7 @@ foam.CLASS({
   constants: [
     {
       name: 'SUPER_CLASSES',
+      documentation: 'Store Java Class references so they can be accessed by subclasses.',
       value: {
       }
     }
@@ -128,27 +129,6 @@ foam.CLASS({
   ],
 
   methods: [
-//    function init() {
-//      this.SUPER();
-////      this.SUPER_CLASSES[this.name] = this;
-////      console.log("+++TEST " + typeof(this));
-////      console.log("+++NAmE " + this.id);
-//    },
-
-//    function fromModel(model) {
-//      this.name     = model.name;
-//      this.package  = model.package;
-//      this.abstract = model.abstract;
-//
-//      cls.extends = this.model_.extends === 'FObject' ?
-//        undefined : this.model_.extends;
-//
-//      if ( this.model_.javaExtends )
-//        cls.extends = this.model_.javaExtends;
-//
-//      this.SUPER_CLASSES[this.name] = this;
-//    },
-
     function getField(name) {
       for ( var i  = 0 ; this.fields && i < this.fields.length ; i++ ) {
         if ( this.fields[i].name === name ) return this.fields[i];
@@ -267,16 +247,18 @@ foam.CLASS({
 
       var extendedCls = self.SUPER_CLASSES[self.extends];
       this.fields.sort(function(o1, o2) {
-              return foam.Number.compare(o1.order, o2.order);
-            }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
+        return foam.Number.compare(o1.order, o2.order);
+      }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
 
       var self = this;
+
       this.methods.forEach(function(f) {
         if ( extendedCls != undefined ) {
+          // Check that parent class already defines the same method, so we can skip outputting it here.
           var superMethod = extendedCls.methods.find(obj => {
             return obj.name == f.name && foam.util.equals(obj.args, f.args) && obj.type == f.type && ! obj.abstract;
           });
-          if ( superMethod == undefined || superMethod.forceJavaOutputter) {
+          if ( superMethod == undefined || superMethod.forceJavaOutputter ) {
             o.out(f, '\n');
             return;
           }
