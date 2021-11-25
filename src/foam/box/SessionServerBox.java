@@ -188,6 +188,9 @@ public class SessionServerBox
       getDelegate().send(msg);
     } catch (Throwable t) {
       logger.warning(t.getMessage());
+      if ( t instanceof NullPointerException) {
+        logger.error(t);
+      }
       msg.replyWithException(t);
 
       AppConfig appConfig = (AppConfig) getX().get("appConfig");

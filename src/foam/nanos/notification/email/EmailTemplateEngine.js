@@ -13,15 +13,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
-    'foam.lib.parse.Action',
-    'foam.lib.parse.Grammar',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.notification.email.DAOResourceLoader',
-    'java.lang.StringBuilder',
-    'java.util.HashMap',
-    'java.util.Map',
-    'static foam.mlang.MLang.EQ'
+    'java.util.Map'
   ],
 
   properties: [
@@ -388,51 +383,44 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          protected static ThreadLocal<StringBuilder> sb_ = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-
-          protected static ThreadLocal<StringBuilder> sbContent_ = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-
-          protected static ThreadLocal<StringBuilder> sbJoin_ = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-        `);
+  javaCode: `
+    protected static ThreadLocal<StringBuilder> sb_ = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
       }
-    }
-  ]
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+
+    protected static ThreadLocal<StringBuilder> sbContent_ = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
+      }
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+
+    protected static ThreadLocal<StringBuilder> sbJoin_ = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
+      }
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+  `
 });

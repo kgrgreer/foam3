@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'FUIDAO',
+  name: 'FUIDDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
@@ -30,7 +30,12 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.util.UIDGenerator'
+    'foam.core.X',
+    'foam.core.PropertyInfo',
+    'foam.util.SafetyUtil',
+    'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
+    'foam.util.NUIDGenerator'
   ],
 
   properties: [
@@ -52,10 +57,12 @@ foam.CLASS({
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
-        return new UIDGenerator.Builder(getX())
-          .setSalt(getNSpec().getName())
-          .build();
-      `
+        var klass = getPropertyInfo().getValueClass();
+        if ( klass == String.class ) {
+          return new AUIDGenerator(getX(), getNSpec().getName());
+        }
+        return new NUIDGenerator(getX(), getNSpec().getName());
+      `,
     },
     {
       name: 'nSpec',
@@ -64,33 +71,30 @@ foam.CLASS({
     }
   ],
 
+  javaCode: `
+  public FUIDDAO(DAO delegate) {
+    setDelegate(delegate);
+  }
+
+  public FUIDDAO(X x, String salt, DAO delegate) {
+    super(x, delegate);
+    var id = (PropertyInfo) delegate.getOf().getAxiomByName("id");
+    setUIDGenerator(id.getValueClass() == String.class
+      ? new AUIDGenerator(x, salt)
+      : new NUIDGenerator(x, salt));
+  }
+  `,
+
   methods: [
     {
       name: 'put_',
       javaCode: `
-        var id = getPropertyInfo().get(obj);
-        var klass = getPropertyInfo().getValueClass();
-        synchronized (this) {
-          if ( klass == String.class && ((String) id).isBlank() ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextString());
-          } else if ( klass == long.class && ((long) id) == 0L ) {
-            getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
-          }
+        if ( getPropertyInfo().isDefaultValue(obj) ) {
+          getPropertyInfo().set(obj,
+            getUIDGenerator().getNext(getPropertyInfo().getValueClass()));
         }
         return getDelegate().put_(x, obj);
       `
     },
-  ],
-
-  axioms: [
-    {
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public FUIDAO(DAO delegate) {
-            setDelegate(delegate);
-          }
-        `);
-      },
-    },
-  ],
+  ]
 });

@@ -74,6 +74,11 @@
       name: 'renderedPages_'
     },
     {
+      class: 'Map',
+      name: 'loadingPages_',
+      documentation: 'Used to ensure pages that are currently being loaded are not reloaded/duplicated'
+    },
+    {
       class: 'Int',
       name: 'topRow',
       documentation: 'Stores the index top row that is currently displayed in the table',
@@ -234,21 +239,22 @@
       if ( this.groupBy ) sortParams.push(this.groupBy)
       if ( this.order ) sortParams.push(this.order)
       if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
+      this.loadingPages_[page] = true;
       promise = this.prepDAO(proxy, this.ctx);
-      var e = this.E();
+      var e = this.E().attr('data-page', page);
 
       promise.then((values) => {
         if ( foam.mlang.sink.Projection.isInstance( values ) ) {
           for (var i = 0 ; i < values.projection.length ; i++) {
             if ( values.array[i] === undefined ) continue;
+            var index = (page*this.pageSize) + i + 1;
             if ( this.groupBy ) {
               var group = self.groupBy.f(values.array[i]);
-              if ( ! foam.util.equals(group, self.currGroup_) ){
+              if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
                 e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
               }
               self.currGroup_ = group;
             }
-            var index = (page*this.pageSize) + i + 1
             var rowEl = this.E().tag(self.rowView, { obj: values.array[i], projection: values.projection[i] })
                 .attr('data-idx', index);
             e.add(rowEl)
@@ -260,6 +266,10 @@
           // TODO
         }
         var isSet = false;
+        if  ( self.renderedPages_[page] ) { 
+          console.warn('Trying to overwrite a loaded page without clearning....Clearing page');
+          this.clearPage(page)
+        }
         Object.keys(self.renderedPages_).forEach(j => {
           if ( j > page && self.renderedPages_[j] && !isSet ){
             this.appendTo.insertBefore(e, self.renderedPages_[j]);
@@ -269,6 +279,7 @@
         });
         if ( ! isSet ) { this.appendTo.add(e); isSet = true; }
         self.renderedPages_[page] = e;
+        self.loadingPages_[page] = false;
         // If there is a scroll in progress and all pages have been loaded, try to scroll again
         if ( this.scrollToIndex && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
           self.safeScroll();
@@ -295,6 +306,8 @@
       code: function() {
         this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
+        // Don't clear loadingPages_ here since they are being 
+        // loaded and will have latest data anyway
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
@@ -334,11 +347,11 @@
         });
 
         // Add any pages that are not already rendered.
-        for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++) {
+        for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++ ) {
           var page = this.currentTopPage_ + i;
-          if ( this.renderedPages_[page] ) continue;
+          if ( this.renderedPages_[page] || this.loadingPages_[page] ) continue;
           var skip = page * this.pageSize;
-          var dao   = this.data.limit(this.pageSize).skip(skip);
+          var dao  = this.data.limit(this.pageSize).skip(skip);
           this.getPage(dao, page);
         }
       }

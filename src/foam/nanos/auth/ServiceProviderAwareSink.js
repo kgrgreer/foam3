@@ -18,7 +18,7 @@ foam.CLASS({
     'java.util.Map',
     'java.util.HashMap'
   ],
-  
+
   properties: [
     {
       name: 'propertyInfos',
@@ -35,22 +35,13 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public ServiceProviderAwareSink(X x, Sink delegate, Map<String, PropertyInfo[]> propertyInfos) {
-    setX(x);
-    setDelegate(delegate);
-    setPropertyInfos(propertyInfos);
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public ServiceProviderAwareSink(X x, Sink delegate, Map<String, PropertyInfo[]> propertyInfos) {
+      setX(x);
+      setDelegate(delegate);
+      setPropertyInfos(propertyInfos);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -71,4 +62,3 @@ foam.CLASS({
     }
   ]
 });
-

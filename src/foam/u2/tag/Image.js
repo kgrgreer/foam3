@@ -20,8 +20,24 @@ foam.CLASS({
   name: 'Image',
   extends: 'foam.u2.View',
 
+  imports: [ 'theme' ], //needed?
+
+  requires: [
+    'foam.net.HTTPRequest',
+    'foam.u2.HTMLView'
+  ],
+
+  css: `
+    ^ .foam-u2-HTMLView {
+      padding: 0;
+    }
+  `,
+
   properties: [
-    ['nodeName', 'img'],
+    {
+      class: 'GlyphProperty',
+      name: 'glyph'
+    },
     {
       name: 'displayWidth',
       attribute: true
@@ -30,18 +46,50 @@ foam.CLASS({
       name: 'displayHeight',
       attribute: true
     },
-    ['alpha', 1.0]
+    ['alpha', 1.0],
+    { 
+      class: 'String',
+      name: 'role'
+    },
+    {
+      class: 'Boolean',
+      name: 'embedSVG'
+    }
   ],
 
   methods: [
     function render() {
-      this.
-        attrs({ src: this.data$ }).
-        style({
-          height:  this.displayHeight$,
-          width:   this.displayWidth$,
-          opacity: this.alpha$
-        });
+      this
+        .addClass(this.myClass())
+        .add(this.slot(function(data, glyph, displayWidth, displayHeight, alpha) {
+          if ( glyph ) {
+            var indicator = glyph.clone(this).expandSVG();
+            return this.E().start(this.HTMLView, { data: indicator })
+              .attrs({ role: this.role })
+              .end();
+          } else if ( this.embedSVG && data?.endsWith('svg') ) {
+            var req = this.HTTPRequest.create({
+              method: 'GET',
+              path: data,
+              cache: true
+            });
+            var res = req.send().then(payload => payload.resp.text());
+            return this.E()
+              .start(this.HTMLView, { data: res })
+                .attrs({ role: this.role })
+              .end()
+          } else {
+            return this.E()
+              .start('img')
+                .attrs({ src: data, role: this.role })
+                .style({
+                  height:  displayHeight,
+                  width:   displayWidth,
+                  opacity: alpha
+                })
+              .end();
+          }
+        }));
     }
   ]
 });

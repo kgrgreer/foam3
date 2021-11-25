@@ -24,12 +24,20 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.IN',
+    'foam.mlang.sink.Average',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.StdoutLogger',
     'foam.nanos.pm.PM',
+    'foam.nanos.pm.PMInfo',
+    'foam.nanos.pm.PMInfoId',
     'foam.nanos.script.BeanShellExecutor',
     'foam.nanos.script.JShellExecutor',
     'foam.nanos.script.Language',
@@ -37,39 +45,34 @@ foam.CLASS({
     'foam.nanos.script.ScriptStatus',
     'foam.util.SafetyUtil',
     'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
     'java.io.IOException',
     'java.math.BigDecimal',
     'java.math.RoundingMode',
     'java.util.ArrayList',
+    'java.util.Arrays',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
+    'java.util.Set',
     'java.util.concurrent.CountDownLatch',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.atomic.AtomicLong'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  // legacy support so not to break 'scripts'. This suppresses
-  // output to logger, which results in duplicate output, as
-  // this runner already outputs the results.
+  javaCode: `
+    // legacy support so not to break 'scripts'. This suppresses
+    // output to logger, which results in duplicate output, as
+    // this runner already outputs the results.
 
-  public String getResult() {
-    return "";
-  }
-
-  public String formatResults() {
-    return "";
-  }
-          `
-        }));
-      }
+    public String getResult() {
+      return "";
     }
-  ],
+
+    public String formatResults() {
+      return "";
+    }
+  `,
 
   sections: [
     {
@@ -90,7 +93,7 @@ foam.CLASS({
     'status',
     'threadCount',
     'runPerThread',
-    'invocationCount',
+    'executionCount',
     'benchmarkId'
   ],
 
@@ -106,9 +109,9 @@ foam.CLASS({
       value: 'THREAD'
     },
     {
-      documentation: 'Context key informaing the execute method which invocation the current run is.',
-      name: 'INVOCATION',
-      value: 'INVOCATION'
+      documentation: 'Context key informaing the execute method which execution the current run is.',
+      name: 'EXECUTION',
+      value: 'EXECUTION'
     }
   ],
 
@@ -129,7 +132,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'invocationCount',
+      name: 'executionCount',
       value: 1000
     },
     {
@@ -140,6 +143,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'oneTimeSetup'
+    },
+    {
+      class: 'Boolean',
+      name: 'oneTimeTeardown'
     },
     {
       class: 'Reference',
@@ -173,12 +180,12 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
-      PM pm = new PM(this.getClass(), getId());
+      long startTime = System.currentTimeMillis();
       try {
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
-        setLastDuration(pm.getTime());
+        setLastDuration(System.currentTimeMillis() - startTime);
 
         ScriptEvent event = new ScriptEvent(x);
         event.setLastRun(this.getLastRun());
@@ -202,26 +209,32 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Logger log = (Logger) x.get("logger");
-      if ( log != null ) {
-        log = new foam.nanos.logger.StdoutLogger();
-      }
-      final Logger logger = new PrefixLogger(new String[] { getId() }, log);
-
       AppConfig config = (AppConfig) x.get("appConfig");
       if ( config.getMode() == Mode.PRODUCTION ) {
-        logger.warning("Benchmark execution disabled in PRODUCTION");
+        Loggers.logger(x, this).warning("Benchmark execution disabled in PRODUCTION");
         return;
       }
+
+      final Set<String> pmInfoIds = new ConcurrentHashMap().newKeySet();
 
       try {
         final Benchmark benchmark = getBenchmark(x);
 
-        logger.info("execute", benchmark.getClass().getSimpleName());
-        UIDGenerator uidGenerator = new UIDGenerator.Builder(getX())
+        Logger log = (Logger) x.get("logger");
+        if ( log == null ) {
+          log = new StdoutLogger();
+        }
+        final Logger logger = new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName(),
+          getId(),
+          benchmark.getId()
+        }, log);
+        logger.info("execute");
+
+        AUIDGenerator uidGenerator = new AUIDGenerator.Builder(getX())
             .setSalt("benchmarkResultDAO")
             .build();
-        String uid = String.valueOf(uidGenerator.getNextLong());
+        String uid = uidGenerator.getNextString();
 
         int availableThreads = Math.min(Runtime.getRuntime().availableProcessors(), getThreadCount());
         int run = 1;
@@ -232,7 +245,12 @@ foam.CLASS({
           threads = availableThreads;
         }
 
+        if ( getClearPMs() ) {
+          ((DAO) x.get("pmInfoDAO")).removeAll();
+        }
+
         boolean setup = false;
+        boolean teardown = false;
         while ( true ) {
           final CountDownLatch latch = new CountDownLatch(threads);
           final AtomicLong pass = new AtomicLong();
@@ -246,16 +264,19 @@ foam.CLASS({
           br.setName(this.getId());
           br.setThreads(threads);
 
-          if ( ! getOneTimeSetup() ||
-               getOneTimeSetup() && ! setup ) {
+          final BenchmarkResult finalBr = br;
+
+          if ( getOneTimeSetup() && ! setup ) {
             // set up the benchmark
             logger.info("setup");
+            PM pm = new PM("BenchmarkRunner", benchmark.getId(), "setup");
             benchmark.setup(x, br);
+            pm.log(x);
             setup = true;
           }
-          if ( getClearPMs() ) {
-            ((DAO) x.get("pmInfoDAO")).removeAll();
-          }
+
+          // clear timing pms associated with this benchmark runner
+          ((DAO) x.get("pmInfoDAO")).where(EQ(PMInfo.KEY, getId())).removeAll();
 
           // get start time
           long startTime = System.currentTimeMillis();
@@ -266,22 +287,34 @@ foam.CLASS({
             Thread thread = new Thread(group, new Runnable() {
                 @Override
                 public void run() {
+                  pmInfoIds.add(benchmark.getId()+":execute:"+Thread.currentThread().getId());
+                  if ( ! getOneTimeSetup() ) {
+                    // set up the benchmark
+                    logger.info("setup");
+                    PM pm = new PM(getId(), benchmark.getId(), "setup", Thread.currentThread().getId());
+                    benchmark.setup(x, finalBr);
+                    pm.log(x);
+                  }
+
                   long passed = 0;
-                  for ( int j = 0 ; j < getInvocationCount() ; j++ ) {
+                  for ( int j = 0 ; j < getExecutionCount() ; j++ ) {
+                    PM pm = new PM(getId(), benchmark.getId(), "execute", Thread.currentThread().getId());
                     try {
-                      X y = x.put(THREAD, tno).put(INVOCATION, j);
+                      X y = x.put(THREAD, tno).put(EXECUTION, j);
                       XLocator.set(y);
                       benchmark.execute(y);
                       passed++;
                     } catch (Throwable t) {
+                      pm.error(x, t.getMessage());
                       fail.incrementAndGet();
                       Throwable e = t;
                       if ( t instanceof RuntimeException && t.getCause() != null ) {
                         e = t.getCause();
                       }
-                      logger.error(e.getMessage());
+                      logger.error("thread", tno, "execution", j, e.getMessage());
                       logger.debug(e);
                     } finally {
+                      pm.log(x);
                       XLocator.set(null);
                     }
                   }
@@ -289,6 +322,11 @@ foam.CLASS({
 
                   // count down the latch when finished
                   latch.countDown();
+
+                  if ( ! getOneTimeTeardown() ) {
+                    logger.info("teardown");
+                    benchmark.teardown(x, finalBr);
+                  }
                 }
               }) {
                 @Override
@@ -310,17 +348,32 @@ foam.CLASS({
           // calculate length taken
           // get number of threads completed and duration
           // print out transactions per second
-          long  endTime  = System.currentTimeMillis();
-          float complete = (float) (threads * getInvocationCount());
-          float duration = ((float) (endTime - startTime) / 1000.0f);
+          long endTime = System.currentTimeMillis();
+
+          Average avg = new Average(x, PMInfo.TOTAL_TIME, 0.0, 0L);
+          ((DAO) x.get("pmInfoDAO"))
+            .where(
+              AND(
+                EQ(PMInfo.KEY, getId()),
+                IN(PMInfo.NAME, pmInfoIds.toArray(new String[pmInfoIds.size()]))
+              )
+            ).select(avg);
+
+          // long time = endTime - startTime;
+          double time = (double) avg.getValue();
+          float complete = (float) (threads * getExecutionCount());
+          float duration = (float) (time / 1000.0f);
           br.setPass(pass.get());
           br.setFail(fail.get());
           br.setTotal(pass.get() + fail.get());
           br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
           br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
 
-          logger.info("teardown");
-          benchmark.teardown(x, br);
+          if ( getOneTimeTeardown() && ! teardown ) {
+            logger.info("teardown");
+            benchmark.teardown(x, br);
+            teardown = true;
+          }
 
           br = (BenchmarkResult) getBenchmarkResults(x).put(br);
 

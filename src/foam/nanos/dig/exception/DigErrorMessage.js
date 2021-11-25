@@ -10,33 +10,25 @@ foam.CLASS({
   extends: 'foam.core.FOAMException',
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public DigErrorMessage(String message) {
-            super(message);
-          }
+  javaCode: `
+    public DigErrorMessage(String message) {
+      super(message);
+    }
 
-          public DigErrorMessage(String message, Throwable cause) {
-            super(message, cause);
-            if ( cause instanceof foam.core.Exception ) {
-              setInner((foam.core.Exception) cause);
-            }
-          }
-
-          public DigErrorMessage(Throwable cause) {
-            super(cause);
-            if ( cause instanceof foam.core.Exception ) {
-              setInner((foam.core.Exception) cause);
-            }
-          }
-        `
-        );
+    public DigErrorMessage(String message, Throwable cause) {
+      super(message, cause);
+      if ( cause instanceof foam.core.Exception ) {
+        setInner((foam.core.Exception) cause);
       }
     }
-  ],
+
+    public DigErrorMessage(Throwable cause) {
+      super(cause);
+      if ( cause instanceof foam.core.Exception ) {
+        setInner((foam.core.Exception) cause);
+      }
+    }
+  `,
 
   properties: [
     {

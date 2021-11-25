@@ -33,7 +33,7 @@ foam.CLASS({
     // Added for scrollTableView support
     {
       name: 'actionDAO',
-      factory: function () { return this.data.data; } 
+      factory: function () { return this.data.data; }
     }
   ],
 
@@ -46,7 +46,7 @@ foam.CLASS({
       var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
       callIf( this.dblclick && ! this.data.disableUserSelection, function() {
-        this.on('dblclick', function() {
+        this.on('dblclick', function(evt) {
             if ( self.data.shouldEscapeEvts(evt) ) return;
             self.dblclick.call(self, null, obj.id);
         });
@@ -54,6 +54,7 @@ foam.CLASS({
       callIf( this.click && ! this.data.disableUserSelection, function() {
         this.on('click', function(evt) {
           if ( self.data.shouldEscapeEvts(evt) ) return;
+          self.data.selection = obj.id;
           self.click.call(self, null, obj.id);
         });
       }).
@@ -189,7 +190,7 @@ foam.CLASS({
       // Added to maintain support for ScrollTableView that does not support resizable columns
       if ( this.colWidthUpdated$ && this.selectedColumnsWidth$ ) {
         this.onDetach(this.colWidthUpdated$.sub(function() {
-          if ( self.selectedColumnsWidth[self.propName] ) 
+          if ( self.selectedColumnsWidth[self.propName] )
             self.colWidth = self.selectedColumnsWidth[self.propName];
         }));
       }

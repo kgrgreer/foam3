@@ -26,52 +26,45 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-  public FOAMException() {
-    getHostname();
-  }
-
-  public FOAMException(String message) {
-    super(message);
-    setMessage(message);
-    getHostname();
-  }
-
-  public FOAMException(String message, String errorCode) {
-    super(message);
-    setMessage(message);
-    setErrorCode(errorCode);
-    getHostname();
-  }
-
-  public FOAMException(Throwable cause) {
-    super(cause);
-    setMessage(cause.getMessage());
-    getHostname();
-  }
-
-  public FOAMException(String message, Throwable cause) {
-    super(message, cause);
-    setMessage(message);
-    getHostname();
-  }
-
-  public FOAMException(String message, String errorCode, Throwable cause) {
-    super(message, cause);
-    setMessage(message);
-    setErrorCode(errorCode);
-    getHostname();
-  }
-
-  protected static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("\\\\{\\\\{.*?\\\\}\\\\}");
-        `);
-      }
+  javaCode: `
+    public FOAMException() {
+      getHostname();
     }
-  ],
+
+    public FOAMException(String message) {
+      super(message);
+      setMessage(message);
+      getHostname();
+    }
+
+    public FOAMException(String message, String errorCode) {
+      super(message);
+      setMessage(message);
+      setErrorCode(errorCode);
+      getHostname();
+    }
+
+    public FOAMException(Throwable cause) {
+      super(cause);
+      setMessage(cause.getMessage());
+      getHostname();
+    }
+
+    public FOAMException(String message, Throwable cause) {
+      super(message, cause);
+      setMessage(message);
+      getHostname();
+    }
+
+    public FOAMException(String message, String errorCode, Throwable cause) {
+      super(message, cause);
+      setMessage(message);
+      setErrorCode(errorCode);
+      getHostname();
+    }
+
+    protected static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("\\\\{\\\\{.*?\\\\}\\\\}");
+  `,
 
   properties: [
     {
