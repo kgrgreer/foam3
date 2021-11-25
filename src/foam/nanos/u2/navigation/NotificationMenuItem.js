@@ -35,19 +35,11 @@ foam.CLASS({
       align-items: normal;
       width: 40px;
     }
-    ^ img {
-      height: 25px;
-      width: 25px;
-      cursor: pointer;
-      border-bottom: 1px solid transparent;
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
+    ^bell {
+      padding: 4px 2px;
     }
-    ^ img:hover {
-      border-bottom: 1px solid white;
+    ^bell svg {
+      fill: /*%GREY2%*/ #6B778C;
     }
     ^ .selected-icon {
       border-bottom: 1px solid white;
@@ -98,24 +90,20 @@ foam.CLASS({
 
       this.addClass()
         .addClass('icon-container')
-        .on('click', this.changeToNotificationsPage.bind(this))
-
-        .start('img')
+        .startContext({ data: this })
+        .start(this.NOTIFICATIONS, { themeIcon: 'bell', label: '', buttonStyle: 'TERTIARY' })
           .enableClass('selected-icon', this.currentMenu$.map((menu) => {
             return this.Menu.isInstance(menu) && menu.id === 'notifications';
           }))
-          .attrs({ src: this.BELL_IMAGE })
+          .addClass(this.myClass('bell'))
         .end()
+        .endContext()
         .start('span')
           .addClass('dot')
           .add(this.countUnread$)
           .show(this.showCountUnread$)
         .end()
       .end();
-    },
-
-    function changeToNotificationsPage() {
-      this.pushMenu(this.MENU_ID);
     }
   ],
 
@@ -137,6 +125,15 @@ foam.CLASS({
         ).select(this.COUNT()).then((count) => {
           this.countUnread = count.value;
         });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'notifications',
+      code: function() {
+        this.pushMenu(this.MENU_ID);
       }
     }
   ]

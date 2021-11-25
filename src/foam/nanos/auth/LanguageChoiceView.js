@@ -49,7 +49,8 @@ foam.CLASS({
     ^dropdown span, ^dropdown svg {
       font-size: 1.5rem;
       font-weight: 500;
-      color: /*%WHITE%*/ #ffffff;
+      color: /*%GREY2%*/ #6B778C;
+      fill: /*%GREY2%*/ #6B778C;
     }
   `,
 
@@ -64,7 +65,7 @@ foam.CLASS({
         let language = this.supportedLanguages.find( e => e.toString() === foam.locale )
         language = language === undefined ? this.defaultLanguage : language
         localStorage.setItem('localeLanguage', language.toString());
-        return language
+        return language;
       }
     }
   ],
@@ -94,7 +95,7 @@ foam.CLASS({
           });
         });
 
-        var label = this.formatLabel(this.lastLanguage);
+        var label = this.formatLabel(this.lastLanguage, true);
 
       this
         .addClass(this.myClass())
@@ -109,9 +110,14 @@ foam.CLASS({
       .end();
     },
 
-    async function formatLabel(language) {
+    async function formatLabel(language, shortName) {
       let country = await this.countryDAO.find(language.variant);
-      let label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label;
+      if ( shortName ) {
+        return language.code.toUpperCase();
+      } else {
+        label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      }
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }
