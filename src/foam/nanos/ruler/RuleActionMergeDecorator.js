@@ -11,13 +11,14 @@ foam.CLASS({
   documentation: `
     Merge calls occurring within mergeDelay period to the delegate rule action.
 
-    Usage: Add RuleActionMergeDecorator to the asyncAction of a rule to merge
-    repeated calls to the underlying rule action. For example,
+    Usage: Add RuleActionMergeDecorator to the 'action' of an async rule to
+    merge repeated calls to the underlying rule action. For example,
 
       {
         class: 'foam.nanos.ruler.Rule',
         ...,
-        asyncAction: {
+        async: true,
+        action: {
           class: 'foam.nanos.ruler.RuleActionMergeDecorator',
           mergeDelay: 1000,
           delegate: {
@@ -62,12 +63,14 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( getMergeDelay() <= 0 ) {
+        if ( ! rule.getAsync()
+          || getMergeDelay() <= 0
+        ) {
           getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
           return;
         }
 
-        var key = obj.hashCode();
+        var key = obj.getProperty("id");
         var task = (TimerTask) getTaskQueue().get(key);
 
         // Cancel task if not yet being executed
