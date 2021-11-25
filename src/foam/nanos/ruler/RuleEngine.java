@@ -195,8 +195,7 @@ public class RuleEngine extends ContextAwareSupport {
       if ( ! rule.f(x, nu, oldObj) ) return;
 
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
-      ProxyX readOnlyX = new ReadOnlyDAOContext(x);
-      rule.asyncApply(readOnlyX, nu, oldObj, RuleEngine.this, rule);
+      rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
       pm.log(getX());
     }, "Async apply rule id: " + rule.getId()));
   }
