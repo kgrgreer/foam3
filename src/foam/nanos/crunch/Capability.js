@@ -455,6 +455,8 @@ foam.CLASS({
           AgentCapabilityJunction acj = (AgentCapabilityJunction) ucj;
           subject.setUser((User) userDAO.find(acj.getEffectiveUser())); // "user"
         } else if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
+          // Call setUser() twice
+          // Because it builds a user path and adds a user to the chain for each setUser()
           subject.setUser(currentSubject.getRealUser());
           subject.setUser(currentSubject.getUser());
         } else {
