@@ -106,6 +106,8 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
         UserCapabilityJunction result = (UserCapabilityJunction) super.find_(x, id);
+        System.out.println("888id: " + id + " 888res: " + result);
+       if ( result != null ) System.out.println("888checkOwn: " + checkOwnership(x, result));
         if ( result == null || ! checkOwnership(x, result) ) return null;
         return result;
       `

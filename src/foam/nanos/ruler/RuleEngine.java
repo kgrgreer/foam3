@@ -220,7 +220,12 @@ public class RuleEngine extends ContextAwareSupport {
           // For that, greedy mode is used for object reload. For before rules,
           // object reload uses non-greedy mode so that changes on the original
           // object will be copied over to the reloaded object.
-          FObject nu = getDelegate().find_(x, obj).fclone();
+          System.out.println("***rule: " + rule.getId());
+          FObject nu = (FObject) getDelegate().find_(x, obj);
+          FObject nu1 = (FObject) getDelegate().find_(x, obj.getProperty("id"));
+          System.out.println("***nu: " + nu);
+          System.out.println("***nu1: " + nu1);
+          nu = (FObject) nu.fclone();
           nu = reloadObject(obj, oldObj, nu, rule.getAfter());
           PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC: " + rule.getDaoKey() + ": " + rule.getId());
 
