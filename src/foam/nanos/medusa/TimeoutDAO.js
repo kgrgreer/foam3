@@ -31,9 +31,9 @@ foam.CLASS({
       javaCode: `
       Logger logger = Loggers.logger(x, this);
       MedusaEntry entry = (MedusaEntry) obj;
-      Long created = entry.getCreated().getTime();
       if ( entry.getLastModified() == null && // not yet saved the first time.
-           System.currentTimeMillis() - created > getGlobalTimeout() ) {
+           entry.getCreated() != null &&
+           System.currentTimeMillis() - entry.getCreated().getTime() > getGlobalTimeout() ) {
         throw new MedusaEntryTimeoutException();
       }
       return getDelegate().put_(x, obj);
