@@ -27,10 +27,7 @@ foam = {
       var a = path.split('.');
       var i;
 
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( strict && ! root[a[i]] ) {
-          return false;
-        }
+      for ( var i = 0 ; i < a.length && root ; i++ ) {
         root = root[a[i]] || ( root[a[i]] = {} );
         if ( opt_ensure && root == undefined ) {
           root = root[a[i]] = {};

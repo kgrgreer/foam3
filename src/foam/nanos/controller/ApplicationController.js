@@ -581,7 +581,7 @@ foam.CLASS({
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
       const M = m.toUpperCase(); 
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false, true);
+      var val = foam.util.path(this.theme, prop, false);
 
       // NOTE: We add a negative lookahead for */, which is used to close a
       // comment in CSS. We do this because if we don't, then when a developer
@@ -601,7 +601,7 @@ foam.CLASS({
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       const M = m.toUpperCase(); 
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false, true);
+      var val = foam.util.path(this.theme, prop, false);
       return val ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
         '/*%' + M + '%*/ ' + val) : css;
