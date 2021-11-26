@@ -375,7 +375,7 @@ foam.CLASS({
         field({
           name: isSet,
           type: 'boolean',
-          visibility: 'private',
+          visibility: 'protected',
           initializer: 'false;'
         }).
         method({
@@ -383,6 +383,7 @@ foam.CLASS({
           type: this.javaType,
           visibility: 'public',
           synchronized: this.synchronized,
+          forceJavaOutputter: true,
           body: this.javaGetter || ('if ( ! ' + isSet + ' ) {\n' +
             ( this.javaFactory ?
                 '  set' + capitalized + '(' + factoryName + '());\n' :
@@ -403,6 +404,7 @@ foam.CLASS({
             }
           ],
           type: 'void',
+          forceJavaOutputter: true,
           body: this.generateSetter_()
         }).
         method({
@@ -505,6 +507,8 @@ foam.LIB({
       cls.extends = this.model_.extends === 'FObject' ?
         undefined : this.model_.extends;
 
+      cls.SUPER_CLASSES[cls.id] = cls;
+
       if ( this.model_.javaExtends )
         cls.extends = this.model_.javaExtends;
 
@@ -514,7 +518,8 @@ foam.LIB({
         name: 'getClassInfo',
         type: 'foam.core.ClassInfo',
         visibility: 'public',
-        body: 'return classInfo_;'
+        body: 'return classInfo_;',
+        forceJavaOutputter:true
       });
 
       cls.method({
@@ -522,7 +527,8 @@ foam.LIB({
         visibility: 'public',
         static: true,
         type: 'foam.core.ClassInfo',
-        body: 'return classInfo_;'
+        body: 'return classInfo_;',
+        forceJavaOutputter:true
       });
 
       var flagFilter = foam.util.flagFilter(['java']);
@@ -1100,6 +1106,7 @@ foam.CLASS({
       cls.method({
         type: this.javaType,
         name: 'get' + foam.String.capitalize(this.name),
+        forceJavaOutputter: true,
         body: `return (${this.javaType})getX().get("${this.key}");`,
         visibility: 'protected'
       });

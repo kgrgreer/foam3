@@ -32,7 +32,14 @@ foam.CLASS({
       name: 'args'
     },
     { class: 'StringArray', name: 'throws' },
-    { class: 'foam.java.CodeProperty', name: 'body' }
+    { class: 'foam.java.CodeProperty', name: 'body' },
+    { class: 'Boolean',
+      name: 'forceJavaOutputter',
+      documentation: `if true, outputs method regardless of whether it is already in the super class. Useful for getters
+        of properties that are "shadowed" because those properties will use values defined in the class where
+        getter/setter is defined. Simply put, we cannot "override" a variable, by redefining a variable in a super class,
+        we only creating another variable with the same name on the the child class`
+    }
   ],
 
   methods: [
