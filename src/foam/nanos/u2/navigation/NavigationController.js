@@ -115,7 +115,6 @@ foam.CLASS({
     function render() {
       // TODO: Add responsive View switching
       this.onDetach(this.displayWidth$.sub(this.maybeCloseNav));
-      this.layoutInitialized$.sub(function() { debugger; })
       this.addClass()
       .add(this.slot( async function(loginSuccess, topNav) {
         if ( ! loginSuccess || ! topNav ) return null;
