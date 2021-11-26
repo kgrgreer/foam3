@@ -18,10 +18,6 @@ class LocalState {
     state_ = fr_.initialState();
   }
 
-  public synchronized Object getState() {
-    return state_;
-  }
-
   /**
    * Fold an operation into the state.
    *
