@@ -31,10 +31,9 @@ foam.CLASS({
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
   javaImports: [
-    'foam.nanos.logger.Logger',
-    'java.util.Timer',
-    'java.util.TimerTask',
-    'java.util.concurrent.ConcurrentHashMap'
+    'foam.core.ContextAgent',
+    'foam.core.DirectAgency',
+    'foam.core.X'
   ],
 
   properties: [
@@ -47,17 +46,6 @@ foam.CLASS({
       class: 'Int',
       name:  'mergeDelay',
       units: 'ms'
-    },
-    {
-      class: 'Object',
-      javaType: 'java.util.Timer',
-      name: 'timer',
-      javaFactory: 'return new Timer();'
-    },
-    {
-      class: 'Map',
-      name: 'taskQueue',
-      javaFactory: 'return new ConcurrentHashMap();'
     }
   ],
 
@@ -65,35 +53,18 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( ! rule.getAsync()
-          || getMergeDelay() <= 0
-        ) {
+        if ( ! rule.getAsync() || getMergeDelay() <= 0 ) {
           getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
           return;
         }
 
-        var key = obj.getProperty("id");
-        var task = (TimerTask) getTaskQueue().get(key);
-
-        // Cancel task if not yet being executed
-        if ( task != null
-          && task.scheduledExecutionTime() - System.currentTimeMillis() > 0
-        ) {
-          task.cancel();
-          ((Logger) x.get("logger")).debug(
-            "Merge repeated execution of Rule id:" + rule.getId(), obj);
-        }
-
-        // Schedule the delegate rule action call
-        task = new TimerTask() {
+        var key = rule.getId() + ":" + obj.getProperty("id");
+        ((DirectAgency) agency).schedule(x, new ContextAgent() {
           @Override
-          public void run() {
+          public void execute(X x) {
             getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
-            getTaskQueue().remove(key);
           }
-        };
-        getTaskQueue().put(key, task);
-        getTimer().schedule(task, getMergeDelay());
+        }, key, getMergeDelay());
       `
     }
   ]
