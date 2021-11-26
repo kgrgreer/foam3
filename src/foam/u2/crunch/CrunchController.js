@@ -119,8 +119,8 @@ foam.CLASS({
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
           .add(this.GrantedEditAgent)
-          .add(this.WAOSettingAgent)
           .add(this.LoadCapabilitiesAgent)
+          .add(this.WAOSettingAgent)
           // TODO: remove CheckRootIdAgent after phase 2 fix on PENDING
           .add(this.CheckRootIdAgent)
           .add(this.CheckPendingAgent)

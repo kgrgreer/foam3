@@ -86,7 +86,11 @@ foam.CLASS({
     },
     {
       name: 'isSettingCapabilities',
-      class: 'Boolean'
+      class: 'Boolean',
+      documentation: `If passing in a set of capabilites to open,
+      then this is true and the wizard sequence is different.
+      Otherwise we assume a rootCapability is instantiating this flow
+      and thus a different wizard sequence.`
     }
   ],
 
@@ -98,8 +102,8 @@ foam.CLASS({
         user = await this.userDAO.find(this.data.effectiveUser);
       }
       if ( ! user ) user = realUser;
-      let subject = this.Subject.create({ user: user, realUser: realUser });
-      let stack = this.Stack.create();
+      var subject = this.Subject.create({ user: user, realUser: realUser });
+      var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
         stack: stack,
         subject: subject,
@@ -108,12 +112,12 @@ foam.CLASS({
             ? this.ControllerMode.EDIT
             : this.ControllerMode.VIEW
       });
-
+      var sequence = undefined;
       if ( this.isSettingCapabilities ) {
         x = x.createSubContext({
           capabilities: this.capabilitiesList
         });
-        let sequence1 = this.Sequence.create(null, x)
+        sequence = this.Sequence.create(null, x)
         .add(this.ConfigureFlowAgent, { popupMode: false })
         .add(this.WAOSettingAgent)
         .add(this.CreateWizardletsAgent)
@@ -125,13 +129,9 @@ foam.CLASS({
         .add(this.SubmitAgent)
         .add(this.DetachSpinnerAgent)
         .add(this.CapabilityStoreAgent);
-
-        this.config.applyTo(sequence1);
-        sequence1.execute();
       } else {
-        let sequence2 = this.crunchController.createWizardSequence(this.data.targetId, x);
-        this.config.applyTo(sequence2);
-        sequence2
+        sequence = this.crunchController.createWizardSequence(this.data.targetId, x);
+        sequence
           .reconfigure('LoadCapabilitiesAgent', {
             subject: subject })
           .reconfigure('ConfigureFlowAgent', {
@@ -143,9 +143,12 @@ foam.CLASS({
           .remove('WizardStateAgent')
           .remove('AutoSaveWizardletsAgent')
           .remove('PutFinalJunctionsAgent')
-          .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
-          .execute();
+          .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) });
       }
+      this.config.applyTo(sequence);
+      sequence.execute();
+
+
       // add back button and 'View Reference' title
       this.addClass()
         .startContext({ data: this })
@@ -156,14 +159,14 @@ foam.CLASS({
           })
         .endContext()
         .addClass(this.myClass('stack-container'))
-          .tag(this.StackView.create({ data: stack, showActions: false }, x))
+          .tag(this.StackView.create({ data: stack, showActions: false }, x));
     },
     async function onSave(isValid, ucj) {
-      if ( isValid &&
-        ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+      if ( isValid && ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
         this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
         this.stack.back();
-      } else {
+      }
+      else {
         let { rejectOnInvalidatedSave, approval } = this.config;
         if ( rejectOnInvalidatedSave && approval ) {
           let rejectedApproval = approval.clone();

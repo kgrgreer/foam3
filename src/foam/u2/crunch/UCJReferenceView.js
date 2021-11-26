@@ -57,14 +57,14 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.nanos.crunch.UserCapabilityJunction',
       transient: true,
-      documentation: 'set this property too display these ucj\'s in wizard'
+      documentation: 'Stores the property predicate search results from ucjDAO.'
     },
     {
-      name: 'capabilityList',
+      name: 'capabilitiesList',
       class: 'FObjectArray',
       of: 'foam.nanos.crunch.Capability',
       transient: true,
-      documentation: 'set this property too display these ucj\'s in wizard'
+      documentation: 'Set this property to display these ucj\'s in wizard'
     }
   ],
 
@@ -75,20 +75,19 @@ foam.CLASS({
       // TODO this only works for ONE signing officer
       this
         .add(this.slot(async function(ucjPropertyList) {
-          var ucj = this.ucjPropertyList.filter(u => this.AgentCapabilityJunction.isInstance(u) );
-          this.capabilityList = (
+          var ucj = await ucjPropertyList.filter(u => this.AgentCapabilityJunction.isInstance(u) );
+          this.capabilitiesList = (
             await this.capabilityDAO.where(this.AND(
               this.IN(this.Capability.ID, this.ucjPropertyList.map(u => u.targetId)),
               this.NEQ(this.Capability.OF, null))).select()
           ).array;
           return this.UCJView.create({
             isSettingCapabilities: true,
-            data: ucj.length > 0 ? ucj[0] : this.ucjPropertyList[0],
+            data: ucj.length > 0 ? ucj[0] : ucjPropertyList[0],
             mode: this.mode,
-            capabilitiesList: this.capabilityList
+            capabilitiesList: this.capabilitiesList
           });
         }));
-
       this.ucjPropertyList = (
         await this.userCapabilityJunctionDAO.where(this.data).select()
       ).array;

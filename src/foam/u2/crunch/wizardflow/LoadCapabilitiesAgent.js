@@ -18,18 +18,16 @@ foam.CLASS({
     'rootCapability'
   ],
   exports: [
-    'caps as capabilities',
+    'capabilities',
     'subject as wizardSubject'
   ],
 
   properties: [
     {
-      name: 'caps',
-      class: 'FObjectArray',
-      of: 'foam.nanos.crunch.Capability',
-      factory: function() {
-        if ( this.capabilities.length > 0 ) this.caps = this.capabilities;
-      }
+      name: 'capabilities',
+      class: 'Array',
+      documentation: `This array can consist of capabilities
+      and arrays of capabilities.`
     },
     {
       name: 'subject',
@@ -47,10 +45,10 @@ foam.CLASS({
     function execute() {
       if ( this.subject ) {
         return this.crunchService.getCapabilityPathFor(null, this.rootCapability.id, false, this.subject.user, this.subject.realUser)
-          .then(capabilities => this.caps = capabilities);
+          .then(capabilities => this.capabilities = capabilities);
       }
       return this.crunchService.getCapabilityPath(null, this.rootCapability.id, false, true)
-        .then(capabilities => this.caps = capabilities);
+        .then(capabilities => this.capabilities = capabilities);
     }
   ]
 });
