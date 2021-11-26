@@ -50,7 +50,7 @@ foam.CLASS({
           //             .setMaxRetryAttempts(support.getMaxRetryAttempts())
           //             .setMaxRetryDelay(support.getMaxRetryDelay())
           //             .build();
-        Loggers.logger(x, this).debug("put", "request", "to", serverConfig.getId(), getServiceName());
+        // Loggers.logger(x, this).debug("put", "request", "to", serverConfig.getId(), getServiceName());
         return dao.put_(x, obj);
       } catch (Throwable t) {
         pm.error(x, entry.toSummary(), t);

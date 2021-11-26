@@ -25,6 +25,7 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.nanos.security.KeyStoreManager',
     'foam.util.SafetyUtil',
@@ -139,6 +140,8 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      Logger logger = Loggers.logger(getX(), this);
+      logger.info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       setHashingEnabled(support.getHashingEnabled());
 
@@ -146,7 +149,7 @@ foam.CLASS({
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
            config.getZone() > 0L ) {
-        getLogger().debug("start", "exit");
+        logger.debug("start", "exit");
         return;
       }
 

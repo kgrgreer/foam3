@@ -52,7 +52,6 @@ foam.CLASS({
       Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      ElectoralService electoralService = (ElectoralService) x.get("electoralService");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       Boolean hadQuorum = support.hasQuorum(x);
@@ -63,44 +62,39 @@ foam.CLASS({
       // }
 
       if ( old != null &&
-           old.getStatus() != nu.getStatus() &&
-           ( support.canVote(x, nu) ||
-             support.canVote(x, myConfig) ) ) {
-
+           old.getStatus() != nu.getStatus() ) {
         logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 
-            Boolean hasQuorum = support.hasQuorum(x);
-            if ( electoralService.getState() == ElectoralServiceState.IN_SESSION ||
-                 electoralService.getState() == ElectoralServiceState.DISMISSED ) {
-              if ( hadQuorum && ! hasQuorum) {
-                logger.warning("mediator quorum lost");
-                electoralService.dissolve(x);
-              } else if ( ! hadQuorum && hasQuorum ) {
-                logger.warning("mediator quorum acquired");
-                electoralService.dissolve(x);
-              } else if ( hasQuorum ) {
-                try {
-                  support.getPrimary(x);
-                  if ( electoralService.getState() != ElectoralServiceState.IN_SESSION ) {
-                    // When cluster has quorum, the last mediator may not be in-session.
-                    electoralService.register(x, myConfig.getId());
-                  }
-                } catch ( RuntimeException e ) {
-                  // no primary
-                  electoralService.dissolve(x);
+        if ( support.canVote(x, myConfig) &&
+             support.canVote(x, nu) ) {
+          ElectoralService electoralService = (ElectoralService) x.get("electoralService");
+          Boolean hasQuorum = support.hasQuorum(x);
+          if ( electoralService.getState() == ElectoralServiceState.IN_SESSION ||
+               electoralService.getState() == ElectoralServiceState.DISMISSED ) {
+            if ( hadQuorum && ! hasQuorum) {
+              logger.warning("mediator quorum lost");
+              electoralService.dissolve(x);
+            } else if ( ! hadQuorum && hasQuorum ) {
+              logger.warning("mediator quorum acquired");
+              electoralService.dissolve(x);
+            } else if ( hasQuorum ) {
+              try {
+                support.getPrimary(x);
+                if ( electoralService.getState() != ElectoralServiceState.IN_SESSION ) {
+                  // When cluster has quorum, the last mediator may not be in-session.
+                  electoralService.register(x, myConfig.getId());
                 }
+              } catch ( RuntimeException e ) {
+                // no primary
+                electoralService.dissolve(x);
               }
             }
-      }
+          }
+        }
 
-      if ( old != null &&
-           old.getStatus() != nu.getStatus() &&
-           ( ( myConfig.getType() == MedusaType.MEDIATOR &&
-               myConfig.getZone() == 0 ) /*||
-             ( myConfig.getType() == MedusaType.NERF &&
-               myConfig.getZone() > 0 ) ) */ &&
-           nu.getType() == MedusaType.NODE ) ) {
-        bucketNodes(x);
+        if ( nu.getType() == MedusaType.NODE ) {
+          bucketNodes(x);
+        }
       }
 
       return nu;
@@ -187,8 +181,6 @@ foam.CLASS({
           config = (ClusterConfig) config.fclone();
           config.setStatus(Status.OFFLINE);
           ((DAO) x.get("localClusterConfigDAO")).put(config);
-          // ElectoralService electoralService = (ElectoralService) x.get("electoralService");
-          // electoralService.dissolve(x);
         } catch (PrimaryNotFoundException e) {
           // should have found self!
           Loggers.logger(x, this).warning("Unexpected exception", e);

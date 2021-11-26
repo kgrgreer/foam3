@@ -269,12 +269,14 @@ This is the heart of Medusa.`,
         }
       ],
       javaCode: `
+      getLogger().info("execute");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
         .setName("Medusa Consensus")
         .setClusterable(false)
         .build();
+
       try {
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -290,6 +292,17 @@ This is the heart of Medusa.`,
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               if ( next.getPromoted() ) {
+                // TODO: access to DaggerService status.
+                if ( nextIndex < 2 ) {
+                  // Dagger bootstrap has not yet occurred.
+                  getLogger().info("promoter", "waiting for bootstrap of DAG", nextIndex);
+                  x.get("daggerService");
+                  try {
+                    Thread.currentThread().sleep(1000);
+                  } catch (InterruptedException e) {
+                    return;
+                  }
+                }
                 continue;
               }
 

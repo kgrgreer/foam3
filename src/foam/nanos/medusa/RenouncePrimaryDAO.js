@@ -20,6 +20,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.util.ArrayList',
@@ -28,6 +30,14 @@ foam.CLASS({
     'java.util.HashSet',
     'java.util.Map',
     'java.util.Set'
+  ],
+
+  constants: [
+    {
+      name: 'ALARM_NAME',
+      type: 'String',
+      value: 'Medusa Primary Rennounce'
+    }
   ],
 
   properties: [
@@ -69,6 +79,15 @@ foam.CLASS({
            old.getIsPrimary() &&
            electoralService.getState() == ElectoralServiceState.IN_SESSION ) {
 
+        // generate an alarm
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName(ALARM_NAME)
+          .setIsActive(true)
+          .setReason(AlarmReason.MANUAL)
+          .setNote(myConfig.getId())
+          .setClusterable(false)
+          .build());
+
         // block - see ReplayingDAO - will block on OFFLINE and Primary
         // replaying.setIsReplaying(true);
 
@@ -101,7 +120,7 @@ foam.CLASS({
           }
         }
         // Primary drained, relinquish designation
-        nu = (ClusterConfig) nu.fclone();
+        nu = (ClusterConfig) support.getConfig(x, nu.getId());
         nu.setIsPrimary(false);
         nu = (ClusterConfig) getDelegate().put_(x, nu);
 
@@ -109,6 +128,14 @@ foam.CLASS({
 
         // unblock - ReplayingDAO will unblock when OFFLINE and not primary
         // replaying.setIsReplaying(false);
+
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName(ALARM_NAME)
+          .setIsActive(false)
+          .setReason(AlarmReason.MANUAL)
+          .setNote(myConfig.getId())
+          .setClusterable(false)
+          .build());
       }
       return nu;
       `

@@ -26,6 +26,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'static foam.mlang.MLang.MAX',
     'foam.mlang.sink.Max',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.concurrent.AbstractAssembly',
@@ -35,6 +37,14 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'java.util.concurrent.ConcurrentHashMap',
+  ],
+
+  constants: [
+    {
+      name: 'ALARM_NAME',
+      type: 'String',
+      value: 'Medusa Primary Announce'
+    }
   ],
 
   properties: [
@@ -88,7 +98,17 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      // FIXME: Wait 10s for ClusterConfigMonitorAgents to run until we fix the MAX request below.
+      // generate an alarm
+      Alarm alarm = new Alarm.Builder(x)
+        .setName(ALARM_NAME)
+        .setIsActive(true)
+        .setReason(AlarmReason.MANUAL)
+        .setNote(myConfig.getId())
+        .setClusterable(false)
+        .build();
+      alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+
+      // FIXME: Wait 10+s for ClusterConfigMonitorAgents to run until we fix the MAX request below. ClusterConfigMonitorAgents run at 10s intervals (presently).
       try {
         logger.warning("Artificial delay of 12s to allow ClusterConfigMonitorAgents to run");
         Thread.currentThread().sleep(12000);
@@ -153,6 +173,10 @@ foam.CLASS({
         replaying.updateIndex(x, max);
         replaying.setReplaying(false);
         logger.info("Index verification", "complete");
+
+        alarm = (Alarm) alarm.fclone();
+        alarm.setIsActive(false);
+        ((DAO) x.get("alarmDAO")).put(alarm);
       }
       `
     }

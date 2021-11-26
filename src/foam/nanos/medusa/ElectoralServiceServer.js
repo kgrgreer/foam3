@@ -255,7 +255,7 @@ foam.CLASS({
       }
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
-      List voters = support.getVoters(x);
+      List<ClusterConfig> voters = support.getVoters(x);
 
       if ( ! support.hasQuorum(x) ) {
         if ( ! support.getHasNodeQuorum() ) {
@@ -278,7 +278,10 @@ foam.CLASS({
         setVotes(0);
 
         // record own vote
-        recordResult(x, generateVote(x), config);
+        if ( voters.contains(config) ) {
+          recordResult(x, generateVote(x), config);
+        }
+
         if ( voters.size() == 1 &&
              voters.size() == support.getMediatorQuorum() ) {
           callReport(x);

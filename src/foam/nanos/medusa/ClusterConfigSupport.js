@@ -187,6 +187,8 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REALM, config.getRealm()),
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
+
+
         .select(COUNT());
       return ((Long)count.getValue()).intValue() >= getMediatorQuorum();
       `
@@ -198,7 +200,9 @@ configuration for contacting the primary node.`,
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
-      return (int) Math.floor(getNodeCount() / getNodeGroups() / 2) + 1;
+      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+      getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      return quorum;
       `
     },
     {
@@ -284,11 +288,6 @@ configuration for contacting the primary node.`,
       int minNodesInBucket = getNodeQuorum();
 
       List<Set<String>> buckets = getNodeBuckets();
-      if ( buckets.size() < getNodeQuorum() ) {
-        getLogger().warning("hasNodeQuorum", "false", "insufficient buckets", buckets.size(), "threshold", getNodeQuorum());
-        outputBuckets(getX());
-        return false;
-      }
       for ( int i = 0; i < buckets.size(); i++ ) {
         Set<String> bucket = buckets.get(i);
         // Need at least minNodesInBucket in ONLINE state for Quorum.
