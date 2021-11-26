@@ -12,8 +12,8 @@ foam.INTERFACE({
       name: 'submit',
       type: 'Void',
       args: [
-        { name: 'x', type: 'Context' },
-        { name: 'agent', type: 'foam.core.ContextAgent' },
+        { name: 'x',           type: 'Context' },
+        { name: 'agent',       type: 'foam.core.ContextAgent' },
         { name: 'description', type: 'String' }
       ]
     }
