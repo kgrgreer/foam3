@@ -14,19 +14,19 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.View',
+    'foam.core.Action',
     'foam.nanos.auth.Language',
     'foam.u2.view.OverlayActionListView',
-    'foam.core.Action'
+    'foam.u2.View'
   ],
 
   imports: [
-    'stack',
-    'languageDAO',
-    'subject',
-    'userDAO',
     'countryDAO',
-    'translationService'
+    'languageDAO',
+    'stack',
+    'subject',
+    'translationService',
+    'userDAO'
   ],
 
   exports: [ 'as data' ],
@@ -79,30 +79,30 @@ foam.CLASS({
           arg2: true
         })).select()).array;
 
-        var actionArray = this.supportedLanguages.map( c => {
-          var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
-          return self.Action.create({
-            name: c.name,
-            label$: labelSlot,
-            code: async function() {
-              let user = self.subject.realUser;
-              user.language = c.id;
-              await self.userDAO.put(user);
-              location.reload();
-              // TODO: Figure out a better way to store user preferences
-              localStorage.setItem('localeLanguage', c.toString());
-            }
-          });
+      var actionArray = this.supportedLanguages.map( c => {
+        var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
+        return self.Action.create({
+          name: c.name,
+          label$: labelSlot,
+          code: async function() {
+            let user = self.subject.realUser;
+            user.language = c.id;
+            await self.userDAO.put(user);
+            location.reload();
+            // TODO: Figure out a better way to store user preferences
+            localStorage.setItem('localeLanguage', c.toString());
+          }
         });
+      });
 
-        var label = this.formatLabel(this.lastLanguage, true);
+      var label = this.formatLabel(this.lastLanguage, true);
 
       this
         .addClass(this.myClass())
         .start(this.OverlayActionListView, {
-          label: label,
-          data: actionArray,
-          obj: self,
+          label:       label,
+          data:        actionArray,
+          obj:         self,
           buttonStyle: 'UNSTYLED'
         })
           .addClass(this.myClass('dropdown'))
@@ -123,6 +123,5 @@ foam.CLASS({
       }
       return label;
     }
-  ],
-
+  ]
 });

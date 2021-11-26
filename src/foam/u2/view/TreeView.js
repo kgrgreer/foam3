@@ -24,7 +24,7 @@ foam.CLASS({
     'returnExpandedCSS?',
     'selection',
     'startExpanded',
-    'translationService'
+    'translationService?'
   ],
 
   css: `
@@ -173,6 +173,10 @@ foam.CLASS({
         self.subMenus    = val.array;
       });
 
+      var labelString = this.data.label;
+      if ( this.translationService ) {
+        labelString = self.translationService.getTranslation(foam.locale, self.data.label, self.data.label);
+      }
       var mainLabel = this.E().
         addClass(self.myClass('select-level')).
         start()
@@ -241,6 +245,7 @@ foam.CLASS({
             start(self.ON_CLICK_FUNCTIONS, {
               buttonStyle: 'UNSTYLED',
               label: mainLabel,
+              ariaLabel: labelString,
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''

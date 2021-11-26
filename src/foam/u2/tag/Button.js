@@ -345,6 +345,10 @@ foam.CLASS({
       name: 'label'
     },
     {
+      class: 'String',
+      name: 'ariaLabel'
+    },
+    {
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle',

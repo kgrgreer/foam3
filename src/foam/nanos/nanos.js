@@ -146,7 +146,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/UserAndGroupAuthService" },
   { name: "foam/nanos/auth/UserQueryService" },
   { name: "foam/nanos/auth/SimpleUserQueryService" },
-  { name: "foam/nanos/auth/AssignableAware" },
   { name: "foam/nanos/auth/ResetSpidBeforeLoginAuthService" },
   { name: "foam/nanos/theme/Theme" },
   { name: "foam/nanos/theme/ThemeGlyphs" },
@@ -542,6 +541,7 @@ FOAM_FILES([
   { name: 'foam/nanos/crunch/predicate/IsAgent' },
   { name: 'foam/nanos/crunch/predicate/CapabilityJunctionTransitionToStatus' },
   { name: 'foam/nanos/crunch/predicate/IsAgentUpdate' },
+  { name: 'foam/nanos/crunch/predicate/IsCapabilityJunctionOf' },
   //spid
   { name: "foam/nanos/auth/CreateUserCapabilityJunctionOnSpidSet" },
   { name: "foam/nanos/auth/SetUserServiceProviderJunctionRuleAction" },
