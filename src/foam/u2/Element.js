@@ -2923,36 +2923,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'MenuViewRefinement',
-  refines: 'foam.nanos.menu.Menu',
-
-  requires: [
-    'foam.u2.view.MenuView'
-  ],
-
-  properties: [
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'view',
-      factory: function() { return { class: 'foam.u2.view.MenuView', menu: this }; }
-    }
-  ],
-
-  methods: [
-    function toE(args, X) {
-      var view = foam.u2.ViewSpec.createView(this.view, args, this, X);
-
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        view.data$ = X.data$;
-      }
-
-      return view;
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'TableColumns',
 
   documentation: 'Axiom for storing Table Columns information in Class. Unlike most Axioms, doesn\'t modify the Class, but is just used to store information.',
