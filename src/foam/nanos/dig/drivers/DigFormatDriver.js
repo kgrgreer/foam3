@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.core.*',
     'foam.dao.AbstractDAO',
     'foam.dao.ArraySink',
+    'foam.dao.OrderedSink',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
@@ -173,8 +174,14 @@ foam.CLASS({
         }
       }
       dao = dao.limit(pageSize);
+      
+      final var sink = dao.select(new ArraySink());
+      List fobjects = null;
+      if ( sink instanceof ArraySink )
+        fobjects = ((ArraySink) sink).getArray();
+      else if ( sink instanceof OrderedSink )
+        fobjects = ((OrderedSink) sink).getArray();
 
-      List fobjects = ((ArraySink) dao.select(new ArraySink())).getArray();
       getLogger().debug("Number of FObjects selected: " + fobjects.size());
 
       outputFObjects(x, dao, fobjects);
