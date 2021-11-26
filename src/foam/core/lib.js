@@ -23,7 +23,7 @@ foam = {
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   util:     {
-    path: function(root, path, opt_ensure, strict) {
+    path: function(root, path, opt_ensure) {
       var a = path.split('.');
       var i;
 
