@@ -127,7 +127,6 @@ foam.CLASS({
         setMinTime(Math.min(getMinTime(), other.getMinTime()));
         setMaxTime(Math.max(getMaxTime(), other.getMaxTime()));
 
-        setCapture(other.getCapture());
         if ( ! foam.util.SafetyUtil.isEmpty(other.getCaptureTrace()) ) {
           setCaptureTrace(other.getCaptureTrace());
           other.setCaptureTrace("");

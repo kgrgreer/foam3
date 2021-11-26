@@ -34,7 +34,7 @@ public class PMInfoMDAO extends MDAO
 
   public foam.core.FObject put_(X x, FObject obj) {
     PMInfo pmi = (PMInfo) obj;
-    frpmlogger_.putCaptureEnabledPM(pmi);
+    frpmlogger_.put(pmi);
 
     return super.put_(x, obj);
   }
