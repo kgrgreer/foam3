@@ -90,7 +90,7 @@ foam.CLASS({
 
       if ( block ) {
         // Just log when blocking to monitor primary announce/renounce periods.
-        Loggers.logger(x, this).info("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", myConfig.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
+        Loggers.logger(x, this).debug("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", myConfig.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
       }
 
       return block;
