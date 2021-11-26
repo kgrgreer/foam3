@@ -41,14 +41,6 @@ foam.CLASS({
     }
   ],
 
-  // properties: [
-  //   {
-  //     documentation: 'when this cmd is received, all blocked threads will be notified.',
-  //     name: 'unblockCmd',
-  //     class: 'Object'
-  //   }
-  // ],
-
   methods: [
     {
       name: 'find_',
@@ -167,19 +159,6 @@ foam.CLASS({
       return false;
       `
     },
-    // {
-    //   name: 'maybeUnblock',
-    //   args: [
-    //     {
-    //       name: 'x',
-    //       type: 'Context'
-    //     }
-    //   ],
-    //   type: 'Boolean',
-    //   javaCode: `
-    //   return true;
-    //   `
-    // }
     {
       name: 'getBlockedCount',
       type: 'Long',
