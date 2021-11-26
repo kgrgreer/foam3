@@ -38,7 +38,7 @@ foam.CLASS({
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
-      javaPostSet: ' // noop '
+      javaPostSet: ' // noop'
     }
   ]
 });

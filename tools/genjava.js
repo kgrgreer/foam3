@@ -181,9 +181,10 @@ function generateClass(cls) {
   if ( foam.Array.isInstance(cls) ) {
     cls = cls[1];
   }
-  if ( typeof cls === 'string' )
+  if ( typeof cls === 'string' ) {
     cls = foam.lookup(cls);
-
+    cls = cls.buildJavaClass();
+}
   logger.debug('call/generateClass:cls.id', cls.id);
 
   if ( fileWhitelist !== null ) {
@@ -206,7 +207,7 @@ function generateClass(cls) {
 
   ensurePath(outfile);
 
-  writeFileIfUpdated(outfile, cls.buildJavaClass().toJavaSource());
+  writeFileIfUpdated(outfile, cls.toJavaSource());
 }
 
 function generateAbstractClass(cls) {
@@ -249,7 +250,7 @@ function generateProxy(intf) {
   var existing = foam.lookup(intf.package + '.Proxy' + intf.name, true);
 
   if ( existing ) {
-    generateClass(existing.id);
+    generateClass(existing.buildJavaClass());
     return;
   }
 
@@ -268,7 +269,7 @@ function generateProxy(intf) {
 
   proxy.source = intf.model_.source;
 
-  generateClass(proxy.buildClass());
+  generateClass(proxy.buildClass().buildJavaClass());
 }
 
 function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
@@ -367,7 +368,17 @@ addDepsToClasses().then(function() {
   skeletons.forEach(loadClass);
   proxies.forEach(loadClass);
 
-  classes.forEach(generateClass);
+  var javaClasses = classes.map(function(cls) {
+    logger.debug('call/generateClass:cls', ''+cls);
+    if ( foam.Array.isInstance(cls) ) {
+      cls = cls[1];
+    }
+    if ( typeof cls === 'string' )
+      cls = foam.lookup(cls);
+    return cls.buildJavaClass();
+  });
+
+  javaClasses.forEach(generateClass);
   abstractClasses.forEach(generateAbstractClass);
   skeletons.forEach(generateSkeleton);
   proxies.forEach(generateProxy);
