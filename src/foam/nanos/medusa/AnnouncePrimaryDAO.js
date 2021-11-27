@@ -149,6 +149,11 @@ foam.CLASS({
         logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
         // just stay in replay mode - admin can take primary OFFLINE to force this process to repeat.
         logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
+
+        alarm = (Alarm) alarm.fclone();
+        alarm.setSeverity(foam.log.LogLevel.ERROR);
+        alarm.setNote("Index Verification Failed");
+        ((DAO) x.get("alarmDAO")).put(alarm);
       } else {
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         logger.debug("max", max, "index", replaying.getIndex());
