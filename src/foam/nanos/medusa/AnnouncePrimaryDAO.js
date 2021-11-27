@@ -47,14 +47,6 @@ foam.CLASS({
     }
   ],
 
-  properties: [
-    {
-      name: 'serviceName',
-      class: 'String',
-      value: 'medusaEntryMediatorDAO'
-    }
-  ],
-
   methods: [
     {
       name: 'put_',
@@ -108,15 +100,6 @@ foam.CLASS({
         .build();
       alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
 
-      // FIXME: Wait 10+s for ClusterConfigMonitorAgents to run until we fix the MAX request below. ClusterConfigMonitorAgents run at 10s intervals (presently).
-      try {
-        logger.warning("Artificial delay of 12s to allow ClusterConfigMonitorAgents to run");
-        Thread.currentThread().sleep(12000);
-      } catch (InterruptedException e) {
-        // nop;
-        return;
-      }
-
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> map = new ConcurrentHashMap();
       List<ClusterConfig> nodes = support.getReplayNodes();
@@ -127,14 +110,13 @@ foam.CLASS({
             Max max = new Max(0, MedusaEntry.INDEX);
             Long m = 0L;
             try {
-              // FIXME: this is failing with NullPointerException - from the client I believe.
               max = (Max) client.select(max);
               if ( max != null ) {
                 m = (Long) max.getValue();
               }
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
-              // Fallback for now - it's many seconds stall but better than nothing
+              // Fallback for now - it's many seconds stale but better than nothing
               ReplayingInfo replaying = cfg.getReplayingInfo();
               m = replaying.getIndex();
             }
