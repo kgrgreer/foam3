@@ -13,7 +13,7 @@ foam.CLASS({
 
   css: `
     :root{
-      font-size: 62.5%; // sets default to 10px so 14px would be 1.4rem
+      font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
     }
 
     body {

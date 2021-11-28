@@ -692,6 +692,9 @@ var classes = [
   'foam.lib.parse.ActionParser',
   'foam.lib.parse.SymbolParser',
   'foam.util.UIDGenerator',
+  'foam.util.AUIDGenerator',
+  'foam.util.NUIDGenerator',
+  'foam.util.test.DummyNuid',
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
   'foam.util.EmailTest',
@@ -912,6 +915,7 @@ var classes = [
   'foam.nanos.crunch.predicate.IsAgent',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
+  'foam.nanos.crunch.predicate.IsCapabilityJunctionOf',
 
   'foam.nanos.crunch.document.Document',
 

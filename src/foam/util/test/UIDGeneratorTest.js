@@ -10,7 +10,11 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.MDAO',
     'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
+    'foam.util.NUIDGenerator',
     'foam.util.UIDSupport',
     'java.util.HashSet',
     'static foam.util.UIDSupport.*'
@@ -20,16 +24,23 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        var uidgen = new UIDGenerator.Builder(x).setSalt("foobar").build();
-        var hash   = mod("foobar");
-        UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(uidgen, hash);
-        UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(uidgen, hash);
+        // AUID tests
+        var auidgen = new AUIDGenerator.Builder(x).setSalt("foobar").build();
+        var hash    = mod("foobar");
+        UIDGeneratorTest_GenerateVerifiableUniqueStringIDs(auidgen, hash);
+
+        // NUID tests
+        x = x.put("nuidDAO", new MDAO(DummyNuid.getOwnClassInfo()));
+        var nuidgen = new NUIDGenerator.Builder(x).setSalt("nuidDAO").build();
+        var hash2   = mod("nuidDAO");
+        UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(x, nuidgen, hash2);
+
         // UIDs similarity tests
-        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0, 32);
-        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x100, 32);
-        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x1000, 32);
-        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x10000, 32);
-        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(uidgen, 0x100000, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x100, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x1000, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x10000, 32);
+        UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x100000, 32);
       `
     },
     {
@@ -55,14 +66,20 @@ foam.CLASS({
     },
     {
       name: 'UIDGeneratorTest_GenerateVerifiableUniqueLongIDs',
-      args: [ 'UIDGenerator uidgen', 'int hash' ],
+      args: [ 'Context x', 'UIDGenerator uidgen', 'int hash' ],
       javaCode: `
         var n = 1000;
         var ids = new HashSet<Long>();
+        var nuidDAO = (DAO) x.get("nuidDAO");
         for ( int i = 0; i < n; i++ ) {
-          ids.add(uidgen.getNextLong());
+          var dummy = new DummyNuid();
+          dummy.setId(uidgen.getNextLong());
+          if ( ! ids.add(dummy.getId()) ) {
+            break;
+          }
+          nuidDAO.put(dummy);
         }
-        test(n == ids.size(), "Should generate " + n + " unique long ids");
+        test(n == ids.size(), "Should generate " + n + " unique long ids" + (n == ids.size() ? "" : ", but " + ids.size() + " were generated"));
 
         var verified = true;
         var it = ids.iterator();
@@ -71,7 +88,7 @@ foam.CLASS({
           id = it.next();
           verified = hash == UIDSupport.hash(id);
         }
-        test(verified, "Should generated unique string ids be verifiable" + (verified ? "" : ", but " + id + " failed verification"));
+        test(verified, "Should generated unique long ids be verifiable" + (verified ? "" : ", but " + id + " failed verification"));
       `
     },
     {
@@ -100,10 +117,11 @@ foam.CLASS({
     },
     {
       name: 'UIDGeneratorTest_CheckGeneratedUIDsSimilarity',
-      args: [ 'UIDGenerator uidgen', 'int startSeqNo', 'int threshold' ],
+      args: [ 'AUIDGenerator uidgen', 'int startSeqNo', 'int threshold' ],
       javaCode: `
         uidgen.setSeqNo(startSeqNo);
-        uidgen.setLastSecondCalled(System.currentTimeMillis() / 1000);
+        uidgen.setLastSecondCalled(
+          (System.currentTimeMillis() - AUIDGenerator.EPOCH) / 1000);
 
         var id1 = uidgen.getNextString();
         var id2 = uidgen.getNextString();
