@@ -7,7 +7,6 @@
 foam.CLASS({
   package: 'foam.nanos.dig',
   name: 'DIGDAOClient',
-  extends: 'foam.dao.AbstractDAO',
 
   documentation: 'Java HTTP client hitting service/dig. Intented for performance testing.',
 
@@ -147,22 +146,46 @@ foam.CLASS({
       return builder.build();
     }
   };
+
+  public Object select(X x, String q) {
+    return select(x, 0L, 1000L, q);
+  }
   `,
 
   methods: [
     {
-      name: 'find_',
+      name: 'find',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'id',
+          type: 'Object'
+        }
+      ],
+      type: 'foam.core.FObject',
       javaCode: `
       Object result = submit(x, DOP.SELECT, "id="+id.toString());
-      // Loggers.logger(x, this).debug("find", "response", result);
-      if ( result != null ) {
-        return (FObject) unAdapt(x, DOP.FIND, result);
-      }
-      throw new RuntimeException("Empty response");
+      Loggers.logger(x, this).debug("find", "response", result);
+      if ( result == null ) return null;
+      return (FObject) unAdapt(x, DOP.FIND, result);
       `
     },
     {
-      name: 'put_',
+      name: 'put',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'obj',
+          type: 'foam.core.FObject'
+        }
+      ],
+      type: 'foam.core.FObject',
       javaCode: `
       // Special support for Sessions as they must go through SUGAR
       if ( obj instanceof Session ) {
@@ -173,22 +196,69 @@ foam.CLASS({
       }
 
       Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
-      // Loggers.logger(x, this).debug("put", "response", result);
-      if ( result != null ) {
-        return (FObject) unAdapt(x, DOP.PUT, result);
-      }
-      throw new RuntimeException("Empty response");
+      Loggers.logger(x, this).debug("put", "response", result);
+      if ( result == null ) return null; // REVIEW: throw exception?
+      return (FObject) unAdapt(x, DOP.PUT, result);
       `
     },
     {
-      name: 'select_',
-      // select_(X,Sink,Skip,Limit,Comparator,Predicate)
+      documentation: `NOTE: limit 1 will return single entry, not [].`,
+      name: 'select',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'skip',
+          type: 'Long'
+        },
+        {
+          name: 'limit',
+          type: 'Long'
+        },
+        {
+          name: 'query',
+          type: 'String'
+        }
+      ],
+      type: 'Object',
       javaCode: `
-      throw new UnsupportedOperationException();
+      StringBuilder sb = new StringBuilder();
+      if ( skip > 0 ) {
+        sb.append("skip=");
+        sb.append(skip);
+      }
+
+      if ( sb.length() > 0 ) sb.append("&");
+      sb.append("limit=");
+      if ( limit == 0 ) limit = 1000;
+      sb.append(limit);
+
+      if ( ! SafetyUtil.isEmpty(query) ) {
+        if ( sb.length() > 0 ) sb.append("&");
+        sb.append("q=");
+        sb.append(query);
+      }
+      Object result = submit(x, DOP.SELECT, sb.toString());
+      Loggers.logger(x, this).debug("select", "response", result);
+      if ( result == null ) return null;
+      return unAdapt(x, DOP.SELECT, result);
       `
     },
     {
-      name: 'remove_',
+      name: 'remove',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'obj',
+          type: 'foam.core.FObject'
+        },
+      ],
+      type: 'foam.core.FObject',
       javaCode: `
       throw new UnsupportedOperationException();
       // NOTE: untested
@@ -224,7 +294,6 @@ foam.CLASS({
       `
     },
     {
-      // TODO: support SELECT
       name: 'unAdapt',
       args: [
         {
@@ -243,7 +312,14 @@ foam.CLASS({
       type: 'Object',
       javaCode: `
       try {
-        return x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
+        Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
+        if ( result != null &&
+             result instanceof DigErrorMessage ) {
+          throw (DigErrorMessage) result;
+        }
+        return result;
+      } catch ( DigErrorMessage e ) {
+        throw e;
       } catch ( RuntimeException e ) {
         Throwable cause = e.getCause();
         while ( cause.getCause() != null ) {
@@ -290,7 +366,7 @@ foam.CLASS({
       }
       sb.append("&format=JSON");
 
-      // Loggers.logger(x, this).debug("submit", "request", sb.toString());
+      Loggers.logger(x, this).debug("submit", "request", sb.toString());
       return sb.toString();
       `
     },
@@ -358,7 +434,6 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-      // TODO: model this
       StringBuilder sb = new StringBuilder();
       sb.append("{");
       sb.append("\\"service\\":\\"sessionService\\",");
