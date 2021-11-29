@@ -55,9 +55,9 @@ public class EmailsUtility {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-      Group userGroup = user.findGroup(x);
+      Group userGroup = user.findGroup(userX);
       group = userGroup.getId();
-      userX = userX.put("group", user.findGroup(userX));
+      userX = userX.put("group", userGroup);
       appConfig = userGroup.getAppConfig(x);
     }
 
@@ -101,7 +101,7 @@ public class EmailsUtility {
     }
 
     // SERVICE CALL: passing emailMessage through to actual email service.
-    DAO email = ((DAO) x.get("localEmailMessageDAO")).inX(x);
+    DAO email = ((DAO) x.get("localEmailMessageDAO")).inX(userX);
     emailMessage.setStatus(foam.nanos.notification.email.Status.UNSENT);
     email.put(emailMessage);
   }
