@@ -59,7 +59,7 @@ foam.CLASS({
         incrExecuting(1);
         incrQueued(-1);
 
-        PM     pm     = PM.create(x_, this.getClass(), agent_.getClass().getSimpleName() + ":" + description_);
+        PM pm = PM.create(x_, this.getClass(), agent_.getClass().getSimpleName() + ":" + description_);
 
         X oldX = ((ProxyX) XLocator.get()).getX();
 
@@ -88,8 +88,7 @@ foam.CLASS({
       reportingEnabled_ = val;
       reportingEnabledIsSet_ = true;
 
-      if ( ! old && val &&
-           pool_ != null ) {
+      if ( ! old && val && pool_ != null ) {
         schedule();
       }
       `
