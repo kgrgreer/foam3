@@ -229,7 +229,7 @@ public class HttpParametersWebAgent
     parameters.set("format", format);
     parameters.set(Format.class, format);
 
-    logger.debug("parameters", parameters);
+    // logger.debug("parameters", parameters);
     x = x.put(HttpParameters.class, parameters);
     getDelegate().execute(x);
   }
