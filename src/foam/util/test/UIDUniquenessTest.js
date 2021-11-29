@@ -46,7 +46,7 @@ foam.CLASS({
           threads[i] = new Thread(() -> {
             try {
               for ( var j = 0; j < getSize(); j++ ) {
-                if ( duplicateFound.get() ) return;
+                if ( duplicateFound.get() || error.get() ) return;
                 var uid = uidgen.getNextString();
                 if ( ! uids.containsKey(uid) ) {
                   uids.put(uid, uid);
@@ -65,10 +65,12 @@ foam.CLASS({
         for ( var t : threads ) {
           try { t.join(); } catch ( InterruptedException e ) { /* Ignored */ }
         }
+
+        var extraInfo = " Total threads: " + uidGenerators.length + "; Ids generated: " + uids.size() + ".";
         if ( error.get() ) {
-          test(false, "Failed to generate UID");
+          test(false, "Failed to generate UID. " + extraInfo);
         } else {
-          test(duplicateFound.get() == expected, message);
+          test(duplicateFound.get() == expected, message + extraInfo);
         }
       `
     },
@@ -77,7 +79,12 @@ foam.CLASS({
       args: [ 'Context x' ],
       javaCode: `
         var uidgen = new AUIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.", uidgen, uidgen, uidgen, uidgen);
+        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.",
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen
+        );
       `
     },
     {
