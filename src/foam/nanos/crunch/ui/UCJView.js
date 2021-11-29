@@ -21,6 +21,16 @@ foam.CLASS({
     'userDAO'
   ],
 
+  documentation: `
+  To use the UCJView for a custom set of capabilities : should set the following properties:
+    this.UCJView.create({
+      isSettingCapabilities: // true,
+      data: // need to set a ucj such that wizard extracts subject from
+      mode: this.mode, // seems to want to be ControllerMode - however not clear why this is here
+      capabilitiesList: // Set Custom Capability list
+    });
+  `,
+
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
