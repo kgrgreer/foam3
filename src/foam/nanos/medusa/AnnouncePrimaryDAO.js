@@ -59,7 +59,7 @@ foam.CLASS({
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
       // Secondary -> Primary 
-      if ( nu.getId() == myConfig.getId() &&
+      if ( nu.getId().equals(myConfig.getId()) &&
            nu.getIsPrimary() &&
            ! old.getIsPrimary() ) {
 
@@ -132,7 +132,9 @@ foam.CLASS({
           }
         });
       }
+      logger.debug("line.shutdown", "wait");
       line.shutdown();
+      logger.debug("line.shutdown", "continue");
 
       long max = 0L;
       for ( Long m : map.keySet() ) {

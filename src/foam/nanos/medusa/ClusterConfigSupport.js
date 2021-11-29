@@ -159,6 +159,7 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
+      getLogger().info("mediatorCount", ((Long)count.getValue()).intValue());
       return ((Long)count.getValue()).intValue();
       `
     },
@@ -190,7 +191,9 @@ configuration for contacting the primary node.`,
 
 
         .select(COUNT());
-      return ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
+      return result;
       `
     },
     {
@@ -595,7 +598,10 @@ configuration for contacting the primary node.`,
       if ( configs.size() > 0 ) {
         primaryConfig = configs.get(0);
         if ( configs.size() > 1 ) {
-          getLogger().error("muliple primaries", configs.get(0), configs.get(1));
+          getLogger().error("muliple primaries", configs.get(0).getId(), configs.get(1).getId());
+          for ( ClusterConfig cfg : configs ) {
+            getLogger().error("mulitiple primaries", cfg);
+          }
           throw new MultiplePrimariesException();
         }
         return primaryConfig;
@@ -685,7 +691,7 @@ configuration for contacting the primary node.`,
         config.getEnabled() &&
         config.getType() == MedusaType.MEDIATOR &&
         config.getZone() == 0L &&
-        config.getRegion() == myConfig.getRegion();
+        config.getRegion().equals(myConfig.getRegion());
       `
     },
     {

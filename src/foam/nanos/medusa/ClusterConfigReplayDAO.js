@@ -59,8 +59,8 @@ foam.CLASS({
       if ( old != null &&
            old.getStatus() != nu.getStatus() &&
            nu.getStatus() == Status.ONLINE &&
-           nu.getRealm() == myConfig.getRealm() &&
-           nu.getRegion() == myConfig.getRegion() ) {
+           nu.getRealm().equals(myConfig.getRealm()) &&
+           nu.getRegion().equals(myConfig.getRegion()) ) {
 
         getLogger().info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 

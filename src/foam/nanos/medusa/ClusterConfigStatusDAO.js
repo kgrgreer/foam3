@@ -179,6 +179,7 @@ foam.CLASS({
         } catch (MultiplePrimariesException e) {
           Loggers.logger(x, this).warning("Multiple Primaries detected");
           config = (ClusterConfig) config.fclone();
+          // REVIEW: if 'just' quorum ONLINE, this will fail the cluster.
           config.setStatus(Status.OFFLINE);
           ((DAO) x.get("localClusterConfigDAO")).put(config);
         } catch (PrimaryNotFoundException e) {
