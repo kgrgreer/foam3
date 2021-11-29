@@ -596,7 +596,7 @@ foam.CLASS({
       // then we don't want this method to expand the commented portion of that
       // CSS because it's already in long form. By checking if */ follows the
       // macro, we can tell if it's already in long form and skip it.
-      return val ? css.replace(
+      return val && foam.util.isPrimitive(val) ? css.replace(
         new RegExp('%' + M + '%(?!\\*/)', 'g'),
         '/*%' + M + '%*/ ' + val) : css;
     },
@@ -606,7 +606,7 @@ foam.CLASS({
       const M = m.toUpperCase(); 
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
-      return val ? css.replace(
+      return val && foam.util.isPrimitive(val)  ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
         '/*%' + M + '%*/ ' + val) : css;
     },
