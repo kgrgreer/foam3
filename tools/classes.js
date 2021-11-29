@@ -21,6 +21,7 @@ var classes = [
   'foam.core.Identifiable',
   'foam.core.Validatable',
   'foam.core.Agency',
+  'foam.core.AbstractAgency',
   'foam.core.CoreTypesValidationTest',
   'foam.core.CoreTypesValidationTestModel',
   'foam.core.Validator',

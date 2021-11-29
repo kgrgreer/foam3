@@ -112,6 +112,7 @@ FOAM_FILES([
   { name: "foam/core/AxiomCloner" },
   { name: 'foam/u2/ModalOverlay', flags: ['web'] },
   { name: "foam/core/Agency"},
+  { name: "foam/core/AbstractAgency"},
   { name: "foam/nanos/auth/Authorizable" },
   { name: "foam/i18n/TranslationFormatStringParser"},
   { name: "foam/swift/SwiftLib", flags: ['swift'] },

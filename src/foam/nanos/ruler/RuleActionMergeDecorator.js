@@ -32,7 +32,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.DirectAgency',
     'foam.core.X'
   ],
 
@@ -59,7 +58,7 @@ foam.CLASS({
         }
 
         var key = rule.getId() + ":" + obj.getProperty("id");
-        ((DirectAgency) agency).schedule(x, new ContextAgent() {
+        agency.schedule(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
