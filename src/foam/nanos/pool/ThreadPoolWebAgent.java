@@ -19,11 +19,12 @@ public class ThreadPoolWebAgent
   public ThreadPoolWebAgent() {}
 
   public void execute(X x) {
-    PrintWriter        out         = x.get(PrintWriter.class);
-    ThreadPoolAgency pool         = (ThreadPoolAgency) x.get("threadPool");
+    PrintWriter                        out   = x.get(PrintWriter.class);
+    ThreadPoolAgency                   pool  = (ThreadPoolAgency) x.get("threadPool");
     java.util.concurrent.BlockingQueue queue = pool.pool_.getQueue();
-    out.println(pool.getClass().getSimpleName()+": "+pool.toString());
+
+    out.println(pool.getClass().getSimpleName() + ": " + pool.toString());
     out.println("<br>");
-    out.println("pool queue size: "+queue.size());
+    out.println("pool queue size: " + queue.size());
   }
 }

@@ -19,12 +19,27 @@ foam.CLASS({
   package: 'foam.java',
   name: 'Class',
 
+  constants: [
+    {
+      name: 'SUPER_CLASSES',
+      documentation: 'Store Java Class references so they can be accessed by subclasses.',
+      value: {
+      }
+    }
+  ],
+
   requires: [
     'foam.java.Argument',
     'foam.java.Method'
   ],
 
   properties: [
+    {
+      name: 'id',
+      getter: function() {
+        return this.package ? this.package + '.' + this.name : this.name;
+      }
+    },
     {
       class: 'String',
       name: 'name'
@@ -114,18 +129,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function fromModel(model) {
-      this.name     = model.name;
-      this.package  = model.package;
-      this.abstract = model.abstract;
-
-      cls.extends = this.model_.extends === 'FObject' ?
-        undefined : this.model_.extends;
-
-      if ( this.model_.javaExtends )
-        cls.extends = this.model_.javaExtends;
-    },
-
     function getField(name) {
       for ( var i  = 0 ; this.fields && i < this.fields.length ; i++ ) {
         if ( this.fields[i].name === name ) return this.fields[i];
@@ -242,11 +245,28 @@ foam.CLASS({
 
       this.constants.forEach(function(c) { o.out(c, '\n'); });
 
+      var extendedCls = self.SUPER_CLASSES[self.extends];
       this.fields.sort(function(o1, o2) {
         return foam.Number.compare(o1.order, o2.order);
       }).forEach(function(f) { if ( ! self.isEnum || ! f.static )  o.out(f, '\n'); });
 
-      this.methods.forEach(function(f) { o.out(f, '\n'); });
+      var self = this;
+
+      this.methods.forEach(function(f) {
+        if ( extendedCls != undefined ) {
+          // Check that parent class already defines the same method, so we can skip outputting it here.
+          var superMethod = extendedCls.methods.find(obj => {
+            return obj.name == f.name && foam.util.equals(obj.args, f.args) && obj.type == f.type && ! obj.abstract;
+          });
+          if ( superMethod == undefined || superMethod.forceJavaOutputter ) {
+            o.out(f, '\n');
+            return;
+          }
+          if ( superMethod.body.data != f.body.data ) o.out(f, '\n');
+        } else {
+          o.out(f, '\n');
+        }
+      });
       this.classes.forEach(function(c) { o.out(c, '\n'); });
       this.extras.forEach(function(c)  { o.out(c, '\n'); });
       o.decreaseIndent();
