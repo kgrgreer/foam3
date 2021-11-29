@@ -17,6 +17,7 @@ import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.Loggers;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
@@ -43,7 +44,7 @@ public class DAOResourceLoader
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
-    Logger logger = (Logger) x.get("logger");
+    Logger logger = Loggers.logger(x, new DAOResourceLoader());
 
     /*
     name  group locale spid
@@ -55,7 +56,8 @@ public class DAOResourceLoader
       Y     *     *     *
     */
 
-    logger.info("name : " + name + ", groupId : " + groupId + ", locale : " + locale + ", spid : " + spid);
+    logger.info("name", name, "groupId", groupId, "locale", locale, "spid", spid);
+
     List<String> groupIdList = new ArrayList<>();
 
     while ( ! SafetyUtil.isEmpty(groupId) ) {
@@ -161,8 +163,11 @@ public class DAOResourceLoader
       String source = templateSource != null ? templateSource : "emailTemplate";
       emailTemplate.setSourceClass(source);
 
-      PM pm = PM.create(x, source,  "emailTemplate: " + name);
+      PM pm = PM.create(x, source,  "emailTemplate", name);
       pm.log(x);
+  }
+
+  public DAOResourceLoader() {
   }
 
   public DAOResourceLoader(X x, String groupId, String locale, String spid) {
