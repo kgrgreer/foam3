@@ -34,7 +34,7 @@ foam.CLASS({
         && task.scheduledExecutionTime() - System.currentTimeMillis() > 0
       ) {
         task.cancel();
-        Loggers.logger(x, this).debug("Merge scheduled task", key);
+        Loggers.logger(x, this).debug("schedule", "cancel", key);
       }
 
       // Schedule executing the agent
