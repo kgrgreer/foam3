@@ -401,7 +401,6 @@ foam.CLASS({
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
                         .callIf( availableActions.length, function() {
-                          debugger
                           if ( availableActions.length > Math.max(1, maxActions) ) {
                             var extraActions = availableActions.splice(maxActions);
                           }
