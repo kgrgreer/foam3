@@ -105,6 +105,11 @@ foam.CLASS({
       'customCSS',
       'logoBackgroundColour',
       'font1',
+      'DisplayWidth.XS',
+      'DisplayWidth.SM',
+      'DisplayWidth.MD',
+      'DisplayWidth.LG',
+      'DisplayWidth.XL',
       'primary1',
       'primary2',
       'primary3',
@@ -578,7 +583,9 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
-      var M = m.toUpperCase();
+      const M = m.toUpperCase(); 
+      var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
+      var val = foam.util.path(this.theme, prop, false);
 
       // NOTE: We add a negative lookahead for */, which is used to close a
       // comment in CSS. We do this because if we don't, then when a developer
@@ -589,17 +596,19 @@ foam.CLASS({
       // then we don't want this method to expand the commented portion of that
       // CSS because it's already in long form. By checking if */ follows the
       // macro, we can tell if it's already in long form and skip it.
-      return this.theme[m] ? css.replace(
+      return val ? css.replace(
         new RegExp('%' + M + '%(?!\\*/)', 'g'),
-        '/*%' + M + '%*/ ' + this.theme[m]) : css;
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
-      var M = m.toUpperCase();
-      return this.theme[m] ? css.replace(
-        new RegExp('/\\*%' + M + '%\\*/[^;!]*', 'g'),
-        '/*%' + M + '%*/ ' + this.theme[m]) : css;
+      const M = m.toUpperCase(); 
+      var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
+      var val = foam.util.path(this.theme, prop, false);
+      return val ? css.replace(
+        new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function wrapCSS(text, id) {
