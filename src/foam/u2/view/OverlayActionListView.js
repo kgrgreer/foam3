@@ -172,7 +172,7 @@ foam.CLASS({
 
       this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
-      self.obj.sub(function() {
+      self.obj?.sub(function() {
         self.overlay_.close();
       });
 
