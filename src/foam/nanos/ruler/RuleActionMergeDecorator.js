@@ -52,7 +52,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( ! rule.getAsync() || getMergeDelay() <= 0 ) {
+        if ( ! rule.getAsync() ) {
           getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
           return;
         }

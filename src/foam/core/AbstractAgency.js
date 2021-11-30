@@ -32,17 +32,16 @@ foam.CLASS({
       // and removed from the queue.
       if ( ! TASK_QUEUE.containsKey(key) ) {
         var task = new TimerTask() {
-          @Override
           public void run() {
             try { agent.execute(x); }
-            catch ( Exception e ) {
-              Loggers.logger(x, this).error("schedule", "failed", key);
+            catch ( java.lang.Exception e ) {
+              Loggers.logger(x, this).error("schedule", "failed", key, e);
             }
             TASK_QUEUE.remove(key);
           }
-          TASK_QUEUE.put(key, task);
-          TIMER.schedule(task, delay);
         };
+        TASK_QUEUE.put(key, task);
+        TIMER.schedule(task, delay);
       }
     }
   `
