@@ -32,7 +32,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.X'
+    'foam.core.X',
+    'foam.nanos.ruler.Rule'
   ],
 
   properties: [
@@ -62,9 +63,9 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             // Re-enter rule.asyncApply() to support retry
-            var rule = rule.fclone();
-            rule.setAction(getDelegate());
-            rule.asyncApply(x, obj, oldObj, ruler, rule);
+            var clone = (Rule) rule.fclone();
+            clone.setAction(getDelegate());
+            clone.asyncApply(x, obj, oldObj, ruler, clone);
           }
         }, key, getMergeDelay());
       `
