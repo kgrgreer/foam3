@@ -1101,6 +1101,7 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
-  { name: "foam/nanos/dig/exception/GeneralException" }
+  { name: "foam/nanos/dig/exception/GeneralException" },
 
+  { name: "foam/u2/memento/Memento"}
 ]);
