@@ -18,8 +18,8 @@ foam.CLASS({
   ],
 
   javaCode: `
-    protected static final Timer TIMER = new Timer();
-    protected static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
+    private static final Timer TIMER = new Timer();
+    private static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
 
     public void schedule(X x, ContextAgent agent, String key, long delay) {
       if ( delay <= 0 ) {
@@ -27,29 +27,23 @@ foam.CLASS({
         return;
       }
 
-      var task = TASK_QUEUE.get(key);
-
-      // Cancel the task if it's not yet executed and being re-scheduled
-      if ( task != null
-        && task.scheduledExecutionTime() - System.currentTimeMillis() > 0
-      ) {
-        task.cancel();
-        Loggers.logger(x, this).debug("schedule", "cancel", key);
-      }
-
-      // Schedule executing the agent
-      task = new TimerTask() {
-        @Override
-        public void run() {
-          try { agent.execute(x); }
-          catch ( Exception e ) {
-            Loggers.logger(x, this).error("schedule", "failed", key);
+      // Do not re-schedule existing task with the same key. Subsequent attempts
+      // to schedule the same task/key are ignored until the task is executed
+      // and removed from the queue.
+      if ( ! TASK_QUEUE.containsKey(key) ) {
+        var task = new TimerTask() {
+          @Override
+          public void run() {
+            try { agent.execute(x); }
+            catch ( Exception e ) {
+              Loggers.logger(x, this).error("schedule", "failed", key);
+            }
+            TASK_QUEUE.remove(key);
           }
-          TASK_QUEUE.remove(key);
-        }
-      };
-      TASK_QUEUE.put(key, task);
-      TIMER.schedule(task, delay);
+          TASK_QUEUE.put(key, task);
+          TIMER.schedule(task, delay);
+        };
+      }
     }
   `
 });
