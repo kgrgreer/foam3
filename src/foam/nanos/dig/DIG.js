@@ -42,6 +42,7 @@ foam.CLASS({
     'java.net.http.HttpRequest',
     'java.net.http.HttpResponse',
     'java.net.URI',
+    'java.net.URLEncoder',
     'java.time.Duration',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
@@ -512,7 +513,7 @@ foam.CLASS({
       type: 'foam.core.FObject',
       javaCode: `
       // Special support for Sessions as they must go through SUGAR
-      if ( obj instanceof Session ) {
+      if ( "sessionDAO".equals(getNSpecName()) ) {
         Session session = (Session) obj;
         String id = createSession(x, session);
         session.setId(id);
@@ -562,12 +563,21 @@ foam.CLASS({
       if ( ! SafetyUtil.isEmpty(query) ) {
         if ( sb.length() > 0 ) sb.append("&");
         sb.append("q=");
-        sb.append(query);
+        try {
+          sb.append(URLEncoder.encode(query, "UTF-8"));
+        } catch ( java.io.UnsupportedEncodingException e ) {
+          throw new RuntimeException(e);
+        }
       }
       Object result = submit(x, DOP.SELECT, sb.toString());
       Loggers.logger(x, this).debug("select", "response", result);
       if ( result == null ) return null;
-      return unAdapt(x, DOP.SELECT, result);
+      Object results = unAdapt(x, DOP.SELECT, result);
+      Loggers.logger(x, this).debug("select", "unAdapt", results);
+      // select should return [] unless limit=1
+      if ( results instanceof FObject[] ) return results;
+      if ( limit == 1 ) return results;
+      return new FObject[] { (FObject) results };
       `
     },
     {
@@ -579,19 +589,19 @@ foam.CLASS({
         },
         {
           name: 'obj',
-          type: 'foam.core.FObject'
+          type: 'Object'
         },
       ],
       type: 'foam.core.FObject',
       javaCode: `
       throw new UnsupportedOperationException();
       // NOTE: untested
-      // Object result = submit(x, DOP.REMOVE, "id="+obj.getProperty("id"));
+      // String id = obj.toString();
+      // if ( obj instanceof FObject ) id = obj.getProperty("id");
+      // Object result = submit(x, DOP.REMOVE, "id="+id);
       // Loggers.logger(x, this).debug("remove", "response", result);
-      // if ( result != null ) {
-      //   return (FObject) unAdapt(x, DOP.REMOVE, result);
-      // }
-      // return null;
+      // if ( result == null ) return null;
+      // return (FObject) unAdapt(x, DOP.REMOVE, result);
       `
     },
     {
