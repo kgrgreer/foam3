@@ -61,7 +61,10 @@ foam.CLASS({
         agency.schedule(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            getDelegate().applyAction(x, obj, oldObj, ruler, rule, agency);
+            // Re-enter rule.asyncApply() to support retry
+            var rule = rule.fclone();
+            rule.setAction(getDelegate());
+            rule.asyncApply(x, obj, oldObj, ruler, rule);
           }
         }, key, getMergeDelay());
       `
