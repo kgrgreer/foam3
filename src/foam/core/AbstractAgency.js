@@ -41,7 +41,10 @@ foam.CLASS({
       task = new TimerTask() {
         @Override
         public void run() {
-          agent.execute(x);
+          try { agent.execute(x); }
+          catch ( Exception e ) {
+            Loggers.logger(x, this).error("schedule", "failed", key);
+          }
           TASK_QUEUE.remove(key);
         }
       };
