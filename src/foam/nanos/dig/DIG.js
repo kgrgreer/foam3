@@ -25,6 +25,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.box.socket.SslContextFactory',
+    'foam.core.FOAMException',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -38,9 +39,12 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.net.Authenticator',
+    'java.net.CookieHandler',
+    'java.net.CookieManager',
     'java.net.http.HttpClient',
     'java.net.http.HttpRequest',
     'java.net.http.HttpResponse',
+    'java.net.http.HttpTimeoutException',
     'java.net.URI',
     'java.net.URLEncoder',
     'java.time.Duration',
@@ -468,6 +472,8 @@ foam.CLASS({
           builder = builder.sslContext(sslContext);
         }
       }
+      // store and accept ORIGINAL_SERVER
+      // builder.cookieHandler(new CookieManager());
       return builder.build();
     }
   };
@@ -492,10 +498,7 @@ foam.CLASS({
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      Object result = submit(x, DOP.SELECT, "id="+id.toString());
-      Loggers.logger(x, this).debug("find", "response", result);
-      if ( result == null ) return null;
-      return (FObject) unAdapt(x, DOP.FIND, result);
+      return (FObject) submit(x, DOP.SELECT, "id="+id.toString());
       `
     },
     {
@@ -520,10 +523,7 @@ foam.CLASS({
         return session;
       }
 
-      Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
-      Loggers.logger(x, this).debug("put", "response", result);
-      if ( result == null ) return null; // REVIEW: throw exception?
-      return (FObject) unAdapt(x, DOP.PUT, result);
+      return (FObject) submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
       `
     },
     {
@@ -570,14 +570,10 @@ foam.CLASS({
         }
       }
       Object result = submit(x, DOP.SELECT, sb.toString());
-      Loggers.logger(x, this).debug("select", "response", result);
       if ( result == null ) return null;
-      Object results = unAdapt(x, DOP.SELECT, result);
-      Loggers.logger(x, this).debug("select", "unAdapt", results);
-      // select should return [] unless limit=1
-      if ( results instanceof FObject[] ) return results;
-      if ( limit == 1 ) return results;
-      return new FObject[] { (FObject) results };
+      if ( result instanceof FObject[] ) return result;
+      if ( limit == 1 ) return result;
+      return new FObject[] { (FObject) result };
       `
     },
     {
@@ -598,10 +594,7 @@ foam.CLASS({
       // NOTE: untested
       // String id = obj.toString();
       // if ( obj instanceof FObject ) id = obj.getProperty("id");
-      // Object result = submit(x, DOP.REMOVE, "id="+id);
-      // Loggers.logger(x, this).debug("remove", "response", result);
-      // if ( result == null ) return null;
-      // return (FObject) unAdapt(x, DOP.REMOVE, result);
+      // return (FObject) submit(x, DOP.REMOVE, "id="+id);
       `
     },
     {
@@ -648,11 +641,11 @@ foam.CLASS({
       try {
         Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
         if ( result != null &&
-             result instanceof DigErrorMessage ) {
-          throw (DigErrorMessage) result;
+             result instanceof FOAMException ) {
+          throw (FOAMException) result;
         }
         return result;
-      } catch ( DigErrorMessage e ) {
+      } catch ( FOAMException e ) {
         throw e;
       } catch ( RuntimeException e ) {
         Throwable cause = e.getCause();
@@ -699,8 +692,6 @@ foam.CLASS({
         sb.append(data);
       }
       sb.append("&format=JSON");
-
-      Loggers.logger(x, this).debug("submit", "request", sb.toString());
       return sb.toString();
       `
     },
@@ -720,10 +711,12 @@ foam.CLASS({
           type: 'String'
         },
       ],
-      type: 'String',
+      type: 'Object',
       javaCode: `
+      String url = buildUrl(x, dop, data);
+      Loggers.logger(x, this).debug("submit", "request", dop, url);
       HttpRequest.Builder builder = HttpRequest.newBuilder()
-        .uri(URI.create(buildUrl(x, dop, data)))
+        .uri(URI.create(url))
         .timeout(Duration.ofMillis(getRequestTimeout()))
         .header("Accept-Language", "en-US,en;q=0.5")
         .header("Authorization", "BEARER "+getSessionId())
@@ -733,22 +726,24 @@ foam.CLASS({
         builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
       }
       HttpRequest request = builder.build();
-
       try {
         HttpClient client = client_.get();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if ( response.statusCode() == 200 ) {
-          return response.body();
+        if ( response.statusCode() != 200 ) {
+          Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), response.body());
+        } else {
+          Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
         }
-        Loggers.logger(x, this).warning("submit", "response", response.statusCode(), response.body());
-        try {
-          throw (DigErrorMessage) unAdapt(x, dop, response.body());
-        } catch ( Throwable t ) {
-          // nop
-          Loggers.logger(x, this).debug("submit", "response", "failed to parse dig excetpion", t.getMessage(), response.statusCode(), response.body(), t);
-        }
-        throw new RuntimeException(String.valueOf(response.statusCode()));
+        if ( SafetyUtil.isEmpty(response.body()) ) return null;
+        return unAdapt(x, dop, response.body());
+      } catch (FOAMException e) {
+        Loggers.logger(x, this).error("submit", "request", dop, url, "response", e.getClass().getSimpleName(), e.getMessage(), e);
+        throw e;
+      } catch (HttpTimeoutException e) {
+        Loggers.logger(x, this).warning("submit", "request", dop, url, "response", e.getMessage(), "timeout", getRequestTimeout());
+        throw new RuntimeException(e);
       } catch (java.io.IOException | InterruptedException e) {
+        Loggers.logger(x, this).warning("submit", "request", dop, url, "response", e.getMessage());
         throw new RuntimeException(e);
       }
       `
@@ -788,10 +783,11 @@ foam.CLASS({
         .setSessionId(getSessionId())
         .build();
 
-     String id = client.submit(x, DOP.PUT, sb.toString());
+     Object obj = client.submit(x, DOP.PUT, sb.toString());
+      if ( obj == null ) return null;
+      String id = obj.toString();
       // HttpRequest or SUGAR response is quoted, need to strip.
-      if ( ! SafetyUtil.isEmpty(id) &&
-           id.startsWith("\\"") ) {
+      if ( id.startsWith("\\"") ) {
         id = id.substring(1, id.length() - 2);
       }
       return id;
