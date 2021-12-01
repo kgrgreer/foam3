@@ -93,15 +93,11 @@ foam.CLASS({
     }
 
     ^ thead th {
-      position: -webkit-sticky; /* for Safari */
       position: sticky;
       top: 0;
     } 
     
-    /* To have the header in the first column stick to the left: */
-    
     ^ tbody td:first-child, ^ thead th:first-child {
-      position: -webkit-sticky; /* for Safari */
       position: sticky;
       left: 0;
       z-index: 2;
