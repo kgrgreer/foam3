@@ -49,7 +49,7 @@ foam.CLASS({
 
     function hl(hue, l) {
 //      var [r, g, b] = this.hslToRgb(hue/360, 0.8, l/1000);
-      var [r, g, b] = this.adjustRGBBrightness(this.hslToRgb(hue/360, 0.9, .6), Math.sqrt((1000-l)/1000));
+      var [r, g, b] = this.adjustRGBBrightness(this.hslToRgb(hue/360, 0.75, .6), Math.sqrt((1000-l*0.95)/1000));
       return `rgb(${r},${g},${b})`;
 //      return `hsl(${hue},70%,${l/10}%)`;
     },
