@@ -72,19 +72,7 @@ foam.CLASS({
     },
     {
       class:  'StringArray',
-      name: 'on',
-      // initObject: function(obj) {
-      //   // called when the object is init()'ed
-      //
-      //   //listener "onDAOUpdate1"
-      //   //topic    propertyChange
-      //   //value    obj
-      // return obj
-      //
-      // },
-      // adapt: function(o,e) {
-      // return e;
-      // }
+      name: 'on'
     }
   ],
 
@@ -107,7 +95,7 @@ foam.CLASS({
 
       var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
-          //if ( this.cls_.prototype === this ) return code;
+          if ( this.cls_.prototype === this ) return code;
 
           if ( ! this.hasOwnPrivate_(name) ) {
             var self = this;
