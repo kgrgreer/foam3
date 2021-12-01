@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'DIG',
   extends: 'foam.nanos.http.DefaultHttpParameters',
 
-  documentation: 'Data Integration Gateway - Perform DAO operations against a web service',
+  documentation: `Data Integration Gateway - Perform DAO operations against a web service.
+NOTE: when using the java client, the first call to a newly started instance may time-out as lazy nspec services startup.`,
 
   requires: [
     'foam.net.web.HTTPRequest'
@@ -629,9 +630,14 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-      FObjectFormatter formatter = formatter_.get();
-      formatter.output(obj);
-      return formatter.builder().toString();
+      PM pm = PM.create(x, "DIG:adapt", getPostURL(), getNSpecName(), dop);
+      try {
+        FObjectFormatter formatter = formatter_.get();
+        formatter.output(obj);
+        return formatter.builder().toString();
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -652,6 +658,7 @@ foam.CLASS({
       ],
       type: 'Object',
       javaCode: `
+      PM pm = PM.create(x, "DIG:unAdapt", getPostURL(), getNSpecName(), dop);
       try {
         Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
         if ( result == null ) {
@@ -671,6 +678,8 @@ foam.CLASS({
         }
         Loggers.logger(x, this).error("unAdapt", "Failed to parse", getOf(), data, cause);
         throw e;
+      } finally {
+        pm.log(x);
       }
       `
     },
@@ -746,7 +755,13 @@ foam.CLASS({
       HttpRequest request = builder.build();
       try {
         HttpClient client = client_.get();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = null;
+        PM pm = PM.create(x, "DIG:send", getPostURL(), getNSpecName(), dop);
+        try {
+          response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } finally {
+          pm.log(x);
+        }
         if ( response.statusCode() != 200 ) {
           Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), response.body());
         } else {
