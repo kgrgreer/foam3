@@ -230,6 +230,7 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.u2.memento',
   name: 'WindowHashMemento',
   extends: 'Memento',
 
@@ -285,6 +286,7 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.u2.memento',
   name: 'MemorablePropertyRefinement',
   refines: 'foam.core.Property',
 
@@ -301,6 +303,7 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.u2.memento',
   name: 'Memorable',
 
   documentation: 'Mixin to make a model Memorable',
