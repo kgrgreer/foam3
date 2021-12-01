@@ -95,12 +95,13 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
+      documentation: 'Maximum retries of a retry client. Set to -1 for infinite retry',
       name: 'maxRetryAttempts',
       class: 'Int',
-      documentation: 'Set to -1 to infinitely retry.',
       value: 20
     },
     {
+      documentation: 'Maximum delay in milliseconds between retries of a retry client',
       class: 'Int',
       name: 'maxRetryDelay',
       value: 20000
@@ -109,26 +110,6 @@ configuration for contacting the primary node.`,
       name: 'threadPoolName',
       class: 'String',
       value: 'medusaThreadPool'
-    },
-    {
-      name: 'batchTimerInterval',
-      class: 'Long',
-      value: 10
-    },
-    {
-      name: 'maxBatchSize',
-      class: 'Long',
-      value: 1000
-    },
-    {
-      name: 'httpConnectTimeout',
-      class: 'Int',
-      value: 5000
-    },
-    {
-      name: 'httpReadTimeout',
-      class: 'Int',
-      value: 10000
     },
     {
       name: 'clients',
