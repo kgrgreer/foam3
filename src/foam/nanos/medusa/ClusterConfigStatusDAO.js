@@ -51,7 +51,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
