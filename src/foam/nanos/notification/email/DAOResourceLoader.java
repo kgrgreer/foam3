@@ -16,6 +16,8 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.Loggers;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
@@ -42,6 +44,7 @@ public class DAOResourceLoader
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
+    Logger logger = Loggers.logger(x, new DAOResourceLoader());
 
     /*
     name  group locale spid
@@ -53,7 +56,10 @@ public class DAOResourceLoader
       Y     *     *     *
     */
 
+    logger.info("name", name, "groupId", groupId, "locale", locale, "spid", spid);
+
     List<String> groupIdList = new ArrayList<>();
+
     while ( ! SafetyUtil.isEmpty(groupId) ) {
       groupIdList.add(groupId);
 
@@ -95,6 +101,9 @@ public class DAOResourceLoader
     if ( emailTemplate == null )
       emailTemplate = findTemplateHelper(x, name, "", "en", "", templateArgs);
 
+    if ( emailTemplate == null )
+      emailTemplate = findTemplateByName(x, name, templateArgs);
+
     return emailTemplate;
   }
 
@@ -125,19 +134,40 @@ public class DAOResourceLoader
 
     if ( emailTemplate_ != null ) {
       EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
-      String sourceType = (String) templateArgs.get("templateSourceType");
-      String templateSource = (String) templateArgs.get("templateSource");
-      String source = templateSource != null ? templateSource : "emailTemplate";
-
-      clonedTemplate.setSourceClass(source);
-
-      PM pm = PM.create(x, source,  "emailTemplate: " + name);
-      pm.log(x);
+      setTemplateSource(x, name, clonedTemplate,templateArgs);
 
       emailTemplateDAO.put(clonedTemplate);
     }
 
     return emailTemplate_;
+  }
+
+  public static EmailTemplate findTemplateByName(X x, String name, Map templateArgs) {
+    DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
+    EmailTemplate emailTemplate_ = (EmailTemplate) emailTemplateDAO
+      .find(EQ(EmailTemplate.NAME, name));
+
+    if ( emailTemplate_ != null ) {
+      EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
+      setTemplateSource(x, name, clonedTemplate,templateArgs);
+
+      emailTemplateDAO.put(clonedTemplate);
+    }
+
+    return emailTemplate_;
+  }
+
+  public static void setTemplateSource(X x, String name, EmailTemplate emailTemplate, Map templateArgs) {
+      String sourceType = (String) templateArgs.get("templateSourceType");
+      String templateSource = (String) templateArgs.get("templateSource");
+      String source = templateSource != null ? templateSource : "emailTemplate";
+      emailTemplate.setSourceClass(source);
+
+      PM pm = PM.create(x, source,  "emailTemplate", name);
+      pm.log(x);
+  }
+
+  public DAOResourceLoader() {
   }
 
   public DAOResourceLoader(X x, String groupId, String locale, String spid) {
