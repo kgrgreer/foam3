@@ -198,8 +198,42 @@ foam.CLASS({
     },
     {
       class: 'Image',
+      name: 'rasterLogo',
+      documentation: 'A raster logo to display in the application. Use when svg is not supported',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
       name: 'largeLogo',
       documentation: 'A large logo to display in the application.',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
+      name: 'largeRasterLogo',
+      documentation: 'A large raster logo to display in the application. Use when svg is not supported.',
       displayWidth: 60,
       view: {
         class: 'foam.u2.MultiView',
