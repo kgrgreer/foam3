@@ -69,6 +69,22 @@ foam.CLASS({
           })
         ];
       }
+    },
+    {
+      class:  'StringArray',
+      name: 'on',
+      // initObject: function(obj) {
+      //   // called when the object is init()'ed
+      //
+      //   //listener "onDAOUpdate1"
+      //   //topic    propertyChange
+      //   //value    obj
+      // return obj
+      //
+      // },
+      // adapt: function(o,e) {
+      // return e;
+      // }
     }
   ],
 
@@ -87,10 +103,11 @@ foam.CLASS({
       var isMerged   = this.isMerged;
       var isFramed   = this.isFramed;
       var mergeDelay = this.mergeDelay;
+      var on         = this.on;
 
-      Object.defineProperty(proto, name, {
+      var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
-          if ( this.cls_.prototype === this ) return code;
+          //if ( this.cls_.prototype === this ) return code;
 
           if ( ! this.hasOwnPrivate_(name) ) {
             var self = this;
@@ -113,6 +130,15 @@ foam.CLASS({
         configurable: true,
         enumerable: false
       });
+
+      if ( on.length > 0 ) {
+        var listener = obj[this.name];
+        for ( var i = 0 ; i < on.length ; i++ ) {
+          var topic = [on[i].split('.')[1]];
+          obj.onDetach(obj.sub.apply(obj, topic.concat(listener)));
+        }
+      }
+      return obj;
     }
   ]
 });
