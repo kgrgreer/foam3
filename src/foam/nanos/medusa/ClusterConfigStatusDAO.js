@@ -21,6 +21,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.mlang.sink.Count',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.util.ArrayList',
@@ -49,6 +51,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -90,6 +93,44 @@ foam.CLASS({
               }
             }
           }
+        }
+
+        if ( myConfig.getZone() == 0 ) {
+          Count mediatorsActive = ((Count) ((DAO) getX().get("localClusterConfigDAO"))
+            .where(
+              AND(
+                EQ(ClusterConfig.ZONE, 0),
+                EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+                EQ(ClusterConfig.ENABLED, true),
+                EQ(ClusterConfig.REALM, myConfig.getRealm()),
+                EQ(ClusterConfig.STATUS, Status.ONLINE),
+                EQ(ClusterConfig.REGION, myConfig.getRegion())
+              ))
+            .select(COUNT()));
+          if ( nu.getStatus() == Status.ONLINE && mediatorsActive.getValue() > support.getMediatorQuorum() ) {
+            DAO alarmDAO = (DAO) getX().get("alarmDAO");
+            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+            if ( alarm != null && alarm.getIsActive() ) {
+              alarm = (Alarm) alarm.fclone();
+              alarm.setIsActive(false);
+              alarmDAO.put(alarm);
+            }
+          } else if ( nu.getStatus() == Status.OFFLINE && mediatorsActive.getValue() <= support.getMediatorQuorum() ) {
+            DAO alarmDAO = (DAO) getX().get("alarmDAO");
+            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+            if ( alarm == null ) {
+              alarm = new Alarm.Builder(getX())
+                .setName("Medusa Mediator Degradation")
+                .setIsActive(true)
+                .setNote("Online mediators count at quorum")
+                .build();
+            } else {
+              alarm = (Alarm) alarm.fclone();
+              if ( ! alarm.getIsActive() ) alarm.setIsActive(true);
+            }
+            alarmDAO.put(alarm);
+          }
+
         }
 
         if ( nu.getType() == MedusaType.NODE ) {
