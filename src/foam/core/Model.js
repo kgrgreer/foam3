@@ -33,7 +33,7 @@ foam.CLASS({
       transient: true,
       getter: function() {
         return this.package ? this.package + '.' + this.name : this.name;
-      },
+      }
     },
     {
       name: 'package',
