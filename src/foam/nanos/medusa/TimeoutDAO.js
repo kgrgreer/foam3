@@ -27,6 +27,7 @@ foam.CLASS({
     {
       name: 'globalTimeout',
       class: 'Long',
+      units: 'ms',
       value: 30000
     }
   ],
