@@ -134,13 +134,6 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    ['data', 'action.create', 'onCreate'],
-    ['data', 'edit', 'onEdit'],
-    ['data', 'finished', 'onFinished'],
-    ['data', 'export', 'onExport']
-  ],
-
   methods: [
     function render() {
       var self = this;
@@ -250,28 +243,51 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onCreate() {
-      this.stack.push(this.createControllerView, this.__subContext__);
+    {
+      name: 'onCreate',
+      on: [
+        //obj.topic
+        'data.action',
+        'data.create'
+      ],
+      code: function() {
+        this.stack.push(this.createControllerView, this.__subContext__);
+      }
     },
-
-    function onEdit(s, edit, id) {
-      this.stack.push({
-        class: this.updateView.class,
-        detailView: this.data.detailView,
-        editEnabled: this.data.editEnabled,
-        key: id
-      }, this.__subContext__);
+    {
+      name: 'onEdit',
+      on: [
+        'data.edit'
+      ],
+      code: function(s, edit, id) {
+        this.stack.push({
+          class: this.updateView.class,
+          detailView: this.data.detailView,
+          editEnabled: this.data.editEnabled,
+          key: id
+        }, this.__subContext__);
+      }
     },
-
-    function onFinished() {
-      this.stack.back();
+    {
+      name: 'onFinished',
+      on: [
+        'data.finished'
+      ],
+      code: function() {
+        this.stack.back();
+      }
     },
-
-    function onExport(dao) {
-      this.add(this.Popup.create().tag({
-        class: 'foam.u2.ExportModal',
-        exportData: dao.src.filteredDAO
-      }));
+    {
+      name: 'onExport',
+      on: [
+        'data.export'
+      ],
+      code: function(dao) {
+        this.add(this.Popup.create().tag({
+          class: 'foam.u2.ExportModal',
+          exportData: dao.src.filteredDAO
+        }));
+      }
     }
   ]
 });
