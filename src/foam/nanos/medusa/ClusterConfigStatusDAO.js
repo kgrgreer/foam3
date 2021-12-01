@@ -122,6 +122,7 @@ foam.CLASS({
                 .setName("Medusa Mediator Degradation")
                 .setIsActive(true)
                 .setNote("Online mediators count at quorum")
+                .setClusterable(false)
                 .build();
             } else {
               alarm = (Alarm) alarm.fclone();
