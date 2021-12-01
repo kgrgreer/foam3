@@ -80,16 +80,31 @@ foam.CLASS({
       margin: 8px 0;
     }
 
-    ^header input { float: right }
-
     ^ .permissionHeader {
+      background: white;
       color: #444;
       text-align: left;
       padding-left: 6px;
     }
 
-    ^ .property-groupQuery {
-      margin-left: 8px;
+    ^table-wrapper {
+      display: flex;
+      overflow: auto;
+    }
+
+    ^ thead th {
+      position: -webkit-sticky; /* for Safari */
+      position: sticky;
+      top: 0;
+    } 
+    
+    /* To have the header in the first column stick to the left: */
+    
+    ^ tbody td:first-child, ^ thead th:first-child {
+      position: -webkit-sticky; /* for Safari */
+      position: sticky;
+      left: 0;
+      z-index: 2;
     }
   `,
 
@@ -191,17 +206,11 @@ foam.CLASS({
             'padding-left':  '16px',
             'padding-top':   '16px',
             'padding-right': '16px',
-            'height':        'calc(100% - 32px)',
-            'overflow':      'hidden'
           })
           .start()
-            .style({
-              height: '32px'
-            })
             .addClass(this.myClass('header'))
             .start('span')
               .style({
-                'display': 'inline-block',
                 'padding': '8px'
               })
               .add('Permission Matrix')
@@ -209,10 +218,10 @@ foam.CLASS({
             .add(this.GROUP_QUERY, ' ', this.QUERY)
           .end()
           .start()
-            .style({ 'overflow': 'scroll' })
+            .addClass(this.myClass('table-wrapper'))
               .start('table')
-              .style({ 'width': '100%' })
-              .on('wheel', this.onWheel)
+              .style({ 'width': '100%', 'flex': '1' })
+              .on('wheel', this.onWheel, {passive: true})
               .start('thead')
                 .start('tr')
                   .start('th')
@@ -258,15 +267,15 @@ foam.CLASS({
                 });
               }))
             .end()
-          .end()
-          .start(self.ScrollCView.create({
-            value$: self.skip$,
-            extent: self.ROWS,
-            height: self.ROWS*21,
-            width: 26,
-            size$: self.filteredRows$.map(function(m){return m-1;})
-          }))
-            .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
+            .start(self.ScrollCView.create({
+              value$: self.skip$,
+              extent: self.ROWS,
+              height: self.ROWS*21,
+              width: 26,
+              size$: self.filteredRows$.map(function(m){return m-1;})
+            }))
+              .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
+            .end()
           .end()
         .end();
     },
@@ -419,6 +428,7 @@ foam.CLASS({
   listeners: [
     {
       name: 'onWheel',
+      isFramed: true,
       code: function(e) {
         var negative = e.deltaY < 0;
         // Convert to rows, rounding up. (Therefore minumum 1.)
