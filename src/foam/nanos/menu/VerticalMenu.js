@@ -43,16 +43,28 @@ foam.CLASS({
     z-index: 100;
   }
 
+    ^ .side-nav-view,
+    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+      width: 100%;
+    }
+
   ^search {
     box-sizing: border-box;
     margin-top: 14px;
     padding: 0 5px;
     text-align: center;
-    width: 240px;
+    width: 100%;
   }
 
   ^ .tree-view-height-manager {
     margin-bottom: 40px;
+  }
+
+  @media only screen and (min-width: 768px) {
+    ^ .side-nav-view,
+    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+      width: 240px;
+    }
   }
   `,
 
