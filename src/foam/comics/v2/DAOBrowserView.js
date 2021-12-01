@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
+    'foam.u2.layout.DisplayWidth',
     'foam.u2.layout.Rows',
     'foam.u2.stack.StackBlock',
     'foam.u2.view.OverlayActionListView',
@@ -122,7 +123,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
+    'displayWidth',
     'exportDriverRegistryDAO',
     'stack?'
   ],
@@ -290,6 +293,8 @@ foam.CLASS({
       this.onDetach(this.cannedPredicate$.sub(() => {
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
+
+      this.config.DAOActions.push(this.REFRESH_TABLE, this.EXPORT, this.IMPORT);
     },
     function render() {
       this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
@@ -303,8 +308,7 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
-
+        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO, displayWidth) {
           // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
@@ -345,6 +349,18 @@ foam.CLASS({
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
+          var hasPermissionsArr = await Promise.all(this.config.DAOActions.map(async action => {
+              if ( ! action.availablePermissions?.length ) return true;
+              var res = await Promise.all(action.availablePermissions.map(async permission => self.auth.check(null, permission)));
+              return res.every(p => p);
+            }));
+          var isAvailableArr = await Promise.all(this.config.DAOActions.map(action => action.isAvailable.call(this, this.config)));
+          var availableActions = [];
+          this.config.DAOActions.forEach((action, i) => isAvailableArr[i] && hasPermissionsArr[i] && availableActions.push(action))
+          var maxActions = displayWidth.minWidth < self.DisplayWidth.MD.minWidth ? 0 :
+                           displayWidth.minWidth < self.DisplayWidth.LG.minWidth ? 1 :
+                           3
+
           return self.E()
             .start(self.Rows)
             .addClass(this.myClass('wrapper'))
@@ -384,21 +400,12 @@ foam.CLASS({
                         data: self,
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
-                        .start(self.EXPORT, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
-                        .start(self.IMPORT, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
-                        .start(self.REFRESH_TABLE, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
-                        .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > 3 ) {
-                            var extraActions = self.config.DAOActions.splice(2);
+                        .callIf( availableActions.length, function() {
+                          if ( availableActions.length > Math.max(1, maxActions) ) {
+                            var extraActions = availableActions.splice(maxActions);
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
-                          for ( action of self.config.DAOActions ) {
+                          for ( action of availableActions ) {
                             actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
                           this.add(actions);
