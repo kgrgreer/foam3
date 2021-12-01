@@ -50,12 +50,14 @@ foam.CLASS({
       documentation: 'Delay in milliseconds between testing for primary drain',
       name: 'pollingInterval',
       class: 'Long',
+      units: 'ms',
       value: 1000
     },
     {
       documentation: 'Maximum time in milliseconds to wait for primary to drain',
       name: 'maxWaitTime',
       class: 'Long',
+      units: 'ms',
       value: 60000
     }
   ],
