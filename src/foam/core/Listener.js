@@ -93,7 +93,7 @@ foam.CLASS({
       var mergeDelay = this.mergeDelay;
       var on         = this.on;
 
-      var obj = Object.defineProperty(proto, name, {
+      Object.defineProperty(proto, name, {
         get: function listenerGetter() {
           if ( this.cls_.prototype === this ) return code;
 
@@ -120,13 +120,12 @@ foam.CLASS({
       });
 
       if ( on.length > 0 ) {
-        var listener = obj[this.name];
+        var listener = proto[this.name];
         for ( var i = 0 ; i < on.length ; i++ ) {
           var topic = [on[i].split('.')[1]];
-          obj.onDetach(obj.sub.apply(obj, topic.concat(listener)));
+          proto.onDetach(proto.sub.apply(proto, topic.concat(listener)));
         }
       }
-      return obj;
     }
   ]
 });
