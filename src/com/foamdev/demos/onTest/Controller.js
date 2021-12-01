@@ -42,8 +42,12 @@ foam.CLASS({
     {
       name: 'onTestListener',
       on: [
+        //obj.topic
         'this.propertyChange',
         'this.test'
+        // we can use also :
+        //   'yourName.propertyChange',
+        //   'data.propertyChange'
       ],
       code: function(evt) {
         console.log('Test Listener code')//TODO print this.yourName
