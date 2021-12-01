@@ -22,7 +22,12 @@ foam.CLASS({
   imports: [
     'ctrl',
     'document',
+    'dropdown',
     'theme'
+  ],
+
+  exports: [
+    'overlay_ as dropdown'
   ],
 
   properties: [
@@ -187,7 +192,7 @@ foam.CLASS({
         return this.isAvailable.bind(this);
       }));
 
-      var el = this.E().startContext({ data: self.obj })
+      var el = this.E().startContext({ data: self.obj, dropdown: self.overlay_ })
         .forEach(self.data, function(action, index) {
           if ( availabilities[index] ) {
             this
