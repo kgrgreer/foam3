@@ -1102,5 +1102,5 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" }
-
 ]);
+

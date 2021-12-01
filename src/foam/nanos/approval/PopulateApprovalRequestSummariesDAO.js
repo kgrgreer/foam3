@@ -84,7 +84,7 @@
         }
 
         // handle referenceSummaryString
-        String referenceSummaryString = "ID:" + approval.getObjId().toString();
+        String referenceSummaryString = "ID:" + (approval.getObjId() == null ? "N/A" : approval.getObjId().toString());
         if ( referenceDAO != null ) {
           FObject referenceObject = (FObject) referenceDAO.find(approval.getObjId());
           if ( referenceObject != null ) {
