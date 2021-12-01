@@ -702,6 +702,7 @@ FOAM_FILES([
   { name: "foam/u2/crunch/wizardflow/GrantedEditAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckNoDataAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadCapabilitiesAgent", flags: ['web'] },
+  { name: "foam/u2/crunch/wizardflow/WAOSettingAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CreateWizardletsAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadWizardletsAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/FilterWizardletsAgent", flags: ['web'] },
@@ -1101,5 +1102,5 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" }
-
 ]);
+

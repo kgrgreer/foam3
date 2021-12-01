@@ -436,7 +436,7 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        self.onUserAgentAndGroupLoaded();
+        await self.onUserAgentAndGroupLoaded();
         self.mementoChange();
       });
 
@@ -715,7 +715,7 @@ foam.CLASS({
       this.pushMenu(this.memento.head);
     },
 
-    function onUserAgentAndGroupLoaded() {
+    async function onUserAgentAndGroupLoaded() {
       /**
        * Called whenever the group updates.
        *   - Updates the portal view based on the group
