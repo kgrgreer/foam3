@@ -31,8 +31,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
-    'foam.util.UIDGenerator'
+    'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
+    'foam.util.NUIDGenerator'
   ],
 
   properties: [
@@ -53,7 +56,13 @@ foam.CLASS({
       class: 'Object',
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
-      javaFactory: 'return new UIDGenerator(getX(), getNSpec().getName());',
+      javaFactory: `
+        var klass = getPropertyInfo().getValueClass();
+        if ( klass == String.class ) {
+          return new AUIDGenerator(getX(), getNSpec().getName());
+        }
+        return new NUIDGenerator(getX(), getNSpec().getName());
+      `,
     },
     {
       name: 'nSpec',
@@ -69,7 +78,10 @@ foam.CLASS({
 
   public FUIDDAO(X x, String salt, DAO delegate) {
     super(x, delegate);
-    setUIDGenerator(new UIDGenerator(x, salt));
+    var id = (PropertyInfo) delegate.getOf().getAxiomByName("id");
+    setUIDGenerator(id.getValueClass() == String.class
+      ? new AUIDGenerator(x, salt)
+      : new NUIDGenerator(x, salt));
   }
   `,
 
@@ -77,12 +89,9 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        var id = getPropertyInfo().get(obj);
-        var klass = getPropertyInfo().getValueClass();
-        if ( klass == String.class && SafetyUtil.isEmpty((String) id) ) {
-          getPropertyInfo().set(obj, getUIDGenerator().getNextString());
-        } else if ( klass == long.class && ((long) id) == 0L ) {
-          getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
+        if ( getPropertyInfo().isDefaultValue(obj) ) {
+          getPropertyInfo().set(obj,
+            getUIDGenerator().getNext(getPropertyInfo().getValueClass()));
         }
         return getDelegate().put_(x, obj);
       `

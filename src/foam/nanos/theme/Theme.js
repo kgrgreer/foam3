@@ -29,7 +29,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeGlyphs'
+    'foam.nanos.theme.ThemeGlyphs',
+    'foam.u2.layout.DisplayWidth'
   ],
 
   javaImports: [
