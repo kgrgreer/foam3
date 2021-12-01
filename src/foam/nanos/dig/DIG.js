@@ -498,7 +498,15 @@ foam.CLASS({
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      return (FObject) submit(x, DOP.SELECT, "id="+id.toString());
+      Object result = submit(x, DOP.SELECT, "id="+id.toString());
+      if ( result == null ) return null;
+      if ( result instanceof FObject[] ) {
+        if ( ((FObject[])result).length > 0 ) {
+          return ((FObject[]) result)[0];
+        }
+        return null;
+      }
+      return (FObject) result;
       `
     },
     {
@@ -571,7 +579,13 @@ foam.CLASS({
       }
       Object result = submit(x, DOP.SELECT, sb.toString());
       if ( result == null ) return null;
-      if ( result instanceof FObject[] ) return result;
+      if ( result instanceof FObject[] ) {
+        if ( limit == 1 &&
+             ((FObject[]) result).length > 0 ) {
+          return ((FObject[]) result)[0];
+        }
+        return result;
+      }
       if ( limit == 1 ) return result;
       return new FObject[] { (FObject) result };
       `
@@ -640,8 +654,11 @@ foam.CLASS({
       javaCode: `
       try {
         Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
-        if ( result != null &&
-             result instanceof FOAMException ) {
+        if ( result == null ) {
+          // ClassReferenceParser returns null when data is not a modelled class
+          return data.toString();
+        }
+        if ( result instanceof FOAMException ) {
           throw (FOAMException) result;
         }
         return result;
@@ -692,6 +709,7 @@ foam.CLASS({
         sb.append(data);
       }
       sb.append("&format=JSON");
+      sb.append("&multiline=false");
       return sb.toString();
       `
     },
@@ -735,7 +753,14 @@ foam.CLASS({
           Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
         }
         if ( SafetyUtil.isEmpty(response.body()) ) return null;
-        return unAdapt(x, dop, response.body());
+        // return unAdapt(x, dop, response.body());
+        Object result = unAdapt(x, dop, response.body());
+        // Empty array has a trailing new line - assume server side dig is doing this.
+        if ( result instanceof String &&
+             result.toString().startsWith("[]") ) {
+          return null;
+        }
+        return result;
       } catch (FOAMException e) {
         Loggers.logger(x, this).error("submit", "request", dop, url, "response", e.getClass().getSimpleName(), e.getMessage(), e);
         throw e;
