@@ -174,7 +174,6 @@ foam.CLASS({
           ((DAO) x.get("clusterConfigDAO")).put(config);
         }
 
-
         getLogger().debug("dissolve", getState());
         return;
       }

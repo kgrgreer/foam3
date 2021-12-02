@@ -169,8 +169,6 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REALM, config.getRealm()),
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
-
-
         .select(COUNT());
       boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
       getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
