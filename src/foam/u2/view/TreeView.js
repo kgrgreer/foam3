@@ -64,9 +64,12 @@ foam.CLASS({
       padding-right: 8px;
       text-align: left;
       width: 100%;
+    }
+
+    ^select-level {
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipses;
+      text-overflow: ellipsis;
     }
 
     ^selected > ^heading > ^button {
