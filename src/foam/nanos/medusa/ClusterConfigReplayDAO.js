@@ -122,12 +122,12 @@ foam.CLASS({
             serviceName = "medusaEntryDAO";
           }
           DAO clientDAO = support.getClientDAO(x, serviceName, myConfig, config);
-          clientDAO = new RetryClientSinkDAO.Builder(x)
-            .setName(serviceName)
-            .setDelegate(clientDAO)
-            .setMaxRetryAttempts(support.getMaxRetryAttempts())
-            .setMaxRetryDelay(support.getMaxRetryDelay())
-            .build();
+          // clientDAO = new RetryClientSinkDAO.Builder(x)
+          //   .setName(serviceName)
+          //   .setDelegate(clientDAO)
+          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
+          //   .setMaxRetryDelay(support.getMaxRetryDelay())
+          //   .build();
 
           // NOTE: using internalMedusaDAO else we'll block on ReplayingDAO.
           DAO dao = (DAO) x.get("internalMedusaDAO");
