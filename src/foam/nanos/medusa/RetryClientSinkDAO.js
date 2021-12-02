@@ -38,7 +38,7 @@ foam.CLASS({
       name: 'maxRetryAttempts',
       class: 'Int',
       documentation: 'Set to -1 to infinitely retry.',
-      value: 20
+      value: -1
     },
     {
       class: 'Int',
@@ -158,6 +158,12 @@ foam.CLASS({
             throw e;
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
+            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            if ( replaying != null &&
+                 replaying.getIndex() > ((MedusaEntry) obj).getIndex() ) {
+              // This entry has been saved quorum times, no need to retry.
+              return obj;
+            }
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());

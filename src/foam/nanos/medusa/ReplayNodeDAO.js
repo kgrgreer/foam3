@@ -18,8 +18,10 @@ foam.CLASS({
     'foam.dao.Journal',
     'foam.dao.Sink',
     'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.MAX',
     'static foam.mlang.MLang.MIN',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.PrefixLogger',
@@ -108,6 +110,19 @@ foam.CLASS({
           // }
         }
         return cmd;
+      }
+
+      // REVIEW - this is failing on caller.  Currently testing/troubleshooting
+      // with multiple cmd objects.
+      if ( "MAX".equals(obj) ||
+           obj instanceof foam.mlang.sink.Max ) {
+        getLogger().debug("Max", "received");
+        Max max = (Max) getDelegate().select(MAX(MedusaEntry.INDEX));
+        if ( max != null ) {
+          getLogger().debug("Max", "response", max.getValue());
+          return max.getValue();
+        }
+        return 0L;
       }
 
       return getDelegate().cmd_(x, obj);

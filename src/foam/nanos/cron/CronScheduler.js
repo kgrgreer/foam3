@@ -128,7 +128,7 @@ foam.CLASS({
                                  }
                                } catch (Throwable t) {
                                  logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);
-                                 ((DAO) x.get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), LogLevel.ERROR, AlarmReason.CONFIGURATION));
+                                 ((DAO) x.get("alarmDAO")).put(new Alarm("CronScheduler", LogLevel.ERROR, AlarmReason.CONFIGURATION));
                                }
                              }
                            });
@@ -149,7 +149,7 @@ foam.CLASS({
     } catch (Throwable t) {
       logger.error(this.getClass(), t.getMessage());
       ((DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
-        .setName(this.getClass().getSimpleName())
+        .setName("CronScheduler")
         .setSeverity(foam.log.LogLevel.ERROR)
         .setNote(t.getMessage())
         .build());

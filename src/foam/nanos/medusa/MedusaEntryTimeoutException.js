@@ -6,13 +6,13 @@
 
 foam.CLASS({
   package: 'foam.nanos.medusa',
-  name: 'PrimaryNotFoundException',
+  name: 'MedusaEntryTimeoutException',
   javaExtends: 'foam.nanos.medusa.MedusaException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
   javaCode: `
-    public PrimaryNotFoundException() {
+    public MedusaEntryTimeoutException() {
       super();
     }
   `
