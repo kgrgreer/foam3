@@ -183,6 +183,7 @@ foam.CLASS({
       var mainLabel = this.E().
         addClass(self.myClass('select-level')).
         start()
+        //TODO: add tooltip when ellipsis
           .addClass(this.slot(function(selected_) {
             return selected_ ? 'p-semiBold' : 'p';
           }))
