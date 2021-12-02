@@ -10,7 +10,10 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   reactions: [
+    //simple
     ['', 'propertyChange', 'reactionTestListener']
+    //using slot
+    //['', 'propertyChange.slotListener', 'reactionTestListener']
   ],
 
   css: `
@@ -28,13 +31,23 @@ foam.CLASS({
         onKey: true,
         placeholder: 'Your name please'
       }
+    },
+    {
+      class: 'String',
+      name: 'slotListener',
+      value: 'active listener ...',
+      view: {
+        class: 'foam.u2.TextField',
+        onKey: true
+      }
     }
   ],
 
   methods: [
     function render() {
       this.start('div').add('Name:').end().start('div').add(this.YOUR_NAME).end().
-        start('h1').add('Hello ').add(this.yourName$).add('!').end();
+        start('h1').add('Hello ').add(this.yourName$).add('!').end().
+        start('div').add('listener:').end().start('div').add(this.SLOT_LISTENER).end();
     }
   ],
 
@@ -42,12 +55,18 @@ foam.CLASS({
     {
       name: 'onTestListener',
       on: [
-        //obj.topic
-        'this.propertyChange',
-        'this.test'
+        //we can use :
+        //obj.topic or obj.evt.topic
+
+        //TODO I prefer to use 'this.slotListener$.propertyChange'
+
+//         'this.propertyChange.slotListener',//work
+//         'this.propertyChange.yourName',//work
+        'this.propertyChange',//work
+//         'this.test'
         // we can use also :
-        //   'yourName.propertyChange',
-        //   'data.propertyChange'
+//           'yourName.propertyChange',//work
+//           'data.propertyChange'//work
       ],
       code: function(evt) {
         console.log('Test Listener code')//TODO print this.yourName

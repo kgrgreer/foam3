@@ -122,7 +122,10 @@ foam.CLASS({
       if ( on.length > 0 ) {
         var listener = proto[this.name];
         for ( var i = 0 ; i < on.length ; i++ ) {
-          var topic = [on[i].split('.')[1]];
+          let o        = on[i].split('.');
+          let objectOn = o.shift();
+          let topic    = o;
+          console.log(listener, topic);
           proto.onDetach(proto.sub.apply(proto, topic.concat(listener)));
         }
       }
