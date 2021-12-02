@@ -26,7 +26,9 @@ and waits on a response.`,
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.Calendar',
+    'java.util.TimeZone'
   ],
 
   properties: [
@@ -144,6 +146,9 @@ and waits on a response.`,
           entry.setDop(dop);
           entry.setObject(obj);
           entry.setObjectId(id);
+          // created required to test for timeout.
+          entry.setCreated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+
           entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
           PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
           registry.wait(x, (Long) entry.getId());
