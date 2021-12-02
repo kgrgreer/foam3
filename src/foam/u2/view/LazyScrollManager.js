@@ -165,10 +165,6 @@
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
@@ -266,7 +262,7 @@
           // TODO
         }
         var isSet = false;
-        if  ( self.renderedPages_[page] ) { 
+        if  ( self.renderedPages_[page] ) {
           console.warn('Trying to overwrite a loaded page without clearning....Clearing page');
           this.clearPage(page)
         }
@@ -306,7 +302,7 @@
       code: function() {
         this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
-        // Don't clear loadingPages_ here since they are being 
+        // Don't clear loadingPages_ here since they are being
         // loaded and will have latest data anyway
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
@@ -338,6 +334,9 @@
       name: 'updateRenderedPages_',
       isMerged: true,
       mergeDelay: 100,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         // Remove any pages that are no longer on screen to save on
         // the amount of DOM we add to the page.

@@ -291,10 +291,6 @@
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
@@ -485,6 +481,9 @@
     {
       name: 'updateRenderedPages_',
       isFramed: true,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         if ( ! this.table_ ) return;
 
@@ -503,7 +502,7 @@
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
           var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
-          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight) 
+          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight)
           var tbody = this.table_.slotE_(this.renderedPageSlots_[page]);
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;

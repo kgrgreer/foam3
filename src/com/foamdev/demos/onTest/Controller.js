@@ -14,6 +14,8 @@ foam.CLASS({
     ['', 'propertyChange', 'reactionTestListener']
     //using slot
     //['', 'propertyChange.slotListener', 'reactionTestListener']
+    // TODO we need to add support for this case.
+    //[ 'slotListener', 'propertyChange', 'reactionTestListener' ]
   ],
 
   css: `
