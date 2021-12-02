@@ -765,6 +765,7 @@ var classes = [
   'foam.nanos.ruler.action.ChangePropertyAction',
   'foam.nanos.ruler.action.AbstractCheckDAOforMatching',
   'foam.nanos.ruler.RetryStrategy',
+  'foam.nanos.ruler.DefaultRetryStrategy',
   'foam.comics.SearchMode',
 
   // DAO decorators

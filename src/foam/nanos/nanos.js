@@ -459,6 +459,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/predicate/PropertyEQProperty" },
   { name: "foam/nanos/ruler/Relationships" },
   { name: "foam/nanos/ruler/RetryStrategy" },
+  { name: "foam/nanos/ruler/DefaultRetryStrategy" },
   { name: "foam/nanos/ruler/action/SendNotification" },
   { name: "foam/nanos/ruler/predicate/PropertyHasValue" },
   { name: "foam/nanos/ruler/predicate/PropertyEQValue" },
