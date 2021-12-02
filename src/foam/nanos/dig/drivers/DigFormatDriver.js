@@ -271,10 +271,14 @@ foam.CLASS({
         }
 
         // adding system context in case if user has permission to update but not to read
-        FObject old = dao.inX(getX()).find(obj);
-        if ( old != null ) {
-          nu = old.fclone();
-          nu.copyFrom(obj);
+        Object id = obj.getProperty("id");
+        if ( id != null &&
+             ! SafetyUtil.isEmpty(id.toString()) ) {
+          FObject old = dao.inX(getX()).find(id);
+          if ( old != null ) {
+            nu = old.fclone();
+            nu.copyFrom(obj);
+          }
         }
 
         return dao.put(nu);
