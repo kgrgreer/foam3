@@ -49,7 +49,7 @@ foam.CLASS({
 
     function hl(hue, l) {
 //      var [r, g, b] = this.hslToRgb(hue/360, 0.8, l/1000);
-      var [r, g, b] = this.adjustRGBBrightness(this.hslToRgb(hue/360, 0.75, .6), Math.sqrt((1000-l*0.95)/1000));
+      var [r, g, b] = this.adjustRGBBrightness(this.hslToRgb(hue/360, 0.95, .6), Math.sqrt((1000-l*0.95)/1000));
       return `rgb(${r},${g},${b})`;
 //      return `hsl(${hue},70%,${l/10}%)`;
     },
@@ -58,10 +58,10 @@ foam.CLASS({
       var self = this;
       this.start('table').
         call(function() {
-          for ( var l = 50 ; l <= 900 ; l += 50 ) {
+          for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var hue = 0 ; hue < 360 ; hue += 20 ) {
-                this.start('td').style({color: self.hl(hue+180,950-l), width: '80px', height: '40px', background: self.hl(hue, l)}).add(l).end();
+                this.start('th').style({color: self.hl(hue+180,950-l), width: '80px', height: '80px', background: self.hl(hue, l)}).add(l).end();
               }
             }).end();
           }
