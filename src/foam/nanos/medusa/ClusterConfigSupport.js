@@ -551,12 +551,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getPrimary',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-      ],
+      args: 'Context x',
       type: 'foam.nanos.medusa.ClusterConfig',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getPrimaryDAO");
@@ -621,12 +616,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getVoters',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaType: `java.util.List`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getVoters");
@@ -903,12 +893,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'outputBuckets',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
       List<Set<String>> buckets = getNodeBuckets();
       for ( int i = 0; i < buckets.size(); i++ ) {

@@ -145,12 +145,7 @@ foam.CLASS({
       documentation: 'Assign nodes to buckets.',
       synchronized: true,
       name: 'bucketNodes',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
@@ -204,12 +199,7 @@ foam.CLASS({
     {
       documentation: 'Check for multiple primaries.  Can occur when the primary is issolated, the others vote, then the primary comes back - and was unaware that it was issolated.',
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());

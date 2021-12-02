@@ -76,12 +76,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()

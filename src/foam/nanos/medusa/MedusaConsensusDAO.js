@@ -262,12 +262,7 @@ This is the heart of Medusa.`,
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       getLogger().info("execute");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");

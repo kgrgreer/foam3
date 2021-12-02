@@ -177,12 +177,7 @@ foam.CLASS({
     - Explicitly set in DaggerService NSpec
     - // TODO: HSM`,
       name: 'getBootstrapHash',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'String',
       javaCode: `
       String alias = BOOTSTRAP_HASH.toLowerCase();

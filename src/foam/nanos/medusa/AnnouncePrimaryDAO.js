@@ -79,12 +79,7 @@ foam.CLASS({
     {
       documentation: `Interogate nodes for max index. Check for quorum on resulting max and halt or proceed as primary.`,
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       final Logger logger = Loggers.logger(x, this);
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");

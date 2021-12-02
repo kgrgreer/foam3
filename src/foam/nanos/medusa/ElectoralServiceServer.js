@@ -197,12 +197,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       getLogger().debug("execute");
       String savedThreadName = Thread.currentThread().getName();
@@ -240,12 +235,7 @@ foam.CLASS({
     },
     {
       name: 'callVote',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
      getLogger().debug("callVote", getState());
      if ( getState() != ElectoralServiceState.ELECTION ) {
@@ -367,12 +357,7 @@ foam.CLASS({
     },
     {
       name: 'generateVote',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'int',
       javaCode: `
       return ThreadLocalRandom.current().nextInt(255);
@@ -380,12 +365,7 @@ foam.CLASS({
     },
     {
       name: 'callReport',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       getLogger().debug("callReport", getState());
       if ( getState() == ElectoralServiceState.IN_SESSION ) {

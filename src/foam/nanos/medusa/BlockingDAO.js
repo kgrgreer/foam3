@@ -100,12 +100,7 @@ foam.CLASS({
     },
     {
       name: 'block',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       if ( ! maybeBlock(x) ) {
         return;
@@ -132,12 +127,7 @@ foam.CLASS({
     },
     {
       name: 'unblock',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       if ( ! maybeBlock(x) ) {
         synchronized ( lock_ ) {
@@ -148,12 +138,7 @@ foam.CLASS({
     },
     {
       name: 'maybeBlock',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'Boolean',
       javaCode: `
       return false;

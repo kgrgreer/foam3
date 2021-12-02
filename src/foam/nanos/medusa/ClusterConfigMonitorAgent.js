@@ -103,12 +103,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
