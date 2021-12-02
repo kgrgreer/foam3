@@ -182,7 +182,7 @@ public class RuleEngine extends ContextAwareSupport {
 
   private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
     asyncExecutor_.submit(new ContextAgentRunnable(userX_, x -> {
-      if ( stops_.get() ) asyncExecutor_.shutdownNow();
+      if ( stops_.get() ) return;
 
       // Reload the "obj" as it might be stale by the time the async rule is
       // executed. Re-run the rule predicate on the reloaded object to ensure

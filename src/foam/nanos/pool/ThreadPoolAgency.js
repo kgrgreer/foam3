@@ -10,7 +10,6 @@ foam.CLASS({
   extends: 'foam.nanos.pool.AbstractFixedThreadPool',
 
   implements: [
-    'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.nanos.NanoService'
   ],
@@ -18,7 +17,6 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
-    'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.core.XLocator',
@@ -89,7 +87,7 @@ foam.CLASS({
       reportingEnabledIsSet_ = true;
 
       if ( ! old && val && pool_ != null ) {
-        schedule();
+        scheduleReporting();
       }
       `
     },
@@ -134,11 +132,11 @@ foam.CLASS({
       }
     );
     pool_.allowCoreThreadTimeOut(true);
-    schedule();
+    scheduleReporting();
     `
     },
     {
-      name: 'schedule',
+      name: 'scheduleReporting',
       javaCode: `
     if ( getReportingEnabled() ) {
       java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
@@ -262,7 +260,7 @@ foam.CLASS({
       if ( getQueued() > 0 ) {
         foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
       }
-      schedule();
+      scheduleReporting();
       `
     }
   ]
