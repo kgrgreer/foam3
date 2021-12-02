@@ -13,8 +13,11 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.medusa.Clusterable'
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+  mixins: [
+    'foam.nanos.medusa.ClusterableMixin'
   ],
 
   tableColumns: [
@@ -129,12 +132,6 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea' },
       createVisibility: 'RW',
       updateVisibility: 'RO'
-    },
-    {
-      class: 'Boolean',
-      name: 'clusterable',
-      value: false,
-      includeInDigest: false
     }
   ],
 
