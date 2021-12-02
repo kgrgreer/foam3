@@ -735,7 +735,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       type: 'Object',
       javaCode: `
       String url = buildUrl(x, dop, data);
-      Loggers.logger(x, this).debug("submit", "request", dop, url);
+      // Loggers.logger(x, this).debug("submit", "request", dop, url);
       HttpRequest.Builder builder = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(Duration.ofMillis(getRequestTimeout()))
@@ -759,7 +759,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         if ( response.statusCode() != 200 ) {
           Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), response.body());
         } else {
-          Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
+          // Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
         }
         if ( SafetyUtil.isEmpty(response.body()) ) return null;
         // return unAdapt(x, dop, response.body());
