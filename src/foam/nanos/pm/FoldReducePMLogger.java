@@ -6,6 +6,7 @@
 
 package foam.nanos.pm;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
@@ -13,15 +14,13 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.util.concurrent.FoldReducer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FoldReducePMLogger
   extends    FoldReducer
   implements PMLogger
 {
-  private final Map<String, PMInfoId> captureEnabledList_ = new HashMap<>();
+  private final Set<PMInfo> captureEnabledList_ = new TreeSet<PMInfo>(PMInfo.ID);
 
   public FoldReducePMLogger() {
   }
@@ -32,14 +31,13 @@ public class FoldReducePMLogger
 
     // Load capture enabled PMInfos into initial state
     if ( captureEnabledList_ != null && captureEnabledList_.size() > 0 ) {
-      for ( String key : captureEnabledList_.keySet() ) {
-        PMInfoId pmid = captureEnabledList_.get(key);
-
+      for ( PMInfo pmi_orig : captureEnabledList_ ) {
         PMInfo pmi = new PMInfo();
-        pmi.setKey(pmid.getKey());
-        pmi.setName(pmid.getName());
+        pmi.setKey(pmi_orig.getKey());
+        pmi.setName(pmi_orig.getName());
         pmi.setCapture(true);
 
+        String key = pmi_orig.getKey() + ":" + pmi_orig.getName();
         initState.put(key, pmi);
       }
     }
@@ -81,7 +79,16 @@ public class FoldReducePMLogger
 
     pmi.setCapture(false);
     pmi.setCaptureTrace(trace.toString());
-    put(pmi);
+    updateCaptureEnabledList(pmi);
+  }
+
+  /** Manage keys for maintaining capture flag between state and LocalState **/
+  public synchronized void updateCaptureEnabledList(PMInfo pmi) {
+    if ( pmi.getCapture() ) {
+      captureEnabledList_.add(pmi);
+    } else {
+      captureEnabledList_.remove(pmi);
+    }
   }
 
   /** Template method to Merge two states. **/
@@ -101,22 +108,6 @@ public class FoldReducePMLogger
     }
 
     return state1;
-  }
-
-  /** Manage keys for maintaining capture flag between state and LocalState **/
-  public void put(PMInfo pmi) {
-    if ( pmi == null ) return;
-
-    String key = pmi.getKey() + ":" + pmi.getName();
-
-    if ( pmi.getCapture() ) {
-      PMInfoId pmid = new PMInfoId();
-      pmid.setKey(pmi.getKey());
-      pmid.setName(pmi.getName());
-      captureEnabledList_.put(key, pmid);
-    } else {
-      captureEnabledList_.remove(key);
-    }
   }
 
   @Override
@@ -140,17 +131,26 @@ public class FoldReducePMLogger
     return new ProxyDAO() {
       public DAO getDelegate() {
         synchronized ( FoldReducePMLogger.this ) {
-          DAO dao = new PMInfoMDAO(FoldReducePMLogger.this);
+          DAO dao = new PMInfoMDAO();
           Map<String, PMInfo>  m   = (Map<String, PMInfo>) getState();
 
           for ( PMInfo pi : m.values() ) {
-            String key = pi.getKey() + ":" + pi.getName();
-            pi.setCapture(captureEnabledList_.containsKey(key));
+            pi.setCapture(captureEnabledList_.contains(pi));
             dao.put(pi);
           }
 
           return dao;
         }
+      }
+
+      public foam.core.FObject put_(X x, FObject obj) {
+        PMInfo pmi = (PMInfo) obj;
+
+        if ( pmi != null ) {
+          updateCaptureEnabledList(pmi);
+        }
+
+        return super.put_(x, obj);
       }
 
       public foam.core.FObject remove_(X x, foam.core.FObject obj) {

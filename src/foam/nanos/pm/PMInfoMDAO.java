@@ -7,7 +7,6 @@
 package foam.nanos.pm;
 
 import foam.core.FObject;
-import foam.core.X;
 import foam.dao.MDAO;
 
 /**
@@ -16,12 +15,8 @@ import foam.dao.MDAO;
  **/
 public class PMInfoMDAO extends MDAO
 {
-  private final FoldReducePMLogger frpmlogger_;
-
-  public PMInfoMDAO(FoldReducePMLogger frpmlogger) {
+  public PMInfoMDAO() {
     super(PMInfo.getOwnClassInfo());
-
-    frpmlogger_ = frpmlogger;
   }
 
   public FObject objIn(FObject obj) {
@@ -30,12 +25,5 @@ public class PMInfoMDAO extends MDAO
 
   public FObject objOut(FObject obj) {
     return obj;
-  }
-
-  public foam.core.FObject put_(X x, FObject obj) {
-    PMInfo pmi = (PMInfo) obj;
-    frpmlogger_.put(pmi);
-
-    return super.put_(x, obj);
   }
 }
