@@ -39,3 +39,12 @@ Industry offerings are centered around traditional databases. Since nanopay empl
 <h1>Viewing Data</h1>
 <p>Medusa entries can view from the Mediators.</p>
 <p>Menu <b>Medusa Entry</b></p>
+
+<h1>Mediator Failover Scenarios<h1>
+<p>Graceful and Hard Failover </p>
+Graceful
+In a Gracful Failover the Primary is instructed to go OFFLINE.
+Before an election is called, the Primary blocks incomming requests, allows in-flight operations to finish.
+
+Hard (JVM dies)
+When a mediator becomes Primary it blocks incomming requests and verifies the global index.

@@ -50,7 +50,7 @@ public class WebAgentQueryParser {
 
       if ( ps == null ) {
         String message = getParsingError(x, q);
-        logger.error(this.getClass().getSimpleName(), "failed to parse q", message);
+        logger.error(this.getClass().getSimpleName(), "failed to parse q", q, message);
         throw new IllegalArgumentException("failed to parse [" + q + "]: " + message);
       }
 
