@@ -7,8 +7,8 @@
 foam.CLASS({
   package: 'foam.core',
   name: 'CompoundContextAgency',
+  extends: 'foam.core.AbstractAgency',
   javaImplements: [
-    'foam.core.Agency',
     'foam.core.ContextAgent'
   ],
 
