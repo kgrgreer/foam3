@@ -55,12 +55,7 @@ foam.CLASS({
   methods: [
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
     MedusaTestObject test = new MedusaTestObject();
     test.setDescription("MedusaTestObject");

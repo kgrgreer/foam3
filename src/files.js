@@ -112,6 +112,7 @@ FOAM_FILES([
   { name: "foam/core/AxiomCloner" },
   { name: 'foam/u2/ModalOverlay', flags: ['web'] },
   { name: "foam/core/Agency"},
+  { name: "foam/core/AbstractAgency"},
   { name: "foam/nanos/auth/Authorizable" },
   { name: "foam/i18n/TranslationFormatStringParser"},
   { name: "foam/swift/SwiftLib", flags: ['swift'] },
@@ -359,11 +360,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
-  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
-
-  { name: 'foam/nanos/bench/BenchmarkResult' },
 
   { name: "foam/dao/EasyDAO" },
   { name: "foam/dao/NoSelectAllDAO" },
@@ -1086,21 +1084,6 @@ FOAM_FILES([
   { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
-  { name: "foam/util/date/TimeUnit" },
-
-  { name: "foam/nanos/dig/DIGDAOClient" },
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
-  { name: "foam/nanos/dig/exception/DAONotFoundException" },
-  { name: "foam/nanos/dig/exception/DAORequiredException" },
-  { name: "foam/nanos/dig/exception/ParsingErrorException" },
-  { name: "foam/nanos/dig/exception/DAOPutException" },
-  { name: "foam/nanos/dig/exception/EmptyDataException" },
-  { name: "foam/nanos/dig/exception/UnsupportException" },
-  { name: "foam/nanos/dig/exception/UnknownIdException" },
-  { name: "foam/nanos/dig/exception/DigSuccessMessage" },
-  { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
-  { name: "foam/nanos/dig/exception/EmptyParameterException" },
-  { name: "foam/nanos/dig/exception/ExternalAPIException" },
-  { name: "foam/nanos/dig/exception/GeneralException" }
+  { name: "foam/util/date/TimeUnit" }
 ]);
 
