@@ -344,14 +344,6 @@ NOTE: when using the java client, the first call to a newly started instance may
       javaFactory: 'return getX().get(Session.class).getId();',
       visibility: 'HIDDEN'
     },
-    // {
-    //   name: 'url',
-    //   class: 'String',
-    //   javaFactory: `
-    //   // see 'domain' below - which is not working.
-    //   return "http://"+System.getProperty("hostname", "localhost")+":8080";
-    //   `
-    // },
     {
       documentation: 'Connection timeout in milliseconds',
       name: 'connectionTimeout',
@@ -412,7 +404,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       `,
       visibility: 'HIDDEN',
       transient: true
-    }
+    },
   ],
 
   actions: [
@@ -476,7 +468,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         }
       }
       // store and accept ORIGINAL_SERVER
-      // builder.cookieHandler(new CookieManager());
+      builder.cookieHandler(new CookieManager());
       return builder.build();
     }
   };
