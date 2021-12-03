@@ -11,18 +11,22 @@ foam.CLASS({
   methods: [
     function rgbToGrey(rgb) {
       var [r, g, b] = rgb;
-      return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255;
+//      return (r/255+g/255+b/255)/3;
+//Gray = (Red * 0.3 + Green * 0.59 + Blue * 0.11)
+      return 0.3 * r/255 + 0.59 * g/255 + 0.11 * b/255;
     },
 
     function adjustRGBBrightness(rgb, br) {
+    //  return [255 * br, 255 * br, 255 * br];
       var [r, g, b] = rgb;
       var gr = this.rgbToGrey(rgb);
-      console.log(r,g,b, gr);
+
+      console.log('adjustRGB', r,g,b, gr);
       var scale = br/gr;
       return [r * scale, g * scale, b * scale];
     },
 
-    function hslToRgb(h, s, l){
+    function hslToRgb(h, s, l) {
       var r, g, b;
 
       if ( s == 0 ) {
