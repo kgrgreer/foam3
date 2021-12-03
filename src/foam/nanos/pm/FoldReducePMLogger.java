@@ -10,6 +10,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.dao.RemoveSink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.util.concurrent.FoldReducer;
@@ -166,7 +167,13 @@ public class FoldReducePMLogger
       }
 
       public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-        resetState();
+        if ( predicate == null && skip == 0 && limit == MAX_SAFE_INTEGER ) {
+          // Remove all
+          resetState();
+        } else {
+          // Remove elements based on predicate
+          getDelegate().select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
+        }
       }
     };
   }

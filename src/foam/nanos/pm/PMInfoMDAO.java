@@ -17,6 +17,9 @@ public class PMInfoMDAO extends MDAO
 {
   public PMInfoMDAO() {
     super(PMInfo.getOwnClassInfo());
+
+    // Add index for lookup by pminfo key
+    this.addIndex(PMInfo.KEY);
   }
 
   public FObject objIn(FObject obj) {
