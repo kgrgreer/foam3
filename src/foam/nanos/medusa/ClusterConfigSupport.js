@@ -459,6 +459,13 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'shutdown',
+      class: 'Boolean',
+      value: false,
+      visibility: 'HIDDEN',
+      transient: true
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',

@@ -1085,6 +1085,7 @@ FOAM_FILES([
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" },
+  { name: "foam/u2/memento/Memento"},
 
   // Retry strategy
   { name: "foam/util/retry/RetryStrategy" },
