@@ -982,8 +982,10 @@ var classes = [
 
   // Retry strategy
   'foam.util.retry.RetryStrategy',
+  'foam.util.retry.NoRetryStrategy',
   'foam.util.retry.SimpleRetryStrategy',
   'foam.util.retry.BackoffRetryStrategy',
+  'foam.util.retry.RetryStrategyFactory',
   'foam.util.retry.RetryLimitReachedException'
 ];
 
