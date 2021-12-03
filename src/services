@@ -1042,3 +1042,31 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ipAddressInfoDAO",
+  "serve": true,
+  "lazy": false,
+  "description": "A read-only dao which will return information based on the request IP Address",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setReadOnly(true)
+      .setRuler(false)
+      .setDecorator(new foam.net.ip.FetchIPAddressInfo.Builder(x).build())
+      .setEnableInterfaceDecorators(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ipAddressInfos")
+      .setGuid(true)
+      .setOf(foam.net.ip.IPAddressInfo.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.net.ip.IPAddressInfo"
+  }
+  """
+})

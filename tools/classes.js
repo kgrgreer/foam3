@@ -103,6 +103,8 @@ var classes = [
   'foam.net.CIDR',
   'foam.net.IPSupport',
   'foam.net.Host',
+  'foam.net.ip.IPAddressInfo',
+  'foam.net.ip.FetchIPAddressInfo',
   'foam.box.Box',
   'foam.box.Skeleton',
   'foam.box.AbstractSkeleton',

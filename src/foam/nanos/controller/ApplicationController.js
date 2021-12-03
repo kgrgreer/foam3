@@ -75,6 +75,7 @@ foam.CLASS({
     'currentMenu',
     'displayWidth',
     'group',
+    'ipAddressInfo',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'loginSuccess',
@@ -342,6 +343,12 @@ foam.CLASS({
     {
       name: 'styles',
       factory: function() { return {}; }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'ipAddressInfo',
+      of: 'foam.net.ip.IPAddressInfo',
+      documentation: 'Contains fetched information from the applied IP Address information provider.'
     }
   ],
 
