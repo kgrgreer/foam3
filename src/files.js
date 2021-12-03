@@ -1092,6 +1092,7 @@ FOAM_FILES([
   { name: "foam/util/retry/SimpleRetryStrategy" },
   { name: "foam/util/retry/BackoffRetryStrategy" },
   { name: "foam/util/retry/RetryForeverStrategy" },
+  { name: "foam/util/retry/RetryUntilStrategy" },
   { name: "foam/util/retry/RetryStrategyFactory" },
   { name: "foam/util/retry/RetryLimitReachedException" }
 ]);
