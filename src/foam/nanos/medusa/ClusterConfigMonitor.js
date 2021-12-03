@@ -56,11 +56,13 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
+      units: 'ms',
       value: 60000
     },
     {
       name: 'initialTimerDelay',
       class: 'Int',
+      units: 'ms',
       value: 5000
     },
     {
@@ -102,12 +104,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());

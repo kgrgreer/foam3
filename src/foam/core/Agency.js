@@ -16,6 +16,16 @@ foam.INTERFACE({
         { name: 'agent',       type: 'foam.core.ContextAgent' },
         { name: 'description', type: 'String' }
       ]
+    },
+    {
+      name: 'schedule',
+      type: 'Void',
+      args: [
+        { name: 'x',           type: 'Context' },
+        { name: 'agent',       type: 'foam.core.ContextAgent' },
+        { name: 'key',         type: 'String' },
+        { name: 'delay',       type: 'long' }
+      ]
     }
   ]
 });

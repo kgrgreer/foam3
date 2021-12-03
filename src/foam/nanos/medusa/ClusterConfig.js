@@ -136,6 +136,7 @@ foam.CLASS({
     {
       name: 'pingTime',
       class: 'Long',
+      units: 'ms',
       visibility: 'RO',
       storageTransient: true
     },

@@ -61,7 +61,8 @@ foam.CLASS({
           for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var hue = 0 ; hue < 360 ; hue += 20 ) {
-                this.start('th').style({color: self.hl(hue+180,950-l), width: '80px', height: '80px', background: self.hl(hue, l)}).add(l).end();
+                var l2 = 1000-(l+500)%950;
+                this.start('th').style({xxxcolor: 'black', color: self.hl(hue+180,l2), width: '80px', height: '80px', background: self.hl(hue, l)}).add(l).end();
               }
             }).end();
           }

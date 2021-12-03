@@ -49,12 +49,7 @@ foam.CLASS({
   methods: [
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
       DaggerService dagger = (DaggerService) x.get("daggerService");
       dagger.link(x, x.create(MedusaEntry.class));
