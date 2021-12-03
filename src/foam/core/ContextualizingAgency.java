@@ -24,4 +24,10 @@ public class ContextualizingAgency
     if ( agent instanceof ContextAware) ((ContextAware) agent).setX(systemX_);
     super.submit(userX_, agent, description);
   }
+
+  @Override
+  public void schedule(X x, ContextAgent agent, String key, long delay) {
+    if ( agent instanceof ContextAware) ((ContextAware) agent).setX(systemX_);
+    super.schedule(x, agent, key, delay);
+  }
 }

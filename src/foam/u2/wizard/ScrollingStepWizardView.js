@@ -211,7 +211,8 @@ foam.CLASS({
           .addClass(this.myClass('fix-grid'))
           .start(this.GUnit, { columns: 4 }).show(this.displayWizardletSteps)
             // TODO: deprecate this hide-X-status class
-            .addClass(this.hideX ? this.myClass('hide-X-status') : this.myClass('status'))
+            .enableClass(this.myClass('hide-X-status'), this.hideX$)
+            .enableClass(this.myClass('status'), this.hideX$, true)
             .add(
               this.slot(function (data, data$currentWizardlet) {
                 return this.StepWizardletStepsView.create({
