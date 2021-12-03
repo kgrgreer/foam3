@@ -46,8 +46,8 @@ public class RetryManager {
             }
           } catch (Exception ex) {
             exception_ = ex;
-            latch_.countDown();
             start();
+            latch_.countDown();
           }
         }
       }, retryStrategy_.getRetryDelay(x_));
@@ -64,7 +64,6 @@ public class RetryManager {
     new Retry(x, agent).start();
     try {
       latch_.await();
-      System.out.println("---------- release count down latch");
     } catch (InterruptedException e) { /*ignored*/ }
   }
 }
