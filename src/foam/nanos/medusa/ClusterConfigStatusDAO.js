@@ -95,7 +95,7 @@ foam.CLASS({
         }
 
         if ( myConfig.getZone() == 0 ) {
-          Count mediatorsActive = ((Count) ((DAO) getX().get("localClusterConfigDAO"))
+          Count mediatorsActive = ((Count) ((DAO) x.get("localClusterConfigDAO"))
             .where(
               AND(
                 EQ(ClusterConfig.ZONE, 0),
@@ -107,7 +107,7 @@ foam.CLASS({
               ))
             .select(COUNT()));
           if ( nu.getStatus() == Status.ONLINE && mediatorsActive.getValue() > support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) getX().get("alarmDAO");
+            DAO alarmDAO = (DAO) x.get("alarmDAO");
             Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
             if ( alarm != null && alarm.getIsActive() ) {
               alarm = (Alarm) alarm.fclone();
@@ -115,10 +115,10 @@ foam.CLASS({
               alarmDAO.put(alarm);
             }
           } else if ( nu.getStatus() == Status.OFFLINE && mediatorsActive.getValue() <= support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) getX().get("alarmDAO");
+            DAO alarmDAO = (DAO) x.get("alarmDAO");
             Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
             if ( alarm == null ) {
-              alarm = new Alarm.Builder(getX())
+              alarm = new Alarm.Builder(x)
                 .setName("Medusa Mediator Degradation")
                 .setIsActive(true)
                 .setNote("Online mediators count at quorum")
