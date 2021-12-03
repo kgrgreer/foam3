@@ -1085,22 +1085,6 @@ FOAM_FILES([
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" },
-
-  { name: "foam/nanos/dig/DIGDAOClient" },
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
-  { name: "foam/nanos/dig/exception/DAONotFoundException" },
-  { name: "foam/nanos/dig/exception/DAORequiredException" },
-  { name: "foam/nanos/dig/exception/ParsingErrorException" },
-  { name: "foam/nanos/dig/exception/DAOPutException" },
-  { name: "foam/nanos/dig/exception/EmptyDataException" },
-  { name: "foam/nanos/dig/exception/UnsupportException" },
-  { name: "foam/nanos/dig/exception/UnknownIdException" },
-  { name: "foam/nanos/dig/exception/DigSuccessMessage" },
-  { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
-  { name: "foam/nanos/dig/exception/EmptyParameterException" },
-  { name: "foam/nanos/dig/exception/ExternalAPIException" },
-  { name: "foam/nanos/dig/exception/GeneralException" },
-
   { name: "foam/u2/memento/Memento"}
 
 ]);
