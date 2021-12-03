@@ -992,6 +992,7 @@ var classes = [
   'foam.util.retry.NoRetryStrategy',
   'foam.util.retry.SimpleRetryStrategy',
   'foam.util.retry.BackoffRetryStrategy',
+  'foam.util.retry.RetryForeverStrategy',
   'foam.util.retry.RetryStrategyFactory',
   'foam.util.retry.RetryLimitReachedException'
 ];
