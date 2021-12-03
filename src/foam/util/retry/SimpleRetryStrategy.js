@@ -23,7 +23,7 @@ foam.CLASS({
       name: 'maxRetry'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'retryDelay'
     }
   ],
