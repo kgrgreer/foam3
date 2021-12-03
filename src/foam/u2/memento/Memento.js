@@ -232,7 +232,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2.memento',
   name: 'WindowHashMemento',
-  extends: 'Memento',
+  extends: 'foam.u2.memento.Memento',
 
   documentation: `
     A Memento with support for binding to the windows location hash.
@@ -306,6 +306,11 @@ foam.CLASS({
   package: 'foam.u2.memento',
   name: 'Memorable',
 
+  requires: [
+    'foam.u2.memento.Memento',
+    'foam.u2.memento.WindowHashMemento'
+  ],
+
   documentation: 'Mixin to make a model Memorable',
 
   imports: [ 'memento_? as parentMemento_' ],
@@ -320,8 +325,8 @@ foam.CLASS({
         // If no top-level Memento found, then create a WindowHashMemento to be
         // the top-level one.
         return this.parentMemento_ ?
-          Memento.create({obj: this, memento_: this.parentMemento_}, this) :
-          WindowHashMemento.create({obj: this}, this);
+          this.Memento.create({obj: this, memento_: this.parentMemento_}, this) :
+          this.WindowHashMemento.create({obj: this}, this);
       }
     }
   ],
