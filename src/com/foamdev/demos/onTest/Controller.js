@@ -14,8 +14,6 @@ foam.CLASS({
     ['', 'propertyChange', 'reactionTestListener']
     //using slot
     //['', 'propertyChange.slotListener', 'reactionTestListener']
-    // TODO we need to add support for this case.
-    //[ 'slotListener', 'propertyChange', 'reactionTestListener' ]
   ],
 
   css: `
@@ -59,16 +57,13 @@ foam.CLASS({
       on: [
         //we can use :
         //obj.topic or obj.evt.topic
-
-        //TODO I prefer to use 'this.slotListener$.propertyChange'
-
-//         'this.propertyChange.slotListener',//work
-//         'this.propertyChange.yourName',//work
+        //  'this.propertyChange.slotListener',//work
+        //  'this.propertyChange.yourName',//work
         'this.propertyChange',//work
-//         'this.test'
+
         // we can use also :
-//           'yourName.propertyChange',//work
-//           'data.propertyChange'//work
+        //  'yourName.propertyChange',//work
+        //  'data.propertyChange'//work
       ],
       code: function(evt) {
         console.log('Test Listener code')//TODO print this.yourName
