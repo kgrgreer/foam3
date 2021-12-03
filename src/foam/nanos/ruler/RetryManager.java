@@ -11,9 +11,9 @@ import java.util.concurrent.CountDownLatch;
 
 public class RetryManager {
   protected final RetryStrategy retryStrategy_;
-  protected final String          description_;
-  protected CountDownLatch        latch_;
-  protected Exception             exception_;
+  protected final String        description_;
+  protected CountDownLatch      latch_;
+  protected Exception           exception_;
 
   class Retry {
     final X            x_;
