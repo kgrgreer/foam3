@@ -1084,6 +1084,8 @@ FOAM_FILES([
   { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
-  { name: "foam/util/date/TimeUnit" }
+  { name: "foam/util/date/TimeUnit" },
+  { name: "foam/u2/memento/Memento"}
+
 ]);
 
