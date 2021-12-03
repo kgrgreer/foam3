@@ -35,6 +35,8 @@
     'foam.nanos.auth.Subject',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.util.retry.RetryStrategy',
+    'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
     'java.util.Date'
   ],
@@ -424,7 +426,7 @@
           apply(x, obj, oldObj, ruler, rule, new DirectAgency());
         } catch ( Exception e ) {
           var strategy = getMaxRetry() > 0 ?
-            new DefaultRetryStrategy(getMaxRetry(), getRetryDelay()) :
+            new SimpleRetryStrategy(getMaxRetry(), getRetryDelay()) :
             (RetryStrategy) x.get("ruleRetryStrategy");
 
           new RetryManager(strategy, rule.getName()).submit(x, userX -> {

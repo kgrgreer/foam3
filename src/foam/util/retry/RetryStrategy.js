@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.nanos.ruler',
+  package: 'foam.util.retry',
   name: 'RetryStrategy',
 
   methods: [
@@ -16,7 +16,12 @@ foam.INTERFACE({
     {
       name: 'getRetryDelay',
       type: 'Long',
-      args: [ 'Long t' ]
+      args: [ 'Context x' ]
+    },
+    {
+      name: 'canRetry',
+      type: 'Boolean',
+      args: [ 'Context x' ]
     }
   ]
 });

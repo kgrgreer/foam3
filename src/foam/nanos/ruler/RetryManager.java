@@ -3,13 +3,14 @@ package foam.nanos.ruler;
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.nanos.logger.Logger;
+import foam.util.retry.RetryStrategy;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 public class RetryManager {
-  protected final RetryStrategy   retryStrategy_;
+  protected final RetryStrategy retryStrategy_;
   protected final String          description_;
   protected CountDownLatch        latch_;
   protected Exception             exception_;
@@ -25,7 +26,7 @@ public class RetryManager {
     }
 
     public void start() {
-      if ( latch_.getCount() > 0 ) {
+      if ( retryStrategy_.canRetry(x_) ) {
         retry();
       } else {
         ((Logger) x_.get("logger")).error(
@@ -35,7 +36,6 @@ public class RetryManager {
     }
 
     private void retry() {
-      var t = retryStrategy_.getMaxRetry() - latch_.getCount();
       timer_.schedule(new TimerTask() {
         @Override
         public void run() {
@@ -50,7 +50,7 @@ public class RetryManager {
             start();
           }
         }
-      }, retryStrategy_.getRetryDelay(t));
+      }, retryStrategy_.getRetryDelay(x_));
     }
   }
 
@@ -64,6 +64,7 @@ public class RetryManager {
     new Retry(x, agent).start();
     try {
       latch_.await();
+      System.out.println("---------- release count down latch");
     } catch (InterruptedException e) { /*ignored*/ }
   }
 }

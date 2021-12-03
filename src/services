@@ -707,7 +707,7 @@ p({
   name: "ruleRetryStrategy",
   lazy: true,
   service: {
-    class: "foam.nanos.ruler.DefaultRetryStrategy",
+    class: "foam.util.retry.SimpleRetryStrategy",
     maxRetry: 5,
     retryDelay: 10000
   }

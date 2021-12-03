@@ -1101,6 +1101,12 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
   { name: "foam/nanos/dig/exception/EmptyParameterException" },
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
-  { name: "foam/nanos/dig/exception/GeneralException" }
+  { name: "foam/nanos/dig/exception/GeneralException" },
+
+  // Retry strategy
+  { name: "foam/util/retry/RetryStrategy" },
+  { name: "foam/util/retry/SimpleRetryStrategy" },
+  { name: "foam/util/retry/BackoffRetryStrategy" },
+  { name: "foam/util/retry/RetryLimitReachedException" }
 ]);
 

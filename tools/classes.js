@@ -764,9 +764,6 @@ var classes = [
   'foam.nanos.ruler.predicate.PropertyIsSetPredicate',
   'foam.nanos.ruler.action.ChangePropertyAction',
   'foam.nanos.ruler.action.AbstractCheckDAOforMatching',
-  'foam.nanos.ruler.RetryStrategy',
-  'foam.nanos.ruler.DefaultRetryStrategy',
-  'foam.nanos.ruler.ExponentialBackoffRetryStrategy',
   'foam.comics.SearchMode',
 
   // DAO decorators
@@ -981,7 +978,13 @@ var classes = [
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
   'foam.counter.Counter',
-  'foam.util.date.TimeUnit'
+  'foam.util.date.TimeUnit',
+
+  // Retry strategy
+  'foam.util.retry.RetryStrategy',
+  'foam.util.retry.SimpleRetryStrategy',
+  'foam.util.retry.BackoffRetryStrategy',
+  'foam.util.retry.RetryLimitReachedException'
 ];
 
 var abstractClasses = [
