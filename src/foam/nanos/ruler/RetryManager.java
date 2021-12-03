@@ -19,6 +19,7 @@ public class RetryManager {
     final X            x_;
     final ContextAgent agent_;
     final Timer        timer_ = new Timer();
+    private boolean cancelled_ = false;
 
     public Retry(X x, ContextAgent agent) {
       x_     = x;
@@ -39,6 +40,8 @@ public class RetryManager {
       timer_.schedule(new TimerTask() {
         @Override
         public void run() {
+          if ( cancelled_ ) return;
+
           try {
             agent_.execute(x_);
             while ( latch_.getCount() > 0 ) {
@@ -52,6 +55,10 @@ public class RetryManager {
         }
       }, retryStrategy_.getRetryDelay(x_));
     }
+
+    public void cancel() {
+      cancelled_ = true;
+    }
   }
 
   public RetryManager(RetryStrategy retryStrategy, String description) {
@@ -61,9 +68,12 @@ public class RetryManager {
   }
 
   public void submit(X x, ContextAgent agent) {
-    new Retry(x, agent).start();
+    var retry = new Retry(x, agent);
+    retry.start();
     try {
       latch_.await();
-    } catch (InterruptedException e) { /*ignored*/ }
+    } catch (InterruptedException e) {
+      retry.cancel();
+    }
   }
 }
