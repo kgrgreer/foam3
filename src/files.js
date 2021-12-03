@@ -1084,7 +1084,6 @@ FOAM_FILES([
   { name: "foam/u2/table/UnstyledTableView", flags: ['web'] },
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
-<<<<<<< HEAD
   { name: "foam/util/date/TimeUnit" },
 
   { name: "foam/nanos/dig/DIGDAOClient" },
@@ -1102,9 +1101,7 @@ FOAM_FILES([
   { name: "foam/nanos/dig/exception/ExternalAPIException" },
   { name: "foam/nanos/dig/exception/GeneralException" },
 
-  { name: "foam/u2/memento/Memento"},
-
-  { name: "foam/util/date/TimeUnit" }
+  { name: "foam/u2/memento/Memento"}
 
 ]);
 
