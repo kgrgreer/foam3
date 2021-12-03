@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'RenouncePrimaryDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  implements: [
+    'foam.core.ContextAgent'
+  ],
+
   documentation: `If this mediator was primary and is now going offline, set electoral state to DISSOLUTION and wait until in-flight broadcast are complete before calling election.`,
 
   // trigger Primary and ONLINE -> OFFLINE
@@ -17,6 +21,7 @@ foam.CLASS({
   // election DISMISS
 
   javaImports: [
+    'foam.core.Agency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -140,8 +145,22 @@ foam.CLASS({
           .setNote(myConfig.getId())
           .setClusterable(false)
           .build());
+
+        if ( support.getShutdown() ) {
+          Agency agency = (Agency) x.get(support.getThreadPoolName());
+          agency.schedule(x, this, this.getClass().getSimpleName(), 30000);
+          logger.warning("shutdown","scheduled", "30s");
+        }
       }
       return nu;
+      `
+    },
+    {
+      name: 'execute',
+      args: 'Context x',
+      javaCode: `
+      Loggers.logger(x, this).warning("shutdown","exit");
+      System.exit(0);
       `
     }
   ]
