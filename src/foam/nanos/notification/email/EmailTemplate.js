@@ -149,7 +149,7 @@ foam.CLASS({
 
         EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
         // BODY:
-        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(emailMessage.getBody()) ) {
+        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(getBody()) ) {
           emailMessage.setBody(templateEngine.renderTemplate(x, getBody(), templateArgs).toString());
         }
 
