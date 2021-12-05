@@ -1085,7 +1085,16 @@ FOAM_FILES([
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" },
-  { name: "foam/u2/memento/Memento"}
+  { name: "foam/u2/memento/Memento"},
 
+  // Retry strategy
+  { name: "foam/util/retry/RetryStrategy" },
+  { name: "foam/util/retry/NoRetryStrategy" },
+  { name: "foam/util/retry/SimpleRetryStrategy" },
+  { name: "foam/util/retry/BackoffRetryStrategy" },
+  { name: "foam/util/retry/RetryForeverStrategy" },
+  { name: "foam/util/retry/RetryUntilStrategy" },
+  { name: "foam/util/retry/RetryStrategyFactory" },
+  { name: "foam/util/retry/RetryLimitReachedException" }
 ]);
 

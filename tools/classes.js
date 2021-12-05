@@ -986,7 +986,17 @@ var classes = [
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
   'foam.counter.Counter',
-  'foam.util.date.TimeUnit'
+  'foam.util.date.TimeUnit',
+
+  // Retry strategy
+  'foam.util.retry.RetryStrategy',
+  'foam.util.retry.NoRetryStrategy',
+  'foam.util.retry.SimpleRetryStrategy',
+  'foam.util.retry.BackoffRetryStrategy',
+  'foam.util.retry.RetryForeverStrategy',
+  'foam.util.retry.RetryUntilStrategy',
+  'foam.util.retry.RetryStrategyFactory',
+  'foam.util.retry.RetryLimitReachedException'
 ];
 
 var abstractClasses = [

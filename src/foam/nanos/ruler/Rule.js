@@ -35,6 +35,8 @@
     'foam.nanos.auth.Subject',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.util.retry.RetryStrategy',
+    'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
     'java.util.Date'
   ],
@@ -295,6 +297,23 @@
       section: 'basicInfo',
       value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       documentation: 'Service Provider Id of the rule. Default to ServiceProviderAware.GLOBAL_SPID for rule applicable to all service providers.'
+    },
+    {
+      class: 'Int',
+      name: 'maxRetry',
+      documentation: 'The number of max retry when failed to execute the action. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'retryDelay',
+      unit: 'ms',
+      documentation: 'The delay time in millisecond to retry executing the action after failure. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ],
 
@@ -406,7 +425,11 @@
         try {
           apply(x, obj, oldObj, ruler, rule, new DirectAgency());
         } catch ( Exception e ) {
-          new RetryManager(rule.getName()).submit(x, userX -> {
+          var strategy = getMaxRetry() > 0 ?
+            new SimpleRetryStrategy(getMaxRetry(), getRetryDelay()) :
+            (RetryStrategy) x.get("ruleRetryStrategy");
+
+          new RetryManager(strategy, rule.getName()).submit(x, userX -> {
             apply(x, obj, oldObj, ruler, rule, new DirectAgency());
           });
         }
