@@ -493,6 +493,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.benchmark.PingDAO',
   'foam.nanos.medusa.test.MedusaTestObject',
+  'foam.nanos.medusa.test.MedusaTestObjectDIGBenchmark',
   'foam.nanos.security.KeyStoreManager',
   'foam.nanos.benchmark.UUIDBenchmark',
   'foam.nanos.benchmark.AuthorizerBenchmark',

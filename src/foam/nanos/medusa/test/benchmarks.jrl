@@ -1,0 +1,7 @@
+p({
+  class: "foam.nanos.medusa.test.MedusaTestObjectDIGBenchmark",
+  id: "MedusaTestObjectDIGBenchmark",
+  name: "MedusaTestObjectDIGBenchmark",
+  sessionId: "1aef6375-3f9d-ada3-1735-eebf98f1e6de",
+  urls:["https://argus:8443","https://hera:8443","https://prometheus:8443"]
+})
