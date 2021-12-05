@@ -1,11 +1,22 @@
 p({
   class:"foam.nanos.script.Script",
-  id:"FUIDGenerator",
-  description: "Generate FUIDs",
+  id:"AUIDGenerator",
+  description: "Generate Alpha-Numeric FOAM UIDs",
+  clusterable: false,
   code:"""
-    import foam.util.UIDGenerator;
-    g = new UIDGenerator();
-    g.setSalt("benchmarkDAO");
+    import foam.util.AUIDGenerator;
+    g = new AUIDGenerator(x, "benchmarkDAO");
+    print("id: "+g.getNextString());
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"NUIDGenerator",
+  description: "Generate Numeric FOAM UIDs",
+  clusterable: false,
+  code:"""
+    import foam.util.NUIDGenerator;
+    g = new NUIDGenerator(x, "benchmarkDAO");
     print("id: "+g.getNextLong());
   """
 })
