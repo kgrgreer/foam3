@@ -624,7 +624,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'String',
       javaCode: `
-      PM pm = PM.create(x, "DIG:adapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getNSpecName(), dop);
       try {
         FObjectFormatter formatter = formatter_.get();
         formatter.output(obj);
@@ -652,7 +652,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'Object',
       javaCode: `
-      PM pm = PM.create(x, "DIG:unAdapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getNSpecName(), dop);
       try {
         Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
         if ( result == null ) {
@@ -750,7 +750,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       try {
         HttpClient client = client_.get();
         HttpResponse<String> response = null;
-        PM pm = PM.create(x, "DIG:send", getPostURL(), getNSpecName(), dop);
+        PM pm = PM.create(x, "DIG", "send", getPostURL(), getNSpecName(), dop);
         try {
           response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } finally {
