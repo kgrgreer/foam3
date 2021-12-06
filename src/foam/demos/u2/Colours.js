@@ -109,7 +109,7 @@ foam.CLASS({
           for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var c = 0 ; c < self.colours.length ; c++ ) {
-               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l*0.95)/1000)); //self.hl(hue, l);
+               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l)/1000)); //self.hl(hue, l);
                this.start('th').style({color: 'black', width: '60px', height: '60px', background: self.rgbToString(colour)}).add(l).end();
               }
             }).end();
