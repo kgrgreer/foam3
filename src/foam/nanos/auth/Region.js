@@ -20,7 +20,8 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'code'
+      name: 'code',
+      javaFactory: 'return getCountryId() + "-" + getIsoCode();'
     },
     {
       class: 'String',

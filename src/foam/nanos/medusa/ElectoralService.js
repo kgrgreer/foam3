@@ -64,7 +64,7 @@ foam.INTERFACE({
       async: true,
       args: [
         {
-          name: 'winner',
+          name: 'winnerId',
           type: 'String'
         }
       ]

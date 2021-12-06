@@ -193,6 +193,13 @@ foam.CLASS({
           setLastDao(delegate);
         }
 
+        if ( getMdao() != null && ! getEnableInterfaceDecorators() ) {
+          logger.warning(getName(),
+            "Interface decorators need to be disabled on the higher level of the decorator chain " +
+            "if you are trying to prevent the decorators to be triggered multiple times"
+          );
+        }
+
         if ( getCluster() &&
              getMdao() != null ) {
           logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());

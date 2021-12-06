@@ -10,12 +10,11 @@ import com.google.common.base.Optional;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.Sink;
-import foam.dao.ArraySink;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
-import foam.nanos.notification.email.EmailTemplate;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.Loggers;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
@@ -30,7 +29,7 @@ import java.util.Map;
 
 import static foam.mlang.MLang.*;
 
-public class DAOResourceLoader
+public class EmailTemplateSupport
   extends    ContextAwareSupport
   implements ResourceLoader
 {
@@ -42,6 +41,7 @@ public class DAOResourceLoader
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
+    Logger logger = Loggers.logger(x, new EmailTemplateSupport());
 
     /*
     name  group locale spid
@@ -53,7 +53,10 @@ public class DAOResourceLoader
       Y     *     *     *
     */
 
+    logger.info("name", name, "groupId", groupId, "locale", locale, "spid", spid);
+
     List<String> groupIdList = new ArrayList<>();
+
     while ( ! SafetyUtil.isEmpty(groupId) ) {
       groupIdList.add(groupId);
 
@@ -125,14 +128,7 @@ public class DAOResourceLoader
 
     if ( emailTemplate_ != null ) {
       EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
-      String sourceType = (String) templateArgs.get("templateSourceType");
-      String templateSource = (String) templateArgs.get("templateSource");
-      String source = templateSource != null ? templateSource : "emailTemplate";
-
-      clonedTemplate.setSourceClass(source);
-
-      PM pm = PM.create(x, source,  "emailTemplate: " + name);
-      pm.log(x);
+      setTemplateSource(x, name, clonedTemplate,templateArgs);
 
       emailTemplateDAO.put(clonedTemplate);
     }
@@ -140,7 +136,20 @@ public class DAOResourceLoader
     return emailTemplate_;
   }
 
-  public DAOResourceLoader(X x, String groupId, String locale, String spid) {
+  public static void setTemplateSource(X x, String name, EmailTemplate emailTemplate, Map templateArgs) {
+      String sourceType = (String) templateArgs.get("templateSourceType");
+      String templateSource = (String) templateArgs.get("templateSource");
+      String source = templateSource != null ? templateSource : "emailTemplate";
+      emailTemplate.setSourceClass(source);
+
+      PM pm = PM.create(x, source,  "emailTemplate", name);
+      pm.log(x);
+  }
+
+  public EmailTemplateSupport() {
+  }
+
+  public EmailTemplateSupport(X x, String groupId, String locale, String spid) {
     setX(x);
     this.groupId_ = groupId;
     this.locale_  = locale;
@@ -154,7 +163,7 @@ public class DAOResourceLoader
 
   @Override
   public InputStream load(String s) {
-    EmailTemplate template = DAOResourceLoader.findTemplate(getX(), s, this.groupId_, this.locale_, this.spid_);
+    EmailTemplate template = EmailTemplateSupport.findTemplate(getX(), s, this.groupId_, this.locale_, this.spid_);
     return template == null ? null : new ByteArrayInputStream(template.getBodyAsByteArray());
   }
 

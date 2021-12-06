@@ -314,6 +314,33 @@ foam.CLASS({
             }
           }
         }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
       `
     },
     {

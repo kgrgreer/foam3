@@ -112,6 +112,7 @@ FOAM_FILES([
   { name: "foam/core/AxiomCloner" },
   { name: 'foam/u2/ModalOverlay', flags: ['web'] },
   { name: "foam/core/Agency"},
+  { name: "foam/core/AbstractAgency"},
   { name: "foam/nanos/auth/Authorizable" },
   { name: "foam/i18n/TranslationFormatStringParser"},
   { name: "foam/swift/SwiftLib", flags: ['swift'] },
@@ -186,6 +187,9 @@ FOAM_FILES([
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
   { name: "foam/util/UIDGenerator" },
+  { name: "foam/util/AUIDGenerator" },
+  { name: "foam/util/NUIDGenerator" },
+  { name: "foam/util/test/DummyNuid" },
   { name: "foam/util/test/UIDGeneratorTest" },
   { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/log/LogLevel" },
@@ -356,11 +360,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAgentNameAware" },
-  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
 
   { name: "foam/nanos/script/Language", flags: ['java', 'web'] },
-
-  { name: 'foam/nanos/bench/BenchmarkResult' },
 
   { name: "foam/dao/EasyDAO" },
   { name: "foam/dao/NoSelectAllDAO" },
@@ -702,6 +703,7 @@ FOAM_FILES([
   { name: "foam/u2/crunch/wizardflow/GrantedEditAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckNoDataAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadCapabilitiesAgent", flags: ['web'] },
+  { name: "foam/u2/crunch/wizardflow/WAOSettingAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CreateWizardletsAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadWizardletsAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/FilterWizardletsAgent", flags: ['web'] },
@@ -1086,20 +1088,16 @@ FOAM_FILES([
   { name: "foam/u2/table/TableHeaderComponent", flags: ['web'] },
 
   { name: "foam/util/date/TimeUnit" },
+  { name: "foam/u2/memento/Memento"},
 
-  { name: "foam/nanos/dig/DIGDAOClient" },
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
-  { name: "foam/nanos/dig/exception/DAONotFoundException" },
-  { name: "foam/nanos/dig/exception/DAORequiredException" },
-  { name: "foam/nanos/dig/exception/ParsingErrorException" },
-  { name: "foam/nanos/dig/exception/DAOPutException" },
-  { name: "foam/nanos/dig/exception/EmptyDataException" },
-  { name: "foam/nanos/dig/exception/UnsupportException" },
-  { name: "foam/nanos/dig/exception/UnknownIdException" },
-  { name: "foam/nanos/dig/exception/DigSuccessMessage" },
-  { name: "foam/nanos/dig/exception/TemporaryExternalAPIException" },
-  { name: "foam/nanos/dig/exception/EmptyParameterException" },
-  { name: "foam/nanos/dig/exception/ExternalAPIException" },
-  { name: "foam/nanos/dig/exception/GeneralException" }
-
+  // Retry strategy
+  { name: "foam/util/retry/RetryStrategy" },
+  { name: "foam/util/retry/NoRetryStrategy" },
+  { name: "foam/util/retry/SimpleRetryStrategy" },
+  { name: "foam/util/retry/BackoffRetryStrategy" },
+  { name: "foam/util/retry/RetryForeverStrategy" },
+  { name: "foam/util/retry/RetryUntilStrategy" },
+  { name: "foam/util/retry/RetryStrategyFactory" },
+  { name: "foam/util/retry/RetryLimitReachedException" }
 ]);
+

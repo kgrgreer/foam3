@@ -79,6 +79,13 @@
       'optionPopup_'
     ],
 
+    messages: [
+      { name:'MARK_AS_READ_MSG', message: 'Successfully marked as read' },
+      { name:'FAILED_MARK_AS_READ_MSG', message: 'Failed to mark as read' },
+      { name:'MARK_AS_UNREAD_MSG', message: 'Successfully marked as unread' },
+      { name:'FAILED_MARK_AS_UNREAD_MSG', message: 'Failed to mark as unread' }
+    ],
+
     methods: [
       function render() {
         var self = this;
@@ -168,7 +175,11 @@
             self.data.read = true;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
+              self.ctrl.notify(self.MARK_AS_READ_MSG, '', this.LogLevel.INFO, true);
               X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+            }).catch((e) => {
+              self.data.read = false;
+              self.ctrl.notify(self.FAILED_MARK_AS_READ_MSG, e.message, this.LogLevel.ERROR, true);
             });
           }
         }
@@ -184,8 +195,12 @@
             self.data.read = false;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
+              self.ctrl.notify(self.MARK_AS_UNREAD_MSG, '', this.LogLevel.INFO, true);
               X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
-            })
+            }).catch((e) => {
+             self.data.read = true;
+             self.ctrl.notify(self.FAILED_MARK_AS_UNREAD_MSG, e.message, this.LogLevel.ERROR, true);
+           });
           }
         }
       }

@@ -13,7 +13,7 @@ foam.CLASS({
 
   css: `
     :root{
-      font-size: 62.5%; // sets default to 10px so 14px would be 1.4rem
+      font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
     }
 
     body {
@@ -272,12 +272,19 @@ foam.CLASS({
     font-weight: bold;
     font-size: 2.8rem;
   }
+
+
+  /* mobile */
   @media only screen and (min-width: 321px) {
     .large-title { font-size: 3.5rem; }
   }
+
+  /* tablet */
   @media only screen and (min-width: 768px) {
     .large-title { font-size: 6.4rem; }
   }
+
+  /* desktop */
   @media only screen and (min-width: 960px) {
     .large-title { font-size: 8.4rem; }
   }
