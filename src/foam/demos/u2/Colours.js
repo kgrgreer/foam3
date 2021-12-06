@@ -5,7 +5,28 @@ foam.CLASS({
   properties: [
     {
       name: 'colours',
-      factory: function() {
+      value: [
+        [244,67,54], // red
+        [233,30,99], // pink
+        [156,39,176], // purple
+        [103,58,183], // deep purple
+        [63,81,181], // indigo
+        [33,150,243], // blue
+        [3,169,244], // light blue
+        [0,188,212], // cyan
+        [0,150,136], // teal
+        [76,175,80], // green
+        [139,195,74], // light green
+        [205,220,57], // lime
+        [255,235,59], // yellow
+        [255,193,7], // amber
+        [255,152,0], // orange
+        [255,87,34], // deep orange
+        [121,85,72], // brown
+        [158,158,158], // grey
+        [96,125,139], // blue grey
+      ],
+      xxxfactory: function() {
         var a = [];
         for ( var hue = 0 ; hue < 360 ; hue += 20 )
           a.push(this.normalizeRGB(this.hslToRgb(hue/360, 0.8, 0.4)));
@@ -24,13 +45,13 @@ foam.CLASS({
 
     function rgbToGrey(rgb /*[0..255,0.255,0.255]*/) /* -> 0..1 */ {
       var [r, g, b] = rgb;
-     // return 0.18 * r/255 + 0.8 * g/255 + 0.02 * b/255; // What Chrome appears to be using
-      return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255; // Correct
+      return 0.18 * r/255 + 0.8 * g/255 + 0.02 * b/255; // What Chrome appears to be using
+     // return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255; // Correct
    //   return 0.3 * r/255.0 + 0.6 * g/255.0 + 0.1 * b/255.0; // Approximate
     },
 
     function adjustRGBBrightness(rgb /*[0..255,0.255,0.255]*/, desired/*0..1*/) {
-    rgb = this.normalizeRGB(rgb);
+  //    rgb = this.normalizeRGB(rgb);
       var [r, g, b] = rgb;
       var gr = this.rgbToGrey(rgb);
       if ( desired > gr ) {
