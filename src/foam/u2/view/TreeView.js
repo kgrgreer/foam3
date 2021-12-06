@@ -66,7 +66,7 @@ foam.CLASS({
       width: 100%;
     }
 
-    ^select-level {
+    ^select-level > * {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

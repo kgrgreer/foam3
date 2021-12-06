@@ -37,9 +37,12 @@ foam.CLASS({
     background: /*%WHITE%*/ #FFFFFF;
     border-right: 1px solid /*%GREY4%*/ #e7eaec;
     color: /*%GREY2%*/ #9ba1a6;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow-x: hidden;
     padding: 16px 0;
+    overflow: auto;
   }
 
   ^search {
@@ -47,6 +50,11 @@ foam.CLASS({
     padding: 0 8px;
     text-align: center;
     width: 240px;
+  }
+
+  ^menuList {
+    flex: 1;
+    height: 100%;
   }
   `,
 
@@ -92,7 +100,7 @@ foam.CLASS({
             .addClass(this.myClass('search'))
           .end()
           .endContext()
-          .tag({
+          .start({
             class: 'foam.u2.view.TreeView',
             data$: self.dao_$,
             relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
@@ -104,7 +112,9 @@ foam.CLASS({
               this.translate(data.id + '.label', data.label);
             },
             defaultRoot: self.theme.navigationRootMenu
-          });
+          })
+            .addClass(this.myClass('menuList'))
+          .end();
     },
 
     function openMenu(menu) {

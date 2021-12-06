@@ -24,7 +24,7 @@ foam.CLASS({
       align-items: center;
       background-color: /*%WHITE%*/ #FFFFFF;
       display: flex;
-      height: var(--topbar-height, 64px);
+      min-height: 64px;
       justify-content: space-between;
       padding: 8px 16px;
       width: 100%;
