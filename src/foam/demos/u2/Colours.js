@@ -45,8 +45,8 @@ foam.CLASS({
 
     function rgbToGrey(rgb /*[0..255,0.255,0.255]*/) /* -> 0..1 */ {
       var [r, g, b] = rgb;
-      return 0.18 * r/255 + 0.8 * g/255 + 0.02 * b/255; // What Chrome appears to be using
-     // return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255; // Correct
+    //  return 0.18 * r/255 + 0.8 * g/255 + 0.02 * b/255; // What Chrome appears to be using
+      return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255; // Correct
    //   return 0.3 * r/255.0 + 0.6 * g/255.0 + 0.1 * b/255.0; // Approximate
     },
 
@@ -104,13 +104,14 @@ foam.CLASS({
 
     function render() {
       var self = this;
-      this.start('table').
+      this.start('table').attrs({cellspacing: 0}).
         call(function() {
           for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var c = 0 ; c < self.colours.length ; c++ ) {
-               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l)/1000)); //self.hl(hue, l);
-               this.start('th').style({color: 'black', width: '60px', height: '60px', background: self.rgbToString(colour)}).add(l).end();
+                var l2 = (l + 50 ) *900 / 950;
+               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l2)/1000)); //self.hl(hue, l);
+               this.start('th').style({color: l < 500 ? 'black' : 'white', width: '80px', height: '50px', background: self.rgbToString(colour)}).add(l).end();
               }
             }).end();
           }
