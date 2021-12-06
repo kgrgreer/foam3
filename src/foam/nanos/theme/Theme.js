@@ -615,9 +615,9 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      name: 'findRestrictedCapabilities',
+      name: 'restrictedCapabilities',
       documentation: `
-        List of capabilities whose entries should be ignored when making a find call to capabilityDAO.
+        List of capabilities whose entries should be ignored when querying capabilityDAO.
       `
     }
   ],

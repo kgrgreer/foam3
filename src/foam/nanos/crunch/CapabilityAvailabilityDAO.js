@@ -56,12 +56,12 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
         Theme theme = (Theme) x.get("theme");
-        List<String> findRestrictedCapabilities = new ArrayList<String>();
-        if ( theme != null && theme.getFindRestrictedCapabilities() != null ) {
-          findRestrictedCapabilities = new ArrayList(Arrays.asList(theme.getFindRestrictedCapabilities()));
+        List<String> restrictedCapabilities = new ArrayList<String>();
+        if ( theme != null && theme.getRestrictedCapabilities() != null ) {
+          restrictedCapabilities = new ArrayList(Arrays.asList(theme.getRestrictedCapabilities()));
         }
         Capability capability = (Capability) getDelegate().find_(x, id);
-        if ( capability == null || ! f(x, capability) || ( findRestrictedCapabilities.contains(capability.getId()) ) ) {
+        if ( capability == null || ! f(x, capability) || ( restrictedCapabilities.contains(capability.getId()) ) ) {
           return null;
         }
         return capability;
@@ -70,6 +70,12 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
+        Theme theme = (Theme) x.get("theme");
+        if ( theme != null && theme.getRestrictedCapabilities() != null ) {
+          return getDelegate()
+            .where(foam.mlang.MLang.NOT(foam.mlang.MLang.IN(Capability.ID, theme.getRestrictedCapabilities())))
+            .select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
+        }
         return getDelegate().select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
       `
     },
