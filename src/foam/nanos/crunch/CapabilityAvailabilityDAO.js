@@ -20,12 +20,16 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
+    'foam.nanos.theme.Theme',
     'foam.core.X',
     'foam.core.Detachable',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'java.util.Arrays',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   documentation: `
@@ -51,8 +55,13 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
+        Theme theme = (Theme) x.get("theme");
+        List<String> findRestrictedCapabilities = new ArrayList<String>();
+        if ( theme != null && theme.getFindRestrictedCapabilities() != null ) {
+          findRestrictedCapabilities = new ArrayList(Arrays.asList(theme.getFindRestrictedCapabilities()));
+        }
         Capability capability = (Capability) getDelegate().find_(x, id);
-        if ( capability == null || ! f(x, capability) ) {
+        if ( capability == null || ! f(x, capability) || ( findRestrictedCapabilities.contains(capability.getId()) ) ) {
           return null;
         }
         return capability;
