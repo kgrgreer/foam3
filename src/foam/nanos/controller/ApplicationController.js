@@ -647,20 +647,32 @@ foam.CLASS({
       // needs to be updated prior to menu dao searchs - since some menus rely soley on the memento
       if ( this.memento.head !== idCheck || opt_forceReload ) {
         this.memento.value = idCheck;
+        if  ( idCheck.includes(this.Memento.SEPARATOR) )
+          menu = idCheck.split(this.Memento.SEPARATOR)[0];
       }
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
         dao = this.client.menuDAO;
         menu = await dao.find(menu);
-        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+        if ( ! menu ) { 
+          menu = await this.findFirstMenuIHavePermissionFor(dao);
+          let newId = (menu && menu.id) || '';
+          if ( this.memento.head !== newId ) 
+            this.memento.value = newId;
+        }
         menu && menu.launch(this);
         this.menuListener(menu);
       } else {
         await this.clientPromise.then(async () => {
           dao = this.client.menuDAO;
           menu = await dao.find(menu);
-          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+          if ( ! menu ) { 
+            menu = await this.findFirstMenuIHavePermissionFor(dao);
+            let newId = (menu && menu.id) || '';
+            if ( this.memento.head !== newId ) 
+              this.memento.value = newId;
+          }
           menu && menu.launch(this);
           this.menuListener(menu);
         });

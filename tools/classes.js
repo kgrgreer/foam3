@@ -493,6 +493,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.benchmark.PingDAO',
   'foam.nanos.medusa.test.MedusaTestObject',
+  'foam.nanos.medusa.test.MedusaTestObjectDIGBenchmark',
   'foam.nanos.security.KeyStoreManager',
   'foam.nanos.benchmark.UUIDBenchmark',
   'foam.nanos.benchmark.AuthorizerBenchmark',
@@ -709,6 +710,7 @@ var classes = [
   'foam.test.TestObj',
   'foam.core.FObjectTest',
 
+  'foam.nanos.dig.bench.DIGBenchmark',
   'foam.nanos.dig.drivers.DigFormatDriver',
   'foam.nanos.dig.drivers.DigCsvDriver',
   'foam.nanos.dig.drivers.DigHtmlDriver',
@@ -985,7 +987,17 @@ var classes = [
   'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
 
   'foam.counter.Counter',
-  'foam.util.date.TimeUnit'
+  'foam.util.date.TimeUnit',
+
+  // Retry strategy
+  'foam.util.retry.RetryStrategy',
+  'foam.util.retry.NoRetryStrategy',
+  'foam.util.retry.SimpleRetryStrategy',
+  'foam.util.retry.BackoffRetryStrategy',
+  'foam.util.retry.RetryForeverStrategy',
+  'foam.util.retry.RetryUntilStrategy',
+  'foam.util.retry.RetryStrategyFactory',
+  'foam.util.retry.RetryLimitReachedException'
 ];
 
 var abstractClasses = [
