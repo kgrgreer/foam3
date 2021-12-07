@@ -109,8 +109,8 @@ foam.CLASS({
           for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var c = 0 ; c < self.colours.length ; c++ ) {
-                var l2 = (l + 50 ) *900 / 950;
-               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l2)/1000)); //self.hl(hue, l);
+                var l2 = (l + 50 ) * 750 / 950;
+               var colour = self.adjustRGBBrightness(self.colours[c], /*Math.sqrt*/((1000-l2)/1000)); //self.hl(hue, l);
                this.start('th').style({color: l < 500 ? 'black' : 'white', width: '80px', height: '50px', background: self.rgbToString(colour)}).add(l).end();
               }
             }).end();
