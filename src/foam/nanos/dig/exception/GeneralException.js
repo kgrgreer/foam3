@@ -22,7 +22,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'errroCode',
+      name: 'errorCode',
       value: '1008'
     }
   ]
