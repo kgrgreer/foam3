@@ -79,10 +79,10 @@ foam.CLASS({
 
   imports: [
     'displayWidth',
+    'document',
     'initLayout',
     'isMenuOpen',
     'loginSuccess',
-    'layoutInitialized',
     'showNav',
     'stack'
   ],
@@ -155,7 +155,7 @@ foam.CLASS({
     },
     function adjustTopBarHeight() {
       if ( ! this.headerSlot_ ) return;
-      let root = document.documentElement;
+      let root = this.document.documentElement;
       this.headerSlot_.el().then(el => { 
         root?.style.setProperty('--topbar-height', el.offsetHeight + 'px' ); 
       })
