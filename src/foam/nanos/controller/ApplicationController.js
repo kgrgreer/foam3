@@ -647,6 +647,8 @@ foam.CLASS({
       // needs to be updated prior to menu dao searchs - since some menus rely soley on the memento
       if ( this.memento.head !== idCheck || opt_forceReload ) {
         this.memento.value = idCheck;
+        if  ( idCheck.includes(this.Memento.SEPARATOR) )
+          menu = idCheck.split(this.Memento.SEPARATOR)[0];
       }
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;

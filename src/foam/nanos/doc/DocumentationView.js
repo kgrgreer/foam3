@@ -42,7 +42,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'docKey',
-      documentation: 'ID of the document to render.'
+      documentation: 'ID of the document to render.',
+      postSet: function(o, n) {
+        if ( o != n ) this.data = undefined;
+      }
     },
     {
       class: 'String',
@@ -61,15 +64,15 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var tmp = this.memento.value.split(this.Memento.SEPARATOR);
-      if ( ! this.docKey ) this.docKey = tmp.length > 1 && tmp[1];
+      this.launchDoc();
     },
     function render() {
+      this.onDetach(this.memento.tail$.sub(this.launchDoc));
       var dao = this.__context__[this.daoKey];
       this.addClass();
       if ( ! dao ) {
         this.add('No DAO found for key: ', this.daoKey);
-      } else this.add(this.slot(function(data, error) {
+      } else this.add(this.slot(function(data, error, docKey) {
         if ( ! data && ! error) {
           dao.find(this.docKey).then(function(doc) {
             if ( doc ) this.data = doc;
@@ -84,6 +87,12 @@ foam.CLASS({
         }
         return data.toE(null, this.__subSubContext__);
       }));
+    }
+  ],
+  listeners: [
+    function launchDoc() {
+      var tmp = this.memento.value.split(this.Memento.SEPARATOR);
+      this.docKey = tmp.length > 1 && tmp[1];
     }
   ]
 });
