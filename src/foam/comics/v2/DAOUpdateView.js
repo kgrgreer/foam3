@@ -53,6 +53,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.controller.Memento',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Grid',
