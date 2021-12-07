@@ -37,6 +37,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
+    'java.util.Arrays',
+    'java.util.HashSet',
     'java.util.List',
     'java.util.Map'
   ],
@@ -760,6 +762,23 @@ foam.CLASS({
 
           value1.copyFrom(value2);
         }
+      `
+    },
+    {
+      name: 'isCapabilityRestricted',
+      type: 'Boolean',
+      args: [ 'String capId' ],
+      code: function(capId) {
+        if ( this.restrictedCapabilities != null ) {
+          return this.restrictedCapabilities.includes(capId)
+        }
+        return false;
+      },
+      javaCode: `
+        if ( getRestrictedCapabilities() != null ) {
+          return (new HashSet<>(Arrays.asList(getRestrictedCapabilities()))).contains(capId);
+        }
+        return false;
       `
     }
   ]

@@ -27,9 +27,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
-    'java.util.Arrays',
-    'java.util.ArrayList',
-    'java.util.List'
+    
+    'static foam.mlang.MLang.*'
   ],
 
   documentation: `
@@ -56,12 +55,9 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
         Theme theme = (Theme) x.get("theme");
-        List<String> restrictedCapabilities = new ArrayList<String>();
-        if ( theme != null && theme.getRestrictedCapabilities() != null ) {
-          restrictedCapabilities = new ArrayList(Arrays.asList(theme.getRestrictedCapabilities()));
-        }
         Capability capability = (Capability) getDelegate().find_(x, id);
-        if ( capability == null || ! f(x, capability) || ( restrictedCapabilities.contains(capability.getId()) ) ) {
+
+        if ( capability == null || ! f(x, capability) || ( theme != null && theme.isCapabilityRestricted(capability.getId()) ) ) {
           return null;
         }
         return capability;
@@ -73,7 +69,7 @@ foam.CLASS({
         Theme theme = (Theme) x.get("theme");
         if ( theme != null && theme.getRestrictedCapabilities() != null ) {
           return getDelegate()
-            .where(foam.mlang.MLang.NOT(foam.mlang.MLang.IN(Capability.ID, theme.getRestrictedCapabilities())))
+            .where(NOT(IN(Capability.ID, theme.getRestrictedCapabilities())))
             .select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
         }
         return getDelegate().select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
