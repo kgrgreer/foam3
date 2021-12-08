@@ -197,11 +197,12 @@ public class RuleEngine extends ContextAwareSupport {
       if ( ! rule.f(x, nu, oldObj) ) return;
 
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
-      var before = nu.fclone();
+      FObject before = null;
+      if ( rule.getOperation() != Operation.REMOVE ) {
+        before = nu.fclone();
+      }
       rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
-      if ( rule.getOperation() != Operation.REMOVE
-        && before.diff(nu).size() > 0
-      ) {
+      if ( before != null && ! before.equals(nu) ) {
         getDelegate().put_(userX_, nu);
       }
       pm.log(getX());
