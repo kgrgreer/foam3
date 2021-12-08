@@ -19,26 +19,51 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
+    'foam.mlang.order.Comparator',
     'static foam.util.UIDSupport.*'
   ],
 
   javaCode: `
-  public NUIDGenerator(X x, String salt) {
+  public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo) {
     setX(x);
     setSalt(salt);
+    setDao(dao);
+    setPropertyInfo(pInfo);
+    init_();
+  }
+
+  public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo, Comparator comparator) {
+    setX(x);
+    setSalt(salt);
+    setDao(dao);
+    setPropertyInfo(pInfo);
+    setComparator(comparator);
+    init_();
   }
   `,
 
   properties: [
     {
+      class: 'String',
       name: 'salt',
-      javaPostSet: 'setDao((DAO) getX().get(getSalt()));'
+      javaPostSet: 'if ( getDao() == null ) setDao((DAO) getX().get(getSalt()));'
     },
     {
-      class: 'Object',
-      name: 'dao',
-      javaType: 'foam.dao.DAO',
-      javaPostSet: 'assertLongId();'
+      class: 'foam.dao.DAOProperty',
+      name: 'dao'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'propertyInfo',
+      hidden: true,
+      javaType: 'foam.core.PropertyInfo',
+      javaInfoType: 'foam.core.AbstractObjectPropertyInfo'
+    },
+    {
+      documentation: 'order select by comparator so first entry has max sequence number',
+      class: 'FObjectProperty',
+      of: 'foam.mlang.order.Comparator',
+      name: 'comparator'
     },
     {
       class: 'Int',
@@ -47,6 +72,16 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'init_',
+      javaCode: 'assertLongId();'
+    },
+    {
+      name: 'getNext',
+      args: [ 'java.lang.Class type' ],
+      type: 'Object',
+      javaCode: 'return getNextLong();'
+    },
     {
       name: 'generate_',
       documentation: `
@@ -69,10 +104,14 @@ foam.CLASS({
       name: 'getLastSeqNo',
       type: 'Integer',
       javaCode: `
-        getDao().select(new AbstractSink() {
+        DAO dao = getDao();
+        if ( getComparator() != null ) {
+          dao = dao.orderBy(getComparator()).limit(1);
+        }
+        dao.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
-            var id = (long) ((FObject) obj).getProperty("id");
+            var id = (long) getPropertyInfo().get(obj);
             if ( id > 0x1000000 ) {
               var hex   = undoPermute(Long.toHexString(id));
               var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
@@ -89,12 +128,11 @@ foam.CLASS({
       name: 'assertLongId',
       javaThrows: [ 'java.lang.UnsupportedOperationException' ],
       javaCode: `
-        var id = (PropertyInfo) getDao().getOf().getAxiomByName("id");
-        if ( id.getValueClass() != long.class ) {
+        if ( ! ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) ) {
           throw new UnsupportedOperationException(
-            "NUIDGenerator: not support " + getSalt() + " with id of type: " + id.getValueClass().getSimpleName());
+            "NUIDGenerator: not supported on " + getSalt() + " without id property");
         }
       `
     }
   ]
-})
+});
