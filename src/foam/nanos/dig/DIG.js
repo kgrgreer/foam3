@@ -599,11 +599,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      throw new UnsupportedOperationException();
-      // NOTE: untested
-      // String id = obj.toString();
-      // if ( obj instanceof FObject ) id = obj.getProperty("id");
-      // return (FObject) submit(x, DOP.REMOVE, "id="+id);
+      String id = obj.toString();
+      if ( obj instanceof FObject ) id = ((FObject)obj).getProperty("id").toString();
+      return (FObject) submit(x, DOP.REMOVE, "id="+id);
       `
     },
     {

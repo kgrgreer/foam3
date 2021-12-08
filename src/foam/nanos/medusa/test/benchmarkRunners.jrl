@@ -1,0 +1,7 @@
+p({
+  class:"foam.nanos.bench.BenchmarkRunner",
+  id:"MedusaTestObjectDIGBenchmarkRunner",
+  runPerThread:false,
+  oneTimeSetup:true,
+  benchmarkId:"MedusaTestObjectDIGBenchmark"
+})
