@@ -9,6 +9,7 @@ package foam.nanos.ruler;
 import foam.core.*;
 import foam.dao.DAO;
 import foam.nanos.auth.*;
+import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 
@@ -196,7 +197,13 @@ public class RuleEngine extends ContextAwareSupport {
       if ( ! rule.f(x, nu, oldObj) ) return;
 
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
+      var before = nu.fclone();
       rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
+      if ( rule.getOperation() != Operation.REMOVE
+        && before.diff(nu).size() > 0
+      ) {
+        getDelegate().put_(userX_, nu);
+      }
       pm.log(getX());
     }, "Async apply rule id: " + rule.getId()));
   }
