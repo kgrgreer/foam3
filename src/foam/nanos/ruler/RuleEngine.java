@@ -199,9 +199,7 @@ public class RuleEngine extends ContextAwareSupport {
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
       rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
       var before = reloadObject(obj, rule.getOperation());
-      if ( rule.getOperation() != Operation.REMOVE
-        && ! before.equals(nu)
-      ) {
+      if ( rule.getOperation() != Operation.REMOVE && ! before.equals(nu) ) {
         getDelegate().put_(userX_, nu);
       }
       pm.log(getX());
@@ -232,7 +230,7 @@ public class RuleEngine extends ContextAwareSupport {
   private FObject reloadObject(FObject obj, Operation operation) {
     // For REMOVE operation, the object was removed from the DAO thus
     // returning the original object.
-    if ( operation == Operation.REMOVE) {
+    if ( operation == Operation.REMOVE ) {
       return obj;
     }
 
