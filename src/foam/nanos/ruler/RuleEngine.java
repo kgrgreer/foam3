@@ -193,16 +193,15 @@ public class RuleEngine extends ContextAwareSupport {
       // isActive and permission as it was the rule at the time RuleEngine.execute()
       // is called that the rule engine honors and should commit to, not the
       // future version of the same rule.
-      var nu = reloadObject(obj);
+      var nu = reloadObject(obj, rule.getOperation());
       if ( ! rule.f(x, nu, oldObj) ) return;
 
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
-      FObject before = null;
-      if ( rule.getOperation() != Operation.REMOVE ) {
-        before = nu.fclone();
-      }
       rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
-      if ( before != null && ! before.equals(nu) ) {
+      var before = reloadObject(obj, rule.getOperation());
+      if ( rule.getOperation() != Operation.REMOVE
+        && ! before.equals(nu)
+      ) {
         getDelegate().put_(userX_, nu);
       }
       pm.log(getX());
@@ -230,14 +229,15 @@ public class RuleEngine extends ContextAwareSupport {
     return true;
   }
 
-  private FObject reloadObject(FObject obj) {
-    var reloaded = getDelegate().find_(userX_, obj);
-    // For rules with operation=REMOVE, the object was removed from the DAO thus
+  private FObject reloadObject(FObject obj, Operation operation) {
+    // For REMOVE operation, the object was removed from the DAO thus
     // returning the original object.
-    if ( reloaded == null ) {
+    if ( operation == Operation.REMOVE) {
       return obj;
     }
-    return reloaded.fclone();
+
+    var reloaded = getDelegate().find_(userX_, obj);
+    return reloaded == null ? obj : reloaded.fclone();
   }
 
   /**
