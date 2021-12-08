@@ -506,6 +506,7 @@ var classes = [
   'foam.nanos.medusa.benchmark.MedusaPingBenchmark',
   'foam.nanos.medusa.benchmark.PingDAO',
   'foam.nanos.medusa.test.MedusaTestObject',
+  'foam.nanos.medusa.test.MedusaTestObjectDIGBenchmark',
   'foam.nanos.security.KeyStoreManager',
   'foam.nanos.benchmark.UUIDBenchmark',
   'foam.nanos.benchmark.AuthorizerBenchmark',
@@ -722,6 +723,7 @@ var classes = [
   'foam.test.TestObj',
   'foam.core.FObjectTest',
 
+  'foam.nanos.dig.bench.DIGBenchmark',
   'foam.nanos.dig.drivers.DigFormatDriver',
   'foam.nanos.dig.drivers.DigCsvDriver',
   'foam.nanos.dig.drivers.DigHtmlDriver',
