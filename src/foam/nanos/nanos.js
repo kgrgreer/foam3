@@ -508,6 +508,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityJunctionStatus" },
   { name: "foam/nanos/crunch/CapabilityIntercept" },
   { name: "foam/nanos/crunch/CapabilityJunctionPayload" },
+  { name: "foam/nanos/crunch/UserReferencedPayload" },
   { name: "foam/nanos/crunch/lite/CapablePayloadStatusDAO" },
   { name: "foam/nanos/crunch/lite/Capable" },
   { name: "foam/nanos/crunch/lite/CapableDAO" },

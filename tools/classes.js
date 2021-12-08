@@ -876,7 +876,7 @@ var classes = [
   'foam.nanos.crunch.AssociatedEntity',
   'foam.nanos.crunch.RenewableData',
   'foam.nanos.crunch.UCJUpdateApprovable',
-
+  'foam.nanos.crunch.UserReferencedPayload',
   'foam.nanos.crunch.connection.CapabilityPayload',
   'foam.nanos.crunch.connection.CapabilityPayloadRecord',
   'foam.nanos.crunch.connection.GrantPathNode',
