@@ -16,6 +16,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'clusterable',
+      value: true,
       documentation: 'In a medusa cluster, when false, this entity remains local to the generating server.  Intended for entity such as Alarms, Notifications, Emails allowing a medusa server to report clustering issues.',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
