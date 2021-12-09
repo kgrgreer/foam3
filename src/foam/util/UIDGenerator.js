@@ -16,6 +16,15 @@ foam.CLASS({
     'static foam.util.UIDSupport.*'
   ],
 
+  constants: [
+    {
+      documentation: 'Epoch of this feature - 2021 Nov 1',
+      name: 'EPOCH',
+      type: 'Long',
+      value: 1635739200000
+    }
+  ],
+
   properties: [
     {
       name: 'salt',
@@ -43,15 +52,25 @@ foam.CLASS({
         }
         return machineId;
       `
+    },
+    {
+      documentation: `Number of hex digits used from the timestamp. Long UIDs are constrained and therefore would use less timestamp digits.`,
+      name: 'timestampHexits',
+      class: 'Int',
+      value: 2
+    },
+    {
+      name: 'seqNo',
+      class: 'Int'
+    },
+    {
+      name: 'lastSecondCalled',
+      class: 'Long',
+      javaFactory: 'return (System.currentTimeMillis() - EPOCH) / 1000;'
     }
   ],
 
   methods: [
-    {
-      abstract: true,
-      name: 'generate_',
-      args: [ 'StringBuilder id' ]
-    },
     {
       name: 'generate',
       type: 'String',
@@ -75,6 +94,31 @@ foam.CLASS({
 
         // permutation
         return permute(id.toString());
+      `
+    },
+    {
+      name: 'generate_',
+      args: [ 'StringBuilder id' ],
+      documentation: `
+      `,
+      javaCode: `
+        long curSec = 0;
+        int seqNo   = 0;
+
+        synchronized (this) {
+          curSec = (System.currentTimeMillis() - EPOCH) / 1000;
+          if ( curSec != getLastSecondCalled() ) {
+            setSeqNo(0);
+            setLastSecondCalled(curSec);
+          }
+          seqNo = getSeqNo();
+          setSeqNo(seqNo + 1);
+        }
+
+        // 2 bits timestamp
+        id.append(toHexString(curSec, getTimestampHexits()));
+        // At least 2 bits sequence
+        id.append(toHexString(seqNo, 2));
       `
     },
     {
@@ -123,4 +167,4 @@ foam.CLASS({
       `
     }
   ]
-})
+});

@@ -65,21 +65,10 @@ foam.CLASS({
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
-      PropertyInfo pInfo = getPropertyInfo();
-      try {
-        if ( pInfo instanceof foam.core.AbstractLongPropertyInfo ) {
-          PropertyInfo created = (PropertyInfo)(getOf().getAxiomByName("created"));
-          if ( created != null ) {
-            return new NUIDGenerator(getX(), getSalt(), getDelegate(), pInfo, foam.mlang.MLang.DESC(created));
-          }
-          return new NUIDGenerator(getX(), getSalt(), getDelegate(), pInfo);
-        }
-        return new AUIDGenerator(getX(), getSalt());
-      } catch (NullPointerException | UnsupportedOperationException e) {
-        // Report potentially incorrectly configured NSpecs during transition to FUIDDAO
-        foam.nanos.logger.Loggers.logger(getX(), this).error("NSpec", getSalt(), "propertyInfo", pInfo, e);
-        throw e;
+      if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
+        return new NUIDGenerator(getX(), getSalt());
       }
+      return new AUIDGenerator(getX(), getSalt());
       `,
       hidden: true,
     },
@@ -95,22 +84,16 @@ foam.CLASS({
   public FUIDDAO(X x, String salt, DAO delegate) {
     super(x, delegate);
     setSalt(salt);
-    init_();
   }
 
   public FUIDDAO(X x, String salt, String idProperty, DAO delegate) {
     super(x, delegate);
     setSalt(salt);
     setProperty(idProperty);
-    init_();
   }
   `,
 
   methods: [
-    {
-      name: 'init_',
-      javaCode: 'getUIDGenerator();'
-    },
     {
       name: 'put_',
       javaCode: `

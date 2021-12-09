@@ -31,7 +31,7 @@ foam.CLASS({
 
         // NUID tests
         x = x.put("nuidDAO", new MDAO(DummyNuid.getOwnClassInfo()));
-        var nuidgen = new NUIDGenerator(x, "nuidDAO", (DAO) x.get("nuidDAO"), DummyNuid.ID);
+        var nuidgen = new NUIDGenerator(x, "nuidDAO");
         var hash2   = mod("nuidDAO");
         UIDGeneratorTest_GenerateVerifiableUniqueLongIDs(x, nuidgen, hash2);
 
