@@ -24,7 +24,7 @@ foam.CLASS({
         [255,87,34], // deep orange
         [121,85,72], // brown
         [158,158,158], // grey
-        [96,125,139], // blue grey
+        [96,125,139] // blue grey
       ],
       xxxfactory: function() {
         var a = [];
@@ -51,7 +51,6 @@ foam.CLASS({
     },
 
     function adjustRGBBrightness(rgb /*[0..255,0.255,0.255]*/, desired/*0..1*/) {
-  //    rgb = this.normalizeRGB(rgb);
       var [r, g, b] = rgb;
       var gr = this.rgbToGrey(rgb);
       if ( desired > gr ) {
@@ -66,7 +65,8 @@ foam.CLASS({
 
        var scale = desired/gr;
       return [ scale * r, scale * g, scale * b ];
-  },
+    },
+
     function hslToRgb(h, s, l) {
       var r, g, b;
 
@@ -92,11 +92,6 @@ foam.CLASS({
       return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
     },
 
-    function hl(hue, l) {
-      var [r, g, b] = this.adjustRGBBrightness(this.hslToRgb(hue/360, 0.8, 0.4), );
-      return [r, g, b];
-    },
-
     function rgbToString(rgb) {
       var [r, g, b] = rgb;
       return `rgb(${r.toFixed(4)},${g.toFixed(4)},${b.toFixed(4)})`;
@@ -109,8 +104,8 @@ foam.CLASS({
           for ( var l = 50 ; l <= 900 ; l = l == 50 ? 100 : l + 100 ) {
             this.start('tr').call(function() {
               for ( var c = 0 ; c < self.colours.length ; c++ ) {
-                var l2 = (l + 50 ) *900 / 950;
-               var colour = self.adjustRGBBrightness(self.colours[c], Math.sqrt((1000-l2)/1000)); //self.hl(hue, l);
+                var l2 = (l + 50 ) * 750 / 950;
+               var colour = self.adjustRGBBrightness(self.colours[c], /*Math.sqrt*/((1000-l2)/1000));
                this.start('th').style({color: l < 500 ? 'black' : 'white', width: '80px', height: '50px', background: self.rgbToString(colour)}).add(l).end();
               }
             }).end();
