@@ -49,7 +49,7 @@ foam.CLASS({
       name: 'salt',
       javaFactory: `
       if ( getNSpec() != null ) return getNSpec().getName();
-      return null;
+      throw new IllegalArgumentException("salt undefined");
       `
     },
     {
@@ -61,9 +61,9 @@ foam.CLASS({
       javaFactory: 'return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));'
     },
     {
-      class: 'Object',
+      class: 'FObjectProperty',
       name: 'uIDGenerator',
-      javaType: 'foam.util.UIDGenerator',
+      of: 'foam.util.UIDGenerator',
       javaFactory: `
       if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
         return new NUIDGenerator(getX(), getSalt());
