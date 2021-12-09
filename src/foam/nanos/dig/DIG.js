@@ -49,6 +49,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'java.net.URI',
     'java.net.URLEncoder',
     'java.time.Duration',
+    'java.util.Base64',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
   ],
@@ -341,7 +342,20 @@ NOTE: when using the java client, the first call to a newly started instance may
       documentation: 'Session token / BEARER token',
       name: 'sessionId',
       class: 'String',
-      javaFactory: 'return getX().get(Session.class).getId();',
+      // javaFactory: 'return getX().get(Session.class).getId();',
+      visibility: 'HIDDEN'
+    },
+    {
+      documentation: 'Basic Auth',
+      name: 'userName',
+      class: 'String',
+      value: 'admin',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'password',
+      class: 'Password',
+      value: 'adminAb1',
       visibility: 'HIDDEN'
     },
     {
@@ -738,9 +752,15 @@ NOTE: when using the java client, the first call to a newly started instance may
         .uri(URI.create(url))
         .timeout(Duration.ofMillis(getRequestTimeout()))
         .header("Accept-Language", "en-US,en;q=0.5")
-        .header("Authorization", "BEARER "+getSessionId())
         .header("Content-Type", "application/json")
         .header("User-Agent", "Mozilla/5.0");
+      if ( ! SafetyUtil.isEmpty(getSessionId()) ) {
+        builder = builder.header("Authorization", "BEARER "+getSessionId());
+      } else if ( ! SafetyUtil.isEmpty(getPassword()) ) {
+        builder = builder.header("Authorization", "BASIC "+Base64.getEncoder().encodeToString((getUserName()+":"+getPassword()).getBytes()));
+      } else {
+        throw new IllegalArgumentException("Missing auth details");
+      }
       if ( dop == DOP.PUT ) {
         builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
       }
