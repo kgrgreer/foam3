@@ -29,7 +29,7 @@ foam.CLASS({
       -webkit-appearance: textfield;
     }
 
-    ^:read-only {
+    ^:read-only:not(:disabled) {
       border: none;
       background: rgba(0,0,0,0);
     }
