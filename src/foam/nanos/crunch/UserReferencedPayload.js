@@ -7,7 +7,13 @@
  foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'UserReferencedPayload',
-  documentation: 'Capability user related payload class - attaches listeners to wizardlets if defined',
+  documentation: `
+    Capability user related payload class.
+    Attaches listeners to wizardlets if defined.
+    Useful for extending payload classes that would potentially be used by
+    capable objects requiring user specific logic such as copying user values
+    from the payload to user.
+  `,
 
   imports: [
     'wizardlets'
