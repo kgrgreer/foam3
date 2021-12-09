@@ -11,7 +11,8 @@ foam.CLASS({
   documentation: `
     Sets one of the views as the selectedView based on current window display width.
 
-    Default to the largtest possible specified view.
+    Default to the largest possible specified view. In cases with multiple views for a 
+    displayWidth, the first view provided takes priority.
 
     Example usage:
         {
