@@ -9,11 +9,11 @@ foam.CLASS({
   name: 'ResponsiveAltView',
   extends: 'foam.u2.View',
   documentation: `
-    Set one of the views as the selectedView based on current window display width.
+    Sets one of the views as the selectedView based on current window display width.
 
     Default to the largtest possible specified view.
-    For example:
 
+    Example usage:
         {
           class: 'foam.u2.view.ResponsiveAltView',
           views: [
