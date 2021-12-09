@@ -81,6 +81,9 @@ public class FoldReducePMLogger
     pmi.setCapture(false);
     pmi.setCaptureTrace(trace.toString());
     updateCaptureEnabledList(pmi);
+
+    // Force reduce
+    getState();
   }
 
   /** Manage keys for maintaining capture flag between state and LocalState **/
