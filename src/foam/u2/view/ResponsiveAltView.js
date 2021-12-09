@@ -28,11 +28,10 @@ foam.CLASS({
               {
                 // view 2 spec
               },
-              'MD',
+              ['MD'],
               'View 2'
             ]
-          ],
-          selectedView: 'View 2' // select view by name
+          ]
         }
   `,
 
