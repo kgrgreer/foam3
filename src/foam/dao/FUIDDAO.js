@@ -66,10 +66,6 @@ foam.CLASS({
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
         if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
-          PropertyInfo created = (PropertyInfo)(getOf().getAxiomByName("created"));
-          if ( created != null ) {
-            return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo(), foam.mlang.MLang.DESC(created));
-          }
           return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
         }
         return new AUIDGenerator(getX(), getSalt());
