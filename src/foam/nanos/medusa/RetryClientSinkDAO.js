@@ -64,6 +64,10 @@ foam.CLASS({
     public RetryClientSinkDAO(X x, DAO delegate) {
       super(x, delegate);
     }
+    public RetryClientSinkDAO(X x, int maxRetryAttempts, DAO delegate) {
+      super(x, delegate);
+      setMaxRetryAttempts(maxRetryAttempts);
+    }
   `,
 
   methods: [
