@@ -60,10 +60,12 @@ foam.CLASS({
       foam.dao.DAO studentCourseJunctionDAO = ((foam.dao.DAO)x.get("studentCourseJunctionDAO")).inX(x);
 
       studentDAO.put(new foam.nanos.demo.relationship.Student.Builder(x).
+        setStudentId(1L).
         setName("Adam").
         build());
 
       studentDAO.put(new foam.nanos.demo.relationship.Student.Builder(x).
+        setStudentId(2L).
         setName("Mike").
         build());
 
