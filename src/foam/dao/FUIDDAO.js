@@ -49,7 +49,7 @@ foam.CLASS({
       name: 'salt',
       javaFactory: `
       if ( getNSpec() != null ) return getNSpec().getName();
-      return null;
+      throw new IllegalArgumentException("Salt not defined");
       `
     },
     {
@@ -65,21 +65,14 @@ foam.CLASS({
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
-      PropertyInfo pInfo = getPropertyInfo();
-      try {
-        if ( pInfo instanceof foam.core.AbstractLongPropertyInfo ) {
+        if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
           PropertyInfo created = (PropertyInfo)(getOf().getAxiomByName("created"));
           if ( created != null ) {
-            return new NUIDGenerator(getX(), getSalt(), getDelegate(), pInfo, foam.mlang.MLang.DESC(created));
+            return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo(), foam.mlang.MLang.DESC(created));
           }
-          return new NUIDGenerator(getX(), getSalt(), getDelegate(), pInfo);
+          return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
         }
         return new AUIDGenerator(getX(), getSalt());
-      } catch (NullPointerException | UnsupportedOperationException e) {
-        // Report potentially incorrectly configured NSpecs during transition to FUIDDAO
-        foam.nanos.logger.Loggers.logger(getX(), this).error("NSpec", getSalt(), "propertyInfo", pInfo, e);
-        throw e;
-      }
       `,
       hidden: true,
     },
