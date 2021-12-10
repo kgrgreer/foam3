@@ -19,6 +19,7 @@ import foam.nanos.NanoService;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.CompositeApprovable;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
@@ -619,7 +620,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Capability capability = (Capability) capabilityDAO.find(capabilityId);
     UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
 
-    if ( ! capability.getEnabled() ) return false;
+    if ( capability.getLifecycleState() == LifecycleState.DELETED || capability.getLifecycleState() == LifecycleState.REJECTED ) return false;
     // if topLevel capability.isInternalCapability then returns capRenewability
     // if a preReq capability.isInternalCapability then that capability renewablity is ignored
     if ( ! firstCall && capability.getIsInternalCapability() ) return false;

@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.List',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CrunchService',
@@ -96,7 +97,7 @@ foam.CLASS({
         // Count junction statuses
         for ( String capId : prereqCapabilityIds ) {
           Capability cap = (Capability) capabilityDAO.find(capId);
-          if ( ! cap.getEnabled() ) continue;
+          if ( cap.getLifecycleState() == LifecycleState.DELETED || cap.getLifecycleState() == LifecycleState.REJECTED ) continue;
 
           X junctionSubjectContext = x.put("subject", junctionSubject);
 
@@ -136,7 +137,7 @@ foam.CLASS({
         is less than 'min'
       `,
       javaCode: `
-        if ( ! getEnabled() ) return false;
+        if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
