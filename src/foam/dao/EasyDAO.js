@@ -167,11 +167,16 @@ foam.CLASS({
           }
         }
 
-        if ( getSeqNo() ) {
+        if ( getFuid() ) {
           delegate = new foam.dao.FUIDDAO(getX(), getName(), getSeqPropertyName(), delegate);
-        } else if ( getGuid() ||
-                    getFuid() ) {
-          delegate = new foam.dao.FUIDDAO(getX(), getName(), delegate);
+        } else if ( getSeqNo() ) {
+          delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
+            setDelegate(delegate).
+            setProperty(getSeqPropertyName()).
+            setStartingValue(getSeqStartingValue()).
+            build();
+        } else if ( getGuid() ) {
+          delegate = new foam.dao.GUIDDAO(getX(), delegate);
         }
 
         if ( getMdao() != null &&
