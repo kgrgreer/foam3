@@ -102,8 +102,8 @@ p({
 })
 p({
   class: "foam.nanos.bench.BenchmarkRunner",
-  id: "PMBenchmarkRunner",
-  benchmarkId: "PMBenchmark",
+  id: "PerfMonBenchmarkRunner",
+  benchmarkId: "PerfMonBenchmark",
   executionCount: 100000,
   reverseThreads: true
 })

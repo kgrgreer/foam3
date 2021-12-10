@@ -35,7 +35,9 @@ foam.CLASS({
     'foam.util.concurrent.AsyncAssemblyLine',
     'java.util.List',
     'java.util.HashMap',
+    'java.util.HashSet',
     'java.util.Map',
+    'java.util.Set',
     'java.util.concurrent.ConcurrentHashMap',
   ],
 
@@ -44,6 +46,15 @@ foam.CLASS({
       name: 'ALARM_NAME',
       type: 'String',
       value: 'Medusa Primary Announce'
+    }
+  ],
+
+  properties: [
+    {
+      name: 'indexVerificationMaxWait',
+      class: 'Long',
+      value: 60000,
+      units: 'ms'
     }
   ],
 
@@ -96,7 +107,8 @@ foam.CLASS({
       alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
-      final Map<Long, Long> map = new ConcurrentHashMap();
+      final Map<Long, Long> counts = new ConcurrentHashMap();
+      final Set<String> replies = new HashSet();
       List<ClusterConfig> nodes = support.getReplayNodes();
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
@@ -108,6 +120,7 @@ foam.CLASS({
               max = (Max) client.select(max);
               if ( max != null ) {
                 m = (Long) max.getValue();
+                replies.add(cfg.getId());
               }
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
@@ -117,33 +130,56 @@ foam.CLASS({
             }
             logger.info(cfg.getId(), "max", m);
             synchronized ( this ) {
-              Long count = map.get(m);
+              Long count = counts.get(m);
               if ( count == null ) {
                 count = new Long(0);
               }
               count = new Long(count.longValue() + 1);
-              map.put(m, count);
+              counts.put(m, count);
             }
           }
         });
       }
       logger.debug("line.shutdown", "wait");
-      line.shutdown();
+      // NOTE: this will block forever if a node does not reply.
+      // line.shutdown();
+      // Perform manual polling for completion.
+      long waited = 0L;
+      long sleep = 1000L;
+      while ( waited < getIndexVerificationMaxWait() ) {
+        try {
+          Thread.currentThread().sleep(sleep);
+          waited += sleep;
+        } catch (InterruptedException e) {
+          break;
+        }
+        if ( replies.size() >= nodes.size() -1 ) {
+          break;
+        }
+      }
       logger.debug("line.shutdown", "continue");
 
       long max = 0L;
-      for ( Long m : map.keySet() ) {
+      for ( Long m : counts.keySet() ) {
         if ( m > max ) {
           max = m;
         }
       }
-      Long count = map.get(max);
+      Long count = counts.get(max);
       long quorum = support.getNodeQuorum();
-      logger.debug("max", max, "count", count, "quorum", quorum);
-      if ( count == null ||
+
+      if ( replies.size() < nodes.size() -1 ||
+           count == null ||
            count < support.getNodeQuorum() ) {
+        if ( replies.size() < nodes.size() -1 ) {
+          logger.debug("replies", replies.size(), "nodes", nodes.size());
+          logger.error("Index verification", "failed", "Unable to determine max index", "PAUSING");
+        } else {
+          logger.debug("max", max, "count", count, "quorum", quorum);
+          logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
+        }
+
         // Halt the system.
-        logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
         // just stay in replay mode - admin can take primary OFFLINE to force this process to repeat.
         logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
 

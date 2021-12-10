@@ -14,12 +14,11 @@
   `,
 
   imports: [
-    'subject'
+    'wizardSubject'
   ],
 
   exports: [
-    'getWAO',
-    'subject as wizardSubject'
+    'getWAO'
   ],
 
   requires: [
@@ -51,11 +50,11 @@
     function getWAO() {
       switch ( this.waoSetting ) {
         case this.WAOSetting.UCJ:
-          return this.UserCapabilityJunctionWAO.create({ subject: this.subject }, this.__context__);
+          return this.UserCapabilityJunctionWAO.create({ subject: this.wizardSubject }, this.__context__);
         case this.WAOSetting.CAPABLE:
           return this.CapableWAO.create({}, this.__context__);
         case this.WAOSetting.APPROVAL:
-          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.subject });
+          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.wizardSubject });
         default:
           throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
       }
