@@ -20,26 +20,31 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.mlang.order.Comparator',
-    'static foam.util.UIDSupport.*'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'static foam.util.UIDSupport.*',
+    'java.util.concurrent.atomic.AtomicInteger'
   ],
 
   javaCode: `
   public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo) {
     setX(x);
-    setSalt(salt);
     setDao(dao);
+    setSalt(salt);
     setPropertyInfo(pInfo);
     init_();
   }
 
   public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo, Comparator comparator) {
     setX(x);
-    setSalt(salt);
     setDao(dao);
+    setSalt(salt);
     setPropertyInfo(pInfo);
     setComparator(comparator);
     init_();
   }
+
+  AtomicInteger seqNo_ = new AtomicInteger();
   `,
 
   properties: [
@@ -64,10 +69,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.mlang.order.Comparator',
       name: 'comparator'
-    },
-    {
-      class: 'Int',
-      name: 'value'
     }
   ],
 
@@ -93,17 +94,21 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        int seqNo = 0;
-        synchronized (this) {
-          seqNo = getLastSeqNo() + 1;
+        if ( seqNo_.get() == 0 ) {
+          synchronized ( this ) {
+            if ( seqNo_.get() == 0 ) {
+              initMaxSeqNo();
+            }
+          }
         }
-        id.append(toHexString(seqNo, 2));
+        id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
     },
     {
-      name: 'getLastSeqNo',
-      type: 'Integer',
+      name: 'initMaxSeqNo',
       javaCode: `
+        Logger logger = Loggers.logger(getX(), this);
+        logger.info(getSalt(), "max", "find");
         DAO dao = getDao();
         if ( getComparator() != null ) {
           dao = dao.orderBy(getComparator()).limit(1);
@@ -115,13 +120,13 @@ foam.CLASS({
             if ( id > 0x1000000 ) {
               var hex   = undoPermute(Long.toHexString(id));
               var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-              if ( getValue() < seqNo ) {
-                setValue(seqNo);
+              if ( seqNo > seqNo_.get() ) {
+                seqNo_.set(seqNo);
               }
             }
           }
         });
-        return getValue();
+        Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
       `
     },
     {
