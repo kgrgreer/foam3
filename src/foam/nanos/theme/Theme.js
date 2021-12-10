@@ -620,7 +620,19 @@ foam.CLASS({
       name: 'restrictedCapabilities',
       documentation: `
         List of capabilities whose entries should be ignored when querying capabilityDAO.
+      `,
+      javaPostSet: `
+        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
       `
+    },
+    {
+      class: 'Object',
+      name: 'restrictedCapabilities_',
+      javaType: 'java.util.HashSet',
+      javaFactory: `
+        return new HashSet<>();
+      `,
+      hidden: true
     }
   ],
 
@@ -776,7 +788,7 @@ foam.CLASS({
       },
       javaCode: `
         if ( getRestrictedCapabilities() != null ) {
-          return (new HashSet<>(Arrays.asList(getRestrictedCapabilities()))).contains(capId);
+          return getRestrictedCapabilities_().contains(capId);
         }
         return false;
       `
