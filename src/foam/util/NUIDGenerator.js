@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
-    'foam.mlang.order.Comparator',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'static foam.util.UIDSupport.*',
@@ -32,15 +31,6 @@ foam.CLASS({
     setDao(dao);
     setSalt(salt);
     setPropertyInfo(pInfo);
-    init_();
-  }
-
-  public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo, Comparator comparator) {
-    setX(x);
-    setDao(dao);
-    setSalt(salt);
-    setPropertyInfo(pInfo);
-    setComparator(comparator);
     init_();
   }
 
@@ -63,12 +53,6 @@ foam.CLASS({
       hidden: true,
       javaType: 'foam.core.PropertyInfo',
       javaInfoType: 'foam.core.AbstractObjectPropertyInfo'
-    },
-    {
-      documentation: 'order select by comparator so first entry has max sequence number',
-      class: 'FObjectProperty',
-      of: 'foam.mlang.order.Comparator',
-      name: 'comparator'
     }
   ],
 
@@ -109,11 +93,7 @@ foam.CLASS({
       javaCode: `
         Logger logger = Loggers.logger(getX(), this);
         logger.info(getSalt(), "max", "find");
-        DAO dao = getDao();
-        if ( getComparator() != null ) {
-          dao = dao.orderBy(getComparator()).limit(1);
-        }
-        dao.select(new AbstractSink() {
+        getDao().select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
             var id = (long) getPropertyInfo().get(obj);
