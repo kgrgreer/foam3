@@ -34,6 +34,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.json.JSONParser',
+    'foam.nanos.dig.bench.DIGBenchmark',
     'foam.nanos.dig.exception.DigErrorMessage',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
@@ -355,7 +356,6 @@ NOTE: when using the java client, the first call to a newly started instance may
     {
       name: 'password',
       class: 'Password',
-      value: 'adminAb1',
       visibility: 'HIDDEN'
     },
     {
@@ -449,6 +449,16 @@ NOTE: when using the java client, the first call to a newly started instance may
   ],
 
   javaCode: `
+  public DIG(X x, String nSpecName, DIGBenchmark benchmark) {
+    setNSpecName(nSpecName);
+    setPostURL(benchmark.getSetupUrl());
+    setSessionId(benchmark.getSetupSessionId());
+    setUserName(benchmark.getSetupUserName());
+    setPassword(benchmark.getSetupPassword());
+    setConnectionTimeout(benchmark.getConnectionTimeout());
+    setRequestTimeout(benchmark.getRequestTimeout());
+  }
+
   protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
     @Override
     protected JSONFObjectFormatter initialValue() {
