@@ -657,6 +657,7 @@ var classes = [
   'foam.nanos.demo.relationship.Course',
   'foam.nanos.demo.relationship.CourseType',
   'foam.nanos.demo.relationship.StudentCourseJunction',
+  'foam.nanos.demo.relationship.test.RelationshipTest',
   'foam.nanos.fs.File',
   'foam.nanos.fs.FileDataClearSink',
   'foam.nanos.fs.FileDataDAO',
