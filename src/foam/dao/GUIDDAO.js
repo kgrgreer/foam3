@@ -82,6 +82,10 @@ return getDelegate().put_(x, obj);
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
+public GUIDDAO(foam.core.X x, DAO delegate) {
+  setX(x);
+  setDelegate(delegate);
+}
 public GUIDDAO(DAO delegate) {
   setDelegate(delegate);
 }

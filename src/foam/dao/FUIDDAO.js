@@ -45,6 +45,14 @@ foam.CLASS({
       value: 'id'
     },
     {
+      class: 'String',
+      name: 'salt',
+      javaFactory: `
+      if ( getNSpec() != null ) return getNSpec().getName();
+      throw new IllegalArgumentException("Salt not defined");
+      `
+    },
+    {
       /** @private */
       name: 'propertyInfo',
       hidden: true,
@@ -57,44 +65,49 @@ foam.CLASS({
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
-        var klass = getPropertyInfo().getValueClass();
-        if ( klass == String.class ) {
-          return new AUIDGenerator(getX(), getNSpec().getName());
+        if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
+          return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
         }
-        return new NUIDGenerator(getX(), getNSpec().getName());
+        return new AUIDGenerator(getX(), getSalt());
       `,
+      hidden: true,
     },
     {
       name: 'nSpec',
       class: 'FObjectProperty',
-      type: 'foam.nanos.boot.NSpec'
+      type: 'foam.nanos.boot.NSpec',
+      hidden: true,
     }
   ],
 
   javaCode: `
-  public FUIDDAO(DAO delegate) {
-    setDelegate(delegate);
-  }
-
   public FUIDDAO(X x, String salt, DAO delegate) {
     super(x, delegate);
-    var id = (PropertyInfo) delegate.getOf().getAxiomByName("id");
-    setUIDGenerator(id.getValueClass() == String.class
-      ? new AUIDGenerator(x, salt)
-      : new NUIDGenerator(x, salt));
+    setSalt(salt);
+    init_();
+  }
+
+  public FUIDDAO(X x, String salt, String idProperty, DAO delegate) {
+    super(x, delegate);
+    setSalt(salt);
+    setProperty(idProperty);
+    init_();
   }
   `,
 
   methods: [
     {
+      name: 'init_',
+      javaCode: 'getUIDGenerator();'
+    },
+    {
       name: 'put_',
       javaCode: `
         if ( getPropertyInfo().isDefaultValue(obj) ) {
-          getPropertyInfo().set(obj,
-            getUIDGenerator().getNext(getPropertyInfo().getValueClass()));
+          getPropertyInfo().set(obj, getUIDGenerator().getNext(null));
         }
         return getDelegate().put_(x, obj);
       `
-    },
+    }
   ]
 });
