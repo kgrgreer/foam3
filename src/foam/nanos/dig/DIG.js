@@ -414,7 +414,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         } else if ( dao instanceof foam.dao.MDAO ) {
           return ((foam.dao.MDAO) dao).getOf();
         }
-        return null;
+        throw new IllegalArgumentException("of undefined");
       `,
       visibility: 'HIDDEN',
       transient: true
@@ -450,6 +450,7 @@ NOTE: when using the java client, the first call to a newly started instance may
 
   javaCode: `
   public DIG(X x, String nSpecName, DIGBenchmark benchmark) {
+    this(x);
     setNSpecName(nSpecName);
     setPostURL(benchmark.getSetupUrl());
     setSessionId(benchmark.getSetupSessionId());
@@ -484,13 +485,12 @@ NOTE: when using the java client, the first call to a newly started instance may
         .connectTimeout(Duration.ofMillis(getConnectionTimeout()));
 
       if ( getSecure() ) {
-        // System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
         SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
         if ( contextFactory != null && contextFactory.getEnableSSL() ) {
           SSLContext sslContext = contextFactory.getSSLContext();
           builder = builder.sslContext(sslContext);
         }
-      }
+     }
       // store and accept ORIGINAL_SERVER
       builder.cookieHandler(new CookieManager());
       return builder.build();
@@ -688,11 +688,11 @@ NOTE: when using the java client, the first call to a newly started instance may
       } catch ( FOAMException e ) {
         throw e;
       } catch ( RuntimeException e ) {
-        Throwable cause = e.getCause();
+        Throwable cause = e;
         while ( cause.getCause() != null ) {
           cause = cause.getCause();
         }
-        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getOf(), data, cause);
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), getOf(), data, cause);
         throw e;
       } finally {
         pm.log(x);
@@ -769,6 +769,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       } else if ( ! SafetyUtil.isEmpty(getPassword()) ) {
         builder = builder.header("Authorization", "BASIC "+Base64.getEncoder().encodeToString((getUserName()+":"+getPassword()).getBytes()));
       } else {
+        Loggers.logger(x, this).warning("submit", "Missing auth details", "session", getSessionId(), "username", getUserName(), "password", getPassword());
         throw new IllegalArgumentException("Missing auth details");
       }
       if ( dop == DOP.PUT ) {
@@ -790,7 +791,6 @@ NOTE: when using the java client, the first call to a newly started instance may
           // Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
         }
         if ( SafetyUtil.isEmpty(response.body()) ) return null;
-        // return unAdapt(x, dop, response.body());
         Object result = unAdapt(x, dop, response.body());
         // Empty array has a trailing new line - assume server side dig is doing this.
         if ( result instanceof String &&
