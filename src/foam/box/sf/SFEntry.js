@@ -24,7 +24,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.core.FObject',
-      name: 'object'
+      name: 'object',
+      storageTransient: false
     },
     {
       class: 'Long',
