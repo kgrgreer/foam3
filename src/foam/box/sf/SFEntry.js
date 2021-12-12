@@ -62,6 +62,12 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      name: 'retryStrategy',
+      class: 'FObjectProperty',
+      of: 'foam.util.retry.RetryStrategy',
+      storageTransient: true
+    },
+    {
       class: 'Long',
       name: 'fileOffset',
     },

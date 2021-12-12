@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.fs.Storage',
     'foam.nanos.fs.FileSystemStorage',
     'foam.dao.ReadOnlyF3FileJournal',
+    'foam.util.retry.RetryStrategy',
     'foam.mlang.MLang',
     'foam.mlang.predicate.Predicate',
     'foam.lib.json.Outputter',
@@ -74,9 +75,10 @@ foam.CLASS({
     {
       name: 'retryStrategy',
       class: 'FObjectProperty',
-      of: 'foam.box.sf.RetryStrategy',
+      of: 'foam.util.retry.RetryStrategy',
       javaFactory: `
-        return (new DefaultRetryStrategy.Builder(getX())).build();
+        //return (new DefaultRetryStrategy.Builder(getX())).build();
+        return null;
       `
     },
     {
@@ -195,6 +197,8 @@ foam.CLASS({
           entry.setIndex(index);
           SFFileJournal journal = getJournal(toFileName(entry));
           entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
+          FObject o = (FObject) getRetryStrategy();
+          entry.setRetryStrategy((RetryStrategy) o.fclone());
           forward(entry);
         } else {
           synchronized ( writeLock_ ) {
@@ -207,6 +211,8 @@ foam.CLASS({
             synchronized ( onHoldListLock_ ) {
               if ( onHoldList_.size() == 0 ) {
                 onHoldList_.add(entry);
+                FObject o = (FObject) getRetryStrategy();
+                entry.setRetryStrategy((RetryStrategy) o.fclone());
                 forward(entry);
               } else {
                 onHoldList_.add(entry);
@@ -239,7 +245,10 @@ foam.CLASS({
         synchronized ( onHoldListLock_ ) {
           onHoldList_.remove(0);
           if ( onHoldList_.size() != 0 ) {
-            forward(onHoldList_.get(0));
+            SFEntry s = (SFEntry) onHoldList_.get(0);
+            FObject o = (FObject) getRetryStrategy();
+            s.setRetryStrategy((RetryStrategy) o.fclone());
+            forward(s);
           }
         }
       `
@@ -262,9 +271,8 @@ foam.CLASS({
       documentation: 'handle entry when retry fail',
       javaCode: `
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
-        if ( getRetryStrategy().maxRetries() > -1 &&
-              e.getRetryAttempt() >= getRetryStrategy().maxRetries() )  {
-          logger_.warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getRetryStrategy().maxRetries(), e.toString());
+        if ( ! getRetryStrategy().canRetry(getX()) )  {
+          logger_.warning("Retry end: ", e.toString());
 
           if ( getReplayFailEntry() == true ) {
             e.setStatus(SFStatus.CANCELLED);
@@ -390,7 +398,10 @@ foam.CLASS({
           List<SFEntry> sfEntryList = sink.getArray();
           logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
           for ( SFEntry entry : sfEntryList ) {
-            forward((SFEntry) entry.fclone());
+            SFEntry s = (SFEntry) entry.fclone();
+            FObject o = (FObject) getRetryStrategy();
+            s.setRetryStrategy((RetryStrategy) o.fclone());
+            forward(s);
           }
         } else {
 
@@ -442,7 +453,12 @@ foam.CLASS({
             }
 
             entryIndex_.set(maxFileIndex * getFileCapacity());
-            if ( onHoldList_.size() != 0 ) forward(onHoldList_.get(0));
+            if ( onHoldList_.size() != 0 ) {
+              SFEntry s = (SFEntry) onHoldList_.get(0);
+              FObject o = (FObject) getRetryStrategy();
+              s.setRetryStrategy((RetryStrategy) o.fclone());
+              forward(s);
+            }
           }
         }
 
@@ -454,10 +470,7 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setCurStep(getRetryStrategy().delay(e.getCurStep()));
-        if ( e.getCurStep() > getRetryStrategy().maxRetryDelay() ) {
-          e.setCurStep(getRetryStrategy().maxRetryDelay());
-        }
+        e.setCurStep(e.getRetryStrategy().getRetryDelay(getX()));
         e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
         return e;
       `
