@@ -2,7 +2,6 @@ p({
   "class":"foam.box.sf.SFSink",
   "id":"constFourSecondHttpSinkDemo",
   "fileName":"httpSFSinkDemo",
-  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
   "timeWindow": 3600,
   "replayFailEntry": true,
   "delegateNspecId": "demoHttpSink"
@@ -11,7 +10,6 @@ p({
   "class":"foam.box.sf.SFSink",
   "id":"constFourSecondHttpSinkDemoUsingAtime",
   "fileName":"httpSFSinkDemoUsingAtime",
-  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy","maxRetryAttempts":40},
   "timeWindow": 3600,
   "fileCapacity": 4,
   "delegateNspecId": "demoHttpSinkUsingAtime"
@@ -20,7 +18,6 @@ p({
   "class":"foam.box.sf.SFSink",
   "id":"flinksWebHook",
   "fileName":"flinksWebHook",
-  "retryStrategy":{"class":"foam.box.sf.DefaultRetryStrategy"},
   "timeWindow": 3600,
   "replayFailEntry": true,
   "delegateNspecId": "flinksWebHookHttpSink"

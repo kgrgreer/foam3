@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.fs.FileSystemStorage',
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.util.retry.RetryStrategy',
+    'foam.util.retry.RetryForeverStrategy',
     'foam.mlang.MLang',
     'foam.mlang.predicate.Predicate',
     'foam.lib.json.Outputter',
@@ -77,8 +78,9 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.util.retry.RetryStrategy',
       javaFactory: `
-        //return (new DefaultRetryStrategy.Builder(getX())).build();
-        return null;
+        return (new RetryForeverStrategy.Builder(null))
+          .setRetryDelay(4000)
+          .build();
       `
     },
     {
