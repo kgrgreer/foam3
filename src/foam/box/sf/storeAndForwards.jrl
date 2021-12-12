@@ -11,7 +11,7 @@ p({
   "id":"constFourSecondHttpSinkDemoUsingAtime",
   "fileName":"httpSFSinkDemoUsingAtime",
   "timeWindow": 3600,
-  "fileCapacity": 4,
+  "fileCapacity": 1000,
   "delegateNspecId": "demoHttpSinkUsingAtime"
 })
 p({
