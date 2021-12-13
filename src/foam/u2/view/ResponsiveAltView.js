@@ -76,9 +76,9 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.onDetach(this.views$.sub(this.createViewMap));
+      this.views$.sub(this.createViewMap);
       this.createViewMap();
-      this.onDetach(this.displayWidth$.sub(this.maybeUpdateView));
+      this.displayWidth$.sub(this.maybeUpdateView);
       this.maybeUpdateView();
       // TODO: Too many wrapping divs
       this
@@ -101,6 +101,7 @@ foam.CLASS({
       name: 'createViewMap',
       isFramed: true,
       code: function() {
+        this.clearProperty('viewMap');
         this.views.forEach(v => {
           if ( ! v[1] ) return;
           v[1].forEach(dw => {
