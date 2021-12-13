@@ -122,6 +122,9 @@ foam.CLASS({
             ? this.ControllerMode.EDIT
             : this.ControllerMode.VIEW
       });
+      console.log("@UCJView - created context in subject - " + (x.subject ? x.subject.user.id : "-") + " real: " + (x.subject ? x.subject.realUser.id : "-") );
+      console.log("@UCJView - passed in subject - " + (__subContext__.subject ? __subContext__.subject.user.id : "-") + " real: " + (__subContext__.subject ? __subContext__.subject.realUser.id : "-") );
+      
       var sequence = undefined;
       if ( this.isSettingCapabilities ) {
         x = x.createSubContext({
@@ -142,8 +145,6 @@ foam.CLASS({
       } else {
         sequence = this.crunchController.createWizardSequence(this.data.targetId, x);
         sequence
-          .reconfigure('LoadCapabilitiesAgent', {
-            subject: subject })
           .reconfigure('ConfigureFlowAgent', {
             popupMode: false
           })

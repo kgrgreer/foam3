@@ -11,7 +11,8 @@ foam.CLASS({
   flags: ['web'],
 
   imports: [
-    'crunchService'
+    'crunchService',
+    'subject'
   ],
 
   requires: [
@@ -21,15 +22,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Subject',
-      name: 'subject',
-      documentation: `
-        The requested subject associated to the ucj. Should only be set
-        when used by a permissioned back-office user.
-      `
-    },
     {
       name: 'saveLock',
       class: 'FObjectProperty',
@@ -64,22 +56,21 @@ foam.CLASS({
       return this.save_(wizardlet, options);
     },
     function cancel(wizardlet) {
-      let p = this.subject ? this.crunchService.updateJunctionFor(
+      console.log("@UCJ WAO canel - created context in subject - " + (this.subject ? this.subject.user.id : "-") + " real: " + (this.subject ? this.subject.realUser.id : "-") );
+      
+      let p = this.crunchService.updateJunctionFor(
         null, wizardlet.capability.id, null, null, this.subject.user, this.subject.realUser
-      ) : this.crunchService.updateJunction(
-        null, wizardlet.capability.id, null, null
       );
       return p.then(ucj => { return ucj; })
         .catch(this.reportNetworkFailure.bind(this, wizardlet, 'cancel', null));
     },
     function load(wizardlet) {
       if ( wizardlet.loading ) return;
-
+      console.log("@UCJ WAO load - created context in subject - " + (this.subject ? this.subject.user.id : "-") + " real: " + (this.subject ? this.subject.realUser.id : "-") );
+      
       wizardlet.loading = true;
-      let p = this.subject ? this.crunchService.getJunctionFor(
+      let p = this.crunchService.getJunctionFor(
         null, wizardlet.capability.id, this.subject.user, this.subject.realUser
-      ) : this.crunchService.getJunction(
-        null, wizardlet.capability.id
       );
       return p.then(ucj => {
         this.load_(wizardlet, ucj);
@@ -91,11 +82,11 @@ foam.CLASS({
       if ( wizardlet.reloadAfterSave && options.reloadData ) {
         wizardlet.loadingLevel = this.LoadingLevel.LOADING;
       }
-      let p = this.subject ? this.crunchService.updateJunctionFor(
+      console.log("@UCJ WAO save - created context in subject - " + (this.subject ? this.subject.user.id : "-") + " real: " + (this.subject ? this.subject.realUser.id : "-") );
+      
+      let p = this.crunchService.updateJunctionFor(
         null, wizardlet.capability.id, wData, null,
         this.subject.user, this.subject.realUser
-      ) : this.crunchService.updateJunction(null,
-        wizardlet.capability.id, wData, null
       );
       p = p.then((ucj) => {
         if ( wizardlet.reloadAfterSave && options.reloadData ) {

@@ -64,10 +64,9 @@ foam.CLASS({
       }
     },
     async function getUcjAndApprovable_(wizardlet) {
-      let ucj = this.subject ? await this.crunchService.getJunctionFor(
+      console.log("@WWAO getUcjAndApprovable_ - created context in subject - " + (this.subject ? this.subject.user.id : "-") + " real: " + (this.subject ? this.subject.realUser.id : "-") );
+      let ucj = await this.crunchService.getJunctionFor(
         null, wizardlet.capability.id, this.subject.user, this.subject.realUser
-      ) : await this.crunchService.getJunction(
-        null, wizardlet.capability.id
       );
       let approvable = (await this.userCapabilityJunctionApprovableDAO.where(this.AND(
         this.EQ(this.Approvable.OBJ_ID, ucj.id),

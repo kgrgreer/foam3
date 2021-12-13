@@ -28,11 +28,13 @@ foam.CLASS({
       var ucj = (await x.userCapabilityJunctionDAO
         .where(this.associatedTopLevelUCJ).select()).array[0];
       var subject = await ucj.getSubject();
-
-      x.crunchController.createWizardSequence(ucj.targetId, x)
-        .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject
-        })
+      var xs = x.createSubContext({
+        subject: subject
+      });
+      console.log("@UCJUpdateApprovable - created context in subject - " + (xs.subject ? xs.subject.user.id : "-") + " real: " + (xs.subject ? xs.subject.realUser.id : "-") );
+      console.log("@UCJUpdateApprovable - passed in subject - " + (x.subject ? x.subject.user.id : "-") + " real: " + (x.subject ? x.subject.realUser.id : "-") );
+      
+      xs.crunchController.createWizardSequence(ucj.targetId, xs)
         .reconfigure('ConfigureFlowAgent', {
           popupMode: false
         })
