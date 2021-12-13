@@ -107,6 +107,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var user = undefined;
+      if ( ! this.data ) return;
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( this.data.effectiveUser ) {
         user = await this.userDAO.find(this.data.effectiveUser);
@@ -123,7 +124,7 @@ foam.CLASS({
             : this.ControllerMode.VIEW
       });
       console.log("@UCJView - created context in subject - " + (x.subject ? x.subject.user.id : "-") + " real: " + (x.subject ? x.subject.realUser.id : "-") );
-      console.log("@UCJView - passed in subject - " + (__subContext__.subject ? __subContext__.subject.user.id : "-") + " real: " + (__subContext__.subject ? __subContext__.subject.realUser.id : "-") );
+      console.log("@UCJView - passed in subject - " + (this.__subContext__.subject ? this.__subContext__.subject.user.id : "-") + " real: " + (this.__subContext__.subject ? this.__subContext__.subject.realUser.id : "-") );
       
       var sequence = undefined;
       if ( this.isSettingCapabilities ) {
