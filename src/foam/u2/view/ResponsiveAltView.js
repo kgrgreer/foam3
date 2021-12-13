@@ -36,12 +36,8 @@ foam.CLASS({
         }
   `,
 
-  imports: [
-    'displayWidth',
-    'data as parentData'
-  ],
+  imports: [ 'displayWidth' ],
 
-  exports: ['parentData as data'],
 
   requires: ['foam.u2.layout.DisplayWidth'],
 
@@ -60,13 +56,13 @@ foam.CLASS({
         return this.views[0][0];
       },
       adapt: function(_, nu) {
-        if ( typeof nu === 'string' ) {
+        if ( foam.String.isInstance(nu) ) {
           for ( var i = 0; i < this.views.length; i++ ) {
             if ( this.views[i][1] === nu ) {
               return this.views[i][0];
             }
           }
-        } else if ( typeof nu === 'number' ) {
+        } else if ( foam.Number.isInstance(nu) ) {
           return this.views[nu][0];
         }
         return nu;
@@ -129,7 +125,7 @@ foam.CLASS({
         var newView;
         // Try to find the largest possible view for current breakpoint
         this.DisplayWidth.VALUES
-          .sort((a, b) => a.ordinal - b.ordinal)
+          .sort(this.DisplayWidth.ORDINAL.compare)
           .forEach(dw => {
             if ( newView && dw.minWidth > self.displayWidth.minWidth ) return;
             if ( this.viewMap[dw.name] )
