@@ -37,6 +37,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
+    'java.util.Arrays',
+    'java.util.HashSet',
     'java.util.List',
     'java.util.Map'
   ],
@@ -613,6 +615,25 @@ foam.CLASS({
       },
       includeInDigest: true
     },
+    {
+      class: 'Array',
+      name: 'restrictedCapabilities',
+      documentation: `
+        List of capabilities whose entries should be ignored when querying capabilityDAO.
+      `,
+      javaPostSet: `
+        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
+      `
+    },
+    {
+      class: 'Object',
+      name: 'restrictedCapabilities_',
+      javaType: 'java.util.HashSet',
+      javaFactory: `
+        return new HashSet<>();
+      `,
+      hidden: true
+    }
   ],
 
   actions: [
@@ -753,6 +774,23 @@ foam.CLASS({
 
           value1.copyFrom(value2);
         }
+      `
+    },
+    {
+      name: 'isCapabilityRestricted',
+      type: 'Boolean',
+      args: [ 'String capId' ],
+      code: function(capId) {
+        if ( this.restrictedCapabilities != null ) {
+          return this.restrictedCapabilities.includes(capId)
+        }
+        return false;
+      },
+      javaCode: `
+        if ( getRestrictedCapabilities() != null ) {
+          return getRestrictedCapabilities_().contains(capId);
+        }
+        return false;
       `
     }
   ]
