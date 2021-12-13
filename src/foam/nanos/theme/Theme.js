@@ -628,6 +628,7 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'restrictedCapabilities_',
+      transient: true,
       javaType: 'java.util.HashSet',
       javaFactory: `
         return new HashSet<>();
