@@ -20,17 +20,13 @@ foam.CLASS({
 
   imports: [
     'capabilityDAO',
-    'crunchController',
     'userCapabilityJunctionDAO'
   ],
 
   requires: [
     'foam.nanos.crunch.ui.UCJView',
     'foam.nanos.crunch.Capability',
-    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.AgentCapabilityJunction',
-    'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
-    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
   ],

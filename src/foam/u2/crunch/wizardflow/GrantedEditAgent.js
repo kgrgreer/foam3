@@ -23,7 +23,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
-    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.SkipMode'
   ],

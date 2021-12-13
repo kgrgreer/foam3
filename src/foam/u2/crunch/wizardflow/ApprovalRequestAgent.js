@@ -19,7 +19,6 @@ foam.CLASS({
     'rootCapability',
     'subject',
     'submitted',
-    'wizardSubject'
   ],
 
   requires: [
