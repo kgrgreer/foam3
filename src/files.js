@@ -604,6 +604,7 @@ FOAM_FILES([
   { name: "foam/u2/view/TreeView", flags: ['web'] },
   { name: "foam/u2/view/FileUploadTextField", flags: ['web'] },
   { name: "foam/u2/view/AltView", flags: ['web'] },
+  { name: "foam/u2/view/ResponsiveAltView", flags: ['web'] },
   { name: "foam/u2/view/ObjAltView", flags: ['web'] },
   { name: "foam/u2/view/ModeAltView", flags: ['web'] },
   { name: "foam/u2/view/StringView", flags: ['web'] },
