@@ -9,7 +9,9 @@ foam.CLASS({
   name: 'CapabilityAuthServicePredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   documentation: `
-    Create modeled predicate.
+    The main reason to  create this modeled predicate is to solve a performance
+    issue. We need to avoid using anonymous inner class.
+    By creating a model, we will be able to have a better concurrently performance.
   `,
 
   javaImports: [
