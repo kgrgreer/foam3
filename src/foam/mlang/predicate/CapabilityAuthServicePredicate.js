@@ -45,9 +45,7 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
             Capability c = (Capability) getCapabilityDAO().find(ucj.getTargetId());
-            if ( c != null &&
-                ! c.isDeprecated(x)
-              ) {
+            if ( c != null && ! c.isDeprecated(x) ) {
               c.setX(x);
               if ( c.grantsPermission(getPermission()) ) {
                return true;
