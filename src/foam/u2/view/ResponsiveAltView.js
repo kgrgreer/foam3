@@ -38,7 +38,6 @@ foam.CLASS({
 
   imports: [ 'displayWidth' ],
 
-
   requires: ['foam.u2.layout.DisplayWidth'],
 
   properties: [
