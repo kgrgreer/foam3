@@ -180,6 +180,7 @@ foam.CLASS({
     function onMouseLeave(e) {
       console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
+      // If mouse moves to a nested dropdown, do not close the parent dropdown
       if ( e.toElement?.nodeName == 'DROPDOWN' ) return;
       this.timer = setTimeout(() => { this.close(); }, 500);
     },

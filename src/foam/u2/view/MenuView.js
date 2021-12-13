@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'MenuView',
   extends: 'foam.u2.tag.Button',
 
-  imports: ['dropdown?'],
+  imports: [
+    // If rendered in a dropdown, close the dropdown after launching menu
+    'dropdown? as parentMenuDropdown'
+  ],
 
   properties: [
     'menu',
@@ -31,7 +34,7 @@ foam.CLASS({
     function click(evt) {
       this.SUPER(evt);
       this.menu.launch_(this.__subContext__, this);
-      if ( this.dropdown ) this.dropdown.close();
+      if ( this.parentMenuDropdown ) this.parentMenuDropdown.close();
       return;
     }
   ]
