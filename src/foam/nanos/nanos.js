@@ -299,7 +299,7 @@ FOAM_FILES([
   { name: "foam/nanos/cron/CronSchedule" },
   { name: "foam/nanos/cron/CronScheduler" },
   { name: "foam/nanos/cron/CronScheduleDAO" },
-  { name: "foam/nanos/cron/GenericIntervalSchedule" },
+  { name: "foam/nanos/cron/SimpleIntervalSchedule" },
   { name: "foam/nanos/cron/IntervalSchedule" },
   { name: "foam/nanos/cron/NeverSchedule" },
   { name: "foam/nanos/cron/OrSchedule" },

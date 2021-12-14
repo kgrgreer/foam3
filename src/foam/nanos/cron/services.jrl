@@ -61,3 +61,58 @@ p({
     return new foam.nanos.cron.CronScheduler();
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"schedulableDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.cron.Schedulable.getOwnClassInfo())
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("schedulables")
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(
+        new foam.nanos.cron.CronScheduleDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Schedulable.getOwnClassInfo()))
+          .build()))
+      .setPm(true)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build()
+      })
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.STATUS })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.LAST_RUN })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.ENABLED });
+  """,
+  "client":"{\"of\":\"foam.nanos.cron.Schedulable\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"schedulableEventDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.script.ScriptEvent.getOwnClassInfo())
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("schedulableEvents")
+      .setWriteOnly(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.script.ScriptEvent.LAST_RUN))
+        .setSize(10000)
+        .build())
+      .setCluster(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.ScriptEvent.LAST_RUN).build()
+      })
+      .setRuler(false)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.OWNER })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.LAST_RUN });
+  """,
+  "client":"{\"of\":\"foam.nanos.cron.ScriptEvent\"}"
+})

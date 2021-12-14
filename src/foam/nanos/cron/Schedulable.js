@@ -7,28 +7,39 @@
  foam.CLASS({
   package: 'foam.nanos.cron',
   name: 'Schedulable',
+  extends: 'foam.nanos.cron.Cron',
+
   mixins: [
     'foam.nanos.auth.CreatedAwareMixin',
     'foam.nanos.auth.CreatedByAwareMixin'
   ],
 
   implements: [
-    'foam.nanos.auth.ServiceProviderAware',
+    'foam.core.ContextAgent',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   properties: [
     {
-      class: 'String',
-      name: 'daoKey'
+      name: 'daoKey',
+      value: 'schedulableDAO'
     },
     {
-      class: 'FObjectProperty',
+      class: 'String',
+      name: 'eventDaoKey',
+      value: 'schedulableEventDAO'
+    },
+    {
       name: 'schedule',
       of: 'foam.nanos.cron.Schedule',
       view: {
         class: 'foam.u2.view.FObjectView',
-        of: 'foam.nanos.cron.GenericIntervalSchedule'
+        of: 'foam.nanos.cron.SimpleIntervalSchedule'
       }
+    },
+    {
+      class: 'String',
+      name: 'objectDaoKey'
     },
     {
       class: 'FObjectProperty',
@@ -39,9 +50,23 @@
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      section: 'basicInfo',
       value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       documentation: 'Service Provider Id of the rule. Default to ServiceProviderAware.GLOBAL_SPID for rule applicable to all service providers.'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'runScript',
+      javaCode: `
+        // TODO: simple submit itself to the threadpool agency which will call 'execute'
+      `
+    },
+    {
+      name: 'execute',
+      javaCode: `
+        // TODO: submitting the entry to the dao
+      `
     }
   ]
  });
