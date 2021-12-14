@@ -36,10 +36,10 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['Day', 'Day'],
-          ['Week', 'Week'],
-          ['Month', 'Month'],
-          ['Year', 'Year']
+          'Day',
+          'Week',
+          'Month',
+          'Year'
         ]
       },
       gridColumns: 6,
@@ -56,11 +56,11 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['Monday', 'Monday'],
-          ['Tuesday', 'Tuesday'],
-          ['Wednesday', 'Wednesday'],
-          ['Thursday', 'Thursday'],
-          ['Friday', 'Friday']
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday'
         ]
       },
       updateVisibility: function(frequency) {
@@ -93,8 +93,8 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          [1, 1],
-          [2, 2]
+          1,
+          2
         ]
       },
       updateVisibility: function(monthlyChoice, frequency) {
@@ -112,11 +112,11 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['First', 'First'],
-          ['Second', 'Second'],
-          ['Third', 'Third'],
-          ['Before Last', 'Before Last'],
-          ['Last', 'Last']
+          'First',
+          'Second',
+          'Third',
+          'Before Last',
+          'Last'
         ]
       },
       gridColumns: 6,
@@ -134,12 +134,12 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['Monday', 'Monday'],
-          ['Tuesday', 'Tuesday'],
-          ['Wednesday', 'Wednesday'],
-          ['Thursday', 'Thursday'],
-          ['Friday', 'Friday'],
-          ['Weekday', 'Weekday']
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Weekday'
         ]
       },
       gridColumns: 6,
@@ -157,9 +157,9 @@
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['Never', 'Never'],
-          ['On', 'On'],
-          ['After', 'After']
+          'Never',
+          'On',
+          'After'
         ]
       },
       gridColumns: 6,
