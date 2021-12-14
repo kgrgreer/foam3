@@ -138,7 +138,7 @@ public class MDAO
   }
 
   public FObject objIn(FObject obj) {
-    return obj.freeze();
+    return obj.fclone().freeze();
   }
 
   public FObject objOut(FObject obj) {
