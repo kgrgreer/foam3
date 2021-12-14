@@ -25,7 +25,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'com.toSql.Emp',
+      of: 'foam.demos.toSql.Emp',
       name: 'mgr',
       value: -1
     },
@@ -44,7 +44,7 @@ foam.CLASS({
 
     {
       class: 'Reference',
-      of: 'com.toSql.Dept',
+      of: 'foam.demos.toSql.Dept',
       name: 'deptNo'
     },
   ]

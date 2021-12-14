@@ -16,9 +16,9 @@ public class ToSql {
   public static void main(String[] args) {
     java.util.List res;
 
-    DAO deptDao = new foam.dao.MDAO(com.toSql.Dept.getOwnClassInfo());
-    DAO salGradeDao = new foam.dao.MDAO(com.toSql.SalGrade.getOwnClassInfo());
-    DAO empDao = new foam.dao.MDAO(com.toSql.Emp.getOwnClassInfo());
+    DAO deptDao = new foam.dao.MDAO(foam.demos.toSql.Dept.getOwnClassInfo());
+    DAO salGradeDao = new foam.dao.MDAO(foam.demos.toSql.SalGrade.getOwnClassInfo());
+    DAO empDao = new foam.dao.MDAO(foam.demos.toSql.Emp.getOwnClassInfo());
 
     setup(deptDao, salGradeDao, empDao);
 
@@ -32,7 +32,7 @@ public class ToSql {
 
     //select * from emp where sal<1000
     res = ( (ArraySink) empDao.
-        where(LT(com.toSql.Emp.SAL, 1000.0)).
+        where(LT(foam.demos.toSql.Emp.SAL, 1000.0)).
         select(new ArraySink()) ).getArray();
     print(res);
 
