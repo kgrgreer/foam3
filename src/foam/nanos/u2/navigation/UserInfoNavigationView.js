@@ -85,17 +85,6 @@ foam.CLASS({
 
       menuArray.sort((a, b) => a.order - b.order);
 
-      menuArray = menuArray.map(menuItem => {
-        var e = this;
-        return self.Action.create({
-          name: menuItem.name,
-          label: this.translationService.getTranslation(foam.locale, menuItem.id + '.label', menuItem.label),
-          code: () => {
-            menuItem.launch_(X, e);
-          }
-        });
-      });
-
       this
       .addClass(this.myClass())
       .start(this.OverlayActionListView, {

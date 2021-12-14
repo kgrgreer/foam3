@@ -25,13 +25,17 @@ foam = {
   util:     {
     path: function(root, path, opt_ensure) {
       var a = path.split('.');
-      var i;
 
-      for ( var i = 0 ; i < a.length && root ; i++ ) {
-        root = root[a[i]] || ( root[a[i]] = {} );
-        if ( opt_ensure && root == undefined ) {
-          root = root[a[i]] = {};
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        var nextRoot = root[a[i]];
+        if ( nextRoot === undefined ) {
+          if ( opt_ensure ) {
+            nextRoot = root[a[i]] = {};
+          } else {
+            return;
+          }
         }
+        root = nextRoot;
       }
 
       return root;
