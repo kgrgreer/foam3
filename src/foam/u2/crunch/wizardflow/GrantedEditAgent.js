@@ -28,10 +28,24 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.SkipMode'
   ],
 
+  properties: [
+    {
+      name: 'subject',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Subject',
+      documentation: `
+        The requested subject associated to the ucj. Should only be set
+        when used by a permissioned back-office user.
+      `
+    }
+  ],
+
   methods: [
     // If Property expressions ever unwrap promises this method can be blank.
     async function execute() {
-      var ucj = await this.crunchService.getJunction(null, this.rootCapability.id);
+      var ucj = this.subject ? 
+        await this.crunchService.getJunctionFor(null, this.rootCapability.id, this.subject.user, this.subject.realUser) : 
+        await this.crunchService.getJunction(null, this.rootCapability.id);
       var isRenewable = await this.crunchService.isRenewable(this.__subContext__, this.rootCapability.id);
       if ( ucj.status === this.CapabilityJunctionStatus.GRANTED ) {
         if ( isRenewable ) {
