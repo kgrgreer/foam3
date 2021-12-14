@@ -123,10 +123,12 @@ public class MDAO
     synchronized ( writeLock_ ) {
       if ( index instanceof TreeIndex ) {
         var properties = propertyInfoList_(index);
+        var str1 = arrayToString_(properties);
         var delegates = index_.getDelegates();
         for ( Index i : delegates ) {
           var properties2 = propertyInfoList_(i);
-          if ( properties.containsAll(properties2) || properties2.containsAll(properties) ) {
+          var str2 = arrayToString_(properties2);
+          if ( str1.startsWith(str2) || str2.startsWith(str1) ) {
             //Logger  logger = (Logger) getX().get("logger");
             //logger.warning("redundant indexes...did not add");
             System.err.println("redundant indexes...did not add");
@@ -138,6 +140,14 @@ public class MDAO
     }
     }
 
+    public String arrayToString_(ArrayList<PropertyInfo> list) {
+      StringBuilder sb = new StringBuilder();
+      for ( PropertyInfo i : list ) {
+        sb.append(i.toString());
+        sb.append(":");
+      }
+      return sb.toString();
+    }
 
   /** Add an Index which is for a unique value. Use addIndex() if the index is not unique. **/
   public void addUniqueIndex(PropertyInfo... props) {

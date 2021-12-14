@@ -93,7 +93,7 @@ public class TreeIndex
           state = statePredicate[0];
           arg   = (Predicate) statePredicate[1];
         }
-        
+
         if ( arg == null ) {
           ((And) p).getArgs()[i] = new True();
         }
@@ -171,5 +171,13 @@ public class TreeIndex
 
   public long size(Object state) {
     return ((TreeNode) state).size;
+  }
+
+  public Index getTail() {
+    return this.tail_;
+  }
+
+  public PropertyInfo getProp() {
+    return this.prop_;
   }
 }
