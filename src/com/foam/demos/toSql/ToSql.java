@@ -1,4 +1,4 @@
-package com.toSql;
+package foam.demos.toSql;
 
 import static foam.mlang.MLang.LT;
 
@@ -61,6 +61,15 @@ public class ToSql {
     // select ename,job , sal from emp order by job, sal desc
 
     // select distinct job from emp
+
+    // select ename,comm/sal, comm, sal from emp where job='SALESMAN'order by comm/sal;
+
+    // select ename,sal, comm from emp where comm <sal*0.25
+
+    // select ename,job decode(comm,null,'sans',0,comm) , sal from emp order by job, sal desc
+
+
+
 
 
   }

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'com.toSql',
+  package: 'foam.demos.toSql',
   name: 'SalGrade',
 
   properties: [

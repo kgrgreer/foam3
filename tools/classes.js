@@ -963,9 +963,9 @@ var classes = [
   'foam.counter.Counter',
   'foam.util.date.TimeUnit',
 
-  'com.toSql.Dept',
-  'com.toSql.SalGrade',  
-  'com.toSql.Emp'
+  'foam.demos.toSql.Dept',
+  'foam.demos.toSql.SalGrade',
+  'foam.demos.toSql.Emp'
 
 ];
 

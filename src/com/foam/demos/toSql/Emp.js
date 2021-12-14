@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'com.toSql',
+  package: 'foam.demos.toSql',
   name: 'Emp',
-  
+
   imports: [
-    'com.toSql.Dept'
+    'foam.demos.toSql.Dept'
   ],
 
   properties: [
@@ -49,5 +49,3 @@ foam.CLASS({
     },
   ]
 });
-
-
