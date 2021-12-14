@@ -161,11 +161,6 @@ foam.CLASS({
       documentation: 'Specifies the root menu to be used in top navigation settings drop-down.'
     },
     {
-      class: 'Boolean',
-      name: 'disableCurrencyChoice',
-      value: false
-    },
-    {
       class: 'String',
       name: 'logoRedirect',
     },
