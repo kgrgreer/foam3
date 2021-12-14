@@ -36,6 +36,8 @@ foam.CLASS({
     ^tabRow {
       border-bottom: 1px solid #e7eaec;
       background-color: white;
+      overflow-x: auto;
+      white-space: nowrap;
     }
     ^tab {
       border-top: 3px solid transparent;
@@ -63,10 +65,11 @@ foam.CLASS({
       background-color: /*%WHITE%*/ white;
       border-radius: 4px 4px 0 0;
       border-bottom: 1px solid /*%GREY4%*/ #DADDE2;
-      box-sizing: border-box;
       display: flex;
       gap: 12px 24px;
       padding: 12px;
+      overflow-x: auto;
+      white-space: nowrap;
     }
     ^tab {
       align-items: center;
@@ -76,7 +79,6 @@ foam.CLASS({
       display: flex;
       justify-content: center;
       padding: 7px 12px;
-      box-sizing: border-box;
     }
     ^tab:hover {
       background: /*%PRIMARY5%*/ #C6D2FF;

@@ -32,7 +32,7 @@ foam.CLASS({
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       border-radius: 4px;
       display: block;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 400;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -180,6 +180,8 @@ foam.CLASS({
     function onMouseLeave(e) {
       console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
+      // If mouse moves to a nested dropdown, do not close the parent dropdown
+      if ( e.toElement?.nodeName == 'DROPDOWN' ) return;
       this.timer = setTimeout(() => { this.close(); }, 500);
     },
 

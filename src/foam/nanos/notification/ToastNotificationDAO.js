@@ -15,13 +15,17 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-        Notification notification = (Notification) obj;
-        if ( notification.getTransient() == true ) {
-          return notification;
+      code: function(x, obj) {
+        if ( obj.transient ) {
+          // Need to manullay publish put in the client dao decorator when you return.
+          // This is needed here because the method responsible for creating a toast
+          // message is listening on put to myNotificationDAO to be executed.
+          this.on.put.pub(obj);
+          return obj;
         }
-        return getDelegate().put_(x, notification);
-      `
+
+        return this.delegate.put_(x, obj);
+      }
     }
   ]
 });

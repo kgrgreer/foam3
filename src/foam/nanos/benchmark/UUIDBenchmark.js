@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.benchmark',
   name: 'UUIDBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
     'foam.core.FObject',
@@ -40,7 +40,7 @@ foam.CLASS({
       javaFactory: `
       Logger logger = (Logger) getX().get("logger");
       if ( logger == null ) {
-        logger = new StdoutLogger();
+        logger = StdoutLogger.instance();
       }
       return new PrefixLogger(new Object[] {
         this.getClass().getSimpleName()
@@ -50,18 +50,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaCode: `
-      // nop
-      `
-    },
     {
       name: 'execute',
       args: [
@@ -78,22 +66,6 @@ foam.CLASS({
     }
 
     UUID.randomUUID().toString();
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

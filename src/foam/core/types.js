@@ -114,12 +114,12 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'foam.u2.TextFormatter',
       name:'formatter',
-      value:[],
+      value: null,
       documentation: `
-        An array of integers and strings of delimiters used to format the property
-        where integer values represent number of digits at its location
-        E.g., [3, '.', 3, '.', 3, '.', 3]
+        A TextFormatter Object to be passed to the FormattedTextField view.
       `
     }
   ],
@@ -226,6 +226,12 @@ foam.CLASS({
 
         return foam.Date.compare(o1, o2);
       }
+    },
+    {
+      name: 'format',
+      value: function(val) {
+        return foam.Date.formatDate(val);
+      }
     }
   ]
 });
@@ -256,6 +262,12 @@ foam.CLASS({
           return ret;
         }
         return d;
+      }
+    },
+    {
+      name: 'format',
+      value: function(val, timeFirst = false) {
+        return foam.Date.formatDate(val, timeFirst);
       }
     }
   ]
@@ -560,8 +572,10 @@ foam.CLASS({
         return v;
       }
     ],
-    [ 'type', 'Class' ]
+    [ 'type', 'Class' ],
+    [ 'displayWidth', 80 ]
   ],
+
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
@@ -891,6 +905,24 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'enableLink',
+      documentation: `
+        Create the reference view as an anchor link to the reference's DetailView or provided menu.
+        Check ReadReferenceView documentation for more info.
+      `,
+      value: true
+    },
+    {
+      name: 'menuKeys',
+      documentation: `
+        A list of menu ids.
+        The link will reference to the first menu to which group has permission
+        in this list. If no menus are permissioned, the link will be disabled.
+        Check ReadReferenceView documentation for more info.
+      `
+    },
+    {
       class: 'String',
       name: 'unauthorizedTargetDAOKey',
       documentation: `
@@ -908,16 +940,19 @@ foam.CLASS({
     {
       name: 'value',
       expression: function(of) {
+        if ( of && ! of.ID ) {
+          console.warn('of.ID not found for: ' + of + '.' +this.name);
+        }
         var ret = of ? of.ID.value : null;
 
 
-        if ( ! of ){
-          console.warn('Of not found for: ' + this.name)
-          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name)
+        if ( ! of ) {
+          console.warn('Of not found for: ' + this.name);
+          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name);
         }
 
-        if ( ret === undefined ){
-          console.warn('Default value is undefined for: ' + of.name + '.' + this.name)
+        if ( ret === undefined ) {
+          console.warn('Default value is undefined for: ' + of.name + '.' + this.name);
           ret = null;
         }
 
@@ -1052,7 +1087,26 @@ foam.CLASS({
         if ( ! foam.core.FObject.isInstance(v) ) {
           return prop.Glyph.create(v);
         }
+        return v;
       }
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'FUIDProperty',
+  extends: 'Property',
+
+  properties: [
+    {
+      name: 'adapt',
+      value: function(_, a) {
+        return a ? a.toString().trim() : '';
+      }
+    },
+    [ 'type', 'String' ],
+    [ 'value', '' ]
   ]
 });

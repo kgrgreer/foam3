@@ -21,6 +21,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'id',
+      getter: function() {
+        return this.package ? this.package + '.' + this.name : this.name;
+      }
+    },
+    {
       class: 'String',
       name: 'name'
     },
@@ -56,8 +62,16 @@ foam.CLASS({
   ],
 
   methods: [
+    function interfaceMethod(m) {
+      var im = foam.java.InterfaceMethod.create(m);
+      this.methods.push(im);
+      return this;
+    },
+
     function method(m) {
-      this.methods.push(foam.java.InterfaceMethod.create(m));
+      var im = foam.java.InterfaceMethod.create(m);
+      im.body = '';
+      this.methods.push(im);
       return this;
     },
 
@@ -141,7 +155,6 @@ foam.CLASS({
       }
 
       o.out('}');
-
     }
   ]
 });

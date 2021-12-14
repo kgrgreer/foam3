@@ -129,7 +129,7 @@ foam.CLASS({
             } catch (NoSuchMethodException e) {
               Logger logger = (Logger) x.get("logger");
               if ( logger == null ) {
-                logger = new foam.nanos.logger.StdoutLogger();
+                logger = foam.nanos.logger.StdoutLogger.instance();
               }
               logger.warning("ServiceProviderAwareSupport.match", result.getClass().getSimpleName(), pInfo.getName(), "NoSuchMethodException");
               return false;
@@ -183,7 +183,7 @@ foam.CLASS({
             } catch (NoSuchMethodException e) {
               Logger logger = (Logger) x.get("logger");
               if ( logger == null ) {
-                logger = new foam.nanos.logger.StdoutLogger();
+                logger = foam.nanos.logger.StdoutLogger.instance();
               }
               logger.warning("ServiceProviderAwareSupport.findSpid", result.getClass().getSimpleName(), pInfo.getName(), "NoSuchMethodException");
               return "";
@@ -292,7 +292,7 @@ foam.CLASS({
           }
           Logger logger = (Logger) x.get("logger");
           if ( logger == null ) {
-            logger = new foam.nanos.logger.StdoutLogger();
+            logger = foam.nanos.logger.StdoutLogger.instance();
           }
           if ( cause != null &&
                cause instanceof AuthorizationException ) {
@@ -317,17 +317,9 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public ServiceProviderAwareSupport(String spid) {
-            setSpid(spid);
-          }
-        `);
-      }
+  javaCode: `
+    public ServiceProviderAwareSupport(String spid) {
+      setSpid(spid);
     }
-  ]
+  `
 });
-

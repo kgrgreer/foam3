@@ -39,29 +39,22 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
+  javaCode: `
+    protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
 
-          protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-              return new StringBuilder();
-            }
-            @Override
-            public StringBuilder get() {
-              StringBuilder b = super.get();
-              b.setLength(0);
-              return b;
-            }
-          };
-        `);
+    protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+      @Override
+      protected StringBuilder initialValue() {
+        return new StringBuilder();
       }
-    }
-  ],
+      @Override
+      public StringBuilder get() {
+        StringBuilder b = super.get();
+        b.setLength(0);
+        return b;
+      }
+    };
+  `,
 
   properties: [
     {
@@ -104,7 +97,7 @@ foam.CLASS({
       javaFactory: `
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
-          logger = new StdoutLogger();
+          logger = StdoutLogger.instance();
         }
         return new PrefixLogger(new Object[] { "[JDAO]", getFilename() }, logger);
       `

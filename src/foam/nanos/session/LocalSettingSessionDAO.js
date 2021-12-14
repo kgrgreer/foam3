@@ -13,21 +13,13 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO'
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public LocalSettingSessionDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-            } 
-          `
-        );
-      }
+  javaCode: `
+    public LocalSettingSessionDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
+
   methods: [
     {
       name: 'put_',

@@ -84,12 +84,6 @@ foam.CLASS({
       encode these changes in the actual foam files
     */
 
-    ^ .foam-u2-TextField,
-    ^ .foam-u2-tag-Select,
-    ^ .foam-u2-tag-TextArea,
-    ^ .foam-u2-IntView {
-      width: 100%;
-    }
 
     ^ .foam-u2-view-date-DateTimePicker {
       cursor: pointer;
@@ -102,7 +96,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-chevron {
       content: '▾';
       padding-left: 0px;
-      font-size: 16px;
+      font-size: 1.6rem;
       color: #8D9090;
     }
 
@@ -113,17 +107,17 @@ foam.CLASS({
       box-sizing: border-box;
       -webkit-appearance: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 1.4rem;
     }
 
     ^ .foam-u2-view-RichChoiceView .search {
       padding: 8px 16px;
-      font-size: 14px;
+      font-size: 1.4rem;
       border-bottom: 1px solid #f4f4f9;
     }
 
     ^ .foam-u2-detail-SectionedDetailPropertyView .property-filter {
-      font-size: 14px;
+      font-size: 1.4rem;
       padding-left: 16px;
     }
 
@@ -138,7 +132,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-heading {
       border-bottom: 1px solid #f4f4f9;
       line-height: 24px;
-      font-size: 14px;
+      font-size: 1.4rem;
       color: #333;
       font-weight: 900;
       padding: 6px 16px;
@@ -151,7 +145,7 @@ foam.CLASS({
     ^ .DefaultRowView-row {
       background: white;
       padding: 8px 16px;
-      font-size: 12px;
+      font-size: 1.2rem;
       color: #424242;
     }
 
@@ -167,8 +161,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-layout-Cols {
-      padding-bottom: 4px;
-      display: flex;
       align-items: center;
     }
 
@@ -265,7 +257,7 @@ foam.CLASS({
                           })
                         .end()
                         .start()
-                          .style({ 'flex-grow': 1 })
+                          .style({ 'flex': 1 })
                           .add(errorSlot.map(s => {
                             return self.E().add(s);
                           }))

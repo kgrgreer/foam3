@@ -27,6 +27,7 @@ foam.INTERFACE({
     {
       name: 'getPrereqs',
       type: 'java.util.List<String>',
+      async: true,
       args: [
         { name: 'x',     type: 'Context' },
         { name: 'capId', type: 'String' },
@@ -84,6 +85,12 @@ foam.INTERFACE({
           type: 'foam.nanos.auth.User'
         }
       ]
+    },
+    {
+      name: 'retrieveCapabilityPath',
+      async: true,
+      type: 'List',
+      args: 'Context x, String sourceId, boolean filterGrantedUCJ, boolean groupPrereqAwares, List collectLeafNodesList'
     },
     {
       name: 'getCapabilityPath',
@@ -215,6 +222,12 @@ foam.INTERFACE({
           type: 'foam.nanos.auth.Subject'
         }
       ],
+    },
+    {
+      name: 'updateJunctionDirectly',
+      async: true,
+      type: 'UserCapabilityJunction',
+      args: 'Context x, String capabilityId, foam.core.FObject data'
     },
     {
       name: 'updateJunction',

@@ -30,6 +30,7 @@ foam.CLASS({
 
   constants: [
     { name: 'BCRMB_ID', value: 'b' },
+    { name: 'ACTION_ID', value: 'a' },
   ],
 
   properties: [
@@ -149,6 +150,7 @@ foam.CLASS({
 
       if ( m && m.parent ) {
         m.value = '';
+        return m.parent;
       }
     },
 
@@ -168,10 +170,17 @@ foam.CLASS({
       while ( this.pos > jumpPos ) {
       // Check if the class of the view to which current memento points has property viewTitle set 
       // using the identifier added to the memento params by stackView
-        if ( this.stack_[this.pos].parent?.memento.params == this.BCRMB_ID ) {
-          this.deleteMemento(this.stack_[this.pos].parent.memento.head);
+        if ( this.stack_[this.pos].parent ) {
+          var actionMemento;
+          var parent = this.getContextFromParent(this.stack_[this.pos].parent);
+          if ( parent.memento?.params == this.BCRMB_ID ) {
+            actionMemento = this.deleteMemento(parent.memento.head);
+          }
+          //Remove all actions that may have been performed in this view
+          while ( actionMemento?.params == this.ACTION_ID ) {
+            actionMemento = this.deleteMemento(actionMemento.head);
+          }
         }
-
         this.pos--;
       }
       if ( this.navStackBottom > this.pos ) {
@@ -182,6 +191,20 @@ foam.CLASS({
           }
         }
       }
+    },
+    function getContextFromParent(parent, ctx) {
+      ctx = ctx || this;
+      if ( ! parent ) return ctx.__subSubContext__;
+      if ( parent.isContext ) return parent;
+      if ( parent.__subContext__ ) return parent.__subContext__;
+
+
+      // Do a bit of a dance with the context, to ensure that exports from
+      // "parent" are available to "view"
+      // TODO: revisit KGR's comment from earlier; this may not be needed
+      console.warn('parent is neither an element nor a context');
+      return ctx.__subSubContext__.createSubContext(parent);
+
     }
   ],
 

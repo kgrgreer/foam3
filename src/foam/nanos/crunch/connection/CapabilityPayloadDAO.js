@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Logger', 
+    'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
@@ -40,12 +40,12 @@ foam.CLASS({
   ],
 
   documentation: `
-    CapabilityPayloadDAO is not able to store anything. 
-    
+    CapabilityPayloadDAO is not able to store anything.
+
     For find and select, it defaults to looking up the respective
     query on the localCapabilityDAO, and instead returns CapabilityPayload objects based on those queries.
 
-    For put, it expects a CapabilityPayload back and then updates UCJs based on fetching the grant path based on 
+    For put, it expects a CapabilityPayload back and then updates UCJs based on fetching the grant path based on
     the CapabilityPayload.id and then cross referencing the grant path with CapabilityPayload.capabilityDataObjects
     to fetch the filled out data.
   `,
@@ -70,77 +70,70 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public CapabilityPayloadDAO(X x, DAO delegate) {
-            setX(x);
-            setDelegate(delegate);
-          } 
-
-          private Map<String, GrantPathNode> walkGrantPath(List grantPath, X x) {
-            DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-            var capabilityDAO = (DAO) x.get("capabilityDAO");
-            var userId = ((Subject)x.get("subject")).getRealUser().getId();
-            var businessId = ((Subject)x.get("subject")).getUser().getId();
-
-            // Collect all capabilities that belong to either the user or business
-            Map<String, UserCapabilityJunction> capabilityUcjMap = new HashMap<String, UserCapabilityJunction>();
-            ((ArraySink) userCapabilityJunctionDAO.where(
-              OR(
-                EQ(UserCapabilityJunction.SOURCE_ID, userId),
-                EQ(UserCapabilityJunction.SOURCE_ID, businessId)
-              )
-            ).select(new ArraySink())).getArray().forEach((item) -> {
-              var ucj = (UserCapabilityJunction) item;
-              var capability = (Capability) capabilityDAO.find(ucj.getTargetId());
-              if ( capability != null )
-                capabilityUcjMap.put(capability.getName(), ucj);
-            });
-      
-            int index = 0;
-            Map<String,GrantPathNode> capabilityGrantPath = new HashMap<>();
-            
-            while ( index < grantPath.size() )
-            {
-              Object item = grantPath.get(index++);
-
-              if ( item instanceof Capability ) {
-                Capability capability = (Capability) item;
-                UserCapabilityJunction ucj = capabilityUcjMap.get(capability.getName());
-                FObject data = null;
-                if ( capability.getOf() != null ){
-                  try {
-                    data = ( ucj != null ) ? ucj.getData() : null;
-                    if ( data == null )
-                      data = (FObject) capability.getOf().newInstance();
-                  } catch (java.lang.Exception e){
-                    throw new RuntimeException(e);
-                  }
-                }
-                GrantPathNode node = new GrantPathNode.Builder(x)
-                  .setCapability(capability)
-                  .setUcj(ucj)
-                  .setData(data)
-                  .build();
-                capabilityGrantPath.put(capability.getName(), node);
-              }
-              else if ( item instanceof List ) {
-                List list = (List) item;
-
-                // add all the elements of the list
-                grantPath.addAll(list);
-              }
-            }
-
-            return capabilityGrantPath;
-          }
-        `);
-      }
+  javaCode: `
+    public CapabilityPayloadDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+
+    private Map<String, GrantPathNode> walkGrantPath(List grantPath, X x) {
+      DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+      var capabilityDAO = (DAO) x.get("capabilityDAO");
+      var userId = ((Subject)x.get("subject")).getRealUser().getId();
+      var businessId = ((Subject)x.get("subject")).getUser().getId();
+
+      // Collect all capabilities that belong to either the user or business
+      Map<String, UserCapabilityJunction> capabilityUcjMap = new HashMap<String, UserCapabilityJunction>();
+      ((ArraySink) userCapabilityJunctionDAO.where(
+        OR(
+          EQ(UserCapabilityJunction.SOURCE_ID, userId),
+          EQ(UserCapabilityJunction.SOURCE_ID, businessId)
+        )
+      ).select(new ArraySink())).getArray().forEach((item) -> {
+        var ucj = (UserCapabilityJunction) item;
+        var capability = (Capability) capabilityDAO.find(ucj.getTargetId());
+        if ( capability != null )
+          capabilityUcjMap.put(capability.getName(), ucj);
+      });
+
+      int index = 0;
+      Map<String,GrantPathNode> capabilityGrantPath = new HashMap<>();
+
+      while ( index < grantPath.size() )
+      {
+        Object item = grantPath.get(index++);
+
+        if ( item instanceof Capability ) {
+          Capability capability = (Capability) item;
+          UserCapabilityJunction ucj = capabilityUcjMap.get(capability.getName());
+          FObject data = null;
+          if ( capability.getOf() != null ){
+            try {
+              data = ( ucj != null ) ? ucj.getData() : null;
+              if ( data == null )
+                data = (FObject) capability.getOf().newInstance();
+            } catch (java.lang.Exception e){
+              throw new RuntimeException(e);
+            }
+          }
+          GrantPathNode node = new GrantPathNode.Builder(x)
+            .setCapability(capability)
+            .setUcj(ucj)
+            .setData(data)
+            .build();
+          capabilityGrantPath.put(capability.getName(), node);
+        }
+        else if ( item instanceof List ) {
+          List list = (List) item;
+
+          // add all the elements of the list
+          grantPath.addAll(list);
+        }
+      }
+
+      return capabilityGrantPath;
+    }
+  `,
 
   methods: [
     {
@@ -151,7 +144,7 @@ foam.CLASS({
         DAO localCapabilityDAO = (DAO) x.get("localCapabilityDAO");
 
         String idToString = (String) id;
-        
+
         if ( localCapabilityDAO.find(idToString) == null ){
           // throw new RuntimeException("Requested Capability id cannot be found");
           return null;
@@ -174,7 +167,7 @@ foam.CLASS({
 
         // if separate capability ids submitted in select which aree part of different subtrees
         List<CapabilityPayload> capabilityPayloads = new ArrayList<>();
-      
+
         // iterate through each capability from the select and calculate separate grant path
         for ( Capability rootCapability : rootCapabilities ){
           CapabilityPayload capabilityPayload = filterCapabilityPayload(x, rootCapability.getId());
@@ -184,7 +177,7 @@ foam.CLASS({
         ArraySink capabilityPayloadsToArraySink = new ArraySink.Builder(x)
           .setArray(new ArrayList(capabilityPayloads))
           .build();
-        
+
         return capabilityPayloadsToArraySink;
       `
     },
@@ -203,12 +196,12 @@ foam.CLASS({
           // Sorted maps for return data
           Map<String,FObject> dataObjects = new TreeMap<String,FObject>();
           Map<String,String> validationErrors = new TreeMap<String,String>();
-          
+
           // Validate any of the existing data objects
           for ( var key : dataMap.keySet() ) {
             GrantPathNode node = dataMap.get(key);
             FObject data = node.getData();
-            
+
             // Only return the non-null data objects
             if ( data != null ) {
               dataObjects.put(key, data);
@@ -216,8 +209,8 @@ foam.CLASS({
               // Check to see if there are validation erros blocking granting these capabilities
               if ( data instanceof Validatable ) {
                 try {
-                  ((Validatable) data).validate(x); 
-                  
+                  ((Validatable) data).validate(x);
+
                   // Check for pending approvals on data that passes validation
                   UserCapabilityJunction ucj = node.getUcj();
                   if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.PENDING ) {
@@ -228,7 +221,7 @@ foam.CLASS({
                   validationErrors.put(key, ie.getMessage());
                 } catch (ValidationException ve) {
                   validationErrors.put(
-                    String.format("%s[%s]", key, ve.getPropName()), 
+                    String.format("%s[%s]", key, ve.getPropName()),
                     ve.getMessage());
                 } catch (CompoundException ce) {
                   for ( var t : ce.getExceptions() ) {
@@ -256,14 +249,18 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      var pm = new PM(CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+      var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
+
+      recordCapabilityPayload(x, obj.fclone());
 
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 
-        List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
-        processCapabilityList(x, grantPath, capabilityDataObjects);
+        List leaves = new ArrayList<>();
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
         var ret =  find_(x, receivingCapPayload.getId());
         return ret;
@@ -280,9 +277,12 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'list', type: 'List' },
+        { name: 'leaves', type: 'List' },
         { name: 'capabilityDataObjects', type: 'Map' }
       ],
       javaCode: `
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+
         for (Object item : list) {
           if ( item instanceof Capability ) {
             Capability cap = (Capability) item;
@@ -292,25 +292,71 @@ foam.CLASS({
               // Making sure to cast the of to the object before it gets casted to an fobject
               dataObj = ( cap.getOf() != null ) ?
                 (FObject) cap.getOf().getObjClass().cast(capabilityDataObjects.get(cap.getName())) :
-                (FObject) capabilityDataObjects.get(cap.getName());  
+                (FObject) capabilityDataObjects.get(cap.getName());
             }
-            
-            CrunchService crunchService = (CrunchService) x.get("crunchService");
-            UserCapabilityJunction oldUcj = crunchService.getJunction(x, cap.getId());
-            FObject currentDataObj = oldUcj.getData();
-            if ( currentDataObj != null && dataObj != null ) {
-              currentDataObj.copyFrom(dataObj);
-              dataObj = currentDataObj;
-            }
-            
-            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
-            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
+
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunctionDirectly(x, cap.getId(), dataObj);
+            getLogger().debug("Updated capability", cap.getName(), cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
           } else if ( item instanceof List ) {
-            processCapabilityList(x, (List) item, capabilityDataObjects);
+            processCapabilityList(x, (List) item, null, capabilityDataObjects);
           } else {
-            getLogger().warning("Ignoring unexpected item in grant path " + item);
+            getLogger().warning("Ignoring unexpected item in grant path ", item);
           }
         }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
       `
     }
   ],

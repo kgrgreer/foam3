@@ -608,23 +608,23 @@ foam.CLASS({
 
       var references = foam.json.references(x, json);;
 
-      return Promise.all(references).then(function() {
+      return Promise.all/*Settled*/(references).then(() => {
         return foam.json.parse(json, undefined, opt_ctx || this.creationContext);
-      }.bind(this));
+      });
     },
     function parseClassFromString(str, opt_cls, opt_ctx) {
       return this.strict ?
-          // JSON.parse() is faster; use it when data format allows.
-          foam.json.parse(
-            JSON.parse(str),
-            opt_cls,
-            opt_ctx || this.creationContext) :
-          // Create new parser iff different context was injected; otherwise
-          // use same parser bound to "creationContext" each time.
-          opt_ctx ? foam.parsers.FON.create({
-            creationContext: opt_ctx || this.creationContext
-          }).parseClassFromString(str, opt_cls) :
-          this.fonParser_.parseClassFromString(str, opt_cls);
+        // JSON.parse() is faster; use it when data format allows.
+        foam.json.parse(
+          JSON.parse(str),
+          opt_cls,
+          opt_ctx || this.creationContext) :
+        // Create new parser iff different context was injected; otherwise
+        // use same parser bound to "creationContext" each time.
+        opt_ctx ? foam.parsers.FON.create({
+          creationContext: opt_ctx || this.creationContext
+        }).parseClassFromString(str, opt_cls) :
+        this.fonParser_.parseClassFromString(str, opt_cls);
     },
     function clone() {
       return this;
@@ -831,9 +831,7 @@ foam.LIB({
           for ( var i = 0 ; i < o.length ; i++ ) {
             foam.json.references(x, o[i], r);
           }
-          // TODO: Should just be foam.core.FObject.isSubClass(o), but its broken #1023
-        } else if ( ( o && o.prototype && foam.core.FObject.prototype.isPrototypeOf(o.prototype) ) ||
-                    foam.core.FObject.isInstance(o) ) {
+        } else if ( foam.core.FObject.isSubClass(o) ) {
           return r;
         } else if ( foam.Object.isInstance(o) ) {
           for ( var key in o ) {

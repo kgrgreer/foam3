@@ -63,8 +63,7 @@ foam.CLASS({
       width: 165px;
       height: 35px;
       z-index: 10000
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -86,7 +85,7 @@ foam.CLASS({
       display: inline-block;
       text-align: center;
       padding-top: 4px;
-      font-size: 10px;
+      font-size: 1rem;
     }
     ^ .header {
       text-align: left;
@@ -96,8 +95,7 @@ foam.CLASS({
     ^ .title {
       width: auto;
       height: 20px;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 20px;
+      font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
       font-stretch: normal;
@@ -115,8 +113,7 @@ foam.CLASS({
     }
     ^ .subtitle {
       opacity: 0.7;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -187,7 +184,7 @@ foam.CLASS({
             .start().addClass('generic-status').addClass(this.status).add(this.status).end()
           .end()
           .start().addClass('subtitle')
-            .add("#", this.data.id, ' ', this.formatDate(this.data.createdAt), ' | ', this.data.requestorName, " <", this.data.requestorEmail, ">", "  |  Via support@mintchip.ca")
+            .add("#", this.data.id, ' ', foam.Date.formatDate(this.data.createdAt, false), ' | ', this.data.requestorName, " <", this.data.requestorEmail, ">", "  |  Via support@mintchip.ca")
           .end()
         .end()
         .start('div')
@@ -204,13 +201,6 @@ foam.CLASS({
           }, this.messages$)).end()
           .end()
         .end();
-    },
-
-    function formatDate(date) {
-      return date.toLocaleString(foam.locale, { month: 'short' }) + ' ' +
-        date.getDate() + ' ' +
-        date.getHours() + ':' +
-        date.getMinutes();
     }
   ],
 

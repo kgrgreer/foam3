@@ -16,8 +16,15 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Journal',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
+    'foam.dao.Sink',
+    'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.MAX',
+    'static foam.mlang.MLang.MIN',
+    'foam.mlang.sink.Count',
+    'foam.mlang.sink.Max',
+    'foam.mlang.sink.Min',
+    'foam.mlang.sink.Sequence',
+    'foam.nanos.logger.Loggers',
   ],
 
   properties: [
@@ -25,19 +32,6 @@ foam.CLASS({
       name: 'journal',
       class: 'FObjectProperty',
       of: 'foam.dao.Journal'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -54,26 +48,61 @@ foam.CLASS({
         details.setMaxIndex(info.getMaxIndex());
         details.setCount(info.getCount());
 
-        getLogger().info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
+        Loggers.logger(x, this).info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
         return details;
       }
 
       if ( obj instanceof ReplayCmd ) {
         ReplayCmd cmd = (ReplayCmd) obj;
-        getLogger().info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
+        ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
+        long indexAtStart = info.getIndex();
+
+        Loggers.logger(x, this).info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig fromConfig = support.getConfig(x, cmd.getDetails().getResponder());
         ClusterConfig toConfig = support.getConfig(x, cmd.getDetails().getRequester());
         DAO clientDAO = support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig);
 
-        // replay from file system
-        getJournal().replay(x, new RetryClientSinkDAO(x, clientDAO));
+        // mdao (cache, fixed size, last x received) - this includes storageTransient entries.
+        DAO cache = (DAO) x.get("medusaNodeDAO");
 
-        // replay mdao (cache - fixed size) - this includes storageTransient entries.
-        ((DAO) x.get("medusaNodeDAO")).select(new RetryClientSinkDAO(x, clientDAO));
+        ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
+        if ( details.getMinIndex() <= info.getMaxIndex() ) {
+          Min min = (Min) MIN(MedusaEntry.INDEX);
+          Count count = new Count();
+          Sequence seq = new Sequence.Builder(x)
+            .setArgs(new Sink[] {count, min})
+            .build();
+          cache.select(seq);
 
+          if ( ((Long) count.getValue()) == 0 ||
+               min != null &&
+               min.getValue() != null &&
+               details.getMinIndex() < (Long) min.getValue() ) {
+;
+
+            // replay from file system
+            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, 3, clientDAO)));
+          }
+
+          // replay from cache
+          // cache.select(new RetryClientSinkDAO(x, 3, clientDAO));
+          if ( info.getIndex() > indexAtStart ) {
+            // send the extra received since we started the cache replay
+            cache.where(GT(MedusaEntry.INDEX, info.getIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 3, clientDAO)));
+          }
+        }
         return cmd;
+      }
+
+      if ( obj instanceof foam.mlang.sink.Max ) {
+        Loggers.logger(x, this).debug("Max", "received");
+        Max max = (Max) getDelegate().select((Max) obj);
+        if ( max != null ) {
+          Loggers.logger(x, this).debug("Max", "response", max.getValue());
+        }
+        return max;
       }
 
       return getDelegate().cmd_(x, obj);

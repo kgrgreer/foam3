@@ -15,20 +15,20 @@ foam.CLASS({
 
   css: `
     ^pill{
+      align-items: center;
       border-radius: 11.2px;
       border: 1px solid;
-      font-size: 10px;
+      display: inline-flex;
+      justify-content: space-around;
+      font-size: 1rem;
       font-weight: 500;
       letter-spacing: normal;
       line-height: 2.1em;
-      min-width: 60px;
+      min-width: 88px;
       padding: 0 12px;
       text-align: center;
       width: -webkit-max-content;
       width: -moz-max-content;
-      display: inline-flex;
-      justify-content: space-around;
-      align-items: center;
     }
     ^icon{
       margin-right: 4px;
@@ -57,7 +57,7 @@ foam.CLASS({
         .style({
           'background-color': background,
           'color': color,
-          'border-color': background == '#FFFFFF' || ! background ? color : background
+          'border-color': background.includes('#FFFFFF') || ! background ? color : background
         })
         .callIf(this.showGlyph && data.glyph, () => {
           var icon = {
@@ -71,7 +71,7 @@ foam.CLASS({
         })
         .callIfElse(isPill,
           () => { this.start().add(data.label).end(); },
-          () => { this.start('p').add(data.label).end(); }
+          () => { this.start().addClass('p').add(data.label).end(); }
         );
     },
     {

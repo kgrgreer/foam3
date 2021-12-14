@@ -29,21 +29,12 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public SocketClientReplyBox(String replyBoxId) {
-    setReplyBoxId(replyBoxId);
-    setCreated(new java.util.Date());
-  }
-        `
-        }));
-      }
+  javaCode: `
+    public SocketClientReplyBox(String replyBoxId) {
+      setReplyBoxId(replyBoxId);
+      setCreated(new java.util.Date());
     }
-  ],
+  `,
 
   methods: [
     {
@@ -62,7 +53,7 @@ foam.CLASS({
       } else {
         foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         if ( logger == null ) {
-          logger = new foam.nanos.logger.StdoutLogger();
+          logger = foam.nanos.logger.StdoutLogger.instance();
         }
         logger.error(this.getClass().getSimpleName(), "send,Socket not found", "replyBoxId", getReplyBoxId(), "message abandoned", msg, new Exception("Socket not found."));
       }

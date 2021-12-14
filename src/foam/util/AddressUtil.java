@@ -6,7 +6,18 @@
 
 package foam.util;
 
+import foam.core.Detachable;
+import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
+import java.util.List;
 import java.util.regex.Pattern;
+
+import static foam.mlang.MLang.*;
+
 
 public class AddressUtil {
 
@@ -55,6 +66,69 @@ public class AddressUtil {
       throw new IllegalArgumentException("Couldn't parse " + address1 + (address2.isEmpty() ? "" : "," + address2));
 
     return new String[] { streetNumber, streetName };
+  }
+
+  public static String normalizeRegion(X x, String country, String regionCode) {
+    if ( SafetyUtil.isEmpty(regionCode) ) {
+      return regionCode;
+    }
+    
+    String[] normalizedRegion = { country + "-" + regionCode };
+    DAO regionDAO = (DAO) x.get("regionDAO");
+    Region found = (Region) regionDAO.find(regionCode);
+    if ( found != null )
+      return found.getCode();
+
+    if ( SafetyUtil.isEmpty(country) ) {
+      return regionCode;
+    }
+
+    regionDAO.where(AND(
+      EQ(Region.COUNTRY_ID, country),
+      OR(
+        EQ(Region.ISO_CODE, regionCode),
+        STARTS_WITH_IC(Region.NAME, regionCode)
+      )
+    )).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        Region region = (Region) o;
+        if ( region.getIsoCode().equals(regionCode) || region.getName().equalsIgnoreCase(regionCode) ) {
+          normalizedRegion[0] = region.getCode();
+          d.detach();
+        }
+      }
+    });
+    
+    return normalizedRegion[0];
+  }
+
+  public static String normalizeCountry(X x, String countryCode) {
+    if ( SafetyUtil.isEmpty(countryCode) ) {
+      return countryCode;
+    }
+    
+    String[] normalizedCountry = { countryCode };
+    DAO countryDAO = (DAO) x.get("countryDAO");
+    Country found = (Country) countryDAO.find(countryCode);
+    if ( found != null )
+      return found.getCode();
+
+    countryDAO
+      .where(OR(
+        EQ(Country.ISO31661CODE, countryCode),
+        STARTS_WITH_IC(Country.NAME, countryCode)
+      ))
+      .select(new AbstractSink() {
+        public void put(Object o, Detachable d) {
+          Country country = (Country) o;
+          if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
+            normalizedCountry[0] = country.getCode();
+            d.detach();
+          }
+        }
+      });
+    
+    return normalizedCountry[0];
   }
 
 }

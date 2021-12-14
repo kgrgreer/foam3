@@ -14,11 +14,13 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
     'group',
     'loginSuccess',
     'requestLogin',
     'sessionTimer',
+    'subject',
     'window'
   ],
 
@@ -45,7 +47,7 @@ foam.CLASS({
   methods: [
     {
       name: 'send',
-      code: function send(msg) {
+      code: async function send(msg) {
         var self = this;
         if (
           this.RPCErrorMessage.isInstance(msg.object) &&
@@ -55,10 +57,15 @@ foam.CLASS({
           // that something occurred on the backend to destroy this user's
           // session. Therefore we reset the client state and ask them to log
           // in again.
-          if ( this.loginSuccess ) {
-            if ( this.ctrl )  this.ctrl.remove();
-            alert(this.REFRESH_MSG);
+          var promptlogin = await this.auth.check(null, 'auth.promptlogin');
+          var authResult  = await this.auth.check(null, '*');
 
+          if ( this.loginSuccess && ( ! promptlogin || authResult ) ) {
+            if ( this.ctrl ) this.ctrl.remove();
+            // Set loginSuccess to false so that if multiple requests are sent with no authentication, alert is called only once
+            this.loginSuccess = false;
+            alert(this.REFRESH_MSG);
+            (this.window || window).location.reload();
             return;
           }
 
@@ -122,7 +129,7 @@ foam.CLASS({
     {
       name: 'send',
       code: function send(msg) {
-        msg.attributes[this.SESSION_KEY] = this.jsSessionID;
+        msg.attributes[this.SESSION_KEY] = this.sessionID;
 
         msg.attributes.replyBox.localBox = this.SessionReplyBox.create({
           msg:       msg,

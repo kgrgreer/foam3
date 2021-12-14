@@ -20,10 +20,6 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
-  imports: ['memento'],
-
-  exports: ['currentMemento_ as memento'],
-
   css: `
     ^ {
       padding: 32px
@@ -35,7 +31,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 
@@ -69,7 +65,6 @@ foam.CLASS({
 
   exports: [
     'controllerMode',
-    'as objectSummaryView',
     'currentMemento_ as memento'
   ],
 
@@ -161,7 +156,13 @@ foam.CLASS({
       class: 'String',
       name: 'viewTitle',
       expression: function(data) {
-        return data?.toSummary() ?? '';
+        var self = this;
+        var maybePromise = data?.toSummary() ?? '';
+        if ( maybePromise.then ) { 
+          maybePromise.then( v => { self.viewTitle = v })
+          return '';
+        }
+        return maybePromise;
       }
     }
   ],
@@ -194,6 +195,8 @@ foam.CLASS({
       },
       code: function() {
         if ( ! this.stack ) return;
+        // Wait to get data before loading edit
+        if ( ! this.data ) return;
 
         this.stack.push(this.StackBlock.create({
           view: {
@@ -306,70 +309,74 @@ foam.CLASS({
         }
       }
 
-      var promise = this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord);
-
       // Get a fresh copy of the data, especially when we've been returned
       // to this view from the edit view on the stack.
-      promise.then(d => {
-        if ( d ) self.data = d;
-        if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
-          self.edit();
-        } else {
-          if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
-            this.memento.head = 'view';
-            this.memento.tail.head = this.mementoHead;
-            if ( ! this.memento.tail.tail ) 
-              this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
-            this.currentMemento_ = this.memento.tail.tail;
-          }
-          this
-          .addClass(this.myClass())
-          .add(self.slot(function(data, config$viewBorder, viewView) {
-            return self.E()
-              .start(self.Rows)
-                .start(self.Rows)
-                  // we will handle this in the StackView instead
-                  .startContext({ onBack: self.onBack })
-                    .tag(self.BreadcrumbView)
-                  .endContext()
-                  .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
-                    .start()
-                      .add(data && data.toSummary() ? data.toSummary() : '')
-                      .addClass(self.myClass('account-name'))
-                      .addClass('truncate-ellipsis')
-                    .end()
-                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
-                  .end()
-                .end()
-
-                .start(self.Cols)
-                  .start(self.Cols).addClass(self.myClass('actions-header'))
-                    .startContext({ data: self })
-                      .tag(self.EDIT, {
-                        buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'edit',
-                        icon: 'images/edit-icon.svg'
-                      })
-                      .tag(self.COPY, {
-                        buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'copy',
-                        icon: 'images/copy-icon.svg'
-                      })
-                      .tag(self.DELETE, {
-                        buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'trash',
-                        icon: 'images/delete-icon.svg'
-                      })
-                    .endContext()
-                  .end()
-                .end()
-                .start(config$viewBorder)
-                  .start(viewView, { data }).addClass(self.myClass('view-container')).end()
-                .end()
-              .end();
-          }));
+      this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
+        if ( d ) { 
+          self.data = d;
+          if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) 
+            self.edit();
         }
       });
+      if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) {
+        self.edit();
+      } else {
+        if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+          this.memento.head = 'view';
+          this.memento.tail.head = this.mementoHead;
+          if ( ! this.memento.tail.tail ) 
+            this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
+          this.currentMemento_ = this.memento.tail.tail;
+        }
+        this
+        .addClass(this.myClass())
+        .add(self.slot(function(data, config$viewBorder, viewView) {
+          // If data doesn't exist yet return
+          if ( ! data ) return;
+          return self.E()
+            .start(self.Rows)
+              .start(self.Rows)
+                // we will handle this in the StackView instead
+                .startContext({ onBack: self.onBack })
+                  .tag(self.BreadcrumbView)
+                .endContext()
+                .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
+                  .start()
+                    .add(data && data.toSummary() ? data.toSummary() : '')
+                    .addClass(self.myClass('account-name'))
+                    .addClass('truncate-ellipsis')
+                  .end()
+                  .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
+                .end()
+              .end()
+
+              .start(self.Cols)
+                .start(self.Cols).addClass(self.myClass('actions-header'))
+                  .startContext({ data: self })
+                    .tag(self.EDIT, {
+                      buttonStyle: foam.u2.ButtonStyle.LINK,
+                      themeIcon: 'edit',
+                      icon: 'images/edit-icon.svg'
+                    })
+                    .tag(self.COPY, {
+                      buttonStyle: foam.u2.ButtonStyle.LINK,
+                      themeIcon: 'copy',
+                      icon: 'images/copy-icon.svg'
+                    })
+                    .tag(self.DELETE, {
+                      buttonStyle: foam.u2.ButtonStyle.LINK,
+                      themeIcon: 'trash',
+                      icon: 'images/delete-icon.svg'
+                    })
+                  .endContext()
+                .end()
+              .end()
+              .start(config$viewBorder)
+                .start(viewView, { data }).addClass(self.myClass('view-container')).end()
+              .end()
+            .end();
+        }));
+      }
     }
   ]
 });

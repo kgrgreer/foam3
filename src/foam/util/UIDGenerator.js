@@ -7,32 +7,106 @@
 foam.CLASS({
   package: 'foam.util',
   name: 'UIDGenerator',
+  abstract: true,
   flags: ['java'],
 
   javaImports: [
-    'java.util.Arrays',
-    'java.util.List'
+    'foam.core.X',
+    'foam.nanos.logger.Loggers',
+    'static foam.util.UIDSupport.*'
   ],
 
   properties: [
     {
-      name: 'seqNo',
-      class: 'Int'
+      name: 'salt',
+      class: 'String'
     },
     {
-      name: 'lastSecondCalled',
-      class: 'Long',
-      javaFactory: 'return System.currentTimeMillis() / 1000;'
+      name: 'machineId',
+      class: 'Int',
+      javaFactory: `
+        int machineId = 0;
+        try {
+          machineId = Integer.parseInt(System.getProperty("MACHINE_ID"));
+          Loggers.logger(getX(), this).debug("machineId", "MACHINE_ID", machineId);
+        } catch ( Exception e ) {
+          // NOTE: attempting to use IP address is not realistic from Java,
+          // as InetAddress.getLocalHost and even getByName(hostname) will
+          // return the loopback address (127.0.0.1).
+          try {
+            machineId = System.getProperty("hostname").hashCode() & 0xffff;
+            Loggers.logger(getX(), this).debug("machineId", "hostname", machineId);
+          } catch ( NullPointerException ex ) {
+            machineId = (int) System.currentTimeMillis() & 0xffff;
+            Loggers.logger(getX(), this).warning("machineId", "time", machineId, new Exception("MachineId not determined"));
+          }
+        }
+        return machineId;
+      `
     }
   ],
 
   methods: [
     {
+      abstract: true,
+      name: 'generate_',
+      args: [ 'StringBuilder id' ]
+    },
+    {
+      name: 'generate',
+      type: 'String',
+      documentation: `
+        Generate a Unique ID. The Unique ID consists of :
+        sub-class generate_(id) + 2 hexits machine ID + 3 hexits checksum.
+
+        After the checksum is added, the ID is permuted making the next
+        generated ID harder to guess.
+      `,
+      javaCode: `
+        var id = new StringBuilder();
+        generate_(id);
+
+        // 2 bits machine id
+        id.append(toHexString(getMachineId() % 0xff, 2));
+
+        // 3 bits checksum
+        var checksum = toHexString(calcChecksum(id.toString()), 3);
+        id.append(checksum);
+
+        // permutation
+        return permute(id.toString());
+      `
+    },
+    {
+      name: 'calcChecksum',
+      visibility: 'protected',
+      type: 'Integer',
+      args: [
+        { name: 'id', type: 'String' }
+      ],
+      javaCode: `
+        var targetMod = mod(getSalt());
+        // Breaking the multiplication to avoid overflow before mod-ing,
+        // (ab mod m) = ((a mod m) * (b mod m)) mod m.
+        var idMod     = mod(mod(Long.parseLong(id, 16)) * mod(0x1000));
+
+        return (int) (UIDSupport.CHECKSUM_MOD - idMod + targetMod);
+      `
+    },
+    {
+      name: 'getNext',
+      type: 'Object',
+      args: [ 'java.lang.Class type' ],
+      javaCode: `
+        if ( type == String.class ) return getNextString();
+        if ( type == long.class   ) return getNextLong();
+        throw new UnsupportedOperationException("Not support generating uid of type " + type.getSimpleName());
+      `
+    },
+    {
       name: 'getNextString',
       type: 'String',
-      javaCode: `
-        return generate();
-      `
+      javaCode: 'return generate();'
     },
     {
       name: 'getNextLong',
@@ -43,115 +117,9 @@ foam.CLASS({
           long id = Long.parseLong(generate(), 16);
           return id;
         } catch (Exception e) {
-          e.printStackTrace();
-          setSeqNo(0);
-          long id = Long.parseLong(generate(), 16);
-          return id;
+          foam.nanos.logger.Loggers.logger(getX(), this).error("Failed to generate numeric uid", e);
+          throw e;
         }
-      `
-    },
-    {
-      name: 'generate',
-      synchronized: true,
-      type: 'String',
-      documentation: `
-        Generate a Unique ID. The Unique ID consists of : 8 hexits timestamp(s) + at least 2 hexits sequence inside second 
-        + 2 hexits checksum. After the checksum is added, the ID is permutated based on the permutationSeq. In most cases, 
-        the generated ID should be 12 digits long.
-      `,
-      javaCode: `
-        long curSec = System.currentTimeMillis() / 1000;
-        if ( curSec != getLastSecondCalled() ) {
-          setSeqNo(0);
-          setLastSecondCalled(curSec);
-        }
-        int seqNo = getSeqNo();
-        StringBuilder id = new StringBuilder(Long.toHexString(curSec));
-        int seqNoAndCks = seqNo * 256 + calcChecksum(curSec, seqNo);
-        if ( seqNoAndCks == 0 ) {
-          id.append("0000");
-        } else {
-          int l = (int) (Math.log(seqNoAndCks) / Math.log(16)) + 1;
-          if ( l <= 2 ) { id.append("00"); } 
-          if ( l % 2 != 0 ) { id.append('0'); }
-        }
-        id.append(Integer.toHexString(seqNoAndCks));
-        setSeqNo(seqNo + 1);
-        return permutate(id);
-      `
-    },
-    {
-      name: 'calcChecksum',
-      visibility: 'protected',
-      type: 'int',
-      args: [
-        { name: 'curSec', type: 'long' },
-        { name: 'seqNo', type: 'int' }
-      ],
-      javaCode: `
-        int checksum = 0;
-        while ( curSec > 0 ) {
-          checksum += curSec % 256;
-          curSec = curSec / 256;
-        }
-        while ( seqNo > 0 ) {
-          checksum += seqNo % 256;
-          seqNo = seqNo / 256;
-        }
-        checksum = 256 - (checksum % 256);
-        return checksum;
-      `
-    },
-    {
-      name: 'getPermutationSeq',
-      visibility: 'protected',
-      type: 'int[]',
-      documentation: `
-        A hard coded array used as permutation sequence. It only supports permutation of a string less than 30 digits. 
-        The part of a string over 30 digits will not be involved in permutation.
-      `,
-      javaCode: `
-        int[] permutationSeq = new int[] {11, 3, 7, 9, 5, 6, 2, 8, 1, 9, 11, 10, 8, 12, 6, 14, 6, 5, 16, 3, 17, 2, 20, 18, 24, 17, 25, 3, 16, 12};
-        return permutationSeq;
-      `
-    },
-    {
-      name: 'permutate',
-      type: 'String',
-      args: [
-        { name: 'idStr', type: 'StringBuilder' }
-      ],
-      javaCode: `
-        int l = idStr.length();
-        char[] id = new char[l];
-        idStr.getChars(0, l, id, 0);
-        int[] permutationSeq = getPermutationSeq();
-        for ( int i = 0 ; i < l ; i++ ) {
-          int newI = permutationSeq[i];
-          char c = id[newI];
-          id[newI] = id[i];
-          id[i] = c;
-        }
-        return String.valueOf(id);
-      `
-    },
-    {
-      name: 'undoPermutate',
-      type: 'String',
-      args: [
-        { name: 'idStr', type: 'String' }
-      ],
-      javaCode: `
-        int l = idStr.length();
-        char[] id = idStr.toCharArray();
-        int[] permutationSeq = getPermutationSeq();
-        for ( int i = l - 1 ; i >= 0; i-- ) {
-          int newI = permutationSeq[i];
-          char c = id[newI];
-          id[newI] = id[i];
-          id[i] = c;
-        }
-        return String.valueOf(id);
       `
     }
   ]

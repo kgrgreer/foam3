@@ -29,13 +29,16 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeGlyphs'
+    'foam.nanos.theme.ThemeGlyphs',
+    'foam.u2.layout.DisplayWidth'
   ],
 
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
+    'java.util.Arrays',
+    'java.util.HashSet',
     'java.util.List',
     'java.util.Map'
   ],
@@ -102,6 +105,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'registrationGroup'
+    },
+    {
+      class: 'String',
       name: 'description',
       section: 'infoSection',
     },
@@ -130,13 +137,13 @@ foam.CLASS({
           },
           { class: 'foam.u2.view.ImageView' },
         ]
-      },
+      }
     },
     {
       class: 'Array',
       name: 'domains',
       of: 'String',
-      factory: function(){
+      factory: function() {
         return  ['localhost'];
       },
       javaFactory: 'return new String[] { "localhost" };',
@@ -152,11 +159,6 @@ foam.CLASS({
       class: 'String',
       name: 'settingsRootMenu',
       documentation: 'Specifies the root menu to be used in top navigation settings drop-down.'
-    },
-    {
-      class: 'Boolean',
-      name: 'disableCurrencyChoice',
-      value: false
     },
     {
       class: 'String',
@@ -198,8 +200,42 @@ foam.CLASS({
     },
     {
       class: 'Image',
+      name: 'rasterLogo',
+      documentation: 'A raster logo to display in the application. Use when svg is not supported',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
       name: 'largeLogo',
       documentation: 'A large logo to display in the application.',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
+      name: 'largeRasterLogo',
+      documentation: 'A large raster logo to display in the application. Use when svg is not supported.',
       displayWidth: 60,
       view: {
         class: 'foam.u2.MultiView',
@@ -541,7 +577,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of:'foam.nanos.app.SupportConfig',
       name: 'supportConfig',
-      factory: function() { return foam.nanos.app.SupportConfig.create({},this)},
+      factory: function() { return foam.nanos.app.SupportConfig.create({}, this)},
       javaFactory: `
         return new foam.nanos.app.SupportConfig();
       `
@@ -574,6 +610,26 @@ foam.CLASS({
       },
       includeInDigest: true
     },
+    {
+      class: 'Array',
+      name: 'restrictedCapabilities',
+      documentation: `
+        List of capabilities whose entries should be ignored when querying capabilityDAO.
+      `,
+      javaPostSet: `
+        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
+      `
+    },
+    {
+      class: 'Object',
+      name: 'restrictedCapabilities_',
+      transient: true,
+      javaType: 'java.util.HashSet',
+      javaFactory: `
+        return new HashSet<>();
+      `,
+      hidden: true
+    }
   ],
 
   actions: [
@@ -612,8 +668,7 @@ foam.CLASS({
           if ( foam.core.StringArray.isInstance(props[i])          ) this.mergeArrayProperty(props[i], theme, other);
           else if ( foam.core.Map.isInstance(props[i])             ) this.mergeMapProperty(props[i], theme, other);
           else if ( foam.core.FObjectProperty.isInstance(props[i]) ) this.mergeFObjectProperty(props[i], theme, other);
-          else
-            theme[name] = other[name];
+          else theme[name] = other[name];
         }
         return theme;
       },
@@ -626,8 +681,7 @@ foam.CLASS({
           if ( p.getValueClass().isArray()                            ) mergeArrayProperty(p, theme, other);
           else if ( Map.class.isAssignableFrom(p.getValueClass())     ) mergeMapProperty(p, theme, other);
           else if ( FObject.class.isAssignableFrom(p.getValueClass()) ) mergeFObjectProperty(p, theme, other);
-          else
-            p.set(theme, p.get(other));
+          else p.set(theme, p.get(other));
         }
         return theme;
       `
@@ -716,6 +770,23 @@ foam.CLASS({
 
           value1.copyFrom(value2);
         }
+      `
+    },
+    {
+      name: 'isCapabilityRestricted',
+      type: 'Boolean',
+      args: [ 'String capId' ],
+      code: function(capId) {
+        if ( this.restrictedCapabilities != null ) {
+          return this.restrictedCapabilities.includes(capId)
+        }
+        return false;
+      },
+      javaCode: `
+        if ( getRestrictedCapabilities() != null ) {
+          return getRestrictedCapabilities_().contains(capId);
+        }
+        return false;
       `
     }
   ]

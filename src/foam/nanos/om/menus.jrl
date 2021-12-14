@@ -6,7 +6,7 @@ p({
   "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"om1minuteDAO"
+      "daoKey":"om1MinuteDAO"
     }
   },
   "parent":"admin"
@@ -19,7 +19,7 @@ p({
   "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"om5minuteDAO"
+      "daoKey":"om5MinuteDAO"
     }
   },
   "parent":"admin"

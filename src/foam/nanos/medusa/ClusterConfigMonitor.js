@@ -17,8 +17,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
@@ -57,11 +56,13 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
+      units: 'ms',
       value: 60000
     },
     {
       name: 'initialTimerDelay',
       class: 'Int',
+      units: 'ms',
       value: 5000
     },
     {
@@ -93,24 +94,17 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      getLogger().info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
-      timer.scheduleAtFixedRate(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+      timer.schedule(
+        new ContextAgentTimerTask(getX(), this),
         getInitialTimerDelay(),
         getTimerInterval());
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
@@ -144,8 +138,9 @@ foam.CLASS({
             config.setStatus(Status.ONLINE);
             ((DAO) x.get("localClusterConfigDAO")).put(config);
 
-             // TODO/REVIEW: disable monitor? is it needed
           }
+          // TODO/REVIEW: disable monitor? is it needed
+          return;
         } else if ( config.getType() != MedusaType.MEDIATOR &&
                     config.getType() != MedusaType.NERF &&
                     config.getStatus() == Status.OFFLINE ) {

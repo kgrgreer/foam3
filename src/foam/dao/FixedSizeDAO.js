@@ -64,5 +64,14 @@ foam.CLASS({
         return obj;
       `
     },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( DAO.PURGE_CMD.equals(obj) ) {
+        getDelegate().removeAll();
+      }
+      return getDelegate().cmd_(x, obj);
+      `
+    }
   ]
 });

@@ -11,7 +11,13 @@ foam.CLASS({
 
   implements: [ 'foam.nanos.auth.LifecycleAware' ],
 
-  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin',
+    'foam.nanos.auth.LastModifiedAwareMixin',
+    'foam.nanos.auth.LastModifiedByAwareMixin',
+    'foam.nanos.crunch.CapabilityJunctionPayload'
+  ],
 
   documentation: `
     Model for UserCapabilityJunction, contains the data needed to grant the
@@ -53,6 +59,56 @@ foam.CLASS({
 
   sections: [
     { name: 'ucjExpirySection' }
+  ],
+
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All Expirable',
+      predicateFactory: function(e) {
+        return e.NEQ(
+          foam.nanos.crunch.UserCapabilityJunction.EXPIRY,
+          null
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Renewable',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_IN_RENEWABLE_PERIOD,
+          true
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'In Grace Period',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_IN_GRACE_PERIOD,
+          true
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Expired',
+      predicateFactory: function(e) {
+        return e.EQ(
+          foam.nanos.crunch.UserCapabilityJunction.IS_EXPIRED,
+          true
+        );
+      }
+    },
   ],
 
   properties: [
@@ -122,7 +178,8 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      }
+      },
+      menuKeys: ['admin.capabilities']
     },
     {
       name: 'payload',
@@ -333,7 +390,7 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = this;
         var currentSubject = (Subject) x.get("subject");
-        var userDAO = (DAO) x.get("userDAO");
+        var userDAO = (DAO) x.get("bareUserDAO");
 
         Subject subject = new Subject(x);
         if ( ucj instanceof AgentCapabilityJunction ) {
@@ -352,6 +409,7 @@ foam.CLASS({
         }
 
         if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
+          // setup user chain
           subject.setUser(currentSubject.getRealUser());
           subject.setUser(currentSubject.getUser());
           return subject;
@@ -366,7 +424,6 @@ foam.CLASS({
           subject.setUser((User) userDAO.find(ucj.getSourceId()));
         }
 
-        subject.setUser((User) userDAO.find(ucj.getSourceId()));
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         return subject;
       `,

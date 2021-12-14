@@ -34,8 +34,7 @@ foam.CLASS({
     ^ .company-name {
       margin-right: 10px;
       float: left;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: bold;
       font-style: normal;
       font-stretch: normal;
@@ -48,8 +47,7 @@ foam.CLASS({
       padding-right: 0px;
     }
     ^ .date {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -61,8 +59,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .text {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -101,7 +98,7 @@ foam.CLASS({
       border-radius: 100px;
       background-color: #1cc2b7;
       color: white;
-      font-size: 12px;
+      font-size: 1.2rem;
       line-height: 1.2;
     }
   `,
@@ -128,7 +125,7 @@ foam.CLASS({
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
                 .start().add(this.requestName$).addClass('company-name').end() 
-                .start().add(this.formatDate(this.message.dateCreated)).addClass('date').end()
+                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('internal-status')
                     .add('Internal Note')
@@ -138,14 +135,6 @@ foam.CLASS({
               .start().add(this.message.message).addClass('text').end()   
           .end()     
         .end()               
-    },
-
-    function formatDate(date) {
-      return date.toLocaleString(foam.locale, { month: 'short' }) + ' ' +
-        date.getDate() + ', ' +
-        date.getFullYear() + ' ' +
-        date.getHours() + ':' +
-        date.getMinutes();
     }
   ]
 });

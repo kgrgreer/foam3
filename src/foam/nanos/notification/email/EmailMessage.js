@@ -17,6 +17,10 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  mixins: [
+    'foam.nanos.medusa.ClusterableMixin'
+  ],
+
   tableColumns: [
     'created',
     'subject',

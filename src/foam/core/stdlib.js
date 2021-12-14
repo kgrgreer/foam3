@@ -998,6 +998,24 @@ foam.LIB({
       }
 
       return date.toDateString().substring(4);
+    },
+    /** formats a date as MMM dd, YYYY
+     *  Use the timeFirst parameter to include a time string.
+     *  If the parameter is not provided, no time informationwill be encoded in the final format.
+     *  When provided and true, time is prefixed, else postfixed.
+     **/
+    function formatDate(date, timeFirst) {
+      if ( date === undefined ) return '';
+      if ( typeof date === 'number' ) date = new Date(date);
+      if ( ! ( date instanceof Date ) ) return '';
+
+      var formattedDate = date.toLocaleDateString(foam.locale, { year: 'numeric', month: 'short', day: '2-digit' });
+      if ( arguments.length == 1 ) return formattedDate;
+
+      var formattedTime = date.toLocaleTimeString(foam.locale, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      return  ( timeFirst ? formattedTime + ' ' : '' )
+            + formattedDate
+            + ( ! timeFirst ? ' ' + formattedTime : '' );
     }
   ]
 });
@@ -1248,14 +1266,7 @@ foam.LIB({
       foam.assert(typeof path === 'string',
           'Cannot make a package path of a non-string');
 
-      path = path.split('.');
-      var node = root;
-
-      for ( var i = 0 ; i < path.length ; i++ ) {
-        node = node[path[i]] || ( node[path[i]] = {} );
-      }
-
-      return node;
+      return foam.util.path(root, path, true);
     }
   ]
 });

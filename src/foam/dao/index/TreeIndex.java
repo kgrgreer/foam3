@@ -8,9 +8,9 @@ import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.dao.AbstractDAO;
 import foam.dao.Sink;
+import foam.mlang.Expr;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.*;
-import foam.mlang.predicate.Binary;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.GroupBy;
 import java.util.Arrays;
@@ -18,10 +18,9 @@ import java.util.Arrays;
 public class TreeIndex
   extends AbstractIndex
 {
-  protected Index tail_;
+  protected Index        tail_;
   protected PropertyInfo prop_;
-  protected long selectCount_;
-
+  protected long         selectCount_;
 
   public TreeIndex(PropertyInfo prop) {
     this(prop, ValueIndex.instance());
@@ -35,7 +34,7 @@ public class TreeIndex
 
   public Object bulkLoad(FObject[] a) {
     Arrays.sort(a);
-    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length - 1, a);
+    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length-1, a);
   }
 
   /**
@@ -45,6 +44,7 @@ public class TreeIndex
    * @return Return an Object[] which contains two elements, first one is update state and second one is update predicate.
    */
   protected Object[] simplifyPredicate(Object state, Predicate predicate) {
+    Predicate p = predicate;
     if ( predicate == null || prop_ == null ) {
       return new Object[]{state, predicate};
     }
@@ -83,6 +83,8 @@ public class TreeIndex
       }
     } else if ( predicate instanceof And ) {
       int length = ((And) predicate).getArgs().length;
+      // Just deepClone the predicate to not alter the original predicate
+      p = (Predicate) ( (And) predicate ).shallowClone();
       for ( int i = 0; i < length; i++ ) {
         Predicate arg = ( (And) predicate ).getArgs()[i];
         if ( arg != null && state != null ) {
@@ -91,16 +93,18 @@ public class TreeIndex
           state = statePredicate[0];
           arg   = (Predicate) statePredicate[1];
         }
+        
         if ( arg == null ) {
-          ((And) predicate).getArgs()[i] = new True();
+          ((And) p).getArgs()[i] = new True();
         }
       }
+
       // use partialEval to simplify predicate themselves.
-      predicate = predicate.partialEval();
+      p = p.partialEval();
     }
 
-    if ( predicate instanceof True ) predicate = null;
-    return new Object[]{state, predicate};
+    if ( p instanceof True ) p = null;
+    return new Object[]{state, p};
   }
 
   public Object put(Object state, FObject value) {
@@ -155,8 +159,8 @@ public class TreeIndex
 
       // We return a groupByPlan only if no order, no limit, no skip, no predicate
       if ( sink instanceof GroupBy
-        && ((GroupBy) sink).getArg1().toString().equals(prop_.toString())
-        && order == null && skip == 0 && limit == AbstractDAO.MAX_SAFE_INTEGER )
+          && ((GroupBy) sink).getArg1().toString().equals(prop_.toString())
+          && order == null && skip == 0 && limit == AbstractDAO.MAX_SAFE_INTEGER )
       {
         return new GroupByPlan(state, sink, predicate, prop_, tail_);
       }
@@ -167,14 +171,5 @@ public class TreeIndex
 
   public long size(Object state) {
     return ((TreeNode) state).size;
-  }
-
-
-  public Index getTail() {
-    return this.tail_;
-  }
-
- public PropertyInfo getProp() {
-    return this.prop_;
   }
 }

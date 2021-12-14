@@ -31,12 +31,12 @@ foam.CLASS({
     ^userName {
       color: /*%GREY4%*/ #e7eaec;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 1.2rem;
     }
     ^agentName{
       color: /*%GREY3%*/ #cbcfd4;
       font-weight: 400;
-      font-size: 11px;
+      font-size: 1.1rem;
     }
     ^name-container {
       max-width: 90px;
@@ -53,8 +53,8 @@ foam.CLASS({
   methods: [
     async function render() {
       var self = this;
-      var menu = this.Menu.create({ id: this.theme.settingsRootMenu });
       var X    = this.__subContext__;
+
       var mainLabel = this.E()
         .add(this.slot(subject$user => {
         if ( ! this.subject.user ) return;
@@ -70,17 +70,20 @@ foam.CLASS({
                 .add( this.subject.realUser.toSummary() )
               .end();
         }));
-      var menuArray = (await menu.children.orderBy(foam.nanos.menu.Menu.ORDER).select())
-        .array.map( menuItem => {
-          var e = this;
-          return self.Action.create({
-            name: menuItem.name,
-            label: this.translationService.getTranslation(foam.locale, menuItem.id + '.label', menuItem.label),
-            code: () => {
-              menuItem.launch_(X, e);
-            }
-          });
-        });
+
+      // We need to add menus from settings (and then add menus from theme.settingsRootMenu) 
+      // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
+      // Doing this prevents us from creating the same menu for each setting.
+      let menu = this.Menu.create({ id: 'settings' });
+      let menuArray = (await menu.children.select()).array;
+      
+      // add theme.settingsRootMenu menus
+      if ( this.theme.settingsRootMenu !== 'settings' ) {
+        menu = this.Menu.create({ id: this.theme.settingsRootMenu });
+        menuArray = menuArray.concat((await menu.children.select()).array);
+      }
+
+      menuArray.sort((a, b) => a.order - b.order);
 
       this
       .addClass(this.myClass())

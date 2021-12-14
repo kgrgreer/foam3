@@ -23,10 +23,13 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Subject',
     'static foam.mlang.MLang.*'
   ],
 
@@ -36,7 +39,7 @@ foam.CLASS({
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
         Notification notif = (Notification) obj;
-    
+
         if ( notif.getBroadcasted() ) {
           userDAO.select(new AbstractSink() {
             @Override
@@ -46,13 +49,18 @@ foam.CLASS({
             }
           });
         } else if ( ! SafetyUtil.isEmpty(notif.getGroupId()) ) {
+          Group group = (Group) ((DAO) x.get("groupDAO")).find(notif.getGroupId());
+          if ( ! group.getEnabled() ) {
+            Loggers.logger(x, this).debug(notif.getTemplate(), "group", "disabled");
+            return obj;
+          }
           DAO receivers = userDAO.where(
-                                        AND(
-                                            EQ(User.GROUP, notif.getGroupId()),
-                                            EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
-                ));
+            AND(
+                EQ(User.GROUP, notif.getGroupId()),
+                EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+          ));
           Count count = (Count) receivers.select(new Count());
-          Logger logger = (Logger) x.get("logger");
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
           if ( count.getValue() == 0 ) {
             logger.warning("Notification " + notif.getNotificationType() +
               " will not be saved to notificationDAO because no users exist in the group " + notif.getGroupId());
@@ -67,9 +75,25 @@ foam.CLASS({
         }
 
         // Only put objects sent to a specific user
-        if ( SafetyUtil.isEmpty(notif.getGroupId()) && ! notif.getBroadcasted() )  
-          return getDelegate().put_(x, notif);
-    
+        if ( SafetyUtil.isEmpty(notif.getGroupId()) &&
+             ! notif.getBroadcasted() &&
+             notif.getUserId() > 0 ) {
+          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
+          Subject subject = (Subject) x.get("subject");
+          if ( subject != null ) {
+            User user = subject.getUser();
+            notif.setSpid(user.getSpid());
+            if ( ! foam.util.SafetyUtil.isEmpty(notif.getSpid()) ) {
+              try {
+                return getDelegate().put_(x, notif);
+              } catch ( Throwable t ) {
+                logger.error(t);
+              }
+            }
+          }
+          logger.warning(notif.getNotificationType(), "Spid not found", "Notification not saved");
+        }
+
         return obj;
       `
     }

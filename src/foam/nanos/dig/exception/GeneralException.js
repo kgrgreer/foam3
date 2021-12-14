@@ -8,19 +8,11 @@ foam.CLASS({
   name: 'GeneralException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public GeneralException(String message) {
-            super(message);
-          } 
-        `
-        );
-      }
+  javaCode: `
+    public GeneralException(String message) {
+      super(message);
     }
-  ],
+  `,
 
   properties: [
     {
@@ -30,7 +22,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'errroCode',
+      name: 'errorCode',
       value: '1008'
     }
   ]

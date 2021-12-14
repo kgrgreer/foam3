@@ -18,8 +18,7 @@
     ],
 
     imports: [
-      'summaryView?',
-      'invoiceDAO',
+      'myNotificationDAO',
       'notificationDAO',
       'notify',
       'stack',
@@ -52,7 +51,7 @@
         margin-top: 5px;
       }
       ^ .msg {
-        font-size: 12px;
+        font-size: 1.2rem;
         word-wrap: break-word;
         line-height: 1.4;
         width: 414px;
@@ -80,6 +79,13 @@
       'optionPopup_'
     ],
 
+    messages: [
+      { name:'MARK_AS_READ_MSG', message: 'Successfully marked as read' },
+      { name:'FAILED_MARK_AS_READ_MSG', message: 'Failed to mark as read' },
+      { name:'MARK_AS_UNREAD_MSG', message: 'Successfully marked as unread' },
+      { name:'FAILED_MARK_AS_UNREAD_MSG', message: 'Failed to mark as unread' }
+    ],
+
     methods: [
       function render() {
         var self = this;
@@ -90,7 +96,7 @@
               self.ctrl.add(self.Popup.create().tag({
                 class: 'foam.nanos.notification.NotificationMessageModal',
                 data: self.data
-              }));    
+              }));
             })
             .tag(this.NotificationCitationView, {
               of: this.data.cls_,
@@ -118,16 +124,10 @@
         name: 'removeNotification',
         code: function(X) {
           var self = X.rowView;
-          self.notificationDAO.remove(self.data).then(_ => {
+          X.notificationDAO.remove(self.data).then(_ => {
             self.finished.pub();
-            if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-              self.summaryView.update();
-            } else {
-              self.stack.push({
-                class: 'foam.nanos.notification.NotificationView'
-              });
-            }
-          })
+            X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          });
         },
         confirmationRequired: function() {
           return true;
@@ -148,14 +148,8 @@
         self.userDAO.put(userClone).then(user => {
           self.finished.pub();
           self.user = user;
-          
-          if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-            self.summaryView.update();
-          } else {
-            self.stack.push({
-              class: 'foam.nanos.notification.NotificationView'
-            });
-          }
+          X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+
         }).catch(e => {
           self.throwError.pub(e);
 
@@ -181,13 +175,11 @@
             self.data.read = true;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-                self.summaryView.update();
-              } else {
-                self.stack.push({
-                  class: 'foam.nanos.notification.NotificationView'
-                });
-              }
+              self.ctrl.notify(self.MARK_AS_READ_MSG, '', this.LogLevel.INFO, true);
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+            }).catch((e) => {
+              self.data.read = false;
+              self.ctrl.notify(self.FAILED_MARK_AS_READ_MSG, e.message, this.LogLevel.ERROR, true);
             });
           }
         }
@@ -203,14 +195,12 @@
             self.data.read = false;
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
-              if ( self.summaryView && foam.u2.GroupingDAOList.isInstance(self.summaryView) ){
-                self.summaryView.update();
-              } else {
-                self.stack.push({
-                  class: 'foam.nanos.notification.NotificationView'
-                });
-              }
-            })
+              self.ctrl.notify(self.MARK_AS_UNREAD_MSG, '', this.LogLevel.INFO, true);
+              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+            }).catch((e) => {
+             self.data.read = true;
+             self.ctrl.notify(self.FAILED_MARK_AS_UNREAD_MSG, e.message, this.LogLevel.ERROR, true);
+           });
           }
         }
       }

@@ -32,10 +32,9 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.ctrl.memento.value = '';
-      this.window.location.hash = '';
       this.auth.logout().then(() => {
         localStorage.removeItem('defaultSession');
+        this.window.location.hash = '';
         this.window.location.reload();
       });
     }

@@ -12,6 +12,8 @@
   documentation: `The base model for storing, using and managing currency information.`,
 
   javaImports: [
+    'foam.core.XLocator',
+    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil'
   ],
 
@@ -31,8 +33,8 @@
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public String format(long amount) {
-            return format(amount, false);
+          public String format(X x, long amount) {
+            return format(x, amount, false);
           }
         `);
       }
@@ -127,7 +129,7 @@
     },
     {
       name: 'format',
-      code: function(amount, hideId) {
+      code: function(amount, hideId, hideSymbol) {
         /**
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
@@ -146,37 +148,40 @@
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
 
-        if ( ! hideId ) {
-          if ( this.leftOrRight === 'right' ) {
-            formatted += this.id;
-            formatted += ' ';
-          }
-          if ( this.leftOrRight === 'left' ) {
-            formatted += this.symbol;
-            if ( this.showSpace ) formatted += ' ';
-          }
+        if ( ! hideId && this.leftOrRight === 'right' ) {
+          formatted += this.id;
+          formatted += ' ';
+        }
+        if ( ! hideSymbol && this.leftOrRight === 'left' ) {
+          formatted += this.symbol;
+          if ( this.showSpace ) formatted += ' ';
         }
 
-        formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, this.delimiter) || '0';
+        var delimiter = this.translationService.getTranslation(foam.locale, 'Currency.delimiter', this.delimiter);
+        var decimal = this.translationService.getTranslation(foam.locale, 'Currency.decimalCharacter', this.decimalCharacter)
+
+        formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) || '0';
         if ( this.precision > 0 ) {
-          formatted += this.decimalCharacter;
+          formatted += decimal;
           formatted += amount.substring(amount.length - this.precision);
         }
 
-        if ( ! hideId ) {
-          if ( this.leftOrRight === 'right' ) {
-            if ( this.showSpace ) formatted += ' ';
-            formatted += this.symbol;
-          }
-          if ( this.leftOrRight === 'left' ) {
-            formatted += ' ';
-            formatted += this.id;
-          }
+        if ( ! hideSymbol && this.leftOrRight === 'right' ) {
+          if ( this.showSpace ) formatted += ' ';
+          formatted += this.symbol;
+        }
+        if ( ! hideId && this.leftOrRight === 'left' ) {
+          formatted += ' ';
+          formatted += this.id;
         }
 
         return formatted;
       },
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           class: 'foam.core.UnitValue',
           name: 'amount'
@@ -206,23 +211,33 @@
           }
         }
 
+        String delimiter = getDelimiter();
+        String decimalCharacter = getDecimalCharacter();
+        try {
+          TranslationService ts = (TranslationService) x.get("translationService");
+          String locale = (String) x.get("locale.language");
+
+          delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
+          decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+        } catch (NullPointerException e) {
+          foam.nanos.logger.Loggers.logger(x, this).debug(e);
+        }
+
         formatted += beforeDecimal.length() > 0 ?
-          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
+          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", delimiter) :
           "0";
 
         if ( this.getPrecision() > 0 ) {
-          formatted += this.getDecimalCharacter();
-          formatted += amountStr.substring(amountStr.length() - this.getPrecision());
+          formatted += decimalCharacter;
+          formatted += amountStr.substring(amountStr.length() - getPrecision());
         }
 
-        if ( ! hideId && SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
-          if ( this.getShowSpace() ) {
+        if ( ! hideId && SafetyUtil.equals(getLeftOrRight(), "right") ) {
+          if ( getShowSpace() ) {
             formatted += " ";
           }
-          formatted += this.getSymbol();
+          formatted += getSymbol();
         }
-
-
         return formatted;
       `
     },
@@ -238,6 +253,10 @@
         return (amount/Math.pow(2, this.precision)).toFixed(this.precision);
       },
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           class: 'foam.core.UnitValue',
           name: 'amount'

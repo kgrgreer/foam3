@@ -29,7 +29,7 @@ public class AnyParser
       DoubleParser.instance(),
       StringArrayParser.instance(),
       new StringDoubleArrayParser(),
-      new PropertyReferenceParser(),
+      PropertyReferenceParser.instance(),
       ObjectDateParser.instance(),
       ClassReferenceParser.instance(),
       ArrayParser.instance(),

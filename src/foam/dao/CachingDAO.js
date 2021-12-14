@@ -38,12 +38,12 @@ foam.CLASS({
     'foam.dao.QuickSink'
   ],
 
-  constants: [
-    {
-      name: 'PURGE',
-      value: 'PURGE'
-    }
+  imports: [
+    'loginSuccess?',
+    'setInterval'
   ],
+
+  implements: [ 'foam.mlang.Expressions' ],
 
   properties: [
     {
@@ -72,21 +72,29 @@ foam.CLASS({
       hidden: true,
       topics: [ 'on' ],
       forwards: [ 'find_', 'select_' ],
-      expression: function(src, cache) {
-        // Preload src into cache, then proxy everything to cache that we
-        // don't override explicitly.
-        var self = this;
-        var cacheFilled = cache.removeAll().then(function() {
-          // First clear cache, then load the src into the cache
-          return src.select(self.DAOSink.create({dao: cache})).then(function() {
-            return cache;
-          });
-        });
+      expression: function(src) {
+        var cache = this.cache;
+
         // The PromisedDAO resolves as our delegate when the cache is ready to use
         return this.PromisedDAO.create({
-          promise: cacheFilled
+          promise: (async function() {
+            var a = await src.select();
+            await cache.removeAll();
+            a.array.forEach(o => cache.put(o));
+            return cache;
+          })()
         });
       }
+    },
+    {
+      class: 'Int',
+      name: 'pollingInterval',
+      units: 'ms'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Property',
+      name: 'pollingProperty'
     }
   ],
 
@@ -94,12 +102,20 @@ foam.CLASS({
     function init() {
       this.SUPER();
 
+      if ( this.loginSuccess$ ) {
+        this.loginSuccess$.sub(this.onSrcReset);
+      }
+
       var proxy = this.src$proxy;
       proxy.listen(this.QuickSink.create({
-        putFn: this.onSrcPut,
+        putFn:    this.onSrcPut,
         removeFn: this.onSrcRemove,
-        resetFn: this.onSrcReset
+        resetFn:  this.onSrcReset
       }));
+
+      if ( this.pollingInterval > 0 ) {
+        this.setInterval(this.poll, this.pollingInterval);
+      }
     },
 
     /** Puts are sent to the cache and to the source, ensuring both
@@ -120,6 +136,7 @@ foam.CLASS({
         return self.delegate.remove_(x, o);
       });
     },
+
     /** removeAll is executed on the cache and the source, ensuring both
       are up to date. */
     function removeAll_(x, skip, limit, order, predicate) {
@@ -130,16 +147,14 @@ foam.CLASS({
     },
 
     function cmd_(x, obj) {
-      if ( obj == this.PURGE ) {
-        this.cache.removeAll();
-        delete this.private_['delegate'];
-      }
-      else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+      if ( foam.dao.DAO.PURGE_CMD === obj ) {
+        this.onSrcReset();
+      } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+        // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
       }
-      else {
-        this.SUPER(x, obj);
-      }
+
+      this.SUPER(x, obj);
     }
   ],
 
@@ -159,7 +174,28 @@ foam.CLASS({
     /** Keeps the cache in sync with changes from the source.
       @private */
     function onSrcReset() {
-      // TODO: Should this removeAll from the cache?
+      this.clearPrivate_('delegate');
+
+      // Not necessary, but frees up memory
+      this.cache.removeAll();
+    },
+
+    /** Polls updates from the source. */
+    function poll() {
+      var self = this;
+
+      if ( ! this.loginSuccess ) return;
+
+      self.delegate
+        .orderBy(this.DESC(self.pollingProperty)).limit(1)
+        .select().then(function(data) {
+          if ( data.array.length === 1 ) {
+            self.src
+              .where(self.GT(
+                self.pollingProperty, self.pollingProperty.f(data.array[0])))
+              .select(self.QuickSink.create({ putFn: self.onSrcPut }));
+          }
+        });
     }
   ]
 });

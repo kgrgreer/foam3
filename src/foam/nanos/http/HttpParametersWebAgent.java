@@ -75,7 +75,7 @@ public class HttpParametersWebAgent
     Command        command         = null;
     String         cmd             = req.getParameter("cmd");
 
-    logger.debug("methodName", methodName);
+    // logger.debug("methodName", methodName);
 
     try {
       parameters = (HttpParameters) x.create(this.parametersClass);
@@ -85,9 +85,9 @@ public class HttpParametersWebAgent
 
     // Capture 'data' on all requests
     if ( ! SafetyUtil.isEmpty(req.getParameter("data")) ) {
-      logger.debug("data",   req.getParameter("data"));
-      logger.debug("cmd",    req.getParameter("cmd"));
-      logger.debug("format", req.getParameter("format"));
+      // logger.debug("data",   req.getParameter("data"));
+      // logger.debug("cmd",    req.getParameter("cmd"));
+      // logger.debug("format", req.getParameter("format"));
 
       parameters.set("data", req.getParameter("data"));
     } else {
@@ -113,7 +113,7 @@ public class HttpParametersWebAgent
           builder.append(cbuffer, 0, read);
           count += read;
         }
-        logger.debug("reader data:", builder.toString());
+        // logger.debug("reader data:", builder.toString());
         if ( ! SafetyUtil.isEmpty(builder.toString()) ) {
           parameters.set("data", builder.toString());
         }
@@ -127,44 +127,41 @@ public class HttpParametersWebAgent
       }
     }
 
-      if ( ! SafetyUtil.isEmpty(cmd) ) {
-        switch ( cmd.toLowerCase() ) {
-          case "put":
-            command = Command.PUT;
-            break;
-          case "select":
-            command = Command.SELECT;
-            if ( ! SafetyUtil.isEmpty(req.getParameter("id")) ) {
-              parameters.set("id", req.getParameter("id"));
-              logger.debug("id", req.getParameter("id"));
-            }
-            break;
-          case "remove":
-            command = Command.REMOVE;
-            parameters.set("id", req.getParameter("id"));
-            logger.debug("id", req.getParameter("id"));
-            break;
-        }
-      } else {
-        switch ( methodName.toUpperCase() ) {  // set default command
-          case "POST":
-            command = Command.PUT;
-            break;
-          case "PUT":
-            command = Command.PUT;
-            break;
-          case "DELETE":
-            command = Command.REMOVE;
-            break;
-          case "GET":
-            command = Command.SELECT;
-            break;
-          default:
-            command = Command.SELECT;
-            logger.warning("cmd/method could not be determined, defaulting to SELECT.");
-            break;
+    if ( ! SafetyUtil.isEmpty(cmd) ) {
+      switch ( cmd.toLowerCase() ) {
+      case "put":
+        command = Command.PUT;
+        break;
+      case "remove":
+        command = Command.REMOVE;
+        parameters.set("id", req.getParameter("id"));
+        // logger.debug("id", req.getParameter("id"));
+        break;
+      default:
+        command = Command.SELECT;
+        if ( ! SafetyUtil.isEmpty(req.getParameter("id")) ) {
+          parameters.set("id", req.getParameter("id"));
+          // logger.debug("id", req.getParameter("id"));
         }
       }
+    } else {
+      switch ( methodName.toUpperCase() ) {  // set default command
+      case "POST":
+        command = Command.PUT;
+        break;
+      case "PUT":
+        command = Command.PUT;
+        break;
+      case "DELETE":
+        command = Command.REMOVE;
+        break;
+      default:
+        command = Command.SELECT;
+        if ( ! SafetyUtil.isEmpty(req.getParameter("id")) ) {
+          parameters.set("id", req.getParameter("id"));
+        }
+      }
+    }
 
     parameters.set("cmd", command);
     parameters.set(Command.class, command);
@@ -177,10 +174,6 @@ public class HttpParametersWebAgent
         case "XML":
           format = Format.XML;
           resp.setContentType("application/xml");
-          break;
-        case "JSON":
-          format = Format.JSON;
-          resp.setContentType("application/json");
           break;
         case "JSONJ":
           format = Format.JSONJ;
@@ -195,11 +188,12 @@ public class HttpParametersWebAgent
           resp.setContentType("text/html");
           break;
         default:
-          logger.warning("accept/format could not be determined, default to JSON.");
+          format = Format.JSON;
+          resp.setContentType("application/json");
       }
     }
     else if ( ! SafetyUtil.isEmpty(accept) && ! "application/x-www-form-urlencoded".equals(contentType)  ) {
-      logger.debug("accept", accept);
+      // logger.debug("accept", accept);
       String[] formats = accept.split(";");
       int i;
       for ( i = 0 ; i < formats.length; i++ ) {
@@ -226,16 +220,16 @@ public class HttpParametersWebAgent
           break;
         }
       }
-      if ( i == formats.length ) {
-        logger.warning("accept/format could not be determined, default to JSON.");
-      }
-    } else {
-      logger.warning("accept/format could not be determined, default to JSON.");
+    //   if ( i == formats.length ) {
+    //     logger.debug("accept/format could not be determined, default to JSON.");
+    //   }
+    // } else {
+    //   logger.debug("accept/format could not be determined, default to JSON.");
     }
     parameters.set("format", format);
     parameters.set(Format.class, format);
 
-    logger.debug("parameters", parameters);
+    // logger.debug("parameters", parameters);
     x = x.put(HttpParameters.class, parameters);
     getDelegate().execute(x);
   }

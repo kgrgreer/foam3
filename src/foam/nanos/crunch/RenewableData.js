@@ -15,12 +15,14 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewDataSection',
+      title: 'Confirmation',
       isAvailable: function(renewable) { return renewable; }
     }
   ],
 
   messages: [
-    { name: 'REVIEW_ERROR', message: 'Need to certify data reviewed' }
+    { name: 'CONFIRMATION_MSG', message: 'I agree that all the information provided above is accurate and up to date' },
+    { name: 'REVIEW_ERROR', message: 'Certification required' }
   ],
 
   properties: [
@@ -28,12 +30,27 @@ foam.CLASS({
       name: 'renewable',
       class: 'Boolean',
       section: 'reviewDataSection',
-      hidden: true
+      hidden: true,
+      javaSetter: `
+        // Reset reviwed when a ucj goes into renewable period
+        if ( ! getRenewable() && val ) {
+          setReviewed(false);
+        }
+        renewable_ = val;
+        renewableIsSet_ = true;
+      `
     },
     {
       name: 'reviewed',
       class: 'Boolean',
+      label: '',
       section: 'reviewDataSection',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.CONFIRMATION_MSG
+        };
+      },
       validationPredicates: [
         {
           args: ['renewable', 'reviewed'],

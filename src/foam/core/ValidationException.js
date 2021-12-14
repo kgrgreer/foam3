@@ -21,12 +21,7 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
+  javaCode: `
     public ValidationException(String message) {
       super(message);
     }
@@ -38,9 +33,5 @@ foam.CLASS({
     public ValidationException(Throwable cause) {
       super(cause);
     }
-            `
-        }));
-      }
-    }
-  ]
+  `
 });

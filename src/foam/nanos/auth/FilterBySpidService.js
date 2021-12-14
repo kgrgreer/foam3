@@ -5,10 +5,10 @@
  */
 
 foam.CLASS({
-   package: 'foam.nanos.auth',
-   name: 'FilterBySpidService',
-   extends: 'foam.nanos.auth.ProxyUniqueUserService',
-   flags: ['java'],
+  package: 'foam.nanos.auth',
+  name: 'FilterBySpidService',
+  extends: 'foam.nanos.auth.ProxyUniqueUserService',
+  flags: ['java'],
 
   documentation: 'Filter users by spid.',
 
@@ -35,13 +35,13 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO userDAO = (DAO) x.get("localUserUserDAO");
         userDAO = userDAO
           .where(OR(
             EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()),
             EQ(User.SPID, getSuperSpid())));
 
-        x = x.put("localUserDAO", userDAO);
+        x = x.put("localUserUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
       `
     }

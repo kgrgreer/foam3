@@ -56,10 +56,17 @@ foam.CLASS({
   methods: [
     function installInClass(cls) {
       var m = this.__context__.lookup(this.path);
-      if ( ! m ) throw 'No such interface or trait: ' + this.path;
+      if ( ! m ) {
+        throw 'No such interface or trait: ' + this.path;
+      }
 
-      // TODO: clone these axioms since they could be reused and then would
-      // have the wrong sourceCls_;
+      // Install interface properties unless they're already present.
+      // This prevents every sub-class from re-importing them.
+      m.getOwnAxiomsByClass(foam.core.Property).forEach(p => {
+        if ( ! cls.getAxiomByName(p.name) ) {
+          cls.installAxiom(p);
+        }
+      });
 
       // This next part is a bit tricky.
       // If we install a mixin and then override properties of one of the

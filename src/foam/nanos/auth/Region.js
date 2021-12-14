@@ -20,7 +20,12 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'code'
+      name: 'code',
+      javaFactory: 'return getCountryId() + "-" + getIsoCode();'
+    },
+    {
+      class: 'String',
+      name: 'isoCode'
     },
     {
       class: 'String',
@@ -36,25 +41,5 @@ foam.CLASS({
       class: 'StringArray',
       name: 'alternativeNames'
     }
-  ],
-
-  methods: [
-    {
-      name: 'getRegionCode',
-      type: 'String',
-      code: function() {
-        if ( this.code && this.code.length > 3 ) {
-          return this.code.substring(3, this.code.length);
-        }
-        return '';
-      },
-      javaCode: `
-        String c = getCode();
-        if ( null != c && c.length() > 3 ) {
-          return c.substring(3, c.length());
-        }
-        return "";
-      `
-    }
-  ],
+  ]
 });

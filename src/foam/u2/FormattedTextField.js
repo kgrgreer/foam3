@@ -9,23 +9,39 @@ foam.CLASS({
   name: 'FormattedTextField',
   extends: 'foam.u2.View',
 
+  requires: ['foam.u2.TextField'],
+
   css: `
     ^ {
       display: flex;
-      position: relative;
-      width: fit-content;
       flex-direction: column;
+      height: /*%INPUTHEIGHT%*/ 34px;
       justify-content: center;
+      position: relative;
+      width: 100%;
     }
-    ^placeholder::after {
-      position: absolute;
-      left: 9px;
-      content: attr(data-placeholder);
-      pointer-events: none;
-      opacity: 0.7;
-      font-size: 14px;
-      letter-spacing: normal;
+    ^placeholder.foam-u2-TextField {
+      bottom: 0;
+      font-size: 1.4rem;
       inline-size: fit-content;
+      left: 0;
+      letter-spacing: normal;
+      opacity: 0.7;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: fit-content;
+    }
+    ^real-input.foam-u2-TextField {
+      z-index: 1;
+      background-color: transparent;
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: fit-content;
     }
   `,
 
@@ -39,12 +55,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Array',
+      class: 'FObjectProperty',
+      of: 'foam.u2.TextFormatter',
       name: 'formatter',
       documentation: `
-        Array of integers and strings of delimiters used to format the input
-        where integer values represent number of digits at its location
-        e.g., [3, '.', 3, '.', 3, '-', 2]
+        An object of the TextFormatter interface which will be used to apply
+        specific formatting logic to the input.
       `
     },
     // Use a new prop as input data in case the actual data shouldn't include formatting
@@ -52,15 +68,14 @@ foam.CLASS({
     {
       name: 'placeholder',
       factory: function() {
-        return this.formatter.join('').replace(/\d+/g, function(match) { return '#'.repeat(match); });
+        return this.formatter.getPlaceholder();
       }
     },
     {
       name: 'dynamicPlaceholder',
       expression: function(placeholder, formattedData, mode) {
         return mode === foam.u2.DisplayMode.RW ?
-          (formattedData || '') + 
-          placeholder.substring(formattedData && formattedData.length || 0)
+          this.formatter.getPlaceholder(formattedData, placeholder)
           : '';
       },
       documentation: 'The placeholder text when the input has content'
@@ -72,24 +87,23 @@ foam.CLASS({
     },
     // booleans to configure state for formatting data
     'isDelete',
-    'includeTrailingDelimiter',
     'formatted'
   ],
 
   methods: [
     function render() {
       this.resetState();
-      this.formattedData$.sub(this.formatData);
+      this.formattedData$.sub((detachable) => { this.formatData(detachable.src.oldValue); });
       this.formattedData = this.data || '';
 
-      var input = foam.u2.TextField.create({ onKey: true, data$: this.formattedData$, mode$: this.mode$ });
-      input.setAttribute('maxlength', this.placeholder.length);
-
       return this
-        .setAttribute('data-placeholder', this.dynamicPlaceholder$)
         .addClass(this.myClass())
-        .addClass(this.myClass('placeholder'))
-        .tag(input)
+        .start(this.TextField, { onKey: true, data$: this.formattedData$, mode$: this.mode$ })
+          .addClass(this.myClass('real-input'))
+        .end()
+        .start(this.TextField, { autocomplete: false, data$: this.dynamicPlaceholder$, mode$: this.mode$ })
+          .addClass(this.myClass('placeholder'))
+        .end()
         .on('paste', evt => {
           if ( ! evt.clipboardData.types.includes('text/plain') || ! evt.clipboardData.getData('text').trim() ) {
             evt.preventDefault();
@@ -101,53 +115,31 @@ foam.CLASS({
         });
     },
 
-    async function load() {
-      this.SUPER();
-      // compute and set the minWidth from the maxlength of the input
-      var el = await this.el();
-      el.style['min-width'] = this.dynamicPlaceholder.length + 'em';
-    },
-
     function setStateOnDelete(evt) {
       this.isDelete = true;
-      this.includeTrailingDelimiter = false;
       var start = evt.target.selectionStart;
       var end = evt.target.selectionEnd;
       // treat deleting single character as deleting a selectionrange of length 1
       if ( start == end ) start--;
 
-      // if start of selection is a delimiter, remove the entire delimiter
-      if ( isNaN(this.formattedData[start]) ) {
-        while ( start > 0 && isNaN(this.formattedData[start - 1]) ) start--;
-        evt.target.setSelectionRange(start, end);
-      } else {
-        // if removing a digit from the end keep trailing delimiter
-        if ( this.formattedData.substring(end).replace(/\D/g,'') == '' ) this.includeTrailingDelimiter = true;
-      }
+      var range = this.formatter.onDelete(this.formattedData, start, end);
+      evt.target.setSelectionRange(range[0], range[1]);
     },
 
     async function resetState() {
-      var el = await this.el();
-      if ( el && window.getComputedStyle(el, ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
-        // workaround for Safari isssue where attr(data-placeholder) is not
-        // being recalculated on data-placeholder changes
-        this.removeClass(this.myClass('placeholder'));
-        this.addClass(this.myClass('placeholder'));
-      }
       this.isDelete = false;
-      this.includeTrailingDelimiter = true;
       this.formatted = false;
+      this.formatter.reset && this.formatter.reset();
       if ( this.hasOwnProperty('formattedData') )
-        this.data = this.returnFormatted ? this.formattedData : this.formattedData.replace(/\D/g,'');
+        this.data = this.returnFormatted ? this.formattedData : this.formatter.getUnformatted(this.formattedData);
     }
   ],
 
   listeners: [
     {
       name: 'formatData',
-      code: async function () {
-        var data = this.formattedData.replace(/\D/g,'');
-        if ( this.formatted || this.formattedData.trim() == '' ) {
+      code: async function (old) {
+        if ( this.formatted ) {
           this.resetState();
           return;
         }
@@ -156,32 +148,12 @@ foam.CLASS({
         var startingPos = el.children[0].selectionStart;
         var endPos = el.children[0].selectionEnd;
 
-        // keep track of number of digits before selection start and use is as a initial value for final position of the cursor
-        var digitsBeforeSelectionStart = pos = this.formattedData.substring(0, startingPos).replace(/\D/g, '').length;
-        // if not typing from the end of the string, do not add trailing delimiters
-        if ( endPos < this.formattedData.length ) this.includeTrailingDelimiter = false;
-
-        var temp = '';
-        var index = 0;
-        for ( const format of this.formatter ) {
-          if ( typeof format === 'number' || ! isNaN(format) ) {
-            temp += data.substring(index, index += format);
-            if ( index > data.length || ( index == data.length && ! this.includeTrailingDelimiter ) ) break;
-          } else if ( typeof format === 'string' ) {
-            temp += format;
-            // if a delimiter has been inserted at an index before pos, increment pos
-            if ( index <= digitsBeforeSelectionStart ) pos += format.length;
-            // on delete, if index is 0, i.e., string begins with delimiter, increment startingPos
-            if ( this.isDelete && startingPos == 0 && index == 0 ) startingPos += format.length;
-          }
-        }
-        if ( temp != this.formattedData ) {
+        var formatted = this.formatter.formatData(this.formattedData, old, startingPos, endPos, this.isDelete);
+        if ( formatted[0] != this.formattedData ) {
           // set this to true so that when formatData is invoked by the assignment below it will return instead
           this.formatted = true;
-          pos = this.isDelete ? startingPos : pos; // final cursor position is fixed on delete
-          this.formattedData = temp;
-
-          el.children[0].setSelectionRange(pos, pos);
+          this.formattedData = formatted[0];
+          el.children[0].setSelectionRange(formatted[1], formatted[1]);
         }
         this.resetState();
       }

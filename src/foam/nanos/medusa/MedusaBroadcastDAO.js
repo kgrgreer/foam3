@@ -125,7 +125,7 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      Agency agency = (Agency) x.get("threadPool");
+      Agency agency = (Agency) x.get(support.getThreadPoolName());
       for ( ClusterConfig config : support.getBroadcastMediators() ) {
         // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
         agency.submit(x, new ContextAgent() {
@@ -135,12 +135,12 @@ foam.CLASS({
               DAO dao = (DAO) getClients().get(config.getId());
               if ( dao == null ) {
                   dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                  dao = new RetryClientSinkDAO.Builder(x)
-                          .setName(getServiceName())
-                          .setDelegate(dao)
-                          .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                          .setMaxRetryDelay(support.getMaxRetryDelay())
-                          .build();
+                  // dao = new RetryClientSinkDAO.Builder(x)
+                  //         .setName(getServiceName())
+                  //         .setDelegate(dao)
+                  //         .setMaxRetryAttempts(support.getMaxRetryAttempts())
+                  //         .setMaxRetryDelay(support.getMaxRetryDelay())
+                  //         .build();
                 getClients().put(config.getId(), dao);
               }
 

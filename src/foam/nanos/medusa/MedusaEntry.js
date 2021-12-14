@@ -108,6 +108,20 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       }
     },
     {
+      document: 'FObject id',
+      class: 'Object',
+      name: 'objectId',
+      visibility: 'RO',
+      storageTransient: true
+    },
+    {
+      document: 'FObject on route to Primary',
+      class: 'FObjectProperty',
+      name: 'object',
+      hidden: true,
+      storageTransient: true
+    },
+    {
       class: 'String',
       name: 'signature',
       visibility: 'RO'
@@ -143,7 +157,7 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       class: 'Map',
       visibility: 'HIDDEN',
       factory: function() { return {}; },
-      javaFactory: 'return new java.util.HashMap();',
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap();',
       transient: true
     },
     {
@@ -234,6 +248,10 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
           sb.append(":");
           sb.append(getHash().substring(0,7));
         }
+        if ( getObjectId() != null ) {
+          sb.append(":");
+          sb.append(getObjectId().toString());
+        }
         return sb.toString();
       `
     },
@@ -241,6 +259,6 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       name: 'toString',
       type: 'String',
       javaCode: `return toSummary();`
-    }
+   }
   ]
 });

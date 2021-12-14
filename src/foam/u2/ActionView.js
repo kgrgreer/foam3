@@ -19,6 +19,7 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'ActionView',
   extends: 'foam.u2.tag.Button',
+  mixins: [ 'foam.nanos.controller.MementoMixin' ],
 
   documentation: `
     A button View for triggering Actions.
@@ -35,9 +36,7 @@ foam.CLASS({
     'foam.u2.dialog.ConfirmationModal'
   ],
 
-  imports: [
-    'ctrl'
-  ],
+  imports: ['ctrl'],
 
   enums: [
     {
@@ -52,11 +51,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONFIRM', message: 'Confirm' },
+    { name: 'CONFIRM',     message: 'Confirm' },
     { name: 'CONFIRM_MSG', message: 'Are you sure you want to ' }
   ],
 
   properties: [
+    {
+      name: 'name',
+      factory: function() { return this.action.name || ''; }
+    },
     {
       name: 'icon',
       factory: function(action) { return this.action.icon; }
@@ -99,6 +102,10 @@ foam.CLASS({
       factory: function(action) { return this.action.label; }
     },
     {
+      name: 'ariaLabel',
+      factory: function() { return this.action.ariaLabel; }
+    },
+    {
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle',
@@ -114,11 +121,24 @@ foam.CLASS({
       factory: function() {
         return false;
       }
+    },
+    {
+      name: 'mementoName',
+      factory: function(action) { return this.action.mementoName; }
     }
   ],
 
   methods: [
     function render() {
+      if ( this.mementoName ) {
+        if ( this.memento?.head == this.mementoName ) {
+          this.click();
+        }
+        this.initMemento();
+      } else {
+        this.currentMemento_ = this.memento;
+      }
+
       this.tooltip = this.action.toolTip;
 
       this.SUPER();
@@ -129,8 +149,6 @@ foam.CLASS({
           this.onDetach(cRSlot$.sub(() => this.setConfirm(cRSlot$.get())));
           this.setConfirm(cRSlot$.get());
         }
-        this.attrs({name: this.action.name, 'aria-label': this.action.ariaLabel });
-
         this.enableClass(this.myClass('unavailable'), this.action.createIsAvailable$(this.__context__, this.data), true);
         this.attrs({ disabled: this.action.createIsEnabled$(this.__context__, this.data).map((e) => e ? false : 'disabled') });
       }
@@ -167,9 +185,14 @@ foam.CLASS({
       } catch (x) {
         console.warn('Unexpected Exception in Action: ', x);
       }
-
-      e.preventDefault();
-      e.stopPropagation();
+      if ( this.memento && this.mementoName ) {
+        this.memento.head = this.mementoName;
+        this.memento.params = foam.u2.stack.Stack.ACTION_ID;
+      }
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     },
     {
       name: 'debounce',

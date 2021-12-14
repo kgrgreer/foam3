@@ -48,9 +48,11 @@
       tableWidth: 80
     },
     {
-      class: 'JSFObject',
+      class: 'FObjectProperty',
+//      of: 'foam.nanos.menu.AbstractMenu',
       name: 'handler',
       documentation: 'View initialized when menu is launched.',
+      javaJSONParser: 'foam.lib.json.UnknownFObjectParser.instance()',
       view: {
         class: 'foam.u2.view.FObjectView',
         allowCustom: true,
@@ -127,6 +129,11 @@
       class: 'Boolean',
       name: 'authenticate',
       value: true
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'view',
+      factory: function() { return { class: 'foam.u2.view.MenuView', menu: this }; }
     }
   ],
 
@@ -141,6 +148,9 @@
 
       this.lastMenuLaunchedListener && this.lastMenuLaunchedListener(this);
       this.handler && this.handler.launch(subX, this, e);
+    },
+    function toE(args, X) {
+      return foam.u2.ViewSpec.createView(this.view, args, this, X);
     },
     {
       documentation: 'Desire to call read predicate with calling context but predicate may also need access to this menu; add the current menu as context key MENU',

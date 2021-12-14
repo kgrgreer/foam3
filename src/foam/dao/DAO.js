@@ -32,6 +32,12 @@ foam.INTERFACE({
       documentation: 'Command to request the last DAO in a DAO delegate chain, such as the MDAO.',
       type: 'String',
       value: 'LAST_CMD'
+    },
+    {
+      name: 'PURGE_CMD',
+      documentation: 'Command to request a DAO to clear its cache.  i.e. CachingDAO, FixedSizedDAO',
+      type: 'String',
+      value: 'PURGE_CMD'
     }
   ],
 

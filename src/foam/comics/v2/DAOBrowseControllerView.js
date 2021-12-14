@@ -25,6 +25,7 @@ foam.CLASS({
   exports: [
     'config',
     'memento',
+    'click'
   ],
 
   requires: [
@@ -40,7 +41,7 @@ foam.CLASS({
 
   css: `
     ^container {
-      padding: 24px 32px 16px 32px;
+      padding: 36px 16px 8px 16px;
       height: 100%;
       box-sizing: border-box;
     }
@@ -67,6 +68,12 @@ foam.CLASS({
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       height: 100%;
       padding: 0;
+    }
+
+    @media only screen and (min-width: 768px) {
+      ^container {
+        padding: 24px 32px 16px 32px;
+      }
     }
   `,
 
@@ -109,6 +116,23 @@ foam.CLASS({
         var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
         return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
       }
+    },
+    {
+      name: 'click',
+      expression: function(config$click) {
+        if ( this.config.click && typeof this.config.click === 'function' )
+          return this.config.click;
+        return function(obj, id) {
+          if ( ! this.stack ) return;
+          this.stack.push(foam.u2.stack.StackBlock.create({
+          view: {
+            class: 'foam.comics.v2.DAOSummaryView',
+            data: obj,
+            config: this.__context__.config,
+            idOfRecord: id
+          }, parent: this.__subContext__ }, this));
+        };
+      }
     }
   ],
 
@@ -144,10 +168,11 @@ foam.CLASS({
               data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
-            }, parent: this
+            }, parent: this,
+            popup: this.config.createPopup
           }));
         } else if ( this.config.createControllerView ) {
-          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this }));
+          this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this, popup: this.config.createPopup }));
         } else {
           this.stack.push(this.StackBlock.create({
             view: {
@@ -159,7 +184,8 @@ foam.CLASS({
               menu: this.config.menu,
               controllerMode: foam.u2.ControllerMode.CREATE,
               isEdit: true
-            }, parent: this
+            }, parent: this,
+            popup: this.config.createPopup
           }));
         }
       }
@@ -168,14 +194,14 @@ foam.CLASS({
 
   methods: [
     function render() {
-    this.SUPER();
+      this.SUPER();
 
-    var self = this;
-    var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
-    var nav = this.showNav ? self.BreadcrumbView : '';
-    this.addClass()
+      var self = this;
+      var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+      var nav = this.showNav ? self.BreadcrumbView : '';
+      this.addClass()
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -188,21 +214,24 @@ foam.CLASS({
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .start(self.Cols)
-                    .callIf( config.browseActions.length && config.browseContext, function() {
-                      if ( config.browseActions.length > 2 ) {
-                        this.start(self.OverlayActionListView, {
-                          label: this.ACTIONS,
-                          data: config.browseActions,
-                          obj: config$browseContext
-                        }).addClass(self.myClass('buttons')).end();
-                      } else {
-                        var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
-                        for ( action of config.browseActions ) {
-                          actions.tag(action, { size: 'LARGE' });
-                        }
-                        this.add(actions.endContext());
-                      }
-                    })
+                    .add(this.slot(function(config$browseContext) {
+                      return this.E()
+                        .callIf( config.browseActions.length && config.browseContext, function() {
+                          if ( config.browseActions.length > 2 ) {
+                            this.start(self.OverlayActionListView, {
+                              label: this.ACTIONS,
+                              data: config.browseActions,
+                              obj: config$browseContext
+                            }).addClass(self.myClass('buttons')).end();
+                          } else {
+                            var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
+                            for ( action of config.browseActions ) {
+                              actions.tag(action, { size: 'LARGE' });
+                            }
+                            this.add(actions.endContext());
+                          }
+                        });
+                    }))
                     .callIf( ! config.detailView, function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
@@ -241,7 +270,7 @@ foam.CLASS({
                 })
                 .call(function() {
                   this.add(self.slot(function(browseView) {
-                    return self.E().tag(browseView, { data: data, config: config });
+                    return self.E().tag(browseView, { data: data, config: config } );
                   }));
                 })
               .end()

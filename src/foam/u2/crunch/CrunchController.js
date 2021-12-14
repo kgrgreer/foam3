@@ -55,11 +55,13 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.MaybeDAOPutAgent',
     'foam.u2.crunch.wizardflow.ShowPreexistingAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
+    'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.SpinnerAgent',
     'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
+    'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.util.async.Sequence',
     'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -118,6 +120,7 @@ foam.CLASS({
           .add(this.LoadTopConfig)
           .add(this.GrantedEditAgent)
           .add(this.LoadCapabilitiesAgent)
+          .add(this.WAOSettingAgent)
           // TODO: remove CheckRootIdAgent after phase 2 fix on PENDING
           .add(this.CheckRootIdAgent)
           .add(this.CheckPendingAgent)
@@ -135,6 +138,8 @@ foam.CLASS({
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
+          .add(this.SaveAllAgent)
+          .add(this.SubmitAgent)
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           // .add(this.TestAgent)
@@ -159,14 +164,13 @@ foam.CLASS({
           capable: capable
         });
         return this.createWizardSequence(capable && capable.capabilityIds[0], x)
-          .reconfigure('LoadCapabilitiesAgent', {
-            waoSetting: this.LoadCapabilitiesAgent.WAOSetting.CAPABLE })
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
-          .addBefore('DetachSpinnerAgent',this.SaveAllAgent)
           .add(this.MaybeDAOPutAgent)
           ;
       }
@@ -308,12 +312,12 @@ foam.CLASS({
     },
 
     function purgeCachedCapabilityDAOs() {
-      this.capabilityDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.capabilityDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
-      this.capabilityCategoryDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.capabilityCategoryDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
-      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+      this.capabilityDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.capabilityDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      this.capabilityCategoryDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.capabilityCategoryDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
     },
 
     // CRUNCH Lite Methods

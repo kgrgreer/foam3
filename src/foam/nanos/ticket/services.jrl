@@ -23,7 +23,6 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.ID})
       .setAuthorize(false)
       .setPm(true)
       .setGuid(true)
@@ -67,7 +66,18 @@ p({
       .setInnerDAO((foam.dao.DAO) x.get("localTicketDAO"))
       .build();
   """,
-  "client": "{\"of\":\"foam.nanos.ticket.Ticket\"}"
+  "client":
+  """
+  {
+    "of": "foam.nanos.ticket.Ticket",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
 })
 
 p({
@@ -78,7 +88,6 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.TicketStatus.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.TicketStatus.ID})
       .setAuthorize(false)
       .setPm(true)
       .setSeqNo(true)
@@ -131,9 +140,6 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.TicketComment.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {
-         foam.nanos.ticket.TicketComment.ID
-      })
       .setAuthorize(false)
       .setPm(true)
       .setSeqNo(true)

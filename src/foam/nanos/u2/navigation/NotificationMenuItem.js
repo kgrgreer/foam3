@@ -19,11 +19,10 @@ foam.CLASS({
 
   imports: [
     'currentMenu',
-    'group',
     'menuDAO',
-    'notificationDAO',
+    'myNotificationDAO',
     'pushMenu',
-    'user'
+    'subject'
   ],
 
   implements: [
@@ -41,7 +40,6 @@ foam.CLASS({
       width: 25px;
       cursor: pointer;
       border-bottom: 1px solid transparent;
-      padding-bottom: 10px;
       -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
       -ms-transition: all .15s ease-in-out;
@@ -63,7 +61,7 @@ foam.CLASS({
       position: relative;
       right: 10px;
       text-align: center;
-      font-size: 8px;
+      font-size: 0.8rem;
     }
     ^ .dot > span {
       padding-top: 3px;
@@ -84,7 +82,8 @@ foam.CLASS({
   ],
 
   constants: [
-    { name: 'BELL_IMAGE', value: 'images/bell.png' }
+    { name: 'BELL_IMAGE', value: 'images/bell.png' },
+    { name: 'MENU_ID', value: 'notifications' }
   ],
 
   messages: [
@@ -93,9 +92,8 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.notificationDAO.on.sub(this.onDAOUpdate);
-      this.user$.dot('id').sub(this.onDAOUpdate);
-      this.group$.dot('id').sub(this.onDAOUpdate);
+      this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
+      this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
 
       this.addClass()
@@ -117,12 +115,7 @@ foam.CLASS({
     },
 
     function changeToNotificationsPage() {
-      this.menuDAO.find('notifications').then((menu) => {
-        if ( menu == null ) {
-          throw new Error(this.INVALID_MENU);
-        }
-        this.pushMenu(menu.id);
-      });
+      this.pushMenu(this.MENU_ID);
     }
   ],
 
@@ -131,24 +124,19 @@ foam.CLASS({
       name: 'onDAOUpdate',
       isFramed: true,
       code: function() {
-        if ( ! this.group || ! this.user ) return;
-        if ( this.user.id ) {
-          this.notificationDAO.where(
-            this.AND(
-              this.EQ(this.Notification.READ, false),
-              this.OR(
-                this.EQ(this.Notification.USER_ID, this.user.id),
-                this.EQ(this.Notification.GROUP_ID, this.group.id),
-                this.EQ(this.Notification.BROADCASTED, true)
-              ),
-              this.NOT(this.IN(
-                this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
-            )
-          ).select(this.COUNT()).then((count) => {
-            this.countUnread = count.value;
-          });
-        }
+        if ( ! this.subject.user ) return;
+
+        this.myNotificationDAO.where(
+          this.AND(
+            this.EQ(this.Notification.READ, false),
+            this.EQ(this.Notification.TRANSIENT, false),
+            this.NOT(this.IN(
+              this.Notification.NOTIFICATION_TYPE,
+              this.subject.user.disabledTopics))
+          )
+        ).select(this.COUNT()).then((count) => {
+          this.countUnread = count.value;
+        });
       }
     }
   ]

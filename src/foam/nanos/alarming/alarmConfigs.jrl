@@ -1,0 +1,17 @@
+p({
+  "class":"foam.nanos.alarming.AlarmConfig",
+  "id":"b9e8a50d-895f-7bf6-c821-29300a6b915c",
+  "name":"SMTP EMail Service ",
+  "preRequest":"Pre send email request",
+  "postRequest":"Post send email request",
+  "alarmValue":95,
+  "monitorType":1,
+  "sendEmail":false
+})
+
+p({
+  "class":"foam.nanos.alarming.AlarmConfig",
+  "id":"default",
+  "name":"default",
+  "group":"noc"
+})

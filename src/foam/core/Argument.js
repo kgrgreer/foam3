@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'of',
       postSet: function(_, of) {
-        console.warn('Deprecated usaged of Argument.of', this.name, of);
+        console.warn('Deprecated usage of Argument.of', this.name, of);
         this.type = of;
       }
     },
@@ -45,7 +45,8 @@ foam.CLASS({
       name: 'args',
       adapt: function(o, n, prop) {
         if ( foam.String.isInstance(n) ) {
-          n = n.split(',');
+          if ( n === '' ) return [];
+          n = n.split(', ');
         }
         return foam.core.FObjectArray.ADAPT.value.call(this, o, n, prop);
       },
@@ -53,7 +54,7 @@ foam.CLASS({
         if ( foam.String.isInstance(e) ) {
           // Matches strings in the form [(type)] (name)
           // Where [] is optional and () is a capture group
-          let res  = /(?:([\w.$]+)\s+)?([\w$?]+)/g.exec(e);
+          let res  = /(?:([\S.$]+)\s+)?([\w$?]+)/g.exec(e);
           let type = res[1];
           let name = res[2];
 

@@ -21,13 +21,14 @@ foam.CLASS({
   extends: 'foam.java.Class',
 
   properties: [
-    ['anonymous', true],
-    'propName',
-    'propShortName',
-    'propAliases',
-    'compare',
-    'comparePropertyToObject',
-    'comparePropertyToValue',
+    { name: 'property' },
+    { name: 'anonymous', value: true },
+    { name: 'propName',                factory: function() { return this.property.name; } },
+    { name: 'propShortName',           factory: function() { return this.property.shortName; } },
+    { name: 'propAliases',             factory: function() { return this.property.aliases; } },
+    { name: 'compare',                 factory: function() { return this.property.javaCompare; } },
+    { name: 'comparePropertyToObject', factory: function() { return this.property.javaComparePropertyToObject; } },
+    { name: 'comparePropertyToValue',  factory: function() { return this.property.javaComparePropertyToValue; } },
     {
       name: 'getAliasesBody',
       expression: function() {
@@ -41,45 +42,55 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'networkTransient'
+      name: 'networkTransient',
+      factory: function() { return this.property.networkTransient; }
     },
     {
       class: 'Boolean',
-      name: 'externalTransient'
+      name: 'externalTransient',
+      factory: function() { return this.property.externalTransient; }
     },
     {
       class: 'Boolean',
-      name: 'storageTransient'
+      name: 'storageTransient',
+      factory: function() { return this.property.storageTransient; }
     },
     {
       class: 'Boolean',
-      name: 'storageOptional'
+      name: 'storageOptional',
+      factory: function() { return this.property.storageOptional; }
     },
     {
       class: 'Boolean',
-      name: 'clusterTransient'
+      name: 'clusterTransient',
+      factory: function() { return this.property.clusterTransient; }
     },
     {
       class: 'Boolean',
-      name: 'readPermissionRequired'
+      name: 'readPermissionRequired',
+      factory: function() { return this.property.readPermissionRequired; }
     },
     {
       class: 'Boolean',
-      name: 'writePermissionRequired'
+      name: 'writePermissionRequired',
+      factory: function() { return this.property.writePermissionRequired; }
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML attribute. eg <foo id="XMLAttribute"></foo>',
-      name: 'xmlAttribute'
+      name: 'xmlAttribute',
+      factory: function() { return this.property.xmlAttribute; }
     },
     {
       class: 'Boolean',
       documentation: 'define a property is a XML textNode. eg <foo id="1">textNode</foo>',
-      name: 'xmlTextNode'
+      name: 'xmlTextNode',
+      factory: function() { return this.property.xmlTextNode; }
     },
     {
       class: 'String',
-      name: 'sqlType'
+      name: 'sqlType',
+      factory: function() { return this.property.sqlType; }
     },
     {
       name: 'getterName',
@@ -107,37 +118,41 @@ foam.CLASS({
       class: 'Boolean',
       name: 'includeInDigest',
       value: true
+//      factory: function() { return (! this.clusterTransient && ! this.storageTransient)/* && this.property.includeInDigest;*/ }
     },
     {
       class: 'Boolean',
       name: 'includeInSignature',
-      value: true
+      factory: function() { return this.property.includeInSignature; }
     },
     {
       class: 'Boolean',
-      name: 'containsPII'
+      name: 'containsPII',
+      factory: function() { return this.property.containsPII; }
     },
     {
       class: 'Boolean',
-      name: 'containsDeletablePII'
+      name: 'containsDeletablePII',
+      factory: function() { return this.property.containsDeletablePII; }
     },
-    'sourceCls',
-    'propType',
-    'propValue',
-    'propRequired',
-    'jsonParser',
-    'csvParser',
-    'cloneProperty',
-    'queryParser',
-    'diffProperty',
-    'validateObj',
-    'toCSV',
-    'toCSVLabel',
-    'fromCSVLabelMapping',
-    'formatJSON',
+    { name: 'sourceCls' },
+    { name: 'propType',            factory: function() { return this.property.javaType; } },
+    { name: 'propValue',           factory: function() { return this.property.javaValue; } },
+    { name: 'propRequired',        factory: function() { return this.property.required; } },
+    { name: 'jsonParser',          factory: function() { return this.property.javaJSONParser; } },
+    { name: 'csvParser',           factory: function() { return this.property.javaCSVParser; } },
+    { name: 'cloneProperty',       factory: function() { return this.property.javaCloneProperty; } },
+    { name: 'queryParser',         factory: function() { return this.property.javaQueryParser; } },
+    { name: 'diffProperty',        factory: function() { return this.property.javaDiffProperty; } },
+    { name: 'validateObj',         factory: function() { return this.property.javaValidateObj; } },
+    { name: 'toCSV',               factory: function() { return this.property.javaToCSV; } },
+    { name: 'toCSVLabel',          factory: function() { return this.property.javaToCSVLabel; } },
+    { name: 'fromCSVLabelMapping', factory: function() { return this.property.javaFromCSVLabelMapping; } },
+    { name: 'formatJSON',          factory: function() { return this.property.javaFormatJSON; } },
     {
       class: 'Boolean',
       name: 'sheetsOutput',
+      factory: function() { return this.property.sheetsOutput; },
       documentation: 'The sheetsOutput specifies if property shoud be written to Google Sheet on import. eg on Transaction import in case there is Status column transaction\'s status will be written there'
     },
     {
@@ -316,128 +331,102 @@ foam.CLASS({
           }
         }
 
-        if ( this.networkTransient ) {
-          m.push({
-            name: 'getNetworkTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.networkTransient + ';'
-          });
-        }
+        m.push({
+          name: 'getNetworkTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.networkTransient + ';'
+        });
 
-        if ( this.externalTransient ) {
-          m.push({
-            name: 'getExternalTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.externalTransient + ';'
-          });
-        }
+        m.push({
+          name: 'getExternalTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.externalTransient + ';'
+        });
 
-        if ( this.storageTransient ) {
-          m.push({
-            name: 'getStorageTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.storageTransient + ';'
-          });
-        }
+        m.push({
+          name: 'getStorageTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.storageTransient + ';'
+        });
 
-        if ( this.storageOptional ) {
-          m.push({
-            name: 'getStorageOptional',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.storageOptional + ';'
-          });
-        }
+        m.push({
+          name: 'getStorageOptional',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.storageOptional + ';'
+        });
 
-        if ( this.clusterTransient ) {
-          m.push({
-            name: 'getClusterTransient',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.clusterTransient + ';'
-          });
-        }
+        m.push({
+          name: 'getClusterTransient',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.clusterTransient + ';'
+        });
 
-        if ( this.readPermissionRequired ) {
-          m.push({
-            name: 'getReadPermissionRequired',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.readPermissionRequired + ';'
-          });
-        }
+        m.push({
+          name: 'getReadPermissionRequired',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.readPermissionRequired + ';'
+        });
 
-        if ( this.writePermissionRequired ) {
-          m.push({
-            name: 'getWritePermissionRequired',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.writePermissionRequired + ';'
-          });
-        }
+        m.push({
+          name: 'getWritePermissionRequired',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.writePermissionRequired + ';'
+        });
 
-        if ( this.xmlAttribute ) {
-          m.push({
-            name: 'getXMLAttribute',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.xmlAttribute + ';'
-          });
-        }
+        m.push({
+          name: 'getXMLAttribute',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.xmlAttribute + ';'
+        });
 
-        if ( this.xmlTextNode ) {
-          m.push({
-            name: 'getXMLTextNode',
-            type: 'boolean',
-            visibility: 'public',
-            body: 'return ' + this.xmlTextNode + ';'
-          });
-        }
+        m.push({
+          name: 'getXMLTextNode',
+          type: 'boolean',
+          visibility: 'public',
+          body: 'return ' + this.xmlTextNode + ';'
+        });
 
-        if ( this.propRequired ) {
-          m.push({
-            name: 'getRequired',
-            visibility: 'public',
-            type: 'boolean',
-            body: 'return ' + Boolean(this.propRequired) + ';'
-          });
-        }
+        m.push({
+          name: 'getRequired',
+          visibility: 'public',
+          type: 'boolean',
+          body: 'return ' + Boolean(this.propRequired) + ';'
+        });
 
-        if ( this.validateObj ) {
-          m.push({
-            name: 'validateObj',
-            visibility: 'public',
-            type: 'void',
-            args: [
-              { name: 'x', type: 'foam.core.X' },
-              { name: 'obj', type: 'foam.core.FObject' }
-            ],
-            body: this.validateObj
-          });
-        }
+        m.push({
+          name: 'validateObj',
+          visibility: 'public',
+          type: 'void',
+          args: [
+            { name: 'x', type: 'foam.core.X' },
+            { name: 'obj', type: 'foam.core.FObject' }
+          ],
+          body: this.validateObj
+        });
 
-        if ( this.propShortName ) {
-          m.push({
-            name: 'getShortName',
-            visibility: 'public',
-            type: 'String',
-            body: this.propShortName ?
-              'return "' + this.propShortName + '";' :
-              'return null;'
-          });
-        }
+        m.push({
+          name: 'getShortName',
+          visibility: 'public',
+          type: 'String',
+          body: this.propShortName ?
+            'return "' + this.propShortName + '";' :
+            'return null;'
+        });
 
-        if ( this.propAliases.length ) {
-          m.push({
-            name: 'getAliases',
-            visibility: 'public',
-            type: 'String[]',
-            body: 'return ' + this.getAliasesBody
-          });
-        }
+        m.push({
+          name: 'getAliases',
+          visibility: 'public',
+          type: 'String[]',
+          body: 'return ' + this.getAliasesBody
+        });
 
         if ( this.cloneProperty != null ) {
           m.push({
@@ -463,61 +452,55 @@ foam.CLASS({
           });
         }
 
-        // default value is true, only generate if value is false
-        if ( ! this.includeInDigest ) {
+
+/*
+//        if ( ! this.includeInDigest ) {
           m.push({
             name:       'includeInDigest',
             visibility: 'public',
             type:       'boolean',
-            body:       `return ${this.includeInDigest};`
+            body:       'return ${this.includeInDigest};'
           });
-        }
+          */
+//        }
 
-        if ( this.includeInID ) {
           m.push({
             name:       'includeInID',
             visibility: 'public',
             type:       'boolean',
-            body:       'return true;'
+            body:       `return ${this.includeInID};`
           });
-        }
 
         // default value is true, only generate if value is false
-        if ( ! this.includeInSignature ) {
+      //  if ( ! this.includeInSignature ) {
           m.push({
             name:       'includeInSignature',
             visibility: 'public',
             type:       'boolean',
-            body:       `return ${this.includeInSignature};`
+            body:       `return ${this.includeInSignature && this.includeInDigest};`
           });
-        }
+      //  }
 
-        if ( this.containsPII ) {
           m.push({
             name:       'containsPII',
             visibility: 'public',
             type:       'boolean',
             body:       `return ${this.containsPII};`
           });
-        }
 
-        if ( this.containsDeletablePII ) {
           m.push({
             name:       'containsDeletablePII',
             visibility: 'public',
             type:       'boolean',
             body:       `return ${this.containsDeletablePII};`
           });
-        }
 
-        if ( this.sheetsOutput ) {
           m.push({
             name: 'getSheetsOutput',
             type: 'boolean',
             visibility: 'public',
             body: 'return ' + this.sheetsOutput + ';'
           });
-        }
 
         if ( this.formatJSON != null ) {
           m.push({

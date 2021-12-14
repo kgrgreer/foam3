@@ -18,9 +18,6 @@ foam.CLASS({
       appearance: none;
       -moz-appearance: none;
       -webkit-appearance: none;
-      border: none;
-      background: rgba(0,0,0,0);
-      color: initial;
     }
     ^ {
       appearance: none;
@@ -64,6 +61,13 @@ foam.CLASS({
     {
       name: 'header',
       documentation: 'The heading text for the choices'
+    },
+    {
+      name: 'disabledData',
+      documentation: 'Optional list of disabled choices that should not be selectable',
+      factory: function() {
+        return [];
+      }
     }
   ],
 
@@ -80,7 +84,7 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.setChildren(this.slot(function(choices, placeholder, header) {
+      this.setChildren(this.slot(function(choices, placeholder, header, data) {
         var cs = [];
 
         if ( header ) {
@@ -97,10 +101,14 @@ foam.CLASS({
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var c = choices[i];
           let value = c[1];
+          var isSelected = data == i;
           let e = self.E('option').attrs({
             value: i,
-            selected: self.data === i
-          }).translate(c[1] + '.name', value)
+            selected: isSelected,
+            disabled: ! isSelected && self.disabledData$.map(function(a) {
+              return a.some(o => foam.util.equals(o, value));
+            })
+          }).translate(value + '.name', value)
           if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
             e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));

@@ -27,6 +27,7 @@ public class SimpleFacetManager
       System.err.println("Unable to create FObject.");
       return null;
     }
+
     try {
       // Automatically load FooImpl if Foo is abstract.
       // KGR: Why/where do we do this?
@@ -39,6 +40,7 @@ public class SimpleFacetManager
         }
       }
 
+      T obj = null;
       try {
         java.lang.reflect.Method method = type.getMethod("getOwnClassInfo");
         ClassInfo classInfo = (ClassInfo) method.invoke(null);
@@ -55,13 +57,19 @@ public class SimpleFacetManager
         }
 
         if ( f != null ) {
-          return ((XArgsFactory<T>) f).getInstance(args, x);
+          obj = ((XArgsFactory<T>) f).getInstance(args, x);
         }
-
       } catch (NoSuchMethodException e) {
+        // nop
+      } catch (NullPointerException e) {
+        System.err.println("Unable to create "+type.getName());
+        Thread.dumpStack();
+        throw e;
       }
 
-      T obj = type.newInstance();
+      if ( obj == null ) {
+        obj = type.newInstance();
+      }
 
       if ( obj instanceof ContextAware ) ((ContextAware) obj).setX(x);
 

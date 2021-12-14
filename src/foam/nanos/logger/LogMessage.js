@@ -29,24 +29,15 @@ foam.CLASS({
     'message'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  protected static ThreadLocal<foam.util.FastTimestamper> timestamper_ = new ThreadLocal<foam.util.FastTimestamper>() {
-    @Override
-    protected foam.util.FastTimestamper initialValue() {
-      foam.util.FastTimestamper ft = new foam.util.FastTimestamper();
-      return ft;
-    }
-  };
-          `
-        }));
+  javaCode: `
+    protected static ThreadLocal<foam.util.FastTimestamper> timestamper_ = new ThreadLocal<foam.util.FastTimestamper>() {
+      @Override
+      protected foam.util.FastTimestamper initialValue() {
+        foam.util.FastTimestamper ft = new foam.util.FastTimestamper();
+        return ft;
       }
-    }
-  ],
+    };
+  `,
 
   properties: [
     {
@@ -155,7 +146,15 @@ foam.CLASS({
     {
       name: 'toString',
       javaCode: `
-      return timestamper_.get().createTimestamp(getCreated())+","+getThread()+","+getSeverity()+","+getMessage();
+      StringBuilder sb = new StringBuilder();
+      sb.append(timestamper_.get().createTimestamp(getCreated()));
+      sb.append(",");
+      sb.append(getThread());
+      sb.append(",");
+      sb.append(getSeverity());
+      sb.append(",");
+      sb.append(getMessage());
+      return sb.toString();
       `
     }
   ]

@@ -5,10 +5,10 @@
  */
 
 foam.CLASS({
-   package: 'foam.nanos.auth',
-   name: 'PreventDuplicateEmailLoginService',
-   extends: 'foam.nanos.auth.ProxyUniqueUserService',
-   flags: ['java'],
+  package: 'foam.nanos.auth',
+  name: 'PreventDuplicateEmailLoginService',
+  extends: 'foam.nanos.auth.ProxyUniqueUserService',
+  flags: ['java'],
 
   documentation: 'Prevent users from logging in with duplicate email',
 
@@ -26,7 +26,7 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO userDAO = (DAO) x.get("localUserUserDAO");
         Sink sink = new ArraySink();
         sink = userDAO
           .where(OR(

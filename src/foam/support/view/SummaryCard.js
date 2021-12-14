@@ -28,13 +28,13 @@ foam.CLASS({
       position: relative;
       top: 35;
       left: 10;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: normal;
       padding: 3px 7px;
       display: inline;
     }
     ^ .count {
-      font-size: 30px;
+      font-size: 3rem;
       font-weight: 300;
       line-height: 1;
       position: relative;

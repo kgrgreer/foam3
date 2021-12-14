@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'ViewSpec',
-  extends: 'foam.core.JSFObject',
+  extends: 'foam.core.FObjectProperty',
 
   documentation: `
     Set a ViewFactory to be a string containing a class name,
@@ -114,6 +114,7 @@ foam.CLASS({
     [ 'adapt', function(_, spec, prop) {
       return foam.String.isInstance(spec) ? { class: spec } : spec ;
     } ],
+    [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
     [ 'displayWidth', 80 ]
     /*
     TODO: do on the Java side also.

@@ -16,9 +16,8 @@ foam.CLASS({
   documentation: 'Remove promoted entries which will never be referenced again',
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
     'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -36,6 +35,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'serviceName',
+      class: 'String',
+      value: 'internalMedusaDAO'
+    },
     {
       // REVIEW: Get this from DaggerService?
       documentation: 'Presently Dagger service bootstraps two entries.',
@@ -66,34 +70,13 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      schedule(getX());
-      `
-    },
-    {
-      name: 'schedule',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaCode: `
-      long interval = getTimerInterval();
-      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(
-        new AgencyTimerTask(x, support.getThreadPoolName(), this),
-        interval);
+      timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -103,7 +86,7 @@ foam.CLASS({
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
 
       try {
-        DAO dao = (DAO) x.get("medusaEntryDAO");
+        DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
           AND(
             GT(MedusaEntry.INDEX, getMinIndex()),
@@ -121,7 +104,6 @@ foam.CLASS({
         logger.error(t);
       } finally {
         pm.log(x);
-        schedule(x);
       }
       `
     }

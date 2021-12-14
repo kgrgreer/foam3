@@ -39,11 +39,11 @@ foam.CLASS({
         FObject refObj = null;
         try {
           refObj = (FObject)obj.getClass().getMethod("find" + StringUtil.capitalize(p1.getName()), foam.core.X.class)
-            .invoke(obj, ((FObject)obj).getX());
+            .invoke(obj, foam.core.XLocator.get());
         } catch ( Throwable t ) {
           Logger logger = (Logger) getX().get("logger");
           if ( logger == null ) {
-            logger = new StdoutLogger();
+            logger = StdoutLogger.instance();
           }
           logger.error(t);
         }

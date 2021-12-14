@@ -30,9 +30,11 @@ public class DigWebAgent extends ContextAwareSupport
     Format              format  = (Format) p.get(Format.class);
     Logger              logger  = (Logger) x.get("logger");
     String              daoName = p.getParameter("dao");
-    PM                  pm      = new PM(getClass(), p.getParameter("dao"), command.getName(), format.getName());
+    PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format.getName());
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
+    logger.debug("data", p.get("data")
+    );
 
     try {
       // Find the operation
@@ -87,15 +89,5 @@ public class DigWebAgent extends ContextAwareSupport
     DigErrorMessage error = new GeneralException(message);
     error.setStatus(String.valueOf(status));
     DigUtil.outputException(x, error, Format.JSON);
-  }
-
-  public boolean redirectToLogin(X x) {
-    HttpServletRequest req = x.get(HttpServletRequest.class);
-    String methodName = req.getMethod();
-    if ( "get".equalsIgnoreCase(methodName)
-      && req.getHeader("Authorization") == null ) {
-      return true;
-    }
-    return false;
   }
 }

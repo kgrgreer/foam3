@@ -15,7 +15,9 @@ foam.CLASS({
   imports: [
     'capabilityDAO',
     'group',
-    'userCapabilityJunctionDAO'
+    'subject',
+    'userCapabilityJunctionDAO',
+    'loginSuccess?'
   ],
   properties: [
     {
@@ -25,9 +27,11 @@ foam.CLASS({
   ],
   methods: [
     function init() {
-      this.onDetach(this.group$.sub(function() {
-        this.cache = {};
-      }.bind(this)));
+      this.onDetach(this.group$.sub(this.resetCache));
+      this.onDetach(this.subject$.sub(this.resetCache));
+      if ( this.loginSuccess$ ) {
+        this.onDetach(this.loginSuccess$.sub(this.resetCache));
+      }
       this.onDetach(this.userCapabilityJunctionDAO.on.sub(
         (sub, _on, event, ucj) => {
           if ( event !== 'put' && event !== 'remove' ) return;
@@ -43,4 +47,9 @@ foam.CLASS({
       return this.cache[p];
     },
   ],
+  listeners: [
+    function resetCache() {
+      this.cache = {};
+    }
+  ]
 });

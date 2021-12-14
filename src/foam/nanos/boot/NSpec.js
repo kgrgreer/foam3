@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl'
+    'ctrl',
+    'pushMenu'
   ],
 
   javaImports: [
@@ -87,7 +88,7 @@ foam.CLASS({
             .add(value ? ' Y' : '-')
           .end();
       },
-      documentation: 'If true, this service is served over the network.'
+      documentation: 'If true, this service is served over the network via boxes. If the service is a WebAgent, it will be served as a WebAgent only if this is false.'
     },
     {
       class: 'Boolean',
@@ -133,10 +134,16 @@ foam.CLASS({
       }
     },
     {
+      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, o as to avoid the synchronization overhead associated with accessing the created singleton service.`,
+      class: 'Boolean',
+      name: 'threadLocalEnabled',
+      value: false
+    },
+    {
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -144,7 +151,7 @@ foam.CLASS({
       name: 'serviceClass',
       shortName: 'sc',
       displayWidth: 80,
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -181,9 +188,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.tag.TextArea', rows: 12, cols: 140 },
-        readView: { class: 'foam.u2.view.PreView' }
+        readView:  { class: 'foam.u2.view.PreView' }
       },
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -192,9 +199,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.tag.TextArea', rows: 12, cols: 140 },
-        readView: { class: 'foam.u2.view.PreView' }
+        readView:  { class: 'foam.u2.view.PreView' }
       },
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -216,7 +223,7 @@ foam.CLASS({
     {
       name: 'createService',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',  type: 'Context' },
         { name: 'ps', type: 'PrintStream' }
       ],
       javaType: 'java.lang.Object',
@@ -227,21 +234,23 @@ foam.CLASS({
           return Class.forName(getServiceClass()).newInstance();
 
         Language l = getLanguage();
+
         if ( l == foam.nanos.script.Language.JSHELL )
           return new JShellExecutor().runExecutor(x, ps, getServiceScript());
-        else if ( l == foam.nanos.script.Language.BEANSHELL )
+
+        if ( l == foam.nanos.script.Language.BEANSHELL )
           return new BeanShellExecutor(this).execute(x, ps, getServiceScript());
-        else
-          throw new RuntimeException("Script language not supported");
+
+        throw new RuntimeException("Script language not supported");
       `,
       javaThrows: [
-        'java.lang.ClassNotFoundException',
-        'java.lang.InstantiationException',
-        'java.lang.IllegalAccessException',
-        'SecurityException',
-        'NoSuchFieldException',
+        'Exception',
         'IOException',
-        'Exception'
+        'java.lang.ClassNotFoundException',
+        'java.lang.IllegalAccessException',
+        'java.lang.InstantiationException',
+        'NoSuchFieldException',
+        'SecurityException'
       ]
     },
     {
@@ -259,7 +268,7 @@ foam.CLASS({
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service." + getName()) ) {
-          throw new AuthorizationException("You do not have permission to access the service named "+getName());
+          throw new AuthorizationException("You do not have permission to access the service named " + getName());
         }
       `
     }
@@ -278,7 +287,7 @@ foam.CLASS({
       code: function() {
         var service = this.__context__[this.name];
         if ( foam.dao.DAO.isInstance(service) ) {
-          this.ctrl.memento.value = 'admin.data' + foam.nanos.controller.Memento.SEPARATOR + this.name;
+          this.pushMenu(`admin.data${foam.nanos.controller.Memento.SEPARATOR}${this.name}`);
         }
       }
     }

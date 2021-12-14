@@ -41,6 +41,8 @@ configuration for contacting the primary node.`,
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.medusa.ElectoralService',
+    'foam.nanos.medusa.ElectoralServiceState',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.net.Host',
@@ -86,27 +88,6 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
-      name: 'isPrimary',
-      class: 'Boolean',
-      value: false,
-      // value: true, // STANDALONE
-      visibility: 'RO'
-    },
-    {
-      documentation: 'Setting instance to true (ONLINE) will make this instance visible to the cluster.',
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.nanos.medusa.Status',
-      value: 'OFFLINE',
-      visibility: 'RO'
-    },
-    {
-      documentation: 'Debugging tool to build the list of instances an command passes through.',
-      name: 'trace',
-      class: 'Boolean',
-      value: true
-    },
-    {
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',
@@ -114,12 +95,13 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
+      documentation: 'Maximum retries of a retry client. Set to -1 for infinite retry',
       name: 'maxRetryAttempts',
       class: 'Int',
-      documentation: 'Set to -1 to infinitely retry.',
       value: 20
     },
     {
+      documentation: 'Maximum delay in milliseconds between retries of a retry client',
       class: 'Int',
       name: 'maxRetryDelay',
       value: 20000
@@ -127,27 +109,7 @@ configuration for contacting the primary node.`,
     {
       name: 'threadPoolName',
       class: 'String',
-      value: 'threadPool'
-    },
-    {
-      name: 'batchTimerInterval',
-      class: 'Long',
-      value: 10
-    },
-    {
-      name: 'maxBatchSize',
-      class: 'Long',
-      value: 1000
-    },
-    {
-      name: 'httpConnectTimeout',
-      class: 'Int',
-      value: 5000
-    },
-    {
-      name: 'httpReadTimeout',
-      class: 'Int',
-      value: 10000
+      value: 'medusaThreadPool'
     },
     {
       name: 'clients',
@@ -178,6 +140,7 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
+      getLogger().info("mediatorCount", ((Long)count.getValue()).intValue());
       return ((Long)count.getValue()).intValue();
       `
     },
@@ -207,20 +170,25 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
-      return ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
+      return result;
       `
     },
     {
       // NOTE: replace all the quorum logic with a plug in quorum strategy
-      documentation: 'Enabled and Online nodes to achieve quorum. Entries are written out one to each bucket, so quorum requires a reply from at least x buckets.',
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeQuorum',
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
-      return (int) Math.floor(getNodeGroups() / 2) + 1;
+      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+      getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      return quorum;
       `
     },
     {
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeGroups',
       class: 'Int',
       visibility: 'RO',
@@ -263,6 +231,24 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'replayNodes',
+      class: 'List',
+      visibility: 'RO',
+      javaFactory: `
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      return (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, 0L),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            EQ(ClusterConfig.REGION, config.getRegion()),
+            EQ(ClusterConfig.TYPE, MedusaType.NODE),
+            EQ(ClusterConfig.ENABLED, true)
+          ))
+        .select(new ArraySink())).getArray();
+      `
+    },
+    {
       name: 'nodeBuckets',
       class: 'List',
       visibility: 'RO',
@@ -281,14 +267,9 @@ configuration for contacting the primary node.`,
         return true;
       }
 
-      int minNodesInBucket = (int) Math.max(1, Math.floor(getNodeCount() / getNodeGroups()) - 1);
+      int minNodesInBucket = getNodeQuorum();
 
       List<Set<String>> buckets = getNodeBuckets();
-      if ( buckets.size() < getNodeQuorum() ) {
-        getLogger().warning("hasNodeQuorum", "false", "insufficient buckets", buckets.size(), "threshold", getNodeQuorum());
-        outputBuckets(getX());
-        return false;
-      }
       for ( int i = 0; i < buckets.size(); i++ ) {
         Set<String> bucket = buckets.get(i);
         // Need at least minNodesInBucket in ONLINE state for Quorum.
@@ -400,8 +381,6 @@ configuration for contacting the primary node.`,
         }
         List<ClusterConfig> configs = ((ArraySink) dao.select(new ArraySink())).getArray();
         if ( configs.size() > 0 ) {
-          // return configs.get(0);
-          // return configs.get(configs.size() -1);
           ClusterConfig cfg = configs.get(0);
           getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary(), cfg.getPingTime());
           for ( ClusterConfig c : configs ) {
@@ -478,6 +457,13 @@ configuration for contacting the primary node.`,
         throw new RuntimeException("Active Region not found.");
       }
       `
+    },
+    {
+      name: 'shutdown',
+      class: 'Boolean',
+      value: false,
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'logger',
@@ -572,12 +558,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getPrimary',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-      ],
+      args: 'Context x',
       type: 'foam.nanos.medusa.ClusterConfig',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getPrimaryDAO");
@@ -598,8 +579,11 @@ configuration for contacting the primary node.`,
       if ( configs.size() > 0 ) {
         primaryConfig = configs.get(0);
         if ( configs.size() > 1 ) {
-          getLogger().error("muliple primaries", configs.get(0), configs.get(1));
-          throw new RuntimeException("Multiple primaries found.");
+          getLogger().error("muliple primaries", configs.get(0).getId(), configs.get(1).getId());
+          for ( ClusterConfig cfg : configs ) {
+            getLogger().error("mulitiple primaries", cfg);
+          }
+          throw new MultiplePrimariesException();
         }
         return primaryConfig;
       } else {
@@ -639,12 +623,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getVoters',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaType: `java.util.List`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getVoters");
@@ -669,6 +648,7 @@ configuration for contacting the primary node.`,
      `
     },
     {
+      documentation: 'Mediator is a potential voter - depending on eventual status.',
       name: 'canVote',
       type: 'Boolean',
       args: [
@@ -682,10 +662,12 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      ClusterConfig myConfig = getConfig(x, getConfigId());
       return
         config.getEnabled() &&
         config.getType() == MedusaType.MEDIATOR &&
-        config.getZone() == 0L;
+        config.getZone() == 0L &&
+        config.getRegion().equals(myConfig.getRegion());
       `
     },
     {
@@ -788,7 +770,10 @@ configuration for contacting the primary node.`,
       `
     },
     {
-      documentation: 'Crontrol which instances cron jobs run.  Clusterable cron jobs should only run one the primary mediator.',
+      documentation: `
+        Returns true if the cron job should be enabled. Returns false otherwise.
+        Note that clusterable cron jobs should only run on the primary mediator.
+      `,
       name: 'cronEnabled',
       type: 'Boolean',
       args: [
@@ -796,6 +781,11 @@ configuration for contacting the primary node.`,
           name: 'x',
           type: 'Context'
         },
+        {
+          name: 'clusterable',
+          type: 'boolean',
+          documentation: 'true if the cron job is clusterable'
+        }
       ],
       javaCode: `
       try {
@@ -803,7 +793,20 @@ configuration for contacting the primary node.`,
         if ( config == null ) {
           return true;
         }
+        
         if ( config.getType() == MedusaType.MEDIATOR ) {
+          ElectoralService electoral = (ElectoralService) x.get("electoralService");
+          // System must be ready before running cron jobs
+          if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
+            return false;
+          }
+        
+          // Non-clusterable cron jobs can run if the system is ready
+          if ( ! clusterable ) {
+            return true;
+          }
+
+          // Clusterable cron jobs should only run on the primary mediator
           if ( getMediatorCount() == 1 ) {
             return true;
           }
@@ -897,12 +900,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'outputBuckets',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
       List<Set<String>> buckets = getNodeBuckets();
       for ( int i = 0; i < buckets.size(); i++ ) {

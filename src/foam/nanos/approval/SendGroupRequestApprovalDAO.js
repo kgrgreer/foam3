@@ -42,21 +42,12 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public SendGroupRequestApprovalDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-            } 
-          `
-        );
-      }
+  javaCode: `
+    public SendGroupRequestApprovalDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -91,14 +82,14 @@ foam.CLASS({
 
         for ( String groupName : request.getAdditionalGroups() ){
           Group group = (Group) groupDAO.find_(getX(), groupName);
-        
+
           if ( group == null ) {
             String errorMessage = ADDITIONAL_GROUP_NOT_FOUND_ERROR_MSG + groupName;
 
             Logger logger = (Logger) x.get("logger");
             logger.error(
               errorMessage,
-              request.getGroup(), 
+              request.getGroup(),
               request.getApprover()
             );
 

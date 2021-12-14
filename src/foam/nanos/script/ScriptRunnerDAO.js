@@ -17,20 +17,11 @@ foam.CLASS({
     'foam.nanos.logger.StdoutLogger'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          ` 
-            public ScriptRunnerDAO(DAO delegate) {
-              setDelegate(delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public ScriptRunnerDAO(DAO delegate) {
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -39,9 +30,13 @@ foam.CLASS({
         Script script = (Script) obj;
         if ( script.getStatus() == ScriptStatus.SCHEDULED ) {
           if ( script.canRun(x) ) {
-            script = (Script) getDelegate().put_(x, script);
+            script.setStatus(ScriptStatus.RUNNING);
+            script = (Script) getDelegate().put_(x, script).fclone();
             runScript(x, script);
-          } 
+          } else {
+            script.setStatus(ScriptStatus.UNSCHEDULED);
+            script = (Script) getDelegate().put_(x, script);
+          }
         } else {
           script = (Script) getDelegate().put_(x, script);
         }
@@ -58,29 +53,24 @@ foam.CLASS({
       javaCode: `
           ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
             @Override
-            public void execute(X y) {
-              Logger logger = (Logger) y.get("logger");
+            public void execute(X x) {
+              Logger logger = (Logger) x.get("logger");
               if ( logger == null ) {
-                logger = new StdoutLogger();
+                logger = StdoutLogger.instance();
               }
               logger = new PrefixLogger(new Object[] {
                 this.getClass().getSimpleName()
               }, logger);
-    
-              Script s = (Script) script.fclone();
+
               try {
-                s.setStatus(ScriptStatus.RUNNING);
-                s = (Script) getDelegate().put_(x, s).fclone();
-                logger.debug("agency", s.getId(), "start");
-                s.runScript(x);
-                logger.debug("agency", s.getId(), "end");
-                s.setStatus(ScriptStatus.UNSCHEDULED);
-                getDelegate().put_(x, s);
+                script.runScript(x);
+                script.setStatus(ScriptStatus.UNSCHEDULED);
               } catch(Throwable t) {
+                script.setStatus(ScriptStatus.ERROR);
+                logger.error("agency", script.getId(), t);
                 t.printStackTrace();
-                s.setStatus(ScriptStatus.ERROR);
-                getDelegate().put_(x, s);
-                logger.error("agency", s.getId(), t);
+              } finally {
+                getDelegate().put_(x, script);
               }
             }
           }, "Run script: " + script.getId());
@@ -89,4 +79,3 @@ foam.CLASS({
     }
   ]
 });
-

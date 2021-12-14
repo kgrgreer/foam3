@@ -120,6 +120,7 @@ foam.CLASS({
 
       imports: [
         'globalScope',
+        'params',
         'selected'
       ],
 
@@ -138,6 +139,8 @@ foam.CLASS({
       methods: [
         function render() {
           this.SUPER();
+
+          if ( this.params.id && this.params.id !== this.data.id ) return;
 
           var self = this;
 
@@ -215,7 +218,7 @@ foam.CLASS({
                 eval(self.data.code);
               } catch (x) {
                 self.data.error = true;
-                scope.log(x);
+                scope.log(x.toString());
               }
             }
           }
@@ -305,13 +308,15 @@ foam.CLASS({
 
   exports: [
     'globalScope',
+    'query',
     'selected'
   ],
 
   properties: [
-    { class: 'Int', name: 'count' },
-    { class: 'Int', name: 'exampleCount' },
-    { class: 'Int', name: 'errorCount' },
+    { class: 'Int',    name: 'count' },
+    { class: 'Int',    name: 'exampleCount' },
+    { class: 'Int',    name: 'errorCount' },
+    { class: 'String', name: 'query', view: 'foam.u2.SearchField', onKey: true },
     'selected',
     'testData',
     {
@@ -339,27 +344,17 @@ foam.CLASS({
     async function render() {
       this.SUPER();
 
-      this.testData += await fetch('u2').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('faq').then(function(response) {
-        return response.text();
-      });
-
-      this.testData = await fetch('validation').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('examples').then(function(response) {
-        return response.text();
-      });
-
-      this.testData += await fetch('dao').then(function(response) {
-        return response.text();
-      });
-
       var self = this;
+
+      async function load(section) {
+        self.testData += await fetch(section).then(response => response.text())
+      }
+      await load('u2');
+      await load('faq');
+      await load('validation');
+      await load('examples');
+      await load('dao');
+
       this.
         addClass(this.myClass()).
         start('h1').
@@ -369,6 +364,7 @@ foam.CLASS({
           style({ display: 'flex' }).
           start().
             addClass(this.myClass('index')).
+            add(this.QUERY).
             start().
             select(this.data, function(e) {
               self.count++;
@@ -377,6 +373,11 @@ foam.CLASS({
               return this.E('a')
                 .attrs({href: '#' + e.id})
                 .enableClass('error', e.error$)
+                .show(self.query$.map(function(q) {
+                  q = q.trim().toLowerCase();
+                  if ( ! q ) return true;
+                  return e.title.toLowerCase().indexOf(q) != -1;
+                }))
                 .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
                 .add(e.id, ' ', e.title)
                 .enableClass('selected', self.selected$.map(s => s == e.id))

@@ -6,6 +6,7 @@
 
 package foam.nanos.logger;
 
+import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import java.io.IOException;
@@ -13,67 +14,32 @@ import java.text.SimpleDateFormat;
 import java.util.logging.*;
 
 public class StdoutLogger
-  extends AbstractLogger
+  extends  DAOLogger
 {
   protected java.util.logging.Logger logger_;
+  private final static StdoutLogger instance__ = new StdoutLogger();
+  public static StdoutLogger instance() { return instance__; }
 
   public StdoutLogger() {
+    this(foam.core.XLocator.get());
+  }
+
+  public StdoutLogger(X x) {
+    setX(x);
+    setDelegate(
+                new foam.nanos.logger.RepeatLogMessageDAO.Builder(x)
+                .setDelegate(new foam.nanos.logger.LogMessageDAO.Builder(x)
+                             .setDelegate(new foam.nanos.logger.StdoutLoggerDAO.Builder(x)
+                                          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.logger.LogMessage.getOwnClassInfo()))
+                                          .build())
+                             .build())
+                .build());
+
+    // Add Java logging handler
     logger_ = java.util.logging.Logger.getAnonymousLogger();
     logger_.setUseParentHandlers(false);
     logger_.setLevel(Level.ALL);
-    Handler handler = new ConsoleHandler();
-    handler.setLevel(Level.ALL);
-    handler.setFormatter(new CustomFormatter());
+    Handler handler = new JavaHandler();
     logger_.addHandler(handler);
-  }
-
-  protected class CustomFormatter extends Formatter {
-    foam.util.SyncFastTimestamper ts_ = new foam.util.SyncFastTimestamper();
-
-    @Override
-    public String format(LogRecord record) {
-      int           lev = record.getLevel().intValue();
-      String        msg = record.getMessage();
-      StringBuilder str = sb.get();
-
-      str.append(ts_.createTimestamp());
-      str.append(',');
-
-      str.append(Thread.currentThread().getName());
-      str.append(',');
-
-      // debug special case, fine level == 500
-      if ( lev == 500 ) {
-        str.append("DEBUG");
-      } else {
-        str.append(record.getLevel());
-      }
-
-      str.append(',');
-      str.append(msg);
-      str.append('\n');
-      return str.toString();
-    }
-  }
-
-  public void log(Object... args) {
-    logger_.info(combine(args));
-  }
-
-  public void info(Object... args) {
-    logger_.info(combine(args));
-  }
-
-  public void warning(Object... args) {
-    logger_.warning(combine(args));
-  }
-
-  public void error(Object... args) {
-    logger_.severe(combine(args));
-  }
-
-  // can't normally do .debug() with custom formatter: use fine instead
-  public void debug(Object...  args) {
-    logger_.fine(combine(args));
   }
 }

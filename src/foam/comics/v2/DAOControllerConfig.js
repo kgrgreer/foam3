@@ -12,10 +12,6 @@ foam.CLASS({
     A customizable model to configure any DAOController
   `,
 
-  imports: [
-    'translationService'
-  ],
-
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.CannedQuery',
@@ -28,6 +24,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'click',
+      documentation: 'Used to override the default click listener exported by DAOController'
+    },
     {
       class: 'String',
       name: 'daoKey'
@@ -98,7 +98,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'createView',
       factory: function() {
-        return { class: 'foam.u2.view.FObjectView' };
+        return {
+          class: 'foam.u2.view.FObjectView',
+          detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
       }
     },
     {
@@ -106,7 +109,7 @@ foam.CLASS({
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
-          class: 'foam.u2.view.ScrollTableView',
+          class: 'foam.u2.table.TableView',
           editColumnsEnabled: true,
           columns: tableColumns,
           css: {
@@ -238,7 +241,40 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'deletePredicate',
-      documentation: 'True to enable the delete button.',
+      documentation: 'True to enable the delete button in the DAOSummaryView.',
+      factory: function() {
+        return foam.mlang.predicate.True.create();
+      },
+      javaFactory: `
+        return foam.mlang.MLang.TRUE;
+      `
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'refreshPredicate',
+      documentation: 'True to enable the refresh button.',
+      factory: function() {
+        return foam.mlang.predicate.True.create();
+      },
+      javaFactory: `
+        return foam.mlang.MLang.TRUE;
+      `
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'exportPredicate',
+      documentation: 'True to enable the export button.',
+      factory: function() {
+        return foam.mlang.predicate.True.create();
+      },
+      javaFactory: `
+        return foam.mlang.MLang.TRUE;
+      `
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'importPredicate',
+      documentation: 'True to enable the import button.',
       factory: function() {
         return foam.mlang.predicate.True.create();
       },
@@ -301,7 +337,7 @@ foam.CLASS({
       name: 'browseActions',
       documentation: 'An array of Actions valid for the summaryView',
       adaptArrayElement: function(o) {
-        if ( foam.core.Action.isInstance(o) ) return;
+        if ( foam.core.Action.isInstance(o) ) return o;
         var lastIndex = o.lastIndexOf('.');
         var classObj = foam.lookup(o.substring(0, lastIndex));
         return classObj[o.substring(lastIndex + 1)];
@@ -311,6 +347,38 @@ foam.CLASS({
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
       value: null
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'createPopup',
+      documentation: `Given a ViewSpec the createView will be rendered using
+      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a
+      default Popup`
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.Action',
+      name: 'DAOActions',
+      documentation: `Array of actions rendered by the DAOBrowserView,
+      meant to be used to replace/override export, import and refresh`,
+      adaptArrayElement: function(o) {
+        if ( foam.core.Action.isInstance(o) ) return o;
+        var lastIndex = o.lastIndexOf('.');
+        var classObj = foam.lookup(o.substring(0, lastIndex));
+        return classObj[o.substring(lastIndex + 1)];
+      }
+    },
+    {
+      class: 'Map',
+      name: 'selectedObjs'
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'searchPredicate'
+    },
+    {
+      class: 'Int',
+      name: 'preSelectedCannedQuery'
     }
   ]
 });

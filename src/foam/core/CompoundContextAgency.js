@@ -7,14 +7,15 @@
 foam.CLASS({
   package: 'foam.core',
   name: 'CompoundContextAgency',
+  extends: 'foam.core.AbstractAgency',
   javaImplements: [
-    'foam.core.Agency',
     'foam.core.ContextAgent'
   ],
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.nanos.pm.PM'
   ],
 
   properties: [
@@ -35,12 +36,15 @@ foam.CLASS({
       javaCode: `CompoundException e = null;
 Logger logger = (Logger) x.get("logger");
 for ( Runnable agent : getAgents() ) {
+  PM pm = PM.create(x, this.getClassInfo(), agent.toString());
   try {
     agent.run();
   } catch (Throwable t) {
     logger.error(t.getMessage(), t);
-	if ( e == null ) e = new CompoundException();
-    e.add(t);
+	  if ( e == null ) e = new CompoundException();
+      e.add(t);
+  } finally {
+    pm.log(x);
   }
 }
 if ( e != null ) e.maybeThrow();`
@@ -79,15 +83,9 @@ for ( int i = 0 ; i < getAgents().size() ; i++ ) {
 return desc;`
     }
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`public void submit(foam.core.X x, foam.core.ContextAgent agent) {
-          submit(x, agent, "");
-        }`);
-      }
+  javaCode: `
+    public void submit(foam.core.X x, foam.core.ContextAgent agent) {
+      submit(x, agent, "");
     }
-  ]
+  `
 });
-

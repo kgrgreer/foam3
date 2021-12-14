@@ -17,7 +17,7 @@ foam.CLASS({
     'user'
   ],
 
-  requires: ['foam.u2.stack.StackBlock'],
+  requires: [ 'foam.u2.stack.StackBlock' ],
 
   css: `
     ^ {
@@ -48,32 +48,19 @@ foam.CLASS({
     ^section {
       margin-bottom: 10%;
     }
-    /* title  */
-    ^ ^section h2 {
-      margin-top: 0;
-      margin-bottom: 4vh;
-      font-size: 2.5rem;
-      text-align: center;
-    }
     /* subtitle */
     /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
     ^ ^section .subtitle {
       color: /*%GREY2%*/ #9ba1a6;
-      font-size: 1rem;
-      margin-top: 0;
-      margin-bottom: 3vh;
-      line-height: 1.5;
-      text-align: center;
-    }
-    /* button */
-    ^ ^section .foam-u2-layout-Cols {
-      justify-content: center !important; /* centers button */
     }
     ^link {
       color: /*%PRIMARY3%*/ #604aff;
       cursor: pointer;
       text-align: center;
       padding-top: 1.5vh;
+    }
+    ^ .foam-u2-layout-Cols > .foam-u2-ActionView {
+      width: 100%;
     }
   `,
 

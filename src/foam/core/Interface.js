@@ -58,13 +58,17 @@ foam.CLASS({
     {
       class: 'AxiomArray',
       name: 'methods',
-      of: 'foam.core.internal.InterfaceMethod'
+      of: 'foam.core.internal.InterfaceMethod',
+      adaptArrayElement: function(m) {
+        return foam.core.internal.InterfaceMethod.create(foam.String.isInstance(m) ? {signature: m} : m);
+      }
     },
     {
       class: 'StringArray',
       name: 'javaExtends'
     }
   ],
+
   methods: [
     function validate() {
       if ( this.extends !== 'foam.core.AbstractInterface' )
@@ -97,8 +101,24 @@ foam.LIB({
 
   methods: [
     function INTERFACE(m) {
-      m.class = m.class || 'foam.core.InterfaceModel';
-      foam.CLASS(m);
+      if ( m.refines ) {
+        var i = foam.__context__.lookup(m.refines);
+
+        if ( m.methods ) {
+          var i2 = foam.core.InterfaceModel.create(m);
+          for ( var m of i2.methods ) {
+            var j = i.model_.methods.find(m2 => m2.name == m.name);
+            if ( j == undefined ) {
+              i.model_.methods.push(m);
+            } else {
+              i.model_.methods[j] = m;
+            }
+          }
+        }
+      } else {
+        m.class = m.class || 'foam.core.InterfaceModel';
+        foam.CLASS(m);
+      }
     }
   ]
 });

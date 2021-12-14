@@ -65,6 +65,12 @@ foam.CLASS({
       name: 'exception',
       class: 'Object',
       storageTransient: true
+    },
+    {
+      name: 'enableCandlestick',
+      class: 'Boolean',
+      value: false,
+      documentation: 'Whether to create a candlestick for this PM.'
     }
   ],
 
@@ -85,15 +91,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-    if ( x == null ) return;
-    if ( getIsError() ) return;
-    if ( getEndTime() == 0L ) {
-      setEndTime(System.currentTimeMillis());
-    }
-    PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
-    if ( pmLogger != null ) {
-      pmLogger.log(this);
-    }
+        if ( x == null ) return;
+        if ( getIsError() ) return;
+        if ( getEndTime() == 0L ) {
+          setEndTime(System.currentTimeMillis());
+        }
+        PMLogger pmLogger = (PMLogger) x.get(DAOPMLogger.SERVICE_NAME);
+        if ( pmLogger != null ) {
+          pmLogger.log(this);
+        }
+
+        // Candlestick
+        if ( getEnableCandlestick() ) {
+          DAOPMLogger daoPMLogger = (DAOPMLogger) x.get("daoPMLogger");
+          if ( daoPMLogger != null ) {
+            daoPMLogger.log(this);
+          }
+        }
       `
     },
     {
@@ -156,100 +170,106 @@ foam.CLASS({
      `
     }
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-            public static PM create(X x, FObject fo, String... name) {
-              PM pm = (PM) x.get("PM");
+  javaCode: `
+    public static PM create(X x, FObject fo, String... name) {
+      PM pm = (PM) x.get("PM");
 
-              if ( pm == null ) return new PM(fo, name);
+      if ( pm == null ) return new PM(fo, name);
 
-              pm.setKey(fo.getClassInfo().getId());
-              pm.setName(combine((Object[]) name));
-              pm.init_();
+      pm.setKey(fo.getClassInfo().getId());
+      pm.setName(combine((Object[]) name));
+      pm.init_();
 
-              return pm;
-            }
-
-            public static PM create(X x, ClassInfo clsInfo, String... name) {
-              PM pm = (PM) x.get("PM");
-
-              if ( pm == null ) return new PM(clsInfo, name);
-
-              pm.setKey(clsInfo.getId());
-              pm.setName(combine((Object[]) name));
-              pm.init_();
-
-              return pm;
-            }
-
-            public static PM create(X x, Object key, Object... args) {
-              PM pm = (PM) x.get("PM");
-
-              if ( pm == null ) return new PM(key, args);
-
-              pm.setKey(key.toString());
-              pm.setName(combine((Object[]) args));
-              pm.init_();
-
-              return pm;
-            }
-
-            public PM(ClassInfo clsInfo, String... name) {
-              setName(combine((Object[]) name));
-              setKey(clsInfo.getId());
-              init_();
-            }
-
-            public PM(Class cls, String... name) {
-              setName(combine((Object[]) name));
-              foam.core.ClassInfoImpl clsInfo = new foam.core.ClassInfoImpl();
-              clsInfo.setObjClass(cls);
-              clsInfo.setId(cls.getName());
-              setKey(clsInfo.getId());
-              init_();
-            }
-
-            public PM(FObject fo, String... name) {
-              this(fo.getClassInfo(), name);
-            }
-
-            public PM(String... args) {
-              if ( args.length > 0 ) {
-                setKey(args[0]);
-              }
-              if ( args.length > 1 ) {
-                setName(combine((Object[]) java.util.Arrays.copyOfRange(args, 1, args.length)));
-              }
-              init_();
-            }
-
-            public PM(Object... args) {
-              if ( args.length > 0 ) {
-                setKey(args[0].toString());
-              }
-              if ( args.length > 1 ) {
-                setName(combine((Object[]) java.util.Arrays.copyOfRange(args, 1, args.length)));
-              }
-              init_();
-            }
-
-            public static String combine(Object... args) {
-              if ( args == null ) return "";
-              if ( args.length == 0 || args[0] == null ) return "";
-              if ( args.length == 1 ) return args[0].toString();
-              StringBuilder sb = new StringBuilder();
-              for ( Object o: args) {
-                sb.append(o).append(":");
-              }
-              return sb.deleteCharAt(sb.length() - 1).toString();
-            }
-          `
-        }));
-      }
+      return pm;
     }
-  ]
+
+    public static PM create(X x, ClassInfo clsInfo, String... name) {
+      PM pm = (PM) x.get("PM");
+
+      if ( pm == null ) return new PM(clsInfo, name);
+
+      pm.setKey(clsInfo.getId());
+      pm.setName(combine((Object[]) name));
+      pm.init_();
+
+      return pm;
+    }
+
+    public static PM create(X x, Class cls, Object... args) {
+      return create(x, cls.getName(), args);
+    }
+
+    public static PM create(X x, Object key, Object... args) {
+      PM pm = (PM) x.get("PM");
+
+      if ( pm == null ) return new PM(key, args);
+
+      pm.setKey(key.toString());
+      pm.setName(combine((Object[]) args));
+      pm.init_();
+
+      return pm;
+    }
+
+    public static PM create(X x, Boolean enableCandlestick, String... args) {
+      PM pm = new PM(args);
+      pm.setEnableCandlestick(enableCandlestick);
+      return pm;
+    }
+
+    public PM(ClassInfo clsInfo, String... name) {
+      setName(combine((Object[]) name));
+      setKey(clsInfo.getId());
+      init_();
+    }
+
+    public PM(Class cls, String... name) {
+      setName(combine((Object[]) name));
+      foam.core.ClassInfoImpl clsInfo = new foam.core.ClassInfoImpl();
+      clsInfo.setObjClass(cls);
+      clsInfo.setId(cls.getName());
+      setKey(clsInfo.getId());
+      init_();
+    }
+
+    public PM(FObject fo, String... name) {
+      this(fo.getClassInfo(), name);
+    }
+
+    public PM(String... args) {
+      if ( args.length > 0 ) {
+        setKey(args[0]);
+      }
+      if ( args.length > 1 ) {
+        setName(combine((Object[]) java.util.Arrays.copyOfRange(args, 1, args.length)));
+      }
+      init_();
+    }
+
+    public PM(Object... args) {
+      if ( args.length > 0 ) {
+        setKey(args[0].toString());
+      }
+      if ( args.length > 1 ) {
+        setName(combine((Object[]) java.util.Arrays.copyOfRange(args, 1, args.length)));
+      }
+      init_();
+    }
+
+    public static String combine(Object... args) {
+      if ( args == null ) return "";
+      if ( args.length == 0 || args[0] == null ) return "";
+      if ( args.length == 1 ) return args[0].toString();
+      StringBuilder sb = new StringBuilder();
+      for ( Object o: args) {
+        if ( o instanceof FObject ) {
+          sb.append(o.getClass().getSimpleName());
+        } else {
+          sb.append(o);
+        }
+        sb.append(":");
+      }
+      return sb.deleteCharAt(sb.length() - 1).toString();
+    }
+  `
 });

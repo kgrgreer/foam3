@@ -22,12 +22,12 @@ foam.CLASS({
 
   css: `
     ^unrolled paper-item {
-      font-size: 12px;
+      font-size: 1.2rem;
       min-height: 36px;
     }
     ^label {
       color: #737373;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: 400;
       line-height: 18px;
       overflow: hidden;

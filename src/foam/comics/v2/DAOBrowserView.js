@@ -19,8 +19,10 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
+    'foam.u2.layout.DisplayWidth',
     'foam.u2.layout.Rows',
     'foam.u2.stack.StackBlock',
+    'foam.u2.view.OverlayActionListView',
     'foam.u2.view.ScrollTableView',
     'foam.u2.view.SimpleSearch',
     'foam.u2.view.TabChoiceView'
@@ -75,10 +77,15 @@ foam.CLASS({
       overflow: hidden;
     }
 
+    ^actions svg {
+      height: 1em;
+      width: 1em;
+    }
+
     /*
-      Scroll is handled here to ensure summaryView always has a scroll 
+      Scroll is handled here to ensure summaryView always has a scroll
       even if it is not configured in the summaryView.
-      This is the generalised way to do this but should be removed 
+      This is the generalised way to do this but should be removed
       if double scroll bars start appearing
     */
     ^browse-view-container > * {
@@ -111,18 +118,21 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' }
+    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   imports: [
+    'auth',
     'ctrl',
+    'displayWidth',
     'exportDriverRegistryDAO',
     'stack?'
   ],
 
   exports: [
-    'click',
     'config',
+    'data as dao',
     'filteredTableColumns',
     'searchColumns',
     'serviceName'
@@ -172,24 +182,27 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'cannedPredicate',
-      expression: function(config$cannedQueries) {
+      expression: function(config$cannedQueries, config$preSelectedCannedQuery) {
         return config$cannedQueries && config$cannedQueries.length
-          ? config$cannedQueries[0].predicate
-          : foam.mlang.predicate.True.create();
+          ? config$preSelectedCannedQuery != null
+            ? config$cannedQueries[config$preSelectedCannedQuery].predicate
+              : config$cannedQueries[1].predicate
+                : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'searchPredicate',
-      expression: function() {
-        return foam.mlang.predicate.True.create();
+      expression: function(config$searchPredicate) {
+        return config$searchPredicate ? config$searchPredicate : foam.mlang.predicate.True.create();
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'predicatedDAO',
       expression: function(config, cannedPredicate, searchPredicate) {
-        return config.dao$proxy.where(this.AND(cannedPredicate, searchPredicate));
+        var predicate = this.AND(cannedPredicate, searchPredicate);
+        return config.dao$proxy.where(predicate);
       }
     },
     {
@@ -224,14 +237,21 @@ foam.CLASS({
       label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
-      isAvailable: async function() {
+      isAvailable: async function(config) {
+        if ( ! config.exportPredicate.f() ) return false;
         var records = await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
-      code: function() {
-        this.add(this.Popup.create().tag({
+      code: function(X) {
+        var adao;
+        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
+          adao = foam.dao.ArrayDAO.create({ of: this.data.of });
+          foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
+        }
+
+        this.add(this.Popup.create(null, X).tag({
           class: 'foam.u2.ExportModal',
-          exportData: this.predicatedDAO$proxy,
+          exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
         }));
       }
@@ -241,9 +261,13 @@ foam.CLASS({
       label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
+      isAvailable: function(config) {
+        if ( ! config.refreshPredicate.f() ) return false;
+        return true;
+      },
       code: function(X) {
-        this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
-        this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
         this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
@@ -253,8 +277,12 @@ foam.CLASS({
       icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
-      code: function() {
-        this.add(this.Popup.create().tag(this.importModal));
+      isAvailable: function(config) {
+        if ( ! config.importPredicate.f() ) return false;
+        return true;
+      },
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag(this.importModal));
       }
     }
   ],
@@ -265,18 +293,11 @@ foam.CLASS({
       this.onDetach(this.cannedPredicate$.sub(() => {
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
-    },
-    function click(obj, id) {
-      if ( ! this.stack ) return;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: 'foam.comics.v2.DAOSummaryView',
-          data: obj,
-          config: this.config,
-          idOfRecord: id
-        }, parent: this.__subContext__ }));
+
+      this.config.DAOActions.push(this.REFRESH_TABLE, this.EXPORT, this.IMPORT);
     },
     function render() {
+      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
       var simpleSearch;
@@ -287,24 +308,31 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
-
+        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO, displayWidth) {
           // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
-              data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-    
+              data$: self.searchPredicate$
+            }, this, self.__subSubContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
+
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, simpleSearch.__subContext__.createSubContext());
+            }, this, self.__subContext__.createSubContext({
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           } else {
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
+            }, this, self.__subContext__.createSubContext({
+              memento: self.currentMemento_,
+              controllerMode: foam.u2.ControllerMode.EDIT
+            }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
@@ -315,6 +343,23 @@ foam.CLASS({
           if ( ! self.config.browseContext ) {
             self.config.browseContext = summaryView;
           }
+
+          if ( summaryView.selectedObjects )
+            self.config.selectedObjs$ = summaryView.selectedObjects$;
+
+          var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
+
+          var hasPermissionsArr = await Promise.all(this.config.DAOActions.map(async action => {
+              if ( ! action.availablePermissions?.length ) return true;
+              var res = await Promise.all(action.availablePermissions.map(async permission => self.auth.check(null, permission)));
+              return res.every(p => p);
+            }));
+          var isAvailableArr = await Promise.all(this.config.DAOActions.map(action => action.isAvailable.call(this, this.config)));
+          var availableActions = [];
+          this.config.DAOActions.forEach((action, i) => isAvailableArr[i] && hasPermissionsArr[i] && availableActions.push(action))
+          var maxActions = displayWidth.minWidth < self.DisplayWidth.MD.minWidth ? 0 :
+                           displayWidth.minWidth < self.DisplayWidth.LG.minWidth ? 1 :
+                           3
 
           return self.E()
             .start(self.Rows)
@@ -340,8 +385,7 @@ foam.CLASS({
                 this
                   .start(self.Cols).addClass(self.myClass('query-bar'))
                     .startContext({
-                      dao: searchFilterDAO,
-                      controllerMode: foam.u2.ControllerMode.EDIT
+                      dao: searchFilterDAO
                     })
                       .callIf(self.config.searchMode === self.SearchMode.SIMPLE, function() {
                         this.add(simpleSearch);
@@ -352,25 +396,40 @@ foam.CLASS({
                     .endContext()
                     .start(self.Cols)
                       .addClass(self.myClass('buttons'))
-                      .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
-                          .addClass(self.myClass('export'))
-                        .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
-                          .addClass(self.myClass('export'))
-                        .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
-                          .addClass(self.myClass('refresh'))
-                        .end()
+                      .startContext({
+                        data: self,
+                        controllerMode: foam.u2.ControllerMode.EDIT
+                      })
+                        .callIf( availableActions.length, function() {
+                          if ( availableActions.length > Math.max(1, maxActions) ) {
+                            var extraActions = availableActions.splice(maxActions);
+                          }
+                          var actions = this.E().addClass(self.myClass('buttons'));
+                          for ( action of availableActions ) {
+                            actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
+                          }
+                          this.add(actions);
+                          if ( extraActions && extraActions.length ) {
+                            this.start(self.OverlayActionListView, {
+                              label: self.ACTIONS,
+                              data: extraActions,
+                              obj: self
+                            }).addClass(self.myClass('buttons')).end();
+                          }
+                        })
                       .endContext()
                     .end()
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
                 })
-              .start()
-                .add(summaryView)
-                .addClass(self.myClass('browse-view-container'))
-              .end()
+              .add(filterView.slot( function(mementoUpdated, mementoToggle) {
+                // TEMPORARY
+                // wait for filterView to set momento before instantianting summaryView
+                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
+                  return this.E()
+                  .addClass(self.myClass('browse-view-container'))
+                  .add(summaryView);
+              }))
             .end();
         }));
     }

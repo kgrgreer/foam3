@@ -37,7 +37,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 
@@ -53,6 +53,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.controller.Memento',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Grid',
@@ -61,8 +62,10 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'currentMenu?',
     'memento',
-    'stack'
+    'stack',
+    'translationService'
   ],
 
   exports: [
@@ -77,7 +80,8 @@ foam.CLASS({
     { name: 'SECTIONED', message: 'Sectioned' },
     { name: 'MATERIAL', message: 'Material' },
     { name: 'WIZARD', message: 'Wizard' },
-    { name: 'VERTICAL', message: 'Vertical' }
+    { name: 'VERTICAL', message: 'Vertical' },
+    { name: 'UPDATED', message: 'Updated' }
   ],
 
   properties: [
@@ -131,7 +135,10 @@ foam.CLASS({
                 currentFeedback = currentFeedback.next;
               }
             } else {
-              this.ctrl.notify(`${this.data.model_.label} updated.`, '', this.LogLevel.INFO, true);
+              var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+              var title = this.translationService.getTranslation(foam.locale, menuId + '.browseTitle', this.config.browseTitle);
+
+              this.ctrl.notify(title + " " + this.UPDATED, '', this.LogLevel.INFO, true);
             }
           }
           this.stack.back();
@@ -159,7 +166,18 @@ foam.CLASS({
       this.SUPER();
 
       if ( this.memento ) {
-        this.currentMemento_$ = this.memento.tail$;
+        this.currentMemento_ = this.memento;
+        var counter = 0;
+        // counter < 2 is as at this point we need to skip 2 memento
+        // head of first one will be DAOSummaryView mode
+        // and second will be the id for the view
+        while ( counter < 2 ) {
+          if ( ! this.currentMemento_.tail ) {
+            this.currentMemento_.tail = this.Memento.create();
+          }
+          this.currentMemento_ = this.currentMemento_.tail;
+          counter++;
+        }
         this.memento.head = 'edit';
       }
 
@@ -175,12 +193,13 @@ foam.CLASS({
                   .tag(self.stack.BACK, {
                     buttonStyle: foam.u2.ButtonStyle.LINK,
                     icon: 'images/back-icon.svg',
+                    themeIcon: 'back',
                     label: this.BACK
                   })
                 .endContext()
                 .start(self.Cols).style({ 'align-items': 'center' })
                   .start()
-                    .add(data.toSummary())
+                    .add(data && data.toSummary() ? data.toSummary() : '')
                     .addClass(this.myClass('account-name'))
                     .addClass('truncate-ellipsis')
                   .end()
@@ -193,7 +212,7 @@ foam.CLASS({
                   .add(self.slot(function(viewView) {
                     var view = foam.u2.ViewSpec.createView(viewView, {
                       data$: self.workingData$
-                    }, self, self.__subContext__.createSubContext({ memento: self.memento }));
+                    }, self, self);
 
                     return self.E().add(view);
                   }))

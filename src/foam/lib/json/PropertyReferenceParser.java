@@ -11,6 +11,9 @@ import foam.core.ClassInfo;
 public class PropertyReferenceParser
   extends ProxyParser
 {
+  private static Parser instance__ = new PropertyReferenceParser();
+  public static Parser instance() { return instance__; }
+
   public PropertyReferenceParser() {
     super(new Seq0(
       Whitespace.instance(),

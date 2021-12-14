@@ -70,7 +70,7 @@ foam.CLASS({
         if ( foam.String.isInstance(propName) ) {
           var propNames = propName.split('.');
           for ( var i = 0 ; i < propNames.length ; i++ ) {
-            axiom = cls.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(propNames[i]));
+            axiom = cls.getAxiomByName(this.columnHandler.propertyNamesForColumnArray(propNames[i]));
             if ( ! axiom )
               return '';
             colPath.push( axiom.label || foam.String.labelize(axiom.name) );
@@ -267,7 +267,7 @@ foam.CLASS({
     function returnPropertyColumnMappings(of, propertyNamesToQuery) {
       var result = [];
       for ( var propName of propertyNamesToQuery ) {
-        result.push(foam.u2.view.PropertyColumnMapping.create({ fullPropertyName: propName, property: this.returnProperty(of, propName) }));
+        result.push(foam.u2.table.PropertyColumnMapping.create({ fullPropertyName: propName, property: this.returnProperty(of, propName) }));
       }
       return result;
     },

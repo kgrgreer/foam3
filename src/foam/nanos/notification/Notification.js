@@ -111,7 +111,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'Creation date.'
+      documentation: 'Creation date.',
+      factory: function() { return new Date(); }
     },
     {
       class: 'Reference',
@@ -159,7 +160,8 @@ foam.CLASS({
     {
       class: 'Enum',
       name: 'severity',
-      of: 'foam.log.LogLevel'
+      of: 'foam.log.LogLevel',
+      documentation: 'Severity of notification being displayed (eg. INFO, WARNING, ERROR)'
     },
     {
       class: 'Boolean',
@@ -186,7 +188,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.Group',
       name: 'groupId',
       documentation: 'Group notification will be sent to.',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' }
+      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' },
+      menuKeys: ['admin.groups']
     },
     {
       class: 'Map',

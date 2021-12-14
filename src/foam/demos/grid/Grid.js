@@ -33,7 +33,6 @@ foam.CLASS({
 
   css: `
     body {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       color:#3a3a3a;
     }
     ^list {
@@ -88,7 +87,7 @@ foam.CLASS({
     }
     ^ .foam-u2-DetailView tr {
       display: inline;
-      font-size: 16px;
+      font-size: 1.6rem;
     }
   `,
 

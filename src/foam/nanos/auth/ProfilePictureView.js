@@ -75,14 +75,14 @@ foam.CLASS({
     }
     ^ .uploadDescription {
       margin-top: 9px;
-      font-size: 14px;
+      font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: /*%PRIMARY3%*/ #406dea;
     }
     ^ .uploadRestriction {
       margin-top: 9px;
-      font-size: 10px;
+      font-size: 1rem;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: /*%BLACK%*/ #1e1f21;

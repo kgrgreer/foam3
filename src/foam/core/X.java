@@ -48,12 +48,12 @@ public interface X {
   /**
    * Cd into a sub context.
    * @param x Starting context
-   * @param path Dot-separated path to a sub context eg, "foo.bar".
+   * @param path to a sub context eg, "foo/bar".
    * @return A sub context if exists, otherwise returns null.
    */
   default X cd(X x, String path) {
     X subX = x;
-    for ( var c : path.split("\\.") ) {
+    for ( var c : path.split("/") ) {
       var obj = subX.get(c);
       if ( ! ( obj instanceof X ) ) {
         return null;

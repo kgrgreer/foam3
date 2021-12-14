@@ -13,7 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.util.HashMap',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Map'
   ],
 
@@ -139,7 +139,7 @@ foam.CLASS({
           let end = endTime || new Date();
           timeElapsed = end.getTime() - startTime.getTime();
         }
-        let remaining = ( timeElapsed / index ) * replayIndex - timeElapsed;
+        let remaining = ( timeElapsed / index ) * ( replayIndex - index );
         let duration = foam.core.Duration.duration(remaining);
         return duration;
       },
@@ -156,7 +156,7 @@ foam.CLASS({
         }
         timeElapsed = end.getTime() - getStartTime().getTime();
       }
-      return String.valueOf((( timeElapsed / getIndex() ) * getReplayIndex() - timeElapsed) / 1000);
+      return String.valueOf((( timeElapsed / getIndex() ) * ( getReplayIndex() - getIndex() )) / 1000);
       `
     },
     {
@@ -175,7 +175,7 @@ foam.CLASS({
     {
       name: 'replayNodes',
       class: 'Map',
-      javaFactory: 'return new HashMap();',
+      javaFactory: 'return new ConcurrentHashMap();',
       visibility: 'RO'
     },
     {

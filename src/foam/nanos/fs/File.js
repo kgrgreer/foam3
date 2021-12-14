@@ -10,8 +10,14 @@ foam.CLASS({
 
   documentation: 'Represents a file',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
+    'foam.nanos.auth.CreatedByAwareMixin'
+  ],
+
   implements: [
     'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
@@ -39,11 +45,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id',
-      'filename',
-      'filesize',
-      'mimeType'
-    ],
+    'filename',
+    'filesize',
+    'mimeType',
+    'created'
+  ],
 
   searchColumns: [
     'id',
@@ -51,7 +57,21 @@ foam.CLASS({
     'mimeType'
   ],
 
+  contextMenuActions: [this.DOWNLOAD],
+
+  messages: [
+    { name: 'INVALID_FILE_LABEL', message: 'An assigned file label cannot be empty' }
+  ],
+
   properties: [
+    {
+      name: 'lifecycleState',
+      class: 'Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      value: 'ACTIVE',
+      visibility: 'RO',
+      includeInDigest: true
+    },
     {
       class: 'String',
       name: 'id',
@@ -68,9 +88,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'filesize',
-      updateVisibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
       readVisibility: 'RO',
-      documentation: 'Filesize'
+      documentation: 'Filesize',
+      tableCellFormatter: function(value, _) {
+        this.tag({
+          class: 'foam.nanos.fs.FileSizeView',
+          data: value
+        });
+      },
+      view: { class: 'foam.nanos.fs.FileSizeView' }
     },
     {
       class: 'String',
@@ -133,7 +161,8 @@ foam.CLASS({
           data$: dataSlot,
           selected$: selectSlot
         });
-      }
+      },
+      comparePropertyValues: function(o1, o2) { return 0; }
     },
     {
       class: 'Blob',
@@ -191,13 +220,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'labels',
-      class: 'StringArray',
-      documentation: 'List of labels applied to this file',
-      view: {
-        class: 'foam.u2.view.ReferenceArrayView',
-        daoKey: 'fileLabelDAO'
-      }
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileLabel',
+      name: 'label'
     },
     {
       class: 'Reference',
@@ -216,6 +241,11 @@ foam.CLASS({
           .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilityId'
+    }
   ],
   methods: [
     {
@@ -235,7 +265,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        // KeyValueDAO will return the same object if it is update operation
+        // FileUpdateDecorator will return the same object if it is update operation
         // No changes will be made
       `
     },
@@ -273,6 +303,41 @@ foam.CLASS({
         }
         return "";
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'download',
+      code: function(a, X) {
+        // TODO: Add logging for who has downloaded files etc.
+        var blob = this.data;
+        if ( foam.blob.BlobBlob.isInstance(blob) ) {
+          window.open(URL.createObjectURL(blob.blob));
+        } else {
+          var url = this.address;
+          window.open(url);
+        }
+      }
+    },
+    {
+      name: 'multiDownload',
+      label: 'Download',
+      isAvailable: function() { return false; },
+      code: function(ctx, X) {
+        // For multi-select download support in DAOBrowserView
+        if ( this.config && this.config.selectedObjs && ! foam.Object.equals(this.config.selectedObjs, {}) ) {
+          foam.Object.forEach(this.config.selectedObjs, function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else if ( this.predicatedDAO$proxy ) {
+          this.predicatedDAO$proxy.select(function(obj) {
+            X.sourceCls_.DOWNLOAD.maybeCall(ctx, obj);
+          });
+        } else {
+          console.warn('Something went wrong downloading using multi-select');
+        }
+      }
     }
   ]
 });

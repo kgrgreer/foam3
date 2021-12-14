@@ -1265,7 +1265,7 @@ foam.CLASS({
       } else if ( foam.core.Slot.isInstance(opt_shown) ) {
         this.onDetach(this.shown$.follow(opt_shown));
       } else {
-        this.shown = !! opt_shown;
+        this.shown = opt_shown;
       }
 
       return this;
@@ -2451,6 +2451,7 @@ foam.CLASS({
     [ 'view', { class: 'foam.u2.view.StringView' } ]
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2',

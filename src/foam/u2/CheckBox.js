@@ -34,9 +34,18 @@ foam.CLASS({
       transition: background-color 140ms, border-color 140ms;
       width: 18px;
     }
+    ^:disabled {
+      border-color:  /*%GREY4%*/ #DADDE2;
+      background-color: /*%GREY5%*/ #F5F7FA;
+    }
     ^:checked {
-      background-color: /*%PRIMARY3%*/ #1e1f21;
-      border-color: /*%PRIMARY3%*/ #1e1f21;
+      background-color: /*%PRIMARY3%*/ #406DEA;
+      border-color: /*%PRIMARY3%*/ #406DEA;
+      fill: white;
+    }
+    ^:checked:disabled {
+      border-color:  /*%PRIMARY4%*/ #DADDE2;
+      background-color: /*%PRIMARY4%*/ #DADDE2;
       fill: white;
     }
     ^:checked:after{

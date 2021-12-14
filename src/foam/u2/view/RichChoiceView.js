@@ -166,7 +166,7 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: 900;
       padding: 1px 2px;
     }
@@ -178,7 +178,7 @@ foam.CLASS({
       width: 100%;
 
       height: /*%INPUTHEIGHT%*/ 34px;
-      font-size: 14px;
+      font-size: 1.4rem;
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       border: 1px solid;
@@ -207,7 +207,6 @@ foam.CLASS({
 
     ^chevron::before {
       content: '▾';
-      font-size: 1.5em;
       padding-left: 4px;
     }
 
@@ -618,15 +617,19 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       code: function() {
-        if ( this.data ) {
-          this.sections[0].dao.find(this.data).then((result) => {
-            this.fullObject_ = result;
-          });
+        if ( ! this.data ) {
+          this.clearSelection();
+          return;
         }
+        this.sections.forEach(section => {
+          section.dao.find(this.data).then(result => {
+            if ( result ) this.fullObject_ = result;
+          });
+        });
       }
     },
     function clearSelection(evt) {
-      evt.stopImmediatePropagation();
+      evt && evt.stopImmediatePropagation();
       this.fullObject_ = undefined;
 
       // If this view is being used for a property, then when the user clears
@@ -654,7 +657,7 @@ foam.CLASS({
         ^row {
           background: white;
           padding: 1px 2px;
-          font-size: 12px;
+          font-size: 1.2rem;
         }
 
         ^row:hover {
@@ -749,7 +752,7 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
-          font-size: 12px;
+          font-size: 1.2rem;
           justify-content: flex-start;
           text-align: left;
           width: 100%;
