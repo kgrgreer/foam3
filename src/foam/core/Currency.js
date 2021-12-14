@@ -129,7 +129,7 @@
     },
     {
       name: 'format',
-      code: function(amount, hideSymbol, hideId) {
+      code: function(amount, hideId, hideSymbol) {
         /**
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
