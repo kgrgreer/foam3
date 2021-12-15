@@ -23,8 +23,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'Creation date.',
-      storageOptional: true
+      documentation: 'Creation date.'
     },
     {
       class: 'DateTime',
@@ -36,22 +35,19 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.ruler.Rule',
       name: 'ruleId',
-      documentation: 'The applied rule.',
-      storageOptional: true
+      documentation: 'The applied rule.'
     },
     {
       class: 'Object',
       name: 'objectId',
       visibility: 'RO',
-      documentation: 'Id of the object on which rule is applied.',
-      storageOptional: true
+      documentation: 'Id of the object on which rule is applied.'
     },
     {
       class: 'String',
       name: 'objectDaoKey',
       visibility: 'RO',
-      documentation: 'DAO name of the object',
-      storageOptional: true
+      documentation: 'DAO name of the object'
     },
     {
       class: 'Object',
@@ -73,8 +69,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'expirationDate',
-      documentation: 'Expiration date to be rescheduled.',
-      storageOptional: true
+      documentation: 'Expiration date to be rescheduled.'
     },
     {
       class: 'Enum',
