@@ -429,6 +429,7 @@ FOAM_FILES([
 
   // Dig
   { name: 'foam/nanos/dig/bench/DIGBenchmark' },
+  { name: 'foam/nanos/dig/bench/DistributedDIGBenchmarkRunner' },
   { name: 'foam/nanos/dig/exception/DAOPutException' },
   { name: 'foam/nanos/dig/exception/DAONotFoundException' },
   { name: 'foam/nanos/dig/exception/DAORequiredException' },
@@ -450,7 +451,7 @@ FOAM_FILES([
   { name: 'foam/nanos/dig/DUGRule' },
   { name: 'foam/nanos/dig/DUGRuleAction' },
   { name: 'foam/nanos/dig/ExternalDataAware' },
-  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
+  { name: 'foam/nanos/dig/ExternalDataAwareMixin' },
   { name: 'foam/nanos/dig/LinkView' },
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/SUGAR' },

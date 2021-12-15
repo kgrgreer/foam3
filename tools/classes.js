@@ -716,6 +716,7 @@ var classes = [
   'foam.core.FObjectTest',
 
   'foam.nanos.dig.bench.DIGBenchmark',
+  'foam.nanos.dig.bench.DistributedDIGBenchmarkRunner',
   'foam.nanos.dig.drivers.DigFormatDriver',
   'foam.nanos.dig.drivers.DigCsvDriver',
   'foam.nanos.dig.drivers.DigHtmlDriver',
