@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package foam.demos.toSql;
 
 import static foam.mlang.MLang.LT;
@@ -6,6 +12,10 @@ import java.util.GregorianCalendar;
 
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+
+/**
+ * The main objective of this demo is to familiarize the dev team with the DAO interface.
+ */
 
 public class ToSql {
 
