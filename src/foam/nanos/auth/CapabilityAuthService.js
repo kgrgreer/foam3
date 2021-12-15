@@ -127,7 +127,32 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          AbstractPredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+
+          // TODO investigate
+          // this predicate is executed under the context of the userCapabilityJunction obj found by the select
+          // which is an "empty" x
+          // AbstractPredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+
+          AbstractPredicate predicate = new AbstractPredicate(x) {
+            @Override
+            public boolean f(Object obj) {
+              Logger logger = (Logger) x.get("logger");
+              UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+              if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
+                Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
+                if ( c != null &&
+                    ! c.isDeprecated(x) ) {
+                  c.setX(x);
+                  if ( c.grantsPermission(permission) ) {
+                   return true;
+                  }
+                } else if ( c == null ) {
+                  logger.warning(this.getClass().getSimpleName(), "capabilityCheck", "targetId not found", ucj);
+                }
+              }
+              return false;
+            }
+          };
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
