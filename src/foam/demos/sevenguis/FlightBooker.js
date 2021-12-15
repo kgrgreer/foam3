@@ -30,7 +30,7 @@ foam.CLASS({
   css: `
     ^ { padding: 10px; }
     ^ .error { border: 2px solid red; }
-    ^title { font-size: 18px; }
+    ^title { font-size: 1.8rem; }
     ^title, ^ button, ^ input, ^ select {
       width: 160px; height: 28px; margin: 8px 0; display: flex;
     }

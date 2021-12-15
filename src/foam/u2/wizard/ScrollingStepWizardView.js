@@ -68,10 +68,7 @@ foam.CLASS({
       display: flex;
       flex-grow: 0;
       justify-content: flex-end;
-      min-height: calc(
-        var(--actionBarHeight) - var(--actionBarTbPadding));
       padding: var(--actionBarTbPadding) var(--lrPadding);
-      width: calc(100% - 2*var(--lrPadding));
     }
 
     ^heading {
@@ -81,18 +78,16 @@ foam.CLASS({
     }
 
     ^network-failure-banner {
-      position: sticky;
-      top: 0;
-      background-color: %DESTRUCTIVE2%f0;
-      color: %WHITE%;
-      height: 30px;
-      font-size: 18px;
-      line-height: 30px;
-      text-align: center;
-      z-index: 1000;
-      padding: 15px;
-      border-radius: 8px;
       backdrop-filter: blur(10px);
+      background-color: /*%DESTRUCTIVE2%*/ #A61414;
+      border-radius: 8px;
+      color: /*%WHITE%*/ white;
+      margin-bottom: 16px;
+      padding: 8px;
+      position: sticky;
+      text-align: center;
+      top: 0;
+      z-index: 1000;
     }
 
     ^hide {
@@ -216,7 +211,8 @@ foam.CLASS({
           .addClass(this.myClass('fix-grid'))
           .start(this.GUnit, { columns: 4 }).show(this.displayWizardletSteps)
             // TODO: deprecate this hide-X-status class
-            .addClass(this.hideX ? this.myClass('hide-X-status') : this.myClass('status'))
+            .enableClass(this.myClass('hide-X-status'), this.hideX$)
+            .enableClass(this.myClass('status'), this.hideX$, true)
             .add(
               this.slot(function (data, data$currentWizardlet) {
                 return this.StepWizardletStepsView.create({
@@ -248,7 +244,7 @@ foam.CLASS({
               .add(this.slot(function (data$someFailures) {
                 return data$someFailures
                   ? this.E()
-                    .addClass(this.myClass('network-failure-banner'))
+                    .addClasses(['p', this.myClass('network-failure-banner')])
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))

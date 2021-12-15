@@ -27,7 +27,7 @@ foam.CLASS({
       color: #444;
       display: block;
       float: left;
-      font-size: 15px;
+      font-size: 1.5rem;
       padding: 4px 32px 4px 6px;
       text-align: left;
       vertical-align: top;
@@ -38,7 +38,7 @@ foam.CLASS({
     }
     .foam-u2-PropertyView-units  {
       color: #444;
-      font-size: 12px;
+      font-size: 1.2rem;
       padding: 4px;
       text-align: right;
     }

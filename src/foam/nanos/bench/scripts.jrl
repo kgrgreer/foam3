@@ -1,0 +1,4 @@
+p({
+  class: 'foam.nanos.bench.BenchmarkRunnerScript',
+  id: 'benchmarkRunnerScript'
+})

@@ -15,11 +15,14 @@ foam.CLASS({
 
   documentation: 'View for editing Date values.',
 
-  css: '^:read-only { border: none; background: rgba(0,0,0,0); }',
-
   axioms: [
     { class: 'foam.u2.TextInputCSS' }
   ],
+
+  css: `
+    ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); }
+    ^ { width: fit-content; }
+  `,
 
   messages: [
     { name: 'DATE_FORMAT', message: 'yyyy-mm-dd' }

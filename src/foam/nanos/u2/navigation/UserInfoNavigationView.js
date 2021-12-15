@@ -31,12 +31,12 @@ foam.CLASS({
     ^userName {
       color: /*%GREY4%*/ #e7eaec;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 1.2rem;
     }
     ^agentName{
       color: /*%GREY3%*/ #cbcfd4;
       font-weight: 400;
-      font-size: 11px;
+      font-size: 1.1rem;
     }
     ^name-container {
       max-width: 90px;
@@ -84,17 +84,6 @@ foam.CLASS({
       }
 
       menuArray.sort((a, b) => a.order - b.order);
-
-      menuArray = menuArray.map(menuItem => {
-        var e = this;
-        return self.Action.create({
-          name: menuItem.name,
-          label: this.translationService.getTranslation(foam.locale, menuItem.id + '.label', menuItem.label),
-          code: () => {
-            menuItem.launch_(X, e);
-          }
-        });
-      });
 
       this
       .addClass(this.myClass())

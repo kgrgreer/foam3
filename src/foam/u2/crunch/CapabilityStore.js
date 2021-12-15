@@ -102,7 +102,7 @@ foam.CLASS({
 
     ^label-title {
       font-weight: 900;
-      font-size: 32px;
+      font-size: 3.2rem;
       margin: 24px 16px;
       margin-bottom: 8px;
     }
@@ -111,7 +111,7 @@ foam.CLASS({
       margin: 16px;
       margin-top: 0;
       color: #9ba1a6;
-      font-size: 18px;
+      font-size: 1.8rem;
     }
 
     ^category {
@@ -510,7 +510,8 @@ foam.CLASS({
         this.junctions = juncs;
         this.daoUpdate();
         // Attempting to reset menuDAO incase of menu permission grantings.
-        this.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+        this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+        this.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
       }
     }
   ]

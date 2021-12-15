@@ -35,6 +35,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("PMHourly")
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setCluster(false)
       .build();
     """,
   "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"
@@ -44,7 +45,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmHourlyReduceManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOReduceManager.Builder(x)
       .setSourceDAO((foam.dao.DAO) x.get("pm1MinuteDAO"))
@@ -66,6 +67,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("PMDaily")
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setCluster(false)
       .build();
     """,
   "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"
@@ -75,7 +77,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmDailyReduceManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOReduceManager.Builder(x)
       .setSourceDAO((foam.dao.DAO) x.get("pmHourlyDAO"))
@@ -89,7 +91,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pmFoldManager",
   "lazy":true,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
     return new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao((foam.dao.DAO) x.get("pm1MinuteDAO"))
@@ -105,7 +107,13 @@ p({
   "serviceScript":`
     return x.get("pmLogger").asDAO().orderBy(foam.mlang.MLang.DESC(foam.nanos.pm.PMInfo.TOTAL_TIME));
   `,
-  "client":"{\"of\":\"foam.nanos.pm.PMInfo\", \"remoteListenerSupport\": false}"
+  "client":"""
+  {
+    "of":"foam.nanos.pm.PMInfo",
+    "remoteListenerSupport": false,
+    "ttlPurgeTime": 0
+  }
+  """
 })
 
 p({

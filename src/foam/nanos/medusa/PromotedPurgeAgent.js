@@ -36,6 +36,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'serviceName',
+      class: 'String',
+      value: 'internalMedusaDAO'
+    },
+    {
       // REVIEW: Get this from DaggerService?
       documentation: 'Presently Dagger service bootstraps two entries.',
       name: 'minIndex',
@@ -71,12 +76,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -86,7 +86,7 @@ foam.CLASS({
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
 
       try {
-        DAO dao = (DAO) x.get("medusaEntryDAO");
+        DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
           AND(
             GT(MedusaEntry.INDEX, getMinIndex()),

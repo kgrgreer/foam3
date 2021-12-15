@@ -5,10 +5,10 @@
  */
 
 foam.CLASS({
-   package: 'foam.nanos.auth',
-   name: 'PreventDuplicateEmailLoginService',
-   extends: 'foam.nanos.auth.ProxyUniqueUserService',
-   flags: ['java'],
+  package: 'foam.nanos.auth',
+  name: 'PreventDuplicateEmailLoginService',
+  extends: 'foam.nanos.auth.ProxyUniqueUserService',
+  flags: ['java'],
 
   documentation: 'Prevent users from logging in with duplicate email',
 

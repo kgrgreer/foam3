@@ -39,7 +39,7 @@ foam.CLASS({
       String locale = (String) templateArgs.get("locale");
 
       // STEP 1) Find EmailTemplate
-      EmailTemplate emailTemplateObj = DAOResourceLoader.findTemplate(x, templateName, group, locale);
+      EmailTemplate emailTemplateObj = EmailTemplateSupport.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
       if ( emailTemplateObj == null ) {
         logger.error(this.getClass().getSimpleName(), "EmailTemplate not found", templateName, group);
         return emailMessage;
@@ -47,7 +47,8 @@ foam.CLASS({
 
       // STEP 2) Apply Template to emailMessage
       try {
-        emailMessage = emailTemplateObj.apply(x, group, emailMessage, templateArgs);
+        if ( emailTemplateObj.getEnabled() )
+          emailMessage = emailTemplateObj.apply(x, group, emailMessage, templateArgs);
       } catch (Exception e) {
         logger.error(new NoSuchFieldException("@EmailTemplateApplyEmailPropertyService: emailTemplate.apply has failed. emailTemplate = {id:" + templateName + ", group:" + group + "}" + e.getMessage()), e);
       }

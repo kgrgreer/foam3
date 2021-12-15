@@ -7,22 +7,13 @@
 foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'PrimaryNotFoundException',
-  javaExtends: 'foam.core.ClientRuntimeException',
+  javaExtends: 'foam.nanos.medusa.MedusaException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public PrimaryNotFoundException() {
-    super();
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public PrimaryNotFoundException() {
+      super();
     }
-  ]
+  `
 });

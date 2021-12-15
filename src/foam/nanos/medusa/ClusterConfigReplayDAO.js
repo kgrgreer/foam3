@@ -26,7 +26,8 @@ foam.CLASS({
     'foam.mlang.sink.Min',
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'java.util.List'
   ],
 
   properties: [
@@ -58,10 +59,10 @@ foam.CLASS({
       if ( old != null &&
            old.getStatus() != nu.getStatus() &&
            nu.getStatus() == Status.ONLINE &&
-           nu.getRealm() == myConfig.getRealm() &&
-           nu.getRegion() == myConfig.getRegion() ) {
+           nu.getRealm().equals(myConfig.getRealm()) &&
+           nu.getRegion().equals(myConfig.getRegion()) ) {
 
-        getLogger().info(nu.getName(), old.getStatus().getLabel(), "->", nu.getStatus().getLabel().toUpperCase());
+        getLogger().info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 
         ClusterConfig config = nu;
 
@@ -121,12 +122,12 @@ foam.CLASS({
             serviceName = "medusaEntryDAO";
           }
           DAO clientDAO = support.getClientDAO(x, serviceName, myConfig, config);
-          clientDAO = new RetryClientSinkDAO.Builder(x)
-            .setName(serviceName)
-            .setDelegate(clientDAO)
-            .setMaxRetryAttempts(support.getMaxRetryAttempts())
-            .setMaxRetryDelay(support.getMaxRetryDelay())
-            .build();
+          // clientDAO = new RetryClientSinkDAO.Builder(x)
+          //   .setName(serviceName)
+          //   .setDelegate(clientDAO)
+          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
+          //   .setMaxRetryDelay(support.getMaxRetryDelay())
+          //   .build();
 
           // NOTE: using internalMedusaDAO else we'll block on ReplayingDAO.
           DAO dao = (DAO) x.get("internalMedusaDAO");
@@ -148,29 +149,40 @@ foam.CLASS({
           synchronized ( this ) {
             DaggerService dagger = (DaggerService) x.get("daggerService");
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            if ( replaying.getReplaying() ) {
             replaying.getReplayNodes().put(details.getResponder(), details);
 
-            if ( replaying.getStartTime() == null ) {
-              replaying.setStartTime(new java.util.Date());
-              replaying.updateIndex(x, dagger.getGlobalIndex(x));
-            }
-            if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
-              dagger.setGlobalIndex(x, details.getMaxIndex());
-            }
+              if ( replaying.getStartTime() == null ) {
+                replaying.setStartTime(new java.util.Date());
+                replaying.updateIndex(x, dagger.getGlobalIndex(x));
+              }
+              if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
+                dagger.setGlobalIndex(x, details.getMaxIndex());
+              }
 
-            if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
-              replaying.setReplayIndex(details.getMaxIndex());
-            }
+              if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
+                replaying.setReplayIndex(details.getMaxIndex());
+              }
 
-            getLogger().debug(myConfig.getId(), "replaying", replaying.getReplaying(), "index", replaying.getIndex(), "replayIndex", replaying.getReplayIndex(), "node quorum", support.getHasNodeQuorum());
-
-            if ( replaying.getIndex() >= replaying.getReplayIndex() &&
-                 ( myConfig.getType() == MedusaType.MEDIATOR &&
-                   support.getHasNodeQuorum() ) ||
-                 ( myConfig.getType() == MedusaType.NERF &&
-                   support.getHasMediatorQuorum() ) ) {
-              // special intial case - no data, or baseline
-              ((DAO) x.get("localMedusaEntryDAO")).cmd(new ReplayCompleteCmd());
+              // Detect baseline - no data.
+              // Have to check almost all nodes.
+              int online = 0;
+              List<ClusterConfig> nodes = support.getReplayNodes();
+              for ( ClusterConfig cfg : nodes ) {
+                if ( cfg.getStatus() == Status.ONLINE ) online++;
+              }
+              getLogger().debug("test for baseline", "online", online, "nodes", ( nodes.size() - ( support.getNodeQuorum() - 1 ) ), "index", replaying.getIndex(), "replayingIndex", replaying.getReplayIndex());
+              if ( online >= ( nodes.size() - ( support.getNodeQuorum() - 1 ) ) ) {
+                // found enough online nodes, now test if all reporting zero index.
+                if ( replaying.getIndex() >= replaying.getReplayIndex() &&
+                   ( myConfig.getType() == MedusaType.MEDIATOR &&
+                     support.getHasNodeQuorum() ) ||
+                   ( myConfig.getType() == MedusaType.NERF &&
+                     support.getHasMediatorQuorum() ) ) {
+                  getLogger().info("baseline dectected");
+                  ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
+                }
+              }
             }
           }
 
@@ -209,16 +221,17 @@ foam.CLASS({
           c.setDetails(details);
 
           DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-          clientDAO = new RetryClientSinkDAO.Builder(x)
-            .setName("medusaEntryDAO")
-            .setDelegate(clientDAO)
-            .setMaxRetryAttempts(support.getMaxRetryAttempts())
-            .setMaxRetryDelay(support.getMaxRetryDelay())
-            .build();
+          // clientDAO = new RetryClientSinkDAO.Builder(x)
+          //   .setName("medusaEntryDAO")
+          //   .setDelegate(clientDAO)
+          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
+          //   .setMaxRetryDelay(support.getMaxRetryDelay())
+          //   .build();
           clientDAO.cmd_(x, c);
         }
+        return obj;
       }
-      return obj;
+      return getDelegate().cmd_(x, obj);
       `
     }
   ]

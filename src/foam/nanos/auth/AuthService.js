@@ -21,6 +21,7 @@ foam.INTERFACE({
       * updatePassword
       * validateUser
       * authorizeAnonymous
+      * isAnonymous
 
     and the methods relating to authorization are:
 
@@ -258,6 +259,18 @@ foam.INTERFACE({
       async: true,
       type: 'Void',
       swiftThrows: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ]
+    },
+    {
+      name: 'isAnonymous',
+      documentation: 'Is the current user anonymous user',
+      async: true,
+      type: 'Boolean',
       args: [
         {
           name: 'x',

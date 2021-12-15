@@ -34,7 +34,7 @@ foam.CLASS({
       height: 48px;
       text-align: center;
       margin: 8px 14px 8px 0;
-      font-size: 22px;
+      font-size: 2.2rem;
     }
     ^ .wrong-code {
       border-color: #f91c1c;

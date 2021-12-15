@@ -9,6 +9,11 @@
   name: 'ScrollTableView',
   extends: 'foam.u2.Element',
 
+  documentation: `
+  WARNING:This table view is not recieving functionality updates
+              Use foam/u2/table/UnstyledTableView.js instead
+  `,
+
   imports: [
     'getElementById',
     'memento?',
@@ -23,6 +28,7 @@
   ],
 
   requires: [
+    'foam.core.Lock',
     'foam.dao.FnSink',
     'foam.mlang.sink.Count',
     'foam.u2.layout.Cols',
@@ -274,6 +280,14 @@
       class: 'Float',
       name: 'displayedRowCount_',
       documentation: 'Stores the number of rows that are currently displayed in the div height',
+    },
+    {
+      name: 'lock',
+      class: 'FObjectProperty',
+      of: 'foam.core.Lock',
+      factory: function () {
+        return this.Lock.create();
+      }
     }
   ],
 
@@ -285,6 +299,9 @@
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
       this.onDetach(this.table_$.sub(this.refresh));
+      this.onDetach(this.table_$.dot('data').sub(this.refresh));
+      this.onDetach(this.table_$.dot('updateValues').sub(this.refresh));
+      this.onDetach(this.table_$.dot('order').sub(this.refresh));
       this.updateCount();
     },
 
@@ -454,10 +471,15 @@
       isFramed: true,
       code: function() {
         var limit = ( this.data && this.data.limit_ ) || undefined;
-        return this.data$proxy.select(this.Count.create()).then(s => {
-          this.daoCount = limit && limit < s.value ? limit : s.value;
-          this.refresh();
-        });
+        return this.lock.then(() => {
+          return new Promise((resolve) =>{
+            this.data$proxy.select(this.COUNT()).then((s) => {
+              this.daoCount = limit && limit < s.value ? limit : s.value;
+              this.refresh();
+              resolve();
+            })
+          })
+        })
       }
     },
     {

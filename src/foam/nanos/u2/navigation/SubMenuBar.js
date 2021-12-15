@@ -30,7 +30,7 @@ foam.CLASS({
     }
     ^ ul{
       margin-top: 20px;
-      font-size: 13px;
+      font-size: 1.3rem;
       list-style-type: none;
     }
     ^ li{

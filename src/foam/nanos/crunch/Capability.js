@@ -455,6 +455,8 @@ foam.CLASS({
           AgentCapabilityJunction acj = (AgentCapabilityJunction) ucj;
           subject.setUser((User) userDAO.find(acj.getEffectiveUser())); // "user"
         } else if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
+          // Call setUser() twice
+          // Because it builds a user path and adds a user to the chain for each setUser()
           subject.setUser(currentSubject.getRealUser());
           subject.setUser(currentSubject.getUser());
         } else {
@@ -613,24 +615,6 @@ foam.RELATIONSHIP({
     updateVisibility: 'RO',
     columnPermissionRequired: true
   }
-});
-
-
-foam.CLASS({
-  package: 'foam.nanos.crunch',
-  name: 'CRUNCHThemeRefinement',
-  refines: 'foam.nanos.theme.Theme',
-
-  properties: [
-    {
-      name: 'admissionCapability',
-      class: 'String',
-      // TODO: Why doesn't a Reference property work here?
-      // class: 'Reference',
-      of: 'foam.nanos.crunch.Capability',
-      documentation: 'Specifies the top-level capability that must be granted before we admit a user to the system.'
-    }
-  ],
 });
 
 

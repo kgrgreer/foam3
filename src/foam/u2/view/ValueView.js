@@ -28,11 +28,17 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var prop = this.prop;
-
       if ( prop && prop.unitPropValueToString ) {
-        this.add(this.data$.map(data => {
-          return prop.unitPropValueToString.call(self.__subContext__.objData, self.__subContext__, data, self.__context__.objData[prop.unitPropName]);
-        }));
+        var unitPropSlot = self.__subContext__.objData?.slot(prop.unitPropName);
+        this.add(
+          unitPropSlot ?
+          unitPropSlot.map(unitProp => this.slot(function(data) {
+              return prop.unitPropValueToString.call(self.__subContext__.objData, self.__subContext__, data, unitProp);
+          })) :
+          this.slot(function(data) {
+            return prop.unitPropValueToString.call(self.__subContext__.objData, self.__subContext__, data, self.__subContext__.objData[prop.unitPropName]);
+          })
+        );
       } else {
         this.add(this.data$);
       }

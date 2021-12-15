@@ -24,7 +24,7 @@ foam.CLASS({
       width: 14px;
       position: absolute;
       margin-left: 10px;
-      margin-top: 14px;
+      margin-top: 11px;
     }
     ^input {
       padding-left: 32px !important;

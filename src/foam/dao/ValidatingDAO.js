@@ -21,26 +21,17 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public ValidatingDAO(X x, DAO delegate) {
-              this(x, delegate, ValidatableValidator.instance());
-            }
-
-            public ValidatingDAO(X x, DAO delegate, Validator validator) {
-              setX(x);
-              setDelegate(delegate);
-              setValidator(validator);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public ValidatingDAO(X x, DAO delegate) {
+      this(x, delegate, ValidatableValidator.instance());
     }
-  ],
+
+    public ValidatingDAO(X x, DAO delegate, Validator validator) {
+      setX(x);
+      setDelegate(delegate);
+      setValidator(validator);
+    }
+  `,
 
   methods: [
     {

@@ -21,6 +21,7 @@
     'foam.dao.ProxySink',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil'
   ],
 
@@ -74,22 +75,31 @@
           : "N/A";
         
         User createdForUser = (User) userDAO.find(approval.getCreatedFor());
-        createdForUser.setX(x);
+        if ( createdForUser != null ) {
+          createdForUser.setX(x);
 
-        if ( createdForUser != null && ! SafetyUtil.isEmpty(createdForUser.toSummary()) ){
-          createdForSummaryString = createdForUser.toSummary();
+          if ( ! SafetyUtil.isEmpty(createdForUser.toSummary()) ){
+            createdForSummaryString = createdForUser.toSummary();
+          }
         }
 
         // handle referenceSummaryString
-        String referenceSummaryString = "ID:" + approval.getObjId().toString();
+        String referenceSummaryString = "ID:" + (approval.getObjId() == null ? "N/A" : approval.getObjId().toString());
+        if ( referenceDAO != null ) {
+          FObject referenceObject = (FObject) referenceDAO.find(approval.getObjId());
+          if ( referenceObject != null ) {
+            referenceObject.setX(x);
 
-        FObject referenceObject = (FObject) referenceDAO.find(approval.getObjId());
-        referenceObject.setX(x);
+            String referenceObjectToSummary = referenceObject.toSummary();
 
-        String referenceObjectToSummary = referenceObject.toSummary();
-
-        if ( ! SafetyUtil.isEmpty(referenceObjectToSummary) ){
-          referenceSummaryString = referenceObjectToSummary;
+            if ( ! SafetyUtil.isEmpty(referenceObjectToSummary) ){
+              referenceSummaryString = referenceObjectToSummary;
+            }
+          } else {
+            Loggers.logger(x, this).debug("Cannot find reference object", approval.getObjId(), approval);
+          }
+        } else {
+          Loggers.logger(x, this).debug("Cannot find reference DAO", approval.getDaoKey(), approval);
         }
 
         approval.setCreatedForSummary(createdForSummaryString);

@@ -13,8 +13,11 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.medusa.Clusterable'
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+  mixins: [
+    'foam.nanos.medusa.ClusterableMixin'
   ],
 
   tableColumns: [
@@ -38,49 +41,40 @@ foam.CLASS({
     'monitoringReportDAO'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public Alarm(String name) {
-    this(name, true);
-  }
-
-  public Alarm(String name, String note) {
-    setName(name);
-    setNote(note);
-  }
-
-  public Alarm(String name, String note, foam.log.LogLevel severity) {
-    setName(name);
-    setNote(note);
-    setSeverity(severity);
-  }
-
-  public Alarm(String name, boolean isActive) {
-    setName(name);
-    setIsActive(isActive);
-  }
-
-  public Alarm(String name, AlarmReason reason) {
-    setName(name);
-    setIsActive(true);
-    setReason(reason);
-  }
-
-  public Alarm(String name, foam.log.LogLevel severity, AlarmReason reason) {
-    setName(name);
-    setIsActive(true);
-    setSeverity(severity);
-    setReason(reason);
-  }
-          `
-        }));
-      }
+  javaCode: `
+    public Alarm(String name) {
+      this(name, true);
     }
-  ],
+
+    public Alarm(String name, String note) {
+      setName(name);
+      setNote(note);
+    }
+
+    public Alarm(String name, String note, foam.log.LogLevel severity) {
+      setName(name);
+      setNote(note);
+      setSeverity(severity);
+    }
+
+    public Alarm(String name, boolean isActive) {
+      setName(name);
+      setIsActive(isActive);
+    }
+
+    public Alarm(String name, AlarmReason reason) {
+      setName(name);
+      setIsActive(true);
+      setReason(reason);
+    }
+
+    public Alarm(String name, foam.log.LogLevel severity, AlarmReason reason) {
+      setName(name);
+      setIsActive(true);
+      setSeverity(severity);
+      setReason(reason);
+    }
+  `,
 
   ids: [
     'name',
@@ -127,7 +121,6 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      label: 'Since',
       visibility: 'RO',
       tableWidth: 150,
       includeInDigest: false,
@@ -139,12 +132,6 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea' },
       createVisibility: 'RW',
       updateVisibility: 'RO'
-    },
-    {
-      class: 'Boolean',
-      name: 'clusterable',
-      value: false,
-      includeInDigest: false
     }
   ],
 

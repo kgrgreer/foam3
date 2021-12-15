@@ -7,8 +7,8 @@
 foam.CLASS({
   package: 'foam.core',
   name: 'CompoundContextAgency',
+  extends: 'foam.core.AbstractAgency',
   javaImplements: [
-    'foam.core.Agency',
     'foam.core.ContextAgent'
   ],
 
@@ -83,15 +83,9 @@ for ( int i = 0 ; i < getAgents().size() ; i++ ) {
 return desc;`
     }
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`public void submit(foam.core.X x, foam.core.ContextAgent agent) {
-          submit(x, agent, "");
-        }`);
-      }
+  javaCode: `
+    public void submit(foam.core.X x, foam.core.ContextAgent agent) {
+      submit(x, agent, "");
     }
-  ]
+  `
 });
-

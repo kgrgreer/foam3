@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^ { padding: 10px !important; font-size: 18px; }
+    ^ { padding: 10px !important; font-size: 1.8rem; }
     ^ .elapsed { margin-top: 10px; }
     ^ .label { display: inline-block; width: 130px; }
     ^ .foam-u2-ActionView { width: 332px !important; margin-top: 16px !important; }

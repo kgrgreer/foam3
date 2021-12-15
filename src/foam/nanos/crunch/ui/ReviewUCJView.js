@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
     'foam.u2.crunch.wizardflow.LoadTopConfig',
     'foam.u2.crunch.wizardflow.StepWizardAgent',
@@ -87,6 +88,7 @@ foam.CLASS({
       });
       // Invoke custom wizard flow which excludes pending check and preview
       this.Sequence.create(null, crunchContext)
+        .add(this.WAOSettingAgent)
         .add(this.ConfigureFlowAgent)
         .add(this.CapabilityAdaptAgent)
         .add(this.LoadCapabilitiesAgent)

@@ -18,12 +18,13 @@ foam.CLASS({
     'foam.dao.Journal',
     'foam.dao.Sink',
     'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.MAX',
     'static foam.mlang.MLang.MIN',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.mlang.sink.Sequence',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
   ],
 
   properties: [
@@ -31,19 +32,6 @@ foam.CLASS({
       name: 'journal',
       class: 'FObjectProperty',
       of: 'foam.dao.Journal'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -60,15 +48,16 @@ foam.CLASS({
         details.setMaxIndex(info.getMaxIndex());
         details.setCount(info.getCount());
 
-        getLogger().info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
+        Loggers.logger(x, this).info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
         return details;
       }
 
       if ( obj instanceof ReplayCmd ) {
         ReplayCmd cmd = (ReplayCmd) obj;
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
+        long indexAtStart = info.getIndex();
 
-        getLogger().info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
+        Loggers.logger(x, this).info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig fromConfig = support.getConfig(x, cmd.getDetails().getResponder());
@@ -94,20 +83,26 @@ foam.CLASS({
 ;
 
             // replay from file system
-            getJournal().replay(x, new RetryClientSinkDAO(x, clientDAO));
+            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, 3, clientDAO)));
           }
 
           // replay from cache
-          // long indexAtStart = info.getIndex();
-          cache.select(new RetryClientSinkDAO(x, clientDAO));
-
-          // if ( info.getIndex() > indexAtStart ) {
-          //   // send the extra received since we started the cache replay
-          //   // Often after replay, the last storageTransient entry is not sent.
-          //   cache.where(GT(MedusaEntry.INDEX, info.getIndex())).select(new RetryClientSinkDAO(x, clientDAO));
-          // }
+          // cache.select(new RetryClientSinkDAO(x, 3, clientDAO));
+          if ( info.getIndex() > indexAtStart ) {
+            // send the extra received since we started the cache replay
+            cache.where(GT(MedusaEntry.INDEX, info.getIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 3, clientDAO)));
+          }
         }
         return cmd;
+      }
+
+      if ( obj instanceof foam.mlang.sink.Max ) {
+        Loggers.logger(x, this).debug("Max", "received");
+        Max max = (Max) getDelegate().select((Max) obj);
+        if ( max != null ) {
+          Loggers.logger(x, this).debug("Max", "response", max.getValue());
+        }
+        return max;
       }
 
       return getDelegate().cmd_(x, obj);

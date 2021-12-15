@@ -25,7 +25,6 @@ foam.CLASS({
     'foam.i18n.TranslationService',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
-    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.dao.Operation',
     'foam.nanos.auth.Subject',
@@ -170,14 +169,15 @@ foam.CLASS({
                   .setCreatedFor(user.getId())
                   .setGroup(getGroupToNotify())
                   .setAdditionalGroups(getAdditionalGroupsToNotify())
-                  .setClassificationEnum(ApprovalRequestClassificationEnum.CAPABLE_CREATED_APPROVAL)
+                  .setClassification("capable-created-approval")
                   .setStatus(ApprovalStatus.REQUESTED).build();
 
                 approvalRequest = decorateApprovalRequest(x, approvalRequest, obj, capablePayload);
 
                 approvalRequestDAO.put_(getX(), approvalRequest);
-              } catch (Exception e){
-                throw new RuntimeException(e);
+              } catch (Exception e) {
+                foam.nanos.logger.Loggers.logger(x, this).warning(e);
+                throw new RuntimeException(e.getMessage());
               }
             }
 

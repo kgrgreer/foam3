@@ -15,29 +15,22 @@ foam.CLASS({
     'foam.dao.MDAO'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-          public LoggerJDAO(foam.core.X x, foam.dao.DAO delegate, foam.core.ClassInfo classInfo, String filename) {
-            setX(x);
-            setOf(classInfo);
-            setFilename(filename);
-            setDelegate(delegate);
+  javaCode: `
+    public LoggerJDAO(foam.core.X x, foam.dao.DAO delegate, foam.core.ClassInfo classInfo, String filename) {
+      setX(x);
+      setOf(classInfo);
+      setFilename(filename);
+      setDelegate(delegate);
 
-            // create journal
-            setJournal(new foam.nanos.logger.LoggerJournal.Builder(x)
-              .setFilename(filename)
-              .setCreateFile(true)
-              .setDao(getDelegate())
-              .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[JDAO]", filename }, foam.nanos.logger.StdoutLogger.instance()))
-              .build());
-          }
-        `);
-      }
+      // create journal
+      setJournal(new foam.nanos.logger.LoggerJournal.Builder(x)
+        .setFilename(filename)
+        .setCreateFile(true)
+        .setDao(getDelegate())
+        .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[JDAO]", filename }, foam.nanos.logger.StdoutLogger.instance()))
+        .build());
     }
-  ],
+  `,
 
   properties: [
     {
@@ -45,7 +38,7 @@ foam.CLASS({
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
-      javaPostSet: ' // noop '
+      javaPostSet: ' // noop'
     }
   ]
 });

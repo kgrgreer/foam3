@@ -24,34 +24,25 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public UnreliableDAO(DAO delegate) {
-              super();
-              setDelegate(delegate);
-              if ( delegate instanceof ProxyDAO ) {
-                setX(((ProxyDAO)delegate).getX());
-              }
-            }
-          
-            public UnreliableDAO(double errorRate, DAO delegate) {
-              this(delegate);
-              setErrorRate(errorRate);
-            }
-          
-            public UnreliableDAO(foam.core.X x, double errorRate, DAO delegate) {
-              this(errorRate, delegate);
-              setX(x);
-            } 
-          `
-        );
+  javaCode: `
+    public UnreliableDAO(DAO delegate) {
+      super();
+      setDelegate(delegate);
+      if ( delegate instanceof ProxyDAO ) {
+        setX(((ProxyDAO)delegate).getX());
       }
     }
-  ],
+
+    public UnreliableDAO(double errorRate, DAO delegate) {
+      this(delegate);
+      setErrorRate(errorRate);
+    }
+
+    public UnreliableDAO(foam.core.X x, double errorRate, DAO delegate) {
+      this(errorRate, delegate);
+      setX(x);
+    }
+  `,
 
   methods: [
     {
@@ -60,7 +51,7 @@ foam.CLASS({
         if ( Math.random() < getErrorRate() ) {
           throw new RuntimeException(CANNOT_PERFORM_ERROR_MSG);
         }
-    
+
         return super.put_(x, obj);
       `
     },
@@ -70,7 +61,7 @@ foam.CLASS({
         if ( Math.random() < getErrorRate() ) {
           throw new RuntimeException(CANNOT_PERFORM_ERROR_MSG);
         }
-    
+
         return super.remove_(x, obj);
       `
     },
@@ -80,7 +71,7 @@ foam.CLASS({
         if ( Math.random() < getErrorRate() ) {
           throw new RuntimeException(CANNOT_PERFORM_ERROR_MSG);
         }
-    
+
         return super.select_(x, sink, skip, limit, order, predicate);
       `
     },
@@ -90,7 +81,7 @@ foam.CLASS({
         if ( Math.random() < getErrorRate() ) {
           throw new RuntimeException(CANNOT_PERFORM_ERROR_MSG);
         }
-    
+
         super.removeAll_(x, skip, limit, order, predicate);
       `
     }

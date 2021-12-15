@@ -43,10 +43,11 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      min-height: 10vh;
+      box-sizing: content-box;
       background-color: #ffffff;
       border: solid 1px #e7eaec;
       border-radius: 5px;
+      min-height: 10vh;
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;

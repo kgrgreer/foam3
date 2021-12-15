@@ -49,22 +49,14 @@ foam.CLASS({
       The equality condition for execution is greater than or equal to Threshhold.`
     },
   ],
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data:
-`protected ThreadLocal<Boolean> currentlyLogging = new ThreadLocal<Boolean>() {
-  @Override
-  protected Boolean initialValue() {
-    return false;
-  }
-};`
-        }));
+  javaCode: `
+    protected ThreadLocal<Boolean> currentlyLogging = new ThreadLocal<Boolean>() {
+      @Override
+      protected Boolean initialValue() {
+        return false;
       }
-    }
-  ],
+    };
+  `,
 
   methods: [
     {
