@@ -34,6 +34,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.json.JSONParser',
+    'foam.nanos.dig.bench.DIGBenchmark',
     'foam.nanos.dig.exception.DigErrorMessage',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
@@ -49,6 +50,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'java.net.URI',
     'java.net.URLEncoder',
     'java.time.Duration',
+    'java.util.Base64',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
   ],
@@ -341,7 +343,19 @@ NOTE: when using the java client, the first call to a newly started instance may
       documentation: 'Session token / BEARER token',
       name: 'sessionId',
       class: 'String',
-      javaFactory: 'return getX().get(Session.class).getId();',
+      // javaFactory: 'return getX().get(Session.class).getId();',
+      visibility: 'HIDDEN'
+    },
+    {
+      documentation: 'Basic Auth',
+      name: 'userName',
+      class: 'String',
+      value: 'admin',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'password',
+      class: 'Password',
       visibility: 'HIDDEN'
     },
     {
@@ -400,7 +414,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         } else if ( dao instanceof foam.dao.MDAO ) {
           return ((foam.dao.MDAO) dao).getOf();
         }
-        return null;
+        throw new IllegalArgumentException("of undefined");
       `,
       visibility: 'HIDDEN',
       transient: true
@@ -435,6 +449,17 @@ NOTE: when using the java client, the first call to a newly started instance may
   ],
 
   javaCode: `
+  public DIG(X x, String nSpecName, DIGBenchmark benchmark) {
+    this(x);
+    setNSpecName(nSpecName);
+    setPostURL(benchmark.getSetupUrl());
+    setSessionId(benchmark.getSetupSessionId());
+    setUserName(benchmark.getSetupUserName());
+    setPassword(benchmark.getSetupPassword());
+    setConnectionTimeout(benchmark.getConnectionTimeout());
+    setRequestTimeout(benchmark.getRequestTimeout());
+  }
+
   protected static final ThreadLocal<FObjectFormatter> formatter_ = new ThreadLocal<FObjectFormatter>() {
     @Override
     protected JSONFObjectFormatter initialValue() {
@@ -460,13 +485,12 @@ NOTE: when using the java client, the first call to a newly started instance may
         .connectTimeout(Duration.ofMillis(getConnectionTimeout()));
 
       if ( getSecure() ) {
-        // System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
         SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
         if ( contextFactory != null && contextFactory.getEnableSSL() ) {
           SSLContext sslContext = contextFactory.getSSLContext();
           builder = builder.sslContext(sslContext);
         }
-      }
+     }
       // store and accept ORIGINAL_SERVER
       builder.cookieHandler(new CookieManager());
       return builder.build();
@@ -664,11 +688,11 @@ NOTE: when using the java client, the first call to a newly started instance may
       } catch ( FOAMException e ) {
         throw e;
       } catch ( RuntimeException e ) {
-        Throwable cause = e.getCause();
+        Throwable cause = e;
         while ( cause.getCause() != null ) {
           cause = cause.getCause();
         }
-        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getOf(), data, cause);
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), getOf(), data, cause);
         throw e;
       } finally {
         pm.log(x);
@@ -738,9 +762,16 @@ NOTE: when using the java client, the first call to a newly started instance may
         .uri(URI.create(url))
         .timeout(Duration.ofMillis(getRequestTimeout()))
         .header("Accept-Language", "en-US,en;q=0.5")
-        .header("Authorization", "BEARER "+getSessionId())
         .header("Content-Type", "application/json")
         .header("User-Agent", "Mozilla/5.0");
+      if ( ! SafetyUtil.isEmpty(getSessionId()) ) {
+        builder = builder.header("Authorization", "BEARER "+getSessionId());
+      } else if ( ! SafetyUtil.isEmpty(getPassword()) ) {
+        builder = builder.header("Authorization", "BASIC "+Base64.getEncoder().encodeToString((getUserName()+":"+getPassword()).getBytes()));
+      } else {
+        Loggers.logger(x, this).warning("submit", "Missing auth details", "session", getSessionId(), "username", getUserName(), "password", getPassword());
+        throw new IllegalArgumentException("Missing auth details");
+      }
       if ( dop == DOP.PUT ) {
         builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
       }
@@ -760,7 +791,6 @@ NOTE: when using the java client, the first call to a newly started instance may
           // Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
         }
         if ( SafetyUtil.isEmpty(response.body()) ) return null;
-        // return unAdapt(x, dop, response.body());
         Object result = unAdapt(x, dop, response.body());
         // Empty array has a trailing new line - assume server side dig is doing this.
         if ( result instanceof String &&

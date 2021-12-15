@@ -6,8 +6,6 @@
 
 package foam.util.concurrent;
 
-import java.util.*;
-
 /** Thread(Local) state information. **/
 class LocalState {
   FoldReducer fr_;
@@ -19,7 +17,6 @@ class LocalState {
     fr_    = fr;
     state_ = fr_.initialState();
   }
-
 
   /**
    * Fold an operation into the state.

@@ -28,13 +28,7 @@ foam.CLASS({
     {
       name: 'setup',
       javaCode: `
-      DIG dig = new DIG.Builder(x)
-        .setNSpecName("serviceProviderDAO")
-        .setPostURL(getSetupUrl())
-        .setSessionId(getSetupSessionId())
-        .setConnectionTimeout(getConnectionTimeout())
-        .setRequestTimeout(getRequestTimeout())
-        .build();
+      DIG dig = new DIG(x, "serviceProviderDAO", this);
 
       ServiceProvider sp = (ServiceProvider) dig.find(x, spid_);
       if ( sp == null ) {
@@ -85,13 +79,7 @@ foam.CLASS({
     {
       name: 'teardown',
       javaCode: `
-      DIG dig = new DIG.Builder(x)
-        .setNSpecName("userDAO")
-        .setPostURL(getSetupUrl())
-        .setSessionId(getSetupSessionId())
-        .setConnectionTimeout(getConnectionTimeout())
-        .setRequestTimeout(getRequestTimeout())
-        .build();
+      DIG dig = new DIG(x, "userDAO", this);
 
       dig.remove(x, user_.getId());
 

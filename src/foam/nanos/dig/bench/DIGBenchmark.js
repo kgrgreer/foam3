@@ -21,12 +21,22 @@ foam.CLASS({
     },
     {
       name: 'setupSessionId',
+      class: 'String'
+    },
+    {
+      documentation: 'Basic Auth',
+      name: 'setupUserName',
       class: 'String',
-      value: '2c2d88af-cba8-9549-05e9-18be400a0aed'
+      value: 'admin'
+    },
+    {
+      name: 'setupPassword',
+      class: 'String'
     },
     {
       documentation: 'single load-balancer url, or many for manual psuedo load-balancing',
       name: 'urls',
+      label: 'URLs (Load-Balanced)',
       class: 'StringArray',
       javaFactory: 'return new String[] { "https://moosehead:4444" };'
     },

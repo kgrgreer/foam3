@@ -167,26 +167,17 @@ foam.CLASS({
           }
         }
 
-        if ( (getGuid() && getSeqNo())
-          || (getGuid() && getFuid())
-          || (getFuid() && getSeqNo())
-        ) {
-          throw new RuntimeException("EasyDAO GUID, SeqNo and FUID are mutually exclusive");
-        }
-
-        if ( getSeqNo() ) {
+        if ( getFuid() ) {
+          delegate = new foam.dao.FUIDDAO(getX(), getName(), getSeqPropertyName(), delegate);
+        } else if ( getSeqNo() ) {
           delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
-          setDelegate(delegate).
-          setProperty(getSeqPropertyName()).
-          setStartingValue(getSeqStartingValue()).
-          build();
+            setDelegate(delegate).
+            setProperty(getSeqPropertyName()).
+            setStartingValue(getSeqStartingValue()).
+            build();
+        } else if ( getGuid() ) {
+          delegate = new foam.dao.GUIDDAO(getX(), delegate);
         }
-
-        if ( getGuid() )
-          delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
-
-        if ( getFuid() )
-          delegate = new foam.dao.FUIDDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {
@@ -278,6 +269,7 @@ foam.CLASS({
             .setDelegate(delegate)
             .setName(getPermissionPrefix())
             .build();
+          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("lifecycleState") });
         }
 
         if ( getDeletedAware() ) {
@@ -289,9 +281,10 @@ foam.CLASS({
           delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
         }
 
-        if ( getCreatedAware() )
+        if ( getCreatedAware() ) {
           delegate = new foam.nanos.auth.CreatedAwareDAO.Builder(getX()).setDelegate(delegate).build();
-
+          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("created") });
+        }
         if ( getCreatedByAware() )
           delegate = new foam.nanos.auth.CreatedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
