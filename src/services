@@ -697,6 +697,10 @@ p({
       .setJournalName("ruleHistory")
       .setRuler(false)
       .setPm(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.ruler.RuleHistory.CREATED))
+        .setSize(100000)
+        .build())
       .build();
     """,
     "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"
