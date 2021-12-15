@@ -118,7 +118,7 @@ foam.CLASS({
       font-family: /*%FONT1%*/ 'IBM Plex Sans';
       font-style: normal;
       font-weight: normal;
-      font-size: 11px;
+      font-size: 1.1rem;
       line-height: 14px;
       color: #000000;
       margin: 10px 0px 0px 24px;

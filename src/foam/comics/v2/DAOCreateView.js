@@ -33,7 +33,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 
@@ -48,15 +48,24 @@ foam.CLASS({
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode'
   ],
+
   imports: [
     'ctrl',
+    'currentMenu?',
     'memento',
-    'stack'
+    'stack',
+    'translationService'
   ],
+
   exports: [
     'controllerMode',
     'currentMemento_ as memento'
   ],
+
+  messages: [
+    { name: 'CREATED', message: 'Created' }
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -107,7 +116,10 @@ foam.CLASS({
               currentFeedback = currentFeedback.next;
             }
           } else {
-            this.ctrl.notify(`${this.data.model_.label} created.`, '', this.LogLevel.INFO, true);
+            var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+            var title = this.translationService.getTranslation(foam.locale, menuId + '.browseTitle', this.config.browseTitle);
+
+            this.ctrl.notify(title + " " + this.CREATED, '', this.LogLevel.INFO, true);
           }
 
           this.stack.back();
@@ -148,7 +160,8 @@ foam.CLASS({
                 .startContext({ data: self.stack })
                     .tag(self.stack.BACK, {
                       buttonStyle: foam.u2.ButtonStyle.LINK,
-                      icon: 'images/back-icon.svg'
+                      icon: 'images/back-icon.svg',
+                      themeIcon: 'back'
                     })
                 .endContext()
                 .start(self.Cols).style({ 'align-items': 'center' })

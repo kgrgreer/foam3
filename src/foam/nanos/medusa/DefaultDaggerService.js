@@ -25,7 +25,9 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
+    'foam.nanos.security.KeyStoreManager',
     'foam.util.SafetyUtil',
     'java.nio.charset.StandardCharsets',
     'java.security.MessageDigest',
@@ -33,27 +35,31 @@ foam.CLASS({
     'java.util.List'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public static String byte2Hex(byte[] bytes) {
-    StringBuffer stringBuffer = new StringBuffer();
-    String temp = null;
-    for ( int i=0; i<bytes.length; i++ ) {
-      temp = Integer.toHexString(bytes[i] & 0xFF);
-      if ( temp.length() == 1 ) {
-        stringBuffer.append("0");
+  javaCode: `
+    public static String byte2Hex(byte[] bytes) {
+      StringBuffer stringBuffer = new StringBuffer();
+      String temp = null;
+      for ( int i=0; i<bytes.length; i++ ) {
+        temp = Integer.toHexString(bytes[i] & 0xFF);
+        if ( temp.length() == 1 ) {
+          stringBuffer.append("0");
+        }
+        stringBuffer.append(temp);
       }
-      stringBuffer.append(temp);
+      return stringBuffer.toString();
     }
-    return stringBuffer.toString();
-  }
-          `
-        }));
-      }
+  `,
+
+  constants: [
+    {
+      name: 'BOOTSTRAP_HASH',
+      type: 'String',
+      value: 'BOOTSTRAP_HASH'
+    },
+    {
+      name: 'BOOTSTRAP_HASH_DEFAULT',
+      type: 'String',
+      value: '466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534'
     }
   ],
 
@@ -134,6 +140,8 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      Logger logger = Loggers.logger(getX(), this);
+      logger.info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       setHashingEnabled(support.getHashingEnabled());
 
@@ -141,7 +149,7 @@ foam.CLASS({
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
            config.getZone() > 0L ) {
-        getLogger().debug("start", "exit");
+        logger.debug("start", "exit");
         return;
       }
 
@@ -169,17 +177,21 @@ foam.CLASS({
     - Explicitly set in DaggerService NSpec
     - // TODO: HSM`,
       name: 'getBootstrapHash',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'String',
       javaCode: `
+      String alias = BOOTSTRAP_HASH.toLowerCase();
+      try {
+        KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
+        return manager.getSecret(x, alias, "PBEWithHmacSHA256AndAES_128");
+      } catch (java.security.GeneralSecurityException | java.io.IOException e) {
+        getLogger().warning("Keystore error", alias, e.getMessage());
+      } catch (IllegalArgumentException e) {
+        getLogger().warning("Keystore alias not found", alias);
+      }
       return System.getProperty(
-                "BOOTSTRAP_HASH",
-                "466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534"
+                BOOTSTRAP_HASH,
+                BOOTSTRAP_HASH_DEFAULT
              );
       `
     },

@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'foam.nanos.dig',
   name: 'DUGDigestConfig',
+  documentation: 'DUG config for adding a hashed secretKey to webhook headers',
 
   implements: [
     'foam.nanos.auth.EnabledAware',

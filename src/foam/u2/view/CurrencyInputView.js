@@ -62,7 +62,7 @@ foam.CLASS({
       flex: 1;
       height: 30px;
 
-      font-size: 14px;
+      font-size: 1.4rem;
 
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-left: none;

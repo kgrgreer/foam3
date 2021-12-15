@@ -31,6 +31,9 @@ public class Loggers {
    */
   public static Logger logger(X x, Object caller, boolean includeSubject) {
     Logger logger = (Logger) x.get("logger");
+    if ( logger == null ) {
+      logger = new StdoutLogger(x);
+    }
     if ( caller != null ) {
       logger = new PrefixLogger(
                                 new Object[] {
@@ -44,5 +47,17 @@ public class Loggers {
     }
 
     return logger;
+  }
+
+  /**
+   * For expensive debug output - where parameters may be expanded during the call to the logger, first wrap in a test if the debug logging is enabled.
+   */
+  public static boolean isEnabled(X x, foam.log.LogLevel level) {
+    LogLevelFilterLogger filter = (LogLevelFilterLogger) x.get("logLevelFilterLogger");
+    return filter.isEnabled(level);
+  }
+
+  public static boolean isDebugEnabled(X x) {
+    return isEnabled(x, foam.log.LogLevel.DEBUG);
   }
 }

@@ -19,21 +19,12 @@ foam.CLASS({
     'java.util.Calendar'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public UserPasswordHashingDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public UserPasswordHashingDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {

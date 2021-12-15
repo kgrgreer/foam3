@@ -54,20 +54,30 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-      public Subject(User user) {
-        setUser(user);
-      }
-        `);
-      }
+  javaCode: `
+    public Subject(User user) {
+      setUser(user);
     }
-  ],
+  `,
 
   methods: [
+    {
+      name: 'isUserInSubject',
+      documentation: 'Function to check if a given user is in the context. Prior to a user or business being set into the context i wanted to know if that user was already represented. On user create',
+      type: 'Boolean',
+      args: [
+        'Long idCheck'
+      ],
+      javaCode: `
+      for ( User user : getUserPath() ) {
+        if ( foam.util.SafetyUtil.equals(user.getId(), idCheck) ) return true;
+      }
+      return false;
+      `,
+      code: function() {
+        return !! this.userPath.find(u => u.id == idCheck);
+      }
+    },
     {
       name: 'toString',
       type: 'String',

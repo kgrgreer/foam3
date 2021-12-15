@@ -18,24 +18,15 @@ foam.CLASS({
 
   javaGenerateConvenienceConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-            public CompoundException(String message) {
-              super(message);
-            }
-
-            public CompoundException(String message, java.lang.Exception cause) {
-              super(message, cause);
-            }
-            `
-        }));
-      }
+  javaCode: `
+    public CompoundException(String message) {
+      super(message);
     }
-  ],
+
+    public CompoundException(String message, java.lang.Exception cause) {
+      super(message, cause);
+    }
+  `,
 
   methods:  [
     {

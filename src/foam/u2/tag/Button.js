@@ -66,10 +66,6 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^ > .foam-u2-HTMLView{
-      padding: 0;
-    }
-
     /* Unstyled */
     ^unstyled {
       background: none;
@@ -276,16 +272,12 @@ foam.CLASS({
     ^link > .foam-u2-HTMLView{
       height: 1em;
     }
-    // TODO: Find a better selector for this
-    ^link > .foam-u2-HTMLView > *{
-      height: 100%
-    }
+
     ^svgIcon {
       max-height: 100%;
       max-width: 100%;
       object-fit: contain;
     }
-
     ^svgIcon svg {
       height: 100%;
     }
@@ -299,6 +291,26 @@ foam.CLASS({
     }
     ^imgSVGIcon svg {
       height: initial;
+    }
+
+    ^small svg,
+    ^small img {
+      width: 1.15em;
+      height: 1.15em;
+    }
+    ^medium svg,
+    ^medium img {
+      width: 1.71em;
+      height: 1.71em;
+    }
+    ^large svg,
+    ^large img {
+      width: 2.25em;
+      height: 2.25em;
+    }
+    ^link svg, link img {
+      width: 1em;
+      height: 1em;
     }
   `,
 
@@ -331,6 +343,10 @@ foam.CLASS({
     [ 'nodeName', 'button' ],
     {
       name: 'label'
+    },
+    {
+      class: 'String',
+      name: 'ariaLabel'
     },
     {
       class: 'Enum',
@@ -393,36 +409,20 @@ foam.CLASS({
     async function addContent() {
       /** Add text or icon to button. **/
       var self = this;
-      var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
-      var iconStyle = { width: size, height: size };
-
-      if ( this.themeIcon && this.theme ) {
-        var indicator = this.themeIcon.clone(this).expandSVG();
-        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).addClass(this.myClass('SVGIcon')).style(iconStyle).end();
+      if ( ( this.themeIcon && this.theme ) ) {
+        this
+          .start({ class: 'foam.u2.tag.Image', glyph: this.themeIcon, role: 'presentation' })
+            .addClass(this.myClass('SVGIcon'))
+          .end();
       } else if ( this.icon ) {
-        if ( this.icon.endsWith('.svg') ) {
-          var req  = this.HTTPRequest.create({
-            method: 'GET',
-            path: this.icon,
-            cache: true
-          });
-          await req.send().then(function(payload) {
-            return payload.resp.text();
-          }).then(x => {
-            self.start(this.HTMLView, { data: x })
-              .attrs({ role: 'presentation' })
-              .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
-              .style(iconStyle)
-            .end();
-          });
-        } else {
-          this.start('img').style(iconStyle).attrs({ src: this.icon$, role: 'presentation' }).end();
-        }
+        this
+          .start({ class: 'foam.u2.tag.Image', data: this.icon, role: 'presentation', embedSVG: true })
+            .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+          .end();
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.addClass(this.action.name);
         this.addClass(this.iconFontClass); // required by font package
-        this.style(iconStyle);
         this.attr(role, 'presentation')
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);

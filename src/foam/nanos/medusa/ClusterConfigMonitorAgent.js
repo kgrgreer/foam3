@@ -61,11 +61,13 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
+      units: 'ms',
       value: 10000
     },
     {
       name: 'initialTimerDelay',
       class: 'Int',
+      units: 'ms',
       value: 5000
     },
     {
@@ -101,12 +103,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -131,6 +128,7 @@ foam.CLASS({
             getLogger().debug(t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
+            cfg.setIsPrimary(false);
             config = (ClusterConfig) getDao().put_(x, cfg);
           }
           Throwable cause = t.getCause();
@@ -156,6 +154,7 @@ foam.CLASS({
         if ( alarms != null ) {
           DAO alarmDAO = (DAO) x.get("alarmDAO");
           for (Alarm alarm : alarms ) {
+            alarm.setClusterable(false);
             alarmDAO.put(alarm);
           }
         }

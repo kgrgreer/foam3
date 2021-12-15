@@ -7,10 +7,10 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'MedusaPingBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   documentation: `for some sample size, ping all instances in cluster.`,
-  
+
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
@@ -23,7 +23,6 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.medusa.ClusterConfig',
-    'foam.nanos.medusa.ClusterServerDAO',
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.Status',
     'foam.nanos.pm.PM',
@@ -38,13 +37,28 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'serviceName',
+      class: 'String',
+      value: 'clusterConfigDAO'
+    },
+    {
       documentation: 'This/self cluster config',
       name: 'config',
-      class: 'FObjectProperty'
+      class: 'FObjectProperty',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      config_ = val;
+      configIsSet_ = true;
+      `
     },
     {
       name: 'clients',
-      class: 'Array'
+      class: 'Array',
+      javaSetter: `
+      // explicit setter to suppress the generated 'assertNotFrozen'
+      clients_ = val;
+      clientsIsSet_ = true;
+      `
     },
     {
       name: 'configs',
@@ -73,12 +87,6 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
         if ( getConfigs().size() > 0 ) {
           return;
@@ -100,7 +108,7 @@ foam.CLASS({
             .select(new ArraySink())).getArray();
         List<DAO> clients = new ArrayList();
         for ( ClusterConfig cfg : configs ) {
-          DAO client = support.getClientDAO(x, "clusterConfigDAO", config, cfg);
+          DAO client = support.getClientDAO(x, getServiceName(), config, cfg);
           clients.add(client);
           getConfigs().put(client, cfg);
           getLogger().info("created,client", cfg.getId());
@@ -110,36 +118,21 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
+      if ( getClients().length == 0 ) {
+        throw new RuntimeException("No clients found");
+      }
       java.util.Random random = new java.util.Random();
       int index = random.nextInt(getClients().length);
       DAO client = (DAO) getClients()[index];
       ClusterConfig cfg = (ClusterConfig) getConfigs().get(client);
+      if ( cfg == null ) {
+       throw new RuntimeException("Client not found "+index);
+      }
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
-      client.cmd(ClusterServerDAO.PING);
+      client.cmd(PingDAO.PING);
       pm.log(x);
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

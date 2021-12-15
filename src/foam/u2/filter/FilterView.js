@@ -45,7 +45,6 @@ foam.CLASS({
 
     ^container-search {
       display: flex;
-      gap: 24px;
     }
 
     ^container-drawer {
@@ -103,6 +102,7 @@ foam.CLASS({
       fill: initial;
       transform: rotate(0deg);
       transition: all 0.5s ease;
+      font-size: 0.6rem;
     }
 
     ^filter-button-active{
@@ -116,7 +116,7 @@ foam.CLASS({
     }
 
     ^link-mode {
-      font-size: 14px;
+      font-size: 1.4rem;
       margin-left: 16px;
       cursor: pointer;
     }
@@ -160,6 +160,12 @@ foam.CLASS({
       width: 75%;
       height: 80%;
       border-radius: 5px;
+    }
+    /* tablet and desktop */
+    @media only screen and (min-width: 768px) {
+      ^container-search {
+        gap: 24px;
+      }
     }
   `,
 
@@ -273,7 +279,7 @@ foam.CLASS({
 
           counter = self.updateCurrentMementoAndReturnCounter.call(self, counter);
 
-          self.generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
+          var generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
             onKey: true
@@ -289,12 +295,12 @@ foam.CLASS({
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start()
-              .add(self.generalSearchField)
+              .add(generalSearchField)
               .addClass(self.myClass('general-field'))
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -317,7 +323,8 @@ foam.CLASS({
                         criteria: 0,
                         searchView: axiom.searchView,
                         property: axiom,
-                        dao: self.dao
+                        dao: self.dao,
+                        preSetPredicate: self.assignPredicate(axiom)
                       },  self, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
 
                       counter--;
@@ -362,6 +369,8 @@ foam.CLASS({
                 .end()
             .end();
           }));
+          //set here to avoid prematured finalPredicate override
+          self.generalSearchField = generalSearchField;
 
           return e;
         }, this.filters$));
@@ -414,6 +423,21 @@ foam.CLASS({
       var grantedProperties =  permissionedProperties.filter((_v, index) => perms[index]);
       var unorderedProperties = grantedProperties.concat(unpermissionedProperties);
       return properties.filter(v => unorderedProperties.includes(v));
+    },
+    function assignPredicate(property) {
+      var predicate = this.filterController.finalPredicate;
+      if ( predicate ) {
+        if ( foam.mlang.predicate.And.isInstance(predicate) ) {
+          var subPredicates = predicate.args;
+          for ( subPredicate of subPredicates ) {
+            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
+          }
+        }
+        else {
+          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
+        }
+      }
+      return null;
     }
   ],
 

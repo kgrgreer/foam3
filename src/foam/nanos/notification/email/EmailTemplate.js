@@ -11,6 +11,20 @@ foam.CLASS({
   documentation: `Represents an email template that stores the default properties of a specific email,
   mimics the EmailMessage which is the end obj that is processed into email.`,
 
+  mixins: [ 'foam.nanos.notification.email.EmailTemplateSource' ],
+
+  imports: [
+    'pmInfoDAO'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.pm.PMInfo'
+  ],
+
   javaImports: [
     'foam.i18n.Locale',
     'foam.i18n.TranslationService',
@@ -22,7 +36,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets'
   ],
 
-  tableColumns: ['id', 'name', 'group', 'locale'],
+  tableColumns: ['id', 'name', 'group', 'locale', 'spid', 'sourceClass', 'disabled', 'count'],
 
   properties: [
     {
@@ -43,6 +57,10 @@ foam.CLASS({
       class: 'String',
       name: 'locale',
       value: 'en'
+    },
+    {
+      class: 'String',
+      name: 'spid'
     },
     {
       class: 'String',
@@ -83,6 +101,15 @@ foam.CLASS({
       transient: true,
       type: 'Byte[]',
       javaFactory: 'return getBody() != null ? getBody().getBytes(StandardCharsets.UTF_8) : null;'
+    },
+    {
+      class: 'Int',
+      name: 'count',
+      transient: true,
+      getter: async function() {
+        var pmInfo = await this.pmInfoDAO.find(this.EQ(this.PMInfo.KEY, this.sourceClass));
+        return pmInfo ? pmInfo.count : 0;
+      }
     }
   ],
 
@@ -122,7 +149,7 @@ foam.CLASS({
 
         EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
         // BODY:
-        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(emailMessage.getBody()) ) {
+        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(getBody()) ) {
           emailMessage.setBody(templateEngine.renderTemplate(x, getBody(), templateArgs).toString());
         }
 
@@ -138,14 +165,7 @@ foam.CLASS({
 
         // SUBJECT:
         if ( ! emailMessage.isPropertySet("subject") && ! SafetyUtil.isEmpty(getSubject()) ) {
-          // translate first and then set
-          TranslationService ts = (TranslationService) x.get("translationService");
-          Subject subject = (Subject) x.get("subject");
-          User user = subject.getRealUser();
-          String locale = user.getLanguage().toString();
-          String source = getId() + ".subject";
-          String translatedSubject = ts.getTranslation(locale, source, getSubject());
-          emailMessage.setSubject(templateEngine.renderTemplate(x, translatedSubject, templateArgs).toString());
+          emailMessage.setSubject(templateEngine.renderTemplate(x, getSubject(), templateArgs).toString());
         }
 
         // SEND TO:

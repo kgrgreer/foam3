@@ -7,26 +7,20 @@
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
   name: 'DaggerVerifyBenchmark',
-  implements: [ 'foam.nanos.bench.Benchmark' ],
+  extends: 'foam.nanos.bench.Benchmark',
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.LifecycleState',
-    'foam.nanos.auth.Language',
     'foam.nanos.bench.Benchmark',
-    'foam.nanos.boot.NSpec',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.medusa.MedusaEntry',
     'foam.nanos.medusa.DaggerService',
-    'static foam.mlang.MLang.EQ',
-    'java.util.UUID'
+    'foam.nanos.medusa.test.MedusaTestObject',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -61,39 +55,21 @@ foam.CLASS({
   methods: [
     {
       name: 'setup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
       javaCode: `
-    DAO dao = (DAO) x.get("languageDAO");
+    DAO dao = (DAO) x.get("medusaTestObjectDAO");
     for ( int i = 0; i < getSampleSize(); i++ ) {
-      Language language = new Language();
-      language.setCode(String.valueOf(i));
-      language.setName(language.getCode());
-      dao.put(language);
+      MedusaTestObject test = new MedusaTestObject();
+      test.setDescription("MedusaTestObject");
+      dao.put(test);
     }
-    dao = (DAO) x.get("medusaEntryDAO");
     Count count = (Count) dao.select(new Count());
     setEntries((int) count.getValue());
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) {
-      return;
-    }
     DaggerService dagger = (DaggerService) x.get("daggerService");
     DAO dao = (DAO) x.get("medusaEntryDAO");
     MedusaEntry entry = null;
@@ -116,22 +92,6 @@ foam.CLASS({
     } else {
       getLogger().warning("Failed to find entry");
     }
-      `
-    },
-    {
-      name: 'teardown',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-        {
-          name: 'stats',
-          type: 'Map'
-        }
-      ],
-      javaCode: `
-      // nop
       `
     }
   ]

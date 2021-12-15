@@ -29,7 +29,7 @@ foam.CLASS({
       width: 100%;
       height: 36px;
 
-      font-size: 14px;
+      font-size: 1.4rem;
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
@@ -49,7 +49,7 @@ foam.CLASS({
 
     ^label-section {
       padding: 0 16px;
-      font-size: 12px;
+      font-size: 1.2rem;
       font-weight: 600;
       line-height: 1.33;
       letter-spacing: normal;

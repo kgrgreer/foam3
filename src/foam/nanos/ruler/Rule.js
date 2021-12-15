@@ -35,6 +35,8 @@
     'foam.nanos.auth.Subject',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.util.retry.RetryStrategy',
+    'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
     'java.util.Date'
   ],
@@ -140,6 +142,14 @@
       documentation: 'Defines if the rule needs to be applied before or after operation is completed'+
       'E.g. on dao.put: before object was stored in a dao or after.'
     },
+    {
+      class: 'Boolean',
+      name: 'async',
+      value: false,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
+      documentation: 'Defines if the rule is async. Async rule always runs after DAO put/remove, the after flag on the rule will be ignored.'
+    },
     'predicate',
     {
       class: 'FObjectProperty',
@@ -147,13 +157,6 @@
       name: 'action',
       view: { class: 'foam.u2.view.JSONTextView' },
       documentation: 'The action to be executed if predicates returns true for passed object.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.ruler.RuleAction',
-      name: 'asyncAction',
-      hidden: true,
-      documentation: 'The action to be executed asynchronously if predicates returns true for passed object.'
     },
     {
       name: 'enabled',
@@ -190,21 +193,6 @@
           this.saveHistory = true;
         }
       }
-    },
-    {
-      class: 'Object',
-      name: 'cmd',
-      transient: true,
-      hidden: true,
-      javaFactory: `
-        if ( Operation.CREATE == getOperation()
-          || Operation.UPDATE == getOperation()
-          || Operation.CREATE_OR_UPDATE == getOperation()
-        ) {
-          return RulerDAO.PUT_CMD;
-        }
-        return null;
-      `
     },
     {
       class: 'DateTime',
@@ -309,6 +297,23 @@
       section: 'basicInfo',
       value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       documentation: 'Service Provider Id of the rule. Default to ServiceProviderAware.GLOBAL_SPID for rule applicable to all service providers.'
+    },
+    {
+      class: 'Int',
+      name: 'maxRetry',
+      documentation: 'The number of max retry when failed to execute the action. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'retryDelay',
+      unit: 'ms',
+      documentation: 'The delay time in millisecond to retry executing the action after failure. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ],
 
@@ -387,6 +392,9 @@
       ],
       javaCode: `
         getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        try {
+          ruler.saveHistory(this, obj);
+        } catch ( Exception e ) { /* Ignored */ }
       `
     },
     {
@@ -414,9 +422,16 @@
         },
       ],
       javaCode: `
-        getAsyncAction().applyAction(x, obj, oldObj, ruler, rule, new DirectAgency());
-        if ( ! getAfter() ) {
-          ruler.getDelegate().cmd_(x.put("OBJ", obj), getCmd());
+        try {
+          apply(x, obj, oldObj, ruler, rule, new DirectAgency());
+        } catch ( Exception e ) {
+          var strategy = getMaxRetry() > 0 ?
+            new SimpleRetryStrategy(getMaxRetry(), getRetryDelay()) :
+            (RetryStrategy) x.get("ruleRetryStrategy");
+
+          new RetryManager(strategy, rule.getName()).submit(x, userX -> {
+            apply(x, obj, oldObj, ruler, rule, new DirectAgency());
+          });
         }
       `
     },
@@ -504,16 +519,9 @@
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-        public static Rule findById(Collection<Rule> listRule, String passedId) {
-          return listRule.stream().filter(rule -> passedId.equals(rule.getId())).findFirst().orElse(null);
-        }
-        `);
-      }
+  javaCode: `
+    public static Rule findById(Collection<Rule> listRule, String passedId) {
+      return listRule.stream().filter(rule -> passedId.equals(rule.getId())).findFirst().orElse(null);
     }
-  ]
+  `
 });

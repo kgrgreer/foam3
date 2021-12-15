@@ -22,7 +22,7 @@ foam.CLASS({
     ^ {
       border-collapse: collapse;
       width: 100%;
-      font-size: 14px;
+      font-size: 1.4rem;
     }
     ^ thead {
       background-color: #dee3e9;

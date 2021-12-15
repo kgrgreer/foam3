@@ -31,7 +31,7 @@ foam.CLASS({
     }
 
     ^account-name {
-      font-size: 36px;
+      font-size: 3.6rem;
       font-weight: 600;
     }
 
@@ -65,7 +65,6 @@ foam.CLASS({
 
   exports: [
     'controllerMode',
-    'as objectSummaryView',
     'currentMemento_ as memento'
   ],
 
@@ -157,7 +156,13 @@ foam.CLASS({
       class: 'String',
       name: 'viewTitle',
       expression: function(data) {
-        return data?.toSummary() ?? '';
+        var self = this;
+        var maybePromise = data?.toSummary() ?? '';
+        if ( maybePromise.then ) { 
+          maybePromise.then( v => { self.viewTitle = v })
+          return '';
+        }
+        return maybePromise;
       }
     }
   ],
@@ -190,6 +195,8 @@ foam.CLASS({
       },
       code: function() {
         if ( ! this.stack ) return;
+        // Wait to get data before loading edit
+        if ( ! this.data ) return;
 
         this.stack.push(this.StackBlock.create({
           view: {
@@ -305,9 +312,13 @@ foam.CLASS({
       // Get a fresh copy of the data, especially when we've been returned
       // to this view from the edit view on the stack.
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
-        if ( d ) self.data = d;
+        if ( d ) { 
+          self.data = d;
+          if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) 
+            self.edit();
+        }
       });
-      if ( self.memento  && self.memento.head.toLowerCase() === 'edit' ) {
+      if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) {
         self.edit();
       } else {
         if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {

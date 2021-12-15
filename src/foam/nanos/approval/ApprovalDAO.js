@@ -22,21 +22,12 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-            public ApprovalDAO(X x, DAO delegate) {
-              setX(x);
-              setDelegate(delegate);
-            }
-          `
-        );
-      }
+  javaCode: `
+    public ApprovalDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
     }
-  ],
+  `,
 
   methods: [
     {
@@ -49,7 +40,7 @@ foam.CLASS({
         if ( old != null && old.getStatus() != request.getStatus()
           || old == null && request.getStatus() != ApprovalStatus.REQUESTED
         ) {
-          DAO requests = ApprovalRequestUtil.getAllRequests(x, getDelegate().inX(x), request.getObjId(), request.getClassificationEnum());
+          DAO requests = ApprovalRequestUtil.getAllRequests(x, getDelegate().inX(x), request.getObjId(), request.getClassification());
           // if not a cancellation request and points are sufficient to consider object approved
           var currentPoints = getCurrentPoints(requests);
           var currentRejectedPoints = getCurrentRejectedPoints(requests);

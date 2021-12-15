@@ -40,7 +40,7 @@ foam.CLASS({
         padding: 8px 24px;
         animation-name: fade;
         animation-duration: 5s;
-        font-size: 14px;
+        font-size: 1.4rem;
         line-height: 1.33;
         letter-spacing: 0.2px;
         border-radius: 3px;
@@ -76,15 +76,13 @@ foam.CLASS({
       ^content {
         display: inline-block;
         vertical-align: middle;
-        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 2.5em;
         font-weight: 800;
         color: #19402e;
         letter-spacing: normal;
       }
       ^description {
-        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 14px;
+        font-size: 1.4rem;
         font-weight: normal;
         line-height: 1.43;
         letter-spacing: normal;

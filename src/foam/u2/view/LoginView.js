@@ -129,7 +129,6 @@ foam.CLASS({
       /* ON NO IMG SPLIT & IMG SPLIT */
   ^ .disclaimer-login {
     width: 35vw;
-    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 0.75em;
     color: #8e9090;
     margin-left: 12vw;
@@ -229,9 +228,6 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      // clearing any values that may linger in memento - such as SignOut
-      this.memento.value = '';
-      location.hash = '';
 
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.onDetach(() => {
@@ -242,7 +238,7 @@ foam.CLASS({
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
-        .start().show(logo).addClass('topBar-logo-Back')
+        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')

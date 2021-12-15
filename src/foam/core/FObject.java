@@ -344,7 +344,7 @@ public interface FObject
               remote = p.get(obj);
             }
           } catch ( ClassCastException ee ) {
-            System.err.println("FObject.overlay "+p.getName()+" get "+ee);
+            System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" get '"+p.getName()+"' from "+obj.getClass().getSimpleName()+": "+ee.getMessage());
           }
         }
       }
@@ -360,7 +360,7 @@ public interface FObject
           }
         }
       } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+p.getName()+" set "+e);
+        System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" set '"+p.getName()+"' with "+obj.getClass().getSimpleName()+": "+e.getMessage());
       }
     }
     return this;

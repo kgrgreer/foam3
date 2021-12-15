@@ -28,8 +28,8 @@ foam.CLASS({
         public void execute(X x) {
           DAO configDAO = (DAO) x.get("alarmConfigDAO");
           MonitoringReport report = (MonitoringReport) obj;
-          AlarmConfig config = (AlarmConfig) configDAO.find(EQ(AlarmConfig.NAME, report.getName()));
-          
+          AlarmConfig config = (AlarmConfig) configDAO.find(report.getName());
+
           if ( config == null || ! config.getEnabled() ) {
             return;
           }
@@ -42,7 +42,7 @@ foam.CLASS({
           Candlestick sentRequest = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
             EQ(Candlestick.KEY, config.getPreRequest())
           );
-      
+
           Candlestick timeout = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
             EQ(Candlestick.KEY, config.getTimeOutRequest())
           );
@@ -85,7 +85,7 @@ foam.CLASS({
               alarm.setIsActive(true);
             }
           } else if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
-            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {        
+            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {
               alarm.setReason(AlarmReason.CONGESTION);
               alarm.setIsActive(true);
             }
@@ -126,7 +126,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
-        if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CREDENTIALS) ) {        
+        if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CREDENTIALS) ) {
           alarm.setReason(AlarmReason.CREDENTIALS);
           alarm.setIsActive(true);
         }

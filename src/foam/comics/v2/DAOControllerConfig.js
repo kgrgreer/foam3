@@ -12,10 +12,6 @@ foam.CLASS({
     A customizable model to configure any DAOController
   `,
 
-  imports: [
-    'translationService'
-  ],
-
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.CannedQuery',
@@ -28,6 +24,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'click',
+      documentation: 'Used to override the default click listener exported by DAOController'
+    },
     {
       class: 'String',
       name: 'daoKey'
@@ -98,7 +98,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'createView',
       factory: function() {
-        return { class: 'foam.u2.view.FObjectView' };
+        return {
+          class: 'foam.u2.view.FObjectView',
+          detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
       }
     },
     {
@@ -106,7 +109,7 @@ foam.CLASS({
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
-          class: 'foam.u2.view.ScrollTableView',
+          class: 'foam.u2.table.TableView',
           editColumnsEnabled: true,
           columns: tableColumns,
           css: {
@@ -348,8 +351,8 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'createPopup',
-      documentation: `Given a ViewSpec the createView will be rendered using 
-      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a 
+      documentation: `Given a ViewSpec the createView will be rendered using
+      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a
       default Popup`
     },
     {
@@ -368,6 +371,14 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'selectedObjs'
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'searchPredicate'
+    },
+    {
+      class: 'Int',
+      name: 'preSelectedCannedQuery'
     }
   ]
 });

@@ -84,8 +84,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityFeature
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityFeatureView.RENEW_DATA_LABEL",target:"Por favor reveja e atualize seus dados"})
 
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CRUNCHThemeRefinement.ADMISSION_CAPABILITY.label",target:"admissionCapability pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CRUNCHThemeRefinement.ADMISSION_CAPABILITY.documentation",target:"Especifica a capacidade de nível superior que deve ser concedida antes de admitirmos um usuário no sistema."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.ID.label",target:"id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.NAME.label",target:"nome"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.Capability.ICON.label",target:"ícone"})
@@ -368,6 +366,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.DESIRED_PASSWORD.label",target:"Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.LOGIN.label",target:"iniciar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.USER_NAME.label",target:"Nome do usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.SUCCESS_MSG",target:"Conta criada com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignUp.SUCCESS_MSG_TITLE",target:"Sucesso"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"*.foam.nanos.auth.Address.REGION.label",target:"Região"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"*.foam.nanos.auth.Address.REGION.error",target:"Região requerido"})
@@ -572,6 +572,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PA
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.NEW_PASSWORD.label",target:"Nova Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.CONFIRMATION_PASSWORD.label",target:"Confirme a Senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD.label",target:"Confirme"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.ERROR_MSG",target:"Ocorreu um problema ao redefinir sua senha"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.Notification.model_.plural",target:"notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"notificações"})
@@ -613,6 +614,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.GROUP.label",target:"Grupo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.STATUS.label",target:"Status"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.APPROVER.label",target:"Aprovador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CLASSIFICATION.label",target:"Aprovação Tipo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CLASSIFICATION_ENUM.label",target:"Aprovação Tipo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CREATED.label",target:"Criado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CREATED_BY.label",target:"Criado Por"})
@@ -658,6 +660,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.BACK_LABEL",target:"Voltar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequest.CREATED_FOR_SUMMARY.label",target:"Criado Para esumo"})
 
+// approval request classifications
+p({class:"foam.i18n.Locale",locale:"pt",source:"capable-created-approval.name",target:"Aprovação Criada com Capacidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"approvable-request.name",target:"Solicitação Aprovável"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_CANCELLED",target:"Você cancelou com sucesso este tíquete"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ticket.Ticket.SUCCESS_ASSIGNED",target:"Você designou com sucesso este tíquete"})
 
@@ -673,6 +679,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.FIR
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.PREV_PAGE.toolTip",target:"Página anterior"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ScrollTableView.LAST_PAGE.toolTip",target:"Última página"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableHeaderComponent.DRAG_TO_RESIZE.toolTip",target:"Arraste para redimensionar"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.DETAIL",target:"Detalhe"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.TABBED",target:"Tabbed"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.SECTIONED",target:"Seccionado"})
@@ -680,6 +688,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.MAT
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.WIZARD",target:"Mago"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.VERTICAL",target:"Vertical"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.BACK",target:"VOLTAR"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOUpdateView.UPDATED",target:"Atualizado"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOCreateView.CREATED",target:"Criado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER1",target:"Controlador 1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.boot.DAOConfigSummaryView.CONTROLLER2",target:"Controlador 2"})
@@ -972,44 +983,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Trinidad and Tobago.name",target
 p({class:"foam.i18n.Locale",locale:"pt",source:"United Kingdom.name",target:"Reino Unido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"US.name",target:"Estados Unidos"})
 
-/* ApprovalRequestClassificationEnum */
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR.label",target:"Validador Genérico de Negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_IDENTITYMIND_MERCHANT_KYC.label",target:"Negócio IdentityMind Comerciante KYC"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.TRANSACTION_IDENTITYMIND_TRANSFER.label",target:"Transação IdentityMind Transferir"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BENEFICIAL_OWNER_DOW_JONES.label",target:"Proprietário Beneficiário Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_DOW_JONES.label",target:"Negócios Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_DIRECTOR_DOW_JONES.label",target:"Diretor de Negócios Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_ONBOARDING_DOW_JONES.label",target:"KYC Entidade Dow Jones Integração Negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.SIGNING_OFFICER_SECUREFACT_SIDNI.label",target:"Agente de Assinatura SecureFact SIDni"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.SIGNING_OFFICER_DOW_JONES.label",target:"Agente de Contratação Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_ONBOARDING_SECUREFACT_LEV.label",target:"Fato Seguro Integração Negócios LEV"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_ONBOARDING_DOW_JONES.label",target:"Entidade Dow Jones Integração Negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.SIGNING_OFFICER_SECUREFACT_SIDNI.label",target:"Agente de Assinatura SecureFact SIDni"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.SIGNING_OFFICER_DOW_JONES.label",target:"Diretor de Contratação Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_ONBOARDING_SECUREFACT_LEV.label",target:"Negócio Fato Seguro Integração LEV"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_USER_DOW_JONES.label",target:"Manual do Usuário Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_USER_SECUREFACT_SIDNI.label",target:"Manual do usuário SecureFact SIDni"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_USER_IDENTITYMIND.label",target:"Identidade Manual do Usuário (Acuant)"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_DOW_JONES.label",target:"Manual de Negócios Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanosoval.ApprovalRequestClassificationEnum.BUSINESS_SECUREFACT_LEV.label",target:"Fato Segurança Comercial LEV"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_IDENTITYMIND.label",target:"Negócio IdentityMind KYC (Acuant)"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.COMPLIANCE_CAPABILITY_GRANTED.label",target:"Capacidade Conformidade Concedida"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.GENERIC_SIGNING_OFFICER_VALIDATION.label",target:"Validador Oficial Assinatura Genérico"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.USER_DOW_JONES.label",target:"Usuário Dow Jones R&C"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.KOTAK_MANUAL_FX_COMPLETED.label",target:"Conclusão da transação FX manual Kotak"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.EXCHAGE_LIMIT_EXCEEDED.label",target:"Limite Câmbio Excedido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.AFEX_BUSINESS.label",target:"Transação Dow Jones do beneficiário/pagador"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.USER_SECUREFACT_SIDNI.label",target:"Usuário SecureFact SIDni"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.COMPLIANCE_TRANSACTION.label",target:"Transação de Conformidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.CAPABLE_CREATED_APPROVAL.label",target:"Aprovação Criada com Capacidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.APPROVABLE_REQUEST.label",target:"Solicitação Aprovável"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL.label",target:"Aprovação de SUDO tíquete"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.NATURE_CODE_APPROVAL.label",target:"Aprovação do código da natureza"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL.label",target:"Aprovação de função de conta"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.ACCOUNT_APPROVABLE_REQUEST.label",target:"Solicitação de conta aprovada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.TRANSACTION_REQUEST.label",target:"Aprovação de transação Solicitação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.NATURE_CODE_DOCUMENT_APPROVAL.label",target:"Código da Natureza Documento Aprovação"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ArrayView.ADD_ROW.label",target:"adicionar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.OK.label",target:"Tudo Bem"})
@@ -1073,3 +1046,26 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Expired",target:"Expirado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.delimiter",target:"."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Currency.decimalCharacter",target:","})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.REMOVE_NOTIFICATION.label",target:"Remover Notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.HIDE_NOTIFICATION_TYPE.label",target:"Ocultar tipo de notificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_READ.label",target:"Marcar como Lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD.label",target:"Marcar como não lido"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NO_TOKEN",target:"Insira um código de verificação."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_LABEL",target:"Insira o código de verificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_ERROR",target:"Código incorreto. Tente novamente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_TITLE",target:"Autenticação de dois fatores"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_EXPLANATION",target:"Abra o aplicativo Google Authenticator em seu dispositivo móvel para visualizar o código de 6 dígitos e verificar sua identidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_1",target:"Precisa de outra forma de autenticação?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.TWO_FACTOR_NOTES_2",target:"Fale conosco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.twofactor.TwoFactorSignInView.VERIFY.label",target:"Verifique"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.TableView.MESSAGE_OF",target:"do"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.table.UnstyledTableGroup.EMPTY_MSG",target:"Não"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_READ_MSG",target:"Marcado com sucesso como lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD_MSG",target:"Marcado com sucesso como não lido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_READ_MSG",target:"Falha ao marcar como lida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_UNREAD_MSG",target:"Falha ao marcar como não lida"})

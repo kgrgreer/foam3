@@ -28,12 +28,12 @@ foam.CLASS({
 
   implements: [
     'foam.box.Context',
-    'foam.mlang.Expressions',
-    'foam.nanos.controller.AppStyles'
+    'foam.mlang.Expressions'
   ],
 
   requires: [
     'foam.nanos.client.ClientBuilder',
+    'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Memento',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
@@ -105,6 +105,11 @@ foam.CLASS({
       'customCSS',
       'logoBackgroundColour',
       'font1',
+      'DisplayWidth.XS',
+      'DisplayWidth.SM',
+      'DisplayWidth.MD',
+      'DisplayWidth.LG',
+      'DisplayWidth.XL',
       'primary1',
       'primary2',
       'primary3',
@@ -151,15 +156,6 @@ foam.CLASS({
   ],
 
   css: `
-    body {
-      background: /*%GREY5%*/ #f5f7fa;
-      color: #373a3c;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.2px;
-      margin: 0;
-      overscroll-behavior: none;
-    }
     .stack-wrapper {
       min-height: calc(80% - 60px);
     }
@@ -395,6 +391,8 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        await self.fetchGroup();
+
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.memento.head ) {
           var menu = await self.__subContext__.menuDAO.find(self.memento.head);
@@ -402,12 +400,17 @@ foam.CLASS({
           // since if there is a user session on refresh, this would also
           // find authenticated menus to try to push before fetching subject
           if ( menu && menu.authenticate === false ) {
-            self.pushMenu(menu);
-            self.languageInstalled.resolve();
-            return;
+            await self.fetchSubject(false);
+            if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
+              // only push the unauthenticated menu if there is no subject
+              // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+              self.pushMenu(menu);
+              self.languageInstalled.resolve();
+              return;
+            }
           }
         }
-        await self.fetchGroup();
+
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
@@ -433,7 +436,7 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        self.onUserAgentAndGroupLoaded();
+        await self.onUserAgentAndGroupLoaded();
         self.mementoChange();
       });
 
@@ -450,6 +453,7 @@ foam.CLASS({
     },
 
     function render() {
+      var self = this;
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
@@ -472,13 +476,14 @@ foam.CLASS({
 
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
+          // Work around to ensure wrapCSS is exported into context before
+          // calling AppStyles which needs theme replacement
+          self.AppStyles.create();
           this
             .addClass(this.myClass())
-            .start()
               .add(this.slot(function (topNavigation_) {
                 return this.E().tag(topNavigation_);
               }))
-            .end()
             .start()
               .addClass('stack-wrapper')
               .tag({
@@ -558,17 +563,18 @@ foam.CLASS({
       }
     },
 
-    async function fetchSubject() {
+    async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
         this.subject = result;
 
-        var promptlogin = await this.client.auth.check(this, 'auth.promptlogin');
+        promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
-        if ( ! result || ! result.user || promptlogin && ! authResult ) throw new Error();
+        if ( ! result || ! result.user ) throw new Error();
 
       } catch (err) {
+        if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
@@ -577,7 +583,9 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
-      var M = m.toUpperCase();
+      const M = m.toUpperCase(); 
+      var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
+      var val = foam.util.path(this.theme, prop, false);
 
       // NOTE: We add a negative lookahead for */, which is used to close a
       // comment in CSS. We do this because if we don't, then when a developer
@@ -588,18 +596,19 @@ foam.CLASS({
       // then we don't want this method to expand the commented portion of that
       // CSS because it's already in long form. By checking if */ follows the
       // macro, we can tell if it's already in long form and skip it.
-      return this.theme[m] ? css.replace(
+      return val ? css.replace(
         new RegExp('%' + M + '%(?!\\*/)', 'g'),
-        '/*%' + M + '%*/ ' + this.theme[m]) : css;
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
-      var M = m.toUpperCase();
-
-      return this.theme[m] ? css.replace(
-        new RegExp('/\\*%' + M + '%\\*/[^;!]*', 'g'),
-        '/*%' + M + '%*/ ' + this.theme[m]) : css;
+      const M = m.toUpperCase(); 
+      var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
+      var val = foam.util.path(this.theme, prop, false);
+      return val ? css.replace(
+        new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
+        '/*%' + M + '%*/ ' + val) : css;
     },
 
     function wrapCSS(text, id) {
@@ -638,20 +647,32 @@ foam.CLASS({
       // needs to be updated prior to menu dao searchs - since some menus rely soley on the memento
       if ( this.memento.head !== idCheck || opt_forceReload ) {
         this.memento.value = idCheck;
+        if  ( idCheck.includes(this.Memento.SEPARATOR) )
+          menu = idCheck.split(this.Memento.SEPARATOR)[0];
       }
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
         dao = this.client.menuDAO;
         menu = await dao.find(menu);
-        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+        if ( ! menu ) { 
+          menu = await this.findFirstMenuIHavePermissionFor(dao);
+          let newId = (menu && menu.id) || '';
+          if ( this.memento.head !== newId ) 
+            this.memento.value = newId;
+        }
         menu && menu.launch(this);
         this.menuListener(menu);
       } else {
         await this.clientPromise.then(async () => {
           dao = this.client.menuDAO;
           menu = await dao.find(menu);
-          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+          if ( ! menu ) { 
+            menu = await this.findFirstMenuIHavePermissionFor(dao);
+            let newId = (menu && menu.id) || '';
+            if ( this.memento.head !== newId ) 
+              this.memento.value = newId;
+          }
           menu && menu.launch(this);
           this.menuListener(menu);
         });
@@ -662,10 +683,8 @@ foam.CLASS({
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
-        .select().then(ableToAccessMenus => {
-          ableToAccessMenus.array[0].launch(this);
-          return ableToAccessMenus.array[0];
-        }).catch(e => console.error(e.message || e));
+        .select().then(a => a.array.length && a.array[0])
+        .catch(e => console.error(e.message || e));
     },
 
     function requestLogin() {
@@ -708,7 +727,7 @@ foam.CLASS({
       this.pushMenu(this.memento.head);
     },
 
-    function onUserAgentAndGroupLoaded() {
+    async function onUserAgentAndGroupLoaded() {
       /**
        * Called whenever the group updates.
        *   - Updates the portal view based on the group
@@ -724,9 +743,12 @@ foam.CLASS({
             description: obj.toastSubMessage,
             icon: obj.icon
           }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
+          // only update and save non-transient messages
+          if ( ! obj.transient ) {
+            var clonedNotification = obj.clone();
+            clonedNotification.toastState = this.ToastState.DISPLAYED;
+            this.__subSubContext__.notificationDAO.put(clonedNotification);
+          }
         }
       });
 
@@ -792,8 +814,7 @@ foam.CLASS({
     },
     {
       name: 'updateDisplayWidth',
-      isMerged: true,
-      mergeDelay: 1000,
+      isFramed: true,
       code: function() {
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()

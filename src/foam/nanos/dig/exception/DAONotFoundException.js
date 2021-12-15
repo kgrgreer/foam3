@@ -9,25 +9,17 @@ foam.CLASS({
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
   javaGenerateDefaultConstructor: false,
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-          public DAONotFoundException() { }
+  javaCode: `
+    public DAONotFoundException() { }
 
-          public DAONotFoundException(String daoName) {
-            super(daoName);
-          }
-
-          public DAONotFoundException(String daoName, Throwable cause) {
-            super(daoName, cause);
-          }
-        `
-        );
-      }
+    public DAONotFoundException(String daoName) {
+      super(daoName);
     }
-  ],
+
+    public DAONotFoundException(String daoName, Throwable cause) {
+      super(daoName, cause);
+    }
+  `,
 
   properties: [
     {

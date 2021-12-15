@@ -39,18 +39,26 @@ foam.CLASS({
     'java.nio.file.StandardWatchEventKinds'
   ],
 
+  constants: [
+    {
+      name: 'OFFLINE',
+      type: 'String',
+      value: 'OFFLINE'
+    },
+    {
+      name: 'SHUTDOWN',
+      type: 'String',
+      value: 'SHUTDOWN'
+    }
+  ],
+
   properties: [
     {
       name: 'watchDir',
       class: 'String',
       javaFactory: 'return System.getProperty("java.io.tmpdir", "/tmp");'
     },
-    {
-      name: 'statusFilename',
-      class: 'String',
-      value: 'OFFLINE'
-    },
-    {
+   {
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
@@ -71,22 +79,30 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
         }, (Logger) x.get("logger"));
       logger.info("execute", getWatchDir());
       try {
-        Path existing = Paths.get(getWatchDir(), getStatusFilename());
+        Path existing = Paths.get(getWatchDir(), OFFLINE);
         Files.deleteIfExists(existing);
         existing.toFile().deleteOnExit();
+      } catch ( IOException e) {
+        // Can fail to delete when it was touch by root, for example.
+        logger.warning(e);
+      }
 
+      try {
+        Path existing = Paths.get(getWatchDir(), SHUTDOWN);
+        Files.deleteIfExists(existing);
+        existing.toFile().deleteOnExit();
+      } catch ( IOException e) {
+        logger.warning(e);
+      }
+
+      try {
         WatchService watchService = FileSystems.getDefault().newWatchService();
         Path path = Paths.get(getWatchDir());
         path.register(
@@ -98,11 +114,15 @@ foam.CLASS({
         while ((key = watchService.take()) != null) {
           for (WatchEvent<?> event : key.pollEvents()) {
             if ( event.kind() == StandardWatchEventKinds.ENTRY_CREATE &&
-                 getStatusFilename().equals(event.context().toString()) ) {
+                 ( OFFLINE.equals(event.context().toString()) ||
+                   SHUTDOWN.equals(event.context().toString()) ) ) {
               logger.warning("detected", event.context());
 
               ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
               if ( support != null ) {
+                if ( SHUTDOWN.equals(event.context().toString()) ) {
+                  support.setShutdown(true);
+                }
                 ClusterConfig config = support.getConfig(x, support.getConfigId());
                 config = (ClusterConfig) config.fclone();
                 config.setStatus(Status.OFFLINE);
