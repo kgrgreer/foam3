@@ -94,6 +94,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'salary',
+      units: 'CAD$'
     },
     {
       class: 'String',
@@ -158,20 +159,33 @@ foam.CLASS({
 
     {
       name: 'PropertyView',
-      // extends: 'foam.u2.View',
+      extends: 'foam.u2.View',
       properties: [ 'prop', 'args' ],
       methods: [
-        function toE(args, X) {
+        function xxxtoE(args, X) {
           return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
+        },
 
+        function render() {
           var prop = this.prop;
-          this.add(
-            prop.label,
-            ' ',
-            prop.toE_(this.args, this));
-          if ( prop.units ) {
-            this.start('units').add(prop.units).end();
-          }
+
+          this.
+            addClass(this.myClass()).
+
+            style({'padding-top': '2px'}).
+
+            start('div').add(prop.label).end().
+
+            start('div').
+              style({display: 'flex'}).
+              add(prop.toE_(this.args, this)).
+              callIf(prop.units, function() {
+                this.start().
+                  style({'padding-left': '4px', 'align-self': 'center'}).
+                  add(prop.units).
+                end();
+              }).
+            end();
         }
       ]
     }
@@ -196,29 +210,26 @@ foam.CLASS({
 
       var self = this;
 
-//      this.add(this.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
+//      this.add(this.data.cls_.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
 
       this.
+        start(LabelledSection, {title: 'User'}).
         addClass(this.myClass()).
         start(Columns).
-          start(Column).start('table').
+          start(Column).
             add(this.data.ID, this.data.DESCRIPTION).
-          end().end().
-          start(Column).start('table').
+          end().
+          start(Column).
             add(this.data.ENABLED).
-          end().end().
+          end().
         end().
         br().
         start(Tabs).
           start(Tab, {label: 'Address'}).
-            start().style({'overflow-y': 'auto'}).
-              startContext({data: this.data}).
-                add(this.data.ADDRESS, this.data.CITY, this.data.REGION, this.data.POSTAL_CODE, this.data.COUNTRY).
-              endContext().
-            end().
+            add(this.data.ADDRESS, this.data.CITY, this.data.REGION, this.data.POSTAL_CODE, this.data.COUNTRY).
           end().
           start(Tab, {label: 'Employee Information'}).
-            start('table').add(this.data.EMPLOYEE, this.data.SALARY).end().
+            add(this.data.EMPLOYEE, this.data.SALARY).
           end().
         end();
     }
@@ -231,5 +242,6 @@ E('br').write();
 E('hr').write();
 E('br').write();
 
-CustomUserDetailView.create({of: User, data: User.create(), showActions: true}).write();
-foam.u2.DetailView.create({data: User.create(), showActions: true}).write();
+var user = User.create();
+CustomUserDetailView.create({of: User, data: user}).write();
+foam.u2.DetailView.create({data: user, showActions: true}).write();
