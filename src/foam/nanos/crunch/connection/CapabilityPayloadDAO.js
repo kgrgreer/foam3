@@ -259,7 +259,7 @@ foam.CLASS({
 
         List leaves = new ArrayList<>();
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), false, true, leaves);
         processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
         var ret =  find_(x, receivingCapPayload.getId());
