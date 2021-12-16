@@ -79,6 +79,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
+      width: 12,
       documentation: 'Unique name of the Group.'
     },
     {
@@ -98,8 +99,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'description',
-      documentation: 'Description of the Group.'
+      name: 'jobTitle'
     },
     {
       class: 'String',
@@ -111,27 +111,33 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'title'
+      name: 'title',
+      width: 4
     },
     {
       class: 'String',
-      name: 'address'
+      name: 'address',
+      width: 80
     },
     {
       class: 'String',
-      name: 'City'
+      name: 'City',
+      width: 40
     },
     {
       class: 'String',
-      name: 'region'
+      name: 'region',
+      width: 4
     },
     {
       class: 'String',
-      name: 'postalCode'
+      name: 'postalCode',
+      width: 10
     },
     {
       class: 'String',
-      name: 'Country'
+      name: 'country',
+      width: 30
     }
   ]
 });
@@ -172,9 +178,9 @@ foam.CLASS({
           this.
             addClass(this.myClass()).
 
-            style({'padding-top': '2px'}).
+            style({'padding-top': '8px'}).
 
-            start('div').add(prop.label).end().
+            start('div').style({'padding-bottom': '2px'}).add(prop.label).end().
 
             start('div').
               style({display: 'flex'}).
@@ -208,7 +214,7 @@ foam.CLASS({
       this.SUPER();
       this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
 
-      var self = this;
+      var self = this, data = this.data;
 
 //      this.add(this.data.cls_.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
 
@@ -217,19 +223,27 @@ foam.CLASS({
         addClass(this.myClass()).
         start(Columns).
           start(Column).
-            add(this.data.ID, this.data.DESCRIPTION).
+            add(data.ID, data.FIRST_NAME).
           end().
           start(Column).
-            add(this.data.ENABLED).
+            add(data.ENABLED, data.LAST_NAME).
           end().
         end().
         br().
         start(Tabs).
           start(Tab, {label: 'Address'}).
-            add(this.data.ADDRESS, this.data.CITY, this.data.REGION, this.data.POSTAL_CODE, this.data.COUNTRY).
+            add(data.ADDRESS).
+            start(Columns).
+              start(Column).
+                add(data.CITY, data.REGION).
+              end().
+              start(Column).
+                add(data.POSTAL_CODE, data.COUNTRY).
+              end().
+            end().
           end().
           start(Tab, {label: 'Employee Information'}).
-            add(this.data.EMPLOYEE, this.data.SALARY).
+            add(data.EMPLOYEE, data.JOB_TITLE, data.SALARY).
           end().
         end();
     }
