@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.DAOResourceLoader',
+    'foam.nanos.notification.email.EmailTemplateSupport',
     'foam.nanos.notification.email.EmailTemplate',
     'foam.nanos.notification.email.EmailTemplateEngine',
     'foam.nanos.theme.Theme',
@@ -102,7 +102,7 @@ foam.CLASS({
             args.put("largeLogo", url + "/" + theme.getLargeLogo());
           }
 
-          EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(
+          EmailTemplate emailTemplate = EmailTemplateSupport.findTemplate(
             x,
             "verify-email-link",
             (String) user.getGroup(),

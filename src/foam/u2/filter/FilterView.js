@@ -45,7 +45,6 @@ foam.CLASS({
 
     ^container-search {
       display: flex;
-      gap: 24px;
     }
 
     ^container-drawer {
@@ -161,6 +160,12 @@ foam.CLASS({
       width: 75%;
       height: 80%;
       border-radius: 5px;
+    }
+    /* tablet and desktop */
+    @media only screen and (min-width: 768px) {
+      ^container-search {
+        gap: 24px;
+      }
     }
   `,
 

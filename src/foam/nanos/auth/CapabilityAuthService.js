@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
     'foam.mlang.predicate.Predicate',
+    'foam.mlang.predicate.CapabilityAuthServicePredicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.Capability',
@@ -126,6 +127,12 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
+
+          // TODO investigate
+          // this predicate is executed under the context of the userCapabilityJunction obj found by the select
+          // which is an "empty" x
+          // AbstractPredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+
           AbstractPredicate predicate = new AbstractPredicate(x) {
             @Override
             public boolean f(Object obj) {

@@ -40,7 +40,7 @@ p({
 })
 p({
   class: "foam.nanos.benchmark.PMBenchmark",
-  id: "PMBenchmark"
+  id: "PerfMonBenchmark"
 })
 p({
   class: "foam.nanos.benchmark.TimestampBenchmark",
