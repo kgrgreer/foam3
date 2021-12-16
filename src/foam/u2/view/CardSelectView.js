@@ -23,21 +23,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^selected {
-      border-color: /*%PRIMARY3%*/ #406dea !important;
-    }
-
-    ^disabled {
-      background-color: /*%GREY5%*/ #f5f7fa !important;
-      color: /*%GREY2%*/ #9ba1a6;
-    }
-
-    ^selected-disabled {
-      border-color: /*%PRIMARY5%*/ #b2c4f6 !important;
-      background-color: /*%GREY5%*/ #f5f7fa !important;
-      color: /*%GREY2%*/ #9ba1a6;
-    }
-
     ^innerFlexer {
       min-width: -webkit-fill-available;
     }
@@ -51,7 +36,20 @@ foam.CLASS({
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;
-      margin: 4px;
+    }
+    ^selected {
+      border-color: /*%PRIMARY3%*/ #406dea;
+    }
+
+    ^disabled {
+      background-color: /*%GREY5%*/ #f5f7fa;
+      color: /*%GREY2%*/ #9ba1a6;
+    }
+
+    ^selected-disabled {
+      border-color: /*%PRIMARY5%*/ #b2c4f6;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      color: /*%GREY2%*/ #9ba1a6;
     }
   `,
 

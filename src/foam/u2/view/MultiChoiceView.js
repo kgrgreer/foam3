@@ -43,11 +43,10 @@ foam.CLASS({
       text-align: center;
       justify-content:flex-start;
     }
+    ^flexer > * {
+      margin: 4px;
+    }
   `,
-
-  constants: {
-    NUM_COLUMNS: 3
-  },
 
   messages: [
     { name: 'OPTIONS_MSG', message: 'options' },
@@ -71,7 +70,27 @@ foam.CLASS({
       `,
       factory: function() {
         return [];
+      },
+      adapt: function(old, nu) {
+        if ( typeof nu === 'object' && ! Array.isArray(nu) ) {
+          var out = [];
+          for ( var key in nu ) {
+            if ( nu.hasOwnProperty(key) ) out.push([ key, nu[key] ]);
+          }
+          return out;
+        }
+
+        nu = foam.Array.shallowClone(nu);
+
+        // Upgrade single values to [value, value].
+        for ( var i = 0; i < nu.length; i++ ) {
+          if ( ! Array.isArray(nu[i]) ) {
+            nu[i] = [ nu[i], nu[i] ];
+          }
+        }
+        return nu;
       }
+
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -147,6 +166,14 @@ foam.CLASS({
     {
       name: 'data',
       value: []
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceView',
+      value: { class: 'foam.u2.view.CardSelectView' }
+    },
+    {
+      name: 'numberColumns'
     }
   ],
 
@@ -183,8 +210,8 @@ foam.CLASS({
           ...this.data,
         ];
         arr = arr.filter(o => ! foam.util.equals(o, choice));
-        if ( slot.get() ) { 
-          arr.push(choice); 
+        if ( slot.get() ) {
+          arr.push(choice);
         }
         this.data = arr;
       });
@@ -221,7 +248,7 @@ foam.CLASS({
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
                 var isFinal = choice[2];
-                
+
                 var isSelectedSlot = self.slot(function(choices, data) {
                   try {
                     var isSelected = self.isChoiceSelected(data, choices[index][0]);
@@ -230,7 +257,7 @@ foam.CLASS({
                     console.error('isSelectedSlot', err)
                     return false;
                   }
-      
+
                 });
 
                 var isDisabledSlot = self.slot(function(choices, data, maxSelected) {
@@ -238,7 +265,7 @@ foam.CLASS({
                       if ( isFinal ) {
                         return true;
                       }
-  
+
                       var isSelected = self.isChoiceSelected(data, choices[index][0]);
                       return !! (! isSelected && data.length >= maxSelected);
                   } catch(err) {
@@ -246,7 +273,7 @@ foam.CLASS({
                     return false;
                   }
                 });
-                
+
                 var cls =  choice[0] && choice[0].cls_.id;
 
                 var selfE = self.E();
@@ -260,7 +287,7 @@ foam.CLASS({
                     data$: valueSimpSlot,
                     label$: labelSimpSlot,
                     isSelected$: isSelectedSlot,
-                    isDisabled$: isDisabledSlot, 
+                    isDisabled$: isDisabledSlot,
                     of: cls
                   })
                     .call(function () {
