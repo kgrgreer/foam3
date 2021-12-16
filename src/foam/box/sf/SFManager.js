@@ -161,7 +161,7 @@ foam.CLASS({
               }
             }
           }
-        }, "SFBoxManager");
+        }, "SFManager");
       `
     },
     {

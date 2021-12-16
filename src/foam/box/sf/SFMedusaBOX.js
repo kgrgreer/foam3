@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'SFBox',
+  name: 'SFMedusaBOX',
   extends: 'foam.box.sf.SF',
   implements: [ 'foam.box.Box' ],
 
@@ -30,7 +30,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nspecId',
+      name: 'delegateNspecId',
     },
     {
       class: 'Proxy',
