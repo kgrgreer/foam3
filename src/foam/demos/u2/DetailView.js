@@ -82,6 +82,25 @@ foam.CLASS({
     'foam.u2.DetailPropertyView'
   ],
 
+  classes: [
+    {
+      name: 'PropertyView',
+      // extends: 'foam.u2.View',
+      properties: [ 'prop', 'args' ],
+      methods: [
+        function toE(args, X) {
+          return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
+
+          var prop = this.prop;
+          this.add(
+            prop.label,
+            ' ',
+            prop.toE_(this.args, this));
+        }
+      ]
+    }
+  ],
+
   // css: foam.u2.DetailView.model_.css,
 
   css: `
@@ -97,19 +116,20 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
+      this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
+
       var self = this;
+
+//      this.add(this.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
 
       this.
         addClass(this.myClass()).
         start(Columns).
           start(Column).start('table').
-            tag(this.DetailPropertyView, {prop: this.data.ID}).
-            tag(this.DetailPropertyView, {prop: this.data.DESCRIPTION}).
+            add(this.data.ID, this.data.DESCRIPTION).
           end().end().
           start(Column).start('table').
-            tag(this.DetailPropertyView, {prop: this.data.PARENT}).
-            tag(this.DetailPropertyView, {prop: this.data.DEFAULT_MENU}).
-            tag(this.DetailPropertyView, {prop: this.data.ENABLED}).
+            add(this.data.ENABLED).
           end().end().
         end().
         br().
@@ -126,23 +146,8 @@ foam.CLASS({
           end().
           start(Tab, {label: 'Users'}).
           end().
-          start(Tab, {label: 'Colours'}).
-            start('table').
-              tag(this.DetailPropertyView, {prop: this.data.PRIMARY_COLOR,     label: 'Primary'}).
-              tag(this.DetailPropertyView, {prop: this.data.SECONDARY_COLOR,   label: 'Secondary'}).
-              tag(this.DetailPropertyView, {prop: this.data.ACCENT_COLOR,      label: 'Accent'}).
-              tag(this.DetailPropertyView, {prop: this.data.TABLE_COLOR,       label: 'Table'}).
-              tag(this.DetailPropertyView, {prop: this.data.TABLE_HOVER_COLOR, label: 'Table Hover'}).
-            end().
-          end().
           start(Tab, {label: 'CSS'}).
             add(this.data.GROUP_CSS).
-          end().
-          start(Tab, {label: 'Views'}).
-            start('table').
-              tag(this.DetailPropertyView, {prop: this.data.TOP_NAVIGATION}).
-              tag(this.DetailPropertyView, {prop: this.data.FOOTER_VIEW, label: 'Footer'}).
-            end().
           end().
           start(Tab, {label: 'Logo'}).
             add(this.data.LOGO).
@@ -195,8 +200,7 @@ foam.CLASS({
             tag(this.DetailPropertyView, {prop: this.data.DESCRIPTION}).
           end().end().
           start(Column).start('table').
-            tag(this.DetailPropertyView, {prop: this.data.PARENT}).
-            tag(this.DetailPropertyView, {prop: this.data.DEFAULT_MENU}).
+//            tag(this.DetailPropertyView, {prop: this.data.DEFAULT_MENU}).
             tag(this.DetailPropertyView, {prop: this.data.ENABLED}).
           end().end().
         end().
@@ -221,26 +225,6 @@ foam.CLASS({
 
               end().
 
-              start(Column).
-
-                start(LabelledSection, {title: 'Colours'}).
-                  start('table').
-                    tag(this.DetailPropertyView, {prop: this.data.PRIMARY_COLOR,     label: 'Primary'}).
-                    tag(this.DetailPropertyView, {prop: this.data.SECONDARY_COLOR,   label: 'Secondary'}).
-                    tag(this.DetailPropertyView, {prop: this.data.ACCENT_COLOR,      label: 'Accent'}).
-                    tag(this.DetailPropertyView, {prop: this.data.TABLE_COLOR,       label: 'Table'}).
-                    tag(this.DetailPropertyView, {prop: this.data.TABLE_HOVER_COLOR, label: 'Table Hover'}).
-                  end().
-                end().br().
-
-                start(LabelledSection, {title: 'Views'}).
-                  start('table').
-                    tag(this.DetailPropertyView, {prop: this.data.TOP_NAVIGATION}).
-                    tag(this.DetailPropertyView, {prop: this.data.FOOTER_VIEW, label: 'Footer'}).
-                  end().
-                end().
-
-              end().
             end().
           end().
 
