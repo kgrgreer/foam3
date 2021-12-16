@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'SFMedusaBOX',
+  name: 'SFBOX',
   extends: 'foam.box.sf.SF',
   implements: [ 'foam.box.Box' ],
 
@@ -50,8 +50,7 @@ foam.CLASS({
     {
       name: 'send',
       javaCode: `
-      // SFEntry e = this.store((FObject) msg);
-      // this.forward(e);
+        this.storeAndForward((FObject) msg);
       `
     },
     {
@@ -65,8 +64,8 @@ foam.CLASS({
       name: 'createDelegate',
       documentation: 'creating delegate when start up',
       javaCode: `
-        Box box = (Box) getX().get(getNspecId());
-        if (  box == null ) throw new RuntimeException("NspecId: " + getNspecId() + "Not Found!!");
+        Box box = (Box) getX().get(getDelegateNspecId());
+        if (  box == null ) throw new RuntimeException("NspecId: " + getDelegateNspecId() + "Not Found!!");
         setDelegate(box);
       `
     },

@@ -185,6 +185,7 @@ foam.CLASS({
     {
       name: 'storeAndForward',
       args: 'FObject fobject',
+      javaType: 'FObject',
       documentation: 'write entry to journal and forward',
       javaCode: `
         // Wait for the SF ready to serve.
@@ -222,6 +223,7 @@ foam.CLASS({
             }
           }
         }
+        return fobject.fclone();
       `
     },
     {
