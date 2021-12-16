@@ -1100,9 +1100,7 @@ FOAM_FILES([
   { name: "foam/util/retry/RetryStrategyFactory" },
   { name: "foam/util/retry/RetryLimitReachedException" },
 
-  { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] }
-
-
-
+  { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
+  { name: "foam/u2/view/DayChoiceView" , flags: ["web"] }
 ]);
 

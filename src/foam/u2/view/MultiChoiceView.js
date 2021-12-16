@@ -173,7 +173,8 @@ foam.CLASS({
       value: { class: 'foam.u2.view.CardSelectView' }
     },
     {
-      name: 'numberColumns'
+      name: 'numberColumns',
+      value: 3
     }
   ],
 
@@ -243,7 +244,7 @@ foam.CLASS({
           .addClass(this.myClass('flexer'))
           .add( // TODO isDoaFetched and simpSlot0 aren't used should be clean up
             this.isDaoFetched$.map(isDaoFetched => {
-              var toRender = this.choices.sort().map((choice, index) => {
+              var toRender = this.choices.map((choice, index) => {
                 var valueSimpSlot = this.mustSlot(choice[0]);
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
@@ -274,16 +275,16 @@ foam.CLASS({
                   }
                 });
 
-                var cls =  choice[0] && choice[0].cls_.id;
+                var cls =  choice[0] && choice[0].cls_ && choice[0].cls_.id;
 
                 var selfE = self.E();
 
                 return selfE
                   // NOTE: This should not be the way we implement columns.
                   .style({
-                    'width': self.isVertical ? '100%' : `${100 / self.NUM_COLUMNS}%`
+                    'width': self.isVertical ? '100%' : `${100 / self.numberColumns}%`
                   })
-                  .start(self.CardSelectView, {
+                  .start(self.choiceView, {
                     data$: valueSimpSlot,
                     label$: labelSimpSlot,
                     isSelected$: isSelectedSlot,
