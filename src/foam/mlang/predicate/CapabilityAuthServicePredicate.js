@@ -59,6 +59,11 @@ foam.CLASS({
           }
           return false;
       `
+    },
+    {
+      name: 'fclone',
+      type: 'FObject',
+      javaCode: 'return this;'
     }
   ]
 });
