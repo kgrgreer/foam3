@@ -73,16 +73,89 @@ E('hr').write();
 E('br').write();
 
 foam.CLASS({
-  package: 'foam.nanos.auth',
-  name: 'GroupDetailView',
+  name: 'User',
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      documentation: 'Unique name of the Group.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'employee',
+      value: true
+    },
+    {
+      class: 'Int',
+      name: 'salary',
+    },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: 'Description of the Group.'
+    },
+    {
+      class: 'String',
+      name: 'firstName'
+    },
+    {
+      class: 'String',
+      name: 'lastName'
+    },
+    {
+      class: 'String',
+      name: 'title'
+    },
+    {
+      class: 'String',
+      name: 'address'
+    },
+    {
+      class: 'String',
+      name: 'City'
+    },
+    {
+      class: 'String',
+      name: 'region'
+    },
+    {
+      class: 'String',
+      name: 'postalCode'
+    },
+    {
+      class: 'String',
+      name: 'Country'
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'CustomUserDetailView',
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.nanos.auth.Group',
-    'foam.u2.DetailPropertyView'
+    'User'
   ],
 
   classes: [
+    /*
+    Responsibilities:
+      1. display property's view
+      2. label
+      3. units
+      4. visibility
+      5. validation
+      6. tooltip
+      7. help
+      */
+
     {
       name: 'PropertyView',
       // extends: 'foam.u2.View',
@@ -96,6 +169,9 @@ foam.CLASS({
             prop.label,
             ' ',
             prop.toE_(this.args, this));
+          if ( prop.units ) {
+            this.start('units').add(prop.units).end();
+          }
         }
       ]
     }
@@ -134,121 +210,26 @@ foam.CLASS({
         end().
         br().
         start(Tabs).
-          start(Tab, {label: 'Permissions'}).
+          start(Tab, {label: 'Address'}).
             start().style({'overflow-y': 'auto'}).
               startContext({data: this.data}).
-                add(this.data.PERMISSIONS).
-              endContext().
-              startContext({data: this.data}).
-                add(this.data.PERMISSIONS2).
+                add(this.data.ADDRESS, this.data.CITY, this.data.REGION, this.data.POSTAL_CODE, this.data.COUNTRY).
               endContext().
             end().
           end().
-          start(Tab, {label: 'Users'}).
-          end().
-          start(Tab, {label: 'CSS'}).
-            add(this.data.GROUP_CSS).
-          end().
-          start(Tab, {label: 'Logo'}).
-            add(this.data.LOGO).
-            br().
-            start(foam.u2.view.ImageView, {data: this.data.logo$}).style({padding: '10px'}).end().
+          start(Tab, {label: 'Employee Information'}).
+            start('table').add(this.data.EMPLOYEE, this.data.SALARY).end().
           end().
         end();
-//        tag(this.DetailPropertyView, {prop: this.data.USERS});
     }
   ]
 });
 
 // Bug: Borders don't pass down Context properly
 
-foam.u2.DetailView.create({of: foam.nanos.auth.Group, data: foam.nanos.auth.Group.create(), showActions: true}).write();
-
 E('br').write();
 E('hr').write();
 E('br').write();
 
-foam.CLASS({
-  name: 'GroupDetailView2',
-  extends: 'foam.u2.View',
-
-  requires: [
-    'foam.nanos.auth.Group',
-    'foam.u2.DetailPropertyView'
-  ],
-
-  css: `
-    ^ {
-      padding: 8px;
-      display: inline-block;
-      border-radius: 3px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-      margin: 8px;
-    }
-  `,
-
-  methods: [
-    function render() {
-      this.SUPER();
-      var self = this;
-
-      this.
-        addClass(this.myClass()).
-        start(Columns).
-          start(Column).start('table').
-            tag(this.DetailPropertyView, {prop: this.data.ID}).
-            tag(this.DetailPropertyView, {prop: this.data.DESCRIPTION}).
-          end().end().
-          start(Column).start('table').
-//            tag(this.DetailPropertyView, {prop: this.data.DEFAULT_MENU}).
-            tag(this.DetailPropertyView, {prop: this.data.ENABLED}).
-          end().end().
-        end().
-        br().
-        start(Tabs).
-
-          start(Tab, {label: 'Look & Feel'}).
-
-            start(Columns).
-              start(Column).
-
-                start(LabelledSection, {title: 'CSS'}).
-                  add(this.data.GROUP_CSS).
-                end().br().
-
-                start(LabelledSection, {title: 'Logo'}).
-                  br().
-                  add(this.data.LOGO).
-                  br().
-                  start(foam.u2.view.ImageView, {data: this.data.logo$}).style({padding: '10px'}).end().
-                end().
-
-              end().
-
-            end().
-          end().
-
-          start(Tab, {label: 'Permissions'}).
-            start().style({'overflow-y': 'auto'}).
-              add(this.data.PERMISSIONS).
-            end().
-          end().
-
-          start(Tab, {label: 'Users'}).
-          end().
-
-        end();
-//        tag(this.DetailPropertyView, {prop: this.data.USERS});
-    }
-  ]
-});
-
-GroupDetailView2.create({of: foam.nanos.auth.Group, data: foam.nanos.auth.Group.create(), showActions: true}).write();
-
-E('br').write();
-E('hr').write();
-E('br').write();
-
-/*
-foam.nanos.auth.Group.getAxiomsByClass(foam.core.Property).forEach(function(p) { console.log("tag(this.DetailPropertyView, {prop: this.data." + foam.String.constantize(p.name) + "})..");}).;
-*/
+CustomUserDetailView.create({of: User, data: User.create(), showActions: true}).write();
+foam.u2.DetailView.create({data: User.create(), showActions: true}).write();
