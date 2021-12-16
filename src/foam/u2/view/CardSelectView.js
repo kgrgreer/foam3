@@ -29,8 +29,8 @@ foam.CLASS({
 
     ^ .foam-u2-borders-CardBorder {
       box-sizing: content-box;
-      background-color: #ffffff;
-      border: solid 1px #e7eaec;
+      background-color: /*%WHITE%*/ #ffffff;
+      border: solid 1px /*%GREY4%*/ #e7eaec;
       border-radius: 5px;
       min-height: 10vh;
       position: relative;

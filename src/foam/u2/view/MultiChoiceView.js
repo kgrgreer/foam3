@@ -72,7 +72,7 @@ foam.CLASS({
         return [];
       },
       adapt: function(old, nu) {
-        if ( typeof nu === 'object' && ! Array.isArray(nu) ) {
+        if ( foam.Object.isInstance(nu) && ! Array.isArray(nu) ) {
           var out = [];
           for ( var key in nu ) {
             if ( nu.hasOwnProperty(key) ) out.push([ key, nu[key] ]);

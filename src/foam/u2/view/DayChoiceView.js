@@ -11,16 +11,16 @@ foam.CLASS({
   css: `
   ^ {
     box-sizing: content-box;
-    background-color: #ffffff;
+    background-color: /*%WHITE%*/ #ffffff;
     border: solid 1px #b2b6bd;
     border-radius: 4px;
     padding: 8px 16px;
     transition: all 0.2s linear;
     text-align: center;
-    width: 36px;
+    width: 2.5em;
   }
   ^selected {
-    background-color: #e5f1fc;
+    background-color: /*%PRIMARY5%*/ #e5f1fc;
   }
   `,
   methods: [

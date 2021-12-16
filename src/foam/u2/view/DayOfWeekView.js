@@ -29,6 +29,7 @@ foam.CLASS({
   ],
   methods: [
     function init() {
+      this.SUPER();
       this.choices = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri'];
     }
   ]
