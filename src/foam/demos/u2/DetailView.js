@@ -136,6 +136,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'region',
+      label: 'Province',
       width: 4
     },
     {
@@ -174,7 +175,7 @@ foam.CLASS({
 
     {
       name: 'PropertyView',
-      extends: 'foam.u2.View',
+      extends: 'foam.u2.Element',
       properties: [ 'prop', 'args' ],
       methods: [
         function xxxtoE(args, X) {
@@ -198,7 +199,7 @@ foam.CLASS({
 
             start('div').
               style({display: 'flex'}).
-              add(prop.toE_(this.args, this)).
+              add(prop.toE_(this.args, this.__subContext__)).
               callIf(prop.units, function() {
                 this.start().
                   style({'padding-left': '4px', 'align-self': 'center'}).
