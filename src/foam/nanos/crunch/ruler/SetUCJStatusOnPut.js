@@ -90,6 +90,9 @@ foam.CLASS({
       javaCode: `
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability cap = (Capability) capabilityDAO.find(ucj.getTargetId());
+        if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
+          throw new RuntimeException("Unable to find capability: " + ucj.getTargetId());
+        }
         return cap.getPrereqsChainedStatus(x, ucj);
       `
     }
