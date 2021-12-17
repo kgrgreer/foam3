@@ -50,13 +50,13 @@ foam.CLASS({
       // width: 600px;
       // width: 100%;
     }
-    ^tabRow { height: 38px; }
+    ^tabRow { height: 40px; }
     ^tab {
       background: lightgray;
       border: 1px solid black;
       border-radius: 3px 3px 0 0;
       display: inline-block;
-      height: 12px;
+      height: 14px;
       padding: 8px;
     }
     ^tab.selected {
