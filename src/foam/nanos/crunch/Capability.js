@@ -41,7 +41,7 @@ foam.CLASS({
     'name',
     'description',
     'version',
-    'status',
+    'lifecycleState',
     'expiry',
     'daoKey'
   ],

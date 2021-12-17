@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'static foam.nanos.crunch.CapabilityJunctionStatus.*',
@@ -70,7 +71,7 @@ foam.CLASS({
         var capabilityDAO = (DAO) x.get("capabilityDAO");
 
         // Verify that the capability exists
-        Object cap = capabilityDAO.inX(x).find(getCapabilityId());
+        Capability cap = (Capability) capabilityDAO.inX(x).find(getCapabilityId());
         if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
 
         var ucj = crunchService.getJunction(x, getCapabilityId());

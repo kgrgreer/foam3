@@ -379,7 +379,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     for ( String preconditionId : preconditions ) {
       // Return false if capability does not exist or is not available
-      Capability precondition = (precondition) capabilityDAO.find(preconditionId);
+      Capability precondition = (Capability) capabilityDAO.find(preconditionId);
       if ( precondition == null || precondition.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
       var ucj = getJunction(sessionX, preconditionId);
       if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
