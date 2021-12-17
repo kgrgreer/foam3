@@ -52,16 +52,8 @@
     {
       name: 'dayOfWeek',
       label: 'On',
-      //will be replaced by multiselect dayofweek view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday'
-        ]
+        class: 'foam.u2.view.DayOfWeekView',
       },
       updateVisibility: function(frequency) {
         if ( frequency != 'Week' )
