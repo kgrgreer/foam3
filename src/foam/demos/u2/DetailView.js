@@ -46,8 +46,7 @@ foam.CLASS({
     function layoutProperties(properties, self) {
       self.layoutProp(self.Timer.I, self);
       self.layoutProp(self.Timer.INTERVAL, self);
-    },
-
+    }
   ]
 });
 
@@ -89,17 +88,27 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'employee',
+      name: 'isEmployee',
+      label: 'Employee',
       value: true
     },
     {
       class: 'Int',
       name: 'salary',
-      units: 'CAD$'
+      units: 'CAD$',
+      xxxvalidateObj: function(salary) {
+        if ( salary && salary < 30000 ) throw 'Salary must be at least $30,000.';
+      },
+      visibility: function(isEmployee) {
+        return isEmployee ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'String',
-      name: 'jobTitle'
+      name: 'jobTitle',
+      visibility: function(isEmployee) {
+        return isEmployee ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'String',
@@ -175,11 +184,17 @@ foam.CLASS({
 
     {
       name: 'PropertyView',
-      extends: 'foam.u2.Element',
+      extends: 'foam.u2.Element', // isn't actually a View (no data), more like a border or wrapper
       properties: [ 'prop', 'args' ],
       methods: [
         function xxxtoE(args, X) {
           return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
+        },
+
+        function createVisibilitySlot() {
+          return this.prop.createVisibilityFor(
+            this.__context__.data$,
+            this.controllerMode$).map(m => m != foam.u2.DisplayMode.HIDDEN);
         },
 
         function render() {
@@ -190,22 +205,35 @@ foam.CLASS({
           // Needs to be called after tooltip is set, which seems like a bug. KGR
           this.SUPER();
 
+          var data = this.__context__.data;
+          var view = prop.toE_(this.args, this.__subContext__);
+
+          var errorSlot = prop.validateObj && prop.validationTextVisible ?
+            data.slot(prop.validateObj) :
+            foam.core.ConstantSlot.create({ value: null });
+
           this.
             addClass(this.myClass()).
-
+            show(this.createVisibilitySlot()).
             style({'padding-top': '8px'}).
 
             start('div').style({'padding-bottom': '2px'}).add(prop.label).end().
 
             start('div').
-              style({display: 'flex'}).
-              add(prop.toE_(this.args, this.__subContext__)).
+              style({display: 'flex', 'flex-wrap': 'wrap'}).
+              add(view).
               callIf(prop.units, function() {
                 this.start().
                   style({'padding-left': '4px', 'align-self': 'center'}).
                   add(prop.units).
                 end();
               }).
+              start('div').
+                style({'flex-basis': '100%', width: '0', color: 'red'}).
+                show(errorSlot).
+                br().
+                add(errorSlot).
+              end().
             end();
         }
       ]
@@ -258,11 +286,11 @@ foam.CLASS({
             end().
           end().
           start(Tab, {label: 'Employee Information'}).
-            add(data.EMPLOYEE, data.JOB_TITLE, data.SALARY).
+            add(data.IS_EMPLOYEE, data.JOB_TITLE, data.SALARY).
           end().
         end().
         start(FoldingSection, {title: 'Employee Information'}).
-          add(data.EMPLOYEE, data.JOB_TITLE, data.SALARY).
+          add(data.IS_EMPLOYEE, data.JOB_TITLE, data.SALARY).
         end();
     }
   ]
