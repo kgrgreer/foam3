@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   implements: [ 'foam.mlang.Expressions' ],
 
-  documentation: 'A DOM-based native scrolling view over for a DAO.',
+  documentation: 'A DOM-based native scrolling view for a DAO.',
 
   css: `
     ^ {
