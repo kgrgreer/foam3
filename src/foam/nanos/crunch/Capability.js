@@ -323,7 +323,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: 'ACTIVE'
+      value: 'ACTIVE',
+      documentation: `
+        PENDING - Awaiting action, unusable capability.
+        REJECTED - Rejected from system use, unusable capability.
+        DELETED - Marked as deleted from system, unusuable capability.
+        ACTIVE - Capability is active and can be used.
+      `
     }
   ],
 
