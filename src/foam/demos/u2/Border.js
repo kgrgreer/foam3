@@ -73,13 +73,13 @@ foam.CLASS({
       width: 100%;
     }
     ^content {
-      margin: 4px;
-      padding: 6px;
       background: white;
       border: 1px solid black;
+      left: -4px;
+      margin: 4px;
+      padding: 6px;
       position: relative;
       top: -13px;
-      left: -4px;
     }
   `,
 
@@ -334,7 +334,7 @@ E('br').write();
 
 foam.CLASS({
   name: 'FoldingSection',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.Element',
 
   requires: [ 'foam.u2.ActionView' ],
 
@@ -376,7 +376,8 @@ foam.CLASS({
     }
     ^content {
       background: white;
-      height: 200px;
+      display: initial;
+     //  height: 200px;
       position: relative;
       top: -22px;
       width: 300px;
