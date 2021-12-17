@@ -110,6 +110,15 @@ foam.CLASS({
       name: 'lastName'
     },
     {
+      class: 'EMail',
+      name: 'email'
+    },
+    {
+      class: 'Date',
+      name: 'birthday',
+      description: 'Date of birth.'
+    },
+    {
       class: 'String',
       name: 'title',
       width: 4
@@ -223,10 +232,10 @@ foam.CLASS({
         addClass(this.myClass()).
         start(Columns).
           start(Column).
-            add(data.ID, data.FIRST_NAME).
+            add(data.ID, data.FIRST_NAME, data.EMAIL).
           end().
           start(Column).
-            add(data.ENABLED, data.LAST_NAME).
+            add(data.ENABLED, data.LAST_NAME, data.BIRTHDAY).
           end().
         end().
         br().
@@ -245,6 +254,9 @@ foam.CLASS({
           start(Tab, {label: 'Employee Information'}).
             add(data.EMPLOYEE, data.JOB_TITLE, data.SALARY).
           end().
+        end().
+        start(FoldingSection, {title: 'Employee Information'}).
+          add(data.EMPLOYEE, data.JOB_TITLE, data.SALARY).
         end();
     }
   ]
@@ -256,6 +268,7 @@ E('br').write();
 E('hr').write();
 E('br').write();
 
-var user = User.create();
+var user = User.create({lastName: 'Greer'});
 CustomUserDetailView.create({of: User, data: user}).write();
 foam.u2.DetailView.create({data: user, showActions: true}).write();
+user.firstName = 'Kevin';
