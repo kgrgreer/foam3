@@ -333,7 +333,7 @@ public class CapabilityTest extends Test {
     ));
 
     test(uj1.getStatus() == CapabilityJunctionStatus.GRANTED, "UserCapabilityJunction Status between user and c1 is still granted: " + uj1.getStatus());
-    test( ! ( c1.getLifecycleState() == LifecycleState.DELETED || c1.getLifecycleState() == LifecycleState.REJECTED ), "c1 is still enabled");
+    test( ! ( c1.getLifecycleState() == LifecycleState.ACTIVE ), "c1 is still active");
 
   }
 
