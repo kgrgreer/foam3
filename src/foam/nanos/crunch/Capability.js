@@ -466,7 +466,7 @@ foam.CLASS({
         if ( prereqs != null ) {
           for ( var capId : prereqs ) {
             var cap = (Capability) capabilityDAO.find(capId);
-            if ( cap == null || cap.getLifecycleState() == LifecycleState.DELETED || cap.getLifecycleState() == LifecycleState.REJECTED ) continue;
+            if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
             UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
 
@@ -557,7 +557,7 @@ foam.CLASS({
 
         for ( var capId : prereqs ) {
           Capability cap = (Capability) capabilityDAO.find(capId);
-          if ( cap == null ) throw new RuntimeException("Cannot find prerequisite capability");
+          if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) throw new RuntimeException("Cannot find prerequisite capability");
           UserCapabilityJunction prereq = crunchService.getJunction(x, capId);
           if ( cap.maybeReopen(x, prereq) ) return true;
         }

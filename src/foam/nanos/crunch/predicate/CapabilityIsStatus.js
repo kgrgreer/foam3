@@ -71,7 +71,7 @@ foam.CLASS({
 
         // Verify that the capability exists
         Object cap = capabilityDAO.inX(x).find(getCapabilityId());
-        if ( cap == null ) return false;
+        if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
 
         var ucj = crunchService.getJunction(x, getCapabilityId());
         if ( ucj == null || ucj.getStatus() != getStatus() ) return false;
