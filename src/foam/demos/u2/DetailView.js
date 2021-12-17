@@ -116,7 +116,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'birthday',
-      description: 'Date of birth.'
+      help: 'Date of birth.'
     },
     {
       class: 'String',
@@ -183,6 +183,11 @@ foam.CLASS({
 
         function render() {
           var prop = this.prop;
+
+          if ( prop.help ) this.tooltip = prop.help;
+
+          // Needs to be called after tooltip is set, which seems like a bug. KGR
+          this.SUPER();
 
           this.
             addClass(this.myClass()).
@@ -268,7 +273,8 @@ E('br').write();
 E('hr').write();
 E('br').write();
 
-var user = User.create({lastName: 'Greer'});
+var user = User.create({firstName: 'Kevin', lastName: 'Greer'});
 CustomUserDetailView.create({of: User, data: user}).write();
 foam.u2.DetailView.create({data: user, showActions: true}).write();
-user.firstName = 'Kevin';
+
+foam.u2.detail.SectionedDetailView.create({data: user, showActions: true}).write();
