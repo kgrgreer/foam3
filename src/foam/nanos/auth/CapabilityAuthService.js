@@ -127,12 +127,10 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-
           // TODO investigate
           // this predicate is executed under the context of the userCapabilityJunction obj found by the select
           // which is an "empty" x
           // AbstractPredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
-
           AbstractPredicate predicate = new AbstractPredicate(x) {
             @Override
             public boolean f(Object obj) {
@@ -153,7 +151,6 @@ foam.CLASS({
               return false;
             }
           };
-
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
