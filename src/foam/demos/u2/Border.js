@@ -123,7 +123,7 @@ foam.CLASS({
         // tab.shown$ = tab.selected$;
         // Rather than using 'shown', setting visibility maintains the size of the
         // largest tab.
-        tab.style({visibility: tab.selected$.map(function(s) { return s ? '' : 'hidden'; })});
+        tab.style({display: tab.selected$.map(function(s) { return s ? '' : 'none'; })});
       }
 
       this.SUPER(tab);
@@ -234,22 +234,23 @@ foam.CLASS({
 
   css: `
     ^ {
-      border-style: ridge;
+      // border-style: ridge;
       display: block;
-      padding: 10px;
+      // padding: 10px;
     }
     ^title {
       background: white;
       color: #666;
       display: inline;
+      font-size: larger;
       padding: 3px;
       position: relative;
       top: -20px;
     }
     ^content {
-      height: 200px;
+      // height: 200px;
       position: relative;
-      top: -22px;
+      // top: -22px;
       // width: 300px;
     }
   `,
@@ -339,13 +340,14 @@ foam.CLASS({
 
   css: `
     ^ {
+      width: 97%;
       border-top: 1px solid #999;
       display: inline-block;
-      padding: 10px;
+      padding: 10px 4px;
     }
     ^.expanded {
       border: 1px solid #999;
-      padding-left: 8px;
+     // padding-left: 8px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
     }
     ^control {
@@ -656,9 +658,10 @@ foam.CLASS({
   css: `
     ^ {
       display: inline-block;
-      padding: 4px;
+      padding-right: 8px;
+      // padding: 4px;
       float: left;
-      margin: 4px;
+      // margin: 4px;
       // border: 1px solid black;
       // width: 100%;
     }
