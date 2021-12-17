@@ -103,6 +103,7 @@ foam.CLASS({
         addClass(this.myClass()).
         start('div').
         addClass(this.myClass('header')).
+        show(!!this.data.label || !!this.data.configView).
         start().
           style({ float: 'left' }).
           add(this.data.label$).

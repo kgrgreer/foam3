@@ -8,44 +8,37 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'DAOTable',
   extends: 'foam.u2.Element',
+  mixins: ['foam.nanos.controller.MementoMixin'],
   requires: [
-    'foam.u2.view.TableView',
-    'foam.dashboard.view.DashboardCitationView'
+    'foam.dashboard.view.DashboardCitationView',
+    'foam.comics.v2.DAOBrowseControllerView',
+    'foam.u2.stack.StackBlock'
   ],
-  imports: [ 'data' ],
-
-  properties: [
-    {
-      name: 'citationView',
-      factory: function() {
-        return this.DashboardCitationView;
-      }
-    }
-  ],
-
-  methods: [
-    function render() {
-      var self = this;
-      this
-        .addClass(this.myClass())
-        .add(this.slot(function(data$dao, data$limit) {
-          return self.E()
-            .addClass(this.myClass())
-            .select(data$dao.limit(data$limit), function(obj) {
-              return self.E()
-                .start().addClass('table-row')
-                .start({
-                  class: self.citationView,
-                  data: obj,
-                  of: data$dao.of
-                })
-               .end();
-           });
-        }));
-    }
+  imports: [
+    'data',
+    'dashboardController',
+    'stack',
+    'translationService'
   ],
 
   css: `
+    ^center {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    ^empty-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+    ^empty-subTitle {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+    }
     ^ .table-row:hover {
       background: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
@@ -57,5 +50,133 @@ foam.CLASS({
     ^ div.table-row:last-child div {
       border-bottom: none;
     }
-  `
+    ^ .view-more button {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 56px;
+      max-height: 56px;
+    }
+    ^ .view-more button:hover {
+      background: /*%GREY5%*/ #f5f7fa;
+      cursor: pointer;
+    }
+    ^scroll {
+      max-height: 528px;
+      overflow-y: scroll;
+    }
+  `,
+
+  properties: [
+    {
+      name: 'citationView',
+      factory: function() {
+        return this.DashboardCitationView;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'viewMore',
+      documentation: `
+        If true, displays a button at the butttom of the table that redirects to a
+        full TableView of the given dao. If false, the Table will default to scroll.
+      `,
+      postSet: function() {
+        if ( this.viewMore ) this.data.limit = 6;
+      }
+    },
+    {
+      class: 'Array',
+      name: 'currentValues',
+      documentation: `
+        A list of objects currently displayed in the Table. This list is used as a reference to prevent
+        the it from re-rendering the table with the same data.
+      `,
+      value: []
+    },
+    {
+      class: 'String',
+      name: 'emptyTitle'
+    },
+    {
+      class: 'String',
+      name: 'emptySubTitle'
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.onDetach(this.dashboardController.sub('dashboard', 'update', this.fetchValues));
+    },
+    function render() {
+      var self = this;
+      var emptyTitle_ = this.translationService.getTranslation(foam.locale, this.emptyTitle, this.emptyTitle);
+      var emptySubTitle_ = this.translationService.getTranslation(foam.locale, this.emptySubTitle, this.emptySubTitle);
+      this.fetchValues();
+      this
+        .addClass(this.myClass())
+        .callIf(!self.viewMore, function() {
+          self.addClass(self.myClass('scroll'));
+        })
+        .add(this.slot(function(currentValues) {
+          var e = self.E();
+          return e
+            .callIf(currentValues.length == 0, function() {
+              e.start().addClass(self.myClass('center'))
+                .start().addClass(self.myClass('empty-title')).add(emptyTitle_).end()
+                .start().addClass(self.myClass('empty-subtitle')).add(emptySubTitle_).end()
+              .end();
+            })
+            .forEach(currentValues, function(obj) {
+              e.start().addClass('table-row')
+                .start({
+                  class: self.citationView,
+                  data: obj,
+                  of: self.data.of
+                })
+               .end();
+           })
+           .callIf(self.viewMore && currentValues.length >= self.data.limit, function() {
+              e.start()
+              .addClass('view-more')
+              .startContext({data: self})
+                .tag(self.VIEW_MORE_ACTION, {
+                  buttonStyle: foam.u2.ButtonStyle.UNSTYLED
+                })
+              .endContext()
+            .end();
+           })
+        }));
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewMoreAction',
+      label: 'View more activities',
+      code: function() {
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: this.DAOBrowseControllerView,
+            data: this.data.dao,
+          }, parent: this.__subContext__ 
+        }));
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'fetchValues',
+      code: function() {
+        var self = this;
+        self.data.dao.limit(self.data.limit).select().then((objects) => {
+          var fetchedValues = objects.array;
+          if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
+            self.currentValues = fetchedValues;
+          }
+        });
+      }
+    }
+  ]
 });
