@@ -71,6 +71,8 @@ foam.CLASS({
                 }) :
                 s.title$;
 
+                console.log("s", s);
+
                 return self.GUnit.create({ columns: s.gridColumns })
                   .addClass(self.myClass('card-container'))
                   .start('h2')
