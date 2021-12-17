@@ -637,7 +637,6 @@ FOAM_FILES([
   { name: "foam/u2/view/ColumnConfigView", flags: ['web'] },
   { name: "foam/u2/view/ScrollTableView", flags: ['web'] },
   { name: "foam/u2/view/EmbeddedTableView", flags: ['web'] },
-  { name: "foam/u2/view/ScrollDAOView", flags: ['web'] },
   { name: "foam/u2/view/BlobView", flags: ['web'] },
   { name: "foam/u2/view/FileView", flags: ['web'] },
   { name: "foam/u2/view/ImageBlobView", flags: ['web'] },
@@ -1100,4 +1099,3 @@ FOAM_FILES([
   { name: "foam/util/retry/RetryStrategyFactory" },
   { name: "foam/util/retry/RetryLimitReachedException" }
 ]);
-
