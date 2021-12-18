@@ -50,6 +50,7 @@ foam.CLASS({
   ]
 });
 
+/*
 E('br').write();
 E('hr').write();
 E('br').write();
@@ -70,6 +71,7 @@ foam.u2.DetailView.create({of: 'foam.util.Timer', showActions: true}).write();
 E('br').write();
 E('hr').write();
 E('br').write();
+*/
 
 foam.CLASS({
   name: 'User',
@@ -156,6 +158,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'country',
+      value: 'Canada',
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Canada', 'United States', 'Mexico' ] },
       width: 30
     }
   ]
@@ -185,7 +189,14 @@ foam.CLASS({
     {
       name: 'PropertyView',
       extends: 'foam.u2.Element', // isn't actually a View (no data), more like a border or wrapper
-      properties: [ 'prop', 'args' ],
+      properties: [
+        'prop',
+        'args',
+        {
+          name: 'label',
+          factory: function() { return this.prop.label; }
+        }
+      ],
       methods: [
         function xxxtoE(args, X) {
           return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
@@ -213,19 +224,26 @@ foam.CLASS({
             foam.core.ConstantSlot.create({ value: null });
 
           this.
-            addClass(this.myClass()).
+            addClass().
             show(this.createVisibilitySlot()).
             style({'padding-top': '8px'}).
 
-            start('div').style({'padding-bottom': '2px'}).add(prop.label).end().
+            start('div').style({'padding-bottom': '2px'}).add(this.label).end().
 
             start('div').
               style({display: 'flex', 'flex-wrap': 'wrap'}).
               add(view).
               callIf(prop.units, function() {
                 this.start().
-                  style({'padding-left': '4px', 'align-self': 'center'}).
+                  style({position: 'relative', 'align-self': 'center'}).
                   add(prop.units).
+                  call(function() {
+                    this.el().then((el) => {
+                      // TODO: find parent and add extra padding
+                      var style = this.__context__.window.getComputedStyle(el);
+                      this.style({'margin-left': -8-parseFloat(style.width)});
+                    });
+                  }).
                 end();
               }).
               start('div').
@@ -263,13 +281,17 @@ foam.CLASS({
 
       this.
         start(LabelledSection, {title: 'User'}).
-        addClass(this.myClass()).
+        addClass().
+        add(data.ID).
+       // start(Row).add('start',data.ID, data.ENABLED, data.IS_EMPLOYEE,'end').end().
+        tag('hr').
+        start('h3').add('Title').end().
         start(Columns).
           start(Column).
-            add(data.ID, data.FIRST_NAME, data.EMAIL).
+            add(data.ENABLED, data.FIRST_NAME, data.EMAIL).
           end().
           start(Column).
-            add(data.ENABLED, data.LAST_NAME, data.BIRTHDAY).
+            add(data.IS_EMPLOYEE, data.LAST_NAME, data.BIRTHDAY).
           end().
         end().
         br().
@@ -278,19 +300,27 @@ foam.CLASS({
             add(data.ADDRESS).
             start(Columns).
               start(Column).
-                add(data.CITY, data.REGION).
+                add(data.CITY, data.COUNTRY).
               end().
               start(Column).
-                add(data.POSTAL_CODE, data.COUNTRY).
+                add(data.POSTAL_CODE).
+                tag(self.PropertyView, {
+                  prop: data.REGION,
+                  label: this.data.country$.map(c => {
+                    return { Canada: 'Province', 'United States': 'State', Mexico: 'State' }[c];
+                  })
+                }).
               end().
             end().
           end().
           start(Tab, {label: 'Employee Information'}).
-            add(data.IS_EMPLOYEE, data.JOB_TITLE, data.SALARY).
+            show(data.isEmployee$).
+            add(data.JOB_TITLE, data.SALARY).
           end().
         end().
         start(FoldingSection, {title: 'Employee Information'}).
-          add(data.IS_EMPLOYEE, data.JOB_TITLE, data.SALARY).
+          show(data.isEmployee$).
+          add(data.JOB_TITLE, data.SALARY).
         end();
     }
   ]
@@ -303,7 +333,11 @@ E('hr').write();
 E('br').write();
 
 var user = User.create({firstName: 'Kevin', lastName: 'Greer'});
+
 CustomUserDetailView.create({of: User, data: user}).write();
+
+/*
 foam.u2.DetailView.create({data: user, showActions: true}).write();
 
 foam.u2.detail.SectionedDetailView.create({data: user, showActions: true}).write();
+*/
