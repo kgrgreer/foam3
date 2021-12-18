@@ -43,12 +43,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      // background: gray;
       display: block;
-      // height: 200px;
-      padding: 10px 4px;
-      // width: 600px;
-      // width: 100%;
+      width: 98%;
     }
     ^tabRow { height: 40px; }
     ^tab {
@@ -61,6 +57,7 @@ foam.CLASS({
     }
     ^tab.selected {
       background: white;
+      border-bottom: 1px solid white;
       position: relative;
       z-index: 1;
     }
@@ -112,6 +109,7 @@ foam.CLASS({
         if ( ! this.selected ) this.selected = tab;
 
         this.tabRow.start('span').
+          show(tab.shown$).
           addClass(this.myClass('tab')).
           enableClass('selected', tab.selected$).
           on('click', function() { this.selected = tab; }.bind(this)).
@@ -234,16 +232,15 @@ foam.CLASS({
 
   css: `
     ^ {
-      // border-style: ridge;
       display: block;
-      // padding: 10px;
+      padding: 10px 4px;
     }
     ^title {
       background: white;
       color: #666;
       display: inline;
       font-size: larger;
-      padding: 3px;
+      padding: 0 4px;
       position: relative;
       top: -20px;
     }
@@ -340,7 +337,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 97%;
+      width: 98%;
       border-top: 1px solid #999;
       display: inline-block;
       padding: 10px 4px;
@@ -639,9 +636,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      // background: #efefef;
       display: flex;
-      // width: 100%;
     }
   `,
 
@@ -701,3 +696,30 @@ var cols = E().
     start(Tab, {label: 'Tab 3'}).add('Even more contents in tab 3').end().
   end();
 cols.write();
+
+
+foam.CLASS({
+  name: 'Row',
+  extends: 'foam.u2.Element',
+
+  css: `
+    ^ {
+      display: flex;
+    }
+  `,
+
+  methods: [
+    function init() {
+      this.addClass();
+    },
+    function xxxadd() {
+      debugger;
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = this.createChild_(Column);
+        this.add_(c);
+        c.add(arguments[i]);
+      }
+      return this;
+    }
+  ]
+});
