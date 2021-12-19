@@ -103,6 +103,7 @@ foam.CLASS({
       class: 'Int',
       name: 'salary',
       units: 'CAD$',
+      // TODO:
       xxxvalidateObj: function(salary) {
         if ( salary && salary < 30000 ) throw 'Salary must be at least $30,000.';
       },
@@ -204,6 +205,9 @@ foam.CLASS({
         {
           name: 'units',
           factory: function() { return this.prop.units; }
+        },
+        {
+          name: 'view'
         }
       ],
       methods: [
@@ -241,7 +245,10 @@ foam.CLASS({
 
             start('div').
               style({display: 'flex', 'flex-wrap': 'wrap'}).
-              add(view).
+              tag(this.view$.map(v => {
+                var p = v ? prop.clone().copyFrom({view: v}) : prop;
+                return p.toE_({}, this.__context__);
+              })).
               add(this.units$.map(units => {
                 if ( ! units ) return '';
                 return this.E().
@@ -318,6 +325,17 @@ foam.CLASS({
                 }).
                 tag(self.PropertyView, {
                   prop: data.REGION,
+                  view$: this.data.country$.map(c => {
+                    if ( c === 'Canada' ) return {
+                      class: 'foam.u2.view.ChoiceView',
+                      choices: [
+                        [ 'ON', 'Ontario' ],
+                        [ 'PQ', 'Quebec' ],
+                        [ 'OT', 'Other' ]
+                      ]
+                    };
+                    return data.REGION.view;
+                  }),
                   label: this.data.country$.map(c => {
                     return { Canada: 'Province', 'United States': 'State' }[c];
                   })
