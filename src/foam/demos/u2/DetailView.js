@@ -84,6 +84,11 @@ foam.CLASS({
       documentation: 'Unique name of the Group.'
     },
     {
+      class: 'Date',
+      name: 'created',
+      factory: function() { return new Date(); }
+    },
+    {
       class: 'Boolean',
       name: 'enabled',
       value: true
@@ -159,7 +164,7 @@ foam.CLASS({
       class: 'String',
       name: 'country',
       value: 'Canada',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Canada', 'United States', 'Mexico' ] },
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Canada', 'United States' ] },
       width: 30
     }
   ]
@@ -195,6 +200,10 @@ foam.CLASS({
         {
           name: 'label',
           factory: function() { return this.prop.label; }
+        },
+        {
+          name: 'units',
+          factory: function() { return this.prop.units; }
         }
       ],
       methods: [
@@ -233,19 +242,19 @@ foam.CLASS({
             start('div').
               style({display: 'flex', 'flex-wrap': 'wrap'}).
               add(view).
-              callIf(prop.units, function() {
-                this.start().
+              add(this.units$.map(units => {
+                if ( ! units ) return '';
+                return this.E().
                   style({position: 'relative', 'align-self': 'center'}).
-                  add(prop.units).
+                  add(units).
                   call(function() {
                     this.el().then((el) => {
                       // TODO: find parent and add extra padding
                       var style = this.__context__.window.getComputedStyle(el);
                       this.style({'margin-left': -8-parseFloat(style.width)});
                     });
-                  }).
-                end();
-              }).
+                  });
+              })).
               start('div').
                 style({'flex-basis': '100%', width: '0', color: 'red'}).
                 show(errorSlot).
@@ -282,16 +291,14 @@ foam.CLASS({
       this.
         start(LabelledSection, {title: 'User'}).
         addClass().
-        add(data.ID).
        // start(Row).add('start',data.ID, data.ENABLED, data.IS_EMPLOYEE,'end').end().
-        tag('hr').
         start('h3').add('Title').end().
         start(Columns).
           start(Column).
-            add(data.ENABLED, data.FIRST_NAME, data.EMAIL).
+            add(data.ID, data.ENABLED, data.FIRST_NAME, data.EMAIL).
           end().
           start(Column).
-            add(data.IS_EMPLOYEE, data.LAST_NAME, data.BIRTHDAY).
+            add(data.CREATED, data.IS_EMPLOYEE, data.LAST_NAME, data.BIRTHDAY).
           end().
         end().
         br().
@@ -303,11 +310,16 @@ foam.CLASS({
                 add(data.CITY, data.COUNTRY).
               end().
               start(Column).
-                add(data.POSTAL_CODE).
+                tag(self.PropertyView, {
+                  prop: data.POSTAL_CODE,
+                  label: this.data.country$.map(c => {
+                    return { Canada: 'Postal Code', 'United States': 'Zip Code' }[c];
+                  })
+                }).
                 tag(self.PropertyView, {
                   prop: data.REGION,
                   label: this.data.country$.map(c => {
-                    return { Canada: 'Province', 'United States': 'State', Mexico: 'State' }[c];
+                    return { Canada: 'Province', 'United States': 'State' }[c];
                   })
                 }).
               end().
@@ -320,7 +332,13 @@ foam.CLASS({
         end().
         start(FoldingSection, {title: 'Employee Information'}).
           show(data.isEmployee$).
-          add(data.JOB_TITLE, data.SALARY).
+          add(data.JOB_TITLE).
+          tag(self.PropertyView, {
+            prop: data.SALARY,
+            units: this.data.country$.map(c => {
+              return { Canada: 'CAD$', 'United States': '$' }[c];
+            })
+          }).
         end();
     }
   ]
