@@ -52,16 +52,8 @@
     {
       name: 'dayOfWeek',
       label: 'On',
-      //will be replaced by multiselect dayofweek view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday'
-        ]
+        class: 'foam.u2.view.DayOfWeekView',
       },
       updateVisibility: function(frequency) {
         if ( frequency != 'Week' )
@@ -205,5 +197,26 @@
         return new java.util.Date();
       `
     },
+
+    // helper methods to get formatted frequency/start/end fields
+    // todo implement properly
+    {
+      name: 'getFrequency',
+      code: function() {
+        return 'every ' + this.repeat + ' ' + this.frequency;
+      }
+    },
+    {
+      name: 'getStartDate',
+      code: function() {
+        return this.START_DATE.format(this.startDate);
+      }
+    },
+    {
+      name: 'getEndDate',
+      code: function() {
+        return this.ends + ' ' + ( this.ends == 'On' ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
+      }
+    }
   ]
 });
