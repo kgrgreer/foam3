@@ -4,74 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var timer = foam.util.Timer.create();
-timer.start();
-
 var E = foam.__context__.E.bind(foam.__context__);
-
-/*
-
-foam.u2.DetailView.create({
-  data: foam.util.Timer.create(),
-  showActions: true
-})..write();
-
-foam.u2.DetailView.create({
-  data: foam.util.Timer.create(),
-  showActions: true,
-  properties: [ foam.util.Timer.INTERVAL, foam.util.Timer.I ],
-  actions: [ foam.util.Timer.STOP, foam.util.Timer.START ]
-})..write();
-
-*/
-foam.CLASS({
-  package: 'foam.util',
-  name: 'TimerDetailView',
-  extends: 'foam.u2.DetailView',
-
-  requires: [
-    'foam.util.Timer'
-  ],
-
-  // css: foam.u2.DetailView.model_.css,
-
-  methods: [
-    function render() {
-      var self = this;
-      this.startContext({data: this.data}).
-        tag(this.DetailPropertyView, {prop: self.Timer.I}).
-        tag(this.DetailPropertyView, {prop: self.Timer.INTERVAL}).
-        add(self.Timer.STOP, self.Timer.START);
-    },
-    function layoutProperties(properties, self) {
-      self.layoutProp(self.Timer.I, self);
-      self.layoutProp(self.Timer.INTERVAL, self);
-    }
-  ]
-});
-
-/*
-E('br').write();
-E('hr').write();
-E('br').write();
-
-E('h3').add('Custom DetailView').write();
-foam.util.TimerDetailView.create({data: timer, showActions: true}).write();
-
-E('h3').add('DetailView with data').write();
-foam.u2.DetailView.create({data: timer, showActions: true}).write();
-
-E('h3').add('DetailView with of and data').write();
-foam.u2.DetailView.create({of: 'foam.util.Timer', data: timer, showActions: true}).write();
-
-E('h3').add('DetailView with of').write();
-foam.u2.DetailView.create({of: 'foam.util.Timer', showActions: true}).write();
-
-
-E('br').write();
-E('hr').write();
-E('br').write();
-*/
 
 foam.CLASS({
   name: 'User',
