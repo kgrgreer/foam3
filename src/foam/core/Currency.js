@@ -36,6 +36,15 @@
           public String format(X x, long amount) {
             return format(x, amount, false);
           }
+
+          public String format(X x, double amount) {
+            return format(x, amount, false);
+          }
+
+          public String format(X x, double amount, boolean hideId ) {
+            long longAmount = (long) Math.round(Math.pow(10, getPrecision()) * amount);
+            return format(x, longAmount, hideId);
+          }
         `);
       }
     }
