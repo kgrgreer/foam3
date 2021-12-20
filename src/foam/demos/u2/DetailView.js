@@ -86,6 +86,8 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'created',
+      // TODO: doesn't work
+      visibility: foam.u2.DisplayMode.RO,
       factory: function() { return new Date(); }
     },
     {
@@ -246,6 +248,7 @@ foam.CLASS({
             start('div').
               style({display: 'flex', 'flex-wrap': 'wrap'}).
               tag(this.view$.map(v => {
+                // TODO: add a method to Property to bind a view
                 var p = v ? prop.clone().copyFrom({view: v}) : prop;
                 return p.toE_({}, this.__context__);
               })).
