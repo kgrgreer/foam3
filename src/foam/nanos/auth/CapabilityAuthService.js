@@ -127,7 +127,7 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          AbstractPredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+          Predicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
