@@ -299,7 +299,7 @@ public interface FObject
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
-        if ( getClass().equals(obj.getClass()) ) {
+        if ( getClass() == obj.getClass() ) {
           if ( p.isSet(obj) ) p.set(this, p.get(obj));
         } else {
           PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
