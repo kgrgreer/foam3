@@ -368,9 +368,43 @@ E('br').write();
 E('hr').write();
 E('br').write();
 
+foam.CLASS({
+  name: 'ControllerModeTester',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    {
+      class: 'Enum',
+      name: 'mode',
+      of: 'foam.u2.ControllerMode'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'view'
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.SUPER();
+
+      this.
+        add(this.MODE).
+        tag('hr').
+        add(this.mode$.map(m => {
+          return this.E().startContext({controllerMode: m}).tag(this.view);
+        }));
+    }
+  ]
+});
+
 var user = User.create({firstName: 'Kevin', lastName: 'Greer'});
 
-CustomUserDetailView.create({of: User, data: user}).write();
+ControllerModeTester.create({
+  view: {class: 'CustomUserDetailView', of: User, data: user}
+}).write();
+
+//CustomUserDetailView.create({of: User, data: user}).write();
 
 /*
 foam.u2.DetailView.create({data: user, showActions: true}).write();
