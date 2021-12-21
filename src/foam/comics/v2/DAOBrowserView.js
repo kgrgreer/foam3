@@ -294,7 +294,10 @@ foam.CLASS({
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
 
-      this.config.DAOActions.push(this.REFRESH_TABLE, this.EXPORT, this.IMPORT);
+      [ this.REFRESH_TABLE, this.EXPORT, this.IMPORT ].forEach(action => {
+        if ( this.config.DAOActions.indexOf(action) === -1 )
+          this.config.DAOActions.push(action);
+      });
     },
     function render() {
       this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
