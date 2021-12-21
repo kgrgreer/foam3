@@ -43,7 +43,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(repeat) {
+      visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.DISABLED};
         return foam.u2.DisplayMode.RW;
@@ -55,7 +55,7 @@
       view: {
         class: 'foam.u2.view.DayOfWeekView',
       },
-      updateVisibility: function(frequency) {
+      visibility: function(frequency) {
         if ( frequency != 'Week' )
            return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -72,7 +72,7 @@
         ],
        isHorizontal: true
       },
-      updateVisibility: function(frequency) {
+      visibility: function(frequency) {
         if ( frequency != 'Month')
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -89,7 +89,7 @@
           2
         ]
       },
-      updateVisibility: function(monthlyChoice, frequency) {
+      visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice != 2 )
@@ -112,7 +112,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(monthlyChoice, frequency ) {
+      visibility: function(monthlyChoice, frequency ) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice !=  1 )
@@ -135,7 +135,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(monthlyChoice, frequency) {
+      visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice != 1 )
@@ -155,7 +155,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(repeat) {
+      visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.HIDDEN};
         return foam.u2.DisplayMode.RW;
@@ -166,7 +166,7 @@
       name: 'endsOn',
       label: '',
       gridColumns: 6,
-      updateVisibility: function(ends) {
+      visibility: function(ends) {
         if ( ends != 'On' )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -178,7 +178,7 @@
       label: '',
       gridColumns: 6,
       min: 1,
-      updateVisibility: function(ends) {
+      visibility: function(ends) {
         if ( ends != 'After' )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;

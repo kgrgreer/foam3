@@ -27,7 +27,7 @@ foam.CLASS({
       min-width: -webkit-fill-available;
     }
 
-    ^ .foam-u2-borders-CardBorder {
+    ^base {
       box-sizing: content-box;
       background-color: /*%WHITE%*/ #ffffff;
       border: solid 1px /*%GREY4%*/ #e7eaec;
@@ -37,8 +37,9 @@ foam.CLASS({
       padding: 16px;
       transition: all 0.2s linear;
     }
+
     ^selected {
-      border-color: /*%PRIMARY3%*/ #406dea;
+      border-color: /*%PRIMARY3%*/ #53B700;
     }
 
     ^disabled {
@@ -84,6 +85,7 @@ foam.CLASS({
       .addClass(this.myClass())
       .addClass(this.myClass('innerFlexer'))
       .start(this.CardBorder)
+        .addClass(this.myClass('base'))
         .enableClass(this.myClass('selected'), this.isSelected$)
         .enableClass(this.myClass('disabled'), this.isDisabled$)
         .enableClass(this.myClass('selected-disabled'), this.slot((isSelected, isDisabled) => {
