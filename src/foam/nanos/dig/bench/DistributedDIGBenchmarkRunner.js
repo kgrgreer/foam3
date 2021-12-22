@@ -48,7 +48,8 @@ foam.CLASS({
     {
       name: 'runners',
       class: 'Map',
-      javaFactory: 'return new HashMap<String, BenchmarkRunner>();'
+      visibility: 'HIDDEN',
+      transient: true
     }
   ],
 
@@ -56,40 +57,59 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
-      try {
+      setRunners(new HashMap<String, BenchmarkRunner>());
       final Logger logger = Loggers.logger(x, this);
       final UIDGenerator uid = new AUIDGenerator(x, this.getClass().getName());
       final BenchmarkRunner self = this;
-      final Benchmark benchmark = getBenchmark(x);
       final DIGBenchmark digBenchmark = getDigBenchmark();
       AssemblyLine line = new AsyncAssemblyLine(x);
       for ( String url : digBenchmark.getUrls() ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
-            DIG dig = new DIG(x, "benchmarkDAO", digBenchmark);
-            dig.setPostURL(url);
-            dig.put(benchmark);
+            DIG dig = null;
+            Benchmark benchmark = null;
+            BenchmarkRunner runner = null;
+            try {
+              dig = new DIG(x, "benchmarkDAO", digBenchmark);
+              dig.setPostURL(url);
+              benchmark = (Benchmark) getBenchmark(x);
+              benchmark.setId(uid.getNextString());
+              benchmark = (Benchmark) dig.put(benchmark);
 
-            BenchmarkRunner runner = new BenchmarkRunner();
-            runner.copyFrom(self);
-            runner.setId(uid.getNextString());
-            runner.setStatus(ScriptStatus.SCHEDULED);
-            runner.setClusterable(false);
-            dig.setNSpecName("benchmarkRunnerDAO");
-            runner = (BenchmarkRunner) dig.put(runner);
-            getRunners().put(url, runner);
-            long waited = 0;
-            while ( waited < getMaxWait() ) {
-              try {
-                Thread.currentThread().sleep(getPollInterval());
-                runner = (BenchmarkRunner) dig.find(runner.getId());
-                if ( runner.getStatus() == ScriptStatus.RUNNING ) {
-                  getRunners().put(url, runner);
+              runner = new BenchmarkRunner();
+              runner.copyFrom(self);
+              runner.setId(uid.getNextString());
+              runner.setBenchmarkId(benchmark.getId());
+              runner.setStatus(ScriptStatus.SCHEDULED);
+              runner.setClusterable(false);
+              dig.setNSpecName("benchmarkRunnerDAO");
+              runner = (BenchmarkRunner) dig.put(runner);
+              getRunners().put(url, runner);
+              long waited = 0;
+              while ( waited < getMaxWait() ) {
+                try {
+                  Thread.currentThread().sleep(getPollInterval());
+                  runner = (BenchmarkRunner) dig.find(runner.getId());
+                  if ( runner.getStatus() == ScriptStatus.RUNNING ) {
+                    getRunners().put(url, runner);
+                    break;
+                  }
+                  waited += getPollInterval();
+                } catch ( InterruptedException e ) {
                   break;
                 }
-                waited += getPollInterval();
-              } catch ( InterruptedException e ) {
-                break;
+              }
+            } catch ( Throwable t ) {
+              logger.warning(url, t);
+            } finally {
+              if ( dig != null ) {
+                if( runner != null ) {
+                  dig.remove(runner);
+                }
+                if ( benchmark != null ) {
+                  dig.setNSpecName("benchmarkDAO");
+                  dig.remove(benchmark);
+                }
               }
             }
           }
@@ -101,13 +121,10 @@ foam.CLASS({
       for ( Object key : getRunners().keySet() ) {
         BenchmarkRunner runner = (BenchmarkRunner) getRunners().get(key);
         if ( runner != null ) {
-          logger.info("result", key, runner.getStatus());
+          logger.info("result", key, runner.getStatus(), runner.formatResults(x, runner.getResults()));
         } else {
           logger.info("result", key, "null");
         }
-      }
-      } catch (Throwable t) {
-        throw new RuntimeException(t);
       }
       `
     }
