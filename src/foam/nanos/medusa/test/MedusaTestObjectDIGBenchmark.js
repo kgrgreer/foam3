@@ -8,6 +8,10 @@ foam.CLASS({
   name: 'MedusaTestObjectDIGBenchmark',
   extends: 'foam.nanos.dig.bench.DIGBenchmark',
 
+  mixins: [
+    'foam.nanos.medusa.ClusterableMinin'
+  ],
+
   javaImports: [
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
