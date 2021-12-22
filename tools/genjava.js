@@ -67,11 +67,29 @@ if ( process.argv.length > 5  &&
 var indir = process.argv[2];
 indir = path_.resolve(path_.normalize(indir));
 
-var externalFile = require(indir);
-var classes = externalFile.classes;
+/*
+const CLASS_TYPES = [
+  {
+    name: 'classes'
+  },
+  {
+    name: 'abstractClasses'
+  },
+  {
+    name: 'skeletons'
+  },
+  {
+    name: 'proxies'
+  }
+];
+*/
+
+var externalFile    = require(indir);
+
+var classes         = externalFile.classes;
 var abstractClasses = externalFile.abstractClasses;
-var skeletons = externalFile.skeletons;
-var proxies = externalFile.proxies;
+var skeletons       = externalFile.skeletons;
+var proxies         = externalFile.proxies;
 
 var blacklist = {}
 externalFile.blacklist.forEach(function(cls) {
@@ -167,29 +185,19 @@ function loadClass(c) {
     c = c[1];
   }
 
-  if ( ! foam.lookup(c, true) ) {
+  if ( ! foam.maybeLookup(c) ) {
     console.warn("Using fallback model loading; " +
       "may cause errors for files with multiple definitions.");
     require(path + c.replace(/\./g, '/') + '.js');
   }
+
   cls = foam.lookup(c);
   return cls;
 }
 
-function generateClass(cls) {
-  logger.debug('call/generateClass:cls', ''+cls);
-  if ( foam.Array.isInstance(cls) ) {
-    cls = cls[1];
-  }
-  if ( typeof cls === 'string' ) {
-    cls = foam.lookup(cls);
-    cls = cls.buildJavaClass();
-}
-  logger.debug('call/generateClass:cls.id', cls.id);
-
+function generateClass(/* foam Class */ cls) {
   if ( fileWhitelist !== null ) {
     let src = cls.model_.source;
-    logger.debug('call/generateClass:src', cls.id, src);
     if ( ! src ) {
       classesNotFound[cls.id] = true;
     } else {
@@ -200,24 +208,19 @@ function generateClass(cls) {
       }
     }
   }
-  logger.debug('call/generateClass:cls.id,build?', cls.id, 'true');
 
-  var outfile = outdir + path_.sep +
-    cls.id.replace(/\./g, path_.sep) + '.java';
+  var outfile = outdir + path_.sep + cls.model_.id.replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
 
-  writeFileIfUpdated(outfile, cls.toJavaSource());
+  writeFileIfUpdated(outfile, cls.buildJavaClass().toJavaSource());
 }
 
-function generateAbstractClass(cls) {
-  if ( foam.Array.isInstance(cls) ) {
-    cls = cls[1];
-  }
+function generateAbstractClass(/* String */ cls) {
+  console.log('generating Abstract Class', cls);
   cls = foam.lookup(cls);
 
-  var outfile = outdir + path_.sep +
-    cls.id.replace(/\./g, path_.sep) + '.java';
+  var outfile = outdir + path_.sep + cls.id.replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
 
@@ -226,10 +229,8 @@ function generateAbstractClass(cls) {
   writeFileIfUpdated(outfile, javaclass.toJavaSource());
 }
 
-function generateSkeleton(cls) {
-  if ( foam.Array.isInstance(cls) ) {
-    cls = cls[1];
-  }
+function generateSkeleton(/* String */ cls) {
+  console.log('generating Skeleton', cls);
   cls = foam.lookup(cls);
 
   var outfile = outdir + path_.sep +
@@ -241,16 +242,15 @@ function generateSkeleton(cls) {
   writeFileIfUpdated(outfile, foam.java.Skeleton.create({ of: cls }).buildJavaClass().toJavaSource());
 }
 
-function generateProxy(intf) {
-  if ( foam.Array.isInstance(intf) ) {
-    intf = intf[1];
-  }
-  intf = foam.lookup(intf);
+function generateProxy(/* String */ intf) {
+  console.log('generating Proxy', intf);
 
-  var existing = foam.lookup(intf.package + '.Proxy' + intf.name, true);
+  intf = foam.maybeLookup(intf);
+
+  var existing = foam.maybeLookup(intf.package + '.Proxy' + intf.name, true);
 
   if ( existing ) {
-    generateClass(existing.buildJavaClass());
+    generateClass(existing);
     return;
   }
 
@@ -269,7 +269,7 @@ function generateProxy(intf) {
 
   proxy.source = intf.model_.source;
 
-  generateClass(proxy.buildClass().buildJavaClass());
+  generateClass(proxy.buildClass());
 }
 
 function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
@@ -308,18 +308,11 @@ var addDepsToClasses = function() {
     function collectDeps() {
       var classMap = {};
       var classQueue = classes.slice(0);
-      const PRINT_LIMIT = 25;
       let printCounter = 0;
       while ( classQueue.length ) {
         var cls = classQueue.pop();
         if ( ! classMap[cls] && ! blacklist[cls] ) {
-          if ( printCounter < PRINT_LIMIT ) {
-            console.log('generating', cls);
-            printCounter = printCounter + 1;
-          } else if ( printCounter == PRINT_LIMIT ) {
-            console.log('generating ...');
-            printCounter = printCounter + 1;
-          }
+          console.log('generating', cls);
           cls = foam.lookup(cls);
           if ( ! checkFlags(cls.model_) ) continue;
           classMap[cls.id] = true;
@@ -340,7 +333,6 @@ var addDepsToClasses = function() {
         sequence(
           compose(map(loadClass), value(classes)),
           wrap(collectDeps)));
-
     }
   })();
 };
@@ -368,23 +360,22 @@ addDepsToClasses().then(function() {
   skeletons.forEach(loadClass);
   proxies.forEach(loadClass);
 
-  var javaClasses = classes.map(function(cls) {
-    logger.debug('call/generateClass:cls', ''+cls);
-    if ( foam.Array.isInstance(cls) ) {
-      cls = cls[1];
-    }
-    if ( typeof cls === 'string' )
+  function deArray(a) { return foam.Array.isInstance(a) ? a[1] : a; }
+
+  var javaClasses = classes.map(deArray).map(function(cls) {
+    if ( foam.String.isInstance(cls) ) {
       cls = foam.lookup(cls);
-    return cls.buildJavaClass();
+    }
+    return cls;
   });
 
-  javaClasses.forEach(generateClass);
-  abstractClasses.forEach(generateAbstractClass);
-  skeletons.forEach(generateSkeleton);
-  proxies.forEach(generateProxy);
+  javaClasses.map(deArray).forEach(generateClass);
+  abstractClasses.map(deArray).forEach(generateAbstractClass);
+  skeletons.map(deArray).forEach(generateSkeleton);
+  proxies.map(deArray).forEach(generateProxy);
 }).then(function () {
   var notFound = Object.keys(classesNotFound).length;
-  var found = Object.keys(classesFound).length;
+  var found    = Object.keys(classesFound).length;
 
   if ( notFound > 0 ) {
     var allKeys = {};

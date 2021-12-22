@@ -25,7 +25,7 @@ p({
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
       .setAuthorize(false)
       .setPm(true)
-      .setGuid(true)
+      .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("tickets")
       .setOrder(new foam.mlang.order.Comparator[] {
