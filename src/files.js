@@ -246,6 +246,7 @@ FOAM_FILES([
   { name: "foam/dao/AbstractDAO" },
   { name: "foam/dao/FilteredDAO" },
   { name: "foam/dao/DAOProperty" },
+  { name: "foam/dao/PipelinePMDAO" },
   { name: "foam/dao/SQLStatement" },
   { name: "foam/dao/CSVSink" },
   { name: "foam/dao/LimitedDAO" },
