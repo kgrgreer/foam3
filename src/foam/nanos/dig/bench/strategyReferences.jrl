@@ -7,6 +7,6 @@ p({
 p({
   "class": "foam.strategy.StrategyReference",
   "id": "foam.nanos.dig.bench.DistributedDIGBenchmarkRunner",
-  "desiredModelId": "foam.nanos.bench.BenchmarkRunner"
+  "desiredModelId": "foam.nanos.bench.BenchmarkRunner",
   "strategy": "foam.nanos.dig.bench.DistributedDIGBenchmarkRunner",
 })
