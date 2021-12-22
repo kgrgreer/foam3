@@ -36,6 +36,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'foam.lib.json.JSONParser',
     'foam.nanos.dig.bench.DIGBenchmark',
     'foam.nanos.dig.exception.DigErrorMessage',
+    'foam.nanos.dig.exception.DigSuccessMessage',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
@@ -489,6 +490,10 @@ NOTE: when using the java client, the first call to a newly started instance may
         if ( contextFactory != null && contextFactory.getEnableSSL() ) {
           SSLContext sslContext = contextFactory.getSSLContext();
           builder = builder.sslContext(sslContext);
+        } else if ( contextFactory == null ) {
+          new foam.nanos.logger.StdoutLogger(getX()).warning("DIG", "sslContextFactory", "not found");
+        } else if ( ! contextFactory.getEnableSSL() ) {
+          new foam.nanos.logger.StdoutLogger(getX()).warning("DIG", "sslContextFactory", "ssl not enabled");
         }
      }
       // store and accept ORIGINAL_SERVER
@@ -645,7 +650,13 @@ NOTE: when using the java client, the first call to a newly started instance may
       javaCode: `
       String id = obj.toString();
       if ( obj instanceof FObject ) id = ((FObject)obj).getProperty("id").toString();
-      return (FObject) submit(x, DOP.REMOVE, "id="+id);
+      try {
+        return (FObject) submit(x, DOP.REMOVE, "id="+id);
+      } catch ( DigSuccessMessage e ) {
+        return null;
+      } catch ( FOAMException e ) {
+        throw e;
+      }
       `
     },
     {
@@ -818,6 +829,8 @@ NOTE: when using the java client, the first call to a newly started instance may
           return null;
         }
         return result;
+      } catch (DigSuccessMessage e) {
+        throw e;
       } catch (FOAMException e) {
         Loggers.logger(x, this).error("submit", "request", dop, url, "response", e.getClass().getSimpleName(), e.getMessage(), e);
         throw e;
@@ -858,14 +871,12 @@ NOTE: when using the java client, the first call to a newly started instance may
       sb.append(session.getTtl());
       sb.append("}");
 
-      DIG client = new DIG.Builder(x)
-        .setServiceName("sugar")
-        .setOf(Session.getOwnClassInfo())
-        .setPostURL(getPostURL())
-        .setSessionId(getSessionId())
-        .build();
+      DIG client = new DIG(x);
+      client.copyFrom(this);
+      client.setServiceName("sugar");
+      client.setOf(Session.getOwnClassInfo());
 
-     Object obj = client.submit(x, DOP.PUT, sb.toString());
+      Object obj = client.submit(x, DOP.PUT, sb.toString());
       if ( obj == null ) return null;
       String id = obj.toString();
       // HttpRequest or SUGAR response is quoted, need to strip.
