@@ -55,7 +55,11 @@ foam.CLASS({
                 serviceList = new ArrayList();
                 hashes_.put(key, serviceList);
               }
-              serviceList.add(nspec.getName());
+
+              var serviceName = nspec.getName();
+              if ( ! serviceList.contains(serviceName) ) {
+                serviceList.add(serviceName);
+              }
             }
           }
         };
