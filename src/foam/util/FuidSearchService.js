@@ -44,7 +44,7 @@ foam.CLASS({
       name: 'start',
       javaCode: `
         var nSpecDAO = (DAO) getX().get("nSpecDAO");
-        nSpecDAO.select(new AbstractSink(getX()) {
+        var sink = new AbstractSink(getX()) {
           @Override
           public void put(Object obj, Detachable sub) {
             var nspec = (NSpec) obj;
@@ -58,8 +58,9 @@ foam.CLASS({
               serviceList.add(nspec.getName());
             }
           }
-        });
-        // TODO: nSpecDAO.listen
+        };
+        nSpecDAO.select(sink);
+        nSpecDAO.listen(sink, null);
       `
     },
     {
