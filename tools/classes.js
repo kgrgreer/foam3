@@ -710,6 +710,7 @@ var classes = [
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
   'foam.util.GlobalSearchService',
+  'foam.util.FuidSearchService',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',

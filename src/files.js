@@ -193,6 +193,7 @@ FOAM_FILES([
   { name: "foam/util/test/UIDGeneratorTest" },
   { name: "foam/util/test/UIDUniquenessTest" },
   { name: "foam/util/GlobalSearchService" },
+  { name: "foam/util/FuidSearchService" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
