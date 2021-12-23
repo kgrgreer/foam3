@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.bench',
   name: 'BenchmarkRunner',
   extends: 'foam.nanos.script.Script',
+  classIsFinal: false,
 
   implements: [
     'foam.core.ContextAgent',
