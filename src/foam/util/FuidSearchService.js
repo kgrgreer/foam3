@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.nanos.boot.NSpec',
+    'foam.nanos.logger.Loggers',
     'foam.util.UIDSupport',
     'java.util.ArrayList',
     'java.util.HashMap',
@@ -75,10 +76,14 @@ foam.CLASS({
           }
         }
 
-        if ( nuid > 0 ) {
-          findById(x, nuid, getDaoList(UIDSupport.hash(nuid)), result);
+        try {
+          if ( nuid > 0 ) {
+            findById(x, nuid, getDaoList(UIDSupport.hash(nuid)), result);
+          }
+          findById(x, id, getDaoList(UIDSupport.hash(id)), result);
+        } catch ( Exception e ) {
+          Loggers.logger(x, this).warning("Failed to searchById", id, e);
         }
-        findById(x, id, getDaoList(UIDSupport.hash(id)), result);
         return result;
       `
     },
