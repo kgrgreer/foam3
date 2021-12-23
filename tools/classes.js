@@ -709,6 +709,7 @@ var classes = [
   'foam.util.test.DummyNuid',
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
+  'foam.util.GlobalSearchService',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
