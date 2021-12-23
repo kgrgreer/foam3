@@ -339,14 +339,10 @@ foam.CLASS({
       transient: true,
       documentation: `Deprecated, use lifecycleState instead.
         This property only exists for auto migration of legacy data`,
-      javaGetter: `
-        if ( ! enabled_ && enabledIsSet_ && ! lifecycleStateIsSet_ ){
+      javaSetter: `
+        if ( ! val && ! lifecycleStateIsSet_ ){
           setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
         }
-        if ( ! enabledIsSet_ ) {
-           return true;
-        }
-        return enabled_;
       `
     }
   ],
