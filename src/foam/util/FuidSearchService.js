@@ -46,15 +46,15 @@ foam.CLASS({
         nSpecDAO.select(new AbstractSink(getX()) {
           @Override
           public void put(Object obj, Detachable sub) {
-            var serviceName = ((NSpec) obj).getName();
-            if ( getX().get(serviceName) instanceof DAO ) {
-              var key = UIDSupport.mod(serviceName);
+            var nspec = (NSpec) obj;
+            var key   = nspec.getUidKey();
+            if ( key > -1 ) {
               var serviceList = hashes_.get(key);
               if ( serviceList == null ) {
                 serviceList = new ArrayList();
                 hashes_.put(key, serviceList);
               }
-              serviceList.add(serviceName);
+              serviceList.add(nspec.getName());
             }
           }
         });
