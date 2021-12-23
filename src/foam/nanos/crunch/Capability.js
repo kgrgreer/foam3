@@ -330,6 +330,24 @@ foam.CLASS({
         DELETED - Marked as deleted from system, unusuable capability.
         ACTIVE - Capability is active and can be used.
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      visibility: 'HIDDEN',
+      value: true,
+      transient: true,
+      documentation: `Deprecated, use lifecycleState instead.
+        This property only exists for auto migration of legacy data`,
+      javaGetter: `
+        if ( ! enabled_ && enabledIsSet_ && ! lifecycleStateIsSet_ ){
+          setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
+        }
+        if ( ! enabledIsSet_ ) {
+           return true;
+        }
+        return enabled_;
+      `
     }
   ],
 
