@@ -14,6 +14,7 @@
 
   requires: [
     'foam.dao.FnSink',
+    'foam.core.Latch',
     'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
     'foam.nanos.controller.Memento'
@@ -51,6 +52,8 @@
     {
       type: 'Int',
       name: 'pageSize',
+      // Used to prevent extra large datasets being requested as it caused chrome to crash
+      max: 1000,
       value: 30,
       documentation: 'The number of items in each "page". There are three pages.'
     },
@@ -162,6 +165,15 @@
       name: 'offsetTop',
       value: 0,
       documentation: 'Offset property that is passed to IntersectionObserver'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'dataLatch',
+      documentation: 'A latch used to wait for table data load.',
+      factory: function () {
+        return this.Latch.create();
+      }
     }
   ],
 
@@ -184,7 +196,15 @@
         rootMargin: `-${this.offsetTop}px 0px 0px`,
         threshold: [0.25, 0.5, 0.75]
       };
-      resize.observe(this.rootElement?.el_());
+
+      // defer till after atleast one page has been loaded in order
+      // to ensure correct value for displayedRowCount_
+      this.dataLatch.then(() => {
+        this.rootElement?.el().then(el => {
+          resize.observe(el);
+        })
+      })
+      
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
       // This needs to be here because intersectionObserver does not bind the correct this during callback
       function handleIntersect(entries, observer) {
@@ -283,7 +303,8 @@
         // If there is a scroll in progress and all pages have been loaded, try to scroll again
         if ( this.scrollToIndex && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
           self.safeScroll();
-        if ( this.displayedRowCount_ <= 0 ) this.bottomRow = this.daoCount
+        this.dataLatch.resolve();
+        if ( this.displayedRowCount_ < 0 ) this.bottomRow = this.daoCount
       });
     }
   ],
