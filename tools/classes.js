@@ -710,6 +710,7 @@ var classes = [
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
   'foam.util.GlobalSearchService',
+  'foam.util.ClientGlobalSearchService',
   'foam.util.FuidSearchService',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
@@ -1035,7 +1036,8 @@ var skeletons = [
   'foam.nanos.export.GoogleSheetsExport',
   'foam.nanos.google.api.sheets.GoogleSheetsDataImportService',
   'foam.nanos.crunch.CrunchService',
-  'foam.i18n.TranslationService'
+  'foam.i18n.TranslationService',
+  'foam.util.GlobalSearchService'
 ];
 
 var proxies = [
