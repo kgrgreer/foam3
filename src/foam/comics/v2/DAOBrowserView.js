@@ -352,14 +352,6 @@ foam.CLASS({
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
-          var hasPermissionsArr = await Promise.all(this.config.DAOActions.map(async action => {
-              if ( ! action.availablePermissions?.length ) return true;
-              var res = await Promise.all(action.availablePermissions.map(async permission => self.auth.check(null, permission)));
-              return res.every(p => p);
-            }));
-          var isAvailableArr = await Promise.all(this.config.DAOActions.map(action => action.isAvailable.call(this, this.config)));
-          var availableActions = [];
-          this.config.DAOActions.forEach((action, i) => isAvailableArr[i] && hasPermissionsArr[i] && availableActions.push(action))
           var maxActions = displayWidth.minWidth < self.DisplayWidth.MD.minWidth ? 0 :
                            displayWidth.minWidth < self.DisplayWidth.LG.minWidth ? 1 :
                            3
@@ -403,12 +395,12 @@ foam.CLASS({
                         data: self,
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
-                        .callIf( availableActions.length, function() {
-                          if ( availableActions.length > Math.max(1, maxActions) ) {
-                            var extraActions = availableActions.splice(maxActions);
+                        .callIf( self.config.DAOActions.length, function() {
+                          if ( self.config.DAOActions.length > Math.max(1, maxActions) ) {
+                            var extraActions = self.config.DAOActions.splice(maxActions);
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
-                          for ( action of availableActions ) {
+                          for ( action of self.config.DAOActions ) {
                             actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
                           this.add(actions);
