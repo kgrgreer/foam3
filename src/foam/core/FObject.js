@@ -813,7 +813,7 @@ foam.CLASS({
     function detach() {
       /**
        * Detach this object. Free any referenced objects and destory
-       * any registered detroyables.
+       * any registered destroyables.
        */
       if ( this.instance_.detaching_ ) return;
 

@@ -12,6 +12,7 @@ import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.CapabilityAuthService;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.CapabilityCapabilityJunction;
@@ -332,7 +333,7 @@ public class CapabilityTest extends Test {
     ));
 
     test(uj1.getStatus() == CapabilityJunctionStatus.GRANTED, "UserCapabilityJunction Status between user and c1 is still granted: " + uj1.getStatus());
-    test(c1.getEnabled(), "c1 is still enabled");
+    test(c1.getLifecycleState() == LifecycleState.ACTIVE, "c1 is still active");
 
   }
 
@@ -396,7 +397,7 @@ public class CapabilityTest extends Test {
     c1.setDescription("The first ever capability!");
     c1.setNotes("noted");
     c1.setVersion("0.0.0.0");
-    c1.setEnabled(true);
+    c1.setLifecycleState(LifecycleState.ACTIVE);
     c1.setVisibilityPredicate(TRUE);
     c1.setPermissionsGranted( new String[] {p1} );
     c1.setExpiry(((new GregorianCalendar(2867, Calendar.JULY, 1)).getTime()));
@@ -423,13 +424,13 @@ public class CapabilityTest extends Test {
 
     // test disabled capability does not imply their permissions granted
     c1 = ((Capability) c1.fclone());
-    c1.setEnabled(false);
+    c1.setLifecycleState(LifecycleState.DELETED);
     c1 = (Capability) capabilityDAO.put(c1);
     test((!c1.implies(x, p1)) && (!c1.implies(x, p2)), "c2 disabled and does not imply p1 and p2");
 
     // test re-enabled capability imply their permissions granted
     c1 = ((Capability) c1.fclone());
-    c1.setEnabled(true);
+    c1.setLifecycleState(LifecycleState.ACTIVE);
     c1 = (Capability) capabilityDAO.put(c1);
     test(c1.implies(x, p1) && c1.implies(x, p2), "c2 re-enabled implies p1 and p2");
   }
