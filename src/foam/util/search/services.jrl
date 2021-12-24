@@ -1,0 +1,14 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"globalSearchService",
+  "description":"FUID Global Search Service",
+  "serve":true,
+  "authenticate":true,
+  "serviceClass":"foam.util.search.FuidSearchService",
+  "boxClass":"foam.util.search.GlobalSearchServiceSkeleton",
+  "client":"""
+    {
+      "class":"foam.util.search.ClientGlobalSearchService"
+    }
+  """
+})

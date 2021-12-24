@@ -192,9 +192,6 @@ FOAM_FILES([
   { name: "foam/util/test/DummyNuid" },
   { name: "foam/util/test/UIDGeneratorTest" },
   { name: "foam/util/test/UIDUniquenessTest" },
-  { name: "foam/util/GlobalSearchService" },
-  { name: "foam/util/ClientGlobalSearchService" },
-  { name: "foam/util/FuidSearchService" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -1104,5 +1101,10 @@ FOAM_FILES([
   { name: "foam/util/retry/RetryLimitReachedException" },
 
   { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
-  { name: "foam/u2/view/DayChoiceView" , flags: ["web"] }
+  { name: "foam/u2/view/DayChoiceView" , flags: ["web"] },
+
+  // Global search
+  { name: "foam/util/search/GlobalSearchService" },
+  { name: "foam/util/search/ClientGlobalSearchService" },
+  { name: "foam/util/search/FuidSearchService" }
 ]);

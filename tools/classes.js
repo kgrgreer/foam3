@@ -709,9 +709,6 @@ var classes = [
   'foam.util.test.DummyNuid',
   'foam.util.test.UIDGeneratorTest',
   'foam.util.test.UIDUniquenessTest',
-  'foam.util.GlobalSearchService',
-  'foam.util.ClientGlobalSearchService',
-  'foam.util.FuidSearchService',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
@@ -1005,7 +1002,12 @@ var classes = [
   'foam.util.retry.RetryForeverStrategy',
   'foam.util.retry.RetryUntilStrategy',
   'foam.util.retry.RetryStrategyFactory',
-  'foam.util.retry.RetryLimitReachedException'
+  'foam.util.retry.RetryLimitReachedException',
+
+  // Global search
+  'foam.util.search.GlobalSearchService',
+  'foam.util.search.ClientGlobalSearchService',
+  'foam.util.search.FuidSearchService'
 ];
 
 var abstractClasses = [
@@ -1037,7 +1039,7 @@ var skeletons = [
   'foam.nanos.google.api.sheets.GoogleSheetsDataImportService',
   'foam.nanos.crunch.CrunchService',
   'foam.i18n.TranslationService',
-  'foam.util.GlobalSearchService'
+  'foam.util.search.GlobalSearchService'
 ];
 
 var proxies = [

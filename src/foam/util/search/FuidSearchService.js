@@ -5,13 +5,13 @@
  */
 
 foam.CLASS({
-  package: 'foam.util',
+  package: 'foam.util.search',
   name: 'FuidSearchService',
   javaExtends: 'foam.core.ContextAwareSupport',
 
   implements: [
     'foam.nanos.NanoService',
-    'foam.util.GlobalSearchService'
+    'foam.util.search.GlobalSearchService'
   ],
 
   javaImports: [

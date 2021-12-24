@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.util',
+  package: 'foam.util.search',
   name: 'GlobalSearchService',
 
   methods: [
