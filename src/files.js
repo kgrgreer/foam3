@@ -148,7 +148,6 @@ FOAM_FILES([
   { name: "foam/swift/Field", flags: ['swift']},
   { name: "foam/swift/Method", flags: ['swift']},
 
-
   { name: "foam/core/PropertyInfo", flags: ['java'] },
   { name: "foam/java/Argument", flags: ['java'] },
   { name: "foam/java/Class", flags: ['java'] },
@@ -355,6 +354,8 @@ FOAM_FILES([
   { name: "foam/nanos/logger/Logger" },
   { name: "foam/nanos/logger/DAOLogger" },
   { name: "foam/nanos/logger/LoggingDAO" },
+
+
 
   // Auth Mixins
   { name: "foam/nanos/auth/CreatedAwareMixin" },

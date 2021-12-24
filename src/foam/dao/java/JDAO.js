@@ -22,7 +22,8 @@ In this current implementation setDelegate must be called last.`,
     'foam.dao.MDAO',
     'foam.dao.NullJournal',
     'foam.dao.ReadOnlyF3FileJournal',
-    'foam.dao.WriteOnlyF3FileJournal'
+    'foam.dao.WriteOnlyF3FileJournal',
+    'foam.nanos.ndiff.NDiffJournal'
   ],
 
   javaCode: `
@@ -99,7 +100,9 @@ In this current implementation setDelegate must be called last.`,
 
             new CompositeJournal.Builder(resourceStorageX)
               .setDelegates(new foam.dao.Journal[] {
-                journal0,
+                new NDiffJournal.Builder(resourceStorageX)
+                .setDelegate(journal0)
+                .build(),
                 getJournal()
               })
               .build()
