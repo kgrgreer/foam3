@@ -132,7 +132,7 @@ foam.CLASS({
       }
 
       // Not using SUPER, so just return original method
-      if ( method.toString().indexOf('SUPER') == -1 ) return method;
+      if ( method.toString().indexOf('SUPER(') == -1 ) return method;
 
       var superMethod_ = proto.cls_.getSuperAxiomByName(this.name);
       var super_;
