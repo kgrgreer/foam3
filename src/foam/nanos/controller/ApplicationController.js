@@ -91,7 +91,6 @@ foam.CLASS({
     'stack',
     'subject',
     'theme',
-    'user',
     'webApp',
     'wrapCSS as installCSS'
   ],
