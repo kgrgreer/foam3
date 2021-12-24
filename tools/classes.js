@@ -5,7 +5,7 @@
  */
 
 var classes = [
-  'foam.core.Action',
+//  'foam.core.Action',
   'foam.core.Axiom',
   'foam.core.Detachable',
   'foam.core.Serializable',
@@ -38,6 +38,7 @@ var classes = [
   'foam.glang.EndOfMonth',
   'foam.glang.EndOfQuarter',
   'foam.glang.EndOfYear',
+  'foam.mlang.predicate.MQLExpr',
   'foam.mlang.predicate.Predicate',
   'foam.mlang.predicate.True',
   'foam.mlang.predicate.False',
@@ -153,6 +154,9 @@ var classes = [
  // 'foam.box.network.DemoSocketClientReplyBox',
   'foam.box.NullBox',
   'foam.dao.DAO',
+  'foam.dao.AbstractDAO',
+  'foam.dao.GUIDDAO',
+  'foam.dao.NullDAO',
   'foam.dao.SlowDAO',
   'foam.dao.DOP',
   'foam.dao.PredicatedDualDelegateDAO',
@@ -249,7 +253,7 @@ var classes = [
   'foam.nanos.alarming.AlarmConfigOMNameDAO',
   'foam.nanos.alarming.AlarmConfigOMNameSink',
   'foam.nanos.alarming.AlarmHostnameRuleAction',
-  'foam.nanos.alarming.AlarmIdRefines',
+//  'foam.nanos.alarming.AlarmIdRefines',
   'foam.nanos.alarming.AlarmingUniqueNameDAO',
   'foam.nanos.alarming.AlarmLoggingDAO',
   'foam.nanos.alarming.AlarmNotificationDAO',
@@ -275,6 +279,7 @@ var classes = [
   'foam.nanos.auth.AccountLockedException',
   'foam.nanos.auth.AgentJunctionStatus',
   'foam.nanos.auth.Authorizer',
+  'foam.nanos.auth.Authorizable',
   'foam.nanos.auth.AuthorizationDAO',
   'foam.nanos.auth.AuthenticationException',
   'foam.nanos.auth.AuthorizationException',
@@ -283,7 +288,7 @@ var classes = [
   'foam.nanos.auth.EnabledAware',
   'foam.nanos.auth.EnabledAwareDummy',
   'foam.nanos.auth.GroupPermissionJunction',
-  'foam.nanos.auth.GroupPermissionJunctionRefinement',
+//  'foam.nanos.auth.GroupPermissionJunctionRefinement',
   'foam.nanos.auth.CheckPermissionsSink',
   'foam.nanos.auth.Group',
   'foam.nanos.auth.PasswordPolicy',
@@ -314,6 +319,7 @@ var classes = [
   'foam.nanos.auth.PriorPassword',
   'foam.nanos.auth.ruler.AddPasswordHistoryAction',
   'foam.nanos.auth.ruler.PreventDuplicateUsernameAction',
+  'foam.nanos.auth.ruler.PreventDuplicateEmailAction',
   'foam.nanos.auth.ruler.EnsurePropertyOnCreateRule',
   'foam.nanos.auth.test.PasswordPolicyTest',
   'foam.nanos.auth.Country',
@@ -393,6 +399,7 @@ var classes = [
   'foam.nanos.auth.Language',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.TimeZone',
+  'foam.log.LogLevel',
   'foam.nanos.logger.LogMessage',
   'foam.nanos.logger.LogMessageDAO',
   'foam.nanos.logger.LogLevelFilterLogger',
@@ -565,6 +572,7 @@ var classes = [
   'foam.nanos.notification.ResendNotificationServiceInterface',
   'foam.nanos.notification.ClientResendNotificationService',
   'foam.nanos.script.Script',
+  'foam.nanos.script.ScriptStatus',
   'foam.nanos.script.ScriptEvent',
   'foam.nanos.script.TestRunnerConfig',
   'foam.nanos.script.TestRunnerScript',
@@ -686,6 +694,7 @@ var classes = [
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
   'foam.nanos.dig.FieldNameMapGrammar',
+  'foam.nanos.dig.ExternalDataAware',
 
   'foam.nanos.jetty.HttpServer',
   'foam.nanos.servlet.Servlet',
@@ -805,6 +814,8 @@ var classes = [
   'foam.nanos.app.SupportConfig',
 
   'foam.nanos.test.StockSnapshot',
+  'foam.nanos.analytics.Foldable',
+  'foam.nanos.analytics.FoldManager',
   'foam.nanos.analytics.FoldManagerDAODecorator',
   'foam.nanos.analytics.DAOFoldManager',
   'foam.nanos.analytics.DAOReduceManager',
@@ -831,8 +842,10 @@ var classes = [
   'io.c9.ace.Mode',
   'io.c9.ace.Theme',
 
-  // Themes
+  // Themes/
+  'foam.core.Glyph',
   'foam.nanos.theme.Theme',
+  'foam.nanos.theme.ThemeGlyphs',
   'foam.nanos.theme.ThemeDomain',
   'foam.nanos.theme.ThemeDomainsDAO',
   'foam.nanos.theme.Themes',
@@ -872,6 +885,8 @@ var classes = [
   'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
   'foam.nanos.crunch.CapabilityJunctionStatus',
   'foam.nanos.crunch.UserCapabilityJunction',
+  'foam.u2.crunch.EasyCrunchWizard',
+  'foam.u2.crunch.wizardflow.SkipMode',
   'foam.nanos.crunch.ui.WizardState',
   // 'foam.nanos.crunch.ui.UserCapabilityWizardState',
   'foam.nanos.crunch.ui.CapabilityWizardlet',
@@ -1065,9 +1080,9 @@ var blacklist = [
 ];
 
 module.exports = {
-    classes: classes,
+    classes:         classes,
     abstractClasses: abstractClasses,
-    skeletons: skeletons,
-    proxies: proxies,
-    blacklist: blacklist
+    skeletons:       skeletons,
+    proxies:         proxies,
+    blacklist:       blacklist
 };
