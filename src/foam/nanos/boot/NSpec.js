@@ -215,17 +215,6 @@ foam.CLASS({
       transient: true,
       javaGetter: 'return getName();',
       getter: function() { return this.name; }
-    },
-    {
-      class: 'Int',
-      name: 'uidKey',
-      value: -1,
-      javaSetter: `
-        uidKey_ = val;
-        uidKeyIsSet_ = true;
-      `,
-      transient: true,
-      hidden: true
     }
     // TODO: permissions, parent
   ],

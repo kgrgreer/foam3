@@ -7,24 +7,23 @@
 foam.CLASS({
   package: 'foam.util.search',
   name: 'FuidSearchService',
-  javaExtends: 'foam.core.ContextAwareSupport',
 
   implements: [
-    'foam.nanos.NanoService',
     'foam.util.search.GlobalSearchService'
   ],
 
+  imports: [
+    'DAO fuidKeyDAO'
+  ],
+
   javaImports: [
-    'foam.core.Detachable',
-    'foam.dao.AbstractSink',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Loggers',
     'foam.util.UIDSupport',
-    'java.util.ArrayList',
     'java.util.HashMap',
-    'java.util.List',
-    'java.util.Map'
+    'java.util.Map',
+    'static foam.mlang.MLang.*'
   ],
 
   constants: [
@@ -35,38 +34,7 @@ foam.CLASS({
     }
   ],
 
-  javaCode: `
-    private final Map<Integer, List> hashes_ = new HashMap<>();
-  `,
-
   methods: [
-    {
-      name: 'start',
-      javaCode: `
-        var nSpecDAO = (DAO) getX().get("nSpecDAO");
-        var sink = new AbstractSink(getX()) {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            var nspec = (NSpec) obj;
-            var key   = nspec.getUidKey();
-            if ( key > -1 ) {
-              var serviceList = hashes_.get(key);
-              if ( serviceList == null ) {
-                serviceList = new ArrayList();
-                hashes_.put(key, serviceList);
-              }
-
-              var serviceName = nspec.getName();
-              if ( ! serviceList.contains(serviceName) ) {
-                serviceList.add(serviceName);
-              }
-            }
-          }
-        };
-        nSpecDAO.select(sink);
-        nSpecDAO.listen(sink, null);
-      `
-    },
     {
       name: 'searchById',
       type: 'Map',
@@ -113,7 +81,12 @@ foam.CLASS({
       name: 'getDaoList',
       type: 'List',
       args: [ 'Integer key' ],
-      javaCode: 'return hashes_.get(key);'
+      javaCode: `
+        return ((ArraySink) ((foam.mlang.sink.Map)
+        getFuidKeyDAO()
+          .where(EQ(FuidKey.KEY, key))
+          .select(MAP(FuidKey.DAO_NAME, new ArraySink()))).getDelegate()).getArray();
+      `
     }
   ]
 });

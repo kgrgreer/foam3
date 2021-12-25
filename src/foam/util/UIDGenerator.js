@@ -85,7 +85,7 @@ foam.CLASS({
         { name: 'id', type: 'String' }
       ],
       javaCode: `
-        var targetMod = mod(getSalt());
+        var targetMod = getHashKey();
         // Breaking the multiplication to avoid overflow before mod-ing,
         // (ab mod m) = ((a mod m) * (b mod m)) mod m.
         var idMod     = mod(mod(Long.parseLong(id, 16)) * mod(0x1000));
@@ -121,6 +121,11 @@ foam.CLASS({
           throw e;
         }
       `
+    },
+    {
+      name: 'getHashKey',
+      type: 'Integer',
+      javaCode: 'return mod(getSalt());'
     }
   ]
 })

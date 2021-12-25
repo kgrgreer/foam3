@@ -169,9 +169,6 @@ foam.CLASS({
 
         if ( getFuid() ) {
           delegate = new foam.dao.FUIDDAO(getX(), getName(), getSeqPropertyName(), delegate);
-          if ( getNSpec() != null ) {
-            getNSpec().setUidKey(foam.util.UIDSupport.mod(getName()));
-          }
         } else if ( getSeqNo() ) {
           delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
             setDelegate(delegate).
