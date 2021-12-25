@@ -1007,6 +1007,7 @@ var classes = [
   // Global search
   'foam.util.search.GlobalSearchService',
   'foam.util.search.ClientGlobalSearchService',
+  'foam.util.search.FuidKey',
   'foam.util.search.FuidSearchService'
 ];
 

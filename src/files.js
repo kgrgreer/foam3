@@ -1106,5 +1106,6 @@ FOAM_FILES([
   // Global search
   { name: "foam/util/search/GlobalSearchService" },
   { name: "foam/util/search/ClientGlobalSearchService" },
+  { name: "foam/util/search/FuidKey" },
   { name: "foam/util/search/FuidSearchService" }
 ]);

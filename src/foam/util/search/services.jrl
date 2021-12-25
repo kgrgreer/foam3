@@ -12,3 +12,24 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fuidKeyDAO",
+  "lazy":false,
+  "serve":true,
+  "authenticate":true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("fuidKeys")
+      .setOf(foam.util.search.FuidKey.getOwnClassInfo())
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.util.search.FuidKey.KEY });
+  """,
+  "client": """
+    {
+      "of": "foam.util.search.FuidKey"
+    }
+  """
+})
