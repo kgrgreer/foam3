@@ -267,6 +267,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/benchmark/PingDAO' },
   { name: 'foam/nanos/medusa/test/MedusaTestObject' },
   { name: 'foam/nanos/medusa/test/MedusaTestObjectDIGBenchmark' },
+  { name: 'foam/nanos/medusa/test/MedusaTestObjectDistributedDIGBenchmarkRunner' },
   { name: 'foam/nanos/security/KeyStoreManager' },
   { name: 'foam/nanos/benchmark/UUIDBenchmark' },
   { name: "foam/nanos/u2/navigation/TopNavigation", flags: ['web'] },
@@ -429,6 +430,7 @@ FOAM_FILES([
 
   // Dig
   { name: 'foam/nanos/dig/bench/DIGBenchmark' },
+  { name: 'foam/nanos/dig/bench/DistributedDIGBenchmarkRunner' },
   { name: 'foam/nanos/dig/exception/DAOPutException' },
   { name: 'foam/nanos/dig/exception/DAONotFoundException' },
   { name: 'foam/nanos/dig/exception/DAORequiredException' },
@@ -450,7 +452,7 @@ FOAM_FILES([
   { name: 'foam/nanos/dig/DUGRule' },
   { name: 'foam/nanos/dig/DUGRuleAction' },
   { name: 'foam/nanos/dig/ExternalDataAware' },
-  { name: "foam/nanos/dig/ExternalDataAwareMixin" },
+  { name: 'foam/nanos/dig/ExternalDataAwareMixin' },
   { name: 'foam/nanos/dig/LinkView' },
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/SUGAR' },
@@ -641,4 +643,8 @@ FOAM_FILES([
 
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" },
+
+  { name: 'foam/nanos/alarming/AlarmIdRefines', flags: ['java'] },
+  { name: 'foam/nanos/auth/GroupPermissionJunctionRefinement', flags: ['java'] }
+
 ]);

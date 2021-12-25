@@ -7,7 +7,6 @@ foam.CLASS({
   package: 'foam.nanos.dig.bench',
   name: 'DIGBenchmark',
   extends: 'foam.nanos.bench.Benchmark',
-  abstract: true,
 
   javaImports: [
     'foam.nanos.dig.DIG'
@@ -75,6 +74,13 @@ foam.CLASS({
       javaCode: `
       lastServerIndex_ = (lastServerIndex_ + 1) % getUrls().length;
       return lastServerIndex_;
+      `
+    },
+    {
+      name: 'execute',
+      args: 'Context x',
+      javaCode: `
+      // nop
       `
     }
   ]

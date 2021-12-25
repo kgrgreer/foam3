@@ -8,6 +8,10 @@ foam.CLASS({
   name: 'MedusaTestObjectDIGBenchmark',
   extends: 'foam.nanos.dig.bench.DIGBenchmark',
 
+  mixins: [
+    'foam.nanos.medusa.ClusterableMinin'
+  ],
+
   javaImports: [
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
@@ -30,16 +34,16 @@ foam.CLASS({
       javaCode: `
       DIG dig = new DIG(x, "serviceProviderDAO", this);
 
-      ServiceProvider sp = (ServiceProvider) dig.find(x, spid_);
+      ServiceProvider sp = (ServiceProvider) dig.find(spid_);
       if ( sp == null ) {
         sp = new ServiceProvider();
         sp.setId(spid_);
         sp.setDescription(spid_+" Spid");
-        sp = (ServiceProvider) dig.put(x, sp);
+        sp = (ServiceProvider) dig.put(sp);
       }
 
       dig.setNSpecName("userDAO");
-      User user = (User) dig.select(x, 0L, 1L, "userName="+userName_);
+      User user = (User) dig.query_(x, 0L, 1L, "userName="+userName_);
       if ( user == null ) {
         user = new User();
         user.setUserName(userName_);
@@ -49,16 +53,16 @@ foam.CLASS({
         user.setEmailVerified(true);
         user.setSpid(spid_);
         user.setGroup("sme");
-        user_ = (User) dig.put(x, user);
+        user_ = (User) dig.put(user);
       } else if ( user.getLifecycleState() == LifecycleState.DELETED ) {
         user = (User) user.fclone();
         user.setLifecycleState(LifecycleState.ACTIVE);
-        user = (User) dig.put(x, user);
+        user = (User) dig.put(user);
       }
       user_ = user;
 
       dig.setNSpecName("sessionDAO");
-      Session session = (Session) dig.put(x, new Session.Builder(x).setUserId(user_.getId()).build());
+      Session session = (Session) dig.put(new Session.Builder(x).setUserId(user_.getId()).build());
       setSessionId(session.getId());
       `
     },
@@ -73,7 +77,7 @@ foam.CLASS({
         .setRequestTimeout(getRequestTimeout())
         .build();
 
-      dig.put(x, new MedusaTestObject());
+      dig.put(new MedusaTestObject());
       `
     },
     {
@@ -81,10 +85,10 @@ foam.CLASS({
       javaCode: `
       DIG dig = new DIG(x, "userDAO", this);
 
-      dig.remove(x, user_.getId());
+      dig.remove(user_.getId());
 
       // dig.setNSpecName("serviceProviderDAO");
-      // dig.remove(x, spid_);
+      // dig.remove(spid_);
       `
     }
   ]
