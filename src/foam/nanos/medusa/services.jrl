@@ -18,15 +18,7 @@ p({
   }
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "health",
-  "lazy": false,
-  "authenticate": false,
-  "parameters": true,
-  "serviceClass": "foam.nanos.medusa.HealthCheckWebAgent"
-})
-
+// deprecated by HealthWebAgent under service/health
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "info",
@@ -231,4 +223,16 @@ p({
 //   "name":"clusterConfigMonitor",
 //   "lazy": false,
 //   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+// })
+
+// enable for medusa system
+// p({
+//   class:"foam.nanos.boot.NSpec",
+//   name:"Health",
+//   description:"Medusa Health Factory",
+//   authenticate:false,
+//   pm:false,
+//   service:{
+//     class:"foam.nanos.medusa.MedusaHealthFactory"
+//   }
 // })
