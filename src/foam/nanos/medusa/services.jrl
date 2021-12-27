@@ -29,6 +29,26 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaHealthDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
+    .setInnerDAO((foam.dao.DAO) x.get("healthDAO"))
+    .setCluster(false)
+    .build()
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.medusa.MedusaHealth"
+  }
+  """
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "medusaEntrySupport",
   "lazy": false,
