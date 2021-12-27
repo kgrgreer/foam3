@@ -29,26 +29,6 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"medusaHealthDAO",
-  "serve":true,
-  "serviceScript":
-  """
-  return new foam.dao.EasyDAO.Builder(x)
-    .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
-    .setInnerDAO((foam.dao.DAO) x.get("healthDAO"))
-    .setCluster(false)
-    .build()
-  """,
-  "client":
-  """
-  {
-    "of":"foam.nanos.medusa.MedusaHealth"
-  }
-  """
-})
-
-p({
   "class": "foam.nanos.boot.NSpec",
   "name": "medusaEntrySupport",
   "lazy": false,
@@ -245,7 +225,14 @@ p({
 //   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 // })
 
-// enable for medusa system
+// enable for medusa systems
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "medusastatuswatcher",
+//   "lazy": false,
+//   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
+// })
+
 // p({
 //   class:"foam.nanos.boot.NSpec",
 //   name:"Health",
@@ -255,4 +242,24 @@ p({
 //   service:{
 //     class:"foam.nanos.medusa.MedusaHealthFactory"
 //   }
+// })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaHealthDAO",
+//   "serve":true,
+//   "serviceScript":
+//   """
+//   return new foam.dao.EasyDAO.Builder(x)
+//     .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
+//     .setInnerDAO((foam.dao.DAO) x.get("healthDAO"))
+//     .setCluster(false)
+//     .build()
+//   """,
+//   "client":
+//   """
+//   {
+//     "of":"foam.nanos.medusa.MedusaHealth"
+//   }
+//   """
 // })

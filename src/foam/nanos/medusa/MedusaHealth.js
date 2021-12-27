@@ -19,6 +19,18 @@ foam.CLASS({
     'foam.nanos.app.HealthStatus'
   ],
 
+  tableColumns: [
+    'id',
+    'version',
+    'medusaType',
+    'medusaStatus',
+    'isPrimary',
+    'index',
+    'uptime',
+    'next',
+    'alarms'
+  ],
+
   properties: [
     {
       name: 'clusterable',
