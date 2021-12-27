@@ -7,14 +7,21 @@
 foam.CLASS({
   package: 'foam.build',
   name: 'ClassLoaderImpl',
+
   implements: [
     'foam.build.ClassLoader'
   ],
+
   requires: [
     'foam.dao.ArrayDAO',
     'foam.dao.Relationship',
     'foam.mlang.ExpressionsSingleton'
   ],
+
+  exports: [
+    'aref'
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -25,9 +32,7 @@ foam.CLASS({
       name: 'loading'
     }
   ],
-  exports: [
-    'aref'
-  ],
+
   methods: [
     {
       class: 'ContextMethod',
