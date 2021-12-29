@@ -109,7 +109,7 @@ foam.CLASS({
     }
 
     ^dropdown svg {
-      font-size: 0.6rem; 
+      font-size: 0.6rem;
     }
 
     ^iconContainer {
