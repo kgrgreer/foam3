@@ -12,7 +12,8 @@
     Wraps several delegate DAOs. 
     `,
     javaImports: [
-        'java.util.Objects',
+        'foam.dao.DAO',
+        'java.util.Objects'
     ],
     properties: [
         {
@@ -25,14 +26,18 @@
         {
             name: 'put_',
             javaCode: `
-                getDelegates().forEach(dao->dao.put_(x,obj));
+                for( foam.dao.DAO dao : getDelegates() ) {
+                    dao.put_(x,obj);
+                }
                 return obj;
             `
         },
         {
             name: 'remove_',
             javaCode: `
-                getDelegates().forEach(dao->dao.remove_(x,obj));
+                for( foam.dao.DAO dao : getDelegates() ) {
+                    dao.remove_(x,obj);
+                }
                 return obj;
             `
         }
@@ -43,7 +48,7 @@
         setDelegates(delegates);
     }
     
-    public CompositeDAO(foam.core.X x, foam.core.ClassInfo of, foam.dao.DAO ... delegate) {
+    public CompositeDAO(foam.core.X x, foam.core.ClassInfo of, foam.dao.DAO ... delegates) {
         super(x,of,delegates[0]);
         setDelegates(delegates);
     }

@@ -102,6 +102,8 @@ In this current implementation setDelegate must be called last.`,
               .setDelegates(new foam.dao.Journal[] {
                 new NDiffJournal.Builder(resourceStorageX)
                 .setDelegate(journal0)
+                .setOriginalFilename(getFilename())
+                .setFilename(journal0.getFilename())
                 .build(),
                 getJournal()
               })

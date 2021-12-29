@@ -8,12 +8,24 @@
     package: 'foam.nanos.ndiff',
     name: 'NDiffJournal',
     extends: 'foam.dao.ProxyJournal',
-
-    requires: [
+    javaImports: [
         'foam.nanos.ndiff.NDiff',
-        'foam.dao.DAO'
+        'foam.nanos.ndiff.NDiffDAO',
+        'foam.dao.DAO',
+        'foam.dao.CompositeDAO',
+        'foam.dao.AbstractF3FileJournal',
+        'foam.util.SafetyUtil'
     ],
-
+    properties: [
+        {
+            name: 'originalFilename',
+            class: 'String'
+        },
+        {
+            name: 'filename',
+            class: 'String'
+        }
+    ],
     methods: [
         {
             name: 'replay',
@@ -24,17 +36,32 @@
             // we can't just pipe data into the NDiffDAO
             // we have to transform the existing data first
             // because NDiffDAO contains NDiffs
-            
-            foam.dao.Journal delegateJournal = getDelegate(); 
+            foam.dao.Journal delegateJournal = getDelegate();
 
-            // ndiffDAO may not actually be installed
-            DAO ndiffDao = (DAO) x.get("ndiffDAO");
-            if (ndiffDao != null) {
-                getDelegate().replay(x, new CompositeDAO(x, ndiffDao, dao)); 
-            } else {
-                logger.warning("NDiffJournal: NDiffDAO is not (yet) running.");
+            // need information about the target journal first.
+            // if we have no idea where this is replaying,
+            // then don't bother sending to NDiffDAO
+            if (SafetyUtil.isEmpty(getFilename()) ||
+                SafetyUtil.isEmpty(getOriginalFilename()))
+            {
+                logger.warning("NDiffJournal: filename / originalFilename are not set!!");
                 getDelegate().replay(x, dao); 
+                return;
             }
+
+            String journalFileName = getFilename();
+
+            // ndiffDAO may not actually be installed.
+            // if it isn't, just log a warning, replay and get out
+            DAO ndiffDao = (DAO) x.get("ndiffDAO");
+            if (ndiffDao == null) {
+                logger.warning("NDiffJournal: NDiffDAO is not (yet) running. attempted to replay: "+journalFileName);
+                getDelegate().replay(x, dao); 
+                return;
+            }
+            
+            logger.info("NDiffJournal: replaying to NDiffDAO: "+journalFileName);
+            getDelegate().replay(x, new CompositeDAO(x, dao, ndiffDao));
             `
         }
     ]

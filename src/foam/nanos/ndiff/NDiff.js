@@ -11,18 +11,19 @@ foam.CLASS({
 
     properties: [
     {
-        type: 'String',
+        class: 'String',
         name: 'id'
     },
     {
-        type: 'String',
+        class: 'String',
         name: 'nSpecName'
     },
     {
+        class: 'Object',
         name: 'objectId'
     },
     {
-        type: 'boolean',
+        class: 'Boolean',
         name: 'delta',
         documentation: `Set to true if a difference was detected.`
     },

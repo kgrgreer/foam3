@@ -1,0 +1,22 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"ndiffDAO",
+  "serve":true,
+  "authenticate":false,
+  "lazy":false,
+  "serviceScript": """
+    dao  = new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.ndiff.NDiff.getOwnClassInfo())
+      .setDecorator(new foam.nanos.ndiff.NDiffDAO(x, new foam.dao.NullDAO(x, foam.nanos.ndiff.NDiff.getOwnClassInfo())))
+      .setFuid(true)
+      .setCluster(false)
+      .build();
+    return dao;
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.ndiff.NDiff"
+  }
+  """
+})
