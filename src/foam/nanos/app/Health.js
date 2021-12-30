@@ -27,7 +27,7 @@ foam.CLASS({
     'port',
     'status',
     'uptime',
-    'next',
+    'nextHeartbeatIn',
     'alarms'
   ],
 
@@ -35,13 +35,6 @@ foam.CLASS({
     {
       name: 'id',
       class: 'String',
-      javaFactory: `
-      String name = System.getProperty("hostname", "localhost");
-      if ( "localhost".equals(name) ) {
-        name = System.getProperty("user.name");
-      }
-      return name;
-      `,
       visibility: 'RO',
     },
     {
@@ -66,7 +59,6 @@ foam.CLASS({
       name: 'port',
       shortName: 'p',
       class: 'Int',
-      javaFactory: 'return Integer.parseInt(System.getProperty("http.port", "8443"));',
       visibility: 'RO',
     },
     {
@@ -84,41 +76,64 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
-      name: 'uptime',
+      name: 'bootTime',
+      shortName: 'bt',
+      class: 'Long',
+      visibility: 'RO',
+    },
+    {
+      name: 'upTime',
       shortName: 'ut',
       class: 'Duration',
+      javaFactory: 'return System.currentTimeMillis() - getBootTime();',
       visibility: 'RO',
+      clusterTransient: true
     },
     {
-      name: 'timeLast',
-      shortName: 'tl',
-      class: 'Long',
-      units: 'ms',
-      storageTransient: true,
-      networkTransient: true,
-      visibility: 'RO',
-    },
-    {
-      name: 'timeCurrent',
-      shortName: 'tc',
+      name: 'lastHeartbeat',
+      shortName: 'lh',
       class: 'Long',
       units: 'ms',
       visibility: 'RO',
+      clusterTransient: true
     },
     {
-      name: 'timeNext',
-      shortName: 'tn',
+      name: 'currentHeartbeat',
+      shortName: 'ch',
       class: 'Long',
       units: 'ms',
       visibility: 'RO',
     },
     {
-      name: 'next',
+      name: 'nextHeartbeat',
+      shortName: 'nh',
+      class: 'Long',
+      units: 'ms',
+      visibility: 'RO',
+    },
+    {
+      name: 'nextHearbeatIn',
       class: 'Duration',
-      javaGetter: 'return getTimeNext() - System.currentTimeMillis();',
-      storageTransient: true,
-      networkTransient: true,
+      expression: function(nextHeartbeat) {
+        if ( nextHeartbeat && nextHeartbeat > 0 ) {
+          return nextHeartbeat - Date.now();
+        }
+        return 0;
+      },
+      javaGetter: `
+      if ( getNextHeartbeat() > 0L ) {
+        return getNextHeartbeat() - System.currentTimeMillis();
+      }
+      return 0L;
+      `,
       visibility: 'RO',
+      clusterTransient: true
+    },
+    {
+      name: 'propogationTime',
+      class: 'Duration',
+      visibility: 'RO',
+      clusterTransient: true
     },
     {
       name: 'memoryMax',
@@ -156,18 +171,34 @@ foam.CLASS({
   public Health(foam.core.X x) {
     super();
     setX(x);
-    Health old = (Health) ((foam.dao.DAO) x.get("healthDAO")).find_(x, getId());
-    if ( old != null &&
-      getTimeLast() == 0L ) {
-      setTimeLast(old.getTimeCurrent());
+
+    String id = System.getProperty("hostname", "localhost");
+    if ( "localhost".equals(id) ) {
+      id = System.getProperty("user.name");
     }
-    setTimeCurrent(System.currentTimeMillis());
+    setId(id);
 
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     setMode(appConfig.getMode());
-    setVersion(appConfig.getVersion());
 
-    setUptime(System.currentTimeMillis() - (Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
+    StringBuilder sb = new StringBuilder();
+    String version = this.getClass().getPackage().getImplementationVersion();
+    if ( foam.util.SafetyUtil.isEmpty(version) ) {
+      sb.append(appConfig.getVersion());
+    } else {
+      String revision = this.getClass().getPackage().getSpecificationVersion();
+      sb.append(version);
+      if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
+           revision.length() > 2 ) {
+        sb.append("-"+revision.substring(0, 3));
+      }
+    }
+    setVersion(sb.toString());
+
+    setPort(Integer.parseInt(System.getProperty("http.port", "8443")));
+
+    setBootTime((Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
+    // setUptime(System.currentTimeMillis() - (Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
 
     Runtime runtime = Runtime.getRuntime();
     setMemoryMax(runtime.maxMemory());
@@ -186,6 +217,15 @@ foam.CLASS({
       setAlarms(((Long) count.getValue()).intValue());
     } else {
       setAlarms(0);
+    }
+
+    // NOTE: this works in conjunction with heartbear service -
+    // which creates entry for 'self'
+    Health old = (Health) ((DAO) x.get("healthDAO")).find_(x, getId());
+    if ( old == null ) {
+      setStatus(HealthStatus.DOWN);
+    } else {
+      setStatus(HealthStatus.UP);
     }
   }
   `

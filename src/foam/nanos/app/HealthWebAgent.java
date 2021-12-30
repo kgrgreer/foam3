@@ -31,8 +31,8 @@ public class HealthWebAgent
 
     response.setContentType("text/plain");
 
-    Health health = (Health) ((DAO) x.get("healthDAO")).find_(x, new Health().getId());
-
+    // Health health = (Health) ((DAO) x.get("healthDAO")).find_(x, ((Health) x.get("Health")).getId());
+    Health health = (Health) x.get("Health");
     if ( health.getStatus() == HealthStatus.UP ) {
       response.setStatus(HttpServletResponse.SC_OK);
     } else {

@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.lib.json.JSONParser',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.pm.PM',
     'java.io.IOException',
     'java.net.DatagramPacket',
     'java.net.DatagramSocket',
@@ -47,20 +48,15 @@ foam.CLASS({
     {
       name: 'initialTimerDelay',
       class: 'Long',
-      value: 30000,
+      value: 5000,
       units: 'ms'
     },
     {
       name: 'port',
       class: 'Int',
       javaFactory: `
-      return Integer.parseInt(System.getProperty("http.port", "8443")) + getPortOffset();
+      return Integer.parseInt(System.getProperty("heartbeat.port", "52241"));
       `
-    },
-    {
-      name: 'portOffset',
-      class: 'Int',
-      value: 4
     },
     {
       name: 'multicastAddress',
@@ -74,8 +70,7 @@ foam.CLASS({
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
       formatter.setOutputShortNames(true);
       formatter.setOutputDefaultClassNames(false);
-      formatter.setPropertyPredicate(
-        new foam.lib.NetworkPropertyPredicate());
+      formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
       return formatter;
       `
     }
@@ -85,7 +80,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-      Loggers.logger(getX(), this).info("start");
+      Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getPort());
       Agency agency = (Agency) getX().get("threadPool");
       agency.submit(getX(), this, this.getClass().getSimpleName());
 
@@ -94,8 +89,11 @@ foam.CLASS({
         new ContextAgentTimerTask(getX(),
           new ContextAgent() {
             public void execute(X x) {
-              Health health = (Health) ((DAO) x.get("healthDAO")).put_(x, (Health) x.get("Health")).fclone();
-              health.setTimeNext(health.getTimeCurrent() + getTimerInterval());
+              PM pm = PM.create(x, "HealthHeartbeatService", "broadcaster");
+              // Health health = (Health) ((DAO) x.get("healthDAO")).put_(x, (Health) x.get("Health")).fclone();
+              Health health = (Health) x.get("Health");
+              health.setCurrentHeartbeat(System.currentTimeMillis());
+              health.setNextHeartbeat(health.getCurrentHeartbeat() + getTimerInterval());
               FObjectFormatter formatter = (FObjectFormatter) getFormatter();
               formatter.reset();
               formatter.output(health);
@@ -113,6 +111,7 @@ foam.CLASS({
                 Loggers.logger(x, this).warning("broadcaster", e);
               } finally {
                 if ( socket != null ) socket.close();
+                pm.log(x);
               }
             }
           }
@@ -126,11 +125,13 @@ foam.CLASS({
       name: 'execute',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
-      logger.debug("listener");
+      logger.info("listener", "start", getMulticastAddress(), getPort());
       byte[] buf = new byte[512];
       MulticastSocket socket = null;
       InetAddress group = null;
-      Class cls = x.get("Health").getClass();
+      Health self = (Health) x.get("Health");
+      Class cls = self.getClass();
+
       try {
         socket = new MulticastSocket(getPort());
         group = InetAddress.getByName(getMulticastAddress());
@@ -138,11 +139,20 @@ foam.CLASS({
         while (true) {
           DatagramPacket packet = new DatagramPacket(buf, buf.length);
           socket.receive(packet);
+          long now = System.currentTimeMillis();
+          PM pm = PM.create(x, "HealthHeartbeatService", "listener");
+
           String received = new String(
             packet.getData(), 0, packet.getLength());
           // logger.debug("listener", "received", received);
           try {
             Health health = (Health) x.create(JSONParser.class).parseString(received, cls);
+            // NOTE: could ignore broadcast from self, but this gives us
+            // our own IP address.
+            // // ignore broadcast from self.
+            // if ( self.getId().equals(health.getId()) ) {
+            //   continue;
+            // }
             InetSocketAddress sender = (InetSocketAddress) packet.getSocketAddress();
             String address = sender.getAddress().toString();
             if ( address.startsWith("/") ) {
@@ -150,9 +160,17 @@ foam.CLASS({
               address = address.substring(1);
             }
             health.setAddress(address);
+            health.setPropogationTime(Math.abs(now - health.getCurrentHeartbeat()));
+            DAO dao = (DAO) x.get("healthDAO");
+            Health old = (Health) dao.find(health.getId());
+            if ( old != null ) {
+              health.setLastHeartbeat(old.getCurrentHeartbeat());
+            }
             ((DAO) x.get("healthDAO")).put_(x, health);
           } catch ( RuntimeException e ) {
             logger.warning("listener", "parse", e);
+          } finally {
+            pm.log(x);
           }
         }
       } catch ( IOException e ) {

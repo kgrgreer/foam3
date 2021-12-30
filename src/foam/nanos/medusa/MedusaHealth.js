@@ -10,10 +10,6 @@ foam.CLASS({
   extends: 'foam.nanos.app.Health',
   javaGenerateDefaultConstructor: false,
 
-  implements: [
-    'foam.nanos.medusa.Clusterable'
-  ],
-
   javaImports: [
     'foam.nanos.app.Health',
     'foam.nanos.app.HealthStatus'
@@ -26,30 +22,23 @@ foam.CLASS({
     'medusaStatus',
     'isPrimary',
     'index',
-    'uptime',
-    'next',
+    'upTime',
+    'nextHeartbeatIn',
     'alarms'
   ],
 
   properties: [
     {
-      name: 'clusterable',
-      class: 'Boolean',
-      value: false,
-      transient: true,
-      visibility: 'HIDDEN'
-    },
-    {
       documentation: 'Type of a Medusa instance.',
       name: 'medusaType',
-      shortName: 'mt',
+      shortName: 'mmt',
       class: 'Enum',
       of: 'foam.nanos.medusa.MedusaType',
       visibility: 'RO'
     },
     {
       name: 'medusaStatus',
-      shortName: 'ms',
+      shortName: 'mms',
       class: 'Enum',
       of: 'foam.nanos.medusa.Status',
       visibility: 'RO'
@@ -57,6 +46,7 @@ foam.CLASS({
     {
       documentation: 'True when this instance is the Primary.',
       name: 'isPrimary',
+      label: 'Primary',
       shortName: 'mip',
       class: 'Boolean',
       visibility: 'RO'
@@ -102,9 +92,19 @@ foam.CLASS({
     super(x);
 
     ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-    if ( support == null ) return;
+    if ( support == null ) {
+      setStatus(HealthStatus.DOWN);
+      setMedusaStatus(Status.OFFLINE);
+      return;
+    }
 
     ClusterConfig config = support.getConfig(x, support.getConfigId());
+    if ( ! config.getEnabled() ) {
+      setStatus(HealthStatus.DOWN);
+      setMedusaStatus(Status.OFFLINE);
+      return;
+    }
+
     setIsPrimary(config.getIsPrimary());
     setMedusaStatus(config.getStatus());
     setMedusaType(config.getType());
@@ -116,16 +116,11 @@ foam.CLASS({
 
     ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
     setReplaying(replaying.getReplaying());
-
-    DaggerService dagger = (DaggerService) x.get("daggerService");
-    setIndex(dagger.getGlobalIndex(x));
-
-    // status
-    if ( ! config.getEnabled() ) {
-      setStatus(HealthStatus.DOWN);
-      return;
+    if ( replaying.getReplaying() ) {
+      setIndex(replaying.getIndex() * -1);
+    } else {
+      setIndex(replaying.getIndex());
     }
-
     boolean cluster = "true".equals(System.getProperty("CLUSTER", "false"));
     if ( config.getType() == MedusaType.MEDIATOR ) {
       ElectoralService electoral = (ElectoralService) x.get("electoralService");
