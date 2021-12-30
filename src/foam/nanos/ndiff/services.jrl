@@ -7,9 +7,9 @@ p({
   "serviceScript": """
     dao  = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ndiff.NDiff.getOwnClassInfo())
-      .setDecorator(new foam.nanos.ndiff.NDiffDAO(x, new foam.dao.NullDAO(x, foam.nanos.ndiff.NDiff.getOwnClassInfo())))
       .setFuid(true)
       .setCluster(false)
+      .setRuler(false)
       .build();
     return dao;
   """,

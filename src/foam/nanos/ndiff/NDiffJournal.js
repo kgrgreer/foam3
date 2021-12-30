@@ -19,24 +19,24 @@
     properties: [
         {
             name: 'originalFilename',
-            class: 'String'
+            class: 'String',
+            documentation: `The filename without the file extension (e.g., 'services')`
         },
         {
             name: 'filename',
-            class: 'String'
+            class: 'String',
+            documentation: `
+            The filename with the file extension, if present (e.g., 'services.0').
+            Note that if this filename does NOT end with .0, we assume that the records are
+            coming from a runtime journal.
+            `
         }
     ],
     methods: [
         {
             name: 'replay',
-            javaCode: ` 
+            javaCode: `
             foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
-
-            // TODO:
-            // we can't just pipe data into the NDiffDAO
-            // we have to transform the existing data first
-            // because NDiffDAO contains NDiffs
-            foam.dao.Journal delegateJournal = getDelegate();
 
             // need information about the target journal first.
             // if we have no idea where this is replaying,
@@ -49,19 +49,17 @@
                 return;
             }
 
+            String originalFileName = getOriginalFilename();
             String journalFileName = getFilename();
 
-            // ndiffDAO may not actually be installed.
-            // if it isn't, just log a warning, replay and get out
-            DAO ndiffDao = (DAO) x.get("ndiffDAO");
-            if (ndiffDao == null) {
-                logger.warning("NDiffJournal: NDiffDAO is not (yet) running. attempted to replay: "+journalFileName);
-                getDelegate().replay(x, dao); 
-                return;
-            }
-            
             logger.info("NDiffJournal: replaying to NDiffDAO: "+journalFileName);
-            getDelegate().replay(x, new CompositeDAO(x, dao, ndiffDao));
+            getDelegate().replay(x, new NDiffDAO.Builder(getX())
+                                                .setDelegate(dao)
+                                                .setNSpecName(originalFileName)
+                                                .setRuntimeOrigin(!journalFileName.endsWith(".0"))
+                                                .build()
+            );
+            logger.info("NDiffJournal: replaying to NDiffDAO: "+journalFileName+"... done);
             `
         }
     ]

@@ -8,9 +8,15 @@ foam.CLASS({
     package: 'foam.nanos.ndiff',
     name: 'NDiffDAO',
     extends: 'foam.dao.ProxyDAO',
-    javaIncludes: [
+
+    doumentation: `
+    Decorator for an existing DAO that logs puts to the ndiffDAO service if it's running. 
+    `,
+    javaImports: [
+        'foam.nanos.logger.Loggers',
         'foam.nanos.ndiff.NDiff',
         'foam.dao.DAO',
+        'foam.nanos.pm.PM',
         'foam.dao.CompositeDAO',
         'foam.core.X'
     ],
@@ -18,54 +24,62 @@ foam.CLASS({
         public NDiffDAO(foam.core.X x, foam.dao.DAO delegate) {
             setX(x);
             setDelegate(delegate);
-
-            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
-            logger.info("NDiffDAO: object created");
         }
     `,
+    properties: [
+        {
+            name: 'nSpecName',
+            class: 'String'
+        },
+        {
+            name: 'runtimeOrigin',
+            class: 'Boolean'
+        }
+    ],
     methods: [
         {
             name: 'put_',
             javaCode: `
-            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
+            foam.nanos.logger.Logger logger = Loggers.logger(x, this); 
 
-            if ( obj instanceof NDiff ) {
-                return super.put_( x, obj );
+            DAO ndiffDao = (DAO)x.get("ndiffDAO");
+            if (ndiffDao == null) {
+                logger.warning("ndiffDAO is not running (yet)");
+                return super.put_(x, obj); 
             }
 
+            PM pm = PM.create(x, this.getClass(), "put_");
+
             Object objectId = obj.getProperty("id");
-
-            // WRONG! can't grab nspec name at the moment!
-            // only temporary, will change soon
-            String nSpecName = obj.getClass().getName();
+            String nSpecName = getNSpecName();
             String dbg = "(nSpecName="+nSpecName+",objectId="+objectId+")";
-
-            logger.info("NDiffDAO: try find existing ndiff: "+dbg);
-            NDiff existingNdiff = (NDiff) super.find(
+            NDiff existingNdiff = (NDiff) ndiffDao.find(
                 foam.mlang.MLang.AND(
                     foam.mlang.MLang.EQ(NDiff.OBJECT_ID, objectId),
                     foam.mlang.MLang.EQ(NDiff.N_SPEC_NAME, nSpecName)
                 )
                 );
-
-            // debugging branch
-            if (existingNdiff != null) {
-                logger.info("NDiffDAO: try find existing ndiff: "+dbg+"... updating");
-            }
-
-            NDiff ndiff = existingNdiff != null ? existingNdiff : new NDiff();
+            NDiff ndiff = existingNdiff != null ? (NDiff) existingNdiff.fclone() : new NDiff();
             ndiff.setObjectId(objectId);
-            ndiff.setNSpecName(nSpecName); 
-            if (true) { 
+            ndiff.setNSpecName(nSpecName);
+
+            if (!getRuntimeOrigin()) { 
                 ndiff.setInitialFObject(obj);
             } else {
                 ndiff.setRuntimeFObject(obj);
             }
 
-            super.put_(x, ndiff); 
-            logger.info("NDiffDAO: still alive: "+dbg);
+            if (ndiff.getInitialFObject() != null &&
+                ndiff.getRuntimeFObject() != null) {
+                ndiff.setDelta(!ndiff.getInitialFObject().equals(ndiff.getRuntimeFObject()));
+            }
 
-            return obj;
+            ndiffDao.put_(x, ndiff);
+
+            pm.log(x);
+
+            // forward to delegate once we're done
+            return super.put_(x, obj); 
             `
         }
     ]

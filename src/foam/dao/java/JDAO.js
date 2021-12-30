@@ -100,12 +100,20 @@ In this current implementation setDelegate must be called last.`,
 
             new CompositeJournal.Builder(resourceStorageX)
               .setDelegates(new foam.dao.Journal[] {
+                // replays the repo journal
                 new NDiffJournal.Builder(resourceStorageX)
                 .setDelegate(journal0)
                 .setOriginalFilename(getFilename())
                 .setFilename(journal0.getFilename())
                 .build(),
-                getJournal()
+
+                // replays the runtime journal
+                // (disabled in cluster mode)
+                new NDiffJournal.Builder(getX())
+                  .setDelegate(getJournal())
+                  .setOriginalFilename(getFilename())
+                  .setFilename(getFilename())
+                 .build()
               })
               .build()
               .replay(resourceStorageX, delegate);
