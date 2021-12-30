@@ -90,8 +90,7 @@ foam.CLASS({
       visibility: 'RO',
       javaFactory: `return getNextScheduledTime(getX());`,
       tableWidth: 170,
-      storageTransient: true,
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'String',
