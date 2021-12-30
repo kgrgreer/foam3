@@ -41,7 +41,6 @@ foam.CLASS({
       nu = (ClusterConfig) getDelegate().put_(x, nu);
 
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-
       // new entry
       if ( old == null ||
            old.getEnabled() != nu.getEnabled() ||
@@ -60,8 +59,6 @@ foam.CLASS({
         ClusterConfigSupport.NEXT_ZONE.clear(support);
         ClusterConfigSupport.NEXT_SERVER.clear(support);
         ClusterConfigSupport.ACTIVE_REGION.clear(support);
-      } else if ( old != null &&
-                  old.getPingTime() != nu.getPingTime() ) {
         ClusterConfigSupport.NEXT_ZONE.clear(support);
       } else if ( old != null &&
                   nu.getType() == MedusaType.NODE &&

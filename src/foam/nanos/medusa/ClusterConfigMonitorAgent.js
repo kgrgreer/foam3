@@ -27,8 +27,8 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GTE',
     'foam.nanos.alarming.Alarm',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.HashMap',
     'java.util.List',
@@ -39,6 +39,11 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
+  public ClusterConfigMonitorAgent(foam.core.X x, String id) {
+    setX(x);
+    setId(id);
+  }
+
   public ClusterConfigMonitorAgent(foam.core.X x, String id, foam.dao.DAO dao) {
     setX(x);
     setId(id);
@@ -56,7 +61,8 @@ foam.CLASS({
     },
     {
       name: 'dao',
-      class: 'foam.dao.DAOProperty'
+      class: 'foam.dao.DAOProperty',
+      javaFactory: 'return (DAO) getX().get("localClusterConfigDAO");'
     },
     {
       name: 'timerInterval',
@@ -74,20 +80,6 @@ foam.CLASS({
       name: 'lastAlarmsSince',
       class: 'Date',
       javaFactory: 'return new java.util.Date(1081157732);'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getId()
-        }, (Logger) getX().get("logger"));
-      `
     }
  ],
 
@@ -96,7 +88,7 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      getLogger().info("start", "interval", getTimerInterval());
+      Loggers.logger(getX(), this).info(getId(), "start", "interval", getTimerInterval());
       Timer timer = new Timer(this.getClass().getSimpleName()+"-"+getId(), true);
       timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
@@ -115,17 +107,17 @@ foam.CLASS({
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         try {
-          long startTime = System.currentTimeMillis();
+          // long startTime = System.currentTimeMillis();
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
           if ( cfg != null ) {
-            cfg.setPingTime(System.currentTimeMillis() - startTime);
+            // cfg.setPingTime(System.currentTimeMillis() - startTime);
             getDao().put_(x, cfg);
           } else {
-            getLogger().warning("client,find", "null");
+            Loggers.logger(x, this).warning(getId(), "client,find", "null");
           }
         } catch ( Throwable t ) {
           if ( config.getStatus() != Status.OFFLINE ) {
-            getLogger().debug(t.getMessage());
+            Loggers.logger(x, this).debug(getId(), t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
             cfg.setIsPrimary(false);
@@ -135,7 +127,7 @@ foam.CLASS({
           if ( cause == null ||
                ! ( cause instanceof java.io.IOException ) &&
                config.getStatus() != Status.OFFLINE ) {
-            getLogger().warning(t.getMessage(), t);
+            Loggers.logger(x, this).warning(getId(), t.getMessage(), t);
           }
           return;
         }
@@ -164,7 +156,7 @@ foam.CLASS({
         if ( cause == null ||
              ! ( cause instanceof java.io.IOException ) &&
              config.getStatus() != Status.OFFLINE ) {
-          getLogger().debug(t.getMessage(), t);
+          Loggers.logger(x, this).debug(getId(), t.getMessage(), t);
         }
         pm.error(x, t);
       } finally {

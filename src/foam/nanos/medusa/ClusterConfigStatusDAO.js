@@ -59,10 +59,6 @@ foam.CLASS({
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
 
-      // if ( support.getStandAlone() ) {
-      //   return nu;
-      // }
-
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
         logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
@@ -133,7 +129,8 @@ foam.CLASS({
 
         }
 
-        if ( nu.getType() == MedusaType.NODE ) {
+        if ( myConfig.getType() == MedusaType.MEDIATOR &&
+             nu.getType() == MedusaType.NODE ) {
           bucketNodes(x);
         }
       }

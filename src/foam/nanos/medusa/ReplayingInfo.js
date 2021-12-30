@@ -17,10 +17,6 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  requires: [
-    // 'foam.core.Duration', -- don't require, triggers Java compilation.
-  ],
-
   properties: [
     {
       name: 'id',

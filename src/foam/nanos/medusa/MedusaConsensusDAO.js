@@ -97,7 +97,7 @@ This is the heart of Medusa.`,
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       try {
         // if ( replaying.getReplaying() ) {
-        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //  getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
         //   if ( entry.getIndex() % 10000 == 0 ) {
         //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
         //   }
@@ -319,10 +319,21 @@ This is the heart of Medusa.`,
                 // TODO: more thought on alarming, and configuration for alarm times. This is really messy.
                 if ( replaying.getReplaying() ) {
                   if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 60000 ) {
-                    getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
+                    getLogger().warning("promoter", "no consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", replaying.getLastModified());
+                    if ( ! alarm.getIsActive() ) {
                     alarm.setIsActive(true);
                     alarm.setNote("No Consensus: "+next.toSummary());
                     alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+
+                    final ReplayRequestCmd cmd = new ReplayRequestCmd();
+                    cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
+                    Agency agency = (Agency) x.get(support.getThreadPoolName());
+                    agency.submit(x, new ContextAgent() {
+                      public void execute(X x) {
+                        ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+                      }
+                    }, this.getClass().getSimpleName());
+                    }
                   } else {
                     if ( alarm.getIsActive() ) {
                       alarm.setIsActive(false);
@@ -330,7 +341,7 @@ This is the heart of Medusa.`,
                     }
                   }
                 } else if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 5000 ) {
-                  getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
+                  getLogger().warning("promoter", "no consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", replaying.getLastModified());
                   if ( ! alarm.getIsActive() ) {
                     alarm.setIsActive(true);
                     alarm.setNote("No Consensus: "+next.toSummary());
