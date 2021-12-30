@@ -47,7 +47,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.cron.Cron.getOwnClassInfo())
       .setInnerDAO(x.get("localCronJobDAO"))
-      .setReadOnly(true)
       .setCluster(false)
       .build();
   """,
