@@ -88,20 +88,22 @@ foam.CLASS({
       name: 'scheduledTime',
       documentation: 'Scheduled time to run Cron script.',
       visibility: 'RO',
-      javaFactory: `return getNextScheduledTime(getX());`,
       tableWidth: 170,
-      storageTransient: true,
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'String',
       name: 'daoKey',
-      value: 'cronDAO'
+      value: 'cronJobDAO',
+      transient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'String',
       name: 'eventDaoKey',
-      value: 'cronEventDAO'
+      value: 'cronJobEventDAO',
+      transient: true,
+      visibility: 'HIDDEN',
     }
   ],
 
