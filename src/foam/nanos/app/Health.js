@@ -90,23 +90,15 @@ foam.CLASS({
       clusterTransient: true
     },
     {
-      name: 'lastHeartbeat',
-      shortName: 'lh',
-      class: 'Long',
-      units: 'ms',
-      visibility: 'RO',
-      clusterTransient: true
-    },
-    {
-      name: 'currentHeartbeat',
-      shortName: 'ch',
+      name: 'heartbeatTime',
+      shortName: 'ht',
       class: 'Long',
       units: 'ms',
       visibility: 'RO',
     },
     {
-      name: 'nextHeartbeat',
-      shortName: 'nh',
+      name: 'heartbeatSchedule',
+      shortName: 'hs',
       class: 'Long',
       units: 'ms',
       visibility: 'RO',
@@ -114,15 +106,15 @@ foam.CLASS({
     {
       name: 'nextHearbeatIn',
       class: 'Duration',
-      expression: function(nextHeartbeat) {
-        if ( nextHeartbeat && nextHeartbeat > 0 ) {
-          return nextHeartbeat - Date.now();
+      expression: function(heartbeatTime, heartbeatSchedule) {
+        if ( heartbeatTime && heartbeatSchedule && heartbeatSchedule > 0 ) {
+          return (heartbeatTime + heartbeatSchedule) - Date.now();
         }
         return 0;
       },
       javaGetter: `
-      if ( getNextHeartbeat() > 0L ) {
-        return getNextHeartbeat() - System.currentTimeMillis();
+      if ( getHeartbeatSchedule() > 0L ) {
+        return (getHeartbeatTime() + getHeartbeatSchedule()) - System.currentTimeMillis();
       }
       return 0L;
       `,
@@ -228,5 +220,21 @@ foam.CLASS({
       setStatus(HealthStatus.UP);
     }
   }
-  `
+  `,
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.id + '/' + this.address;
+      },
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      sb.append(getId());
+      sb.append("/");
+      sb.append(getAddress());
+      return sb.toString();
+      `
+    }
+  ]
 });

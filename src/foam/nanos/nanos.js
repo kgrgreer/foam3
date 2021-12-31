@@ -42,6 +42,7 @@ FOAM_FILES([
   { name: 'foam/nanos/app/ContextLookupAppConfigService' },
   { name: 'foam/nanos/app/Health' },
   { name: 'foam/nanos/app/HealthFactory' },
+  { name: 'foam/nanos/app/HealthHeartbeatMonitor' },
   { name: 'foam/nanos/app/HealthHeartbeatService' },
   { name: 'foam/nanos/app/HealthStatus' },
   { name: 'foam/nanos/app/Mode' },

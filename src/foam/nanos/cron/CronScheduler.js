@@ -111,7 +111,6 @@ foam.CLASS({
             Cron cron = (Cron) ((FObject) obj).fclone();
             cron.setScheduledTime(cron.getNextScheduledTime(getX()));
             cronJobDAO.put(cron);
-            logger.info("cronjob", "put", cron.getId());
           }
           public void remove(Object obj, Detachable sub) {}
           public void eof() {}

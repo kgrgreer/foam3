@@ -42,7 +42,7 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
-      value: 5000,
+      value: 3000,
       units: 'ms'
     },
     {
@@ -92,8 +92,8 @@ foam.CLASS({
               PM pm = PM.create(x, "HealthHeartbeatService", "broadcaster");
               // Health health = (Health) ((DAO) x.get("healthDAO")).put_(x, (Health) x.get("Health")).fclone();
               Health health = (Health) x.get("Health");
-              health.setCurrentHeartbeat(System.currentTimeMillis());
-              health.setNextHeartbeat(health.getCurrentHeartbeat() + getTimerInterval());
+              health.setHeartbeatTime(System.currentTimeMillis());
+              health.setHeartbeatSchedule(getTimerInterval());
               FObjectFormatter formatter = (FObjectFormatter) getFormatter();
               formatter.reset();
               formatter.output(health);
@@ -160,12 +160,7 @@ foam.CLASS({
               address = address.substring(1);
             }
             health.setAddress(address);
-            health.setPropogationTime(Math.abs(now - health.getCurrentHeartbeat()));
-            DAO dao = (DAO) x.get("healthDAO");
-            Health old = (Health) dao.find(health.getId());
-            if ( old != null ) {
-              health.setLastHeartbeat(old.getCurrentHeartbeat());
-            }
+            health.setPropogationTime(Math.abs(now - health.getHeartbeatTime()));
             ((DAO) x.get("healthDAO")).put_(x, health);
           } catch ( RuntimeException e ) {
             logger.warning("listener", "parse", e);

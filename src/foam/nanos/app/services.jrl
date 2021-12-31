@@ -54,3 +54,12 @@ p({
     multicastAddress: "230.22.41.0"
   }
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "healthHeartbeatMonitor",
+  "lazy": false,
+  "service": {
+    class: "foam.nanos.app.HealthHeartbeatMonitor",
+  }
+})
