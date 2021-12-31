@@ -246,6 +246,7 @@ var classes = [
   'foam.nanos.app.ContextLookupAppConfigService',
   'foam.nanos.app.Health',
   'foam.nanos.app.HealthFactory',
+  'foam.nanos.app.HealthHeartbeatMonitor',
   'foam.nanos.app.HealthHeartbeatService',
   'foam.nanos.app.HealthStatus',
   'foam.nanos.app.Mode',
