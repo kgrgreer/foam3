@@ -138,13 +138,18 @@ foam.CLASS({
                              public void put(Object obj, Detachable sub) {
                                Cron cron = (Cron) ((FObject) obj).fclone();
                                try {
-                                 if ( support == null || support.cronEnabled(x, cron.getClusterable()) ) {
+                                 if ( support == null ||
+                                      support.cronEnabled(x, cron.getClusterable()) ) {
                                    cron.setStatus(ScriptStatus.SCHEDULED);
                                    cronJobDAO.put_(x, cron);
                                  }
                                } catch (Throwable t) {
                                  logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);
-                                 ((DAO) x.get("alarmDAO")).put(new Alarm("CronScheduler", LogLevel.ERROR, AlarmReason.CONFIGURATION));
+                                 Alarm alarm = new Alarm("CronScheduler - Unabled to schedule");
+                                 alarm.setSeverity(LogLevel.ERROR);
+                                 alarm.setReason(AlarmReason.CONFIGURATION);
+                                 alarm.setNote(cron.getId()+"\\n"+t.getMessage());
+                                 ((DAO) x.get("alarmDAO")).put(alarm);
                                }
                              }
                            });
