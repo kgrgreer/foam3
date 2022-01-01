@@ -99,7 +99,7 @@ foam.CLASS({
       // generate an alarm
       Alarm alarm = new Alarm.Builder(x)
         .setName(ALARM_NAME)
-        .setIsActive(true)
+        .setIsActive(false)
         .setReason(AlarmReason.MANUAL)
         .setNote(myConfig.getId())
         .setClusterable(false)
