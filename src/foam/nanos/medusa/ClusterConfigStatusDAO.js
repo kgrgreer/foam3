@@ -96,7 +96,7 @@ foam.CLASS({
           }
         }
 
-        if ( myConfig.getZone() == 0 ) {
+        if ( support.canVote(x, myConfig) ) {
           Count mediatorsActive = ((Count) ((DAO) x.get("localClusterConfigDAO"))
             .where(
               AND(
@@ -108,17 +108,16 @@ foam.CLASS({
                 EQ(ClusterConfig.REGION, myConfig.getRegion())
               ))
             .select(COUNT()));
-          if ( nu.getStatus() == Status.ONLINE && mediatorsActive.getValue() > support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) x.get("alarmDAO");
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+
+          DAO alarmDAO = (DAO) x.get("alarmDAO");
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+          if ( mediatorsActive.getValue() > support.getMediatorQuorum() ) {
             if ( alarm != null && alarm.getIsActive() ) {
               alarm = (Alarm) alarm.fclone();
               alarm.setIsActive(false);
               alarmDAO.put(alarm);
             }
           } else if ( nu.getStatus() == Status.OFFLINE && mediatorsActive.getValue() <= support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) x.get("alarmDAO");
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
             if ( alarm == null ) {
               alarm = new Alarm.Builder(x)
                 .setName("Medusa Mediator Degradation")
@@ -132,7 +131,6 @@ foam.CLASS({
             }
             alarmDAO.put(alarm);
           }
-
         }
 
         if ( myConfig.getType() == MedusaType.MEDIATOR &&
