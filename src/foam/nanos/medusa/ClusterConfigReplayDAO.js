@@ -66,20 +66,20 @@ foam.CLASS({
 
         ClusterConfig config = nu;
 
+        // replay from NODE to zone and zone + 1
         if (
-                      // replay from NODE to zone and zone + 1
-                    ( config.getType() == MedusaType.NODE &&
-                      ( ( myConfig.getType() == MedusaType.MEDIATOR &&
-                          config.getZone() == myConfig.getZone() ) ||
-                        ( myConfig.getType() == MedusaType.NERF &&
-                          ( config.getZone() == myConfig.getZone() ||
-                            config.getZone() == myConfig.getZone() -1 ) ) ) ) ||
+            ( config.getType() == MedusaType.NODE &&
+              ( ( myConfig.getType() == MedusaType.MEDIATOR &&
+                  config.getZone() == myConfig.getZone() ) ||
+                ( myConfig.getType() == MedusaType.NERF &&
+                  ( config.getZone() == myConfig.getZone() ||
+                    config.getZone() == myConfig.getZone() -1 ) ) ) ) ||
 
-                      // replay from MEDIATOR to get Bootstrap indexes
-                    ( config.getType() == MedusaType.MEDIATOR &&
-                      myConfig.getType() == MedusaType.NERF &&
-                      config.getZone() == myConfig.getZone() -1 )
-                  ) {
+              // replay from MEDIATOR to get Bootstrap indexes
+            ( config.getType() == MedusaType.MEDIATOR &&
+              myConfig.getType() == MedusaType.NERF &&
+              config.getZone() == myConfig.getZone() -1 )
+          ) {
           String serviceName = "medusaNodeDAO";
           if ( config.getType() == MedusaType.MEDIATOR ||
                config.getType() == MedusaType.NERF ) {

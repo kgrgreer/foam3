@@ -33,6 +33,13 @@ foam.CLASS({
       class: 'Int',
       units: 'ms',
       value: 5000
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
   ],
 
@@ -42,6 +49,7 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
       timer.schedule(
         new ContextAgentTimerTask(getX(), this),
         getInitialTimerDelay());

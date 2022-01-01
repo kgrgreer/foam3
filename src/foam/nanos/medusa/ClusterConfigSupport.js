@@ -819,6 +819,7 @@ configuration for contacting the primary node.`,
           }
           return false;
         }
+
         if ( config.getType() == MedusaType.NODE ) {
           return false;
         }

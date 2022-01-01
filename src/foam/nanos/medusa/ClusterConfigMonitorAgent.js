@@ -26,6 +26,7 @@ foam.CLASS({
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GTE',
+    'foam.nanos.app.Health',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -80,6 +81,13 @@ foam.CLASS({
       name: 'lastAlarmsSince',
       class: 'Date',
       javaFactory: 'return new java.util.Date(1081157732);'
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
  ],
 
@@ -90,6 +98,7 @@ foam.CLASS({
       javaCode: `
       Loggers.logger(getX(), this).info(getId(), "start", "interval", getTimerInterval());
       Timer timer = new Timer(this.getClass().getSimpleName()+"-"+getId(), true);
+      setTimer(timer);
       timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
     },
@@ -122,6 +131,13 @@ foam.CLASS({
             cfg.setStatus(Status.OFFLINE);
             cfg.setIsPrimary(false);
             config = (ClusterConfig) getDao().put_(x, cfg);
+            Health health = (Health) ((DAO) x.get("healthDAO")).find(config.getId());
+            if ( health != null &&
+                 health instanceof MedusaHealth ) {
+              MedusaHealth medusaHealth = (MedusaHealth) health.fclone();
+              medusaHealth.setMedusaStatus(config.getStatus());
+              ((DAO) x.get("healthDAO")).put(medusaHealth);
+            }
           }
           Throwable cause = t.getCause();
           if ( cause == null ||

@@ -39,12 +39,6 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
-      documentation: 'MedusaEntry has not reached consensus on this index.',
-      name: 'nonConsensusIndex',
-      class: 'Long',
-      visibility: 'RO',
-    },
-    {
       name: 'replaying',
       class: 'Boolean',
       value: true,
@@ -173,13 +167,6 @@ foam.CLASS({
       class: 'Map',
       javaFactory: 'return new ConcurrentHashMap();',
       visibility: 'RO'
-    },
-    {
-      name: 'lastModified',
-      label: 'Stored',
-      class: 'DateTime',
-      visibility: 'RO',
-      includeInDigest: false,
     }
   ],
 
