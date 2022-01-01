@@ -230,6 +230,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/MedusaBroadcastNARegionDAO' },
   { name: 'foam/nanos/medusa/MedusaBroadcast2NodesDAO' },
   { name: 'foam/nanos/medusa/MedusaConsensusDAO' },
+  { name: 'foam/nanos/medusa/MedusaConsensusMonitor' },
   { name: 'foam/nanos/medusa/MedusaHashingDAO' },
   { name: 'foam/nanos/medusa/MedusaInternalDAO' },
   { name: 'foam/nanos/medusa/MedusaNodeJDAO' },

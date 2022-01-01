@@ -730,6 +730,7 @@ var classes = [
   'foam.nanos.medusa.MedusaBroadcastNARegionDAO',
   'foam.nanos.medusa.MedusaBroadcastDAO',
   'foam.nanos.medusa.MedusaConsensusDAO',
+  'foam.nanos.medusa.MedusaConsensusMonitor',
   'foam.nanos.medusa.MedusaException',
   'foam.nanos.medusa.MedusaEntryTimeoutException',
   'foam.nanos.medusa.MedusaEntrySupport',

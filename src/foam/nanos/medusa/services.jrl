@@ -218,6 +218,16 @@ p({
 //   """
 // })
 
+// mm specific
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaConsensusMonitor",
+//   "lazy":false,
+//   "service": {
+//     class:"foam.nanos.medusa.MedusaConsensusMonitor"
+//   }
+// })
+
 // p({
 //   "class":"foam.nanos.boot.NSpec",
 //   "name":"clusterConfigMonitor",
