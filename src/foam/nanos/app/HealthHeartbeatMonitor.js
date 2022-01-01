@@ -107,6 +107,7 @@ foam.CLASS({
                 }
               } else {
                 alarm = new Alarm(name);
+                alarm.setSeverity(foam.log.LogLevel.INFO);
                 alarm.setReason(AlarmReason.TIMEOUT);
                 alarm.setClusterable(false);
                 alarm.setNote(health.toSummary() + " missed " + getMissed() + " heartbeats");
