@@ -11,10 +11,10 @@ foam.ENUM({
   documentation: 'Represents typical health status',
 
   values: [
-    { name: 'DOWN',  label: 'Down',  color: 'gray' },
-    { name: 'MAINT', label: 'Maint', color: 'orange' },
-    { name: 'UP',     label: 'Up',    color: 'green' },
-    { name: 'FAIL',   label: 'Fail',  color: 'red' },
-    { name: 'DRAIN', label: 'Drain', color: 'orange' }
+    { name: 'DOWN',  label: 'down',  color: 'gray' },
+    { name: 'MAINT', label: 'maint', color: 'orange' },
+    { name: 'UP',     label: 'up',    color: 'green' },
+    { name: 'FAIL',   label: 'fail',  color: 'red' },
+    { name: 'DRAIN', label: 'drain', color: 'orange' }
   ]
 });
