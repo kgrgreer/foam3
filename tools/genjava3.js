@@ -67,9 +67,11 @@ if ( process.argv.length > 5  &&
 var indir = process.argv[2];
 indir = path_.resolve(path_.normalize(indir));
 
-
+// TODO: remove
 function createBlacklist(bl) {
   var blacklist = {};
+
+return {};
 
   bl.forEach(function(cls) {
     blacklist[cls] = true;
@@ -189,6 +191,7 @@ const CLASS_TYPES = [
   {
     name: 'proxies',
     build: cls => {
+      console.log('************************** PROXY', cls.id);
       var proxy = foam.core.Model.create({
         package: cls.package,
         name: 'Proxy' + cls.name,
@@ -256,7 +259,8 @@ function generateJava(javaClass) {
 
   if ( generatedJava[javaClass.id] || blacklist[javaClass.id] ) return;
 
-  if ( ! foam.java.Class.isInstance(javaClass) && ! foam.java.Interface.isInstance(javaClass) ) {
+  // Could be Class, Interface or Enum
+  if ( javaClass.buildJavaClass ) {
     javaClass = javaClass.buildJavaClass();
   }
 
