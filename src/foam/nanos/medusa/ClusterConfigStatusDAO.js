@@ -69,7 +69,7 @@ foam.CLASS({
 
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
-        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
+        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus(), "quorum", hadQuorum, "->", hasQuorum);
 
         if ( support.canVote(x, myConfig) ) {
           ElectoralService electoralService = (ElectoralService) x.get("electoralService");
