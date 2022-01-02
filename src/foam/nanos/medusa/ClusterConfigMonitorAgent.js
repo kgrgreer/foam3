@@ -116,10 +116,8 @@ foam.CLASS({
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         try {
-          // long startTime = System.currentTimeMillis();
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
           if ( cfg != null ) {
-            // cfg.setPingTime(System.currentTimeMillis() - startTime);
             getDao().put_(x, cfg);
           } else {
             Loggers.logger(x, this).warning(getId(), "client,find", "null");
