@@ -45,21 +45,21 @@ foam.CLASS({
       if ( old == null ||
            old.getEnabled() != nu.getEnabled() ||
            old.getStatus() != nu.getStatus() ) {
-        ClusterConfigSupport.REPLAY_NODES.clear(support);
+        ClusterConfigSupport.ACTIVE_REGION.clear(support);
+        ClusterConfigSupport.BROADCAST_MEDIATORS.clear(support);
+        ClusterConfigSupport.BROADCAST_NAREGION_MEDIATORS.clear(support);
+        ClusterConfigSupport.CLIENTS.clear(support);
+        ClusterConfigSupport.HAS_MEDIATOR_QUORUM.clear(support);
+        ClusterConfigSupport.HAS_NODE_QUORUM.clear(support);
+        ClusterConfigSupport.MEDIATOR_COUNT.clear(support);
+        ClusterConfigSupport.MEDIATOR_QUORUM.clear(support);
+        ClusterConfigSupport.NEXT_SERVER.clear(support);
+        ClusterConfigSupport.NEXT_ZONE.clear(support);
         ClusterConfigSupport.NODE_COUNT.clear(support);
         ClusterConfigSupport.NODE_GROUPS.clear(support);
         ClusterConfigSupport.NODE_QUORUM.clear(support);
-        ClusterConfigSupport.HAS_NODE_QUORUM.clear(support);
-        ClusterConfigSupport.MEDIATOR_COUNT.clear(support);
-        ClusterConfigSupport.HAS_MEDIATOR_QUORUM.clear(support);
+        ClusterConfigSupport.REPLAY_NODES.clear(support);
         ClusterConfigSupport.STAND_ALONE.clear(support);
-        ClusterConfigSupport.CLIENTS.clear(support);
-        ClusterConfigSupport.BROADCAST_MEDIATORS.clear(support);
-        ClusterConfigSupport.BROADCAST_NAREGION_MEDIATORS.clear(support);
-        ClusterConfigSupport.NEXT_ZONE.clear(support);
-        ClusterConfigSupport.NEXT_SERVER.clear(support);
-        ClusterConfigSupport.ACTIVE_REGION.clear(support);
-        ClusterConfigSupport.NEXT_ZONE.clear(support);
       } else if ( old != null &&
                   nu.getType() == MedusaType.NODE &&
                   old.getAccessMode() != nu.getAccessMode() ) {
