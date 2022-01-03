@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
+    'foam.net.Port',
     'java.io.IOException',
     'java.net.DatagramPacket',
     'java.net.DatagramSocket',
@@ -53,15 +54,15 @@ foam.CLASS({
     },
     {
       name: 'port',
-      class: 'Int',
-      javaFactory: `
-      return Integer.parseInt(System.getProperty("heartbeat.port", "52241"));
-      `
+      class: 'Int'
     },
     {
       name: 'multicastAddress',
-      class: 'String',
-      value: '230.10.22.41'
+      class: 'String'
+    },
+    {
+      name: 'timer',
+      class: 'Object'
     },
     {
       name: 'formatter',
@@ -85,6 +86,7 @@ foam.CLASS({
       agency.submit(getX(), this, this.getClass().getSimpleName());
 
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
       timer.scheduleAtFixedRate(
         new ContextAgentTimerTask(getX(),
           new ContextAgent() {

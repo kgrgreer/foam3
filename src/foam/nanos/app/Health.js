@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.log.LogLevel',
+    'foam.net.Port',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
@@ -187,10 +188,14 @@ foam.CLASS({
     }
     setVersion(sb.toString());
 
-    setPort(Integer.parseInt(System.getProperty("http.port", "8443")));
+    int port = Integer.parseInt(System.getProperty("http.port", "0"));
+    if ( port != 0 ) {
+      setPort(port);
+    } else {
+      setPort(Port.get(getX(), "http"));
+    }
 
     setBootTime((Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
-    // setUptime(System.currentTimeMillis() - (Long) x.get(foam.nanos.boot.Boot.BOOT_TIME));
 
     Runtime runtime = Runtime.getRuntime();
     setMemoryMax(runtime.maxMemory());

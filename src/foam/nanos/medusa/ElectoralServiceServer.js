@@ -379,6 +379,9 @@ foam.CLASS({
         synchronized ( electionLock_ ) {
           if ( ! ( getState() == ElectoralServiceState.ELECTION &&
                    support.hasQuorum(x) ) ) {
+            if ( getState() == ElectoralServiceState.VOTING ) {
+              setState(ElectoralServiceState.ELECTION);
+            }
             getLogger().debug("callReport", getState(), "no quorum", "votes", getVotes(), "voters", voters.size());
             return;
           }

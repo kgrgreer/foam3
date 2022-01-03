@@ -118,8 +118,7 @@ foam.CLASS({
     },
     {
       name: 'port',
-      class: 'Int',
-      value: 8080
+      class: 'Int'
     },
     {
       name: 'sessionId',

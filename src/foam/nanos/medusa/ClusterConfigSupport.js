@@ -46,6 +46,7 @@ configuration for contacting the primary node.`,
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.net.Host',
+    'foam.net.Port',
     'foam.util.SafetyUtil',
     'java.net.HttpURLConnection',
     'java.net.URL',
@@ -534,10 +535,15 @@ configuration for contacting the primary node.`,
         if ( host != null ) {
           address = host.getAddress();
         }
+        int port = receiveClusterConfig.getPort();
+        if ( port == 0 ) {
+          port = foam.net.Port.get(x, "SocketServer");
+        }
+
         SocketClientBox clientBox = new SocketClientBox();
         clientBox.setX(x);
         clientBox.setHost(address);
-        clientBox.setPort(receiveClusterConfig.getPort() + SocketServer.PORT_OFFSET);
+        clientBox.setPort(port);
         clientBox.setServiceName(serviceName);
         // getLogger().debug("getSocketClientBox", serviceName, clientBox);
         return clientBox;
