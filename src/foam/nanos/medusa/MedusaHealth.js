@@ -109,7 +109,6 @@ foam.CLASS({
     setMedusaStatus(config.getStatus());
     setMedusaType(config.getType());
     setName(config.getName());
-    // setPort(config.getPort());
     setRealm(config.getRealm());
     setRegion(config.getRegion());
     setZone(config.getZone());
