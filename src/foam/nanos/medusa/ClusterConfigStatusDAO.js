@@ -213,9 +213,11 @@ foam.CLASS({
         } catch (MultiplePrimariesException e) {
           Loggers.logger(x, this).warning("Multiple Primaries detected");
           config = (ClusterConfig) config.fclone();
+          ElectoralService electoral = (ElectoralService) x.get("electoralService");
+          electoral.dissolve(x);
           // REVIEW: if 'just' quorum ONLINE, this will fail the cluster.
-          config.setStatus(Status.OFFLINE);
-          ((DAO) x.get("localClusterConfigDAO")).put(config);
+          // config.setStatus(Status.OFFLINE);
+          // ((DAO) x.get("localClusterConfigDAO")).put(config);
         } catch (PrimaryNotFoundException e) {
           // should have found self!
           Loggers.logger(x, this).warning("Unexpected exception", e);
