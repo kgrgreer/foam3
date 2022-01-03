@@ -77,7 +77,13 @@ configuration for contacting the primary node.`,
       name: 'configId',
       label: 'Self',
       class: 'String',
-      javaFactory: 'return System.getProperty("hostname", "localhost");',
+      javaFactory: `
+      String hostname = System.getProperty("hostname", "localhost");
+      if ( "localhost".equals(hostname) ) {
+        hostname = System.getProperty("user.name");
+      }
+      return hostname;
+      `,
       visibility: 'RO'
     },
     {
@@ -176,6 +182,17 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'nodeRedundancy',
+      class: 'Int',
+      javaFactory: `
+      int c = getNodeCount();
+      // maximize groups for small test/staging clusters - sacrifice HA
+      if ( c < 4 ) return 0;
+      if ( c < 9 ) return 1;
+      return 2;
+      `
+    },
+    {
       // NOTE: replace all the quorum logic with a plug in quorum strategy
       documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeQuorum',
@@ -194,20 +211,9 @@ configuration for contacting the primary node.`,
       visibility: 'RO',
       javaFactory: `
       int c = getNodeCount();
-
-      if ( c < 4 ) {
-        return 1;
-      }
-      if ( c < 6 ) {
-        return 2;
-      }
-      if ( c < 12 ) {
-        return 3;
-      }
-      if ( c < 20 ) {
-        return 4;
-      }
-      return 5;
+      int bucketSize = 1 + getNodeRedundancy();
+      int groups = (int) Math.max(1, Math.floor( c / (double) bucketSize ));
+      return groups;
       `
     },
     {
