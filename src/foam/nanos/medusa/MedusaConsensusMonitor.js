@@ -14,6 +14,8 @@ foam.CLASS({
     'foam.nanos.NanoService'
   ],
 
+  documentation: `Poll system to detect if stalled waiting on consensus`,
+
   javaImports: [
     'foam.core.Agency',
     'foam.core.AgencyTimerTask',
@@ -36,11 +38,13 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
+      units: 'ms',
       value: 30000
     },
     {
       name: 'initialTimerDelay',
       class: 'Long',
+      units: 'ms',
       value: 60000
     },
     {
