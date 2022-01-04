@@ -21,6 +21,7 @@ In this current implementation setDelegate must be called last.`,
     'foam.dao.F3FileJournal',
     'foam.dao.MDAO',
     'foam.dao.NullJournal',
+    'foam.nanos.boot.NSpec',
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.dao.WriteOnlyF3FileJournal',
     'foam.nanos.ndiff.NDiffJournal'
@@ -98,25 +99,40 @@ In this current implementation setDelegate must be called last.`,
               .setFilename(getFilename() + ".0")
               .build();
 
-            new CompositeJournal.Builder(resourceStorageX)
+            // if NSpec present in X then go through NDiff
+            // (set up in EasyDAO's decorator chain)
+            NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_NAME_CTX_KEY);
+            
+            if ( nspec != null ) {
+              String nSpecName = nspec.getName();
+
+              new CompositeJournal.Builder(resourceStorageX)
               .setDelegates(new foam.dao.Journal[] {
                 // replays the repo journal
                 new NDiffJournal.Builder(resourceStorageX)
                 .setDelegate(journal0)
-                .setOriginalFilename(getFilename())
-                .setFilename(journal0.getFilename())
+                .setNSpecName(nSpecName)
+                .setRuntimeOrigin(false) 
                 .build(),
 
                 // replays the runtime journal
-                // (disabled in cluster mode)
                 new NDiffJournal.Builder(getX())
-                  .setDelegate(getJournal())
-                  .setOriginalFilename(getFilename())
-                  .setFilename(getFilename())
-                 .build()
+                .setDelegate(getJournal())
+                .setNSpecName(nSpecName)
+                .setRuntimeOrigin(true) 
+                .build()
               })
               .build()
               .replay(resourceStorageX, delegate);
+            } else {
+              new CompositeJournal.Builder(resourceStorageX)
+                .setDelegates(new foam.dao.Journal[] {
+                  journal0,
+                  getJournal()
+                })
+                .build()
+                .replay(resourceStorageX, delegate);
+            }
     `
     }
   ],

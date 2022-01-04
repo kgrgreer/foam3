@@ -9,6 +9,7 @@ p({
       .setOf(foam.nanos.ndiff.NDiff.getOwnClassInfo())
       .setCluster(false)
       .setRuler(false)
+      .setAuthorize(false)
       .build();
     return dao;
   """,

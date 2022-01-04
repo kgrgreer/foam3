@@ -41,23 +41,24 @@ foam.CLASS({
         {
             name: 'put_',
             javaCode: `
-            Logger logger = Loggers.logger(x, this); 
-
+            // object must be sent to the delegate dao first
+            // as there is a chance its ID has not been set
+            var storedObject = getDelegate().put_(x, obj);
+            
             DAO ndiffDao = (DAO)x.get("ndiffDAO");
             if ( ndiffDao == null ) {
-                logger.warning("ndiffDAO is not running (yet)");
-                return super.put_(x, obj); 
+                return storedObject;
             }
-
+            
             PM pm = PM.create(x, this.getClass(), "put_");
 
-            Object objectId = obj.getProperty("id");
+            Object objectId = storedObject.getProperty("id");
             String nSpecName = getNSpecName();
             
             NDiff existingNdiff = (NDiff) ndiffDao.find(
                 foam.mlang.MLang.AND(
-                    foam.mlang.MLang.EQ(NDiff.OBJECT_ID, objectId),
-                    foam.mlang.MLang.EQ(NDiff.N_SPEC_NAME, nSpecName)
+                    foam.mlang.MLang.EQ(NDiff.N_SPEC_NAME, nSpecName),
+                    foam.mlang.MLang.EQ(NDiff.OBJECT_ID, objectId)
                 )
                 );
             NDiff ndiff = existingNdiff != null ?
@@ -68,9 +69,9 @@ foam.CLASS({
             ndiff.setNSpecName(nSpecName);
 
             if ( ! getRuntimeOrigin() ) { 
-                ndiff.setInitialFObject(obj);
+                ndiff.setInitialFObject(storedObject);
             } else {
-                ndiff.setRuntimeFObject(obj);
+                ndiff.setRuntimeFObject(storedObject);
             }
 
             if ( ndiff.getInitialFObject() != null &&
@@ -84,7 +85,7 @@ foam.CLASS({
             ndiffDao.put_(x, ndiff); 
             pm.log(x);
  
-            return getDelegate().put_(x, obj); 
+            return storedObject;
             `
         }
     ]

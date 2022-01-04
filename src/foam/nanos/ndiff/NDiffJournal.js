@@ -19,20 +19,18 @@
     ],
     properties: [
         {
-            name: 'originalFilename',
+            name: 'nSpecName',
             class: 'String',
             documentation: `
-            The filename without the file extension (e.g.,'services')
+            The name of the originating NSpec.
             `
         },
         {
-            name: 'filename',
-            class: 'String',
+            name: 'runtimeOrigin',
+            class: 'Boolean',
             documentation: `
-            The filename with the file extension, if present
-            (e.g., 'services.0').
-            Note that if this filename does NOT end with .0, we assume that
-            the records are coming from a runtime journal.
+            If true, this entry was fed in at runtime, rather
+            than from one of the repo journals.
             `
         }
     ],
@@ -45,25 +43,30 @@
             // need information about the target journal first.
             // if we have no idea where this is replaying,
             // then don't bother sending to NDiffDAO
-            if ( SafetyUtil.isEmpty(getFilename()) ||
-                SafetyUtil.isEmpty(getOriginalFilename()) )
-            {
-                logger.warning("Filename / originalFilename are not set!!");
+            if ( SafetyUtil.isEmpty(getNSpecName()) ) {
+                logger.warning("nSpecName is not set!!");
                 getDelegate().replay(x, dao); 
                 return;
             }
 
-            String originalFileName = getOriginalFilename();
-            String journalFileName = getFilename();
+            String nSpecName = getNSpecName();
+            boolean runtimeOrigin = getRuntimeOrigin();
 
-            logger.info("Replaying to NDiffDAO",journalFileName);
+            logger.info("Replaying to NDiffDAO",
+                        nSpecName,
+                        "runtimeOrigin",
+                        runtimeOrigin);
             getDelegate().replay(x, new NDiffDAO.Builder(getX())
                                                 .setDelegate(dao)
-                                                .setNSpecName(originalFileName)
-                                                .setRuntimeOrigin(!journalFileName.endsWith(".0"))
+                                                .setNSpecName(nSpecName)
+                                                .setRuntimeOrigin(runtimeOrigin)
                                                 .build()
             );
-            logger.info("Replaying to NDiffDAO",journalFileName,"Done");
+            logger.info("Replaying to NDiffDAO",
+                        nSpecName,
+                        "runtimeOrigin",
+                        runtimeOrigin,
+                        "Done");
             `
         }
     ]

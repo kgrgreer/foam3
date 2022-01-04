@@ -11,6 +11,17 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
+  constants: [
+    {
+      name: 'NSPEC_NAME_CTX_KEY',
+      type: 'String',
+      class: 'String',
+      value: 'NSPEC_NAME_CTX_KEY',
+      documentation: `
+      Constant for addressing the NSpec through the context 
+      `
+    }
+  ],
   requires: [
     {
       path: 'foam.comics.BrowserView',

@@ -84,7 +84,8 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'java.util.List',
+    'foam.nanos.ndiff.NDiffDAO'
   ],
 
   constants: [
@@ -163,7 +164,9 @@ foam.CLASS({
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
             }
-            delegate = getJournalDelegate(getX(), delegate);
+            // hook for NDiff-related stuff downstream
+            // code in JDAO.js is looking for nSpecName set in a subX
+            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_NAME_CTX_KEY, getNSpec()), delegate);
           }
         }
 
@@ -189,6 +192,20 @@ foam.CLASS({
             "Interface decorators need to be disabled on the higher level of the decorator chain " +
             "if you are trying to prevent the decorators to be triggered multiple times"
           );
+        }
+
+        // listen for further changes to journaled nspec entries
+        // and forward them to NDiffDAO
+        // (this should ONLY be enabled for nspecs that have journals!)
+        if ( getNSpec() != null &&
+             getJournalType().equals(JournalType.SINGLE_JOURNAL) &&
+             !getWriteOnly() &&
+             getFixedSize() == null ) {
+          delegate = new NDiffDAO.Builder(getX())
+                      .setDelegate(delegate)
+                      .setNSpecName(getNSpec().getName())
+                      .setRuntimeOrigin(true)
+                      .build();
         }
 
         if ( getCluster() &&
@@ -834,9 +851,9 @@ model from which to test ServiceProvider ID (spid)`,
       javaCode: `
         if ( getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
           if ( getWriteOnly() ) {
-            delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
+            delegate = new foam.dao.WriteOnlyJDAO(subx, delegate, getOf(), getJournalName());
           } else {
-            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster());
+            delegate = new foam.dao.java.JDAO(subx, delegate, getJournalName(), getCluster());
           }
         }
         return delegate;
