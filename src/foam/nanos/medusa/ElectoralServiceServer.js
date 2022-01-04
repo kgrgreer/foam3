@@ -189,7 +189,10 @@ foam.CLASS({
       }
 
       // run a new campaigne
-      setElectionTime(System.currentTimeMillis());
+      // re: random - when nodes are all restarted, the mediators can
+      // complete replay at the same time.
+      setElectionTime(ThreadLocalRandom.current().nextInt(10000));
+
       setState(ElectoralServiceState.ELECTION);
       getLogger().debug("dissolve", getState(), "execute");
       ((Agency) x.get(support.getThreadPoolName())).submit(x, (ContextAgent)this, this.getClass().getSimpleName());
@@ -379,9 +382,6 @@ foam.CLASS({
         synchronized ( electionLock_ ) {
           if ( ! ( getState() == ElectoralServiceState.ELECTION &&
                    support.hasQuorum(x) ) ) {
-            if ( getState() == ElectoralServiceState.VOTING ) {
-              setState(ElectoralServiceState.ELECTION);
-            }
             getLogger().debug("callReport", getState(), "no quorum", "votes", getVotes(), "voters", voters.size());
             return;
           }
