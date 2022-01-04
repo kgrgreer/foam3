@@ -84,7 +84,7 @@ foam.CLASS({
             ndiffDao.put_(x, ndiff); 
             pm.log(x);
  
-            return super.put_(x, obj); 
+            return getDelegate().put_(x, obj); 
             `
         }
     ]
