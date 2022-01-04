@@ -29,8 +29,6 @@ public class HealthWebAgent
     HttpParameters      p       = x.get(HttpParameters.class);
     Format              format  = (Format) p.get(Format.class);
 
-    response.setContentType("text/plain");
-
     Health health = (Health) x.get("Health");
     if ( health.getStatus() == HealthStatus.UP ) {
       response.setStatus(HttpServletResponse.SC_OK);
@@ -55,6 +53,10 @@ public class HealthWebAgent
 
       response.setContentType("application/json");
       out.println(outputterJson.toString());
+    } else if( format == Format.XML ) {
+      response.setContentType("application/xml");
+      Outputter outputter = new Outputter(out, OutputterMode.NETWORK);
+      out.println(outputter.stringify(health));
     } else {
       response.setContentType("text/plain");
       out.println(health.getStatus().getLabel());
