@@ -9,11 +9,8 @@ foam.CLASS({
     name: 'NDiff',
     documentation: `Tracks changes to nSpecs. Used for debugging`,
 
+    ids: ['nSpecName', 'objectId'],
     properties: [
-    {
-        class: 'String',
-        name: 'id'
-    },
     {
         class: 'String',
         name: 'nSpecName'

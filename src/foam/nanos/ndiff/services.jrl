@@ -7,7 +7,6 @@ p({
   "serviceScript": """
     dao  = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ndiff.NDiff.getOwnClassInfo())
-      .setFuid(true)
       .setCluster(false)
       .setRuler(false)
       .build();
