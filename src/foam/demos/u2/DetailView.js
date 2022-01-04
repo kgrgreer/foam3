@@ -4,6 +4,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/*
+  TODO:
+    - help
+    - required
+    - more validation
+*/
+
 var E = foam.__context__.E.bind(foam.__context__);
 
 foam.CLASS({

@@ -69,7 +69,7 @@ foam.SCRIPT({
      * @param id The id of the class to lookup.
      **/
     maybeLookup: function(id) {
-      var ret = typeof id === 'string' && this.__cache__[id];
+      var ret = foam.String.isInstance(id) && this.__cache__[id];
 
       return foam.Function.isInstance(ret) ? ret() : ret;
     },
@@ -234,11 +234,11 @@ foam.SCRIPT({
 
   // Create short-cuts for foam.__context__.[createSubContext, register, lookup]
   // in foam.
-  foam.lookup = function(id, opt_suppress) {
-    return foam.__context__.lookup(id, opt_suppress);
+  foam.lookup = function(id) {
+    return foam.__context__.lookup(id);
   };
-  foam.maybeLookup = function(id, opt_suppress) {
-    return foam.__context__.maybeLookup(id, opt_suppress);
+  foam.maybeLookup = function(id) {
+    return foam.__context__.maybeLookup(id);
   };
   foam.register = function(cls, opt_id) {
     foam.__context__.register(cls, opt_id);

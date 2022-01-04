@@ -297,6 +297,7 @@ FOAM_FILES([
   { name: "foam/nanos/test/Test" },
   { name: "foam/nanos/test/TestBorder" },
   { name: "foam/nanos/cron/Cron" },
+  { name: "foam/nanos/cron/CronJobDAO" },
   { name: "foam/nanos/cron/CronSchedule" },
   { name: "foam/nanos/cron/CronScheduler" },
   { name: "foam/nanos/cron/CronScheduleDAO" },
@@ -644,4 +645,8 @@ FOAM_FILES([
 
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" },
+
+  { name: 'foam/nanos/alarming/AlarmIdRefines', flags: ['java'] },
+  { name: 'foam/nanos/auth/GroupPermissionJunctionRefinement', flags: ['java'] }
+
 ]);
