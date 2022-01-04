@@ -89,8 +89,22 @@ foam.CLASS({
                   // When cluster has quorum, the last mediator may not be in-session.
                   electoralService.register(x, myConfig.getId());
                 }
-              } catch ( RuntimeException e ) {
+              } catch (PrimaryNotFoundException e) {
                 // no primary
+                if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
+                  logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
+                  myConfig = (ClusterConfig) myConfig.fclone();
+                  myConfig.setStatus(Status.OFFLINE);
+                  DAO dao = (DAO) x.get("localClusterConfigDAO");
+                  myConfig = (ClusterConfig) dao.put(myConfig).fclone();
+                  myConfig.setStatus(Status.ONLINE);
+                  dao.put(myConfig);
+                } else {
+                  logger.warning("No Primary detected", "dissolving");
+                  electoralService.dissolve(x);
+                }
+              } catch (MultiplePrimariesException e) {
+                logger.warning("Mulitiple Primaries detected", "dissolving");
                 electoralService.dissolve(x);
               }
             }
@@ -206,21 +220,15 @@ foam.CLASS({
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
-      if ( config.getIsPrimary() &&
-           config.getStatus() == Status.ONLINE ) {
+      if ( config.getStatus() == Status.ONLINE ) {
         try {
           support.getPrimary(x);
         } catch (MultiplePrimariesException e) {
           Loggers.logger(x, this).warning("Multiple Primaries detected");
-          config = (ClusterConfig) config.fclone();
           ElectoralService electoral = (ElectoralService) x.get("electoralService");
           electoral.dissolve(x);
-          // REVIEW: if 'just' quorum ONLINE, this will fail the cluster.
-          // config.setStatus(Status.OFFLINE);
-          // ((DAO) x.get("localClusterConfigDAO")).put(config);
         } catch (PrimaryNotFoundException e) {
-          // should have found self!
-          Loggers.logger(x, this).warning("Unexpected exception", e);
+          Loggers.logger(x, this).warning("No Primary detected", e);
         }
       }
       `
