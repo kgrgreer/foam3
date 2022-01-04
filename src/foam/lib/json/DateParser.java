@@ -49,8 +49,8 @@ public class DateParser
         IntParser.instance(),
         Literal.create(":"),
         IntParser.instance(),
-        Literal.create("."),
-        new Repeat(new Chars("0123456789"), null, 3, 3),
+        new Optional(new Seq(Literal.create("."),
+          new Repeat(new Chars("0123456789"), null, 3, 3))),
         Literal.create("Z"),
         Literal.create("\"")),
       new LongParser()
@@ -85,9 +85,12 @@ public class DateParser
       (Integer) result[9],
       (Integer) result[11]);
 
+    if ( result[12] == null ) return ps.setValue(c.getTime());
+
     boolean zeroPrefixed = true;
     StringBuilder milliseconds = sb.get();
-    Object[] millis = (Object[]) result[13];
+    Object[] millArr = (Object[]) result[12];
+    Object[] millis = (Object[]) millArr[1];
 
     for ( int i = 0 ; i < millis.length ; i++ ) {
       // do not prefix with zeros
