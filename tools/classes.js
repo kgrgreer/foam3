@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- var classes = [
+var classes = [
   'foam.nanos.auth.CreatedAware',
   'foam.box.AbstractSkeleton',
   'foam.box.Skeleton',
