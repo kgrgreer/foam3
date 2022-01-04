@@ -90,7 +90,6 @@ foam.CLASS({
                   electoralService.register(x, myConfig.getId());
                 }
               } catch (PrimaryNotFoundException e) {
-                // no primary
                 if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
                   logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
                   myConfig = (ClusterConfig) myConfig.fclone();
@@ -228,7 +227,11 @@ foam.CLASS({
           ElectoralService electoral = (ElectoralService) x.get("electoralService");
           electoral.dissolve(x);
         } catch (PrimaryNotFoundException e) {
-          Loggers.logger(x, this).warning("No Primary detected", e);
+          if ( support.hasQuorum(x) ) {
+            Loggers.logger(x, this).warning("No Primary detected");
+            ElectoralService electoral = (ElectoralService) x.get("electoralService");
+            electoral.dissolve(x);
+          }
         }
       }
       `
