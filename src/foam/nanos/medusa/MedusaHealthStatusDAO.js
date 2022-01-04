@@ -13,6 +13,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.Agency',
+    'foam.dao.DAO',
     'foam.nanos.logger.Loggers'
   ],
 
@@ -23,10 +24,13 @@ foam.CLASS({
       MedusaHealth nu = (MedusaHealth) obj;
       MedusaHealth old = (MedusaHealth) getDelegate().find_(x, nu.getId());
       nu = (MedusaHealth) getDelegate().put_(x, nu);
+      ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(nu.getId());
       if ( old == null ||
            old.getStatus() != nu.getStatus() ||
            old.getMedusaStatus() != nu.getMedusaStatus() ||
-           old.getBootTime() != nu.getBootTime() ) {
+           old.getBootTime() != nu.getBootTime() ||
+           nu.getMedusaStatus() != config.getStatus() ||
+           nu.getIsPrimary() != config.getIsPrimary() ) { 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         Agency agency = (Agency) x.get(support.getThreadPoolName());
         Loggers.logger(x, this).info("agency", "ClusterConfigMonitorAgent", nu.getId());
