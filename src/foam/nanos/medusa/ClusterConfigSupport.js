@@ -383,16 +383,13 @@ configuration for contacting the primary node.`,
             ));
         if ( zone == 0 ) {
           dao = dao.orderBy(foam.mlang.MLang.DESC(ClusterConfig.IS_PRIMARY));
-        // TODO: ping moved to heartbeat
-        // } else {
-        //   dao = dao.orderBy(ClusterConfig.PING_TIME);
         }
         List<ClusterConfig> configs = ((ArraySink) dao.select(new ArraySink())).getArray();
         if ( configs.size() > 0 ) {
           ClusterConfig cfg = configs.get(0);
-          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary()/*, cfg.getPingTime()*/);
+          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary());
           for ( ClusterConfig c : configs ) {
-            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary()/*, c.getPingTime()*/);
+            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary());
           }
           return cfg;
         }
