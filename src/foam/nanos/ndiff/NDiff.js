@@ -25,17 +25,23 @@ foam.CLASS({
     {
         class: 'Boolean',
         name: 'delta',
-        documentation: `Set to true if a difference was detected.`
+        documentation: `
+        Set to true if a difference was detected.
+        `
     },
     {
         class: 'FObjectProperty',
         name: 'initialFObject',
-        documentation: `The object as it was loaded from the repo journals (".0 file")`
+        documentation: `
+        The object as it was loaded from the repo journals (".0 file")
+        `
     },
     {
         class: 'FObjectProperty',
         name: 'runtimeFObject',
-        documentation: `The object as it was loaded from the runtime journals`
+        documentation: `
+        The object as it was loaded from the runtime journals
+        `
     }
     ]
 
