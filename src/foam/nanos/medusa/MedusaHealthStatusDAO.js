@@ -13,6 +13,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.Agency',
+    'foam.nanos.logger.Loggers'
   ],
 
   methods: [
@@ -28,7 +29,7 @@ foam.CLASS({
            old.getBootTime() != nu.getBootTime() ) {
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         Agency agency = (Agency) x.get(support.getThreadPoolName());
-        ((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "ClusterConfigMonitorAgent", "execute", nu.getId());
+        Loggers.logger(x, this).info("agency", "ClusterConfigMonitorAgent", nu.getId());
         agency.submit(x, new ClusterConfigMonitorAgent(x, nu.getId()), this.getClass().getSimpleName());
       }
       return nu;
