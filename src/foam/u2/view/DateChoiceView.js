@@ -11,7 +11,7 @@ foam.CLASS({
     ^ {
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px /*%WHITE%*/ #ffffff;
-      border-radius: 8px;
+      border-radius: 0px;
       box-sizing: content-box;
       font-weight: normal;
       padding: 4px;
@@ -24,6 +24,7 @@ foam.CLASS({
     }
     ^selected {
       background-color: /*%PRIMARY3%*/ #406dea;
+      border-radius: 8px;
       color: /*%WHITE%*/ #ffffff;
       font-weight: bold;
     }
