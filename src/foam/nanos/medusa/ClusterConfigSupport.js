@@ -806,7 +806,7 @@ configuration for contacting the primary node.`,
             return true;
           }
 
-          // Clusterable cron jobs should only run on the primary mediator
+          // Standalone mode - only 1 mediator
           if ( getMediatorCount() == 1 ) {
             return true;
           }

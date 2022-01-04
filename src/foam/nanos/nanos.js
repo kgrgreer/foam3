@@ -296,6 +296,7 @@ FOAM_FILES([
   { name: "foam/nanos/test/Test" },
   { name: "foam/nanos/test/TestBorder" },
   { name: "foam/nanos/cron/Cron" },
+  { name: "foam/nanos/cron/CronJobDAO" },
   { name: "foam/nanos/cron/CronSchedule" },
   { name: "foam/nanos/cron/CronScheduler" },
   { name: "foam/nanos/cron/CronScheduleDAO" },

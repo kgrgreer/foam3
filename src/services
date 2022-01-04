@@ -705,7 +705,6 @@ p({
     """,
     "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"
 })
-
 p({"class":"foam.nanos.boot.NSpec", "name":"serializationTestEchoService", "boxClass": "foam.nanos.test.EchoServiceSkeleton",  "serve":true, "serviceClass":"foam.nanos.test.SerializationTestEchoService", "client":"{\"class\":\"foam.nanos.test.ClientEchoService\",\"delegate\":{\"class\":\"foam.box.SessionClientBox\",\"delegate\":{\"class\":\"foam.box.HTTPBox\",\"method\":\"POST\",\"url\":\"service/serializationTestEchoService\"}}}"})
 
 p({
@@ -1045,18 +1044,4 @@ p({
       "of": "foam.nanos.approval.ApprovalRequestClassification"
     }
   """
-})
-
-p({
-  class: "foam.nanos.boot.NSpec",
-  name: "ruleRetryStrategy",
-  lazy: true,
-  service: {
-    class: "foam.util.retry.RetryStrategyFactory",
-    prototype: {
-      class: "foam.util.retry.SimpleRetryStrategy",
-      maxRetry: 5,
-      retryDelay: 10000
-    }
-  }
 })
