@@ -49,8 +49,10 @@ public class DateParser
         IntParser.instance(),
         Literal.create(":"),
         IntParser.instance(),
-        new Optional(new Seq(Literal.create("."),
-          new Repeat(new Chars("0123456789"), null, 3, 3))),
+        new Optional(
+          new Seq(Literal.create("."),
+          new Repeat(new Chars("0123456789"), null, 3, 3))
+        ),
         Literal.create("Z"),
         Literal.create("\"")),
       new LongParser()
