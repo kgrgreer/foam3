@@ -50,7 +50,7 @@ public class DateParser
         Literal.create(":"),
         IntParser.instance(),
         new Optional(
-          new Seq(Literal.create("."),
+          new Seq1(1, Literal.create("."),
           new Repeat(new Chars("0123456789"), null, 3, 3))
         ),
         Literal.create("Z"),
@@ -91,8 +91,7 @@ public class DateParser
 
     boolean zeroPrefixed = true;
     StringBuilder milliseconds = sb.get();
-    Object[] millArr = (Object[]) result[12];
-    Object[] millis = (Object[]) millArr[1];
+    Object[] millis = (Object[]) result[12];
 
     for ( int i = 0 ; i < millis.length ; i++ ) {
       // do not prefix with zeros
