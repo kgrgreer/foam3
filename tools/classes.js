@@ -929,6 +929,7 @@ var classes = [
   'foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted',
   'foam.nanos.crunch.predicate.StatusChangedTo',
   'foam.nanos.crunch.predicate.IsAgent',
+  'foam.nanos.crunch.predicate.IsSpid',
   'foam.nanos.crunch.predicate.CapabilityJunctionTransitionToStatus',
   'foam.nanos.crunch.predicate.IsAgentUpdate',
   'foam.nanos.crunch.predicate.IsCapabilityJunctionOf',

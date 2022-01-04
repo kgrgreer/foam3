@@ -11,8 +11,8 @@ import foam.dao.*;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.*;
 import foam.nanos.crunch.*;
+import foam.nanos.crunch.predicate.*;
 import java.util.*;
-import net.nanopay.crunch.*;
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
 
@@ -36,8 +36,8 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     nanoX = x.put("subject", new Subject(nanoUser));
     adminX = x.put("subject", new Subject(nanoAdmin));
 
-    Predicate isTestSpid = new IsSpid.Builder(x).setSpid("test").build();
-    Predicate isNanoSpid = new IsSpid.Builder(x).setSpid("nanopay").build();
+    Predicate isTestSpid = new IsSpid.Builder(x).setSpids(new String[]{"test"}).build();
+    Predicate isNanoSpid = new IsSpid.Builder(x).setSpids(new String[]{"nanopay"}).build();
 
     cap = new Capability.Builder(x).setId("cap").build();
     prereq = new Capability.Builder(x).setId("prereq").build();
