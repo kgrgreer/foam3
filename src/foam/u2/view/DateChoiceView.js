@@ -10,23 +10,13 @@ foam.CLASS({
   css: `
     ^ {
       background-color: /*%WHITE%*/ #ffffff;
-      border: 1px /*%WHITE%*/ #ffffff;
-      border-radius: 0px;
-      box-sizing: content-box;
-      font-weight: normal;
+      border-radius: 3px;
       padding: 4px;
-      transition: all 0.2s ease;
-      text-align: center;
-      width: 1.5em;
-    }
-    ^:hover {
-      cursor: pointer;
+      width: 4ch;
     }
     ^selected {
       background-color: /*%PRIMARY3%*/ #406dea;
-      border-radius: 8px;
-      color: /*%WHITE%*/ #ffffff;
-      font-weight: bold;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
   `
 });

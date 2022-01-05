@@ -24,7 +24,7 @@ foam.CLASS({
     },
     {
       name: 'numberColumns',
-      value: 8
+      value: 7
     }
   ],
   methods: [
