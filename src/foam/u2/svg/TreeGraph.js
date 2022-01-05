@@ -14,16 +14,6 @@ foam.CLASS({
     'foam.u2.svg.arrow.SimpleArrowHead',
   ],
 
-  css: `
-    ^p {
-      /*
-        note: "pixels" are relative to SVG viewport
-      */
-      font-size: 1rem;
-      text-align: center;
-    }
-  `,
-
   documentation: `
     SVG implementation of a tree graph.
   `,
