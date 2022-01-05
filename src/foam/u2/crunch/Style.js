@@ -40,70 +40,17 @@ foam.CLASS({
       background-repeat: no-repeat;
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      border: solid 1px /*%GREY4%*/ #e7eaec;
+      background-color: /*%WHITE%*/ #ffffff;
       background-position: 50% 50%;
     }
 
-    ^card-title {
-      margin: 0;
-      min-height: 20px;
-      font-size: 1.6rem;
-      font-weight: 600;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.25;
-      letter-spacing: normal;
-      color: #1e1f21;
-    }
-
     ^card-subtitle {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: normal;
-      font-stretch: normal;
-      line-height: 1.27;
-      letter-spacing: normal;
-      color: #9ba1a6;
-    }
-
-    ^card-description {
-      margin-top: 9px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.43;
-      letter-spacing: normal;
-      color: #5e6061;
-      cursor: pointer;
-
-      /* normalize for transitions */
-      border: solid 1px rgba(255,255,255,0);
-
-      /* Card highlight transition */
-      transition: background 200ms ease-in, border 200ms ease-in;
-      -webkit-transition: background 200ms ease-in, border 200ms ease-in;
-      -moz-transition: background 200ms ease-in, border 200ms ease-in;
+      color: /*%GREY2%*/ #9ba1a6;
     }
 
     ^.state-hover {
       cursor: pointer;
-    }
-
-    ^mode-card.state-hover {
-      background-color: rgba(255,255,255,0.5);
-      border: solid 1px #e7eaec;
-    }
-
-    ^mode-card.state-hover ^card-description {
-      position: relative;
-      left: -15px;
-      width: calc(250px - (2*24px)/3 + 30px);
-    }
-    ^mode-circle.state-hover ^card-description {
-      width: auto;
-      height: auto;
     }
 
     ^icon-circle {
@@ -112,10 +59,7 @@ foam.CLASS({
       height: 80px;
       border-radius: 40px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      background-color: #ffffff;
-    }
-
-    ^mode-card {
+      background-color: /*%WHITE%*/ #ffffff;
     }
 
     ^mode-circle {
@@ -149,13 +93,7 @@ foam.CLASS({
       height: 24px;
       padding: 2px 8px;
       background-color: /*%WHITE%*/ #ffffff;
-      font-size: 1rem;
-      font-weight: 500;
-      font-style: normal;
-      font-stretch: normal;
       color: /*%BLACK%*/ #1e1f21;
-      line-height: 24px;
-      letter-spacing: normal;
       text-align: center;
       opacity: 80%;
       width: -moz-available;
@@ -185,7 +123,6 @@ foam.CLASS({
       border-radius: 5px;
 
       padding: 16px;
-      font-size: 1.2rem;
 
       position: absolute;
       z-index: 101;
