@@ -32,6 +32,13 @@ public class HealthWebAgent
     Format              format  = (Format) p.get(Format.class);
 
     Health health = (Health) x.get("Health");
+    health.setHeartbeatTime(System.currentTimeMillis());
+
+    Health lastHealth = (Health) ((DAO) x.get("healthDAO")).find(health);
+    if ( lastHealth != null ) {
+      health.setAddress(lastHealth.getAddress());
+    }
+
     if ( health.getStatus() == HealthStatus.UP ) {
       response.setStatus(HttpServletResponse.SC_OK);
     } else {
@@ -48,7 +55,6 @@ public class HealthWebAgent
                                      new foam.lib.AndPropertyPredicate(x,
                                                                        new foam.lib.PropertyPredicate[] {
                                                                          new foam.lib.ExternalPropertyPredicate(),
-                                                                         new foam.lib.NetworkPropertyPredicate(),
                                                                          new foam.lib.PermissionedPropertyPredicate()}));
 
       formatter.output(health);
