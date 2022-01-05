@@ -19,15 +19,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .headerTitle {
-      font-size: 2.4rem;
-      font-weight: 900;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.5;
-      letter-spacing: normal;
-    }
-
     ^ .Container > *:not(:last-of-type) {
       margin-bottom: 24px;
     }
@@ -67,7 +58,7 @@ foam.CLASS({
       this.startContext(this.context)
         .start().addClass(this.myClass())
           .start().addClass('Container')
-            .start().addClass('headerTitle').add(this.title).end()
+            .start().addClass('h300').add(this.title).end()
             .start().addClass('content')
               .add(this.body)
             .end()
