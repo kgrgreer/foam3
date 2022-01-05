@@ -513,10 +513,10 @@ var classes = [
   'foam.util.NUIDGenerator',
   'foam.util.UIDGenerator',
   'foam.util.AUIDGenerator',
-  'foam.util.search.GlobalSearchService',
-  'foam.util.search.ClientGlobalSearchService',
-  'foam.util.search.FuidKey',
-  'foam.util.search.FuidSearchService',
+  'foam.util.uid.GlobalSearchService',
+  'foam.util.uid.ClientGlobalSearchService',
+  'foam.util.uid.FuidKey',
+  'foam.util.uid.FuidSearchService',
   'foam.lib.parse.SymbolParser',
   'foam.lib.parse.Parser',
   'foam.lib.parse.ActionParser',
@@ -1056,7 +1056,7 @@ var skeletons = [
   'foam.nanos.google.api.sheets.GoogleSheetsDataImportService',
   'foam.nanos.crunch.CrunchService',
   'foam.i18n.TranslationService',
-  'foam.util.search.GlobalSearchService'
+  'foam.util.uid.GlobalSearchService'
 ];
 
 var proxies = [

@@ -4,11 +4,11 @@ p({
   "description":"FUID Global Search Service",
   "serve":true,
   "authenticate":true,
-  "serviceClass":"foam.util.search.FuidSearchService",
-  "boxClass":"foam.util.search.GlobalSearchServiceSkeleton",
+  "serviceClass":"foam.util.uid.FuidSearchService",
+  "boxClass":"foam.util.uid.GlobalSearchServiceSkeleton",
   "client":"""
     {
-      "class":"foam.util.search.ClientGlobalSearchService"
+      "class":"foam.util.uid.ClientGlobalSearchService"
     }
   """
 })
@@ -23,13 +23,13 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("fuidKeys")
-      .setOf(foam.util.search.FuidKey.getOwnClassInfo())
+      .setOf(foam.util.uid.FuidKey.getOwnClassInfo())
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.util.search.FuidKey.KEY });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.util.uid.FuidKey.KEY });
   """,
   "client": """
     {
-      "of": "foam.util.search.FuidKey"
+      "of": "foam.util.uid.FuidKey"
     }
   """
 })

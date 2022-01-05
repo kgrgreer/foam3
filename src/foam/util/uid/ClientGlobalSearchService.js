@@ -5,10 +5,10 @@
  */
 
 foam.CLASS({
-  package: 'foam.util.search',
+  package: 'foam.util.uid',
   name: 'ClientGlobalSearchService',
 
-  implements: [ 'foam.util.search.GlobalSearchService' ],
+  implements: [ 'foam.util.uid.GlobalSearchService' ],
 
   requires: [
     'foam.box.SessionClientBox',
@@ -22,7 +22,7 @@ foam.CLASS({
     },
     {
       class: 'Stub',
-      of: 'foam.util.search.GlobalSearchService',
+      of: 'foam.util.uid.GlobalSearchService',
       name: 'delegate',
       factory: function() {
         return this.SessionClientBox.create({ delegate: this.HTTPBox.create({

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.util.search',
+  package: 'foam.util.uid',
   name: 'FuidKey',
   plural: 'Fuid Keys',
 

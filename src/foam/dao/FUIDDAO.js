@@ -106,7 +106,7 @@ foam.CLASS({
         var uidgen = getUIDGenerator();
         if ( getFuidKeyDAO().find(getSalt()) == null ) {
           getFuidKeyDAO().put(
-            new foam.util.search.FuidKey.Builder(getX())
+            new foam.util.uid.FuidKey.Builder(getX())
               .setDaoName(getSalt())
               .setKey(uidgen.getHashKey())
               .build()

@@ -1103,9 +1103,9 @@ FOAM_FILES([
   { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
   { name: "foam/u2/view/DayChoiceView" , flags: ["web"] },
 
-  // Global search
-  { name: "foam/util/search/GlobalSearchService" },
-  { name: "foam/util/search/ClientGlobalSearchService" },
-  { name: "foam/util/search/FuidKey" },
-  { name: "foam/util/search/FuidSearchService" }
+  // Uid search
+  { name: "foam/util/uid/GlobalSearchService" },
+  { name: "foam/util/uid/ClientGlobalSearchService" },
+  { name: "foam/util/uid/FuidKey" },
+  { name: "foam/util/uid/FuidSearchService" }
 ]);

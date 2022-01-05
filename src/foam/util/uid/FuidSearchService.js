@@ -5,11 +5,11 @@
  */
 
 foam.CLASS({
-  package: 'foam.util.search',
+  package: 'foam.util.uid',
   name: 'FuidSearchService',
 
   implements: [
-    'foam.util.search.GlobalSearchService'
+    'foam.util.uid.GlobalSearchService'
   ],
 
   imports: [
