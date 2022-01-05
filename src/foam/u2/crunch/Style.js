@@ -145,37 +145,6 @@ foam.CLASS({
       border-color: white;
     }
 
-    ^badge {
-      height: 24px;
-      border-radius: 12px;
-      width: 79px;
-
-      padding: 0 8px;
-      background-color: #b5b5b5;
-
-      font-size: 1rem;
-      font-weight: 500;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 24px;
-      letter-spacing: normal;
-      text-align: center;
-      color: #ffffff;
-    }
-
-    ^badge-neutral {
-      background-color: #b5b5b5;
-    }
-    ^badge-good {
-      background-color: #32bf5e;
-    }
-    ^badge-info {
-      background-color: #604aff;
-    }
-    ^badge-bad {
-      background-color: #bf3232;
-    }
-
     ^renewable-description {
       height: 24px;
       padding: 2px 8px;
@@ -263,6 +232,8 @@ foam.CLASS({
     ^tooltiptext^tooltipDisabled {
       visibility: hidden !important;
     }
+
+
   `,
 
   methods: [
