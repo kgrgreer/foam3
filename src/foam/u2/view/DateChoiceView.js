@@ -9,14 +9,8 @@ foam.CLASS({
   extends: 'foam.u2.view.DayChoiceView',
   css: `
     ^ {
-      background-color: /*%WHITE%*/ #ffffff;
-      border-radius: 3px;
-      padding: 4px;
+      padding: 0.28em;
       width: 4ch;
-    }
-    ^selected {
-      background-color: /*%PRIMARY3%*/ #406dea;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
   `
 });

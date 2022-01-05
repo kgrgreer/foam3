@@ -11,7 +11,7 @@ foam.CLASS({
   css: `
   ^ {
     background-color: /*%WHITE%*/ #ffffff;
-    border: solid 1px #b2b6bd;
+    border: 1px solid /*%GREY3%*/ #b2b6bd;
     border-radius: 4px;
     padding: 8px 16px;
     transition: all 0.2s ease;
@@ -22,9 +22,9 @@ foam.CLASS({
   }
   ^selected {
     background-color: /*%PRIMARY3%*/ #406dea;
-    border: 1px solid /*%PRIMARY3%*/ #406dea;
+    border-color: /*%PRIMARY3%*/ #406dea;
     color: /*%WHITE%*/ #ffffff;
-    font-weight: bold;
+    line-height: 1.5;
   }
   `,
   methods: [
@@ -38,6 +38,7 @@ foam.CLASS({
         }))
         .on('click', this.onClick)
         .add(this.label)
+        .enableClass('h600', this.isSelected$)
     }
   ]
 });
