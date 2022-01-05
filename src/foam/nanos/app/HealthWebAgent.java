@@ -46,7 +46,8 @@ public class HealthWebAgent
                                                                   new foam.lib.PermissionedPropertyPredicate()}));
 
       outputterJson.setOutputDefaultValues(true);
-      outputterJson.setOutputClassNames(true);
+      outputterJson.setOutputClassNames(false);
+      outputterJson.setOutputDefaultClassNames(false);
       outputterJson.setMultiLine(true);
 
       outputterJson.output(health);
