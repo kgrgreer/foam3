@@ -107,7 +107,6 @@ foam.CLASS({
 
       self
         .addClass(style.myClass())
-        .addClass(style.myClass(), 'mode-card')
         .start()
           .addClass(style.myClass('cardpart'))
           .style({
@@ -124,13 +123,13 @@ foam.CLASS({
           .add(this.slot(function(isRenewable) {
             return isRenewable ? this.E()
               .start()
-                .addClass(style.myClass('renewable-description'))
+                .addClasses(['p-xs', style.myClass('renewable-description')])
                 .add(self.RENEW_DATA_LABEL)
               .end() : null;
           }))
         .end()
         .start()
-          .addClass(style.myClass('card-title'))
+          .addClass('h500')
           .translate(self.data.id + '.' + self.data.cls_.NAME.name, self.data.name)
         .end();
     }

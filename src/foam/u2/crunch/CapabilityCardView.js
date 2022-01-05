@@ -31,7 +31,7 @@ foam.CLASS({
       flex-shrink: 0;
     }
 
-    ^ .foam-u2-crunch-Style-card-title {
+    ^card-title {
       margin-bottom: 4px;
     }
   `,
@@ -108,11 +108,11 @@ foam.CLASS({
         .end()
         .start().style({ 'flex': 1 })
           .start('p')
-            .addClass(style.myClass('card-title'))
+            .addClasses(['h500', this.myClass('card-title')])
             .translate(self.data.id + '.' + self.data.cls_.NAME.name, self.data.name)
           .end()
           .start('p')
-            .addClass(style.myClass('card-subtitle'))
+            .addClasses(['p-legal-light', style.myClass('card-subtitle')])
             .translate(self.data.id + '.' + self.data.cls_.DESCRIPTION.name, self.data.description)
           .end()
         .end()
@@ -132,7 +132,7 @@ foam.CLASS({
           .add(this.slot(function(isRenewable) {
             return isRenewable ? this.E()
               .start()
-                .addClass(style.myClass('renewable-description'))
+                .addClasses(['p-xs', style.myClass('renewable-description')])
                 .add(self.RENEW_DATA_LABEL)
               .end() : null;
           }))
