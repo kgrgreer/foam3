@@ -46,14 +46,9 @@ foam.CLASS({
       color: /*%GREY1%*/ #5E6061;
     }
 
-    ^ .foam-u2-ModalHeader-title {
-      font-spacing: 0;
-    }
-
     ^label-subtitle {
       margin: 0;
       margin-bottom: 24px;
-      font-size: 1.6rem;
       font-weight: 300;
     }
 
@@ -155,8 +150,6 @@ foam.CLASS({
     }
 
     ^label-results {
-      margin: 0;
-      font-size: 1.2rem;
       padding: 0 8px;
       flex: 1;
       align-self: center;
@@ -213,7 +206,7 @@ foam.CLASS({
         .add(this.filterController.slot(function(previewCriterias) {
           var keys = Object.keys(previewCriterias);
           return self.E().addClass(self.myClass('container-advanced'))
-            .start('p').addClass(self.myClass('label-subtitle'))
+            .start('p').addClasses(['p-md', self.myClass('label-subtitle')])
               .add(self.LABEL_INSTRUCTION)
             .end()
             .forEach(keys, function(key, index) {
@@ -240,7 +233,7 @@ foam.CLASS({
             .endContext();
         }))
         .start().addClass(this.myClass('container-footer'))
-          .start('p').addClass(this.myClass('label-results'))
+          .start('p').addClasses(['p-legal-light', this.myClass('label-results')])
             .add(this.resultLabel$)
           .end()
           .startContext({ data: this })
