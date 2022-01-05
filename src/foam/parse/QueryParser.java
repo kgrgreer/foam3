@@ -392,7 +392,7 @@ public class QueryParser
 
     grammar.addSymbol("ME", new Seq(
       new LiteralIC("me"),
-      new foam.lib.parse.Not(grammar.sym("char"))
+      new foam.lib.parse.Not(grammar.sym("CHAR"))
     ));
     grammar.addAction("ME", (val, x) -> {
       if ( ( (Object[]) val )[0].equals("me") ) {

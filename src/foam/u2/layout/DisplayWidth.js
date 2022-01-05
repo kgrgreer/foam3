@@ -76,6 +76,11 @@ foam.ENUM({
     {
       class: 'Int',
       name: 'minWidth'
+    },
+    {
+      class: 'String',
+      name: 'minWidthString',
+      expression: function(minWidth) { return minWidth + 'px'; }
     }
   ]
 });

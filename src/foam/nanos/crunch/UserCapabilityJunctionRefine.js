@@ -403,7 +403,7 @@ foam.CLASS({
         // We will need the capability object to know how it's associated
         var capabilityDAO = (DAO) x.get("capabilityDAO");
         var cap = (Capability) capabilityDAO.find(ucj.getTargetId());
-        if ( cap == null ) {
+        if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new RuntimeException(
             "Tried to call getSubject() on UCJ with unrecognized capability");
         }

@@ -56,7 +56,8 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'userId',
       includeInDigest: true,
       tableCellFormatter: function(value, obj) {
@@ -70,7 +71,8 @@ foam.CLASS({
       storageOptional: true
     },
     {
-      class: 'Long',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'agentId',
       includeInDigest: true,
       tableCellFormatter: function(value, obj) {

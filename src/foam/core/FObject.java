@@ -299,16 +299,16 @@ public interface FObject
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
-        if ( p.isSet(obj) ) p.set(this, p.get(obj));
-      } catch (ClassCastException e) {
-        try {
+        if ( getClass() == obj.getClass() ) {
+          if ( p.isSet(obj) ) p.set(this, p.get(obj));
+        } else {
           PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
-        } catch (ClassCastException ignore) {
-          System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
         }
+      } catch (ClassCastException ignore) {
+        System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
       }
     }
     return this;
@@ -344,7 +344,7 @@ public interface FObject
               remote = p.get(obj);
             }
           } catch ( ClassCastException ee ) {
-            System.err.println("FObject.overlay "+p.getName()+" get "+ee);
+            System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" get '"+p.getName()+"' from "+obj.getClass().getSimpleName()+": "+ee.getMessage());
           }
         }
       }
@@ -360,7 +360,7 @@ public interface FObject
           }
         }
       } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+p.getName()+" set "+e);
+        System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" set '"+p.getName()+"' with "+obj.getClass().getSimpleName()+": "+e.getMessage());
       }
     }
     return this;

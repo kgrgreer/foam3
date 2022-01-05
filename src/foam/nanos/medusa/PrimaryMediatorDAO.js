@@ -32,7 +32,8 @@ foam.CLASS({
         ClusterConfig config = support.getConfig(x, support.getConfigId());
 
         if ( ! config.getIsPrimary() ) {
-          throw new MedusaException("Invalid configuration");
+          Loggers.logger(x, this).error("received primary put", config.getId(), entry.getIndex());
+          throw new MedusaException("Not primary");
         }
 
         MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");

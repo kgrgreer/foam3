@@ -29,10 +29,17 @@ foam.CLASS({
     'foam.nanos.boot.NSpecAware'
   ],
 
+  imports: [
+    'DAO fuidKeyDAO'
+  ],
+
   javaImports: [
     'foam.core.X',
+    'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
-    'foam.util.UIDGenerator'
+    'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
+    'foam.util.NUIDGenerator'
   ],
 
   properties: [
@@ -40,6 +47,14 @@ foam.CLASS({
       class: 'String',
       name: 'property',
       value: 'id'
+    },
+    {
+      class: 'String',
+      name: 'salt',
+      javaFactory: `
+      if ( getNSpec() != null ) return getNSpec().getName();
+      throw new IllegalArgumentException("Salt not defined");
+      `
     },
     {
       /** @private */
@@ -53,39 +68,60 @@ foam.CLASS({
       class: 'Object',
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
-      javaFactory: 'return new UIDGenerator(getX(), getNSpec().getName());',
+      javaFactory: `
+        if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
+          return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
+        }
+        return new AUIDGenerator(getX(), getSalt());
+      `,
+      hidden: true,
     },
     {
       name: 'nSpec',
       class: 'FObjectProperty',
-      type: 'foam.nanos.boot.NSpec'
+      type: 'foam.nanos.boot.NSpec',
+      hidden: true,
     }
   ],
 
   javaCode: `
-  public FUIDDAO(DAO delegate) {
-    setDelegate(delegate);
-  }
-
   public FUIDDAO(X x, String salt, DAO delegate) {
     super(x, delegate);
-    setUIDGenerator(new UIDGenerator(x, salt));
+    setSalt(salt);
+    init_();
+  }
+
+  public FUIDDAO(X x, String salt, String idProperty, DAO delegate) {
+    super(x, delegate);
+    setSalt(salt);
+    setProperty(idProperty);
+    init_();
   }
   `,
 
   methods: [
     {
+      name: 'init_',
+      javaCode: `
+        var uidgen = getUIDGenerator();
+        if ( getFuidKeyDAO().find(getSalt()) == null ) {
+          getFuidKeyDAO().put(
+            new foam.util.uid.FuidKey.Builder(getX())
+              .setDaoName(getSalt())
+              .setKey(uidgen.getHashKey())
+              .build()
+          );
+        }
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
-        var id = getPropertyInfo().get(obj);
-        var klass = getPropertyInfo().getValueClass();
-        if ( klass == String.class && SafetyUtil.isEmpty((String) id) ) {
-          getPropertyInfo().set(obj, getUIDGenerator().getNextString());
-        } else if ( klass == long.class && ((long) id) == 0L ) {
-          getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
+        if ( getPropertyInfo().isDefaultValue(obj) ) {
+          getPropertyInfo().set(obj, getUIDGenerator().getNext(null));
         }
         return getDelegate().put_(x, obj);
       `
-    },
+    }
   ]
 });

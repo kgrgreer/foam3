@@ -194,7 +194,7 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      this.onDetach(this.mode$.follow(self.prop.createVisibilityFor(self.data$, self.controllerMode$)));
+      this.mode$.follow(self.prop.createVisibilityFor(self.data$, self.controllerMode$));
 
       this
         .addClass(this.myClass())
@@ -257,7 +257,7 @@ foam.CLASS({
                           })
                         .end()
                         .start()
-                          .style({ 'flex-grow': 1 })
+                          .style({ 'flex': 1 })
                           .add(errorSlot.map(s => {
                             return self.E().add(s);
                           }))

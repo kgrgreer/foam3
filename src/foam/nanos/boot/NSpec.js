@@ -143,7 +143,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -151,7 +151,7 @@ foam.CLASS({
       name: 'serviceClass',
       shortName: 'sc',
       displayWidth: 80,
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -188,9 +188,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.tag.TextArea', rows: 12, cols: 140 },
-        readView: { class: 'foam.u2.view.PreView' }
+        readView:  { class: 'foam.u2.view.PreView' }
       },
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -199,9 +199,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.tag.TextArea', rows: 12, cols: 140 },
-        readView: { class: 'foam.u2.view.PreView' }
+        readView:  { class: 'foam.u2.view.PreView' }
       },
-      readPermissionRequired: true,
+      readPermissionRequired:  true,
       writePermissionRequired: true
     },
     {
@@ -223,7 +223,7 @@ foam.CLASS({
     {
       name: 'createService',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',  type: 'Context' },
         { name: 'ps', type: 'PrintStream' }
       ],
       javaType: 'java.lang.Object',
@@ -234,21 +234,23 @@ foam.CLASS({
           return Class.forName(getServiceClass()).newInstance();
 
         Language l = getLanguage();
+
         if ( l == foam.nanos.script.Language.JSHELL )
           return new JShellExecutor().runExecutor(x, ps, getServiceScript());
-        else if ( l == foam.nanos.script.Language.BEANSHELL )
+
+        if ( l == foam.nanos.script.Language.BEANSHELL )
           return new BeanShellExecutor(this).execute(x, ps, getServiceScript());
-        else
-          throw new RuntimeException("Script language not supported");
+
+        throw new RuntimeException("Script language not supported");
       `,
       javaThrows: [
-        'java.lang.ClassNotFoundException',
-        'java.lang.InstantiationException',
-        'java.lang.IllegalAccessException',
-        'SecurityException',
-        'NoSuchFieldException',
+        'Exception',
         'IOException',
-        'Exception'
+        'java.lang.ClassNotFoundException',
+        'java.lang.IllegalAccessException',
+        'java.lang.InstantiationException',
+        'NoSuchFieldException',
+        'SecurityException'
       ]
     },
     {

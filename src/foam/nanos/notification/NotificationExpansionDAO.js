@@ -23,9 +23,11 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
     'foam.nanos.auth.Subject',
     'static foam.mlang.MLang.*'
@@ -47,6 +49,11 @@ foam.CLASS({
             }
           });
         } else if ( ! SafetyUtil.isEmpty(notif.getGroupId()) ) {
+          Group group = (Group) ((DAO) x.get("groupDAO")).find(notif.getGroupId());
+          if ( ! group.getEnabled() ) {
+            Loggers.logger(x, this).debug(notif.getTemplate(), "group", "disabled");
+            return obj;
+          }
           DAO receivers = userDAO.where(
             AND(
                 EQ(User.GROUP, notif.getGroupId()),

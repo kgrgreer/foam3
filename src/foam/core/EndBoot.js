@@ -57,6 +57,8 @@ foam.CLASS({
         if ( o.class ) {
           var m = this.__context__.lookup(o.class);
           if ( ! m ) throw 'Unknown class : ' + o.class;
+          if ( ! foam.core.Property.isSubClass(m) )
+            throw o.class + " isn't a sub-class of Property. Try using class: 'FObjectProperty', of: '" + o.class + "'";
           return m.create(o, this);
         }
 

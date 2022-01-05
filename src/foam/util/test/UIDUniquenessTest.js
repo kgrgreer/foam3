@@ -11,6 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.UIDGenerator',
+    'foam.util.AUIDGenerator',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.atomic.AtomicBoolean'
   ],
@@ -45,7 +46,7 @@ foam.CLASS({
           threads[i] = new Thread(() -> {
             try {
               for ( var j = 0; j < getSize(); j++ ) {
-                if ( duplicateFound.get() ) return;
+                if ( duplicateFound.get() || error.get() ) return;
                 var uid = uidgen.getNextString();
                 if ( ! uids.containsKey(uid) ) {
                   uids.put(uid, uid);
@@ -64,10 +65,12 @@ foam.CLASS({
         for ( var t : threads ) {
           try { t.join(); } catch ( InterruptedException e ) { /* Ignored */ }
         }
+
+        var extraInfo = " Total threads: " + uidGenerators.length + "; Ids generated: " + uids.size() + ".";
         if ( error.get() ) {
-          test(false, "Failed to generate UID");
+          test(false, "Failed to generate UID. " + extraInfo);
         } else {
-          test(duplicateFound.get() == expected, message);
+          test(duplicateFound.get() == expected, message + extraInfo);
         }
       `
     },
@@ -75,26 +78,35 @@ foam.CLASS({
       name: 'UIDUniquenessTest_No_duplicate_on_same_instance',
       args: [ 'Context x' ],
       javaCode: `
-        var uidgen = new UIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.", uidgen, uidgen);
+        var uidgen = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        testDuplicateFound(false, "Should not generate duplicate uid on the same instance.",
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen,
+          uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen, uidgen
+        );
       `
     },
     {
       name: 'UIDUniquenessTest_Could_generate_duplicate_on_instances_with_same_machineId',
       args: [ 'Context x' ],
       javaCode: `
-        var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
-        var uidgen2 = new UIDGenerator.Builder(x).setMachineId(1).build();
-        testDuplicateFound(true, "Could generate duplicate uid on instances with the same machine id.", uidgen1, uidgen2);
+        var uidgen1 = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen2 = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen3 = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen4 = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        testDuplicateFound(true, "Could generate duplicate uid on instances with the same machine id.", uidgen1, uidgen2, uidgen3, uidgen4);
       `
     },
     {
       name: 'UIDUniquenessTest_No_duplicate_on_instances_with_different_machineId',
       args: [ 'Context x' ],
       javaCode: `
-        var uidgen1 = new UIDGenerator.Builder(x).setMachineId(1).build();
-        var uidgen2 = new UIDGenerator.Builder(x).setMachineId(2).build();
-        testDuplicateFound(false, "Should not generate duplicate uid on instances with the different machine id.", uidgen1, uidgen2);
+        var uidgen1 = new AUIDGenerator.Builder(x).setMachineId(1).build();
+        var uidgen2 = new AUIDGenerator.Builder(x).setMachineId(2).build();
+        var uidgen3 = new AUIDGenerator.Builder(x).setMachineId(3).build();
+        var uidgen4 = new AUIDGenerator.Builder(x).setMachineId(4).build();
+        testDuplicateFound(false, "Should not generate duplicate uid on instances with the different machine id.", uidgen1, uidgen2, uidgen3, uidgen4);
       `
     }
   ]

@@ -42,11 +42,10 @@ foam.CLASS({
       text-align: center;
       justify-content:flex-start;
     }
+    ^flexer > * {
+      margin: 4px;
+    }
   `,
-
-  constants: {
-    NUM_COLUMNS: 3
-  },
 
   messages: [
     { name: 'OPTIONS_MSG', message: 'options' },
@@ -70,7 +69,27 @@ foam.CLASS({
       `,
       factory: function() {
         return [];
+      },
+      adapt: function(old, nu) {
+        if ( foam.Object.isInstance(nu) ) {
+          var out = [];
+          for ( var key in nu ) {
+            if ( nu.hasOwnProperty(key) ) out.push([ key, nu[key] ]);
+          }
+          return out;
+        }
+
+        nu = foam.Array.shallowClone(nu);
+
+        // Upgrade single values to [value, value].
+        for ( var i = 0; i < nu.length; i++ ) {
+          if ( ! Array.isArray(nu[i]) ) {
+            nu[i] = [ nu[i], nu[i] ];
+          }
+        }
+        return nu;
       }
+
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -146,6 +165,15 @@ foam.CLASS({
     {
       name: 'data',
       value: []
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceView',
+      value: { class: 'foam.u2.view.CardSelectView' }
+    },
+    {
+      name: 'numberColumns',
+      value: 3
     }
   ],
 
@@ -182,8 +210,8 @@ foam.CLASS({
           ...this.data,
         ];
         arr = arr.filter(o => ! foam.util.equals(o, choice));
-        if ( slot.get() ) { 
-          arr.push(choice); 
+        if ( slot.get() ) {
+          arr.push(choice);
         }
         this.data = arr;
       });
@@ -215,12 +243,12 @@ foam.CLASS({
           .addClass(this.myClass('flexer'))
           .add( // TODO isDoaFetched and simpSlot0 aren't used should be clean up
             this.isDaoFetched$.map(isDaoFetched => {
-              var toRender = this.choices.sort().map((choice, index) => {
+              var toRender = this.choices.map((choice, index) => {
                 var valueSimpSlot = this.mustSlot(choice[0]);
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
                 var isFinal = choice[2];
-                
+
                 var isSelectedSlot = self.slot(function(choices, data) {
                   try {
                     var isSelected = self.isChoiceSelected(data, choices[index][0]);
@@ -229,7 +257,7 @@ foam.CLASS({
                     console.error('isSelectedSlot', err)
                     return false;
                   }
-      
+
                 });
 
                 var isDisabledSlot = self.slot(function(choices, data, maxSelected) {
@@ -237,7 +265,7 @@ foam.CLASS({
                       if ( isFinal ) {
                         return true;
                       }
-  
+
                       var isSelected = self.isChoiceSelected(data, choices[index][0]);
                       return !! (! isSelected && data.length >= maxSelected);
                   } catch(err) {
@@ -245,21 +273,21 @@ foam.CLASS({
                     return false;
                   }
                 });
-                
-                var cls =  choice[0] && choice[0].cls_.id;
+
+                var cls =  choice[0] && choice[0].cls_ && choice[0].cls_.id;
 
                 var selfE = self.E();
 
                 return selfE
                   // NOTE: This should not be the way we implement columns.
                   .style({
-                    'width': self.isVertical ? '100%' : `${100 / self.NUM_COLUMNS}%`
+                    'width': self.isVertical ? '100%' : `${100 / self.numberColumns}%`
                   })
-                  .start(self.CardSelectView, {
+                  .start(self.choiceView, {
                     data$: valueSimpSlot,
                     label$: labelSimpSlot,
                     isSelected$: isSelectedSlot,
-                    isDisabled$: isDisabledSlot, 
+                    isDisabled$: isDisabledSlot,
                     of: cls
                   })
                     .call(function () {

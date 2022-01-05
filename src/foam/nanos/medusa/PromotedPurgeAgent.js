@@ -62,6 +62,13 @@ foam.CLASS({
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
  ],
 
@@ -71,17 +78,16 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
+      setTimer(timer);
+      timer.schedule(new ContextAgentTimerTask(getX(), this),
+        getTimerInterval(),
+        getTimerInterval()
+      );
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
