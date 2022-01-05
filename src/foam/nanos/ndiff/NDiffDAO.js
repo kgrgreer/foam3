@@ -56,10 +56,10 @@ foam.CLASS({
             String nSpecName = getNSpecName();
             
             NDiff existingNdiff = (NDiff) ndiffDao.find(
-                foam.mlang.MLang.AND(
-                    foam.mlang.MLang.EQ(NDiff.N_SPEC_NAME, nSpecName),
-                    foam.mlang.MLang.EQ(NDiff.OBJECT_ID, objectId)
-                )
+                foam.mlang.MLang.EQ(NDiff.ID, new NDiffId.Builder(x)
+                                              .setNSpecName(nSpecName)
+                                              .setObjectId(objectId)
+                                              .build())
                 );
             NDiff ndiff = existingNdiff != null ?
                           (NDiff) existingNdiff.fclone() :

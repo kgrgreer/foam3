@@ -101,7 +101,7 @@ In this current implementation setDelegate must be called last.`,
 
             // if NSpec present in X then go through NDiff
             // (set up in EasyDAO's decorator chain)
-            NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_NAME_CTX_KEY);
+            NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_CTX_KEY);
             
             if ( nspec != null ) {
               String nSpecName = nspec.getName();

@@ -13,10 +13,10 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'NSPEC_NAME_CTX_KEY',
+      name: 'NSPEC_CTX_KEY',
       type: 'String',
       class: 'String',
-      value: 'NSPEC_NAME_CTX_KEY',
+      value: 'NSPEC_CTX_KEY',
       documentation: `
       Constant for addressing the NSpec through the context 
       `
