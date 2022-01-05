@@ -34,6 +34,7 @@ foam.CLASS({
       shortName: 'mmt',
       class: 'Enum',
       of: 'foam.nanos.medusa.MedusaType',
+      value: 'OTHER',
       visibility: 'RO'
     },
     {
@@ -41,6 +42,7 @@ foam.CLASS({
       shortName: 'mms',
       class: 'Enum',
       of: 'foam.nanos.medusa.Status',
+      value: 'OFFLINE',
       visibility: 'RO'
     },
     {
@@ -49,12 +51,14 @@ foam.CLASS({
       label: 'Primary',
       shortName: 'mip',
       class: 'Boolean',
+      value: false,
       visibility: 'RO'
     },
     {
       name: 'replaying',
       shortName: 'mr',
       class: 'Boolean',
+      value: false,
       visibility: 'RO'
     },
     {

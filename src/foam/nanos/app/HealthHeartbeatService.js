@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.core.ContextAgentTimerTask',
     'foam.core.ContextAgent',
+    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.lib.formatter.FObjectFormatter',
@@ -69,8 +70,11 @@ foam.CLASS({
       class: 'Object',
       javaFactory: `
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
-      formatter.setOutputShortNames(true);
+      // Each healthDAO holds a particular 'of'. Not outputting class
+      // allows the parser to create the model appropriate for its DAO.
+      formatter.setOutputClassNames(false);
       formatter.setOutputDefaultClassNames(false);
+      formatter.setOutputShortNames(true);
       formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
       return formatter;
       `
@@ -92,7 +96,6 @@ foam.CLASS({
           new ContextAgent() {
             public void execute(X x) {
               PM pm = PM.create(x, "HealthHeartbeatService", "broadcaster");
-              // Health health = (Health) ((DAO) x.get("healthDAO")).put_(x, (Health) x.get("Health")).fclone();
               Health health = (Health) x.get("Health");
               health.setHeartbeatTime(System.currentTimeMillis());
               health.setHeartbeatSchedule(getTimerInterval());
@@ -131,8 +134,7 @@ foam.CLASS({
       byte[] buf = new byte[512];
       MulticastSocket socket = null;
       InetAddress group = null;
-      Health self = (Health) x.get("Health");
-      Class cls = self.getClass();
+      FObject self = (FObject) x.get("Health");
 
       try {
         socket = new MulticastSocket(getPort());
@@ -148,13 +150,8 @@ foam.CLASS({
             packet.getData(), 0, packet.getLength());
           // logger.debug("listener", "received", received);
           try {
-            Health health = (Health) x.create(JSONParser.class).parseString(received, cls);
-            // NOTE: could ignore broadcast from self, but this gives us
-            // our own IP address.
-            // // ignore broadcast from self.
-            // if ( self.getId().equals(health.getId()) ) {
-            //   continue;
-            // }
+            Health health = (Health) x.create(JSONParser.class).parseString(received, self.getClass());
+            // NOTE: NOT ignoring broadcast from self as this gives us our own IP address.
             InetSocketAddress sender = (InetSocketAddress) packet.getSocketAddress();
             String address = sender.getAddress().toString();
             if ( address.startsWith("/") ) {
@@ -164,6 +161,8 @@ foam.CLASS({
             health.setAddress(address);
             health.setPropogationTime(Math.abs(now - health.getHeartbeatTime()));
             ((DAO) x.get("healthDAO")).put_(x, health);
+          } catch ( ClassCastException e ) {
+            logger.debug("listener", "received", received, e.getMessage(), e);
           } catch ( RuntimeException e ) {
             logger.warning("listener", "parse", e);
           } finally {
@@ -171,7 +170,7 @@ foam.CLASS({
           }
         }
       } catch ( IOException e ) {
-        logger.warning("listener", "exit", e);
+        logger.warning("listener", "exit", e.getMessage(), e);
       } finally {
         if ( socket != null ) {
           try {

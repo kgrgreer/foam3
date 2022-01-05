@@ -21,16 +21,20 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      if ( ! ( obj instanceof MedusaHealth ) ) {
+        return getDelegate().put_(x, obj);
+      }
       MedusaHealth nu = (MedusaHealth) obj;
       MedusaHealth old = (MedusaHealth) getDelegate().find_(x, nu.getId());
       nu = (MedusaHealth) getDelegate().put_(x, nu);
       ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(nu.getId());
-      if ( old == null ||
-           old.getStatus() != nu.getStatus() ||
-           old.getMedusaStatus() != nu.getMedusaStatus() ||
-           old.getBootTime() != nu.getBootTime() ||
-           nu.getMedusaStatus() != config.getStatus() ||
-           nu.getIsPrimary() != config.getIsPrimary() ) { 
+      if ( config != null && // May have recieved a base Health object.
+           ( old == null ||
+             old.getStatus() != nu.getStatus() ||
+             old.getMedusaStatus() != nu.getMedusaStatus() ||
+             old.getBootTime() != nu.getBootTime() ||
+             nu.getMedusaStatus() != config.getStatus() ||
+             nu.getIsPrimary() != config.getIsPrimary() ) ) { 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         Agency agency = (Agency) x.get(support.getThreadPoolName());
         Loggers.logger(x, this).info("agency", "ClusterConfigMonitorAgent", nu.getId());
