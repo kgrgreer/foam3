@@ -1102,5 +1102,11 @@ FOAM_FILES([
   { name: "foam/util/retry/RetryLimitReachedException" },
 
   { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
-  { name: "foam/u2/view/DayChoiceView" , flags: ["web"] }
+  { name: "foam/u2/view/DayChoiceView" , flags: ["web"] },
+
+  // Uid search
+  { name: "foam/util/uid/GlobalSearchService" },
+  { name: "foam/util/uid/ClientGlobalSearchService" },
+  { name: "foam/util/uid/FuidKey" },
+  { name: "foam/util/uid/FuidSearchService" }
 ]);
