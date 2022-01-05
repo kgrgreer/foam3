@@ -189,7 +189,10 @@ foam.CLASS({
       }
 
       // run a new campaigne
-      setElectionTime(System.currentTimeMillis());
+      // re: random - when nodes are all restarted, the mediators can
+      // complete replay at the same time.
+      setElectionTime(ThreadLocalRandom.current().nextInt(10000));
+
       setState(ElectoralServiceState.ELECTION);
       getLogger().debug("dissolve", getState(), "execute");
       ((Agency) x.get(support.getThreadPoolName())).submit(x, (ContextAgent)this, this.getClass().getSimpleName());

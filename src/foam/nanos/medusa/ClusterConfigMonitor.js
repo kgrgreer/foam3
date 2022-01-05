@@ -71,8 +71,11 @@ foam.CLASS({
       javaFactory: `return new HashMap();`
     },
     {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
       name: 'timer',
-      class: 'Object'
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     },
     {
       name: 'logger',
