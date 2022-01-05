@@ -14,6 +14,8 @@ import foam.nanos.http.HttpParameters;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import foam.lib.json.OutputterMode;
+import foam.lib.formatter.FObjectFormatter;
+import foam.lib.formatter.JSONFObjectFormatter;
 import foam.lib.xml.Outputter;
 
 /**
@@ -37,23 +39,22 @@ public class HealthWebAgent
     }
 
     if ( format == Format.JSON ) {
-      foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)
-        .setPropertyPredicate(
-                              new foam.lib.AndPropertyPredicate(x,
-                                                                new foam.lib.PropertyPredicate[] {
-                                                                  new foam.lib.ExternalPropertyPredicate(),
-                                                                  new foam.lib.NetworkPropertyPredicate(),
-                                                                  new foam.lib.PermissionedPropertyPredicate()}));
+      JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+      formatter.setOutputDefaultValues(true);
+      formatter.setOutputClassNames(false);
+      formatter.setOutputDefaultClassNames(false);
+      formatter.setMultiLine(true);
+      formatter.setPropertyPredicate(
+                                     new foam.lib.AndPropertyPredicate(x,
+                                                                       new foam.lib.PropertyPredicate[] {
+                                                                         new foam.lib.ExternalPropertyPredicate(),
+                                                                         new foam.lib.NetworkPropertyPredicate(),
+                                                                         new foam.lib.PermissionedPropertyPredicate()}));
 
-      outputterJson.setOutputDefaultValues(true);
-      outputterJson.setOutputClassNames(false);
-      outputterJson.setOutputDefaultClassNames(false);
-      outputterJson.setMultiLine(true);
-
-      outputterJson.output(health);
+      formatter.output(health);
 
       response.setContentType("application/json");
-      out.println(outputterJson.toString());
+      out.println(formatter.builder().toString());
     } else if( format == Format.XML ) {
       response.setContentType("application/xml");
       Outputter outputter = new Outputter(out, OutputterMode.NETWORK);
