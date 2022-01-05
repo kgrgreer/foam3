@@ -574,6 +574,7 @@ FOAM_FILES([
   { name: 'foam/nanos/crunch/predicate/CapabilityPrerequisitesGranted' },
   { name: 'foam/nanos/crunch/predicate/StatusChangedTo' },
   { name: 'foam/nanos/crunch/predicate/IsAgent' },
+  { name: 'foam/nanos/crunch/predicate/IsSpid' },
   { name: 'foam/nanos/crunch/predicate/CapabilityJunctionTransitionToStatus' },
   { name: 'foam/nanos/crunch/predicate/IsAgentUpdate' },
   { name: 'foam/nanos/crunch/predicate/IsCapabilityJunctionOf' },
