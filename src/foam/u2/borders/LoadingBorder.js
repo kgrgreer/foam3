@@ -84,8 +84,6 @@ foam.CLASS({
     }
     ^message {
       display: none;
-      line-height: 32pt;
-      font-size: 24pt;
       margin-left: 15pt;
       color: /*%PRIMARY3*/ #604aff;
     }
@@ -112,7 +110,7 @@ foam.CLASS({
               .addClass(this.myClass('container'))
               .tag(this.LoadingSpinner, { size: 32 })
               .start()
-                .addClass(this.myClass('message'))
+                .addClasses(['p-xl', this.myClass('message')])
                 .add(this.MESSAGE)
               .end()
             .end() : this.E();

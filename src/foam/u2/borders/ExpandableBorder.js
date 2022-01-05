@@ -28,10 +28,7 @@
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       padding: 24px;
     }
-    ^ h6{
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin: 0px;
+    ^ .h600{
       padding-bottom: 12px;
     }
   `,
@@ -48,7 +45,7 @@
       .enableClass('expanded', this.expanded$)
       .start()
         .addClass(this.myClass('container'))
-        .start('h6').add(this.title).end()
+        .start().addClass('h600').add(this.title).end()
         .start('div', null, this.content$).style({ 'overflow': 'auto' }).end()
       .end();
     }

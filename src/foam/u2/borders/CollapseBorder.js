@@ -46,7 +46,6 @@ foam.CLASS({
       position: relative;
     }
     ^toggle-button {
-      font-size: inherit !important;
       border: none;
       outline: none;
       padding: 3px;
