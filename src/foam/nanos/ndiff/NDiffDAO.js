@@ -55,12 +55,10 @@ foam.CLASS({
             Object objectId = storedObject.getProperty("id");
             String nSpecName = getNSpecName();
             
-            NDiff existingNdiff = (NDiff) ndiffDao.find(
-                foam.mlang.MLang.EQ(NDiff.ID, new NDiffId.Builder(x)
-                                              .setNSpecName(nSpecName)
-                                              .setObjectId(objectId)
-                                              .build())
-                );
+            NDiff existingNdiff = (NDiff) ndiffDao.find(new NDiffId.Builder(x)
+                                                        .setNSpecName(nSpecName)
+                                                        .setObjectId(objectId)
+                                                        .build());
             NDiff ndiff = existingNdiff != null ?
                           (NDiff) existingNdiff.fclone() :
                           new NDiff()

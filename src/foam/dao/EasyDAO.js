@@ -166,7 +166,7 @@ foam.CLASS({
             }
             // hook for NDiff-related stuff downstream
             // code in JDAO.js is looking for nSpecName set in a subX
-            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_NAME_CTX_KEY, getNSpec()), delegate);
+            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_CTX_KEY, getNSpec()), delegate);
           }
         }
 
