@@ -25,22 +25,12 @@ foam.CLASS({
       vertical-align: top;
       border-radius: 2px;
       overflow: auto;
-      font-size: 1.2rem;
       padding-left: 20px;
       padding-right: 20px;
       z-index: 0;
     }
     ^ h2 {
-      height: 20px;
       opacity: 0.6;
-      font-size: 2.0rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1;
-      letter-spacing: 0.3px;
-      text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .timelineRecord {
       position: relative;
@@ -72,8 +62,8 @@ foam.CLASS({
       var view = this;
 
       this
-        .addClass(this.myClass())
-        .start('h2').add(this.title).end()
+        .addClasses([this.myClass(), 'p-legal'])
+        .start('h2').addClass('p-lg').add(this.title).end()
         .select(view.data.orderBy(this.DESC(this.HistoryRecord.TIMESTAMP)), function(record) {
           return this.E().start('div')
             .addClass('timelineRecord')
