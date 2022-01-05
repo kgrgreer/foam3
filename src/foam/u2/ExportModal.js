@@ -115,11 +115,6 @@ foam.CLASS({
       border: solid 1px #59A5D5;
     }
     ^ .label{
-      font-family: /*%FONT1%*/ 'IBM Plex Sans';
-      font-style: normal;
-      font-weight: normal;
-      font-size: 1.1rem;
-      line-height: 14px;
       color: #000000;
       margin: 10px 0px 0px 24px;
     }
@@ -172,7 +167,7 @@ foam.CLASS({
       .addClass(this.myClass())
       .startContext({ data: this })
         .start()
-          .start().addClass('label').style({'padding-top': '14px'}).add(this.DATA_TYPE_MSG).end()
+          .start().addClasses(['p-legal-light', 'label']).style({'padding-top': '14px'}).add(this.DATA_TYPE_MSG).end()
           .start().style({'margin-left': '24px'}).add(this.DATA_TYPE).end()
           .add(this.slot(function (exportDriver) {
             return this.E()
@@ -180,12 +175,12 @@ foam.CLASS({
               .add(exportDriver);
           }))
           .start().show(this.isDataTypeSelected$)
-            .start().addClass('label').style({'padding-top': '14px'}).add(this.RESPONSE).end()
+            .start().addClasses(['p-legal-light', 'label']).style({'padding-top': '14px'}).add(this.RESPONSE).end()
             .start(this.NOTE).addClass('input-box').addClass('note').end()
             .add(
               self.slot(function(exportDriverReg$exportAllColumns) {
                 if ( exportDriverReg$exportAllColumns ) {
-                  return self.E().start().addClass('label').startContext({ data: self }).tag(self.EXPORT_ALL_COLUMNS).endContext().end();
+                  return self.E().start().addClasses(['p-legal-light', 'label']).startContext({ data: self }).tag(self.EXPORT_ALL_COLUMNS).endContext().end();
                 }
               })
             )

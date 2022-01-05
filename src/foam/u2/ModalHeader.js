@@ -31,13 +31,7 @@ foam.CLASS({
       border-bottom: solid 1px #CBCFD4;
     }
     ^title{
-      font-family: /*%FONT1%*/ 'IBM Plex Sans';
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2.4rem;
-      line-height: 28px;
       color: #000000;
-      margin: 0;
       flex: none;
     }
     ^ .foam-u2-ActionView-closeModal{
@@ -53,7 +47,7 @@ foam.CLASS({
 
     this
       .addClass(this.myClass())
-      .start().addClass(this.myClass('title')).add(this.title).end();
+      .start().addClasses(['h300', this.myClass('title')]).add(this.title).end();
     }
   ]
 });

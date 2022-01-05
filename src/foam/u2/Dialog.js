@@ -67,7 +67,7 @@ foam.CLASS({
       this.addClass();
       if ( this.title ) {
         this.start()
-          .addClass(this.myClass('header'))
+          .addClass('h400')
           .enableClass(this.myClass('padding'), this.padding$)
           .add(this.title)
         .end();
@@ -88,10 +88,6 @@ foam.CLASS({
       display: block;
       margin: 10px;
       overflow: hidden;
-    }
-    ^header {
-      font-size: 2.0rem;
-      font-weight: 500;
     }
     ^padding {
       margin: 24px;

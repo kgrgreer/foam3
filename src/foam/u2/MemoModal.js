@@ -31,8 +31,6 @@ foam.CLASS({
     }
     ^title {
       padding: 32px 0px;
-      font-size: 1.5em;
-      font-weight: bold;
     }
     ^main {
       padding: 0px 32px;
@@ -89,7 +87,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('main'))
           .start()
-            .addClass(this.myClass('title'))
+            .addClasses(['h500', this.myClass('title')])
             .add(this.title)
           .end()
           .startContext({ data: this, controllerMode: this.ControllerMode.EDIT })

@@ -32,8 +32,6 @@ foam.CLASS({
       padding: 32px 24px;
     }
     ^group-title {
-      font-size: 3.5rem;
-      font-weight: 600;
       color: #1e1f21;
       margin: 40px 0px;
     }
@@ -95,7 +93,7 @@ foam.CLASS({
           var group = this.groupExpr.f(obj);
           if ( group !== curGroup ) {
             this.start().
-              addClass(this.myClass('group-title')).
+              addClasses(['h100', this.myClass('group-title')]).
               translate(group)
             .end();
           }
