@@ -279,16 +279,14 @@ foam.CLASS({
       class: 'String',
       name: 'javaFormatJSON',
       value: null
-    },
+    }
   ],
 
   methods: [
-    {
-      name: 'asJavaValue',
-      code: function() {
-        return `${this.forClass_}.${foam.String.constantize(this.name)}`;
-      }
+    function asJavaValue() {
+      return `${this.forClass_}.${foam.String.constantize(this.name)}`;
     },
+
     function createJavaPropertyInfo_(cls) {
       var isID = false;
 
@@ -352,6 +350,11 @@ foam.CLASS({
 
     function buildJavaClass(cls) {
       if ( ! this.generateJava ) return;
+
+      // TODO: this is really hackish
+      // Fixes problem with Properties from interfaces being frozen to their original forClass_
+      this.validateObj          = undefined;
+      this.validationPredicates = undefined;
 
       // Use javaInfoType as an indicator that this property should be
       // generated to java code.
@@ -1003,35 +1006,6 @@ foam.CLASS({
         type: this.javaType,
         value: this.javaValue,
         documentation: this.documentation
-      });
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.java',
-  name: 'ActionJavaRefinement',
-  refines: 'foam.core.Action',
-  flags: ['java'],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'javaCode'
-    }
-  ],
-
-  methods: [
-    function buildJavaClass(cls) {
-      if ( ! this.javaCode ) return;
-
-      cls.method({
-        visibility: 'public',
-        name: this.name,
-        type: 'void',
-        documentation: this.documentation,
-        body: this.javaCode
       });
     }
   ]

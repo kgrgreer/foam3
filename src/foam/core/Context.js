@@ -138,8 +138,7 @@ foam.SCRIPT({
      * registered as a factory.
      */
     isDefined: function(id) {
-      return !! this.__cache__[id] &&
-        ! foam.Function.isInstance(this.__cache__[id]);
+      return !! this.__cache__[id] && ! foam.Function.isInstance(this.__cache__[id]);
     },
 
     /** Internal method to register a context binding in an internal cache */
