@@ -74,7 +74,9 @@
   this.FOAM_FILES = async function(files) {
     var load = createLoader();
 
+    var seen = {};
     files.
+      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
       filter(f => {
         // If flags are defined, don't load unless all are true
         if ( f.flags ) {
