@@ -85,7 +85,7 @@ public class JShellExecutor {
 
   public String execute(X x, JShell jShell, String script) {
     try {
-      return execute(x,jShell,script,false);
+      return execute(x, jShell, script, false);
     } catch (ScriptException e) {
       // code execution should not end up here
       // as we've asked for no rethrows
