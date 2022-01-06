@@ -344,7 +344,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.View',
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
       value: null
@@ -352,8 +351,8 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'createPopup',
-      documentation: `Given a ViewSpec the createView will be rendered using 
-      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a 
+      documentation: `Given a ViewSpec the createView will be rendered using
+      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a
       default Popup`
     },
     {

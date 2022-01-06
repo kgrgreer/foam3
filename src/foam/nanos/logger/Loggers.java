@@ -31,6 +31,9 @@ public class Loggers {
    */
   public static Logger logger(X x, Object caller, boolean includeSubject) {
     Logger logger = (Logger) x.get("logger");
+    if ( logger == null ) {
+      logger = new StdoutLogger(x);
+    }
     if ( caller != null ) {
       logger = new PrefixLogger(
                                 new Object[] {

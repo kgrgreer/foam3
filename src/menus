@@ -14,7 +14,6 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.menu.Menu","id":"admin.cron","label":"Cron Jobs","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"cronDAO"}},"parent":"admin"})
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "admin.crunchlab",

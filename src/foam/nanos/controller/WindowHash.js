@@ -27,8 +27,11 @@ foam.CLASS({
       this.window.onpopstate = this.onPopState;
     },
     function valueChanged(value, replaceHistoryState) {
-      if ( value )
+      if ( value ) {
+        this.feedback_ = true;
         this.value = value;
+        this.feedback_ = false;
+      }
 
       if ( replaceHistoryState )
         this.window.history.replaceState(null, '', this.window.origin + '/#' + this.value);

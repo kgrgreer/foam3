@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.lib.parse.*',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
-    'foam.nanos.notification.email.DAOResourceLoader',
+    'foam.nanos.notification.email.EmailTemplateSupport',
     'java.util.Map'
   ],
 
@@ -269,7 +269,7 @@ foam.CLASS({
             for ( int i = 0 ; i < val0.length ; i++ ) {
               templateName.append(val0[i]);
             }
-            EmailTemplate extendedEmailTemplate = DAOResourceLoader.findTemplate((X)x.get("x"), templateName.toString());
+            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate((X)x.get("x"), templateName.toString());
             if ( extendedEmailTemplate == null ) {
               foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
               logger.warning("Extended template not found " + templateName);
@@ -307,7 +307,7 @@ foam.CLASS({
       ],
       type: 'StringBuilder',
       javaCode: `
-      EmailTemplate template = DAOResourceLoader.findTemplate(x, id);
+      EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
       if ( template == null ) throw new RuntimeException("no template found with id " + id);
       return renderTemplate(x, template.getBody(), values);
       `

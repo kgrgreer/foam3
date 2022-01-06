@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
+    'foam.u2.layout.DisplayWidth',
     'foam.u2.layout.Rows',
     'foam.u2.stack.StackBlock',
     'foam.u2.view.OverlayActionListView',
@@ -122,7 +123,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
+    'displayWidth',
     'exportDriverRegistryDAO',
     'stack?'
   ],
@@ -292,6 +295,11 @@ foam.CLASS({
       }));
     },
     function render() {
+      [ this.EXPORT, this.IMPORT, this.REFRESH_TABLE ].forEach(action => {
+        if ( this.config.DAOActions.indexOf(action) === -1 )
+          this.config.DAOActions.push(action);
+      });
+
       this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
       var filterView;
@@ -303,8 +311,7 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
-
+        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO, displayWidth) {
           // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
@@ -345,6 +352,10 @@ foam.CLASS({
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
+          var maxActions = displayWidth.minWidth < self.DisplayWidth.MD.minWidth ? 0 :
+                           displayWidth.minWidth < self.DisplayWidth.LG.minWidth ? 1 :
+                           3
+
           return self.E()
             .start(self.Rows)
             .addClass(this.myClass('wrapper'))
@@ -384,18 +395,9 @@ foam.CLASS({
                         data: self,
                         controllerMode: foam.u2.ControllerMode.EDIT
                       })
-                        .start(self.EXPORT, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
-                        .start(self.IMPORT, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
-                        .start(self.REFRESH_TABLE, buttonStyle)
-                          .addClass(self.myClass('actions'))
-                        .end()
                         .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > 3 ) {
-                            var extraActions = self.config.DAOActions.splice(2);
+                          if ( self.config.DAOActions.length > Math.max(1, maxActions) ) {
+                            var extraActions = self.config.DAOActions.splice(maxActions);
                           }
                           var actions = this.E().addClass(self.myClass('buttons'));
                           for ( action of self.config.DAOActions ) {

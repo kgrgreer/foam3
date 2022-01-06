@@ -45,16 +45,28 @@ foam.CLASS({
     overflow: auto;
   }
 
+    ^ .side-nav-view,
+    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+      width: 100%;
+    }
+
   ^search {
     box-sizing: border-box;
     padding: 0 8px;
     text-align: center;
-    width: 240px;
+    width: 100%;
   }
 
   ^menuList {
     flex: 1;
     height: 100%;
+  }
+
+  @media only screen and (min-width: 768px) {
+    ^ .side-nav-view,
+    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+      width: 240px;
+    }
   }
   `,
 

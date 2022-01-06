@@ -46,6 +46,7 @@ configuration for contacting the primary node.`,
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.net.Host',
+    'foam.net.Port',
     'foam.util.SafetyUtil',
     'java.net.HttpURLConnection',
     'java.net.URL',
@@ -77,7 +78,13 @@ configuration for contacting the primary node.`,
       name: 'configId',
       label: 'Self',
       class: 'String',
-      javaFactory: 'return System.getProperty("hostname", "localhost");',
+      javaFactory: `
+      String hostname = System.getProperty("hostname", "localhost");
+      if ( "localhost".equals(hostname) ) {
+        hostname = System.getProperty("user.name");
+      }
+      return hostname;
+      `,
       visibility: 'RO'
     },
     {
@@ -88,21 +95,6 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
-      name: 'isPrimary',
-      class: 'Boolean',
-      value: false,
-      // value: true, // STANDALONE
-      visibility: 'RO'
-    },
-    {
-      documentation: 'Setting instance to true (ONLINE) will make this instance visible to the cluster.',
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.nanos.medusa.Status',
-      value: 'OFFLINE',
-      visibility: 'RO'
-    },
-    {
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',
@@ -110,12 +102,13 @@ configuration for contacting the primary node.`,
       visibility: 'RO'
     },
     {
+      documentation: 'Maximum retries of a retry client. Set to -1 for infinite retry',
       name: 'maxRetryAttempts',
       class: 'Int',
-      documentation: 'Set to -1 to infinitely retry.',
       value: 20
     },
     {
+      documentation: 'Maximum delay in milliseconds between retries of a retry client',
       class: 'Int',
       name: 'maxRetryDelay',
       value: 20000
@@ -124,26 +117,6 @@ configuration for contacting the primary node.`,
       name: 'threadPoolName',
       class: 'String',
       value: 'medusaThreadPool'
-    },
-    {
-      name: 'batchTimerInterval',
-      class: 'Long',
-      value: 10
-    },
-    {
-      name: 'maxBatchSize',
-      class: 'Long',
-      value: 1000
-    },
-    {
-      name: 'httpConnectTimeout',
-      class: 'Int',
-      value: 5000
-    },
-    {
-      name: 'httpReadTimeout',
-      class: 'Int',
-      value: 10000
     },
     {
       name: 'clients',
@@ -174,6 +147,7 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
+      getLogger().info("mediatorCount", ((Long)count.getValue()).intValue());
       return ((Long)count.getValue()).intValue();
       `
     },
@@ -203,7 +177,20 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
-      return ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
+      return result;
+      `
+    },
+    {
+      name: 'nodeRedundancy',
+      class: 'Int',
+      javaFactory: `
+      int c = getNodeCount();
+      // maximize groups for small test/staging clusters - sacrifice HA
+      if ( c < 4 ) return 0;
+      if ( c < 9 ) return 1;
+      return 2;
       `
     },
     {
@@ -213,7 +200,9 @@ configuration for contacting the primary node.`,
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
-      return (int) Math.floor(getNodeCount() / getNodeGroups() / 2) + 1;
+      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+      getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      return quorum;
       `
     },
     {
@@ -223,20 +212,9 @@ configuration for contacting the primary node.`,
       visibility: 'RO',
       javaFactory: `
       int c = getNodeCount();
-
-      if ( c < 4 ) {
-        return 1;
-      }
-      if ( c < 6 ) {
-        return 2;
-      }
-      if ( c < 12 ) {
-        return 3;
-      }
-      if ( c < 20 ) {
-        return 4;
-      }
-      return 5;
+      int bucketSize = 1 + getNodeRedundancy();
+      int groups = (int) Math.max(1, Math.floor( c / (double) bucketSize ));
+      return groups;
       `
     },
     {
@@ -299,11 +277,6 @@ configuration for contacting the primary node.`,
       int minNodesInBucket = getNodeQuorum();
 
       List<Set<String>> buckets = getNodeBuckets();
-      if ( buckets.size() < getNodeQuorum() ) {
-        getLogger().warning("hasNodeQuorum", "false", "insufficient buckets", buckets.size(), "threshold", getNodeQuorum());
-        outputBuckets(getX());
-        return false;
-      }
       for ( int i = 0; i < buckets.size(); i++ ) {
         Set<String> bucket = buckets.get(i);
         // Need at least minNodesInBucket in ONLINE state for Quorum.
@@ -410,15 +383,13 @@ configuration for contacting the primary node.`,
             ));
         if ( zone == 0 ) {
           dao = dao.orderBy(foam.mlang.MLang.DESC(ClusterConfig.IS_PRIMARY));
-        } else {
-          dao = dao.orderBy(ClusterConfig.PING_TIME);
         }
         List<ClusterConfig> configs = ((ArraySink) dao.select(new ArraySink())).getArray();
         if ( configs.size() > 0 ) {
           ClusterConfig cfg = configs.get(0);
-          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary(), cfg.getPingTime());
+          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary());
           for ( ClusterConfig c : configs ) {
-            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary(), c.getPingTime());
+            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary());
           }
           return cfg;
         }
@@ -493,6 +464,13 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'shutdown',
+      class: 'Boolean',
+      value: false,
+      visibility: 'HIDDEN',
+      transient: true
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -554,10 +532,15 @@ configuration for contacting the primary node.`,
         if ( host != null ) {
           address = host.getAddress();
         }
+        int port = receiveClusterConfig.getPort();
+        if ( port == 0 ) {
+          port = foam.net.Port.get(x, "SocketServer");
+        }
+
         SocketClientBox clientBox = new SocketClientBox();
         clientBox.setX(x);
         clientBox.setHost(address);
-        clientBox.setPort(receiveClusterConfig.getPort() + SocketServer.PORT_OFFSET);
+        clientBox.setPort(port);
         clientBox.setServiceName(serviceName);
         // getLogger().debug("getSocketClientBox", serviceName, clientBox);
         return clientBox;
@@ -585,12 +568,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getPrimary',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-      ],
+      args: 'Context x',
       type: 'foam.nanos.medusa.ClusterConfig',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getPrimaryDAO");
@@ -611,8 +589,11 @@ configuration for contacting the primary node.`,
       if ( configs.size() > 0 ) {
         primaryConfig = configs.get(0);
         if ( configs.size() > 1 ) {
-          getLogger().error("muliple primaries", configs.get(0), configs.get(1));
-          throw new RuntimeException("Multiple primaries found.");
+          getLogger().error("muliple primaries", configs.get(0).getId(), configs.get(1).getId());
+          for ( ClusterConfig cfg : configs ) {
+            getLogger().error("mulitiple primaries", cfg);
+          }
+          throw new MultiplePrimariesException();
         }
         return primaryConfig;
       } else {
@@ -652,12 +633,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'getVoters',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaType: `java.util.List`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getVoters");
@@ -682,6 +658,7 @@ configuration for contacting the primary node.`,
      `
     },
     {
+      documentation: 'Mediator is a potential voter - depending on eventual status.',
       name: 'canVote',
       type: 'Boolean',
       args: [
@@ -695,10 +672,12 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      ClusterConfig myConfig = getConfig(x, getConfigId());
       return
         config.getEnabled() &&
         config.getType() == MedusaType.MEDIATOR &&
-        config.getZone() == 0L;
+        config.getZone() == 0L &&
+        config.getRegion().equals(myConfig.getRegion());
       `
     },
     {
@@ -849,6 +828,7 @@ configuration for contacting the primary node.`,
           }
           return false;
         }
+
         if ( config.getType() == MedusaType.NODE ) {
           return false;
         }
@@ -931,12 +911,7 @@ configuration for contacting the primary node.`,
     },
     {
       name: 'outputBuckets',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
       List<Set<String>> buckets = getNodeBuckets();
       for ( int i = 0; i < buckets.size(); i++ ) {

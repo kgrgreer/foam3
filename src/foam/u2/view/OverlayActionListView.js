@@ -22,13 +22,18 @@ foam.CLASS({
   imports: [
     'ctrl',
     'document',
+    'dropdown',
     'theme'
+  ],
+
+  exports: [
+    'overlay_ as dropdown'
   ],
 
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.core.Action',
+      of: 'foam.core.FObject',
       name: 'data'
     },
     {
@@ -68,34 +73,34 @@ foam.CLASS({
   ],
 
   css: `
-    ^disabled > button {
+    ^disabled button {
       color: /*%GREY4%*/ grey;
     }
 
-    ^button-container>button {
+    ^button-container button {
       border: 1px solid transparent;
       background-color: /*%WHITE%*/ #FFFFFF;
-      justify-content: flex-start;
+      justify-content: space-between;
       text-align: left;
       white-space: nowrap;
       width: fill-available;
       width: -webkit-fill-available;
     }
 
-    ^button-container > button > img{
+    ^button-container button > img{
       height: 100%;
     }
 
-    ^button-container>button:hover {
+    ^button-container button:hover {
       background-color: /*%PRIMARY5%*/ #E5F1FC;
     }
 
-    ^button-container>button:focus {
+    ^button-container button:focus {
       border-color: /*%PRIMARY4%*/ #C6D2FF;
       background-color: /*%PRIMARY5%*/ #E5F1FC;
     }
 
-    ^button-container>button:focus:not(:focus-visible){
+    ^button-container button:focus:not(:focus-visible){
       border-color: transparent;
     }
 
@@ -104,7 +109,11 @@ foam.CLASS({
     }
 
     ^dropdown svg {
-      font-size: 0.6rem; 
+      font-size: 0.6rem;
+    }
+
+    ^iconContainer {
+      margin-left: auto;
     }
   `,
 
@@ -114,7 +123,7 @@ foam.CLASS({
 
       this.shown = false;
       for ( let action of this.data ) {
-        if ( await this.isAvailable(action) ) {
+        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
           this.shown = true;
           break;
         }
@@ -126,7 +135,7 @@ foam.CLASS({
       var self = this;
       if ( this.showDropdownIcon ) {
         this.add(this.shown$.map(function(shown) {
-          var e = self.E();
+          var e = self.E().addClass(self.myClass('iconContainer'));
           if ( shown ) {
             e.callIfElse(self.theme,
               function() {
@@ -159,22 +168,31 @@ foam.CLASS({
       }
 
       this.onDetach(this.disabled_$.follow(this.ExpressionSlot.create({
-        args: this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj)),
+        args: this.data.map(action => {
+          if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
+          return action.createIsAvailable$(this.__context__, this.obj)
+        }),
         code: (...rest) => ! rest.reduce((l, r) => l || r, false)
       })));
 
       this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
-      self.obj.sub(function() {
+      self.obj?.sub(function() {
         self.overlay_.close();
       });
 
       // a list where element at i stores whether ith action in data is enabled or not
-      const enabled = await Promise.all(this.data.map(this.isEnabled.bind(this)));
+      const enabled = await Promise.all(this.data.map(action => {
+        if ( ! foam.core.Action.isInstance(action) ) return true;
+        return this.isEnabled.bind(this);
+      }));
       // a list where element at i stores whether ith action in data is available or not
-      const availabilities = await Promise.all(this.data.map(this.isAvailable.bind(this)));
+      const availabilities = await Promise.all(this.data.map(action => {
+        if ( ! foam.core.Action.isInstance(action) ) return true;
+        return this.isAvailable.bind(this);
+      }));
 
-      var el = this.E().startContext({ data: self.obj })
+      var el = this.E().startContext({ data: self.obj, dropdown: self.overlay_ })
         .forEach(self.data, function(action, index) {
           if ( availabilities[index] ) {
             this
@@ -202,7 +220,6 @@ foam.CLASS({
       this.firstEl_ = actionElArray_[0].childNodes[0];
       this.lastEl_ = actionElArray_[actionElArray_.length - 1].childNodes[0];
       (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
-
     },
 
     async function isEnabled(action) {

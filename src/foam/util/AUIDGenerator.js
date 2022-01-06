@@ -47,9 +47,15 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getNext',
+      args: [ 'java.lang.Class type' ],
+      type: 'Object',
+      javaCode: 'return getNextString();'
+    },
+    {
       name: 'getNextLong',
       javaCode: `
-        throw new UnsupportedOperationException("AUIDGenerator: not support generating long uid.");
+        throw new UnsupportedOperationException("AUIDGenerator: long uid generation not supported.");
       `
     },
     {
@@ -61,13 +67,11 @@ foam.CLASS({
         In most cases, the generated AUID should be 15 hex digits long.
       `,
       javaCode: `
-        // 8 bits timestamp
-        long curSec = (System.currentTimeMillis() - EPOCH) / 1000;
-        id.append(toHexString(curSec, 8));
+        long curSec = 0;
+        int seqNo   = 0;
 
-        // At least 2 bits sequence
-        int seqNo = 0;
         synchronized (this) {
+          curSec = (System.currentTimeMillis() - EPOCH) / 1000;
           if ( curSec != getLastSecondCalled() ) {
             setSeqNo(0);
             setLastSecondCalled(curSec);
@@ -75,8 +79,12 @@ foam.CLASS({
           seqNo = getSeqNo();
           setSeqNo(seqNo + 1);
         }
+
+        // 8 bits timestamp
+        id.append(toHexString(curSec, 8));
+        // At least 2 bits sequence
         id.append(toHexString(seqNo, 2));
       `
     }
   ]
-})
+});

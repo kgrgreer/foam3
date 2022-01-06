@@ -28,7 +28,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: 'Last modified date.'
+      documentation: 'Last modified date.',
+      storageOptional: true
     },
     {
       class: 'Reference',

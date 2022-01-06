@@ -92,7 +92,7 @@ foam.CLASS({
       ).select(new ArraySink())).getArray().forEach((item) -> {
         var ucj = (UserCapabilityJunction) item;
         var capability = (Capability) capabilityDAO.find(ucj.getTargetId());
-        if ( capability != null )
+        if ( capability != null && capability.getLifecycleState() == foam.nanos.auth.LifecycleState.ACTIVE)
           capabilityUcjMap.put(capability.getName(), ucj);
       });
 
@@ -144,8 +144,8 @@ foam.CLASS({
         DAO localCapabilityDAO = (DAO) x.get("localCapabilityDAO");
 
         String idToString = (String) id;
-
-        if ( localCapabilityDAO.find(idToString) == null ){
+        Capability cap = (Capability) localCapabilityDAO.find(idToString);
+        if (  cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ){
           // throw new RuntimeException("Requested Capability id cannot be found");
           return null;
         }
@@ -314,6 +314,33 @@ foam.CLASS({
             }
           }
         }
+
+        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
+        if ( leaves != null ) {
+          for (Object leaf : leaves) {
+            if ( leaf instanceof Capability ) {
+              Capability cap = (Capability) leaf;
+              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
+              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
+            }
+          }
+        }
+      `
+    },
+    {
+      name: 'recordCapabilityPayload',
+      args: 'Context outerX, FObject obj',
+      javaCode: `
+        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
+          try {
+            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
+              .setCapabilityPayload((CapabilityPayload) obj)
+              .build();
+            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
+          } catch ( Throwable t ) {
+            getLogger().warning("Failed to save record", obj, t);
+          }
+        }, "Save CapabilityPayloadRecord");
       `
     },
     {

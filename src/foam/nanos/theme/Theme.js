@@ -29,13 +29,16 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeGlyphs'
+    'foam.nanos.theme.ThemeGlyphs',
+    'foam.u2.layout.DisplayWidth'
   ],
 
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
+    'java.util.Arrays',
+    'java.util.HashSet',
     'java.util.List',
     'java.util.Map'
   ],
@@ -158,11 +161,6 @@ foam.CLASS({
       documentation: 'Specifies the root menu to be used in top navigation settings drop-down.'
     },
     {
-      class: 'Boolean',
-      name: 'disableCurrencyChoice',
-      value: false
-    },
-    {
       class: 'String',
       name: 'logoRedirect',
     },
@@ -202,8 +200,42 @@ foam.CLASS({
     },
     {
       class: 'Image',
+      name: 'rasterLogo',
+      documentation: 'A raster logo to display in the application. Use when svg is not supported',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
       name: 'largeLogo',
       documentation: 'A large logo to display in the application.',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images'
+    },
+    {
+      class: 'Image',
+      name: 'largeRasterLogo',
+      documentation: 'A large raster logo to display in the application. Use when svg is not supported.',
       displayWidth: 60,
       view: {
         class: 'foam.u2.MultiView',
@@ -578,6 +610,26 @@ foam.CLASS({
       },
       includeInDigest: true
     },
+    {
+      class: 'Array',
+      name: 'restrictedCapabilities',
+      documentation: `
+        List of capabilities whose entries should be ignored when querying capabilityDAO.
+      `,
+      javaPostSet: `
+        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
+      `
+    },
+    {
+      class: 'Object',
+      name: 'restrictedCapabilities_',
+      transient: true,
+      javaType: 'java.util.HashSet',
+      javaFactory: `
+        return new HashSet<>();
+      `,
+      hidden: true
+    }
   ],
 
   actions: [
@@ -718,6 +770,23 @@ foam.CLASS({
 
           value1.copyFrom(value2);
         }
+      `
+    },
+    {
+      name: 'isCapabilityRestricted',
+      type: 'Boolean',
+      args: [ 'String capId' ],
+      code: function(capId) {
+        if ( this.restrictedCapabilities != null ) {
+          return this.restrictedCapabilities.includes(capId)
+        }
+        return false;
+      },
+      javaCode: `
+        if ( getRestrictedCapabilities() != null ) {
+          return getRestrictedCapabilities_().contains(capId);
+        }
+        return false;
       `
     }
   ]

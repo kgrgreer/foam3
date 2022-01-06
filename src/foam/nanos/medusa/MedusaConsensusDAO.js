@@ -73,6 +73,13 @@ This is the heart of Medusa.`,
       class: 'Long'
     },
     {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -97,7 +104,7 @@ This is the heart of Medusa.`,
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       try {
         // if ( replaying.getReplaying() ) {
-        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        //  getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
         //   if ( entry.getIndex() % 10000 == 0 ) {
         //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
         //   }
@@ -234,8 +241,6 @@ This is the heart of Medusa.`,
         registry.notify(x, entry);
 
         replaying.updateIndex(x, entry.getIndex());
-        replaying.setNonConsensusIndex(0);
-        replaying.setLastModified(new java.util.Date());
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
@@ -254,6 +259,7 @@ This is the heart of Medusa.`,
       getLogger().info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
+      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
@@ -262,19 +268,16 @@ This is the heart of Medusa.`,
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
+      getLogger().info("execute");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
         .setName("Medusa Consensus")
         .setClusterable(false)
         .build();
+
       try {
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -290,6 +293,17 @@ This is the heart of Medusa.`,
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               if ( next.getPromoted() ) {
+                // TODO: access to DaggerService status.
+                if ( nextIndex < 2 ) {
+                  // Dagger bootstrap has not yet occurred.
+                  getLogger().info("promoter", "waiting for bootstrap of DAG", nextIndex);
+                  x.get("daggerService");
+                  try {
+                    Thread.currentThread().sleep(1000);
+                  } catch (InterruptedException e) {
+                    return;
+                  }
+                }
                 continue;
               }
 
@@ -299,52 +313,11 @@ This is the heart of Medusa.`,
                 entry = promote(x, entry);
                 nextIndexSince = System.currentTimeMillis();
 
-                if ( alarm.getIsActive() ) {
+                 if ( alarm != null &&
+                  alarm.getIsActive() ) {
+                  alarm = (Alarm) alarm.fclone();
                   alarm.setIsActive(false);
                   alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                }
-              } else {
-                if ( replaying.getNonConsensusIndex() < nextIndex ) {
-                  replaying.setNonConsensusIndex(nextIndex);
-                  replaying.setLastModified(new java.util.Date());
-                }
-                // TODO: more thought on alarming, and configuration for alarm times. This is really messy.
-                if ( replaying.getReplaying() ) {
-                  if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 60000 ) {
-                    getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
-                    alarm.setIsActive(true);
-                    alarm.setNote("No Consensus: "+next.toSummary());
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                  } else {
-                    if ( alarm.getIsActive() ) {
-                      alarm.setIsActive(false);
-                      alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                    }
-                  }
-                } else if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 5000 ) {
-                  getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
-                  if ( ! alarm.getIsActive() ) {
-                    alarm.setIsActive(true);
-                    alarm.setNote("No Consensus: "+next.toSummary());
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-
-                    // NOTE: inside the alarm.getIsActive - replay request
-                    // will run once per alarm. So to force replay again,
-                    // clear the alarm.
-                    final ReplayRequestCmd cmd = new ReplayRequestCmd();
-                    cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-                    Agency agency = (Agency) x.get(support.getThreadPoolName());
-                    agency.submit(x, new ContextAgent() {
-                      public void execute(X x) {
-                        ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
-                      }
-                    }, this.getClass().getSimpleName());
-                  }
-                } else {
-                  if ( alarm.getIsActive() ) {
-                    alarm.setIsActive(false);
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                  }
                 }
               }
             }
@@ -638,12 +611,11 @@ During replay gaps are treated differently; If the index after the gap is ready 
 
             getLogger().warning("gap", "found", index);
             String alarmName = "Medusa Gap";
-            final Alarm alarm;
-            Alarm a = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmName), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
-            if ( a == null ) {
+            Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(new Alarm(alarmName));
+            if ( alarm == null ) {
               alarm = new Alarm(alarmName);
             } else {
-              alarm = (Alarm) a.fclone();
+              alarm = (Alarm) alarm.fclone();
             }
             alarm.setClusterable(false);
             alarm.setIsActive(true);

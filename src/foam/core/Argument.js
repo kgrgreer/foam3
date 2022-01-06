@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'of',
       postSet: function(_, of) {
-        console.warn('Deprecated usaged of Argument.of', this.name, of);
+        console.warn('Deprecated usage of Argument.of', this.name, of);
         this.type = of;
       }
     },
