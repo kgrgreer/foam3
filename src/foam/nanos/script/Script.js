@@ -398,7 +398,7 @@ foam.CLASS({
           } else if ( l == foam.nanos.script.Language.JSHELL ) {
             String print = null;
             JShell jShell = (JShell) createInterpreter(x,ps);
-            print = new JShellExecutor().execute(x, jShell, getCode());
+            print = new JShellExecutor().execute(x, jShell, getCode(), true);
             ps.print(print);
           } else {
             throw new RuntimeException("Script language not supported");
@@ -420,18 +420,17 @@ foam.CLASS({
 
           Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
-          if ( thrown == null ) {
-            ScriptEvent event = new ScriptEvent(x);
-            event.setLastRun(this.getLastRun());
-            event.setLastDuration(this.getLastDuration());
-            event.setOutput(this.getOutput());
-            event.setScriptType(this.getClass().getSimpleName());
-            event.setOwner(this.getId());
-            event.setScriptId(this.getId());
-            event.setHostname(System.getProperty("hostname", "localhost"));
-            event.setClusterable(this.getClusterable());
-            ((DAO) x.get(getEventDaoKey())).put(event);
-          }
+          ScriptEvent event = new ScriptEvent(x);
+          event.setLastRun(this.getLastRun());
+          event.setLastDuration(this.getLastDuration());
+          event.setOutput(this.getOutput());
+          if ( thrown != null ) event.setLastStatus(ScriptStatus.ERROR);
+          event.setScriptType(this.getClass().getSimpleName());
+          event.setOwner(this.getId());
+          event.setScriptId(this.getId());
+          event.setHostname(System.getProperty("hostname", "localhost"));
+          event.setClusterable(this.getClusterable());
+          ((DAO) x.get(getEventDaoKey())).put(event);
         }
     `
     },

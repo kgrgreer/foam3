@@ -93,7 +93,13 @@ foam.CLASS({
       class: 'String',
       name: 'hostname',
       visibility: 'RO',
-      javaFactory: 'return System.getProperty("hostname", "localhost");'
+      javaFactory: `
+      String hostname = System.getProperty("hostname", "localhost");
+      if ( "localhost".equals(hostname) ) {
+        hostname = System.getProperty("user.name");
+      }
+      return hostname;
+      `
     },
     {
       class: 'Enum',

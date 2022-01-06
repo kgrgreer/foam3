@@ -105,8 +105,14 @@ foam.CLASS({
             if ( c.bucket == 1 ) {
               return 'lightblue';
             }
-            if ( c.bucket == 3 ) {
+            if ( c.bucket == 2 ) {
               return 'darkblue';
+            }
+            if ( c.bucket == 3 ) {
+              return 'skyblue';
+            }
+            if ( c.bucket == 4 ) {
+              return 'steelblue';
             }
             return 'blue';
           }

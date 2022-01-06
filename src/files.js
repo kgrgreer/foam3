@@ -395,6 +395,7 @@ FOAM_FILES([
   { name: "lib/utf8" },
   { name: "foam/net/CIDR" },
   { name: "foam/net/Host" },
+  { name: "foam/net/Port" },
   { name: "foam/net/NotConnectedException" },
   { name: "foam/net/ConnectionFailedException" },
   { name: "foam/net/web/WebSocket" },

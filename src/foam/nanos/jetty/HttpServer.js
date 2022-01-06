@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.jetty.JettyThreadPoolConfig',
     'foam.nanos.security.KeyStoreManager',
+    'foam.net.Port',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.io.FileInputStream',
@@ -46,15 +47,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ'
   ],
 
-  constants: [
-    {
-      documentation: 'When http.port specificed, but https.port is not, use this offset to calculated the https.port',
-      name: 'HTTPS_PORT_OFFSET',
-      value: 2,
-      type: 'Integer'
-    }
-  ],
-
   properties: [
     {
       class: 'Boolean',
@@ -64,16 +56,14 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'port',
-      value: 8080
+      javaFactory: `
+      if ( getEnableHttps() ) return 8443;
+      return 8080;
+      `
     },
     {
       class: 'Boolean',
       name: 'enableHttps'
-    },
-    {
-      class: 'Int',
-      name: 'httpsPort',
-      value: 8443
     },
     {
       name: 'keystoreFileName',
@@ -153,13 +143,10 @@ foam.CLASS({
 
       try {
         int port = getPort();
-        String portStr = System.getProperty("http.port");
-        if ( ! foam.util.SafetyUtil.isEmpty(portStr) ) {
-          try {
-            port = Integer.parseInt(portStr);
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTP port", portStr);
-          }
+        try {
+          port = Port.get(getX(), "http");
+        } catch (IllegalArgumentException e) {
+          port = getPort();
         }
 
         JettyThreadPoolConfig jettyThreadPoolConfig = (JettyThreadPoolConfig) getX().get("jettyThreadPoolConfig");
@@ -337,24 +324,11 @@ foam.CLASS({
       foam.dao.DAO fileDAO = ((foam.dao.DAO) getX().get("fileDAO"));
 
       if ( this.getEnableHttps() ) {
-        int port = getHttpsPort();
-        if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("https.port")) ) {
-          try {
-            port = Integer.parseInt(System.getProperty("https.port"));
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTPS port", System.getProperty("https.port"));
-          }
-        } else if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
-          // when https.port is not specified and http.port is and http is not
-          // enabled, then use http.port for HTTPS.
-          try {
-            port = Integer.parseInt(System.getProperty("http.port"));
-            if ( this.getEnableHttp() ) {
-              port += HTTPS_PORT_OFFSET;
-            }
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTPS port", System.getProperty("http.port"));
-          }
+        int port = getPort();
+        try {
+          port = Port.get(getX(), "http");
+        } catch (IllegalArgumentException e) {
+          port = getPort();
         }
 
         ByteArrayOutputStream baos = null;

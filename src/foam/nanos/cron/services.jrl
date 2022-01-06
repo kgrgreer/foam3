@@ -10,7 +10,11 @@ p({
       .setJournalName("cronjobs")
       .setDecorator(new foam.nanos.cron.CronJobDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo())).build())
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.STATUS })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.LAST_RUN })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.ENABLED });
   """,
   "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
 })
@@ -27,15 +31,15 @@ p({
           .build()))
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] {
-        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),
-        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build()
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.cron.Cron.ENABLED).build(),
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.cron.Cron.LAST_RUN).build()
       })
       .setCluster(false)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.STATUS })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.LAST_RUN })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.Script.ENABLED });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.STATUS })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.LAST_RUN })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.ENABLED });
   """
 })
 

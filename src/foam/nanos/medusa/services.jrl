@@ -18,15 +18,7 @@ p({
   }
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "health",
-  "lazy": false,
-  "authenticate": false,
-  "parameters": true,
-  "serviceClass": "foam.nanos.medusa.HealthCheckWebAgent"
-})
-
+// deprecated by HealthWebAgent under service/health
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "info",
@@ -226,9 +218,68 @@ p({
 //   """
 // })
 
+// mm specific
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaConsensusMonitor",
+//   "lazy":false,
+//   "service": {
+//     class:"foam.nanos.medusa.MedusaConsensusMonitor"
+//   }
+// })
+
 // p({
 //   "class":"foam.nanos.boot.NSpec",
 //   "name":"clusterConfigMonitor",
 //   "lazy": false,
 //   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+// })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaNodeBootstrapAgent",
+//   "lazy":false,
+//   "service": {
+//     "class": "foam.nanos.medusa.MedusaNodeBootstrapAgent"
+//   }
+// })
+
+// enable for medusa systems
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "medusastatuswatcher",
+//   "lazy": false,
+//   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
+// })
+
+// p({
+//   class:"foam.nanos.boot.NSpec",
+//   name:"Health",
+//   description:"Medusa Health Factory",
+//   authenticate:false,
+//   pm:false,
+//   service:{
+//     class:"foam.nanos.medusa.MedusaHealthFactory"
+//   }
+// })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"healthDAO",
+//   "serve":true,
+//   "serviceScript":
+//   """
+//   return new foam.dao.EasyDAO.Builder(x)
+//     .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
+//     .setDecorator(new foam.nanos.medusa.MedusaHealthStatusDAO.Builder(x)
+//       .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaHealth.getOwnClassInfo())).build())
+//     .setCluster(false)
+//     .build()
+//   """,
+//   "client":
+//   """
+//   {
+//     "of":"foam.nanos.medusa.MedusaHealth"
+//   }
+//   """
 // })
