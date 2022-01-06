@@ -33,7 +33,7 @@ foam.CLASS({
     ^ {
       display: flex;
       align-items: normal;
-      width: 40px;
+      position: relative;
     }
     ^bell {
       padding: 4px 2px;
@@ -44,17 +44,18 @@ foam.CLASS({
     ^ .dot {
       border-radius: 50%;
       display: inline-block;
-      background: red;
+      background: /*%DESTRUCTIVE3%*/ red;
+      color: /*%WHITE%*/ #FFFFFF;
       width: 15px;
       height: 15px;
-      position: relative;
-      right: 10px;
+      position: absolute;
+      right: -2px;
+      top: -2px;
+      display: flex;
       text-align: center;
       font-size: 0.8rem;
-    }
-    ^ .dot > span {
-      padding-top: 3px;
-      display: inline-block;
+      align-items: center;
+      justify-content: center;
     }
   `,
 
@@ -92,9 +93,9 @@ foam.CLASS({
           .addClass(this.myClass('bell'))
         .end()
         .endContext()
-        .start('span')
+        .start()
           .addClass('dot')
-          .add(this.countUnread$)
+          .add(this.countUnread$.map(v => v > 9 ? '9+' : v ))
           .show(this.showCountUnread$)
         .end()
       .end();
