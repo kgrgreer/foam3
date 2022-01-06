@@ -47,10 +47,6 @@ foam.CLASS({
           return acc;
         }, []).join(' ');
 
-//        if ( negative ) {
-//          // TODO: set css/flag to adjust font
-//          formatted = '('.concat(formatted, ')');
-//        }
         return formatted || '0ms';
       }
     }
