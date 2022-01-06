@@ -413,7 +413,6 @@ foam.CLASS({
                           for ( action of visibleActions ) {
                             actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
-                          // this.add(actions);
                           if ( extraActions && extraActions.length ) {
                             el.start(self.OverlayActionListView, {
                               label: self.ACTIONS,
