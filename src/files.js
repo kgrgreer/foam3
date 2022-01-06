@@ -395,6 +395,7 @@ FOAM_FILES([
   { name: "lib/utf8" },
   { name: "foam/net/CIDR" },
   { name: "foam/net/Host" },
+  { name: "foam/net/Port" },
   { name: "foam/net/NotConnectedException" },
   { name: "foam/net/ConnectionFailedException" },
   { name: "foam/net/web/WebSocket" },
@@ -1103,5 +1104,11 @@ FOAM_FILES([
   { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
   { name: "foam/u2/view/DayChoiceView" , flags: ["web"] },
   { name: "foam/u2/view/DateChoiceView" , flags: ["web"] },
-  { name: "foam/u2/view/DayOfMonthView" , flags: ["web"] }
+  { name: "foam/u2/view/DayOfMonthView" , flags: ["web"] },
+
+  // Uid search
+  { name: "foam/util/uid/GlobalSearchService" },
+  { name: "foam/util/uid/ClientGlobalSearchService" },
+  { name: "foam/util/uid/FuidKey" },
+  { name: "foam/util/uid/FuidSearchService" }
 ]);

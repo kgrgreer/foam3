@@ -66,56 +66,20 @@ foam.CLASS({
 
         ClusterConfig config = nu;
 
-        if ( support.getStandAlone() &&
-             nu.getType() == MedusaType.NODE ) {
-          getLogger().debug("standalone");
-          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-          replaying.setStartTime(new java.util.Date());
+        // replay from NODE to zone and zone + 1
+        if (
+            ( config.getType() == MedusaType.NODE &&
+              ( ( myConfig.getType() == MedusaType.MEDIATOR &&
+                  config.getZone() == myConfig.getZone() ) ||
+                ( myConfig.getType() == MedusaType.NERF &&
+                  ( config.getZone() == myConfig.getZone() ||
+                    config.getZone() == myConfig.getZone() -1 ) ) ) ) ||
 
-          // TODO: Presently min,max not used. Intented for more precise replay, but at the moment nodes simply replay everything.
-          DAO dao = (DAO) x.get("medusaNodeDAO");
-          Min min = (Min) MIN(MedusaEntry.INDEX);
-          Max max = (Max) MAX(MedusaEntry.INDEX);
-          Count count = new Count();
-          Sequence seq = new Sequence.Builder(x)
-            .setArgs(new Sink[] {count, min, max})
-            .build();
-          dao.select(seq);
-          getLogger().debug("put", "standalone", "count", count.getValue(), "max", max.getValue());
-          if ( ((Long) count.getValue()) > 0 ) {
-            replaying.setReplayIndex((Long) max.getValue());
-
-            DaggerService dagger = (DaggerService) x.get("daggerService");
-            if ( ((Long) max.getValue()) > dagger.getGlobalIndex(x)) {
-              dagger.setGlobalIndex(x, ((Long) max.getValue()));
-            }
-
-            // select from internal and put to consensus - medusaMediatorDAO
-            Sink sink = new RetryClientSinkDAO.Builder(x)
-              .setName("medusaNodeDAO")
-              .setDelegate((DAO) x.get("medusaMediatorDAO"))
-              .setMaxRetryAttempts(0)
-              .setMaxRetryDelay(0)
-              .build();
-            dao.select(sink);
-          } else {
-            replaying.setReplaying(false);
-            replaying.setEndTime(new java.util.Date());
-          }
-        } else if (
-                      // replay from NODE to zone and zone + 1
-                    ( config.getType() == MedusaType.NODE &&
-                      ( ( myConfig.getType() == MedusaType.MEDIATOR &&
-                          config.getZone() == myConfig.getZone() ) ||
-                        ( myConfig.getType() == MedusaType.NERF &&
-                          ( config.getZone() == myConfig.getZone() ||
-                            config.getZone() == myConfig.getZone() -1 ) ) ) ) ||
-
-                      // replay from MEDIATOR to get Bootstrap indexes
-                    ( config.getType() == MedusaType.MEDIATOR &&
-                      myConfig.getType() == MedusaType.NERF &&
-                      config.getZone() == myConfig.getZone() -1 )
-                  ) {
+              // replay from MEDIATOR to get Bootstrap indexes
+            ( config.getType() == MedusaType.MEDIATOR &&
+              myConfig.getType() == MedusaType.NERF &&
+              config.getZone() == myConfig.getZone() -1 )
+          ) {
           String serviceName = "medusaNodeDAO";
           if ( config.getType() == MedusaType.MEDIATOR ||
                config.getType() == MedusaType.NERF ) {

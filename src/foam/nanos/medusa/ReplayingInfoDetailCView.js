@@ -12,7 +12,8 @@ foam.CLASS({
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'DAO clusterTopologyDAO as dao'
+    'DAO clusterTopologyDAO as dao',
+    'healthDAO'
   ],
 
   requires: [
@@ -25,6 +26,11 @@ foam.CLASS({
       name: 'config',
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.ClusterConfig'
+    },
+    {
+      name: 'health',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.medusa.MedusaHealth'
     },
     {
       name: 'width',
@@ -53,15 +59,17 @@ foam.CLASS({
   ],
 
   methods: [
-    function initCView() {
+    async function initCView() {
       this.SUPER();
+
+      this.health = await this.healthDAO.find(this.config.id);
 
       this.borderWidth = 5;
       this.border = 'blue';
       this.color = 'white';
 
       this.openTime = Date.now();
-      this.openIndex = this.config.replayingInfo.index;
+      this.openIndex = this.health.index;
 
 //       var view = foam.graphics.ViewCView.create({
 // //        innerView: this.config.replayingInfo.toE(null, this)
@@ -89,15 +97,21 @@ foam.CLASS({
       }
 
       label = this.makeLabel();
-      label.text$ = this.config$.map(function(c) {
-        let delta = new Date().getTime() - c.replayingInfo.startTime.getTime();
+      label.text$ = this.health$.map(function(h) {
+        let delta = new Date().getTime() - h.bootTime;
         let duration = foam.core.Duration.duration(delta);
         return 'Uptime: '+duration;
       });
       this.add(label);
 
       label = this.makeLabel();
-      label.text$ = this.config$.map(function(c) { return 'Index: '+c.replayingInfo.index; });
+      label.text$ = this.health$.map(function(h) {
+        return 'Version: '+h.version;
+      });
+      this.add(label);
+
+      label = this.makeLabel();
+      label.text$ = this.health$.map(function(h) { return 'Index: '+h.index; });
       this.add(label);
 
       if ( this.config.replayingInfo.replaying ) {
@@ -150,10 +164,10 @@ foam.CLASS({
       this.add(label);
 
       label = this.makeLabel();
-      label.text$ = this.config$.map(function(c) {
+      label.text$ = this.health$.map(function(h) {
         var used = 0;
-        if ( c.memoryMax > 0 ) {
-          used = ((c.memoryMax - c.memoryFree) / c.memoryMax) * 100;
+        if ( h.memoryMax > 0 ) {
+          used = ((h.memoryMax - h.memoryFree) / h.memoryMax) * 100;
         }
         if ( used < 70 ) {
           label.color = 'green';
@@ -162,7 +176,7 @@ foam.CLASS({
         } else {
           label.color = 'red';
         }
-        let max = c.memoryMax / (1024*1024*1024);
+        let max = h.memoryMax / (1024*1024*1024);
         return 'Memory: '+used.toFixed(0)+'% '+max.toFixed(1)+'gb';
       });
       this.add(label);
@@ -179,10 +193,10 @@ foam.CLASS({
       this.add(label);
 
       label = this.makeLabel();
-      label.text$ = this.config$.map(function(c) {
-        if ( c.alarms && c.alarms > 0 ) {
+      label.text$ = this.health$.map(function(h) {
+        if ( h.alarms && h.alarms > 0 ) {
           // TODO: this also includes those recently inactive.
-          return 'Alarms: '+c.alarms;
+          return 'Alarms: '+h.alarms;
         } else {
           return '';
         }
@@ -196,6 +210,7 @@ foam.CLASS({
         console.log('ReplayingInfoDetailCView.refresh '+self.children.length);
         if ( self.config ) {
           self.config = await self.dao.find(self.config.id);
+          self.health = await self.healthDAO.find(self.config.id);
           for ( var i = 0; i < self.children.length; i++ ) {
             let child = self.children[i];
             child.refresh && child.refresh(child);

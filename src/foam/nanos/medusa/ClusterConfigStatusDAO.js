@@ -44,7 +44,14 @@ foam.CLASS({
       name: 'timerInterval',
       class: 'Long',
       value: 10000
-    }
+    },
+    {
+      documentation: 'Store referent to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    },
   ],
 
   methods: [
@@ -58,19 +65,15 @@ foam.CLASS({
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
-
-      // if ( support.getStandAlone() ) {
-      //   return nu;
-      // }
+      support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      Boolean hasQuorum = support.hasQuorum(x);
 
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
-        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
+        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus(), "quorum", hadQuorum, "->", hasQuorum);
 
-        if ( support.canVote(x, myConfig) &&
-             support.canVote(x, nu) ) {
+        if ( support.canVote(x, myConfig) ) {
           ElectoralService electoralService = (ElectoralService) x.get("electoralService");
-          Boolean hasQuorum = support.hasQuorum(x);
           if ( electoralService.getState() == ElectoralServiceState.IN_SESSION ||
                electoralService.getState() == ElectoralServiceState.DISMISSED ) {
             if ( hadQuorum && ! hasQuorum) {
@@ -86,15 +89,28 @@ foam.CLASS({
                   // When cluster has quorum, the last mediator may not be in-session.
                   electoralService.register(x, myConfig.getId());
                 }
-              } catch ( RuntimeException e ) {
-                // no primary
+              } catch (PrimaryNotFoundException e) {
+                if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
+                  logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
+                  myConfig = (ClusterConfig) myConfig.fclone();
+                  myConfig.setStatus(Status.OFFLINE);
+                  DAO dao = (DAO) x.get("localClusterConfigDAO");
+                  myConfig = (ClusterConfig) dao.put(myConfig).fclone();
+                  myConfig.setStatus(Status.ONLINE);
+                  dao.put(myConfig);
+                } else {
+                  logger.warning("No Primary detected", "dissolving");
+                  electoralService.dissolve(x);
+                }
+              } catch (MultiplePrimariesException e) {
+                logger.warning("Mulitiple Primaries detected", "dissolving");
                 electoralService.dissolve(x);
               }
             }
           }
         }
 
-        if ( myConfig.getZone() == 0 ) {
+        if ( support.canVote(x, myConfig) ) {
           Count mediatorsActive = ((Count) ((DAO) x.get("localClusterConfigDAO"))
             .where(
               AND(
@@ -106,17 +122,16 @@ foam.CLASS({
                 EQ(ClusterConfig.REGION, myConfig.getRegion())
               ))
             .select(COUNT()));
-          if ( nu.getStatus() == Status.ONLINE && mediatorsActive.getValue() > support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) x.get("alarmDAO");
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+
+          DAO alarmDAO = (DAO) x.get("alarmDAO");
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
+          if ( mediatorsActive.getValue() > support.getMediatorQuorum() ) {
             if ( alarm != null && alarm.getIsActive() ) {
               alarm = (Alarm) alarm.fclone();
               alarm.setIsActive(false);
               alarmDAO.put(alarm);
             }
           } else if ( nu.getStatus() == Status.OFFLINE && mediatorsActive.getValue() <= support.getMediatorQuorum() ) {
-            DAO alarmDAO = (DAO) x.get("alarmDAO");
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Medusa Mediator Degradation"));
             if ( alarm == null ) {
               alarm = new Alarm.Builder(x)
                 .setName("Medusa Mediator Degradation")
@@ -130,10 +145,10 @@ foam.CLASS({
             }
             alarmDAO.put(alarm);
           }
-
         }
 
-        if ( nu.getType() == MedusaType.NODE ) {
+        if ( myConfig.getType() == MedusaType.MEDIATOR &&
+             nu.getType() == MedusaType.NODE ) {
           bucketNodes(x);
         }
       }
@@ -191,6 +206,7 @@ foam.CLASS({
       Loggers.logger(getX(), this).info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
+      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay(), getTimerInterval());
@@ -203,19 +219,19 @@ foam.CLASS({
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
-      if ( config.getIsPrimary() &&
-           config.getStatus() == Status.ONLINE ) {
+      if ( config.getStatus() == Status.ONLINE ) {
         try {
           support.getPrimary(x);
         } catch (MultiplePrimariesException e) {
           Loggers.logger(x, this).warning("Multiple Primaries detected");
-          config = (ClusterConfig) config.fclone();
-          // REVIEW: if 'just' quorum ONLINE, this will fail the cluster.
-          config.setStatus(Status.OFFLINE);
-          ((DAO) x.get("localClusterConfigDAO")).put(config);
+          ElectoralService electoral = (ElectoralService) x.get("electoralService");
+          electoral.dissolve(x);
         } catch (PrimaryNotFoundException e) {
-          // should have found self!
-          Loggers.logger(x, this).warning("Unexpected exception", e);
+          if ( support.hasQuorum(x) ) {
+            Loggers.logger(x, this).warning("No Primary detected");
+            ElectoralService electoral = (ElectoralService) x.get("electoralService");
+            electoral.dissolve(x);
+          }
         }
       }
       `

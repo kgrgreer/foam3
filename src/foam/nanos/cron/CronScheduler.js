@@ -26,14 +26,15 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.MapDAO',
+    'foam.dao.Sink',
     'foam.log.LogLevel',
     'foam.mlang.MLang',
     'foam.mlang.sink.Min',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.auth.EnabledAware',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.NanoService',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date',
@@ -53,11 +54,13 @@ foam.CLASS({
     },
     {
       name: 'cronDAO',
-      class: 'foam.dao.DAOProperty',
-      visibility: 'HIDDEN',
-      javaFactory: `
-      return (DAO) getX().get("cronDAO");
-      `
+      class: 'String',
+      value: 'cronDAO',
+    },
+    {
+      name: 'cronJobDAO',
+      class: 'String',
+      value: 'localCronJobDAO'
     },
     {
       name: 'enabled',
@@ -82,7 +85,7 @@ foam.CLASS({
       name: 'getMinScheduledTime',
       type: 'DateTime',
       javaCode: `
-    Min min = (Min) getCronDAO()
+    Min min = (Min) ((DAO) getX().get(getCronJobDAO()))
       .where(MLang.EQ(Cron.ENABLED, true))
       .select(MLang.MIN(Cron.SCHEDULED_TIME));
 
@@ -96,17 +99,30 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
-    Logger logger = new PrefixLogger(new Object[] {
-        this.getClass().getSimpleName()
-      }, (Logger) x.get("logger"));
-
+    final Logger logger = Loggers.logger(x, this);
     try {
+      logger.info("initialize", "cronjobs", "start");
+      // copy all entries to from cronjob to localCronDAO for execution
+      final DAO cronDAO = (DAO) getX().get(getCronDAO());
+      final DAO cronJobDAO = (DAO) getX().get(getCronJobDAO());
+      cronDAO.where(MLang.EQ(Cron.ENABLED, true)).
+        select(new Sink() {
+          public void put(Object obj, Detachable sub) {
+            Cron cron = (Cron) ((FObject) obj).fclone();
+            cron.setScheduledTime(cron.getNextScheduledTime(getX()));
+            cronJobDAO.put(cron);
+          }
+          public void remove(Object obj, Detachable sub) {}
+          public void eof() {}
+          public void reset(Detachable sub) {}
+        });
+      logger.info("initialize", "cronjobs", "complete");
+
       while ( true ) {
         foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
        if ( getEnabled() ) {
           Date now = new Date();
-
-          getCronDAO().where(
+          cronJobDAO.where(
                          MLang.AND(
                                    MLang.LTE(Cron.SCHEDULED_TIME, now),
                                    MLang.EQ(Cron.ENABLED, true),
@@ -122,13 +138,18 @@ foam.CLASS({
                              public void put(Object obj, Detachable sub) {
                                Cron cron = (Cron) ((FObject) obj).fclone();
                                try {
-                                 if ( support == null || support.cronEnabled(x, cron.getClusterable()) ) {
+                                 if ( support == null ||
+                                      support.cronEnabled(x, cron.getClusterable()) ) {
                                    cron.setStatus(ScriptStatus.SCHEDULED);
-                                   getCronDAO().put_(x, cron);
+                                   cronJobDAO.put_(x, cron);
                                  }
                                } catch (Throwable t) {
                                  logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);
-                                 ((DAO) x.get("alarmDAO")).put(new Alarm("CronScheduler", LogLevel.ERROR, AlarmReason.CONFIGURATION));
+                                 Alarm alarm = new Alarm("CronScheduler - Unabled to schedule");
+                                 alarm.setSeverity(LogLevel.ERROR);
+                                 alarm.setReason(AlarmReason.CONFIGURATION);
+                                 alarm.setNote(cron.getId()+"\\n"+t.getMessage());
+                                 ((DAO) x.get("alarmDAO")).put(alarm);
                                }
                              }
                            });
@@ -147,7 +168,7 @@ foam.CLASS({
         Thread.sleep(delay);
       }
     } catch (Throwable t) {
-      logger.error(this.getClass(), t.getMessage());
+      logger.error(t.getMessage(), t);
       ((DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
         .setName("CronScheduler")
         .setSeverity(foam.log.LogLevel.ERROR)
