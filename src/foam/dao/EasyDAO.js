@@ -158,7 +158,9 @@ foam.CLASS({
                 logger.warning(getName(), "Index not added, no access to MDAO");
               }
             }
-            if ( getFixedSize() != null ) {
+            if ( getFixedSize() != null &&
+                 ! getCluster() ) {
+              // FixedSize is not compatible Clustering
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
