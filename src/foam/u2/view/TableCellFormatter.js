@@ -365,11 +365,9 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'DurationTableCellFormatterRefinement',
   refines: 'foam.core.Duration',
-  css:`
-    ^negative {
-       color: /*%DESTRUCTIVE3%*/ #d9170e;
-    }
-  `,
+  imports: [
+    'returnExpandedCSS'
+  ],
   properties: [
     {
       class: 'foam.u2.view.TableCellFormatter',
@@ -377,7 +375,7 @@ foam.CLASS({
       value: function(value) {
         let formatted = foam.core.Duration.duration(value);
         let negative = value < 0;
-        this.add(formatted || '0ms').enableClass(this.myClass('negative'), negative);
+        this.add(formatted || '0ms').style({ color: negative ? this.__subContext__.returnExpandedCSS('/*%DESTRUCTIVE2%*/ #a61414') : 'inherit' })
       }
     }
   ]
