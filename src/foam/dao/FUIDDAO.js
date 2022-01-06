@@ -29,6 +29,10 @@ foam.CLASS({
     'foam.nanos.boot.NSpecAware'
   ],
 
+  imports: [
+    'DAO fuidKeyDAO'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.core.PropertyInfo',
@@ -98,7 +102,17 @@ foam.CLASS({
   methods: [
     {
       name: 'init_',
-      javaCode: 'getUIDGenerator();'
+      javaCode: `
+        var uidgen = getUIDGenerator();
+        if ( getFuidKeyDAO().find(getSalt()) == null ) {
+          getFuidKeyDAO().put(
+            new foam.util.uid.FuidKey.Builder(getX())
+              .setDaoName(getSalt())
+              .setKey(uidgen.getHashKey())
+              .build()
+          );
+        }
+      `
     },
     {
       name: 'put_',

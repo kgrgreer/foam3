@@ -38,6 +38,13 @@ foam.CLASS({
       units: 'ms',
       value: 60000
     },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    }
   ],
 
   methods: [
@@ -105,6 +112,7 @@ foam.CLASS({
       Loggers.logger(getX(), this).info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
+      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay(), getTimerInterval());

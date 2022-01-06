@@ -36,7 +36,7 @@ foam.CLASS({
       documentation: 'Port of remote server',
       name: 'port',
       class: 'Int',
-      value: 8443,
+      javaFactory: 'return foam.net.Port.get(getX(), "SocketServer");'
     },
     {
       name: 'serviceName',
@@ -60,7 +60,7 @@ foam.CLASS({
           .setSessionID(getSessionId())
           .setDelegate(new SocketClientBox.Builder(x)
             .setHost(getHostname())
-            .setPort(getPort() + SocketServer.PORT_OFFSET)
+            .setPort(getPort())
             .setServiceName(getServiceName())
             .build())
           .build())
