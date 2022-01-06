@@ -501,7 +501,23 @@ foam.CLASS({
                 showActions: false
               },
               footer: this.footerView_,
-              sideNav: { class: this.VerticalMenu }
+              sideNav: {
+                class: 'foam.u2.view.ResponsiveAltView',
+                views: [
+                  [
+                    {
+                      class: 'foam.nanos.u2.navigation.ApplicationSideNav'
+                    },
+                    ['XS']
+                  ],
+                  [
+                    {
+                      class: this.VerticalMenu
+                    },
+                    ['MD']
+                  ]
+                ]
+              }
             });
           });
       });

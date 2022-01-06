@@ -43,6 +43,7 @@ foam.CLASS({
     overflow-x: hidden;
     padding: 16px 0;
     overflow: auto;
+    width: 100%;
   }
 
     ^ .side-nav-view,

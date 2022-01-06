@@ -35,10 +35,11 @@ foam.CLASS({
       align-items: normal;
       position: relative;
     }
-    ^bell {
-      padding: 4px 2px;
+    ^bell.foam-u2-ActionView {
+      color: /*%GREY2%*/ #6B778C;
+      justify-content: flex-start;
     }
-    ^bell svg {
+    ^bell.foam-u2-ActionView svg {
       fill: /*%GREY2%*/ #6B778C;
     }
     ^ .dot {
@@ -49,8 +50,8 @@ foam.CLASS({
       width: 15px;
       height: 15px;
       position: absolute;
-      right: -2px;
-      top: -2px;
+      right: 0px;
+      top: 0px;
       display: flex;
       text-align: center;
       font-size: 0.8rem;
@@ -68,6 +69,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showCountUnread',
       expression: (countUnread) => countUnread > 0
+    },
+    {
+      class: 'Boolean',
+      name: 'showText'
+    },
+    {
+      class: 'String',
+      name: 'formattedCount',
+      expression: function(countUnread) {
+        return countUnread > 9 ? '9+' : countUnread;
+      }
     }
   ],
 
@@ -77,7 +89,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` }
+    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` },
+    { name: 'NOTIF', message: 'Notifications' }
   ],
 
   methods: [
@@ -85,18 +98,23 @@ foam.CLASS({
       this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
       this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
-
+      var self = this;
       this.addClass()
         .addClass('icon-container')
         .startContext({ data: this })
-        .start(this.NOTIFICATIONS, { themeIcon: 'bell', label: '', buttonStyle: 'TERTIARY' })
+        .start(this.NOTIFICATIONS, {
+          themeIcon: 'bell',
+          label$: this.showText ? this.formattedCount$.map(v => `${self.NOTIF} (${v})`) : foam.core.ConstantSlot.create({ value: '' }),
+          buttonStyle: 'TERTIARY',
+          size: this.showText ? 'SMALL' : 'MEDIUM'
+        })
           .addClass(this.myClass('bell'))
         .end()
         .endContext()
         .start()
           .addClass('dot')
           .add(this.countUnread$.map(v => v > 9 ? '9+' : v ))
-          .show(this.showCountUnread$)
+          .show(this.slot(function(showCountUnread, showText) { return showCountUnread && ! showText; }))
         .end()
       .end();
     }

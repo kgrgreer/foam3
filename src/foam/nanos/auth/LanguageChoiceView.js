@@ -53,6 +53,10 @@ foam.CLASS({
         localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'longName'
     }
   ],
 
@@ -80,7 +84,7 @@ foam.CLASS({
         });
       });
 
-      var label = this.formatLabel(this.lastLanguage, true);
+      var label = this.formatLabel(this.lastLanguage, ! this.longName);
 
       this
         .addClass(this.myClass())
@@ -88,7 +92,7 @@ foam.CLASS({
           label:       label,
           data:        actionArray,
           obj:         self,
-          buttonStyle: 'UNSTYLED'
+          buttonStyle: 'TERTIARY'
         })
           .addClass(this.myClass('dropdown'))
         .end()

@@ -38,6 +38,16 @@ foam.CLASS({
       font-weight: 400;
       font-size: 1.1rem;
     }
+    ^label-container {
+      display: flex;
+      flex-direction: column;
+    }
+    ^horizontal { 
+      flex-direction: row;
+    }
+    ^horizontal > * + * {
+      margin-left: 8px;
+    }
     ^name-container {
       max-width: 90px;
       line-height: normal;
@@ -53,12 +63,21 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'horizontal'
+    }
+  ],
+
   methods: [
     async function render() {
       var self = this;
       var X    = this.__subContext__;
 
       var mainLabel = this.E()
+        .addClass(this.myClass('label-container'))
+        .enableClass(this.myClass('horizontal'), this.horizontal$)
         .add(this.slot( subject$user => {
         if ( ! this.subject.user ) return;
         return this.E().addClass(self.myClass('name-container'))
@@ -78,7 +97,7 @@ foam.CLASS({
               .end();
         }));
 
-      // We need to add menus from settings (and then add menus from theme.settingsRootMenu) 
+      // We need to add menus from settings (and then add menus from theme.settingsRootMenu)
       // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
       // Doing this prevents us from creating the same menu for each setting.
       let menu = this.Menu.create({ id: 'settings' });
@@ -98,7 +117,7 @@ foam.CLASS({
         label: mainLabel,
         data: menuArray,
         obj: self,
-        buttonStyle: 'UNSTYLED'
+        buttonStyle: 'TERTIARY'
       })
         .addClass(this.myClass('dropdown'))
       .end();
