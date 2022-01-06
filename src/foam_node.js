@@ -20,23 +20,25 @@
 
   function loadServer() {
     var caller = flags.src || __filename;
-    var path = caller.substring(0, caller.lastIndexOf('src/')+4);
+    var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
 
     if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
     return function (filename) {
       if ( ! filename ) return;
+//      console.log('Loading...', filename);
       // Set document.currentScript.src, as expected by EndBoot.js
       let normalPath = globalThis.imports.path.relative(
-        '.', globalThis.imports.path.normalize(path + filename + '.js'));
+        '.',
+        globalThis.imports.path.normalize(path + filename + '.js'));
       globalThis.document = { currentScript: { src: normalPath } };
       require(path + filename + '.js');
     }
   }
 
-  this.FOAM_FILES = async function(files) {
+  this.FOAM_FILES = function(files) {
     var load = loadServer();
-
+    var seen = {};
     files.
       /*
       TODO: filtering breaks node loading
@@ -52,14 +54,11 @@
         return true;
       }).
       */
+      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
       filter(f => (! f.predicate) || f.predicate()).
       map(function(f) { return f.name; }).
-      forEach(f => load(f, true));
-
-    load(null, false);
-
-  //  delete this.FOAM_FILES;
+      forEach(load);
   };
 
-  loadServer()('files', false);
+  loadServer()('files');
 })();

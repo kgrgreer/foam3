@@ -365,14 +365,17 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'DurationTableCellFormatterRefinement',
   refines: 'foam.core.Duration',
-
+  imports: [
+    'returnExpandedCSS'
+  ],
   properties: [
     {
       class: 'foam.u2.view.TableCellFormatter',
       name: 'tableCellFormatter',
       value: function(value) {
         let formatted = foam.core.Duration.duration(value);
-        this.add(formatted || '0ms');
+        let negative = value < 0;
+        this.add(formatted || '0ms').style({ color: negative ? this.__subContext__.returnExpandedCSS('/*%DESTRUCTIVE2%*/ #a61414') : 'inherit' });
       }
     }
   ]

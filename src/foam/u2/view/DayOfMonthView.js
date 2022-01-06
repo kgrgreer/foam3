@@ -5,18 +5,18 @@
  */
 foam.CLASS({
   package: 'foam.u2.view',
-  name: 'DayOfWeekView',
+  name: 'DayOfMonthView',
   extends: 'foam.u2.view.MultiChoiceView',
 
   properties: [
     {
       class: 'foam.u2.ViewSpec',
       name: 'choiceView',
-      value: { class: 'foam.u2.view.DayChoiceView' }
+      value: { class: 'foam.u2.view.DateChoiceView' }
     },
     {
       name: 'maxSelected',
-      value: 5
+      value: 31
     },
     {
       name: 'showMinMaxHelper',
@@ -24,13 +24,16 @@ foam.CLASS({
     },
     {
       name: 'numberColumns',
-      value: 5
+      value: 7
     }
   ],
   methods: [
     function init() {
       this.SUPER();
-      this.choices = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri'];
+      var days = []
+      for ( var i = 1; i <= 31; i++ )
+        days.push(i);
+      this.choices = days;
     }
   ]
 });
