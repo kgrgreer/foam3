@@ -29,16 +29,6 @@ foam.CLASS({
       justify-content: center;
       flex-direction: column;
     }
-    ^empty-title {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 18px;
-    }
-    ^empty-subTitle {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 24px;
-    }
     ^ .table-row:hover {
       background: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
@@ -54,8 +44,8 @@ foam.CLASS({
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 56px;
-      max-height: 56px;
+      height: 60px;
+      max-height: 60px;
     }
     ^ .view-more button:hover {
       background: /*%GREY5%*/ #f5f7fa;
@@ -63,7 +53,7 @@ foam.CLASS({
     }
     ^scroll {
       max-height: 528px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
   `,
 
@@ -123,8 +113,8 @@ foam.CLASS({
           return e
             .callIf(currentValues.length == 0, function() {
               e.start().addClass(self.myClass('center'))
-                .start().addClass(self.myClass('empty-title')).add(emptyTitle_).end()
-                .start().addClass(self.myClass('empty-subtitle')).add(emptySubTitle_).end()
+                .start().addClass('p-semiBold').add(emptyTitle_).end()
+                .start().addClass('p').add(emptySubTitle_).end()
               .end();
             })
             .forEach(currentValues, function(obj) {
