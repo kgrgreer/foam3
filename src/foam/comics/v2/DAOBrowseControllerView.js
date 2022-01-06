@@ -165,7 +165,7 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: {
               class: this.config.createController.class,
-              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
             }, parent: this,
