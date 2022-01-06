@@ -67,7 +67,6 @@ foam.CLASS({
       this.checkNotificationAccess();
       this.addClass()
         .start(this.VerticalMenu)
-          .on('scroll', this.scrollCheck)
           .addClass(this.myClass('menu-container'))
         .end()
         .start()
@@ -85,14 +84,6 @@ foam.CLASS({
       this.menuDAO.find('notifications').then(bb=>{
         this.hasNotifictionMenuPermission = bb;
       });
-    }
-  ],
-  listeners: [
-    {
-      name: 'scrollCheck',
-      code: function(e) {
-        debugger;
-      }
     }
   ]
 });
