@@ -77,7 +77,6 @@ foam.CLASS({
       args: 'Context x, FObject obj, DOP dop',
       javaCode: `
         //Find other mediators and send.
-        System.out.println("AVVVV");
 
         ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
@@ -91,15 +90,13 @@ foam.CLASS({
         entry.setDop(dop);
         entry.setObject(obj);
 
-        //TODO: using assembly
-        System.out.println(support.getBroadcastMediators().length);
         for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
           try {
             if ( config.getId().equals(myConfig.getId()) ) continue;
             DAO clientDAO = (DAO) sfManager.getSfs().get(config.getId());
             clientDAO.put(entry);
           } catch ( Throwable t ) {
-            //TODO: log
+            getLogger().info(config.getId(), t.getMessage());
           }
         }
 
