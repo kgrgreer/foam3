@@ -2,7 +2,6 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"ndiffDAO",
   "serve":true,
-  "authenticate":false,
   "lazy":false,
   "serviceScript": """
     dao  = new foam.dao.EasyDAO.Builder(x)
