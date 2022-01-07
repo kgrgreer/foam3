@@ -24,13 +24,13 @@ foam.CLASS({
     ^ {
       align-items: center;
       background-color: /*%WHITE%*/ #FFFFFF;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.06);
       display: flex;
       min-height: 64px;
       justify-content: space-between;
       padding: 8px 16px;
       position: relative;
       width: 100%;
-      border-bottom: 2px solid rgba(0, 0, 0, 0.06);
     }
     ^components-container {
       align-items: center;

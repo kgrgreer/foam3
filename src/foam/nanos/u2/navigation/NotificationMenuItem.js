@@ -43,20 +43,19 @@ foam.CLASS({
       fill: /*%GREY2%*/ #6B778C;
     }
     ^ .dot {
-      border-radius: 50%;
-      display: inline-block;
+      align-items: center;
       background: /*%DESTRUCTIVE3%*/ red;
+      border-radius: 50%;
       color: /*%WHITE%*/ #FFFFFF;
-      width: 15px;
+      display: flex;
+      font-size: 0.8rem;
       height: 15px;
+      justify-content: center;
       position: absolute;
       right: 0px;
       top: 0px;
-      display: flex;
       text-align: center;
-      font-size: 0.8rem;
-      align-items: center;
-      justify-content: center;
+      width: 15px;
     }
   `,
 

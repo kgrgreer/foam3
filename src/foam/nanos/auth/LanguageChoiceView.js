@@ -33,10 +33,10 @@ foam.CLASS({
 
   css: `
     ^dropdown span, ^dropdown svg {
-      font-size: 1.4rem;
-      font-weight: 500;
       color: /*%GREY2%*/ #6B778C;
       fill: /*%GREY2%*/ #6B778C;
+      font-size: 1.4rem;
+      font-weight: 500;
     }
   `,
 

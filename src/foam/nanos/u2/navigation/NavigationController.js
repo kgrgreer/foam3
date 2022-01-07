@@ -57,13 +57,13 @@ foam.CLASS({
     }
 
     ^sidebar^sideNav{
-      width: var(--sidebar-width);
       transition: 0.2s ease;
+      width: var(--sidebar-width);
     }
 
     ^sidebarClosed^sideNav{
-      width: 0px;
       transition: 0.2s ease;
+      width: 0px;
     }
 
 
