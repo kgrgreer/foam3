@@ -109,8 +109,12 @@ foam.CLASS({
       javaSetter:`
         readyIsSet_ = true;
         ready_ = val;
+        isReady_.getAndSet(val);
         return;
       `,
+      javaGetter: `
+        return isReady_.get();
+      `
     },
     {
       class: 'Object',
@@ -190,9 +194,14 @@ foam.CLASS({
       javaCode: `
         // Wait for the SF ready to serve.
         //while ( isReady_.get() == false ) {}
-        SFEntry entry = new SFEntry.Builder(getX())
-                            .setObject(fobject)
-                            .build();
+        SFEntry entry = null;
+        if ( fobject instanceof SFEntry ) {
+          entry = (SFEntry) fobject;
+        } else {
+          entry = new SFEntry.Builder(getX())
+            .setObject(fobject)
+            .build();
+        }
         entry.setCreated(new Date());
 
         if ( getReplayFailEntry() == true ) {

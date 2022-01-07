@@ -9,7 +9,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"SFDAO",
+  "name":"internalSFDAO",
   "description": "A read-only database of SF.",
   "serve":true,
   "serviceScript":
@@ -30,6 +30,67 @@ p({
       "of":"foam.box.sf.SF"
     }
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SFDAO",
+  "description": "A mdao-only database of SF.",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setOf(foam.box.sf.SF.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.box.sf.SF"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "SFBroadcastReceiverDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.box.sf.SFEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.box.sf.SFBroadcastReceiverDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFEntry.getOwnClassInfo()))
+      .build())
+      .build();
+   `
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SFMedusaTestDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setJournalName("languages")
+      .setSAF(true)
+      .setOf(foam.nanos.auth.Language.getOwnClassInfo())
+      .build();
+    `,
+  "client":"{\"of\":\"foam.nanos.auth.Language\"}"
 })
 
 p({
