@@ -16,7 +16,7 @@ foam.CLASS({
         name: 'nSpecName'
     },
     {
-        class: 'Object',
+        class: 'String',
         name: 'objectId'
     },
     {

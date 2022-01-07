@@ -52,7 +52,7 @@ foam.CLASS({
             
             PM pm = PM.create(x, this.getClass(), "put_");
 
-            Object objectId = storedObject.getProperty("id");
+            String objectId = storedObject.getProperty("id").toString();
             String nSpecName = getNSpecName();
             
             NDiff existingNdiff = (NDiff) ndiffDao.find(new NDiffId.Builder(x)
