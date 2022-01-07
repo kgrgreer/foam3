@@ -29,18 +29,19 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       justify-content: center;
+      height: 100%
     }
     ^bottom-container {
-      z-index: 10;
+      align-content: flex-start;
       background: white;
-      position: sticky;
       bottom: 0;
-      width: 100%;
       display: flex;
       flex-direction: column;
-      align-content: flex-start;
       justify-content: center;
       padding: 16px;
+      position: sticky;
+      width: 100%;
+      z-index: 10;
     }
     ^divider {
       border-top: 2px solid /*%GREY4%*/;
