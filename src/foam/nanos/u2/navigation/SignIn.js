@@ -19,7 +19,7 @@ foam.CLASS({
     'memento',
     'stack',
     'translationService',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -97,14 +97,14 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function(X) {
-        if ( this.user.twoFactorEnabled ) {
+        if ( this.subject.realUser.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
         } else {
-          if ( ! this.user.emailVerified ) {
+          if ( ! this.subject.realUser.emailVerified ) {
             await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
@@ -112,7 +112,7 @@ foam.CLASS({
           } else {
             if ( ! this.memento || this.memento.value.length === 0 )
               window.location.hash = '';
-            this.loginSuccess = !! this.user;
+            this.loginSuccess = !! this.subject;
           }
         }
       }
@@ -141,23 +141,37 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
-              if ( this.token_ ) {
-                logedInUser.signUpToken = this.token_;
-                this.dao_.put(logedInUser)
-                  .then(updatedUser => {
-                    this.user.copyFrom(updatedUser);
-                    this.nextStep();
-                  }).catch(err => {
-                    this.ctrl.add(this.NotificationMessage.create({
-                      err: err.data,
-                      message: this.ERROR_MSG,
-                      type: this.LogLevel.ERROR
-                    }));
-                  });
-              } else {
-                this.user.copyFrom(logedInUser);
-                this.nextStep();
-              }
+              
+              
+                if ( this.token_ ) {
+                  logedInUser.signUpToken = this.token_;
+                  this.dao_.put(logedInUser)
+                    .then(updatedUser => {
+                      this.subject.realUser = updatedUser;
+                      // this.user.copyFrom(updatedUser);
+  
+                      /* var ru = this.subject['realUser'] = (updatedUser);
+                      var newSubject = this.Subject.create({ user: this.subject.user, realUser: ru });
+                      this.subject = newSubject;*/
+  
+                      this.nextStep();
+                    }).catch(err => {
+                      this.ctrl.add(this.NotificationMessage.create({
+                        err: err.data,
+                        message: this.ERROR_MSG,
+                        type: this.LogLevel.ERROR
+                      }));
+                    });
+                } else {
+                  this.subject.realUser = logedInUser;
+                  // this.subject.user.copyFrom(logedInUser);
+  
+                  /* var ru = this.subject['realUser'] = (logedInUser);
+                                      var newSubject = this.Subject.create({ user: this.subject.user, realUser: ru });
+                                      this.subject = newSubject; */
+  
+                  this.nextStep();
+                }
             }
           ).catch(
             err => {

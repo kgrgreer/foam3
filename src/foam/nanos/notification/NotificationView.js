@@ -19,7 +19,8 @@ foam.CLASS({
     'group',
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'subject'
   ],
 
   requires: [
@@ -66,13 +67,13 @@ foam.CLASS({
           this.AND(
             this.EQ(this.Notification.READ, true),
              this.OR(
-              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.USER_ID, this.subject.user.id),
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
+                this.subject.user.disabledTopics))
           )
         ).orderBy(this.DESC(this.Notification.CREATED));
       },
@@ -88,13 +89,13 @@ foam.CLASS({
           this.AND(
             this.EQ(this.Notification.READ, false),
              this.OR(
-              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.USER_ID, this.subject.user.id),
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
+                this.subject.user.disabledTopics))
           )
         ).orderBy(this.DESC(this.Notification.CREATED));
       },

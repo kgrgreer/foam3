@@ -39,7 +39,7 @@ foam.CLASS({
       postSet: function(o, n) {
         this.userId = n.user.id;
         this.agentId = n.realUser.id;
-        this.user = n.user.toSummary();
+        this.subject.user = n.user.toSummary();
         this.agent= n.realUser.toSummary();
       },
       javaSetter: `
