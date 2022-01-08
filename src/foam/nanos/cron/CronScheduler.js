@@ -36,6 +36,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.NanoService',
+    'foam.nanos.medusa.ClusterConfigSupport',
+    'foam.nanos.medusa.ReplayingInfo',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date',
     'java.util.Timer'
@@ -101,6 +103,17 @@ foam.CLASS({
       javaCode: `
     final Logger logger = Loggers.logger(x, this);
     try {
+      // Wait until Medusa Replay is complete
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( replaying != null &&
+           replaying.getReplaying() ) {
+        Timer timer = new Timer(this.getClass().getSimpleName());
+        timer.schedule(
+          new AgencyTimerTask(x, this),
+          getInitialTimerDelay());
+        return;
+      }
+
       logger.info("initialize", "cronjobs", "start");
       // copy all entries to from cronjob to localCronDAO for execution
       final DAO cronDAO = (DAO) getX().get(getCronDAO());
