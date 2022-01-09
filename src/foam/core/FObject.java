@@ -336,7 +336,7 @@ public interface FObject
           remote = p.get(obj);
         }
       } catch ( ClassCastException e ) {
-        foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay remote", obj.getClass().getSimpleName(), "isSet/get", p.getName(), "from", obj.getClass().getSimpleName(), e.getMessage());
+        // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay remote", obj.getClass().getSimpleName(), "isSet/get", p.getName(), "from", obj.getClass().getSimpleName(), e.getMessage());
         PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
@@ -354,7 +354,7 @@ public interface FObject
         try {
           local = p.get(this);
         } catch ( ClassCastException e ) {
-          foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "get", p.getName(), "from", this.getClass().getSimpleName(), e.getMessage());
+          // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "get", p.getName(), "from", this.getClass().getSimpleName(), e.getMessage());
         }
         if ( remote instanceof FObject &&
              local != null &&
@@ -363,7 +363,7 @@ public interface FObject
           try {
             p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
           } catch ( ClassCastException e ) {
-            foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "set", p.getName(), "overlay", remote.getClass().getSimpleName(), e.getMessage());
+            // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "set", p.getName(), "overlay", remote.getClass().getSimpleName(), e.getMessage());
             p.set(this, remote);
           }
         } else {
