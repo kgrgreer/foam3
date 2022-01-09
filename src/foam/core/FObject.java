@@ -336,6 +336,7 @@ public interface FObject
           remote = p.get(obj);
         }
       } catch ( ClassCastException e ) {
+        // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay remote", obj.getClass().getSimpleName(), "isSet/get", p.getName(), "from", obj.getClass().getSimpleName(), e.getMessage());
         PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
@@ -344,23 +345,30 @@ public interface FObject
               remote = p.get(obj);
             }
           } catch ( ClassCastException ee ) {
-            System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" get '"+p.getName()+"' from "+obj.getClass().getSimpleName()+": "+ee.getMessage());
+            foam.nanos.logger.StdoutLogger.instance().error("FObject.overlay remote", this.getClass().getSimpleName(), "isSet/get", p.getName(), "from", obj.getClass().getSimpleName(), ee.getMessage(), ee);
           }
         }
       }
-      try {
-        if ( p.isSet(obj) ) {
-          Object local = p.get(this);
-          if ( remote instanceof FObject &&
-               local != null &&
-               ! local.equals(remote) ) {
+      Object local = null;
+      if ( p.isSet(obj) ) {
+        try {
+          local = p.get(this);
+        } catch ( ClassCastException e ) {
+          // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "get", p.getName(), "from", this.getClass().getSimpleName(), e.getMessage());
+        }
+        if ( remote instanceof FObject &&
+             local != null &&
+             ! local.equals(remote) &&
+             local.getClass().getCanonicalName().equals(remote.getClass().getCanonicalName()) ) {
+          try {
             p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
-          } else {
+          } catch ( ClassCastException e ) {
+            // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", this.getClass().getSimpleName(), "set", p.getName(), "overlay", remote.getClass().getSimpleName(), e.getMessage());
             p.set(this, remote);
           }
+        } else {
+          p.set(this, remote);
         }
-      } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+this.getClass().getSimpleName()+" set '"+p.getName()+"' with "+obj.getClass().getSimpleName()+": "+e.getMessage());
       }
     }
     return this;
