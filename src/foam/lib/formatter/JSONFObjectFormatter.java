@@ -375,30 +375,30 @@ public class JSONFObjectFormatter
     reset();
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
-      try {
-        if ( prop.includeInID() || prop.compare(oldFObject, newFObject) != 0 ) {
-          if ( delta > 0 ) {
-            append(',');
-            addInnerNewline();
-          }
-          if ( calculateDeltaForNestedFObjects_) {
+      if ( prop.includeInID() || prop.compare(oldFObject, newFObject) != 0 ) {
+        if ( delta > 0 ) {
+          append(',');
+          addInnerNewline();
+        }
+        if ( parentProp == null &&
+          prop.includeInID() ) {
+          // IDs only relevant on root objects
+          outputProperty(newFObject, prop);
+          ids += 1;
+          delta += 1;
+        } else {
+          if ( calculateDeltaForNestedFObjects_ &&
+               prop.get(newFObject) != null && prop.get(oldFObject) != null &&
+               prop.get(newFObject).getClass().getCanonicalName().equals(prop.get(oldFObject).getClass().getCanonicalName()) ) {
             if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
           } else {
             outputProperty(newFObject, prop);
             delta += 1;
           }
-
-          if ( parentProp == null &&
-            prop.includeInID() ) {
-            // IDs only relevant on root objects
-            ids += 1;
-          } else if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
+          if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
             optional += 1;
           }
         }
-      } catch (ClassCastException e) {
-        outputProperty(newFObject, prop);
-        delta += 1;
       }
     }
     String output = builder().toString();
