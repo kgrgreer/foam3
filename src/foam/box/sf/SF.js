@@ -90,12 +90,6 @@ foam.CLASS({
       value: 240
     },
     {
-      class: 'Boolean',
-      name: 'replayFailEntry',
-      documentation: 'only reforward unsuccessful entires when system comes up, will need to write journal twice for each entry',
-      value: false
-    },
-    {
       class: 'Int',
       name: 'loggingThredhold',
       documentation: 'Logging after n times retry fail',
@@ -160,14 +154,13 @@ foam.CLASS({
       documentation: 'help function for create a journal',
       javaType: 'SFFileJournal',
       javaCode: `
-        boolean createFile = getReplayFailEntry() ? true : false;
         SFFileJournal journal = new SFFileJournal.Builder(getX())
                                   .setFilename(fileName)
-                                  .setCreateFile(createFile)
+                                  .setCreateFile(false)
                                   .setDao(new foam.dao.NullDAO())
                                   .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
                                   .build();
-        if ( getReplayFailEntry() == false && journal.getFileExist() == false ) {
+        if ( journal.getFileExist() == false ) {
           journal.createJournalFile();
           journal.setFileOffset(0);
         }
@@ -204,30 +197,20 @@ foam.CLASS({
         }
         entry.setCreated(new Date());
 
-        if ( getReplayFailEntry() == true ) {
+        synchronized ( writeLock_ ) {
           long index = entryIndex_.incrementAndGet();
           entry.setIndex(index);
           SFFileJournal journal = getJournal(toFileName(entry));
           entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
-          FObject o = (FObject) getRetryStrategy();
-          entry.setRetryStrategy((RetryStrategy) o.fclone());
-          forward(entry);
-        } else {
-          synchronized ( writeLock_ ) {
-            long index = entryIndex_.incrementAndGet();
-            entry.setIndex(index);
-            SFFileJournal journal = getJournal(toFileName(entry));
-            entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
 
-            synchronized ( onHoldListLock_ ) {
-              if ( onHoldList_.size() == 0 ) {
-                onHoldList_.add(entry);
-                FObject o = (FObject) getRetryStrategy();
-                entry.setRetryStrategy((RetryStrategy) o.fclone());
-                forward(entry);
-              } else {
-                onHoldList_.add(entry);
-              }
+          synchronized ( onHoldListLock_ ) {
+            if ( onHoldList_.size() == 0 ) {
+              onHoldList_.add(entry);
+              FObject o = (FObject) getRetryStrategy();
+              entry.setRetryStrategy((RetryStrategy) o.fclone());
+              forward(entry);
+            } else {
+              onHoldList_.add(entry);
             }
           }
         }
@@ -239,13 +222,7 @@ foam.CLASS({
       args: 'SFEntry e',
       documentation: 'handle entry when retry success',
       javaCode: `
-        if ( getReplayFailEntry() == true ) {
-          e.setStatus(SFStatus.COMPLETED);
-          Journal journal = getJournal(toFileName(e));
-          journal.put(getX(), "", (DAO) getNullDao(), e);
-        } else {
-          updateJournalOffsetAndForwardNext(e);
-        }
+        updateJournalOffsetAndForwardNext(e);
       `
     },
     {
@@ -285,15 +262,7 @@ foam.CLASS({
         /* Check retry attempt, then Update ScheduledTime and enqueue. */
         if ( ! getRetryStrategy().canRetry(getX()) )  {
           logger_.warning("Retry end: ", e.toString());
-
-          if ( getReplayFailEntry() == true ) {
-            e.setStatus(SFStatus.CANCELLED);
-            Journal journal = getJournal(toFileName(e));
-            journal.put(getX(), "", (DAO) getNullDao(), e);
-          } else {
-            //update file a-time.
-            updateJournalOffsetAndForwardNext(e);
-          }
+          updateJournalOffsetAndForwardNext(e);
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
@@ -366,111 +335,59 @@ foam.CLASS({
 
         }
 
-        if ( getReplayFailEntry() == true ) {
+        synchronized ( onHoldListLock_ ) {
 
-          if ( availableFilenames.size() == 0 ) {
-            availableFilenames.add(filenames.get(filenames.size() - 1));
-          }
-          ArraySink sink = new ArraySink(x);
+          int maxFileIndex = getFileSuffix(filenames.get(filenames.size() - 1));
 
-          //Create predicate depends on condition.
-          Predicate predicate = null;
-          if ( getTimeWindow() == -1 ) {
-            if ( getReplayFailEntry() == true ) {
-              predicate = MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE);
-            } else {
-              predicate = MLang.TRUE;
-            }
-          } else {
-            if ( getReplayFailEntry() == true ) {
-              predicate = MLang.AND(
-                MLang.EQ(SFEntry.STATUS, SFStatus.FAILURE),
-                MLang.GTE(SFEntry.CREATED, timeWindow)
-              );
-            } else {
-              predicate = MLang.GTE(SFEntry.CREATED, timeWindow);
-            }
-          }
-
-          MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
           for ( String filename : availableFilenames ) {
-            Journal journal = new SFFileJournal.Builder(x)
-                                .setDao(tempDAO)
-                                .setFilename(filename)
-                                .setCreateFile(false)
-                                .build();
-            journal.replay(x, tempDAO);
+
+            SFFileJournal journal = new SFFileJournal.Builder(x)
+                                    .setFilename(filename)
+                                    .setCreateFile(false)
+                                    .build();
+
+            journalMap_.put(filename, journal);
+            if ( journal.getFileOffset() == journal.getFileSize() ) continue;
+
+            List<SFEntry> list = new LinkedList<SFEntry>();
+            DAO tempDAO = new TempDAO(x, list);
+
+
+            // Record atime, because read will change the atime.
+            long offset = journal.getFileOffset();
+
+            journal.replayFrom(x, tempDAO, offset);
+
+            // Set back the offset.
+            journal.setFileOffset(offset);
+
+            for ( int i = 0 ; i < list.size() ; i++ ) {
+              SFEntry e = list.get(i);
+              e.setFileName(filename);
+              onHoldList_.add(e);
+            }
+
+            logger_.log("Successfully read " + list.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
           }
 
-          //Find entry index;
-          Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
-          entryIndex_.set((Long)max.getValue());
+          if ( getTimeWindow() == -1 ) {
+            for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
+              SFEntry e = onHoldList_.get(i);
+              if ( e.getCreated().before(timeWindow) ) {
+                updateJournalOffset(e);
+                onHoldList_.remove(0);
+              } else {
+                break;
+              }
+            }
+          }
 
-          tempDAO.where(predicate).select(sink);
-          List<SFEntry> sfEntryList = sink.getArray();
-          logger_.log("Successfully read " + sfEntryList.size() + " entries from file: " + getFileName() + " in SF: " + getId());
-          for ( SFEntry entry : sfEntryList ) {
-            SFEntry s = (SFEntry) entry.fclone();
+          entryIndex_.set(maxFileIndex * getFileCapacity());
+          if ( onHoldList_.size() != 0 ) {
+            SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
             forward(s);
-          }
-        } else {
-
-          synchronized ( onHoldListLock_ ) {
-
-            int maxFileIndex = getFileSuffix(filenames.get(filenames.size() - 1));
-
-            for ( String filename : availableFilenames ) {
-
-              SFFileJournal journal = new SFFileJournal.Builder(x)
-                                      .setFilename(filename)
-                                      .setCreateFile(false)
-                                      .build();
-
-              journalMap_.put(filename, journal);
-              if ( journal.getFileOffset() == journal.getFileSize() ) continue;
-
-              List<SFEntry> list = new LinkedList<SFEntry>();
-              DAO tempDAO = new TempDAO(x, list);
-
-
-              // Record atime, because read will change the atime.
-              long offset = journal.getFileOffset();
-
-              journal.replayFrom(x, tempDAO, offset);
-
-              // Set back the offset.
-              journal.setFileOffset(offset);
-
-              for ( int i = 0 ; i < list.size() ; i++ ) {
-                SFEntry e = list.get(i);
-                e.setFileName(filename);
-                onHoldList_.add(e);
-              }
-
-              logger_.log("Successfully read " + list.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
-            }
-
-            if ( getTimeWindow() == -1 ) {
-              for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
-                SFEntry e = onHoldList_.get(i);
-                if ( e.getCreated().before(timeWindow) ) {
-                  updateJournalOffset(e);
-                  onHoldList_.remove(0);
-                } else {
-                  break;
-                }
-              }
-            }
-
-            entryIndex_.set(maxFileIndex * getFileCapacity());
-            if ( onHoldList_.size() != 0 ) {
-              SFEntry s = (SFEntry) onHoldList_.get(0);
-              FObject o = (FObject) getRetryStrategy();
-              s.setRetryStrategy((RetryStrategy) o.fclone());
-              forward(s);
-            }
           }
         }
 
