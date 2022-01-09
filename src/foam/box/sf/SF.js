@@ -216,7 +216,6 @@ foam.CLASS({
           synchronized ( writeLock_ ) {
             long index = entryIndex_.incrementAndGet();
             entry.setIndex(index);
-            entry.setFileName(toFileName(entry));
             SFFileJournal journal = getJournal(toFileName(entry));
             entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
 
@@ -533,7 +532,7 @@ foam.CLASS({
       args: 'SFEntry entry',
       javaType: 'SFFileJournal',
       javaCode: `
-        return journalMap_.get(entry.getFileName());
+        return journalMap_.get(toFileName(entry));
       `
     },
     {
@@ -552,7 +551,14 @@ foam.CLASS({
       javaCode: `
         return Integer.parseInt(filename.split("\\\\.")[1]);
       `
-    }
+    },
+    {
+      name: 'cleanEntryInfos',
+      javaCode: `
+        entryCurStep_ = 0;
+        entryRetryAttempt_ = 0;
+      `
+    },
   ],
 
   axioms: [
@@ -562,6 +568,9 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             protected Logger logger_ = null;
+            protected long entryCurStep_ = 0;
+            protected long entryRetryAttempt_ = 0;
+
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
             final protected Object writeLock_ = new Object();
