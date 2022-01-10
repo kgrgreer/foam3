@@ -161,6 +161,8 @@ foam.CLASS({
             health.setAddress(address);
             health.setPropogationTime(Math.abs(now - health.getHeartbeatTime()));
             ((DAO) x.get("healthDAO")).put_(x, health);
+          } catch ( NullPointerException e ) {
+            logger.debug("listener", "received", received, e.getMessage(), e);
           } catch ( ClassCastException e ) {
             logger.debug("listener", "received", received, e.getMessage(), e);
           } catch ( RuntimeException e ) {
