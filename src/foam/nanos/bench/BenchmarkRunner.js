@@ -223,7 +223,7 @@ foam.CLASS({
 
         Logger log = (Logger) x.get("logger");
         if ( log == null ) {
-          log = new StdoutLogger();
+          log = StdoutLogger.instance();
         }
         final Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
