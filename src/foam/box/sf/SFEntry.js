@@ -35,36 +35,9 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'Long',
-      name: 'curStep',
-      value: 0,
-      storageTransient: true,
-      clusterTransient: true,
-    },
-    {
-      class: 'Int',
-      name: 'retryAttempt',
-      value: 0,
-      storageTransient: true,
-      clusterTransient: true,
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.box.sf.SF',
       name: 'sf',
-      storageTransient: true,
-      clusterTransient: true,
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.box.sf.SFFileJournal',
-      name: 'journal',
-      storageTransient: true,
-      clusterTransient: true,
-    },
-    {
-      class: 'String',
-      name: 'fileName',
       storageTransient: true,
       clusterTransient: true,
     },
@@ -73,18 +46,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.util.retry.RetryStrategy',
       storageTransient: true,
-      clusterTransient: true,
-    },
-    {
-      class: 'Long',
-      name: 'fileOffset',
-      clusterTransient: true,
-    },
-    {
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.box.sf.SFStatus',
-      value: 'FAILURE',
       clusterTransient: true,
     },
   ]

@@ -208,6 +208,7 @@ foam.CLASS({
               onHoldList_.add(entry);
               FObject o = (FObject) getRetryStrategy();
               entry.setRetryStrategy((RetryStrategy) o.fclone());
+              cleanEntryInfos();
               forward(entry);
             } else {
               onHoldList_.add(entry);
@@ -237,6 +238,7 @@ foam.CLASS({
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
+            cleanEntryInfos();
             forward(s);
           }
         }
@@ -363,7 +365,6 @@ foam.CLASS({
 
             for ( int i = 0 ; i < list.size() ; i++ ) {
               SFEntry e = list.get(i);
-              e.setFileName(filename);
               onHoldList_.add(e);
             }
 
@@ -387,6 +388,7 @@ foam.CLASS({
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
+            cleanEntryInfos();
             forward(s);
           }
         }
@@ -399,8 +401,8 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setCurStep(e.getRetryStrategy().getRetryDelay(getX()));
-        e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
+        entryCurStep_ = e.getRetryStrategy().getRetryDelay(getX());
+        e.setScheduledTime(System.currentTimeMillis()+entryCurStep_);
         return e;
       `
     },
@@ -409,7 +411,7 @@ foam.CLASS({
       args: 'SFEntry e',
       javaType: 'SFEntry',
       javaCode: `
-        e.setRetryAttempt(e.getRetryAttempt()+1);
+        entryRetryAttempt_  = entryRetryAttempt_ + 1;
         return e;
       `
     },
