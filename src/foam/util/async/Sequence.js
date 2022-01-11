@@ -145,7 +145,7 @@ foam.CLASS({
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
-            ? spec.class : ctx.lookup(spec.class);
+            ? spec.class : this.__subContext__.lookup(spec.class);
           if ( ! cls ) foam.assert(false,
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
