@@ -23,7 +23,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
     'subject'
   ],
 

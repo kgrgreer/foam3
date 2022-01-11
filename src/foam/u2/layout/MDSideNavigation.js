@@ -21,7 +21,6 @@ foam.CLASS({
     'menuDAO',
     'pushMenu',
     'theme',
-    'user',
     'subject'
   ],
 

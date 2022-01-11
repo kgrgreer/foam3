@@ -26,7 +26,6 @@ foam.CLASS({
     'stack',
     'userDAO',
     'hideSummary',
-    'user',
     'subject'
   ],
 

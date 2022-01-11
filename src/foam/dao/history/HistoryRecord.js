@@ -37,9 +37,9 @@ foam.CLASS({
       name: 'subject',
       documentation: `References subject that made update. TODO: remove references when subject becomes serializable`,
       postSet: function(o, n) {
-        this.userId = n.user.id; // this line?
+        this.userId = n.user.id;
         this.agentId = n.realUser.id;
-        this.subject.user = n.user.toSummary();
+        this.user = n.user.toSummary();
         this.agent= n.realUser.toSummary();
       },
       javaSetter: `

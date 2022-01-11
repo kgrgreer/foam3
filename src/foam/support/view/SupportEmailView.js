@@ -18,7 +18,6 @@ foam.CLASS({
   imports: [
     'createLabel',  
     'ctrl',
-    'user',
     'subject'
   ],
 

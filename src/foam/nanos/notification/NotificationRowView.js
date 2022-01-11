@@ -22,7 +22,6 @@
       'notificationDAO',
       'notify',
       'stack',
-      'user',
       'subject',
       'userDAO',
       'ctrl'

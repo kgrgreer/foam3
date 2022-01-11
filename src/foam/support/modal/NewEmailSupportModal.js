@@ -28,7 +28,6 @@ foam.CLASS({
     'ctrl',
     'notify',
     'supportEmailDAO',
-    'user',
     'subject'
   ],
 

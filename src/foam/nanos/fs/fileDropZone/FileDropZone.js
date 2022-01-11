@@ -20,7 +20,6 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'user',
     'subject',
     'fileTypeDAO'
   ],

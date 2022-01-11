@@ -19,7 +19,6 @@ foam.CLASS({
     'group',
     'notificationDAO',
     'stack',
-    'user',
     'subject'
   ],
 

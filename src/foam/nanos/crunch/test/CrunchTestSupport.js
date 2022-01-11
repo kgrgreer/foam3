@@ -14,7 +14,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'user',  // is a property here
+      name: 'user',
       documentation: `
         Using this property is discouraged. The user can be obtained from
         context, which is already passed to helper methods.

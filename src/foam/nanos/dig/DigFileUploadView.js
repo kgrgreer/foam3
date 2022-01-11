@@ -19,7 +19,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
     'subject',
     'blobService',
     'notify'

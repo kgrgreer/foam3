@@ -24,7 +24,6 @@ foam.CLASS({
     'ctrl',
     'notify',
     'ticketDAO',
-    'user',
     'subject',
     'hideSummary',
     'stack'
