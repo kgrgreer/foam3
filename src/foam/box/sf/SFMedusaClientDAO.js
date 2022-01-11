@@ -74,6 +74,13 @@ foam.CLASS({
       `
     },
     {
+      name: 'submit',
+      args: 'Context x, SFEntry entry',
+      javaCode: `
+      getDelegate().put(entry);
+      `
+    },
+    {
       name: 'put_',
       code: function() {},
       swiftCode: '// NOOP',
