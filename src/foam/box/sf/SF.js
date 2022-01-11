@@ -64,12 +64,6 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'fileSuffix',
-      transient: true,
-      value: 0
-    },
-    {
-      class: 'Int',
       name: 'fileCapacity',
       value: 1024
     },
@@ -88,12 +82,6 @@ foam.CLASS({
       name: 'timeWindow',
       documentation: 'In second. if -1, replay everything',
       value: 240
-    },
-    {
-      class: 'Int',
-      name: 'loggingThredhold',
-      documentation: 'Logging after n times retry fail',
-      value: 4
     },
     {
       class: 'Boolean',
