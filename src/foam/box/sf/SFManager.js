@@ -213,23 +213,27 @@ foam.CLASS({
           ClusterConfig myConfig = support.getConfig(getX(), support.getConfigId());
           if ( myConfig.getType() == MedusaType.MEDIATOR ) {
             for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
-              getLogger().info("findMediator: " + config.getId());
-              if ( config.getId().equals(myConfig.getId()) ) continue;
-  
-              SF sf = new SFMedusaClientDAO.Builder(context)
-                        .setId(config.getId())
-                        .setFileName(config.getId())
-                        .setTimeWindow(3600)
-                        .setFileCapacity(1000)
-                        .setMyConfig(myConfig)
-                        .setToConfig(config)
-                        .setManager(manager)
-                        .build();
-              sf.setX(context);
-              sf.initial(context);
-              sf.setReady(true);
-              getSfs().put(sf.getId(), sf);
-              getLogger().info("Initialize successfully: " + sf.getId());
+              try {
+                getLogger().info("findMediator: " + config.getId());
+                if ( config.getId().equals(myConfig.getId()) ) continue;
+    
+                SF sf = new SFMedusaClientDAO.Builder(context)
+                          .setId(config.getId())
+                          .setFileName(config.getId())
+                          .setTimeWindow(3600)
+                          .setFileCapacity(1000)
+                          .setMyConfig(myConfig)
+                          .setToConfig(config)
+                          .setManager(manager)
+                          .build();
+                sf.setX(context);
+                sf.initial(context);
+                sf.setReady(true);
+                getSfs().put(sf.getId(), sf);
+                getLogger().info("Initialize successfully: " + sf.getId());
+              } catch ( Throwable t ) {
+                t.printStackTrace();
+              }
             }
           }
         }

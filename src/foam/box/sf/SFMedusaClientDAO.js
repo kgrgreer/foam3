@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'foam.box.sf.SFDAO',
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterConfigSupport'
@@ -55,7 +56,7 @@ foam.CLASS({
         delegateIsSet_ = true;
       }
       `,
-      javaGetter: `
+      javaGetter: ` 
         ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
         DAO dao = support.getBroadcastClientDAO(getX(), getServiceName(), getMyConfig(), getToConfig());
         return dao;
@@ -64,6 +65,22 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'put',
+      code: function() {},
+      swiftCode: '// NOOP',
+      javaCode: `
+      return this.storeAndForward((FObject) obj);     
+      `
+    },
+    {
+      name: 'put_',
+      code: function() {},
+      swiftCode: '// NOOP',
+      javaCode: `
+      return this.storeAndForward((FObject) obj);      
+      `
+    },
     {
       name: 'createDelegate',
       documentation: 'creating delegate when start up',
