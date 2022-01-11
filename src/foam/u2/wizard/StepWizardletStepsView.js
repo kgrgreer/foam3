@@ -213,7 +213,7 @@ foam.CLASS({
 
                       // Render title
                       .start('p').addClass(self.myClass('title'))
-                        .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
+                        .translate(wizardlet.id+'.name', wizardlet.title)
                         .style({
                           'color': isCurrent ? this.theme.black : this.theme.grey2
                         })
@@ -294,12 +294,27 @@ foam.CLASS({
       code: async function() {
         var el    = await this.parentNode.el();
 
+        if ( ! this.data.currentWizardlet ) {
+          console.warn(`setScrollPos() failed; no current wizardlet`, {
+            data: this.data
+          });
+          return;
+        }
+
         var currChild = null;
         for ( let node of this.stepElements ) {
           if ( node.getAttribute('data-wizardlet') == this.data.currentWizardlet.id ) {
             currChild = node;
             break;
           }
+        }
+        if ( ! currChild ) {
+          // TODO: investigate why this is called before elements are loaded
+          console.warn(`setScrollPos() failed; unable to find active wizardlet element`, {
+            'wizardlet id': this.data.currentWizardlet.id,
+            data: this.data
+          });
+          return;
         }
         var firstChild = await this.childNodes[0].childNodes[0].el();
         currChild = await currChild.el();
