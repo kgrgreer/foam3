@@ -27,18 +27,27 @@ foam.CLASS({
         `
     },
     {
+        class: 'Boolean',
+        name: 'deletedAtRuntime',
+        documentation: `
+        Set to true if a repo entry was deleted at runtime.
+        `
+    },
+    {
         class: 'FObjectProperty',
         name: 'initialFObject',
         documentation: `
         The object as it was loaded from the repo journals (".0 file")
-        `
+        `,
+        visibility: 'HIDDEN'
     },
     {
         class: 'FObjectProperty',
         name: 'runtimeFObject',
         documentation: `
         The object as it was loaded from the runtime journals
-        `
+        `,
+        visibility: 'HIDDEN'
     }
     ]
 

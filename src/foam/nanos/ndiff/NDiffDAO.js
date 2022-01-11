@@ -54,7 +54,6 @@ foam.CLASS({
 
             String objectId = storedObject.getProperty("id").toString();
             String nSpecName = getNSpecName();
-            
             NDiff existingNdiff = (NDiff) ndiffDao.find(new NDiffId.Builder(x)
                                                         .setNSpecName(nSpecName)
                                                         .setObjectId(objectId)
@@ -72,17 +71,39 @@ foam.CLASS({
                 ndiff.setRuntimeFObject(storedObject);
             }
 
-            if ( ndiff.getInitialFObject() != null &&
-                ndiff.getRuntimeFObject() != null ) {
-                ndiff.setDelta(
-                    !ndiff.getInitialFObject()
-                          .equals(ndiff.getRuntimeFObject())
-                    );
-            }
-
             ndiffDao.put_(x, ndiff); 
             pm.log(x);
  
+            return storedObject;
+            `
+        },
+        {
+            name: 'remove_',
+            javaCode: `
+            var storedObject = getDelegate().remove_(x, obj);
+            if ( ! getRuntimeOrigin() ) {
+                return storedObject;
+            }
+
+            DAO ndiffDao = (DAO)x.get("ndiffDAO");
+            if ( ndiffDao == null ) {
+                return storedObject;
+            }
+
+            String objectId = storedObject.getProperty("id").toString();
+            String nSpecName = getNSpecName();
+            NDiff existingNdiff = (NDiff) ndiffDao.find(new NDiffId.Builder(x)
+                                                        .setNSpecName(nSpecName)
+                                                        .setObjectId(objectId)
+                                                        .build());
+            if ( existingNdiff == null ) {
+                return storedObject;
+            }
+
+            NDiff ndiff = (NDiff)existingNdiff.fclone();
+            ndiff.setDeletedAtRuntime( ndiff.getInitialFObject() != null );
+            ndiffDao.put_(x, ndiff); 
+
             return storedObject;
             `
         }

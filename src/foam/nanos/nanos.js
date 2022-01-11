@@ -282,6 +282,7 @@ FOAM_FILES([
   { name: 'foam/nanos/ndiff/NDiff' },
   { name: 'foam/nanos/ndiff/NDiffJournal' },
   { name: 'foam/nanos/ndiff/NDiffDAO' },
+  { name: 'foam/nanos/ndiff/NDiffRuntimeDAO' },
 
   { name: 'foam/nanos/security/KeyStoreManager' },
   { name: 'foam/nanos/benchmark/UUIDBenchmark' },

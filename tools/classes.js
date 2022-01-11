@@ -787,6 +787,7 @@ var classes = [
   'foam.nanos.ndiff.NDiff',
   'foam.nanos.ndiff.NDiffDAO',
   'foam.nanos.ndiff.NDiffJournal',
+  'foam.nanos.ndiff.NDiffRuntimeDAO',
   'foam.nanos.menu.ViewMenu',
   'foam.nanos.menu.TabsMenu',
   'foam.nanos.menu.SubMenuView',
