@@ -197,14 +197,17 @@ foam.CLASS({
         internalSFDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
-            
-            SF sf = (SF) ((FObject) obj).fclone();
-            sf.setX(context);
-            sf.setManager(manager);
-            sf.initial(context);
-            sf.setReady(true);
-            getSfs().put(sf.getId(), sf);
-            getLogger().info("Initialize successfully: " + sf.getId());
+            try {
+              SF sf = (SF) ((FObject) obj).fclone();
+              sf.setX(context);
+              sf.setManager(manager);
+              sf.initial(context);
+              sf.setReady(true);
+              getSfs().put(sf.getId(), sf);
+              getLogger().info("Initialize successfully: " + sf.getId());
+            } catch ( Throwable t ) {
+              getLogger().warning(t.getMessage());
+            }
           }
         });
 
@@ -232,7 +235,7 @@ foam.CLASS({
                 getSfs().put(sf.getId(), sf);
                 getLogger().info("Initialize successfully: " + sf.getId());
               } catch ( Throwable t ) {
-                t.printStackTrace();
+                getLogger().warning(t.getMessage());
               }
             }
           }
