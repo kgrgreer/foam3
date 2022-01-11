@@ -111,6 +111,11 @@ foam.CLASS({
       `
     },
     {
+      class: 'Int',
+      name: 'inFlightLimit',
+      value: 1024
+    },
+    {
       class: 'Object',
       name: 'delegateObject',
       createVisibility: 'HIDDEN',
@@ -267,7 +272,6 @@ foam.CLASS({
           updateJournalOffsetAndForwardNext(e);
         } else {
           updateNextScheduledTime(e);
-          updateAttempt(e);
           ((SFManager) getManager()).enqueue(e);
         }
       `
@@ -407,15 +411,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'updateAttempt',
-      args: 'SFEntry e',
-      javaType: 'SFEntry',
-      javaCode: `
-        entryRetryAttempt_  = entryRetryAttempt_ + 1;
-        return e;
-      `
-    },
-    {
       name: 'getStackTrace',
       args: 'SFEntry e, Throwable t',
       javaType: 'String',
@@ -475,7 +470,6 @@ foam.CLASS({
       name: 'cleanEntryInfos',
       javaCode: `
         entryCurStep_ = 0;
-        entryRetryAttempt_ = 0;
       `
     },
   ],
@@ -488,7 +482,6 @@ foam.CLASS({
           data: `
             protected Logger logger_ = null;
             protected long entryCurStep_ = 0;
-            protected long entryRetryAttempt_ = 0;
 
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
@@ -496,15 +489,6 @@ foam.CLASS({
             final protected Object onHoldListLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
             final protected List<SFEntry> onHoldList_ = new LinkedList<SFEntry>();
-            final protected PriorityQueue<SFEntry> completedEntries_ = new PriorityQueue<SFEntry>(16, (n, p) -> {
-                                                                if ( n.getIndex() < p.getIndex() ) {
-                                                                  return -1;
-                                                                }
-                                                                if ( n.getIndex() > p.getIndex() ) {
-                                                                  return 1;
-                                                                }
-                                                                return 0;
-                                                              });
 
             static private class TempDAO extends ProxyDAO {
               public foam.core.ClassInfo getOf() {
