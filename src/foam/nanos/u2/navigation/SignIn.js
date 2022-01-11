@@ -141,19 +141,12 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
-              
-              
                 if ( this.token_ ) {
                   logedInUser.signUpToken = this.token_;
                   this.dao_.put(logedInUser)
                     .then(updatedUser => {
                       this.subject.realUser = updatedUser;
-                      // this.user.copyFrom(updatedUser);
-  
-                      /* var ru = this.subject['realUser'] = (updatedUser);
-                      var newSubject = this.Subject.create({ user: this.subject.user, realUser: ru });
-                      this.subject = newSubject;*/
-  
+                      this.subject.user = updatedUser;
                       this.nextStep();
                     }).catch(err => {
                       this.ctrl.add(this.NotificationMessage.create({
@@ -164,12 +157,7 @@ foam.CLASS({
                     });
                 } else {
                   this.subject.realUser = logedInUser;
-                  // this.subject.user.copyFrom(logedInUser);
-  
-                  /* var ru = this.subject['realUser'] = (logedInUser);
-                                      var newSubject = this.Subject.create({ user: this.subject.user, realUser: ru });
-                                      this.subject = newSubject; */
-  
+                  this.subject.user = logedInUser;
                   this.nextStep();
                 }
             }
