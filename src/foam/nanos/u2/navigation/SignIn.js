@@ -141,25 +141,24 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
-                if ( this.token_ ) {
-                  logedInUser.signUpToken = this.token_;
-                  this.dao_.put(logedInUser)
-                    .then(updatedUser => {
-                      this.subject.realUser = updatedUser;
-                      this.subject.user = updatedUser;
-                      this.nextStep();
-                    }).catch(err => {
-                      this.ctrl.add(this.NotificationMessage.create({
-                        err: err.data,
-                        message: this.ERROR_MSG,
-                        type: this.LogLevel.ERROR
-                      }));
-                    });
-                } else {
-                  this.subject.realUser = logedInUser;
-                  this.subject.user = logedInUser;
-                  this.nextStep();
-                }
+              
+              if ( this.token_ ) {
+                logedInUser.signUpToken = this.token_;
+                this.dao_.put(logedInUser)
+                  .then(updatedUser => {
+                    this.user.copyFrom(updatedUser);
+                    this.nextStep();
+                  }).catch(err => {
+                    this.ctrl.add(this.NotificationMessage.create({
+                      err: err.data,
+                      message: this.ERROR_MSG,
+                      type: this.LogLevel.ERROR
+                    }));
+                  });
+              } else {
+                this.user.copyFrom(logedInUser);
+                this.nextStep();
+              }
             }
           ).catch(
             err => {

@@ -165,7 +165,6 @@ foam.CLASS({
       code: function() {
         this.auth.updatePassword(null, this.originalPassword, this.newPassword)
         .then((result) => {
-          this.subject.user.copyFrom(result);
           this.reset_();
           this.notify(this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
         })
