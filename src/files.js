@@ -976,8 +976,6 @@ FOAM_FILES([
   { name: "foam/u2/wizard/agents/StepWizardAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/SpinnerAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/DetachAgent", flags: ['web'] },
-  { name: "foam/u2/wizard/agents/ExportMapAgent", flags: ['web'] },
-  { name: "foam/u2/wizard/agents/WizardletsAgent", flags: ['web'] },
   { name: "foam/u2/wizard/internal/PropertyUpdate" },
   { name: "foam/u2/wizard/internal/FObjectRecursionSlot" },
   { name: "foam/u2/wizard/internal/WizardletAutoSaveSlot" },
