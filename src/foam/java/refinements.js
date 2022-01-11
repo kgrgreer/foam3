@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017,2018 The FOAM Authors. All Rights Reserved.
+ * Copyright 2017 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -351,11 +351,6 @@ foam.CLASS({
     function buildJavaClass(cls) {
       if ( ! this.generateJava ) return;
 
-      // TODO: this is really hackish
-      // Fixes problem with Properties from interfaces being frozen to their original forClass_
-      this.validateObj          = undefined;
-      this.validationPredicates = undefined;
-
       // Use javaInfoType as an indicator that this property should be
       // generated to java code.
 
@@ -427,14 +422,16 @@ ${isSet} = false;`
         });
       }
 
-      cls.field({
-        name: constantize,
-        visibility: 'public',
-        static: true,
-        final: true,
-        type: 'foam.core.PropertyInfo',
-        initializer: this.createJavaPropertyInfo_(cls)
-      });
+      if ( ! foam.java.Interface.isInstance(cls) ) {
+        cls.field({
+          name: constantize,
+          visibility: 'public',
+          static: true,
+          final: true,
+          type: 'foam.core.PropertyInfo',
+          initializer: this.createJavaPropertyInfo_(cls)
+        });
+      }
 
       var info = cls.getField('classInfo_');
       if ( info ) info.addAxiom(cls.name + '.' + constantize);
@@ -1654,11 +1651,13 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.java',
   name: 'FObjectPropertyJavaRefinement',
   refines: 'foam.core.FObjectProperty',
   flags: ['java'],
+
   properties: [
     ['javaInfoType', 'foam.core.AbstractFObjectPropertyInfo'],
     ['javaCompare',  ''],
