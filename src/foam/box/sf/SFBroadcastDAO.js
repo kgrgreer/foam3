@@ -59,7 +59,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       FObject o = getDelegate().put_(x, obj);
-      broadcast(x, obj, DOP.PUT);
+      broadcast(x, o, DOP.PUT);
       return o;
       `
     },
@@ -67,7 +67,7 @@ foam.CLASS({
       name: 'remove_',
       javaCode: `
       FObject o = getDelegate().remove_(x, obj);
-      broadcast(x, obj, DOP.REMOVE);
+      broadcast(x, o, DOP.REMOVE);
       return o;
       `
     },
