@@ -5,31 +5,31 @@
  */
 
 foam.CLASS({
-    package: 'foam.nanos.menu',
-    name: 'SequenceMenu',
-    extends: 'foam.nanos.menu.AbstractMenu',
+  package: 'foam.nanos.menu',
+  name: 'SequenceMenu',
+  extends: 'foam.nanos.menu.AbstractMenu',
 
-    requires: [
-        'foam.util.async.Sequence'
-    ],
+  requires: [
+    'foam.util.async.Sequence'
+  ],
 
-    properties: [
-        {
-            class: 'FObjectArray',
-            // of: 'foam.util.FluentSpec',
-            of: 'foam.core.FObject',
-            name: 'sequence'
-        }
-    ],
+  properties: [
+    {
+      class: 'FObjectArray',
+      // of: 'foam.util.FluentSpec',
+      of: 'foam.core.FObject',
+      name: 'sequence'
+    }
+  ],
 
-    methods: [
-        function launch(X, menu) {
-            // Rebase sequence onto new context first
-            const sequence = this.Sequence.create({}, X);
-            for ( let fluentSpec of this.sequence ) {
-                fluentSpec.apply(sequence);
-            }
-            sequence.execute();
-        },
-    ],
+  methods: [
+    function launch(X, menu) {
+      // Rebase sequence onto new context first
+      const sequence = this.Sequence.create({}, X);
+      for (let fluentSpec of this.sequence) {
+        fluentSpec.apply(sequence);
+      }
+      sequence.execute();
+    }
+  ]
 });

@@ -295,7 +295,7 @@ foam.CLASS({
         var el    = await this.parentNode.el();
 
         if ( ! this.data.currentWizardlet ) {
-          console.warn(`setScrollPos() failed; no current wizardlet`, {
+          console.warn('setScrollPos() failed; no current wizardlet', {
             data: this.data
           });
           return;
@@ -310,7 +310,7 @@ foam.CLASS({
         }
         if ( ! currChild ) {
           // TODO: investigate why this is called before elements are loaded
-          console.warn(`setScrollPos() failed; unable to find active wizardlet element`, {
+          console.warn('setScrollPos() failed; unable to find active wizardlet element', {
             'wizardlet id': this.data.currentWizardlet.id,
             data: this.data
           });
