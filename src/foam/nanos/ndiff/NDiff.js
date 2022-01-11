@@ -24,14 +24,16 @@ foam.CLASS({
         name: 'delta',
         documentation: `
         Set to true if a difference was detected.
-        `
+        `,
+        storageTransient: false
     },
     {
         class: 'Boolean',
         name: 'deletedAtRuntime',
         documentation: `
         Set to true if a repo entry was deleted at runtime.
-        `
+        `,
+        storageTransient: false
     },
     {
         class: 'FObjectProperty',
@@ -48,7 +50,26 @@ foam.CLASS({
         The object as it was loaded from the runtime journals
         `,
         visibility: 'HIDDEN'
+    },
+    {
+        class: 'Boolean',
+        name: 'applyingOriginal',
+        documentation: `
+        Client-side will set this true when they want to store
+        the initialFObject to its respective DAO.
+        `,
+        storageTransient: false
     }
-    ]
+    ],
 
+    actions: [
+        {
+            name: 'apply',
+            label: 'Apply Original',
+            code: function(X) {
+                this.applyingOriginal = true;
+                X.dao.put(this);
+            }
+        }
+    ]
 });

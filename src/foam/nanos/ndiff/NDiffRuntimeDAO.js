@@ -11,6 +11,7 @@ foam.CLASS({
     javaImports: [
         'foam.core.FObject',
         'foam.core.Detachable',
+        'foam.dao.DAO',
         'foam.dao.Sink',
         'foam.dao.ProxySink',
         'foam.nanos.logger.Logger',
@@ -22,9 +23,42 @@ foam.CLASS({
 
     methods: [
         {
-            name: 'select_',
+            name: 'put_',
             javaCode: `
             Logger logger = Loggers.logger(x, this);
+
+            NDiff ndiff = (NDiff)obj;
+            if ( ndiff.getApplyingOriginal() ) {
+                ndiff = (NDiff)ndiff.fclone();
+
+                String nSpecName = ndiff.getNSpecName();
+                DAO dao = (DAO)x.get(nSpecName);
+                if ( dao != null ) { 
+
+                    // the dao is almost certainly being decorated by NDiffDAO.
+                    // this put_ will recursively call this function and we
+                    // won't be able to restore the result. 
+                    dao.put_(x, ndiff.getInitialFObject()); 
+                
+                    ndiff = (NDiff) this.find(new foam.nanos.ndiff.NDiffId.Builder(x)
+                                                  .setNSpecName(ndiff.getNSpecName())
+                                                  .setObjectId(ndiff.getObjectId())
+                                                  .build()).fclone();
+
+                    ndiff.setDeletedAtRuntime(false);
+                } else {
+                    logger.warning("NDiff points to missing dao", nSpecName);
+                }
+
+                ndiff.setApplyingOriginal(false);
+            }
+            return getDelegate().put_(x, ndiff);
+            `
+        },
+        {
+            name: 'select_',
+            javaCode: `
+            
             Sink originalSink = prepareSink(sink);
 
             // s2 exists because we need to return the original sink later
