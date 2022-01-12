@@ -56,6 +56,7 @@
               return true;
             }
           }
+          if ( foam.flags.js ) return true;
           console.log('****************************** NOT LOADING ', f.name, f.flags);
           return false;
         }
