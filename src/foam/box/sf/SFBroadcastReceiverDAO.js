@@ -32,8 +32,6 @@ foam.CLASS({
       javaCode: `
         PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
         SFEntry entry = (SFEntry) obj;
-
-        Loggers.logger(x, this).error("aaaa: ", "put_", entry);
         
         try {
           DAO dao = ((DAO) x.get(entry.getNSpecName()));
