@@ -251,7 +251,7 @@ FOAM_FILES([
   { name: "foam/dao/LimitedDAO" },
   { name: "foam/dao/LockDAO" },
   { name: "foam/dao/SkipDAO" },
-  { name: "foam/dao/OrderedDAO", flags: [ "web" ] },
+  { name: "foam/dao/OrderedDAO", flags: [ "web", "java" ] },
   { name: "foam/dao/InternalException", flags: [ "java" ] },
   { name: "foam/dao/ExternalException", flags: [ "java" ] },
   { name: "foam/dao/UniqueConstraintException", flags: [ "java" ] },
