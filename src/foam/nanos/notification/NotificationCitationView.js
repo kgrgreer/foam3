@@ -45,7 +45,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      this.created = this.data.created.toUTCString();
+      this.created = this.data.created.toLocaleString(foam.locale);
       this.description = this.data.body;
 
       this
