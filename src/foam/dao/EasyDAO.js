@@ -201,7 +201,7 @@ foam.CLASS({
         // (this should ONLY be enabled for nspecs that have journals!)
         if ( getNSpec() != null &&
              getJournalType().equals(JournalType.SINGLE_JOURNAL) &&
-             !getWriteOnly() &&
+             ! getWriteOnly() &&
              getFixedSize() == null ) {
           delegate = new NDiffDAO.Builder(getX())
                       .setDelegate(delegate)
