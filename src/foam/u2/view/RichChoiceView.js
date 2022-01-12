@@ -596,7 +596,18 @@ foam.CLASS({
                   }));
               }))
           } else {
-            return self.E().add(fullObject_ ? fullObject_.toSummary() : '');
+            return self.E()
+              .addClass(this.myClass())
+              .start()  
+                .addClass(this.myClass('selection-view'))
+                .start()
+                  .addClass(this.myClass('custom-selection-view'))
+                  .tag(self.selectionView, {
+                    fullObject: fullObject_,
+                    defaultSelectionPrompt$: self.choosePlaceholder$
+                  })
+                .end()
+              .end();
           }
         }))
     },

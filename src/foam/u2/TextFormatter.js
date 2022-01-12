@@ -4,9 +4,10 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.INTERFACE({
+foam.INTERFACE({
   package: 'foam.u2',
   name: 'TextFormatter',
+
   properties: [
     {
       name: 'formatter',
@@ -144,7 +145,7 @@ foam.CLASS({
         if ( end > data.length - this.formatter.length ) end = data.length;
         if ( start > data.length - this.formatter.length ) start = data.length - this.formatter.length;
       }
-      return [start, end]; 
+      return [start, end];
     },
 
     function buildJavaGetFormatted(cls, prop) {
@@ -167,10 +168,13 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'NumericCodeFormatter',
+
   implements: [ 'foam.u2.TextFormatter' ],
+
   documentation: `
     Formats a numeric string with delimiters using an array formatter
     containing digits representing number of numeric characters and strings
@@ -185,7 +189,7 @@ foam.CLASS({
   methods: [
     function getPlaceholder(formattedData, placeholder) {
       if ( ! placeholder ) placeholder = this.formatter.join('').replace(/\d+/g, function(match) { return '#'.repeat(match); });
-      if ( ! formattedData ) 
+      if ( ! formattedData )
         return placeholder;
       return (formattedData || '') + placeholder.substring(formattedData && formattedData.length || 0);
     },
