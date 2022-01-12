@@ -78,15 +78,15 @@
     files.
       filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
       filter(f => {
-        // If flags are defined, don't load unless all are true
+        // If flags are defined, don't load unless one is true
         if ( f.flags ) {
           for ( var i = 0 ; i < f.flags.length ; i++ ) {
-            if ( ! foam.flags[f.flags[i]] ) {
+            if ( foam.flags[f.flags[i]] ) {
               // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
-              return false;
+              return true;
             }
           }
-          return true;
+          return false;
         }
         return true;
       }).

@@ -1044,11 +1044,11 @@ var classes = [
   'foam.core.FOAMExceptionTest',
   'foam.core.Detachable',
   'foam.core.Axiom',
+  'foam.nanos.menu.AbstractMenu'
 ];
 
 
 var abstractClasses = [
-  'foam.nanos.menu.AbstractMenu',
 //  'foam.json.Outputter'
 ];
 
@@ -1099,19 +1099,11 @@ var proxies = [
   'foam.strategy.StrategizerService',
 ];
 
-var blacklist = [
-  'foam.core.Property',
-  'foam.mlang.predicate.Func',
-  'foam.nanos.controller.Memento',
-  'foam.u2.AttrSlot',
-  'foam.u2.RenderSink',
-  'foam.u2.ViewSpec'
-];
 
 module.exports = {
     classes:         classes,
-    abstractClasses: abstractClasses,
+    abstractClasses: [],
     skeletons:       skeletons,
     proxies:         proxies,
-    blacklist:       blacklist
+    blacklist:       []
 };
