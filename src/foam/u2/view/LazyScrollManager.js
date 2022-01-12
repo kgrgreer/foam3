@@ -389,9 +389,6 @@
               index += 1;
 
             self.topRow = index;
-
-            if ( self.displayedRowCount_ < 0 )
-              self.bottomRow = this.daoCount;
           } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
               index -= 1;
@@ -400,6 +397,9 @@
               self.bottomRow = index;
           }
         });
+
+        if ( ! self.bottomRow && self.displayedRowCount_ < 0 )
+          self.bottomRow = self.pageSize > entries.length ? entries.length : self.pageSize;
       }
     }
   ],
