@@ -5,90 +5,89 @@
  */
 
 foam.CLASS({
-    package: 'foam.nanos.ndiff',
-    name: 'NDiffRuntimeDAO',
-    extends: 'foam.dao.ProxyDAO',
-    javaImports: [
-        'foam.core.FObject',
-        'foam.core.Detachable',
-        'foam.dao.DAO',
-        'foam.dao.Sink',
-        'foam.dao.ProxySink',
-        'foam.nanos.logger.Logger',
-        'foam.nanos.logger.Loggers'
-    ],
-    documentation: `
+  package: 'foam.nanos.ndiff',
+  name: 'NDiffRuntimeDAO',
+  extends: 'foam.dao.ProxyDAO',
+  javaImports: [
+    'foam.core.FObject',
+    'foam.core.Detachable',
+    'foam.dao.DAO',
+    'foam.dao.Sink',
+    'foam.dao.ProxySink',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.ndiff.NDiffId.Builder'
+  ],
+  documentation: `
     This decorates the ndiffDAO service. 
     `,
 
-    methods: [
-        {
-            name: 'put_',
-            javaCode: `
-            Logger logger = Loggers.logger(x, this);
+  methods: [
+    {
+      name: 'put_',
+      javaCode: `
+        Logger logger = Loggers.logger(x, this);
 
-            NDiff ndiff = (NDiff)obj;
-            if ( ndiff.getApplyingOriginal() ) {
-                ndiff = (NDiff)ndiff.fclone();
+        NDiff ndiff = (NDiff)obj;
+        if ( ndiff.getApplyOriginal() ) {
+          ndiff = (NDiff)ndiff.fclone();
 
-                String nSpecName = ndiff.getNSpecName();
-                DAO dao = (DAO)x.get(nSpecName);
-                if ( dao != null ) { 
-
-                    // the dao is almost certainly being decorated by NDiffDAO.
-                    // this put_ will recursively call this function and we
-                    // won't be able to restore the result. 
-                    dao.put_(x, ndiff.getInitialFObject()); 
-                
-                    ndiff = (NDiff) this.find(new foam.nanos.ndiff.NDiffId.Builder(x)
-                                                  .setNSpecName(ndiff.getNSpecName())
-                                                  .setObjectId(ndiff.getObjectId())
-                                                  .build()).fclone();
-
-                    ndiff.setDeletedAtRuntime(false);
-                } else {
-                    logger.warning("NDiff points to missing dao", nSpecName);
-                }
-
-                ndiff.setApplyingOriginal(false);
-            }
-            return getDelegate().put_(x, ndiff);
-            `
-        },
-        {
-            name: 'select_',
-            javaCode: `
+          String nSpecName = ndiff.getNSpecName();
+          DAO dao = (DAO)x.get(nSpecName);
+          if ( dao != null ) {  
+            // the dao is almost certainly being decorated by NDiffDAO.
+            // this put_ will recursively call this function and we
+            // won't be able to restore the result. 
+            dao.put_(x, ndiff.getInitialFObject()); 
+        
+            var newNdiff = (NDiff) this.find(new NDiffId(ndiff.getNSpecName(),
+                                             ndiff.getObjectId()));
             
-            Sink originalSink = prepareSink(sink);
+            ndiff = newNdiff != null ? (NDiff)newNdiff.fclone() : ndiff;
 
-            // s2 exists because we need to return the original sink later
-            Sink ourSink = originalSink;
- 
-            // TODO: the order/predicate are applied too late and filtering
-            // and sorting do not work correctly in the views. this is something
-            // that will need to be solved later
+            ndiff.setDeletedAtRuntime(false);
+          } else {
+              logger.warning("NDiff points to missing dao", nSpecName);
+          }
 
-            ourSink = new ProxySink(x, ourSink) {
-                public void put(Object obj, Detachable sub) {
-                    NDiff ndiff = (NDiff)( ((NDiff)obj).fclone() );
-                    
-                    FObject initialFObject = ndiff.getInitialFObject();
-                    FObject runtimeFObject = ndiff.getRuntimeFObject();
-                    var delta =
-                        // runtimeFObject will only be put when an object is updated
-                        (initialFObject != null && runtimeFObject == null && ndiff.getDeletedAtRuntime()) ||
-                        (initialFObject != null && runtimeFObject != null && !initialFObject.equals(runtimeFObject));
-
-                    ndiff.setDelta(delta);
-
-                    super.put(ndiff,sub);
-                }
-            };
-
-            super.select_(x, ourSink, skip, limit, order, predicate);
-            
-            return originalSink;
-            `
+          ndiff.setApplyOriginal(false);
         }
-    ]
+        return getDelegate().put_(x, ndiff);
+        `,
+    },
+    {
+      name: 'select_',
+      javaCode: ` 
+        Sink originalSink = prepareSink(sink);
+
+        // originalSink exists because we need to return the original sink later
+        Sink ourSink = originalSink;
+
+        // TODO: the order/predicate are applied too late and filtering
+        // and sorting do not work correctly in the views. this is something
+        // that will need to be solved later
+
+        ourSink = new ProxySink(x, ourSink) {
+          public void put(Object obj, Detachable sub) {
+            NDiff ndiff = (NDiff)( ((NDiff)obj).fclone() );
+            
+            FObject initialFObject = ndiff.getInitialFObject();
+            FObject runtimeFObject = ndiff.getRuntimeFObject();
+            var delta =
+              // runtimeFObject will only be put when an object is updated
+              (initialFObject != null && runtimeFObject == null && ndiff.getDeletedAtRuntime()) ||
+              (initialFObject != null && runtimeFObject != null && !initialFObject.equals(runtimeFObject));
+
+            ndiff.setDelta(delta);
+
+            super.put(ndiff,sub);
+          }
+        };
+
+        super.select_(x, ourSink, skip, limit, order, predicate);
+        
+        return originalSink;
+        `,
+    },
+  ],
 });
