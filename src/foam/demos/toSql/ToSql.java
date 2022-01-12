@@ -47,7 +47,7 @@ public class ToSql {
     print(res);
 
     //TODO
-    //select ename, job,sal from Emp
+    //select ename, job, sal from Emp
     //use alias
 
     // slect ename, sal*12 from Emp
@@ -76,7 +76,20 @@ public class ToSql {
 
     // select ename,sal, comm from emp where comm <sal*0.25
 
-    // select ename,job decode(comm,null,'sans',0,comm) , sal from emp order by job, sal desc
+    // select ename,job, decode(comm,null,'sans',0,comm) commission from EMP;
+
+    // select a.ename, b.loc from emp a, emp b where upper(a.ename) = 'SMITH' and a.detno = b.deptno
+
+    // select empno, ename, dname from emp, sept where emp.deptno = dept.deptno
+
+    // select * from emp e, emp f where e.job = f.job and e.hiredate = f.hireDate
+    // and f.name = 'ford' and e.name <> 'ford';
+    // //or
+    // select * from emp where (job, hiredate) in (select job, hiredate from emp where ename = 'ford') and ename <> 'ford')
+    // e.job = f.job and e.hiredate = f.hireDate
+    // and f.ename = 'ford' and e.ename <> 'ford';
+
+    // select * from emp e, emp kl where e.mgr = kl.mgr and kl.ename = 'CLARK' and e.ename <> 'CLARK'
 
 
 
