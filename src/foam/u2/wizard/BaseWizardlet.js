@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'BaseWizardlet',
 
   todo: [
-    'rename wizardlet.loading to wizardlet.busy'
+    'rename wizardlet.loading to wizardlet.busy',
+    'add support for notification banner'
   ],
 
   topics: ['saveEvent'],
