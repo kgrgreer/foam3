@@ -180,7 +180,6 @@ FOAM_FILES([
   { name: "foam/util/Timer" },
   { name: "foam/util/AddressUtil" },
   { name: "foam/util/EmailTest" },
-  { name: "foam/util/FluentSpec" },
   { name: "foam/util/PasswordTest" },
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/EmailTest", flags: [ "java" ] },
