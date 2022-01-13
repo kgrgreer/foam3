@@ -5,10 +5,9 @@
  */
 
 foam.CLASS({
-  extends: 'foam.core.FObjectProperty',
-  
   package: 'foam.util',
   name: 'FObjectSpec',
+  extends: 'foam.core.FObjectProperty',
 
   documentation: `
     A Property which stores knowledge of what FObject to create
@@ -32,10 +31,9 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  extends: 'foam.core.FObjectArray',
-  
   package: 'foam.util',
   name: 'FObjectSpecArray',
+  extends: 'foam.core.FObjectArray',
 
   properties: [
     [
