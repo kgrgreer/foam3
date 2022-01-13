@@ -1168,4 +1168,5 @@ FOAM_FILES([
   { name: "foam/nanos/ndiff/NDiffDAO" },
   { name: "foam/nanos/ndiff/NDiffJournal" },
   { name: "foam/nanos/ndiff/NDiffRuntimeDAO" },
+  { name: "foam/u2/view/ComparisonView" },
   ]);

@@ -8,52 +8,60 @@ foam.CLASS({
   package: 'foam.nanos.ndiff',
   name: 'NDiff',
   documentation: `Tracks changes to nSpecs. Used for debugging`,
-
+  requires: [
+    'foam.u2.dialog.Popup',
+  ],
+  tableColumns: [
+    'nSpecName',
+    'objectId',
+    'delta',
+    'deletedAtRuntime'
+  ],
   ids: ['nSpecName', 'objectId'],
   properties: [
     {
-      class: 'String',
       name: 'nSpecName',
-    },
-    {
       class: 'String',
-      name: 'objectId',
     },
     {
-      class: 'Boolean',
+      name: 'objectId',
+      class: 'String',
+    },
+    {
       name: 'delta',
+      class: 'Boolean',
       documentation: `
         Set to true if a difference was detected.
         `,
       storageTransient: false,
     },
     {
-      class: 'Boolean',
       name: 'deletedAtRuntime',
+      class: 'Boolean',
       documentation: `
         Set to true if a repo entry was deleted at runtime.
         `,
       storageTransient: false,
     },
     {
-      class: 'FObjectProperty',
       name: 'initialFObject',
+      class: 'FObjectProperty',
+      visibility: 'HIDDEN',
       documentation: `
         The object as it was loaded from the repo journals (".0 file")
         `,
-      visibility: 'HIDDEN',
     },
     {
-      class: 'FObjectProperty',
       name: 'runtimeFObject',
+      class: 'FObjectProperty',
+      visibility: 'HIDDEN',
       documentation: `
         The object as it was loaded from the runtime journals
         `,
-      visibility: 'HIDDEN',
     },
     {
-      class: 'Boolean',
       name: 'applyOriginal',
+      class: 'Boolean',
       documentation: `
         Client-side will set this true when they want to store
         the initialFObject to its respective DAO.
@@ -66,10 +74,28 @@ foam.CLASS({
     {
       name: 'apply',
       label: 'Apply Original',
+      confirmationRequired: function() {
+        return true;
+      },
+      isEnabled: function(delta) {
+        return ! delta;
+      },
       code: function(X) {
         this.applyOriginal = true;
         X.dao.put(this);
       },
+    },
+    {
+      name: 'compare',
+      label: 'Compare changes',
+      isEnabled: function(delta) {
+        return delta;
+      },
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.StyledModal.create({ title: 'Comparison' }, this)
+          .tag({class: 'foam.u2.view.ComparisonView', left: this.initialFObject, right: this.runtimeFObject})
+        );
+      }
     },
   ],
 });
