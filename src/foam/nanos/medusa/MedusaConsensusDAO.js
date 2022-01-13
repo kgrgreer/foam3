@@ -395,6 +395,7 @@ This is the heart of Medusa.`,
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
@@ -404,6 +405,7 @@ This is the heart of Medusa.`,
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
               throw new MedusaException("Failed to parse");
             }
 
@@ -415,8 +417,8 @@ This is the heart of Medusa.`,
                 try {
                   nu = old.fclone().overlay(nu);
                 } catch ( ClassCastException e ) {
-                  // TODO: collect in a Replaying error dao
                   getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                  ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, old, "Class change, old discarded"));
                 }
               }
             }
@@ -429,6 +431,7 @@ This is the heart of Medusa.`,
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
             } else {
               if ( nu == null ) {
                 nu = tran;
