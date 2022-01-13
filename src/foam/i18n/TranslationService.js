@@ -30,7 +30,7 @@ foam.INTERFACE({
         {
           name: 'defaultText',
           type: 'String',
-          documentation: 'text to be translated'
+          documentation: 'The default text'
         }
       ],
       type: 'String'
