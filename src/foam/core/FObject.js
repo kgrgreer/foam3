@@ -74,7 +74,7 @@ foam.LIB({
 
       var axioms = this.getInitAgents();
       for ( var i = 0 ; i < axioms.length ; i++ ) {
-        axioms[i].initObject(obj);
+        axioms[i].initObject.call(obj);
       }
 
       // init() is called when object is created.
