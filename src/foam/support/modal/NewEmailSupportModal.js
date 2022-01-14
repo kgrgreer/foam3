@@ -28,7 +28,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'supportEmailDAO',
-    'user',
+    'subject'
   ],
 
   exports:[
@@ -172,7 +172,7 @@ foam.CLASS({
                   connectedTime: new Date()
                 });
                 // save support email details in journal
-                self.user.supportEmails.put(email);
+                self.subject.user.supportEmails.put(email);
                 self.ctrl.add(foam.u2.dialog.Popup.create().tag({ class: 'foam.support.modal.NewEmailSupportConfirmationModal' }));
                 X.closeDialog();
               } else {
