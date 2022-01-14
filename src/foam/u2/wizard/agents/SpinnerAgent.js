@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.crunch.wizardflow',
+  package: 'foam.u2.wizard.agents',
   name: 'SpinnerAgent',
   documentation: `
     Displays and exports a loading spinner to prevent a user from reloading the
@@ -43,7 +43,7 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  package: 'foam.u2.crunch.wizardflow',
+  package: 'foam.u2.wizard.agents',
   name: 'DetachSpinnerAgent',
   flags: ['web'],
   documentation: `
