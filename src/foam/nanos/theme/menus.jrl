@@ -6,7 +6,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"themeDAO"
+      "daoKey":"spThemeDAO"
     }
   },
   "parent":"admin"

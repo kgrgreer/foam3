@@ -23,6 +23,21 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "spThemeDAO",
+  "description": "Access to Themes specific to Service Provider",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.theme.Theme.getOwnClassInfo())
+      .setInnerDAO(x.get("themeDAO"))
+      .setServiceProviderAware(true)
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.theme.Theme\"}",
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "themeDomainDAO",
   "description": "Provides domain lookup for Themes",
   "serve": true,
