@@ -474,29 +474,35 @@ foam.LIB({
 
   constants: {
     // Pretty Print
-    Pretty: foam.xml.Outputter.create({
-      outputDefaultValues: false,
-      outputDefinedValues: true
-    }),
+    Pretty: function() {
+      return foam.xml.Outputter.create({
+        outputDefaultValues: false,
+        outputDefinedValues: true
+      })
+    },
 
     // Compact output (not pretty)
-    Compact: foam.xml.Outputter.create({
-      pretty: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      outputDefinedValues: false
-    }),
+    Compact: function() {
+      return foam.xml.Outputter.create({
+        pretty: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        outputDefinedValues: false
+      })
+    },
 
     // Shorter than Compact (uses short-names if available)
-    Short: foam.xml.Outputter.create({
-      pretty: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      outputDefinedValues: false,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false,
-    })
+    Short: function() {
+      return foam.xml.Outputter.create({
+        pretty: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        outputDefinedValues: false,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false,
+      })
+    }
   },
 
   methods: [
