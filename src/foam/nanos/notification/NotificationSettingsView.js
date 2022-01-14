@@ -20,7 +20,7 @@ foam.CLASS({
     'group',
     'notificationDAO',
     'stack',
-    'user',
+    'subject',
     'userDAO'
   ],
 
@@ -190,7 +190,7 @@ foam.CLASS({
       var self2 = this;
       return this.call(function() {
         self.notifications.where(self.OR(
-          self.EQ(self.Notification.USER_ID, self.user.id),
+          self.EQ(self.Notification.USER_ID, self.subject.user.id),
           self.EQ(self.Notification.GROUP_ID, self.group.id),
           self.EQ(self.Notification.BROADCASTED, true)
         )).select(
@@ -207,7 +207,7 @@ foam.CLASS({
                     type: 'checkbox',
                     name: 'notifsTab',
                     value: key,
-                    checked: ! self.user.disabledTopics.includes(key)
+                    checked: ! self.subject.user.disabledTopics.includes(key)
                   })
                 .end()
                 .start().addClass('checkBox-Text').add(key).end();
@@ -221,7 +221,7 @@ foam.CLASS({
     var self2 = this;
     return this.call(function() {
       self.notifications.where(self.OR(
-        self.EQ(self.Notification.USER_ID, self.user.id),
+        self.EQ(self.Notification.USER_ID, self.subject.user.id),
         self.EQ(self.Notification.GROUP_ID, self.group.id),
         self.EQ(self.Notification.BROADCASTED, true)
       )).select(
@@ -237,7 +237,7 @@ foam.CLASS({
                   type: 'checkbox',
                   name: 'notifsEmail',
                   value: key,
-                  checked: ! self.user.disabledTopicsEmail.includes(key)
+                  checked: ! self.subject.user.disabledTopicsEmail.includes(key)
                 }).end().start().addClass('checkBox-Text').add(key).end();
             }
           }
@@ -252,21 +252,21 @@ actions: [
     label: 'Update',
     code: function() {
       var notifs = document.getElementsByName('notifsTab');
-      this.user = this.user.clone();
+      this.subject.user = this.subject.user.clone();
       for ( i = 0; i < notifs.length; i++ ) {
         var type = notifs[i].value;
         if ( notifs[i].checked ) {
-          while ( this.user.disabledTopics.includes(type) ) {
-            var index = this.user.disabledTopics.indexOf(type);
-            this.user.disabledTopics.splice(index, 1);
+          while ( this.subject.user.disabledTopics.includes(type) ) {
+            var index = this.subject.user.disabledTopics.indexOf(type);
+            this.subject.user.disabledTopics.splice(index, 1);
           }
         } else {
-          if ( ! this.user.disabledTopics.includes(type) ) {
-            this.user.disabledTopics.push(type);
+          if ( ! this.subject.user.disabledTopics.includes(type) ) {
+            this.subject.user.disabledTopics.push(type);
           }
         }
       }
-      this.userDAO.put(this.user);
+      this.userDAO.put(this.subject.user);
       this.stack.push({
         class: 'foam.nanos.notification.NotificationView'
       });
@@ -277,21 +277,21 @@ actions: [
     label: 'Update',
     code: function() {
       var notifs = document.getElementsByName('notifsEmail');
-      this.user = this.user.clone();
+      this.subject.user = this.subject.user.clone();
       for ( i = 0; i < notifs.length; i++ ) {
         var type = notifs[i].value;
         if ( notifs[i].checked ) {
-          while ( this.user.disabledTopicsEmail.includes(type) ) {
-            var index = this.user.disabledTopicsEmail.indexOf(type);
-            this.user.disabledTopicsEmail.splice(index, 1);
+          while ( this.subject.user.disabledTopicsEmail.includes(type) ) {
+            var index = this.subject.user.disabledTopicsEmail.indexOf(type);
+            this.subject.user.disabledTopicsEmail.splice(index, 1);
           }
         } else {
-          if ( ! this.user.disabledTopicsEmail.includes(type) ) {
-            this.user.disabledTopicsEmail.push(type);
+          if ( ! this.subject.user.disabledTopicsEmail.includes(type) ) {
+            this.subject.user.disabledTopicsEmail.push(type);
           }
         }
       }
-      this.userDAO.put(this.user);
+      this.userDAO.put(this.subject.user);
       this.stack.push({
         class: 'foam.nanos.notification.NotificationView'
       });
