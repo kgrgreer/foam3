@@ -1165,5 +1165,10 @@ FOAM_FILES([
   { name: "foam/nanos/analytics/DAOReduceManager", flags: [ "java" ] },
   { name: "foam/dao/jdbc/TestDataForJDBC", flags: [ "java" ] },
   { name: "foam/java/ParseTemplateTest", flags: [ "java" ] },
-  { name: "foam/i18n/LocaleTranslationService", flags: [ "java" ] }
+  { name: "foam/i18n/LocaleTranslationService", flags: [ "java" ] },
+  { name: "foam/nanos/ndiff/NDiff" },
+  { name: "foam/nanos/ndiff/NDiffDAO" },
+  { name: "foam/nanos/ndiff/NDiffJournal" },
+  { name: "foam/nanos/ndiff/NDiffRuntimeDAO" },
+  { name: "foam/u2/view/ComparisonView" },
   ]);
