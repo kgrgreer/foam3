@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'subject',
+    'user',
     'blobService',
     'notify'
   ],
@@ -255,7 +255,7 @@ foam.CLASS({
       }
 
       this.data = this.File.create({
-        owner: this.subject.user.id,
+        owner: this.user.id,
         filename: file.name,
         filesize: file.size,
         mimeType: file.type,

@@ -27,7 +27,7 @@ foam.CLASS({
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',
-    'subject'
+    'user'
   ],
 
   javaImports: [
@@ -527,7 +527,7 @@ foam.CLASS({
         } else {
           var notification = this.Notification.create();
           notification.userId = this.subject && this.subject.realUser ?
-            this.subject.realUser.id : this.subject.user.id;
+            this.subject.realUser.id : this.user.id;
           notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
           notification.toastState = this.ToastState.REQUESTED;
           notification.severity = foam.log.LogLevel.INFO;
@@ -541,7 +541,7 @@ foam.CLASS({
               this.__context__[this.daoKey].put(this);
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.subject.user.id;
+                this.subject.realUser.id : this.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_COMPLETED;
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
@@ -551,7 +551,7 @@ foam.CLASS({
             (e) => {
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.subject.user.id;
+                this.subject.realUser.id : this.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_FAILED;
               notification.toastSubMessage = e.message || e;
               notification.toastState = this.ToastState.REQUESTED;

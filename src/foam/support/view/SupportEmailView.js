@@ -18,7 +18,7 @@ foam.CLASS({
   imports: [
     'createLabel',  
     'ctrl',
-    'subject'
+    'user'
   ],
 
   css:`
@@ -127,7 +127,7 @@ foam.CLASS({
   methods: [
     function render(){
       var self = this;
-      this.subject.user.supportEmails.limit(1).select().then(function(a){
+      this.user.supportEmails.limit(1).select().then(function(a){ 
         self.emptyDAO = a.array.length == 0;
       });
 
@@ -141,7 +141,7 @@ foam.CLASS({
           .start().addClass('align').end() 
           .start({
             class: 'foam.u2.ListCreateController',
-            dao: this.subject.user.supportEmails,
+            dao: this.user.supportEmails,
             summaryView: this.EmailSupportTableView.create(),
             showActions: false
           }).hide(this.emptyDAO$).end()
@@ -182,7 +182,7 @@ foam.CLASS({
         {
           name: 'data',
           factory: function() {
-            return this.subject.user.supportEmails;
+            return this.user.supportEmails;
           }
         }
       ],
