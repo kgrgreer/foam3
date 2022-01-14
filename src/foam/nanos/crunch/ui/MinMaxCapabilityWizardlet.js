@@ -162,7 +162,8 @@ foam.CLASS({
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,
-              maxSelected$: this.max$
+              maxSelected$: this.max$,
+              choiceView: { class: 'foam.u2.view.CardSelectView', largeCard: true }
             }
           })
         ];

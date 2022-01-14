@@ -11,6 +11,7 @@ var classes = [
   'foam.box.Message',
   'foam.box.OneTimeBox',
   'foam.box.Box',
+  'foam.box.ProxyBox',
   'foam.box.RPCMessage',
   'foam.box.ReplyBox',
   'foam.box.RPCReturnBox',
@@ -27,6 +28,7 @@ var classes = [
   'foam.nanos.auth.CreatedByAware',
   'foam.dao.AbstractDAO',
   'foam.dao.DAO',
+  'foam.dao.ProxyDAO',
   'foam.dao.SkipSink',
   'foam.dao.Sink',
   'foam.dao.ResetListener',
@@ -67,6 +69,7 @@ var classes = [
   'foam.u2.wizard.WizardletIndicator',
   'foam.u2.wizard.WizardletAware',
   'foam.nanos.crunch.CapabilityJunctionStatus',
+  'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.auth.Address',
   'foam.mlang.Partition',
   'foam.mlang.Mux',
@@ -192,7 +195,6 @@ var classes = [
   'foam.nanos.crunch.lite.CapableAdapterDAO',
   'foam.u2.DisplayMode',
   'foam.nanos.notification.Notification',
-  'foam.nanos.medusa.Clusterable',
   'foam.nanos.auth.Phone',
   'foam.nanos.crunch.MinMaxCapability',
   'foam.core.ContextAgent',
@@ -207,7 +209,6 @@ var classes = [
   'foam.nanos.approval.ApprovalRequest',
   'foam.nanos.auth.LastModifiedByAgentNameAware',
   'foam.nanos.approval.CustomViewReferenceApprovable',
-  'foam.nanos.approval.ApprovalStatus',
   'foam.nanos.test.Test',
   'foam.nanos.script.Script',
   'foam.nanos.notification.ToastState',
@@ -238,6 +239,7 @@ var classes = [
   'foam.u2.layout.Rows',
   'foam.u2.dialog.ModalStyles',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.ProxyAuthService',
   'foam.nanos.NanoService',
   'foam.nanos.auth.Group',
   'foam.nanos.auth.PasswordPolicy',
@@ -719,6 +721,7 @@ var classes = [
   'foam.nanos.medusa.DaggerException',
   'foam.nanos.medusa.DefaultDaggerService',
   'foam.nanos.medusa.ClientElectoralService',
+  'foam.nanos.medusa.Clusterable',
   'foam.nanos.medusa.ClusterException',
   'foam.nanos.medusa.ClusterConfigSupportDAO',
   'foam.nanos.medusa.ClusterConfigSupport',
@@ -751,6 +754,7 @@ var classes = [
   'foam.nanos.medusa.MedusaNOPRegistryService',
   'foam.nanos.medusa.MedusaRegistry',
   'foam.nanos.medusa.MedusaRegistryService',
+  'foam.nanos.medusa.MedusaReplayIssue',
   'foam.nanos.medusa.MedusaSetNodeDAO',
   'foam.nanos.medusa.MedusaSigningDAO',
   'foam.nanos.medusa.MedusaStatusWatcher',
@@ -1037,11 +1041,11 @@ var classes = [
   'foam.core.FOAMExceptionTest',
   'foam.core.Detachable',
   'foam.core.Axiom',
+  'foam.nanos.menu.AbstractMenu'
 ];
 
 
 var abstractClasses = [
-  'foam.nanos.menu.AbstractMenu',
 //  'foam.json.Outputter'
 ];
 
@@ -1073,37 +1077,30 @@ var skeletons = [
 ];
 
 var proxies = [
-  'foam.dao.DAO',
+  'foam.blob.Blob',
+  'foam.blob.BlobService',
+  'foam.dao.Journal',
   'foam.dao.Sink',
+  'foam.i18n.TranslationService',
+  'foam.lib.csv.CSVOutputter',
   'foam.lib.Outputter',
   'foam.lib.parse.Parser',
   'foam.lib.parse.PStream',
-  'foam.blob.Blob',
-  'foam.blob.BlobService',
-  'foam.nanos.auth.AuthService',
   'foam.nanos.auth.twofactor.OTPAuthService',
-  'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
   'foam.nanos.auth.UniqueUserService',
+  'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
   'foam.nanos.http.WebAgent',
+  'foam.nanos.logger.Logger',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.push.PushService',
   'foam.strategy.StrategizerService',
-  'foam.i18n.TranslationService'
 ];
 
-var blacklist = [
-  'foam.core.Property',
-  'foam.mlang.predicate.Func',
-  'foam.nanos.controller.Memento',
-  'foam.u2.AttrSlot',
-  'foam.u2.RenderSink',
-  'foam.u2.ViewSpec'
-];
 
 module.exports = {
     classes:         classes,
-    abstractClasses: abstractClasses,
+    abstractClasses: [],
     skeletons:       skeletons,
     proxies:         proxies,
-    blacklist:       blacklist
+    blacklist:       []
 };

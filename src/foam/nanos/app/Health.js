@@ -147,12 +147,6 @@ foam.CLASS({
       shortName: 'al',
       class: 'Int',
       visibility: 'RO',
-    },
-    {
-      name: 'errorMessage',
-      shortName: 'em',
-      class: 'String',
-      visibility: 'RO',
     }
   ],
 

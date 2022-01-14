@@ -72,6 +72,14 @@ foam.CLASS({
         if ( ! wizardlet$of ) return true;
         if ( ! data ) return false;
 
+        if ( ! this.section ) {
+          let valid = data.validate();
+          if ( valid === undefined ) {
+            valid = ! data.errors_ || data.errors_.length < 1;
+          }
+          return valid;
+        }
+
         let sectionErrors = [];
         if ( data$errors_ ) {
           sectionErrors = data$errors_.filter(error =>
