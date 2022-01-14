@@ -690,7 +690,12 @@ foam.CLASS({
         List of capabilities whose entries should be ignored when querying capabilityDAO.
       `,
       javaPostSet: `
-        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
+        Object[] caps = getRestrictedCapabilities();
+        if ( caps != null && caps.length > 0 ) {
+          setRestrictedCapabilities_(new HashSet<>(Arrays.asList(caps)));
+        } else {
+          setRestrictedCapabilities_(new HashSet());
+        }
       `,
       writePermissionRequired: true
     },
@@ -734,12 +739,7 @@ foam.CLASS({
       args: 'X x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        String spid = (String) x.get("spid");
-        if ( spid != null &&
-             ! spid.equals(this.getSpid()) ) {
-foam.nanos.logger.Loggers.logger(x, this).warning("authorizeOnRead", spid, this.getId(), this.getSpid());
-          throw new AuthorizationException();
-        }
+      // global read
       `
     },
     {
@@ -747,15 +747,13 @@ foam.nanos.logger.Loggers.logger(x, this).warning("authorizeOnRead", spid, this.
       args: 'X x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null ||
-             ! user.getSpid().equals(this.getSpid()) ) {
-          throw new AuthorizationException();
-        }
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "theme.update."+ this.getId()) ) {
-          throw new AuthorizationException();
-        }
+        if ( auth.check(x, "theme.update."+ this.getId()) ) return;
+        User user = ((Subject) x.get("subject")).getUser();
+        if ( user != null &&
+             user.getSpid().equals(this.getSpid()) )  return;
+
+        throw new AuthorizationException();
      `
     },
     {
