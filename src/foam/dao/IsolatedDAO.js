@@ -60,6 +60,7 @@ foam.CLASS({
     // This is similar to StoreAndForwardDAO, but we only want to override put and remove.
     function put_() { return this.store_(foam.dao.DOP.PUT_, arguments); },
     function remove_() { return this.store_(foam.dao.DOP.REMOVE_, arguments); },
+    function removeAll_() { return this.store_(foam.dao.DOP.REMOVE_ALL_.label, arguments); },
 
     async function store_(dop, args) {
       // Store DAO operations in order.
