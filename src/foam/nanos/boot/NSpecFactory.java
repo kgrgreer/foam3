@@ -152,6 +152,7 @@ public class NSpecFactory
     }
 
     spec_ = spec;
+    if ( ns_ instanceof NanoService ) ((NanoService) ns_).reload();
     if ( ! spec_.getLazy() ) {
       create(x_);
     }

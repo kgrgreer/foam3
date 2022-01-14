@@ -14,6 +14,18 @@ foam.INTERFACE({
       javaThrows: [
         'java.lang.Exception'
       ]
+    },
+    {
+      name: 'reload',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+        //add implementation
+      `
     }
   ]
 });
