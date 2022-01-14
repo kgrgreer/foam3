@@ -13,26 +13,19 @@ process.on('unhandledRejection', function(e) {
 });
 
 // enable FOAM java support.
-globalThis.FOAM_FLAGS = { 'java': true, 'node': true, 'debug': true, 'js': false, 'swift': false };
+globalThis.FOAM_FLAGS = {
+  'java':    true,
+  'genjava': true,
+  'node':    true,
+  'debug':   true,
+  'js':      false,
+  'swift':   false
+};
 
 // Enable FOAMLink mode but only if FOAMLINK_DATA is set in environment
 var foamlinkMode = process.env.hasOwnProperty('FOAMLINK_DATA');
 if ( foamlinkMode ) {
   globalThis.FOAMLINK_DATA = process.env['FOAMLINK_DATA'];
-}
-
-var logger = {};
-logger.debug = () => {};
-
-// Store debug files but only if DEBUG_DATA_DIR is set in environment
-var debugDataDir = null;
-if ( process.env.hasOwnProperty('DEBUG_DATA_DIR') ) {
-  debugDataDir = process.env['DEBUG_DATA_DIR'];
-  logger.debug = (...args) => {
-    fs_.appendFileSync(path_.join(debugDataDir, 'debugLog.jrl'),
-      args.join('p({"type": "debug", "value": ' + JSON.stringify(args) + '})\n')
-    );
-  };
 }
 
 require('../src/foam_node.js');
@@ -45,7 +38,7 @@ if ( ! (
   process.argv.length == 4 ||
   process.argv.length == 5 ||
   process.argv.length == 6 ) ) {
-  console.log("USAGE: genjava.js input-path output-path src-path(optional) files-to-update (optional)");
+  console.log("USAGE: genjava.js input-path output-path src-path(optional) files-to-update(optional)");
   process.exit(1);
 }
 
@@ -61,109 +54,14 @@ if ( process.argv.length > 5  &&
      process.argv[5] !== '--' &&
      process.argv[5] != '' ) {
   incrementalMeta = JSON.parse(process.argv[5]);
-  logger.debug('INCREMENTAL', process.argv[5]);
 }
 
-var indir = process.argv[2];
-indir = path_.resolve(path_.normalize(indir));
-
-/*
-const CLASS_TYPES = [
-  {
-    name: 'classes'
-  },
-  {
-    name: 'abstractClasses'
-  },
-  {
-    name: 'skeletons'
-  },
-  {
-    name: 'proxies'
-  }
-];
-*/
-
-var externalFile    = require(indir);
-
-var classes         = externalFile.classes;
-var abstractClasses = externalFile.abstractClasses;
-var skeletons       = externalFile.skeletons;
-var proxies         = externalFile.proxies;
-
-var blacklist = {}
-externalFile.blacklist.forEach(function(cls) {
-  blacklist[cls] = true;
-});
-
-var fileWhitelist = null;
-var classesNotFound = {};
-var classesFound = {};
-var debugFilesWritten = [];
-
-// Set file whitelist from parsed argument, but only if foamlink is enabled
-if ( incrementalMeta !== null && foamlinkMode ) {
-  fileWhitelist = {}; // set
-  for ( var i = 0; i < incrementalMeta.modified.length; i++ ) {
-    let relativePath = path_.relative(process.cwd(), incrementalMeta.modified[i]);
-    fileWhitelist[relativePath] = true;
-  }
-}
-logger.debug('fileWhitelist', fileWhitelist);
-
-[
-  'FObject',
-  'foam.core.AbstractEnum',
-  'foam.core.AbstractInterface',
-  'foam.core.Property',
-  'foam.core.String',
-
-  // These have hand written java impls so we don't want to clobber them.
-  // TODO: Change gen.sh to prefer hand written java files over generated.
-  'foam.dao.LimitedDAO',
-  'foam.dao.OrderedDAO',
-  'foam.dao.SkipDAO',
-
-  // TODO: These models currently don't compile in java but could be updated to
-  // compile properly.
-  'foam.blob.BlobBlob',
-  'foam.dao.CompoundDAODecorator',
-  'foam.dao.DAOInterceptor',
-  'foam.dao.FlowControl',
-  'foam.dao.sync.SyncRecord',
-  'foam.dao.sync.VersionedSyncRecord',
-  'foam.mlang.Expressions',
-  'foam.nanos.menu.MenuBar',
-
-  'foam.box.Context',
-//  'foam.box.HTTPBox',
-//  'foam.box.SessionClientBox',
-  'foam.box.SocketBox',
-  'foam.box.WebSocketBox',
-  'foam.box.TimeoutBox',
-  'foam.box.RetryBox',
-  'foam.dao.TTLCachingDAO',
-  'foam.dao.CachingDAO',
-  'foam.dao.CompoundDAODecorator',
-  'foam.dao.InterceptedDAO',
-  'foam.dao.DeDupDAO',
-  'foam.dao.IDBDAO',
-  'foam.dao.LoggingDAO',
-  'foam.dao.MDAO',
-  'foam.dao.RequestResponseClientDAO',
-  'foam.dao.SyncDAO',
-  'foam.dao.TimingDAO'
-].forEach(function(cls) {
-  blacklist[cls] = true;
-});
-
-var outdir = process.argv[3];
-outdir = path_.resolve(path_.normalize(outdir));
+var indir = path_.resolve(path_.normalize(process.argv[2]));
 
 function ensurePath(p) {
-  var i = 1 ;
+  var i     = 1 ;
   var parts = p.split(path_.sep);
-  var path = '/' + parts[0];
+  var path  = '/' + parts[0];
 
   while ( i < parts.length ) {
     try {
@@ -177,224 +75,126 @@ function ensurePath(p) {
   }
 }
 
-function loadClass(c) {
-  var path = srcPath;
-
-  if ( foam.Array.isInstance(c) ) {
-    path = path + c[0];
-    c = c[1];
-  }
-
-  if ( ! foam.maybeLookup(c) ) {
-    console.warn("Using fallback model loading; " +
-      "may cause errors for files with multiple definitions.");
-    require(path + c.replace(/\./g, '/') + '.js');
-  }
-
-  cls = foam.lookup(c);
-  return cls;
-}
-
-function generateClass(/* foam Class */ cls) {
-  if ( fileWhitelist !== null ) {
-    let src = cls.model_.source;
-    if ( ! src ) {
-      classesNotFound[cls.id] = true;
-    } else {
-      delete classesNotFound[cls.id];
-      classesFound[cls.id] = true;
-      if ( ! fileWhitelist[src] ) {
-        return;
-      }
-    }
-  }
-
-  var outfile = outdir + path_.sep + cls.model_.id.replace(/\./g, path_.sep) + '.java';
-
-  ensurePath(outfile);
-
-  writeFileIfUpdated(outfile, cls.buildJavaClass().toJavaSource());
-}
-
-function generateAbstractClass(/* String */ cls) {
-  console.log('generating Abstract Class', cls);
-  cls = foam.lookup(cls);
-
-  var outfile = outdir + path_.sep + cls.id.replace(/\./g, path_.sep) + '.java';
-
-  ensurePath(outfile);
-
-  var javaclass = cls.buildJavaClass(foam.java.Class.create({ abstract: true }));
-
-  writeFileIfUpdated(outfile, javaclass.toJavaSource());
-}
-
-function generateSkeleton(/* String */ cls) {
-  console.log('generating Skeleton', cls);
-  cls = foam.lookup(cls);
-
-  var outfile = outdir + path_.sep +
-    cls.package.replace(/\./g, path_.sep) +
-    path_.sep + cls.name + 'Skeleton.java';
-
-  ensurePath(outfile);
-
-  writeFileIfUpdated(outfile, foam.java.Skeleton.create({ of: cls }).buildJavaClass().toJavaSource());
-}
-
-function generateProxy(/* String */ intf) {
-  console.log('generating Proxy', intf);
-
-  intf = foam.maybeLookup(intf);
-
-  var existing = foam.maybeLookup(intf.package + '.Proxy' + intf.name, true);
-
-  if ( existing ) {
-    generateClass(existing);
-    return;
-  }
-
-  var proxy = foam.core.Model.create({
-    package: intf.package,
-    name: 'Proxy' + intf.name,
-    implements: [intf.id],
-    properties: [
-      {
-        class: 'Proxy',
-        of: intf.id,
-        name: 'delegate'
-      }
-    ]
-  });
-
-  proxy.source = intf.model_.source;
-
-  generateClass(proxy.buildClass());
-}
 
 function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
   if (! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == buildJavaSource))) {
-    debugFilesWritten.push(outfile);
     fs_.writeFileSync(outfile, buildJavaSource);
     if ( opt_result !== undefined) opt_result.push(outfile);
   }
 }
 
-var addDepsToClasses = function() {
-  // Determine all of the paths that the modelDAO should search will use when
-  // arequiring all of the classes.
-  var paths = {};
-  paths[srcPath] = true;
-  classes.forEach(function(cls) {
-    if ( foam.Array.isInstance(cls) ) paths[srcPath + cls[0]] = true;
-  });
 
-  // Remove the paths from the entries in classes because the modelDAO should be
-  // able to find them now.
-  classes = classes.map(function(cls) {
-    return foam.Array.isInstance(cls) ? cls[1] : cls;
-  });
+var externalFile  = require(indir);
+var fileWhitelist = null;
 
-  var flagFilter = foam.util.flagFilter(['java']);
-
-  var classloader = foam.__context__.classloader;
-  Object.keys(paths).forEach(function(p) {
-    classloader.addClassPath(p);
-  });
-
-  return (function() {
-    var loadClass = foam.cps.awrap(classloader.load.bind(classloader));
-
-    function collectDeps() {
-      var classMap = {};
-      var classQueue = classes.slice(0);
-      let printCounter = 0;
-      while ( classQueue.length ) {
-        var cls = classQueue.pop();
-        if ( ! classMap[cls] && ! blacklist[cls] ) {
-          console.log('generating', cls);
-          cls = foam.lookup(cls);
-          if ( ! checkFlags(cls.model_) ) continue;
-          classMap[cls.id] = true;
-          cls.getAxiomsByClass(foam.core.Requires).filter(flagFilter).forEach(function(r) {
-            r.javaPath && classQueue.push(r.javaPath);
-          });
-          cls.getAxiomsByClass(foam.core.Implements).filter(flagFilter).forEach(function(r) {
-            classQueue.push(r.path);
-          });
-          if ( cls.model_.extends ) classQueue.push(cls.model_.extends);
-        }
-      }
-      classes = Object.keys(classMap);
-    }
-
-    with ( foam.cps ) {
-      return new Promise(
-        sequence(
-          compose(map(loadClass), value(classes)),
-          wrap(collectDeps)));
-    }
-  })();
-};
-
-function checkFlags(model) {
-  var parent = true;
-
-  if ( model.extends &&
-       ( model.extends != 'foam.core.FObject' && model.extends != 'FObject' ) ) {
-    parent = checkFlags(foam.lookup(model.extends).model_);
+/*
+// Set file whitelist from parsed argument, but only if foamlink is enabled
+if ( incrementalMeta !== null && foamlinkMode ) {
+  fileWhitelist = {}; // set
+  for ( var i = 0; i < incrementalMeta.modified.length; i++ ) {
+    let relativePath = path_.relative(process.cwd(), incrementalMeta.modified[i]);
+    fileWhitelist[relativePath] = true;
   }
-
-  if ( ! parent ) return false;
-
-  if ( model.flags && model.flags.indexOf('java') == -1 ) {
-    return false;
-  }
-
-  return true;
 }
+console.log('**************************** fileWhiteList', fileWhitelist);
+*/
 
-addDepsToClasses().then(function() {
-  classes.forEach(loadClass);
-  abstractClasses.forEach(loadClass);
-  skeletons.forEach(loadClass);
-  proxies.forEach(loadClass);
+const CLASS_TYPES = [
+  {
+    name: 'classes',
+    build: cls => cls.buildJavaClass()
+  },
+  {
+    name: 'abstractClasses',
+    // TODO: needed?
+    build: cls => cls.buildJavaClass(foam.java.Class.create({abstract: true}))
+  },
+  {
+    name: 'skeletons',
+    build: cls => foam.java.Skeleton.create({of: cls}).buildJavaClass()
+  },
+  {
+    name: 'proxies',
+    build: cls => {
+      var proxy = foam.core.Model.create({
+        package: cls.package,
+        name: 'Proxy' + cls.name,
+        implements: [cls.id],
+        properties: [
+          {
+            class: 'Proxy',
+            of: cls.id,
+            name: 'delegate'
+          }
+        ]
+      });
 
-  function deArray(a) { return foam.Array.isInstance(a) ? a[1] : a; }
+      proxy.source = cls.model_.source;
 
-  var javaClasses = classes.map(deArray).map(function(cls) {
-    if ( foam.String.isInstance(cls) ) {
-      cls = foam.lookup(cls);
-    }
-    return cls;
-  });
-
-  javaClasses.map(deArray).forEach(generateClass);
-  abstractClasses.map(deArray).forEach(generateAbstractClass);
-  skeletons.map(deArray).forEach(generateSkeleton);
-  proxies.map(deArray).forEach(generateProxy);
-}).then(function () {
-  var notFound = Object.keys(classesNotFound).length;
-  var found    = Object.keys(classesFound).length;
-
-  if ( notFound > 0 ) {
-    var allKeys = {};
-    for ( k in classesNotFound ) allKeys[k] = true;
-    for ( k in classesFound ) allKeys[k] = true;
-    console.log(`${found}/${Object.keys(allKeys).length} sources found (${notFound} missing)`);
-    console.log(Object.keys(classesNotFound));
-    if ( debugDataDir !== null ) {
-      require('fs').writeFileSync(
-        path_.join(debugDataDir, 'classesWithNoSources.json'),
-        JSON.stringify(Object.keys(classesNotFound)));
+      return proxy.buildClass().buildJavaClass();
     }
   }
+];
 
-  if ( debugDataDir !== null ) {
-    if ( debugFilesWritten.length != 0 ) {
-      require('fs').writeFileSync(
-        path_.join(debugDataDir, 'filesWritten.json'),
-        JSON.stringify(debugFilesWritten));
-      }
+var outdir = process.argv[3];
+outdir = path_.resolve(path_.normalize(outdir));
+
+var extraJavaClasses = [];
+var javaClasses      = [];
+
+foam.__context__ = foam.__context__.createSubContext({
+  registerFactory: function(m, factory) {
+     this.__proto__.registerFactory.call(this, m, factory);
+     extraJavaClasses.push(factory);
   }
 });
+
+
+CLASS_TYPES.forEach(ct => externalFile[ct.name].forEach(clsName => {
+  if ( foam.Array.isInstance(clsName) ) clsName = clsName[1];
+  if ( ! foam.isRegistered(clsName) ) {
+    console.log('Add to files.js: ', "  { name: '" + clsName + "', flags: ['java'] },");
+  }
+}));
+
+
+CLASS_TYPES.forEach(ct => externalFile[ct.name].forEach(clsName => {
+  if ( foam.Array.isInstance(clsName) ) clsName = clsName[1];
+  try {
+    var cls = foam.lookup(clsName);
+
+    javaClasses.push(ct.build(cls));
+  } catch (x) {
+    console.log('Unable to build: ', x, cls, ct.name);
+    process.exit(1);
+  }
+}));
+
+var generatedJava = {};
+var flagFilter = foam.util.flagFilter(['java']);
+
+function generateJava(javaClass) {
+  if ( ! javaClass ) return;
+
+  if ( foam.Function.isInstance(javaClass) ) {
+    javaClass = javaClass();
+  }
+
+  if ( generatedJava[javaClass.id] ) return;
+
+  // Could be Class, Interface or Enum
+  if ( javaClass.buildJavaClass ) {
+    javaClass = javaClass.buildJavaClass();
+  }
+
+  generatedJava[javaClass.id] = true;
+
+  console.log('generating', javaClass.id + '.java');
+  var outfile = outdir + path_.sep + javaClass.id.replace(/\./g, path_.sep) + '.java';
+
+  ensurePath(outfile);
+  writeFileIfUpdated(outfile, javaClass.toJavaSource());
+}
+
+javaClasses.forEach(generateJava);
+extraJavaClasses.forEach(generateJava);

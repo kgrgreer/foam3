@@ -10,7 +10,9 @@ foam.ENUM({
   values: [
     'tiny',
     'small',
+    'smedium',
     'medium',
+    'lmedium',
     'large',
     'xlarge'
   ]

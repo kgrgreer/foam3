@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017,2018 The FOAM Authors. All Rights Reserved.
+ * Copyright 2017 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -279,16 +279,14 @@ foam.CLASS({
       class: 'String',
       name: 'javaFormatJSON',
       value: null
-    },
+    }
   ],
 
   methods: [
-    {
-      name: 'asJavaValue',
-      code: function() {
-        return `${this.forClass_}.${foam.String.constantize(this.name)}`;
-      }
+    function asJavaValue() {
+      return `${this.forClass_}.${foam.String.constantize(this.name)}`;
     },
+
     function createJavaPropertyInfo_(cls) {
       var isID = false;
 
@@ -424,14 +422,16 @@ ${isSet} = false;`
         });
       }
 
-      cls.field({
-        name: constantize,
-        visibility: 'public',
-        static: true,
-        final: true,
-        type: 'foam.core.PropertyInfo',
-        initializer: this.createJavaPropertyInfo_(cls)
-      });
+      if ( ! foam.java.Interface.isInstance(cls) ) {
+        cls.field({
+          name: constantize,
+          visibility: 'public',
+          static: true,
+          final: true,
+          type: 'foam.core.PropertyInfo',
+          initializer: this.createJavaPropertyInfo_(cls)
+        });
+      }
 
       var info = cls.getField('classInfo_');
       if ( info ) info.addAxiom(cls.name + '.' + constantize);
@@ -1003,35 +1003,6 @@ foam.CLASS({
         type: this.javaType,
         value: this.javaValue,
         documentation: this.documentation
-      });
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.java',
-  name: 'ActionJavaRefinement',
-  refines: 'foam.core.Action',
-  flags: ['java'],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'javaCode'
-    }
-  ],
-
-  methods: [
-    function buildJavaClass(cls) {
-      if ( ! this.javaCode ) return;
-
-      cls.method({
-        visibility: 'public',
-        name: this.name,
-        type: 'void',
-        documentation: this.documentation,
-        body: this.javaCode
       });
     }
   ]
@@ -1680,11 +1651,13 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.java',
   name: 'FObjectPropertyJavaRefinement',
   refines: 'foam.core.FObjectProperty',
   flags: ['java'],
+
   properties: [
     ['javaInfoType', 'foam.core.AbstractFObjectPropertyInfo'],
     ['javaCompare',  ''],

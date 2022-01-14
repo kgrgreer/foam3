@@ -2811,6 +2811,15 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'ImageViewRefinement',
+  refines: 'foam.core.Image',
+  requires: [ 'foam.u2.tag.Image' ],
+  properties: [
+    [ 'view', { class: 'foam.u2.tag.Image' } ]
+  ]
+});
 
 foam.CLASS({
   package: 'foam.u2',
