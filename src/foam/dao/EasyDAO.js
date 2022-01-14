@@ -84,8 +84,7 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
-    'java.util.List',
-    'foam.nanos.ndiff.NDiffDAO'
+    'java.util.List'
   ],
 
   constants: [
@@ -194,20 +193,6 @@ foam.CLASS({
             "Interface decorators need to be disabled on the higher level of the decorator chain " +
             "if you are trying to prevent the decorators to be triggered multiple times"
           );
-        }
-
-        // listen for further changes to journaled nspec entries
-        // and forward them to NDiffDAO
-        // (this should ONLY be enabled for nspecs that have journals!)
-        if ( getNSpec() != null &&
-             getJournalType().equals(JournalType.SINGLE_JOURNAL) &&
-             ! getWriteOnly() &&
-             getFixedSize() == null ) {
-          delegate = new NDiffDAO.Builder(getX())
-                      .setDelegate(delegate)
-                      .setNSpecName(getNSpec().getName())
-                      .setRuntimeOrigin(true)
-                      .build();
         }
 
         if ( getCluster() &&

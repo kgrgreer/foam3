@@ -57,7 +57,8 @@ foam.CLASS({
     },
     {
       name: 'select_',
-      javaCode: ` 
+      javaCode: `
+        Logger logger = Loggers.logger(x, this);
         Sink originalSink = prepareSink(sink);
 
         // originalSink exists because we need to return the original sink later
@@ -70,15 +71,35 @@ foam.CLASS({
         ourSink = new ProxySink(x, ourSink) {
           public void put(Object obj, Detachable sub) {
             NDiff ndiff = (NDiff)( ((NDiff)obj).fclone() );
-            
             FObject initialFObject = ndiff.getInitialFObject();
-            FObject runtimeFObject = ndiff.getRuntimeFObject();
-            var delta =
-              // runtimeFObject will only be put when an object is updated
-              (initialFObject != null && runtimeFObject == null && ndiff.getDeletedAtRuntime()) ||
-              (initialFObject != null && runtimeFObject != null && !initialFObject.equals(runtimeFObject));
+          
+            // rare - but there's a chance it'll happen
+            if (initialFObject != null) {
+              
+              // we grab the runtime object as a select is running
+              String nSpecName = ndiff.getNSpecName();
+              DAO dao = (DAO)x.get(nSpecName);
 
-            ndiff.setDelta(delta);
+              if (dao != null) {
+                Object id = initialFObject.getProperty("id");
+                if (id != null) {
+                  FObject runtimeFObject = dao.find(id);
+
+                  var deletedAtRuntime = runtimeFObject == null;
+
+                  ndiff.setDeletedAtRuntime(deletedAtRuntime);
+                  ndiff.setDelta(deletedAtRuntime || !initialFObject.equals(runtimeFObject));
+                  if (!deletedAtRuntime) {
+                    ndiff.setRuntimeFObject(runtimeFObject);
+                  }
+                }
+                else {
+                  logger.warning("No ID for initialFObject",initialFObject);  
+                }
+              } else {
+                logger.warning("NDiff points to missing dao", nSpecName);
+              }
+            }
 
             super.put(ndiff,sub);
           }
