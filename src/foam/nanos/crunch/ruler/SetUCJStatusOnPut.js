@@ -63,12 +63,6 @@ foam.CLASS({
               ucj.setStatus(CapabilityJunctionStatus.APPROVED);
             } else if ( chainedStatus == CapabilityJunctionStatus.GRANTED && reviewRequired ) {
               ucj.setStatus(wasApproved ? CapabilityJunctionStatus.GRANTED : CapabilityJunctionStatus.PENDING);
-
-            // Change a previously saved onboarding remains ACTION_REQUIRED to
-            // a GRANTED state after filling out the rest of the information in
-            // a wizard and submitting it
-            } else if ( chainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED && reviewRequired ) {
-              ucj.setStatus(CapabilityJunctionStatus.GRANTED);
             }
           }
         }, "set ucj status on put");
