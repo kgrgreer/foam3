@@ -18,15 +18,15 @@ p({
         const IsolatedDAO = foam.dao.IsolatedDAO;
         const TimeHMS = foam.nanos.cron.TimeHMS;
 
-        const dao = ArrayDAO.create({ of: 'foam.nanos.cron.TimeHMS' });
-        isolatedDao = IsolatedDAO.create({
+        let arrayDAO = ArrayDAO.create({ of: 'foam.nanos.cron.TimeHMS' });
+        dao = IsolatedDAO.create({
             of: 'foam.nanos.cron.TimeHMS',
-            delegate: dao
+            delegate: arrayDAO
         });
 
-        isolatedDao.put(TimeHMS.create({ hour: 1 }));
-        test(dao.array.length == 0, "delegate put not called immediately");
-        await isolatedDao.commit();
-        test(dao.array.length != 0, "delegate put called after commit");
+        dao.put(TimeHMS.create({ hour: 1 }));
+        test(arrayDAO.array.length == 0, "delegate put not called immediately");
+        await dao.cmd(IsolatedDAO.COMMIT);
+        test(arrayDAO.array.length != 0, "delegate put called after commit");
     `
 })

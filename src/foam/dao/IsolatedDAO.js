@@ -9,10 +9,24 @@ foam.CLASS({
   name: 'IsolatedDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  todo: [
+    'put/remove should affect local select/find before commit',
+    'commit() could be safer with a lock',
+    'java implementation'
+  ],
+
   documentation: `
     Stores a DAO operation but does not call the delegate until
     commit() is called.
   `,
+
+  constants: [
+    {
+      name: 'COMMIT',
+      type: 'String',
+      value: 'foam.dao.IsolatedDAO.COMMIT'
+    }
+  ],
 
   classes: [
     {
@@ -20,9 +34,10 @@ foam.CLASS({
 
       properties: [
         {
-          class: 'String',
-          name: 'methodName',
-          documentation: 'DAO method name associated with operation.'
+          class: 'Enum',
+          of: 'foam.dao.DOP',
+          name: 'dop',
+          documentation: 'DAO method associated with operation.'
         },
         {
           name: 'args',
@@ -43,8 +58,8 @@ foam.CLASS({
 
   methods: [
     // This is similar to StoreAndForwardDAO, but we only want to override put and remove.
-    function put_() { return this.store_(foam.dao.DOP.PUT_.label, arguments); },
-    function remove_() { return this.store_(foam.dao.DOP.REMOVE_.label, arguments); },
+    function put_() { return this.store_(foam.dao.DOP.PUT_, arguments); },
+    function remove_() { return this.store_(foam.dao.DOP.REMOVE_, arguments); },
 
     async function store_(methodName, args) {
       // Store DAO operations in order.
@@ -59,7 +74,17 @@ foam.CLASS({
     },
     async function commit() {
       for ( let op of this.q_ ) {
-        await this.delegate[op.methodName].apply(this.delegate, op.args);
+        await this.delegate[op.dop.label].apply(this.delegate, op.args);
+      }
+      this.q_ = [];
+    },
+    {
+      name: 'cmd_',
+      code: function (x, obj) {
+        if ( obj == this.COMMIT ) {
+          return this.commit();
+        }
+        return this.delegate.cmd_(x, obj)
       }
     }
   ]
