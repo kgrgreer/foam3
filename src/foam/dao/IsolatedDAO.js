@@ -27,7 +27,7 @@ foam.CLASS({
         {
           documentation: 'Arguments object associated with operation.',
           name: 'args',
-        },
+        }
       ]
     }
   ],
@@ -39,7 +39,7 @@ foam.CLASS({
       // of: 'DAOOperation',
       documentation: 'Queue for pending DAO operations.',
       name: 'q_',
-    },
+    }
   ],
 
   methods: [

@@ -21,7 +21,7 @@ p({
         const dao = ArrayDAO.create({ of: 'foam.nanos.cron.TimeHMS' });
         isolatedDao = IsolatedDAO.create({
             of: 'foam.nanos.cron.TimeHMS',
-            delegate: dao,
+            delegate: dao
         });
 
         isolatedDao.put(TimeHMS.create({ hour: 1 }));
