@@ -21,12 +21,12 @@ foam.CLASS({
       properties: [
         {
           class: 'String',
-          documentation: 'DAO method name associated with operation.',
           name: 'methodName',
+          documentation: 'DAO method name associated with operation.'
         },
         {
-          documentation: 'Arguments object associated with operation.',
           name: 'args',
+          documentation: 'Arguments object associated with operation.'
         }
       ]
     }
@@ -36,9 +36,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'FObject',
-      // of: 'DAOOperation',
-      documentation: 'Queue for pending DAO operations.',
       name: 'q_',
+      documentation: 'Queue for pending DAO operations.'
     }
   ],
 
@@ -51,7 +50,7 @@ foam.CLASS({
       // Store DAO operations in order.
       var op = this.DAOOperation.create({
         methodName: methodName,
-        args: args,
+        args: args
       });
       this.q_.push(op);
 
