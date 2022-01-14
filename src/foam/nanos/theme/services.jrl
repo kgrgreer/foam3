@@ -7,13 +7,13 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.theme.Theme.getOwnClassInfo())
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("themeDAO"))
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("themes")
       .setDecorator(new foam.nanos.theme.ThemeDomainsDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, foam.nanos.theme.Theme.getOwnClassInfo())).build())
       .setPm(true)
       .setServiceProviderAware(false)
+      .setPermissioned(true)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.theme.Theme.NAME, foam.nanos.auth.GroupPermissionJunction.TARGET_ID});
   """,
