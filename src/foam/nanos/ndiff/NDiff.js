@@ -15,7 +15,9 @@ foam.CLASS({
     'nSpecName',
     'objectId',
     'delta',
-    'deletedAtRuntime'
+    'deletedAtRuntime',
+    'apply',
+    'compare'
   ],
   ids: ['nSpecName', 'objectId'],
   properties: [
@@ -31,6 +33,7 @@ foam.CLASS({
     {
       name: 'delta',
       class: 'Boolean',
+      tableWidth: 25,
       documentation: `
         Set to true if a difference was detected.
       `
@@ -38,6 +41,7 @@ foam.CLASS({
     {
       name: 'deletedAtRuntime',
       class: 'Boolean',
+      tableWidth: 25,
       documentation: `
         Set to true if a repo entry was deleted at runtime.
       `
@@ -60,11 +64,13 @@ foam.CLASS({
     },
     {
       name: 'applyOriginal',
+      label: 'Should Apply Original',
       class: 'Boolean',
       visibility: 'HIDDEN',
       documentation: `
         Client-side will set this true when they want to store
         the initialFObject to its respective DAO.
+        The flag will then automatically be set to false.
         `,
       storageTransient: true,
     },
@@ -90,6 +96,7 @@ foam.CLASS({
     {
       name: 'apply',
       label: 'Apply Original',
+      tableWidth: 25,
       confirmationRequired: function() {
         return true;
       },
@@ -103,7 +110,8 @@ foam.CLASS({
     },
     {
       name: 'compare',
-      label: 'Compare changes',
+      label: 'Compare Changes',
+      tableWidth: 25,
       isEnabled: function(delta) {
         return this.hasDelta();
       },
