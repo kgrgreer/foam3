@@ -21,6 +21,7 @@ foam.CLASS({
   properties: [
     {
       name: 'nSpecName',
+      label: 'NSpec',
       class: 'String',
     },
     {
@@ -32,16 +33,14 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `
         Set to true if a difference was detected.
-        `,
-      storageTransient: false,
+      `
     },
     {
       name: 'deletedAtRuntime',
       class: 'Boolean',
       documentation: `
         Set to true if a repo entry was deleted at runtime.
-        `,
-      storageTransient: false,
+      `
     },
     {
       name: 'initialFObject',
@@ -62,14 +61,31 @@ foam.CLASS({
     {
       name: 'applyOriginal',
       class: 'Boolean',
+      visibility: 'HIDDEN',
       documentation: `
         Client-side will set this true when they want to store
         the initialFObject to its respective DAO.
         `,
-      storageTransient: false,
+      storageTransient: true,
     },
   ],
 
+  methods: [
+    {
+      name: 'hasDelta',
+      code: function() {
+        // here temporarily because reading the delta flag
+        // is unreliable -- see TODO in NDiffRuntimeDAO
+        return (this.initialFObject &&
+                ! this.runtimeFObject &&
+                this.deletedAtRuntime)
+                ||
+                (this.initialFObject &&
+                 this.runtimeFObject &&
+                 ! foam.util.equals(this.initialFObject, this.runtimeFObject));
+      }
+    }
+  ],
   actions: [
     {
       name: 'apply',
@@ -78,7 +94,7 @@ foam.CLASS({
         return true;
       },
       isEnabled: function(delta) {
-        return ! delta;
+        return this.hasDelta();
       },
       code: function(X) {
         this.applyOriginal = true;
@@ -89,7 +105,7 @@ foam.CLASS({
       name: 'compare',
       label: 'Compare changes',
       isEnabled: function(delta) {
-        return delta;
+        return this.hasDelta();
       },
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.StyledModal.create({ title: 'Comparison' }, this)
