@@ -19,7 +19,7 @@ foam.CLASS({
     'memento',
     'stack',
     'translationService',
-    'subject'
+    'user'
   ],
 
   requires: [
@@ -97,14 +97,14 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function(X) {
-        if ( this.subject.realUser.twoFactorEnabled ) {
+        if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
         } else {
-          if ( ! this.subject.realUser.emailVerified ) {
+          if ( ! this.user.emailVerified ) {
             await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
@@ -112,7 +112,7 @@ foam.CLASS({
           } else {
             if ( ! this.memento || this.memento.value.length === 0 )
               window.location.hash = '';
-            this.loginSuccess = !! this.subject;
+            this.loginSuccess = !! this.user;
           }
         }
       }
@@ -141,7 +141,6 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
-              
               if ( this.token_ ) {
                 logedInUser.signUpToken = this.token_;
                 this.dao_.put(logedInUser)

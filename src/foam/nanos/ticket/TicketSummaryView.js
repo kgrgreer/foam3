@@ -23,7 +23,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'subject'
+    'user'
   ],
 
   exports: [
@@ -49,7 +49,7 @@ foam.CLASS({
     {
       name: 'dao',
       factory: function() {
-        return this.subject.user.tickets;
+        return this.user.tickets;
       }
     },
     {

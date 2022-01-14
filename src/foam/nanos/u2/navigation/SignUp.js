@@ -22,7 +22,7 @@ foam.CLASS({
     'stack',
     'translationService',
     'theme',
-    'subject'
+    'user',
   ],
 
   requires: [
@@ -179,7 +179,7 @@ foam.CLASS({
     {
       name: 'finalRedirectionCall',
       code: async function(x) {
-        if ( this.subject.user.emailVerified ) {
+        if ( this.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
           // thus thier user.emailVerified should be true and they can simply login from here.
           window.history.replaceState(null, null, window.location.origin);
@@ -224,9 +224,7 @@ foam.CLASS({
             language: this.defaultUserLanguage()
           }))
           .then(async (user) => {
-            this.subject.realUser = user;
-            this.subject.user = user;
-
+            this.user.copyFrom(user);
             await this.updateUser(x);
 
             this.ctrl.add(this.NotificationMessage.create({
