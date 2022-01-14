@@ -288,6 +288,7 @@ FOAM_FILES([
   { name: "foam/dao/KeyValueDAO", flags: [ "java" ] },
   { name: "foam/dao/ReadOnlyDAO", flags: [ "java" ] },
   { name: "foam/dao/StoreAndForwardDAO" },
+  { name: "foam/dao/IsolatedDAO" },
   { name: "foam/dao/Journal", flags: [ "java" ] },
   { name: "foam/dao/CompositeJournal", flags: [ "java" ] },
   { name: "foam/dao/AbstractFileJournal", flags: [ "java" ] },
