@@ -640,101 +640,121 @@ foam.LIB({
   constants: {
 
     // Pretty Print
-    Pretty: foam.json.Outputter.create({
-      strict: false
-    }),
+    Pretty: function() {
+      return foam.json.Outputter.create({
+        strict: false
+      })
+    },
 
     // Strict means output as proper JSON.
-    Strict: foam.json.Outputter.create({
-      pretty: false,
-      strict: true
-    }),
+    Strict: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: true
+      })
+    },
 
     // Pretty and proper JSON.
-    PrettyStrict: foam.json.Outputter.create({
-      pretty: true,
-      strict: true
-    }),
+    PrettyStrict: function() {
+      return foam.json.Outputter.create({
+        pretty: true,
+        strict: true
+      })
+    },
 
     // Compact output (not pretty)
-    Compact: foam.json.Outputter.create({
-      pretty: false,
-      strict: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false
-    }),
+    Compact: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false
+      })
+    },
 
     // Shorter than Compact (uses short-names if available)
-    Short: foam.json.Outputter.create({
-      pretty: false,
-      strict: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false
-    }),
+    Short: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false
+      })
+    },
 
     // Short, but exclude network-transient properties.
-    Network: foam.json.Outputter.create({
-      pretty: false,
-      strict: true,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: true,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false,
-      // TODO: Currently faster to use strict JSON and native JSON.parse
-      convertUnserializableToStubs: true,
-      propertyPredicate: function(o, p) { return ! p.networkTransient; }
-    }),
+    Network: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: true,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: true,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false,
+        // TODO: Currently faster to use strict JSON and native JSON.parse
+        convertUnserializableToStubs: true,
+        propertyPredicate: function(o, p) { return ! p.networkTransient; }
+      })
+    },
 
     // Short, but exclude network-transient properties.
-    Dig: foam.json.Outputter.create({
-      pretty: true,
-      strict: false,
-      formatDatesAsNumbers: false,
-      outputDefaultValues: true,
-      useShortNames: false,
-      convertUnserializableToStubs: true,
-      propertyPredicate: function(o, p) { return ! p.externalTransient && ! p.networkTransient; }
-    }),
+    Dig: function() {
+      return foam.json.Outputter.create({
+        pretty: true,
+        strict: false,
+        formatDatesAsNumbers: false,
+        outputDefaultValues: true,
+        useShortNames: false,
+        convertUnserializableToStubs: true,
+        propertyPredicate: function(o, p) { return ! p.externalTransient && ! p.networkTransient; }
+      })
+    },
 
     // Short, but exclude storage-transient properties.
-    Storage: foam.json.Outputter.create({
-      pretty: false,
-      strict: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false,
-      propertyPredicate: function(o, p) { return ! p.storageTransient; }
-    }),
+    Storage: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false,
+        propertyPredicate: function(o, p) { return ! p.storageTransient; }
+      })
+    },
 
     // Short, but exclude storage-transient properties and is proper JSON.
-    StorageStrict: foam.json.Outputter.create({
-      pretty: false,
-      strict: true,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false,
-      propertyPredicate: function(o, p) { return ! p.storageTransient; }
-    }),
+    StorageStrict: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: true,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false,
+        propertyPredicate: function(o, p) { return ! p.storageTransient; }
+      })
+    },
 
     // Short, but exclude cluster-transient properties.
-    Cluster: foam.json.Outputter.create({
-      pretty: false,
-      strict: false,
-      formatDatesAsNumbers: true,
-      outputDefaultValues: false,
-      // TODO: No deserialization support for shortnames yet.
-      //      useShortNames: true,
-      useShortNames: false,
-      propertyPredicate: function(o, p) { return ! p.clusterTransient; }
-    })
+    Cluster: function() {
+      return foam.json.Outputter.create({
+        pretty: false,
+        strict: false,
+        formatDatesAsNumbers: true,
+        outputDefaultValues: false,
+        // TODO: No deserialization support for shortnames yet.
+        //      useShortNames: true,
+        useShortNames: false,
+        propertyPredicate: function(o, p) { return ! p.clusterTransient; }
+      })
+    }
   },
 
   methods: [
