@@ -61,16 +61,16 @@ foam.CLASS({
     function put_() { return this.store_(foam.dao.DOP.PUT_, arguments); },
     function remove_() { return this.store_(foam.dao.DOP.REMOVE_, arguments); },
 
-    async function store_(methodName, args) {
+    async function store_(dop, args) {
       // Store DAO operations in order.
       var op = this.DAOOperation.create({
-        methodName: methodName,
+        dop: dop,
         args: args
       });
       this.q_.push(op);
 
       // Always succeed
-      return args[0];
+      return args[args.length - 1];
     },
     async function commit() {
       for ( let op of this.q_ ) {

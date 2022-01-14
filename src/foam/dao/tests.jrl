@@ -16,17 +16,34 @@ p({
     code: `
         const ArrayDAO = foam.dao.ArrayDAO;
         const IsolatedDAO = foam.dao.IsolatedDAO;
-        const TimeHMS = foam.nanos.cron.TimeHMS;
+        const Model = foam.core.Model;
+        const e = foam.mlang.Expressions.create();
 
-        let arrayDAO = ArrayDAO.create({ of: 'foam.nanos.cron.TimeHMS' });
+        // Test put only
+        let arrayDAO = ArrayDAO.create({ of: 'foam.core.Model' });
         dao = IsolatedDAO.create({
-            of: 'foam.nanos.cron.TimeHMS',
+            of: 'foam.core.Model',
             delegate: arrayDAO
         });
 
-        dao.put(TimeHMS.create({ hour: 1 }));
+        dao.put(Model.create({ id: 'TestA' }));
         test(arrayDAO.array.length == 0, "delegate put not called immediately");
         await dao.cmd(IsolatedDAO.COMMIT);
         test(arrayDAO.array.length != 0, "delegate put called after commit");
+
+        // Test put and remove
+        arrayDAO = ArrayDAO.create({ of: 'foam.core.Model' });
+        dao = IsolatedDAO.create({
+            of: 'foam.core.Model',
+            delegate: arrayDAO
+        });
+
+        dao.put(Model.create({ name: 'test_1' }));
+        dao.put(Model.create({ name: 'test_2' }));
+        dao.put(Model.create({ name: 'test_3' }));
+        dao.remove(Model.create({ name: 'test_1' }));
+        test(arrayDAO.array.length == 0, "delegate put/remove not called immediately");
+        await dao.cmd(IsolatedDAO.COMMIT);
+        test(arrayDAO.array.length == 2, "state after commit matches mixed DAO operations");
     `
 })
