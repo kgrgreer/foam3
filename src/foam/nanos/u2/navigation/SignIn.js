@@ -141,12 +141,13 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
-              
+
               if ( this.token_ ) {
                 logedInUser.signUpToken = this.token_;
                 this.dao_.put(logedInUser)
                   .then(updatedUser => {
-                    this.user.copyFrom(updatedUser);
+                    this.subject.user = updatedUser;
+                    this.subject.realUser = updatedUser;
                     this.nextStep();
                   }).catch(err => {
                     this.ctrl.add(this.NotificationMessage.create({
@@ -156,7 +157,8 @@ foam.CLASS({
                     }));
                   });
               } else {
-                this.user.copyFrom(logedInUser);
+                this.subject.user = logedInUser;
+                this.subject.realUser = logedInUser;
                 this.nextStep();
               }
             }
