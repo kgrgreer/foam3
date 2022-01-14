@@ -1,0 +1,13 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.theme",
+  "label":"Themes",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"themeDAO"
+    }
+  },
+  "parent":"admin"
+})
