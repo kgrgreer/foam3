@@ -24,7 +24,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'ticketDAO',
-    'user',
+    'subject',
     'hideSummary',
     'stack'
   ],
@@ -160,7 +160,7 @@ foam.CLASS({
     'submitAsPopUp',
     {
       name: 'dao',
-      factory: function() { return this.user.tickets; }
+      factory: function() { return this.subject.user.tickets; }
     },
     {
       class: 'String',
@@ -267,7 +267,7 @@ foam.CLASS({
         var ticket = this.Ticket.create({
           requestorEmail: this.requestorEmail,
           requestorName: this.requestorName,
-          userId: this.user.id,
+          userId: this.subject.user.id,
           subject: this.subject,
           status: this.status
         });
@@ -275,7 +275,7 @@ foam.CLASS({
         this.dao.put(ticket).then(function(ticket) {
           if (self.message == "") return;
           var message = self.TicketMessage.create({
-            senderId: self.user.id,
+            senderId: self.subject.user.id,
             dateCreated: new Date(),
             message: self.message,
             type: 'Internal'

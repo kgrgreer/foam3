@@ -310,7 +310,7 @@ foam.CLASS({
             }))
             .start()
               .addClass('h300')
-              .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
+              .translate(wizardlet.id+'.name', wizardlet.title)
             .end();
         }));
     },

@@ -185,6 +185,7 @@ FOAM_FILES([
   { name: "foam/nanos/menu/Menu" },
   { name: "foam/nanos/menu/MenuBar" },
   { name: "foam/nanos/menu/PopupMenu" },
+  { name: "foam/nanos/menu/SequenceMenu" },
   { name: "foam/nanos/menu/SubMenu" },
   { name: "foam/nanos/menu/SubMenuView" },
   { name: "foam/nanos/menu/TabsMenu" },
@@ -282,6 +283,12 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/test/MedusaTestObject' },
   { name: 'foam/nanos/medusa/test/MedusaTestObjectDIGBenchmark' },
   { name: 'foam/nanos/medusa/test/MedusaTestObjectDistributedDIGBenchmarkRunner' },
+
+  { name: 'foam/nanos/ndiff/NDiff' },
+  { name: 'foam/nanos/ndiff/NDiffJournal' },
+  { name: 'foam/nanos/ndiff/NDiffDAO' },
+  { name: 'foam/nanos/ndiff/NDiffRuntimeDAO' },
+
   { name: 'foam/nanos/security/KeyStoreManager' },
   { name: 'foam/nanos/benchmark/UUIDBenchmark' },
   { name: "foam/nanos/u2/navigation/TopNavigation", flags: ['web'] },
