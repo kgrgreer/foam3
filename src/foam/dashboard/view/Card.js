@@ -116,7 +116,7 @@ foam.CLASS({
         start('div').
         addClass(this.myClass('content')).
         tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, null, this, this.__subSubContext__);
+          return foam.u2.ViewSpec.createView(data$currentView, {obj: this.data.obj}, this, this.__subSubContext__);
         })).
         end('div');
     }
