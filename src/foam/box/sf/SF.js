@@ -175,9 +175,8 @@ foam.CLASS({
         if ( fobject instanceof SFEntry ) {
           entry = (SFEntry) fobject;
         } else {
-          entry = new SFEntry.Builder(getX())
-            .setObject(fobject)
-            .build();
+          entry = new SFEntry(getX());
+          entry.setObject(fobject);
         }
         entry.setCreated(new Date());
 
