@@ -9,6 +9,13 @@ foam.CLASS({
   name: 'Sequence',
   extends: 'foam.core.Fluent',
 
+  documentation: `
+    Sequence creates and executes ContextAgents in the order specified, passing
+    each ContextAgent's export context to the subsequent ContextAgent.
+    If method execute() of the ContextAgent returns a context explicitly, then
+    this will be used instead of the export context.
+  `,
+
   implements: [
     'foam.core.ContextAgent',
     'foam.mlang.Expressions'
