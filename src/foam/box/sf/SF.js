@@ -431,14 +431,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'makeFileName',
-      args: 'int suffix',
-      javaType: 'String',
-      javaCode: `
-        return getFileName() + "." + suffix;
-      `
-    },
-    {
       name: 'getFileSuffix',
       documentation: 'help method to get suffix from file name',
       javaType: 'int',
