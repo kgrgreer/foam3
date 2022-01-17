@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
+    'foam.nanos.logger.Loggers',
     'foam.dao.Sink',
   ],
   
@@ -31,23 +32,14 @@ foam.CLASS({
       args: 'X agencyX, foam.nanos.ruler.Rule rule',
       type: 'foam.dao.Sink',
       javaCode: `
-        DAO sfDAO = (DAO) agencyX.get("SFDAO");
-        Sink sink = (Sink)sfDAO.find_(agencyX, getSfId());
-        if ( sink == null ) throw new RuntimeException("SFId: " + getSfId() + " Not Found!!");
+        SFManager sfManager = (SFManager) agencyX.get("SFManager");
+        Sink sink = (Sink) sfManager.getSfs().get(getSfId());
+        if ( sink == null ) {
+          Loggers.logger(agencyX, this).error("SAF Sink not found, SFId", getSfId());
+          throw new RuntimeException("SAF Sink not found");
+         }
         return sink;
       `
     }
   ],
-  
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-          `
-        }));
-      }
-    }
-  ]
 });

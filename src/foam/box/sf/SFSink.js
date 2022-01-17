@@ -25,13 +25,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.Sink',
       name: 'delegate',
-      transient: true,
-      javaSetter: `
-        if ( ! delegateIsSet_ ) {
-          delegate_ = val;
-          delegateIsSet_ = true;
-        }
-      `
+      transient: true
     }
   ],
   
@@ -66,7 +60,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+      throw new RuntimeException("SFSink do not implement 'remove' method");
       `
     },
     {
@@ -74,7 +68,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+      throw new RuntimeException("SFSink do not implement 'remove' method");
       `    
     },
     {
@@ -82,7 +76,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("HttpSFSink do not implement 'remove' method");
+      throw new RuntimeException("SFSink do not implement 'remove' method");
       `
     }
   ]

@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.lib.NetworkPropertyPredicate',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.StoragePropertyPredicate',
+    'foam.nanos.logger.Loggers',
     'java.nio.file.*',
     'java.nio.file.attribute.*',
     'java.io.IOException',
@@ -69,7 +70,8 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'timeWindow',
-      documentation: 'In second. if -1, replay everything',
+      units: 's',
+      documentation: 'When app starts, replay entries in timeWindow ago from now(the time that app starts)',
       value: 240
     },
     {
@@ -133,7 +135,7 @@ foam.CLASS({
     {
       name: 'createWriteJournal',
       args: 'String fileName',
-      documentation: 'help function for create a journal',
+      documentation: 'helper function to create the SAF journal',
       javaType: 'SFFileJournal',
       javaCode: `
         SFFileJournal journal = new SFFileJournal.Builder(getX())
@@ -261,7 +263,10 @@ foam.CLASS({
         if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
         else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
         else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
-        else throw new RuntimeException("DelegateObject do not support");
+        else {
+          Loggers.logger(getX(), this).error("DelegateObject type not supported", delegate.getClass().getName());
+          throw new RuntimeException("DelegateObject type not supported");
+        }
       `
     },
     {
