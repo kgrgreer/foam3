@@ -17,12 +17,6 @@ foam.INTERFACE({
     },
     {
       name: 'reload',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
       javaCode: `
         //add implementation
       `
