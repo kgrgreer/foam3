@@ -162,12 +162,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['userName', 'type'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
-              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
-            );
-          },
+          query: 'userName=="kristina"',
           errorMessage: 'USERNAME_REQUIRED'
         }
       ],

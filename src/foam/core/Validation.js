@@ -10,17 +10,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'predicateFactory'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.mlang.predicate.Predicate',
-      name: 'predicate',
-      expression: function(predicateFactory) {
-        return predicateFactory ?
-          predicateFactory(foam.mlang.ExpressionsSingleton.create()) :
-          null;
-      }
+      class: 'String',
+      name: 'query'
     },
     {
       class: 'StringArray',
@@ -31,9 +22,10 @@ foam.CLASS({
       // TODO: it isn't normal for JS functions to have a 'js' prefix
       // TODO: poor choice of name, should be something with 'assert'
       name: 'jsFunc',
-      expression: function(predicate, jsErr) {
+      expression: function(query, jsErr) {
         return function() {
-          if ( ! predicate.f(this) ) return jsErr(this);
+          var predicate = foam.parse.FScript.create({of: this.cls_}).parseString(query);
+          if ( predicate !== undefined && ! predicate.f(this) ) return jsErr(this);
         };
       }
     },
@@ -61,6 +53,7 @@ foam.CLASS({
       name: 'jsErr',
       expression: function(errorString, errorMessage) {
         return function(obj) {
+        debugger;
           if ( errorMessage && obj ) {
             if ( obj[errorMessage] ) return obj[errorMessage];
             console.warn('Error finding message', errorMessage, '. No such message on object.', obj);
