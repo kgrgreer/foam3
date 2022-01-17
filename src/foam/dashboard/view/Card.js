@@ -110,7 +110,7 @@ foam.CLASS({
         end().
         start().
           style({ float: 'right' }).
-          add(this.data.configView$).
+          tag(this.data.configView).
         end().
         end('div').
         start('div').
