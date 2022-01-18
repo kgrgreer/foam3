@@ -76,8 +76,9 @@ foam.CLASS({
       class: 'Int',
       name: 'timeWindow',
       units: 's',
-      documentation: 'When app starts, replay entries in timeWindow ago from now(the time that app starts)',
-      value: 240
+      documentation: `When app starts, replay entries in timeWindow ago from now(the time that app starts).
+                      if -1, no using timeWindow`,
+      value: -1
     },
     {
       class: 'Boolean',

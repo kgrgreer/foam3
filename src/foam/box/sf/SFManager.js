@@ -29,6 +29,8 @@ foam.CLASS({
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.MedusaType',
     'foam.nanos.medusa.Status',
+    'foam.util.retry.RetryStrategy',
+    'foam.util.retry.RetryForeverStrategy',
     'java.util.PriorityQueue',
     'java.util.concurrent.TimeUnit',
     'java.util.concurrent.locks.ReentrantLock',
@@ -58,6 +60,27 @@ foam.CLASS({
       javaFactory: `
       return foam.util.SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
       `
+    },
+    {
+      class: 'Int',
+      name: 'medusaTimeWindow',
+      units: 's',
+      value: -1
+    },
+    {
+      name: 'medusaRetryStrategy',
+      class: 'FObjectProperty',
+      of: 'foam.util.retry.RetryStrategy',
+      javaFactory: `
+        return (new RetryForeverStrategy.Builder(null))
+          .setRetryDelay(1000)
+          .build();
+      `
+    },
+    {
+      class: 'Int',
+      name: 'medusaFileCapacity',
+      value: 4096
     },
     {
       class: 'String',
@@ -212,8 +235,9 @@ foam.CLASS({
                 SF sf = new SFMedusaClientDAO.Builder(context)
                           .setId(config.getId())
                           .setFileName(config.getId())
-                          .setTimeWindow(3600)
-                          .setFileCapacity(1000)
+                          .setTimeWindow(getMedusaTimeWindow())
+                          .setFileCapacity(getMedusaFileCapacity())
+                          .setRetryStrategy(getMedusaRetryStrategy())
                           .setMyConfig(myConfig)
                           .setToConfig(config)
                           .setManager(manager)
