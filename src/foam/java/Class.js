@@ -280,4 +280,4 @@ foam.CLASS({
       return output.buf_;
     }
   ]
-})
+});

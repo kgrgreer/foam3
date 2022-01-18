@@ -157,12 +157,13 @@ foam.CLASS({
             isLoaded: true,
             customView: {
               class: 'foam.u2.view.MultiChoiceView',
-              choices$: this.choices$,
+              choices$: this.slot(function(choices) { return choices.sort(); }),
               isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,
-              maxSelected$: this.max$
+              maxSelected$: this.max$,
+              choiceView: { class: 'foam.u2.view.CardSelectView', largeCard: true }
             }
           })
         ];

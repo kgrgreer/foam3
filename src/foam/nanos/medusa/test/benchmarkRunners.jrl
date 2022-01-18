@@ -5,3 +5,21 @@ p({
   oneTimeSetup:true,
   benchmarkId:"MedusaTestObjectDIGBenchmark"
 })
+p({
+  class:"foam.nanos.medusa.test.MedusaTestObjectDistributedDIGBenchmarkRunner",
+  id:"MedusaTestObjectDistributedDIGBenchmarkRunner",
+  runPerThread:false,
+  oneTimeSetup:true,
+  clusterable:false,
+  benchmarkId:"MedusaTestObjectDIGBenchmark",
+  digBenchmark:{
+    class:"foam.nanos.dig.bench.DIGBenchmark",
+    name:"DIGBenchmark",
+    setupUrl:"",
+    setupPassword:"adminAb1",
+    urls:[
+      "https://chimera.hughes.lan:8443",
+      "https://morpheus.hughes.lan:8443"
+    ]
+  }
+})

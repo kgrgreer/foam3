@@ -194,7 +194,7 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      this.onDetach(this.mode$.follow(self.prop.createVisibilityFor(self.data$, self.controllerMode$)));
+      this.mode$.follow(self.prop.createVisibilityFor(self.data$, self.controllerMode$));
 
       this
         .addClass(this.myClass())

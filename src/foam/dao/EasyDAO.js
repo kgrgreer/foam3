@@ -158,12 +158,16 @@ foam.CLASS({
                 logger.warning(getName(), "Index not added, no access to MDAO");
               }
             }
-            if ( getFixedSize() != null ) {
+            if ( getFixedSize() != null &&
+                 ! getCluster() ) {
+              // FixedSize is not compatible Clustering
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
             }
-            delegate = getJournalDelegate(getX(), delegate);
+            // hook for NDiff-related stuff downstream
+            // code in JDAO.js is looking for nSpecName set in a subX
+            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_CTX_KEY, getNSpec()), delegate);
           }
         }
 
@@ -343,7 +347,7 @@ foam.CLASS({
         if ( getLogging() )
           delegate = new foam.nanos.logger.LoggingDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
-        if ( ( foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false")) || getPipelinePm() ) &&
+        if ( ( foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false")) && getPipelinePm() ) &&
             getMdao() != null &&
             ( delegate instanceof ProxyDAO ) )
             delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);

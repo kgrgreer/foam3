@@ -46,6 +46,7 @@ configuration for contacting the primary node.`,
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
     'foam.net.Host',
+    'foam.net.Port',
     'foam.util.SafetyUtil',
     'java.net.HttpURLConnection',
     'java.net.URL',
@@ -77,7 +78,13 @@ configuration for contacting the primary node.`,
       name: 'configId',
       label: 'Self',
       class: 'String',
-      javaFactory: 'return System.getProperty("hostname", "localhost");',
+      javaFactory: `
+      String hostname = System.getProperty("hostname", "localhost");
+      if ( "localhost".equals(hostname) ) {
+        hostname = System.getProperty("user.name");
+      }
+      return hostname;
+      `,
       visibility: 'RO'
     },
     {
@@ -176,6 +183,17 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      name: 'nodeRedundancy',
+      class: 'Int',
+      javaFactory: `
+      int c = getNodeCount();
+      // maximize groups for small test/staging clusters - sacrifice HA
+      if ( c < 4 ) return 0;
+      if ( c < 9 ) return 1;
+      return 2;
+      `
+    },
+    {
       // NOTE: replace all the quorum logic with a plug in quorum strategy
       documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'nodeQuorum',
@@ -194,20 +212,9 @@ configuration for contacting the primary node.`,
       visibility: 'RO',
       javaFactory: `
       int c = getNodeCount();
-
-      if ( c < 4 ) {
-        return 1;
-      }
-      if ( c < 6 ) {
-        return 2;
-      }
-      if ( c < 12 ) {
-        return 3;
-      }
-      if ( c < 20 ) {
-        return 4;
-      }
-      return 5;
+      int bucketSize = 1 + getNodeRedundancy();
+      int groups = (int) Math.max(1, Math.floor( c / (double) bucketSize ));
+      return groups;
       `
     },
     {
@@ -410,15 +417,13 @@ configuration for contacting the primary node.`,
             ));
         if ( zone == 0 ) {
           dao = dao.orderBy(foam.mlang.MLang.DESC(ClusterConfig.IS_PRIMARY));
-        } else {
-          dao = dao.orderBy(ClusterConfig.PING_TIME);
         }
         List<ClusterConfig> configs = ((ArraySink) dao.select(new ArraySink())).getArray();
         if ( configs.size() > 0 ) {
           ClusterConfig cfg = configs.get(0);
-          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary(), cfg.getPingTime());
+          getLogger().info("nextZone", "configs", configs.size(), "selected", cfg.getId(), cfg.getZone(), cfg.getIsPrimary());
           for ( ClusterConfig c : configs ) {
-            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary(), c.getPingTime());
+            getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary());
           }
           return cfg;
         }
@@ -561,10 +566,15 @@ configuration for contacting the primary node.`,
         if ( host != null ) {
           address = host.getAddress();
         }
+        int port = receiveClusterConfig.getPort();
+        if ( port == 0 ) {
+          port = foam.net.Port.get(x, "SocketServer");
+        }
+
         SocketClientBox clientBox = new SocketClientBox();
         clientBox.setX(x);
         clientBox.setHost(address);
-        clientBox.setPort(receiveClusterConfig.getPort() + SocketServer.PORT_OFFSET);
+        clientBox.setPort(port);
         clientBox.setServiceName(serviceName);
         // getLogger().debug("getSocketClientBox", serviceName, clientBox);
         return clientBox;
@@ -852,6 +862,7 @@ configuration for contacting the primary node.`,
           }
           return false;
         }
+
         if ( config.getType() == MedusaType.NODE ) {
           return false;
         }

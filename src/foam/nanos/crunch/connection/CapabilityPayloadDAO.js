@@ -92,7 +92,7 @@ foam.CLASS({
       ).select(new ArraySink())).getArray().forEach((item) -> {
         var ucj = (UserCapabilityJunction) item;
         var capability = (Capability) capabilityDAO.find(ucj.getTargetId());
-        if ( capability != null )
+        if ( capability != null && capability.getLifecycleState() == foam.nanos.auth.LifecycleState.ACTIVE)
           capabilityUcjMap.put(capability.getName(), ucj);
       });
 
@@ -144,8 +144,8 @@ foam.CLASS({
         DAO localCapabilityDAO = (DAO) x.get("localCapabilityDAO");
 
         String idToString = (String) id;
-
-        if ( localCapabilityDAO.find(idToString) == null ){
+        Capability cap = (Capability) localCapabilityDAO.find(idToString);
+        if (  cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ){
           // throw new RuntimeException("Requested Capability id cannot be found");
           return null;
         }

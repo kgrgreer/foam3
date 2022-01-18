@@ -108,7 +108,7 @@ public class ClassInfoImpl
         @Override
         public boolean addAll(Collection c) {
           for ( Object o : c ) {
-            this.add(o);
+            add(o);
           }
           return true;
         }
@@ -154,7 +154,7 @@ public class ClassInfoImpl
       @Override
       public boolean addAll(Collection c) {
         for ( Object o : c ) {
-          this.add(o);
+          add(o);
         }
         return true;
       }

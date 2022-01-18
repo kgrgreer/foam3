@@ -18,12 +18,14 @@ foam.CLASS({
     'foam.dao.Journal',
     'foam.dao.Sink',
     'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.GTE',
     'static foam.mlang.MLang.MAX',
     'static foam.mlang.MLang.MIN',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.mlang.sink.Sequence',
+    'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
   ],
 
@@ -39,6 +41,7 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
+      Logger logger = Loggers.logger(x, this);
       if ( obj instanceof ReplayDetailsCmd ) {
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
 
@@ -48,7 +51,7 @@ foam.CLASS({
         details.setMaxIndex(info.getMaxIndex());
         details.setCount(info.getCount());
 
-        Loggers.logger(x, this).info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
+        logger.info("ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "count", details.getCount());
         return details;
       }
 
@@ -57,16 +60,11 @@ foam.CLASS({
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
         long indexAtStart = info.getIndex();
 
-        Loggers.logger(x, this).info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
+        logger.info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-        ClusterConfig fromConfig = support.getConfig(x, cmd.getDetails().getResponder());
+        ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
         ClusterConfig toConfig = support.getConfig(x, cmd.getDetails().getRequester());
-        DAO clientDAO = support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig);
-
-        // mdao (cache, fixed size, last x received) - this includes storageTransient entries.
-        DAO cache = (DAO) x.get("medusaNodeDAO");
-
         ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
         if ( details.getMinIndex() <= info.getMaxIndex() ) {
           Min min = (Min) MIN(MedusaEntry.INDEX);
@@ -74,33 +72,37 @@ foam.CLASS({
           Sequence seq = new Sequence.Builder(x)
             .setArgs(new Sink[] {count, min})
             .build();
+
+          // cache - mdao (cache, fixed size, last x received)
+          // this includes storageTransient entries
+          DAO cache = (DAO) x.get("medusaNodeDAO");
           cache.select(seq);
 
-          if ( ((Long) count.getValue()) == 0 ||
-               min != null &&
+          DAO clientDAO = support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig);
+
+          if ( ((Long) count.getValue()) > 0 &&
                min.getValue() != null &&
-               details.getMinIndex() < (Long) min.getValue() ) {
-;
-
-            // replay from file system
-            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, 3, clientDAO)));
+               details.getMinIndex() >= (Long) min.getValue() ) {
+            cache.where(GTE(MedusaEntry.INDEX, details.getMinIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 0, clientDAO)));
+          } else {
+            // TODO: JournalSink to only send requested
+            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, 0, clientDAO)));
+            if ( info.getIndex() > indexAtStart ) {
+              // send the extra received since we started the journal replay
+              cache.where(GT(MedusaEntry.INDEX, indexAtStart)).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 0, clientDAO)));
+            }
           }
-
-          // replay from cache
-          // cache.select(new RetryClientSinkDAO(x, 3, clientDAO));
-          if ( info.getIndex() > indexAtStart ) {
-            // send the extra received since we started the cache replay
-            cache.where(GT(MedusaEntry.INDEX, info.getIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 3, clientDAO)));
-          }
+        } else {
+          logger.debug("ReplayCmd", "requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getMaxIndex());
         }
         return cmd;
       }
 
       if ( obj instanceof foam.mlang.sink.Max ) {
-        Loggers.logger(x, this).debug("Max", "received");
+        logger.debug("Max", "received");
         Max max = (Max) getDelegate().select((Max) obj);
         if ( max != null ) {
-          Loggers.logger(x, this).debug("Max", "response", max.getValue());
+          logger.debug("Max", "response", max.getValue());
         }
         return max;
       }
