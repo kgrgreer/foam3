@@ -14,6 +14,10 @@ foam.CLASS({
     'foam.u2.layout.Rows'
   ],
 
+  imports: [
+    'referencePath?'
+  ],
+
   exports: [
     'as view',
     'mode'
@@ -57,6 +61,20 @@ foam.CLASS({
           }
         }
       ]
+    },
+    {
+      name: 'ErrorRow',
+      properties: [
+        {
+          class: 'String',
+          name: 'key'
+        },
+        {
+          class: 'String',
+          name: 'value',
+          value: '< RECURSION DETECTED >'
+        }
+      ],
     }
   ],
 
@@ -67,14 +85,20 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(this.slot(function(data) {
           return self.Rows.create()
-            .forEach(Object.entries(data || {}), function(e) {
-              let oldKey = e[0];
-              let row    = self.KeyValueRow.create({key: e[0], value: e[1]});
-              row.onDetach(row.sub('propertyChange', function() {
-                delete self.data[oldKey];
-                self.data[row.key] = row.value;
-                oldKey = row.key;
-              }));
+            .forEach(Object.entries(data || {}), function([key, value]) {
+              let oldKey = key;
+              let row    = self.KeyValueRow.create({key, value});
+
+              let recursive = self.referencePath && self.referencePath.conflicts(value);
+              if ( recursive ) {
+                row.value = self.ErrorRow.create({key});
+              } else {
+                row.onDetach(row.sub('propertyChange', function() {
+                  delete self.data[oldKey];
+                  self.data[row.key] = row.value;
+                  oldKey = row.key;
+                }));
+              }
               this
                 .startContext({ data: row })
                   .start(self.Cols)
@@ -86,8 +110,11 @@ foam.CLASS({
                       .addClass(self.myClass('value'))
                       .add(self.KeyValueRow.VALUE)
                     .end()
-                    .tag(self.KeyValueRow.REMOVE, {
-                      isDestructive: true
+                    .callIf(! recursive, function () {
+                      this
+                        .tag(self.KeyValueRow.REMOVE, {
+                          isDestructive: true
+                        })
                     })
                   .end()
                 .endContext();

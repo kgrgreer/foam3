@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: 'View for one row/property of a DetailView.',
 
+  requires: [
+    'foam.u2.detail.RecursionSafePropertyView'
+  ],
+
   css: `
     .foam-u2-PropertyView-label {
       color: #444;
@@ -73,8 +77,10 @@ foam.CLASS({
             callIf( ! this.label, function() {
               this.style({'width': '100%'});
             }).
+            tag(this.RecursionSafePropertyView, {
+              prop: prop
+            }).
             add(
-              prop,
               prop.units && this.E('span').addClass('foam-u2-PropertyView-units').add(' ', prop.units)).
             end();
           })

@@ -169,6 +169,7 @@ foam.CLASS({
   requires: [
     'foam.core.ConstantSlot',
     'foam.core.ProxySlot',
+    'foam.u2.detail.RecursionSafePropertyView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
@@ -220,7 +221,10 @@ foam.CLASS({
                   .style({ 'position': 'relative', 'display': 'flex', 'flex-wrap': 'wrap', 'width': '100%' })
                   .start()
                     .style({ 'flex-grow': 1, 'max-width': '100%' })
-                    .tag(prop, { mode$: self.mode$ })
+                    .tag(self.RecursionSafePropertyView, {
+                      prop: prop,
+                      mode$: self.mode$
+                    })
                     .callIf(prop.validationStyleEnabled, function() {
                       this.enableClass(self.myClass('error'), errorSlot);
                     })
