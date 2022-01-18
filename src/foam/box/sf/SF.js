@@ -364,15 +364,13 @@ foam.CLASS({
             logger_.log("Successfully read " + list.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
           }
 
-          if ( getTimeWindow() == -1 ) {
-            for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
-              SFEntry e = onHoldList_.get(i);
-              if ( e.getCreated().before(timeWindow) ) {
-                updateJournalOffset(e);
-                onHoldList_.remove(0);
-              } else {
-                break;
-              }
+          for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
+            SFEntry e = onHoldList_.get(i);
+            if ( e.getCreated().before(timeWindow) ) {
+              updateJournalOffset(e);
+              onHoldList_.remove(0);
+            } else {
+              break;
             }
           }
 
