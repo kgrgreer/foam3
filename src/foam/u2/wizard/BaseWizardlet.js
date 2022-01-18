@@ -152,7 +152,7 @@ foam.CLASS({
           section: section,
           wizardlet: this,
           isAvailable$: section.createIsAvailableFor(
-            this.data$,
+            this.data$.map(data => data || this.of.create({}, this.__context__)),
           )
         }));
         for ( let section of sections ) {
