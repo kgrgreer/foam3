@@ -489,21 +489,6 @@ FOAM_FILES([
   { name: "foam/box/ForwardedMessage" },
   { name: "foam/box/ForwardBox" },
   { name: "foam/box/ForwardingBox" },
-<<<<<<< HEAD
-  { name: "foam/box/SessionClientBox" },
-  { name: "foam/box/AuthServiceClientBox" },
-  { name: "foam/box/OneTimeBox" },
-  { name: "foam/box/ExportBox" },
-  { name: "foam/box/sf/DUGSFRule" },
-  { name: "foam/box/sf/SF" },
-  { name: "foam/box/sf/SFSink" },
-
-  { name: "foam/swift/refines/Stub", flags: ['swift'] },
-  { name: "foam/swift/refines/Promised", flags: ['swift'] },
-  { name: "foam/swift/refines/Topic", flags: ['swift'] },
-  { name: "foam/swift/refines/Remote", flags: ['swift'] },
-
-=======
   { name: "foam/box/SessionClientBox", flags: [ "java" ] },
   { name: "foam/box/AuthServiceClientBox", flags: [ "java" ] },
   { name: "foam/box/OneTimeBox", flags: [ "java" ] },
@@ -512,7 +497,6 @@ FOAM_FILES([
   { name: "foam/swift/refines/Promised", flags: [ "swift" ] },
   { name: "foam/swift/refines/Topic", flags: [ "swift" ] },
   { name: "foam/swift/refines/Remote", flags: [ "swift" ] },
->>>>>>> 0718d3dfead5cf9e899f6e52d224692e87b0219b
   { name: "foam/nanos/menu/MenuToolBar" },
   { name: "foam/box/LogBox" },
   { name: "foam/box/MultiDelegateBox" },
