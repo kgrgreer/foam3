@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.detail',
   name: 'AbstractSectionedDetailView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.detail.AbstractDetailView',
   flags: ['web'],
 
   documentation: `

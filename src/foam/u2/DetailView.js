@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'DetailView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.detail.AbstractDetailView',
 
   documentation: 'A generic property-sheet style View for editing an FObject.',
 
