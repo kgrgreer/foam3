@@ -19,6 +19,8 @@ foam.CLASS({
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.MedusaType',
     'foam.nanos.medusa.Status',
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
   ],
   
   properties: [
@@ -72,21 +74,26 @@ foam.CLASS({
         
         if ( myConfig.getType() != MedusaType.MEDIATOR || myConfig.getStatus() != Status.ONLINE ) return;
         
-        SFManager sfManager = (SFManager) x.get("SFManager");
+        final SFManager sfManager = (SFManager) x.get("SFManager");
         
         SFEntry entry = x.create(SFEntry.class);
         entry.setNSpecName(getNSpec().getName());
         entry.setDop(dop);
         entry.setObject(obj);
 
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
         for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
-          try {
-            if ( config.getId().equals(myConfig.getId()) ) continue;
-            DAO clientDAO = (DAO) sfManager.getSfs().get(config.getId());
-            clientDAO.put(entry);
-          } catch ( Throwable t ) {
-            getLogger().info(config.getId(), t.getMessage());
-          }
+          if ( config.getId().equals(myConfig.getId()) ) continue;
+          agency.submit(x, new ContextAgent() {
+            public void execute(X x) {
+              try {
+                DAO clientDAO = (DAO) sfManager.getSfs().get(config.getId());
+                clientDAO.put(entry);
+              } catch ( Throwable t ) {
+                getLogger().error(config.getId(), t);
+              }
+            }
+          }, this.getClass().getSimpleName());
         }
 
         return;
