@@ -174,8 +174,8 @@ foam.CLASS({
       javaType: 'FObject',
       documentation: 'write entry to journal and forward',
       javaCode: `
-        // Wait for the SF ready to serve.
-        //while ( isReady_.get() == false ) {}
+        if ( ! getReady() ) throw new RuntimeException("SAF: " + getId() + " is not ready or did not initial properly");
+
         SFEntry entry = null;
         if ( fobject instanceof SFEntry ) {
           entry = (SFEntry) fobject;
