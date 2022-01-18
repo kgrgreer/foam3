@@ -94,30 +94,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"demoHttpSink",
-  "description": "A demo http sink for SFSink",
-  "serve":true,
-  "serviceScript":
-  """
-    return new foam.dao.HTTPSink(
-      "http://localhost:8888/",
-      null,
-      foam.nanos.http.Format.JSON,
-      new foam.lib.AndPropertyPredicate(
-        x,
-        new foam.lib.PropertyPredicate[] {
-          new foam.lib.ExternalPropertyPredicate(),
-          new foam.lib.NetworkPropertyPredicate(),
-          new foam.lib.PermissionedPropertyPredicate()
-        }
-      ),
-      false
-    );
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"demoHttpSinkUsingAtime",
   "description": "A demo http sink for SFSink",
   "serve":true,
@@ -136,30 +112,6 @@ p({
         }
       ),
       false
-    );
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"flinksWebHookHttpSink",
-  "description": "A demo http sink for SFSink",
-  "serve":true,
-  "serviceScript":
-  """
-    return new foam.dao.HTTPSink(
-      "https://webhook.site/f9709f40-601b-40a6-8724-4cb1ce4bdd4e",
-      null,
-      foam.nanos.http.Format.JSON,
-      new foam.lib.AndPropertyPredicate(
-        x,
-        new foam.lib.PropertyPredicate[] {
-          new foam.lib.ExternalPropertyPredicate(),
-          new foam.lib.NetworkPropertyPredicate(),
-          new foam.lib.PermissionedPropertyPredicate()
-        }
-      ),
-      true
     );
   """
 })

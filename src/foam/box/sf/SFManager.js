@@ -195,7 +195,7 @@ foam.CLASS({
               getSfs().put(sf.getId(), sf);
               getLogger().info("Initialize successfully: " + sf.getId());
             } catch ( Throwable t ) {
-              getLogger().warning(t.getMessage());
+              getLogger().error(t);
             }
           }
         });

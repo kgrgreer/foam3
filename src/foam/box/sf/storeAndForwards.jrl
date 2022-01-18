@@ -1,24 +1,8 @@
 p({
   "class":"foam.box.sf.SFSink",
-  "id":"constFourSecondHttpSinkDemo",
-  "fileName":"httpSFSinkDemo",
-  "timeWindow": 3600,
-  "replayFailEntry": true,
-  "delegateNspecId": "demoHttpSink"
-})
-p({
-  "class":"foam.box.sf.SFSink",
   "id":"constFourSecondHttpSinkDemoUsingAtime",
   "fileName":"httpSFSinkDemoUsingAtime",
   "timeWindow": 3600,
   "fileCapacity": 1000,
   "delegateNspecId": "demoHttpSinkUsingAtime"
-})
-p({
-  "class":"foam.box.sf.SFSink",
-  "id":"flinksWebHook",
-  "fileName":"flinksWebHook",
-  "timeWindow": 3600,
-  "replayFailEntry": true,
-  "delegateNspecId": "flinksWebHookHttpSink"
 })

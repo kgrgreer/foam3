@@ -50,6 +50,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'filePrefix',
+      value: '../saf/'
+    },
+    {
+      class: 'String',
       name: 'fileName'
     },
     {
@@ -139,7 +144,7 @@ foam.CLASS({
       javaType: 'SFFileJournal',
       javaCode: `
         SFFileJournal journal = new SFFileJournal.Builder(getX())
-                                  .setFilename(fileName)
+                                  .setFilename(getFilePrefix() + fileName)
                                   .setCreateFile(false)
                                   .setDao(new foam.dao.NullDAO())
                                   .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
@@ -286,7 +291,9 @@ foam.CLASS({
                   }, (Logger) x.get("logger"));
         createDelegate();
         FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
-        List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
+        java.io.File folder = fileSystemStorage.get(getFilePrefix());
+        if ( ! folder.exists() ) folder.mkdir();
+        List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles(getFilePrefix(), getFileName()+".*"));
 
         if ( filenames.size() == 0 ) {
           isReady_.getAndSet(true);
@@ -313,7 +320,7 @@ foam.CLASS({
           timeWindow = rightNow.getTime();
 
           for ( String filename : filenames ) {
-            BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
+            BasicFileAttributes attr = fileSystemStorage.getFileAttributes(getFilePrefix() + getSimpleFilename(filename));
             Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
             //TODO: mark journal as finished if unneed.
             if ( fileLastModifiedDate.before(timeWindow) ) break;
@@ -329,11 +336,11 @@ foam.CLASS({
           for ( String filename : availableFilenames ) {
 
             SFFileJournal journal = new SFFileJournal.Builder(x)
-                                    .setFilename(filename)
+                                    .setFilename(getFilePrefix() + getSimpleFilename(filename))
                                     .setCreateFile(false)
                                     .build();
 
-            journalMap_.put(filename, journal);
+            journalMap_.put(getSimpleFilename(filename), journal);
             if ( journal.getFileOffset() == journal.getFileSize() ) continue;
 
             List<SFEntry> list = new LinkedList<SFEntry>();
@@ -436,7 +443,15 @@ foam.CLASS({
       javaType: 'int',
       args: 'String filename',
       javaCode: `
-        return Integer.parseInt(filename.split("\\\\.")[1]);
+        return Integer.parseInt(filename.split("\\\\.")[filename.split("\\\\.").length-1]);
+      `
+    },
+    {
+      name: 'getSimpleFilename',
+      args: 'String filename',
+      javaType: 'String',
+      javaCode: `
+        return filename.split("/")[filename.split("/").length-1];
       `
     },
     {
