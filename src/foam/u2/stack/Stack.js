@@ -19,10 +19,6 @@ foam.CLASS({
   package: 'foam.u2.stack',
   name: 'Stack',
 
-  imports: [
-    'memento'
-  ],
-
   requires: [
     'foam.nanos.controller.Memento',
     'foam.u2.stack.StackBlock'
@@ -127,6 +123,12 @@ foam.CLASS({
       this.depth = pos + 1;
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
+      if ( pos > 0 && ctrl.memento_ ) {
+        // Use toString here instead of usedStr since on refresh stack pushes happen faster
+        // than memento.update() is called since it is merged
+        this.stack_[pos - 1].currentMemento = ctrl.memento_.toString(null, block.parent.memento_);
+        ctrl.memento_.usedStr = ctrl.memento_.toString();
+      }
       this.pos = pos;
       if ( block.shouldResetBreadcrumbs )
         this.navStackBottom = pos;
@@ -173,13 +175,6 @@ foam.CLASS({
         if ( this.stack_[this.pos].parent ) {
           var actionMemento;
           var parent = this.getContextFromParent(this.stack_[this.pos].parent);
-          if ( parent.memento?.params == this.BCRMB_ID ) {
-            actionMemento = this.deleteMemento(parent.memento.head);
-          }
-          //Remove all actions that may have been performed in this view
-          while ( actionMemento?.params == this.ACTION_ID ) {
-            actionMemento = this.deleteMemento(actionMemento.head);
-          }
         }
         this.pos--;
       }

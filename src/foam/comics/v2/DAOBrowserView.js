@@ -8,13 +8,12 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+
 
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.DAOControllerConfig',
     'foam.log.LogLevel',
-    'foam.nanos.controller.Memento',
     'foam.u2.ActionView',
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterView',
@@ -311,10 +310,8 @@ foam.CLASS({
 
       this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
       var self = this;
-      var filterView;
+      var filterView, cannedView, summaryView;
       var simpleSearch;
-
-      this.initMemento();
 
       this.addClass();
       this.SUPER();
@@ -327,7 +324,6 @@ foam.CLASS({
               showCount: false,
               data$: self.searchPredicate$
             }, this, self.__subSubContext__.createSubContext({
-              memento: self.currentMemento_,
               controllerMode: foam.u2.ControllerMode.EDIT
             }));
 
@@ -342,15 +338,18 @@ foam.CLASS({
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
             }, this, self.__subContext__.createSubContext({
-              memento: self.currentMemento_,
               controllerMode: foam.u2.ControllerMode.EDIT
             }));
           }
 
-          summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
-            data: self.predicatedDAO$proxy,
-            config: self.config
-          },  this, filterView.__subContext__.createSubContext());
+          if ( config$cannedQueries.length >= 1 ) {
+            cannedView = foam.u2.ViewSpec.createView(self.cannedQueriesView, {
+              choices: config$cannedQueries.map((o) => [o.predicate, o.label]),
+              data$: self.cannedPredicate$
+            },  this, filterView.__subContext__);
+          }
+
+          var summaryContext = cannedView ? cannedView.__subContext__ : filterView.__subContext__;
 
           if ( ! self.config.browseContext ) {
             self.config.browseContext = summaryView;
@@ -372,10 +371,7 @@ foam.CLASS({
                     .start(self.Cols)
                       .callIf(config$cannedQueries.length > 1, function() {
                         this
-                          .start(self.cannedQueriesView, {
-                            choices: config$cannedQueries.map((o) => [o.predicate, o.label]),
-                            data$: self.cannedPredicate$
-                          })
+                          .start(cannedView)
                             .addClass(self.myClass('canned-queries'))
                           .end();
                       })
@@ -425,15 +421,15 @@ foam.CLASS({
                     .end()
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
-                })
-              .add(filterView.slot( function(mementoUpdated, mementoToggle) {
-                // TEMPORARY
-                // wait for filterView to set momento before instantianting summaryView
-                if ( mementoUpdated || config$hideQueryBar || self.config.searchMode == 'SIMPLE' )
-                  return this.E()
-                  .addClass(self.myClass('browse-view-container'))
-                  .add(summaryView);
-              }))
+              })
+              .startContext({ memento_: summaryContext.memento_ })
+              .start(self.summaryView ,{
+                data: self.predicatedDAO$proxy,
+                config: self.config
+              })
+                .addClass(self.myClass('browse-view-container'))
+              .end()
+              .endContext()
             .end();
         }));
     }
