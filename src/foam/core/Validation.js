@@ -54,7 +54,6 @@ foam.CLASS({
       name: 'jsErr',
       expression: function(errorString, errorMessage) {
         return function(obj) {
-        debugger;
           if ( errorMessage && obj ) {
             if ( obj[errorMessage] ) return obj[errorMessage];
             console.warn('Error finding message', errorMessage, '. No such message on object.', obj);
@@ -425,7 +424,7 @@ foam.CLASS({
         ret.push(
           {
             args: [this.name],
-            query:'email~/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/',
+            query:'email~/^[a-zA-Z0-9.+_-]+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/',
             errorString: this.VALID_EMAIL_REQUIRED
           }
         );
