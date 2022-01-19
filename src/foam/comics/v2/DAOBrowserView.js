@@ -351,6 +351,11 @@ foam.CLASS({
 
           var summaryContext = cannedView ? cannedView.__subContext__ : filterView.__subContext__;
 
+          summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
+            data: self.predicatedDAO$proxy,
+            config: self.config
+          },  this, summaryContext);
+
           if ( ! self.config.browseContext ) {
             self.config.browseContext = summaryView;
           }
@@ -422,14 +427,10 @@ foam.CLASS({
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
               })
-              .startContext({ memento_: summaryContext.memento_ })
-              .start(self.summaryView ,{
-                data: self.predicatedDAO$proxy,
-                config: self.config
-              })
+              .start()
+                .add(summaryView)
                 .addClass(self.myClass('browse-view-container'))
               .end()
-              .endContext()
             .end();
         }));
     }

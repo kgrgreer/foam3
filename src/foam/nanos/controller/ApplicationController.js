@@ -656,7 +656,6 @@ foam.CLASS({
           if ( this.route !== newId ) 
             this.route = newId;
         }
-        if ( menu.id == this.route ) return;
         menu && menu.launch(this);
         this.menuListener(menu);
       } else {
@@ -669,7 +668,6 @@ foam.CLASS({
             if ( this.route !== newId ) 
               this.route = newId;
           }
-          if ( menu.id == this.route ) return;
           menu && menu.launch(this);
           this.menuListener(menu);
         });

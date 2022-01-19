@@ -123,7 +123,7 @@ foam.CLASS({
       this.depth = pos + 1;
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
-      if ( pos > 0 && ctrl.memento_ ) {
+      if ( pos > 0 && ctrl.memento_ && block.parent?.memento_ ) {
         // Use toString here instead of usedStr since on refresh stack pushes happen faster
         // than memento.update() is called since it is merged
         this.stack_[pos - 1].currentMemento = ctrl.memento_.toString(null, block.parent.memento_);
