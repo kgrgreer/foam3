@@ -4501,6 +4501,10 @@ foam.CLASS({
     {
       class: 'foam.mlang.ExprArrayProperty',
       name: 'args'
+    },
+    {
+      class: 'Boolean',
+      name: 'rounding'
     }
   ],
 
@@ -4523,7 +4527,7 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        return getRounding() ? Math.round(result) : result;
       `,
       code: function(o) {
         var result = null;
@@ -4539,7 +4543,7 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        return this.rounding ? Math.round(result) : result;
       }
     },
     {

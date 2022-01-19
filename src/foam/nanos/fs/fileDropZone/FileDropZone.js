@@ -20,7 +20,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'user',
+    'subject',
     'fileTypeDAO'
   ],
 
@@ -276,7 +276,7 @@ foam.CLASS({
         if ( isIncluded ) continue;
         if ( this.isMultipleFiles ) {
           var f = this.File.create({
-            owner:    this.user.id,
+            owner:    this.subject.user.id,
             filename: files[i].name,
             filesize: files[i].size,
             mimeType: files[i].type,
@@ -287,7 +287,7 @@ foam.CLASS({
           this.files.push(f);
         } else {
           this.files[0] = this.File.create({
-            owner:    this.user.id,
+            owner:    this.subject.user.id,
             filename: files[i].name,
             filesize: files[i].size,
             mimeType: files[i].type,

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.crunch.wizardflow',
+  package: 'foam.u2.wizard.agents',
   name: 'ConfigureFlowAgent',
   implements: [ 'foam.core.ContextAgent' ],
 
