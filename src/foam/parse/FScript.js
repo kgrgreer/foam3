@@ -140,15 +140,24 @@ foam.CLASS({
               literal('<=', this.LTE),
               literal('>=', this.GTE),
               literal('<',  this.LT),
-              literal('>',  this.GT)
+              literal('>',  this.GT),
+              literal('~',  this.REG_EXP)
             ),
             sym('value')),
 
           value: alt(
+            sym("regex"),
             sym('string'),
             sym('number'),
             sym('field')
           ),
+
+          regex:
+            seq1(1,
+              '/',
+              str(repeat(notChars('/'))),
+              '/'
+            ),
 
           field: seq(
             sym('fieldname'),
@@ -219,7 +228,6 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
-
             return op.call(self, lhs, rhs);
           },
 
@@ -236,6 +244,13 @@ foam.CLASS({
               }
             }
             return expr;
+          },
+
+          regex: function(v) {
+            console.log(v);
+//            debugger;
+//            return v;
+            return new RegExp(v);
           }
         };
 
