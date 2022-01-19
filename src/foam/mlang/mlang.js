@@ -3999,10 +3999,10 @@ foam.CLASS({
       name: 'f',
       code: function(o) {
         var v1 = this.arg1.f(o);
-        return v1.toString().match(this.regExp);
+        return v1.toString().match(this.regExp) !== null;
       },
       javaCode: `
-        return getRegExp().matcher(getArg1().f(obj).toString()).matches();
+        return getRegExp().matcher(getArg1().f(obj).toString()).matches() !== null;
       `
     }
   ]
