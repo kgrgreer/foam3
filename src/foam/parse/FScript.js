@@ -123,6 +123,7 @@ foam.CLASS({
           simpleexpr: alt(
             sym('paren'),
             sym('negate'),
+            sym('unary'),
             sym('comparison')
           ),
 
@@ -144,6 +145,14 @@ foam.CLASS({
               literal('~',  this.REG_EXP)
             ),
             sym('value')),
+
+          unary: seq(
+            sym('value'),
+            repeat0(" "),
+            alt(
+              literal('exists', this.HAS)
+            )
+          ),
 
           value: alt(
             sym("regex"),
@@ -233,6 +242,13 @@ foam.CLASS({
             var op  = v[1];
             var rhs = v[2];
             return op.call(self, lhs, rhs);
+          },
+
+          unary: function(v) {
+            var lhs = v[0];
+            var op  = v[2];
+            debugger;
+            return op.call(self, lhs);
           },
 
           or: function(v) { return self.OR.apply(self, v); },
