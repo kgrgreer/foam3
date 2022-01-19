@@ -24,6 +24,7 @@ foam.CLASS({
       name: 'jsFunc',
       expression: function(query, jsErr) {
         return function() {
+        debugger;
           var predicate = foam.parse.FScript.create({of: this.cls_}).parseString(query);
           if ( predicate !== undefined && ! predicate.f(this) ) return jsErr(this);
         };
@@ -411,29 +412,23 @@ foam.CLASS({
       name: 'validationPredicates',
       factory: function() {
         var self = this;
-        var ret = [
-          {
-            args: [this.name],
-            predicateFactory: function(e) {
-              return e.OR(
-                e.EQ(self, ''),
-                e.REG_EXP(self, /\S+@\S+\.\S+/)
-              );
-            },
-            errorString: this.VALID_EMAIL_REQUIRED
-          }
-        ];
+        var ret = [];
         if ( this.required ) {
           ret.push(
             {
               args: [this.name],
-              predicateFactory: function(e) {
-                return e.NEQ(self, '');
-              },
+              query: 'email!=""',
               errorString: this.EMAIL_REQUIRED
             }
           );
         }
+        ret.push(
+          {
+            args: [this.name],
+            query:'email~/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/',
+            errorString: this.VALID_EMAIL_REQUIRED
+          }
+        );
         return ret;
       }
     }
