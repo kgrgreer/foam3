@@ -125,7 +125,7 @@ foam.CLASS({
           o.model ? foam.core.InnerClass.create(o) :
           foam.core.InnerClass.create({model: o});
 
-        if ( ! ic.model.flags ) ic.model.flags = this.flags;
+        if ( ! ic.model_.flags ) ic.model_.flags = this.flags;
 
         return ic;
       }

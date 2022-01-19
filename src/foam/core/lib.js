@@ -55,13 +55,8 @@ foam = {
     // capture the details of the script if need be.
 
     // Only execute if the script's flags match the curren runtime flags.
-    if ( m.flags && globalThis.FOAM_FLAGS ) {
-      for ( var i = 0 ; i < m.flags.length ; i++ ) {
-        if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
-          m.code();
-          return;
-        }
-      }
+    if ( foam.checkFlags(this.flags ) ) {
+      m.code();
       return;
     }
 

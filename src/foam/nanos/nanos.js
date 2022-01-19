@@ -283,12 +283,6 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/test/MedusaTestObject' },
   { name: 'foam/nanos/medusa/test/MedusaTestObjectDIGBenchmark' },
   { name: 'foam/nanos/medusa/test/MedusaTestObjectDistributedDIGBenchmarkRunner' },
-
-  { name: 'foam/nanos/ndiff/NDiff' },
-  { name: 'foam/nanos/ndiff/NDiffJournal' },
-  { name: 'foam/nanos/ndiff/NDiffDAO' },
-  { name: 'foam/nanos/ndiff/NDiffRuntimeDAO' },
-
   { name: 'foam/nanos/security/KeyStoreManager' },
   { name: 'foam/nanos/benchmark/UUIDBenchmark' },
   { name: "foam/nanos/u2/navigation/TopNavigation", flags: ['web'] },

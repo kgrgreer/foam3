@@ -107,11 +107,11 @@ const CLASS_TYPES = [
   {
     name: 'abstractClasses',
     // TODO: needed?
-    build: cls => cls.buildJavaClass(foam.java.Class.create({abstract: true}))
+    build: cls => cls.buildJavaClass(foam.java.Class.create({abstract: true, flags: [ 'java' ]}))
   },
   {
     name: 'skeletons',
-    build: cls => foam.java.Skeleton.create({of: cls}).buildJavaClass()
+    build: cls => foam.java.Skeleton.create({of: cls, flags: [ 'java' ]}).buildJavaClass()
   },
   {
     name: 'proxies',
@@ -120,6 +120,7 @@ const CLASS_TYPES = [
         package: cls.package,
         name: 'Proxy' + cls.name,
         implements: [cls.id],
+        flags: [ 'java' ],
         properties: [
           {
             class: 'Proxy',
@@ -180,8 +181,6 @@ function generateJava(javaClass) {
     javaClass = javaClass();
   }
 
-  if ( javaClass.name === 'SimpleTxnId' ) debugger;
-  if ( javaClass.flags && ! javaClass.flags.includes('java') ) return;
   if ( generatedJava[javaClass.id] ) return;
 
   // Could be Class, Interface or Enum
@@ -206,11 +205,10 @@ for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
 javaClasses.forEach(function(c) {
   if ( c.id.indexOf('nanopay') == -1 ) {
     if ( ! c.model_.flags || ! c.model_.flags.includes('java') ) {
-      if ( c.id == 'foam.core.Glyph' ) debugger;
-      console.log("********************************* MISSING flags: ['java'] in ", c.id);
+//      console.log("********************************* MISSING flags: ['java'] in ", c.id);
       missing[c.id] = true;
     } else {
-      console.log("********************************* FOUND ", c.id);
+//      console.log("********************************* FOUND ", c.id);
       found[c.id] = true;
     }
   }
@@ -220,14 +218,25 @@ javaClasses.forEach(function(c) {
 //console.log(missing);
 console.log(found);
 console.log('****** EXTRA', extraJavaClasses);
-extraJavaClasses.forEach(generateJava);
+
+function maybeGenerateJava(c) {
+  if ( foam.Function.isInstance(c) ) {
+    c = c();
+  }
+
+  if ( c.model_.flags && ! c.model_.flags.includes('java') ) {
+    return;
+  }
+  generateJava(c);
+}
+
+extraJavaClasses.forEach(maybeGenerateJava);
 
 console.log('************************* START GENERATING flags: java files.');
 for ( var key in foam.USED ) {
   try {
     var c = foam.lookup(key);
-    if ( c.model_.flags && c.model_.flags.includes('java') )
-      generateJava(c);
+    maybeGenerateJava(c);
   } catch(x) {}
 }
 console.log('************************* END GENERATING flags: java files.');
