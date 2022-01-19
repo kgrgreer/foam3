@@ -180,6 +180,8 @@ function generateJava(javaClass) {
     javaClass = javaClass();
   }
 
+  if ( javaClass.name === 'SimpleTxnId' ) debugger;
+  if ( javaClass.flags && ! javaClass.flags.includes('java') ) return;
   if ( generatedJava[javaClass.id] ) return;
 
   // Could be Class, Interface or Enum
@@ -196,5 +198,36 @@ function generateJava(javaClass) {
   writeFileIfUpdated(outfile, javaClass.toJavaSource());
 }
 
-javaClasses.forEach(generateJava);
+var missing = {};
+var found = {};
+
+for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
+
+javaClasses.forEach(function(c) {
+  if ( c.id.indexOf('nanopay') == -1 ) {
+    if ( ! c.model_.flags || ! c.model_.flags.includes('java') ) {
+      if ( c.id == 'foam.core.Glyph' ) debugger;
+      console.log("********************************* MISSING flags: ['java'] in ", c.id);
+      missing[c.id] = true;
+    } else {
+      console.log("********************************* FOUND ", c.id);
+      found[c.id] = true;
+    }
+  }
+
+  generateJava(c);
+});
+//console.log(missing);
+console.log(found);
+console.log('****** EXTRA', extraJavaClasses);
 extraJavaClasses.forEach(generateJava);
+
+console.log('************************* START GENERATING flags: java files.');
+for ( var key in foam.USED ) {
+  try {
+    var c = foam.lookup(key);
+    if ( c.model_.flags && c.model_.flags.includes('java') )
+      generateJava(c);
+  } catch(x) {}
+}
+console.log('************************* END GENERATING flags: java files.');
