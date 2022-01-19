@@ -149,7 +149,8 @@ foam.CLASS({
             sym("regex"),
             sym('string'),
             sym('number'),
-            sym('field')
+            sym('field_len'),
+            sym('field'),
           ),
 
           regex:
@@ -158,6 +159,9 @@ foam.CLASS({
               str(repeat(notChars('/'))),
               '/'
             ),
+
+          field_len: seq(
+            sym('field'),'_len'),
 
           field: seq(
             sym('fieldname'),
@@ -244,6 +248,11 @@ foam.CLASS({
               }
             }
             return expr;
+          },
+          field_len: function(v) {
+            return foam.mlang.StringLength.create({
+              arg1: v[0]
+            })
           },
 
           regex: function(v) {
