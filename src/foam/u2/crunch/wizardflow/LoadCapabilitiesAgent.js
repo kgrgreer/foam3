@@ -42,12 +42,13 @@ foam.CLASS({
 
   methods: [
     // If Property expressions ever unwrap promises this method can be blank.
-    function execute() {
+    async function execute() {
       if ( this.subject ) {
-        return this.crunchService.getCapabilityPathFor(null, this.rootCapability.id, false, this.subject.user, this.subject.realUser)
+        await this.crunchService.getCapabilityPathFor(null, this.rootCapability.id, false, this.subject.user, this.subject.realUser)
           .then(capabilities => this.capabilities = capabilities);
+        return;
       }
-      return this.crunchService.getCapabilityPath(null, this.rootCapability.id, false, true)
+      await this.crunchService.getCapabilityPath(null, this.rootCapability.id, false, true)
         .then(capabilities => this.capabilities = capabilities);
     }
   ]
