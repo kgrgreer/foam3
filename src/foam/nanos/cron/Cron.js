@@ -109,16 +109,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'toSummary',
-      type: 'String',
-      code: function() {
-        return this.id;
-      },
-      javaCode: `
-        return getId();
-      `
-    },
-    {
       name: 'canRun',
       args: [
         {
