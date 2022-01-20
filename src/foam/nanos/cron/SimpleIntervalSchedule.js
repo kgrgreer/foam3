@@ -32,7 +32,7 @@
     },
     {
       name: 'frequency',
-      label: '',
+      label: 'Frequency',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
@@ -81,13 +81,8 @@
     {
       name: 'dayOfMonth',
       label: '',
-      //will be replaced by multiselect dayofmonth view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          1,
-          2
-        ]
+        class: 'foam.u2.view.DayOfMonthView',
       },
       visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )

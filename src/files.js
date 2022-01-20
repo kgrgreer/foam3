@@ -1107,6 +1107,10 @@ FOAM_FILES([
 
   { name: "foam/u2/view/DayOfWeekView" , flags: ["web"] },
   { name: "foam/u2/view/DayChoiceView" , flags: ["web"] },
+  { name: "foam/u2/view/DayOfMonthView" , flags: ["web"] },
+  { name: "foam/u2/view/DateChoiceView" , flags: ["web"] },
+  { name: "foam/u2/view/SimpleIntervalScheduleView" , flags: ["web"] },
+
 
   { name: 'foam/core/FOAMExceptionTestTestException', flags: ['java'] },
   { name: 'foam/core/Identifiable', flags: ['java'] },
