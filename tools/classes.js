@@ -1015,6 +1015,7 @@ var classes = [
   'foam.box.sf.SFBroadcastReceiverDAO',
   'foam.box.sf.SFMedusaClientDAO',
   'foam.box.sf.SFFileJournal',
+  'foam.box.sf.SFTestObject',
   'foam.net.CIDR',
   'foam.net.Host',
   'foam.net.IPSupport',

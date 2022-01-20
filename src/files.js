@@ -1077,6 +1077,7 @@ FOAM_FILES([
   { name: "foam/box/sf/SFBroadcastReceiverDAO", flags: [ "java" ] },
   { name: "foam/box/sf/SFMedusaClientDAO", flags: [ "java" ] },
   { name: "foam/box/sf/SFFileJournal", flags: [ "java" ] },
+  { name: "foam/box/sf/SFTestObject", flags: [ "java" ] },
   { name: "foam/box/socket/BoxHolder", flags: [ "java" ] },
   { name: "foam/box/socket/SocketConnectionBox", flags: [ "java" ] },
   { name: "foam/box/socket/SocketConnectionReplyBox", flags: [ "java" ] },
