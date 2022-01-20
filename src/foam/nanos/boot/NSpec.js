@@ -18,10 +18,11 @@ foam.CLASS({
       class: 'String',
       value: 'NSPEC_CTX_KEY',
       documentation: `
-      Constant for addressing the NSpec through the context 
+      Constant for addressing the NSpec through the context
       `
     }
   ],
+
   requires: [
     {
       path: 'foam.comics.BrowserView',
