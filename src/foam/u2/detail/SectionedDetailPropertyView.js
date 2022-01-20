@@ -138,6 +138,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .addClass(`sectioned-detail-property-${this.prop.name}`)
+        .show(this.prop.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN))
         .add(this.slot(function(mode, prop, prop$label) {
 
           var errorSlot = prop.validateObj && prop.validationTextVisible ?
