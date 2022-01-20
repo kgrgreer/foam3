@@ -90,6 +90,8 @@ foam.CLASS({
   name: 'AbstractDAODecorator',
   implements: ['foam.dao.DAOInterceptor'],
 
+  flags: [],
+
   methods: [
     function write(X, dao, obj, existing) {
       return Promise.resolve(obj);
@@ -107,6 +109,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.dao',
   name: 'CompoundDAODecorator',
+
+  flags: [],
 
   implements: ['foam.dao.DAOInterceptor'],
 

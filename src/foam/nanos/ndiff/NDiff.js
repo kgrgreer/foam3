@@ -120,6 +120,6 @@ foam.CLASS({
           .tag({class: 'foam.u2.view.ComparisonView', left: this.initialFObject, right: this.runtimeFObject})
         );
       }
-    },
-  ],
+    }
+  ]
 });

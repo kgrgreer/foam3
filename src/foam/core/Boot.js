@@ -125,19 +125,8 @@ foam.LIB({
       var cls;
 
       if ( this.refines ) {
-        // TODO This should probably live elsewhere.
-        if ( this.flags && globalThis.FOAM_FLAGS ) {
-          var flagged = false;
-          for ( var i = 0 ; i < this.flags.length ; i++ ) {
-            if ( globalThis.FOAM_FLAGS[this.flags[i]] ) {
-              flagged = true;
-              break;
-            }
-          }
-
-          if ( ! flagged ) {
-            return context.lookup(this.refines);
-          }
+        if ( ! foam.checkFlags(this.flags ) ) {
+          return context.lookup(this.refines);
         }
 
         cls = context.lookup(this.refines);

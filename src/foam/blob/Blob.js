@@ -52,6 +52,7 @@ foam.INTERFACE({
   ]
 });
 
+
 foam.INTERFACE({
   package: 'foam.blob',
   name: 'BlobService',
@@ -413,6 +414,8 @@ foam.CLASS({
   name: 'Blob',
   extends: 'foam.core.FObjectProperty',
 
+  flags: [],
+
   properties: [
     [ 'type', 'foam.blob.Blob' ],
     [ 'of', 'foam.blob.Blob' ],
@@ -449,6 +452,8 @@ foam.CLASS({
   package: 'foam.blob',
   name: 'FdBlob',
   extends: 'foam.blob.AbstractBlob',
+
+  flags: [],
 
   properties: [
     {
@@ -831,6 +836,8 @@ foam.CLASS({
   name: 'RestBlobService',
   extends: 'foam.blob.AbstractBlobService',
 
+  flags: [],
+
   documentation: 'Implementation of a BlobService against a REST interface.',
 
   requires: [
@@ -930,6 +937,8 @@ foam.CLASS({
   name: 'BlobServiceDecorator',
   extends: 'foam.dao.AbstractDAODecorator',
 
+  flags: [],
+
   imports: [
     'blobService'
   ],
@@ -970,6 +979,8 @@ foam.CLASS({
   package: 'foam.blob',
   name: 'TestBlobService',
   extends: 'foam.blob.AbstractBlobService',
+
+  flags: [],
 
   requires: [
     'foam.blob.IdentifiedBlob',
