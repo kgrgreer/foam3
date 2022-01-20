@@ -241,7 +241,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'javaValidateObj',
-      xxxexpression: function(validationPredicates) {
+      expression: function(validationPredicates) {
         return validationPredicates
           .map((vp) => {
             var exception = vp.errorMessage ?
