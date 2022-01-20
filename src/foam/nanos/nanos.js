@@ -604,6 +604,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ui/UserCapabilityJunctionWAO" },
   { name: "foam/nanos/crunch/ui/CapableWAO" },
   { name: "foam/nanos/crunch/ui/CapabilityWizardlet" },
+  { name: "foam/nanos/crunch/ui/ReloadSubjectWizardlet" },
   { name: "foam/nanos/crunch/ui/MinMaxCapabilityWizardlet" },
   { name: "foam/nanos/crunch/ui/MinMaxCapabilityWizardletSection" },
   { name: "foam/nanos/crunch/ui/ReviewCapabilityWizardlet" },
