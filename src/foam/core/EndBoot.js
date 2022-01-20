@@ -293,6 +293,7 @@ foam.CLASS({
     m.order = foam.__count++;
     m.id = m.package ? m.package + '.' + m.name : m.name;
 
+    if ( ! m.flags && globalThis.foam.currentFlags ) m.flags = globalThis.foam.currentFlags;
     foam.UNUSED[m.id] = m;
 
     if ( m.refines ) {

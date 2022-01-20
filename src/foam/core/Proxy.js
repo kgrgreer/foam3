@@ -91,7 +91,7 @@ foam.CLASS({
   requires: [
     'foam.core.EventProxy',
     'foam.core.ProxiedMethod',
-    'foam.core.ProxySub',
+    'foam.core.ProxySub'
   ],
 
   properties: [
