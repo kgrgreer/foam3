@@ -343,6 +343,10 @@ foam.CLASS({
 
             journalMap_.put(getSimpleFilename(filename), journal);
             if ( journal.getFileOffset() == journal.getFileSize() ) continue;
+            if ( journal.getFileOffset() > journal.getFileSize() ) {
+              logger_.error("Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize");
+              continue;
+            }
 
             List<SFEntry> list = new LinkedList<SFEntry>();
             DAO tempDAO = new TempDAO(x, list);
