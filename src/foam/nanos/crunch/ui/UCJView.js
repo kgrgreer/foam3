@@ -156,6 +156,7 @@ foam.CLASS({
           .remove('WizardStateAgent')
           .remove('AutoSaveWizardletsAgent')
           .remove('PutFinalJunctionsAgent')
+          .remove('CheckPendingAgent')
           .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) });
       }
       this.config.applyTo(sequence);
