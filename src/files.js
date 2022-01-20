@@ -889,7 +889,7 @@ FOAM_FILES([
   { name: "foam/dashboard/view/GroupByCitationView" },
   { name: "foam/dashboard/view/Card" },
   { name: "foam/dashboard/view/Dashboard" },
-//  { name: "foam/build/Library" },
+  { name: "foam/build/Library" },
   { name: "foam/build/EmbeddedModelDAO" },
   { name: "foam/u2/view/JSONTextView" },
   { name: "foam/u2/view/MapView" },
