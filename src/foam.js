@@ -3482,7 +3482,7 @@ var updated = [];
       filter(f => {
         if ( foam.checkFlags(f.flags) ) return true;
         console.log('Not loading', f, 'flags:', f.flags);
-        return true;
+        return false;
       }).
       filter(f => (! f.predicate) || f.predicate()).
       map(f => f.name).

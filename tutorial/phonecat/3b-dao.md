@@ -8,10 +8,10 @@ tutorial: 3b
 In this chapter, for the purpose of building our simple app on FOAM, you will learn about the following:
 
   1. DAOs (Data Access Objects)
-  2. the FOAM DetailView  
-  3. the Controller 
-  
-In the previous chapter, by defining the model (the M of MVC) you described what your data is: a `Phone`.  As mentioned in the Core Concepts of this tutorial, MVC is a classic pattern for breaking up applications into reusable, decoupled components. DAOs further define the model (M) by defining how you store your data. The DetailView (V) is how your data will be presented to the user for viewing and editing. The controller (C) will connect the views with the model. 
+  2. the FOAM DetailView
+  3. the Controller
+
+In the previous chapter, by defining the model (the M of MVC) you described what your data is: a `Phone`.  As mentioned in the Core Concepts of this tutorial, MVC is a classic pattern for breaking up applications into reusable, decoupled components. DAOs further define the model (M) by defining how you store your data. The DetailView (V) is how your data will be presented to the user for viewing and editing. The controller (C) will connect the views with the model.
 
 ## **1. DAO - Data Access Objects**
 
@@ -30,11 +30,11 @@ FOAM's data storage library contains many implementations of the common DAO inte
 
 There are also many DAO "decorators" which add extra functionality on top of other DAOs. This spares each DAO's author from having to reimplement caching, autoincrement, logging and timing.
 
-## **2. The FOAM DetailView** 
+## **2. The FOAM DetailView**
 
-The FOAM `DetailView` has a `data` property which is set to a specified FOAM object. 
+The FOAM `DetailView` has a `data` property which is set to a specified FOAM object.
 
-The FOAM `DetailView` has a default template which runs through the list of `properties` on the object and displays their `name`s (or `label`s, if set) in the left column of a table and their `view`s on the right. Therefore, we don't really have to define a custom view here. 
+The FOAM `DetailView` has a default template which runs through the list of `properties` on the object and displays their `name`s (or `label`s, if set) in the left column of a table and their `view`s on the right. Therefore, we don't really have to define a custom view here.
 
 ## **3. The Controller**
 
@@ -89,7 +89,7 @@ For this simple app, you will have a small controller with very few parts:
             expression: function (dao, search, order) {
               var expr = foam.mlang.Expressions.create();
               return dao.orderBy(order).where(expr.OR(
-                expr.CONTAINS_IC(Phone.SNIPPET, search), 
+                expr.CONTAINS_IC(Phone.SNIPPET, search),
                 expr.CONTAINS_IC(Phone.SNIPPET, search)));
             }
           }
@@ -105,10 +105,10 @@ For this simple app, you will have a small controller with very few parts:
 
 3. `order` defaults to sorting by `Phone.NAME`.
 
-    * For each property `someProp` on a class `MyClass`, there is a static property spelled `MyClass.SOME_PROP` that is used for sorting and filtering in DAOs. There are several examples of these here. 
+    * For each property `someProp` on a class `MyClass`, there is a static property spelled `MyClass.SOME_PROP` that is used for sorting and filtering in DAOs. There are several examples of these here.
 
-4. `order` is displayed as a `ChoiceView` which represents a drop-down box. 
-          
+4. `order` is displayed as a `ChoiceView` which represents a drop-down box.
+
     * `ChoiceView` expects an array of choices. Each choice is an array `[internalValue, 'user label']`. The value of the `order` property is two-way bound to the current value of the drop-down box.
 
 5. `dao` is the master DAO containing all the phones.
@@ -124,7 +124,7 @@ For this simple app, you will have a small controller with very few parts:
       - The return value becomes the value of `this.filteredDAO` which will be a sorted and filtered version of the master `this.dao`.
     * `CONTAINS_IC` checks if the string on the left contains the string on the right, ignoring case.
 
-The `rowView` in the `DAOList` above is called `PhoneCitationView`. The above code defined this view to specify how to display a summary of a phone for the catalog page. Now, load your app using the default `DetailView` templates. 
+The `rowView` in the `DAOList` above is called `PhoneCitationView`. The above code defined this view to specify how to display a summary of a phone for the catalog page. Now, load your app using the default `DetailView` templates.
 
 
 **STEP #2.** Add the following dummy code to `Controller.js`.  After this step the catalog page will be functional:
@@ -153,8 +153,6 @@ The `rowView` in the `DAOList` above is called `PhoneCitationView`. The above co
     </html>
     {% endhighlight %}
 
-If loaded into your browser, you'll see that it's far from pretty but that searching and sorting work properly.
-
 The `<foam>` tag is convenient for loading a given model and view and inserting it into the DOM.
 
 
@@ -163,9 +161,9 @@ The `<foam>` tag is convenient for loading a given model and view and inserting 
 In this part of the tutorial, we have explained the use of DAOs, the DetailView and the controller in FOAM.  You have applied a controller to your app and used DetailView to assess your work. You are now ready to move onto learning about FOAM UI components and add them to your app.
 
 ## **[NEXT: Part III - Applied Learning - User Interface Library](../3c-UI/)**
-  
 
-### **Tutorial Menu:** 
+
+### **Tutorial Menu:**
 
 1. [Getting Started](../1-gettingstarted/)
 1. [Core Concepts](../2-concepts/)

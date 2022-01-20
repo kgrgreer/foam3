@@ -90,6 +90,10 @@ foam.CLASS({
       transient: true,
       class: 'FObjectArray',
       of: 'foam.u2.wizard.WizardletSection',
+      // Override BaseWizardlet preSet
+      preSet: function (_, val) {
+        return val;
+      },
       factory: function () {
         var sections = foam.u2.detail.AbstractSectionedDetailView.create({
           of: this.of,
