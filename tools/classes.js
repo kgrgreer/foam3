@@ -618,19 +618,6 @@ var classes = [
   'foam.nanos.pm.PMFactory',
   'foam.nanos.iban.test.ValidationIBANTest',
   'foam.nanos.iban.IBANInfo',
-  'foam.box.sf.SFBOX',
-  'foam.box.sf.SFSink',
-  'foam.box.sf.SFDAO',
-  'foam.box.sf.DUGSFRuleAction',
-  'foam.box.sf.DUGSFRule',
-  'foam.box.sf.SFEntry',
-  'foam.box.sf.SFManager',
-  'foam.box.sf.SF',
-  'foam.box.sf.SFBroadcastDAO',
-  'foam.box.sf.SFBroadcastReceiverDAO',
-  'foam.box.sf.SFMedusaClientDAO',
-  'foam.box.sf.SFFileJournal',
-  'foam.box.sf.SFTestObject',
   'foam.nanos.menu.AbstractMenu'
 ];
 
