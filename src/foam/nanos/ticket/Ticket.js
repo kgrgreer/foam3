@@ -490,9 +490,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
-          throw new AuthorizationException("You don't have permission to update this ticket.");
-        }
+        // The creator of the ticket can update
+        if ( user.getId() == this.getCreatedBy() ) return;
+
+        // The assignee of the ticket can update
+        Ticket oldTicket = (Ticket) ((DAO) x.get("localTicketDAO")).find(this.getId());
+        if ( user.getId() == this.getAssignedTo() || user.getId() == oldTicket.getAssignedTo() ) return;
+
+        // Group with update permission can update
+        if ( auth.check(x, "ticket.update." + this.getId()) ) return;
+
+        throw new AuthorizationException("You don't have permission to update this ticket.");
       `
     },
     {
