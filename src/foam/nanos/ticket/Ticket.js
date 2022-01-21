@@ -500,7 +500,7 @@ foam.CLASS({
         // Group with update permission can update
         if ( auth.check(x, "ticket.update." + this.getId()) ) return;
 
-        throw new AuthorizationException("You don't have permission to update this ticket.");
+        throw new AuthorizationException();
       `
     },
     {
