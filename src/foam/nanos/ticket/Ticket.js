@@ -407,7 +407,7 @@ foam.CLASS({
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            findAssignedTo(x).doNotify(x, notification);
+            findAssignedTo(getSystemX(x)).doNotify(x, notification);
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
             DAO notificationDAO = (DAO) x.get("localNotificationDAO");
             Notification notification = new Notification.Builder(x)
@@ -423,7 +423,7 @@ foam.CLASS({
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          findCreatedFor(x).doNotify(x, notification);
+          findCreatedFor(getSystemX(x)).doNotify(x, notification);
         }
       `
     },
@@ -440,7 +440,7 @@ foam.CLASS({
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-            findAssignedTo(x).doNotify(x, notification);
+            findAssignedTo(getSystemX(x)).doNotify(x, notification);
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
           DAO notificationDAO = (DAO) x.get("localNotificationDAO");
           Notification notification = new Notification.Builder(x)
@@ -450,6 +450,17 @@ foam.CLASS({
             .build();
           notificationDAO.put(notification);
         }
+      `
+    },
+    {
+      name: 'getSystemX',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Context',
+      javaCode: `
+        return x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build())
+                .put("group", null);
       `
     },
     {
