@@ -399,6 +399,7 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
@@ -407,9 +408,8 @@ foam.CLASS({
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            findAssignedTo(getUserX(x)).doNotify(x, notification);
+            notificationDAO.put_(x, notification);
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
             Notification notification = new Notification.Builder(x)
               .setBody(this.COMMENT_NOTIFICATION)
               .setGroupId(getAssignedToGroup())
@@ -423,7 +423,7 @@ foam.CLASS({
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          findCreatedFor(getUserX(x)).doNotify(x, notification);
+          notificationDAO.put_(x, notification);
         }
       `
     },
@@ -434,15 +434,15 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new Notification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-            findAssignedTo(getUserX(x)).doNotify(x, notification);
+          notificationDAO.put_(x, notification);
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
           Notification notification = new Notification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setGroupId(getAssignedToGroup())
@@ -450,17 +450,6 @@ foam.CLASS({
             .build();
           notificationDAO.put(notification);
         }
-      `
-    },
-    {
-      name: 'getUserX',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      type: 'Context',
-      javaCode: `
-        return x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build())
-                .put("group", null);
       `
     },
     {
