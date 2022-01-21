@@ -453,7 +453,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getSystemX',
+      name: 'getUserX',
       args: [
         { name: 'x', type: 'Context' }
       ],
