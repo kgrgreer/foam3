@@ -1,12 +1,12 @@
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"admin.theme",
-  "label":"Themes",
+  "id":"admin.scripts",
+  "label":"Scripts",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"spThemeDAO"
+      "daoKey":"scriptDAO"
     }
   },
   "parent":"admin"
@@ -14,13 +14,13 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"admin.themedomain",
-  "label":"Theme Domains",
-  "handler":
+  "id":"admin.scriptevents",
+  "label":"Script Events",
+  "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"themeDomainDAO"
+      "daoKey":"scriptEventDAO"
     }
   },
   "parent":"admin"
