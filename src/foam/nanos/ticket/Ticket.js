@@ -399,6 +399,7 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
@@ -407,9 +408,8 @@ foam.CLASS({
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            findAssignedTo(x).doNotify(x, notification);
+            notificationDAO.put_(x, notification);
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
             Notification notification = new Notification.Builder(x)
               .setBody(this.COMMENT_NOTIFICATION)
               .setGroupId(getAssignedToGroup())
@@ -423,7 +423,7 @@ foam.CLASS({
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          findCreatedFor(x).doNotify(x, notification);
+          notificationDAO.put_(x, notification);
         }
       `
     },
@@ -434,15 +434,15 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new Notification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-            findAssignedTo(x).doNotify(x, notification);
+          notificationDAO.put_(x, notification);
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
           Notification notification = new Notification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setGroupId(getAssignedToGroup())
@@ -490,9 +490,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
-          throw new AuthorizationException("You don't have permission to update this ticket.");
-        }
+        // The creator of the ticket can update
+        if ( user.getId() == this.getCreatedBy() ) return;
+
+        // The assignee of the ticket can update
+        Ticket oldTicket = (Ticket) ((DAO) x.get("localTicketDAO")).find(this.getId());
+        if ( user.getId() == this.getAssignedTo() || user.getId() == oldTicket.getAssignedTo() ) return;
+
+        // Group with update permission can update
+        if ( auth.check(x, "ticket.update." + this.getId()) ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
