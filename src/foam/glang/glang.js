@@ -46,6 +46,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfTimeSpan',
@@ -73,10 +74,12 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfHour',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   methods: [
     {
       name: 'f',
@@ -117,10 +120,12 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfDay',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   methods: [
     {
       name: 'f',
@@ -132,6 +137,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.glang',
@@ -161,10 +167,12 @@ return java.util.Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfWeek',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   properties: [
     {
       class: 'Int',
@@ -187,6 +195,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.glang',
@@ -212,7 +221,7 @@ foam.CLASS({
         var endOfWeek = (this.startOfWeek + 6) % 7;
         var day = ts.getDay();
         var daysToEndOfWeek = (endOfWeek - day + 7) % 7;
-        
+
         ts.setDate(date + daysToEndOfWeek);
 
         ts.setHours(23, 59, 59);
@@ -238,10 +247,12 @@ return java.util.Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfMonth',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   methods: [
     {
       name: 'f',
@@ -255,6 +266,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.glang',
@@ -289,10 +301,12 @@ return java.util.Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfQuarter',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   methods: [
     {
       name: 'f',
@@ -306,6 +320,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.glang',
@@ -348,10 +363,12 @@ return java.util.Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfYear',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: [],
   methods: [
     {
       name: 'f',
@@ -365,6 +382,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.glang',

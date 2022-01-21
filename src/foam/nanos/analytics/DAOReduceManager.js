@@ -7,10 +7,12 @@
 foam.CLASS({
   package: 'foam.nanos.analytics',
   name: 'DAOReduceManager',
+
   javaImports: [
     'java.util.Date',
     'static foam.mlang.MLang.*'
   ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -36,6 +38,7 @@ setCloseTimeExpr(new foam.glang.EndOfTimeSpan.Builder(getX())
       name: 'closeTimeExpr'
     }
   ],
+
   methods: [
     {
       name: 'doReduce',

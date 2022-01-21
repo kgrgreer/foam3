@@ -315,6 +315,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.id;
+      },
+      javaCode: `
+        return getId();
+      `
+    },
+    {
       name: 'createInterpreter',
       args: [
         { name: 'x', type: 'Context' },
