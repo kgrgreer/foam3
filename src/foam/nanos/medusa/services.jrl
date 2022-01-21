@@ -167,14 +167,14 @@ p({
   "client": "{\"of\":\"foam.nanos.session.Session\"}"
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "replayingInfo",
-  "description": "Medusa replay info for this instance",
-  "serviceScript": """
-     return new foam.nanos.medusa.ReplayingInfo();
-  """
-})
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "replayingInfo",
+//   "description": "Medusa replay info for this instance",
+//   "serviceScript": """
+//      return new foam.nanos.medusa.ReplayingInfo();
+//   """
+// })
 
 p({
   "class": "foam.nanos.boot.NSpec",
