@@ -407,7 +407,7 @@ foam.CLASS({
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            findAssignedTo(getSystemX(x)).doNotify(x, notification);
+            findAssignedTo(getUserX(x)).doNotify(x, notification);
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
             DAO notificationDAO = (DAO) x.get("localNotificationDAO");
             Notification notification = new Notification.Builder(x)
@@ -423,7 +423,7 @@ foam.CLASS({
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          findCreatedFor(getSystemX(x)).doNotify(x, notification);
+          findCreatedFor(getUserX(x)).doNotify(x, notification);
         }
       `
     },
@@ -440,7 +440,7 @@ foam.CLASS({
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-            findAssignedTo(getSystemX(x)).doNotify(x, notification);
+            findAssignedTo(getUserX(x)).doNotify(x, notification);
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
           DAO notificationDAO = (DAO) x.get("localNotificationDAO");
           Notification notification = new Notification.Builder(x)
