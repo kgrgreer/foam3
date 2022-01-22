@@ -235,6 +235,7 @@ p({
   "parent":"integration"
 })
 p({"class":"foam.nanos.menu.Menu","id":"integration.model-doc","label":"UML API Models","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser","allowedModels":{"net.nanopay.fx.afex.AFEXLog":true}}},"parent":"integration"})
+
 p({"class":"foam.flow.DocumentMenu","id":"admin.flowdoc","label":"FLOW Documents","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.doc.DocumentationView"}},"parent":"admin"})
 
 // settings
