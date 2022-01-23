@@ -60,7 +60,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFSink do not implement 'remove' method");
+      throw new UnsupportedOperationException("SFSink do not implement 'remove' method");
       `
     },
     {
@@ -68,7 +68,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFSink do not implement 'remove' method");
+      throw new UnsupportedOperationException("SFSink do not implement 'remove' method");
       `    
     },
     {
@@ -76,7 +76,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFSink do not implement 'remove' method");
+      throw new UnsupportedOperationException("SFSink do not implement 'remove' method");
       `
     }
   ]

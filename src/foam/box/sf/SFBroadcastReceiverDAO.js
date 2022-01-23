@@ -13,12 +13,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.DOP',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.medusa.ClusterConfig',
-    'foam.nanos.medusa.ClusterConfigSupport',
-    'foam.nanos.medusa.MedusaType',
-    'foam.nanos.medusa.Status',
     'foam.nanos.pm.PM',
     'foam.nanos.logger.Loggers'
   ],

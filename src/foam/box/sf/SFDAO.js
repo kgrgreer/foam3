@@ -72,7 +72,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'remove' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'remove' method");
       `
     },
     {
@@ -80,7 +80,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'remove_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'remove_' method");
       `
     },
     {
@@ -88,7 +88,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'find' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'find' method");
       `
     },
     {
@@ -96,7 +96,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'find_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'find_' method");
       `
     },
     {
@@ -104,7 +104,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'select' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'select' method");
       `
     },
     {
@@ -112,7 +112,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'select_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'select_' method");
       `
     },
     {
@@ -120,7 +120,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'removeAll' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'removeAll' method");
       `
     },
     {
@@ -128,7 +128,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'removeAll_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'removeAll_' method");
       `
     },
     {
@@ -136,7 +136,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'listen' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'listen' method");
       `
     },
     {
@@ -144,7 +144,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'listen_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'listen_' method");
       `
     },
     {
@@ -152,7 +152,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'pipe' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'pipe' method");
       `
     },
     {
@@ -160,7 +160,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'pipe_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'pipe_' method");
       `
     },
     {
@@ -168,7 +168,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'where' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'where' method");
       `
     },
     {
@@ -176,7 +176,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'orderBy' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'orderBy' method");
       `
     },
     {
@@ -184,7 +184,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'skip' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'skip' method");
       `
     },
     {
@@ -192,7 +192,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'limit' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'limit' method");
       `
     },
     {
@@ -200,7 +200,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'inX' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'inX' method");
       `
     },
     {
@@ -208,7 +208,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'cmd' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'cmd' method");
       `
     },
     {
@@ -216,7 +216,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'cmd_' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'cmd_' method");
       `
     },
     {
@@ -224,7 +224,7 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      throw new RuntimeException("SFDAO do not implement 'getOf' method");
+      throw new UnsupportedOperationException("SFDAO do not implement 'getOf' method");
       `
     },
   ]
