@@ -306,8 +306,8 @@ foam.CLASS({
         List<String> availableFilenames = null;
         //Sort file from high index to low.
         filenames.sort((f1, f2) -> {
-          int l1 = Integer.parseInt(f1.split("\\\\.")[1]);
-          int l2 = Integer.parseInt(f2.split("\\\\.")[1]);
+          int l1 = getFileSuffix(f1);
+          int l2 = getFileSuffix(f2);
           return l1 > l2 ? -1 : 1;
         });
 
@@ -334,7 +334,7 @@ foam.CLASS({
 
         synchronized ( onHoldListLock_ ) {
 
-          int maxFileIndex = getFileSuffix(filenames.get(filenames.size() - 1));
+          int maxFileIndex = getFileSuffix(filenames.get(0));
 
           for ( String filename : availableFilenames ) {
 
