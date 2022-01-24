@@ -95,7 +95,6 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("candlestickalarms")
-      .setCluster(false)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.CandlestickAlarm.KEY });
   """,
