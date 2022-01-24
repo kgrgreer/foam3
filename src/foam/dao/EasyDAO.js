@@ -198,7 +198,7 @@ foam.CLASS({
         if ( getCluster() &&
              getMdao() != null ) {
           if ( getSAF() ) {
-            delegate = new foam.box.sf.SFBroadcastDAO.Builder(getX())
+            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
             .build();   

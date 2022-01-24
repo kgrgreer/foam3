@@ -25,10 +25,6 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.util.concurrent.AssemblyLine',
-    'foam.nanos.medusa.ClusterConfig',
-    'foam.nanos.medusa.ClusterConfigSupport',
-    'foam.nanos.medusa.MedusaType',
-    'foam.nanos.medusa.Status',
     'foam.util.retry.RetryStrategy',
     'foam.util.retry.RetryForeverStrategy',
     'java.util.PriorityQueue',
@@ -53,39 +49,6 @@ foam.CLASS({
           return 0;
         });
       `
-    },
-    {
-      name: 'cluster',
-      class: 'Boolean',
-      javaFactory: `
-      return foam.util.SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
-      `
-    },
-    {
-      class: 'Int',
-      name: 'medusaTimeWindow',
-      units: 's',
-      value: -1
-    },
-    {
-      name: 'medusaRetryStrategy',
-      class: 'FObjectProperty',
-      of: 'foam.util.retry.RetryStrategy',
-      javaFactory: `
-        return (new RetryForeverStrategy.Builder(null))
-          .setRetryDelay(1000)
-          .build();
-      `
-    },
-    {
-      class: 'Int',
-      name: 'medusaFileCapacity',
-      value: 4096
-    },
-    {
-      class: 'String',
-      name: 'SFBroadcastReceiverService',
-      value: 'SFBroadcastReceiverDAO'
     },
     {
       name: 'sfs',
@@ -209,8 +172,10 @@ foam.CLASS({
         internalSFDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
+            String sfId = "";
             try {
               SF sf = (SF) ((FObject) obj).fclone();
+              sfId = sf.getId();
               sf.setX(context);
               sf.setManager(manager);
               sf.initial(context);
@@ -218,43 +183,10 @@ foam.CLASS({
               getSfs().put(sf.getId(), sf);
               getLogger().info("Initialize successfully: " + sf.getId());
             } catch ( Throwable t ) {
-              getLogger().error(t);
+              getLogger().error(sfId, t);
             }
           }
         });
-
-        if ( getCluster() ) {
-          ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
-          ClusterConfig myConfig = support.getConfig(getX(), support.getConfigId());
-          if ( myConfig.getType() == MedusaType.MEDIATOR ) {
-            for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
-              try {
-                getLogger().info("findMediator: " + config.getId());
-                if ( config.getId().equals(myConfig.getId()) ) continue;
-    
-                SF sf = new SFMedusaClientDAO.Builder(context)
-                          .setId(config.getId())
-                          .setFileName(config.getId())
-                          .setTimeWindow(getMedusaTimeWindow())
-                          .setFileCapacity(getMedusaFileCapacity())
-                          .setRetryStrategy(getMedusaRetryStrategy())
-                          .setMyConfig(myConfig)
-                          .setToConfig(config)
-                          .setManager(manager)
-                          .build();
-                sf.setX(context);
-                sf.initial(context);
-                sf.setReady(true);
-                getSfs().put(sf.getId(), sf);
-                getLogger().info("Initialize successfully: " + sf.getId());
-              } catch ( Throwable t ) {
-                getLogger().warning(t.getMessage());
-              }
-            }
-          }
-        }
-        getLogger().info("SFManager Start");
-
       `
     }
   ],

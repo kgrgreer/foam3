@@ -153,6 +153,8 @@ foam.CLASS({
         if ( journal.getFileExist() == false ) {
           journal.createJournalFile();
           journal.setFileOffset(0);
+        } else {
+          journal.setFileOffset(journal.getFileSize());
         }
         return journal;
 
