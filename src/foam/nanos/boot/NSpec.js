@@ -19,7 +19,8 @@ foam.CLASS({
       value: 'NSPEC_CTX_KEY',
       documentation: `
       Constant for addressing the NSpec through the context
-      `
+      `,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -232,6 +233,16 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.name;
+      },
+      javaCode: `
+        return getName();
+      `
+    },
     {
       name: 'createService',
       args: [
