@@ -68,6 +68,7 @@ var skeletons = [
   'foam.nanos.app.AppConfigService',
   'foam.nanos.auth.AgentAuthService',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
   'foam.nanos.auth.UserQueryService',
   'foam.nanos.crunch.CrunchService',
   'foam.nanos.export.GoogleSheetsExport',
