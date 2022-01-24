@@ -56,12 +56,15 @@ FOAM_FILES([
   { name: "foam/nanos/alarming/AddAlarmNameDAO", flags: [ "java" ] },
   { name: "foam/nanos/alarming/Alarm", flags: [ "java" ] },
   { name: "foam/nanos/alarming/AlarmAndMonitoring", flags: [ "java" ] },
-  { name: "foam/nanos/alarming/AlarmingUniqueNameDAO", flags: [ "java" ] },
   { name: "foam/nanos/alarming/AlarmConfig", flags: [ "java" ] },
-  { name: "foam/nanos/alarming/AlarmReason", flags: [ "java" ] },
+  { name: "foam/nanos/alarming/AlarmingUniqueNameDAO", flags: [ "java" ] },
+  { name: "foam/nanos/alarming/AlarmIdRefines", flags: ["java"] },
   { name: "foam/nanos/alarming/AlarmHostnameRuleAction", flags: [ "java" ] },
   { name: "foam/nanos/alarming/AlarmLoggingDAO", flags: [ "java" ] },
   { name: "foam/nanos/alarming/AlarmNotificationDAO", flags: [ "java" ] },
+  { name: "foam/nanos/alarming/AlarmReason", flags: [ "java" ] },
+  { name: "foam/nanos/alarming/CandlestickAlarm", flags: [ "web", "java" ] },
+  { name: "foam/nanos/alarming/CandlestickAlarmDAO", flags: [ "java" ] },
   { name: "foam/nanos/alarming/MonitoringReport", flags: [ "java" ] },
   { name: "foam/nanos/alarming/MonitorType", flags: [ "java" ] },
   { name: "foam/nanos/alarming/OMName", flags: [ "java" ] },
@@ -665,7 +668,6 @@ FOAM_FILES([
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification", flags: [ "java" ] },
 
-  { name: "foam/nanos/alarming/AlarmIdRefines", flags: ["java"] },
   { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] }
 
 ]);
