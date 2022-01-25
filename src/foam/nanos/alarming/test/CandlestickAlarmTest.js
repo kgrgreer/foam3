@@ -47,7 +47,7 @@ foam.CLASS({
       }
       m.doReduce();
       alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, ca.getAlarmName()));
-      test(alarm != null, "Alarm generated");
+      test(alarm != null && alarm.getIsActive(), "Alarm generated");
       `
     }
   ]
