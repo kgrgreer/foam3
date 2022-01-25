@@ -23,7 +23,7 @@ foam.CLASS({
       name: 'propName'
     },
     {
-      class: 'Class',
+      class: 'String',
       name: 'of',
       documentation: 'class that we want the object to be an instance of'
     },
@@ -37,14 +37,21 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
+      Class cls;
+      try {
+        cls = Class.forName(getOf());
+      }
+      catch (Exception E) {
+        return false; // unable to find class
+      };
 
       if ( getIsNew() ) {
         FObject nu  = (FObject) NEW_OBJ.f(obj);
-        return getOf().isInstance(nu.getProperty(getPropName()));
+        return cls.isInstance(nu.getProperty(getPropName()));
       }
       FObject old = (FObject) OLD_OBJ.f(obj);
       if ( old != null )
-        return getOf().isInstance(old.getProperty(getPropName()));
+        return cls.isInstance(old.getProperty(getPropName()));
       return false;
       `
     }
