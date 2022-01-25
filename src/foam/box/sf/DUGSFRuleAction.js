@@ -32,7 +32,7 @@ foam.CLASS({
       args: 'X agencyX, foam.nanos.ruler.Rule rule',
       type: 'foam.dao.Sink',
       javaCode: `
-        SFManager sfManager = (SFManager) agencyX.get("SFManager");
+        SFManager sfManager = (SFManager) agencyX.get("sfManager");
         Sink sink = (Sink) sfManager.getSfs().get(getSfId());
         if ( sink == null ) {
           Loggers.logger(agencyX, this).error("SAF Sink not found, SFId", getSfId());

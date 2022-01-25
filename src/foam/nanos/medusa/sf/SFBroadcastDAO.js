@@ -76,7 +76,7 @@ foam.CLASS({
           
           if ( myConfig.getType() != MedusaType.MEDIATOR || myConfig.getStatus() != Status.ONLINE ) return;
           
-          final SFManager sfManager = (SFManager) x.get("SFManager");
+          final SFManager sfManager = (SFManager) x.get("sfManager");
           
           SFEntry entry = x.create(SFEntry.class);
           entry.setNSpecName(getNSpec().getName());

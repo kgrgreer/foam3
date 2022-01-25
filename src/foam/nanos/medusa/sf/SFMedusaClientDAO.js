@@ -33,7 +33,7 @@ foam.CLASS({
         name: 'serviceName',
         class: 'String',
         javaFactory: `
-        return "SFBroadcastReceiverDAO";
+        return "sfBroadcastReceiverDAO";
         `
       },
       {
