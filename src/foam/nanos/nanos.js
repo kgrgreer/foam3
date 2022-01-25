@@ -515,6 +515,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/predicate/IsClassPredicate", flags: [ "java" ] },
   { name: "foam/nanos/ruler/predicate/IsInstancePredicate", flags: [ "java" ] },
   { name: "foam/nanos/ruler/predicate/PropertyIsInstance", flags: [ "java" ] },
+  { name: "foam/nanos/ruler/predicate/PropertyImplements", flags: [ "java" ] },
   { name: "foam/nanos/ruler/predicate/PropertyIsClass", flags: [ "java" ] },
   { name: "foam/nanos/ruler/predicate/ContextContainsPredicate", flags: [ "java" ] },
   { name: "foam/nanos/ruler/predicate/PropertyIsSetPredicate", flags: [ "java" ] },

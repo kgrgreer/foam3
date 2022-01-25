@@ -553,6 +553,7 @@ var missing = {
   'foam.nanos.ruler.predicate.ContextContainsPredicate': true,
   'foam.nanos.ruler.predicate.PropertyIsClass': true,
   'foam.nanos.ruler.predicate.PropertyIsInstance': true,
+  'foam.nanos.ruler.predicate.PropertyImplements': true,
   'foam.nanos.ruler.predicate.IsClassPredicate': true,
   'foam.nanos.ruler.predicate.IsInstancePredicate': true,
   'foam.nanos.ruler.predicate.NewEqOld': true,
