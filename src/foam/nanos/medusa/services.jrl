@@ -48,6 +48,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setAuthorize(false)
+      .setHashed(true)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.ClusterConfigNARegionReplayDAO.Builder(x)
         .setDelegate(new foam.nanos.medusa.ClusterConfigReplayDAO.Builder(x)
