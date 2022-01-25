@@ -26,7 +26,8 @@ foam.CLASS({
     {
       documentation: 'Candlestick property to test',
       class: 'String',
-      name: 'propertyName'
+      name: 'propertyName',
+      value: 'total'
     },
     {
       documentation: 'Alarm on percentage change since last test',

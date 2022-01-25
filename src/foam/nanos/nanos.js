@@ -68,6 +68,7 @@ FOAM_FILES([
   { name: "foam/nanos/alarming/MonitoringReport", flags: [ "java" ] },
   { name: "foam/nanos/alarming/MonitorType", flags: [ "java" ] },
   { name: "foam/nanos/alarming/OMName", flags: [ "java" ] },
+  { name: "foam/nanos/alarming/test/CandlestickAlarmTest", flags: [ "java" ] },
   { name: "foam/nanos/auth/DayOfWeek", flags: [ "java" ] },
   { name: "foam/nanos/auth/Hours", flags: [ "java" ] },
   { name: "foam/nanos/auth/PropertyType", flags: [ "java" ] },
