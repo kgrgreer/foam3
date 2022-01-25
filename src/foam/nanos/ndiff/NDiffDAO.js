@@ -79,6 +79,10 @@ foam.CLASS({
       name: 'remove_',
       javaCode: `
         var storedObject = getDelegate().remove_(x, obj);
+        if ( storedObject == null ) {
+          return null;
+        }
+
         if ( ! getRuntimeOrigin() ) {
           return storedObject;
         }
