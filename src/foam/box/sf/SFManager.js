@@ -113,7 +113,7 @@ foam.CLASS({
           public void execute(X x) {
             lock_.lock();
             while ( true ) {
-              getLogger().info("$$$$ SF running: " + count++ + " queue size: " + queue.size());
+              //getLogger().info("$$$$ SF running: " + count++ + " queue size: " + queue.size());
               if ( queue.size() > 0 ) {
                 if ( queue.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                   SFEntry e = queue.poll();
@@ -134,7 +134,7 @@ foam.CLASS({
                   long waitTime = queue.peek().getScheduledTime() - System.currentTimeMillis();
                   if ( waitTime > 0 ) {
                     try {
-                      getLogger().info("$$$ waitTime: " + waitTime);
+                      //getLogger().info("$$$ waitTime: " + waitTime);
                       notAvailable_.await(waitTime, TimeUnit.MILLISECONDS);
                     } catch ( InterruptedException e ) {
                       getLogger().info("SFManager interrupt: " + waitTime);
