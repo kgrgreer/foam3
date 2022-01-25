@@ -76,6 +76,7 @@ foam.CLASS({
       documentation: 'NanoService implementation.',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName());
       timer.schedule(
         new AgencyTimerTask(getX(), this),
@@ -107,6 +108,7 @@ foam.CLASS({
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       if ( replaying != null &&
            replaying.getReplaying() ) {
+        logger.debug("execute", "replaying");
         Timer timer = new Timer(this.getClass().getSimpleName());
         timer.schedule(
           new AgencyTimerTask(x, this),

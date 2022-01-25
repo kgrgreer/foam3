@@ -97,7 +97,7 @@ foam.CLASS({
       int index = (int) (entry.getIndex() % buckets.size());
       Set<String> bucket = buckets.get(index);
       for ( String id : bucket ) {
-        om.log(this.getClass().getSimpleName(), "request");
+        om.log("MedusaBroadcast2NodesDAO", "request");
         inFlight_.getAndIncrement();
         AssemblyLine queue = (AssemblyLine) getQueues().get(id);
         if ( queue == null ) {
@@ -127,7 +127,7 @@ foam.CLASS({
             // logger.debug("AssemblyLine", "executeUnderLock", id);
             ((DAO) getClients().get(id)).put_(x, entry);
             inFlight_.getAndDecrement();
-            om.log(this.getClass().getSimpleName(), "response");
+            om.log("MedusaBroadcast2NodesDAO", "response");
           }
         });
       }
