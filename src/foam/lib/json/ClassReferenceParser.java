@@ -43,7 +43,8 @@ public class ClassReferenceParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    if ( ( ps = super.parse(ps, x)) == null ) {
+    ps = super.parse(ps, x);
+    if ( ps == null || ps.value() == null ) {
       return null;
     }
 
