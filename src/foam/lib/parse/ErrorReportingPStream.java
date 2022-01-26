@@ -71,7 +71,7 @@ public class ErrorReportingPStream
       trap.apply(errParser, errContext);
     }
 
-    return errContext.get("error") + "\n" +
+    return errContext.get("error") + " at " + errStream.getErrorLine() + "\n" +
       "Invalid character '" + invalid + "' found at " + errStream.pos_ + ", " +
       "Valid characters include: " + StringUtils.join(validCharacters, ",");
   }
