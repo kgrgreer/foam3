@@ -885,6 +885,7 @@ FOAM_FILES([
   { name: "foam/dashboard/view/Line" },
   { name: "foam/dashboard/view/DAOTable" },
   { name: "foam/dashboard/view/HorizontalDAOTable" },
+  { name: "foam/dashboard/view/UserGreetingView" },
   { name: "foam/dashboard/view/GroupByDAOTable" },
   { name: "foam/dashboard/view/GroupByCitationView" },
   { name: "foam/dashboard/view/Card" },
