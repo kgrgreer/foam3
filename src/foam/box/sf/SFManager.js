@@ -120,11 +120,12 @@ foam.CLASS({
                   assemblyLine.enqueue(new foam.util.concurrent.AbstractAssembly() { 
                     public void executeJob() {
                       try {
+                        getLogger().info("sfID: " + e.getSf().getId(), "sfObject: " + e.getObject());
                         e.getSf().submit(x, e);
                         e.getSf().successForward(e);
                       } catch ( Throwable t ) {
-                        //getLogger().warning(t.getMessage());
-                        getLogger().error(t);
+                        //getLogger().warning("sfID: " + e.getSf().getId(), t.getMessage());
+                        getLogger().error("sfID: " + e.getSf().getId(), t);
                         e.getSf().failForward(e, t);
                       }
                     }
@@ -143,7 +144,7 @@ foam.CLASS({
                   }
                 } else {
                   try {
-                    notAvailable_.await();
+                    notAvailable_.await(2000, TimeUnit.MILLISECONDS);
                   } catch ( InterruptedException e ) {
                     getLogger().info("SFManager interrupt");
   
@@ -151,7 +152,7 @@ foam.CLASS({
                 }
               } else {
                 try {
-                  notAvailable_.await();
+                  notAvailable_.await(2000, TimeUnit.MILLISECONDS);
                 } catch ( InterruptedException e ) {
                   getLogger().info("SFManager interrupt");
 
