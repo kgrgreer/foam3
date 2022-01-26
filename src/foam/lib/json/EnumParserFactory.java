@@ -48,7 +48,7 @@ public class EnumParserFactory {
                                                 value = forOrdinal.invoke(null, (int)ps.value());
                                               } catch(NoSuchMethodException | IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
                                                 x.set("error", e);
-                                                return null;
+                                                throw new RuntimeException(e);
                                               }
 
                                               x.set("obj", value);

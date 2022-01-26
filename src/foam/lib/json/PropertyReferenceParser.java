@@ -85,7 +85,7 @@ public class PropertyReferenceParser
         return ps.setValue(axiom);
       } catch (Exception e) {
         x.set("error", e);
-        return null;
+        throw new RuntimeException(e);
       }
     }
 

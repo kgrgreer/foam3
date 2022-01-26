@@ -39,12 +39,16 @@ public class ErrorReportingPStream
 
   @Override
   public PStream apply(Parser parser, ParserContext x) {
-    PStream result = parser.parse(this, x);
-    if ( result == null ) {
-      // if result is null then self report
-      this.report(new ErrorReportingNodePStream(this, getDelegate(), 0), parser, x);
+    try {
+      PStream result = parser.parse(this, x);
+      if (result == null) {
+        // if result is null then self report
+        this.report(new ErrorReportingNodePStream(this, getDelegate(), 0), parser, x);
+      }
+      return result;
+    } catch ( Throwable t ) {
+      return null;
     }
-    return result;
   }
 
   public void report(ErrorReportingNodePStream ernps, Parser parser, ParserContext x) {
@@ -73,7 +77,7 @@ public class ErrorReportingPStream
 
     return errContext.get("error") + " at " + errStream.getErrorLine() + "\n" +
       "Invalid character '" + invalid + "' found at " + errStream.pos_ + ", " +
-      "Valid characters include: " + StringUtils.join(validCharacters, ",");
+      "Valid characters include: " + StringUtils.join(validCharacters, ",") + "\n";
   }
 
   public String getPrintableCharacter(Character ch) {

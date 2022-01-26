@@ -48,7 +48,7 @@ public class ErrorReportingNodePStream
   }
 
   public String getErrorLine() {
-    var lines = root_.substring(tail_);
+    var lines = root_.substring(tail());
     int nextLinePos = lines.indexOf('\n');
     int lastLinePos = 0;
     int lineNumber  = 1;

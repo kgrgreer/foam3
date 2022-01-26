@@ -85,14 +85,9 @@ public class FObjectParser
             }
 
             return null;
-          } catch (ClassNotFoundException e) {
-//            System.err.println("********************* " + e);
-            x.set("error", e);
-            throw new TypeNotPresentException("class", e);
           } catch (Throwable t) {
             x.set("error", t);
-            t.printStackTrace();
-            return null;
+            throw new RuntimeException(t);
           }
         }
       },
@@ -105,12 +100,7 @@ public class FObjectParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    try {
-      return getDelegate().parse(ps, x);
-    } catch (TypeNotPresentException e) {
-      return null;
-//      return UnknownFObjectParser.instance().parse(ps, x);
-    }
+    return getDelegate().parse(ps, x);
   }
 
 }
