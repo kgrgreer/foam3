@@ -195,7 +195,7 @@ foam.CLASS({
           entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
 
           synchronized ( onHoldListLock_ ) {
-            if ( onHoldList_.size() == 0 ) {
+            if ( onHoldList_.isEmpty() ) {
               onHoldList_.add(entry);
               FObject o = (FObject) getRetryStrategy();
               entry.setRetryStrategy((RetryStrategy) o.fclone());
@@ -225,7 +225,7 @@ foam.CLASS({
 
         synchronized ( onHoldListLock_ ) {
           onHoldList_.remove(0);
-          if ( onHoldList_.size() != 0 ) {
+          if ( ! onHoldList_.isEmpty() ) {
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
@@ -346,7 +346,7 @@ foam.CLASS({
             journalMap_.put(getSimpleFilename(filename), journal);
             if ( journal.getFileOffset() == journal.getFileSize() ) continue;
             if ( journal.getFileOffset() > journal.getFileSize() ) {
-              logger_.error("Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize");
+              logger_.warning("Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize");
               journal.setFileOffset(journal.getFileSize());
               continue;
             }
@@ -371,18 +371,20 @@ foam.CLASS({
             logger_.log("Successfully read " + list.size() + " entries from file: " + journal.getFilename() + " in SF: " + getId());
           }
 
-          for ( int i = 0 ; i < onHoldList_.size() ; i++ ) {
-            SFEntry e = onHoldList_.get(i);
-            if ( e.getCreated().before(timeWindow) ) {
-              updateJournalOffset(e);
-              onHoldList_.remove(0);
-            } else {
-              break;
+          if ( getTimeWindow() > -1 ) {
+            for ( int i = onHoldList_.size() ; i > 0 ; i-- ) {
+              SFEntry e = onHoldList_.remove(0);
+              if ( e.getCreated().before(timeWindow) ) {
+                updateJournalOffset(e);
+              } else {
+                onHoldList_.add(0, e);
+                break;
+              }
             }
           }
 
           entryIndex_.set(maxFileIndex * getFileCapacity());
-          if ( onHoldList_.size() != 0 ) {
+          if ( ! onHoldList_.isEmpty() ) {
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
@@ -475,7 +477,8 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             protected Logger logger_ = null;
-            protected long entryCurStep_ = 0;
+            protected volatile long entryCurStep_ = 0;
+            protected volatile SFEntry curSFEntry_ = null;
 
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
