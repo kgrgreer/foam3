@@ -4002,7 +4002,7 @@ foam.CLASS({
         return v1.toString().match(this.regExp) !== null;
       },
       javaCode: `
-        return getRegExp().matcher(getArg1().f(obj).toString()).matches() !== null;
+        return getRegExp().matcher(getArg1().f(obj).toString()).matches();
       `
     }
   ]

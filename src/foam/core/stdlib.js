@@ -941,8 +941,8 @@ foam.LIB({
   name: 'foam.Date',
 
   constants: {
-    MIN_DATE: new Date(-8640000000000000),
-    MAX_DATE: new Date(8640000000000000)
+    MIN_DATE: new Date(-2022,01,10),
+    MAX_DATE: new Date(2022,01,01)
   },
 
   methods: [

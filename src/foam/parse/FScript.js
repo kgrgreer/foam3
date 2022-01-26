@@ -155,11 +155,25 @@ foam.CLASS({
           ),
 
           value: alt(
-            sym("regex"),
+            sym('regex'),
+            sym('date'),
             sym('string'),
             sym('number'),
             sym('field_len'),
             sym('field'),
+          ),
+
+          date: alt(
+            // YYYY-MM-DDTHH:MM
+            seq(sym('number'), '-', sym('number'), '-', sym('number'), 'T',
+                sym('number'), ':', sym('number')),
+            // YYYY-MM-DDTHH
+            seq(sym('number'), '-', sym('number'), '-', sym('number'), 'T',
+                sym('number')),
+            // YYYY-MM-DD
+            seq(sym('number'), '-', sym('number'), '-', sym('number')),
+            // YYYY-MM
+            seq(sym('number'), '-', sym('number'))
           ),
 
           regex:
@@ -273,9 +287,20 @@ foam.CLASS({
 
           regex: function(v) {
             console.log(v);
-//            debugger;
-//            return v;
             return new RegExp(v);
+          },
+
+          date: function(v) {
+          var args = [];
+            for (var i = 0; i < v.length; i ++ ) {
+              if ( i == 0 || i % 2 === 0 ) {
+                // we assume that the input for month is human readable(january is 1 but should be 0 when creating new date)
+                args.push( i == 2 ? v[i] - 1 : v[i]);
+              }
+            }
+            console.log(args);
+            debugger;
+            return new Date(...args);
           }
         };
 

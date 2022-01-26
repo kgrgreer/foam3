@@ -247,9 +247,13 @@ foam.CLASS({
             var exception = vp.errorMessage ?
               `throw new IllegalStateException(((${this.forClass_}) obj).${vp.errorMessage});` :
               `throw new IllegalStateException(${foam.java.asJavaValue(vp.errorString)});`
-            return `if ( ! ${foam.java.asJavaValue(vp.predicate)}.f(obj) ) {
-              ${exception}
-            }`;
+            return `var sps    = new foam.lib.parse.StringPStream();
+var px = new foam.lib.parse.ParserContextImpl();
+sps.setString(${foam.java.asJavaValue(vp.query)});
+var parser = new foam.parse.QueryParser(getClassInfo());
+if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) {
+  ${exception}
+}`;
           })
           .join('');
       }

@@ -153,9 +153,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            predicateFactory: function(e) {
-              return e.GTE(foam.mlang.StringLength.create({ arg1: self }), self.minLength);
-            },
+            query: this.name+'_len>='+self.minLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
         }
@@ -163,9 +161,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
-            predicateFactory: function(e) {
-              return e.LTE(foam.mlang.StringLength.create({ arg1: self }), self.maxLength);
-            },
+            query: this.name+'_len<='+self.maxLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
           });
         }
@@ -173,9 +169,7 @@ foam.CLASS({
         if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            predicateFactory: function(e) {
-              return e.GTE(foam.mlang.StringLength.create({ arg1: self }), 1);
-            },
+            query: this.name+'_len!=""',
             errorString: `${this.label} ${foam.core.String.REQUIRED}`
           });
         }
@@ -273,13 +267,11 @@ foam.CLASS({
         if ( ! this.autoValidate ) return [];
         var self = this;
         var a    = [];
-
+//        console.log(self.name);
         if ( foam.Number.isInstance(self.min) ) {
           a.push({
             args: [self.name],
-            predicateFactory: function(e) {
-              return e.GTE(self, self.min);
-            },
+            query: self.name+">="+self.min,
             errorString: `Please enter ${self.label.toLowerCase()} greater than or equal to ${self.min}.`
           });
         }
@@ -287,9 +279,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(self.max) ) {
           a.push({
             args: [self.name],
-            predicateFactory: function(e) {
-              return e.LTE(self, self.max);
-            },
+            query: self.name+"<="+self.max,
             errorString: `Please enter ${self.label.toLowerCase()} less than or equal to ${self.max}`
           });
         }
@@ -456,28 +446,19 @@ foam.CLASS({
           ? [
               {
                 args: [this.name],
-                predicateFactory: function(e) {
-                  return e.HAS(self);
-                },
+                query: this.name +' exists',
                 errorString: this.PHONE_NUMBER_REQUIRED
               },
               {
                 args: [this.name],
-                predicateFactory: function(e) {
-                  return e.REG_EXP(self, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX);
-                },
+                query: this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
                 errorString: this.INVALID_PHONE_NUMBER
               }
             ]
           : [
               {
                 args: [this.name],
-                predicateFactory: function(e) {
-                    return e.OR(
-                      e.EQ(foam.mlang.StringLength.create({ arg1: self }), 0),
-                      e.REG_EXP(self, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX)
-                    );
-                },
+                query: this.name +' exists||' + this.name+'~'+foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
                 errorString: this.INVALID_PHONE_NUMBER
               }
             ];
@@ -502,6 +483,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
+            query: self.name + '<'+foam.Date.MAX_DATE.toISOString().slice(0,16)+'&&'+self.name + '<'+foam.Date.MIN_DATE.toISOString().slice(0,16),
             predicateFactory: function(e) {
               return e.OR(
                 e.NOT(e.HAS(self)), // Allow null dates.

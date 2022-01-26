@@ -162,7 +162,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['userName', 'type'],
-          query: 'userName=="kristina"',
+          query: 'type!="User"||userName!=""',
           errorMessage: 'USERNAME_REQUIRED'
         }
       ],
@@ -309,6 +309,7 @@ foam.CLASS({
         'en' :'Email Address',
         'fr' :'Adresse Email'
       },
+      required: true,
       includeInDigest: true,
       containsPII: true,
       documentation: 'The email address of the User.',
