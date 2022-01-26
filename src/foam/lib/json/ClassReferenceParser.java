@@ -63,6 +63,7 @@ public class ClassReferenceParser
       return ps.setValue(info);
     } catch ( Throwable t ) {
       System.err.println(classId + " is not a modelled class.");
+      x.set("error", t);
       return null;
     }
   }
