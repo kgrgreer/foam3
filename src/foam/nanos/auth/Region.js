@@ -40,6 +40,26 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'alternativeNames'
+    },
+//    {
+//        class: 'EMail',
+//        name: 'email',
+//        required: true
+//      },
+//    {
+//      class: 'Int',
+//      name: 'test',
+//      min: 6,
+//      autoValidate: true
+//    }
+//    {
+//      class: 'PhoneNumber',
+//      name: 'phone',
+//      required: true
+//    },
+    {
+      class: 'Date',
+      name: 'date'
     }
   ]
 });
