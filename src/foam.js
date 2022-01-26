@@ -1809,7 +1809,7 @@ var missing = {
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig': true,
   'net.nanopay.crunch.wizardlet.RefreshWizardlet': true,
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet': true,
-  'net.nanopay.crunch.document.DateOfIssue': true,
+  'net.nanopay.crunch.document.DateOfDocument': true,
   'net.nanopay.crunch.document.ExpirableDocument': true,
   'net.nanopay.crunch.document.Document': true,
   'net.nanopay.crunch.registration.businesstypes.TrustData': true,
