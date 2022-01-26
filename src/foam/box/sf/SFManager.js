@@ -123,7 +123,8 @@ foam.CLASS({
                         e.getSf().submit(x, e);
                         e.getSf().successForward(e);
                       } catch ( Throwable t ) {
-                        getLogger().warning(t.getMessage());
+                        //getLogger().warning(t.getMessage());
+                        getLogger().error(t);
                         e.getSf().failForward(e, t);
                       }
                     }

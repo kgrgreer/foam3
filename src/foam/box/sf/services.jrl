@@ -86,6 +86,7 @@ p({
       .setJournalType(foam.dao.JournalType.NO_JOURNAL)
       .setJournalName("sftestobjects")
       .setSAF(true)
+      .setFuid(true)
       .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
       .build();
     `,
