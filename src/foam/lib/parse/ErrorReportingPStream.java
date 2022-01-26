@@ -71,13 +71,9 @@ public class ErrorReportingPStream
       trap.apply(errParser, errContext);
     }
 
-    // TODO: @kristina add more context
-    // TODO: @kristina try removing a character
-    // " if ( firstname == 'kristina' ^ERROR^ { ..."
-    return "Invalid character '" + invalid +
-      "' found at " + errStream.pos_ + "\n" +
-      "Valid characters include: " +
-      StringUtils.join(validCharacters, ",");
+    return errContext.get("error") + "\n" +
+      "Invalid character '" + invalid + "' found at " + errStream.pos_ + ", " +
+      "Valid characters include: " + StringUtils.join(validCharacters, ",");
   }
 
   public String getPrintableCharacter(Character ch) {

@@ -87,8 +87,10 @@ public class FObjectParser
             return null;
           } catch (ClassNotFoundException e) {
 //            System.err.println("********************* " + e);
+            x.set("error", e);
             throw new TypeNotPresentException("class", e);
           } catch (Throwable t) {
+            x.set("error", t);
             t.printStackTrace();
             return null;
           }
