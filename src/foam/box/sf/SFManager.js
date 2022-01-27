@@ -120,13 +120,27 @@ foam.CLASS({
                   assemblyLine.enqueue(new foam.util.concurrent.AbstractAssembly() { 
                     public void executeJob() {
                       try {
-                        getLogger().info("sfID: " + e.getSf().getId(), "sfObject: " + e.getObject());
+                        getLogger().info("VVVvvv444333","sfID: " + e.getSf().getId(), "sfObject: " + e.getObject());
                         e.getSf().submit(x, e);
-                        e.getSf().successForward(e);
-                      } catch ( Throwable t ) {
+                        try {
+                          e.getSf().successForward(e);
+                        } catch ( Throwable t ) {
+                          throw new SFException(t);
+                        }
+                      }
+                      catch ( SFException sfe ) {
+                        getLogger().error("VVVvvv444333", "sfID: " + e.getSf().getId(), sfe.getCause());
+                        e.getSf().setReady(false);
+                      }
+                      catch ( Throwable t ) {
                         //getLogger().warning("sfID: " + e.getSf().getId(), t.getMessage());
                         getLogger().error("sfID: " + e.getSf().getId(), t);
-                        e.getSf().failForward(e, t);
+                        try {
+                          e.getSf().failForward(e, t);
+                        } catch ( Throwable et ) {
+                          getLogger().error("VVVvvv444333", "sfID: " + e.getSf().getId(), et);
+                          e.getSf().setReady(false);
+                        }
                       }
                     }
                   });

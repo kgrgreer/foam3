@@ -1075,6 +1075,7 @@ FOAM_FILES([
   { name: "foam/box/sf/SF", flags: [ "java" ] },
   { name: "foam/box/sf/SFFileJournal", flags: [ "java" ] },
   { name: "foam/box/sf/SFTestObject", flags: [ "java" ] },
+  { name: "foam/box/sf/SFException", flags: [ "java" ] },
   { name: "foam/nanos/medusa/sf/MedusaSFManager", flags: [ "java" ] },
   { name: "foam/nanos/medusa/sf/SFBroadcastDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/sf/SFBroadcastReceiverDAO", flags: [ "java" ] },
