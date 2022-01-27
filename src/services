@@ -150,11 +150,15 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localUserDAO",
+  "serve": false,
   "serviceScript": """
-    return
-      new foam.dao.PMDAO(x,
-      new foam.dao.SequenceNumberDAO(1000,
-      new foam.dao.java.JDAO(x, foam.nanos.auth.User.getOwnClassInfo(), "users")));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setPm(true)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("users")
+      .build();
   """
 })
 
