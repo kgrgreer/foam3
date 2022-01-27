@@ -242,15 +242,16 @@ foam.CLASS({
       class: 'String',
       name: 'javaValidateObj',
       expression: function(validationPredicates) {
-        return validationPredicates
+        return `var sps    = new foam.lib.parse.StringPStream();
+var parser = new foam.parse.QueryParser(getClassInfo());
+var px = new foam.lib.parse.ParserContextImpl();` +
+        validationPredicates
           .map((vp) => {
             var exception = vp.errorMessage ?
               `throw new IllegalStateException(((${this.forClass_}) obj).${vp.errorMessage});` :
               `throw new IllegalStateException(${foam.java.asJavaValue(vp.errorString)});`
-            return `var sps    = new foam.lib.parse.StringPStream();
-var px = new foam.lib.parse.ParserContextImpl();
+            return `
 sps.setString(${foam.java.asJavaValue(vp.query)});
-var parser = new foam.parse.QueryParser(getClassInfo());
 if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) {
   ${exception}
 }`;
