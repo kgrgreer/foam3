@@ -81,8 +81,13 @@ foam.CLASS({
         psx.set("X", x);
 
         // attempt parsing
-        ps = (StringPStream) ps.apply(parser, psx);
-        test(ps == null, message);
+        var threw = false;
+        try {
+          ps = (StringPStream) ps.apply(parser, psx);
+        } catch ( Throwable t ) {
+          threw = true;
+        }
+        test(threw, message);
         test(psx.get("error") instanceof Throwable, "Parser context should contain error");
       `
     }
