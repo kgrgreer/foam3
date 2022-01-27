@@ -43,9 +43,12 @@ public class ClassReferenceParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    ps = super.parse(ps, x);
-    if ( ps == null || ps.value() == null ) {
+    if ( ( ps = super.parse(ps, x)) == null ) {
       return null;
+    }
+
+    if ( ps.value() == null ) {
+      return ps;
     }
 
     String classId = (String) ps.value();
