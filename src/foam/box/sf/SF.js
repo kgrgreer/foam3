@@ -195,7 +195,6 @@ foam.CLASS({
           entry = (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
 
           synchronized ( onHoldListLock_ ) {
-            logger_.log("VVVvvv444333", "storeAndForwards", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size(), "object: " + entry.getObject(), "index: " + entry.getIndex());
             if ( onHoldList_.isEmpty() ) {
               onHoldList_.add(entry);
               FObject o = (FObject) getRetryStrategy();
@@ -205,7 +204,6 @@ foam.CLASS({
             } else {
               onHoldList_.add(entry);
             }
-            logger_.log("VVVvvv444333", "storeAndForwarde", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size(), "object: " + entry.getObject(), "index: " + entry.getIndex());
           }
         }
         return fobject.fclone();
@@ -226,7 +224,6 @@ foam.CLASS({
         updateJournalOffset(e);
 
         synchronized ( onHoldListLock_ ) {
-          logger_.log("VVVvvv444333", "updateJournalOffsetAndForwardNexts", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size(), "object: " + e.getObject(), "index: " + e.getIndex());
           onHoldList_.remove(0);
           if ( ! onHoldList_.isEmpty() ) {
             SFEntry s = (SFEntry) onHoldList_.get(0);
@@ -235,7 +232,6 @@ foam.CLASS({
             cleanEntryInfos();
             forward(s);
           }
-          logger_.log("VVVvvv444333", "updateJournalOffsetAndForwardNexte", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size(), "object: " + e.getObject(), "index: " + e.getIndex());
         }
       `
     },
@@ -388,16 +384,13 @@ foam.CLASS({
           }
 
           entryIndex_.set(maxFileIndex * getFileCapacity());
-          logger_.log("VVVvvv444333", "initials", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size());
           if ( ! onHoldList_.isEmpty() ) {
-            logger_.log("VVVvvv444333", "initialm", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size());
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
             s.setRetryStrategy((RetryStrategy) o.fclone());
             cleanEntryInfos();
             forward(s);
           }
-          logger_.log("VVVvvv444333", "initialve", "sfId: " + getId(), "entryIndex: " + entryIndex_.get(),  "onHoldList_ size: " + onHoldList_.size());
         }
 
         isReady_.getAndSet(true);

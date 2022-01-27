@@ -90,7 +90,7 @@ foam.CLASS({
               public void execute(X x) {
                 try {
                   DAO clientDAO = (DAO) sfManager.getSfs().get(config.getId());
-                  clientDAO.put(entry);
+                  clientDAO.put((SFEntry) entry.fclone());
                 } catch ( Throwable t ) {
                   getLogger().error(config.getId(), t);
                 }
