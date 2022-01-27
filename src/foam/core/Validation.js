@@ -153,7 +153,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'_len>='+self.minLength,
+            query: this.name+'.len>='+self.minLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
         }
@@ -161,7 +161,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'_len<='+self.maxLength,
+            query: this.name+'.len<='+self.maxLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
           });
         }
@@ -169,7 +169,7 @@ foam.CLASS({
         if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'_len!=""',
+            query: this.name+'.len!=""',
             errorString: `${this.label} ${foam.core.String.REQUIRED}`
           });
         }
