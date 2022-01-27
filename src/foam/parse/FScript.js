@@ -159,7 +159,7 @@ foam.CLASS({
             sym('date'),
             sym('string'),
             sym('number'),
-            sym('field_len'),
+            sym('fieldLen'),
             sym('field'),
           ),
 
@@ -183,8 +183,8 @@ foam.CLASS({
               '/'
             ),
 
-          field_len: seq(
-            sym('field'),'_len'),
+          fieldLen: seq(
+            sym('field'),'.len'),
 
           field: seq(
             sym('fieldname'),
@@ -279,7 +279,7 @@ foam.CLASS({
             }
             return expr;
           },
-          field_len: function(v) {
+          fieldLen: function(v) {
             return foam.mlang.StringLength.create({
               arg1: v[0]
             })
