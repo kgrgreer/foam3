@@ -159,10 +159,9 @@ foam.CLASS({
           )
         }));
         for ( let section of sections ) {
-          this.onDetach(section.isAvailable$.sub(
-            this.updateVisibilityFromSectionCount));
+          this.onDetach(section.isAvailable$.sub(() => { this.updateVisibilityFromSectionCount(sections) }));
         }
-        this.updateVisibilityFromSectionCount();
+        this.updateVisibilityFromSectionCount(sections);
         return sections;
       }
     },
@@ -279,9 +278,9 @@ foam.CLASS({
   ],
 
   listeners: [
-    function updateVisibilityFromSectionCount() {
-      if ( ! this.sections ) return;
-      this.atLeastOneSectionVisible_ = this.sections.filter(
+    function updateVisibilityFromSectionCount(sections) {
+      if ( ! sections ) return;
+      this.atLeastOneSectionVisible_ = sections.filter(
         v => v.isAvailable).length > 0;
     }
   ]
