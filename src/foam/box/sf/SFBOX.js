@@ -58,17 +58,5 @@ foam.CLASS({
         setDelegate(box);
       `
     },
-  ],
-
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-          `
-        }));
-      }
-    }
   ]
 });

@@ -7,8 +7,5 @@
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'SFTestObject',
-  extends: 'foam.nanos.medusa.test.MedusaTestObject',
-  
-  properties: [
-  ]
+  extends: 'foam.nanos.medusa.test.MedusaTestObject'
 });

@@ -215,7 +215,6 @@ foam.CLASS({
           data: `
             private final ReentrantLock lock_ = new ReentrantLock();
             private final Condition notAvailable_ = lock_.newCondition();
-        
           `
         }));
       }
