@@ -22,3 +22,9 @@ p({
   "desiredModelId": "foam.nanos.cron.Schedule",
   "strategy": "foam.nanos.cron.TimeOfDaySchedule"
 })
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "1ba0774a-4354-418b-880a-64b8fcdf8331",
+  "desiredModelId": "foam.nanos.cron.Schedule",
+  "strategy": "foam.nanos.cron.SimpleIntervalSchedule"
+})

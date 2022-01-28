@@ -8,6 +8,14 @@
   package: 'foam.nanos.cron',
   name: 'SimpleIntervalSchedule',
 
+  javaImports: [
+    'java.time.DayOfWeek',
+    'java.time.LocalDate',
+    'java.time.ZoneId',
+    'java.time.temporal.TemporalAdjusters',
+    'java.util.Date'
+  ],
+
   implements: [
     'foam.nanos.cron.Schedule'
   ],
@@ -31,6 +39,7 @@
       }
     },
     {
+      class: 'String',
       name: 'frequency',
       label: '',
       view: {
@@ -50,6 +59,8 @@
       }
     },
     {
+      class: 'Array',
+      of: 'String',
       name: 'dayOfWeek',
       label: 'On',
       view: {
@@ -62,6 +73,7 @@
       }
     },
     {
+      class: 'Int',
       name: 'monthlyChoice',
       label: '',
       view: {
@@ -79,6 +91,7 @@
       }
     },
     {
+      class: 'Int',
       name: 'dayOfMonth',
       label: '',
       //will be replaced by multiselect dayofmonth view
@@ -99,6 +112,7 @@
     },
     {
     //first , second , third ...
+    class: 'String',
       name: 'vagueFreq',
       label: '',
       view: {
@@ -121,6 +135,7 @@
       }
     },
     {
+      class: 'String',
       name: 'expandedDayOfWeek',
       label: '',
       view: {
@@ -144,6 +159,7 @@
       }
     },
     {
+      class: 'String',
       name: 'ends',
       label: 'Ends',
       view: {
@@ -188,13 +204,59 @@
   methods: [
     {
       name: 'getNextScheduledTime',
-      code: function() {
-        //TODO:
-        return new Date();
-      },
-      javaCode:`
-        //TODO:
-        return new java.util.Date();
+      javaCode: `
+        int repeatEvery = getRepeat();
+        LocalDate startDate = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate nextDate = LocalDate.now();
+        if ( startDate.isAfter(nextDate) ) {
+          return getStartDate();
+        }
+        switch (getFrequency()) {
+          case "Day":
+            nextDate = nextDate.plusDays(repeatEvery);
+            break;
+          case "Week":
+            nextDate = nextDate.plusWeeks(getRepeat());
+            LocalDate minDate = nextDate;
+            String[] days = getDayOfWeek();
+            nextDate = nextDate.with(TemporalAdjusters.next(getWeekday(days[0])));
+            for ( int i=1; i < days.length; i++ ) {
+              LocalDate date = nextDate.with(getWeekday(days[i]));
+              if ( date.isAfter(minDate) && date.isBefore(nextDate) ) {
+                nextDate = date;
+              }
+            }
+            break;
+          case "Month":
+            nextDate = nextDate.plusMonths(repeatEvery);
+            if ( getMonthlyChoice() == 2 ) {
+              nextDate = nextDate.withDayOfMonth(getDayOfMonth());
+            } else {
+              switch (getVagueFreq()) {
+                case "First":
+                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(1,getWeekday(getExpandedDayOfWeek())));
+                  break;
+                case "Second":
+                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(2,getWeekday(getExpandedDayOfWeek())));
+                  break;
+                case "Third":
+                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(3,getWeekday(getExpandedDayOfWeek())));
+                  break;
+                case "Before Last":
+                  nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
+                  nextDate = nextDate.minusDays(7);
+                  break;
+                case "Last":
+                  nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
+                  break;
+              }
+            }
+            break;
+          case "Year":
+            nextDate = nextDate.plusYears(repeatEvery);
+            break;
+        }
+        return Date.from(nextDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
       `
     },
 
@@ -217,6 +279,33 @@
       code: function() {
         return this.ends + ' ' + ( this.ends == 'On' ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
       }
+    },
+    {
+      name: 'getWeekday',
+      type: 'DayOfWeek',
+      args: [
+        {
+          type: 'String',
+          name: 'day'
+        }
+      ],
+      javaCode: `
+        if ( day.equals("Monday") || day.equals("Mon") ) {
+          return DayOfWeek.MONDAY;
+        } else if ( day.equals("Tuesday") || day.equals("Tue") ) {
+          return DayOfWeek.TUESDAY;
+        } else if ( day.equals("Wednesday") || day.equals("Wed") ) {
+          return DayOfWeek.WEDNESDAY;
+        } else if ( day.equals("Thursday") || day.equals("Thur") ) {
+          return DayOfWeek.THURSDAY;
+        } else if ( day.equals("Friday") || day.equals("Fri") ) {
+          return DayOfWeek.FRIDAY;
+        } else if ( day.equals("Saturday") || day.equals("Sat") ) {
+          return DayOfWeek.SATURDAY;
+        }else {
+          return DayOfWeek.SUNDAY;
+        }
+      `
     }
   ]
 });
