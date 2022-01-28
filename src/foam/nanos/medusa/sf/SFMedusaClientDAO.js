@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterConfigSupport',
+    'foam.nanos.pm.PM',
     'foam.box.sf.SFEntry',
     'foam.box.sf.SFManager'
   ],
@@ -22,12 +23,22 @@ foam.CLASS({
     {
       name: 'myConfig',
       class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ClusterConfig'
+      of: 'foam.nanos.medusa.ClusterConfig',
+      javaSetter: `
+      myConfig_ = val;
+      myConfigIsSet_ = true;
+      DELEGATE.clear(this);
+      `
     },
     {
       name: 'toConfig',
       class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ClusterConfig'
+      of: 'foam.nanos.medusa.ClusterConfig',
+      javaSetter: `
+      toConfig_ = val;
+      toConfigIsSet_ = true;
+      DELEGATE.clear(this);
+      `
     },
     {
       name: 'serviceName',
@@ -41,13 +52,7 @@ foam.CLASS({
       of: 'foam.dao.DAO',
       name: 'delegate',
       transient: true,
-      javaSetter: `
-      if ( ! delegateIsSet_ ) {
-        delegate_ = val;
-        delegateIsSet_ = true;
-      }
-      `,
-      javaGetter: ` 
+      javaFactory: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       DAO dao = support.getBroadcastClientDAO(getX(), getServiceName(), getMyConfig(), getToConfig());
       return dao;
@@ -61,26 +66,22 @@ foam.CLASS({
       code: function() {},
       swiftCode: '// NOOP',
       javaCode: `
-      return this.storeAndForward((FObject) obj);     
-        return this.storeAndForward((FObject) obj);     
-      return this.storeAndForward((FObject) obj);     
+      return this.storeAndForward((FObject) obj);
       `
     },
     {
       name: 'submit',
       args: 'Context x, SFEntry entry',
       javaCode: `
-      getDelegate().put(entry);
-      `
-    },
-    {
-      name: 'put_',
-      code: function() {},
-      swiftCode: '// NOOP',
-      javaCode: `
-      return this.storeAndForward((FObject) obj);      
-        return this.storeAndForward((FObject) obj);      
-      return this.storeAndForward((FObject) obj);      
+      PM pm = new PM("SMMedusaClientDAO", "submit", getMyConfig().getId(), getToConfig().getId());
+      try {
+        getDelegate().put(entry);
+      } catch (RuntimeException e) {
+        pm.error(x, e);
+        throw e;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -90,4 +91,4 @@ foam.CLASS({
       `
     },
   ]
-})
+});
