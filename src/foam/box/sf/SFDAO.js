@@ -24,13 +24,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.DAO',
       name: 'delegate',
-      transient: true,
-      javaSetter: `
-      if ( ! delegateIsSet_ ) {
-        delegate_ = val;
-        delegateIsSet_ = true;
-      }
-      `
+      transient: true
     }
   ],
   

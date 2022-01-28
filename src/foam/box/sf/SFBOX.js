@@ -25,13 +25,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.box.Box',
       name: 'delegate',
-      transient: true,
-      javaSetter: `
-        if ( ! delegateIsSet_ ) {
-          delegate_ = val;
-          delegateIsSet_ = true;
-        }
-      `
+      transient: true
     }
   ],
 
