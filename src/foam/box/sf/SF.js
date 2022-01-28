@@ -43,6 +43,14 @@ foam.CLASS({
     'org.apache.commons.lang.exception.ExceptionUtils'
   ],
 
+  tableColumns: [
+    'id',
+    'filePrefix',
+    'fileName',
+    'fileCapacity',
+    'inFlightLimit'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -103,9 +111,6 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'delegateObject',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN',
-      updateVisibility: 'HIDDEN',
       visibility: 'HIDDEN',
       transient: true,
     },
@@ -113,9 +118,6 @@ foam.CLASS({
       class: 'Object',
       name: 'nullDao',
       transient: true,
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN',
-      updateVisibility: 'HIDDEN',
       visibility: 'HIDDEN',
       javaFactory: `
         return new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build();
@@ -126,9 +128,6 @@ foam.CLASS({
       name: 'manager',
       javaType: 'SFManager',
       transient: true,
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN',
-      updateVisibility: 'HIDDEN',
       visibility: 'HIDDEN',
       javaSetter: `
         managerIsSet_ = true;
@@ -509,4 +508,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});
