@@ -119,6 +119,9 @@ foam.CLASS({
       javaCode: `
         if ( getPropertyInfo().isDefaultValue(obj) ) {
           getPropertyInfo().set(obj, getUIDGenerator().getNext(null));
+        } else if ( getUIDGenerator() instanceof NUIDGenerator ) {
+          ((NUIDGenerator) getUIDGenerator()).maybeUpdateSeqNo(
+            getPropertyInfo().get(obj));
         }
         return getDelegate().put_(x, obj);
       `

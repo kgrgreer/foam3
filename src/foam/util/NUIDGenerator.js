@@ -97,13 +97,7 @@ foam.CLASS({
           @Override
           public void put(Object obj, Detachable sub) {
             var id = (long) getPropertyInfo().get(obj);
-            if ( id > 0x1000000 ) {
-              var hex   = undoPermute(Long.toHexString(id));
-              var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-              if ( seqNo > seqNo_.get() ) {
-                seqNo_.set(seqNo);
-              }
-            }
+            maybeUpdateSeqNo(id);
           }
         });
         Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
@@ -116,6 +110,19 @@ foam.CLASS({
         if ( ! ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) ) {
           throw new UnsupportedOperationException(
             "NUIDGenerator: not supported on " + getSalt() + " without id property");
+        }
+      `
+    },
+    {
+      name: 'maybeUpdateSeqNo',
+      args: 'Long id'
+      javaCode: `
+        if ( id > 0x1000000 ) {
+          var hex   = undoPermute(Long.toHexString(id));
+          var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
+          if ( seqNo > seqNo_.get() ) {
+            seqNo_.set(seqNo);
+          }
         }
       `
     }
