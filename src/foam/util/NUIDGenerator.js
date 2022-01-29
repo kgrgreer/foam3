@@ -118,6 +118,11 @@ foam.CLASS({
       args: 'Long id'
       javaCode: `
         if ( id > 0x1000000 ) {
+          if ( UIDSupport.hash(id) != getHashKey() ) {
+            Loggers.logger(getX(), this).warning(getSalt(), "id:" + id, "hash not matched");
+            return;
+          }
+
           var hex   = undoPermute(Long.toHexString(id));
           var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
           if ( seqNo > seqNo_.get() ) {
