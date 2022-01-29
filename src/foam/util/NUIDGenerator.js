@@ -80,9 +80,11 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        synchronized ( this ) {
-          if ( ! initMaxSeqNo_.get() ) {
-            initMaxSeqNo();
+        if ( ! initMaxSeqNo_.get() ) {
+          synchronized ( this ) {
+            if ( ! initMaxSeqNo_.get() ) {
+              initMaxSeqNo();
+            }
           }
         }
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
@@ -91,6 +93,7 @@ foam.CLASS({
     {
       name: 'initMaxSeqNo',
       javaCode: `
+        initMaxSeqNo_.set(true);
         Logger logger = Loggers.logger(getX(), this);
         logger.info(getSalt(), "max", "find");
         getDao().select(new AbstractSink() {
@@ -128,7 +131,11 @@ foam.CLASS({
           if ( getMachineId() % 0xff == mid ) {
             var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
             if ( seqNo > seqNo_.get() ) {
-              seqNo_.set(seqNo);
+              synchronized ( this ) {
+                if ( seqNo > seqNo_.get() ) {
+                  seqNo_.set(seqNo);
+                }
+              }
             }
           }
         }
