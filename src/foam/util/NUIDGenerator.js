@@ -124,9 +124,12 @@ foam.CLASS({
           }
 
           var hex   = undoPermute(Long.toHexString(id));
-          var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-          if ( seqNo > seqNo_.get() ) {
-            seqNo_.set(seqNo);
+          var mid   = Integer.parseInt(hex.substring(hex.length() - 5, hex.length() - 3), 16);
+          if ( getMachineId() % 0xff == mid ) {
+            var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
+            if ( seqNo > seqNo_.get() ) {
+              seqNo_.set(seqNo);
+            }
           }
         }
       `
