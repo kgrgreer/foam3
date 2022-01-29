@@ -22,7 +22,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'static foam.util.UIDSupport.*',
-    'java.util.concurrent.atomic.AtomicInteger'
+    'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
 
   javaCode: `
@@ -35,6 +36,7 @@ foam.CLASS({
   }
 
   AtomicInteger seqNo_ = new AtomicInteger();
+  AtomicBoolean initMaxSeqNo_ = new AtomicBoolean(false);
   `,
 
   properties: [
@@ -78,11 +80,9 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        if ( seqNo_.get() == 0 ) {
-          synchronized ( this ) {
-            if ( seqNo_.get() == 0 ) {
-              initMaxSeqNo();
-            }
+        synchronized ( this ) {
+          if ( ! initMaxSeqNo_.get() ) {
+            initMaxSeqNo();
           }
         }
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
