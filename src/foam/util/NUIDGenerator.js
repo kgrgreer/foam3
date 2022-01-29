@@ -115,7 +115,7 @@ foam.CLASS({
     },
     {
       name: 'maybeUpdateSeqNo',
-      args: 'Long id'
+      args: 'Long id',
       javaCode: `
         if ( id > 0x1000000 ) {
           if ( UIDSupport.hash(id) != getHashKey() ) {

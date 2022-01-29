@@ -124,7 +124,7 @@ foam.CLASS({
           // on the mediator and the sequence number of the NUID generator may
           // need to keep up with the sequence number embedded in the ids.
           ((NUIDGenerator) getUIDGenerator()).maybeUpdateSeqNo(
-            getPropertyInfo().get(obj));
+            (long) getPropertyInfo().get(obj));
         }
         return getDelegate().put_(x, obj);
       `
