@@ -80,26 +80,25 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        if ( ! initMaxSeqNo_.getAndSet(true) ) {
-          initMaxSeqNo();
-        }
+        initMaxSeqNo();
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
     },
     {
       name: 'initMaxSeqNo',
       javaCode: `
-        initMaxSeqNo_.set(true);
-        Logger logger = Loggers.logger(getX(), this);
-        logger.info(getSalt(), "max", "find");
-        getDao().select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            var id = (long) getPropertyInfo().get(obj);
-            maybeUpdateSeqNo(id);
-          }
-        });
-        Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
+        if ( ! initMaxSeqNo_.getAndSet(true) ) {
+          Logger logger = Loggers.logger(getX(), this);
+          logger.info(getSalt(), "max", "find");
+          getDao().select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              var id = (long) getPropertyInfo().get(obj);
+              maybeUpdateSeqNo(id);
+            }
+          });
+          Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
+        }
       `
     },
     {
