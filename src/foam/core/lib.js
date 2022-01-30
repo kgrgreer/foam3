@@ -19,7 +19,10 @@
  * Top-Level of foam package
  */
 foam = {
-  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
+  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {
+    // from a static build, models have already been filtered so checkFlags can be a NOP
+    checkFlags: function(flags) { return true; }
+  }),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   util:     {
@@ -55,13 +58,8 @@ foam = {
     // capture the details of the script if need be.
 
     // Only execute if the script's flags match the curren runtime flags.
-    if ( m.flags && globalThis.FOAM_FLAGS ) {
-      for ( var i = 0 ; i < m.flags.length ; i++ ) {
-        if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
-          m.code();
-          return;
-        }
-      }
+    if ( foam.checkFlags(this.flags ) ) {
+      m.code();
       return;
     }
 

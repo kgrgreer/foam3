@@ -29,6 +29,10 @@ foam.CLASS({
     'foam.nanos.boot.NSpecAware'
   ],
 
+  imports: [
+    'DAO fuidKeyDAO'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.core.PropertyInfo',
@@ -98,13 +102,29 @@ foam.CLASS({
   methods: [
     {
       name: 'init_',
-      javaCode: 'getUIDGenerator();'
+      javaCode: `
+        var uidgen = getUIDGenerator();
+        if ( getFuidKeyDAO().find(getSalt()) == null ) {
+          getFuidKeyDAO().put(
+            new foam.util.uid.FuidKey.Builder(getX())
+              .setDaoName(getSalt())
+              .setKey(uidgen.getHashKey())
+              .build()
+          );
+        }
+      `
     },
     {
       name: 'put_',
       javaCode: `
         if ( getPropertyInfo().isDefaultValue(obj) ) {
           getPropertyInfo().set(obj, getUIDGenerator().getNext(null));
+        } else if ( getUIDGenerator() instanceof NUIDGenerator ) {
+          // NOTE: On replay, medusa node "put" its entries (with non-zero ids)
+          // on the mediator and the sequence number of the NUID generator may
+          // need to keep up with the sequence number embedded in the ids.
+          ((NUIDGenerator) getUIDGenerator()).maybeUpdateSeqNo(
+            (long) getPropertyInfo().get(obj));
         }
         return getDelegate().put_(x, obj);
       `

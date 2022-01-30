@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.core',
   name: 'Stub',
   extends: 'Property',
+
   requires: [
     'foam.box.Message',
     'foam.box.RPCMessage',
@@ -16,6 +17,7 @@ foam.CLASS({
     'foam.core.StubMethod',
     'foam.core.StubNotification',
   ],
+
   properties: [
     'of',
     {
@@ -162,7 +164,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.core.Model',
+    'foam.core.Model'
   ],
 
   properties: [
@@ -292,6 +294,7 @@ get${boxPropName}().send(message);
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.core',

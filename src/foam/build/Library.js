@@ -8,6 +8,9 @@ foam.CLASS({
   package: 'foam.build',
   name: 'Library',
   ids: ['name', 'iteration'],
+
+  flags: [],
+
   properties: [
     {
       name: 'name'

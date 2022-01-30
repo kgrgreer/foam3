@@ -43,7 +43,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(repeat) {
+      visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.DISABLED};
         return foam.u2.DisplayMode.RW;
@@ -52,18 +52,10 @@
     {
       name: 'dayOfWeek',
       label: 'On',
-      //will be replaced by multiselect dayofweek view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday'
-        ]
+        class: 'foam.u2.view.DayOfWeekView',
       },
-      updateVisibility: function(frequency) {
+      visibility: function(frequency) {
         if ( frequency != 'Week' )
            return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -80,7 +72,7 @@
         ],
        isHorizontal: true
       },
-      updateVisibility: function(frequency) {
+      visibility: function(frequency) {
         if ( frequency != 'Month')
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -97,7 +89,7 @@
           2
         ]
       },
-      updateVisibility: function(monthlyChoice, frequency) {
+      visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice != 2 )
@@ -120,7 +112,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(monthlyChoice, frequency ) {
+      visibility: function(monthlyChoice, frequency ) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice !=  1 )
@@ -143,7 +135,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(monthlyChoice, frequency) {
+      visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )
           return foam.u2.DisplayMode.HIDDEN;
         if ( monthlyChoice != 1 )
@@ -163,7 +155,7 @@
         ]
       },
       gridColumns: 6,
-      updateVisibility: function(repeat) {
+      visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.HIDDEN};
         return foam.u2.DisplayMode.RW;
@@ -174,7 +166,7 @@
       name: 'endsOn',
       label: '',
       gridColumns: 6,
-      updateVisibility: function(ends) {
+      visibility: function(ends) {
         if ( ends != 'On' )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -186,7 +178,7 @@
       label: '',
       gridColumns: 6,
       min: 1,
-      updateVisibility: function(ends) {
+      visibility: function(ends) {
         if ( ends != 'After' )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
@@ -205,5 +197,26 @@
         return new java.util.Date();
       `
     },
+
+    // helper methods to get formatted frequency/start/end fields
+    // todo implement properly
+    {
+      name: 'getFrequency',
+      code: function() {
+        return 'every ' + this.repeat + ' ' + this.frequency;
+      }
+    },
+    {
+      name: 'getStartDate',
+      code: function() {
+        return this.START_DATE.format(this.startDate);
+      }
+    },
+    {
+      name: 'getEndDate',
+      code: function() {
+        return this.ends + ' ' + ( this.ends == 'On' ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
+      }
+    }
   ]
 });

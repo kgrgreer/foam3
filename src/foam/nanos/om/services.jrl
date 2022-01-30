@@ -41,6 +41,8 @@ p({
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
       .setAuthorize(false)
       .setCluster(false)
+      .setDecorator(new foam.nanos.alarming.CandlestickAlarmDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.analytics.Candlestick.getOwnClassInfo())).build())
       .build();
   """
 })

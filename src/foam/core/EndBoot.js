@@ -311,6 +311,8 @@ foam.CLASS({
       return;
     }
 
+    if ( ! m.flags && foam.currentFlags ) m.flags = foam.currentFlags;
+
     var f = foam.Function.memoize0(function() {
       delete foam.UNUSED[m.id];
       var c = CLASS(m);

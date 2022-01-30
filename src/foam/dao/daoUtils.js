@@ -47,8 +47,8 @@ if let oldValue = oldValue as? foam_dao_AbstractDAO {
     },
     {
       name: 'of',
-      factory: function() {
-        return this.delegate.of;
+      expression: function(delegate) {
+        return delegate.of;
       },
       swiftExpressionArgs: ['delegate$of'],
       swiftExpression: 'return delegate$of as! ClassInfo',
@@ -244,6 +244,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'LocalStorageDAO',
   extends: 'foam.dao.ArrayDAO',
+
+  flags: [],
 
   properties: [
     {

@@ -15,13 +15,38 @@
  * limitations under the License.
  */
 
-
 (function() {
   var foam  = globalThis.foam || ( globalThis.foam = {} );
-  var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
+
+  // Also appears in foam_node.js, manually keep two copies in sync
+  foam.checkFlags = function(flags) {
+    if ( ! flags || flags.length == 0 ) return true;
+    if ( typeof flags === 'string' ) {
+      flags = flags.split('|');
+    }
+
+    function and(fs) {
+      fs = fs.split('&');
+      for ( var i = 0 ; i < fs.length ; i++ ) {
+        if ( ! foam.flags[fs[i]] ) return false;
+      }
+      return true;
+    }
+
+    // OR AND clauses
+    for ( var i = 0 ; i < flags.length ; i++ ) {
+      if ( and(flags[i]) ) return true;
+    }
+    return false;
+  }
+
+  if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
+
+  var flags = this.FOAM_FLAGS;
   foam.flags = flags;
 
   flags.web  = true;
+  flags.genjava = true;
 
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
@@ -74,19 +99,13 @@
   this.FOAM_FILES = async function(files) {
     var load = createLoader();
 
+    var seen = {};
     files.
+      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
       filter(f => {
-        // If flags are defined, don't load unless all are true
-        if ( f.flags ) {
-          for ( var i = 0 ; i < f.flags.length ; i++ ) {
-            if ( ! foam.flags[f.flags[i]] ) {
-              // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
-              return false;
-            }
-          }
-          return true;
-        }
-        return true;
+        if ( foam.checkFlags(f.flags) ) return true;
+        console.log('Not loading', f, 'flags:', f.flags);
+        return false;
       }).
       filter(f => (! f.predicate) || f.predicate()).
       map(f => f.name).

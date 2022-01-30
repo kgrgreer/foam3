@@ -109,7 +109,7 @@ Later themes:
             group = await group.parent$find;
           }
 
-          if ( !! defaultMenu ) {
+          if ( !! defaultMenu && theme && ! theme.defaultMenu) {
             theme.defaultMenu = defaultMenu;
             theme.logoRedirect = defaultMenu;
           }
