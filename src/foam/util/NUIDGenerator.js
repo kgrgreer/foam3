@@ -80,12 +80,8 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        if ( ! initMaxSeqNo_.get() ) {
-          synchronized ( this ) {
-            if ( ! initMaxSeqNo_.get() ) {
-              initMaxSeqNo();
-            }
-          }
+        if ( ! initMaxSeqNo_.getAndSet(true) ) {
+          initMaxSeqNo();
         }
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
@@ -130,13 +126,7 @@ foam.CLASS({
           var mid   = Integer.parseInt(hex.substring(hex.length() - 5, hex.length() - 3), 16);
           if ( getMachineId() % 0xff == mid ) {
             var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-            if ( seqNo > seqNo_.get() ) {
-              synchronized ( this ) {
-                if ( seqNo > seqNo_.get() ) {
-                  seqNo_.set(seqNo);
-                }
-              }
-            }
+            seqNo_.getAndAccumulate(seqNo, (old, nu) -> Math.max(old, nu));
           }
         }
       `
