@@ -279,10 +279,14 @@ foam.CLASS({
   ],
 
   listeners: [
-    function updateVisibilityFromSectionCount() {
-      if ( ! this.sections ) return;
-      this.atLeastOneSectionVisible_ = this.sections.filter(
-        v => v.isAvailable).length > 0;
+    {
+      name: 'updateVisibilityFromSectionCount',
+      isFramed: true,
+      code: function() {
+        if ( ! this.sections ) return;
+        this.atLeastOneSectionVisible_ = this.sections.filter(
+          v => v.isAvailable).length > 0;
+      }
     }
   ]
 });
