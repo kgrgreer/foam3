@@ -7,10 +7,12 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"ndiffDAO",
-      "summaryView": { "class": "foam.u2.view.TableView" },
-      "editColumnsEnabled": true,
-      "css": {
-        "width": "100%"
+      "summaryView": {
+        "class": "foam.u2.view.TableView",
+        "editColumnsEnabled": true,
+        "css": {
+          "width": "100%"
+        }
       }
     }
   },
