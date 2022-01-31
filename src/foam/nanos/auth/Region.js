@@ -51,7 +51,7 @@ foam.CLASS({
 //      name: 'test',
 //      min: 6,
 //      autoValidate: true
-//    }
+//    },
 //    {
 //      class: 'PhoneNumber',
 //      name: 'phone',
@@ -60,6 +60,12 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'date'
-    }
+    },
+    {
+      class: 'String',
+      name: 'testStr',
+      minLength: 6,
+      autoValidate: true
+    },
   ]
 });
