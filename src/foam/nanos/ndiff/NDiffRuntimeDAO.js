@@ -94,7 +94,7 @@ foam.CLASS({
                     ndiff.setRuntimeFObject(runtimeFObject);
                   }
 
-                  if (delta) {
+                  if ( delta ) {
                     super.put(ndiff,sub);
                   }
                 }
