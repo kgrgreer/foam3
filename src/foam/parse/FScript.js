@@ -101,6 +101,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'thisValue',
     {
       class: 'Class',
       name: 'of'
@@ -184,7 +185,7 @@ foam.CLASS({
             ),
 
           fieldLen: seq(
-            sym('field'),'.len'),
+            sym('field'),'_len'),
 
           field: seq(
             sym('fieldname'),
@@ -213,6 +214,13 @@ foam.CLASS({
         const cls        = this.of;
         const fields     = [];
         const properties = cls.getAxiomsByClass(foam.core.Property);
+
+        if ( this.thisValue !== undefined ) {
+          fields.push(this.Literal.create({
+            s: 'thisValue',
+            value: this.thisValue
+          }));
+        }
 
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
@@ -255,6 +263,7 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
+            debugger;
             return op.call(self, lhs, rhs);
           },
 
@@ -271,7 +280,8 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
-            if ( v[1] ) {
+            debugger;
+            if ( v[1] && v[1][1][0] != 'len' ) {
               var parts = v[1][1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
                 expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
@@ -279,7 +289,9 @@ foam.CLASS({
             }
             return expr;
           },
+
           fieldLen: function(v) {
+          debugger;
             return foam.mlang.StringLength.create({
               arg1: v[0]
             })
