@@ -21,12 +21,16 @@ import foam.dao.MDAO;
 import foam.dao.Sink;
 import foam.mlang.Constant;
 import foam.mlang.Expr;
-import foam.mlang.predicate.And;
+import foam.mlang.order.Desc;
+import foam.mlang.predicate.*;
 import foam.mlang.predicate.Eq;
 import foam.mlang.predicate.Gt;
 import foam.mlang.predicate.Lt;
+import foam.mlang.predicate.Or;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Projection;
+
+import static foam.mlang.MLang.*;
 
 /**
  * The main objective of this demo is to familiarize the dev team with the DAO
@@ -148,6 +152,23 @@ public class ToSql {
     printListArray(values, propNames1);
 
     // select empno, ename, job, sal from emp where job in ('CLERK','ANALYST')
+    //TODO use In operator.
+    Predicate jobSelection[] = {
+        new Eq(foam.demos.toSql.Emp.JOB, new Constant("CLERK")),
+        new Eq(foam.demos.toSql.Emp.JOB, new Constant("ANALYST"))};
+    pred = new Or(jobSelection);
+    r    = empDao.where(pred);
+
+    propNames1    = new PropertyInfo[3];
+    propNames1[0] = foam.demos.toSql.Emp.EMP_NO;
+    propNames1[1] = foam.demos.toSql.Emp.ENAME;
+    propNames1[2] = foam.demos.toSql.Emp.JOB;
+    
+    p2 = new Projection.Builder(x).setExprs(propNames1)
+      .build();//TODO if I delete the projection, I will get error.
+    r.select(p2);
+    values = p2.getProjection();
+    printListArray(values, propNames1);
 
     // select ename from emp where ename like 'M%'
 
@@ -158,6 +179,21 @@ public class ToSql {
     // select ename from emp where sal! = any (1000,2000,3000,40000)
 
     // select ename,job , sal from emp order by job, sal desc
+
+    propNames1    = new PropertyInfo[3];
+    propNames1[0] = foam.demos.toSql.Emp.ENAME;
+    propNames1[1] = foam.demos.toSql.Emp.JOB;
+    propNames1[2] = foam.demos.toSql.Emp.SAL;
+    
+    p2 = new Projection.Builder(x).setExprs(propNames1)
+      .build();
+    empDao
+      .orderBy(DESC(foam.demos.toSql.Emp.JOB))
+      .orderBy(DESC(foam.demos.toSql.Emp.SAL))
+      .select(p2);
+
+    values = p2.getProjection();
+    printListArray(values, propNames1);
 
     // select distinct job from emp
 
