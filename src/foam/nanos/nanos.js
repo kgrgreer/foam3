@@ -17,6 +17,7 @@ FOAM_FILES([
   { name: "foam/nanos/logger/RepeatLogMessageDAO", flags: [ "java" ] },
   { name: "foam/nanos/logger/StdoutLoggerDAO", flags: [ "java" ] },
   { name: "foam/nanos/logger/benchmark/LoggerBenchmark", flags: [ "java" ] },
+  { name: "foam/nanos/bench/PredicateBenchmark", flags: [ "java" ] },
   { name: "foam/nanos/fs/File", flags: [ "java" ] },
   { name: "foam/nanos/fs/FileLabel", flags: [ "java" ] },
   { name: "foam/nanos/fs/FileType", flags: [ "java" ] },

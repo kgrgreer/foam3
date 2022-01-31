@@ -25,7 +25,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'ofInterface',
-      documentation: 'interface that we want the object to be an instance of'
+      documentation: 'interface that we want the object to be an instance of, if changed, nullify cache',
+      javaPreSet: `
+        setCachedClass_(null);
+      `
+    },
+    {
+      class: 'Class',
+      name: 'cachedClass_',
+      documentation: 'cached class',
+      value: null
     },
     {
       class: 'Boolean',
@@ -38,13 +47,18 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       Class cls;
-      try {
-        cls = Class.forName(getOfInterface());
+      if ( getCachedClass_() == null ) {
+        cls = getCachedClass_().getClass();
       }
-      catch (Exception E) {
-        return false; // unable to find class
-      };
-
+      else {
+        try {
+          cls = Class.forName(getOfInterface());
+         // setCachedClass_(cls);
+        }
+        catch (Exception E) {
+          return false; // unable to find class
+        };
+      }
       if ( getIsNew() ) {
         FObject nu  = (FObject) NEW_OBJ.f(obj);
         return cls.isInstance(nu.getProperty(getPropName()));
