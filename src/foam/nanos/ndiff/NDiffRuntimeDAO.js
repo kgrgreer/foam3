@@ -90,7 +90,7 @@ foam.CLASS({
 
                   ndiff.setDeletedAtRuntime(deletedAtRuntime);
                   ndiff.setDelta(delta);
-                  if (!deletedAtRuntime) {
+                  if ( ! deletedAtRuntime ) {
                     ndiff.setRuntimeFObject(runtimeFObject);
                   }
 
