@@ -80,30 +80,25 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        if ( ! initMaxSeqNo_.get() ) {
-          synchronized ( this ) {
-            if ( ! initMaxSeqNo_.get() ) {
-              initMaxSeqNo();
-            }
-          }
-        }
+        initMaxSeqNo();
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
     },
     {
       name: 'initMaxSeqNo',
       javaCode: `
-        initMaxSeqNo_.set(true);
-        Logger logger = Loggers.logger(getX(), this);
-        logger.info(getSalt(), "max", "find");
-        getDao().select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            var id = (long) getPropertyInfo().get(obj);
-            maybeUpdateSeqNo(id);
-          }
-        });
-        Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
+        if ( ! initMaxSeqNo_.getAndSet(true) ) {
+          Logger logger = Loggers.logger(getX(), this);
+          logger.info(getSalt(), "max", "find");
+          getDao().select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              var id = (long) getPropertyInfo().get(obj);
+              maybeUpdateSeqNo(id);
+            }
+          });
+          Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
+        }
       `
     },
     {
@@ -130,13 +125,7 @@ foam.CLASS({
           var mid   = Integer.parseInt(hex.substring(hex.length() - 5, hex.length() - 3), 16);
           if ( getMachineId() % 0xff == mid ) {
             var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-            if ( seqNo > seqNo_.get() ) {
-              synchronized ( this ) {
-                if ( seqNo > seqNo_.get() ) {
-                  seqNo_.set(seqNo);
-                }
-              }
-            }
+            seqNo_.getAndAccumulate(seqNo, (old, nu) -> Math.max(old, nu));
           }
         }
       `
