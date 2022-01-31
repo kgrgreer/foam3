@@ -10,53 +10,142 @@ import static foam.mlang.MLang.LT;
 
 import java.util.GregorianCalendar;
 
+import foam.core.Detachable;
+import foam.core.EmptyX;
+import foam.core.PropertyInfo;
+import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.dao.MDAO;
+import foam.dao.Sink;
+import foam.mlang.Constant;
+import foam.mlang.Expr;
+import foam.mlang.predicate.And;
+import foam.mlang.predicate.Eq;
+import foam.mlang.predicate.Gt;
+import foam.mlang.predicate.Lt;
+import foam.mlang.predicate.Predicate;
+import foam.mlang.sink.Projection;
 
 /**
- * The main objective of this demo is to familiarize the dev team with the DAO interface.
+ * The main objective of this demo is to familiarize the dev team with the DAO
+ * interface.
  */
 
 public class ToSql {
 
-  //SQL version
-  //https://www.orafaq.com/wiki/SCOTT
-  //http://jailer.sourceforge.net/scott-tiger.sql.html
+  // SQL version
+  // https://www.orafaq.com/wiki/SCOTT
+  // http://jailer.sourceforge.net/scott-tiger.sql.html
 
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) {
     java.util.List res;
 
-    DAO deptDao = new foam.dao.MDAO(foam.demos.toSql.Dept.getOwnClassInfo());
+    DAO deptDao     = new foam.dao.MDAO(foam.demos.toSql.Dept.getOwnClassInfo());
     DAO salGradeDao = new foam.dao.MDAO(foam.demos.toSql.SalGrade.getOwnClassInfo());
-    DAO empDao = new foam.dao.MDAO(foam.demos.toSql.Emp.getOwnClassInfo());
+    DAO empDao      = new foam.dao.MDAO(foam.demos.toSql.Emp.getOwnClassInfo());
 
     setup(deptDao, salGradeDao, empDao);
 
-    //select * from emp;
+    // select * from emp;
     res = ( (ArraySink) empDao.select(new ArraySink()) ).getArray();
-    print(res);
+    printList(res);
 
-    //select * from dept;
+    // select * from dept;
     res = ( (ArraySink) deptDao.select(new ArraySink()) ).getArray();
-    print(res);
+    printList(res);
 
-    //select * from emp where sal<1000
-    res = ( (ArraySink) empDao.
-        where(LT(foam.demos.toSql.Emp.SAL, 1000.0)).
-        select(new ArraySink()) ).getArray();
-    print(res);
+    // select * from emp where sal<1000
+    res = ( (ArraySink) empDao.where(LT(foam.demos.toSql.Emp.SAL, 1000.0))
+      .select(new ArraySink()) ).getArray();
+    printList(res);
 
-    //TODO
-    //select ename, job, sal from Emp
-    //use alias
+    // select ename, job, sal from Emp
+    // use alias
+    X              x          = EmptyX.instance();
+    PropertyInfo[] propNames1 = new PropertyInfo[3];
+    propNames1[0] = foam.demos.toSql.Emp.ENAME;
+    propNames1[1] = foam.demos.toSql.Emp.JOB;
+    propNames1[2] = foam.demos.toSql.Emp.SAL;
 
+    Projection p1 = new Projection.Builder(x).setExprs(propNames1)
+      .build();
+
+    empDao.select(p1);
+
+    java.util.List<Object[]> values = p1.getProjection();
+
+    printListArray(values, propNames1);
+
+    // TODO
     // slect ename, sal*12 from Emp
+    // print 0 if sal is null
+    
+    DAO tEmpDao = new MDAO(foam.demos.toSql.Emp.getOwnClassInfo());
+
+    Sink rr = empDao.select(new AbstractSink() {
+      public void put(Object obj, Detachable sub) {
+        Emp e = (Emp) ( (Emp) obj ).fclone();
+        e.setSal(e.getSal()*12);
+        tEmpDao.put(e);//not in this DAO
+      }
+    });
+    
+    PropertyInfo[] propNames = new PropertyInfo[2];
+    propNames[0] = foam.demos.toSql.Emp.ENAME;
+    propNames[1] = foam.demos.toSql.Emp.SAL;
+
+    // We can use an array of name property (String) to make the projection.
+    // Projection p = ( new
+    // foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder() )
+    // .buildProjectionForPropertyNamesArray(x,
+    // foam.demos.toSql.Emp.getOwnClassInfo(), propNames);
+
+    Projection p = new Projection.Builder(x).setExprs(propNames)
+      .build();
+    tEmpDao.select(p);
+    values = p.getProjection();
+    printListArray(values, propNames);
 
     // select ename from emp where comm is not null
+    Expr       e    = new Constant(0);
+    Predicate  pred = new Gt(foam.demos.toSql.Emp.COMM, e);
+    DAO        r    = empDao.where(pred);
+    
+    propNames1    = new PropertyInfo[1];
+    propNames1[0] = foam.demos.toSql.Emp.ENAME;
+    
+    Projection p2   = new Projection.Builder(x).setExprs(propNames1)
+        .build();
+    r.select(p2);
+    values = p2.getProjection();
+    printListArray(values, propNames1);
 
     // select ename from emp where comm is null
+    
+    pred = new Eq(foam.demos.toSql.Emp.COMM, e);
+    r    = empDao.where(pred);
 
-    // select ename from emp where sal between 800 and 3000
+    p2 = new Projection.Builder(x).setExprs(propNames1)
+      .build();//TODO if I delete the projection, I will get error.
+    r.select(p2);
+    values = p2.getProjection();
+    printListArray(values, propNames1);
+    
+    // select ename from emp where sal between 800 and 3000  
+    Predicate newArgs[] = {
+        new Gt(foam.demos.toSql.Emp.COMM, new Constant(800)),
+        new Lt(foam.demos.toSql.Emp.COMM, new Constant(3000))};
+    pred = new And(newArgs);
+    r    = empDao.where(pred);
+
+    p2 = new Projection.Builder(x).setExprs(propNames1)
+      .build();//TODO if I delete the projection, I will get error.
+    r.select(p2);
+    values = p2.getProjection();
+    printListArray(values, propNames1);
 
     // select empno, ename, job, sal from emp where job in ('CLERK','ANALYST')
 
@@ -72,29 +161,46 @@ public class ToSql {
 
     // select distinct job from emp
 
-    // select ename,comm/sal, comm, sal from emp where job='SALESMAN'order by comm/sal;
+    // select ename,comm/sal, comm, sal from emp where job='SALESMAN'order by
+    // comm/sal;
 
     // select ename,sal, comm from emp where comm <sal*0.25
 
     // select ename,job, decode(comm,null,'sans',0,comm) commission from EMP;
 
-    // select a.ename, b.loc from emp a, emp b where upper(a.ename) = 'SMITH' and a.detno = b.deptno
+    // select a.ename, b.loc from emp a, emp b where upper(a.ename) = 'SMITH'
+    // and a.detno = b.deptno
 
     // select empno, ename, dname from emp, sept where emp.deptno = dept.deptno
 
-    // select * from emp e, emp f where e.job = f.job and e.hiredate = f.hireDate
+    // select * from emp e, emp f where e.job = f.job and e.hiredate =
+    // f.hireDate
     // and f.name = 'ford' and e.name <> 'ford';
     // //or
-    // select * from emp where (job, hiredate) in (select job, hiredate from emp where ename = 'ford') and ename <> 'ford')
+    // select * from emp where (job, hiredate) in (select job, hiredate from emp
+    // where ename = 'ford') and ename <> 'ford')
     // e.job = f.job and e.hiredate = f.hireDate
     // and f.ename = 'ford' and e.ename <> 'ford';
 
-    // select * from emp e, emp kl where e.mgr = kl.mgr and kl.ename = 'CLARK' and e.ename <> 'CLARK'
+    // select * from emp e, emp kl where e.mgr = kl.mgr and kl.ename = 'CLARK'
+    // and e.ename <> 'CLARK'
 
+  }
 
+  private static void printList(java.util.List res) {
+    for ( Object object : res ) {
+      System.out.println(object.toString());
+    }
+    System.out.println("\n");
+  }
 
-
-
+  private static void printListArray(java.util.List<Object[]> values, Object[] stringArr) {
+    for ( int i = 0; i < values.size(); i++ ) {
+      for ( int j = 0; j < stringArr.length; j++ ) {
+        System.out.print(values.get(i)[j] + " ");
+      }
+      System.out.println("\n");
+    }
   }
 
   private static void setup(DAO deptDao, DAO salGradeDao, DAO empDao) {
@@ -131,7 +237,7 @@ public class ToSql {
 
     res = ( (ArraySink) deptDao.select(new ArraySink()) ).getArray();
 
-    print(res);
+    printList(res);
 
     // grade
     SalGrade s1 = new SalGrade();
@@ -172,7 +278,7 @@ public class ToSql {
 
     res = ( (ArraySink) salGradeDao.select(new ArraySink()) ).getArray();
 
-    print(res);
+    printList(res);
 
     // TODO complete the list
     Emp e1 = new Emp();
@@ -184,7 +290,6 @@ public class ToSql {
     e1.setSal(800);
     e1.setComm(0);
 
-
     Emp e2 = new Emp();
     e2.setId(1);
     e2.setEmpNo(7499);
@@ -193,7 +298,6 @@ public class ToSql {
     e2.setHireDate(new GregorianCalendar(1981, 2, 20).getTime());
     e2.setSal(1600);
     e2.setComm(300);
-
 
     Emp e3 = new Emp();
     e3.setId(2);
@@ -350,11 +454,5 @@ public class ToSql {
     empDao.put(e12);
     empDao.put(e13);
     empDao.put(e14);
-  }
-
-  private static void print(java.util.List res) {
-    for ( Object object : res ) {
-      System.out.println(object.toString());
-    }
   }
 }
