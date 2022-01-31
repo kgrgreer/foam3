@@ -25,7 +25,7 @@ foam.CLASS({
       expression: function(query, jsErr) {
         return function() {
         debugger;
-          var predicate = foam.parse.FScript.create({of: this.cls_}).parseString(query);
+          var predicate = foam.parse.FScript.create({of: this.cls_, thisValue: this}).parseString(query);
           if ( predicate !== undefined && ! predicate.f(this) ) return jsErr(this);
         };
       }
@@ -153,7 +153,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len>='+self.minLength,
+            query: this.name+'_len>='+self.minLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
         }
@@ -161,7 +161,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len<='+self.maxLength,
+            query: this.name+'_len<='+self.maxLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
           });
         }
@@ -169,7 +169,7 @@ foam.CLASS({
         if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len!=""',
+            query: this.name+'_len!=""',
             errorString: `${this.label} ${foam.core.String.REQUIRED}`
           });
         }
