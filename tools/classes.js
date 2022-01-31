@@ -54,6 +54,11 @@ var classes = [
   'foam.nanos.auth.GroupPermissionJunction',
   'foam.nanos.auth.GroupPermissionJunctionId',
   'foam.nanos.auth.EnabledAwareDummy',
+
+  //DAO example
+  'foam.demos.toSql.Dept',
+  'foam.demos.toSql.SalGrade',
+  'foam.demos.toSql.Emp',
 ];
 
 

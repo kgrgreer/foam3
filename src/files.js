@@ -1184,4 +1184,9 @@ FOAM_FILES([
   { name: "foam/nanos/ndiff/NDiffJournal", flags: [ "java" ] },
   { name: "foam/nanos/ndiff/NDiffRuntimeDAO", flags: [ "java" ] },
   { name: "foam/u2/view/ComparisonView" },
+
+  //DAO example
+  { name: "foam/demos/toSql/Dept", flags: [ "java" ] },
+  { name: "foam/demos/toSql/SalGrade", flags: [ "java" ] },
+  { name: "foam/demos/toSql/Emp", flags: [ "java" ] },
   ]);
