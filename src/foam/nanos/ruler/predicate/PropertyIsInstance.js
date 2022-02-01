@@ -26,14 +26,18 @@ foam.CLASS({
       class: 'String',
       name: 'of',
       documentation: 'class that we want the object to be an instance of, if changed, nullify cache',
-      javaPostSet: `
-        try { setCachedClass_(Class.forName(getOf())); }
-        catch (Exception E) { };
+      javaPreSet: `
+        try {
+          setCachedClass_(Class.forName(val));
+        }
+        catch (Exception E) { return; };
       `
     },
     {
       class: 'Object',
       name: 'cachedClass_',
+      visibility: 'HIDDEN',
+      transient: true,
       documentation: 'cached class',
       javaFactory: `
         try { return Class.forName(getOf()); }
