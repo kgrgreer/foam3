@@ -180,7 +180,7 @@ foam.CLASS({
       documentation: `
         A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
         To use this sequence, a context agent exporting rootCapabilityId should be inserted
-        before CapabilityAdaptAgent. This capability will be set as the requirement for a
+        before CapabilityAdaptAgent; this capability will be set as the requirement for a
         new BaseCapable object that will be discarded at the end of the sequence.
       `,
       code: function createTransientWizardSequence(x) {
