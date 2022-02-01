@@ -26,15 +26,20 @@ foam.CLASS({
       class: 'String',
       name: 'of',
       documentation: 'class that we want the object to be an instance of, if changed, nullify cache',
-      javaPreSet: `
-        setCachedClass_(null);
+      javaPostSet: `
+        try { setCachedClass_(Class.forName(getOf())); }
+        catch (Exception E) { };
       `
     },
     {
       class: 'Object',
       name: 'cachedClass_',
       documentation: 'cached class',
-      value: null
+      javaFactory: `
+        try { return Class.forName(getOf()); }
+        catch (Exception E) { };
+        return null;
+      `
     },
     {
       class: 'Boolean',
@@ -46,26 +51,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      Class cls;
-      if ( getCachedClass_() != null ) {
-        cls = (Class) getCachedClass_();
-      }
-      else {
-        try {
-          cls = Class.forName(getOf());
-          setCachedClass_(cls);
-        }
-        catch (Exception E) {
-          return false; // unable to find class
-        };
-      }
       if ( getIsNew() ) {
         FObject nu  = (FObject) NEW_OBJ.f(obj);
-        return cls.isInstance(nu.getProperty(getPropName()));
+        return ((Class) getCachedClass_()).isInstance(nu.getProperty(getPropName()));
       }
       FObject old = (FObject) OLD_OBJ.f(obj);
       if ( old != null )
-        return cls.isInstance(old.getProperty(getPropName()));
+        return ((Class) getCachedClass_()).isInstance(old.getProperty(getPropName()));
       return false;
       `
     }
