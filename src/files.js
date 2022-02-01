@@ -944,6 +944,7 @@ FOAM_FILES([
   { name: "foam/u2/dialog/SimpleActionDialog" },
   { name: "foam/u2/tag/CircleIndicator" },
   { name: "foam/u2/wizard/agents/ConfigureFlowAgent", flags: ['web'] },
+  { name: "foam/u2/wizard/agents/RootCapabilityAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/StepWizardAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/SpinnerAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/DetachAgent", flags: ['web'] },
