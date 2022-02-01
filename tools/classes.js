@@ -54,7 +54,6 @@ var classes = [
   'foam.nanos.auth.GroupPermissionJunction',
   'foam.nanos.auth.GroupPermissionJunctionId',
   'foam.nanos.auth.EnabledAwareDummy',
-  'foam.nanos.bench.PredicateBenchmark',
 ];
 
 

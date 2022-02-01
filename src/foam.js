@@ -314,7 +314,6 @@ var missing = {
   'foam.core.ValidationException': true,
   'foam.core.ClientRuntimeException': true,
   'foam.nanos.bench.Benchmark': true,
-  'foam.nanos.bench.PredicateBenchmark': true,
   'foam.nanos.dig.DUGRule': true,
   'foam.box.HTTPAuthorizationType': true,
   'foam.nanos.http.Format': true,

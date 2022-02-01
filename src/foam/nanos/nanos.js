@@ -162,7 +162,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/SimpleUserQueryService", flags: [ "java" ] },
   { name: "foam/nanos/auth/ResetSpidBeforeLoginAuthService", flags: [ "java" ] },
   { name: "foam/nanos/bench/Benchmark", flags: [ "java" ] },
-  { name: "foam/nanos/bench/PredicateBenchmark", flags: [ "java" ] },
   { name: "foam/nanos/bench/BenchmarkResult", flags: [ "java" ] },
   { name: "foam/nanos/bench/BenchmarkResultReportingDAO", flags: [ "java" ] },
   { name: "foam/nanos/bench/BenchmarkResultSystemDAO", flags: [ "java" ] },

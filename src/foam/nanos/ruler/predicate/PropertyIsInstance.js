@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.ruler.predicate',
   name: 'PropertyIsInstance',
 
-  documentation: 'Returns true if property propName is instanceof of',
+  documentation: 'Returns true if property propName is instanceof of. uses string instead of class, to allow checking instance of interfaces',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
@@ -25,7 +25,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'of',
-      documentation: 'class that we want the object to be an instance of'
+      documentation: 'class that we want the object to be an instance of, if changed, nullify cache',
+      javaPreSet: `
+        setCachedClass_(null);
+      `
+    },
+    {
+      class: 'Object',
+      name: 'cachedClass_',
+      documentation: 'cached class',
+      value: null
     },
     {
       class: 'Boolean',
@@ -38,13 +47,18 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       Class cls;
-      try {
-        cls = Class.forName(getOf());
+      if ( getCachedClass_() != null ) {
+        cls = (Class) getCachedClass_();
       }
-      catch (Exception E) {
-        return false; // unable to find class
-      };
-
+      else {
+        try {
+          cls = Class.forName(getOf());
+          setCachedClass_(cls);
+        }
+        catch (Exception E) {
+          return false; // unable to find class
+        };
+      }
       if ( getIsNew() ) {
         FObject nu  = (FObject) NEW_OBJ.f(obj);
         return cls.isInstance(nu.getProperty(getPropName()));
