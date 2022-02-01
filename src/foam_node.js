@@ -5,7 +5,8 @@
  */
 
 (function() {
-  var foam  = globalThis.foam || ( globalThis.foam = {} );
+  var foam = globalThis.foam || ( globalThis.foam = {} );
+
   // Imports used by the loadServer() loader
   globalThis.imports = {};
   globalThis.imports.path = require('path');
@@ -33,7 +34,7 @@
   }
 
   if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
-  var flags = foam.flags = this.FOAM_FLAGS;
+  var flags = globalThis.foam.flags = this.FOAM_FLAGS;
 
   // TODO: remove the genjava flag and let genjava set it
   if ( ! flags.hasOwnProperty('genjava')  ) flags.genjava = true;
@@ -69,19 +70,28 @@
   this.FOAM_FILES = function(files) {
     var load = loadServer();
     var seen = {};
+    var SAFE = foam.SAFE || {};
     files.
       filter(f => {
         if ( foam.checkFlags(f.flags) ) return true;
-        console.log('****************************** NOT LOADING ', f.name, f.flags);
+//        console.log('****************************** NOT LOADING ', f.name, f.flags);
         return true;
       }).
       filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
       filter(f => (! f.predicate) || f.predicate()).
       forEach(function(f) {
-        globalThis.foam.currentFlags = f.flags || [];
-        console.log('******* LOADING WITH FLAGS ', f.name, globalThis.foam.currentFlags);
+        foam = globalThis.foam;
+        foam.currentFlags = f.flags || [];
+
+        // console.log('******* LOADING WITH FLAGS ', f.name, globalThis.foam.currentFlags);
+        var count1 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
         load(f.name);
+        var count2 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
+        if ( count2 == count1 + 1 ) {
+          SAFE[f.name] = true;
+        }
       });
+      foam.SAFE = SAFE;
   };
 
   loadServer()('files');

@@ -21,10 +21,16 @@ foam.CLASS({
         String input = "{\\"class\\":\\"__Class__\\",\\"forClass_\\":\\"foam.nanos.auth.User\\"}";
         ClassReferenceParserTest_StringWithValidClassReference(
           x, input, User.getOwnClassInfo(), "Parsed long form modelled Class reference parser successfully");
-          
+
         String input2 = "\\"foam.nanos.auth.User\\"";
         ClassReferenceParserTest_StringWithValidClassReference(
           x, input2, User.getOwnClassInfo(), "Parsed short form modelled Class reference parser successfully");
+
+        String input3 = "{\\"class\\":\\"__Class__\\",\\"forClass_\\":\\"java.lang.String\\"}";
+        ClassReferenceParserTest_StringWithInvalidClassReference(x, input3, "Should fail parsing non foam class");
+
+        String input4 = "{\\"class\\":\\"__Class__\\",\\"forClass_\\":\\"Invalid_Class\\"}";
+        ClassReferenceParserTest_StringWithInvalidClassReference(x, input4, "Should fail parsing invalid class");
       `
     },
     {
@@ -57,7 +63,28 @@ foam.CLASS({
 
         // attempt parsing
         ps = (StringPStream) ps.apply(classReferenceParser, psx);
-        test(expected.equals(ps.value()), message);
+        test(ps != null && expected.equals(ps.value()), message);
+      `
+    },
+    {
+      name: 'ClassReferenceParserTest_StringWithInvalidClassReference',
+      args: 'Context x, String data, String message',
+      javaCode: `
+        // setup parser
+        Parser classReferenceParser = ClassReferenceParser.instance();
+        StringPStream ps = new StringPStream(new Reference<>(data));
+        ParserContext psx = new ParserContextImpl();
+        psx.set("X", x);
+
+        // attempt parsing
+        var threw = false;
+        try {
+          ps = (StringPStream) ps.apply(classReferenceParser, psx);
+        } catch ( Throwable t ) {
+          threw = true;
+        }
+        test(threw, message);
+        test(psx.get("error") instanceof Throwable, "Parser context should contain error");
       `
     }
   ]
