@@ -27,10 +27,8 @@ foam.CLASS({
       name: 'of',
       documentation: 'class that we want the object to be an instance of, if changed, nullify cache',
       javaPreSet: `
-        try {
-          setCachedClass_(Class.forName(val));
-        }
-        catch (Exception E) { return; };
+        try { setCachedClass_(Class.forName(val)); }
+        catch (Exception E) { return; }
       `
     },
     {
@@ -41,7 +39,7 @@ foam.CLASS({
       documentation: 'cached class',
       javaFactory: `
         try { return Class.forName(getOf()); }
-        catch (Exception E) { };
+        catch (Exception E) { }
         return null;
       `
     },
