@@ -53,14 +53,14 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      if ( getIsNew() ) {
-        FObject nu  = (FObject) NEW_OBJ.f(obj);
-        return ((Class) getCachedClass_()).isInstance(nu.getProperty(getPropName()));
-      }
-      FObject old = (FObject) OLD_OBJ.f(obj);
-      if ( old != null )
-        return ((Class) getCachedClass_()).isInstance(old.getProperty(getPropName()));
-      return false;
+        if ( getIsNew() ) {
+          FObject nu  = (FObject) NEW_OBJ.f(obj);
+          return ((Class) getCachedClass_()).isInstance(nu.getProperty(getPropName()));
+        }
+        FObject old = (FObject) OLD_OBJ.f(obj);
+        if ( old != null )
+          return ((Class) getCachedClass_()).isInstance(old.getProperty(getPropName()));
+        return false;
       `
     }
   ]
