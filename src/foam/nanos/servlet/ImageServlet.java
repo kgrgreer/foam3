@@ -82,14 +82,14 @@ public class ImageServlet
 
           // convert .svg to .png
           try {
-            String svg_URI_input = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
-            TranscoderInput input_svg_image = new TranscoderInput(svg_URI_input);
-            OutputStream png_ostream = new FileOutputStream(src.getPath());
-            TranscoderOutput output_png_image = new TranscoderOutput(png_ostream);
-            PNGTranscoder my_converter = new PNGTranscoder();
-            my_converter.transcode(input_svg_image, output_png_image);
-            png_ostream.flush();
-            png_ostream.close();
+            String svgURIInput = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
+            TranscoderInput inputSVGImage = new TranscoderInput(svgURIInput);
+            OutputStream PNGOutputStream = new FileOutputStream(src.getPath());
+            TranscoderOutput outputPNGImage = new TranscoderOutput(PNGOutputStream);
+            PNGTranscoder myConverter = new PNGTranscoder();
+            myConverter.transcode(inputSVGImage, outputPNGImage);
+            PNGOutputStream.flush();
+            PNGOutputStream.close();
 
             String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
             try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(src))) {
