@@ -4322,6 +4322,25 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'RegexValue',
+  extends: 'foam.mlang.AbstractExpr',
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+  methods: [
+    {
+      name: 'f',
+      code: function(o) { return new RegExp(this.arg1.f(o)) },
+      javaCode: 'return ((String) getArg1().f(obj)).length();'
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.mlang',
