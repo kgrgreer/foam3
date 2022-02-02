@@ -84,10 +84,10 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    // Reuse parsers if created for same 'of' class.
-    foam.pattern.Multiton.create({property: 'of'})
-  ],
+  //  axioms: [
+  //    // Reuse parsers if created for same 'of' class.
+  //    foam.pattern.Multiton.create({property: 'of',})
+  //  ],
 
   mixins: [ 'foam.mlang.Expressions' ],
 
@@ -214,7 +214,9 @@ foam.CLASS({
         const cls        = this.of;
         const fields     = [];
         const properties = cls.getAxiomsByClass(foam.core.Property);
+        const constants = cls.getAxiomsByClass(foam.core.Constant);
 
+        debugger;
         if ( this.thisValue !== undefined ) {
           fields.push(this.Literal.create({
             s: 'thisValue',
@@ -227,6 +229,13 @@ foam.CLASS({
           fields.push(this.Literal.create({
             s: prop.name,
             value: prop
+          }));
+        }
+        for ( var i = 0 ; i < constants.length ; i++ ) {
+          var con = constants[i];
+          fields.push(this.Literal.create({
+            s: con.name,
+            value: con.value
           }));
         }
 
@@ -263,6 +272,9 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
+//            if ( op.name == "REG_EXP" ) {
+//              rhs = foam.mlang.RegexValue.create({arg1: rhs});
+//            }
             debugger;
             return op.call(self, lhs, rhs);
           },

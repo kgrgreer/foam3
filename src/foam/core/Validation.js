@@ -23,10 +23,11 @@ foam.CLASS({
       // TODO: poor choice of name, should be something with 'assert'
       name: 'jsFunc',
       expression: function(query, jsErr) {
-        return function() {
+      var self = this;
+        return function(obj) {
         debugger;
-          var predicate = foam.parse.FScript.create({of: this.cls_, thisValue: this}).parseString(query);
-          if ( predicate !== undefined && ! predicate.f(this) ) return jsErr(this);
+          var predicate = foam.parse.FScript.create({of: obj.cls_, thisValue: this}).parseString(query);
+          if ( predicate !== undefined && ! predicate.f(obj) ) return jsErr(obj);
         };
       }
     },
@@ -102,7 +103,12 @@ foam.CLASS({
     },
     {
       name: 'validateObj',
-      expression: function(name, label, required, validationPredicates) {
+      factory: function(prop) {
+      var name = this.name;
+      var label = this.label;
+      var required = this.required;
+      var prop2 = this;
+      var validationPredicates = this.validationPredicates;
         if ( validationPredicates.length ) {
           var args = foam.Array.unique(validationPredicates
             .map(vp => vp.args)
@@ -111,7 +117,7 @@ foam.CLASS({
             for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
               var vp   = validationPredicates[i];
               var self = this;
-              if ( vp.jsFunc.call(this) ) return vp.jsErr.call(self, self);
+              if ( vp.jsFunc.call(prop2, this) ) return vp.jsErr.call(self, self);
             }
             return null;
           }];
@@ -153,7 +159,7 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'_len>='+self.minLength,
+            query: 'thisValue_len>='+self.minLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
         }
@@ -206,7 +212,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.expression.apply(this, arguments);
+        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
       }
     }
   ]
@@ -244,7 +250,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.expression.apply(this, arguments);
+        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
       }
     }
   ]
