@@ -5,7 +5,7 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.google.api.sheets.views',
+  package: 'foam.nanos.google.api.sheets',
   name: 'GoogleSheetsImportConfig',
   documentation: 'GoogleSheetsImportConfig contains info about import',
   properties: [
@@ -47,7 +47,7 @@
     {
       name: 'columnHeaderPropertyMappings',
       class: 'FObjectArray',
-      of: 'foam.nanos.google.api.sheets.views.ColumnHeaderToPropertyMapping',
+      of: 'foam.nanos.google.api.sheets.ColumnHeaderToPropertyMapping',
       visibility: 'RO',
       hidden: true
     },
@@ -64,7 +64,7 @@
 });
 
 foam.CLASS({
-  package: 'foam.nanos.google.api.sheets.views',
+  package: 'foam.nanos.google.api.sheets',
   name: 'ColumnHeaderToPropertyMapping',
   properties: [
     {

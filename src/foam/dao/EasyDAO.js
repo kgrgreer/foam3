@@ -197,18 +197,11 @@ foam.CLASS({
 
         if ( getCluster() &&
              getMdao() != null ) {
-          if ( getSAF() ) {
-            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
+          logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
+          delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();   
-          } else {
-            logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
-            delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
-              .setNSpec(getNSpec())
-              .setDelegate(delegate)
-              .build();   
-          }
+            .build();
         }
 
         if ( getServiceProviderAware() ) {
@@ -675,12 +668,6 @@ foam.CLASS({
       javaFactory: `
       return foam.util.SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
       `
-    },
-    {
-      documentation: 'Store and forward this DAO',
-      name: 'SAF',
-      class: 'Boolean',
-      value: false
     },
     {
       documentation: 'Simpler alternative than providing serverBox.',

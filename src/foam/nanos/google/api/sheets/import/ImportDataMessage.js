@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.google.api.sheets.views',
+  package: 'foam.nanos.google.api.sheets',
   name: 'ImportDataMessage',
   properties: [
     {

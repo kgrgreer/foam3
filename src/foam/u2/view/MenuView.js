@@ -15,24 +15,25 @@ foam.CLASS({
   ],
 
   properties: [
+    'menu',
     {
       name: 'label',
-      factory: function() { return this.data.label || ''; }
+      factory: function() { return this.menu.label || ''; }
     },
     {
       name: 'icon',
-      factory: function() { return this.data.icon; }
+      factory: function() { return this.menu.icon; }
     },
     {
       name: 'themeIcon',
-      factory: function() { return this.data.themeIcon; }
+      factory: function() { return this.menu.themeIcon; }
     }
   ],
 
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.data.launch_(this.__subContext__, this);
+      this.menu.launch_(this.__subContext__, this);
       if ( this.parentMenuDropdown ) this.parentMenuDropdown.close();
       return;
     }

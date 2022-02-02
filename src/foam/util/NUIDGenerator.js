@@ -22,8 +22,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'static foam.util.UIDSupport.*',
-    'java.util.concurrent.atomic.AtomicInteger',
-    'java.util.concurrent.atomic.AtomicBoolean'
+    'java.util.concurrent.atomic.AtomicInteger'
   ],
 
   javaCode: `
@@ -36,7 +35,6 @@ foam.CLASS({
   }
 
   AtomicInteger seqNo_ = new AtomicInteger();
-  AtomicBoolean initMaxSeqNo_ = new AtomicBoolean(false);
   `,
 
   properties: [
@@ -80,25 +78,35 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        initMaxSeqNo();
+        if ( seqNo_.get() == 0 ) {
+          synchronized ( this ) {
+            if ( seqNo_.get() == 0 ) {
+              initMaxSeqNo();
+            }
+          }
+        }
         id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
     },
     {
       name: 'initMaxSeqNo',
       javaCode: `
-        if ( ! initMaxSeqNo_.getAndSet(true) ) {
-          Logger logger = Loggers.logger(getX(), this);
-          logger.info(getSalt(), "max", "find");
-          getDao().select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              var id = (long) getPropertyInfo().get(obj);
-              maybeUpdateSeqNo(id);
+        Logger logger = Loggers.logger(getX(), this);
+        logger.info(getSalt(), "max", "find");
+        getDao().select(new AbstractSink() {
+          @Override
+          public void put(Object obj, Detachable sub) {
+            var id = (long) getPropertyInfo().get(obj);
+            if ( id > 0x1000000 ) {
+              var hex   = undoPermute(Long.toHexString(id));
+              var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
+              if ( seqNo > seqNo_.get() ) {
+                seqNo_.set(seqNo);
+              }
             }
-          });
-          Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
-        }
+          }
+        });
+        Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
       `
     },
     {
@@ -108,25 +116,6 @@ foam.CLASS({
         if ( ! ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) ) {
           throw new UnsupportedOperationException(
             "NUIDGenerator: not supported on " + getSalt() + " without id property");
-        }
-      `
-    },
-    {
-      name: 'maybeUpdateSeqNo',
-      args: 'Long id',
-      javaCode: `
-        if ( id > 0x1000000 ) {
-          if ( UIDSupport.hash(id) != getHashKey() ) {
-            Loggers.logger(getX(), this).warning(getSalt(), "id:" + id, "hash not matched");
-            return;
-          }
-
-          var hex   = undoPermute(Long.toHexString(id));
-          var mid   = Integer.parseInt(hex.substring(hex.length() - 5, hex.length() - 3), 16);
-          if ( getMachineId() % 0xff == mid ) {
-            var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-            seqNo_.getAndAccumulate(seqNo, (old, nu) -> Math.max(old, nu));
-          }
         }
       `
     }

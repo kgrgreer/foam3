@@ -29,7 +29,7 @@ foam.CLASS({
       padding-top: 0;
     }
     ^ .foam-dashboard-view-Card {
-      margin-right: 16px;
+      margin-left: 0;
     }
   `,
 
@@ -77,13 +77,15 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .style({
-          width: 'inherit',
+          width: this.slot(function(size) {
+            return ( this.SIZES[size.name][0] + 'px' );
+          }),
           height: this.slot(function(size) {
             return ( this.SIZES[size.name][1] + 'px' );
           })
         })
         .start().addClass(this.myClass('title-container'))
-          .start().addClass('h500').style({ 'margin-bottom': '16px' }).add(self.title).end()
+          .start().addClass('h500').add(self.title).end()
           .start()
             .startContext({data: self})
               .tag(self.VIEW_MORE_ACTION, {
