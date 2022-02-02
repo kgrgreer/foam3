@@ -86,11 +86,16 @@ foam.CLASS({
                   FObject runtimeFObject = dao.find(id);
 
                   var deletedAtRuntime = runtimeFObject == null;
+                  var delta = deletedAtRuntime || !initialFObject.equals(runtimeFObject);
 
                   ndiff.setDeletedAtRuntime(deletedAtRuntime);
-                  ndiff.setDelta(deletedAtRuntime || !initialFObject.equals(runtimeFObject));
-                  if (!deletedAtRuntime) {
+                  ndiff.setDelta(delta);
+                  if ( ! deletedAtRuntime ) {
                     ndiff.setRuntimeFObject(runtimeFObject);
+                  }
+
+                  if ( delta ) {
+                    super.put(ndiff,sub);
                   }
                 }
                 else {
@@ -100,8 +105,6 @@ foam.CLASS({
                 logger.warning("NDiff points to missing dao", nSpecName);
               }
             }
-
-            super.put(ndiff,sub);
           }
         };
 

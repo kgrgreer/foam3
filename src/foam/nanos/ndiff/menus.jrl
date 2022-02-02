@@ -6,7 +6,14 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"ndiffDAO"
+      "daoKey":"ndiffDAO",
+      "summaryView": {
+        "class": "foam.u2.view.TableView",
+        "editColumnsEnabled": true,
+        "css": {
+          "width": "100%"
+        }
+      }
     }
   },
   "parent":"admin"

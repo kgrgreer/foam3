@@ -175,6 +175,30 @@ foam.CLASS({
           ;
       }
     },
+    {
+      name: 'createTransientWizardSequence',
+      documentation: `
+        A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
+        To use this sequence, a context agent exporting rootCapabilityId should be inserted
+        before CapabilityAdaptAgent; this capability will be set as the requirement for a
+        new BaseCapable object that will be discarded at the end of the sequence.
+      `,
+      code: function createTransientWizardSequence(x) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+        return this.createWizardSequence('no-capability-id', x)
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
+          .remove('SkipGrantedAgent')
+          .remove('CheckRootIdAgent')
+          .remove('CheckPendingAgent')
+          .remove('CheckNoDataAgent')
+          .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
+          .add(this.MaybeDAOPutAgent)
+          ;
+      }
+    },
 
     function wizardSequenceToViewSequence_(sequence) {
       return sequence
