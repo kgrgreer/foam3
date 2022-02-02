@@ -24,11 +24,11 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['number'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(
-              foam.nanos.auth.Phone.NUMBER, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX);
-          },
-          // query: 'number~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+          // predicateFactory: function(e) {
+          //   return e.REG_EXP(
+          //     foam.nanos.auth.Phone.NUMBER, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX);
+          // },
+          query: 'number~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
           errorString: 'Please enter phone number'
         }
       ]
