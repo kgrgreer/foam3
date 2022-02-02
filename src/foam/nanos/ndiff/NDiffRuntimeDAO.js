@@ -84,7 +84,9 @@ foam.CLASS({
 
             var deletedAtRuntime = runtimeFObject == null;
             ndiff.setDeletedAtRuntime(deletedAtRuntime);
-            ndiff.setRuntimeFObject(runtimeFObject);
+            if ( ! deletedAtRuntime ) {
+              ndiff.setRuntimeFObject(runtimeFObject);
+            }
             
             super.put(ndiff,sub);
           }
@@ -111,7 +113,7 @@ foam.CLASS({
                   FObject runtimeFObject = dao.find(id);
 
                   var deletedAtRuntime = runtimeFObject == null;
-                  return deletedAtRuntime || !initialFObject.equals(runtimeFObject);
+                  return ( deletedAtRuntime || ! initialFObject.equals(runtimeFObject) );
                 }
               }
             }
