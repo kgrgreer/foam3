@@ -11,7 +11,12 @@ foam.CLASS({
   documentation: 'Region (province/state) information.',
 
   ids: ['code'],
-
+  constants: [
+    {
+      name: 'PHONE_NUMBER_REGEX',
+      factory: () => /^[a-zA-Z]*$/,
+    }
+  ],
   searchColumns: [
     'code',
     'name'
@@ -29,7 +34,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      validationPredicates: [
+        {
+          args: ['name'],
+          query: 'name~PHONE_NUMBER_REGEX',
+          errorString: `you suck`
+        }
+      ]
     },
     {
       class: 'Reference',
