@@ -20,6 +20,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscoderException;
+import java.nio.file.Paths;
 
 public class ImageServlet
   extends HttpServlet
@@ -68,6 +75,35 @@ public class ImageServlet
 
           IOUtils.copy(is, resp.getOutputStream());
           return;
+        }
+      }else if ( reqPath.endsWith(".png") ){
+        File srcSVG = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
+        if ( srcSVG.isFile() && srcSVG.canRead() && srcSVG.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
+
+          // convert .svg to .png
+          try {
+            String svg_URI_input = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
+            TranscoderInput input_svg_image = new TranscoderInput(svg_URI_input);
+            OutputStream png_ostream = new FileOutputStream(src.getPath());
+            TranscoderOutput output_png_image = new TranscoderOutput(png_ostream);
+            PNGTranscoder my_converter = new PNGTranscoder();
+            my_converter.transcode(input_svg_image, output_png_image);
+            png_ostream.flush();
+            png_ostream.close();
+
+            String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
+            try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(src))) {
+              resp.setContentType(!SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
+              resp.setHeader("Content-Disposition", "filename=\"" + StringEscapeUtils.escapeHtml4(src.getName()) + "\"");
+              resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
+              resp.setContentLengthLong(src.length());
+
+              IOUtils.copy(is, resp.getOutputStream());
+              return;
+            }
+          } catch (TranscoderException e) {
+            System.out.println("Error occurred while image transcoding:" + e.getMessage());
+          }
         }
       }
     }
