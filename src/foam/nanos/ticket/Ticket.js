@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.nanos.ticket',
   name: 'Ticket',
 
@@ -523,8 +523,7 @@ foam.CLASS({
         return true;
       },
       isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
+        return id && status !== 'CLOSED';
       },
       code: function() {
         this.status = 'CLOSED';
