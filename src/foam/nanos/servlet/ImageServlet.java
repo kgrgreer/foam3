@@ -6,7 +6,9 @@
 
 package foam.nanos.servlet;
 
+import foam.core.X;
 import foam.util.SafetyUtil;
+import foam.nanos.logger.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -81,15 +83,13 @@ public class ImageServlet
         if ( srcSVG.isFile() && srcSVG.canRead() && srcSVG.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
 
           // convert .svg to .png
-          try {
-            String svgURIInput = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
-            TranscoderInput inputSVGImage = new TranscoderInput(svgURIInput);
-            OutputStream PNGOutputStream = new FileOutputStream(src.getPath());
-            TranscoderOutput outputPNGImage = new TranscoderOutput(PNGOutputStream);
-            PNGTranscoder myConverter = new PNGTranscoder();
+          String          svgURIInput   = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
+          TranscoderInput inputSVGImage = new TranscoderInput(svgURIInput);
+          try (OutputStream  PNGOutputStream = new FileOutputStream(src.getPath())) {
+            TranscoderOutput outputPNGImage  = new TranscoderOutput(PNGOutputStream);
+            PNGTranscoder    myConverter     = new PNGTranscoder();
             myConverter.transcode(inputSVGImage, outputPNGImage);
             PNGOutputStream.flush();
-            PNGOutputStream.close();
 
             String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
             try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(src))) {
@@ -102,7 +102,8 @@ public class ImageServlet
               return;
             }
           } catch (TranscoderException e) {
-            System.out.println("Error occurred while image transcoding:" + e.getMessage());
+            X x = (X) this.getServletConfig().getServletContext().getAttribute("X");
+            ((Logger) x.get("logger")).error(e);
           }
         }
       }
