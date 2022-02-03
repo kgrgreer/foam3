@@ -384,6 +384,8 @@ FOAM_FILES([
   { name: "foam/physics/Collider" },
   { name: "foam/physics/PhysicsEngine" },
   { name: "foam/blob/Blob", flags: [ "java" ] },
+  { name: "foam/blob/BlobStore", flags: [ "java" ] },
+  { name: "foam/blob/FdBlob", flags: [ "java" ] },
   { name: "lib/node/json_dao", flags: [ "node" ] },
   { name: "lib/utf8" },
   { name: "foam/net/CIDR", flags: [ "java" ] },
