@@ -523,8 +523,7 @@ foam.CLASS({
         return true;
       },
       isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
+        return id && status !== 'CLOSED';
       },
       code: function() {
         this.status = 'CLOSED';
