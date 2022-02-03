@@ -133,7 +133,9 @@
     {
       class: 'foam.u2.ViewSpec',
       name: 'view',
-      factory: function() { return { class: 'foam.u2.view.MenuView', menu: this }; }
+      value: function(args, X) {
+        return { class: 'foam.u2.view.MenuView', data: this };
+      }
     }
   ],
 
