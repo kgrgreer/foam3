@@ -78,7 +78,7 @@ public class ImageServlet
           IOUtils.copy(is, resp.getOutputStream());
           return;
         }
-      }else if ( reqPath.endsWith(".png") ){
+      } else if ( reqPath.endsWith(".png") ) {
         File srcSVG = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
         if ( srcSVG.isFile() && srcSVG.canRead() && srcSVG.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
 
