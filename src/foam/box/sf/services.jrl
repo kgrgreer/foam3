@@ -34,24 +34,25 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"sfDAO",
-  "description": "A mdao-only database of SF.",
+  "name":"sfMonitorDAO",
   "serve":true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
-      .setPm(true)
+      .setOf(foam.box.sf.SFMonitor.getOwnClassInfo())
+      .setNullify(true)
       .setCluster(false)
       .setRuler(false)
-      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
-      .setOf(foam.box.sf.SF.getOwnClassInfo())
+      .setPm(true)
+      .setDelegate(new foam.box.sf.SFMonitorDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFMonitor.getOwnClassInfo()))
+      .build())
       .build();
   """,
   "client":
   """
     {
-      "of":"foam.box.sf.SF"
+      "of":"foam.box.sf.SFMonitor"
     }
   """
 })

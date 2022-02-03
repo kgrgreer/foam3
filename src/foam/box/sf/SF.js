@@ -105,6 +105,13 @@ foam.CLASS({
     },
     {
       class: 'Int',
+      name: 'inFlightNum',
+      javaGetter: `
+        return onHoldList_.size();
+      `
+    },
+    {
+      class: 'Int',
       name: 'inFlightLimit',
       value: 1024
     },
@@ -477,7 +484,6 @@ foam.CLASS({
           data: `
             protected Logger logger_ = null;
             protected volatile long entryCurStep_ = 0;
-            protected volatile SFEntry curSFEntry_ = null;
 
             final protected AtomicLong entryIndex_ = new AtomicLong(0);
             final protected Map<String, SFFileJournal> journalMap_ = new ConcurrentHashMap<String, SFFileJournal>();
