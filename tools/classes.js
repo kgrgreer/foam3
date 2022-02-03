@@ -83,8 +83,6 @@ var skeletons = [
 
  var proxies = [
    'foam.blob.Blob',
-   'foam.blob.BlobStore',
-   'foam.blob.FdBlob',
    'foam.blob.BlobService',
    'foam.dao.Journal',
    'foam.dao.Sink',
