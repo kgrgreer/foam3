@@ -25,6 +25,26 @@ foam = {
   }),
   isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
+  checkFlags: function(flags) {
+    if ( ! flags || flags.length == 0 ) return true;
+    if ( typeof flags === 'string' ) {
+      flags = flags.split('|');
+    }
+
+    function and(fs) {
+      fs = fs.split('&');
+      for ( var i = 0 ; i < fs.length ; i++ ) {
+        if ( ! foam.flags[fs[i]] ) return false;
+      }
+      return true;
+    }
+
+    // OR AND clauses
+    for ( var i = 0 ; i < flags.length ; i++ ) {
+      if ( and(flags[i]) ) return true;
+    }
+    return false;
+  },
   util:     {
     path: function(root, path, opt_ensure) {
       var a = path.split('.');
