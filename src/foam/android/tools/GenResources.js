@@ -19,6 +19,8 @@ foam.CLASS({
   package: 'foam.android.tools',
   name: 'GenResources',
 
+  flags: ['node'],
+
   imports: [
     'classloader',
   ],
