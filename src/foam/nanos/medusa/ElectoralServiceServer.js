@@ -390,11 +390,11 @@ foam.CLASS({
         getLogger().debug("callReport", getState(), "votes", getVotes(), "voters", voters.size());
 
         if ( voters.size() < support.getMediatorQuorum() ) {
-          getLogger().debug("callReport", getState(), "insuficient voters", "votes", getVotes(), "voters", voters.size());
+          getLogger().debug("callReport", getState(), "insuficient voters", "votes", getVotes(), "voters", voters.size(), "quorum", support.getMediatorQuorum());
           return;
         }
-        if ( getVotes() < voters.size() ) {
-          getLogger().debug("callReport", getState(), "insuficient votes", "votes", getVotes(), "voters", voters.size());
+        if ( getVotes() < support.getMediatorQuorum() ) {
+          getLogger().debug("callReport", getState(), "insuficient votes", "votes", getVotes(), "voters", voters.size(), "quorum", support.getMediatorQuorum());
           return;
         }
 

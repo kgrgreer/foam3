@@ -57,6 +57,14 @@ configuration for contacting the primary node.`,
     'java.util.Set'
   ],
 
+  constants: [
+    {
+      name: 'STANDALONE',
+      type: 'String',
+      value: 'standalone'
+    }
+  ],
+  
   properties: [
     {
       documentation: 'URL path prefix',
@@ -98,7 +106,7 @@ configuration for contacting the primary node.`,
       documentation: 'A single instance is using the medusa journal. No other clustering features are used.',
       name: 'standAlone',
       class: 'Boolean',
-      value: false,
+      javaFactory: 'return STANDALONE.equals(getConfigId());',
       visibility: 'RO'
     },
     {
@@ -156,6 +164,8 @@ configuration for contacting the primary node.`,
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
+      if ( getStandAlone() ) return 1;
+
       return (int) Math.floor(getMediatorCount() / 2) + 1;
       `
     },
@@ -165,6 +175,8 @@ configuration for contacting the primary node.`,
       class: 'Boolean',
       visibility: 'RO',
       javaFactory: `
+      if ( getStandAlone() ) return true;
+
       ClusterConfig config = getConfig(getX(), getConfigId());
       Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
         .where(
@@ -200,6 +212,8 @@ configuration for contacting the primary node.`,
       class: 'Int',
       visibility: 'RO',
       javaFactory: `
+      if ( getStandAlone() ) return 0;
+
       int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
       getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
       return quorum;
@@ -269,6 +283,8 @@ configuration for contacting the primary node.`,
       class: 'Boolean',
       visibility: 'RO',
       javaFactory: `
+      if ( getStandAlone() ) return true;
+
       ClusterConfig myConfig = getConfig(getX(), getConfigId());
       if ( myConfig.getType() == MedusaType.NODE ) {
         return true;
@@ -305,6 +321,11 @@ configuration for contacting the primary node.`,
       visibility: 'HIDDEN',
       javaFactory: `
       ClusterConfig myConfig = getConfig(getX(), getConfigId());
+
+      if ( getStandAlone() ) {
+        return new ClusterConfig[] { myConfig };
+      }
+
       long zone = myConfig.getZone() + 1;
       if ( myConfig.getType() == MedusaType.NODE ) {
         zone = myConfig.getZone();
@@ -406,6 +427,8 @@ configuration for contacting the primary node.`,
       javaFactory: `
       ClusterConfig config = getConfig(getX(), getConfigId());
 
+      if ( getStandAlone() ) return config;
+
       // standby region -> active region
       if ( config.getRegionStatus() != RegionStatus.ACTIVE ) {
         return getActiveRegion();
@@ -417,16 +440,7 @@ configuration for contacting the primary node.`,
       }
 
       // route to primary
-      try {
-        return getPrimary(getX());
-      } catch ( RuntimeException t ) {
-        // if in standalone mode, just route to self if only one mediator enabled.
-        if ( getStandAlone() ) {
-          getLogger().debug("nextServer", t.getMessage(), "fallback to StandAlone");
-          return config;
-        }
-        throw t;
-      }
+      return getPrimary(getX());
       `
     },
     {
@@ -571,34 +585,50 @@ configuration for contacting the primary node.`,
       args: 'Context x',
       type: 'foam.nanos.medusa.ClusterConfig',
       javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "getPrimaryDAO");
-      try {
-      ClusterConfig primaryConfig = null;
-      DAO clusterConfigDAO = (DAO) x.get("clusterConfigDAO");
-      List<ClusterConfig> configs = ((ArraySink) clusterConfigDAO
-        .where(
-          AND(
-            EQ(ClusterConfig.IS_PRIMARY, true),
-            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-            EQ(ClusterConfig.ZONE, 0L),
-            EQ(ClusterConfig.STATUS, Status.ONLINE),
-            EQ(ClusterConfig.REGION_STATUS, RegionStatus.ACTIVE),
-            EQ(ClusterConfig.ENABLED, true)
-          ))
-        .select(new ArraySink())).getArray();
-      if ( configs.size() > 0 ) {
-        primaryConfig = configs.get(0);
-        if ( configs.size() > 1 ) {
-          getLogger().error("muliple primaries", configs.get(0).getId(), configs.get(1).getId());
-          for ( ClusterConfig cfg : configs ) {
-            getLogger().error("mulitiple primaries", cfg);
-          }
-          throw new MultiplePrimariesException();
+      if ( getStandAlone() ) {
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        if ( myConfig.getStatus() == Status.ONLINE ) {
+          return myConfig;
         }
-        return primaryConfig;
-      } else {
         throw new PrimaryNotFoundException();
       }
+
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "getPrimaryDAO");
+
+      try {
+        ClusterConfig primaryConfig = null;
+        DAO clusterConfigDAO = (DAO) x.get("clusterConfigDAO");
+        List<ClusterConfig> configs = ((ArraySink) clusterConfigDAO
+          .where(
+            AND(
+              EQ(ClusterConfig.IS_PRIMARY, true),
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.ZONE, 0L),
+              EQ(ClusterConfig.STATUS, Status.ONLINE),
+              EQ(ClusterConfig.REGION_STATUS, RegionStatus.ACTIVE),
+              EQ(ClusterConfig.ENABLED, true)
+            ))
+          .select(new ArraySink())).getArray();
+        if ( configs.size() > 0 ) {
+          primaryConfig = configs.get(0);
+          if ( configs.size() > 1 ) {
+            getLogger().error("muliple primaries", configs.get(0).getId(), configs.get(1).getId());
+            for ( ClusterConfig cfg : configs ) {
+              getLogger().error("mulitiple primaries", cfg);
+              if ( cfg.getId().equals(getConfigId()) ) {
+                // if self in the list, go offline
+                ClusterConfig myConfig = (ClusterConfig) cfg.fclone();
+                myConfig.setStatus(Status.OFFLINE);
+                clusterConfigDAO.put(myConfig);
+              }
+            }
+            throw new MultiplePrimariesException();
+          }
+          return primaryConfig;
+        } else {
+          throw new PrimaryNotFoundException();
+        }
       } finally {
         pm.log(x);
       }
@@ -620,12 +650,12 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getConfig");
       try {
-      ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
-      if ( config != null ) {
-        return (ClusterConfig) config.fclone();
-      }
-      getLogger().error("ClusterConfig not found:", id);
-      throw new RuntimeException("ClusterConfig not found: "+id);
+        ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
+        if ( config != null ) {
+          return (ClusterConfig) config.fclone();
+        }
+        getLogger().error("ClusterConfig not found:", id);
+        throw new RuntimeException("ClusterConfig not found: "+id);
       } finally {
         pm.log(x);
       }
@@ -638,20 +668,20 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getVoters");
       try {
-      ClusterConfig config = getConfig(x, getConfigId());
-      List arr = (ArrayList) ((ArraySink) ((DAO) x.get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-            EQ(ClusterConfig.ZONE, 0L),
-            EQ(ClusterConfig.STATUS, Status.ONLINE),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.REALM, config.getRealm()),
-            EQ(ClusterConfig.REGION, config.getRegion())
+        ClusterConfig config = getConfig(x, getConfigId());
+        List arr = (ArrayList) ((ArraySink) ((DAO) x.get("localClusterConfigDAO"))
+          .where(
+            AND(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.ZONE, 0L),
+              EQ(ClusterConfig.STATUS, Status.ONLINE),
+              EQ(ClusterConfig.ENABLED, true),
+              EQ(ClusterConfig.REALM, config.getRealm()),
+              EQ(ClusterConfig.REGION, config.getRegion())
+            )
           )
-        )
-        .select(new ArraySink())).getArray();
-      return arr;
+          .select(new ArraySink())).getArray();
+        return arr;
       } finally {
         pm.log(x);
       }
@@ -718,6 +748,13 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      if ( getStandAlone() ) {
+        DAO service = (DAO) x.get("serviceName");
+        if ( service != null ) {
+          return service;
+        }
+      }
+
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getClientDAO");
       try {
         String sessionId = sendClusterConfig.getSessionId();
@@ -760,6 +797,13 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      if ( getStandAlone() ) {
+        DAO service = (DAO) x.get(serviceName);
+        if ( service != null ) {
+          return service;
+        }
+      }
+
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getBroadcastClientDAO");
       try {
         String sessionId = sendClusterConfig.getSessionId();
@@ -798,6 +842,8 @@ configuration for contacting the primary node.`,
         }
       ],
       javaCode: `
+      if ( getStandAlone() ) return true;
+
       try {
         ClusterConfig config = getConfig(x, getConfigId());
         if ( config == null ) {

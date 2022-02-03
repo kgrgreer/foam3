@@ -168,6 +168,7 @@ foam.CLASS({
         entry.setNode(support.getConfigId());
         entry.setPromoted(true);
         entry = (MedusaEntry) dao.put_(getX(), entry);
+        logger.info("start", "bootstrap", "entry", entry.getId());
         updateLinks(getX(), entry);
       }
      `

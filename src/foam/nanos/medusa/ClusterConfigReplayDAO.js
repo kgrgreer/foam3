@@ -8,6 +8,9 @@ foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'ClusterConfigReplayDAO',
   extends: 'foam.dao.ProxyDAO',
+  implments: [
+    'foam.nanos.NanoService'
+  ],
 
   documentation: `On status change to ONLINE initiate replay, in Active Region.`,
 
@@ -27,6 +30,7 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'java.util.List'
   ],
 
@@ -45,8 +49,42 @@ foam.CLASS({
       `
     }
   ],
-
   methods: [
+    {
+      documentation: 'NanoService implementation.',
+      name: 'start',
+      javaCode: `
+      Logger logger = Loggers.logger(getX(), this);
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      if ( support.getStandAlone() ) {
+        ClusterConfig myConfig = support.getConfig(getX(), support.getConfigId());
+        DaggerService dagger = (DaggerService) getX().get("daggerService");
+        ReplayingInfo replaying = (ReplayingInfo) getX().get("replayingInfo");
+        replaying.setReplaying(true);
+        replaying.setStartTime(new java.util.Date());
+        replaying.updateIndex(getX(), dagger.getGlobalIndex(getX()));
+
+        DAO clientDAO = support.getClientDAO(getX(), "medusaNodeDAO", myConfig, myConfig);
+        ReplayDetailsCmd details = new ReplayDetailsCmd();
+        details.setRequester(myConfig.getId());
+        details.setResponder(myConfig.getId());
+        details = (ReplayDetailsCmd) clientDAO.cmd_(getX(), details);
+        if ( details.getMaxIndex() == 0 ) {
+          replaying.setReplaying(true);
+          logger.info("baseline detected");
+          ((DAO) getX().get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
+          return;
+        }
+
+        ReplayCmd cmd = new ReplayCmd();
+        cmd.setDetails(details);
+        cmd.setServiceName("medusaMediatorDAO");
+        logger.info("ReplayCmd", "from", myConfig.getId(), "to", myConfig.getId(), "request", cmd.getDetails());
+        cmd = (ReplayCmd) clientDAO.cmd_(getX(), cmd);
+        logger.info("ReplayCmd", "from", myConfig.getId(), "to", myConfig.getId(), "response");
+      }
+      `
+    },
     {
       name: 'put_',
       javaCode: `
@@ -143,7 +181,7 @@ foam.CLASS({
                      support.getHasNodeQuorum() ) ||
                    ( myConfig.getType() == MedusaType.NERF &&
                      support.getHasMediatorQuorum() ) ) {
-                  getLogger().info("baseline dectected");
+                  getLogger().info("baseline detected");
                   ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
                 }
               }

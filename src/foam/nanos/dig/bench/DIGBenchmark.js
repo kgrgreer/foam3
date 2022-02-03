@@ -14,6 +14,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'id'
+    },
+    {
       name: 'setupUrl',
       class: 'String',
       value: 'https://hera:8443'

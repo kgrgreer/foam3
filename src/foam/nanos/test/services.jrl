@@ -3,12 +3,8 @@ p({
   "name": "testDAO",
   "serve": true,
   "serviceScript": """
-    mdao = new foam.dao.MDAO(foam.nanos.test.Test.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.LAST_RUN});
-    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ENABLED});
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.test.Test.getOwnClassInfo())
-      .setMdao(mdao)
       .setGuid(true)
       .setPm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -18,7 +14,9 @@ p({
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build()
       })
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.LAST_RUN})
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ENABLED});
   """,
   "client": "{\"of\":\"foam.nanos.test.Test\"}"
 })
@@ -28,12 +26,8 @@ p({
   "name":"testEventDAO",
   "serve":true,
   "serviceScript":"""
-    mdao = new foam.dao.MDAO(foam.nanos.script.ScriptEvent.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.OWNER});
-    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.LAST_RUN});
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.script.ScriptEvent.getOwnClassInfo())
-      .setMdao(mdao)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("testEvents")
@@ -46,7 +40,9 @@ p({
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.ScriptEvent.LAST_RUN).build()
       })
       .setRuler(false)
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.OWNER})
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.LAST_RUN});
   """,
   "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })
