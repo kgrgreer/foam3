@@ -100,13 +100,6 @@ foam.CLASS({
   properties: [
     'thisValue',
     {
-      class: 'Map',
-      name: 'specializations_',
-      transient: true,
-      factory: function() { return {}; },
-      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, foam.mlang.predicate.Predicate>();'
-    },
-    {
       class: 'Class',
       name: 'of'
     },

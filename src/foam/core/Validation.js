@@ -26,8 +26,8 @@ foam.CLASS({
       var self = this;
         return function(obj) {
         debugger;
-          var predicate = foam.parse.FScriptParser.create({of: obj.cls_, thisValue: this}).parseString(query);
-          if ( predicate !== undefined && ! predicate.f(obj) ) return jsErr(obj);
+          var predicate = foam.mlang.predicate.FScript.create({query: query, property: this});
+          if ( ! predicate.f(obj) ) return jsErr(obj);
         };
       }
     },

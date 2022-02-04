@@ -4129,6 +4129,30 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'FScript',
+  extends: 'foam.mlang.predicate.AbstractPredicate',
+
+  axioms: [
+      foam.pattern.Multiton.create({property: 'query'})
+  ],
+
+  properties: [
+    'property', 'query'
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        var pred = foam.parse.FScriptParser.create({of: o.cls_, thisValue: this.property}).parseString(this.query);
+        return pred ? pred.partialEval().f(o) : false;
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
