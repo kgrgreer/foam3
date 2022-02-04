@@ -12,7 +12,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.X'
   ],
-  
 
   tableColumns: [
     'id',
