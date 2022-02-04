@@ -5,7 +5,7 @@
  */
 
  foam.INTERFACE({
-  package: 'foam.nanos.google.api.sheets.views',
+  package: 'foam.nanos.google.api.sheets',
   name: 'GoogleSheetsDataImportService',
   methods: [
     {
@@ -18,13 +18,13 @@
         },
         {
           name: 'importConfig',
-          type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+          type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
         }
       ]
     },
     {
       name: 'importData',
-      type: 'foam.nanos.google.api.sheets.views.ImportDataMessage',
+      type: 'foam.nanos.google.api.sheets.ImportDataMessage',
       async: true,
       args: [
         {
@@ -33,7 +33,7 @@
         },
         {
           name: 'importConfig',
-          type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+          type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
         }
       ]
     }

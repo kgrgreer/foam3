@@ -30,11 +30,6 @@ foam.CLASS({
     {
       name: 'permission',
       class: 'String'
-    },
-    {
-      name: 'entity',
-      class: 'Enum',
-      of: 'foam.nanos.crunch.AssociatedEntity'
     }
   ],
 
@@ -52,7 +47,7 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
             Capability c = (Capability) getCapabilityDAO().find(ucj.getTargetId());
-            if ( c != null && c.getAssociatedEntity().equals(getEntity()) && ! c.isDeprecated(x) ) {
+            if ( c != null && ! c.isDeprecated(x) ) {
               c.setX(x);
               if ( c.grantsPermission(getPermission()) ) {
                return true;

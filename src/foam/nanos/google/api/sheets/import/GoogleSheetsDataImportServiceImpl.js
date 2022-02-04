@@ -5,11 +5,11 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.google.api.sheets.views',
+  package: 'foam.nanos.google.api.sheets',
   name: 'GoogleSheetsDataImportServiceImpl',
   documentation: 'Service to import data from google sheets to DAO',
   implements: [
-    'foam.nanos.google.api.sheets.views.GoogleSheetsDataImportService'
+    'foam.nanos.google.api.sheets.GoogleSheetsDataImportService'
   ],
   javaImports: [
     'com.google.api.services.sheets.v4.model.ValueRange',
@@ -18,8 +18,7 @@
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.core.AbstractEnumPropertyInfo',
-    'foam.nanos.google.api.sheets.views.ImportDataMessage',
-    'foam.nanos.google.api.sheets.GoogleSheetsApiService',
+    'foam.nanos.google.api.sheets.ImportDataMessage',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.StdoutLogger',
 
@@ -60,7 +59,7 @@
         },
         {
           name: 'importConfig',
-          type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+          type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
         }
       ],
       javaCode:`
@@ -85,7 +84,7 @@
     },
     {
       name: 'importData',
-      type: 'foam.nanos.google.api.sheets.views.ImportDataMessage',
+      type: 'foam.nanos.google.api.sheets.ImportDataMessage',
       args: [
         {
           name: 'x',
@@ -93,7 +92,7 @@
         },
         {
           name: 'importConfig',
-          type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+          type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
         }
       ],
       javaCode: `
@@ -193,7 +192,7 @@
       },
       {
         name: 'importConfig',
-        type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+        type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
       },
       {
         name: 'data',
@@ -261,7 +260,7 @@
       },
       {
         name: 'columnHeaderToPropertyMapping',
-        javaType: 'foam.nanos.google.api.sheets.views.ColumnHeaderToPropertyMapping'
+        javaType: 'foam.nanos.google.api.sheets.ColumnHeaderToPropertyMapping'
       },
       {
         name: 'val',
@@ -337,7 +336,7 @@
       },
       {
         name: 'importConfig',
-        type: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig'
+        type: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig'
       },
       {
         name: 'objs',

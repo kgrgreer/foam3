@@ -83,6 +83,11 @@ foam.CLASS({
     }
   ],
 
+    axioms: [
+      // Reuse parsers if created for same 'of' class.
+      foam.pattern.Multiton.create({property: 'thisValue',})
+    ],
+
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
@@ -284,7 +289,8 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
-            if ( v[1] ) {
+            debugger;
+            if ( v[1] && v[1][1][0] != 'len' ) {
               var parts = v[1][1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
                 expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));

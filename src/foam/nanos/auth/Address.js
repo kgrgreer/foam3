@@ -66,14 +66,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['structured', 'address1'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, true),
-              e.GTE(foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.ADDRESS1
-              }), 1)
-            );
-          },
+          query: 'structured==true||address1_len>=1',
           errorMessage: 'INVALID_ADDRESS_1'
         }
       ],
@@ -198,14 +191,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, false),
-              e.GTE(foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.STREET_NUMBER
-              }), 1)
-            );
-          },
+          query: 'structured==false||streetNumber_len>=1',
           errorMessage: 'STREET_NUMBER_REQUIRED'
         }
       ]
@@ -220,12 +206,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['structured', 'streetName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, false),
-              e.REG_EXP(foam.nanos.auth.Address.STREET_NAME, /^\s*.+\s*$/)
-            );
-          },
+          query: 'structured==false||streetName~/^\s*.+\s*$/',
           errorMessage: 'STREET_NAME_REQUIRED'
         }
       ]
@@ -253,12 +234,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['postalCode'],
-          predicateFactory: function(e) {
-            return e.GT(
-              foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.POSTAL_CODE
-              }), 0);
-          },
+          query: 'postalCode_len>0',
           errorMessage: 'POSTAL_CODE_REQUIRE'
         },
         {
