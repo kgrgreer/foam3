@@ -83,3 +83,46 @@ foam.CLASS({
     }
   ]
 });
+
+
+foam.CLASS({
+  package: 'foam.util',
+  name: 'RemoveFluentSpec',
+  implements: ['foam.util.FluentSpec'],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'reference'
+    }
+  ],
+
+  methods: [
+    function apply(fluent) {
+      fluent.remove(this.reference);
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.util',
+  name: 'AddBeforeFluentSpec',
+  implements: ['foam.util.FluentSpec'],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'reference'
+    },
+    {
+      class: 'foam.util.FObjectSpec',
+      name: 'spec'
+    }
+  ],
+
+  methods: [
+    function apply(fluent) {
+      fluent.addBefore(this.reference, this.spec);
+    }
+  ]
+});
