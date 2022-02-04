@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.Date'
   ],
@@ -77,7 +78,7 @@ foam.CLASS({
     },
     {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A ticket assigned to you has been updated'
+      message: 'A comment has been added to a ticket assigned to you: '
     }
   ],
 
@@ -404,14 +405,18 @@ foam.CLASS({
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            notificationDAO.put_(x, notification);
+            try {
+              findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+            } catch (NullPointerException e) {
+              notificationDAO.put_(x, notification);
+            }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
               .build();
@@ -419,11 +424,15 @@ foam.CLASS({
           }
         } else if ( getCreatedFor() != 0 ){
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          notificationDAO.put_(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getCreatedFor()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         }
       `
     },
@@ -437,14 +446,18 @@ foam.CLASS({
         DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-          notificationDAO.put_(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setGroupId(getAssignedToGroup())
             .setSpid(getSpid())
             .build();
