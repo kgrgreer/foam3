@@ -82,7 +82,7 @@ foam.CLASS({
     },
     {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A comment has been added to a ticket assigned to you: '
+      message: 'A ticket assigned to you has been updated '
     }
   ],
 
