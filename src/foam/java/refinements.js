@@ -97,7 +97,7 @@ foam.CLASS({
   package: 'foam.java',
   name: 'JavaType',
   extends: 'String',
-  // flags: ['java'],
+  flags: [],
   properties: [
     {
       name: 'flags',
@@ -492,7 +492,6 @@ foam.CLASS({
 
 foam.LIB({
   name: 'foam.core.FObject',
-  // flags: ['java'],
   methods: [
     function buildJavaClass(cls) {
       // TODO Generate getX() and setX() if contextAware

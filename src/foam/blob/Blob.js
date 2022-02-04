@@ -453,7 +453,7 @@ foam.CLASS({
   name: 'FdBlob',
   extends: 'foam.blob.AbstractBlob',
 
-  flags: [],
+  flags: [ 'node' ],
 
   properties: [
     {
