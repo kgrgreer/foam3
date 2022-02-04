@@ -77,6 +77,10 @@ foam.CLASS({
       message: 'You have successfully unassigned this ticket'
     },
     {
+      name: 'SUCCESS_CLOSED',
+      message: 'You have successfully closed this ticket'
+    },
+    {
       name: 'COMMENT_NOTIFICATION',
       message: 'A comment has been added to a ticket assigned to you: '
     }
@@ -543,6 +547,7 @@ foam.CLASS({
         this.assignedTo = 0;
         this.ticketDAO.put(this).then(function(ticket) {
           this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
         }.bind(this));
       }
     },
