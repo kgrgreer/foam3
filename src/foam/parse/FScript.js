@@ -33,7 +33,6 @@ foam.CLASS({
 
   static: [
     function test__() {
-//      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
       var fs = foam.parse.FScript.create({of: foam.parse.Test});
 
       var data = foam.parse.Test.create({
@@ -84,11 +83,6 @@ foam.CLASS({
     }
   ],
 
-  //  axioms: [
-  //    // Reuse parsers if created for same 'of' class.
-  //    foam.pattern.Multiton.create({property: 'of',})
-  //  ],
-
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
@@ -99,9 +93,19 @@ foam.CLASS({
     'foam.parse.Parsers',
     'foam.parse.StringPStream'
   ],
+  axioms: [
+      foam.pattern.Multiton.create({property: 'thisValue'})
+  ],
 
   properties: [
     'thisValue',
+    {
+      class: 'Map',
+      name: 'specializations_',
+      transient: true,
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, foam.mlang.predicate.Predicate>();'
+    },
     {
       class: 'Class',
       name: 'of'
@@ -272,17 +276,12 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
-//            if ( op.name == "REG_EXP" ) {
-//              rhs = foam.mlang.RegexValue.create({arg1: rhs});
-//            }
-            debugger;
             return op.call(self, lhs, rhs);
           },
 
           unary: function(v) {
             var lhs = v[0];
             var op  = v[2];
-            debugger;
             return op.call(self, lhs);
           },
 
@@ -292,8 +291,7 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
-            debugger;
-            if ( v[1] && v[1][1][0] != 'len' ) {
+            if ( v[1] ) {
               var parts = v[1][1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
                 expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
@@ -303,14 +301,12 @@ foam.CLASS({
           },
 
           fieldLen: function(v) {
-          debugger;
             return foam.mlang.StringLength.create({
               arg1: v[0]
             })
           },
 
           regex: function(v) {
-            console.log(v);
             return new RegExp(v);
           },
 
@@ -322,8 +318,6 @@ foam.CLASS({
                 args.push( i == 2 ? v[i] - 1 : v[i]);
               }
             }
-            console.log(args);
-            debugger;
             return new Date(...args);
           }
         };
