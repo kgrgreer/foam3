@@ -378,7 +378,7 @@ FOAM_FILES([
   { name: "foam/dao/PutOnlyDAO", flags: [ "java" ] },
   { name: "foam/glang/glang", flags: [ "java" ] },
   { name: "foam/parse/QueryParser" },
-  { name: "foam/parse/FScript" },
+  { name: "foam/parse/FScriptParser" },
   { name: "foam/parse/QueryParserUserTest", flags: [ "java" ] },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },

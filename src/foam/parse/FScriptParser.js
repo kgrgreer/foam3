@@ -27,13 +27,13 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.parse',
-  name: 'FScript',
+  name: 'FScriptParser',
 
   documentation: 'A simple scripting language.',
 
   static: [
     function test__() {
-      var fs = foam.parse.FScript.create({of: foam.parse.Test});
+      var fs = foam.parse.FScriptParser.create({of: foam.parse.Test});
 
       var data = foam.parse.Test.create({
         id: 42,
@@ -62,7 +62,7 @@ foam.CLASS({
     },
 
     function test2__() {
-      var fs = foam.parse.FScript.create({of: foam.util.Timer});
+      var fs = foam.parse.FScriptParser.create({of: foam.util.Timer});
 
       function test(s) {
         try {
