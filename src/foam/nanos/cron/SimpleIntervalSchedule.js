@@ -278,7 +278,6 @@
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
         } 
-        System.out.println("date " + nextDate);
         if ( ! nextDate.isAfter(LocalDate.now()) ) {
           return calculateNextDate(x, nextDate, true);
         }
@@ -305,20 +304,13 @@
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusWeeks(getRepeat());
-          System.out.println("min " + nextDate);
         }
         LocalDate minDate = getStartOfWeek(x,nextDate);
         LocalDate endOfWeek = getEndOfWeek(x,minDate);
         String[] days = getDayOfWeek();
         nextDate = minDate.with(TemporalAdjusters.next(getWeekday(days[0])));
-        if ( ! nextDate.isAfter(endOfWeek) ) {
-          System.out.println("date " + nextDate);
-        } 
         for ( int i=1; i < days.length; i++ ) {
           LocalDate temp = minDate.with(TemporalAdjusters.next(getWeekday(days[i])));
-          if ( ! temp.isAfter(endOfWeek) ) {
-            System.out.println("date " + temp);
-          }
           if ( temp.isAfter(LocalDate.now()) && ( temp.isBefore(nextDate) || ! nextDate.isAfter(LocalDate.now())) ) {
             nextDate = temp;
           }
@@ -391,7 +383,6 @@
               break;
           }
         }
-        System.out.println("date " + nextDate);
         if ( ! nextDate.isAfter(startDate) && ChronoUnit.MONTHS.between(nextDate, startDate) == 0 ) {
           return calculateNextDate(x, nextDate.plusMonths(1), false);
         }
@@ -426,7 +417,6 @@
         if ( applyWait ) {
           nextDate = nextDate.plusYears(getRepeat());
         }
-        System.out.println("date " + nextDate);
         if ( startDate.isAfter(LocalDate.now()) ) {
           nextDate = startDate;
         } else if ( ! nextDate.isAfter(LocalDate.now() )) {
@@ -517,7 +507,6 @@
         if ( applyWait ) {
           nextDate = nextDate.plusYears(getRepeat());
         }
-        System.out.println("date " + nextDate);
         if ( startDate.isAfter(LocalDate.now()) ) {
           nextDate = startDate;
         } else if ( ! nextDate.isAfter(LocalDate.now() )) {
