@@ -25,7 +25,7 @@ p({
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
       .setAuthorize(false)
       .setPm(true)
-      .setFuid(true)
+      .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("tickets")
       .setOrder(new foam.mlang.order.Comparator[] {
@@ -172,4 +172,31 @@ p({
       .build();
   """,
   "client": "{\"of\":\"foam.nanos.ticket.TicketComment\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"rfiTicketDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.ticket.RfiTicket.getOwnClassInfo())
+      .setAuthorize(true)
+      .setEnableInterfaceDecorators(false)
+      .setInnerDAO((x.get("ticketDAO")).where(foam.mlang.MLang.INSTANCE_OF(foam.nanos.ticket.RfiTicket.class)))
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x)
+          .setArg1(foam.nanos.ticket.RfiTicket.CREATED)
+          .build()
+      })
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.ticket.RfiTicket"
+  }
+  """
 })
