@@ -11,12 +11,7 @@ foam.CLASS({
   documentation: 'Region (province/state) information.',
 
   ids: ['code'],
-  constants: [
-    {
-      name: 'PHONE_NUMBER_REGEX',
-      factory: () => /^[a-zA-Z]*$/,
-    }
-  ],
+
   searchColumns: [
     'code',
     'name'
@@ -25,8 +20,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'code',
-      javaFactory: 'return getCountryId() + "-" + getIsoCode();'
+      name: 'code'
     },
     {
       class: 'String',
@@ -34,14 +28,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      validationPredicates: [
-        {
-          args: ['name'],
-          query: 'name~PHONE_NUMBER_REGEX',
-          errorString: `you suck`
-        }
-      ]
+      name: 'name'
     },
     {
       class: 'Reference',
@@ -52,32 +39,6 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'alternativeNames'
-    },
-//    {
-//        class: 'EMail',
-//        name: 'email',
-//        required: true
-//      },
-//    {
-//      class: 'Int',
-//      name: 'test',
-//      min: 6,
-//      autoValidate: true
-//    },
-//    {
-//      class: 'PhoneNumber',
-//      name: 'phone',
-//      required: true
-//    },
-    {
-      class: 'Date',
-      name: 'date'
-    },
-    {
-      class: 'String',
-      name: 'testStr',
-      minLength: 6,
-      autoValidate: true
-    },
+    }
   ]
 });

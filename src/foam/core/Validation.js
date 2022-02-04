@@ -107,7 +107,7 @@ foam.CLASS({
       var name = this.name;
       var label = this.label;
       var required = this.required;
-      var prop2 = this;
+      var self_ = this;
       var validationPredicates = this.validationPredicates;
         if ( validationPredicates.length ) {
           var args = foam.Array.unique(validationPredicates
@@ -117,7 +117,7 @@ foam.CLASS({
             for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
               var vp   = validationPredicates[i];
               var self = this;
-              if ( vp.jsFunc.call(prop2, this) ) return vp.jsErr.call(self, self);
+              if ( vp.jsFunc.call(self_, this) ) return vp.jsErr.call(self, self);
             }
             return null;
           }];
