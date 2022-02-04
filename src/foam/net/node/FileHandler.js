@@ -22,6 +22,8 @@ foam.CLASS({
   flags: ['node'],
   documentation: 'HTTP(S) server handler for a single file.',
 
+  flags: ['node'],
+
   imports: [ 'info' ],
 
   properties: [

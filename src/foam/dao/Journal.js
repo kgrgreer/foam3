@@ -76,7 +76,7 @@ if ( foam.isServer ) {
     name: 'NodeFileJournal',
     extends: 'foam.dao.AbstractJournal',
 
-    flags: [],
+    flags: ['node'],
 
     properties: [
       {
