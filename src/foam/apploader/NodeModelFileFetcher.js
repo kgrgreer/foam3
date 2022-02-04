@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'foam.apploader',
   name: 'NodeModelFileFetcher',
 
+  flags: ['node'],
+
   properties: [
     'root'
   ],

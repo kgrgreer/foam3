@@ -100,7 +100,10 @@ public class FObjectParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    return getDelegate().parse(ps, x);
+    try {
+      return getDelegate().parse(ps, x);
+    } catch (TypeNotPresentException e) {
+      return UnknownFObjectParser.instance().parse(ps, x);
+    }
   }
-
 }
