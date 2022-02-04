@@ -9,8 +9,6 @@ foam.CLASS({
   name: 'BlobStore',
   extends: 'foam.blob.AbstractBlobService',
 
-  flags: ['node'],
-
   requires: [
     'foam.blob.IdentifiedBlob'
   ],
@@ -74,19 +72,21 @@ foam.CLASS({
       type: 'Void',
       args: [ { name: 'x', type: 'Context' } ],
       code: function setup() {
-        if ( this.isSet ) return;
+        if ( globalThis.require ) {
+          if ( this.isSet ) return;
 
-        var parsed = require('path').parse(this.root);
+          var parsed = require('path').parse(this.root);
 
-        if ( ! require('fs').statSync(parsed.dir).isDirectory() ) {
-          throw new Error(parsed.dir + ' is not a directory.');
+          if ( ! require('fs').statSync(parsed.dir).isDirectory() ) {
+            throw new Error(parsed.dir + ' is not a directory.');
+          }
+
+          this.ensureDir(this.root);
+          this.ensureDir(this.tmp);
+          this.ensureDir(this.directory);
+
+          this.isSet = true;
         }
-
-        this.ensureDir(this.root);
-        this.ensureDir(this.tmp);
-        this.ensureDir(this.directory);
-
-        this.isSet = true;
       },
       javaCode:`
         if ( this.getIsSet() )

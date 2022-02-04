@@ -5,7 +5,7 @@
  */
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = {} );
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: true } );
 
   // Imports used by the loadServer() loader
   globalThis.imports = {};
