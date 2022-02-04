@@ -116,7 +116,7 @@ foam.CLASS({
 
                     var json = JSON.parse(spec.client);
 
-                    references = references.concat(foam.json.references(self.__context__, json));
+                    //references = references.concat(foam.json.references(self.__context__, json));
 
                     client.properties.push({
                       name: spec.name,

@@ -448,8 +448,6 @@ foam.CLASS({
 });
 
 
-
-
 foam.CLASS({
   package: 'foam.blob',
   name: 'RestBlobService',
