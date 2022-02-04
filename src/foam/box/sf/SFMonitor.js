@@ -16,14 +16,14 @@ foam.CLASS({
   tableColumns: [
     'id',
     'ready',
-    'inFlightNum',
+    'inFlightCount',
     'inFlightLimit'
   ],
 
   properties: [
     {
       class: 'Int',
-      name: 'inFlightNum'
+      name: 'inFlightCount'
     },
     {
       class: 'Boolean',
@@ -41,8 +41,8 @@ foam.CLASS({
               this.setX(sf.getX());
               this.setId(sf.getId());
               this.setReady(sf.getReady());
-              this.setInFlightNum(sf.getInFlightNum());
               this.setInFlightLimit(sf.getInFlightLimit());
+              this.setInFlightCount(sf.onHoldList_.size());
             }
           `
         }));

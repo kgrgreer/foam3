@@ -105,13 +105,6 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'inFlightNum',
-      javaGetter: `
-        return onHoldList_.size();
-      `
-    },
-    {
-      class: 'Int',
       name: 'inFlightLimit',
       value: 1024
     },
