@@ -228,9 +228,10 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      hidden: true,
+      writePermissionRequired: true,
       storageTransient: true,
       section: 'systemInformation',
+      documentation: 'file.rw.spid permission required to write the File.js spid property',
       javaFactory: `
         var map = new java.util.HashMap();
         map.put(
