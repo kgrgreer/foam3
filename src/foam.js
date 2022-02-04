@@ -18,27 +18,8 @@
 (function() {
   var foam  = globalThis.foam || ( globalThis.foam = {} );
 
-  // Also appears in foam_node.js, manually keep two copies in sync
-  foam.checkFlags = function(flags) {
-    if ( ! flags || flags.length == 0 ) return true;
-    if ( typeof flags === 'string' ) {
-      flags = flags.split('|');
-    }
-
-    function and(fs) {
-      fs = fs.split('&');
-      for ( var i = 0 ; i < fs.length ; i++ ) {
-        if ( ! foam.flags[fs[i]] ) return false;
-      }
-      return true;
-    }
-
-    // OR AND clauses
-    for ( var i = 0 ; i < flags.length ; i++ ) {
-      if ( and(flags[i]) ) return true;
-    }
-    return false;
-  }
+  // Is replaced when lib.js is loaded.
+  foam.checkFlags = () => true;
 
   if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
 

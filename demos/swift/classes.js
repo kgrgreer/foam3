@@ -6,6 +6,8 @@
 
 var classes = [
   'foam.blob.Blob',
+  'foam.blob.BlobStore',
+  'foam.blob.FdBlob',
   'foam.box.Box',
   'foam.box.BoxRegistry',
   'foam.box.BoxService',

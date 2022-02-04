@@ -55,6 +55,13 @@ This is the heart of Medusa.`,
 
   javaCode: `
     protected Object promoterLock_ = new Object();
+
+    protected ThreadLocal<JSONParser> parser_ = new ThreadLocal<JSONParser>() {
+      @Override
+      protected JSONParser initialValue() {
+        return getX().create(JSONParser.class);
+      }
+    };
   `,
 
   properties: [
@@ -383,7 +390,7 @@ This is the heart of Medusa.`,
           String data = entry.getData();
           if ( ! SafetyUtil.isEmpty(data) ) {
             try {
-              nu = x.create(JSONParser.class).parseString(entry.getData());
+              nu = parser_.get().parseString(entry.getData());
             } catch ( RuntimeException e ) {
               Throwable cause = e.getCause();
               while ( cause.getCause() != null ) {
@@ -424,7 +431,7 @@ This is the heart of Medusa.`,
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
-            FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData());
+            FObject tran = parser_.get().parseString(entry.getTransientData());
             if ( tran == null ) {
               getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
               Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
