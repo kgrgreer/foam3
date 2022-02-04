@@ -66,6 +66,12 @@ foam.CLASS({
         }
         return min;
       `
+    },
+    {
+      name: 'postExecution',
+      javaCode: `
+        return;
+      `
     }
   ]
 });

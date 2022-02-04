@@ -12,6 +12,7 @@
     'java.time.DayOfWeek',
     'java.time.LocalDate',
     'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
     'java.time.temporal.TemporalAdjusters',
     'java.util.Date'
   ],
@@ -91,16 +92,12 @@
       }
     },
     {
-      class: 'Int',
+      class: 'Array',
+      of: 'Int',
       name: 'dayOfMonth',
       label: '',
-      //will be replaced by multiselect dayofmonth view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          1,
-          2
-        ]
+        class: 'foam.u2.view.DayOfMonthView',
       },
       visibility: function(monthlyChoice, frequency) {
         if ( frequency != 'Month' )
@@ -205,58 +202,237 @@
     {
       name: 'getNextScheduledTime',
       javaCode: `
-        int repeatEvery = getRepeat();
+        LocalDate date = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return Date.from(calculateNextDate(x, date, false).atStartOfDay(ZoneId.systemDefault()).toInstant());
+      `
+    },
+    {
+      name: 'calculateNextDate',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'date',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        }
+      ],
+      javaCode: `
         LocalDate startDate = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate nextDate = LocalDate.now();
+        LocalDate endsOn = getEndsOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate nextDate = date;
+
+        // Check if schedule duration has been exceeded
+        if ( getEnds().equals("After") && getEndsAfter() == 0 || getEnds().equals("On") && ! LocalDate.now().isBefore(endsOn) ) {
+          return null;
+        }
+
         if ( startDate.isAfter(nextDate) ) {
-          return getStartDate();
+          nextDate = startDate;
         }
         switch (getFrequency()) {
           case "Day":
-            nextDate = nextDate.plusDays(repeatEvery);
+            nextDate = calculateNextDay(x, nextDate, applyWait);
             break;
           case "Week":
-            nextDate = nextDate.plusWeeks(getRepeat());
-            LocalDate minDate = nextDate;
-            String[] days = getDayOfWeek();
-            nextDate = nextDate.with(TemporalAdjusters.next(getWeekday(days[0])));
-            for ( int i=1; i < days.length; i++ ) {
-              LocalDate date = nextDate.with(getWeekday(days[i]));
-              if ( date.isAfter(minDate) && date.isBefore(nextDate) ) {
-                nextDate = date;
-              }
-            }
+            nextDate = calculateNextWeek(x, nextDate, applyWait);
             break;
-          case "Month":
-            nextDate = nextDate.plusMonths(repeatEvery);
-            if ( getMonthlyChoice() == 2 ) {
-              nextDate = nextDate.withDayOfMonth(getDayOfMonth());
-            } else {
-              switch (getVagueFreq()) {
-                case "First":
-                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(1,getWeekday(getExpandedDayOfWeek())));
-                  break;
-                case "Second":
-                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(2,getWeekday(getExpandedDayOfWeek())));
-                  break;
-                case "Third":
-                  nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(3,getWeekday(getExpandedDayOfWeek())));
-                  break;
-                case "Before Last":
-                  nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
-                  nextDate = nextDate.minusDays(7);
-                  break;
-                case "Last":
-                  nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
-                  break;
-              }
-            }
+            case "Month":
+            nextDate = calculateNextMonth(x, nextDate, applyWait, startDate);
             break;
           case "Year":
-            nextDate = nextDate.plusYears(repeatEvery);
+            nextDate = calculateNextYear(x, nextDate, applyWait, startDate);
             break;
         }
-        return Date.from(nextDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        if ( getEnds().equals("On") && ! nextDate.isBefore(endsOn) ) {
+          return null;
+        }
+        return nextDate;
+      `
+    },
+    {
+      name: 'calculateNextDay',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'nextDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        }
+      ],
+      javaCode: `
+        if ( applyWait ) {
+          nextDate = nextDate.plusDays(getRepeat());
+        } 
+        System.out.println("date " + nextDate);
+        if ( ! nextDate.isAfter(LocalDate.now()) ) {
+          return calculateNextDate(x, nextDate, true);
+        }
+        return nextDate;
+      `
+    },
+    {
+      name: 'calculateNextWeek',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'nextDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        }
+      ],
+      javaCode: `
+        if ( applyWait ) {
+          nextDate = nextDate.plusWeeks(getRepeat());
+          System.out.println("min " + nextDate);
+        }
+        LocalDate minDate = getStartOfWeek(x,nextDate);
+        LocalDate endOfWeek = getEndOfWeek(x,minDate);
+        String[] days = getDayOfWeek();
+        nextDate = minDate.with(TemporalAdjusters.next(getWeekday(days[0])));
+        if ( ! nextDate.isAfter(endOfWeek) ) {
+          System.out.println("date " + nextDate);
+        } 
+        for ( int i=1; i < days.length; i++ ) {
+          LocalDate temp = minDate.with(TemporalAdjusters.next(getWeekday(days[i])));
+          if ( ! temp.isAfter(endOfWeek) ) {
+            System.out.println("date " + temp);
+          }
+          if ( temp.isAfter(LocalDate.now()) && ( temp.isBefore(nextDate) || ! nextDate.isAfter(LocalDate.now())) ) {
+            nextDate = temp;
+          }
+        }
+        if ( nextDate.isAfter(LocalDate.now()) && ! nextDate.isAfter(endOfWeek) ) {
+          return nextDate;
+        } else {
+          return calculateNextDate(x, minDate, true);
+        }
+      `
+    },
+    {
+      name: 'calculateNextMonth',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'nextDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        },
+        {
+          name: 'startDate',
+          type: 'LocalDate'
+        }
+      ],
+      javaCode: `
+        if ( applyWait ) {
+          nextDate = nextDate.plusMonths(getRepeat());
+        }
+        if ( getMonthlyChoice() == 2 ) {
+          LocalDate start = nextDate.with(TemporalAdjusters.firstDayOfMonth());
+          LocalDate end = nextDate.with(TemporalAdjusters.lastDayOfMonth());
+
+          for ( Object day : getDayOfMonth() ) {
+            LocalDate temp = start.plusDays(((Long)day)-1);
+            if ( temp.isAfter(LocalDate.now()) && ( temp.isBefore(nextDate) || ! nextDate.isAfter(LocalDate.now())) ) {
+              nextDate = temp;
+            }
+          }
+
+          if ( nextDate.isAfter(LocalDate.now()) && ! nextDate.isAfter(end) ) {
+            return nextDate;
+          } else {
+            return calculateNextDate(x, start,true);
+          }
+        } else {
+          switch (getVagueFreq()) {
+            case "First":
+              nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(1,getWeekday(getExpandedDayOfWeek())));
+              break;
+            case "Second":
+              nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(2,getWeekday(getExpandedDayOfWeek())));
+              break;
+            case "Third":
+              nextDate = nextDate.with(TemporalAdjusters.dayOfWeekInMonth(3,getWeekday(getExpandedDayOfWeek())));
+              break;
+            case "Before Last":
+              nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
+              nextDate = nextDate.minusDays(7);
+              break;
+            case "Last":
+              nextDate = nextDate.with(TemporalAdjusters.lastInMonth(getWeekday(getExpandedDayOfWeek())));
+              break;
+          }
+        }
+        System.out.println("date " + nextDate);
+        if ( ! nextDate.isAfter(startDate) && ChronoUnit.MONTHS.between(nextDate, startDate) == 0 ) {
+          return calculateNextDate(x, nextDate.plusMonths(1), false);
+        }
+        if ( ! nextDate.isAfter(LocalDate.now()) ) {
+          return  calculateNextDate(x, nextDate, true);
+        }
+        return nextDate;
+      `
+    },
+    {
+      name: 'calculateNextYear',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'nextDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        },
+        {
+          name: 'startDate',
+          type: 'LocalDate'
+        }
+      ],
+      javaCode: `
+        if ( applyWait ) {
+          nextDate = nextDate.plusYears(getRepeat());
+        }
+        System.out.println("date " + nextDate);
+        if ( startDate.isAfter(LocalDate.now()) ) {
+          nextDate = startDate;
+        } else if ( ! nextDate.isAfter(LocalDate.now() )) {
+          return calculateNextDate(x, nextDate, true);
+        }
+        return nextDate;
       `
     },
 
@@ -305,6 +481,83 @@
         }else {
           return DayOfWeek.SUNDAY;
         }
+      `
+    },
+    {
+      name: 'postExecution',
+      javaCode: `
+        int endsAfter = getEndsAfter();
+        if ( endsAfter > 0 ) {
+          setEndsAfter(--endsAfter);
+        }
+      `
+    },
+    {
+      name: 'calculateNextYear',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'nextDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'applyWait',
+          type: 'boolean'
+        },
+        {
+          name: 'startDate',
+          type: 'LocalDate'
+        }
+      ],
+      javaCode: `
+        if ( applyWait ) {
+          nextDate = nextDate.plusYears(getRepeat());
+        }
+        System.out.println("date " + nextDate);
+        if ( startDate.isAfter(LocalDate.now()) ) {
+          nextDate = startDate;
+        } else if ( ! nextDate.isAfter(LocalDate.now() )) {
+          return calculateNextDate(x, nextDate, true);
+        }
+        return nextDate;
+      `
+    },
+    {
+      name: 'getEndOfWeek',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'date',
+          type: 'LocalDate'
+        }
+      ],
+      javaCode: `
+        return date.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
+      `
+    },
+    {
+      name: 'getStartOfWeek',
+      type: 'java.time.LocalDate',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'date',
+          type: 'LocalDate'
+        }
+      ],
+      javaCode: `
+        return date.minusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
       `
     }
   ]

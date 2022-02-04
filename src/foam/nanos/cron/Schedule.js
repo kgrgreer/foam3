@@ -31,6 +31,9 @@ foam.INTERFACE({
         }
       ],
       type: 'DateTime'
+    },
+    {
+      name: 'postExecution',
     }
   ]
 });
