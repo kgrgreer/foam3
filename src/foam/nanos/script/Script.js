@@ -391,7 +391,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        RuntimeException thrown      = null;
         Language         l           = getLanguage();
         ByteArrayOutputStream baos   = new ByteArrayOutputStream();
         PrintStream            ps    = new PrintStream(baos);
@@ -415,13 +414,12 @@ foam.CLASS({
           }
           pm.log(x);
         } catch (Throwable t) {
-          thrown = new RuntimeException(t);
+          setStatus(ScriptStatus.ERROR);
           pm.error(x, t);
           ps.println();
           t.printStackTrace(ps);
           Logger logger = (Logger) x.get("logger");
           logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
-          throw thrown;
         } finally {
           setLastRun(new Date());
           setLastDuration(pm.getTime());
@@ -434,7 +432,7 @@ foam.CLASS({
           event.setLastRun(this.getLastRun());
           event.setLastDuration(this.getLastDuration());
           event.setOutput(this.getOutput());
-          if ( thrown != null ) event.setLastStatus(ScriptStatus.ERROR);
+          event.setLastStatus(getStatus());
           event.setScriptType(this.getClass().getSimpleName());
           event.setOwner(this.getId());
           event.setScriptId(this.getId());
