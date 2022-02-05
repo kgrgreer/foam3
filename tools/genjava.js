@@ -49,14 +49,50 @@ if ( process.argv.length > 4 && process.argv[4] !== '--' ) {
   }
 }
 
-var incrementalMeta = null;
-if ( process.argv.length > 5  &&
-     process.argv[5] !== '--' &&
-     process.argv[5] != '' ) {
-  incrementalMeta = JSON.parse(process.argv[5]);
-}
-
 var indir = path_.resolve(path_.normalize(process.argv[2]));
+
+
+foam.CLASS({
+  name: 'GenJavaModelRefinement',
+  refines: 'foam.core.Model',
+
+  methods: [
+    function ensurePath(p) {
+      var i     = 1 ;
+      var parts = p.split(path_.sep);
+      var path  = '/' + parts[0];
+
+      while ( i < parts.length ) {
+        try {
+          var stat = fs_.statSync(path);
+          if ( ! stat.isDirectory() ) throw path + 'is not a directory';
+        } catch(e) {
+          fs_.mkdirSync(path);
+        }
+
+        path += path_.sep + parts[i++];
+      }
+    },
+
+    function writeFileIfUpdated(outfile, javaSource, opt_result) {
+      if ( ! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == javaSource))) {
+        fs_.writeFileSync(outfile, javaSource);
+        opt_result?.push(outfile);
+      }
+    },
+
+    function genJava() {
+      var cls       = foam.lookup(this.id);
+      var javaClass = cls.buildJavaClass(); // Should be on Model?
+      console.log('generating(2)',  this.id + '.java');
+      var outfile = outdir + path_.sep + this.id.replace(/\./g, path_.sep) + '.java';
+      this.ensurePath(outfile);
+      this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
+    }
+  ]
+});
+
+
 
 function ensurePath(p) {
   var i     = 1 ;
@@ -76,10 +112,10 @@ function ensurePath(p) {
 }
 
 
-function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
-  if (! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == buildJavaSource))) {
-    fs_.writeFileSync(outfile, buildJavaSource);
-    if ( opt_result !== undefined) opt_result.push(outfile);
+function writeFileIfUpdated(outfile, javaSource, opt_result) {
+  if ( ! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == javaSource))) {
+    fs_.writeFileSync(outfile, javaSource);
+    opt_result?.push(outfile);
   }
 }
 
@@ -87,17 +123,6 @@ function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
 var externalFile  = require(indir);
 var fileWhitelist = null;
 
-/*
-// Set file whitelist from parsed argument, but only if foamlink is enabled
-if ( incrementalMeta !== null && foamlinkMode ) {
-  fileWhitelist = {}; // set
-  for ( var i = 0; i < incrementalMeta.modified.length; i++ ) {
-    let relativePath = path_.relative(process.cwd(), incrementalMeta.modified[i]);
-    fileWhitelist[relativePath] = true;
-  }
-}
-console.log('**************************** fileWhiteList', fileWhitelist);
-*/
 
 const CLASS_TYPES = [
   {
@@ -172,29 +197,43 @@ CLASS_TYPES.forEach(ct => externalFile[ct.name].forEach(clsName => {
 }));
 
 var generatedJava = {};
-var flagFilter = foam.util.flagFilter(['java']);
 
-function generateJava(javaClass) {
-  if ( ! javaClass ) return;
+function generateJava(cls) {
+  if ( ! cls ) { debugger; return; }
 
-  if ( foam.Function.isInstance(javaClass) ) {
-    javaClass = javaClass();
+  if ( foam.Function.isInstance(cls) ) {
+    debugger;
+    cls = cls();
   }
 
-  if ( generatedJava[javaClass.id] ) return;
+  if ( generatedJava[cls.id] ) {
+    console.log('WARNING *************************: Duplicate building of', cls.id);
+    return;
+  }
 
+  var javaClass = cls.buildJavaClass ? cls.buildJavaClass() : cls;
+
+  /*
   // Could be Class, Interface or Enum
   if ( javaClass.buildJavaClass ) {
-    javaClass = javaClass.buildJavaClass();
+  } else {
+    debugger;
+    console.log('****************************** CLASS NOT JAVACLASS', javaClass.id);
   }
+  */
 
-  generatedJava[javaClass.id] = true;
-
-  console.log('generating', javaClass.id + '.java');
+  generatedJava[cls.id] = true;
+  var c2 = foam.maybeLookup(javaClass.id) || foam.CLASS(cls);
+if ( ! c2 ) debugger;
+  c2.model_.genJava();
+  /*
+  console.log('generating(1)', cls.id + '.java');
   var outfile = outdir + path_.sep + javaClass.id.replace(/\./g, path_.sep) + '.java';
 
   ensurePath(outfile);
+  if ( ! javaClass.toJavaSource ) debugger;
   writeFileIfUpdated(outfile, javaClass.toJavaSource());
+  */
 }
 
 var missing = {};
@@ -202,20 +241,54 @@ var found = {};
 
 for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
 
-javaClasses.forEach(function(c) {
-  if ( c.id.indexOf('nanopay') == -1 ) {
-    if ( ! c.model_.flags || ! c.model_.flags.includes('java') ) {
-//      console.log("********************************* MISSING flags: ['java'] in ", c.id);
+// console.log('**** SAFE ', foam.SAFE);
+javaClasses.filter(c => ! foam.java.Class.isInstance(c)).forEach(function(/* foam.core.Class */ c) {
+  if ( foam.Function.isInstance(c) )
+    c = c();
+
+  foam.lookup(c.id).model_.genJava();
+});
+
+javaClasses.filter(c => foam.java.Class.isInstance(c)).forEach(function(/* foam.java.Class */ c) {
+  if ( c.id.indexOf('nanopay') != -1 ) {
+    var cls = foam.maybeLookup(c.id);
+    if ( ! cls ) return;
+    var model = cls.model_;
+    /*
+    // if ( model.flags && model.flags.includes('java') ) {
+    if ( false && ! model.flags || ! model.flags.includes('java') ) {
+      var id = c.id.replaceAll('.', '/');
+
+      if ( foam.SAFE[id] ) {
+        console.log(`### egrep -v "${c.id}" tools/classes.js > /tmp/junk ; cp /tmp/junk tools/classes.js`);
+        for ( var file of [
+          'nanopay/src/net/nanopay/files.js',
+          'interac/src/net/nanopay/interac/files.js',
+          'nanopay/src/net/nanopay/iso8583/files.js',
+          'nanopay/src/net/nanopay/flinks/utils/files.js',
+          'nanopay/src/net/nanopay/fx/ascendantfx/model/files.js',
+          'nanopay/src/net/nanopay/kotak/model/paymentResponse/files.js',
+          'nanopay/src/net/nanopay/kotak/model/reversal/files.js',
+          'nanopay/src/net/nanopay/kotak/model/paymentRequest/files.js',
+          'nanopay/src/net/nanopay/iso20022/files.js'        ] )
+        console.log(`### sed -i '' 's_"${id}"_"${id}", flags: [ "java" ]_g' ${file}`);
+      }
+    //        console.log("********************************* MISSING flags: ['java'] in ", c.id);
       missing[c.id] = true;
-    } else {
-//      console.log("********************************* FOUND ", c.id);
-      found[c.id] = true;
     }
+    */
   }
 
-  generateJava(c);
+  // TODO
+//  generateJava(c);
+console.log('generating(1)', c.id + '.java');
+var outfile = outdir + path_.sep + c.id.replace(/\./g, path_.sep) + '.java';
+
+ensurePath(outfile);
+writeFileIfUpdated(outfile, c.toJavaSource());
+
 });
-//console.log(missing);
+// console.log('***** MISSING', missing);
 console.log(found);
 console.log('****** EXTRA', extraJavaClasses);
 
@@ -225,8 +298,10 @@ function maybeGenerateJava(c) {
   }
 
   if ( c.model_.flags && ! c.model_.flags.includes('java') ) {
+    console.log('***** NOT GENERATING', c.id);
     return;
   }
+  console.log('***** GENERATING', c.id);
   generateJava(c);
 }
 

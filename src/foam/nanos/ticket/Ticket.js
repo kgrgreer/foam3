@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.Date'
   ],
@@ -76,8 +77,12 @@ foam.CLASS({
       message: 'You have successfully unassigned this ticket'
     },
     {
+      name: 'SUCCESS_CLOSED',
+      message: 'You have successfully closed this ticket'
+    },
+    {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A ticket assigned to you has been updated'
+      message: 'A ticket assigned to you has been updated '
     }
   ],
 
@@ -394,14 +399,18 @@ foam.CLASS({
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            notificationDAO.put_(x, notification);
+            try {
+              findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+            } catch (NullPointerException e) {
+              notificationDAO.put_(x, notification);
+            }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
               .build();
@@ -409,11 +418,15 @@ foam.CLASS({
           }
         } else if ( getCreatedFor() != 0 ){
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          notificationDAO.put_(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getCreatedFor()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         }
       `
     },
@@ -427,14 +440,18 @@ foam.CLASS({
         DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-          notificationDAO.put_(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setGroupId(getAssignedToGroup())
             .setSpid(getSpid())
             .build();
@@ -513,14 +530,14 @@ foam.CLASS({
         return true;
       },
       isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
+        return id && status !== 'CLOSED';
       },
       code: function() {
         this.status = 'CLOSED';
         this.assignedTo = 0;
         this.ticketDAO.put(this).then(function(ticket) {
           this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
         }.bind(this));
       }
     },

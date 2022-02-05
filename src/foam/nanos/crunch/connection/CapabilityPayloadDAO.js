@@ -314,17 +314,6 @@ foam.CLASS({
             }
           }
         }
-
-        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
-        if ( leaves != null ) {
-          for (Object leaf : leaves) {
-            if ( leaf instanceof Capability ) {
-              Capability cap = (Capability) leaf;
-              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
-              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
-            }
-          }
-        }
       `
     },
     {
