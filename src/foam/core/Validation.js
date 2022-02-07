@@ -273,7 +273,6 @@ foam.CLASS({
         if ( ! this.autoValidate ) return [];
         var self = this;
         var a    = [];
-//        console.log(self.name);
         if ( foam.Number.isInstance(self.min) ) {
           a.push({
             args: [self.name],
