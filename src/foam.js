@@ -16,15 +16,13 @@
  */
 
 (function() {
-  var foam  = globalThis.foam || ( globalThis.foam = {} );
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: false, flags: globalThis.FOAM_FLAGS || {} } );
 
   // Is replaced when lib.js is loaded.
   foam.checkFlags = () => true;
 
-  if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
-
-  var flags = this.FOAM_FLAGS;
-  foam.flags = flags;
+  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
+  var flags = globalThis.foam.flags;
 
   flags.web  = true;
   flags.genjava = true;
