@@ -488,26 +488,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: self.name + '<'+foam.Date.MAX_DATE.toISOString().slice(0,16)+'&&'+self.name + '<'+foam.Date.MIN_DATE.toISOString().slice(0,16),
-            predicateFactory: function(e) {
-              return e.OR(
-                e.NOT(e.HAS(self)), // Allow null dates.
-                e.AND(
-                  e.LTE(
-                    self,
-                    // Maximum date supported by FOAM
-                    // (bounded by JavaScript's limit)
-                    foam.Date.MAX_DATE
-                  ),
-                  e.GTE(
-                    self,
-                    // Minimum date supported by FOAM
-                    // (bounded by JavaScript's limit)
-                    foam.Date.MIN_DATE
-                  )
-                )
-              );
-            },
+            query: 'thisValue! exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(0,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(0,16),
             errorString: 'Invalid date value'
           }
         ];
@@ -537,12 +518,7 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            predicateFactory: function(e) {
-              return e.OR(
-                e.EQ(self, ''),
-                e.REG_EXP(self, urlRegex)
-              );
-            },
+            query: 'thisValue==""||thisValue~'+urlRegex,
             errorString: this.INVALID_URL
           }
         ];
@@ -572,12 +548,7 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            predicateFactory: function(e) {
-              return e.OR(
-                e.EQ(self, ''),
-                e.REG_EXP(self, websiteRegex)
-              );
-            },
+            query: 'thisValue==""||thisValue~'+websiteRegex,
             errorString: this.INVALID_WEBSITE
           }
         ];
