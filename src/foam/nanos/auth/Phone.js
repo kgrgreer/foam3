@@ -24,7 +24,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['number'],
-          query: 'number~' + 'PHONE_NUMBER_REGEX',
+          query: 'number~PHONE_NUMBER_REGEX',
           errorString: 'Please enter phone number'
         }
       ]

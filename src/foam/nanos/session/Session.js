@@ -122,9 +122,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['ttl'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.nanos.session.Session.TTL, 0);
-          },
+          query: 'ttl>=0',
           errorString: 'TTL must be 0 or greater.'
         }
       ]
