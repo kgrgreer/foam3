@@ -88,7 +88,7 @@ have multiple classloaders running alongside eachother`
       type: 'Class',
       async: true,
       documentation: "Like load, but don't throw if not found.",
-      args: [ { name: 'id', type: 'String' } ],
+      args: 'String id',
       code: function(id) {
         return this.load(id).catch(function() {
           console.warn.apply(console, ["Failed to load", id].concat(Array.from(arguments)));
@@ -100,8 +100,7 @@ have multiple classloaders running alongside eachother`
       name: 'maybeLoad_',
       type: 'Class',
       async: true,
-      args: [ { name: 'id', type: 'String' },
-              { name: 'path', type: 'String[]' } ],
+      args: 'String id, String[] path',
       code: function(id, path) {
         return this.load_(id, path).catch(function() { return null; });
       }
@@ -157,6 +156,9 @@ have multiple classloaders running alongside eachother`
               return foam.lookup(id);
             });
           }
+
+// Temporarily disable class loader to fix build, until classloader can be completely removed.
+return Promise.resolve(foam.maybeLookup(id));
 
           if ( foam.maybeLookup(id) )
             return Promise.resolve(foam.lookup(id));
