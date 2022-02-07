@@ -92,7 +92,10 @@ foam.CLASS({
           this.setValue_(wizardlet, savedData);
           return savedData;
         })
-      .catch(e => wizardlet.reportNetworkFailure(e))
+      .catch(e => {
+        console.error(e);
+        wizardlet.reportNetworkFailure(e);
+      })
       .finally(() => {
         wizardlet.loading = false;
       });
@@ -106,7 +109,10 @@ foam.CLASS({
         if ( ! dataToFind || ( dataToFind && ! dataToFind.id ) ) return;
 
         let loadedData = await this.dao.find(dataToFind)
-            .catch(e => wizardlet.reportNetworkFailure(e))
+            .catch(e => {
+              console.error(e);
+              wizardlet.reportNetworkFailure(e);
+            })
         this.setValue_(wizardlet, loadedData);
       }
       wizardlet.loading = false;
