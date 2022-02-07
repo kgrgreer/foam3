@@ -84,17 +84,17 @@ public class ImageServlet
     if ( reqPath.endsWith(".png") ) {
       for ( int i = 0; i < paths.length; i++ ) {
         File src    = new File(cwd + "/" + paths[i] + reqPath);
-        File srcSVG = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
-        if ( srcSVG.isFile() && srcSVG.canRead() && srcSVG.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
+        File srcSvg = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
+        if ( srcSvg.isFile() && srcSvg.canRead() && srcSvg.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
 
           // convert .svg to .png
-          String          svgURIInput   = Paths.get(srcSVG.getPath()).toUri().toURL().toString();
-          TranscoderInput inputSVGImage = new TranscoderInput(svgURIInput);
-          try ( OutputStream PNGOutputStream = new FileOutputStream(src.getPath()) ) {
-            TranscoderOutput outputPNGImage  = new TranscoderOutput(PNGOutputStream);
+          String          svgUriInput   = Paths.get(srcSvg.getPath()).toUri().toURL().toString();
+          TranscoderInput inputSvgImage = new TranscoderInput(svgUriInput);
+          try ( OutputStream pngOutputStream = new FileOutputStream(src.getPath()) ) {
+            TranscoderOutput outputPngImage  = new TranscoderOutput(pngOutputStream);
             PNGTranscoder    myConverter     = new PNGTranscoder();
-            myConverter.transcode(inputSVGImage, outputPNGImage);
-            PNGOutputStream.flush();
+            myConverter.transcode(inputSvgImage, outputPngImage);
+            pngOutputStream.flush();
 
             String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
             try ( BufferedInputStream is = new BufferedInputStream(new FileInputStream(src)) ) {
