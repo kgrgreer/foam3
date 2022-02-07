@@ -178,8 +178,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       expression: function(flags) {
-        var enabledFlags = Object.keys(globalThis.FOAM_FLAGS)
-          .filter(f => globalThis.FOAM_FLAGS[f]);
+        var enabledFlags = Object.keys(globalThis.foam.flags)
+          .filter(f => globalThis.foam.flags[f]);
         return foam.util.flagFilter(enabledFlags)(this);
       }
     },
