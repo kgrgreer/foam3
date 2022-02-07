@@ -136,7 +136,7 @@ const CLASS_TYPES = [
   },
   {
     name: 'skeletons',
-    build: cls => foam.java.Skeleton.create({of: cls, flags: [ 'java' ]}).buildJavaClass()
+    build: cls => foam.java.Skeleton.create({of: cls.id, flags: [ 'java' ]}).buildJavaClass()
   },
   {
     name: 'proxies',
@@ -243,14 +243,14 @@ for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
 
 // console.log('**** SAFE ', foam.SAFE);
 javaClasses.filter(c => ! foam.java.Class.isInstance(c)).forEach(function(/* foam.core.Class */ c) {
-  if ( foam.Function.isInstance(c) )
-    c = c();
+  if ( foam.Function.isInstance(c) ) c = c();
 
   foam.lookup(c.id).model_.genJava();
 });
 
 javaClasses.filter(c => foam.java.Class.isInstance(c)).forEach(function(/* foam.java.Class */ c) {
-  if ( c.id.indexOf('nanopay') != -1 ) {
+
+  if ( false && c.id.indexOf('nanopay') != -1 ) {
     var cls = foam.maybeLookup(c.id);
     if ( ! cls ) return;
     var model = cls.model_;
@@ -280,14 +280,15 @@ javaClasses.filter(c => foam.java.Class.isInstance(c)).forEach(function(/* foam.
   }
 
   // TODO
-//  generateJava(c);
-console.log('generating(1)', c.id + '.java');
-var outfile = outdir + path_.sep + c.id.replace(/\./g, path_.sep) + '.java';
+  // generateJava(c);
 
-ensurePath(outfile);
-writeFileIfUpdated(outfile, c.toJavaSource());
+  console.log('generating(1)', c.id + '.java');
+  var outfile = outdir + path_.sep + c.id.replace(/\./g, path_.sep) + '.java';
 
+  ensurePath(outfile);
+  writeFileIfUpdated(outfile, c.toJavaSource());
 });
+
 // console.log('***** MISSING', missing);
 console.log(found);
 console.log('****** EXTRA', extraJavaClasses);
