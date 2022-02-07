@@ -4139,7 +4139,14 @@ foam.CLASS({
   ],
 
   properties: [
-    'property', 'query'
+    {
+      class: 'String',
+      name: 'query'
+    },
+    {
+      name: 'property',
+      javaType: 'PropertyInfo'
+    },
   ],
 
   methods: [
