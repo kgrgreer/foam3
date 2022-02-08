@@ -61,7 +61,7 @@ public class FObjectParser
               try {
                 c = Class.forName(ps1.value().toString());
               }catch (ClassNotFoundException t) {
-                x.set("error", t.getMessage() + ps1.value().toString());
+                x.set("error", t.getMessage() + " " + ps1.value().toString());
                 throw new RuntimeException(t);
               }
             } else {
