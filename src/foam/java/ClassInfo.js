@@ -47,11 +47,6 @@ foam.CLASS({
       o.out('private static final foam.core.ClassInfo classInfo_ = new foam.core.ClassInfoImpl()\n')
       o.increaseIndent();
       o.indent();
-      // Fully-qualified class name for Java inner class uses ($) instead of (.)
-      // eg. package.OuterClass$InnerClass
-      // if ( is_inner_class ) {
-      //   o.out('.setId("', this.id.replace(/\.([^.]*)$/, '$$$1'), '")');
-      // }
       o.out('.setId("', this.id, '")');
       o.out('.setObjClass(', this.id, '.class)');
       for ( var i = 0 ; i < this.axioms.length ; i++ ) {
