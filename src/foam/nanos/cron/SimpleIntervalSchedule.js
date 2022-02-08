@@ -15,8 +15,7 @@ foam.CLASS({
   messages: [
     { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
-    { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
-    { name: 'MAX_DATE_ERROR', message: 'Date cannot be after maximum date' }
+    { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' }
   ],
 
   properties: [
@@ -25,12 +24,6 @@ foam.CLASS({
       name: 'startDate',
       validateObj: function(startDate) {
         if ( ! startDate ) return this.INVALID_DATE_ERROR;
-
-        // check against max date : set max date 350 years in the future
-        const maxDate = new Date(Date.now() + 1000 * 3600 * 24 * 365 * 350);
-        const df = maxDate.getFullYear() + '/' + (maxDate.getMonth() + 1) + '/' + maxDate.getDate();
-        if ( startDate > maxDate ) return this.MAX_DATE_ERROR + ' [' + df + ']';
-
         // check against current date
         if ( startDate <= new Date() ) return this.START_DATE_ERROR;
       }
@@ -191,12 +184,6 @@ foam.CLASS({
       },
       validateObj: function(endsOn) {
         if ( ! endsOn ) return this.INVALID_DATE_ERROR;
-
-        // check against max date : set max date 350 years in the future
-        const maxDate = new Date(Date.now() + 1000 * 3600 * 24 * 365 * 350);
-        const df = maxDate.getFullYear() + '/' + (maxDate.getMonth() + 1) + '/' + maxDate.getDate();
-        if ( endsOn > maxDate ) return this.MAX_DATE_ERROR + ' [' + df + ']';
-
         // check against start date
         if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
       }
