@@ -51,7 +51,8 @@ foam.CLASS({
       visibility: 'HIDDEN',
       documentation: `
         The object as it was loaded from the runtime journals
-        `,
+      `,
+      storageTransient: true,
     },
     {
       name: 'applyOriginal',
