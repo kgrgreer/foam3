@@ -12,15 +12,6 @@
 
   documentation: `Rule that set the expiry of ucj renewable data.`,
 
-  javaImports: [
-    'foam.nanos.crunch.RenewableData',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Logger',
-    'java.time.LocalDate',
-    'java.time.ZoneId',
-    'java.util.Date',
-  ],
-
   properties: [
     {
       class: 'Int',
@@ -45,28 +36,6 @@
       name: 'asyncAction',
       transient: true,
       javaGetter: 'return null;'
-    }
-  ],
-
-  classes: [
-    {
-      name: 'UCJDataExpiryRuleAction',
-      implements: [ 'foam.nanos.ruler.RuleAction' ],
-      methods: [
-        {
-          name: 'applyAction',
-          javaCode: `
-            var ucj = (UserCapabilityJunction) obj;
-            ((RenewableData) ucj.getData())
-              .setExpiry(Date.from(LocalDate.now()
-                .plusDays(((UCJDataExpiryRule) rule).getExpiredIn())
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-              ));
-            ruler.stop();
-          `
-        }
-      ]
     }
   ]
 });

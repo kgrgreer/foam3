@@ -1042,6 +1042,7 @@ FOAM_FILES([
   { name: "foam/dashboard/view/DateRangeChoiceView" },
   { name: "foam/nanos/fs/AgreementView" },
   { name: "foam/nanos/crunch/ruler/UCJDataExpiryRule", flags: [ "java" ] },
+  { name: "foam/nanos/crunch/ruler/UCJDataExpiryRuleAction", flags: [ "java" ] },
   { name: "foam/u2/table/TableComponentView", flags: [ "web" ] },
   { name: "foam/u2/table/TableView", flags: [ "web" ] },
   { name: "foam/u2/table/UnstyledTableGroup", flags: [ "web" ] },
