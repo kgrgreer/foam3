@@ -19,6 +19,7 @@ var classes = [
   'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
   'foam.nanos.crunch.CapabilityCategoryCapabilityJunctionId',
   'foam.nanos.crunch.CapabilityCategory',
+  'foam.nanos.crunch.example.ExampleData',
 //  'foam.nanos.doc.DocumentationView',
   'foam.nanos.demo.relationship.StudentCourseJunction',
   'foam.nanos.demo.relationship.StudentCourseJunctionId',
