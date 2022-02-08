@@ -6,7 +6,9 @@
 
 package foam.nanos.servlet;
 
+import foam.core.X;
 import foam.util.SafetyUtil;
+import foam.nanos.logger.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -20,6 +22,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscoderException;
+import java.nio.file.Paths;
 
 public class ImageServlet
   extends HttpServlet
@@ -68,6 +77,39 @@ public class ImageServlet
 
           IOUtils.copy(is, resp.getOutputStream());
           return;
+        }
+      }
+    }
+
+    if ( reqPath.endsWith(".png") ) {
+      for ( int i = 0; i < paths.length; i++ ) {
+        File src    = new File(cwd + "/" + paths[i] + reqPath);
+        File srcSvg = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
+        if ( srcSvg.isFile() && srcSvg.canRead() && srcSvg.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
+
+          // convert .svg to .png
+          String          svgUriInput   = Paths.get(srcSvg.getPath()).toUri().toURL().toString();
+          TranscoderInput inputSvgImage = new TranscoderInput(svgUriInput);
+          try ( OutputStream pngOutputStream = new FileOutputStream(src.getPath()) ) {
+            TranscoderOutput outputPngImage  = new TranscoderOutput(pngOutputStream);
+            PNGTranscoder    myConverter     = new PNGTranscoder();
+            myConverter.transcode(inputSvgImage, outputPngImage);
+            pngOutputStream.flush();
+
+            String ext = EXTS.get(FilenameUtils.getExtension(src.getName()));
+            try ( BufferedInputStream is = new BufferedInputStream(new FileInputStream(src)) ) {
+              resp.setContentType(! SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
+              resp.setHeader("Content-Disposition", "filename=\"" + StringEscapeUtils.escapeHtml4(src.getName()) + "\"");
+              resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
+              resp.setContentLengthLong(src.length());
+
+              IOUtils.copy(is, resp.getOutputStream());
+              return;
+            }
+          } catch ( TranscoderException e ) {
+            X x = (X) this.getServletConfig().getServletContext().getAttribute("X");
+            ((Logger) x.get("logger")).error(e);
+          }
         }
       }
     }
