@@ -78,7 +78,8 @@ var skeletons = [
   'foam.nanos.session.SessionService',
   'foam.nanos.test.EchoService',
   'foam.strategy.StrategizerService',
-  'foam.util.uid.GlobalSearchService'
+  'foam.util.uid.GlobalSearchService',
+  'foam.nanos.auth.token.TokenService'
  ];
 
  var proxies = [
