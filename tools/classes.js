@@ -68,6 +68,7 @@ var skeletons = [
   'foam.nanos.app.AppConfigService',
   'foam.nanos.auth.AgentAuthService',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.token.TokenService',
   'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
   'foam.nanos.auth.UserQueryService',
   'foam.nanos.crunch.CrunchService',
@@ -78,8 +79,7 @@ var skeletons = [
   'foam.nanos.session.SessionService',
   'foam.nanos.test.EchoService',
   'foam.strategy.StrategizerService',
-  'foam.util.uid.GlobalSearchService',
-  'foam.nanos.auth.token.TokenService'
+  'foam.util.uid.GlobalSearchService'
  ];
 
  var proxies = [
