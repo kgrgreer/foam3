@@ -501,6 +501,13 @@ NOTE: when using the java client, the first call to a newly started instance may
       return builder.build();
     }
   };
+
+  protected ThreadLocal<JSONParser> parser_ = new ThreadLocal<JSONParser>() {
+    @Override
+    protected JSONParser initialValue() {
+      return getX().create(JSONParser.class);
+    }
+  };
   `,
 
   methods: [
@@ -707,7 +714,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       javaCode: `
       PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getNSpecName(), dop);
       try {
-        Object result = x.create(JSONParser.class).parseString(data.toString(), getOf().getObjClass());
+        Object result = parser_.get().parseString(data.toString(), getOf().getObjClass());
         if ( result == null ) {
           // ClassReferenceParser returns null when data is not a modelled class
           return data.toString();

@@ -76,7 +76,9 @@ foam3_MAVEN_DEPS = \
 	org.eclipse.jetty.websocket:websocket-servlet:9.4.30.v20200611 \
 	com.google.guava:guava:23.6-jre \
 	com.google.appengine:appengine-api-1.0-sdk:1.9.24 \
-	io.methvin:directory-watcher:0.9.10
+	io.methvin:directory-watcher:0.9.10 \
+  	org.apache.xmlgraphics:batik-transcoder:1.14 \
+  	org.apache.xmlgraphics:batik-codec:1.14
 
 java_JARS = foam3
 

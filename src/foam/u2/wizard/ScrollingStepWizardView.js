@@ -64,7 +64,7 @@ foam.CLASS({
       align-items: center;
       background-color: rgba(255,255,255,0.7);
       backdrop-filter: blur(5px);
-      box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-grow: 0;
       justify-content: flex-end;

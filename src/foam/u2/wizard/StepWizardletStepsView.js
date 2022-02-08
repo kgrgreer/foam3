@@ -160,7 +160,7 @@ foam.CLASS({
         wizardlets$: this.data.wizardlets$
       });
 
-      var wizardletIsVisibleSlots = this.data.wizardlets.map(w => w.isVisible$);
+      var wizardletIsVisibleSlots = foam.core.ArraySlot.create({ slots: this.data.wizardlets.map(w => w.isVisible$) });
       var slots_ = [this.data.wizardlets$, this.data.wizardPosition$, wizardletIsVisibleSlots];
       var arraySlot = foam.core.ArraySlot.create({ slots: slots_ });
 
