@@ -55,9 +55,18 @@ public class FObjectParser
 
           try {
             PStream ps1 = ps.apply(delegate, x);
-            Class   c   = ( ps1 != null ) ?
-              Class.forName(ps1.value().toString()) :
-              defaultClass ;
+
+            Class c = null;
+            if ( ps1 != null ) {
+              try {
+                c = Class.forName(ps1.value().toString());
+              }catch (ClassNotFoundException t) {
+                x.set("error", t.getMessage() + ps1.value().toString());
+                throw new RuntimeException(t);
+              }
+            } else {
+              c = defaultClass;
+            }
 
             // return null if class not specified in JSON and no default class available
             if ( c == null || c == foam.core.FObject.class ) {
@@ -83,7 +92,6 @@ public class FObjectParser
             if ( ps != null ) {
               return ps.setValue(subx.get("obj"));
             }
-
             return null;
           } catch (Throwable t) {
             x.set("error", t);
@@ -100,10 +108,6 @@ public class FObjectParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    try {
-      return getDelegate().parse(ps, x);
-    } catch (TypeNotPresentException e) {
-      return UnknownFObjectParser.instance().parse(ps, x);
-    }
+    return getDelegate().parse(ps, x);
   }
 }
