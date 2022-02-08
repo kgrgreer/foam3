@@ -446,6 +446,7 @@ FOAM_FILES([
   { name: "foam/nanos/ticket/TicketDAOCreateView" },
   { name: "foam/nanos/ticket/TicketSummaryView" },
   { name: "foam/nanos/ticket/SummaryCard" },
+  { name: "foam/nanos/ticket/RfiTicket", flags: [ "java" ] },
 
   // Dig
   { name: "foam/nanos/dig/bench/DIGBenchmark", flags: [ "java" ] },
