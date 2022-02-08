@@ -32,7 +32,7 @@ public class ClassInfoImpl
     return this;
   }
 
-      public int compareTo(Object obj) {
+  public int compareTo(Object obj) {
     return getId().compareTo(((ClassInfo)obj).getId());
   }
 
