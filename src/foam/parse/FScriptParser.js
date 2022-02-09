@@ -156,7 +156,9 @@ foam.CLASS({
             sym('regex'),
             sym('date'),
             sym('string'),
-            sym('bool'),
+            literal('true', true),
+            literal('false', false),
+            literal('null', null),
             sym('number'),
             sym('fieldLen'),
             sym('field'),
@@ -193,7 +195,7 @@ foam.CLASS({
             repeat(alt(literal('\\"', '"'), notChars('"'))),
             '"')),
 
-          bool: seq1(0, alt(literal('true', true), literal('false', false))),
+//          bool: seq1(0, alt(literal('true', true), literal('false', false))),
 
           word: str(repeat(sym('char'), null, 1)),
 
