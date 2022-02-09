@@ -78,6 +78,10 @@ foam.CLASS({
   name: 'AddFluentSpec',
   implements: ['foam.util.FluentSpec'],
 
+  documentation: `
+    Specifies a call to .add() on a Fluent
+  `,
+
   properties: [
     {
       class: 'foam.util.FObjectSpec',
@@ -98,6 +102,10 @@ foam.CLASS({
   name: 'RemoveFluentSpec',
   implements: ['foam.util.FluentSpec'],
 
+  documentation: `
+    Specifies a call to .remove() on a Fluent
+  `,
+
   properties: [
     {
       class: 'String',
@@ -116,6 +124,10 @@ foam.CLASS({
   package: 'foam.util',
   name: 'AddBeforeFluentSpec',
   implements: ['foam.util.FluentSpec'],
+
+  documentation: `
+    Specifies a call to .addBefore() on a Fluent
+  `,
 
   properties: [
     {
