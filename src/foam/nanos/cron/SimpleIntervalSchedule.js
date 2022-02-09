@@ -14,9 +14,9 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.cron.DayOfWeek',
-    'foam.nanos.cron.ScheduleEnd',
     'foam.nanos.cron.Frequency',
     'foam.nanos.cron.MonthlyChoice',
+    'foam.nanos.cron.ScheduleEnd',
     'foam.nanos.cron.SymbolicFrequency'
   ],
 
@@ -110,7 +110,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.cron.ExpandedDayOfWeek',
+      of: 'foam.nanos.cron.DayOfWeek',
       name: 'expandedDayOfWeek',
       label: '',
       gridColumns: 6,
