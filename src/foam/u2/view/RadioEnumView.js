@@ -1,7 +1,4 @@
 /**
- * @license
- * Copyright 2022 Google Inc. All Rights Reserved.
-/**
 @license
 Copyright 2022 The FOAM Authors. All Rights Reserved.
 http://www.apache.org/licenses/LICENSE-2.0
