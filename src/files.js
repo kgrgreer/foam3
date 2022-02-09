@@ -591,6 +591,7 @@ FOAM_FILES([
   { name: "foam/u2/view/TabChoiceView", flags: [ "web" ] },
   { name: "foam/u2/view/IconChoiceView", flags: [ "web" ] },
   { name: "foam/u2/view/IconTextFieldView", flags: [ "web" ] },
+  { name: "foam/u2/view/RadioEnumView", flags: [ "web" ] },
   { name: "foam/u2/view/RadioView", flags: [ "web" ] },
   { name: "foam/u2/view/TextField", flags: [ "web" ] },
   { name: "foam/u2/view/TreeView", flags: [ "web" ] },
