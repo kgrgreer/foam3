@@ -156,6 +156,7 @@ foam.CLASS({
             sym('regex'),
             sym('date'),
             sym('string'),
+            sym('bool'),
             sym('number'),
             sym('fieldLen'),
             sym('field'),
@@ -191,6 +192,8 @@ foam.CLASS({
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
             '"')),
+
+          bool: seq1(0, alt(literal('true', true), literal('false', false))),
 
           word: str(repeat(sym('char'), null, 1)),
 
@@ -269,6 +272,7 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
+            debugger;
             return op.call(self, lhs, rhs);
           },
 
