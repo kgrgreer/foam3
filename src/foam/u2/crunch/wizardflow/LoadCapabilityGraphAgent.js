@@ -10,7 +10,7 @@ foam.CLASS({
   implements: [ 'foam.core.ContextAgent' ],
 
   documentation: `
-    Calls crunchService to fetch the necessary prerequisie capabilities.
+    Calls crunchService to fetch the necessary prerequisite capabilities.
   `,
 
   imports: [
