@@ -55,6 +55,14 @@ foam.INTERFACE({
   package: 'foam.util',
   name: 'FluentSpec',
 
+  documentation: `
+    Represents an operation to be performed on a Fluent object.
+    This can be used to specify Sequence steps in a journal.
+    For more information, see the following:
+    - foam.core.Fluent
+    - foam.u2.async.Sequence
+  `,
+
   methods: [
     {
       name: 'apply',
