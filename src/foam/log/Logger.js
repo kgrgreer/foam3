@@ -19,6 +19,8 @@ foam.INTERFACE({
   package: 'foam.log',
   name: 'Logger',
 
+  proxy: true,
+
   methods: [
     { name: 'debug', documentation: 'Log at "debug" log level.' },
     { name: 'log',   documentation: 'Synonym for "info".'       },

@@ -153,7 +153,7 @@ public class LiveScriptBundler
     try {
       log_("START", "Building javascript... (JS)");
 
-      Process        p  = new ProcessBuilder(JS_BUILD_PATH).start();
+      Process        p  = new ProcessBuilder("node", JS_BUILD_PATH).start();
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String         line;
       while ( (line = br.readLine()) != null ) {

@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'AgentAuthService',
 
+  skeleton: true,
+
   documentation: `
     The agent auth service is responsible for allowing users to act as
     others if permitted and places the requesting user as an agent of the system within the context.

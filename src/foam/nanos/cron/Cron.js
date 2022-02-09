@@ -123,7 +123,7 @@ foam.CLASS({
           if ( support != null &&
                ! support.cronEnabled(x, getClusterable()) ) {
             ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
-            throw new ClientRuntimeException(this.getClass().getSimpleName() + " " + EXECUTION_DISABLED);
+            return false;
           }
         }
         return true;

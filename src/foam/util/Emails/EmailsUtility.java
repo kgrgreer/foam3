@@ -100,6 +100,8 @@ public class EmailsUtility {
       return;
     }
 
+    emailMessage.setBody( emailMessage.getBody().replaceAll("\\.svg", ".png") );
+
     // SERVICE CALL: passing emailMessage through to actual email service.
     DAO email = ((DAO) x.get("localEmailMessageDAO")).inX(userX);
     emailMessage.setStatus(foam.nanos.notification.email.Status.UNSENT);

@@ -153,8 +153,7 @@ foam.CLASS({
                              public void put(Object obj, Detachable sub) {
                                Cron cron = (Cron) ((FObject) obj).fclone();
                                try {
-                                 if ( support == null ||
-                                      support.cronEnabled(x, cron.getClusterable()) ) {
+                                 if ( cron.canRun(x) ) {
                                    cron.setStatus(ScriptStatus.SCHEDULED);
                                    cronJobDAO.put_(x, cron);
                                  }

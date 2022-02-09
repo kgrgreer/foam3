@@ -7,17 +7,15 @@
 foam.INTERFACE({
   package: 'foam.nanos.app',
   name: 'AppConfigService',
+
+  skeleton: true,
+
   methods: [
     {
       name: 'getAppConfig',
       async: true,
       type: 'foam.nanos.app.AppConfig',
-      args: [
-        {
-          type: 'Context',
-          name: 'x'
-        }
-      ]
+      args: 'Context x'
     }
   ]
 });
