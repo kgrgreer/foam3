@@ -5,7 +5,7 @@
  */
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = { isServer: true } );
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: true, flags: globalThis.FOAM_FLAGS || {} } );
 
   // Imports used by the loadServer() loader
   globalThis.imports = {};
@@ -15,8 +15,8 @@
   // Is replaced when lib.js is loaded.
   foam.checkFlags = () => true;
 
-  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = {};
-  var flags = globalThis.foam.flags = globalThis.FOAM_FLAGS;
+  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
+  var flags = globalThis.foam.flags;
 
   // TODO: remove the genjava flag and let genjava set it
   if ( ! flags.hasOwnProperty('genjava')  ) flags.genjava = true;

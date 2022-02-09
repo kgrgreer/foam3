@@ -19,11 +19,12 @@
  * Top-Level of foam package
  */
 foam = {
+  flags: {},
+  isServer: false,
   ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {
     // from a static build, models have already been filtered so checkFlags can be a NOP
     checkFlags: function(flags) { return true; }
   }),
-  isServer: globalThis.FOAM_FLAGS.node,
   core:     {},
   checkFlags: function(flags) {
     if ( ! flags || flags.length == 0 ) return true;

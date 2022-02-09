@@ -298,8 +298,10 @@ function maybeGenerateJava(c) {
   }
 
   if ( c.model_.flags && ! c.model_.flags.includes('java') ) {
+    console.log('***** NOT GENERATING', c.id);
     return;
   }
+  console.log('***** GENERATING', c.id);
   generateJava(c);
 }
 
