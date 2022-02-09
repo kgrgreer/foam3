@@ -31,10 +31,11 @@ foam.CLASS({
     {
       name: 'choices',
       expression: function(of) {
-        return of ? of.VALUES.map(v => [v, v.label] ) : [];
+        return of ? of.VALUES.map(v => [v, v.label]) : [];
       }
     }
   ],
+
   methods: [
     // This method will be called where the view is associated with and provide
     // the Property Object to view the Property value so we don't need to
