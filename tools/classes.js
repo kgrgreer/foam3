@@ -5,10 +5,13 @@
  */
 
 var classes = [
+  /*
   'foam.nanos.column.NestedPropertiesExpression',
   'foam.nanos.column.ColumnPropertyValue',
   'foam.nanos.column.ColumnConfigToPropertyConverter',
   'foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder',
+  */
+
   'foam.nanos.notification.push.FirebasePushService',
   'foam.nanos.medusa.Clusterable',
   'foam.nanos.auth.DeletedAwareDummy',
