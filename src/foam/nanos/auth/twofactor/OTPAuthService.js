@@ -9,6 +9,7 @@ foam.INTERFACE({
   name: 'OTPAuthService',
 
   proxy: true,
+  skeleton:true,
 
   documentation: 'One-time password auth service',
 
