@@ -412,7 +412,7 @@ FOAM_FILES([
   { name: "foam/nanos/demo/relationship/CourseType", flags: [ "java" ] },
   { name: "foam/nanos/demo/relationship/Course", flags: [ "java" ] },
   { name: "foam/nanos/demo/relationship/Professor", flags: [ "java" ] },
-  { name: "foam/nanos/demo/relationship/Student" },
+  { name: "foam/nanos/demo/relationship/Student", flags: [ "java" ] }, // demo
   { name: "foam/nanos/demo/relationship/Controller" },
   { name: "foam/nanos/notification/ClientResendNotificationService", flags: [ "java" ] },
   { name: "foam/nanos/notification/EmailSetting", flags: [ "java" ] },
