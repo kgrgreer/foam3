@@ -669,6 +669,8 @@ FOAM_FILES([
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification", flags: [ "java" ] },
 
-  { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] }
+  { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] },
+
+  { name: "foam/nanos/om/OMRuleAction", flags: [ "java" ] }
 
 ]);
