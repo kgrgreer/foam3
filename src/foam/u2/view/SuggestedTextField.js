@@ -114,7 +114,8 @@
       .start(this.TextField, {
         data$: this.data$,
         onKey: true,
-        placeholder$: this.placeholder$
+        placeholder$: this.placeholder$,
+        autocomplete: false
       })
         .on('focus', () => {
           this.inputFocused = true;
