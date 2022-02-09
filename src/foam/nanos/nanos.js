@@ -138,7 +138,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/ResetPassword" },
   { name: "foam/nanos/auth/RetrievePassword" },
   { name: "foam/nanos/auth/UpdatePassword" },
-  { name: "foam/nanos/auth/CreatedByAware" },
+  { name: "foam/nanos/auth/CreatedByAware", flags: [ "java" ] },
   { name: "foam/nanos/auth/CreatedByAwareDAO", flags: [ "java" ] },
   { name: "foam/nanos/auth/Subject", flags: [ "java" ] },
   { name: "foam/nanos/auth/PriorPassword", flags: [ "java" ] },

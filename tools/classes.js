@@ -5,7 +5,7 @@
  */
 
 var classes = [
-  'foam.nanos.auth.CreatedByAware',
+//  'foam.nanos.auth.CreatedByAware',
   'foam.nanos.crunch.Capability',
   'foam.nanos.auth.LastModifiedByAware',
   'foam.nanos.auth.EnabledAware',
