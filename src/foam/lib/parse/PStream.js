@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.lib.parse',
   name: 'PStream',
 
+  proxy: true,
+
   documentation: 'PStream interface',
 
   methods: [

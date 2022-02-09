@@ -7,6 +7,9 @@
 foam.INTERFACE({
   package: 'foam.nanos.crunch',
   name: 'CrunchService',
+
+  skeleton: true,
+
   documentation: `
     CrunchService provides common logic used by the client and other CRUNCH
     services.
