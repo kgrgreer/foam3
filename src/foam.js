@@ -79,16 +79,19 @@
     var load = createLoader();
 
     var seen = {};
-    files.
-      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
-      filter(f => {
-        if ( foam.checkFlags(f.flags) ) return true;
-        console.log('Not loading', f, 'flags:', f.flags);
-        return false;
-      }).
-      filter(f => (! f.predicate) || f.predicate()).
-      map(f => f.name).
-      forEach(f => load(f, true));
+    files.forEach(f => {
+      if ( seen[f.name] ) {
+        console.log('duplicate', f.name);
+        return;
+      }
+      seen[f.name] = true;
+
+      if ( ! foam.checkFlags(f.flags) ) return;
+
+      if ( f.predicate && ! f.predicate() ) return;
+
+      load(f.name, true);
+    });
 
     load(null, false);
   //  delete this.FOAM_FILES;
