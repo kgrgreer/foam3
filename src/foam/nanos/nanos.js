@@ -632,7 +632,7 @@ FOAM_FILES([
   { name: "foam/nanos/approval/ApprovalStatus", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestClassificationEnum", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestClassification", flags: [ "java" ] },
-  { name: "foam/nanos/approval/ApprovalRequest" },
+  { name: "foam/nanos/approval/ApprovalRequest", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestNotification", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView", flags: ["web"] },
   { name: "foam/nanos/approval/ApprovableAware", flags: [ "java" ] },
