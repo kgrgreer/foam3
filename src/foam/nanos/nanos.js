@@ -102,7 +102,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/UserNotFoundException", flags: [ "java" ] },
   { name: "foam/nanos/auth/PermissionTableView" },
   { name: "foam/nanos/auth/LastModifiedAware", flags: [ "java" ] },
-  { name: "foam/nanos/auth/LastModifiedByAware" },
+  { name: "foam/nanos/auth/LastModifiedByAware", flags: [ "java" ] },
 //  { name: "foam/nanos/auth/ServiceProviderAware", flags: [ "java" ] },
   { name: "foam/nanos/auth/ServiceProviderAwareDAO", flags: [ "java" ] },
   { name: "foam/nanos/auth/ServiceProviderAwarePredicate", flags: [ "java" ] },

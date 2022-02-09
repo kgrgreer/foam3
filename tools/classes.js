@@ -7,8 +7,8 @@
 var classes = [
 //  'foam.nanos.auth.CreatedByAware',
 //  'foam.nanos.crunch.Capability',
-  'foam.nanos.auth.LastModifiedByAware',
-  'foam.nanos.auth.EnabledAware',
+//  'foam.nanos.auth.LastModifiedByAware',
+//  'foam.nanos.auth.EnabledAware',
   'foam.nanos.auth.User',
   'foam.nanos.approval.ApprovalRequest',
   'foam.nanos.auth.Group',
