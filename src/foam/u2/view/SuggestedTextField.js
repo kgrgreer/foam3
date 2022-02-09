@@ -116,12 +116,12 @@
         onKey: true,
         placeholder$: this.placeholder$
       })
-      .on('focus', () => {
-        this.inputFocused = true;
-      })
-      .on('blur', () => {
-        this.inputFocused = false;
-      })
+        .on('focus', () => {
+          this.inputFocused = true;
+        })
+        .on('blur', () => {
+          this.inputFocused = false;
+        })
       .end()
       .add(this.slot(function(filteredValues, data, inputFocused) {
         if ( ! data || ! inputFocused ) return this.E();
@@ -129,10 +129,10 @@
         return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
           this
            .start(self.rowView, { data: obj })
-           .addClass(self.myClass('row'))
-           .on('mousedown', function() {
-             self.onSelect.call(self, obj, self.ctx)
-           })
+             .addClass(self.myClass('row'))
+             .on('mousedown', function() {
+               self.onSelect.call(self, obj, self.ctx)
+             })
            .end()
         })
       }))
