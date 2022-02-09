@@ -17,7 +17,6 @@ foam.CLASS({
   methods: [
     {
       name: 'applyAction',
-      args: 'String spid, String group, String name',
       javaCode: `
 //OMLogger omLogger = (OMLogger) x.get("OMLogger");
       `
