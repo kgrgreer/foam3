@@ -14,10 +14,10 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.cron.DayOfWeek',
-    'foam.nanos.cron.End',
+    'foam.nanos.cron.ScheduleEnd',
     'foam.nanos.cron.Frequency',
     'foam.nanos.cron.MonthlyChoice',
-    'foam.nanos.cron.VagueFreq'
+    'foam.nanos.cron.SymbolicFrequency'
   ],
 
   properties: [
@@ -34,7 +34,7 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n === 0 ) {
           this.frequency = this.Frequency.DAY;
-          this.ends = this.End.NEVER;
+          this.ends = this.ScheduleEnd.NEVER;
         }
       }
     },
@@ -96,8 +96,8 @@ foam.CLASS({
     {
       // first , second , third ...
       class: 'Enum',
-      of: 'foam.nanos.cron.VagueFreq',
-      name: 'vagueFreq',
+      of: 'foam.nanos.cron.SymbolicFrequency',
+      name: 'symbolicFrequency',
       label: '',
       gridColumns: 6,
       visibility: function(monthlyChoice, frequency ) {
@@ -124,7 +124,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.cron.End',
+      of: 'foam.nanos.cron.ScheduleEnd',
       name: 'ends',
       label: 'Ends',
       gridColumns: 6,
@@ -140,7 +140,7 @@ foam.CLASS({
       label: 'End Date',
       gridColumns: 6,
       visibility: function(ends) {
-        if ( ends != this.End.ON )
+        if ( ends != this.ScheduleEnd.ON )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
@@ -152,7 +152,7 @@ foam.CLASS({
       gridColumns: 6,
       min: 1,
       visibility: function(ends) {
-        if ( ends != this.End.AFTER )
+        if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
@@ -188,7 +188,7 @@ foam.CLASS({
     {
       name: 'getEndDate',
       code: function() {
-        return this.ends + ' ' + ( this.ends == this.End.ON ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
+        return this.ends + ' ' + ( this.ends == this.ScheduleEnd.ON ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
       }
     }
   ]

@@ -9,9 +9,9 @@ foam.ENUM({
   name: 'Frequency',
 
   values: [
-    { name: 'DAY',   label: 'Day' },
-    { name: 'WEEK',  label: 'Week' },
-    { name: 'MONTH', label: 'Month' },
-    { name: 'YEAR',  label: 'Year' }
+    { name: 'DAY',   label: 'Days' },
+    { name: 'WEEK',  label: 'Weeks' },
+    { name: 'MONTH', label: 'Months' },
+    { name: 'YEAR',  label: 'Years' }
   ]
 });

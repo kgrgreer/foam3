@@ -6,7 +6,7 @@
 
 foam.ENUM({
   package: 'foam.nanos.cron',
-  name: 'VagueFreq',
+  name: 'SymbolicFrequency',
 
   values: [
     { name: 'FIRST',        label: 'First' },

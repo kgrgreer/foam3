@@ -6,7 +6,7 @@
 
 foam.ENUM({
   package: 'foam.nanos.cron',
-  name: 'ExpandedDayOfWeek',
+  name: 'DayOfWeek',
 
   values: [
     { name: 'MONDAY',    label: 'Monday' },

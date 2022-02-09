@@ -6,7 +6,7 @@
 
 foam.ENUM({
   package: 'foam.nanos.cron',
-  name: 'End',
+  name: 'ScheduleEnd',
 
   values: [
     { name: 'NEVER', label: 'Never' },
