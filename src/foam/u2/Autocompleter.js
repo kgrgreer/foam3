@@ -44,6 +44,7 @@ foam.CLASS({
       }
     },
     {
+    class: 'foam.dao.DAOProperty',
     name: 'filteredDAO',
     factory: function() {
       return this.dao;
@@ -54,6 +55,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+      this.partial$.sub(this.onUpdate);
       this.onUpdate();
     }
   ],
@@ -61,7 +63,7 @@ foam.CLASS({
   listeners: [
     {
       name: 'onUpdate',
-//      isFramed: true,
+      isFramed: true,
       code: function onUpdate() {
         if ( ! this.dao ) return;
         this.filteredDAO = this.partial ?

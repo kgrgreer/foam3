@@ -21,7 +21,10 @@
       border-radius: 4px;
       display: flex;
       flex-direction: column;
+      height: auto;
       margin-top: 2px;
+      max-height: 14em;
+      overflow: auto;
       padding: 6px;
       position: absolute;
       width: 100%;
@@ -52,7 +55,7 @@
       of: 'foam.u2.Autocompleter',
       name: 'autocompleter',
       factory: function() {
-        if ( ! this.daoKey ) console.error("No daokey");
+        if ( ! this.daoKey ) console.error('No daokey');
         return this.Autocompleter.create({dao: this.__subContext__[this.daoKey]})
       }
     },
@@ -122,8 +125,8 @@
       .end()
       .add(this.slot(function(filteredValues, data, inputFocused) {
         if ( ! data || ! inputFocused ) return this.E();
-        if ( ! filteredValues.length ) return this.E().addClass(this.myClass("suggestions")).add(this.emptyTitle)
-        return this.E().addClass(this.myClass("suggestions")).add(this.title).forEach(this.filteredValues, function(obj) {
+        if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle)
+        return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
           this
            .start(self.rowView, { data: obj })
            .addClass(self.myClass('row'))
@@ -141,15 +144,14 @@
       name: 'onUpdate',
       isFramed: true,
       code: function() {
-        this.autocompleter.onUpdate();
-        this.autocompleter.filteredDAO.limit(5).select()
+        this.autocompleter.filteredDAO.select()
         .then((sink) => {
           this.filteredValues = sink.array;
         });
       }
     },
     function loaded() {
-      this.onDetach(this.autocompleter.partial$.sub(this.onUpdate));
+      this.onDetach(this.autocompleter.filteredDAO$proxy.sub(this.onUpdate));
     }
   ]
 });
