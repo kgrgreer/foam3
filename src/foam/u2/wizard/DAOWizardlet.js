@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.BaseWizardlet',
 
   requires: [
-    'foam.u2.wizard.DaoWAO'
+    'foam.u2.wizard.DAOWAO'
   ],
 
   properties: [
@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'String',
       documentation: `
-        Optional path used to specify the location of the desired wizardlet\'s data object that will
+        Optional path used to specify the location of the desired wizardlet's data object that will
         be updated.
       `,
       name: 'path'
@@ -37,7 +37,7 @@ foam.CLASS({
     {
       name: 'wao',
       factory: function() {
-        return this.DaoWAO.create({ path: this.path, of: this.data.cls_ }, this.__context__);
+        return this.DAOWAO.create({ path: this.path, of: this.data.cls_ }, this.__context__);
       }
     }
   ]

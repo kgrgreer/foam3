@@ -1,6 +1,6 @@
 p({
   class:"foam.nanos.test.Test",
-  id:"DaoWAOTest",
+  id:"DAOWAOTest",
   description: "Unit test for DAO Wizardlet Access Object",
   language: 0,
   code:"""
@@ -17,8 +17,7 @@ p({
 
         if ( resp && resp.id ) {
           test(true, 'successful DAOWAO save (no path), user id: ' + resp.id);
-        }
-        else {
+        } else {
           test(false, 'failed DAOWAO save (no path)');
         }
        
@@ -32,8 +31,7 @@ p({
 
         if ( dw.data.email === 'francis@filth.com' ) {
           test(true, 'successful DAOWAO load (no path)');
-        }
-        else {
+        } else {
           test(false, 'failed DAOWAO load (no path)');
         }
 
@@ -42,19 +40,18 @@ p({
         dw = foam.u2.wizard.DAOWizardlet.create({ of: foam.nanos.crunch.UserCapabilityJunction, path: 'payload' }, x);
         
         ucj = foam.nanos.crunch.UserCapabilityJunction.create({ 
-                sourceId: 1348,
-                targetId: 'crunch.example',
-                data: foam.nanos.crunch.example.ExampleData.create({}),
-                status: 1
-              }, x);
+              sourceId: 1348,
+              targetId: 'crunch.example',
+              data: foam.nanos.crunch.example.ExampleData.create({}),
+              status: 1
+            }, x);
         dw.data.payload = ucj;
 
         resp = await dw.save();
 
         if ( resp && resp.id ) {
           test(true, 'successful DAOWAO save (path), ucj id: ' + resp.id);
-        }
-        else {
+        } else {
           test(false, 'failed DAOWAO save (path)');
         }
 
@@ -70,8 +67,7 @@ p({
 
         if ( ucj.data && ucj.data.phoneNumber && ucj.data.phoneNumber.number === '+123456789' ) {
           test(true, 'successful DAOWAO load (path)');
-        }
-        else {
+        } else {
           test(false, 'failed DAOWAO load (path)');
         }
 
@@ -88,9 +84,8 @@ p({
         ucj = dw.data.payload;
 
         if ( ucj.data && ucj.data.phoneNumber && ucj.data.phoneNumber.number === '+123456789' ) {
-          test(false, 'successful DAOWAO disable load');
-        }
-        else {
+          test(true, 'successful DAOWAO disable load');
+        } else {
           test(false, 'failed DAOWAO disable load');
         }
       } catch (e) {

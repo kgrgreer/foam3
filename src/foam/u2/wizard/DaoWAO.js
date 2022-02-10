@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard',
-  name: 'DaoWAO',
+  name: 'DAOWAO',
   implements: [
     'foam.mlang.Expressions',
     'foam.u2.wizard.WAO'
@@ -52,7 +52,7 @@ foam.CLASS({
       class: 'String',
       name: 'path',
       documentation: `
-        Optional path used to specify the location of the desired wizardlet\'s data object that will
+        Optional path used to specify the location of the desired wizardlet's data object that will
         be updated.
       `,
     },
@@ -75,8 +75,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'disableFind',
-      value: false
+      name: 'disableFind'
     }
   ],
 
@@ -132,7 +131,7 @@ foam.CLASS({
         lastObject = path.arg1.f(obj);
         lastKey = path.arg2.name;
       } else {
-        throw new Error('unexpected case in DaoWAO.setValue');
+        throw new Error('Unexpected case in DAOWAO.setValue');
       }
       if ( ! lastObject ) return false;
       if ( foam.core.Slot.isInstance(lastObject[lastKey]) ) {
