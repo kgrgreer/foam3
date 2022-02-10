@@ -7,6 +7,9 @@
  foam.INTERFACE({
   package: 'foam.nanos.google.api.sheets.views',
   name: 'GoogleSheetsDataImportService',
+
+  skeleton: true,
+
   methods: [
     {
       name: 'getColumns',

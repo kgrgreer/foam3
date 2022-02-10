@@ -20,7 +20,8 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'code'
+      name: 'code',
+      javaFactory: 'return getCountryId() + "-" + getIsoCode();'
     },
     {
       class: 'String',
@@ -35,6 +36,10 @@ foam.CLASS({
       targetDAOKey: 'countryDAO',
       name: 'countryId',
       of: 'foam.nanos.auth.Country'
+    },
+    {
+      name: 'booltest',
+      class: 'Boolean'
     },
     {
       class: 'StringArray',

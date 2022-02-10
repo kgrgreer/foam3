@@ -148,7 +148,8 @@ foam.CLASS({
             sym('value'),
             repeat0(" "),
             alt(
-              literal('exists', this.HAS)
+              literal('exists', this.HAS),
+              literal('isValid', this.IS_VALID)
             )
           ),
 

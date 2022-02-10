@@ -21,6 +21,8 @@ foam.INTERFACE({
 
   documentation: 'DAO Interface',
 
+  skeleton: true,
+
   constants: [
     {
       name: 'RESET_CMD',

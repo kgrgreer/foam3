@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.tag.Button',
 
   imports: [
+    'menu',
     // If rendered in a dropdown, close the dropdown after launching menu
     'dropdown? as parentMenuDropdown'
   ],
@@ -17,22 +18,22 @@ foam.CLASS({
   properties: [
     {
       name: 'label',
-      factory: function() { return this.data.label || ''; }
+      expression: function(menu) { return menu.label || ''; }
     },
     {
       name: 'icon',
-      factory: function() { return this.data.icon; }
+      expression: function(menu) { return menu.icon || ''; }
     },
     {
       name: 'themeIcon',
-      factory: function() { return this.data.themeIcon; }
+      expression: function(menu) { return menu.themeIcon || ''; }
     }
   ],
 
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.data.launch_(this.__subContext__, this);
+      this.menu.launch_(this.__subContext__, this);
       if ( this.parentMenuDropdown ) this.parentMenuDropdown.close();
       return;
     }

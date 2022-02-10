@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.util.uid',
   name: 'GlobalSearchService',
 
+  skeleton: true,
+
   methods: [
     {
       name: 'searchById',
