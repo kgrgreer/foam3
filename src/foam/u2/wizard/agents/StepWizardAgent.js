@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'wizardController',
     'submitted'
   ],
 
@@ -46,13 +47,14 @@ foam.CLASS({
     {
       name: 'submitted',
       class: 'Boolean'
-    }
+    },
+    'wizardController'
   ],
 
   methods: [
     function execute() {
       return new Promise((resolve, reject) => {
-        var data = this.StepWizardController.create({
+        this.wizardController = this.StepWizardController.create({
           wizardlets: this.wizardlets,
           config: this.config,
           submitted$: this.submitted$,
@@ -63,7 +65,7 @@ foam.CLASS({
 
         this.pushView({
           ...this.config.wizardView,
-          data: data,
+          data: this.wizardController,
           closeable: true,
           onClose: (x) => {
             this.popView(x)
