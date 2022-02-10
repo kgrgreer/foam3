@@ -53,8 +53,8 @@ foam.CLASS({
         StepWizardController, but it can be used where a wizard is launched so
         that only providing this configuration object is necessary.
       `,
-      // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
-      value: { class: 'foam.u2.wizard.ScrollingStepWizardView' }
+      value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
+      // value: { class: 'foam.u2.wizard.ScrollingStepWizardView' }
     }
   ],
 
