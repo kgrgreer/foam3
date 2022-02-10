@@ -29,6 +29,7 @@ foam.CLASS({
   extends: 'foam.dao.InternalException'
 });
 
+
 foam.CLASS({
   package: 'com.firebase',
   name: 'FirebaseDAO',

@@ -5,12 +5,12 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.google.api.sheets',
+  package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'ColumnsToPropertiesMappingModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.google.api.sheets.ColumnHeaderToPropertyMapping',
+    'foam.nanos.google.api.sheets.views.ColumnHeaderToPropertyMapping',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.detail.SectionedDetailPropertyView'
   ],

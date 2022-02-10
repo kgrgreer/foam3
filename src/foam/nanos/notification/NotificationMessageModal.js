@@ -11,24 +11,26 @@ foam.CLASS({
 
   documentation: 'View for displaying notification message',
 
+  axioms: [
+    foam.pattern.Faceted.create()
+  ],
+
   css: `
     ^ {
-      background-color: #fff;
-      width: 60vw;
+      max-width: 60vw;
       max-height: 80vh;
-      overflow-y: auto;
+      min-width: 30vw;
+      overflow: auto;
     }
-    ^ .main {
-      padding: 8px 24px 24px;
-    }
-    ^ .bold-label {
-      font-size: 1.6rem;
-      font-weight: bold;
-      padding-bottom: 8px;
-    }
-    ^ .message {
+    ^message {
       white-space: pre-line;
-    } 
+    }
+    ^container {
+      width: 100%;
+    }
+    ^ > ^container + ^container {
+      margin-top: 16px;
+    }
   `,
 
   requires: [
@@ -38,39 +40,35 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NATIFICATION_MSG', message: 'Notification' },
     { name: 'CREATED_MSG', message: 'Created' },
     { name: 'MESSAGE_MSG', message: 'Message' }
   ],
 
   properties: [
     'data',
-    'created',
-    'description'
+    {
+      name: 'created',
+      expression: function(data$created) {
+        return data$created.toLocaleString([], { dateStyle: 'medium', timeStyle: 'medium' });
+      }
+    }
   ],
 
   methods: [
     function render() {
       this.SUPER();
 
-      this.created = this.data.created.toUTCString();
-      this.description = this.data.body;
-      
       this
       .addClass(this.myClass())
-      .tag(this.ModalHeader.create({
-        title: this.NATIFICATION_MSG
-      }))
-      .start()
-        .addClass('main')
-          .start(this.Rows).style({padding: '24px 0px'})
-            .start().addClass('bold-label').add(this.CREATED_MSG).end()
-            .start().add(this.created).end()
-          .end()
-          .start(this.Rows).style({padding: '24px 0px'})
-            .start().addClass('bold-label').add(this.MESSAGE_MSG).end()
-            .start().addClass('message').add(this.description).end()
-          .end()
+      .start(this.Rows)
+        .addClass(this.myClass('container'))
+        .start().addClass('p-bold').add(this.CREATED_MSG).end()
+        .start().add(this.created$).end()
+      .end()
+      .start(this.Rows)
+        .addClass(this.myClass('container'))
+        .start().addClass('p-bold').add(this.MESSAGE_MSG).end()
+        .start().addClass(this.myClass('message')).add(this.data.body$).end()
       .end();
     }
   ]

@@ -48,6 +48,7 @@ foam.CLASS({
         ClusterConfigSupport.ACTIVE_REGION.clear(support);
         ClusterConfigSupport.BROADCAST_MEDIATORS.clear(support);
         ClusterConfigSupport.BROADCAST_NAREGION_MEDIATORS.clear(support);
+        ClusterConfigSupport.SF_BROADCAST_MEDIATORS.clear(support);
         ClusterConfigSupport.CLIENTS.clear(support);
         ClusterConfigSupport.HAS_MEDIATOR_QUORUM.clear(support);
         ClusterConfigSupport.HAS_NODE_QUORUM.clear(support);

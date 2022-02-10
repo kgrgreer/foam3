@@ -16,34 +16,13 @@
  */
 
 (function() {
-  var foam  = globalThis.foam || ( globalThis.foam = {} );
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: false, flags: globalThis.FOAM_FLAGS || {} } );
 
-  // Also appears in foam_node.js, manually keep two copies in sync
-  foam.checkFlags = function(flags) {
-    if ( ! flags || flags.length == 0 ) return true;
-    if ( typeof flags === 'string' ) {
-      flags = flags.split('|');
-    }
+  // Is replaced when lib.js is loaded.
+  foam.checkFlags = () => true;
 
-    function and(fs) {
-      fs = fs.split('&');
-      for ( var i = 0 ; i < fs.length ; i++ ) {
-        if ( ! foam.flags[fs[i]] ) return false;
-      }
-      return true;
-    }
-
-    // OR AND clauses
-    for ( var i = 0 ; i < flags.length ; i++ ) {
-      if ( and(flags[i]) ) return true;
-    }
-    return false;
-  }
-
-  if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
-
-  var flags = this.FOAM_FLAGS;
-  foam.flags = flags;
+  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
+  var flags = globalThis.foam.flags;
 
   flags.web  = true;
   flags.genjava = true;
@@ -100,16 +79,19 @@
     var load = createLoader();
 
     var seen = {};
-    files.
-      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
-      filter(f => {
-        if ( foam.checkFlags(f.flags) ) return true;
-        console.log('Not loading', f, 'flags:', f.flags);
-        return false;
-      }).
-      filter(f => (! f.predicate) || f.predicate()).
-      map(f => f.name).
-      forEach(f => load(f, true));
+    files.forEach(f => {
+      if ( seen[f.name] ) {
+        console.log('duplicate', f.name);
+        return;
+      }
+      seen[f.name] = true;
+
+      if ( ! foam.checkFlags(f.flags) ) return;
+
+      if ( f.predicate && ! f.predicate() ) return;
+
+      load(f.name, true);
+    });
 
     load(null, false);
   //  delete this.FOAM_FILES;

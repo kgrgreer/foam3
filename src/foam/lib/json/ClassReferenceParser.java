@@ -47,6 +47,10 @@ public class ClassReferenceParser
       return null;
     }
 
+    if ( ps.value() == null ) {
+      return ps;
+    }
+
     String classId = (String) ps.value();
     // Expects classId be a fully qualified name of a modelled class
     // with Java code generation for class lookup and returns
@@ -63,7 +67,8 @@ public class ClassReferenceParser
       return ps.setValue(info);
     } catch ( Throwable t ) {
       System.err.println(classId + " is not a modelled class.");
-      return null;
+      x.set("error", t);
+      throw new RuntimeException(t);
     }
   }
 }

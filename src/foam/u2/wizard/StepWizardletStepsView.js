@@ -159,6 +159,11 @@ foam.CLASS({
       this.searchController = this.WizardletSearchController.create({
         wizardlets$: this.data.wizardlets$
       });
+
+      var wizardletIsVisibleSlots = foam.core.ArraySlot.create({ slots: this.data.wizardlets.map(w => w.isVisible$) });
+      var slots_ = [this.data.wizardlets$, this.data.wizardPosition$, wizardletIsVisibleSlots];
+      var arraySlot = foam.core.ArraySlot.create({ slots: slots_ });
+
       this
         .addClass(this.myClass())
         .start()
@@ -168,17 +173,13 @@ foam.CLASS({
             onKey: true
           })
         .end()
-        .add(this.slot(function (
-          data$wizardlets,
-          data$wizardPosition,
-          data$availabilityInvalidate
-        ) {
+        .add(arraySlot.map( a => {
           let elem = this.E();
 
           let afterCurrent = false;
 
           this.stepElements = [];
-          for ( let w = 0 ; w < data$wizardlets.length ; w++ ) {
+          for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
             let wizardlet = this.data.wizardlets[w];
             let isCurrent = wizardlet === this.data.currentWizardlet;
 
@@ -206,7 +207,7 @@ foam.CLASS({
                       .start(this.CircleIndicator, this.configureIndicator(
                         wizardlet, isCurrent,
                         this.calculateWizardletDisplayNumber(
-                          wizardlet, data$wizardlets)
+                          wizardlet, self.data.wizardlets)
                       ))
                         .addClass('circle')
                       .end()
@@ -225,8 +226,8 @@ foam.CLASS({
                 .end();
 
             // Get section index to highlight current section
-            let wi = data$wizardPosition.wizardletIndex;
-            let si = data$wizardPosition.sectionIndex;
+            let wi = this.data.wizardPosition.wizardletIndex;
+            let si = this.data.wizardPosition.sectionIndex;
 
             // Render section labels
             let sections = this.data.wizardlets[w].sections;

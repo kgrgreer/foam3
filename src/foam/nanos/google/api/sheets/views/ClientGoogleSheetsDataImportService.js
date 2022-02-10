@@ -5,16 +5,16 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.google.api.sheets',
+  package: 'foam.nanos.google.api.sheets.views',
   name: 'ClientGoogleSheetsDataImportService',
   implements: [
-    'foam.nanos.google.api.sheets.GoogleSheetsDataImportService'
+    'foam.nanos.google.api.sheets.views.GoogleSheetsDataImportService'
   ],
 
   properties: [
     {
       class: 'Stub',
-      of: 'foam.nanos.google.api.sheets.GoogleSheetsDataImportService',
+      of: 'foam.nanos.google.api.sheets.views.GoogleSheetsDataImportService',
       name: 'delegate'
     }
   ]

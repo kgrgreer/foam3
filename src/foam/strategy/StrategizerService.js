@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.strategy',
   name: 'StrategizerService',
 
+  proxy: true,
+  skeleton: true,
+
   documentation: `
     A StrategizerService is something that can return a list of references to
     models that either implement a given interface or subclass a given (possibly
@@ -20,7 +23,7 @@ foam.INTERFACE({
       2. A model that extends / is a subclass of a desired model. In this case,
          we refer to the subclass model as one of many possible strategies for
          the desired model.
-    
+
     Hence, a StrategizerService will give you references to strategies for
     something you want, which we refer to as the "desired model". The desired
     model might be an interface, abstract base class, or a concrete class.

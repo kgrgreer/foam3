@@ -28,7 +28,7 @@ foam.CLASS({
         SMALL:   [312, '-'],
         SMEDIUM: [312, 358],
         MEDIUM:  [424, 356],
-        LMEDIUM: [624, 528],
+        LMEDIUM: [570, 450],
         LARGE:   [936, 528],
         XLARGE:  [1580, 698],
       }
@@ -65,7 +65,6 @@ foam.CLASS({
     ^ {
       border-radius: 10px;
       background: white;
-      margin: 8px;
       box-shadow: 3px 8px 6px -2px #cccccc;
     }
 

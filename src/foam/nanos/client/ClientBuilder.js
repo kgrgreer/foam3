@@ -114,9 +114,14 @@ foam.CLASS({
                     var serviceName = spec.name.substring(spec.name.lastIndexOf('.') + 1);
                     client.exports.push(serviceName);
 
-                    var json = JSON.parse(spec.client);
+                    var json;
+                    try {
+                      json = JSON.parse(spec.client);
+                    } catch (err) {
+                      console.error('invalid nspec.client', spec.client, err);
+                    }
 
-                    references = references.concat(foam.json.references(self.__context__, json));
+                    //references = references.concat(foam.json.references(self.__context__, json));
 
                     client.properties.push({
                       name: spec.name,
