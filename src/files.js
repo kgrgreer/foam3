@@ -960,6 +960,7 @@ FOAM_FILES([
   { name: "foam/u2/wizard/debug/DebugWAO" },
   { name: "foam/u2/wizard/debug/DebugContextIntercept" },
   { name: "foam/u2/wizard/debug/DebugWizardletView" },
+  { name: "foam/u2/wizard/DAOWAO" },
   { name: "foam/u2/wizard/debug/WizardInspector" },
   { name: "foam/u2/wizard/WAO" },
   { name: "foam/u2/wizard/ProxyWAO" },
