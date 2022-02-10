@@ -44,11 +44,11 @@ foam.CLASS({
       }
     },
     {
-    class: 'foam.dao.DAOProperty',
-    name: 'filteredDAO',
-    factory: function() {
-      return this.dao;
-     }
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
+      factory: function() {
+        return this.dao;
+      }
     }
   ],
 

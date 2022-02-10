@@ -1,12 +1,14 @@
 /**
  * @license
- * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
  foam.CLASS({
   package: 'foam.u2.view',
   name: 'SuggestedTextField',
   extends: 'foam.u2.View',
+
+  documentation: 'recommends values based on search characters and the provided autocompleter. Look at foam.u2.autocompleter for implementation of the search predicate.',
 
   requires: [
     'foam.u2.Autocompleter',
@@ -126,7 +128,7 @@
       .end()
       .add(this.slot(function(filteredValues, data, inputFocused) {
         if ( ! data || ! inputFocused ) return this.E();
-        if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle)
+        if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
         return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
           this
            .start(self.rowView, { data: obj })
