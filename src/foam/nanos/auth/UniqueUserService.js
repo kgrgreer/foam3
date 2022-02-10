@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'UniqueUserService',
 
+  proxy: true,
+
   methods: [
     {
       name: 'getUser',

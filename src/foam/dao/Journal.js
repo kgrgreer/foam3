@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.dao',
   name: 'Journal',
 
+  proxy: true,
+
   methods: [
     {
       name: 'put',

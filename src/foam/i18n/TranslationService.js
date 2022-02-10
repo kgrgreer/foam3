@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.i18n',
   name: 'TranslationService',
 
+  proxy: true,
+  skeleton: true,
+
   methods: [
     {
       name: 'getTranslations',
