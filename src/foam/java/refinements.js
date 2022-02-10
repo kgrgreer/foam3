@@ -243,7 +243,7 @@ foam.CLASS({
       name: 'javaValidateObj',
       expression: function(validationPredicates) {
         return `var sps    = new foam.lib.parse.StringPStream();
-var parser = new foam.parse.QueryParser(getClassInfo());
+var parser = new foam.parse.FScriptParser(this);
 var px = new foam.lib.parse.ParserContextImpl();` +
         validationPredicates
           .map((vp) => {

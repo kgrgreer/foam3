@@ -14,6 +14,7 @@ import foam.mlang.Expr;
 import foam.mlang.StringLength;
 import foam.mlang.expr.Dot;
 import foam.mlang.predicate.*;
+import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
 
 import java.lang.Exception;
@@ -145,17 +146,25 @@ public class FScriptParser
 
       Binary bin = ( Binary ) values[1];
       bin.setArg1((Expr) values[0]);
-      bin.setArg2((Expr) values[2]);
+      bin.setArg2(( values[2] instanceof Expr ) ?
+        ( Expr ) values[2] : new foam.mlang.Constant (values[2].equals("null") ? null : values[2]));
       return bin;
     });
 
 
-    grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(), new Literal("exists", new Has())));
+    grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
+      new Alt(
+        new Literal("exists", new Has()),
+        new Literal("!exists", new Not(new Has()))
+      )));
     grammar.addAction("UNARY", (val, x) -> {
       Object[] values = (Object[]) val;
-      Unary unary = (Unary) values[1];
-      unary.setArg1((Expr) values[0]);
-      return unary;
+      Predicate pred = (Predicate) values[2];
+      if ( pred instanceof Not ) {
+        ((Unary) ((Not) pred).getArg1()).setArg1((Expr) values[0]);
+      }
+      ((Unary) pred).setArg1((Expr) values[0]);
+      return pred;
     });
 
 
@@ -163,6 +172,9 @@ public class FScriptParser
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
       grammar.sym("STRING"),
+      new Literal("true", true),
+      new Literal("false", false),
+      new Literal("null", null),
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("FIELD")
@@ -171,6 +183,7 @@ public class FScriptParser
     grammar.addSymbol("REGEX", new Seq1(1, Literal.create("/"), new Until(Literal.create("/"))));
     grammar.addAction("REGEX", (val, x) -> Pattern.compile((String) val));
 
+//    grammar.addSymbol("BOOL", new Seq1(0, new Alt(new Literal("true", true), new Literal("false", false))));
 
     grammar.addSymbol("DATE", new Alt(
       new Seq(
@@ -278,7 +291,7 @@ public class FScriptParser
       }
     });
 
-    grammar.addSymbol("FIELD_LEN", new Seq1(0, grammar.sym("FIELD_LEN"), Literal.create("_len")));
+    grammar.addSymbol("FIELD_LEN", new Seq1(0, grammar.sym("FIELD"), Literal.create("_len")));
     grammar.addAction("FIELD_LEN", (val, x) -> new StringLength((Expr) val));
 
 
@@ -287,7 +300,7 @@ public class FScriptParser
     grammar.addAction("FIELD", (val, x) -> {
       Object[] values = (Object[]) val;
       var expr = (Expr) values[0];
-      if ( values.length > 0 ) {
+      if ( values.length > 0 && values[1] != null ) {
         Object[] values2 = (Object[]) values[1];
         var parts = (String[]) values2[1];
         for ( var i = 0 ; i < parts.length ; i++ ) {
