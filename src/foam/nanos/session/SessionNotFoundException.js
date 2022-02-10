@@ -6,7 +6,7 @@
 
 foam.CLASS({
   name: 'SessionNotFoundException',
-  package: 'foam.nanos.auth',
+  package: 'foam.nanos.session',
   extends: 'foam.core.ClientRuntimeException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
