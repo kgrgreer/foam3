@@ -38,23 +38,22 @@
 
     css: `
       ^ {
-        padding: 8px 16px;
-        cursor: pointer;
         background: white;
-        min-height: 50px;
+        border: solid 1px #e7eaec;
         border-radius: 3px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-        border: solid 1px #e7eaec;
-        background-color: #ffffff;
+        cursor: pointer;
+        min-height: 50px;
+        padding: 8px 16px;
       }
       ^msg {
+        display: -webkit-box;
+        color: /*%BLACK%*/ #1e1f21;
+        overflow: hidden;
+        text-overflow: ellipsis;
         word-wrap: break-word;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        display: -webkit-box;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        color: /*%BLACK%*/ #1e1f21;
       }
       ^notificationDiv {
         display: flex;
