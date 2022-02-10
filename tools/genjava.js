@@ -52,48 +52,6 @@ if ( process.argv.length > 4 && process.argv[4] !== '--' ) {
 var indir = path_.resolve(path_.normalize(process.argv[2]));
 
 
-foam.CLASS({
-  name: 'GenJavaModelRefinement',
-  refines: 'foam.core.Model',
-
-  methods: [
-    function ensurePath(p) {
-      var i     = 1 ;
-      var parts = p.split(path_.sep);
-      var path  = '/' + parts[0];
-
-      while ( i < parts.length ) {
-        try {
-          var stat = fs_.statSync(path);
-          if ( ! stat.isDirectory() ) throw path + 'is not a directory';
-        } catch(e) {
-          fs_.mkdirSync(path);
-        }
-
-        path += path_.sep + parts[i++];
-      }
-    },
-
-    function writeFileIfUpdated(outfile, javaSource, opt_result) {
-      if ( ! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == javaSource))) {
-        fs_.writeFileSync(outfile, javaSource);
-        opt_result?.push(outfile);
-      }
-    },
-
-    function genJava() {
-      var cls       = foam.lookup(this.id);
-      var javaClass = cls.buildJavaClass(); // Should be on Model?
-      console.log('generating(2)',  this.id + '.java');
-      var outfile = outdir + path_.sep + this.id.replace(/\./g, path_.sep) + '.java';
-      this.ensurePath(outfile);
-      this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
-    }
-  ]
-});
-
-
-
 function ensurePath(p) {
   var i     = 1 ;
   var parts = p.split(path_.sep);
@@ -225,7 +183,7 @@ function generateJava(cls) {
   generatedJava[cls.id] = true;
   var c2 = foam.maybeLookup(javaClass.id) || foam.CLASS(cls);
 if ( ! c2 ) debugger;
-  c2.model_.genJava();
+  c2.model_.targetJava(outdir);
   /*
   console.log('generating(1)', cls.id + '.java');
   var outfile = outdir + path_.sep + javaClass.id.replace(/\./g, path_.sep) + '.java';
@@ -237,7 +195,7 @@ if ( ! c2 ) debugger;
 }
 
 var missing = {};
-var found = {};
+var found   = {};
 
 for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
 
@@ -245,7 +203,7 @@ for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
 javaClasses.filter(c => ! foam.java.Class.isInstance(c)).forEach(function(/* foam.core.Class */ c) {
   if ( foam.Function.isInstance(c) ) c = c();
 
-  foam.lookup(c.id).model_.genJava();
+  foam.lookup(c.id).model_.targetJava(outdir);
 });
 
 javaClasses.filter(c => foam.java.Class.isInstance(c)).forEach(function(/* foam.java.Class */ c) {
@@ -299,10 +257,10 @@ function maybeGenerateJava(c) {
   }
 
   if ( c.model_.flags && ! c.model_.flags.includes('java') ) {
-    console.log('***** NOT GENERATING', c.id);
+    // console.log('***** NOT GENERATING', c.id);
     return;
   }
-  console.log('***** GENERATING', c.id);
+  // console.log('***** GENERATING', c.id);
   generateJava(c);
 }
 

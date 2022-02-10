@@ -80,7 +80,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AccountDisabledException", flags: [ "java" ] },
   { name: "foam/nanos/auth/AuthenticationException", flags: [ "java" ] },
   { name: "foam/nanos/auth/AuthorizationException", flags: [ "java" ] },
-  { name: "foam/nanos/auth/DeletedAware" },
+  { name: "foam/nanos/auth/DeletedAware", flags: [ "java" ] },
   { name: "foam/nanos/auth/DeletedAwareDAOTest", flags: [ "java" ] },
   { name: "foam/nanos/auth/DuplicateEmailException", flags: [ "java" ] },
   { name: "foam/nanos/auth/DuplicateUserNameException", flags: [ "java" ] },
@@ -102,7 +102,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/UserNotFoundException", flags: [ "java" ] },
   { name: "foam/nanos/auth/PermissionTableView" },
   { name: "foam/nanos/auth/LastModifiedAware", flags: [ "java" ] },
-  { name: "foam/nanos/auth/LastModifiedByAware" },
+  { name: "foam/nanos/auth/LastModifiedByAware", flags: [ "java" ] },
 //  { name: "foam/nanos/auth/ServiceProviderAware", flags: [ "java" ] },
   { name: "foam/nanos/auth/ServiceProviderAwareDAO", flags: [ "java" ] },
   { name: "foam/nanos/auth/ServiceProviderAwarePredicate", flags: [ "java" ] },
@@ -138,7 +138,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/ResetPassword" },
   { name: "foam/nanos/auth/RetrievePassword" },
   { name: "foam/nanos/auth/UpdatePassword" },
-  { name: "foam/nanos/auth/CreatedByAware" },
+  { name: "foam/nanos/auth/CreatedByAware", flags: [ "java" ] },
   { name: "foam/nanos/auth/CreatedByAwareDAO", flags: [ "java" ] },
   { name: "foam/nanos/auth/Subject", flags: [ "java" ] },
   { name: "foam/nanos/auth/PriorPassword", flags: [ "java" ] },
@@ -202,7 +202,7 @@ FOAM_FILES([
   { name: "foam/nanos/medusa/AnnouncePrimaryDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/BlockingDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClientElectoralService", flags: [ "java" ] },
-  { name: "foam/nanos/medusa/Clusterable" },
+  { name: "foam/nanos/medusa/Clusterable", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterableMixin" },
   { name: "foam/nanos/medusa/ClusterConfig", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigMonitor", flags: [ "java" ] },
@@ -358,7 +358,7 @@ FOAM_FILES([
   { name: "foam/nanos/google/api/sheets/views/modal/ColumnsToPropertiesMappingModal" },
   { name: "foam/nanos/google/api/sheets/views/modal/GoogleSheetImportModal" },
   { name: "foam/nanos/google/api/sheets/views/modal/ImportFromGoogleSheetsForm"},
-  { name: "foam/nanos/auth/Relationships" },
+  { name: "foam/nanos/auth/Relationships", flags: [ "java" ] },
   { name: "foam/nanos/NanoService", flags: [ "java" ] },
   { name: "foam/nanos/auth/twofactor/OTPKey", flags: [ "java" ] },
   { name: "foam/nanos/auth/AuthService", flags: [ "java" ] },
@@ -391,7 +391,7 @@ FOAM_FILES([
   { name: "foam/nanos/notification/email/SMTPEmailService", flags: [ "java" ] },
   { name: "foam/nanos/notification/email/Status", flags: [ "java" ] },
   { name: "foam/nanos/notification/push/PushService", flags: [ "java" ] },
-  { name: "foam/nanos/notification/push/FirebasePushService" },
+  { name: "foam/nanos/notification/push/FirebasePushService", flags: [ "java" ] },
   { name: "foam/nanos/notification/sms/SMSMessage", flags: [ "java" ] },
   { name: "foam/nanos/notification/sms/SMSService", flags: [ "java" ] },
   { name: "foam/nanos/notification/sms/SMSSetting", flags: [ "java" ] },
@@ -412,7 +412,7 @@ FOAM_FILES([
   { name: "foam/nanos/demo/relationship/CourseType", flags: [ "java" ] },
   { name: "foam/nanos/demo/relationship/Course", flags: [ "java" ] },
   { name: "foam/nanos/demo/relationship/Professor", flags: [ "java" ] },
-  { name: "foam/nanos/demo/relationship/Student" },
+  { name: "foam/nanos/demo/relationship/Student", flags: [ "java" ] }, // demo
   { name: "foam/nanos/demo/relationship/Controller" },
   { name: "foam/nanos/notification/ClientResendNotificationService", flags: [ "java" ] },
   { name: "foam/nanos/notification/EmailSetting", flags: [ "java" ] },
@@ -632,7 +632,7 @@ FOAM_FILES([
   { name: "foam/nanos/approval/ApprovalStatus", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestClassificationEnum", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestClassification", flags: [ "java" ] },
-  { name: "foam/nanos/approval/ApprovalRequest" },
+  { name: "foam/nanos/approval/ApprovalRequest", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestNotification", flags: [ "java" ] },
   { name: "foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView", flags: ["web"] },
   { name: "foam/nanos/approval/ApprovableAware", flags: [ "java" ] },
@@ -669,6 +669,8 @@ FOAM_FILES([
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification", flags: [ "java" ] },
 
-  { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] }
+  { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] },
+
+  { name: "foam/nanos/om/OMRuleAction", flags: [ "java" ] }
 
 ]);
