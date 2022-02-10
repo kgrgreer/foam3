@@ -33,7 +33,7 @@ FOAM_FILES([
   { name: "foam/nanos/fs/TempFile", flags: [ "java" ] },
   { name: "foam/nanos/crunch/AssociatedEntity", flags: [ "java" ] },
   { name: "foam/nanos/crunch/CapabilityGrantMode", flags: [ "java" ] },
-  { name: "foam/nanos/crunch/Capability" },
+  { name: "foam/nanos/crunch/Capability", flags: [ "java" ] },
   { name: "foam/nanos/auth/ServiceProvider", flags: [ "java" ] },
   { name: "foam/nanos/auth/test/DummySp", flags: [ "java" ] },
   { name: "foam/nanos/fs/TextSaveView", flags: ["web"] },
@@ -559,8 +559,8 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/lite/ruler/UCJApprovableValidateAction", flags: [ "java" ] },
 
   // crunch capability categories
-  { name: "foam/nanos/crunch/CapabilityCategory" },
-  { name: "foam/nanos/crunch/UserCapabilityJunctionRefine" },
+  { name: "foam/nanos/crunch/CapabilityCategory", flags: [ "java" ] },
+  { name: "foam/nanos/crunch/UserCapabilityJunctionRefine", flags: [ "java" ] },
   { name: "foam/nanos/crunch/CapabilityCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/CapabilityCategoryCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/RenewableData", flags: [ "java" ] },
