@@ -958,6 +958,7 @@ FOAM_FILES([
   { name: "foam/u2/wizard/WAO" },
   { name: "foam/u2/wizard/ProxyWAO" },
   { name: "foam/u2/wizard/NullWAO" },
+  { name: "foam/u2/wizard/XORMinMaxWAO" },
   { name: "foam/u2/wizard/axiom/WizardAction" },
   { name: "foam/u2/wizard/WizardPosition", flags: [ "java" ] },
   { name: "foam/u2/wizard/Wizardlet", flags: [ "java" ] },
