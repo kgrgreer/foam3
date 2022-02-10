@@ -378,6 +378,7 @@ var classes = [
   'foam.nanos.session.LocalSetting',
   'foam.nanos.session.LocalSettingSessionDAO',
   'foam.nanos.session.Session',
+  'foam.nanos.session.SessionNotFoundException',
   'foam.nanos.session.SessionService',
   'foam.nanos.session.SimpleSessionService',
   'foam.nanos.pool.AbstractFixedThreadPool',
