@@ -27,8 +27,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'documentation',
-      value: ''
+      name: 'documentation'
     }
   ]
 });
@@ -38,6 +37,7 @@ foam.CLASS({
   package: 'foam.core',
   name: 'MethodArgumentRefine',
   refines: 'foam.core.AbstractMethod',
+
   properties: [
     {
       class: 'FObjectArray',
@@ -79,12 +79,14 @@ foam.CLASS({
   refines: 'foam.core.AbstractMethod',
   package: 'foam.core',
   name: 'CreateChildRefines',
+
   documentation: `
     Overwrites the createChildMethod_ to merge in details from the parent method
     into the child method like return types, arguments, and any other method
     properties. This allows a model to not need to list these details when
     implementing an interface or overriding a parent's method.
   `,
+
   methods: [
     function createChildMethod_(child) {
       var result = child.clone();

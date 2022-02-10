@@ -23,7 +23,7 @@ foam = {
   isServer: false,
   ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {
     // from a static build, models have already been filtered so checkFlags can be a NOP
-    checkFlags: function(flags) { return true; }
+    //checkFlags: function(flags) { return true; }
   }),
   core:     {},
   checkFlags: function(flags) {
