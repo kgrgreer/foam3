@@ -259,14 +259,15 @@ foam.CLASS({
               .addClass(this.myClass('bottom-buttons'))
               .add(this.slot(function (data$isLastScreen, isLoading_) {
                 return this.E()
+                  .tag(this.data.OPEN_WIZARD_INSPECTOR)
                   .startContext({ data: self })
-                  .addClass(self.myClass('buttons'))
-                  .tag(this.GO_PREV, btn)
-                  .tag(this.GO_NEXT,
-                    data$isLastScreen
-                      ? { ...primaryBtn, label: this.ACTION_LABEL }
-                      : primaryBtn
-                  )
+                    .addClass(self.myClass('buttons'))
+                    .tag(this.GO_PREV, btn)
+                    .tag(this.GO_NEXT,
+                      data$isLastScreen
+                        ? { ...primaryBtn, label: this.ACTION_LABEL }
+                        : primaryBtn
+                    )
                   .endContext();
               }))
             .end()
