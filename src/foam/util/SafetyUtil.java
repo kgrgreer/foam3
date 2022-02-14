@@ -29,8 +29,8 @@ public class SafetyUtil {
 
   public static boolean equalsIgnoreCase(String o1, String o2) {
     if ( o1 == o2 )  return true;
-    if ( o1 == null || o2 == null ) return false;
-    return o1.compareToIgnoreCase(o2) == 0;
+    if ( o1 == null ) return false;
+    return o1.equalsIgnoreCase(o2);
   }
 
   public static int compare(Object o1, Object o2) {
