@@ -178,6 +178,7 @@ FOAM_FILES([
   { name: "foam/nanos/session/Session", flags: [ "java" ] },
   { name: "foam/nanos/session/SessionTimer" },
   { name: "foam/nanos/session/SessionService", flags: [ "java" ] },
+  { name: "foam/nanos/session/SessionNotFoundException", flags: [ "java" ] },
   { name: "foam/nanos/menu/XRegistration", flags: [ "java" ] },
   { name: "foam/nanos/menu/AbstractMenu", flags: [ "java" ] },
   { name: "foam/nanos/menu/DAOMenu" },

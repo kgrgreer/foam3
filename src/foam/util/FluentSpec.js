@@ -55,6 +55,14 @@ foam.INTERFACE({
   package: 'foam.util',
   name: 'FluentSpec',
 
+  documentation: `
+    Represents an operation to be performed on a Fluent object.
+    This can be used to specify Sequence steps in a journal.
+    For more information, see the following:
+    - foam.core.Fluent
+    - foam.u2.async.Sequence
+  `,
+
   methods: [
     {
       name: 'apply',
@@ -70,6 +78,10 @@ foam.CLASS({
   name: 'AddFluentSpec',
   implements: ['foam.util.FluentSpec'],
 
+  documentation: `
+    Specifies a call to .add() on a Fluent
+  `,
+
   properties: [
     {
       class: 'foam.util.FObjectSpec',
@@ -80,6 +92,57 @@ foam.CLASS({
   methods: [
     function apply(fluent) {
       fluent.add(this.spec);
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.util',
+  name: 'RemoveFluentSpec',
+  implements: ['foam.util.FluentSpec'],
+
+  documentation: `
+    Specifies a call to .remove() on a Fluent
+  `,
+
+  properties: [
+    {
+      class: 'String',
+      name: 'reference'
+    }
+  ],
+
+  methods: [
+    function apply(fluent) {
+      fluent.remove(this.reference);
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.util',
+  name: 'AddBeforeFluentSpec',
+  implements: ['foam.util.FluentSpec'],
+
+  documentation: `
+    Specifies a call to .addBefore() on a Fluent
+  `,
+
+  properties: [
+    {
+      class: 'String',
+      name: 'reference'
+    },
+    {
+      class: 'foam.util.FObjectSpec',
+      name: 'spec'
+    }
+  ],
+
+  methods: [
+    function apply(fluent) {
+      fluent.addBefore(this.reference, this.spec);
     }
   ]
 });

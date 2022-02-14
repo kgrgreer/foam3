@@ -256,6 +256,7 @@ foam.CLASS({
               .addClass(this.myClass('bottomnav'))
               .start()
                 .addClass(this.myClass('actions'))
+                .tag(this.data.OPEN_WIZARD_INSPECTOR)
                 .startContext({ data: self })
                   .tag(this.SUBMIT, {
                     label$: this.primaryLabel$,

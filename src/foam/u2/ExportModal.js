@@ -18,72 +18,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EXPORT', message: 'Export' },
+    { name: 'EXPORT',        message: 'Export' },
     { name: 'DATA_TYPE_MSG', message: 'Data Type' },
-    { name: 'RESPONSE', message: 'Response' }
+    { name: 'RESPONSE',      message: 'Response' }
   ],
 
   requires: [
-    'foam.u2.ModalHeader',
-    'foam.u2.layout.Cols'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'dataType',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.exportDriverRegistryDAO.where(X.data.predicate),
-          objToChoice: function(a) {
-            return [a.id, a.id];
-          },
-          placeholder: 'Select'
-        }, X);
-      },
-    },
-    {
-      name: 'isDataTypeSelected',
-      expression: function(dataType) {
-        return dataType != '';
-      }
-    },
-    {
-      name: 'note',
-      view: 'foam.u2.tag.TextArea',
-      value: ''
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.mlang.predicate.Predicate',
-      name: 'predicate',
-      factory: function() { return foam.mlang.predicate.True.create(); }
-    },
-    {
-      name: 'unknownExportDriverRegistry',
-      factory: function() { return foam.nanos.export.ExportDriverRegistry.create(); }
-    },
-    'exportData',
-    'exportObj',
-    {
-      name: 'exportAllColumns',
-      view: { class: 'foam.u2.CheckBox',  label: 'Export all columns'},
-      class: 'Boolean'
-    },
-    'exportDriverReg',
-    {
-      class: 'Boolean',
-      name: 'isConvertAvailable'
-    },
-    {
-      class: 'Boolean',
-      name: 'isDownloadAvailable'
-    },
-    {
-      class: 'Boolean',
-      name: 'isOpenAvailable'
-    },
-    'exportDriver'
+    'foam.u2.layout.Cols',
+    'foam.u2.ModalHeader'
   ],
 
   css: `
@@ -139,6 +81,64 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'String',
+      name: 'dataType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.exportDriverRegistryDAO.where(X.data.predicate),
+          objToChoice: function(a) {
+            return [a.id, a.id];
+          },
+          placeholder: 'Select'
+        }, X);
+      }
+    },
+    {
+      name: 'isDataTypeSelected',
+      expression: function(dataType) {
+        return dataType != '';
+      }
+    },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'predicate',
+      factory: function() { return foam.mlang.predicate.True.create(); }
+    },
+    {
+      name: 'unknownExportDriverRegistry',
+      factory: function() { return foam.nanos.export.ExportDriverRegistry.create(); }
+    },
+    'exportData',
+    'exportObj',
+    {
+      name: 'exportAllColumns',
+      view: { class: 'foam.u2.CheckBox',  label: 'Export all columns'},
+      class: 'Boolean'
+    },
+    'exportDriverReg',
+    {
+      class: 'Boolean',
+      name: 'isConvertAvailable'
+    },
+    {
+      class: 'Boolean',
+      name: 'isDownloadAvailable'
+    },
+    {
+      class: 'Boolean',
+      name: 'isOpenAvailable'
+    },
+    'exportDriver'
+  ],
+
   methods: [
     function render() {
       var self = this;
@@ -154,7 +154,7 @@ foam.CLASS({
             self.exportDriver = undefined;
           } else {
             self.exportDriverReg = val;
-            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();           
+            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
           }
         });
       });
@@ -298,5 +298,4 @@ foam.CLASS({
       }
     }
   ]
-
 });
