@@ -39,7 +39,6 @@
 
     return function (filename) {
       if ( ! filename ) return;
-      // console.log('Loading...', filename);
       // Set document.currentScript.src, as expected by EndBoot.js
       let normalPath = globalThis.imports.path.relative(
         '.',
@@ -55,7 +54,7 @@
     var seen = {};
     var SAFE = foam.SAFE || {};
     files.
-      filter(f => {
+     filter(f => {
         if ( ! f.flags || ( ! f.flags.includes('swift') && ! f.flags.includes('node') ) ) {
           var caller = flags.src || __filename;
           var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
@@ -64,7 +63,6 @@
         if ( foam.checkFlags(f.flags) ) {
           return true;
         }
-//        console.log('****************************** NOT LOADING ', f.name, f.flags);
         return true;
       }).
       filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
@@ -73,7 +71,6 @@
         foam = globalThis.foam;
         foam.currentFlags = f.flags || [];
 
-        // console.log('******* LOADING WITH FLAGS ', f.name, globalThis.foam.currentFlags);
         var count1 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
         load(f.name);
         var count2 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
