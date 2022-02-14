@@ -189,6 +189,7 @@ FOAM_FILES([
   { name: "foam/util/test/DummyNuid", flags: [ "java" ] },
   { name: "foam/util/test/UIDGeneratorTest", flags: [ "java" ] },
   { name: "foam/util/test/UIDUniquenessTest", flags: [ "java" ] },
+  { name: "foam/util/test/SafetyUtilTest", flags: [ "java" ] },
   { name: "foam/util/uid/GlobalSearchService", flags: [ "java" ] },
   { name: "foam/util/uid/FuidSearchService", flags: [ "java" ] },
   { name: "foam/util/uid/ClientGlobalSearchService", flags: [ "java" ] },
