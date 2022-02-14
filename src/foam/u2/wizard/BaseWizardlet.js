@@ -167,6 +167,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'FObjectArray',
+      of: 'foam.u2.wizard.BaseWizardlet',
+      name: 'prerequisiteWizardlets'
+    },
+    {
       name: 'wao',
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.WAO',
