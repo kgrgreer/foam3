@@ -217,7 +217,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title==""||comment!=""||externalComment!=""',
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -368,7 +368,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title==""||comment==""||externalComment==""',
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
