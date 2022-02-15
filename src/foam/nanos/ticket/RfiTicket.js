@@ -4,16 +4,12 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.ticket',
   name: 'RfiTicket',
   extends: 'foam.nanos.ticket.Ticket',
 
   documentation: 'Request for information ticket.',
-
-  imports: [
-    'appConfig'
-  ],
 
   javaImports: [
     'foam.dao.DAO',
@@ -43,15 +39,6 @@
       class: 'String',
       name: 'documentType',
       section: 'infoSection'
-    },
-    {
-      class: 'String',
-      name: 'url',
-      section: 'infoSection',
-      visibility: 'RO',
-      expression: function(appConfig, sessionToken) {
-        return appConfig.url + '?sessionId=' + sessionToken + '#request-information';
-      }
     },
     {
       class: 'String',
@@ -90,5 +77,4 @@
       `
     }
   ]
-
 });

@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.nanos.auth.twofactor',
   name: 'OTPAuthService',
 
+  proxy: true,
+  skeleton:true,
+
   documentation: 'One-time password auth service',
 
   methods: [

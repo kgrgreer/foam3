@@ -162,7 +162,8 @@ foam.CLASS({
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,
-              maxSelected$: this.max$
+              maxSelected$: this.max$,
+              choiceView: { class: 'foam.u2.view.CardSelectView', largeCard: true }
             }
           })
         ];
@@ -209,9 +210,27 @@ foam.CLASS({
   ],
 
   methods: [
-    function addPrerequisite(wizardlet) {
-      wizardlet.isAvailable = false;
+    function addPrerequisite(wizardlet, opt_meta) {
+      const meta = {
+        lifted: false,
+        ...opt_meta
+      };
       this.choiceWizardlets.push(wizardlet);
+
+      // Auto-select lifted capabilities if they're available to start with
+      if ( meta.lifted && wizardlet.isAvailable ) {
+        this.selectedData = [...( this.selectedData || [] ), wizardlet.capability];
+      
+        // Hide choice selection if maximum is reached by capability lifting
+        if ( this.selectedData.length >= this.max ) {
+          this.isVisible = false;
+        }
+      }
+      
+      // isAvailable defaults to false if this MinMax is in control of the
+      //   prerequisite wizardlet
+      if ( ! meta.lifted ) wizardlet.isAvailable = false;
+
       return this.consumePrerequisites;
     }
   ]

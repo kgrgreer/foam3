@@ -145,5 +145,5 @@ p({
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.OWNER })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.LAST_RUN });
   """,
-  "client":"{\"of\":\"foam.nanos.cron.ScriptEvent\"}"
+  "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })

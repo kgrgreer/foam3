@@ -1,0 +1,41 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.theme",
+  "label":"Themes",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"spThemeDAO"
+    }
+  },
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.theme-all",
+  "label":"Themes - All",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"themeDAO"
+    }
+  },
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.themedomain",
+  "label":"Theme Domains",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"themeDomainDAO"
+    }
+  },
+  "parent":"admin"
+})

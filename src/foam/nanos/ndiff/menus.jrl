@@ -1,0 +1,20 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"ndiffs",
+  "label":"NDiffs",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ndiffDAO",
+      "summaryView": {
+        "class": "foam.u2.view.TableView",
+        "editColumnsEnabled": true,
+        "css": {
+          "width": "100%"
+        }
+      }
+    }
+  },
+  "parent":"admin"
+})

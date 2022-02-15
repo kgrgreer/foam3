@@ -7,6 +7,9 @@
 foam.INTERFACE({
   package: 'foam.nanos.test',
   name: 'EchoService',
+
+  skeleton: true,
+
   methods: [
     {
       name: 'echo',

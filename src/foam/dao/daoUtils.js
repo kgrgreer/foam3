@@ -245,6 +245,8 @@ foam.CLASS({
   name: 'LocalStorageDAO',
   extends: 'foam.dao.ArrayDAO',
 
+  flags: [],
+
   properties: [
     {
       name:  'name',

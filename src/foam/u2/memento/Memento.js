@@ -321,12 +321,12 @@ foam.CLASS({
       name: 'memento_',
       documentation: 'Memento bound to this object.',
       hidden: true,
-      initObj: function() {
+      initObject: function(obj) {
         // If no top-level Memento found, then create a WindowHashMemento to be
         // the top-level one.
-        this.memento_ = this.parentMemento_ ?
-          this.Memento.create({obj: this, memento_: this.parentMemento_}, this) :
-          this.WindowHashMemento.create({obj: this}, this);
+        return obj.parentMemento_ ?
+          obj.Memento.create({obj: obj, memento_: this.parentMemento_}, obj) :
+          obj.WindowHashMemento.create({obj: obj}, obj);
       }
     }
   ],

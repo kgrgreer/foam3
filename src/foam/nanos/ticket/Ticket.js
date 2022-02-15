@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.Date'
   ],
@@ -76,8 +77,12 @@ foam.CLASS({
       message: 'You have successfully unassigned this ticket'
     },
     {
+      name: 'SUCCESS_CLOSED',
+      message: 'You have successfully closed this ticket'
+    },
+    {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A ticket assigned to you has been updated'
+      message: 'A ticket assigned to you has been updated '
     }
   ],
 
@@ -399,19 +404,23 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .build();
-            findAssignedTo(x).doNotify(x, notification);
+            try {
+              findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+            } catch (NullPointerException e) {
+              notificationDAO.put_(x, notification);
+            }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
             Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION + getId())
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
               .build();
@@ -419,11 +428,15 @@ foam.CLASS({
           }
         } else if ( getCreatedFor() != 0 ){
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .build();
-          findCreatedFor(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getCreatedFor()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         }
       `
     },
@@ -434,17 +447,21 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
             .build();
-            findAssignedTo(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
           Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION + getId())
             .setGroupId(getAssignedToGroup())
             .setSpid(getSpid())
             .build();
@@ -490,9 +507,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
-          throw new AuthorizationException("You don't have permission to update this ticket.");
-        }
+        // The creator of the ticket can update
+        if ( user.getId() == this.getCreatedBy() ) return;
+
+        // The assignee of the ticket can update
+        Ticket oldTicket = (Ticket) ((DAO) x.get("localTicketDAO")).find(this.getId());
+        if ( user.getId() == this.getAssignedTo() || user.getId() == oldTicket.getAssignedTo() ) return;
+
+        // Group with update permission can update
+        if ( auth.check(x, "ticket.update." + this.getId()) ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
@@ -515,14 +540,14 @@ foam.CLASS({
         return true;
       },
       isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
+        return id && status !== 'CLOSED';
       },
       code: function() {
         this.status = 'CLOSED';
         this.assignedTo = 0;
         this.ticketDAO.put(this).then(function(ticket) {
           this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
         }.bind(this));
       }
     },

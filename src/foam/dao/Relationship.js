@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'Relationship',
   implements: [{ path: 'foam.mlang.Expressions', java: false }],
 
+  flags: [],
+
   documentation: 'An Axiom for defining Relationships between models.',
 
   requires: [
@@ -176,8 +178,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       expression: function(flags) {
-        var enabledFlags = Object.keys(globalThis.FOAM_FLAGS)
-          .filter(f => globalThis.FOAM_FLAGS[f]);
+        var enabledFlags = Object.keys(globalThis.foam.flags)
+          .filter(f => globalThis.foam.flags[f]);
         return foam.util.flagFilter(enabledFlags)(this);
       }
     },
@@ -677,6 +679,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'OneToManyRelationshipAxiom',
 
+  flags: [],
+
   requires: [
     'foam.dao.OneToManyRelationshipMethod',
     'foam.dao.OneToManyRelationshipProperty',
@@ -754,6 +758,8 @@ foam.CLASS({
   name: 'OneToManyRelationshipProperty',
   extends: 'foam.dao.DAOProperty',
 
+  flags: [],
+
   properties: [
     {
       name: 'visibility',
@@ -793,6 +799,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'OneToManyRelationshipMethod',
   extends: 'foam.core.Method',
+
+  flags: [],
 
   properties: [
     {
@@ -874,6 +882,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipAxiom',
+
+  flags: [],
 
   requires: [
     'foam.dao.ManyToManyRelationshipProperty',
@@ -961,6 +971,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipMethod',
   extends: 'foam.core.Method',
+
+  flags: [],
 
   properties: [
     {
@@ -1061,6 +1073,9 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'ManyToManyRelationshipProperty',
   extends: 'FObjectProperty',
+
+  flags: [],
+
   properties: [
     {
       name: 'flags',

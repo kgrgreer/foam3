@@ -11,6 +11,17 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
+  constants: [
+    {
+      name: 'NSPEC_CTX_KEY',
+      type: 'String',
+      value: 'NSPEC_CTX_KEY',
+      documentation: `
+      Constant for addressing the NSpec through the context
+      `
+    }
+  ],
+
   requires: [
     {
       path: 'foam.comics.BrowserView',
@@ -134,7 +145,7 @@ foam.CLASS({
       }
     },
     {
-      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, o as to avoid the synchronization overhead associated with accessing the created singleton service.`,
+      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, as to avoid the synchronization overhead associated with accessing the created singleton service.`,
       class: 'Boolean',
       name: 'threadLocalEnabled',
       value: false
