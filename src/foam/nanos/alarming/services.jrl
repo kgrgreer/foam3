@@ -40,7 +40,6 @@ p({
   "serve":true,
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
-      .setLastModifiedAware(true)
       .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
