@@ -818,6 +818,7 @@ var classes = [
   'foam.nanos.pool.ThreadPoolAgency',
   'foam.nanos.pool.AbstractFixedThreadPool',
   'foam.nanos.om.OMLogger',
+  'foam.nanos.om.OMRuleAction',
   'foam.nanos.session.SimpleSessionService',
   'foam.nanos.session.SessionService',
   'foam.nanos.session.Session',

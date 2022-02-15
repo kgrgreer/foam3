@@ -65,6 +65,7 @@ FOAM_FILES([
   { name: 'foam/nanos/alarming/MonitoringReport' },
   { name: 'foam/nanos/alarming/MonitorType' },
   { name: 'foam/nanos/alarming/OMName' },
+  { name: 'foam/nanos/om/OMRuleAction', flags: ['java'] },
   { name: "foam/nanos/auth/DayOfWeek" },
   { name: "foam/nanos/auth/Hours" },
   { name: "foam/nanos/auth/PropertyType" },
