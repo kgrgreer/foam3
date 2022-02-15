@@ -86,9 +86,7 @@ foam.CLASS({
         },
         {
           args: ['passwordAvailable'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.nanos.auth.UpdatePassword.PASSWORD_AVAILABLE, true);
-          },
+          query: 'passwordAvailable==true',
           errorMessage: 'WEAK_PASSWORD_ERR'
         }
       ]
