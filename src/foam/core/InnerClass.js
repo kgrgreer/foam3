@@ -121,9 +121,13 @@ foam.CLASS({
       // passing the model definition as model:, rather than
       // as all of the arguments to create().
       adaptArrayElement: function(o) {
-        return foam.core.InnerClass.isInstance(o) ? o :
+        var ic = foam.core.InnerClass.isInstance(o) ? o :
           o.model ? foam.core.InnerClass.create(o) :
           foam.core.InnerClass.create({model: o});
+
+        if ( ! ic.model_.flags ) ic.model_.flags = this.flags;
+
+        return ic;
       }
     }
   ]

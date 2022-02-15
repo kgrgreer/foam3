@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'BaseWizardlet',
 
+  todo: [
+    'rename wizardlet.loading to wizardlet.busy',
+    'add support for notification banner'
+  ],
+
   topics: ['saveEvent'],
 
   implements: [
@@ -134,6 +139,15 @@ foam.CLASS({
       transient: true,
       class: 'FObjectArray',
       of: 'foam.u2.wizard.WizardletSection',
+      preSet: function (_, val) {
+        // Set 'wizardlet' reference in case this was configured in a journal.
+        // Note: when this preSet was added it broke FlatteningCapabilityWizardlet.
+        //   Now FlatteningCapabilityWizardlet overrides this preSet.
+        for ( let wizardletSection of val ) {
+          wizardletSection.wizardlet = this;
+        }
+        return val;
+      },
       factory: function () {
         var sections = foam.u2.detail.AbstractSectionedDetailView.create({
           of: this.of,
@@ -151,6 +165,11 @@ foam.CLASS({
         this.updateVisibilityFromSectionCount();
         return sections;
       }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.u2.wizard.BaseWizardlet',
+      name: 'prerequisiteWizardlets'
     },
     {
       name: 'wao',
@@ -265,10 +284,14 @@ foam.CLASS({
   ],
 
   listeners: [
-    function updateVisibilityFromSectionCount() {
-      if ( ! this.sections ) return;
-      this.atLeastOneSectionVisible_ = this.sections.filter(
-        v => v.isAvailable).length > 0;
+    {
+      name: 'updateVisibilityFromSectionCount',
+      isFramed: true,
+      code: function() {
+        if ( ! this.sections ) return;
+        this.atLeastOneSectionVisible_ = this.sections.filter(
+          v => v.isAvailable).length > 0;
+      }
     }
   ]
 });

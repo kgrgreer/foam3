@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.i18n',
   name: 'TranslationService',
 
+  proxy: true,
+  skeleton: true,
+
   methods: [
     {
       name: 'getTranslations',
@@ -30,7 +33,7 @@ foam.INTERFACE({
         {
           name: 'defaultText',
           type: 'String',
-          documentation: 'text to be translated'
+          documentation: 'The default text'
         }
       ],
       type: 'String'

@@ -20,7 +20,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'stack',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -91,11 +91,11 @@ foam.CLASS({
       code: function(X) {
         var self = this;
 
-        this.emailToken.generateToken(null, this.user).then(function(result) {
+        this.emailToken.generateToken(null, this.subject.user).then(function(result) {
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.notify('Verification Email Sent', 'Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
+          self.notify('Verification Email Sent', 'Verification email sent to ' + self.subject.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
           self.notify(err.message, '', self.LogLevel.ERROR, true);
         });

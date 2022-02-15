@@ -15,13 +15,15 @@ foam.CLASS({
     'foam.u2.stack.StackBlock'
   ],
   imports: [
-    'data',
     'dashboardController',
-    'stack',
-    'translationService'
+    'stack'
   ],
 
   css: `
+    ^ {
+      position: relative;
+      height: 100%;
+    }
     ^center {
       height: 100%;
       display: flex;
@@ -72,7 +74,7 @@ foam.CLASS({
         full TableView of the given dao. If false, the Table will default to scroll.
       `,
       postSet: function() {
-        if ( this.viewMore ) this.data.limit = 6;
+        if ( this.viewMore ) this.limit = 5;
       }
     },
     {
@@ -91,17 +93,20 @@ foam.CLASS({
     {
       class: 'String',
       name: 'emptySubTitle'
-    }
+    },
+    'dao',
+    ['limit', 5],
+    'mode'
   ],
 
   methods: [
     function init() {
-      this.onDetach(this.dashboardController.sub('dashboard', 'update', this.fetchValues));
+      if ( this.dashboardController ) {
+        this.onDetach(this.dashboardController.sub('dashboard', 'update', this.fetchValues));
+      }
     },
     function render() {
       var self = this;
-      var emptyTitle_ = this.translationService.getTranslation(foam.locale, this.emptyTitle, this.emptyTitle);
-      var emptySubTitle_ = this.translationService.getTranslation(foam.locale, this.emptySubTitle, this.emptySubTitle);
       this.fetchValues();
       this
         .addClass(this.myClass())
@@ -113,20 +118,19 @@ foam.CLASS({
           return e
             .callIf(currentValues.length == 0, function() {
               e.start().addClass(self.myClass('center'))
-                .start().addClass('p-semiBold').add(emptyTitle_).end()
-                .start().addClass('p').add(emptySubTitle_).end()
+                .start().addClass('p-semiBold').translate(self.emptyTitle, self.emptyTitle,).end()
+                .start().addClass('p').translate(self.emptySubTitle, self.emptySubTitle).end()
               .end();
             })
             .forEach(currentValues, function(obj) {
               e.start().addClass('table-row')
                 .start({
                   class: self.citationView,
-                  data: obj,
-                  of: self.data.of
+                  data: obj
                 })
                .end();
            })
-           .callIf(self.viewMore && currentValues.length >= self.data.limit, function() {
+           .callIf(self.viewMore && currentValues.length >= self.limit, function() {
               e.start()
               .addClass('view-more')
               .startContext({data: self})
@@ -148,7 +152,7 @@ foam.CLASS({
         this.stack.push(this.StackBlock.create({
           view: {
             class: this.DAOBrowseControllerView,
-            data: this.data.dao,
+            data: this.__subContext__[this.dao],
           }, parent: this.__subContext__ 
         }));
       }
@@ -160,7 +164,7 @@ foam.CLASS({
       name: 'fetchValues',
       code: function() {
         var self = this;
-        self.data.dao.limit(self.data.limit).select().then((objects) => {
+        self.__subContext__[self.dao].limit(self.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;

@@ -125,19 +125,8 @@ foam.LIB({
       var cls;
 
       if ( this.refines ) {
-        // TODO This should probably live elsewhere.
-        if ( this.flags && globalThis.FOAM_FLAGS ) {
-          var flagged = false;
-          for ( var i = 0 ; i < this.flags.length ; i++ ) {
-            if ( globalThis.FOAM_FLAGS[this.flags[i]] ) {
-              flagged = true;
-              break;
-            }
-          }
-
-          if ( ! flagged ) {
-            return context.lookup(this.refines);
-          }
+        if ( ! foam.checkFlags(this.flags ) ) {
+          return context.lookup(this.refines);
         }
 
         cls = context.lookup(this.refines);
@@ -228,7 +217,7 @@ foam.LIB({
       foam.xmsg = globalThis.window && ( globalThis.window.location.href.indexOf('XMSG') != -1 );
     },
 
-    /** Start second phase of bootstrap process. */
+    /** Start second phase of bootstrap process. Called at end of Method.js. */
     function phase2() {
       // Add a pubsub to foam for class definitions
       foam.pubsub = foam.core.FObject.create();
@@ -274,15 +263,21 @@ foam.LIB({
     },
 
     function phase3() {
-      // Substitute foam.core.installModel() with simpler axiom-only version.
+      /*
+        Substitute foam.core.installModel() with simpler axiom-only version.
+        Called in EndBoot.js
+      */
       foam.core.FObject.installModel = function installModel(m) {
         if ( m.source ) m.axioms_.forEach(function(a) { a.source = m.source; });
         this.installAxioms(m.axioms_);
       };
     },
 
-    /** Finish the bootstrap process, deleting foam.boot when done. */
     function end() {
+      /*
+        Finish the bootstrap process, deleting foam.boot when done.
+        Called in EndBoot.js
+      */
       var Model = foam.core.Model;
 
       // Update psedo-Models to real Models

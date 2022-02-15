@@ -55,6 +55,13 @@ This is the heart of Medusa.`,
 
   javaCode: `
     protected Object promoterLock_ = new Object();
+
+    protected ThreadLocal<JSONParser> parser_ = new ThreadLocal<JSONParser>() {
+      @Override
+      protected JSONParser initialValue() {
+        return getX().create(JSONParser.class);
+      }
+    };
   `,
 
   properties: [
@@ -378,74 +385,74 @@ This is the heart of Medusa.`,
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ||
              ! config.getIsPrimary() ) {
-            // TODO: cache cls for nspecName
-            DAO dao = support.getMdao(x, entry.getNSpecName());
-            Class cls = null;
-            if ( dao instanceof foam.dao.ProxyDAO ) {
-              cls = ((foam.dao.ProxyDAO) dao).getOf().getObjClass();
-            } else if ( dao instanceof foam.dao.MDAO ) {
-              cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
-            } else {
-              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class");
-              Alarm alarm = new Alarm("Unknown class");
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              throw new MedusaException("Unknown class");
-            }
+          DAO dao = support.getMdao(x, entry.getNSpecName());
           FObject nu = null;
           String data = entry.getData();
           if ( ! SafetyUtil.isEmpty(data) ) {
             try {
-              nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
+              nu = parser_.get().parseString(entry.getData());
             } catch ( RuntimeException e ) {
               Throwable cause = e.getCause();
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData(), e);
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData());
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
               throw new MedusaException("Failed to parse");
             }
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
               if ( ! old.getClassInfo().isInstance(nu) ) {
-                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+              } else {
+                try {
+                  nu = old.fclone().overlay(nu);
+                } catch ( ClassCastException e ) {
+                  getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                  ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, old, "Class change, old discarded"));
+                }
               }
-              nu = old.fclone().overlay(nu);
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
-            FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
+            FObject tran = parser_.get().parseString(entry.getTransientData());
             if ( tran == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
               Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
             } else {
               if ( nu == null ) {
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
                   if ( ! old.getClassInfo().isInstance(nu) ) {
-                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+                  } else {
+                    try {
+                      nu = old.fclone().overlay(nu);
+                    } catch ( ClassCastException e ) {
+                      getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                    }
                   }
-                  nu = old.fclone().overlay(nu);
                 }
               } else {
                 nu = nu.overlay(tran);

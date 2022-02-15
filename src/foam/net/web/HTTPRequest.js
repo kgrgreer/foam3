@@ -159,6 +159,7 @@ foam.CLASS({
         return Promise.reject(resp);
       }.bind(this));
     },
+
     function addContentHeaders() {
       // Specify Content-Type header when it can be deduced.
       if ( ! this.headers['Content-Type'] ) {

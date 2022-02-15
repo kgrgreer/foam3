@@ -165,7 +165,9 @@ foam.CLASS({
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
             }
-            delegate = getJournalDelegate(getX(), delegate);
+            // hook for NDiff-related stuff downstream
+            // code in JDAO.js is looking for nSpecName set in a subX
+            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_CTX_KEY, getNSpec()), delegate);
           }
         }
 
@@ -195,11 +197,18 @@ foam.CLASS({
 
         if ( getCluster() &&
              getMdao() != null ) {
-          logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
-          delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
+          if ( getSAF() ) {
+            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();
+            .build();   
+          } else {
+            logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
+            delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
+              .setNSpec(getNSpec())
+              .setDelegate(delegate)
+              .build();   
+          }
         }
 
         if ( getServiceProviderAware() ) {
@@ -666,6 +675,12 @@ foam.CLASS({
       javaFactory: `
       return foam.util.SafetyUtil.equals("true", System.getProperty("CLUSTER", "false"));
       `
+    },
+    {
+      documentation: 'Store and forward this DAO',
+      name: 'SAF',
+      class: 'Boolean',
+      value: false
     },
     {
       documentation: 'Simpler alternative than providing serverBox.',
