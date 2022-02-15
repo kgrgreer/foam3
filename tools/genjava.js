@@ -17,25 +17,24 @@ globalThis.FOAM_FLAGS = {
   'swift':   false
 };
 
+function load(fn) {
+  if ( globalThis.foam ) globalThis.foam.flags.src = fn.substring(0, fn.indexOf('/src/')+5);
+  require(fn);
+}
+
 // TODO: take from command line
-require('../src/foam_node.js');
-require('../src/foam/nanos/nanos.js');
-require('../src/foam/support/support.js');
-
-//require('../../interac/src/net/nanopay/interac/files.js');
-
-// TODO: clean this up, shouldn't be required
-globalThis.foam.flags.src = '../../nanopay/src/';
-
-require('../../nanopay/src/net/nanopay/files.js');
-require('../../nanopay/src/net/nanopay/iso8583/files.js');
-require('../../nanopay/src/net/nanopay/flinks/utils/files.js');
-require('../../nanopay/src/net/nanopay/fx/ascendantfx/model/files.js');
-require('../../nanopay/src/net/nanopay/kotak/model/paymentResponse/files.js');
-require('../../nanopay/src/net/nanopay/kotak/model/reversal/files.js');
-require('../../nanopay/src/net/nanopay/kotak/model/paymentRequest/files.js');
-require('../../nanopay/src/net/nanopay/partner/scotiabank/api/files.js');
-require('../../nanopay/src/net/nanopay/iso20022/files.js');
+load('../src/foam_node.js');
+load('../src/foam/nanos/nanos.js');
+load('../src/foam/support/support.js');
+load('../../nanopay/src/net/nanopay/files.js');
+load('../../nanopay/src/net/nanopay/iso8583/files.js');
+load('../../nanopay/src/net/nanopay/flinks/utils/files.js');
+load('../../nanopay/src/net/nanopay/fx/ascendantfx/model/files.js');
+load('../../nanopay/src/net/nanopay/kotak/model/paymentResponse/files.js');
+load('../../nanopay/src/net/nanopay/kotak/model/reversal/files.js');
+load('../../nanopay/src/net/nanopay/kotak/model/paymentRequest/files.js');
+load('../../nanopay/src/net/nanopay/partner/scotiabank/api/files.js');
+load('../../nanopay/src/net/nanopay/iso20022/files.js');
 
 var srcPath = __dirname + "/../src/";
 
