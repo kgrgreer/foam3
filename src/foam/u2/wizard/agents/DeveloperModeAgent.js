@@ -26,6 +26,7 @@ foam.CLASS({
 
   methods: [
     async function execute() {
+      if ( await this.__subContext__.auth.isAnonymous() ) return;
       const usersJunctions = (await this.userCapabilityJunctionDAO.select()).array;
       const developerCapability = usersJunctions.find(j => j.targetId === 'developer');
       this.developerMode = developerCapability !== undefined;
