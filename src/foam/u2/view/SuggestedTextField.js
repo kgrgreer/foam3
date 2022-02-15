@@ -135,7 +135,8 @@
            .start(self.rowView, { data: obj })
              .addClass(self.myClass('row'))
              .on('mousedown', function() {
-                //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick otherwise when using click the blur gets fired first and the row listener is never called
+                //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
+                //otherwise when using click the blur gets fired first and the row listener is never called
                 self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
              })
            .end()
