@@ -16,6 +16,10 @@
     'foam.u2.TextField'
   ],
 
+  imports: [
+    'onRowSelect?'
+  ],
+
   css: `
     ^suggestions {
       background-color: /*%WHITE%*/ #ffffff;
@@ -75,9 +79,6 @@
       }
     },
     {
-      name: 'ctx'
-    },
-    {
       class: 'String',
       name: 'title',
       factory: function() {
@@ -134,7 +135,8 @@
            .start(self.rowView, { data: obj })
              .addClass(self.myClass('row'))
              .on('mousedown', function() {
-               self.onSelect.call(self, obj, self.ctx)
+                //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick otherwise when using click the blur gets fired first and the row listener is never called
+                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
              })
            .end()
         })
