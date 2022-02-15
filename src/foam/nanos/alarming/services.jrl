@@ -29,8 +29,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setRuler(true)
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.MonitoringReport.NAME });
+      .build();
   """,
   "client":"{\"of\":\"foam.nanos.alarming.MonitoringReport\"}"
 })
