@@ -97,6 +97,18 @@ foam.CLASS({
       // TODO: make sure that DOM is updated if values don't change
       this.setAttribute('readonly', mode === foam.u2.DisplayMode.RO);
       this.setAttribute('disabled', mode === foam.u2.DisplayMode.DISABLED);
-    }
+    },
+
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      if ( ! this.hasOwnProperty('onKey') ) {
+        this.onKey = p.hasOwnProperty('onKey') ? p.onKey : p.validateObj;
+      }
+
+      if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
+
+      this.ariaLabel = p.label || p.name;
+    },
   ]
 });
