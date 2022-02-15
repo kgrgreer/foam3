@@ -384,6 +384,7 @@ var classes = [
   'foam.nanos.pool.AbstractFixedThreadPool',
   'foam.nanos.pool.ThreadPoolAgency',
   'foam.nanos.om.OMLogger',
+  'foam.nanos.om.OMRuleAction',
   'foam.nanos.pool.AbstractFixedThreadPool',
   'foam.nanos.pool.ThreadPoolAgency',
   'foam.nanos.jetty.JettyThreadPoolConfig',
