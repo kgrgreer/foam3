@@ -30,6 +30,22 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core',
+  name: 'IdentifiedStringHolder',
+
+  properties: [
+    {
+      name: 'id',
+      class: 'String'
+    },
+    {
+      name: 'value',
+      class: 'String'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
   name: 'BooleanHolder',
 
   properties: [
