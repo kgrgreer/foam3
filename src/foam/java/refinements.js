@@ -2262,8 +2262,10 @@ foam.CLASS({
     },
 
     function targetJava(outdir) {
+      if ( ! this.flags || ! this.flags.includes('java') ) return false;
       var cls = foam.lookup(this.id);
       this.outputJavaClass(outdir, cls.buildJavaClass());
+      return true;
     }
   ]
 });
@@ -2276,10 +2278,9 @@ foam.CLASS({
 
   methods: [
     function targetJava(outdir) {
-      this.SUPER(outdir);
+      if ( ! this.SUPER(outdir) ) return;
 
       if ( this.proxy ) {
-        debugger;
         var proxy = foam.core.Model.create({
           package: this.package,
           name: 'Proxy' + this.name,
@@ -2303,6 +2304,8 @@ foam.CLASS({
         var javaClass = foam.java.Skeleton.create({of: this.id, flags: [ 'java' ]}).buildJavaClass();
         this.outputJavaClass(outdir, javaClass);
       }
+
+      return true;
     }
   ]
 });
