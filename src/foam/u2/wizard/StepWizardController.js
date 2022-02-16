@@ -74,6 +74,10 @@ foam.CLASS({
           wizardletIndex: 0,
           sectionIndex: 0,
         });
+      },
+      preSet: function(_, n){
+        this.wizardlets[n.wizardletIndex].load()
+        return n;
       }
     },
 
