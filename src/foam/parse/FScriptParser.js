@@ -186,17 +186,15 @@ foam.CLASS({
             ),
 
           fieldLen: seq(
-            sym('field'),'_len'),
+            sym('field'),'.len'),
 
           field: seq(
             sym('fieldname'),
-            optional(seq('.', repeat(sym('word'), '.')))),
+            optional(seq(notChars('len'), '.', repeat(sym('word'), '.')))),
 
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
             '"')),
-
-//          bool: seq1(0, alt(literal('true', true), literal('false', false))),
 
           word: str(repeat(sym('char'), null, 1)),
 
@@ -319,6 +317,12 @@ foam.CLASS({
               }
             }
             return new Date(...args);
+          },
+          word: function(v) {
+            if ( v == "len" ) {
+              return null;
+            }
+            return v;
           }
         };
 
