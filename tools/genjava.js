@@ -6,12 +6,6 @@
 
 // TODO: catch syntax errors
 
-process.on('unhandledRejection', function(e) {
-  console.error("ERROR: Unhandled promise rejection ", e);
-  process.exit(1);
-});
-
-
 var path_ = require('path');
 
 var flags = globalThis.FOAM_FLAGS = {
