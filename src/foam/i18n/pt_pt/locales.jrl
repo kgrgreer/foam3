@@ -435,6 +435,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.MultiChoiceView.DAO
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ColumnConfigPropView.RESET_COLUMNS.label",target:"Redefinir Colunas"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.SuggestedTextField.SUGGESTIONS_MSG",target:"Sugestões"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.SuggestedTextField.NO_SUGGESTIONS_MSG",target:"Nenhuma Sugestão"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.borders.BrowserSupportBorder.BROWSER_SUPPORT",target:"Este aplicativo é otimizado para "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.ExportModal.EXPORT_ALL_COLUMNS.view.label",target:"Exportar todas as colunas"})
