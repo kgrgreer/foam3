@@ -4,8 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: catch syntax errors
-
 var path_ = require('path');
 
 var flags = globalThis.FOAM_FLAGS = {
