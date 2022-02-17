@@ -144,7 +144,7 @@ foam.CLASS({
           foam.assert(
             axiom,
             'Unknown argument ', name, ' in ', pName, expression);
-          foam.assert(
+          axiom && foam.assert(
             axiom.toSlot,
             'Non-Slot argument ', name, ' in ', pName, expression);
         }
