@@ -19,10 +19,24 @@ foam.CLASS({
     'foam.u2.stack.StackBlock'
   ],
 
+  // TODO: This css only works in v3.17. Once this change is merged to v3.17, we need to
+  // readjust the css so that this view does not look off on foam dev 
   css: `
+    ^ {
+      display: flex;
+      align-items: flex-end;
+      gap: 1ch;
+    }
+
     ^link {
-      margin-top: 8px;
-      margin-left: 32px;
+      border: 0;
+      padding: 0;
+    }
+
+    ^ .description {
+      line-height: 1.71
+    }
+
   `,
 
   properties: [
@@ -58,21 +72,21 @@ foam.CLASS({
 
   methods: [
     function render() {
-      const self = this;
       this.SUPER();
       this
-        .start().addClass(this.myClass('link'))
-          .startContext({ data: this })
-            .show(this.hasFoundTicket$)
-            .tag(this.GO_TO_TICKET, { buttonStyle: 'PRIMARY', size: 'SMALL' })
-          .endContext() 
-        .end();
+        .startContext({ data: this })
+          .start(this.GO_TO_TICKET).show(this.hasFoundTicket$)
+            .addClass(this.myClass('link'))
+          .end()
+        .endContext();
     }
   ],
   actions: [
     {
       name: 'goToTicket',
       label: 'Go to the ticket',
+      buttonStyle: 'LINK',
+      size: 'SMALL',
       code: async function() {
 
         if ( ! this.ticket ) return;
