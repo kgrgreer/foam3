@@ -422,6 +422,8 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketOwnerDAO' },
   { name: 'foam/nanos/ticket/TicketCommentOwnerDAO' },
   { name: 'foam/nanos/ticket/TicketDAOCreateView' },
+  { name: 'foam/nanos/ticket/TicketNotification' },
+  { name: 'foam/nanos/ticket/TicketNotificationNotificationCitationView' },
   { name: 'foam/nanos/ticket/TicketSummaryView' },
   { name: 'foam/nanos/ticket/SummaryCard' },
   { name: 'foam/nanos/ticket/RfiTicket' },
