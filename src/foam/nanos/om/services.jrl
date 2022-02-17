@@ -155,3 +155,34 @@ p({
       .build();
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "com1MinuteDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "comFoldManager",
+  "serviceScript": """
+    return new foam.nanos.analytics.DAOFoldManager.Builder(x)
+      .setDao((foam.dao.DAO) x.get("com1MinuteDAO"))
+      .setPeriodLengthMs(60*1000)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "COMLogger",
+  "service": {
+    class:"foam.nanos.om.OMLogger",
+    foldManagerContextKey: "comFoldManager"
+  }
+})
