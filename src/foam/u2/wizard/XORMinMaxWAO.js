@@ -32,19 +32,9 @@
     async function load(wizardlet) {
       wizardlet.isLoaded = false;
 
-      var prereqMinMaxWizardlet;
-
-      for ( var i = 0; i < wizardlet.prerequisiteWizardlets.length; i++ ){
-        var currentWizardlet = wizardlet.prerequisiteWizardlets[i];
-
-        if ( 
-          currentWizardlet.capability && 
-          currentWizardlet.capability.id == this.minMaxCapabilityId 
-        ){
-          prereqMinMaxWizardlet = currentWizardlet;
-          break;
-        }
-      }
+      const prereqMinMaxWizardlet = wizardlet.prerequisiteWizardlets.find(w =>
+        w.capability && w.capability.id == this.minMaxCapabilityId
+      );
 
       if ( ! prereqMinMaxWizardlet ) {
         console.error(
@@ -53,7 +43,7 @@
         return;
       }
 
-      var minMaxSelectedData = prereqMinMaxWizardlet.data.selectedData;
+      const minMaxSelectedData = prereqMinMaxWizardlet.data.selectedData;
 
       if ( minMaxSelectedData.length != 1 ){
         console.error(
@@ -62,26 +52,28 @@
         return;
       }
 
-      var selectedCapabilityId = minMaxSelectedData[0];
+      const selectedCapabilityId = minMaxSelectedData[0];
 
-      for ( var i = 0; i < prereqMinMaxWizardlet.prerequisiteWizardlets.length; i++ ){
-        var currentWizardlet = prereqMinMaxWizardlet.prerequisiteWizardlets[i];
+      const selectedCapabilityWizardlet = prereqMinMaxWizardlet.prerequisiteWizardlets.find(w =>
+        w.capability && w.capability.id == selectedCapabilityId
+      );
 
-        if ( 
-          currentWizardlet.capability && 
-          currentWizardlet.capability.id == selectedCapabilityId 
-        ){
-          var clonedWizardletData = currentWizardlet.data.clone();
-
-          var FObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
-
-          wizardlet.data = FObjectHolder;
-
-          wizardlet.isLoaded = true;
-
-          return this.FObjectHolder.create({ fobject: currentWizardlet.data });
-        }
+      if ( ! selectedCapabilityWizardlet ){
+        console.error(
+          `Cannot find prerequisite for Selected Capability Id: ${selectedCapabilityId}`
+        );
+        return;
       }
+
+      const clonedWizardletData = selectedCapabilityWizardlet.data.clone();
+
+      const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
+
+      wizardlet.data = fObjectHolder;
+
+      wizardlet.isLoaded = true;
+
+      return fObjectHolder
     }
   ]
 });

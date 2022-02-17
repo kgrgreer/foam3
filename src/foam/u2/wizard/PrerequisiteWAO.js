@@ -40,19 +40,10 @@
     async function load(wizardlet) {
       wizardlet.isLoaded = false;
 
-      let prereqWizardlet;
+      const prereqWizardlet = wizardlet.prerequisiteWizardlets.find(w =>
+        w.capability && w.capability.id == this.prerequisiteCapabilityId
+      );
 
-      for ( let i = 0; i < wizardlet.prerequisiteWizardlets.length; i++ ){
-        const currentWizardlet = wizardlet.prerequisiteWizardlets[i];
-
-        if ( 
-          currentWizardlet.capability && 
-          currentWizardlet.capability.id == this.prerequisiteCapabilityId 
-        ){
-          prereqWizardlet = currentWizardlet;
-          break;
-        }
-      }
 
       if ( ! prereqWizardlet ) {
         console.error(
@@ -84,13 +75,13 @@
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
 
-      var FObjectHolder = this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
+      const fObjectHolder = this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
 
-      wizardlet.data = FObjectHolder;
+      wizardlet.data = fObjectHolder;
 
       wizardlet.isLoaded = true;
 
-      return FObjectHolder;
+      return fObjectHolder;
     }
   ]
 });
