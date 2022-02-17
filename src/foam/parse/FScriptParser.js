@@ -109,6 +109,7 @@ foam.CLASS({
       name: 'baseGrammar_',
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
+        var self = this;
         return {
           START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
@@ -149,6 +150,9 @@ foam.CLASS({
             repeat0(" "),
             alt(
               literal('exists', this.HAS),
+              literal('!exists', function (arg) {
+                return self.NOT(self.HAS(arg));
+              }),
               literal('isValid', this.IS_VALID)
             )
           ),
@@ -280,6 +284,10 @@ foam.CLASS({
           unary: function(v) {
             var lhs = v[0];
             var op  = v[2];
+            if ( foam.mlang.predicate.Not.isInstance(op) ) {
+
+            }
+            debugger;
             return op.call(self, lhs);
           },
 

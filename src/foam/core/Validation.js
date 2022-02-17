@@ -68,7 +68,7 @@ foam.CLASS({
       return data.slot(this.jsFunc, this.args);
       /*
       return this.ExpressionSlot.create({
-        args: this.args.map(a => data[a+'$']),
+        args: this.args.map(a => data[a+'$' ]),
         code: this.jsFunc.bind(data)
       });
       */
@@ -486,7 +486,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue! exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(1,16),
+            query: 'thisValue !exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(1,16),
             errorString: 'Invalid date value'
           }
         ];
