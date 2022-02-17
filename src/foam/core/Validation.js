@@ -23,11 +23,8 @@ foam.CLASS({
       // TODO: poor choice of name, should be something with 'assert'
       name: 'jsFunc',
       expression: function(query, jsErr) {
-      debugger;
-      var predicate = foam.mlang.predicate.FScript.create({query: query, prop: prop});
         return function(obj) {
-        debugger;
-//          var predicate = foam.mlang.predicate.FScript.create({query: query, property: this});
+          var predicate = foam.mlang.predicate.FScript.create({query: query, prop: this});
           if ( ! predicate.f(obj) ) return jsErr(obj);
         };
       }
@@ -489,7 +486,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue! exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(0,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(0,16),
+            query: 'thisValue! exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(1,16),
             errorString: 'Invalid date value'
           }
         ];

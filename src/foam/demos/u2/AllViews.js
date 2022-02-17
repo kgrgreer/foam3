@@ -27,7 +27,7 @@ foam.CLASS({
       xxxvalidationPredicates: [
         {
           args: ['firstName'],
-          query: 'firstName_len>0',
+          query: 'firstName.len>0',
           errorString: 'Please enter a first name.'
         }
       ]
@@ -40,7 +40,7 @@ foam.CLASS({
       xxxvalidationPredicates: [
         {
           args: ['lastName'],
-          query: 'lastName_len>0',
+          query: 'lastName.len>0',
           errorString: 'Please enter a last name'
         }
       ]

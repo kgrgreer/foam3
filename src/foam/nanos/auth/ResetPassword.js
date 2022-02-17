@@ -61,7 +61,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['newPassword'],
-          query: 'newPassword_len>=10',
+          query: 'newPassword.len>=10',
           errorMessage: 'PASSWORD_LENGTH_10_ERROR'
         }
       ]

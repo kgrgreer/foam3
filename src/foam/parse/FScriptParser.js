@@ -181,7 +181,7 @@ foam.CLASS({
           regex:
             seq1(1,
               '/',
-              str(repeat(notChars('/'))),
+              str(repeat(alt('\\/', notChars('/'),))),
               '/'
             ),
 
