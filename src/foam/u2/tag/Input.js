@@ -146,8 +146,7 @@ foam.CLASS({
       this.SUPER(p);
 
       if ( ! this.hasOwnProperty('onKey') ) {
-        if ( p.hasOwnProperty('onKey') ) this.onKey = p.onKey;
-        else this.onKey = p.validateObj;
+        this.onKey = p.hasOwnProperty('onKey') ? p.onKey : p.validateObj;
       }
       if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;

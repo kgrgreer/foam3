@@ -61,7 +61,7 @@ foam.CLASS({
           // Prevent extra information from being displayed in RO
           return false;
         }
-        return ! choiceData_ || foam.util.equals(choiceData_, otherKey);
+        return foam.util.equals(choiceData_, otherKey);
       }
     },
     'preventFeedback_'
@@ -84,7 +84,7 @@ foam.CLASS({
       code: function() {
         if ( this.preventFeedback_ ) return;
         this.preventFeedback_ = true;
-        this.data = this.showOther_ ? this.otherData_.trim() : this.choiceData_;
+        this.data = this.showOther_ ? this.otherData_?.trim() : this.choiceData_;
         this.preventFeedback_ = false;
       }
     },

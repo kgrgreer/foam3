@@ -44,22 +44,19 @@ foam.CLASS({
       }
     },
     {
-      class: 'Function',
-      name: 'objToString',
-      documentation: 'When the user has selected an object from the DAO as ' +
-          'the chosen completion, we need to turn it back into a string for ' +
-          'the text field.',
-      required: true
-    },
-    'filteredDAO'
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
+      factory: function() {
+        return this.dao;
+      }
+    }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.slot(function(dao, partial) {
-        this.onUpdate();
-      }.bind(this), this.dao$, this.partial$);
+      this.partial$.sub(this.onUpdate);
+      this.onUpdate();
     }
   ],
 

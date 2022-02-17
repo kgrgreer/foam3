@@ -39,8 +39,8 @@
     function init() {
       this.SUPER();
       this.views = {
-        'googleSheetLink'        : { view: { class: 'foam.nanos.google.api.sheets.views.GoogleSheetImportModal' }, startPoint: true },
-        'columnsMapping'         : { view: { class: 'foam.nanos.google.api.sheets.views.ColumnsToPropertiesMappingModal' } }
+        'googleSheetLink'        : { view: { class: 'foam.nanos.google.api.sheets.views.modal.GoogleSheetImportModal' }, startPoint: true },
+        'columnsMapping'         : { view: { class: 'foam.nanos.google.api.sheets.views.modal.ColumnsToPropertiesMappingModal' } }
       };
     },
 
