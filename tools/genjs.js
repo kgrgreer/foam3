@@ -36,9 +36,7 @@ globalThis.loadedFiles.forEach(l => {
   try {
     l = path_.resolve(__dirname, l);
     files[l] = fs_.readFileSync(l, "utf8");
-  } catch (x) {
-    console.log('***** ERROR LOADING:', l, x);
-  }
+  } catch (x) {}
 });
 
 try {
