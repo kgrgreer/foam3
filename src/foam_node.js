@@ -45,6 +45,7 @@
         globalThis.imports.path.normalize(path + filename + '.js'));
       globalThis.document = { currentScript: { src: normalPath } };
       var fn = path + filename + '.js';
+      globalThis.loadedFiles.push(fn);
       require(fn);
     }
   }
@@ -59,7 +60,6 @@
         if ( ! f.flags || ( ! f.flags.includes('swift') && ! f.flags.includes('node') ) ) {
           var caller = flags.src || __filename;
           var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
-          globalThis.loadedFiles.push(path + f.name + '.js');
         }
         if ( foam.checkFlags(f.flags) ) {
           return true;

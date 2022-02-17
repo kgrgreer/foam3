@@ -2261,10 +2261,10 @@ foam.CLASS({
       this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
     },
 
-    function targetJava(outdir) {
+    function targetJava(X) {
       if ( ! this.flags || ! this.flags.includes('java') ) return false;
       var cls = foam.lookup(this.id);
-      this.outputJavaClass(outdir, cls.buildJavaClass());
+      this.outputJavaClass(X.outdir, cls.buildJavaClass());
       return true;
     }
   ]
@@ -2277,8 +2277,10 @@ foam.CLASS({
   refines: 'foam.core.InterfaceModel',
 
   methods: [
-    function targetJava(outdir) {
-      if ( ! this.SUPER(outdir) ) return;
+    function targetJava(X) {
+      if ( ! this.SUPER(X) ) return;
+
+      var outdir = X.outdir;
 
       if ( this.proxy ) {
         var proxy = foam.core.Model.create({
