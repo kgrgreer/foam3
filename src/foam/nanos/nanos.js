@@ -373,7 +373,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentAuthClient", flags: [ "java" ] },
   { name: "foam/nanos/auth/ClientAgentAuthService", flags: [ "java" ] },
   { name: "foam/nanos/auth/UniqueUserService", flags: [ "java" ] },
-  { name: "foam/nanos/auth/ProxyUniqueUserService", flags: [ "java" ] },
   { name: "foam/nanos/pm/PMTemperatureCellFormatter" },
   { name: "foam/nanos/pm/NullPM", flags: [ "java" ] },
   { name: "foam/nanos/pm/PM", flags: [ "java" ] },
