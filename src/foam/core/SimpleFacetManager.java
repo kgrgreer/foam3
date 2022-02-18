@@ -90,7 +90,7 @@ public class SimpleFacetManager
   }
 
   public Object create(String clsName, Map<String, Object> args, X x) {
-    if ( clsName.equals("foam.core.FObject.class") ) {
+    if ( clsName.equals("foam.core.FObject") ) {
       Thread.dumpStack();
       System.err.println("Unable to create FObject.");
       return null;
