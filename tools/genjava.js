@@ -23,6 +23,9 @@ argv.forEach(fn => {
 
 // Promote all UNUSED Models to USED
 for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
+// Call a 2nd time incase interfaces generated new classes in the 1st pass
+for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
+
 
 // Build Java Classes
 for ( var key in foam.USED ) try {
