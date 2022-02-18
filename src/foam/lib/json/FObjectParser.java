@@ -60,9 +60,27 @@ public class FObjectParser
             if ( ps1 != null ) {
               try {
                 c = Class.forName(ps1.value().toString());
-              }catch (ClassNotFoundException t) {
-                x.set("error", t.getMessage() + " " + ps1.value().toString());
-                throw new RuntimeException(t);
+              } catch (ClassNotFoundException t) {
+                // Create using a string value
+                Object obj;
+                try {
+                  obj = ((X) x.get("X")).create(ps1.value().toString());
+                } catch (RuntimeException e) {
+                  x.set("error", e.getMessage() + " " + ps1.value().toString());
+                  throw new RuntimeException(e);
+                }
+                
+                ParserContext subx = x.sub();
+                subx.set("obj", obj);
+                
+                Parser subParser = ModelParserFactory.getInstance(obj.getClass());
+                
+                ps1 = ps1.apply(subParser, subx);
+
+                if ( ps1 != null ) {
+                  return ps1.setValue(subx.get("obj"));
+                }
+                return null;
               }
             } else {
               c = defaultClass;
