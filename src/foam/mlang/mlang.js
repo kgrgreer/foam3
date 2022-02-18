@@ -1527,9 +1527,6 @@ foam.CLASS({
       postSet: function() {
         this.valueSet_ = null;
       },
-      assertValue: function (nu) {
-        foam.assert(foam.Array.isInstance(nu), 'expected array', nu);
-      },
       adapt: function(old, nu, prop) {
         var value = prop.adaptValue(nu);
         var arg1 = this.arg1;
