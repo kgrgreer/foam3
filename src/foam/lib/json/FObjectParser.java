@@ -88,7 +88,9 @@ public class FObjectParser
               }
             }
 
-            ps = ps1.apply(subParser, subx);
+            if ( ps1 != null ) ps = ps1;
+
+            ps = ps.apply(subParser, subx);
 
             if ( ps != null ) {
               return ps.setValue(subx.get("obj"));
