@@ -88,6 +88,7 @@ public class FObjectParser
               }
             }
 
+            // Ensure that apply method is not invoked on null value
             if ( ps1 != null ) ps = ps1;
 
             ps = ps.apply(subParser, subx);
