@@ -111,7 +111,6 @@ public class SimpleFacetManager
 
       return obj;
     } catch (Throwable e) {
-      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }
