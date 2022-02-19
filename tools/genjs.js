@@ -8,6 +8,9 @@
 // print warning if uglify not found
 // create sourcemap
 
+console.log('START GENJS');
+
+const startTime      = Date.now();
 const path_          = require('path');
 const fs_            = require('fs');
 const uglify_        = require('uglify-js');
@@ -68,3 +71,4 @@ try {
 } catch (x) {
   console.log('ERROR (JSBUILD):', x);
 }
+console.log(`END GENJS: ${Object.keys(files).length} files processed in ${Math.round((Date.now()-startTime)/1000)}s.`);
