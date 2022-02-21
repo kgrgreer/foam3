@@ -315,7 +315,7 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.REGION, config.getRegion())
           ))
         .select(COUNT());
-      getLogger().info("mediatorCount", ((Long)count.getValue()).intValue());
+      // getLogger().debug("mediatorCount", ((Long)count.getValue()).intValue());
       pm.log(getX());
       return ((Long)count.getValue()).intValue();
       `
