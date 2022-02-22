@@ -60,32 +60,36 @@ public class FObjectParser
             if ( ps1 != null ) {
               try {
                 c = Class.forName(ps1.value().toString());
-              }catch (ClassNotFoundException t) {
-                x.set("error", t.getMessage() + " " + ps1.value().toString());
-                throw new RuntimeException(t);
-              }
+              } catch (ClassNotFoundException t) { /* NOP */ }
             } else {
               c = defaultClass;
             }
 
-            // return null if class not specified in JSON and no default class available
-            if ( c == null || c == foam.core.FObject.class ) {
-              return null;
-            }
-
-            if ( ps1 != null ) ps = ps1;
-
             ParserContext subx = x.sub();
             Parser        subParser;
 
-            if ( c.isEnum() ) {
-              subx.set("enum", c);
-              subParser = EnumParserFactory.getInstance(c);
-            } else {
-              Object obj = ((X) x.get("X")).create(c);
+            if ( c == null ) {
+              if ( ps1 == null ) return null;
+
+              // If the class doesn't exist, try creating an object using the class name
+              Object obj = ((X) x.get("X")).create(ps1.value().toString());
               subx.set("obj", obj);
               subParser = ModelParserFactory.getInstance(obj.getClass());
+            } else {
+              if ( c == foam.core.FObject.class ) return null;
+
+              if ( c.isEnum() ) {
+                subx.set("enum", c);
+                subParser = EnumParserFactory.getInstance(c);
+              } else {
+                Object obj = ((X) x.get("X")).create(c);
+                subx.set("obj", obj);
+                subParser = ModelParserFactory.getInstance(obj.getClass());
+              }
             }
+
+            // Ensure that apply method is not invoked on null value
+            if ( ps1 != null ) ps = ps1;
 
             ps = ps.apply(subParser, subx);
 
