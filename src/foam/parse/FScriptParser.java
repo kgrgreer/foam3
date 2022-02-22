@@ -148,7 +148,7 @@ public class FScriptParser
       Binary bin = ( Binary ) values[1];
       bin.setArg1((Expr) values[0]);
       bin.setArg2(( values[2] instanceof Expr ) ?
-        ( Expr ) values[2] : new foam.mlang.Constant (values[2].equals("null") ? null : values[2]));
+        ( Expr ) values[2] : new foam.mlang.Constant (values[2]));
       return bin;
     });
 
@@ -303,7 +303,7 @@ public class FScriptParser
 
 
     grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
-      new Seq(new NotChars("len"), Literal.create("."), new Repeat(grammar.sym("WORD")), Literal.create(".")))));
+      new Seq(Literal.create("."), new Repeat(grammar.sym("WORD"),new NotChars("len")), Literal.create(".")))));
     grammar.addAction("FIELD", (val, x) -> {
       Object[] values = (Object[]) val;
       var expr = (Expr) values[0];
