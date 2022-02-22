@@ -128,9 +128,11 @@ foam.CLASS({
             @Override
             public FObject put_(X x, FObject obj) {
               SFEntry entry = (SFEntry) obj;
+
+              if ( getReplayStrategy() < 10000 && entry.getCreated().before(timeWindow) ) return entry;
   
               DAO dao = ((DAO) context.get(entry.getNSpecName()));
-              if ( ! (dao instanceof EasyDAO) || ((EasyDAO) dao).getSAF() != true ) return null;
+              if ( ! (dao instanceof EasyDAO) || ((EasyDAO) dao).getSAF() != true ) return entry;
 
               DAO mdao = (DAO) dao.cmd_(context, foam.dao.DAO.LAST_CMD);
               if ( DOP.PUT == entry.getDop() ) {
