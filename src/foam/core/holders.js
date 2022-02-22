@@ -30,27 +30,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core',
-  name: 'IdentifiedStringHolder',
-
-  documentation: `
-    Like StringHolder but can be put into a DAO. This is useful for convenient
-    testing by creating a stringHolderDAO in development deployment journals.
-  `,
-
-  properties: [
-    {
-      name: 'id',
-      class: 'String'
-    },
-    {
-      name: 'value',
-      class: 'String'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'foam.core',
   name: 'BooleanHolder',
 
   properties: [
