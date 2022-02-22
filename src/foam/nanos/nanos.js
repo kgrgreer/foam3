@@ -212,7 +212,6 @@ FOAM_FILES([
   { name: "foam/nanos/medusa/ClusterConfigReplayingInfoDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigStatusDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigSupport", flags: [ "java" ] },
-  { name: "foam/nanos/medusa/ClusterConfigSupportDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterException", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterTopology" },
   { name: "foam/nanos/medusa/ClusterTopologyView" },
