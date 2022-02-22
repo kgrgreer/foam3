@@ -40,6 +40,27 @@ foam.CLASS({
     async function execute() {
       const prerequisites = [...this.capabilities];
       const desiredCapability = prerequisites.pop();
+
+      // Remove duplicates from prerequisite aware sub-lists (from server)
+      // (these entries are not needed because GraphBuilder is being used here)
+      const seen = new Set();
+      const removeDuplicates = list => {
+        for ( let i = 0 ; i < list.length ; i++ ) {
+          const capability = list[i];
+          if ( Array.isArray(capability) ) {
+            removeDuplicates(capability);
+            continue;
+          }
+          if ( seen.has(capability.id) ) {
+            list.splice(i, 1);
+            i--;
+            continue;
+          }
+          seen.add(capability.id);
+        }
+      }
+      removeDuplicates(prerequisites);
+
       this.wizardlets = await this.parseArrayToWizardlets(prerequisites, desiredCapability);
 
       // Wire wizardlets into a DAG by populating 'prerequisiteWizardlets'
@@ -85,22 +106,37 @@ foam.CLASS({
         afterWizardlet.data$ = beforeWizardlet.data$;
       }
 
-      for ( let capability of prereqs ) {
+      // Some prerequisite wizardlets can be "controlled" by their parent wizardlet.
+      // The exception is a prerequisite shared with an earlier capability that has
+      // already assumed control; in this situation we say the prerequisite is "lifted".
+      const controlledPrereqWizardlets = new Set();
+
+      for ( const capability of prereqs ) {
         // Perform a recursive call to get wizardlets for this prerequisite
         const subPrereqs = Array.isArray(capability) ? [...capability] : [capability];
         const subParent = subPrereqs.pop();
         const subWizardlets = await this.parseArrayToWizardlets(subPrereqs, subParent);
         const wizardlet = subWizardlets.pop();
 
-        // Call addPrerequisite if this prerequisite relation is effective
-        for ( let rootWizardlet of rootWizardlets ) {
-          if ( this.isPrerequisiteAware(rootWizardlet) ) {
-            rootWizardlet.addPrerequisite(wizardlet);
-          }
-        }
+        controlledPrereqWizardlets.add(wizardlet);
 
         // Update ordered wizardlet list
         wizardlets.push(...subWizardlets, wizardlet);
+      }
+
+      for ( let rootWizardlet of rootWizardlets ) {
+        if ( this.isPrerequisiteAware(rootWizardlet) ) {
+          const graphNode = this.capabilityGraph.data[parent.id];
+          const prerequisiteWizardlets = graphNode.forwardLinks
+            .filter(id => this.capabilityWizardletsMap[id])
+            .map(id => this.capabilityWizardletsMap[id].primaryWizardlet)
+            ;
+          for ( const wizardlet of prerequisiteWizardlets ) {
+            rootWizardlet.addPrerequisite(wizardlet, {
+              lifted: ! controlledPrereqWizardlets.has(wizardlet)
+            });
+          }
+        }
       }
       
       if ( beforeWizardlet ) wizardlets.unshift(beforeWizardlet);

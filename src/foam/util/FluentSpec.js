@@ -26,7 +26,8 @@ foam.CLASS({
       return foam.String.isInstance(spec) ? { class: spec } : spec ;
     } ],
     [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
-    [ 'displayWidth', 80 ]
+    [ 'displayWidth', 80 ],
+    [ 'view', 'foam.u2.view.MapView' ]
   ]
 });
 
