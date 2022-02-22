@@ -20,6 +20,8 @@ var [argv, X, flags] = require('./processArgs.js')(
   { debug: true }
 );
 
+globalThis.foam = { require: function(fn) { /* NOP */ } };
+
 require('../src/foam_node.js');
 
 // Load Manifest (files.js) Files
@@ -48,7 +50,7 @@ try {
     {
       compress: false,
       mangle:   false,
-      output:   { preamble: X.license }
+      output:   { preamble: `// Generated: ${new Date()}\n//\n${X.license}` }
     }).code;
 
   // Remove most Java and Swift Code

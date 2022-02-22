@@ -5,7 +5,7 @@
  */
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = { isServer: true, flags: globalThis.FOAM_FLAGS || {} } );
+  var foam = globalThis.foam = { ...(globalThis.foam || {}), isServer: true, flags: globalThis.FOAM_FLAGS || {} };
 
   // Imports used by the loadServer() loader
   globalThis.imports      = {};
@@ -46,7 +46,7 @@
       globalThis.document = { currentScript: { src: normalPath } };
       var fn = path + filename + '.js';
       globalThis.loadedFiles.push(fn);
-      require(fn);
+      (foam.require || require)(fn);
     }
   }
 
