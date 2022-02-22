@@ -8,6 +8,9 @@
 // print warning if uglify not found
 // create sourcemap
 
+console.log('START GENJS');
+
+const startTime      = Date.now();
 const path_          = require('path');
 const fs_            = require('fs');
 const uglify_        = require('uglify-js');
@@ -16,6 +19,8 @@ var [argv, X, flags] = require('./processArgs.js')(
   { version: '', license: '' },
   { debug: true }
 );
+
+globalThis.foam = { require: function(fn) { /* NOP */ } };
 
 require('../src/foam_node.js');
 
@@ -45,7 +50,7 @@ try {
     {
       compress: false,
       mangle:   false,
-      output:   { preamble: X.license }
+      output:   { preamble: `// Generated: ${new Date()}\n//\n${X.license}` }
     }).code;
 
   // Remove most Java and Swift Code
@@ -68,3 +73,4 @@ try {
 } catch (x) {
   console.log('ERROR (JSBUILD):', x);
 }
+console.log(`END GENJS: ${Object.keys(files).length} files processed in ${Math.round((Date.now()-startTime)/1000)}s.`);
