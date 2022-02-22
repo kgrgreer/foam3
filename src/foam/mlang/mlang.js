@@ -4387,7 +4387,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'IsValid',
-  extends: 'foam.mlang.AbstractExpr',
+  extends: 'foam.mlang.predicate.Unary',
+  implements: 'foam.core.Serializable',
   javaImports: [
     'foam.core.XLocator'
   ],

@@ -130,8 +130,6 @@ foam.CLASS({
 
           negate: seq(literal('!'), sym('expr')),
 
-          subQuery: alt(sym('compoundSubQuery'), sym('simpleSubQuery')),
-
           comparison: seq(
             sym('value'),
             alt(
@@ -160,6 +158,7 @@ foam.CLASS({
           value: alt(
             sym('regex'),
             sym('date'),
+            sym('enum'),
             sym('string'),
             literal('true', true),
             literal('false', false),
@@ -196,9 +195,13 @@ foam.CLASS({
             sym('fieldname'),
             optional(seq(notChars('len'), '.', repeat(sym('word'), '.')))),
 
-          string: str(seq1(1, '"',
+          enum: str(seq('"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
             '"')),
+
+          string: str(seq1(1, '"',
+                      repeat(alt(literal('\\"', '"'), notChars('"'))),
+                      '"')),
 
           word: str(repeat(sym('char'), null, 1)),
 
