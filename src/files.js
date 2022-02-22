@@ -849,6 +849,7 @@ FOAM_FILES([
   { name: "foam/test/AllSerializableProperties", flags: [ "java" ] },
   { name: "foam/test/TestEnum", flags: [ "java" ] },
   { name: "foam/test/TestObj", flags: [ "java" ] },
+  { name: "foam/test/IdentifiedStringHolder", flags: [ "java" ] },
   { name: "foam/core/FObjectTest", flags: [ "java" ] },
   { name: "foam/flow/Document", flags: [ "java" ] },
   { name: "foam/flow/DocumentMenu", flags: [ "java" ] },
