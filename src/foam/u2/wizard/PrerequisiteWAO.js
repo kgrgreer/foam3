@@ -10,7 +10,7 @@
   implements: [ 'foam.u2.wizard.WAO' ],
   flags: ['web'],
   extends: 'foam.u2.wizard.ProxyWAO',
-  todo: [
+  issues: [
     'Explore an efficient way to be able to load from any prequisite descendent of a wizardlet'
   ],
 
