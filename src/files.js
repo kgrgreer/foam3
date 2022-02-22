@@ -1002,7 +1002,7 @@ FOAM_FILES([
   { name: "foam/foamlink/FoamlinkExec" },
   { name: "foam/foamlink/lib" },
   { name: "foam/util/filesystem/FileWalker" },
-  { name: "foam/nanos/column/ColumnConfigPropertyValue" },
+  { name: "foam/nanos/column/ColumnConfigPropertyValue", flags: [ "java" ] },
   { name: "foam/nanos/column/CommonColumnHandler" },
   { name: "foam/nanos/column/CSVTableOutputter" },
   { name: "foam/nanos/column/NestedPropertiesExpression", flags: [ "java" ] },

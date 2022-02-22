@@ -347,7 +347,7 @@ FOAM_FILES([
   { name: "foam/nanos/export/XMLDriver"},
   { name: "foam/nanos/export/report/Template", flags: [ "java" ] },
   { name: "foam/nanos/export/PDFGoogleSheetsExportDriver", flags: [ "java" ] },
-  { name: "foam/nanos/export/TableExportDriver"},
+  { name: "foam/nanos/export/TableExportDriver", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiAuthService", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiCredentials", flags: [ "java" ] },
   { name: "foam/nanos/google/api/drive/GoogleDriveService", flags: [ "java" ] },
@@ -550,7 +550,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/lite/MinMaxCapabilityRefinement" },
   { name: "foam/nanos/crunch/crunchtest/TestCapable", flags: [ "java" ] },
   { name: "foam/nanos/crunch/CapabilityAvailabilityDAO", flags: [ "java" ] },
-  { name: "foam/nanos/crunch/example/ExampleData" },
+  { name: "foam/nanos/crunch/example/ExampleData", flags: [ "java" ] },
 
   // crunch lite rulers
   { name: "foam/nanos/crunch/lite/ruler/CapableStatusChangeAdjustApprovalsRuleAction", flags: [ "java" ] },
