@@ -5,7 +5,7 @@
  */
 
  foam.CLASS({
-  package: 'foam.nanos.google.api.sheets',
+  package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'ImportFromGoogleSheetsForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModal',
 
@@ -27,7 +27,7 @@
     {
       name: 'importConfig',
       class: 'FObjectProperty',
-      of: 'foam.nanos.google.api.sheets.GoogleSheetsImportConfig',
+      of: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig',
       expression: function(of, dao) {
         return foam.nanos.google.api.sheets.GoogleSheetsImportConfig.create({importClassInfo: of, DAO: dao.includes('/') ? dao.split('/')[1] : dao });
       }
@@ -39,8 +39,8 @@
     function init() {
       this.SUPER();
       this.views = {
-        'googleSheetLink'        : { view: { class: 'foam.nanos.google.api.sheets.GoogleSheetImportModal' }, startPoint: true },
-        'columnsMapping'         : { view: { class: 'foam.nanos.google.api.sheets.ColumnsToPropertiesMappingModal' } }
+        'googleSheetLink'        : { view: { class: 'foam.nanos.google.api.sheets.views.modal.GoogleSheetImportModal' }, startPoint: true },
+        'columnsMapping'         : { view: { class: 'foam.nanos.google.api.sheets.views.modal.ColumnsToPropertiesMappingModal' } }
       };
     },
 

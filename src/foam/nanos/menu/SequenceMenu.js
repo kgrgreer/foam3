@@ -19,13 +19,21 @@ foam.CLASS({
       // of: 'foam.util.FluentSpec',
       of: 'foam.core.FObject',
       name: 'sequence'
+    },
+    {
+      class: 'StringArray',
+      name: 'parentMethod'
     }
   ],
 
   methods: [
     function launch(X, menu) {
       // Rebase sequence onto new context first
-      const sequence = this.Sequence.create({}, X);
+      let sequence = this.Sequence.create({}, X);
+      if ( this.parentMethod.length > 0 ) {
+        sequence = X[this.parentMethod[0]]
+          [this.parentMethod[1]](X);
+      }
       for (let fluentSpec of this.sequence) {
         fluentSpec.apply(sequence);
       }

@@ -44,9 +44,16 @@ foam.CLASS({
         // object must be sent to the delegate dao first
         // as there is a chance its ID has not been set
         var storedObject = getDelegate().put_(x, obj);
-        
+
         DAO ndiffDao = (DAO)x.get("ndiffDAO");
         if ( ndiffDao == null ) {
+          return storedObject;
+        }
+
+        // NDiffRuntimeDAO populates runtimeFObject in real time
+        // so do not continue unless we're recording stuff
+        // created at startup
+        if ( getRuntimeOrigin() ) { 
           return storedObject;
         }
         
@@ -62,50 +69,14 @@ foam.CLASS({
                       ;
         ndiff.setObjectId(objectId);
         ndiff.setNSpecName(nSpecName);
-
-        if ( ! getRuntimeOrigin() ) { 
-          ndiff.setInitialFObject(storedObject);
-        } else {
-          ndiff.setRuntimeFObject(storedObject);
-        }
+        ndiff.setInitialFObject(storedObject);
+        
 
         ndiffDao.put_(x, ndiff); 
         pm.log(x);
 
         return storedObject;
       `,
-    },
-    {
-      name: 'remove_',
-      javaCode: `
-        var storedObject = getDelegate().remove_(x, obj);
-        if ( storedObject == null ) {
-          return null;
-        }
-
-        if ( ! getRuntimeOrigin() ) {
-          return storedObject;
-        }
-
-        DAO ndiffDao = (DAO)x.get("ndiffDAO");
-        if ( ndiffDao == null ) {
-          return storedObject;
-        }
-
-        String objectId = storedObject.getProperty("id").toString();
-        String nSpecName = getNSpecName();
-        NDiff existingNdiff = (NDiff) ndiffDao.find(new NDiffId(nSpecName,
-                                                                objectId));
-        if ( existingNdiff == null ) {
-          return storedObject;
-        }
-
-        NDiff ndiff = (NDiff)existingNdiff.fclone();
-        ndiff.setDeletedAtRuntime( ndiff.getInitialFObject() != null );
-        ndiffDao.put_(x, ndiff); 
-
-        return storedObject;
-      `,
-    },
+    }
   ],
 });

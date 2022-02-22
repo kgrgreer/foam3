@@ -16,6 +16,14 @@ foam.CLASS({
     { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
     { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' }
+],
+
+  requires: [
+    'foam.time.DayOfWeek',
+    'foam.time.TimeUnit',
+    'foam.nanos.cron.MonthlyChoice',
+    'foam.nanos.cron.ScheduleEnd',
+    'foam.nanos.cron.SymbolicFrequency'
   ],
 
   properties: [
@@ -36,23 +44,16 @@ foam.CLASS({
       min: 0,
       postSet: function(_, n) {
         if ( n === 0 ) {
-          this.frequency = 'Day';
-          this.ends = 'Never';
+          this.frequency = this.Frequency.DAY;
+          this.ends = this.ScheduleEnd.NEVER;
         }
       }
     },
     {
+      class: 'Enum',
+      of: 'foam.time.TimeUnit',
       name: 'frequency',
       label: '',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Day',
-          'Week',
-          'Month',
-          'Year'
-        ]
-      },
       gridColumns: 6,
       visibility: function(repeat) {
         if ( repeat < 1 ) {
@@ -67,24 +68,24 @@ foam.CLASS({
         class: 'foam.u2.view.DayOfWeekView',
       },
       visibility: function(frequency) {
-        if ( frequency != 'Week' )
+        if ( frequency != this.TimeUnit.WEEK )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
     },
     {
+      class: 'Enum',
+      of: 'foam.nanos.cron.MonthlyChoice',
       name: 'monthlyChoice',
       label: '',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [1, 'On The...'],
-          [2, 'Each']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          isHorizontal: true,
+          class: 'foam.u2.view.RadioEnumView'
+        };
       },
       visibility: function(frequency) {
-        if ( frequency != 'Month')
+        if ( frequency != this.TimeUnit.MONTH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
@@ -92,79 +93,51 @@ foam.CLASS({
     {
       name: 'dayOfMonth',
       label: '',
-      //will be replaced by multiselect dayofmonth view
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          1,
-          2
-        ]
+        class: 'foam.u2.view.DayOfMonthView'
       },
       visibility: function(monthlyChoice, frequency) {
-        if ( frequency != 'Month' )
+        if ( frequency != this.TimeUnit.MONTH )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( monthlyChoice != 2 )
+        if ( monthlyChoice != this.MonthlyChoice.EACH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
     },
     {
-    //first , second , third ...
-      name: 'vagueFreq',
+      // first , second , third ...
+      class: 'Enum',
+      of: 'foam.nanos.cron.SymbolicFrequency',
+      name: 'symbolicFrequency',
       label: '',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'First',
-          'Second',
-          'Third',
-          'Before Last',
-          'Last'
-        ]
-      },
       gridColumns: 6,
       visibility: function(monthlyChoice, frequency ) {
-        if ( frequency != 'Month' )
+        if ( frequency != this.TimeUnit.MONTH )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( monthlyChoice !=  1 )
+        if ( monthlyChoice !=  this.MonthlyChoice.ON_THE )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
     },
     {
+      class: 'Enum',
+      of: 'foam.time.DayOfWeek',
       name: 'expandedDayOfWeek',
       label: '',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Weekday'
-        ]
-      },
       gridColumns: 6,
       visibility: function(monthlyChoice, frequency) {
-        if ( frequency != 'Month' )
+        if ( frequency != this.TimeUnit.MONTH )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( monthlyChoice != 1 )
+        if ( monthlyChoice != this.MonthlyChoice.ON_THE )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
     },
     {
+      class: 'Enum',
+      of: 'foam.nanos.cron.ScheduleEnd',
       name: 'ends',
       label: 'Ends',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Never',
-          'On',
-          'After'
-        ]
-      },
       gridColumns: 6,
       visibility: function(repeat) {
         if ( repeat < 1 ) {
@@ -175,10 +148,10 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'endsOn',
-      label: '',
+      label: 'End Date',
       gridColumns: 6,
       visibility: function(ends) {
-        if ( ends != 'On' )
+        if ( ends != this.ScheduleEnd.ON )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       },
@@ -195,7 +168,7 @@ foam.CLASS({
       gridColumns: 6,
       min: 1,
       visibility: function(ends) {
-        if ( ends != 'After' )
+        if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       }
@@ -231,7 +204,7 @@ foam.CLASS({
     {
       name: 'getEndDate',
       code: function() {
-        return this.ends + ' ' + ( this.ends == 'On' ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
+        return this.ends + ' ' + ( this.ends == this.ScheduleEnd.ON ? this.ENDS_ON.format(this.endsOn) : this.endsAfter )
       }
     }
   ]

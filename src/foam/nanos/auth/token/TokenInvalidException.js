@@ -16,6 +16,10 @@ foam.CLASS({
       super();
     }
 
+    public TokenInvalidException(String msg) {
+      super(msg);
+    }
+
     public TokenInvalidException(Exception cause) {
       super(cause);
     }

@@ -402,10 +402,7 @@ foam.CLASS({
     {
       name: 'prerequisiteImplies',
       type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String permission',
       documentation: `Checks if a permission or capability string is implied by the prerequisites of a capability`,
       javaCode: `
         // temporary prevent infinite loop when checking the permission "predicatedprerequisite.read.*"

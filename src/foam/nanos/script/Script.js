@@ -336,7 +336,8 @@ foam.CLASS({
         Language l = getLanguage();
         if ( l == foam.nanos.script.Language.JSHELL ) {
           JShell jShell = new JShellExecutor().createJShell(ps);
-          Script.X_HOLDER[0] = x.put("out",  ps);
+          Script.X_HOLDER[0] = x.put("out",  ps)
+            .put("currentScript", this);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
           return jShell;
@@ -406,10 +407,8 @@ foam.CLASS({
             shell.setOut(ps);
             shell.eval(getCode());
           } else if ( l == foam.nanos.script.Language.JSHELL ) {
-            String print = null;
             JShell jShell = (JShell) createInterpreter(x,ps);
-            print = new JShellExecutor().execute(x, jShell, getCode(), true);
-            ps.print(print);
+            new JShellExecutor().execute(x, jShell, getCode(), true);
           } else {
             throw new RuntimeException("Script language not supported");
           }

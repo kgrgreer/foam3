@@ -20,6 +20,8 @@ foam.CLASS({
   name: 'JSONFileDAO',
   extends: 'foam.dao.ArrayDAO',
 
+    flags: ['node'],
+
   imports: [ 'warn' ],
 
   properties: [

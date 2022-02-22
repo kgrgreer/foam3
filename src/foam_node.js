@@ -5,36 +5,18 @@
  */
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = {} );
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: true, flags: globalThis.FOAM_FLAGS || {} } );
 
   // Imports used by the loadServer() loader
   globalThis.imports = {};
   globalThis.imports.path = require('path');
+  globalThis.loadedFiles = [];
 
-  // Also appears in foam.js, manually keep two copies in sync
-  foam.checkFlags = function(flags) {
-    if ( ! flags || flags.length == 0 ) return true;
-    if ( typeof flags === 'string' ) {
-      flags = flags.split('|');
-    }
+  // Is replaced when lib.js is loaded.
+  foam.checkFlags = () => true;
 
-    function and(fs) {
-      fs = fs.split('&');
-      for ( var i = 0 ; i < fs.length ; i++ ) {
-        if ( ! foam.flags[fs[i]] ) return false;
-      }
-      return true;
-    }
-
-    // OR AND clauses
-    for ( var i = 0 ; i < flags.length ; i++ ) {
-      if ( and(flags[i]) ) return true;
-    }
-    return false;
-  }
-
-  if ( ! this.FOAM_FLAGS ) this.FOAM_FLAGS = {};
-  var flags = globalThis.foam.flags = this.FOAM_FLAGS;
+  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
+  var flags = globalThis.foam.flags;
 
   // TODO: remove the genjava flag and let genjava set it
   if ( ! flags.hasOwnProperty('genjava')  ) flags.genjava = true;
@@ -57,13 +39,13 @@
 
     return function (filename) {
       if ( ! filename ) return;
-      // console.log('Loading...', filename);
       // Set document.currentScript.src, as expected by EndBoot.js
       let normalPath = globalThis.imports.path.relative(
         '.',
         globalThis.imports.path.normalize(path + filename + '.js'));
       globalThis.document = { currentScript: { src: normalPath } };
-      require(path + filename + '.js');
+      var fn = path + filename + '.js';
+      require(fn);
     }
   }
 
@@ -72,9 +54,15 @@
     var seen = {};
     var SAFE = foam.SAFE || {};
     files.
-      filter(f => {
-        if ( foam.checkFlags(f.flags) ) return true;
-//        console.log('****************************** NOT LOADING ', f.name, f.flags);
+     filter(f => {
+        if ( ! f.flags || ( ! f.flags.includes('swift') && ! f.flags.includes('node') ) ) {
+          var caller = flags.src || __filename;
+          var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
+          globalThis.loadedFiles.push(path + f.name + '.js');
+        }
+        if ( foam.checkFlags(f.flags) ) {
+          return true;
+        }
         return true;
       }).
       filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
@@ -83,7 +71,6 @@
         foam = globalThis.foam;
         foam.currentFlags = f.flags || [];
 
-        // console.log('******* LOADING WITH FLAGS ', f.name, globalThis.foam.currentFlags);
         var count1 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
         load(f.name);
         var count2 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;

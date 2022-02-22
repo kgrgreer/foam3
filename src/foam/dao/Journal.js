@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.dao',
   name: 'Journal',
 
+  proxy: true,
+
   methods: [
     {
       name: 'put',
@@ -76,7 +78,7 @@ if ( foam.isServer ) {
     name: 'NodeFileJournal',
     extends: 'foam.dao.AbstractJournal',
 
-    flags: [],
+    flags: ['node'],
 
     properties: [
       {

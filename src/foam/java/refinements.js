@@ -97,7 +97,7 @@ foam.CLASS({
   package: 'foam.java',
   name: 'JavaType',
   extends: 'String',
-  // flags: ['java'],
+  flags: [],
   properties: [
     {
       name: 'flags',
@@ -492,7 +492,6 @@ foam.CLASS({
 
 foam.LIB({
   name: 'foam.core.FObject',
-  // flags: ['java'],
   methods: [
     function buildJavaClass(cls) {
       // TODO Generate getX() and setX() if contextAware
@@ -2219,6 +2218,90 @@ foam.CLASS({
         return foam.String.isInstance(o) ?
           foam.java.JavaImplements.create({ name: o }) :
           foam.java.JavaImplements.create(o);
+      }
+    },
+    {
+      name: 'fs_',
+      factory: function() { return require('fs'); }
+    },
+    {
+      name: 'sep',
+      factory: function() { return require('path').sep; }
+    }
+  ],
+
+  methods: [
+    function ensurePath(p) {
+      var i     = 1 ;
+      var parts = p.split(this.sep);
+      var path  = '/' + parts[0];
+
+      while ( i < parts.length ) {
+        try {
+          var stat = this.fs_.statSync(path);
+          if ( ! stat.isDirectory() ) throw path + 'is not a directory';
+        } catch(e) {
+          this.fs_.mkdirSync(path);
+        }
+
+        path += this.sep + parts[i++];
+      }
+    },
+
+    function writeFileIfUpdated(outfile, javaSource, opt_result) {
+      if ( ! ( this.fs_.existsSync(outfile) && (this.fs_.readFileSync(outfile).toString() == javaSource))) {
+        this.fs_.writeFileSync(outfile, javaSource);
+        opt_result?.push(outfile);
+      }
+    },
+
+    function outputJavaClass(outdir, javaClass) {
+      var outfile = outdir + this.sep + javaClass.id.replace(/\./g, this.sep) + '.java';
+      this.ensurePath(outfile);
+      this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
+    },
+
+    function targetJava(outdir) {
+      var cls = foam.lookup(this.id);
+      this.outputJavaClass(outdir, cls.buildJavaClass());
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'InterfaceModelJavaRefinement',
+  refines: 'foam.core.InterfaceModel',
+
+  methods: [
+    function targetJava(outdir) {
+      this.SUPER(outdir);
+
+      if ( this.proxy ) {
+        debugger;
+        var proxy = foam.core.Model.create({
+          package: this.package,
+          name: 'Proxy' + this.name,
+          implements: [ this.id ],
+          flags: [ 'java' ],
+          properties: [
+            {
+              class: 'Proxy',
+              of: this.id,
+              name: 'delegate'
+            }
+          ]
+        });
+
+        proxy.source = this.source;
+        var cls = proxy.buildClass();
+        proxy.outputJavaClass(outdir, cls.buildJavaClass());
+      }
+
+      if ( this.skeleton ) {
+        var javaClass = foam.java.Skeleton.create({of: this.id, flags: [ 'java' ]}).buildJavaClass();
+        this.outputJavaClass(outdir, javaClass);
       }
     }
   ]

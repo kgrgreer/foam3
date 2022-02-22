@@ -5,9 +5,9 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.google.api.sheets',
+  package: 'foam.nanos.google.api.sheets.views',
   name: 'GoogleSheetsTransactionsDataImportServiceImpl',
-  extends: 'foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceImpl',
+  extends: 'foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceImpl',
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
@@ -51,7 +51,7 @@ foam.CLASS({
         } else {
           payerBankAccount = BankAccount.findDefault(x, payer, t.getSourceCurrency());
         }
-        
+
         if ( t.getSourceCurrency() == null )
           return false;
         if ( payerBankAccount == null )
@@ -76,7 +76,7 @@ foam.CLASS({
 
         if ( payeeBankAccount == null )
           return false;
-         
+
         t.setDestinationAccount(payeeBankAccount.getId());
 
         return true;

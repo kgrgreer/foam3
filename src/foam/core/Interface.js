@@ -56,6 +56,18 @@ foam.CLASS({
   properties: [
     [ 'extends', 'foam.core.AbstractInterface' ],
     {
+      class: 'Boolean',
+      name: 'proxy',
+      label: 'Generate Proxy',
+      help: 'If enabled, causes automatic proxy generation.'
+    },
+    {
+      class: 'Boolean',
+      name: 'skeleton',
+      label: 'Generate Skeleton',
+      help: 'If enabled, causes automatic skeleton generation.'
+    },
+    {
       class: 'AxiomArray',
       name: 'methods',
       of: 'foam.core.internal.InterfaceMethod',

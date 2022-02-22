@@ -1024,10 +1024,8 @@ foam.CLASS({
           this.cls_.prototype === this ? 'Proto' : '');
     },
 
-    function toSummary() {
-      var prop = this.cls_.getAxiomsByClass(foam.core.String)
-        .find(p => !p.hidden);
-      return prop ? prop.f(this) : this.toString();
+    function toSummary() { 
+      return this.id;
     },
 
     function dot(name) {

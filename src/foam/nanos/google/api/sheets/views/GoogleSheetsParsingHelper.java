@@ -1,4 +1,4 @@
-package foam.nanos.google.api.sheets;
+package foam.nanos.google.api.sheets.views;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +43,5 @@ public class GoogleSheetsParsingHelper {
       return base.get(startCol.length()).get(currColumnIndex - base.get(startCol.length() - 1).size() - 1);
     }
     return base.get(startCol.length() - 1).get(currColumnIndex);
-  }   
+  }
 }

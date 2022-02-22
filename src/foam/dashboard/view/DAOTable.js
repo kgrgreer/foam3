@@ -74,7 +74,7 @@ foam.CLASS({
         full TableView of the given dao. If false, the Table will default to scroll.
       `,
       postSet: function() {
-        if ( this.viewMore ) this.limit = 6;
+        if ( this.viewMore ) this.limit = 5;
       }
     },
     {
@@ -95,7 +95,7 @@ foam.CLASS({
       name: 'emptySubTitle'
     },
     'dao',
-    ['limit', 6],
+    ['limit', 5],
     'mode'
   ],
 

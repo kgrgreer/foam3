@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.lib.csv',
   name: 'CSVOutputter',
 
+  proxy: true,
+
   methods: [
     {
       name: 'outputValue',

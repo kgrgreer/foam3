@@ -14,7 +14,6 @@ foam.CLASS({
   tableColumns: [
     'nSpecName',
     'objectId',
-    'delta',
     'deletedAtRuntime',
     'apply',
     'compare'
@@ -29,14 +28,6 @@ foam.CLASS({
     {
       name: 'objectId',
       class: 'String',
-    },
-    {
-      name: 'delta',
-      class: 'Boolean',
-      tableWidth: 25,
-      documentation: `
-        Set to true if a difference was detected.
-      `
     },
     {
       name: 'deletedAtRuntime',
@@ -60,7 +51,8 @@ foam.CLASS({
       visibility: 'HIDDEN',
       documentation: `
         The object as it was loaded from the runtime journals
-        `,
+      `,
+      storageTransient: true,
     },
     {
       name: 'applyOriginal',
@@ -75,23 +67,6 @@ foam.CLASS({
       storageTransient: true,
     },
   ],
-
-  methods: [
-    {
-      name: 'hasDelta',
-      code: function() {
-        // here temporarily because reading the delta flag
-        // is unreliable -- see TODO in NDiffRuntimeDAO
-        return (this.initialFObject &&
-                ! this.runtimeFObject &&
-                this.deletedAtRuntime)
-                ||
-                (this.initialFObject &&
-                 this.runtimeFObject &&
-                 ! foam.util.equals(this.initialFObject, this.runtimeFObject));
-      }
-    }
-  ],
   actions: [
     {
       name: 'apply',
@@ -99,9 +74,6 @@ foam.CLASS({
       tableWidth: 25,
       confirmationRequired: function() {
         return true;
-      },
-      isEnabled: function(delta) {
-        return this.hasDelta();
       },
       code: function(X) {
         this.applyOriginal = true;
@@ -112,9 +84,6 @@ foam.CLASS({
       name: 'compare',
       label: 'Compare Changes',
       tableWidth: 25,
-      isEnabled: function(delta) {
-        return this.hasDelta();
-      },
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.StyledModal.create({ title: 'Comparison' }, this)
           .tag({class: 'foam.u2.view.ComparisonView', left: this.initialFObject, right: this.runtimeFObject})

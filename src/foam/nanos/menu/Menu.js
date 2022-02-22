@@ -133,7 +133,7 @@
     {
       class: 'foam.u2.ViewSpec',
       name: 'view',
-      factory: function() { return { class: 'foam.u2.view.MenuView', menu: this }; }
+      factory: function() { return 'foam.u2.view.MenuView' }
     }
   ],
 
@@ -150,7 +150,14 @@
       this.handler && this.handler.launch(subX, this, e);
     },
     function toE(args, X) {
-      return foam.u2.ViewSpec.createView(this.view, args, this, X);
+      // Pass on the menu object in context to avoid breaking UI with infinite loops
+      if ( foam.core.FObject.isInstance(X) ) {
+        X = X.__subContext__.createSubContext({ menu: this });
+      } else {
+        X = X.createSubContext({ menu: this });
+      }
+      var a = foam.u2.ViewSpec.createView(this.view, args, this, X);
+      return a;
     },
     {
       documentation: 'Desire to call read predicate with calling context but predicate may also need access to this menu; add the current menu as context key MENU',

@@ -885,11 +885,11 @@ p({
   "name": "googleSheetsDataImport",
   "serve": true,
   "authenticate": true,
-  "boxClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceSkeleton",
-  "serviceClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceImpl",
+  "boxClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceSkeleton",
+  "serviceClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceImpl",
   "client":"""
     {
-      "class": "foam.nanos.google.api.sheets.ClientGoogleSheetsDataImportService",
+      "class": "foam.nanos.google.api.sheets.views.ClientGoogleSheetsDataImportService",
       "delegate":
         {
           "class": "foam.box.HTTPBox",
@@ -904,11 +904,11 @@ p({
   "name": "googleSheetsTransactionsDataImport",
   "serve": true,
   "authenticate": true,
-  "boxClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceSkeleton",
+  "boxClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceSkeleton",
   "serviceClass": "foam.nanos.google.api.sheets.GoogleSheetsTransactionsDataImportServiceImpl",
   "client":"""
     {
-      "class": "foam.nanos.google.api.sheets.ClientGoogleSheetsDataImportService",
+      "class": "foam.nanos.google.api.sheets.views.ClientGoogleSheetsDataImportService",
       "delegate":
         {
           "class": "foam.box.HTTPBox",

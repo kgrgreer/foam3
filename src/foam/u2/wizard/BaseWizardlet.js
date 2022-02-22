@@ -167,6 +167,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'FObjectArray',
+      of: 'foam.u2.wizard.BaseWizardlet',
+      name: 'prerequisiteWizardlets'
+    },
+    {
       name: 'wao',
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.WAO',
@@ -279,10 +284,14 @@ foam.CLASS({
   ],
 
   listeners: [
-    function updateVisibilityFromSectionCount() {
-      if ( ! this.sections ) return;
-      this.atLeastOneSectionVisible_ = this.sections.filter(
-        v => v.isAvailable).length > 0;
+    {
+      name: 'updateVisibilityFromSectionCount',
+      isFramed: true,
+      code: function() {
+        if ( ! this.sections ) return;
+        this.atLeastOneSectionVisible_ = this.sections.filter(
+          v => v.isAvailable).length > 0;
+      }
     }
   ]
 });
