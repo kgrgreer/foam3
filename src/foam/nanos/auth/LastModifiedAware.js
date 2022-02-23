@@ -13,7 +13,10 @@ foam.INTERFACE({
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'Last modified date',
-      storageOptional: true
+      storageOptional: true,
+      javaCompare: 'return 0;',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     }
   ]
 });
