@@ -20,9 +20,11 @@ foam.INTERFACE({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'AbstractWizardletAware',
+  flags: [],
   implements: [
     {
       path: 'foam.u2.wizard.WizardletAware',

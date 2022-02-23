@@ -400,8 +400,6 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
-        await self.fetchGroup();
-
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.memento.head ) {
           var menu = await self.__subContext__.menuDAO.find(self.memento.head);
@@ -421,6 +419,8 @@ foam.CLASS({
         }
 
         await self.fetchSubject();
+
+        await self.fetchGroup();
 
         await self.maybeReinstallLanguage(client);
         self.languageInstalled.resolve();
@@ -740,6 +740,23 @@ foam.CLASS({
       notification.transient       = transient;
       notification.icon            = icon;
       this.__subContext__.myNotificationDAO.put(notification);
+    },
+
+    function displayToastMessage(sub, on, put, obj) {
+      if ( obj.toastState == this.ToastState.REQUESTED ) {
+        this.add(this.NotificationMessage.create({
+          message: obj.toastMessage,
+          type: obj.severity,
+          description: obj.toastSubMessage,
+          icon: obj.icon
+        }));
+        // only update and save non-transient messages
+        if ( ! obj.transient ) {
+          var clonedNotification = obj.clone();
+          clonedNotification.toastState = this.ToastState.DISPLAYED;
+          this.__subSubContext__.notificationDAO.put(clonedNotification);
+        }
+      }
     }
   ],
 
@@ -757,22 +774,7 @@ foam.CLASS({
        *   - Go to a menu based on either the hash or the group
        */
       this.__subSubContext__.myNotificationDAO
-      .on.put.sub((sub, on, put, obj) => {
-        if ( obj.toastState == this.ToastState.REQUESTED ) {
-          this.add(this.NotificationMessage.create({
-            message: obj.toastMessage,
-            type: obj.severity,
-            description: obj.toastSubMessage,
-            icon: obj.icon
-          }));
-          // only update and save non-transient messages
-          if ( ! obj.transient ) {
-            var clonedNotification = obj.clone();
-            clonedNotification.toastState = this.ToastState.DISPLAYED;
-            this.__subSubContext__.notificationDAO.put(clonedNotification);
-          }
-        }
-      });
+      .on.put.sub(this.displayToastMessage.bind(this));
 
       this.fetchTheme();
       this.initLayout.resolve();

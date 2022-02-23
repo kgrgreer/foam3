@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'View user name and user nav settings',
 
   imports: [
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -122,7 +122,7 @@ foam.CLASS({
             }));
           })
           .start('h1')
-            .add( this.user$.dot('firstName') ).addClass(this.myClass('user-name'))
+            .add( this.subject.user$.dot('firstName') ).addClass(this.myClass('user-name'))
           .end()
           .start()
             .addClass(this.myClass('carrot'))

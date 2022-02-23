@@ -29,11 +29,11 @@ foam.CLASS({
         // precision should be atleast one
         precision < 1 && ( precision = 1 );
         // initialize array of values and labels
-        foam.util.date.TimeUnit.VALUES.forEach(unit => {
+        foam.time.TimeUnit.VALUES.forEach(unit => {
           var numUnits = Math.floor(value / unit.conversionFactorMs);
-          var label = useShort ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.shorthand`, unit.shorthand) :
-                      numUnits > 1 ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.plural`, unit.plural) :
-                      ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.label`, unit.label);
+          var label = useShort ? ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.shorthand`, unit.shorthand) :
+                      numUnits > 1 ? ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.plural`, unit.plural) :
+                      ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.label`, unit.label);
           values.push([numUnits, label]);
           value -= numUnits * unit.conversionFactorMs;
         });
@@ -47,10 +47,6 @@ foam.CLASS({
           return acc;
         }, []).join(' ');
 
-        if ( negative ) {
-          // TODO: set css/flag to adjust font
-          formatted = '('.concat(formatted, ')');
-        }
         return formatted || '0ms';
       }
     }

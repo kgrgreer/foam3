@@ -14,7 +14,7 @@ foam.CLASS({
     'auth',
     'notify',
     'resetPasswordToken',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -165,7 +165,6 @@ foam.CLASS({
       code: function() {
         this.auth.updatePassword(null, this.originalPassword, this.newPassword)
         .then((result) => {
-          this.user.copyFrom(result);
           this.reset_();
           this.notify(this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
         })

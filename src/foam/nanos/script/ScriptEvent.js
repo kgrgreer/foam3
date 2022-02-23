@@ -19,6 +19,7 @@ foam.CLASS({
     'owner',
     'lastRun',
     'lastDuration',
+    'lastStatus',
     'hostname'
   ],
 
@@ -56,6 +57,14 @@ foam.CLASS({
       documentation: 'Date and time the script took to complete.',
       visibility: 'RO',
       tableWidth: 125
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.script.ScriptStatus',
+      name: 'lastStatus',
+      documentation: 'The last status that the script had before its completion.',
+      visibility: 'RO',
+      value: 'UNSCHEDULED'
     },
     {
       class: 'String',

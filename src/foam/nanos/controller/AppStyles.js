@@ -273,6 +273,11 @@ foam.CLASS({
     font-size: 2.8rem;
   }
 
+  .flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* mobile */
   @media only screen and (min-width: 321px) {

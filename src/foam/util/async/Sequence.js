@@ -9,6 +9,13 @@ foam.CLASS({
   name: 'Sequence',
   extends: 'foam.core.Fluent',
 
+  documentation: `
+    Sequence creates and executes ContextAgents in the order specified, passing
+    each ContextAgent's export context to the subsequent ContextAgent.
+    If method execute() of the ContextAgent returns a context explicitly, then
+    this will be used instead of the export context.
+  `,
+
   implements: [
     'foam.core.ContextAgent',
     'foam.mlang.Expressions'
@@ -145,14 +152,16 @@ foam.CLASS({
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
-            ? spec.class : ctx.lookup(spec.class);
+            ? spec.class : this.__subContext__.lookup(spec.class);
           if ( ! cls ) foam.assert(false,
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
         }
         // Call the context agent and pass its exports to the next one
         return contextAgent.execute().then(
-          () => nextStep(contextAgent.__subContext__));
+          newX => {
+            return nextStep(newX || contextAgent.__subContext__);
+          });
       };
       return nextStep(this.__subContext__)
     },

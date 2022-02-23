@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.mlang.predicate.CapabilityAuthServicePredicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.AssociatedEntity',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -127,13 +128,14 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          Predicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+          CapabilityAuthServicePredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission, null);
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
+          predicate.setEntity(AssociatedEntity.USER);
           if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
           }
@@ -144,6 +146,7 @@ foam.CLASS({
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
               NOT(INSTANCE_OF(AgentCapabilityJunction.class))
             );
+            predicate.setEntity(AssociatedEntity.REAL_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }
@@ -156,6 +159,7 @@ foam.CLASS({
               EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
               INSTANCE_OF(AgentCapabilityJunction.class)
             );
+            predicate.setEntity(AssociatedEntity.ACTING_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }

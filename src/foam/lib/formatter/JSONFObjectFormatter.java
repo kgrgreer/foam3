@@ -380,19 +380,24 @@ public class JSONFObjectFormatter
           append(',');
           addInnerNewline();
         }
-        if ( calculateDeltaForNestedFObjects_) {
-          if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
-        } else {
-          outputProperty(newFObject, prop);
-          delta += 1;
-        }
-
         if ( parentProp == null &&
-             prop.includeInID() ) {
+          prop.includeInID() ) {
           // IDs only relevant on root objects
+          outputProperty(newFObject, prop);
           ids += 1;
-        } else if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
-          optional += 1;
+          delta += 1;
+        } else {
+          if ( calculateDeltaForNestedFObjects_ &&
+               prop.get(newFObject) != null && prop.get(oldFObject) != null &&
+               prop.get(newFObject).getClass().getCanonicalName().equals(prop.get(oldFObject).getClass().getCanonicalName()) ) {
+            if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
+          } else {
+            outputProperty(newFObject, prop);
+            delta += 1;
+          }
+          if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
+            optional += 1;
+          }
         }
       }
     }

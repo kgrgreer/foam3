@@ -72,3 +72,14 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.nanos.crunch.lite',
+  name: 'BaseCapable',
+  implements: [
+    'foam.nanos.crunch.lite.Capable'
+  ],
+  mixins: [
+    'foam.nanos.crunch.lite.CapableObjectData'
+  ]
+});

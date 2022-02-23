@@ -258,6 +258,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'wizardlet',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Defines a wizardlet to display this capability in a wizard. This
         wizardlet will display after this capability's prerequisites.
@@ -282,6 +284,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.crunch.EasyCrunchWizard',
       name: 'wizardConfig',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Configuration placed on top level capabilities defining various
         configuration options supported by client capability wizards.
@@ -289,6 +293,12 @@ foam.CLASS({
       includeInDigest: false,
       factory: function() {
         return this.EasyCrunchWizard.create({}, this);
+      },
+      adapt: function(_, n) {
+        if ( foam.lib.json.UnknownFObject.isInstance(n) && n.json ) {
+          n = foam.lookup(n.json.class).create(n.json);
+        }
+        return n
       }
     },
     {
@@ -392,10 +402,7 @@ foam.CLASS({
     {
       name: 'prerequisiteImplies',
       type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String permission',
       documentation: `Checks if a permission or capability string is implied by the prerequisites of a capability`,
       javaCode: `
         // temporary prevent infinite loop when checking the permission "predicatedprerequisite.read.*"

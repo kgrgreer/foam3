@@ -204,7 +204,7 @@
           resize.observe(el);
         })
       })
-      
+
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
       // This needs to be here because intersectionObserver does not bind the correct this during callback
       function handleIntersect(entries, observer) {
@@ -286,7 +286,7 @@
           // TODO
         }
         var isSet = false;
-        if  ( self.renderedPages_[page] ) { 
+        if  ( self.renderedPages_[page] ) {
           console.warn('Trying to overwrite a loaded page without clearning....Clearing page');
           this.clearPage(page)
         }
@@ -327,7 +327,7 @@
       code: function() {
         this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
-        // Don't clear loadingPages_ here since they are being 
+        // Don't clear loadingPages_ here since they are being
         // loaded and will have latest data anyway
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
@@ -387,13 +387,19 @@
           if ( entry.boundingClientRect.top <= entry.rootBounds.top ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) <= entry.rootBounds.top )
               index += 1;
+
             self.topRow = index;
           } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
               index -= 1;
-            self.bottomRow = index;
+
+            if ( index > 0 )
+              self.bottomRow = index;
           }
         });
+
+        if ( ! self.bottomRow && self.displayedRowCount_ < 0 )
+          self.bottomRow = self.pageSize > entries.length ? entries.length : self.pageSize;
       }
     }
   ],

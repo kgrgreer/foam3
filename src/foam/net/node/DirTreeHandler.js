@@ -41,6 +41,8 @@ foam.CLASS({
      /frobinator/quz/beta.js as a client-runnable script
      /frobinator/quz/charlie.xyz as a document resource`,
 
+  flags: ['node'],
+
   imports: [
     'log',
     'info'

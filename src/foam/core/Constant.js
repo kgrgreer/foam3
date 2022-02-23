@@ -62,7 +62,7 @@ foam.CLASS({
           cls,
           foam.String.constantize(this.name),
           {
-            value: this.value,
+            get: () => this.value,
             configurable: false
           });
       } else {
@@ -70,7 +70,7 @@ foam.CLASS({
           cls,
           foam.String.constantize(this.name),
           {
-            get: () => this.value,
+            value: this.value,
             configurable: false
           });
       }

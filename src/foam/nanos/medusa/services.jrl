@@ -48,15 +48,14 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setAuthorize(false)
+      .setHashed(true)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.ClusterConfigNARegionReplayDAO.Builder(x)
         .setDelegate(new foam.nanos.medusa.ClusterConfigReplayDAO.Builder(x)
           .setDelegate(new foam.nanos.medusa.ClusterConfigStatusDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.RenouncePrimaryDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.AnnouncePrimaryDAO.Builder(x)
-              .setDelegate(new foam.nanos.medusa.ClusterConfigSupportDAO.Builder(x)
-                .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
-                .build())
+              .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
               .build())
             .build())
           .build())
@@ -167,12 +166,32 @@ p({
   "client": "{\"of\":\"foam.nanos.session.Session\"}"
 })
 
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "replayingInfo",
+//   "description": "Medusa replay info for this instance",
+//   "serviceScript": """
+//      return new foam.nanos.medusa.ReplayingInfo();
+//   """
+// })
+
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "replayingInfo",
-  "description": "Medusa replay info for this instance",
+  "name": "medusaReplayIssueDAO",
+  "serve": true,
   "serviceScript": """
-     return new foam.nanos.medusa.ReplayingInfo();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaReplayIssue.getOwnClassInfo())
+      .setFuid(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":"""
+  {
+    "of":"foam.nanos.medusa.MedusaReplayIssue"
+  }
   """
 })
 

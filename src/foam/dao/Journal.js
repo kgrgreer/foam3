@@ -51,7 +51,6 @@ foam.CLASS({
 });
 
 
-
 foam.CLASS({
   package: 'foam.dao',
   name: 'ProxyJournal',
@@ -70,11 +69,14 @@ foam.CLASS({
 });
 
 
+// TODO: Move to own file
 if ( foam.isServer ) {
   foam.CLASS({
     package: 'foam.dao',
     name: 'NodeFileJournal',
     extends: 'foam.dao.AbstractJournal',
+
+    flags: ['node'],
 
     properties: [
       {

@@ -9,6 +9,8 @@ foam.INTERFACE({
   package: 'foam.nanos.notification',
   name: 'ResendNotificationServiceInterface',
 
+  skeleton: true,
+
   documentation: `
   A nanoService for resend notification for a specific user base on the notification.`,
 

@@ -26,7 +26,14 @@ foam.CLASS({
   properties: [
     {
       name: 'click',
-      documentation: 'Used to override the default click listener exported by DAOController'
+      documentation: 'Used to override the default click listener exported by DAOController',
+      adapt: function(_, n) {
+        if ( typeof n === 'function' ) return n;
+        // adapt a class method path
+        var lastIndex = n.lastIndexOf('.');
+        var classObj = foam.lookup(n.substring(0, lastIndex));
+        return classObj[n.substring(lastIndex + 1)];
+      }
     },
     {
       class: 'String',

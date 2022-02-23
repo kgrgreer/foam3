@@ -10,17 +10,21 @@ foam.CLASS({
 
   css: `
   ^ {
-    box-sizing: content-box;
     background-color: /*%WHITE%*/ #ffffff;
-    border: solid 1px #b2b6bd;
+    border: 1px solid /*%GREY3%*/ #b2b6bd;
     border-radius: 4px;
     padding: 8px 16px;
-    transition: all 0.2s linear;
-    text-align: center;
-    width: 2.5em;
+    transition: all 0.2s ease;
+    width: 8ch;
+  }
+  ^:hover {
+    cursor: pointer;
   }
   ^selected {
-    background-color: /*%PRIMARY5%*/ #e5f1fc;
+    background-color: /*%PRIMARY3%*/ #406dea;
+    border-color: /*%PRIMARY3%*/ #406dea;
+    color: /*%WHITE%*/ #ffffff;
+    line-height: 1.5;
   }
   `,
   methods: [
@@ -34,7 +38,7 @@ foam.CLASS({
         }))
         .on('click', this.onClick)
         .add(this.label)
-        .addClass('h600')
+        .enableClass('h600', this.isSelected$)
     }
   ]
 });

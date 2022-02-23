@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-
 (function() {
-  var foam  = globalThis.foam || ( globalThis.foam = {} );
-  var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
-  foam.flags = flags;
+  var foam = globalThis.foam || ( globalThis.foam = { isServer: false, flags: globalThis.FOAM_FLAGS || {} } );
+
+  // Is replaced when lib.js is loaded.
+  foam.checkFlags = () => true;
+
+  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
+  var flags = globalThis.foam.flags;
 
   flags.web  = true;
+  flags.genjava = true;
 
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
@@ -74,23 +78,20 @@
   this.FOAM_FILES = async function(files) {
     var load = createLoader();
 
-    files.
-      filter(f => {
-        // If flags are defined, don't load unless all are true
-        if ( f.flags ) {
-          for ( var i = 0 ; i < f.flags.length ; i++ ) {
-            if ( ! foam.flags[f.flags[i]] ) {
-              // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
-              return false;
-            }
-          }
-          return true;
-        }
-        return true;
-      }).
-      filter(f => (! f.predicate) || f.predicate()).
-      map(f => f.name).
-      forEach(f => load(f, true));
+    var seen = {};
+    files.forEach(f => {
+      if ( seen[f.name] ) {
+        console.log('duplicate', f.name);
+        return;
+      }
+      seen[f.name] = true;
+
+      if ( ! foam.checkFlags(f.flags) ) return;
+
+      if ( f.predicate && ! f.predicate() ) return;
+
+      load(f.name, true);
+    });
 
     load(null, false);
   //  delete this.FOAM_FILES;

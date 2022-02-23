@@ -40,5 +40,15 @@ foam.CLASS({
       javaFactory: 'return new MDAO(getOf());',
       javaPostSet: ' // noop'
     }
+  ],
+
+  methods: [
+    {
+      documentation: `Override JDAO removeAll which will remove all from journal, then mdao. We only want the mdao to be purged.`,
+      name: 'removeAll_',
+      javaCode: `
+        getDelegate().select_(x, new foam.dao.RemoveSink(x, getDelegate()), skip, limit, order, predicate);
+      `
+    }
   ]
 });

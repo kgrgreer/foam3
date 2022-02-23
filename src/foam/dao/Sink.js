@@ -19,6 +19,8 @@ foam.INTERFACE({
   package: 'foam.dao',
   name: 'Sink',
 
+  proxy: true,
+
   documentation: 'Interface for receiving information updates. Primarily used as the target for DAO.select() calls.',
 
   methods: [
@@ -59,24 +61,6 @@ foam.INTERFACE({
           type: 'foam.core.Detachable'
         }
       ]
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.dao',
-  name: 'ProxySink',
-  implements: [ 'foam.dao.Sink' ],
-
-  documentation: 'Proxy for Sink interface.',
-
-  properties: [
-    {
-      class: 'Proxy',
-      of: 'foam.dao.Sink',
-      name: 'delegate',
-      factory: function() { return foam.dao.ArraySink.create(); }
     }
   ]
 });
@@ -169,6 +153,7 @@ foam.CLASS({
   name: 'DAOSlot',
   implements: ['foam.core.Slot'],
   extends: 'foam.dao.ResetListener',
+  flags: [],
   properties: [
     {
       name: 'dao',
@@ -295,6 +280,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'AnonymousSink',
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   axioms: [
     {
@@ -615,6 +601,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'DescribeSink',
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   documentation: 'Calls .describe() on every object.  Useful for debugging to quickly see what items are in a DAO.',
 
@@ -635,6 +622,7 @@ foam.CLASS({
   implements: [ 'foam.dao.Sink' ],
   documentation: 'Converts all sink events to call to a singular function.' +
     '  Useful for subscribing a listener method to a DAO',
+  flags: [],
 
   axioms: [
     {
@@ -684,6 +672,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'FramedSink',
   extends: 'foam.dao.ProxySink',
+  flags: [],
 
   documentation: 'A proxy that waits until the next frame to flush the calls to the delegate.',
 
@@ -794,6 +783,7 @@ foam.CLASS({
   name: 'JournalSink',
 
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   properties: [
     {

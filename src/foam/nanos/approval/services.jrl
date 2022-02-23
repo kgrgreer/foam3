@@ -46,7 +46,7 @@ p({
         .build())
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.approval.ApprovalRequest.CREATED })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.approval.ApprovalRequest.DAO_KEY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.approval.ApprovalRequest.DAO_KEY, foam.nanos.approval.ApprovalRequest.CLASSIFICATION })
       .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"

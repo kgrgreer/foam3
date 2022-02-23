@@ -48,28 +48,32 @@ foam.CLASS({
   ],
 
   constants: {
-    DEFAULT_ENTITY_ENCODINGS: [
-      foam.net.node.EntityEncoding.create({
+    DEFAULT_ENTITY_ENCODINGS: function() {
+      return [
+        foam.net.node.EntityEncoding.create({
+          bufferEncoding: 'ascii',
+          charsetRegExp: /^(US-ASCII|us|IBM367|cp367|csASCII|iso-ir-100|ISO_8859-1|ISO-8859-1)$/i
+        }),
+        foam.net.node.EntityEncoding.create({
+          bufferEncoding: 'utf8',
+          charsetRegExp: /UTF-8/i
+        }),
+        foam.net.node.EntityEncoding.create({
+          bufferEncoding: 'utf16le',
+          charsetRegExp: /^UTF-16LE$/i
+        }),
+        foam.net.node.EntityEncoding.create({
+          bufferEncoding: 'ucs2',
+          charsetRegExp: /^$ISO-10646-UCS-2/i
+        })
+      ]
+    },
+    DEFAULT_DEFAULT_ENTITY_ENCODING: function() {
+      return foam.net.node.EntityEncoding.create({
         bufferEncoding: 'ascii',
         charsetRegExp: /^(US-ASCII|us|IBM367|cp367|csASCII|iso-ir-100|ISO_8859-1|ISO-8859-1)$/i
-      }),
-      foam.net.node.EntityEncoding.create({
-        bufferEncoding: 'utf8',
-        charsetRegExp: /UTF-8/i
-      }),
-      foam.net.node.EntityEncoding.create({
-        bufferEncoding: 'utf16le',
-        charsetRegExp: /^UTF-16LE$/i
-      }),
-      foam.net.node.EntityEncoding.create({
-        bufferEncoding: 'ucs2',
-        charsetRegExp: /^$ISO-10646-UCS-2/i
       })
-    ],
-    DEFAULT_DEFAULT_ENTITY_ENCODING: foam.net.node.EntityEncoding.create({
-      bufferEncoding: 'ascii',
-      charsetRegExp: /^(US-ASCII|us|IBM367|cp367|csASCII|iso-ir-100|ISO_8859-1|ISO-8859-1)$/i
-    }),
+    }
   },
 
   properties: [

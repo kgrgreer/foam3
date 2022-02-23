@@ -156,7 +156,8 @@
       of: 'foam.nanos.ruler.RuleAction',
       name: 'action',
       view: { class: 'foam.u2.view.JSONTextView' },
-      documentation: 'The action to be executed if predicates returns true for passed object.'
+      documentation: 'The action to be executed if predicates returns true for passed object.',
+      javaCloneProperty: 'set(dest, get(source));'
     },
     {
       name: 'enabled',

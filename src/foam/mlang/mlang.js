@@ -169,6 +169,7 @@ foam.CLASS({
   name: 'ExprProperty',
   extends: 'FObjectProperty',
 
+  flags: [],
   documentation: 'Property for Expr values.',
 
   properties: [
@@ -222,6 +223,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'ExprArrayProperty',
   extends: 'FObjectArray',
+
+  flags: [],
+
   requires: [
     'foam.mlang.ExprProperty'
   ],
@@ -247,6 +251,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'SinkProperty',
   extends: 'FObjectProperty',
+
+  flags: [],
+
   properties: [
     {
       name: 'type',
@@ -323,6 +330,8 @@ foam.CLASS({
   name: 'PredicateProperty',
   extends: 'FObjectProperty',
 
+  flags: [],
+
   documentation: 'Property for Predicate values.',
 
   properties: [
@@ -342,6 +351,8 @@ foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'PredicateArray',
   extends: 'FObjectArray',
+
+  flags: [],
 
   documentation: 'Property for storing arrays of Predicates.',
 
@@ -600,12 +611,14 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Absolute',
+
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
       name: 'delegate'
     }
   ],
+
   methods: [
     {
       name: 'f',
@@ -616,9 +629,11 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Mux',
+
   properties: [
     {
 //      class: 'foam.mlang.ExprProperty',
@@ -646,9 +661,11 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Partition',
+
   properties: [
     {
       name: 'arg1'
@@ -697,6 +714,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
@@ -3355,6 +3373,7 @@ foam.CLASS({
   name: 'CustomComparator',
   implements: [ 'foam.mlang.order.Comparator' ],
 
+  flags: [],
   // TODO: rename FunctionComparator
 
   documentation: 'A function to Comparator adapter.',
@@ -3593,7 +3612,7 @@ foam.CLASS({
 setCount(getCount() + 1);
 setValue((getValue() + ((Number)this.getArg1().f(obj)).doubleValue()) / getCount());
       `,
-    },
+    }
   ]
 });
 
@@ -3789,6 +3808,8 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'Expressions',
 
+  flags: [],
+
   documentation: 'Convenience mix-in for requiring all mlangs.',
 
   requires: [
@@ -3944,6 +3965,8 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'ExpressionsSingleton',
   extends: 'foam.mlang.Expressions',
+
+  flags: [],
 
   documentation: 'A convenience object which provides access to all mlangs.',
   // TODO: why is this needed? Why not just make Expressions a Singleton?
@@ -4478,6 +4501,10 @@ foam.CLASS({
     {
       class: 'foam.mlang.ExprArrayProperty',
       name: 'args'
+    },
+    {
+      class: 'Boolean',
+      name: 'rounding'
     }
   ],
 
@@ -4500,7 +4527,7 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        return getRounding() ? Math.round(result) : result;
       `,
       code: function(o) {
         var result = null;
@@ -4516,7 +4543,7 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        return this.rounding ? Math.round(result) : result;
       }
     },
     {

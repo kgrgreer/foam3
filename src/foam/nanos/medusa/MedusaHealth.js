@@ -139,7 +139,6 @@ foam.CLASS({
                   config.getZone() == 0 &&
                   replaying != null ) {
         if ( ! foam.util.SafetyUtil.isEmpty(config.getErrorMessage()) ) {
-          setErrorMessage(config.getErrorMessage());
           setStatus(HealthStatus.FAIL);
         } else {
           if ( config.getIsPrimary() ) {

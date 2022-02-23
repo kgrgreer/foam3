@@ -68,7 +68,6 @@ foam.CLASS({
               } catch(Throwable t) {
                 script.setStatus(ScriptStatus.ERROR);
                 logger.error("agency", script.getId(), t);
-                t.printStackTrace();
               } finally {
                 getDelegate().put_(x, script);
               }

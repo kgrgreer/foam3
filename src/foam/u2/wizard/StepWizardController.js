@@ -8,11 +8,16 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'StepWizardController',
 
+  imports: [
+    'developerMode'
+  ],
+
   requires: [
     'foam.core.FObject',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardletIndicator',
-    'foam.u2.wizard.StepWizardConfig'
+    'foam.u2.wizard.StepWizardConfig',
+    'foam.u2.wizard.debug.WizardInspector'
   ],
 
   properties: [
@@ -69,6 +74,10 @@ foam.CLASS({
           wizardletIndex: 0,
           sectionIndex: 0,
         });
+      },
+      preSet: function(_, n){
+        this.wizardlets[n.wizardletIndex].load()
+        return n;
       }
     },
 
@@ -328,6 +337,18 @@ foam.CLASS({
     },
     function skipTo(pos) {
       this.wizardPosition = pos;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'openWizardInspector',
+      isAvailable: function (developerMode) { return developerMode },
+      code: function(x) {
+        this.WizardInspector.OPEN({}, this.__subContext__.createSubContext({
+          wizardController: this
+        }));
+      }
     }
   ],
 
