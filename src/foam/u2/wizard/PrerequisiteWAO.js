@@ -33,6 +33,10 @@
         OPTIONAL: For grabbing only a specific property from the CapabilityJunction's data
       `,
       name: 'propertyName'
+    },
+    {
+      class: 'Boolean',
+      name: 'isWrappedInFObjectHolder'
     }
   ],
 
@@ -75,13 +79,20 @@
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
 
-      const fObjectHolder = this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
+      if ( this.isWrappedInFObjectHolder ){
+        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
 
-      wizardlet.data = fObjectHolder;
+        wizardlet.data = fObjectHolder;
 
+        wizardlet.isLoaded = true;
+
+        return fObjectHolder;
+      }
+
+      wizardlet.data = clonedPrereqWizardletData;
       wizardlet.isLoaded = true;
 
-      return fObjectHolder;
+      return clonedPrereqWizardletData;
     }
   ]
 });
