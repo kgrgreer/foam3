@@ -180,7 +180,7 @@ foam.CLASS({
       Predicate checkerPredicate = approvableAwareObj.getCheckerPredicate();
 
       if ( checkerPredicate != null && ! checkerPredicate.f(obj) ){
-        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && currentObjectInDAO == null ){
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && currentObjectInDAO == null ) {
           lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
         }
         return super.put_(x,obj);
