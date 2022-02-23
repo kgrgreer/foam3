@@ -33,39 +33,29 @@ foam.CLASS({
     ^ {
       display: flex;
       align-items: normal;
-      width: 40px;
+      position: relative;
     }
-    ^ img {
-      height: 25px;
-      width: 25px;
-      cursor: pointer;
-      border-bottom: 1px solid transparent;
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
+    ^bell.foam-u2-ActionView {
+      color: /*%GREY2%*/ #6B778C;
+      justify-content: flex-start;
     }
-    ^ img:hover {
-      border-bottom: 1px solid white;
-    }
-    ^ .selected-icon {
-      border-bottom: 1px solid white;
+    ^bell.foam-u2-ActionView svg {
+      fill: /*%GREY2%*/ #6B778C;
     }
     ^ .dot {
+      align-items: center;
+      background: /*%DESTRUCTIVE3%*/ red;
       border-radius: 50%;
-      display: inline-block;
-      background: red;
-      width: 15px;
-      height: 15px;
-      position: relative;
-      right: 10px;
-      text-align: center;
+      color: /*%WHITE%*/ #FFFFFF;
+      display: flex;
       font-size: 0.8rem;
-    }
-    ^ .dot > span {
-      padding-top: 3px;
-      display: inline-block;
+      height: 15px;
+      justify-content: center;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      text-align: center;
+      width: 15px;
     }
   `,
 
@@ -78,6 +68,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showCountUnread',
       expression: (countUnread) => countUnread > 0
+    },
+    {
+      class: 'Boolean',
+      name: 'showText'
+    },
+    {
+      class: 'String',
+      name: 'formattedCount',
+      expression: function(countUnread) {
+        return countUnread > 9 ? '9+' : countUnread;
+      }
     }
   ],
 
@@ -87,7 +88,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` }
+    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` },
+    { name: 'NOTIF', message: 'Notifications' }
   ],
 
   methods: [
@@ -95,27 +97,25 @@ foam.CLASS({
       this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
       this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
-
+      var self = this;
       this.addClass()
         .addClass('icon-container')
-        .on('click', this.changeToNotificationsPage.bind(this))
-
-        .start('img')
-          .enableClass('selected-icon', this.currentMenu$.map((menu) => {
-            return this.Menu.isInstance(menu) && menu.id === 'notifications';
-          }))
-          .attrs({ src: this.BELL_IMAGE })
+        .startContext({ data: this })
+        .start(this.NOTIFICATIONS, {
+          themeIcon: 'bell',
+          label$: this.showText ? this.formattedCount$.map(v => `${self.NOTIF} (${v})`) : foam.core.ConstantSlot.create({ value: '' }),
+          buttonStyle: 'TERTIARY',
+          size: this.showText ? 'SMALL' : 'MEDIUM'
+        })
+          .addClass(this.myClass('bell'))
         .end()
-        .start('span')
+        .endContext()
+        .start()
           .addClass('dot')
-          .add(this.countUnread$)
-          .show(this.showCountUnread$)
+          .add(this.countUnread$.map(v => v > 9 ? '9+' : v ))
+          .show(this.slot(function(showCountUnread, showText) { return showCountUnread && ! showText; }))
         .end()
       .end();
-    },
-
-    function changeToNotificationsPage() {
-      this.pushMenu(this.MENU_ID);
     }
   ],
 
@@ -137,6 +137,15 @@ foam.CLASS({
         ).select(this.COUNT()).then((count) => {
           this.countUnread = count.value;
         });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'notifications',
+      code: function() {
+        this.pushMenu(this.MENU_ID);
       }
     }
   ]

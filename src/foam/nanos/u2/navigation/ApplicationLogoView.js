@@ -27,8 +27,9 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ img, ^ svg {
-      max-height: 40px;
       height: 27px;
+      max-height: 40px;
+      width: 100%;
     }
   `,
 
@@ -39,7 +40,8 @@ foam.CLASS({
         .start(this.Image, {
           data$: this.slot(function(theme$largeLogoEnabled, theme$logo, theme$largeLogo) {
             return theme$largeLogoEnabled ? theme$largeLogo : theme$logo;
-          })
+          }),
+          embedSVG: true
         })
         .end();
     }

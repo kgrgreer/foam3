@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   requires: [
-    'foam.mlang.ExpressionsSingleton'
+    'foam.mlang.ExpressionsSingleton',
+    'foam.u2.tag.Image'
   ],
 
   exports: [
@@ -34,9 +35,9 @@ foam.CLASS({
       width: 240px;
     }
 
-    ^:hover > ^heading {
-      background-color: #e7eaec;
-      color: #406dea;
+    ^button:hover {
+      background-color: /*%GREY5%*/ #e7eaec;
+      color:  /*%PRIMARY1%*/ #406dea;
     }
 
     ^label-container {
@@ -44,46 +45,46 @@ foam.CLASS({
       align-items: center;
     }
 
-    ^label {
-      font-weight: 300;
-      min-width: 120px;
-      padding: 4px;
-      font-weight: normal;
-      display: inline-block;
-      color: /*%GREY1%*/ #5E6061;
-      font-size: 1.4rem;
-      font-weight: normal;
-    }
-
     ^heading {
       min-height: 40px;
-      border-left: 4px solid rgba(0,0,0,0);
       display: flex;
       align-items: center;
+      padding: 0 8px;
     }
 
-    ^button{
-      padding: 0 !important;
+    ^button.foam-u2-ActionView{
+      padding: 8px;
       width: 100%;
     }
 
     ^select-level {
-      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      overflow: hidden;
+      padding-right: 8px;
+      text-align: left;
+      width: 100%;
     }
 
-    ^selected > ^heading {
+    ^select-level > * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    ^selected > ^heading > ^button {
       background-color: /*%PRIMARY5%*/ #e5f1fc !important;
-      border-left: 4px solid /*%PRIMARY3%*/ #406dea;
+      color:  /*%PRIMARY1%*/ #406dea;
+    }
+    ^toggle-icon {
+      align-self: center;
+      transition: 0.2s linear;
     }
 
-    ^selected > ^heading > ^select-level > ^label {
-      color: /*%BLACK%*/ #1E1F21 !important;
-      font-weight: bold;
-    }
-
-    ^selected > ^heading > ^select-level > ^toggle-icon {
-      color: /*%BLACK%*/ #1E1F21 !important;
-      font-weight: bold;
+    ^toggle-icon svg{
+      width: 0.75em;
+      height: 0.75em;
+      fill: inherit;
     }
   `,
 
@@ -139,6 +140,16 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'level'
+    },
+    {
+      class: 'Boolean',
+      name: 'selected_',
+      expression: function(selection, data$id) {
+        if ( selection && foam.util.equals(selection.id, this.data.id) ) {
+          return true;
+        }
+        return false;
+      }
     }
   ],
 
@@ -171,31 +182,22 @@ foam.CLASS({
       }
       var mainLabel = this.E().
         addClass(self.myClass('select-level')).
-        style({
-          'width':         '100%',
-          'padding-right': '20px',
-          'text-align':    'left'
-        }).
         start()
+        //TODO: add tooltip when ellipsis
+          .addClass(this.slot(function(selected_) {
+            return selected_ ? 'p-semiBold' : 'p';
+          }))
           .addClass(self.myClass('label')).
           call(this.formatter, [self.data]).
         end().
-        start('span').
+        start().
           addClass(self.myClass('toggle-icon')).
           show(this.hasChildren$).
           style({
-            'visibility':    'visible',
-            'font-size':     '16px',
-            'float':         'right',
-            'height':        '12px',
-            'width':         '12px',
-            'padding-top':   '4px',
-            'padding-left':  self.expanded$.map(function(c) { return c ? '0px' : '4px'; }),
-            'padding-right': self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
-            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(0deg)' : 'rotate(90deg)'; })
+            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
           }).
           on('click', this.toggleExpanded).
-          add('\u2303').
+          tag(this.Image, { glyph: 'next' }).
         end();
 
       this.
@@ -228,12 +230,7 @@ foam.CLASS({
           }
           return isThisItemRelatedToSearch;
         })).
-        addClass(this.slot(function(selected, id) {
-          if ( selected && foam.util.equals(selected.id, id) ) {
-            return this.myClass('selected');
-          }
-          return '';
-        }, this.selection$, this.data$.dot('id'))).
+        enableClass(this.myClass('selected'), this.selected_$).
         on('dblclick', function() { self.dblclick && self.dblclick(self.data); }).
         callIf(this.draggable, function() {
           this.
@@ -246,7 +243,7 @@ foam.CLASS({
         start().
           addClass(self.myClass('heading')).
           style({
-            'padding-left': ((( self.level - 1) * 16 + 8) + 'px')
+            'padding-left': ((( self.level - 1) * 16 ) + 8 + 'px')
           }).
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
