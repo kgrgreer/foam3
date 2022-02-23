@@ -19,8 +19,6 @@ foam.INTERFACE({
   package: 'foam.dao',
   name: 'Sink',
 
-  proxy: true,
-
   documentation: 'Interface for receiving information updates. Primarily used as the target for DAO.select() calls.',
 
   methods: [
@@ -61,6 +59,24 @@ foam.INTERFACE({
           type: 'foam.core.Detachable'
         }
       ]
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.dao',
+  name: 'ProxySink',
+  implements: [ 'foam.dao.Sink' ],
+
+  documentation: 'Proxy for Sink interface.',
+
+  properties: [
+    {
+      class: 'Proxy',
+      of: 'foam.dao.Sink',
+      name: 'delegate',
+      factory: function() { return foam.dao.ArraySink.create(); }
     }
   ]
 });
