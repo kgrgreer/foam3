@@ -13,7 +13,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'foam.nanos.auth.DayOfWeek',
+      of: 'foam.time.DayOfWeek',
       name: 'day'
     },
     {

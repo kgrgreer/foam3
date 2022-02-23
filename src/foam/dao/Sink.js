@@ -68,24 +68,6 @@ foam.INTERFACE({
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'ProxySink',
-  implements: [ 'foam.dao.Sink' ],
-
-  documentation: 'Proxy for Sink interface.',
-
-  properties: [
-    {
-      class: 'Proxy',
-      of: 'foam.dao.Sink',
-      name: 'delegate',
-      factory: function() { return foam.dao.ArraySink.create(); }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.dao',
   name: 'AbstractSink',
   implements: [ 'foam.dao.Sink' ],
 

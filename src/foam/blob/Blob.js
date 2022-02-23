@@ -23,7 +23,7 @@ foam.INTERFACE({
 
   proxy: true,
 
- methods: [
+  methods: [
     {
       name: 'read',
       async: true,
@@ -58,8 +58,6 @@ foam.INTERFACE({
 foam.INTERFACE({
   package: 'foam.blob',
   name: 'BlobService',
-
-  proxy: true,
 
   documentation: 'BlobService Interface',
 
