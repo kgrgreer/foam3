@@ -121,43 +121,43 @@ public class FScriptParser
     grammar.addSymbol("COMPARISON", new Seq(
       grammar.sym("VALUE"),
       new Alt(
-        new Literal("==")  {
+        new AbstractLiteral("==")  {
           @Override
           public Object value() {
             return new Eq();
           }
         },
-        new Literal("!=")  {
+        new AbstractLiteral("!=")  {
           @Override
           public Object value() {
             return new Neq();
           }
         },
-        new Literal("<=")  {
+        new AbstractLiteral("<=")  {
           @Override
           public Object value() {
             return new Lte();
           }
         },
-        new Literal(">=")  {
+        new AbstractLiteral(">=")  {
           @Override
           public Object value() {
             return new Gte();
           }
         },
-        new Literal("<")  {
+        new AbstractLiteral("<")  {
           @Override
           public Object value() {
             return new Lt();
           }
         },
-        new Literal(">")  {
+        new AbstractLiteral(">")  {
           @Override
           public Object value() {
             return new Gt();
           }
         },
-        new Literal("~")  {
+        new AbstractLiteral("~")  {
           @Override
           public Object value() {
             return new RegExp();
@@ -190,18 +190,18 @@ public class FScriptParser
 
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
       new Alt(
-        new Literal("exists") {
+        new AbstractLiteral("exists") {
           public Object value() {
             return new Has();
           }
         },
-        new Literal("!exists") {
+        new AbstractLiteral("!exists") {
           @Override
           public Object value() {
             return new Not(new Has());
           }
         },
-        new Literal("isValid") {
+        new AbstractLiteral("isValid") {
           @Override
           public Object value() {
             return new IsValid();
@@ -224,24 +224,9 @@ public class FScriptParser
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
       grammar.sym("STRING"),
-      new Literal("true") {
-        @Override
-        public Object value() {
-          return true;
-        }
-      },
-      new Literal("false") {
-        @Override
-        public Object value() {
-          return false;
-        }
-      },
-      new Literal("null")  {
-        @Override
-        public Object value() {
-          return null;
-        }
-      },
+      new Literal("true", true),
+      new Literal("false", false),
+      new Literal("null", null),
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("FIELD")
@@ -325,12 +310,7 @@ public class FScriptParser
     grammar.addSymbol("STRING", new Seq1(1,
       Literal.create("\""),
       new Repeat(new Alt(
-        new Literal("\\\"") {
-          @Override
-          public Object value() {
-            return "\"";
-          }
-        },
+        new Literal("\\\"", "\""),
         new NotChars("\"")
       )),
       Literal.create("\"")

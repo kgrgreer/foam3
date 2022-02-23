@@ -97,7 +97,7 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(user), "birthday<"+today.toString());
 
     sps.setString("birthday>" + new SimpleDateFormat("dd-MM-yyyy").format(oldDate));
-    test(((Predicate) parser.parse(sps, px).value()).f(user), "birthday<"+today.toString());
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "birthday>"+today.toString());
 
     sps.setString("emailVerified==false");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "emailVerified==false");

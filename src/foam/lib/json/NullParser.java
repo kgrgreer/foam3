@@ -9,12 +9,7 @@ package foam.lib.json;
 import foam.lib.parse.*;
 
 public class NullParser {
-  private final static Parser instance__ = new Literal("null") {
-    @Override
-    public Object value() {
-      return null;
-    }
-  };
+  private final static Parser instance__ = new Literal("null", null);
 
   public static Parser instance() { return instance__; }
 }

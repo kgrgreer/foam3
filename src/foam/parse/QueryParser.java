@@ -157,12 +157,7 @@ public class QueryParser
       new Seq(Literal.create("("), grammar.sym("COMPOUND_SUB_QUERY_BODY"), Literal.create(")")),
       new Join(new Seq(
         Literal.create("\""),
-        new Join(new Repeat(new Alt(new Literal("\\\"") {
-          @Override
-          public Object value() {
-            return "\"";
-          }
-        }, new NotChars("\"")))),
+        new Join(new Repeat(new Alt(new Literal("\\\"", "\""), new NotChars("\"")))),
         Literal.create("\"")
       )),
       new NotChars(")")
@@ -561,12 +556,7 @@ public class QueryParser
     grammar.addSymbol("QUOTED_STRING", new Seq1(1,
       Literal.create("\""),
       new Repeat(new Alt(
-        new Literal("\\\"") {
-          @Override
-          public Object value() {
-            return "\"";
-          }
-        },
+        new Literal("\\\"", "\""),
         new NotChars("\"")
       )),
       Literal.create("\"")
