@@ -1036,9 +1036,6 @@ foam.CLASS({
       getter: function() {
         // TODO: This could be an expression if the copyFrom in createChildMethod
         // didn't finalize its value
-        if ( this.name == 'find' ) {
-          console.log(this.name, 'returns', this.javaType);
-        }
         var code = '';
 
         if ( this.javaType && this.javaType !== 'void' ) {
@@ -2248,10 +2245,9 @@ foam.CLASS({
       }
     },
 
-    function writeFileIfUpdated(outfile, javaSource, opt_result) {
-      if ( ! ( this.fs_.existsSync(outfile) && (this.fs_.readFileSync(outfile).toString() == javaSource))) {
+    function writeFileIfUpdated(outfile, javaSource) {
+      if ( ! ( this.fs_.existsSync(outfile) && (this.fs_.readFileSync(outfile).toString() === javaSource))) {
         this.fs_.writeFileSync(outfile, javaSource);
-        opt_result?.push(outfile);
       }
     },
 
@@ -2280,32 +2276,8 @@ foam.CLASS({
     function targetJava(X) {
       if ( ! this.SUPER(X) ) return;
 
-      var outdir = X.outdir;
-
-      if ( this.proxy ) {
-        var proxy = foam.core.Model.create({
-          package: this.package,
-          name: 'Proxy' + this.name,
-          implements: [ this.id ],
-          flags: [ 'java' ],
-          properties: [
-            {
-              class: 'Proxy',
-              of: this.id,
-              name: 'delegate'
-            }
-          ]
-        });
-
-        proxy.source = this.source;
-        var cls = proxy.buildClass();
-        proxy.outputJavaClass(outdir, cls.buildJavaClass());
-      }
-
-      if ( this.skeleton ) {
-        var javaClass = foam.java.Skeleton.create({of: this.id, flags: [ 'java' ]}).buildJavaClass();
-        this.outputJavaClass(outdir, javaClass);
-      }
+      if ( this.skeleton )
+        this.outputJavaClass(X.outdir, foam.java.Skeleton.create({of: this.id}).buildJavaClass());
 
       return true;
     }

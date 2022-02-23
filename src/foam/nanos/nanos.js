@@ -212,7 +212,6 @@ FOAM_FILES([
   { name: "foam/nanos/medusa/ClusterConfigReplayingInfoDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigStatusDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigSupport", flags: [ "java" ] },
-  { name: "foam/nanos/medusa/ClusterConfigSupportDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterException", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterTopology" },
   { name: "foam/nanos/medusa/ClusterTopologyView" },
@@ -348,7 +347,7 @@ FOAM_FILES([
   { name: "foam/nanos/export/XMLDriver"},
   { name: "foam/nanos/export/report/Template", flags: [ "java" ] },
   { name: "foam/nanos/export/PDFGoogleSheetsExportDriver", flags: [ "java" ] },
-  { name: "foam/nanos/export/TableExportDriver"},
+  { name: "foam/nanos/export/TableExportDriver", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiAuthService", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiCredentials", flags: [ "java" ] },
   { name: "foam/nanos/google/api/drive/GoogleDriveService", flags: [ "java" ] },
@@ -373,7 +372,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentAuthClient", flags: [ "java" ] },
   { name: "foam/nanos/auth/ClientAgentAuthService", flags: [ "java" ] },
   { name: "foam/nanos/auth/UniqueUserService", flags: [ "java" ] },
-  { name: "foam/nanos/auth/ProxyUniqueUserService", flags: [ "java" ] },
   { name: "foam/nanos/pm/PMTemperatureCellFormatter" },
   { name: "foam/nanos/pm/NullPM", flags: [ "java" ] },
   { name: "foam/nanos/pm/PM", flags: [ "java" ] },
@@ -552,7 +550,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/lite/MinMaxCapabilityRefinement" },
   { name: "foam/nanos/crunch/crunchtest/TestCapable", flags: [ "java" ] },
   { name: "foam/nanos/crunch/CapabilityAvailabilityDAO", flags: [ "java" ] },
-  { name: "foam/nanos/crunch/example/ExampleData" },
+  { name: "foam/nanos/crunch/example/ExampleData", flags: [ "java" ] },
 
   // crunch lite rulers
   { name: "foam/nanos/crunch/lite/ruler/CapableStatusChangeAdjustApprovalsRuleAction", flags: [ "java" ] },

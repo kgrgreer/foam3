@@ -60,18 +60,17 @@ foam.CLASS({
       javaCode: `
       Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
-      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
-      support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      Boolean hasQuorum = support.hasQuorum(x);
 
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
+        Boolean hasQuorum = support.hasQuorum(x);
         logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus(), "quorum", hadQuorum, "->", hasQuorum);
 
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         if ( support.canVote(x, myConfig) ) {
           ElectoralService electoralService = (ElectoralService) x.get("electoralService");
           if ( electoralService.getState() == ElectoralServiceState.IN_SESSION ||

@@ -8,8 +8,6 @@ foam.INTERFACE({
   package: 'foam.dao',
   name: 'Journal',
 
-  proxy: true,
-
   methods: [
     {
       name: 'put',
@@ -53,7 +51,6 @@ foam.CLASS({
 });
 
 
-
 foam.CLASS({
   package: 'foam.dao',
   name: 'ProxyJournal',
@@ -72,6 +69,7 @@ foam.CLASS({
 });
 
 
+// TODO: Move to own file
 if ( foam.isServer ) {
   foam.CLASS({
     package: 'foam.dao',
