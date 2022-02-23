@@ -209,7 +209,7 @@ foam.CLASS({
             range('a', 'z'),
             range('A', 'Z'),
             range('0', '9'),
-            '-', '^', '_', '@', '%', '.'),
+            '-', '^', '_', '@', '%'),
 
           number: repeat(range('0', '9'), null, 1)
         };

@@ -4241,7 +4241,7 @@ foam.CLASS({
         if ( ! ( obj instanceof FObject ) )
           return false;
 
-        return specialization(((FObject)obj).getClassInfo());
+        return specialization(((FObject)obj).getClassInfo()).f(obj);
       `
     },
     {

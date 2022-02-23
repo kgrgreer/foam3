@@ -63,6 +63,9 @@ foam.CLASS({
     sps.setString("firstName !exists");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "firstName !exists");
 
+    sps.setString("userName !exists||firstName !exists");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "sps.setString(\\"userName !exists||firstName !exists\\")");
+
     sps.setString("firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists||firstName !exists");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists||firstName !exists");
 
@@ -119,36 +122,23 @@ foam.CLASS({
     sps.setString("address.regionId.len==10");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==10");
 
+    var sprtCnfg = new foam.nanos.app.SupportConfig();
+    var theme = new foam.nanos.theme.Theme();
+    sprtCnfg.setSupportAddress(addr);
+    theme.setSupportConfig(sprtCnfg);
+    parser = new FScriptParser(foam.nanos.theme.Theme.SUPPORT_CONFIG);
+
+    sps.setString("supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
+    sps.setString("supportConfig.supportAddress.regionId==\\"wonderland\\"");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId==\\"wonderland\\"");
+
     var rule = new Rule();
+    parser = new FScriptParser(foam.nanos.ruler.Rule.OPERATION);
     rule.setOperation(foam.nanos.dao.Operation.CREATE);
     sps.setString("operation==\\"create\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "operation==\\"create\\"");
-
-      `
-    },
-    {
-      name: 'isValid',
-      type: 'Boolean',
-      args : [
-        { name: 'query',type: 'String' },
-        { name: 'statement',type: 'String' }
-      ],
-      javaCode: `
-        QueryParser parser = new QueryParser(User.getOwnClassInfo());
-
-    StringPStream sps = new StringPStream();
-    sps.setString(query);
-    PStream ps = sps;
-    ParserContext x = new ParserContextImpl();
-    ps = parser.parse(ps, x);
-    if (ps == null)
-      return false;
-
-    Predicate result = (foam.mlang.predicate.Nary) ps.value();
-    result = result.partialEval();
-
-    return statement.equalsIgnoreCase(result.createStatement()) ? true : false;
-        `
-    },
+    `
+    }
   ]
 });

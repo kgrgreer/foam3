@@ -121,13 +121,48 @@ public class FScriptParser
     grammar.addSymbol("COMPARISON", new Seq(
       grammar.sym("VALUE"),
       new Alt(
-        new Literal("==", new Eq()),
-        new Literal("!=", new Neq()),
-        new Literal("<=", new Lte()),
-        new Literal(">=", new Gte()),
-        new Literal("<", new Lt()),
-        new Literal(">", new Gt()),
-        new Literal("~", new RegExp())
+        new Literal("==")  {
+          @Override
+          public Object value() {
+            return new Eq();
+          }
+        },
+        new Literal("!=")  {
+          @Override
+          public Object value() {
+            return new Neq();
+          }
+        },
+        new Literal("<=")  {
+          @Override
+          public Object value() {
+            return new Lte();
+          }
+        },
+        new Literal(">=")  {
+          @Override
+          public Object value() {
+            return new Gte();
+          }
+        },
+        new Literal("<")  {
+          @Override
+          public Object value() {
+            return new Lt();
+          }
+        },
+        new Literal(">")  {
+          @Override
+          public Object value() {
+            return new Gt();
+          }
+        },
+        new Literal("~")  {
+          @Override
+          public Object value() {
+            return new RegExp();
+          }
+        }
       ),
       grammar.sym("VALUE"))
     );
@@ -155,9 +190,23 @@ public class FScriptParser
 
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
       new Alt(
-        new Literal("exists", new Has()),
-        new Literal("!exists", new Not(new Has())),
-        new Literal("isValid", new IsValid())
+        new Literal("exists") {
+          public Object value() {
+            return new Has();
+          }
+        },
+        new Literal("!exists") {
+          @Override
+          public Object value() {
+            return new Not(new Has());
+          }
+        },
+        new Literal("isValid") {
+          @Override
+          public Object value() {
+            return new IsValid();
+          }
+        }
       )));
     grammar.addAction("UNARY", (val, x) -> {
       Object[] values = (Object[]) val;
@@ -175,9 +224,24 @@ public class FScriptParser
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
       grammar.sym("STRING"),
-      new Literal("true", true),
-      new Literal("false", false),
-      new Literal("null", null),
+      new Literal("true") {
+        @Override
+        public Object value() {
+          return true;
+        }
+      },
+      new Literal("false") {
+        @Override
+        public Object value() {
+          return false;
+        }
+      },
+      new Literal("null")  {
+        @Override
+        public Object value() {
+          return null;
+        }
+      },
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("FIELD")
@@ -261,7 +325,12 @@ public class FScriptParser
     grammar.addSymbol("STRING", new Seq1(1,
       Literal.create("\""),
       new Repeat(new Alt(
-        new Literal("\\\"", "\""),
+        new Literal("\\\"") {
+          @Override
+          public Object value() {
+            return "\"";
+          }
+        },
         new NotChars("\"")
       )),
       Literal.create("\"")
@@ -271,7 +340,11 @@ public class FScriptParser
     grammar.addSymbol("WORD", new Repeat(
       grammar.sym("CHAR"), 1
     ));
-    grammar.addAction("WORD", (val, x) -> compactToString(val));
+    grammar.addAction("WORD", (val, x) -> {
+      var ret = compactToString(val);
+      if (ret.equals("len")) return null;
+      return ret;
+    });
 
     grammar.addSymbol("CHAR", new Alt(
       Range.create('a', 'z'),
@@ -281,8 +354,7 @@ public class FScriptParser
       Literal.create("^"),
       Literal.create("_"),
       Literal.create("@"),
-      Literal.create("%"),
-      Literal.create(".")
+      Literal.create("%")
     ));
 
     grammar.addSymbol("NUMBER", new Repeat(
@@ -303,15 +375,16 @@ public class FScriptParser
 
 
     grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
-      new Seq(Literal.create("."), new Repeat(grammar.sym("WORD"),new NotChars("len")), Literal.create(".")))));
+      new Seq1(1, Literal.create("."), new Repeat(new foam.lib.parse.Not(Literal.create("len"),
+        grammar.sym("WORD")), Literal.create("."),1)))));
     grammar.addAction("FIELD", (val, x) -> {
       Object[] values = (Object[]) val;
       var expr = (Expr) values[0];
-      if ( values.length > 0 && values[1] != null ) {
-        Object[] values2 = (Object[]) values[1];
-        var parts = (String[]) values2[1];
-        for ( var i = 0 ; i < parts.length ; i++ ) {
-          expr = new Dot(expr, NamedProperty.create(parts[i]));
+      if ( values.length > 1 && values[1] != null ) {
+        Object[] values2 = ( Object[]) values[1];
+//        var parts = (String[]) values2[1];
+        for ( var i = 0 ; i < values2.length ; i++ ) {
+          expr = new Dot(expr, NamedProperty.create((String) values2[i]));
         }
       }
       return expr;

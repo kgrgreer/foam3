@@ -20,7 +20,7 @@ package foam.lib.parse;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Literal
+public abstract class Literal
   implements Parser
 {
   protected final static Map map__ = new ConcurrentHashMap();
@@ -30,12 +30,22 @@ public class Literal
    * parser more than once.
    **/
   public static Parser create(String s) {
-    if ( s == null ) return new Literal(s, s);
+    if ( s == null ) return new Literal(null) {
+      @Override
+      public Object value() {
+        return null;
+      }
+    };
 
     Parser p = (Parser) map__.get(s);
 
     if ( p == null ) {
-      p = new Literal(s, s);
+      p = new Literal(s) {
+        @Override
+        public Object value() {
+          return s;
+        }
+      };
       map__.put(s, p);
     }
 
@@ -44,11 +54,9 @@ public class Literal
 
 
   protected String string_;
-  protected Object value_;
 
-  public Literal(String s, Object v) {
+  public Literal(String s) {
     string_ = s;
-    value_  = v;
   }
 
   public PStream parse(PStream ps, ParserContext x) {
@@ -60,10 +68,12 @@ public class Literal
       ps = ps.tail();
     }
 
-    return ps.setValue(value_);
+    return ps.setValue(value());
   }
 
   public String toString() {
     return "Literal(" + string_ + ")";
   }
+
+  public abstract Object value();
 }

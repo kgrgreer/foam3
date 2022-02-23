@@ -16,6 +16,16 @@ public class BooleanParser
   public static Parser instance() { return instance__; }
 
   private BooleanParser() {
-    super(new Alt(new Literal("true", true), new Literal("false", false)));
+    super(new Alt(new Literal("true") {
+      @Override
+      public Object value() {
+        return true;
+      }
+    }, new Literal("false") {
+      @Override
+      public Object value() {
+        return false;
+      }
+    }));
   }
 }
