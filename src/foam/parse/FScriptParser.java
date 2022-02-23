@@ -164,7 +164,10 @@ public class FScriptParser
           }
         }
       ),
-      grammar.sym("VALUE"))
+      new Alt(
+        grammar.sym("VALUE"),
+        new Literal("null", null)
+      ))
     );
     grammar.addAction("COMPARISON", (val, x) -> {
       Object[] values = (Object[]) val;

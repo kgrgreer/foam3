@@ -79,10 +79,10 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
     sps.setString("!(firstName~/[0-9]/)");
-    test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!(firstName~/[0-9])/");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "!(firstName~/[0-9]/)");
 
-    sps.setString("firstName~/[a-b]/");
-    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-b]/");
+    sps.setString("firstName~/[a-z]/");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]/");
 
     sps.setString("address isValid");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address isValid");
