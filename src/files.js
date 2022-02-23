@@ -762,7 +762,7 @@ FOAM_FILES([
   { name: "foam/comics/RelationshipView", flags: [ "web" ] },
   { name: "foam/u2/view/ReciprocalSearch", flags: [ "web" ] },
   { name: "lib/net", flags: [ "web" ] },
-  { name: "lib/netNode", flags: [ "node" ], predicate: () => ! foam.flags.genjava },
+  { name: "lib/netNode", flags: [ "node" ], predicate: () => foam.flags.node && ! foam.flags.genjava },
   { name: "foam/net/RetryHTTPRequest" },
   { name: "foam/net/auth/TokenBearerCredential" },
   { name: "foam/net/auth/AuthAwareHTTPRequest" },
