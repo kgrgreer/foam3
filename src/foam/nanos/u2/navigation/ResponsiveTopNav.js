@@ -13,11 +13,11 @@ foam.CLASS({
 
   imports: [
     'displayWidth',
-    'loginSuccess',
-    'theme',
     'isMenuOpen',
+    'loginSuccess',
+    'menuDAO',
     'pushMenu?',
-    'menuDAO'
+    'theme'
   ],
 
   css: `
