@@ -43,7 +43,7 @@ foam.CLASS({
       color: /*%GREY3%*/ #B2B6BD;
     }
     ^ > * + * {
-      margin-top: 10px;
+      margin-top: 4px;
     }
     ^editor {
       border: 1px solid /*%GREY4%*/ #6B778C;
