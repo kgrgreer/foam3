@@ -290,10 +290,39 @@ foam.CLASS({
       columnPermissionRequired: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'associatedUser',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 106,
+      gridColumns: 6,
+      columnPermissionRequired: true
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'associatedBusiness',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 107,
+      gridColumns: 6,
+      columnPermissionRequired: true
+    },
+    {
+      class: 'String',
+      name: 'merchantId',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 108,
+      gridColumns: 6,
+      columnPermissionRequired: true
+    },
+    {
       class: 'String',
       name: 'createdForSummary',
       section: 'additionalInformation',
-      order: 107,
+      order: 109,
       gridColumns: 6,
       columnPermissionRequired: true,
       storageTransient: true
