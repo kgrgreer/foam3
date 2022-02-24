@@ -86,6 +86,11 @@ foam.CLASS({
     }
     
   `,
+
+  messages: [
+    {name: 'PLACEHOLDER_MSG', message: 'Enter text/drop HTML'}
+  ],
+
   properties: [
     {
       class: 'String',
@@ -100,7 +105,7 @@ foam.CLASS({
     {
       name: 'placeholder',
       description: 'Placeholder text to appear when no text is entered.',
-      value: 'Enter text/drop HTML'
+      factory: function() { return this.PLACEHOLDER_MSG; }
     },
     'richText',
     'currentSel_',
@@ -429,7 +434,8 @@ foam.CLASS({
         },
         {
           class: 'String',
-          name: 'label'
+          name: 'label',
+          placeholder: 'Link text'
         },
         {
           class: 'String',
@@ -445,7 +451,6 @@ foam.CLASS({
             return value;
           }
         },
-        'sel',
         ['overlayInitialized_', false]
       ],
       methods: [
