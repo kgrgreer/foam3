@@ -178,8 +178,7 @@ foam.CLASS({
       return this.validator.sanitizeText(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
     },
     function getSelectionText() {
-      var window    = this.window;
-      var selection = window.getSelection();
+      var selection = this.window.getSelection();
 
       if ( selection.rangeCount ) {
         return selection.getRangeAt(0).toLocaleString();
@@ -188,8 +187,7 @@ foam.CLASS({
       return '';
     },
     function insertElement(e, sel) {
-      var window    = this.window;
-      var selection = window.getSelection();
+      var selection = this.window.getSelection();
 
       if ( sel || selection.rangeCount ) {
         var range = sel || selection.getRangeAt(0);
