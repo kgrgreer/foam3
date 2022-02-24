@@ -417,7 +417,7 @@ foam.CLASS({
         ret.push(
           {
             args: [this.name],
-            query:'email~/^[a-zA-Z0-9.+_-]+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/',
+            query:'email~/^[a-zA-Z0-9.+_-]+@[a-zA-Z_]+?\\.[a-zA-Z]+$/',
             errorString: this.VALID_EMAIL_REQUIRED
           }
         );
@@ -461,7 +461,7 @@ foam.CLASS({
           : [
               {
                 args: [this.name],
-                query: this.name +' exists||' + this.name+'~'+foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+                query: this.name +' !exists||' + this.name+'~'+foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
                 errorString: this.INVALID_PHONE_NUMBER
               }
             ];
@@ -486,7 +486,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue !exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>'+foam.Date.MIN_DATE.toISOString().slice(1,16),
+            query: 'thisValue !exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>' + foam.Date.MIN_DATE.toISOString().slice(0,16),
             errorString: 'Invalid date value'
           }
         ];

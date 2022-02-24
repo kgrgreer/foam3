@@ -29,7 +29,7 @@ public class FScriptParser
 
   public FScriptParser(PropertyInfo property) {
     prop_ = property;
-    //TODO: TEST THIS ! ! ! ! ! !
+
     List<PropertyInfo>         properties  = property.getClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     expressions = new ArrayList();
@@ -303,7 +303,15 @@ public class FScriptParser
       )),
       Literal.create("\"")
     ));
-    grammar.addAction("STRING", (val, x) -> compactToString(val));
+    grammar.addAction("STRING", (val, x) -> {
+      var ret = compactToString(val);
+      try {
+        var field = this.prop_.getValueClass().getDeclaredField(ret).get(null);
+        if ( field != null ) return field;
+      } catch (Exception e) {
+      }
+      return ret;
+    });
 
     grammar.addSymbol("ENUM", new Seq(
       grammar.sym("WORD"),
@@ -355,16 +363,20 @@ public class FScriptParser
       Literal.create("_")
     ));
 
-    grammar.addSymbol("NUMBER", new Repeat(
+    grammar.addSymbol("NUMBER", new Seq(new Optional(Literal.create("-")), new Repeat(
       Range.create('0', '9'), 1
-    ));
+    )));
     grammar.addAction("NUMBER", (val, x) -> {
-      String num = compactToString(val);
-      if ( num.length() == 0 ) return val;
+      var sb = new StringBuilder();
+      Object[] values = (Object[]) val;
+      if ( values[0] != null  ) sb.append(values[0]);
+      sb.append(compactToString(values[1]));
+      var finalStr = sb.toString();
+      if ( finalStr.length() == 0 ) return val;
       try {
-        return Integer.parseInt(num);
+        return Integer.parseInt(finalStr);
       } catch (NumberFormatException e) {
-        return Long.parseLong(num);
+        return Long.parseLong(finalStr);
       }
     });
 

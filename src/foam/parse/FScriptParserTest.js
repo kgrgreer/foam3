@@ -35,16 +35,13 @@ foam.CLASS({
     addr.setRegionId("wonderland");
 
 
-    sps.setString("address==null");
-    test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
-
-
-    user.setAddress(addr);
-
     var parser = new FScriptParser(User.FIRST_NAME);
     StringPStream sps    = new StringPStream();
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
+    sps.setString("address==null");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
+    user.setAddress(addr);
 
     sps.setString("firstName==\\"senorita\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName==\\"senorita\\"");
