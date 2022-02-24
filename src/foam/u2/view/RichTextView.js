@@ -156,6 +156,9 @@ foam.CLASS({
           .start().addClass(this.myClass('seperator')).end()
           .start(this.NUMBERED_LIST, { themeIcon: 'numberedList', size: 'SMALL' }).addClass(this.myClass('tool')).end()
           .start(this.BULLET_LIST, { themeIcon: 'bulletedList', size: 'SMALL' }).addClass(this.myClass('tool')).end()
+          .start().addClass(this.myClass('seperator')).end()
+          .start(this.DECREASE_INDENTATION, { themeIcon: 'decreaseIndentation', size: 'SMALL' }).addClass(this.myClass('tool')).end()
+          .start(this.INCREASE_INDENTATION, { themeIcon: 'increaseIndentation', size: 'SMALL' }).addClass(this.myClass('tool')).end()
           .start(this.BLOCK_QUOTE, { themeIcon: 'blockQuote', size: 'SMALL' }).addClass(this.myClass('tool')).end()
         .end()
         .endContext()
@@ -254,7 +257,6 @@ foam.CLASS({
             this.insertElement(this.sanitizeDroppedHtml(txt));
           }
         } else if ( e && e.type && e.type == 'paste' ) {
-          console.log( e.clipboardData.getData('text'));
           var txt = e.clipboardData.getData('text');
           this.insertElement(this.sanitizeDroppedHtml(txt));
         }
@@ -370,26 +372,26 @@ foam.CLASS({
         this.document.execCommand('insertUnorderedList');
       }
     },
-    // {
-    //   name: 'decreaseIndentation',
-    //   label: '',
-    //   buttonStyle: 'TERTIARY',
-    //   toolTip: 'Indent Less',
-    //   code: function() {
-    //     this.richText.focus();
-    //     this.document.execCommand('outdent');
-    //   }
-    // },
-    // {
-    //   name: 'increaseIndentation',
-    //   label: '',
-    //   buttonStyle: 'TERTIARY',
-    //   toolTip: 'Indent More',
-    //   code: function() {
-    //     this.richText.focus();
-    //     this.document.execCommand('indent');
-    //   }
-    // },
+    {
+      name: 'decreaseIndentation',
+      label: '',
+      buttonStyle: 'TERTIARY',
+      toolTip: 'Indent Less',
+      code: function() {
+        this.richText.focus();
+        this.document.execCommand('outdent');
+      }
+    },
+    {
+      name: 'increaseIndentation',
+      label: '',
+      buttonStyle: 'TERTIARY',
+      toolTip: 'Indent More',
+      code: function() {
+        this.richText.focus();
+        this.document.execCommand('indent');
+      }
+    },
     {
       name: 'blockQuote',
       label: '',
@@ -539,6 +541,18 @@ foam.CLASS({
         },
         {
           name: 'BLOCKQUOTE',
+          attributes: []
+        },
+        {
+          name: 'OL',
+          attributes: []
+        },
+        {
+          name: 'UL',
+          attributes: []
+        },
+        {
+          name: 'LI',
           attributes: []
         },
         {
