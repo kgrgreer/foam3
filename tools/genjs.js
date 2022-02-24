@@ -20,7 +20,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   { debug: true }
 );
 
-globalThis.foam = { require: function(fn) { /* NOP */ } };
+//globalThis.foam = { require: function(fn) { /* NOP */ } };
 
 require('../src/foam_node.js');
 

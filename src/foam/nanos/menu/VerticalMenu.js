@@ -33,14 +33,17 @@ foam.CLASS({
     width: 100%;
   }
 
-  ^ .side-nav-view {
-    background: /*%GREY5%*/ #f5f7fas;
+  ^ {
+    background: /*%WHITE%*/ #FFFFFF;
     border-right: 1px solid /*%GREY4%*/ #e7eaec;
     color: /*%GREY2%*/ #9ba1a6;
-    height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     overflow-x: hidden;
-    position: absolute;
-    z-index: 100;
+    padding: 16px 0;
+    overflow: auto;
+    width: 100%;
   }
 
     ^ .side-nav-view,
@@ -50,14 +53,14 @@ foam.CLASS({
 
   ^search {
     box-sizing: border-box;
-    margin-top: 14px;
-    padding: 0 5px;
+    padding: 0 8px;
     text-align: center;
     width: 100%;
   }
 
-  ^ .tree-view-height-manager {
-    margin-bottom: 40px;
+  ^menuList {
+    flex: 1;
+    height: 100%;
   }
 
   @media only screen and (min-width: 768px) {
@@ -92,6 +95,10 @@ foam.CLASS({
         autocomplete: false
       },
       value: ''
+    },
+    {
+      name: 'nodeName',
+      value: 'nav'
     }
   ],
 
@@ -100,33 +107,27 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-      .start()
-        .addClass('side-nav-view')
-        .start()
           .startContext({ data: this })
           .start()
             .add(this.MENU_SEARCH)
             .addClass(this.myClass('search'))
           .end()
           .endContext()
-          .start()
-            .addClass('tree-view-height-manager')
-            .tag({
-              class: 'foam.u2.view.TreeView',
-              data$: self.dao_$,
-              relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
-              startExpanded: true,
-              query: self.menuSearch$,
-              onClickAddOn: function(data) { self.openMenu(data); },
-              selection$: self.currentMenu$,
-              formatter: function(data) {
-                this.translate(data.id + '.label', data.label);
-              },
-              defaultRoot: self.theme.navigationRootMenu
-            })
-          .end()
-        .end()
-      .end();
+          .start({
+            class: 'foam.u2.view.TreeView',
+            data$: self.dao_$,
+            relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
+            startExpanded: true,
+            query: self.menuSearch$,
+            onClickAddOn: function(data) { self.openMenu(data); },
+            selection$: self.currentMenu$,
+            formatter: function(data) {
+              this.translate(data.id + '.label', data.label);
+            },
+            defaultRoot: self.theme.navigationRootMenu
+          })
+            .addClass(this.myClass('menuList'))
+          .end();
     },
 
     function openMenu(menu) {
