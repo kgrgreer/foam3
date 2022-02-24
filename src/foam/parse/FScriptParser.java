@@ -232,7 +232,8 @@ public class FScriptParser
       new Literal("null", null),
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
-      grammar.sym("FIELD")
+      grammar.sym("FIELD"),
+      grammar.sym("ENUM")
     ));
 
     grammar.addSymbol("REGEX", new Seq1(
@@ -241,8 +242,6 @@ public class FScriptParser
       Literal.create("/")
     ));
     grammar.addAction("REGEX", (val, x) -> Pattern.compile(compactToString(val)));
-
-//    grammar.addSymbol("BOOL", new Seq1(0, new Alt(new Literal("true", true), new Literal("false", false))));
 
     grammar.addSymbol("DATE", new Alt(
       new Seq(
@@ -277,16 +276,10 @@ public class FScriptParser
         new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER")
       )
-      //YYYY: NOT SUPPORTED
-//      new Seq(
-//        grammar.sym("NUMBER"))
     ));
     grammar.addAction("DATE", (val, x) -> {
       Calendar start = new GregorianCalendar();
       start.clear();
-
-      Calendar end = new GregorianCalendar();
-      end.clear();
 
       Object[] result = (Object[]) val;
       var dateFmt = result.length;
@@ -298,15 +291,7 @@ public class FScriptParser
         dateFmt >=  7 ? (Integer) result[6]     : 0,
         dateFmt >=  9 ? (Integer) result[8]     : 0);
 
-      end.set(
-        dateFmt >=  1 ? dateFmt == 1 ? (Integer) result[0] + 1 : (Integer) result[0]  : 0,
-        dateFmt >=  3 ? dateFmt == 3 ? (Integer) result[2]     : (Integer) result[2] - 1 : 0,
-        dateFmt >=  5 ? dateFmt == 5 ? (Integer) result[4] + 1 : (Integer) result[4]  : 0,
-        dateFmt >=  7 ? dateFmt == 7 ? (Integer) result[6] + 1 : (Integer) result[6]  : 0,
-        dateFmt >=  9 ? dateFmt == 9 ? (Integer) result[8] + 1 : (Integer) result[8]  : 0);
-
-      Date[] dates = new Date[] { start.getTime(), end.getTime() };
-      return dates;
+      return start.getTime();
     });
 
 
@@ -319,6 +304,38 @@ public class FScriptParser
       Literal.create("\"")
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
+
+    grammar.addSymbol("ENUM", new Seq(
+      grammar.sym("WORD"),
+      new Repeat(
+        new Seq(
+          Literal.create("."),
+          grammar.sym("WORD")
+        )
+      )
+    ));
+    grammar.addAction("ENUM", (val, x) -> {
+      Object[] values = (Object[]) val;
+      var sb = new StringBuilder();
+      sb.append(values[0]);
+      Object[] pckArr = (Object[]) values[1];
+      for ( int i = 0; pckArr.length - 1 > i; i ++) {
+        sb.append(compactToString(pckArr[i]));
+      }
+      Class cls;
+      try {
+        cls = Class.forName(sb.toString());
+      } catch (ClassNotFoundException e) {
+        return null;
+      }
+      String name = (String)((Object[]) pckArr[pckArr.length-1])[1];
+      if ( ! cls.isEnum() ) return null;
+      for (int i = 0; cls.getEnumConstants().length > i ; i ++ ) {
+        Enum en= (Enum) cls.getEnumConstants()[i];
+        if ( en.name().equals(name)) return en;
+      }
+      return null;
+    });
 
     grammar.addSymbol("WORD", new Repeat(
       grammar.sym("CHAR"), 1
@@ -335,9 +352,7 @@ public class FScriptParser
       Range.create('0', '9'),
       Literal.create("-"),
       Literal.create("^"),
-      Literal.create("_"),
-      Literal.create("@"),
-      Literal.create("%")
+      Literal.create("_")
     ));
 
     grammar.addSymbol("NUMBER", new Repeat(

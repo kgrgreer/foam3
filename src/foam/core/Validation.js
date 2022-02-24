@@ -173,7 +173,7 @@ foam.CLASS({
         if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len!=""',
+            query: this.name+'.len!=0',
             errorString: `${this.label} ${foam.core.String.REQUIRED}`
           });
         }
