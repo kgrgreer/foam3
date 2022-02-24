@@ -90,7 +90,12 @@ foam.CLASS({
     {
       name: 'bottom'
     },
-    'parentEl'
+    'parentEl',
+    {
+      class: 'Boolean',
+      name: 'closeOnLeave',
+      value: true
+    }
   ],
 
   methods: [
@@ -181,7 +186,7 @@ foam.CLASS({
       console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
       // If mouse moves to a nested dropdown, do not close the parent dropdown
-      if ( e.toElement?.nodeName == 'DROPDOWN' ) return;
+      if ( e.toElement?.nodeName == 'DROPDOWN' || ! this.closeOnLeave ) return;
       this.timer = setTimeout(() => { this.close(); }, 500);
     },
 
