@@ -98,9 +98,6 @@ foam.CLASS({
       value: '100%'
     },
     {
-      name: 'data'
-    },
-    {
       name: 'placeholder',
       description: 'Placeholder text to appear when no text is entered.',
       value: 'Enter text/drop HTML'
@@ -120,7 +117,7 @@ foam.CLASS({
       factory: function() {
         return this.RichTextValidator.create();
       }
-    }, 
+    }
   ],
   methods: [
     function render() {
@@ -191,9 +188,8 @@ foam.CLASS({
       return '';
     },
     function insertElement(e, sel) {
-      // Can we transition this to use U2?
-      var win    = this.window;
-      var selection = win.getSelection();
+      var window    = this.window;
+      var selection = window.getSelection();
 
       if ( sel || selection.rangeCount ) {
         var range = sel || selection.getRangeAt(0);
@@ -237,9 +233,7 @@ foam.CLASS({
 
         length = e.dataTransfer.items.length;
         if ( length ) {
-          console.log(e.dataTransfer.getData('text/html'));
           var txt = e.dataTransfer.getData('text/html');
-          console.log(txt);
           if ( ! txt )
             txt = e.dataTransfer.getData('text/plain');
           var div = this.sanitizeDroppedHtml(txt);
@@ -437,7 +431,7 @@ foam.CLASS({
         },
         {
           class: 'String',
-          name: 'label',
+          name: 'label'
         },
         {
           class: 'String',

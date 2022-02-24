@@ -275,7 +275,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'RichTextView',
+      name: 'richTextView',
       view: {
         class: 'foam.u2.MultiView',
         views: [ 'foam.u2.view.RichTextView', 'foam.u2.HTMLView' ],

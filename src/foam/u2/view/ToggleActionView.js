@@ -26,7 +26,7 @@ foam.CLASS({
     },
     {
       name: 'buttonStyle',
-      factory: function() { return 'TERTIARY'; } 
+      value: foam.u2.ButtonStyle.TERTIARY
     }
   ],
 
