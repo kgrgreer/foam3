@@ -119,18 +119,22 @@ foam.CLASS({
         const wizardlet = subWizardlets.pop();
 
         controlledPrereqWizardlets.add(wizardlet);
+        // Controlled prerequisites follow the parent's availability
+        wizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
 
         // Update ordered wizardlet list
         wizardlets.push(...subWizardlets, wizardlet);
       }
 
+      const graphNode = this.capabilityGraph.data[parent.id];
+      const prerequisiteWizardlets = graphNode.forwardLinks
+        .filter(id => this.capabilityWizardletsMap[id])
+        .map(id => this.capabilityWizardletsMap[id].primaryWizardlet)
+        ;
+
+      // Handle wizardlets implementing PrerequisiteAware
       for ( let rootWizardlet of rootWizardlets ) {
         if ( this.isPrerequisiteAware(rootWizardlet) ) {
-          const graphNode = this.capabilityGraph.data[parent.id];
-          const prerequisiteWizardlets = graphNode.forwardLinks
-            .filter(id => this.capabilityWizardletsMap[id])
-            .map(id => this.capabilityWizardletsMap[id].primaryWizardlet)
-            ;
           for ( const wizardlet of prerequisiteWizardlets ) {
             rootWizardlet.addPrerequisite(wizardlet, {
               lifted: ! controlledPrereqWizardlets.has(wizardlet)
