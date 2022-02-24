@@ -39,7 +39,6 @@ foam.CLASS({
       position: absolute;
       padding: 8px;
       z-index: 1010;
-      transform: translate(-100%, 8px);
     }
 
     ^open {
@@ -82,7 +81,10 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'x'
+      name: 'left'
+    },
+    {
+      name: 'right'
     },
     {
       name: 'top'
@@ -111,6 +113,7 @@ foam.CLASS({
     },
 
     function open(x, y) {
+      var screenWidth  = this.window.innerWidth;
       var domRect       = this.parentEl.getBoundingClientRect();
       var screenHeight  = this.window.innerHeight;
       var scrollY       = this.window.scrollY;
@@ -119,7 +122,13 @@ foam.CLASS({
       } else {
         this.top = 'auto'; this.bottom = screenHeight - y;
       }
-      this.x = x;
+      if ( domRect.left > 3 * (screenWidth / 4) ) {
+        this.left = 'auto';
+        this.right = screenWidth - x + 10;
+      } else {
+        this.left = x + 10;
+        this.right = 'auto';
+      }
       this.opened = true;
       window.addEventListener('resize', this.onResize);
     },
@@ -152,7 +161,8 @@ foam.CLASS({
         .show(this.opened$)
         .style({
           top: this.top$,
-          left: this.x$,
+          left: this.left$,
+          right: this.right$,
           bottom: this.bottom$
         })
         .on('mouseenter', this.onMouseEnter)

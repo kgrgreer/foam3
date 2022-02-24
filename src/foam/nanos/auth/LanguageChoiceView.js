@@ -33,9 +33,10 @@ foam.CLASS({
 
   css: `
     ^dropdown span, ^dropdown svg {
+      color: /*%GREY2%*/ #6B778C;
+      fill: /*%GREY2%*/ #6B778C;
       font-size: 1.4rem;
       font-weight: 500;
-      color: /*%WHITE%*/ #ffffff;
     }
   `,
 
@@ -52,6 +53,10 @@ foam.CLASS({
         localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'longName'
     }
   ],
 
@@ -79,7 +84,7 @@ foam.CLASS({
         });
       });
 
-      var label = this.formatLabel(this.lastLanguage);
+      var label = this.formatLabel(this.lastLanguage, ! this.longName);
 
       this
         .addClass(this.myClass())
@@ -87,16 +92,21 @@ foam.CLASS({
           label:       label,
           data:        actionArray,
           obj:         self,
-          buttonStyle: 'UNSTYLED'
+          buttonStyle: 'TERTIARY'
         })
           .addClass(this.myClass('dropdown'))
         .end()
       .end();
     },
 
-    async function formatLabel(language) {
+    async function formatLabel(language, shortName) {
       let country = await this.countryDAO.find(language.variant);
-      let label   = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label;
+      if ( shortName ) {
+        return language.code.toUpperCase();
+      } else {
+        label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      }
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }

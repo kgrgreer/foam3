@@ -4,70 +4,36 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var path_ = require('path');
-var fs_   = require('fs');
+console.log('START GENJAVA');
 
-// TODO: take from command line
-globalThis.FOAM_FLAGS = {
-  'java':    true,
-  'genjava': true,
-  'node':    true,
-  'debug':   true,
-  'js':      false,
-  'swift':   false
-};
+const startTime      = Date.now();
+var path_            = require('path');
+var [argv, X, flags] = require('./processArgs.js')(
+  'sourcefiles*',
+  { outdir: '/build/src/java' },
+  { java: true, genjava: true, node: true, debug: true }
+);
 
-function load(fn) {
-  if ( globalThis.foam ) globalThis.foam.flags.src = fn.substring(0, fn.indexOf('/src/')+5);
+X.outdir = path_.resolve(path_.normalize(X.outdir));
+
+require('../src/foam_node.js');
+
+// Load Manifest (files.js) Files
+argv.forEach(fn => {
+  flags.src = fn.substring(0, fn.indexOf('/src/')+5);
   require(fn);
-}
+});
 
-// TODO: take from command line
-load('../src/foam_node.js');
-load('../src/foam/nanos/nanos.js');
-load('../src/foam/support/support.js');
-load('../../nanopay/src/net/nanopay/files.js');
-load('../../nanopay/src/net/nanopay/iso8583/files.js');
-load('../../nanopay/src/net/nanopay/flinks/utils/files.js');
-load('../../nanopay/src/net/nanopay/fx/ascendantfx/model/files.js');
-load('../../nanopay/src/net/nanopay/kotak/model/paymentResponse/files.js');
-load('../../nanopay/src/net/nanopay/kotak/model/reversal/files.js');
-load('../../nanopay/src/net/nanopay/kotak/model/paymentRequest/files.js');
-load('../../nanopay/src/net/nanopay/partner/scotiabank/api/files.js');
-load('../../nanopay/src/net/nanopay/iso20022/files.js');
+// Promote all UNUSED Models to USED
+for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
+// Call a 2nd time incase interfaces generated new classes in the 1st pass
+for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
 
-var srcPath = __dirname + "/../src/";
+var mCount = 0, jCount = 0;
+// Build Java Classes
+for ( var key in foam.USED ) try {
+  mCount++;
+  if ( foam.maybeLookup(key).model_.targetJava(X) ) jCount++;
+} catch(x) {}
 
-if ( process.argv.length < 4 || process.argv.length > 6 ) {
-  console.log("USAGE: genjava.js input-path output-path src-path(optional) files-to-update(optional)");
-  process.exit(1);
-}
-
-if ( process.argv.length > 4 && process.argv[4] !== '--' ) {
-  srcPath = process.argv[4];
-  if ( ! srcPath.endsWith('/') ) {
-    srcPath = srcPath + '/';
-  }
-}
-
-var indir  = path_.resolve(path_.normalize(process.argv[2])); // TODO: not used
-var outdir = path_.resolve(path_.normalize(process.argv[3]));
-
-function maybeGenerateJava(c) {
-  if ( ! c.model_.flags || c.model_.flags.includes('java') ) {
-    var javaClass = c.buildJavaClass ? c.buildJavaClass() : c;
-
-    var c2 = foam.maybeLookup(javaClass.id);
-    c2.model_.targetJava(outdir);
-  }
-}
-
-// TODO: create a foam.MODELS to avoid this
-for ( var key in foam.UNUSED ) try { foam.lookup(key); } catch(x) { }
-
-for ( var key in foam.USED ) {
-  try {
-    var c = foam.lookup(key);
-    maybeGenerateJava(c);
-  } catch(x) {}
-}
+console.log(`END GENJAVA: ${jCount}/${mCount} models processed in ${Math.round((Date.now()-startTime)/1000)}s.`);

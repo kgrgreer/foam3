@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
+    'foam.nanos.menu.VerticalMenu',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
     'foam.nanos.theme.Theme',
@@ -75,8 +76,10 @@ foam.CLASS({
     'currentMenu',
     'displayWidth',
     'group',
+    'initLayout',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
+    'layoutInitialized',
     'loginSuccess',
     'loginVariables',
     'memento',
@@ -156,14 +159,6 @@ foam.CLASS({
   ],
 
   css: `
-    .stack-wrapper {
-      min-height: calc(80% - 60px);
-    }
-    .stack-wrapper:after {
-      content: "";
-      display: block;
-    }
-
     .truncate-ellipsis {
       white-space: nowrap;
       overflow: hidden;
@@ -342,7 +337,21 @@ foam.CLASS({
     {
       name: 'styles',
       factory: function() { return {}; }
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'initLayout',
+      documentation: 'A latch used to wait on layout initialization.',
+      factory: function() {
+        return this.Latch.create();
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'layoutInitialized',
+      documentation: 'True if layout has been initialized.',
+    },
   ],
 
   methods: [
@@ -454,6 +463,9 @@ foam.CLASS({
 
     function render() {
       var self = this;
+      this.initLayout.then(() => {
+        this.layoutInitialized = true;
+      });
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
@@ -481,22 +493,32 @@ foam.CLASS({
           self.AppStyles.create();
           this
             .addClass(this.myClass())
-              .add(this.slot(function (topNavigation_) {
-                return this.E().tag(topNavigation_);
-              }))
-            .start()
-              .addClass('stack-wrapper')
-              .tag({
+            .tag(this.NavigationController, {
+              topNav: this.topNavigation_,
+              mainView: {
                 class: 'foam.u2.stack.DesktopStackView',
                 data: this.stack,
                 showActions: false
-              })
-            .end()
-            .start()
-              .add(this.slot(function (footerView_) {
-                return this.E().tag(footerView_);
-              }))
-            .end();
+              },
+              footer: this.footerView_,
+              sideNav: {
+                class: 'foam.u2.view.ResponsiveAltView',
+                views: [
+                  [
+                    {
+                      class: 'foam.nanos.u2.navigation.ApplicationSideNav'
+                    },
+                    ['XS']
+                  ],
+                  [
+                    {
+                      class: this.VerticalMenu
+                    },
+                    ['MD']
+                  ]
+                ]
+              }
+            });
           });
       });
     },
@@ -755,7 +777,7 @@ foam.CLASS({
       .on.put.sub(this.displayToastMessage.bind(this));
 
       this.fetchTheme();
-
+      this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
 
