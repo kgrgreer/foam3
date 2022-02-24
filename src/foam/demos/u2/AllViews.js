@@ -275,6 +275,15 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'richTextView',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [ 'foam.u2.view.RichTextView', 'foam.u2.HTMLView' ],
+        horizontal: false
+      }
+    },
+    {
+      class: 'String',
       name: 'choiceView',
       view: {
         class: 'foam.u2.view.ChoiceView',
