@@ -31,6 +31,14 @@ foam.CLASS({
     'java.nio.file.attribute.*',
     'java.util.*'
   ],
+
+  constants: [
+    {
+      class: 'Int',
+      name: 'MAXIMUM_REPLAY_DAYS',
+      value: 10000
+    }
+  ],
   
   properties: [
     {
@@ -61,7 +69,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      documentation: 'set -1 replay nothing; set 10000 replay everything',
+      documentation: 'set -1 replay nothing; set to MAXIMUM_REPLAY_DAYS replay everything',
       name: 'replayStrategy',
       units: 'days',
       value: 4
@@ -99,12 +107,13 @@ foam.CLASS({
           return l1 > l2 ? 1 : -1;
         });
   
+        Date timeWindow = null;
         if ( getReplayStrategy() <= 0 ) {
           files = new ArrayList<>(0);
-        } else if ( getReplayStrategy() < 10000 ) {
+        } else if ( getReplayStrategy() < getMAXIMUM_REPLAY_DAYS() ) {
           Calendar rightNow = Calendar.getInstance();
           rightNow.add(Calendar.SECOND, -(getReplayStrategy() * 86400));
-          Date timeWindow = rightNow.getTime();  
+          timeWindow = rightNow.getTime();  
           List<String> temp = new ArrayList<>(files.size());
           for ( String filename : files ) {
             BasicFileAttributes attr = fileSystemStorage.getFileAttributes(getFolderName() + filename);
@@ -113,9 +122,7 @@ foam.CLASS({
           }
           files = temp;
         }
-  
-        for ( String filename : files ) System.out.println("%%%AAA: " + filename);
-  
+    
         for ( String filename : files ) {
           SFFileJournal journal = new SFFileJournal.Builder(getX())
             .setFilename(getFolderName() + filename)
@@ -124,12 +131,13 @@ foam.CLASS({
   
           long offset = journal.getFileOffset();
           
+          final Date cutOff = timeWindow;
           journal.replayFrom(context, new ProxyDAO() {
             @Override
             public FObject put_(X x, FObject obj) {
               SFEntry entry = (SFEntry) obj;
-
-              if ( getReplayStrategy() < 10000 && entry.getCreated().before(timeWindow) ) return entry;
+              System.out.println("vv1111: " + entry);
+              if ( getReplayStrategy() < getMAXIMUM_REPLAY_DAYS() && entry.getCreated().before(cutOff) ) return entry;
   
               DAO dao = ((DAO) context.get(entry.getNSpecName()));
               if ( ! (dao instanceof EasyDAO) || ((EasyDAO) dao).getSAF() != true ) return entry;
@@ -142,6 +150,10 @@ foam.CLASS({
                 throw new UnsupportedOperationException(entry.getDop().toString());
               }
               return entry;
+            }
+
+            public foam.core.ClassInfo getOf() {
+              return SFEntry.getOwnClassInfo();
             }
           }, 0);
           
