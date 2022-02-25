@@ -117,6 +117,9 @@ foam.CLASS({
       wizardlet.loading = false;
 
     },
+    async function cancel() {
+      return;
+    },
     function setValue_(wizardlet, data) {
       let path = this.path_;
       let lastObject = null;
