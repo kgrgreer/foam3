@@ -247,7 +247,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     Session session = x.get(Session.class);
     if ( cache && session != null ) {
-      session.setContext(session.getContext().put(CACHE_KEY, map));
+      session.setApplyContext(session.getContext().put(CACHE_KEY, map));
     }
 
     return map;
@@ -279,14 +279,14 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Map<String, List<String>> cache = (Map) session.getContext().get(CACHE_KEY);
     cache.put(ccj.getSourceId(), getPrereqs_(x.put("subject", subject), ccj.getSourceId()));
 
-    session.setContext(session.getContext().put(CACHE_KEY, cache));
+    session.setApplyContext(session.getContext().put(CACHE_KEY, cache));
   }
 
   // sets the prerequisite cache to null, is used when session info changes
   public static void purgeCache(X x) {
     Session session = x.get(Session.class);
     if ( session != null ){
-      session.setContext(session.getContext().put(CACHE_KEY, null));
+      session.setApplyContext(session.getContext().put(CACHE_KEY, null));
     }
   }
 
