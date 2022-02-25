@@ -383,7 +383,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         rtn = ! wasAnonymous ? rtn
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
           .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY))
-          : rtn;
+          : rtn.put(ServerCrunchService.CACHE_KEY, null);
 
         // We need to do this after the user and agent have been put since
         // 'getCurrentGroup' depends on them being in the context.
