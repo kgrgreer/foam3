@@ -67,6 +67,11 @@ foam.CLASS({
       },
       includeInDigest: false,
     },
+    {
+      class: 'String',
+      name: 'customCardSelectView',
+      value: 'foam.u2.view.CardSelectView'
+    }
   ],
 
   methods: [
