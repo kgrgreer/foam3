@@ -116,6 +116,16 @@ foam.CLASS({
       `,
       value: false
     },
+    {
+      name: 'isCurrent',
+      class: 'Boolean',
+      documentation: `
+        This is true when this wizardlet is "current", meaning previous wizardlets
+        have been filled in by the user.
+
+        Currently this only works in incremental wizards.
+      `
+    },
     { name: 'atLeastOneSectionVisible_', class: 'Boolean', value: true },
     {
       name: 'reloadAfterSave',
