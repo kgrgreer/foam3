@@ -69,7 +69,7 @@
         return;
       }
 
-      const clonedWizardletData = selectedCapabilityWizardlet.data.clone();
+      const clonedWizardletData = selectedCapabilityWizardlet.data.clone(this);
 
       if ( this.isWrappedInFObjectHolder ){
         const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });

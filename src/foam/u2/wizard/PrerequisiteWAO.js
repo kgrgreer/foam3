@@ -37,6 +37,10 @@
     {
       class: 'Boolean',
       name: 'isWrappedInFObjectHolder'
+    },
+    {
+      class: 'Class',
+      name: 'of'
     }
   ],
 
@@ -72,6 +76,10 @@
           console.error(
             `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.propertyName}`
           );
+          if ( this.of ) {
+            wizardlet.data = this.of.create({}, this);
+            return;
+          }
         }
 
         clonedPrereqWizardletData = prereqWizardletData[this.propertyName].clone();
