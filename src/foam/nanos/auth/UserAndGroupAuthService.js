@@ -437,10 +437,9 @@ foam.CLASS({
 
         Session session = x.get(Session.class);
         ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
-        if ( serviceProvider == null ) {
-          throw new AuthorizationException("Service Provider doesn't exist.");
-        }
-        if ( serviceProvider.getAnonymousUser() == 0 || 
+
+        if ( serviceProvider == null ||
+             serviceProvider.getAnonymousUser() == 0 || 
              session == null || session.getUserId() == 0 ||
              session.getUserId() != serviceProvider.getAnonymousUser() )
              return false;
