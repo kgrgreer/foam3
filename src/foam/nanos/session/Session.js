@@ -352,6 +352,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
+        // create a temp session with the user/agent from the old session context to check if it was an anonymous session
+        // and set the wasAnonymous boolean accordingly
+        boolean wasAnonymous = false;
+        if ( subjectUser != null ) {
+          X oldX = (X) foam.util.Auth.sudo(x, subjectUser, subjectAgent);
+          wasAnonymous = auth.isAnonymous(oldX);
+        }
+
         rtn = new OrX(reset(x));
 
         // Support hierarchical SPID context
@@ -371,9 +379,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             .put("spid", subject.getUser().getSpid());
         }
 
-        rtn = rtn
+        // if the context was anonymous, do not reuse outdated entries
+        rtn = ! wasAnonymous ? rtn
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
-          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY));
+          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY))
+          : rtn;
 
         // We need to do this after the user and agent have been put since
         // 'getCurrentGroup' depends on them being in the context.
