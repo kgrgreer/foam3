@@ -72,7 +72,13 @@ foam.CLASS({
       documentation: 'set -1 replay nothing; set to MAXIMUM_REPLAY_DAYS replay everything',
       name: 'replayStrategy',
       units: 'days',
-      value: 4
+      javaSetter: `
+        replayStrategyIsSet_ = true;
+        if ( val < 0 ) replayStrategy_ = -1;
+        else if ( val >=  getMAXIMUM_REPLAY_DAYS() ) replayStrategy_ = getMAXIMUM_REPLAY_DAYS();
+        else replayStrategy_ = val;
+      `,
+      value: -1
     }
   ],
   
@@ -106,7 +112,7 @@ foam.CLASS({
           int l2 = getFileSuffix(f2);
           return l1 > l2 ? 1 : -1;
         });
-  
+
         Date timeWindow = null;
         if ( getReplayStrategy() <= 0 ) {
           files = new ArrayList<>(0);
@@ -122,7 +128,7 @@ foam.CLASS({
           }
           files = temp;
         }
-    
+
         for ( String filename : files ) {
           SFFileJournal journal = new SFFileJournal.Builder(getX())
             .setFilename(getFolderName() + filename)
@@ -136,12 +142,8 @@ foam.CLASS({
             @Override
             public FObject put_(X x, FObject obj) {
               SFEntry entry = (SFEntry) obj;
-              System.out.println("vv1111: " + entry);
               if ( getReplayStrategy() < getMAXIMUM_REPLAY_DAYS() && entry.getCreated().before(cutOff) ) return entry;
-  
               DAO dao = ((DAO) context.get(entry.getNSpecName()));
-              if ( ! (dao instanceof EasyDAO) || ((EasyDAO) dao).getSAF() != true ) return entry;
-
               DAO mdao = (DAO) dao.cmd_(context, foam.dao.DAO.LAST_CMD);
               if ( DOP.PUT == entry.getDop() ) {
                 FObject nu = entry.getObject();

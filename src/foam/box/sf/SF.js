@@ -311,6 +311,7 @@ foam.CLASS({
         });
 
         Date timeWindow = null;
+        int maxFileIndex = getFileSuffix(filenames.get(0));
 
         if ( getTimeWindow() == -1 ) {
           Collections.reverse(filenames);
@@ -332,8 +333,6 @@ foam.CLASS({
         }
 
         synchronized ( onHoldListLock_ ) {
-
-          int maxFileIndex = getFileSuffix(filenames.get(0));
 
           for ( String filename : availableFilenames ) {
 
@@ -383,6 +382,7 @@ foam.CLASS({
           }
 
           entryIndex_.set(maxFileIndex * getFileCapacity());
+          logger_.log("SF: " + getId() + " starts with index: " + entryIndex_.get());
           if ( ! onHoldList_.isEmpty() ) {
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
