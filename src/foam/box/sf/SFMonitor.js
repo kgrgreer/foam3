@@ -28,6 +28,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'ready'
+    },
+    {
+      class: 'Long',
+      name: 'initialIndex'
     }
   ],
 
@@ -43,6 +47,7 @@ foam.CLASS({
               this.setReady(sf.getReady());
               this.setInFlightLimit(sf.getInFlightLimit());
               this.setInFlightCount(sf.onHoldList_.size());
+              this.setInitialIndex(sf.maxFileIndex_*sf.getFileCapacity());
             }
           `
         }));

@@ -36,7 +36,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'MAXIMUM_REPLAY_DAYS',
-      value: 10000
+      value: 365
     }
   ],
   
