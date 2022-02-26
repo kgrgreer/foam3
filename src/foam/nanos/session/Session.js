@@ -356,8 +356,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         // and set the wasAnonymous boolean accordingly
         boolean wasAnonymous = false;
         if ( subjectUser != null ) {
-          X oldX = (X) foam.util.Auth.sudo(x, subjectUser, subjectAgent);
-          wasAnonymous = auth.isAnonymous(oldX);
+          ServiceProvider sp = (ServiceProvider) subjectUser.findSpid(x);
+          wasAnonymous = sp != null && sp.getAnonymousUser() == subjectUser.getId();
         }
 
         rtn = new OrX(reset(x));
