@@ -38,7 +38,7 @@ public class ErrorReportingPStreamFactory implements XFactory {
     return eps.apply(parser, x);
   }
 
-  public static List<String> getListerps() {
+  public static List<String> getListErps() {
     return listErps_;
   }
 

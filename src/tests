@@ -173,7 +173,7 @@ obj.EmptyListErps();
       }
     }
 
-    lst = obj.getListerps();
+    lst = obj.getListErps();
 
     if ( lst.size() == 0 ) test(true,"jrl are fine");
 
