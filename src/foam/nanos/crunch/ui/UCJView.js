@@ -39,18 +39,18 @@ foam.CLASS({
     'foam.u2.ControllerMode',
     'foam.u2.DisplayMode',
     'foam.u2.crunch.EasyCrunchWizard',
-    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
+    'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
-    'foam.u2.crunch.wizardflow.StepWizardAgent',
-    'foam.u2.crunch.wizardflow.DetachAgent',
-    'foam.u2.crunch.wizardflow.SpinnerAgent',
+    'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.DetachAgent',
+    'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.crunch.wizardflow.SubmitAgent',
-    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.stack.Stack',
@@ -107,6 +107,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var user = undefined;
+      if ( ! this.data ) return;
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( this.data.effectiveUser ) {
         user = await this.userDAO.find(this.data.effectiveUser);
