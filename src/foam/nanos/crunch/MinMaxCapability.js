@@ -66,11 +66,6 @@ foam.CLASS({
         return foam.nanos.crunch.ui.CapabilityWizardlet.create({isVisible: false}, this);
       },
       includeInDigest: false,
-    },
-    {
-      class: 'String',
-      name: 'customCardSelectView',
-      value: 'foam.u2.view.CardSelectView'
     }
   ],
 
