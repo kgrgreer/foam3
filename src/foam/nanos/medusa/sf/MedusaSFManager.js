@@ -69,16 +69,16 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      documentation: 'set -1 replay nothing; set to MAXIMUM_REPLAY_DAYS replay all',
+      documentation: 'set 0 or less replay nothing; set to MAXIMUM_REPLAY_DAYS or bigger replay all',
       name: 'replayStrategy',
       units: 'days',
       javaSetter: `
         replayStrategyIsSet_ = true;
-        if ( val < 0 ) replayStrategy_ = -1;
+        if ( val <= 0 ) replayStrategy_ = 0;
         else if ( val >=  getMAXIMUM_REPLAY_DAYS() ) replayStrategy_ = getMAXIMUM_REPLAY_DAYS();
         else replayStrategy_ = val;
       `,
-      value: -1
+      value: 0
     }
   ],
   
