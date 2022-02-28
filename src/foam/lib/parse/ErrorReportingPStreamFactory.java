@@ -1,4 +1,9 @@
-package foam.lib.parse;
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+ package foam.lib.parse;
 
 import java.util.*;
 
