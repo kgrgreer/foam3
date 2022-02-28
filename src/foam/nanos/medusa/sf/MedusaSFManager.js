@@ -69,7 +69,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      documentation: 'set -1 replay nothing; set to MAXIMUM_REPLAY_DAYS replay everything',
+      documentation: 'set -1 replay nothing; set to MAXIMUM_REPLAY_DAYS replay all',
       name: 'replayStrategy',
       units: 'days',
       javaSetter: `
