@@ -10,26 +10,26 @@ foam.CLASS({
   extends: 'foam.box.sf.SFManager',
   
   javaImports: [
-    'foam.core.X',
+    'foam.box.sf.*',
+    'foam.box.sf.SF',
+    'foam.box.sf.SFManager',
     'foam.core.FObject',
-    'foam.dao.ProxyDAO',
-    'foam.dao.EasyDAO',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.DOP',
-    'foam.box.sf.SFManager',
-    'foam.box.sf.SF',
+    'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
+    'foam.nanos.fs.FileSystemStorage',
+    'foam.nanos.fs.Storage',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.MedusaType',
     'foam.nanos.medusa.Status',
-    'foam.util.retry.RetryStrategy',
     'foam.util.retry.RetryForeverStrategy',
-    'java.util.PriorityQueue',
-    'foam.nanos.fs.Storage',
-    'foam.nanos.fs.FileSystemStorage',
-    'foam.box.sf.*',
+    'foam.util.retry.RetryStrategy',
     'java.nio.file.attribute.*',
-    'java.util.*'
+    'java.util.*',
+    'java.util.PriorityQueue'
   ],
 
   constants: [
