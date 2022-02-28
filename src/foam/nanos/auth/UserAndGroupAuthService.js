@@ -431,12 +431,15 @@ foam.CLASS({
         Returns true if session user matches the anonymus user of the current spid.
       `,
       javaCode: `
+        DAO dao = x.get("localServiceProviderDAO") == null ? (DAO) getX().get("localServiceProviderDAO") : (DAO) x.get("localServiceProviderDAO");
+        if ( dao == null )
+          throw new NullPointerException("Cannot find localServiceProviderDAO");
+
         Session session = x.get(Session.class);
-        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
-        if ( serviceProvider == null ) {
-          throw new AuthorizationException("Service Provider doesn't exist.");
-        }
-        if ( serviceProvider.getAnonymousUser() == 0 || 
+        ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
+
+        if ( serviceProvider == null ||
+             serviceProvider.getAnonymousUser() == 0 || 
              session == null || session.getUserId() == 0 ||
              session.getUserId() != serviceProvider.getAnonymousUser() )
              return false;
