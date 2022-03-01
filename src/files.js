@@ -1206,6 +1206,6 @@ FOAM_FILES([
   { name: "foam/nanos/ndiff/NDiffRuntimeDAO", flags: [ "java" ] },
   { name: "foam/u2/view/ComparisonView" },
   { name: "foam/u2/view/SuggestedTextField", flags: [ "web" ] },
-  { name: "foam/demos/csv/CsvUploadDemo", flags: ["web"] }
+  { name: "foam/demos/csv/CsvUploadDemo", flags: [ "demo", "web" ] }
 
   ]);
