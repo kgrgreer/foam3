@@ -38,10 +38,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country'
     },
     {
-      name: 'booltest',
-      class: 'Boolean'
-    },
-    {
       class: 'StringArray',
       name: 'alternativeNames'
     }
