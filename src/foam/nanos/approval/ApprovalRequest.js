@@ -292,29 +292,10 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'associatedUser',
+      name: 'createdForAgent',
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 106,
-      gridColumns: 6,
-      columnPermissionRequired: true
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      name: 'associatedBusiness',
-      includeInDigest: true,
-      section: 'approvalRequestInformation',
-      order: 107,
-      gridColumns: 6,
-      columnPermissionRequired: true
-    },
-    {
-      class: 'String',
-      name: 'merchantId',
-      includeInDigest: true,
-      section: 'approvalRequestInformation',
-      order: 108,
       gridColumns: 6,
       columnPermissionRequired: true
     },
