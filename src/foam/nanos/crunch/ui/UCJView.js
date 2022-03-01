@@ -44,6 +44,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
+    'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
     'foam.u2.wizard.agents.DetachAgent',
@@ -131,6 +132,7 @@ foam.CLASS({
         sequence = this.Sequence.create(null, x)
         .add(this.ConfigureFlowAgent, { popupMode: false })
         .add(this.WAOSettingAgent)
+        .add(this.DeveloperModeAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.LoadWizardletsAgent)
         .add(this.StepWizardAgent)
