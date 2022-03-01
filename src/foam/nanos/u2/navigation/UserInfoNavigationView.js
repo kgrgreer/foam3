@@ -29,14 +29,24 @@ foam.CLASS({
       align-items: center;
     }
     ^userName {
-      color: /*%GREY4%*/ #e7eaec;
+      color: /*%GREY2%*/ #6B778C;
       font-weight: 600;
       font-size: 1.2rem;
     }
     ^agentName{
-      color: /*%GREY3%*/ #cbcfd4;
+      color: /*%GREY2%*/ #6B778C;
       font-weight: 400;
       font-size: 1.1rem;
+    }
+    ^label-container {
+      display: flex;
+      flex-direction: column;
+    }
+    ^horizontal { 
+      flex-direction: row;
+    }
+    ^horizontal > * + * {
+      margin-left: 8px;
     }
     ^name-container {
       max-width: 90px;
@@ -48,7 +58,17 @@ foam.CLASS({
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    ^dropdown svg {
+      fill:  /*%GREY2%*/ #6B778C;
+    }
   `,
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'horizontal'
+    }
+  ],
 
   methods: [
     async function render() {
@@ -56,22 +76,28 @@ foam.CLASS({
       var X    = this.__subContext__;
 
       var mainLabel = this.E()
-        .add(this.slot(subject$user => {
+        .addClass(this.myClass('label-container'))
+        .enableClass(this.myClass('horizontal'), this.horizontal$)
+        .add(this.slot( subject$user => {
         if ( ! this.subject.user ) return;
         return this.E().addClass(self.myClass('name-container'))
-            .start('span').addClass(this.myClass('userName'))
+            .start('span')
+              .addClass(this.myClass('userName'))
+              .addClass('p')
               .add(this.subject.user.toSummary())
             .end();
         }))
-        .add(this.slot(subject$realUser => {
-          if ( ! this.subject.realUser ) return;
+        .add(this.slot( (subject$realUser, subject$user) => {
+          if ( ! this.subject.realUser || foam.util.equals(this.subject.user, this.subject.realUser) ) return;
           return this.E().addClass(self.myClass('name-container'))
-              .start('span').addClass(this.myClass('agentName'))
+              .start('span')
+                .addClass(this.myClass('agentName'))
+                .addClass('p')
                 .add( this.subject.realUser.toSummary() )
               .end();
         }));
 
-      // We need to add menus from settings (and then add menus from theme.settingsRootMenu) 
+      // We need to add menus from settings (and then add menus from theme.settingsRootMenu)
       // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
       // Doing this prevents us from creating the same menu for each setting.
       let menu = this.Menu.create({ id: 'settings' });
@@ -91,7 +117,7 @@ foam.CLASS({
         label: mainLabel,
         data: menuArray,
         obj: self,
-        buttonStyle: 'UNSTYLED'
+        buttonStyle: 'TERTIARY'
       })
         .addClass(this.myClass('dropdown'))
       .end();

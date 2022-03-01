@@ -562,6 +562,8 @@ FOAM_FILES([
   { name: "foam/u2/svg/TestView", flags: [ "web" ] },
   { name: "foam/u2/view/EnumLegendView", flags: [ "web" ] },
   { name: "foam/u2/view/RadioButton", flags: [ "web" ] },
+  { name: "foam/u2/view/RichTextView", flags: [ "web" ] },
+  { name: "foam/u2/view/ToggleActionView", flags: [ "web" ] },
   { name: "foam/u2/view/LoginView", flags: [ "web" ] },
   { name: "foam/u2/view/DocumentUploadView", flags: [ "web" ] },
   { name: "foam/u2/view/ValueView", flags: [ "web" ] },
@@ -762,7 +764,7 @@ FOAM_FILES([
   { name: "foam/comics/RelationshipView", flags: [ "web" ] },
   { name: "foam/u2/view/ReciprocalSearch", flags: [ "web" ] },
   { name: "lib/net", flags: [ "web" ] },
-  { name: "lib/netNode", flags: [ "node" ], predicate: () => ! foam.flags.genjava },
+  { name: "lib/netNode", flags: [ "node" ], predicate: () => foam.flags.node && ! foam.flags.genjava },
   { name: "foam/net/RetryHTTPRequest" },
   { name: "foam/net/auth/TokenBearerCredential" },
   { name: "foam/net/auth/AuthAwareHTTPRequest" },
@@ -848,6 +850,7 @@ FOAM_FILES([
   { name: "foam/test/AllSerializableProperties", flags: [ "java" ] },
   { name: "foam/test/TestEnum", flags: [ "java" ] },
   { name: "foam/test/TestObj", flags: [ "java" ] },
+  { name: "foam/test/IdentifiedStringHolder", flags: [ "java" ] },
   { name: "foam/core/FObjectTest", flags: [ "java" ] },
   { name: "foam/flow/Document", flags: [ "java" ] },
   { name: "foam/flow/DocumentMenu", flags: [ "java" ] },
@@ -1050,6 +1053,8 @@ FOAM_FILES([
   { name: "foam/dashboard/view/DateRangeChoiceView" },
   { name: "foam/nanos/fs/AgreementView" },
   { name: "foam/nanos/crunch/ruler/UCJDataExpiryRule", flags: [ "java" ] },
+  { name: "foam/time/Hours", flags: [ "java" ] },
+  { name: "foam/time/TimeZone", flags: [ "java" ] },
   { name: "foam/time/DayOfWeek", flags: [ "java" ] },
   { name: "foam/time/TimeUnit", flags: [ "java" ] },
   { name: "foam/u2/table/TableComponentView", flags: [ "web" ] },
@@ -1200,6 +1205,5 @@ FOAM_FILES([
   { name: "foam/nanos/ndiff/NDiffJournal", flags: [ "java" ] },
   { name: "foam/nanos/ndiff/NDiffRuntimeDAO", flags: [ "java" ] },
   { name: "foam/u2/view/ComparisonView" },
-  { name: "foam/u2/view/SuggestedTextField", flags: [ "web" ] },
-  { name: "foam/nanos/ticket/TicketNotificationNotificationCitationView" }
+  { name: "foam/u2/view/SuggestedTextField", flags: [ "web" ] }
   ]);
