@@ -193,7 +193,8 @@ foam.CLASS({
       class: 'DateTime',
       visibility: 'RO',
       tableWidth: 150,
-      storageOptional: true
+      storageOptional: true,
+      javaCompare: 'return 0;'
     },
     {
       documentation: `The id of the user who created the transaction.`,
@@ -202,6 +203,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -218,6 +220,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {

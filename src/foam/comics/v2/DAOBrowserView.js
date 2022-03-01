@@ -228,6 +228,15 @@ foam.CLASS({
           dao: this.serviceName || this.data.delegate.serviceName
         };
       }
+    },
+    {
+      class: 'Int',
+      name: 'maxActions',
+      expression: function(displayWidth) {
+        return displayWidth.minWidth < this.DisplayWidth.MD.minWidth ? 0 :
+               displayWidth.minWidth < this.DisplayWidth.LG.minWidth ? 1 :
+               3;
+      }
     }
   ],
 
@@ -311,7 +320,7 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO, displayWidth) {
+        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
           // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
@@ -352,9 +361,6 @@ foam.CLASS({
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
-          var maxActions = displayWidth.minWidth < self.DisplayWidth.MD.minWidth ? 0 :
-                           displayWidth.minWidth < self.DisplayWidth.LG.minWidth ? 1 :
-                           3
 
           return self.E()
             .start(self.Rows)
@@ -391,28 +397,31 @@ foam.CLASS({
                     .endContext()
                     .start(self.Cols)
                       .addClass(self.myClass('buttons'))
-                      .startContext({
-                        data: self,
-                        controllerMode: foam.u2.ControllerMode.EDIT
-                      })
-                        .callIf( self.config.DAOActions.length, function() {
-                          if ( self.config.DAOActions.length > Math.max(1, maxActions) ) {
-                            var extraActions = self.config.DAOActions.splice(maxActions);
+                        .add(self.maxActions$.map(function(maxActions) {
+                          var visibleActions;
+                          if ( self.config.DAOActions.length > Math.max(1, self.maxActions) ) {
+                            var extraActions = self.config.DAOActions.slice(self.maxActions);
+                            visibleActions = self.config.DAOActions.slice(0, self.maxActions);
+                          } else {
+                            visibleActions = self.config.DAOActions;
                           }
-                          var actions = this.E().addClass(self.myClass('buttons'));
-                          for ( action of self.config.DAOActions ) {
+                          var el = self.E();
+                          var actions = el.addClass(self.myClass('buttons')).startContext({
+                            data: self,
+                            controllerMode: foam.u2.ControllerMode.EDIT
+                          });
+                          for ( action of visibleActions ) {
                             actions.start(action, buttonStyle).addClass(self.myClass('actions')).end();
                           }
-                          this.add(actions);
                           if ( extraActions && extraActions.length ) {
-                            this.start(self.OverlayActionListView, {
+                            el.start(self.OverlayActionListView, {
                               label: self.ACTIONS,
                               data: extraActions,
                               obj: self
                             }).addClass(self.myClass('buttons')).end();
                           }
-                        })
-                      .endContext()
+                          return el.endContext();
+                        }))
                     .end()
                   .end()
                   .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();

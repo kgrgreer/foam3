@@ -5,12 +5,12 @@
  */
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = { isServer: true, flags: globalThis.FOAM_FLAGS || {} } );
+  var foam = globalThis.foam = { ...(globalThis.foam || {}), isServer: true, flags: globalThis.FOAM_FLAGS || {} };
 
   // Imports used by the loadServer() loader
-  globalThis.imports = {};
+  globalThis.imports      = {};
   globalThis.imports.path = require('path');
-  globalThis.loadedFiles = [];
+  globalThis.loadedFiles  = [];
 
   // Is replaced when lib.js is loaded.
   foam.checkFlags = () => true;
@@ -45,7 +45,8 @@
         globalThis.imports.path.normalize(path + filename + '.js'));
       globalThis.document = { currentScript: { src: normalPath } };
       var fn = path + filename + '.js';
-      require(fn);
+      globalThis.loadedFiles.push(fn);
+      (foam.require || require)(fn);
     }
   }
 
@@ -53,12 +54,12 @@
     var load = loadServer();
     var seen = {};
     var SAFE = foam.SAFE || {};
+
     files.
-     filter(f => {
+      filter(f => {
         if ( ! f.flags || ( ! f.flags.includes('swift') && ! f.flags.includes('node') ) ) {
           var caller = flags.src || __filename;
           var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
-          globalThis.loadedFiles.push(path + f.name + '.js');
         }
         if ( foam.checkFlags(f.flags) ) {
           return true;

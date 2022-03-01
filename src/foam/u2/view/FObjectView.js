@@ -47,7 +47,8 @@ foam.CLASS({
           displayWidth: 60,
           placeholder: X.data.placeholder,
           header: X.data.header,
-          choices$: X.data.choices$
+          choices$: X.data.choices$,
+          data$: X.data.objectClass$
         };
       }
     },
