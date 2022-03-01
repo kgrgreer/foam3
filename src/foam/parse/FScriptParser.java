@@ -280,12 +280,18 @@ public class FScriptParser
     grammar.addAction("DATE", (val, x) -> {
       Calendar start = new GregorianCalendar();
       start.clear();
+      start.setTimeZone(TimeZone.getTimeZone("UTC"));
 
       Object[] result = (Object[]) val;
       var dateFmt = result.length;
+      int year = dateFmt >=  3 ? (Integer) result[0] : 0;
+      if ( year < 0 ) {
+        start.set(Calendar.ERA, GregorianCalendar.BC);
+        year = (Integer) result[0]*-1;
+      }
 
       start.set(
-        dateFmt >=  1 ? (Integer) result[0]     : 0,
+        year,
         dateFmt >=  3 ? (Integer) result[2] - 1 : 0,
         dateFmt >=  5 ? (Integer) result[4]     : 0,
         dateFmt >=  7 ? (Integer) result[6]     : 0,
@@ -303,15 +309,7 @@ public class FScriptParser
       )),
       Literal.create("\"")
     ));
-    grammar.addAction("STRING", (val, x) -> {
-      var ret = compactToString(val);
-      try {
-        var field = this.prop_.getValueClass().getDeclaredField(ret).get(null);
-        if ( field != null ) return field;
-      } catch (Exception e) {
-      }
-      return ret;
-    });
+    grammar.addAction("STRING", (val, x) -> compactToString(val));
 
     grammar.addSymbol("ENUM", new Seq(
       grammar.sym("WORD"),
@@ -324,9 +322,17 @@ public class FScriptParser
     ));
     grammar.addAction("ENUM", (val, x) -> {
       Object[] values = (Object[]) val;
+      Object[] pckArr = (Object[]) values[1];
+      if ( pckArr.length == 0 ) {
+        try {
+          var field = this.prop_.getClassInfo().getObjClass().getDeclaredField((String) values[0]).get(null);
+          if ( field != null ) return field;
+        } catch (Exception e) {
+          return null;
+        }
+      }
       var sb = new StringBuilder();
       sb.append(values[0]);
-      Object[] pckArr = (Object[]) values[1];
       for ( int i = 0; pckArr.length - 1 > i; i ++) {
         sb.append(compactToString(pckArr[i]));
       }

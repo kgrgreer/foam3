@@ -486,7 +486,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue !exists||thisValue<'+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>' + foam.Date.MIN_DATE.toISOString().slice(0,16),
+            query: 'thisValue !exists||thisValue<='+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>=' + foam.Date.MIN_DATE.toISOString().slice(0,16),
             errorString: 'Invalid date value'
           }
         ];
