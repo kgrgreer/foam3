@@ -155,7 +155,6 @@ foam.CLASS({
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso20022/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/flinks/utils/files.js\\"></script>");
           }
           else if ( ! SafetyUtil.isEmpty(queryString) ) {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
