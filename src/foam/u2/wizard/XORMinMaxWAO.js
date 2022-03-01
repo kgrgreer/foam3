@@ -25,6 +25,10 @@
     {
       class: 'String',
       name: 'minMaxCapabilityId',
+    },
+    {
+      class: 'Boolean',
+      name: 'isWrappedInFObjectHolder'
     }
   ],
 
@@ -65,15 +69,22 @@
         return;
       }
 
-      const clonedWizardletData = selectedCapabilityWizardlet.data.clone();
+      const clonedWizardletData = selectedCapabilityWizardlet.data.clone(this);
 
-      const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
+      if ( this.isWrappedInFObjectHolder ){
+        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
 
-      wizardlet.data = fObjectHolder;
+        wizardlet.data = fObjectHolder;
+  
+        wizardlet.isLoaded = true;
+  
+        return fObjectHolder;
+      }
 
+      wizardlet.data = clonedWizardletData;
       wizardlet.isLoaded = true;
 
-      return fObjectHolder
+      return clonedWizardletData;
     }
   ]
 });

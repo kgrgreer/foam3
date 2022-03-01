@@ -60,10 +60,29 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       postSet: function (ol, nu) {
+        if ( ! this.saveOnAvailable ) return;
         if ( nu ) this.isAvailablePromise =
           this.isAvailablePromise.then(() => this.save());
         else this.isAvailablePromise =
           this.isAvailablePromise.then(() => this.cancel());
+      }
+    },
+    {
+      name: 'saveOnAvailable',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      name: 'saveOnCurrent',
+      class: 'Boolean'
+    },
+    {
+      name: 'isCurrent',
+      class: 'Boolean',
+      postSet: function (_, n) {
+        if ( n && this.saveOnCurrent ) {
+          this.save();
+        }
       }
     },
     {
