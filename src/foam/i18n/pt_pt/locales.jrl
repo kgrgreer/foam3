@@ -1067,3 +1067,16 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.Notifica
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.MARK_AS_UNREAD_MSG",target:"Marcado com sucesso como não lido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_READ_MSG",target:"Falha ao marcar como lida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.NotificationRowView.FAILED_MARK_AS_UNREAD_MSG",target:"Falha ao marcar como não lida"})
+
+//RichTextView
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.PLACEHOLDER_MSG",target:"Digite texto/solte HTML"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BOLD.toolTip",target:"Forte"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.ITALIC.toolTip",target:"Itálica"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.UNDERLINE.toolTip",target:"Sublinhada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.LINK.toolTip",target:"Adicionar link"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.LEFT_JUSTIFY.toolTip",target:"Alinhar à esquerda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.CENTER_JUSTIFY.toolTip",target:"Alinhar ao centro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.RIGHT_JUSTIFY.toolTip",target:"Alinhar à direita"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.NUMBERED_LIST.toolTip",target:"Lista numerada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BULLET_LIST.toolTip",target:"Lista com marcadores"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BLOCK_QUOTE.toolTip",target:"Citar"})
