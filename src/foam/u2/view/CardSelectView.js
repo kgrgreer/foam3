@@ -82,7 +82,8 @@ foam.CLASS({
         if ( n ) this.selectionDisabled.pub();
       }
     },
-    'largeCard'
+    'largeCard',
+    'of'
   ],
 
   methods: [
