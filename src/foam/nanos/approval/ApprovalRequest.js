@@ -303,7 +303,7 @@ foam.CLASS({
       class: 'String',
       name: 'createdForSummary',
       section: 'additionalInformation',
-      order: 109,
+      order: 107,
       gridColumns: 6,
       columnPermissionRequired: true,
       storageTransient: true
