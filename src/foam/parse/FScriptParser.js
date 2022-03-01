@@ -158,7 +158,6 @@ foam.CLASS({
           value: alt(
             sym('regex'),
             sym('date'),
-            sym('enum'),
             sym('string'),
             literal('true', true),
             literal('false', false),
@@ -166,6 +165,7 @@ foam.CLASS({
             sym('number'),
             sym('fieldLen'),
             sym('field'),
+            sym('enum')
           ),
 
           date: alt(
@@ -195,9 +195,7 @@ foam.CLASS({
             sym('fieldname'),
             optional(seq(notChars('len'), '.', repeat(sym('word'), '.')))),
 
-          enum: str(seq('"',
-            repeat(alt(literal('\\"', '"'), notChars('"'))),
-            '"')),
+          enum: str(seq(sym('word'), repeat(str(seq(literal('.'), sym('word')))))),
 
           string: str(seq1(1, '"',
                       repeat(alt(literal('\\"', '"'), notChars('"'))),
@@ -224,7 +222,6 @@ foam.CLASS({
         const properties = cls.getAxiomsByClass(foam.core.Property);
         const constants = cls.getAxiomsByClass(foam.core.Constant);
 
-        debugger;
         if ( this.thisValue !== undefined ) {
           fields.push(this.Literal.create({
             s: 'thisValue',
@@ -280,7 +277,6 @@ foam.CLASS({
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
-            debugger;
             return op.call(self, lhs, rhs);
           },
 
@@ -290,7 +286,6 @@ foam.CLASS({
             if ( foam.mlang.predicate.Not.isInstance(op) ) {
 
             }
-            debugger;
             return op.call(self, lhs);
           },
 
@@ -334,6 +329,14 @@ foam.CLASS({
               return null;
             }
             return v;
+          },
+
+          enum: function(v) {
+            var enumArr = v.replaceAll(',','').split('.');
+            var val = enumArr[enumArr.length-1];
+            var enumCls = v.replaceAll(',','').split('.'+val)[0];
+            var en = this.__context__.lookup(enumCls);
+            return en[val];
           }
         };
 
