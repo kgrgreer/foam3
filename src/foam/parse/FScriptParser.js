@@ -209,7 +209,8 @@ foam.CLASS({
             range('0', '9'),
             '-', '^', '_', '@', '%'),
 
-          number: repeat(range('0', '9'), null, 1)
+          number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
+//          number: repeat(range('0', '9'), null, 1)
         };
       }
     },
@@ -336,7 +337,7 @@ foam.CLASS({
             var val = enumArr[enumArr.length-1];
             var enumCls = v.replaceAll(',','').split('.'+val)[0];
             var en = this.__context__.lookup(enumCls);
-            return en[val];
+            return en == undefined ? null : en[val];
           }
         };
 
