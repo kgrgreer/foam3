@@ -4711,6 +4711,54 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'If',
+  extends: 'foam.mlang.AbstractExpr',
+
+  properties: [
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      javaFactory: 'return foam.mlang.MLang.TRUE;'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'valueIfTrue'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'valueIfFalse'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        if ( getPredicate().f(obj) ) {
+          return  getValueIfTrue() != null ?  getValueIfTrue().f(obj) : null;
+        } else {
+          return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
+        }
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      javaCode: `
+        var sb = new StringBuilder();
+        sb.append("If(")
+          .append("predicate:").append(String.valueOf(getPredicate()))
+          .append(", valueIfTrue:").append(String.valueOf(getValueIfTrue()))
+          .append(", valueIfFalse:").append(String.valueOf(getValueIfFalse()))
+          .append(")");
+        return sb.toString();
+      `
+    }
+  ]
+});
+
 // TODO(braden): We removed Expr.pipe(). That may still be useful to bring back,
 // probably with a different name. It doesn't mean the same as DAO.pipe().
 // remove eof()
