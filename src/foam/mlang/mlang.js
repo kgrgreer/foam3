@@ -4502,6 +4502,15 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'id',
+      transient: true,
+      javaFactory: `
+        java.util.Random r = java.util.concurrent.ThreadLocalRandom.current();
+        return new java.util.UUID(r.nextLong(), r.nextLong()).toString();
+      `
+    },
+    {
       class: 'foam.mlang.ExprArrayProperty',
       name: 'args'
     },
