@@ -113,6 +113,15 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
+      name: 'browseController',
+      factory: function() {
+        return {
+          class: 'foam.comics.v2.DAOBrowseControllerView'
+        };
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
