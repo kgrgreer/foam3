@@ -38,8 +38,47 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      const prerequisites = [...this.capabilities];
-      const desiredCapability = prerequisites.pop();
+      // const prerequisites = [...this.capabilities];
+      // const desiredCapability = prerequisites.pop();
+      let prerequisites = [];
+      const desiredCapability = this.capabilityGraph.roots[0].data;
+
+      const process = arry => {
+        return arry.map(v => Array.isArray(v) ? process(v) : v.id)
+      };
+      const log = (msg, dat) => {
+        console.log(msg, process(dat));
+      }
+
+      const addPrereqs = (current, dest) => {
+        const childIds = this.capabilityGraph.data[current.id].forwardLinks;
+        const childNodes = childIds.map(id => this.capabilityGraph.data[id]);
+        console.log('childNodes', childNodes);
+        const output = [];
+        for ( let node of childNodes ) {
+          const isPrereqAware =
+            (node.data.wizardlet &&
+              this.isPrerequisiteAware(node.data.wizardlet)) ||
+            (node.data.beforeWizardlet &&
+              this.isPrerequisiteAware(node.data.beforeWizardlet));
+
+          if ( isPrereqAware ) {
+            const subList = [];
+            subList.push(...addPrereqs(node))
+            subList.push(node.data);
+            log('sublist', [...subList])
+            log('output.sub.pushed', [...output])
+            output.push(subList);
+          } else {
+            output.push(...addPrereqs(node))
+            output.push(node.data);
+            log('output.pushed', [...output]);
+          }
+        }
+        log('output!', [...output]);
+        return output;
+      };
+      prerequisites = addPrereqs(this.capabilityGraph.roots[0]);
 
       // Remove duplicates from prerequisite aware sub-lists (from server)
       // (these entries are not needed because GraphBuilder is being used here)
@@ -60,6 +99,7 @@ foam.CLASS({
         }
       }
       removeDuplicates(prerequisites);
+      debugger;
 
       this.wizardlets = await this.parseArrayToWizardlets(prerequisites, desiredCapability);
 
@@ -136,6 +176,9 @@ foam.CLASS({
       for ( let rootWizardlet of rootWizardlets ) {
         if ( this.isPrerequisiteAware(rootWizardlet) ) {
           for ( const wizardlet of prerequisiteWizardlets ) {
+            if ( rootWizardlet.title == 'Schedulable MinMax' ) {
+              debugger;
+            }
             rootWizardlet.addPrerequisite(wizardlet, {
               lifted: ! controlledPrereqWizardlets.has(wizardlet)
             });

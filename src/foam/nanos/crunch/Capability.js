@@ -671,5 +671,6 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     section: 'capabilityRelationships'
-  }
+  },
+  hasPriority: true
 });
