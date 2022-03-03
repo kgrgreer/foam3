@@ -25,16 +25,16 @@ foam.CLASS({
       visibility: 'HIDDEN'
     }),
     foam.nanos.theme.Theme.TOP_NAV_LOGO.clone().copyFrom({
-      view: { class: 'foam.nanos.theme.customisation.FileThemeComponentView' },
+      view: { class: 'foam.nanos.theme.customisation.ThemeImageUploadView' },
       section: 'topNavBarLogo'
     }),
     foam.nanos.theme.Theme.LOGIN_IMAGE.clone().copyFrom({
-      view: { class: 'foam.nanos.theme.customisation.FileThemeComponentView' },
+      view: { class: 'foam.nanos.theme.customisation.ThemeImageUploadView' },
       section: 'loginPageImage'
     }),
     foam.nanos.theme.Theme.EXTERNAL_COMMUNICATION_IMAGE.clone().copyFrom({
       view: {
-        class: 'foam.nanos.theme.customisation.FileThemeComponentView',
+        class: 'foam.nanos.theme.customisation.ThemeImageUploadView',
         supportedFormats: { 'image/png': 'PNG' }
       },
       section: 'externalImage'
