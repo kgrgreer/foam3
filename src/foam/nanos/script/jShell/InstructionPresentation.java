@@ -24,12 +24,14 @@ public class InstructionPresentation {
   }
 
   public List<String> parseToInstruction(List<String> scripts) {
-    int i = 0;
+    int    i           = 0;
     String codeToParse = "";
     while ( i < scripts.size() ) {
-      codeToParse += scripts.get(i);
-      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis().analyzeCompletion(codeToParse);
-      if ( info.completeness().isComplete() ) {
+      codeToParse += scripts.get(i) + "\n";
+      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis()
+        .analyzeCompletion(codeToParse);
+      if ( info.completeness()
+        .isComplete() ) {
         listInstruction.add(codeToParse);
         codeToParse = "";
       }
