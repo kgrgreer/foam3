@@ -1096,3 +1096,20 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcas
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.BODY.label",target:"Corpo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.TOAST_MESSAGE.label",target:"Mensagem de resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.SHOW_TOAST.label",target:"Mostrar notificação de brinde"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.SEND.label",target:"Mandar"})
+
+//ThemeCustomisation
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.TOP_NAV_BAR_LOGO.title",target:"Logo da barra superior"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.LOGIN_PAGE_IMAGE.title",target:"Logo de login"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.EXTERNAL_IMAGE.title",target:"Logo externo"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeCustomisation.THEME_MSG",target:"Tema"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeCustomisation.UPADTED_MSG",target:"Atualizada"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_REQUIRED",target:"Arquivo obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_REQUIRED_SUB",target:"Faça upload de um novo arquivo e tente novamente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.UPLOAD_ERROR",target:"Algo deu errado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.PREVIEW_MSG",target:"Visualizar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_UPLOADER.label",target:"Subir arquivo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_1",target:"A atualização do logotipo aqui atualiza o"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_2",target:"para todos os usuários que usam este tema. Por favor, use SVGs ou PNGs de alta resolução para garantir melhores resultados para os usuários"})

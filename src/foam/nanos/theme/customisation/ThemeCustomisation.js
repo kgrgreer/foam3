@@ -74,6 +74,11 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'THEME_MSG', message: 'Theme' },
+    { name: 'UPDATED_MSG', message: 'updated' },
+  ],
+
   properties: [
     {
       name: 'data',
@@ -93,6 +98,7 @@ foam.CLASS({
       value: {}
     }
   ],
+
   methods: [
     async function render() {
       if ( foam.String.isInstance(this.themeName) ) {
@@ -106,7 +112,7 @@ foam.CLASS({
         .addClass(this.myClass('container'))
         .tag(self.BreadcrumbView)
         .start()
-          .add(this.data.name, ' Theme')
+          .add(`${this.data.name} ${this.THEME_MSG}`)
           .addClass('h100')
         .end()
           .start(this.Tabs)
@@ -152,7 +158,7 @@ foam.CLASS({
         themeObj = themeObj.copyFrom(self.data);
         await self.spThemeDAO.put(themeObj);
         self.ctrl.fetchTheme();
-        self.ctrl.notify(`${this.themeName} updated`, '', 'INFO', true);
+        self.ctrl.notify(`${this.themeName} ${this.UPDATED_MSG}`, '', 'INFO', true);
       }
     }
   ]

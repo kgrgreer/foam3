@@ -49,6 +49,11 @@ foam.CLASS({
 
   messages: [
     { name: 'FILE_REQUIRED', message: 'File Required' },
+    { name: 'FILE_REQUIRED_SUB', message: 'Upload a new file and try again' },
+    { name: 'UPLOAD_ERROR', message: 'Something went wrong' },
+    { name: 'PREVIEW_MSG', message: 'Preview' },
+    { name: 'DESC_1', message: 'Updating the logo here updates the' },
+    { name: 'DESC_2', message: 'for all users using this theme. Please use SVGs or high resolution PNGs to ensure best results for the users' }
   ],
 
   properties: [
@@ -56,8 +61,7 @@ foam.CLASS({
       class: 'String',
       name: 'descriptionMessage',
       expression: function(themeProp) {
-        return `Updating the logo here updates the ${themeProp.label} for all users using this theme.
-        Please use SVGs or high resolution PNGs to ensure best results for the users`;
+        return `${this.DESC_1} ${themeProp.label} ${this.DESC_2}`;
       },
       writePermissionRequired: true
     },
@@ -102,6 +106,7 @@ foam.CLASS({
       }
     },
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -119,7 +124,7 @@ foam.CLASS({
               .start()
                 .start()
                   .addClass('p-semiBold')
-                  .add('Preview')
+                  .add(this.PREVIEW_MSG)
                   .style({ 'line-height': '2' })
                 .end()
                 .start(self.previewView, {
@@ -148,7 +153,7 @@ foam.CLASS({
     },
     async function save() {
       if ( ! this.fileUploader[0] ) {
-        ctrl.notify('No file uploaded', 'Upload a new file and try again', 'ERROR', true);
+        ctrl.notify(this.FILE_REQUIRED, this.FILE_REQUIRED_SUB, 'ERROR', true);
         return;
       }
       var v = this.fileUploader[0];
@@ -163,7 +168,7 @@ foam.CLASS({
         this.fileUploader = [];
         return true;
       } catch (x) {
-        ctrl.notify('Something went wrong', x.message, 'ERROR', true);
+        ctrl.notify(this.UPLOAD_ERROR, x.message, 'ERROR', true);
       }
     }
   ]
