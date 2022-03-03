@@ -22,7 +22,7 @@ foam.CLASS({
     { name: 'BODY_REQUIRED', message: 'Notification body is required' },
     { name: 'TOAST_REQUIRED', message: 'Toast Message is required when showing toast' },
     { name: 'NOTIFICATION_SENT', message: 'Notification Sent' },
-    { name: 'NOTIFICAITON_SUMMARY', message: 'notification to' }
+    { name: 'NOTIFICAITON_SUMMARY', message: 'notification to ' }
   ],
   properties: [
     foam.nanos.notification.Notification.GROUP_ID.clone().copyFrom({
@@ -62,7 +62,7 @@ foam.CLASS({
 
   methods: [
     function toSummary() {
-      return this.NOTIFICATION_SUMMARY + this.groupId;
+      return this.NOTIFICAITON_SUMMARY + this.groupId;
     }
   ],
 
