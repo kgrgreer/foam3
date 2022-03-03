@@ -54,7 +54,14 @@ foam.CLASS({
 
       var targetPayload = await this.capable.getCapablePayloadDAO().find(
         wizardlet.capability.id ) || this.targetPayload;
-      this.load_(wizardlet, targetPayload);
+
+      // TODO: MAKE A LEGIT FIX HERE where we want MinMaxCapabilityWizardlet to work without capableWAO
+      // perhaps a 3rd option like transient wao or smth
+      if ( wizardlet.data && ! targetPayload ){
+        return;
+      } else {
+        this.load_(wizardlet, targetPayload);
+      }
     },
     async function load_(wizardlet, payload) {
       wizardlet.isLoaded = true;
