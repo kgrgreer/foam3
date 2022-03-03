@@ -34,6 +34,9 @@
       class: 'Class',
       name: 'of'
     }
+    // TODO: LOAD INTO PROPERTY support
+    // TODO: LOAD FROM PROPERTY support
+    // TODO: MAP TO OVERRIDE
   ],
 
   methods: [

@@ -46,7 +46,7 @@ foam.CLASS({
   sections: [
     {
       name: 'scheduling',
-      isAvailable: function(id) { return !! id; },
+      // isAvailable: function(id) { return !! id; },
       order: 2
     },
     {

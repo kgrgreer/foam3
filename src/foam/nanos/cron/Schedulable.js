@@ -51,7 +51,6 @@
     },
     {
       class: 'FObjectProperty',
-      of: 'FObject',
       name: 'objectToSchedule'
     }
   ],
