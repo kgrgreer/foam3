@@ -27,8 +27,8 @@ public class InstructionPresentation {
     int    i           = 0;
     String codeToParse = "";
     while ( i < scripts.size() ) {
-      String instraction = checkEmptyInstraction(scripts.get(i));
-      codeToParse += instraction;
+      String instruction = checkEmptyInstruction(scripts.get(i));
+      codeToParse += instruction;
       SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis()
         .analyzeCompletion(codeToParse);
       if ( info.completeness()
@@ -41,13 +41,13 @@ public class InstructionPresentation {
     return listInstruction;
   }
 
-  private String checkEmptyInstraction(String instraction) {
-    if ( instraction.startsWith("//") ) instraction = "";
+  private String checkEmptyInstruction(String instruction) {
+    if ( instruction.startsWith("//") ) instruction = "";
 
-    if ( instraction.contains("//") ) {
-      instraction = instraction.substring(0, instraction.indexOf("//"));
+    if ( instruction.contains("//") ) {
+      instruction = instruction.substring(0, instruction.indexOf("//"));
     }
 
-    return instraction;
+    return instruction;
   }
 }
