@@ -4502,6 +4502,7 @@ foam.CLASS({
 
   properties: [
     {
+      documentation: 'During Expr evaluation, nested formula partialEval are often stored along the way and they require a unique key, as the toString may be the same.',
       class: 'String',
       name: 'id',
       transient: true,
