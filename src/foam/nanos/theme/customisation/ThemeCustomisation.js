@@ -152,6 +152,7 @@ foam.CLASS({
         themeObj = themeObj.copyFrom(self.data);
         await self.spThemeDAO.put(themeObj);
         self.ctrl.fetchTheme();
+        self.ctrl.notify(`${this.themeName} updated`, '', 'INFO', true);
       }
     }
   ]

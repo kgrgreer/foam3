@@ -244,7 +244,7 @@ foam.CLASS({
       class: 'Image',
       name: 'externalCommunicationImage',
       factory: function() {
-        return this.largeLogoEnabled ? this.largeLogo : this.logo;
+        return this.logo;
       },
       displayWidth: 60,
       view: {
