@@ -87,7 +87,7 @@ p({
         }
       return t;
     }
-    
+
     long startTime = System.currentTimeMillis();
     int r = main();
     long endTime = System.currentTimeMillis();
@@ -138,9 +138,9 @@ p({
   import foam.dao.MDAO;
   import foam.dao.index.AltIndex;
   import foam.dao.index.Index;
-  
+
   daoKey = "localAccountDAO";
-  
+
   dao = x.get(daoKey);
   mdao = dao.cmd(MDAO.GET_MDAO_CMD);
   print(mdao);
@@ -149,5 +149,36 @@ p({
   for ( TreeIndex i : delegates ) {
     print(i.prop_);
   }
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"CommentJShell",
+  description:"Test for comment in JShell",
+  language:2,
+  code:"""
+  import java.io.PrintStream;
+
+  PrintStream ps = (PrintStream) x.get("out");
+
+  System.out.println("comment 1");//comment1
+
+  ps.println("comment 1");
+  // comment2
+  System.
+  out.println("comment 2");
+
+  ps.
+    println("comment 2");
+
+  /* comment 3 */
+
+  /*
+  comment 4
+  */
+
+  System.out.println("comment 3");
+  ps.println("comment 3");
+  ps.println("Done!");
   """
 })

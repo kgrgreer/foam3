@@ -24,17 +24,30 @@ public class InstructionPresentation {
   }
 
   public List<String> parseToInstruction(List<String> scripts) {
-    int i = 0;
+    int    i           = 0;
     String codeToParse = "";
     while ( i < scripts.size() ) {
-      codeToParse += scripts.get(i);
-      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis().analyzeCompletion(codeToParse);
-      if ( info.completeness().isComplete() ) {
+      String instraction = checkEmptyInstraction(scripts.get(i));
+      codeToParse += instraction;
+      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis()
+        .analyzeCompletion(codeToParse);
+      if ( info.completeness()
+        .isComplete() ) {
         listInstruction.add(codeToParse);
         codeToParse = "";
       }
       i++;
     }
     return listInstruction;
+  }
+
+  private String checkEmptyInstraction(String instraction) {
+    if ( instraction.startsWith("//") ) instraction = "";
+
+    if ( instraction.contains("//") ) {
+      instraction = instraction.substring(0, instraction.indexOf("//"));
+    }
+
+    return instraction;
   }
 }
