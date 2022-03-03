@@ -163,7 +163,7 @@ p({
 
   System.out.println("comment 1");//comment1
 
-  ps.println("comment 1");
+  ps.println("comment // 1");
   // comment2
   System.
   out.println("comment 2");

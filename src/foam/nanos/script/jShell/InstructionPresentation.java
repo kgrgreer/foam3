@@ -27,8 +27,7 @@ public class InstructionPresentation {
     int    i           = 0;
     String codeToParse = "";
     while ( i < scripts.size() ) {
-      String instruction = checkEmptyInstruction(scripts.get(i));
-      codeToParse += instruction;
+      codeToParse += scripts.get(i) + "\n";
       SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis()
         .analyzeCompletion(codeToParse);
       if ( info.completeness()
@@ -39,15 +38,5 @@ public class InstructionPresentation {
       i++;
     }
     return listInstruction;
-  }
-
-  private String checkEmptyInstruction(String instruction) {
-    if ( instruction.startsWith("//") ) instruction = "";
-
-    if ( instruction.contains("//") ) {
-      instruction = instruction.substring(0, instruction.indexOf("//"));
-    }
-
-    return instruction;
   }
 }
