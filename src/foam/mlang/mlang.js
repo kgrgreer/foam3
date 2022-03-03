@@ -4737,11 +4737,9 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        if ( getPredicate().f(obj) ) {
-          return  getValueIfTrue() != null ?  getValueIfTrue().f(obj) : null;
-        } else {
-          return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
-        }
+        if ( getPredicate().f(obj) )
+          return  getValueIfTrue() != null ? getValueIfTrue().f(obj) : null;
+        return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
       `
     },
     {
@@ -4749,10 +4747,9 @@ foam.CLASS({
       type: 'String',
       javaCode: `
         var sb = new StringBuilder();
-        sb.append("If(")
-          .append("predicate:").append(String.valueOf(getPredicate()))
-          .append(", valueIfTrue:").append(String.valueOf(getValueIfTrue()))
-          .append(", valueIfFalse:").append(String.valueOf(getValueIfFalse()))
+        sb.append("If(predicate:").append(getPredicate())
+          .append(", valueIfTrue:").append(getValueIfTrue())
+          .append(", valueIfFalse:").append(getValueIfFalse())
           .append(")");
         return sb.toString();
       `
