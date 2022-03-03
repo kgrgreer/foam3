@@ -1085,3 +1085,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.RIGHT_
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.NUMBERED_LIST.toolTip",target:"Lista numerada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BULLET_LIST.toolTip",target:"Lista com marcadores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BLOCK_QUOTE.toolTip",target:"Citar"})
+
+//SendNotificationView
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.GROUP_REQUIRED",target:"O grupo é obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.BODY_REQUIRED",target:"O corpo de notificação é obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.TOAST_REQUIRED",target:"A mensagem de brinde é necessária ao mostrar o brinde"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.NOTIFICATION_SUMMARY",target:"notificação para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.NOTIFICATION_SENT",target:"Notificação enviada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.GROUP_ID.label",target:"Enviar para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.BODY.label",target:"Corpo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.TOAST_MESSAGE.label",target:"Mensagem de resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.SHOW_TOAST.label",target:"Mostrar notificação de brinde"})

@@ -20,7 +20,9 @@ foam.CLASS({
   messages: [
     { name: 'GROUP_REQUIRED', message: 'Group is required' },
     { name: 'BODY_REQUIRED', message: 'Notification body is required' },
-    { name: 'TOAST_REQUIRED', message: 'Toast Message is required when showing toast' }
+    { name: 'TOAST_REQUIRED', message: 'Toast Message is required when showing toast' },
+    { name: 'NOTIFICATION_SENT', message: 'Notification Sent' },
+    { name: 'NOTIFICAITON_SUMMARY', message: 'notification to' }
   ],
   properties: [
     foam.nanos.notification.Notification.GROUP_ID.clone().copyFrom({
@@ -46,7 +48,6 @@ foam.CLASS({
       postSet: function(_, n) { if ( ! n ) this.toastMessage = ''; }
     },
     foam.nanos.notification.Notification.TOAST_MESSAGE.clone().copyFrom({
-      help: 'message that appears on toast',
       onKey: true,
       createVisibility: function(showToast) {
         return showToast ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -61,7 +62,7 @@ foam.CLASS({
 
   methods: [
     function toSummary() {
-      return `Notification to ${this.groupId}`;
+      return this.NOTIFICATION_SUMMARY + this.groupId;
     }
   ],
 
@@ -88,7 +89,7 @@ foam.CLASS({
           this.toastMessage = undefined;
           this.showToast = undefined;
           this.groupId = undefined;
-          this.ctrl.notify('Notification Sent', '', 'INFO', true);
+          this.ctrl.notify(this.NOTIFICATION_SENT, '', 'INFO', true);
         });
       }
     }
