@@ -28,25 +28,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'ready'
+    },
+    {
+      class: 'Long',
+      name: 'initialIndex'
     }
   ],
 
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-            public SFMonitor(X x, SF sf) {
-              this.setX(sf.getX());
-              this.setId(sf.getId());
-              this.setReady(sf.getReady());
-              this.setInFlightLimit(sf.getInFlightLimit());
-              this.setInFlightCount(sf.onHoldList_.size());
-            }
-          `
-        }));
-      }
+  javaCode: `
+    public SFMonitor(X x, SF sf) {
+      this.setX(sf.getX());
+      this.setId(sf.getId());
+      this.setReady(sf.getReady());
+      this.setInFlightLimit(sf.getInFlightLimit());
+      this.setInFlightCount(sf.onHoldList_.size());
+      this.setInitialIndex(sf.maxFileIndex_*sf.getFileCapacity());
     }
-  ]
+  `
 })

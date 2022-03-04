@@ -71,7 +71,7 @@ foam.CLASS({
 
                 public void endJob(boolean isLast) {
                   if ( obj == null ) {
-                    getLogger().error("Parse error", getParsingErrorMessage(strEntry), "entry:", strEntry);
+                    getLogger().error("Parse error in the jrl file " + getFilename(), getParsingErrorMessage(strEntry), "entry Object is: ", strEntry);
                     return;
                   }
                   switch ( operation ) {

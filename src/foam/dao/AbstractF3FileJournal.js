@@ -404,9 +404,12 @@ try {
         ((StringPStream) ps).setString(line);
         x.set("X", ( getX() == null ) ? new ProxyX() : getX());
 
-        ErrorReportingPStream eps = new ErrorReportingPStream(ps);
-        ps = eps.apply(parser, x);
-        return eps.getMessage();
+        ErrorReportingPStream erpst = new ErrorReportingPStream(ps);
+        ErrorReportingPStreamFactory factory = new ErrorReportingPStreamFactory(erpst, getFilename());
+        factory.create(getX());
+
+        ps = factory.apply(parser, x);
+        return factory.getMessage();
       `
     },
     {
