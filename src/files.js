@@ -562,6 +562,8 @@ FOAM_FILES([
   { name: "foam/u2/svg/TestView", flags: [ "web" ] },
   { name: "foam/u2/view/EnumLegendView", flags: [ "web" ] },
   { name: "foam/u2/view/RadioButton", flags: [ "web" ] },
+  { name: "foam/u2/view/RichTextView", flags: [ "web" ] },
+  { name: "foam/u2/view/ToggleActionView", flags: [ "web" ] },
   { name: "foam/u2/view/LoginView", flags: [ "web" ] },
   { name: "foam/u2/view/DocumentUploadView", flags: [ "web" ] },
   { name: "foam/u2/view/ValueView", flags: [ "web" ] },
@@ -1203,5 +1205,7 @@ FOAM_FILES([
   { name: "foam/nanos/ndiff/NDiffJournal", flags: [ "java" ] },
   { name: "foam/nanos/ndiff/NDiffRuntimeDAO", flags: [ "java" ] },
   { name: "foam/u2/view/ComparisonView" },
-  { name: "foam/u2/view/SuggestedTextField", flags: [ "web" ] }
+  { name: "foam/u2/view/SuggestedTextField", flags: [ "web" ] },
+  { name: "foam/demos/csv/CsvUploadDemo", flags: [ "demo", "web" ] }
+
   ]);
