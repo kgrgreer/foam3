@@ -96,11 +96,19 @@ foam.CLASS({
         FObject found = dao.find(request.getObjId()).fclone();
 
         DAO userDAO = (DAO) x.get("localUserDAO");
+        Subject subject = new Subject();
+
         User initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedBy());
         if ( ((ApprovalRequest) request).getCreatedFor() != 0 ) {
           initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedFor());
         }
-        Subject subject = new Subject.Builder(x).setUser(initiatingUser).build();
+        subject.setUser(initiatingUser);
+
+        if ( ((ApprovalRequest) request).getCreatedForAgent() != 0 ) {
+          User initiatingAgent = (User) userDAO.find(((ApprovalRequest) request).getCreatedForAgent());
+          subject.setUser(initiatingAgent);
+        }
+        
         X initiatingUserX = x.put("subject", subject);
 
         if ( ((ApprovalRequest) request).getOperation() == Operation.REMOVE ) {
