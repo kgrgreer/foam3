@@ -61,6 +61,7 @@ FOAM_FILES([
   { name: 'foam/nanos/alarming/MonitorType' },
   { name: 'foam/nanos/alarming/OMName' },
   { name: 'foam/nanos/om/OMRuleAction' },
+  { name: 'foam/nanos/om/CCOMRuleAction' },
   { name: "foam/nanos/auth/DayOfWeek" },
   { name: "foam/nanos/auth/Hours" },
   { name: "foam/nanos/auth/Address" },
@@ -640,8 +641,5 @@ FOAM_FILES([
   { name: "foam/nanos/iban/test/ValidationIBANTest" },
 
   //notification
-  { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" },
-
-  { name: 'foam/nanos/om/OMRuleAction' },
-  { name: 'foam/nanos/om/CCOMRuleAction' }
+  { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" }
 ]);
