@@ -641,4 +641,7 @@ FOAM_FILES([
 
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification" },
+
+  { name: 'foam/nanos/om/OMRuleAction' },
+  { name: 'foam/nanos/om/CCOMRuleAction' }
 ]);
