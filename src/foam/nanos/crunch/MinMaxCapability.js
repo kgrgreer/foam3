@@ -66,7 +66,7 @@ foam.CLASS({
         return foam.nanos.crunch.ui.CapabilityWizardlet.create({isVisible: false}, this);
       },
       includeInDigest: false,
-    },
+    }
   ],
 
   methods: [
