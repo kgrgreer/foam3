@@ -8,10 +8,3 @@ p({
   "monitorType":1,
   "sendEmail":false
 })
-
-p({
-  "class":"foam.nanos.alarming.AlarmConfig",
-  "id":"default",
-  "name":"default",
-  "group":"noc"
-})

@@ -1,0 +1,47 @@
+p({
+  class: "foam.nanos.notification.email.EmailMessagePropertyServiceRule",
+  id: "foam-nanos-notification-email-EmailMessagePropertyServiceRule",
+  name: "EmailMessage EmailPropertyService",
+  ruleGroup: "EmailMessage",
+  daoKey: "emailMessageDAO",
+  priority: 1000,
+  operation: 3,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.PropertyEQValue",
+        propName: "status",
+        propValue:  {
+          class: "foam.nanos.notification.email.Status",
+          ordinal: 0
+        }
+      }
+    ]
+  },
+  lifecycleState:1
+})
+
+p({
+  class: "foam.nanos.notification.email.EmailMessageStatusRule",
+  id: "foam-nanos-notification-email-EmailMessageStatusRule",
+  name: "EmailMessage Status",
+  ruleGroup: "EmailMessage",
+  daoKey: "emailMessageDAO",
+  priority: 100,
+  operation: 3,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.PropertyEQValue",
+        propName: "status",
+        propValue:  {
+          class: "foam.nanos.notification.email.Status",
+          ordinal: 0
+        }
+      }
+    ]
+  },
+  lifecycleState:1
+})

@@ -101,6 +101,7 @@ foam.CLASS({
         }
 
         try {
+// TODO: if emailName == 'alarm' set status to UNSENT, so not processed via rules. 
           if ( ! SafetyUtil.isEmpty(notification.getEmailName()) ) {
             EmailsUtility.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
           } else {
