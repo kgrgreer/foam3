@@ -11,15 +11,15 @@ foam.CLASS({
   implements: [ 'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet' ],
 
   requires: [
-    'foam.u2.view.MultiChoiceView',
-    'foam.u2.view.CardSelectView',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection'
+    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection',
+    'foam.u2.view.CardSelectView',
+    'foam.u2.view.MultiChoiceView'
   ],
 
   imports: [
-    'translationService',
-    'capabilityDAO'
+    'capabilityDAO',
+    'translationService'
   ],
 
   properties: [
@@ -163,7 +163,11 @@ foam.CLASS({
               data$: this.selectedData$,
               minSelected$: this.min$,
               maxSelected$: this.max$,
-              choiceView: { class: 'foam.u2.view.CardSelectView', largeCard: true }
+              choiceView: {
+                class: 'foam.u2.view.CardSelectView',
+                of: this.choices[0][0].cls_.id,
+                largeCard: true
+             }
             }
           })
         ];
@@ -220,13 +224,13 @@ foam.CLASS({
       // Auto-select lifted capabilities if they're available to start with
       if ( meta.lifted && wizardlet.isAvailable ) {
         this.selectedData = [...( this.selectedData || [] ), wizardlet.capability];
-      
+
         // Hide choice selection if maximum is reached by capability lifting
         if ( this.selectedData.length >= this.max ) {
           this.isVisible = false;
         }
       }
-      
+
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
       if ( ! meta.lifted ) wizardlet.isAvailable = false;

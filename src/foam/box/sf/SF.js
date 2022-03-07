@@ -311,6 +311,7 @@ foam.CLASS({
         });
 
         Date timeWindow = null;
+        maxFileIndex_ = getFileSuffix(filenames.get(0));
 
         if ( getTimeWindow() == -1 ) {
           Collections.reverse(filenames);
@@ -332,8 +333,6 @@ foam.CLASS({
         }
 
         synchronized ( onHoldListLock_ ) {
-
-          int maxFileIndex = getFileSuffix(filenames.get(0));
 
           for ( String filename : availableFilenames ) {
 
@@ -382,7 +381,8 @@ foam.CLASS({
             }
           }
 
-          entryIndex_.set(maxFileIndex * getFileCapacity());
+          entryIndex_.set(maxFileIndex_ * getFileCapacity());
+
           if ( ! onHoldList_.isEmpty() ) {
             SFEntry s = (SFEntry) onHoldList_.get(0);
             FObject o = (FObject) getRetryStrategy();
@@ -484,6 +484,7 @@ foam.CLASS({
             final protected Object onHoldListLock_ = new Object();
             final protected AtomicBoolean isReady_ = new AtomicBoolean(false);
             final protected List<SFEntry> onHoldList_ = new LinkedList<SFEntry>();
+            protected volatile int maxFileIndex_ = 0;
 
             static private class TempDAO extends ProxyDAO {
               public foam.core.ClassInfo getOf() {
