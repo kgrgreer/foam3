@@ -127,6 +127,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'clusterable',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'useCCOMLogger',
+      documentation: 'Indicates whether this alarm is based on CCOMLogger (cross server), otherwise OMLogger (single server)',
+      value: false
     }
   ]
 });

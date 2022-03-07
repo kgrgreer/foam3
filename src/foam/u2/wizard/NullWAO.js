@@ -11,6 +11,7 @@ foam.CLASS({
   flags: ['web'],
   methods: [
     async function save() {},
-    async function load() {}
+    async function load() {},
+    async function cancel() {}
   ]
 });

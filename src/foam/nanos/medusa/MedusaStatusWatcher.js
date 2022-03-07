@@ -41,6 +41,11 @@ foam.CLASS({
 
   constants: [
     {
+      name: 'ONLINE',
+      type: 'String',
+      value: 'ONLINE'
+    },
+    {
       name: 'OFFLINE',
       type: 'String',
       value: 'OFFLINE'
@@ -122,18 +127,27 @@ foam.CLASS({
         while ((key = watchService.take()) != null) {
           for (WatchEvent<?> event : key.pollEvents()) {
             if ( event.kind() == StandardWatchEventKinds.ENTRY_CREATE &&
-                 ( OFFLINE.equals(event.context().toString()) ||
-                   SHUTDOWN.equals(event.context().toString()) ) ) {
+                 ( SHUTDOWN.equals(event.context().toString()) ||
+                   OFFLINE.equals(event.context().toString()) ||
+                   ONLINE.equals(event.context().toString()) ) ) {
               logger.warning("detected", event.context());
 
               ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
               if ( support != null ) {
-                if ( SHUTDOWN.equals(event.context().toString()) ) {
+                String request = event.context().toString();
+                if ( SHUTDOWN.equals(request) ) {
                   support.setShutdown(true);
+                  request = OFFLINE;
                 }
                 ClusterConfig config = support.getConfig(x, support.getConfigId());
                 config = (ClusterConfig) config.fclone();
-                config.setStatus(Status.OFFLINE);
+                if ( OFFLINE.equals(request) &&
+                     config.getStatus() != Status.OFFLINE ) {
+                  config.setStatus(Status.OFFLINE);
+                } else if ( ONLINE.equals(request) &&
+                     config.getStatus() != Status.ONLINE ) {
+                  config.setStatus(Status.ONLINE);
+                }
                 ((DAO) x.get("localClusterConfigDAO")).put(config);
                 break;
               }

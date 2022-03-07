@@ -69,7 +69,6 @@ FOAM_FILES([
   { name: "foam/nanos/alarming/MonitorType", flags: [ "java" ] },
   { name: "foam/nanos/alarming/OMName", flags: [ "java" ] },
   { name: "foam/nanos/alarming/test/CandlestickAlarmTest", flags: [ "java" ] },
-  { name: "foam/nanos/auth/Hours", flags: [ "java" ] },
   { name: "foam/nanos/auth/PropertyType", flags: [ "java" ] },
   { name: "foam/nanos/auth/Country", flags: [ "java" ] },
   { name: "foam/nanos/auth/Region", flags: [ "java" ] },
@@ -115,7 +114,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/LifecycleAwareDAO", flags: [ "java" ] },
   { name: "foam/nanos/auth/Login" },
   { name: "foam/nanos/auth/Permission", flags: [ "java" ] },
-  { name: "foam/nanos/auth/TimeZone", flags: [ "java" ] },
   { name: "foam/nanos/auth/ResendVerificationEmail", flags: ["web"] },
   { name: "foam/nanos/auth/Phone", flags: [ "java" ] },
   { name: "foam/nanos/auth/HtmlDoc", flags: [ "java" ] },
@@ -212,7 +210,6 @@ FOAM_FILES([
   { name: "foam/nanos/medusa/ClusterConfigReplayingInfoDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigStatusDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterConfigSupport", flags: [ "java" ] },
-  { name: "foam/nanos/medusa/ClusterConfigSupportDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterException", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ClusterTopology" },
   { name: "foam/nanos/medusa/ClusterTopologyView" },
@@ -290,6 +287,9 @@ FOAM_FILES([
   { name: "foam/nanos/security/KeyStoreManager", flags: [ "java" ] },
   { name: "foam/nanos/benchmark/UUIDBenchmark", flags: [ "java" ] },
   { name: "foam/nanos/u2/navigation/TopNavigation", flags: ["web"] },
+  { name: "foam/nanos/u2/navigation/ResponsiveTopNav", flags: ['web'] },
+  { name: "foam/nanos/u2/navigation/ApplicationSideNav", flags: ['web'] },
+  { name: "foam/nanos/u2/navigation/NavigationController", flags: ['web'] },
   { name: "foam/nanos/u2/navigation/FooterView", flags: ["web"] },
   { name: "foam/nanos/u2/navigation/SideNavigation", flags: ["web"] },
   { name: "foam/nanos/u2/navigation/SideNavigationItemView", flags: ["web"] },
@@ -348,7 +348,7 @@ FOAM_FILES([
   { name: "foam/nanos/export/XMLDriver"},
   { name: "foam/nanos/export/report/Template", flags: [ "java" ] },
   { name: "foam/nanos/export/PDFGoogleSheetsExportDriver", flags: [ "java" ] },
-  { name: "foam/nanos/export/TableExportDriver"},
+  { name: "foam/nanos/export/TableExportDriver", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiAuthService", flags: [ "java" ] },
   { name: "foam/nanos/google/api/auth/GoogleApiCredentials", flags: [ "java" ] },
   { name: "foam/nanos/google/api/drive/GoogleDriveService", flags: [ "java" ] },
@@ -373,7 +373,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentAuthClient", flags: [ "java" ] },
   { name: "foam/nanos/auth/ClientAgentAuthService", flags: [ "java" ] },
   { name: "foam/nanos/auth/UniqueUserService", flags: [ "java" ] },
-  { name: "foam/nanos/auth/ProxyUniqueUserService", flags: [ "java" ] },
   { name: "foam/nanos/pm/PMTemperatureCellFormatter" },
   { name: "foam/nanos/pm/NullPM", flags: [ "java" ] },
   { name: "foam/nanos/pm/PM", flags: [ "java" ] },
@@ -451,7 +450,6 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/TicketNotification', flags: [ "java" ] },
   { name: "foam/nanos/ticket/TicketNotificationNotificationCitationView" },
   { name: "foam/nanos/ticket/SummaryCard" },
-  { name: "foam/nanos/ticket/RfiTicket", flags: [ "java" ] },
 
   // Dig
   { name: "foam/nanos/dig/bench/DIGBenchmark", flags: [ "java" ] },
@@ -553,7 +551,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/lite/MinMaxCapabilityRefinement" },
   { name: "foam/nanos/crunch/crunchtest/TestCapable", flags: [ "java" ] },
   { name: "foam/nanos/crunch/CapabilityAvailabilityDAO", flags: [ "java" ] },
-  { name: "foam/nanos/crunch/example/ExampleData" },
+  { name: "foam/nanos/crunch/example/ExampleData", flags: [ "java" ] },
 
   // crunch lite rulers
   { name: "foam/nanos/crunch/lite/ruler/CapableStatusChangeAdjustApprovalsRuleAction", flags: [ "java" ] },
@@ -676,6 +674,7 @@ FOAM_FILES([
 
   { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] },
 
-  { name: "foam/nanos/om/OMRuleAction", flags: [ "java" ] }
+  { name: 'foam/nanos/om/OMRuleAction', flags: ["java"] },
+  { name: 'foam/nanos/om/CCOMRuleAction', flags: ["java"] }
 
 ]);

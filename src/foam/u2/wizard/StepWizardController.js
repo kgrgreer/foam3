@@ -74,6 +74,16 @@ foam.CLASS({
           wizardletIndex: 0,
           sectionIndex: 0,
         });
+      },
+      preSet: function(_, n){
+        this.wizardlets[n.wizardletIndex].load()
+        return n;
+      },
+      postSet: function (o, n) {
+        if ( o && n && o.wizardletIndex !== n.wizardletIndex ) {
+          this.wizardlets[o.wizardletIndex].isCurrent = false;
+          this.wizardlets[n.wizardletIndex].isCurrent = true;
+        }
       }
     },
 
