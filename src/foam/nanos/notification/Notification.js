@@ -10,7 +10,6 @@ foam.CLASS({
   plural: 'notifications',
 
   implements: [
-    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.medusa.Clusterable',
@@ -245,58 +244,6 @@ foam.CLASS({
   messages: [
     { name: 'SEND_SUCCESS', message: 'Notification successfully resent' },
     { name: 'SEND_FAILED',  message: 'Notification could not be resent' }
-  ],
-
-  methods: [
-    {
-      name: 'checkOwnership',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getRealUser();
-        return user != null && getUserId() == user.getId();
-      `
-    },
-    {
-      name: 'authorizeOnCreate',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("create")) && ! getTransient() ) throw new AuthorizationException("You don't have permission to create this notification.");
-      `
-    },
-    {
-      name: 'authorizeOnUpdate',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update")) && ! getTransient() ) throw new AuthorizationException("You don't have permission to update notifications you do not own.");
-      `
-    },
-    {
-      name: 'authorizeOnDelete',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, "*") ) throw new AuthorizationException("You don't have permission to delete notifications you do not own.");
-      `
-    },
-    {
-      name: 'authorizeOnRead',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("read")) ) throw new AuthorizationException("You don't have permission to read notifications you do not own.");
-      `
-    },
-    {
-      name: 'createPermission',
-      args: [
-        { name: 'operation', type: 'String' }
-      ],
-      type: 'String',
-      javaCode: `
-        return "notification." + operation + "." + getId();
-      `
-    }
   ],
 
   actions: [
