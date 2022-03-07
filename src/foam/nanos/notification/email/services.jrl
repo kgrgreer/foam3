@@ -47,7 +47,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
       .setAuthorize(false)
-      .setSeqNo(true)
+      .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessages")
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
