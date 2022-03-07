@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
     'foam.u2.wizard.ProxyWAO'
   ],
@@ -38,8 +39,47 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      const prerequisites = [...this.capabilities];
-      const desiredCapability = prerequisites.pop();
+      const process = arry => {
+        return arry.map(v => Array.isArray(v) ? process(v) : v.id)
+      };
+
+      let prerequisites = [];
+      const desiredCapability = this.capabilityGraph.roots[0].data;
+
+      const log = (msg, dat) => {
+        console.log(msg, process(dat));
+      }
+
+      const addPrereqs = (current, prereqAware) => {
+        const childIds = this.capabilityGraph.data[current.id].forwardLinks;
+        const childNodes = childIds.map(id => this.capabilityGraph.data[id]);
+        console.log('childNodes', childNodes);
+        const output = [];
+        for ( let node of childNodes ) {
+          const childPrereqAware =
+            (node.data.wizardlet &&
+              this.isPrerequisiteAware(node.data.wizardlet)) ||
+            (node.data.beforeWizardlet &&
+              this.isPrerequisiteAware(node.data.beforeWizardlet));
+
+          if ( childPrereqAware || prereqAware ) {
+            const subList = [];
+            subList.push(...addPrereqs(node, childPrereqAware))
+            subList.push(node.data);
+            log('sublist', [...subList])
+            if ( subList.length == 1 ) output.push(subList[0])
+            else output.push(subList);
+            log('output.sub.pushed', [...output])
+          } else {
+            output.push(...addPrereqs(node))
+            output.push(node.data);
+            log('output.pushed', [...output]);
+          }
+        }
+        log('output!', [...output]);
+        return output;
+      };
+      prerequisites = addPrereqs(this.capabilityGraph.roots[0]);
 
       // Remove duplicates from prerequisite aware sub-lists (from server)
       // (these entries are not needed because GraphBuilder is being used here)
@@ -49,6 +89,10 @@ foam.CLASS({
           const capability = list[i];
           if ( Array.isArray(capability) ) {
             removeDuplicates(capability);
+            if ( capability.length === 0 ) {
+              list.splice(i, 1);
+              i--;
+            }
             continue;
           }
           if ( seen.has(capability.id) ) {
@@ -119,8 +163,14 @@ foam.CLASS({
         const wizardlet = subWizardlets.pop();
 
         controlledPrereqWizardlets.add(wizardlet);
-        // Controlled prerequisites follow the parent's availability
-        wizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
+
+        const parentHasControl = this.isPrerequisiteAware(beforeWizardlet) ||
+          this.isPrerequisiteAware(afterWizardlet);
+        
+        if ( ! parentHasControl ) {
+          // Controlled prerequisites follow the parent's availability
+          wizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
+        }
 
         // Update ordered wizardlet list
         wizardlets.push(...subWizardlets, wizardlet);
@@ -136,10 +186,18 @@ foam.CLASS({
       for ( let rootWizardlet of rootWizardlets ) {
         if ( this.isPrerequisiteAware(rootWizardlet) ) {
           for ( const wizardlet of prerequisiteWizardlets ) {
+            if ( rootWizardlet.title == 'Schedulable MinMax' ) {
+              debugger;
+            }
             rootWizardlet.addPrerequisite(wizardlet, {
               lifted: ! controlledPrereqWizardlets.has(wizardlet)
             });
           }
+        }
+        if ( this.isLiftingAware(rootWizardlet) ) {
+          const liftedWizardlets = prerequisiteWizardlets
+            .filter(w => ! controlledPrereqWizardlets.has(w));
+          rootWizardlet.handleLifting(liftedWizardlets);
         }
       }
       
@@ -166,6 +224,9 @@ foam.CLASS({
     },
     function isPrerequisiteAware(wizardlet) {
       return this.PrerequisiteAwareWizardlet.isInstance(wizardlet);
+    },
+    function isLiftingAware(wizardlet) {
+      return this.LiftingAwareWizardlet.isInstance(wizardlet);
     }
   ]
 });
