@@ -100,7 +100,7 @@ foam.CLASS({
     args.put("args1", "args1");
     EmailMessage msg = new EmailMessage(x, user_.getId(), args);
     msg = (EmailMessage) dao.put(msg);
-    test(msg!=null, "EmailMessage created: "+msg);
+    test(msg!=null, "EmailMessage created: "+msg.getId());
     msg = (EmailMessage) dao.find(msg.getId());
     test(msg!=null, "EmailMessage found: "+msg.getId());
     test(msg.getStatus() == Status.UNSENT, "EmailMessage status==UNSENT: "+msg.getStatus());
@@ -137,7 +137,7 @@ foam.CLASS({
     test(subjectResolved_.equals(msg3.getSubject()), "EmailsUtility(3) subject=="+subjectResolved_+": "+msg3.getSubject());
     String[] to = msg3.getTo();
     test(to != null && to[0].equals("another@example.com"), "EmailsUtility(3) to[0]==another@example.com");
-      `
+       `
     // },
     // {
     //   description: '',
