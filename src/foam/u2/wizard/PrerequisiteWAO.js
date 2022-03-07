@@ -84,9 +84,9 @@
       let clonedPrereqWizardletData;
 
       if ( this.loadFromPropertyName  ){
-        if (  ! prereqWizardletData.hasOwnProperty(this.propertyName) ){
+        if (  ! prereqWizardletData.hasOwnProperty(this.loadFromPropertyName) ){
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.propertyName}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.loadFromPropertyName}`
           );
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);
@@ -94,7 +94,7 @@
           }
         }
 
-        clonedPrereqWizardletData = prereqWizardletData[this.propertyName].clone();
+        clonedPrereqWizardletData = prereqWizardletData[this.loadFromPropertyName].clone();
       } else {
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
