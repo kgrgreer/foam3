@@ -865,6 +865,7 @@ FOAM_FILES([
   { name: "foam/flow/widgets/TabbedModelDocumentation" },
   { name: "foam/flow/widgets/DocumentationIncomplete" },
   { name: "foam/flow/widgets/TryItSnippet" },
+  { name: "foam/flow/widgets/ApiShortSummary" },
   { name: "org/chartjs/Lib" },
   { name: "org/chartjs/ChartCView" },
   { name: "org/chartjs/AbstractChartCView" },
