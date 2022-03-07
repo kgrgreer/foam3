@@ -478,10 +478,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'Boolean',
-      name: 'hasPriority'
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       label: '',
@@ -520,11 +516,7 @@ foam.CLASS({
       name: 'junctionDAO',
       hidden: true,
       factory: function() {
-        let junctionDAO = this.__context__[this.junctionDAOKey];
-        if ( this.hasPriority ) {
-          junctionDAO = junctionDAO.orderBy(this.junction.PRIORITY)
-        }
-        return junctionDAO;
+        return this.__context__[this.junctionDAOKey];
       },
       javaFactory: 'return (foam.dao.DAO)getX().get(getJunctionDAOKey());',
       swiftFactory: 'return __context__[junctionDAOKey] as? (foam_dao_DAO & foam_core_FObject)'
