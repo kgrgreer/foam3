@@ -22,7 +22,8 @@ foam.CLASS({
     { name: 'BODY_REQUIRED', message: 'Notification body is required' },
     { name: 'TOAST_REQUIRED', message: 'Toast Message is required when showing toast' },
     { name: 'NOTIFICATION_SENT', message: 'Notification Sent' },
-    { name: 'NOTIFICAITON_SUMMARY', message: 'notification to ' }
+    { name: 'NOTIFICAITON_SUMMARY', message: 'notification to ' },
+    { name: 'NOTIFICATION_ERROR', message: 'Notification Error' }
   ],
   properties: [
     foam.nanos.notification.Notification.GROUP_ID.clone().copyFrom({
@@ -31,6 +32,14 @@ foam.CLASS({
         if ( ! groupId ) {
           return this.GROUP_REQUIRED;
         }
+      },
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const group = foam.nanos.auth.Group;
+        var dao = X[X.data.GROUP_ID.targetDAOKey] || X.data[X.data.GROUP_ID.name + '$dao'];
+        // TODO: find a better way to only pick children
+        dao = dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
+        return { class: 'foam.u2.view.ReferenceView', dao: dao };
       }
     }),
     foam.nanos.notification.Notification.BODY.clone().copyFrom({
@@ -90,6 +99,9 @@ foam.CLASS({
           this.showToast = undefined;
           this.groupId = undefined;
           this.ctrl.notify(this.NOTIFICATION_SENT, '', 'INFO', true);
+        }, e => {
+          console.log('ehllo');
+          this.ctrl.notify(this.NOTIFICATION_ERROR, e.message, 'ERROR', true);
         });
       }
     }
