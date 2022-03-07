@@ -21,6 +21,7 @@ foam.CLASS({
     'java.net.Socket',
     'java.security.*',
     'java.security.cert.CertificateException',
+    'java.util.Arrays',
     'foam.nanos.fs.ResourceStorage'
   ],
   
@@ -213,7 +214,7 @@ foam.CLASS({
       javaType: 'SSLContext',
       args: [
         {
-          name: 'alias',
+          name: 'keyAlias',
           type: 'String'
         }
       ],
@@ -223,39 +224,43 @@ foam.CLASS({
           KeyManager[] keyManagers = getKeyManagers(getKeyStorePath(), getKeyStorePass());
           if ( keyManagers == null || keyManagers.length < 1 ) return sslContext;
 
-          final X509KeyManager tmpkeyManager = (X509KeyManager)keyManagers[0];
-          X509KeyManager keyManager = new X509KeyManager() {
-            @Override
-            public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
-              return alias;
-            }
-            @Override
-            public java.security.PrivateKey getPrivateKey(String str) {
-              return tmpkeyManager.getPrivateKey(str);
-            }
-            @Override
-            public java.security.cert.X509Certificate[] getCertificateChain(String s) {
-              return tmpkeyManager.getCertificateChain(s);
-            }
-            @Override
-            public String chooseServerAlias(String keyType, java.security.Principal[] issuers, java.net.Socket socket) {
-              return tmpkeyManager.chooseServerAlias(keyType, issuers, socket);
-            }
-            @Override
-            public String[] getServerAliases(String keyType, java.security.Principal[] issuers) {
-              return tmpkeyManager.getServerAliases(keyType, issuers);
-            }
-            @Override
-            public String[] getClientAliases(String keyType, java.security.Principal[] issuers) {
-              return tmpkeyManager.getClientAliases(keyType, issuers);
-            }
-          };
-
           sslContext = SSLContext.getInstance(getProtocol());
-          sslContext.init(new KeyManager[] { keyManager },
+          sslContext.init(Arrays.stream(keyManagers)
+            .map(k -> {
+              if ( k instanceof X509KeyManager ) {
+                return new X509KeyManager() {
+                  @Override
+                  public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+                    return keyAlias;
+                  }
+                  @Override
+                  public java.security.PrivateKey getPrivateKey(String str) {
+                    return ((X509KeyManager) k).getPrivateKey(str);
+                  }
+                  @Override
+                  public java.security.cert.X509Certificate[] getCertificateChain(String s) {
+                    return ((X509KeyManager) k).getCertificateChain(s);
+                  }
+                  @Override
+                  public String chooseServerAlias(String keyType, java.security.Principal[] issuers, java.net.Socket socket) {
+                    return ((X509KeyManager) k).chooseServerAlias(keyType, issuers, socket);
+                  }
+                  @Override
+                  public String[] getServerAliases(String keyType, java.security.Principal[] issuers) {
+                    return ((X509KeyManager) k).getServerAliases(keyType, issuers);
+                  }
+                  @Override
+                  public String[] getClientAliases(String keyType, java.security.Principal[] issuers) {
+                    return ((X509KeyManager) k).getClientAliases(keyType, issuers);
+                  }
+                };
+              } else {
+                return k;
+              }
+            }).toArray(KeyManager[]::new),
             getTrustManagers(getTrustStorePath(), getTrustStorePass()),
-            null
-          );
+              null);
+
         } catch ( NoSuchAlgorithmException e ) {
           getLogger().error(e);
           throw new RuntimeException(e);
