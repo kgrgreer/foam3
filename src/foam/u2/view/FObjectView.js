@@ -47,8 +47,7 @@ foam.CLASS({
           displayWidth: 60,
           placeholder: X.data.placeholder,
           header: X.data.header,
-          choices$: X.data.choices$,
-          data$: X.data.objectClass$
+          choices$: X.data.choices$
         };
       }
     },
@@ -166,7 +165,7 @@ foam.CLASS({
 
   methods: [
     function updateChoices() {
-      if ( this.of == null ) {
+      if ( this.of == null || this.of.id == 'foam.core.FObject' ) {
         this.choices = [];
         this.choicesLoaded.resolve();
         return;
@@ -244,7 +243,7 @@ foam.CLASS({
       if ( ! this.data && ! this.objectClass && this.choices.length && ! this.hasOwnProperty('placeholder') ) this.objectClass = this.choices[0][0];
 
       this.
-        start(this.OBJECT_CLASS).
+        start(this.OBJECT_CLASS, { data$: this.objectClass$ }).
           // If we were using a DetailView, this would be done for us, but since
           // we aren't, we need to connect the 'visibility' property ourself.
           show(this.OBJECT_CLASS.createVisibilityFor(foam.core.SimpleSlot.create({ value: this }), this.controllerMode$).map(function(m) {
