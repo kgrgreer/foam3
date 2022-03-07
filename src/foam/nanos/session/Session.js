@@ -271,7 +271,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           .put("spid", null)
           .put("subject", subject)
           .put("group", null)
-          .put("twoFactorSuccess", false);
+          .put("twoFactorSuccess", false)
+          .put("ip", null)
+          .put("userAgent", null);
       `
     },
     {
@@ -419,6 +421,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             new Object[] { "session", getId().split("-")[0] },
             foam.nanos.logger.Loggers.logger(rtn, true)
           ));
+
+        // Record IP and UserAgent in the context
+        var req = x.get(HttpServletRequest.class);
+        if ( req != null ) {
+          rtn = rtn.put("ip", foam.net.IPSupport.instance().getRemoteIp(rtn));
+          rtn = rtn.put("userAgent", req.getHeader("User-Agent"));
+        }
 
         // Cache the context changes of applyTo
         setApplyContext(((OrX) rtn).getX());
