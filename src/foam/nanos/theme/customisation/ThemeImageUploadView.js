@@ -154,7 +154,7 @@ foam.CLASS({
     async function save() {
       if ( ! this.fileUploader[0] ) {
         ctrl.notify(this.FILE_REQUIRED, this.FILE_REQUIRED_SUB, 'ERROR', true);
-        return;
+        throw new Error();
       }
       var v = this.fileUploader[0];
       v.owner = this.subject.user.id;
@@ -169,6 +169,7 @@ foam.CLASS({
         return true;
       } catch (x) {
         ctrl.notify(this.UPLOAD_ERROR, x.message, 'ERROR', true);
+        throw new Error(x.message);
       }
     }
   ]

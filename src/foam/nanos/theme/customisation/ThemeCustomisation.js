@@ -77,6 +77,7 @@ foam.CLASS({
   messages: [
     { name: 'THEME_MSG', message: 'Theme' },
     { name: 'UPDATED_MSG', message: 'updated' },
+    { name: 'ERROR_MSG', message: 'Error' },
   ],
 
   properties: [
@@ -148,17 +149,27 @@ foam.CLASS({
       name: 'save',
       code: async function(X) {
         // Call propview saves for this section and then
+        var errors = [];
         var self = this;
         for ( a of this.propViews_[X.section] ) {
           if ( ! a.value.save ) return;
-          await a.value.save.call(a.value);
+          try {
+            await a.value.save.call(a.value);
+          } catch (e) {
+            errors.push(e);
+          }
         }
+        if ( errors.length ) return;
         // Put to theme DAO
         var themeObj = await this.spThemeDAO.find(this.themeName);
         themeObj = themeObj.copyFrom(self.data);
-        await self.spThemeDAO.put(themeObj);
-        self.ctrl.fetchTheme();
-        self.ctrl.notify(`${themeObj.name} ${this.UPDATED_MSG}`, '', 'INFO', true);
+        try {
+          await self.spThemeDAO.put(themeObj);
+          self.ctrl.fetchTheme();
+          self.ctrl.notify(`${themeObj.name} ${this.UPDATED_MSG}`, '', 'INFO', true);
+        } catch (e) {
+          self.ctrl.notify(this.ERROR_MSG, e.mesasge, 'ERROR', true);
+        }
       }
     }
   ]
