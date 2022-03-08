@@ -15,7 +15,7 @@ import jdk.jshell.SnippetEvent;
 import jdk.jshell.EvalException;
 
 /**
- * Evaluate each instruction and return the result 
+ * Evaluate each instruction and return the result
  *
  */
 public class EvalInstruction {
@@ -73,7 +73,8 @@ public class EvalInstruction {
         PrintWriter pw = new PrintWriter(sw);
         exc.printStackTrace(pw);
         output = ((EvalException) exc).getExceptionClassName() + "\n" + sw.toString();
-        System.out.println("JShell Error: " + output);
+        System.out.println("JShell Error in line : " + source );
+        System.out.println("Error is : " + output);
         throw new RuntimeException(output);
       }
     }
