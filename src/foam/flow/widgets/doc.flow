@@ -65,7 +65,7 @@ The above code would display the following:
 
 <h2>ApiShortSummary</h2>
 
-ApiShortSummary is used to document API.
+ApiShortSummary is used for documenting models from the perspective of use as an API.
 
 <code>
 <foam class="foam.flow.widgets.ApiShortSummary" of="net.nanopay.tx.RequestMoney" whitelist="['requestId','requestAmount','requestExpiryDate','senderMemo','requesterName','requesterEmail','fiAccountId','custAccount','returnUrl']" />
