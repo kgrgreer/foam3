@@ -770,6 +770,40 @@ configuration for contacting the primary node.`,
       `
     },
     {
+      documentation: 'Mediators to broadcast to',
+      name: 'getSfBroadcastMediators',
+      type: 'foam.nanos.medusa.ClusterConfig[]',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getSfBroascastMediators");
+      ClusterConfig myConfig = getConfig(getX(), getConfigId());
+
+      if ( myConfig.getType() == MedusaType.NODE ) return new ClusterConfig[0];
+
+      long zone = myConfig.getZone();
+      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            OR(
+              EQ(ClusterConfig.ZONE, zone),
+              EQ(ClusterConfig.ZONE, zone+1)
+            ),
+            OR(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.TYPE, MedusaType.NERF)
+            ),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.REGION, myConfig.getRegion()),
+            EQ(ClusterConfig.REALM, myConfig.getRealm())
+          )
+        )
+        .select(new ArraySink())).getArray();
+      ClusterConfig[] configs = new ClusterConfig[arr.size()];
+      arr.toArray(configs);
+      pm.log(getX());
+      return configs;
+      `
+    },
+    {
       documentation: `
         Returns true if the cron job should be enabled. Returns false otherwise.
         Note that clusterable cron jobs should only run on the primary mediator.
