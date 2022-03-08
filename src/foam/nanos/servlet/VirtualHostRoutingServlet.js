@@ -15,20 +15,20 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil',
     'foam.nanos.app.AppConfig',
     'foam.nanos.jetty.HttpServer',
     'foam.nanos.logger.Logger',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
+    'foam.util.SafetyUtil',
     'java.io.IOException',
     'java.io.PrintWriter',
     'java.util.HashMap',
+    'javax.servlet.http.HttpServletRequest',
     'javax.servlet.ServletConfig',
     'javax.servlet.ServletException',
     'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse',
-    'javax.servlet.http.HttpServletRequest'
+    'javax.servlet.ServletResponse'
   ],
 
   properties: [
@@ -54,6 +54,7 @@ foam.CLASS({
       name: 'servletConfig'
     }
   ],
+
   methods: [
     {
       name: 'destroy',
@@ -77,10 +78,10 @@ foam.CLASS({
       type: 'Void',
       documentation: `Generates the index file's head content based on theme and prints it to the response writer.`,
       args: [
-        { name: 'x', javaType: 'X'},
-        { name: 'theme', javaType: 'Theme'},
-        { name: 'logger', javaType: 'Logger'},
-        { name: 'out', javaType: 'PrintWriter'},
+        { name: 'x',       javaType: 'X'},
+        { name: 'theme',   javaType: 'Theme'},
+        { name: 'logger',  javaType: 'Logger'},
+        { name: 'out',     javaType: 'PrintWriter'},
         { name: 'request', javaType: 'ServletRequest' }
       ],
       javaCode: `
