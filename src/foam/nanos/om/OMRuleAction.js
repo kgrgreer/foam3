@@ -15,7 +15,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.util.SafetyUtil',
-    'java.lang.StringBuilder'
+    'java.util.StringJoiner'
   ],
 
   implements: ['foam.nanos.ruler.RuleAction'],
@@ -43,26 +43,30 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-OMLogger omLogger = (OMLogger) x.get("OMLogger");
-StringBuilder omName = new StringBuilder();
+OMLogger omLogger = getLogger(x);
+StringJoiner omName = new StringJoiner(".");
 
 // Spid
 if ( ! SafetyUtil.isEmpty(getSpid()) ) {
-  omName.append(getSpid());
-  omName.append(".");
+  omName.add(getSpid());
 }
 
 // Group
 if ( ! SafetyUtil.isEmpty(getGroup()) ) {
-  omName.append(getGroup());
-  omName.append(".");
+  omName.add(getGroup());
 }
 
 // Name
-omName.append(getName());
+omName.add(getName());
 
 omLogger.log(omName);
       `
+    },
+    {
+      name: 'getLogger',
+      args: [ { name: 'x', type: 'X' } ],
+      type: 'OMLogger',
+      javaCode: `return (OMLogger) x.get("OMLogger");`
     }
   ]
 });

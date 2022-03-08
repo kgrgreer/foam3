@@ -144,6 +144,15 @@ foam.CLASS({
       }
     },
     {
+      name: 'combinedSection',
+      class: 'Boolean',
+      description: `
+        Setting this to true makes this wizardlet render only one section with
+        a SectionedDetailView for the entire model specified by 'of'.
+        This is a convenient shorthand for overriding 'sections'.
+      `
+    },
+    {
       name: 'sections',
       flags: ['web'],
       transient: true,
@@ -159,6 +168,20 @@ foam.CLASS({
         return val;
       },
       factory: function () {
+        // Simplified case: render just one section for the whole model
+        if ( this.combinedSection ) {
+          return [
+            this.WizardletSection.create({
+              title: this.title,
+              isAvailable: true,
+              customView: {
+                class: 'foam.u2.detail.SectionedDetailView'
+              }
+            })
+          ];
+        }
+
+        // Default case: render each model section as a wizardlet section
         var sections = foam.u2.detail.AbstractSectionedDetailView.create({
           of: this.of,
         }, this).sections.map(section => this.WizardletSection.create({

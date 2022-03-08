@@ -324,11 +324,11 @@ FOAM_FILES([
   { name: "foam/nanos/cron/MonthlyChoice", flags: [ "java" ] },
   { name: "foam/nanos/cron/NeverSchedule" },
   { name: "foam/nanos/cron/OrSchedule", flags: [ "java" ] },
-  { name: "foam/nanos/cron/Schedule", flags: [ "java" ] },
-  { name: "foam/nanos/cron/Schedulable", flags: [ "java" ] },
-  { name: "foam/nanos/cron/ScheduleEnd", flags: [ "java" ] },
-  { name: "foam/nanos/cron/SimpleIntervalSchedule", flags: [ "java" ] },
-  { name: "foam/nanos/cron/SymbolicFrequency", flags: [ "java" ] },
+  { name: "foam/nanos/cron/Schedule", flags: [ "java", "web" ] },
+  { name: "foam/nanos/cron/Schedulable", flags: [ "java", "web" ] },
+  { name: "foam/nanos/cron/ScheduleEnd", flags: [ "java", "web" ] },
+  { name: "foam/nanos/cron/SimpleIntervalSchedule", flags: [ "java", "web" ] },
+  { name: "foam/nanos/cron/SymbolicFrequency", flags: [ "java", "web" ] },
   { name: "foam/nanos/cron/TimeHMS", flags: [ "java" ] },
   { name: "foam/nanos/cron/TimeOfDaySchedule", flags: [ "java" ] },
   { name: "foam/nanos/cron/test/IntervalScheduleTest", flags: [ "java" ] },
@@ -674,6 +674,7 @@ FOAM_FILES([
 
   { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] },
 
-  { name: "foam/nanos/om/OMRuleAction", flags: [ "java" ] }
+  { name: 'foam/nanos/om/OMRuleAction', flags: ["java"] },
+  { name: 'foam/nanos/om/CCOMRuleAction', flags: ["java"] }
 
 ]);
