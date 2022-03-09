@@ -20,6 +20,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.graph.GraphTraverser',
+    'foam.graph.TraversalOrder',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
     'foam.u2.wizard.ProxyWAO'
@@ -39,171 +41,85 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      const process = arry => {
-        return arry.map(v => Array.isArray(v) ? process(v) : v.id)
-      };
-
-      let prerequisites = [];
-      const desiredCapability = this.capabilityGraph.roots[0].data;
-
-      const log = (msg, dat) => {
-        console.log(msg, process(dat));
-      }
-
-      const addPrereqs = (current, prereqAware) => {
-        const childIds = this.capabilityGraph.data[current.id].forwardLinks;
-        const childNodes = childIds.map(id => this.capabilityGraph.data[id]);
-        console.log('childNodes', childNodes);
-        const output = [];
-        for ( let node of childNodes ) {
-          const childPrereqAware =
-            (node.data.wizardlet &&
-              this.isPrerequisiteAware(node.data.wizardlet)) ||
-            (node.data.beforeWizardlet &&
-              this.isPrerequisiteAware(node.data.beforeWizardlet));
-
-          if ( childPrereqAware || prereqAware ) {
-            const subList = [];
-            subList.push(...addPrereqs(node, childPrereqAware))
-            subList.push(node.data);
-            log('sublist', [...subList])
-            if ( subList.length == 1 ) output.push(subList[0])
-            else output.push(subList);
-            log('output.sub.pushed', [...output])
-          } else {
-            output.push(...addPrereqs(node))
-            output.push(node.data);
-            log('output.pushed', [...output]);
-          }
-        }
-        log('output!', [...output]);
-        return output;
-      };
-      prerequisites = addPrereqs(this.capabilityGraph.roots[0]);
-
-      // Remove duplicates from prerequisite aware sub-lists (from server)
-      // (these entries are not needed because GraphBuilder is being used here)
-      const seen = new Set();
-      const removeDuplicates = list => {
-        for ( let i = 0 ; i < list.length ; i++ ) {
-          const capability = list[i];
-          if ( Array.isArray(capability) ) {
-            removeDuplicates(capability);
-            if ( capability.length === 0 ) {
-              list.splice(i, 1);
-              i--;
-            }
-            continue;
-          }
-          if ( seen.has(capability.id) ) {
-            list.splice(i, 1);
-            i--;
-            continue;
-          }
-          seen.add(capability.id);
-        }
-      }
-      removeDuplicates(prerequisites);
-
-      this.wizardlets = await this.parseArrayToWizardlets(prerequisites, desiredCapability);
-
-      // Wire wizardlets into a DAG by populating 'prerequisiteWizardlets'
-      for ( 
-        const [capabilityId, {wizardlets}]
-        of Object.entries(this.capabilityWizardletsMap)
-      ) {
-        const graphNode = this.capabilityGraph.data[capabilityId];
-        const prerequisiteWizardlets = graphNode.forwardLinks
-          // Only add prerequisite wizardlets for capabilities with wizardlets
-          .filter(id => this.capabilityWizardletsMap[id])
-          // Always link the "primary" wizardlet of a capability
-          .map(id => this.capabilityWizardletsMap[id].primaryWizardlet)
-          ;
-
-        // Link the primary wizardlet of each prerequisite of this capability
-        //   to all of this capability's wizardlets
-        for ( let wizardlet of wizardlets ) {
-          wizardlet.prerequisiteWizardlets = prerequisiteWizardlets;
-        }
-      }
+      this.createWizardlets();
     },
-    async function parseArrayToWizardlets(prereqs, parent) {
+    function createWizardlets() {
+      // Step 1: Traverse capability graph to create wizardlets
+      const traverser = this.GraphTraverser.create({
+        graph: this.capabilityGraph,
+        order: this.TraversalOrder.POST_ORDER
+      });
+      traverser.sub('process', (_1, _2, { parent, current }) => {
+        console.log(current.id)
+        const createdHere = this.createWizardletsForCapability(current);
+        const entry = this.capabilityWizardletsMap[current.id];
+        if ( parent && this.capabilityWizardletsMap[parent.id] ) {
+          const parentEntry = this.capabilityWizardletsMap[parent.id];
+          this.linkPrerequisite(parentEntry, entry, {
+            lifted: ! createdHere
+          });
+        }
+      });
+      traverser.traverse();
+
+      // Step 2: Iterate over wizardlet information in capabilityWizardletsMap
+      //         to create the final ordered list of wizardlets
       const wizardlets = [];
+      const rootNode = this.capabilityGraph.roots[0];
+      const pushWizardlets = (entry) => {
+        if ( entry.beforeWizardlet ) wizardlets.push(entry.beforeWizardlet);
+        for ( const subEntry of entry.betweenWizardlets ) {
+          pushWizardlets(subEntry);
+        }
+        if ( entry.afterWizardlet ) wizardlets.push(entry.afterWizardlet);
+      };
+      pushWizardlets(this.capabilityWizardletsMap[rootNode.id]);
+      this.wizardlets = wizardlets;
+    },
+    function createWizardletsForCapability(current) {
+      const capability = current.data;
 
-      let x = { capability: parent };
-      const afterWizardlet = this.adaptWizardlet(x, parent.wizardlet);
-      const beforeWizardlet = this.adaptWizardlet(x, parent.beforeWizardlet);
-
-      const rootWizardlets = [beforeWizardlet, afterWizardlet].filter(exists => exists);
-
-      // Update a map of all capability IDs to their respective wizardlets
-      if ( ! this.capabilityWizardletsMap[parent.id] ) {
-        this.capabilityWizardletsMap[parent.id] = {
-          primaryWizardlet: afterWizardlet,
-          wizardlets: []
-        };
+      if ( this.capabilityWizardletsMap[capability.id] ) {
+        return false;
       }
-      this.capabilityWizardletsMap[parent.id].wizardlets.push(...rootWizardlets);
 
-      if ( beforeWizardlet ) {
+      const afterWizardlet = this.adaptWizardlet(
+        { capability }, capability.wizardlet);
+      const beforeWizardlet = this.adaptWizardlet(
+        { capability }, capability.beforeWizardlet);
+    
+      this.capabilityWizardletsMap[capability.id] = {
+        primaryWizardlet: afterWizardlet || beforeWizardlet,
+        wizardlets: [beforeWizardlet, afterWizardlet].filter(v => v),
+        beforeWizardlet, afterWizardlet,
+        betweenWizardlets: [],
+        liftedWizardlets: []
+      };
+
+      if ( beforeWizardlet && afterWizardlet ) {
         beforeWizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
         afterWizardlet.data$ = beforeWizardlet.data$;
       }
 
-      // Some prerequisite wizardlets can be "controlled" by their parent wizardlet.
-      // The exception is a prerequisite shared with an earlier capability that has
-      // already assumed control; in this situation we say the prerequisite is "lifted".
-      const controlledPrereqWizardlets = new Set();
-
-      for ( const capability of prereqs ) {
-        // Perform a recursive call to get wizardlets for this prerequisite
-        const subPrereqs = Array.isArray(capability) ? [...capability] : [capability];
-        const subParent = subPrereqs.pop();
-        const subWizardlets = await this.parseArrayToWizardlets(subPrereqs, subParent);
-        const wizardlet = subWizardlets.pop();
-
-        controlledPrereqWizardlets.add(wizardlet);
-
-        const parentHasControl = this.isPrerequisiteAware(beforeWizardlet) ||
-          this.isPrerequisiteAware(afterWizardlet);
-        
-        if ( ! parentHasControl ) {
-          // Controlled prerequisites follow the parent's availability
-          wizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
+      return true;
+    },
+    function linkPrerequisite(source, entry, { lifted }) {
+      ( lifted
+        ? source.liftedWizardlets
+        : source.betweenWizardlets ).push(entry);
+      for ( let parentWizardlet of source.wizardlets ) {
+        if ( this.isPrerequisiteAware(parentWizardlet) ) {
+          parentWizardlet.addPrerequisite(entry.primaryWizardlet, { lifted });
         }
-
-        // Update ordered wizardlet list
-        wizardlets.push(...subWizardlets, wizardlet);
+        parentWizardlet.prerequisiteWizardlets.push(entry.primaryWizardlet);
       }
-
-      const graphNode = this.capabilityGraph.data[parent.id];
-      const prerequisiteWizardlets = graphNode.forwardLinks
-        .filter(id => this.capabilityWizardletsMap[id])
-        .map(id => this.capabilityWizardletsMap[id].primaryWizardlet)
-        ;
-
-      // Handle wizardlets implementing PrerequisiteAware
-      for ( let rootWizardlet of rootWizardlets ) {
-        if ( this.isPrerequisiteAware(rootWizardlet) ) {
-          for ( const wizardlet of prerequisiteWizardlets ) {
-            if ( rootWizardlet.title == 'Schedulable MinMax' ) {
-              debugger;
-            }
-            rootWizardlet.addPrerequisite(wizardlet, {
-              lifted: ! controlledPrereqWizardlets.has(wizardlet)
-            });
-          }
-        }
-        if ( this.isLiftingAware(rootWizardlet) ) {
-          const liftedWizardlets = prerequisiteWizardlets
-            .filter(w => ! controlledPrereqWizardlets.has(w));
-          rootWizardlet.handleLifting(liftedWizardlets);
-        }
+      const parentControlsAvailability =
+        this.isPrerequisiteAware(source.beforeWizardlet) ||
+        this.isPrerequisiteAware(source.afterWizardlet);
+      if ( ! lifted && ! parentControlsAvailability ) {
+        entry.primaryWizardlet.isAvailable$.follow(
+          source.primaryWizardlet.isAvailable$);
       }
-      
-      if ( beforeWizardlet ) wizardlets.unshift(beforeWizardlet);
-      wizardlets.push(afterWizardlet);
-      return wizardlets;
     },
     function adaptWizardlet({ capability }, wizardlet) {
       if ( ! wizardlet ) return null;

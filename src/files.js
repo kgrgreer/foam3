@@ -553,6 +553,8 @@ FOAM_FILES([
   { name: "foam/graph/Graph" },
   { name: "foam/graph/GraphNode" },
   { name: "foam/graph/GraphBuilder" },
+  { name: "foam/graph/TraversalOrder" },
+  { name: "foam/graph/GraphTraverser" },
   { name: "foam/u2/svg/arrow/ArrowLine", flags: [ "web" ] },
   { name: "foam/u2/svg/arrow/ArrowHead", flags: [ "web" ] },
   { name: "foam/u2/svg/graph/ZoomedOutFObjectGraphNodeView", flags: [ "web" ] },

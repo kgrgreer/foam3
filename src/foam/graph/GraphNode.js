@@ -23,7 +23,13 @@ foam.CLASS({
     },
     {
       name: 'forwardLinks',
-      class: 'StringArray'
+      class: 'StringArray',
+      preSet: function (_, n) {
+        // Remove duplicate entries
+        const tmp = {};
+        for ( const v of n ) tmp[v] = true;
+        return Object.keys(tmp);
+      }
     },
     {
       name: 'inverseLinks',
