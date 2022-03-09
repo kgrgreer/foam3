@@ -87,22 +87,22 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'DateTime',
@@ -190,13 +190,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
   ],
 
   methods: [
-    // Disable cloneing and freezing so that Sessions can be mutated while
-    // in the SessionDAO.
-    {
-      name: 'fclone',
-      type: 'foam.core.FObject',
-      javaCode: 'return this;'
-    },
+    // Disable freezing so that Sessions can be mutated while
+    // in the SessionDAO. Do not disable cloning else sessions
+    // are not saved/clustered.
     {
       name: 'freeze',
       type: 'foam.core.FObject',
