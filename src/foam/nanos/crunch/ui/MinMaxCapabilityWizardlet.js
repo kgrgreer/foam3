@@ -8,9 +8,13 @@ foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'MinMaxCapabilityWizardlet',
   extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
-  implements: [ 'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet' ],
+  implements: [
+    'foam.nanos.crunch.ui.LiftingAwareWizardlet',
+    'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet'
+  ],
 
   requires: [
+    'foam.core.ArraySlot',
     'foam.u2.view.MultiChoiceView',
     'foam.u2.view.CardSelectView',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -236,6 +240,20 @@ foam.CLASS({
       if ( ! meta.lifted ) wizardlet.isAvailable = false;
 
       return this.consumePrerequisites;
+    },
+    function handleLifting(liftedWizardlets) {
+      this.ArraySlot.create({
+        slots: liftedWizardlets.map(w => w.isAvailable$)
+      }).sub(() => {
+        const countLifted = liftedWizardlets
+          .map(w => w.isAvailable ? 1 : 0)
+          .reduce((count, val) => count + val);
+        if ( countLifted >= this.max ) {
+          this.isVisible = false;
+        } else {
+          this.isVisible = this.isAvailable;
+        }
+      });
     }
   ]
 });
