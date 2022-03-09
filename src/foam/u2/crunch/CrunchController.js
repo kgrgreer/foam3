@@ -196,6 +196,8 @@ foam.CLASS({
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .remove('AutoSaveWizardletsAgent')
+          .remove('SaveAllAgent')
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
