@@ -18,10 +18,7 @@ foam.CLASS({
       name: 'getLogger',
       args: [ { name: 'x', type: 'X' } ],
       type: 'OMLogger',
-      javaCode: `
-// TODO: Switch back to CCOMLogger when SAF is added to 4.21
-return (OMLogger) x.get("OMLogger");
-`
+      javaCode: `return (OMLogger) x.get("CCOMLogger");`
     }
   ]
 });
