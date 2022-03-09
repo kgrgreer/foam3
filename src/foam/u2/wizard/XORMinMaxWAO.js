@@ -29,6 +29,10 @@
     {
       class: 'Boolean',
       name: 'isWrappedInFObjectHolder'
+    },
+    {
+      class: 'Class',
+      name: 'of'
     }
   ],
 
@@ -53,6 +57,11 @@
         console.error(
           `Cannot apply XOR to MinMaxCapabilityId: ${this.minMaxCapabilityId}`
         );
+
+        if ( this.of ) {
+          wizardlet.data = this.of.create({}, this);
+        }
+        
         return;
       }
 
