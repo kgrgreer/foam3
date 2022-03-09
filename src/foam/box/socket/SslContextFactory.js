@@ -228,7 +228,12 @@ foam.CLASS({
           sslContext.init(Arrays.stream(keyManagers)
             .map(k -> {
               if ( k instanceof X509KeyManager ) {
-                return new X509KeyManager() {
+                return new X509ExtendedKeyManager() {
+                  @Override
+                  public String chooseEngineClientAlias(String[] paramArrayOfString, Principal[] paramArrayOfPrincipal, SSLEngine paramSSLEngine) {
+                    return chooseClientAlias(paramArrayOfString, paramArrayOfPrincipal, null);
+                  }
+
                   @Override
                   public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
                     return keyAlias;
