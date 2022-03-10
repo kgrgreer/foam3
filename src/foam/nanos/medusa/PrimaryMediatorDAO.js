@@ -38,6 +38,7 @@ foam.CLASS({
 
         MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
         // Acquire the real delegate dao for this nspec
+        // TODO: cache mdao
         DAO dao = ((DAO) x.get(entry.getNSpecName()));
         DAO mdao = (DAO) dao.cmd_(x, foam.dao.DAO.LAST_CMD);
 
@@ -46,7 +47,7 @@ foam.CLASS({
           FObject old = null;
           Object id = nu.getProperty("id");
           if ( id != null ) {
-            old = getDelegate().find_(x, id);
+            old = mdao.find_(x, id);
           }
           nu = mdao.put_(x, nu);
           id = nu.getProperty("id");
@@ -67,7 +68,7 @@ foam.CLASS({
           throw new UnsupportedOperationException(entry.getDop().toString());
         }
 
-        entry.setObject(null);
+        MedusaEntry.OBJECT.clear(entry);
         DaggerService dagger = (DaggerService) x.get("daggerService");
         entry = dagger.link(x, entry);
         entry = (MedusaEntry) getDelegate().put_(x, entry);
