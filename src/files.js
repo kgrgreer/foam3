@@ -264,6 +264,7 @@ FOAM_FILES([
   { name: "foam/mlang/expr/DateTypes", flags: [ "java" ] },
   { name: "foam/mlang/expr/DateGrouping", flags: [ "java" ] },
   { name: "foam/mlang/expr/DateGroupingExpr", flags: [ "java" ] },
+  { name: "foam/mlang/expr/DateTimeGroupingExpr", flags: [ "java" ] },
   { name: "foam/mlang/expr/Ref", flags: [ "java" ] },
   { name: "foam/mlang/expr/TimeOfDay", flags: [ "java" ] },
   { name: "foam/mlang/predicate/ContextUserPredicate", flags: [ "java" ] },
