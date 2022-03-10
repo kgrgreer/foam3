@@ -184,13 +184,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapability
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.REQUEST_SEND_MSG",target:"Um pedido de aprovação foi enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.FOR",target:" pra "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.IBAN_REQUIRED",target:"IBAN necessário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.UNKNOWN_COUNTRY_CODE",target:"Código de país desconhecido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.LENGTH_MISMATCHED_1",target:"Comprimento do IBAN incompatível com o código do país. Estava esperando"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.LENGTH_MISMATCHED_2",target:"carta mas encontrada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHARACTER",target:"Caráter inválido na posição"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHECKSUM",target:"Checksum inválido"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.OF.label",target:"do"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.DATA.label",target:"dados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.TITLE.label",target:"título"})
