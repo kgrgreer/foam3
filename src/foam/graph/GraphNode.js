@@ -24,7 +24,7 @@ foam.CLASS({
     {
       name: 'forwardLinks',
       class: 'StringArray',
-      preSet: function (_, n) {
+      adapt: function (_, n) {
         // Remove duplicate entries
         const tmp = {};
         for ( const v of n ) tmp[v] = true;

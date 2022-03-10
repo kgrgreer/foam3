@@ -8,12 +8,5 @@ foam.ENUM({
   package: 'foam.graph',
   name: 'TraversalOrder',
 
-  values: [
-    {
-      name: 'POST_ORDER'
-    },
-    {
-      name: 'PRE_ORDER'
-    }
-  ]
+  values: [ 'POST_ORDER', 'PRE_ORDER' ]
 });

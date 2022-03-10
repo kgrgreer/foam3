@@ -50,7 +50,6 @@ foam.CLASS({
         order: this.TraversalOrder.POST_ORDER
       });
       traverser.sub('process', (_1, _2, { parent, current }) => {
-        console.log(current.id)
         const createdHere = this.createWizardletsForCapability(current);
         const entry = this.capabilityWizardletsMap[current.id];
         if ( parent && this.capabilityWizardletsMap[parent.id] ) {
