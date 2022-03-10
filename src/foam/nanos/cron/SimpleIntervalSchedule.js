@@ -32,6 +32,13 @@
     'foam.nanos.cron.SymbolicFrequency'
   ],
 
+  css: `
+    .sectioned-detail-property-disclaimer {
+      text-align: center;
+      font-style: italic;
+    }
+  `,
+
   messages: [
     { name: 'INVALID_ENDS_ON_100', message: 'Please chose a value less than 100' },
     { name: 'INVALID_ENDS_ON_1', message: 'Please chose a value greater than 0' }
@@ -112,6 +119,19 @@
         if ( monthlyChoice != this.MonthlyChoice.EACH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      }
+    },
+    {
+      class: 'String',
+      name: 'disclaimer',
+      value: 'For months without 29,30,31 the schedule will be skipped',
+      label: '',
+      visibility: function(monthlyChoice, frequency) {
+        if ( frequency != this.TimeUnit.MONTH )
+          return foam.u2.DisplayMode.HIDDEN;
+        if ( monthlyChoice != this.MonthlyChoice.EACH )
+          return foam.u2.DisplayMode.HIDDEN;
+        return foam.u2.DisplayMode.RO;
       }
     },
     {
