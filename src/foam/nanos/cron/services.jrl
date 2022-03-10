@@ -147,3 +147,22 @@ p({
   """,
   "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "nextDateService",
+  "description": "A service that returns the next date of a schedule",
+  "serve": true,
+  "authenticate": false,
+  "serviceClass": "foam.nanos.cron.NextDate",
+  "boxClass": "foam.nanos.cron.NextDateServiceSkeleton",
+  "client": """
+    {
+      "class": "foam.nanos.cron.ClientNextDateService",
+      "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/nextDateService"
+        }
+    }
+  """
+})

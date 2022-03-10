@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.nanos.cron',
   name: 'SimpleIntervalSchedule',
 
@@ -30,6 +30,11 @@ foam.CLASS({
     'foam.nanos.cron.MonthlyChoice',
     'foam.nanos.cron.ScheduleEnd',
     'foam.nanos.cron.SymbolicFrequency'
+  ],
+
+  messages: [
+    { name: 'INVALID_ENDS_ON_100', message: 'Please chose a value less than 100' },
+    { name: 'INVALID_ENDS_ON_1', message: 'Please chose a value greater than 0' }
   ],
 
   properties: [
@@ -171,34 +176,77 @@ foam.CLASS({
         if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['endsAfter'],
+          predicateFactory: function(e) {
+            return e.LT(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 100);
+          },
+          errorMessage: 'INVALID_ENDS_ON_100'
+        },
+        {
+          args: ['endsAfter'],
+          predicateFactory: function(e) {
+            return e.GTE(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 1);
+          },
+          errorMessage: 'INVALID_ENDS_ON_1'
+        }
+      ]
     }
   ],
   methods: [
     {
       name: 'getNextScheduledTime',
       javaCode: `
+        return calculateNextDate(x,from,false);
+      `
+    },
+    {
+      name: 'calculateNextDate',
+      type: 'Date',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'date',
+          type: 'Date'
+        },
+        {
+          name: 'useDateAsMinimumDate',
+          type: 'boolean'
+        }
+      ],
+      javaCode: `
         LocalDate startDate = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate minimumDate = null;
+        if ( useDateAsMinimumDate ) {
+          minimumDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } else {
+          minimumDate = LocalDate.now();
+        }
         LocalDate endsOn = getEndsOn() == null ? null : getEndsOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate nextDate = startDate;
 
         // Check if schedule has ended
-        if ( getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0 || getEnds() == ScheduleEnd.ON && ! LocalDate.now().isBefore(endsOn) ) {
+        if ( getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0 || getEnds() == ScheduleEnd.ON && ! minimumDate.isBefore(endsOn) ) {
           return null;
         }
 
         switch (getFrequency()) {
           case DAY:
-            nextDate = calculateNextDay(x, nextDate, false);
+            nextDate = calculateNextDay(x, nextDate, false, startDate, minimumDate);
             break;
           case WEEK:
-            nextDate = calculateNextWeek(x, nextDate, false, startDate);
+            nextDate = calculateNextWeek(x, nextDate, false, startDate, minimumDate);
             break;
           case MONTH:
-            nextDate = calculateNextMonth(x, nextDate, false, startDate);
+            nextDate = calculateNextMonth(x, nextDate, false, startDate, minimumDate);
             break;
           case YEAR:
-            nextDate = calculateNextYear(x, nextDate, false);
+            nextDate = calculateNextYear(x, nextDate, false, startDate, minimumDate);
             break;
         }
 
@@ -225,16 +273,24 @@ foam.CLASS({
         {
           name: 'applyWait',
           type: 'boolean'
+        },
+        {
+          name: 'startDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'minimumDate',
+          type: 'LocalDate'
         }
       ],
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
         } 
-        if ( ! nextDate.isAfter(LocalDate.now()) ) {
-          return calculateNextDay(x, nextDate, true);
+        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+          return nextDate;
         }
-        return nextDate;
+        return calculateNextDay(x, nextDate, true, startDate, minimumDate);
       `
     },
     {
@@ -256,6 +312,10 @@ foam.CLASS({
         {
           name: 'startDate',
           type: 'LocalDate'
+        },
+        {
+          name: 'minimumDate',
+          type: 'LocalDate'
         }
       ],
       javaCode: `
@@ -271,14 +331,14 @@ foam.CLASS({
         nextDate = minDate.with(TemporalAdjusters.next(getWeekday(days[0])));
         for ( int i=1; i < days.length; i++ ) {
           LocalDate temp = minDate.with(TemporalAdjusters.next(getWeekday(days[i])));
-          if ( temp.isAfter(LocalDate.now()) && ( temp.isBefore(nextDate) || ! nextDate.isAfter(LocalDate.now())) ) {
+          if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
             nextDate = temp;
           }
         }
-        if ( nextDate.isAfter(startDate) && nextDate.isAfter(LocalDate.now()) && ! nextDate.isAfter(endOfWeek) ) {
+        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(endOfWeek) ) {
           return nextDate;
         } else {
-          return calculateNextWeek(x, endOfWeek, true, startDate);
+          return calculateNextWeek(x, endOfWeek, true, startDate, minimumDate);
         }
       `
     },
@@ -301,6 +361,10 @@ foam.CLASS({
         {
           name: 'startDate',
           type: 'LocalDate'
+        },
+        {
+          name: 'minimumDate',
+          type: 'LocalDate'
         }
       ],
       javaCode: `
@@ -315,7 +379,7 @@ foam.CLASS({
 
           for ( Object day : getDayOfMonth() ) {
             LocalDate temp = start.plusDays(((long)day)-1);
-            if ( temp.isAfter(LocalDate.now()) && ( temp.isBefore(nextDate) || ! nextDate.isAfter(LocalDate.now())) ) {
+            if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
               nextDate = temp;
             }
           }
@@ -339,10 +403,10 @@ foam.CLASS({
               break;
           }
         }
-        if ( nextDate.isAfter(startDate) && nextDate.isAfter(LocalDate.now()) && ! nextDate.isAfter(end) ) {
+        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(end) ) {
           return nextDate;
         }
-        return calculateNextMonth(x, start, true, startDate);
+        return calculateNextMonth(x, start, true, startDate, minimumDate);
       `
     },
     {
@@ -360,16 +424,24 @@ foam.CLASS({
         {
           name: 'applyWait',
           type: 'boolean'
+        },
+        {
+          name: 'startDate',
+          type: 'LocalDate'
+        },
+        {
+          name: 'minimumDate',
+          type: 'LocalDate'
         }
       ],
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusYears(getRepeat());
         }
-        if ( ! nextDate.isAfter(LocalDate.now() )) {
-          return calculateNextYear(x, nextDate, true);
+        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+          return nextDate;
         }
-        return nextDate;
+        return calculateNextYear(x, nextDate, true, startDate, minimumDate);
       `
     },
 
@@ -463,6 +535,39 @@ foam.CLASS({
       javaCode: `
         // Todo change start of week based off country 
         return date.minusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+      `
+    },
+    {
+      name: 'calculateNextDates',
+      type: 'Date[]',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'n',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        if ( n > 100 ) {
+          n = 100;
+        }
+        int ends = getEndsAfter();
+        if ( getEnds() != ScheduleEnd.AFTER || ends > n ) {
+          ends = n;
+        }
+        Date[] dates = new Date[n];
+        Date date = calculateNextDate(x, new Date(), false);
+        for ( int i = 0; i < ends; i++ ) {
+          if ( date == null ) {
+            break;
+          }
+          dates[i] = date;
+          date = calculateNextDate(x, date, true);
+        }
+        return dates;
       `
     }
   ]
