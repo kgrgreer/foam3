@@ -248,11 +248,7 @@ foam.CLASS({
         const countLifted = liftedWizardlets
           .map(w => w.isAvailable ? 1 : 0)
           .reduce((count, val) => count + val);
-        if ( countLifted >= this.max ) {
-          this.isVisible = false;
-        } else {
-          this.isVisible = this.isAvailable;
-        }
+        this.isVisible = countLifted < this.max && this.isAvailable;
       });
     }
   ]
