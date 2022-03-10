@@ -620,6 +620,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ui/CapableView" },
   { name: "foam/nanos/crunch/ui/UCJView" },
   { name: "foam/nanos/crunch/ui/PrerequisiteAwareWizardlet", flags: [ "java" ] },
+  { name: "foam/nanos/crunch/ui/LiftingAwareWizardlet", flags: [ "java" ] },
   //boxes
   { name: "foam/nanos/crunch/box/CrunchClientBox", flags: [ "java" ] },
   { name: "foam/nanos/crunch/box/CrunchClientReplyBox", flags: [ "java" ] },
