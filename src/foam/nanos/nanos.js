@@ -675,6 +675,7 @@ FOAM_FILES([
 
   { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: ["java"] },
 
-  { name: "foam/nanos/om/OMRuleAction", flags: [ "java" ] }
+  { name: 'foam/nanos/om/OMRuleAction', flags: ["java"] },
+  { name: 'foam/nanos/om/CCOMRuleAction', flags: ["java"] }
 
 ]);

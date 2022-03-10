@@ -290,6 +290,16 @@ foam.CLASS({
       columnPermissionRequired: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdForAgent',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 106,
+      gridColumns: 6,
+      columnPermissionRequired: true
+    },
+    {
       class: 'String',
       name: 'createdForSummary',
       section: 'additionalInformation',

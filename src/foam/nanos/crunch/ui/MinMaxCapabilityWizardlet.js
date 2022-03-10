@@ -15,15 +15,15 @@ foam.CLASS({
 
   requires: [
     'foam.core.ArraySlot',
-    'foam.u2.view.MultiChoiceView',
-    'foam.u2.view.CardSelectView',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection'
+    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection',
+    'foam.u2.view.CardSelectView',
+    'foam.u2.view.MultiChoiceView'
   ],
 
   imports: [
-    'translationService',
-    'capabilityDAO'
+    'capabilityDAO',
+    'translationService'
   ],
 
   properties: [
