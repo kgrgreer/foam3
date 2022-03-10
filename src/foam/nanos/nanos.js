@@ -222,6 +222,7 @@ FOAM_FILES([
   { name: "foam/nanos/medusa/ElectoralServiceState", flags: [ "java" ] },
   { name: "foam/nanos/medusa/ElectoralServiceServer", flags: [ "java" ] },
   { name: "foam/nanos/medusa/MedusaEntry", flags: [ "java" ] },
+  { name: "foam/nanos/medusa/MedusaEntryNoRemoveDAO", flags: [ "java" ] },
   { name: "foam/nanos/medusa/MedusaEntrySupport", flags: [ "java" ] },
   { name: "foam/nanos/medusa/MedusaEntryTimeoutException", flags: [ "java" ] },
   { name: "foam/nanos/medusa/MedusaException", flags: [ "java" ] },
