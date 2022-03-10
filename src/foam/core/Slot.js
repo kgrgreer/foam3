@@ -20,6 +20,7 @@ foam.CLASS({
   name: 'Slot', // ???: Rename AbstractSlot or make an Interface
 
   requires: [
+    'foam.core.internal.AOrB',
     'foam.core.internal.SubSlot'
   ],
 
@@ -161,6 +162,10 @@ foam.CLASS({
       };
       l();
       return other.sub(l);
+    },
+
+    function or(other) {
+      return this.AOrB.create({ a$: this, b$: other }).output$;
     },
 
     /**
@@ -355,6 +360,23 @@ foam.CLASS({
     function valueChange() {
       var parentValue = this.parent.get();
       this.value = parentValue ? parentValue[this.name] : undefined;
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'AOrB',
+
+  properties: [
+    'a',
+    'b',
+    {
+      name: 'output',
+      expression: function (a, b) {
+        return a || b;
+      }
     }
   ]
 });
