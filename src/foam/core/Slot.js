@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'Slot', // ???: Rename AbstractSlot or make an Interface
 
   requires: [
-    'foam.core.internal.AOrB',
+    'foam.core.internal.Or',
     'foam.core.internal.SubSlot'
   ],
 
@@ -165,7 +165,7 @@ foam.CLASS({
     },
 
     function or(other) {
-      return this.AOrB.create({ a$: this, b$: other }).output$;
+      return this.Or.create({ a$: this, b$: other }).output$;
     },
 
     /**
@@ -367,7 +367,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core.internal',
-  name: 'AOrB',
+  name: 'Or',
 
   properties: [
     'a',
