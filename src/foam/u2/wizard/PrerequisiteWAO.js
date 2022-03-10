@@ -49,7 +49,6 @@
       class: 'Class',
       name: 'of'
     }
-    // TODO: Map of fields to override the loaded object via config
   ],
 
   methods: [

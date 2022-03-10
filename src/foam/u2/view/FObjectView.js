@@ -41,16 +41,16 @@ foam.CLASS({
         if ( classIsFinal && this.dataWasProvided_ ) return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       },
-      // view: function(args, X) {
-      //   return {
-      //     class: X.data.allowCustom ? 'foam.u2.TextField' : 'foam.u2.view.ChoiceView',
-      //     displayWidth: 60,
-      //     placeholder: X.data.placeholder,
-      //     header: X.data.header,
-      //     choices$: X.data.choices$,
-      //     data$: X.data.objectClass$
-      //   };
-      // }
+      view: function(args, X) {
+        return {
+          class: X.data.allowCustom ? 'foam.u2.TextField' : 'foam.u2.view.ChoiceView',
+          displayWidth: 60,
+          placeholder: X.data.placeholder,
+          header: X.data.header,
+          choices$: X.data.choices$,
+          data$: X.data.objectClass$
+        };
+      }
     },
     {
       name: 'config'
