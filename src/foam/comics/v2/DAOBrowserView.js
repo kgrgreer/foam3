@@ -346,7 +346,7 @@ foam.CLASS({
             cannedView = foam.u2.ViewSpec.createView(self.cannedQueriesView, {
               choices: config$cannedQueries.map((o) => [o.predicate, o.label]),
               data$: self.cannedPredicate$
-            },  this, filterView.__subContext__);
+            }, this, filterView.__subContext__);
           }
 
           var summaryContext = cannedView ? cannedView.__subContext__ : filterView.__subContext__;
@@ -354,7 +354,7 @@ foam.CLASS({
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
             data: self.predicatedDAO$proxy,
             config: self.config
-          },  this, summaryContext);
+          }, this, summaryContext);
 
           if ( ! self.config.browseContext ) {
             self.config.browseContext = summaryView;

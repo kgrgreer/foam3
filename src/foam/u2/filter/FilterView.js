@@ -257,7 +257,7 @@ foam.CLASS({
     {
       name: 'searchData',
       shortName: 'search',
-      memorable: true,
+      memorable: true
     }
   ],
 
@@ -284,7 +284,7 @@ foam.CLASS({
             of: self.dao.of.id,
             onKey: true,
             searchData$: self.searchData$
-          },  this, self.__subContext__);
+          }, this, self.__subContext__);
 
           self.show(filters && filters.length);
 
@@ -324,7 +324,7 @@ foam.CLASS({
                         property: axiom,
                         dao: self.dao,
                         preSetPredicate: self.assignPredicate(axiom)
-                      },  self, self.__subContext__);
+                      }, self, self.__subContext__);
 
                       this.start()
                         .add(propView)

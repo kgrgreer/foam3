@@ -294,11 +294,11 @@ foam.CLASS({
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
         if ( d ) { 
           self.data = d;
-          if ( this.currentControllerMode == 'edit' )
+          if ( this.currentControllerMode === 'edit' )
             self.edit();
         }
       });
-      if ( this.currentControllerMode == 'edit' ) {
+      if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {
         this.setControllerMode('view');
