@@ -164,7 +164,7 @@ foam.CLASS({
       name: 'fetchValues',
       code: function() {
         var self = this;
-        self.__subContext[self.dao].limit(self.limit).select().then((objects) => {
+        self.__subContext__[self.dao].limit(self.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;
