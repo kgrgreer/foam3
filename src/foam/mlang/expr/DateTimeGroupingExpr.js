@@ -19,7 +19,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.CreatedAware',
     'java.util.Arrays',
-    'java.util.Comparator'
+    'java.util.Comparator',
+    'java.util.Date'
   ],
 
   properties: [
