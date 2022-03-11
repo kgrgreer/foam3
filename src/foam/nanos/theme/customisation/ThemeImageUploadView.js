@@ -142,11 +142,9 @@ foam.CLASS({
       var v = Array.isArray(logo) ? logo[0] : logo;
       v = v.data;
       if ( ! v ) return opt_fallback;
-      if ( foam.blob.BlobBlob.isInstance(v) ) {
+      if ( foam.blob.BlobBlob.isInstance(v) )
         return URL.createObjectURL(v.blob);
-      } else {
-        return v.dataString || this.getFileURL(v);
-      }
+      return v.dataString || this.getFileURL(v);
     },
     function getFileURL(file) {
       return '/service/file/' + file.id;

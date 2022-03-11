@@ -95,8 +95,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'propViews_',
-      visibility: 'HIDDEN',
-      value: {}
+      visibility: 'HIDDEN'
     }
   ],
 
