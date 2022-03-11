@@ -94,14 +94,7 @@ foam.CLASS({
       class: 'String',
       name: 'emptySubTitle'
     },
-    {
-      name: 'dao',
-      adapt: function(_,o) {
-        if ( foam.String.isInstance(o) )
-          return this.__subContext__[o];
-        return o;
-      }
-    },
+    'dao',
     ['limit', 5],
     'mode'
   ],
@@ -159,7 +152,7 @@ foam.CLASS({
         this.stack.push(this.StackBlock.create({
           view: {
             class: this.DAOBrowseControllerView,
-            data: this.dao,
+            data: this.__subContext__[this.dao],
           }, parent: this.__subContext__
         }));
       }
@@ -171,7 +164,7 @@ foam.CLASS({
       name: 'fetchValues',
       code: function() {
         var self = this;
-        self.dao.limit(self.limit).select().then((objects) => {
+        self.__subContext[self.dao].limit(self.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;
