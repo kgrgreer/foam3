@@ -144,6 +144,13 @@ return getSchedule().getNextScheduledTime(x,
   new Date(System.currentTimeMillis())
 );
 `
+    },
+    {
+      name: 'runScript',
+      code: `
+        super.runScript();
+        getSchedule().postExecution();
+      `
     }
   ]
 });
