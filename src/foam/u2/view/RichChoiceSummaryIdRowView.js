@@ -7,23 +7,9 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'RichChoiceSummaryIdRowView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.CitationView',
 
   documentation: 'Appends object id after object summary in RichChoiceViews',
-
-  // duplicates css and most of render method from RichChoiceView.DefaultRowView
-  css: `
-        ^row {
-          background: white;
-          padding: 1px 2px;
-          font-size: 1.2rem;
-        }
-
-        ^row:hover {
-          background: #f4f4f9;
-          cursor: pointer;
-        }
-      `,
 
   methods: [
     function render() {
