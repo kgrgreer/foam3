@@ -193,6 +193,7 @@ FOAM_FILES([
   { name: "foam/util/uid/FuidSearchService", flags: [ "java" ] },
   { name: "foam/util/uid/ClientGlobalSearchService", flags: [ "java" ] },
   { name: "foam/util/uid/FuidKey", flags: [ "java" ] },
+  { name: "foam/util/DeFeedback", flags: [ 'web' ] },
   { name: "foam/log/LogLevel", flags: [ "java" ] },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
