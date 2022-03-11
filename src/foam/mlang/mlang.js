@@ -2687,6 +2687,9 @@ return false;`
       name: 'toString',
       code: function() { return 'Keyword(' + this.arg1.toString() + ')'; },
       javaCode: 'return "Keyword(" + getArg1().toString() + ")";'
+    },
+    function toMQL() {
+      // no-op
     }
   ]
 });
