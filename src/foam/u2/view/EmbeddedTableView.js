@@ -75,6 +75,8 @@ foam.CLASS({
         if ( config$click && typeof config$click === 'function' ) {
           importedClick = config$click;
         } else {
+          // This function is exported and is not always called with the 'this' being the current view
+          // which is why we need to fetch config from subContext
           importedClick = function(obj, id) {
             if ( ! this.stack ) return;
             this.stack.push(foam.u2.stack.StackBlock.create({

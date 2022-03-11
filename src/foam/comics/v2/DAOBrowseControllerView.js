@@ -130,6 +130,8 @@ foam.CLASS({
       expression: function(config$click) {
         if ( this.config.click && typeof this.config.click === 'function' )
           return this.config.click;
+        // This function is exported and is not always called with the 'this' being the current view
+        // which is why we need to fetch config from subContext
         return function(obj, id) {
           if ( ! this.stack ) {
             console.warn('Missing stack, can not push view');
