@@ -54,6 +54,12 @@ foam.CLASS({
 
       var targetPayload = await this.capable.getCapablePayloadDAO().find(
         wizardlet.capability.id ) || this.targetPayload;
+
+      // TODO: investigate nullWAO decorator not working on beforeWizardlet
+      if ( wizardlet.data && ! targetPayload ){
+        return;
+      }
+
       this.load_(wizardlet, targetPayload);
     },
     async function load_(wizardlet, payload) {
