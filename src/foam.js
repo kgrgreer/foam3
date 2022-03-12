@@ -10,6 +10,7 @@
 
   // Is replaced when lib.js is loaded.
   foam.checkFlags = () => true;
+  foam.adapFlags  = () => undefined;
 
   if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
   var flags = globalThis.foam.flags;
@@ -65,6 +66,7 @@
       if ( ! files ) return;
       files.forEach(f => {
         var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
 
         // Do we need this check? Is it already done elsewhere?
         if ( seen[name] ) {
