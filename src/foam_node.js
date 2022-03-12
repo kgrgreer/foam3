@@ -5,7 +5,12 @@
  */
 
 (function() {
-  var foam = globalThis.foam = { ...(globalThis.foam || {}), isServer: true, flags: globalThis.FOAM_FLAGS || {} };
+  var foam = globalThis.foam = {
+    ...(globalThis.foam || {}),
+    isServer: true,
+    adaptFlags: function() {},
+    flags: globalThis.FOAM_FLAGS || {}
+  };
 
   // Imports used by the loadServer() loader
   globalThis.imports      = {};
@@ -51,7 +56,11 @@
   }
 
   this.FOAM_FILES = foam.POM = function(pom) {
-    if ( Array.isArray(pom) ) pom = { projects: pom };
+    if ( Array.isArray(pom) ) {
+      pom = { projects: pom };
+    } else {
+      console.log('*********** FOOBAR: Loading Project', pom.name);
+    }
 
     var load  = loadServer();
     var seen  = {};
@@ -61,6 +70,7 @@
       if ( ! files ) return;
       files.forEach(f => {
         var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
 
         // TODO: fix when all files properly flagged
         /*
