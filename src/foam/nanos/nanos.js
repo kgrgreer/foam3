@@ -623,12 +623,8 @@ foam.POM({
   { name: "foam/nanos/crunch/ui/ReviewUCJView" },
   { name: "foam/nanos/crunch/ui/CapableView" },
   { name: "foam/nanos/crunch/ui/UCJView" },
-<<<<<<< HEAD
   { name: "foam/nanos/crunch/ui/PrerequisiteAwareWizardlet", flags: "java" },
-=======
-  { name: "foam/nanos/crunch/ui/PrerequisiteAwareWizardlet", flags: [ "java" ] },
-  { name: "foam/nanos/crunch/ui/LiftingAwareWizardlet", flags: [ "java" ] },
->>>>>>> 2cb5f5add0500d4eb95694813218c86011430549
+  { name: "foam/nanos/crunch/ui/LiftingAwareWizardlet", flags: "java" },
   //boxes
   { name: "foam/nanos/crunch/box/CrunchClientBox", flags: "java" },
   { name: "foam/nanos/crunch/box/CrunchClientReplyBox", flags: "java" },
