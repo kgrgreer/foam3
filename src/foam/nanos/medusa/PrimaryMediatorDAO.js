@@ -57,6 +57,11 @@ foam.CLASS({
           String transientData = entrySupport.transientData(x, nu, old, entry.getDop());
           entry.setData(data);
           entry.setTransientData(transientData);
+          if ( SafetyUtil.isEmpty(data) &&
+               SafetyUtil.isEmpty(transientData) ) {
+            Loggers.logger(x, this).warning("No delta detected", entry.getObject().getClass().getName(), entry.getObjectId());
+            return entry;
+          }
         } else if ( DOP.REMOVE == entry.getDop() ) {
           FObject result = entry.getObject();
           Object id = obj.getProperty("id");
