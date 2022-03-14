@@ -250,7 +250,7 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return (amount/Math.pow(2, this.precision)).toFixed(this.precision);
+        return (amount/Math.pow(10, this.precision)).toFixed(this.precision);
       },
       args: [
         {

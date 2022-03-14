@@ -8,7 +8,7 @@
   package: 'foam.u2.view',
   name: 'LazyScrollManager',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'A configurable scroll manager that dynamically lazy loads dao data',
 
@@ -17,7 +17,6 @@
     'foam.core.Latch',
     'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.controller.Memento'
   ],
 
   implements: [
@@ -84,15 +83,13 @@
     {
       class: 'Int',
       name: 'topRow',
+      memorable: true,
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
-        }
-        if ( this.memento ) {
-          this.memento.head = this.topRow || 1;
         }
       }
     },
@@ -174,7 +171,8 @@
       factory: function () {
         return this.Latch.create();
       }
-    }
+    },
+    ['isInit', true]
   ],
 
   reactions: [
@@ -188,7 +186,6 @@
     },
 
     function render() {
-      this.initMemento();
       var self = this;
       var resize = new ResizeObserver (this.checkPageSize_);
       let options = {
@@ -332,15 +329,15 @@
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
-        this.currentTopPage_ = 0;
-        this.topRow = 0;
-        this.bottomRow = 0;
+        if ( ! this.isInit ) {
+          this.currentTopPage_ = 0;
+          this.topRow = 0;
+          this.bottomRow = 0;
+        }
+        this.isInit = false;
         this.updateRenderedPages_();
-        if ( ! this.memento ) return;
-        if ( this.memento.head.length != 0 && Number(this.memento.head)) {
-          this.scrollToIndex = this.memento.head;
-        } else {
-          this.scrollToIndex = 1;
+        if ( this.topRow > 1) {
+          this.scrollToIndex = this.topRow;
         }
       }
     },
