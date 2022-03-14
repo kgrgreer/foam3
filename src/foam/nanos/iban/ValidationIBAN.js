@@ -11,6 +11,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ValidationException',
     'foam.nanos.iban.IBANInfo',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil'
   ],
 
@@ -289,7 +290,7 @@ Columns: validation format, parsing format, example`,
         return 'passed';
       },
       javaCode: `
-        if ( foam.util.SafetyUtil.isEmpty(iban) ||
+        if ( SafetyUtil.isEmpty(iban) ||
              iban.length() < MIN_IBAN_LENGTH ) {
           throw new ValidationException(IBAN_REQUIRED);
         }
@@ -444,7 +445,10 @@ Columns: validation format, parsing format, example`,
         }
       ],
       javaCode: `
-        if ( foam.util.SafetyUtil.isEmpty(iban) || iban.length() < 20 ) {
+        try {
+          validate(iban);
+        } catch ( Exception e ) {
+          Loggers.logger(getX(), this).warning("parse", "Iban not valid", iban);
           return null;
         }
         iban = iban.replaceAll(" ", "").trim();
@@ -453,11 +457,7 @@ Columns: validation format, parsing format, example`,
         Object[] temp = (Object[]) COUNTRIES.get(ibanInfo.getCountry());
 
         if ( temp == null || temp[1] == null || SafetyUtil.isEmpty((String)temp[1]) ) {
-          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
-          if ( logger == null ) {
-            logger = foam.nanos.logger.StdoutLogger.instance();
-          }
-          logger.warning(this.getClass().getSimpleName(), "parse", "Format not found", ibanInfo.getCountry());
+          Loggers.logger(getX(), this).warning("parse", "Format not found", ibanInfo.getCountry());
           return null;
         }
 
