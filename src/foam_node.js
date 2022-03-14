@@ -5,7 +5,12 @@
  */
 
 (function() {
-  var foam = globalThis.foam = { ...(globalThis.foam || {}), isServer: true, flags: globalThis.FOAM_FLAGS || {} };
+  var foam = globalThis.foam = {
+    ...(globalThis.foam || {}),
+    isServer: true,
+    adaptFlags: function() {},
+    flags: globalThis.FOAM_FLAGS || {}
+  };
 
   // Imports used by the loadServer() loader
   globalThis.imports      = {};
@@ -50,36 +55,56 @@
     }
   }
 
-  this.FOAM_FILES = function(files) {
-    var load = loadServer();
-    var seen = {};
-    var SAFE = foam.SAFE || {};
+  this.FOAM_FILES = foam.POM = function(pom) {
+    if ( Array.isArray(pom) ) {
+      pom = { projects: pom };
+    } else {
+      console.log('*********** FOOBAR: Loading Project', pom.name);
+    }
 
-    files.
-      filter(f => {
+    var load  = loadServer();
+    var seen  = {};
+    var SAFE  = foam.SAFE || {};
+
+    function loadFiles(files) {
+      if ( ! files ) return;
+      files.forEach(f => {
+        var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
+
+        // TODO: fix when all files properly flagged
+        /*
         if ( ! f.flags || ( ! f.flags.includes('swift') && ! f.flags.includes('node') ) ) {
           var caller = flags.src || __filename;
           var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
         }
-        if ( foam.checkFlags(f.flags) ) {
-          return true;
+        if ( foam.checkFlags(f.flags) ) return true;
+        */
+        //return true;
+
+        // Do we need this check? Is it already done elsewhere?
+        if ( seen[name] ) {
+          console.log('duplicate', name);
+          return;
         }
-        return true;
-      }).
-      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
-      filter(f => (! f.predicate) || f.predicate()).
-      forEach(function(f) {
+        seen[name] = true;
+
+        if ( f.predicate && ! f.predicate() ) return;
+
         foam = globalThis.foam;
         foam.currentFlags = f.flags || [];
 
         var count1 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
-        load(f.name);
+        load(name);
         var count2 = Object.keys(foam.USED || {}).length + Object.keys(foam.UNUSED || {}).length;
-        if ( count2 == count1 + 1 ) {
-          SAFE[f.name] = true;
-        }
+        if ( count2 == count1 + 1 ) SAFE[name] = true;
       });
-      foam.SAFE = SAFE;
+    }
+
+    (foam.loadModules || loadFiles)(pom.projects);
+    (foam.loadFiles   || loadFiles)(pom.files);
+
+    foam.SAFE = SAFE;
   };
 
   loadServer()('files');

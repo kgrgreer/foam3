@@ -14,6 +14,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.log.LogLevel',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.notification.Notification',
     'foam.nanos.theme.Theme',
@@ -43,7 +45,8 @@ foam.CLASS({
         return alarm;
       }
 
-      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) &&
+           ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
         return alarm;
       }
 

@@ -111,6 +111,7 @@ foam.CLASS({
           customFavIconFailed = true;
         }
       }
+
       // default favicon
       if ( headConfig == null || ! headConfig.containsKey("customFavIcon") || customFavIconFailed ) {
         out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/favicon/apple-touch-icon.png\\">");
@@ -136,43 +137,49 @@ foam.CLASS({
           customScriptsFailed = true;
         }
       }
+
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
-        // jar file deployment
         if ( this.getIsResourceStorage() ) {
+          // jar file deployment
           out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.umd.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.plugin.autotable.min.js\\"></script>");
-        }
-        // development
-        else {
+
+          out.println("<script async language=\\"javascript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
+          out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
+        } else {
+          // development
           if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\"></script>");
+            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"pom\\"></script>");
+            /*
             out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/nanos/nanos.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/support/support.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso20022/files.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
-          }
-          else if ( ! SafetyUtil.isEmpty(queryString) ) {
+            */
+          } else if ( ! SafetyUtil.isEmpty(queryString) ) {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
             out.println(queryString);
             out.println("\\"></script>");
-          }
-          else {
+          } else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
           }
+          /*
           out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
-          out.println("<script language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.umd.min.js\\"></script>");
+          out.println("<script       language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.umd.min.js\\"></script>");
           out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
+          */
         }
 
-        out.println("<script async language=\\"JavaScript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
+        /*
+        out.println("<script async language=\\"javascript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
         out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
-
+        */
       }
 
       // custom fonts
@@ -199,7 +206,7 @@ foam.CLASS({
     {
       name: 'service',
       type: 'Void',
-      args: [ { name: 'request', javaType: 'ServletRequest' },
+      args: [ { name: 'request',  javaType: 'ServletRequest' },
               { name: 'response', javaType: 'ServletResponse' } ],
       javaThrows: [ 'ServletException', 'IOException' ],
       javaCode: `

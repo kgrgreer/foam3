@@ -957,9 +957,7 @@ foam.CLASS({
 
   methods: [
     function buildJavaClass(cls) {
-      if ( this.flags && this.flags.length && this.flags.indexOf('java') == -1 ) {
-        return;
-      }
+      if ( this.flags && this.flags.length && ! foam.checkForFlag(this.flags, 'java') ) return;
       cls.constant({
         name: this.name,
         type: 'String',
@@ -989,9 +987,7 @@ foam.CLASS({
 
   methods: [
     function buildJavaClass(cls) {
-      if ( this.flags && this.flags.length && this.flags.indexOf('java') == -1 ) {
-        return;
-      }
+      if ( this.flags && this.flags.length && ! foam.checkForFlag(this.flags, 'java') ) return;
 
       if ( ! this.javaType ) {
         this.__context__.warn('Skipping constant ', this.name, ' with unknown type.');
@@ -2258,7 +2254,7 @@ foam.CLASS({
     },
 
     function targetJava(X) {
-      if ( ! this.flags || ! this.flags.includes('java') ) return false;
+      if ( ! this.flags || ! foam.checkForFlag(this.flags, 'java') ) return false;
       var cls = foam.lookup(this.id);
       this.outputJavaClass(X.outdir, cls.buildJavaClass());
       return true;
