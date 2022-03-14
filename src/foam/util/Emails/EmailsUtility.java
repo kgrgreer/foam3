@@ -8,6 +8,7 @@ import foam.nanos.app.SupportConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
@@ -36,16 +37,20 @@ public class EmailsUtility {
   @param templateName:  The template name that is used for this email. It is found and applied based on user.group
   @param templateArgs:  The arguments that are used to fill the template model body.
   */
-  public static void sendEmailFromTemplate(X x, User user, EmailMessage emailMessage, String templateName, Map templateArgs) {
-    // EXIT CASES && VARIABLE SET UP
-    if ( x == null ) return;
+  public static EmailMessage sendEmailFromTemplate(X x, User user, EmailMessage emailMessage, String templateName, Map templateArgs) {
 
-    Logger logger = (Logger) x.get("logger");
+    // EXIT CASES && VARIABLE SET UP
+    if ( x == null ) throw new RuntimeException("Context not found");
+
+    Logger logger = new PrefixLogger(
+                                     new Object[] { "EmailsUtility" },
+                                     (Logger) x.get("logger"));
 
     if ( emailMessage == null ) {
       if ( SafetyUtil.isEmpty(templateName) ) {
-        logger.error("@EmailsUtility: no email message available to be sent");
-        return;
+        logger.warning("EmailMessage and Template not found");
+        // REVIEW: seems odd to simply return null.
+        return null;
       }
       emailMessage = new EmailMessage();
     }
@@ -92,19 +97,20 @@ public class EmailsUtility {
     try {
       cts.apply(userX, group, emailMessage, templateArgs);
     } catch (Exception e) {
+      logger.error("Problem with template: " + templateName, e);
       Alarm alarm = new Alarm("EmailTemplate");
       alarm.setNote(templateName +": " + e.getMessage());
       ((DAO) x.get("alarmDAO")).put(alarm);
-
-      logger.error("Problem with template: " + templateName, e);
-      return;
+      // REVIEW
+      // return null;
+      throw new RuntimeException("EmailMessage template error");
     }
 
     emailMessage.setBody( emailMessage.getBody().replaceAll("\\.svg", ".png") );
 
     // SERVICE CALL: passing emailMessage through to actual email service.
-    DAO email = ((DAO) x.get("localEmailMessageDAO")).inX(userX);
+    DAO emailDAO = ((DAO) x.get("localEmailMessageDAO")).inX(userX);
     emailMessage.setStatus(foam.nanos.notification.email.Status.UNSENT);
-    email.put(emailMessage);
+    return (EmailMessage) emailDAO.put(emailMessage);
   }
 }
