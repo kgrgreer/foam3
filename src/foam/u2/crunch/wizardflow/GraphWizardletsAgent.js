@@ -92,7 +92,10 @@ foam.CLASS({
         wizardlets: [beforeWizardlet, afterWizardlet].filter(v => v),
         beforeWizardlet, afterWizardlet,
         betweenWizardlets: [],
-        liftedWizardlets: []
+        liftedWizardlets: [],
+        parentControlled: false,
+        availabilitySlot: null,
+        availabilityDetach: null
       };
 
       if ( beforeWizardlet && afterWizardlet ) {
@@ -103,6 +106,7 @@ foam.CLASS({
       return true;
     },
     function linkPrerequisite(source, entry, { lifted }) {
+      if ( source.betweenWizardlets.includes(entry) ) return;
       ( lifted
         ? source.liftedWizardlets
         : source.betweenWizardlets ).push(entry);
@@ -115,9 +119,16 @@ foam.CLASS({
       const parentControlsAvailability =
         this.isPrerequisiteAware(source.beforeWizardlet) ||
         this.isPrerequisiteAware(source.afterWizardlet);
-      if ( ! lifted && ! parentControlsAvailability ) {
-        entry.primaryWizardlet.isAvailable$.follow(
-          source.primaryWizardlet.isAvailable$);
+      entry.parentControlled = parentControlsAvailability || entry.parentControlled;
+      if ( ! entry.parentControlled ) {
+        if ( ! entry.availabilitySlot ) {
+          entry.availabilitySlot = source.primaryWizardlet.isAvailable$;
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+        } else {
+          entry.availabilityDetach.detach();
+          entry.availabilitySlot = entry.availabilitySlot.or(source.primaryWizardlet.isAvailable$)
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+        }
       }
     },
     function adaptWizardlet({ capability }, wizardlet) {
