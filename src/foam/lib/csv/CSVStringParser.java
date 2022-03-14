@@ -9,6 +9,7 @@ package foam.lib.csv;
 import foam.lib.parse.Alt;
 import foam.lib.parse.Parser;
 import foam.lib.parse.ProxyParser;
+import foam.lib.csv.CSVCommaSeparator;
 
 public class CSVStringParser
   extends ProxyParser
@@ -18,9 +19,14 @@ public class CSVStringParser
   public static Parser instance() { return instance__; }
 
   // TODO: make private
-  public CSVStringParser() {
+  // ^^^ why? reason to be determined... ^^^
+  public CSVStringParser(CSVCommaSeparator commaSeparator) {
     super(
-      new Alt(new CSVNormalStringParser(), new CSVEscapeStringParser())
+      new Alt(new CSVNormalStringParser(commaSeparator), new CSVEscapeStringParser(commaSeparator))
     );
+  }
+  
+  public CSVStringParser() {
+    this(CSVCommaSeparator.COMMA);
   }
 }

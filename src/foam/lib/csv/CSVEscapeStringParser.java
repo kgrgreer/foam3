@@ -23,7 +23,17 @@ public class CSVEscapeStringParser implements Parser {
   public final static char ESCAPE = '"';
   private static Parser newlineParser = new CSVNewlineParser();
 
-  public CSVEscapeStringParser() {
+  private char commaSeparatorAsChar;
+
+  public CSVEscapeStringParser(CSVCommaSeparator commaSeparator) {
+    switch( commaSeparator ) {
+      case SEMICOLON:
+        this.commaSeparatorAsChar = ';';
+      case COMMA:
+      default:
+        this.commaSeparatorAsChar = ',';
+        break;
+    }
   }
 
   public PStream parse(PStream ps, ParserContext x) {
@@ -44,7 +54,7 @@ public class CSVEscapeStringParser implements Parser {
         } else if ( delimCount == 0 ) {
           delimCount = 1;
         }
-      } else if (head == ',') {
+      } else if (head == commaSeparatorAsChar) {
         if ( delimCount == 1 ) {
           break;
         } else {

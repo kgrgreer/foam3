@@ -7,7 +7,10 @@
 foam.CLASS({
   package: 'foam.lib.csv',
   name: 'CSVParser',
-  
+  documentation: `
+  JS-side CSV parser code. Possibly legacy. Removal TBD.
+  `,
+
   requires: [
     'foam.parse.ImperativeGrammar'
   ],

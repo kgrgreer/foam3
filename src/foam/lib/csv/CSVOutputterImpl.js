@@ -65,6 +65,11 @@ foam.CLASS({
       flags: ['java'],
       javaType: 'java.lang.StringBuilder',
       javaFactory: 'return new StringBuilder();'
+    },
+    {
+      class: 'Enum',
+      of: 'foam.lib.csv.CSVCommaSeparator',
+      name: 'commaSeparator'
     }
   ],
 

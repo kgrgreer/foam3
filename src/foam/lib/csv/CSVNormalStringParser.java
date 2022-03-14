@@ -19,9 +19,19 @@ import foam.lib.parse.*;
  */
 public class CSVNormalStringParser implements Parser {
 
-  private static Parser newlineParser = new CSVNewlineParser();
-  public CSVNormalStringParser() {
+  private Parser newlineParser = new CSVNewlineParser();
 
+  private char commaSeparatorAsChar;
+
+  public CSVNormalStringParser(CSVCommaSeparator commaSeparator) {
+    switch( commaSeparator ) {
+      case SEMICOLON:
+        this.commaSeparatorAsChar = ';';
+      case COMMA:
+      default:
+        this.commaSeparatorAsChar = ',';
+        break;
+    }
   }
 
   public PStream parse(PStream ps, ParserContext x) {
@@ -47,7 +57,7 @@ public class CSVNormalStringParser implements Parser {
           return null;
         }
       }
-      if ( head == ',' ) {
+      if ( head == commaSeparatorAsChar ) {
         break;
       }
       sb.append(head);

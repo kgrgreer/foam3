@@ -19,8 +19,28 @@ import foam.dao.Sink;
 public class CSVSupport
   extends foam.core.ContextAwareSupport
 {
-  protected Parser headParser = new Repeat(new CSVStringParser(), Literal.create(","));
 
+  protected String commaSeparatorAsString;
+
+  protected Parser headParser;
+
+  public CSVSupport(CSVCommaSeparator commaSeparator) {
+    switch( commaSeparator ) {
+      case SEMICOLON:
+        this.commaSeparatorAsString = ";";
+      case COMMA:
+      default:
+        this.commaSeparatorAsString = ",";
+        break;
+    }
+    this.headParser = new Repeat(new CSVStringParser(commaSeparator), Literal.create(this.commaSeparatorAsString));
+  }
+
+  public CSVSupport() {
+    this(CSVCommaSeparator.COMMA);
+  }
+
+  
   public void inputCSV(InputStream is, Sink sink, ClassInfo classInfo) {
 
     try {
@@ -45,7 +65,7 @@ public class CSVSupport
         Parser p = propertyInfos[i].csvParser();
 
         if ( i < column - 1) {
-          propertyParsers[i] = new Seq1(0, p, Literal.create(","));
+          propertyParsers[i] = new Seq1(0, p, Literal.create(this.commaSeparatorAsString));
         } else {
           propertyParsers[i] = p;
         }

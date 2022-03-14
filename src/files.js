@@ -81,6 +81,7 @@ FOAM_FILES([
   { name: "foam/core/XML" },
   { name: "foam/core/holders", flags: [ "java" ] },
   { name: "foam/core/CompoundException", flags: [ "java" ] },
+  { name: "foam/lib/csv/CSVCommaSeparator", flags: [ "java" ] },
   { name: "foam/lib/csv/CSVParser" },
   { name: "foam/lib/csv/CSVOutputter", flags: [ "java" ] },
   { name: "foam/lib/csv/CSVOutputterImpl", flags: [ "java" ] },
