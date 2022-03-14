@@ -252,6 +252,10 @@ public class AuthWebAgent
           .put(HttpServletResponse.class, resp), email, password);
 
         if ( user != null ) {
+          // Make sure session has the correct context after login
+          session.setUserId(user.getId());
+          session.setContext(session.applyTo(session.getContext()));
+
           if ( ! SafetyUtil.isEmpty(actAs) ) {
             AgentAuthService agentService = (AgentAuthService) x.get("agentAuth");
             DAO localUserDAO = (DAO) x.get("localUserDAO");

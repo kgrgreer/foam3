@@ -8,7 +8,10 @@ foam.CLASS({
   package: 'foam.u2.filter',
   name: 'FilterView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [
+    'foam.u2.memento.Memorable',
+    'foam.util.DeFeedback'
+  ],
 
   documentation: `
     Filter View takes the properties defined in 'searchColumns' and creates
@@ -20,11 +23,13 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.memento.Memento',
     'foam.core.SimpleSlot',
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterController',
     'foam.u2.filter.property.PropertyFilterView',
-    'foam.u2.search.TextSearchView'
+    'foam.u2.search.TextSearchView',
+    'foam.parse.QueryParser'
   ],
 
   imports: [
@@ -245,12 +250,14 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'mementoUpdated'
+      name: 'mementoString',
+      shortName: 'filters',
+      memorable: true
     },
     {
-      class: 'Boolean',
-      name: 'mementoToggle'
+      name: 'searchData',
+      shortName: 'search',
+      memorable: true
     }
   ],
 
@@ -261,31 +268,23 @@ foam.CLASS({
     },
     async function render() {
       var self = this;
+      this.data$.sub(this.updateMementoString);
+      this.mementoString$.sub(this.getData);
+      this.getData();
 
       await this.updateFilters();
-
-      // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
-      var counter = 0;
-      counter = this.updateCurrentMementoAndReturnCounter(counter);
-
-      counter = this.filters ? this.filters.length : 0;
-      //memento which will be exported to table view
-      if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
 
       this.onDetach(this.filterController$.dot('isAdvanced').sub(this.isAdvancedChanged));
       var selectedLabel = ctrl.__subContext__.translationService.getTranslation(foam.locale, 'foam.u2.filter.FilterView.SELECTED', this.SELECTED);
       this.addClass(self.myClass())
         .add(this.slot(function(filters) {
 
-          counter = self.updateCurrentMementoAndReturnCounter.call(self, counter);
-
           var generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
-            onKey: true
-          },  this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-
-          if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
+            onKey: true,
+            searchData$: self.searchData$
+          }, this, self.__subContext__);
 
           self.show(filters && filters.length);
 
@@ -325,16 +324,7 @@ foam.CLASS({
                         property: axiom,
                         dao: self.dao,
                         preSetPredicate: self.assignPredicate(axiom)
-                      },  self, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-
-                      counter--;
-                      if ( self.currentMemento_ ) {
-                        if ( counter != 0 ) {
-                          self.currentMemento_ = self.currentMemento_.tail;
-                          if ( self.currentMemento_.tail == null )
-                            self.currentMemento_.tail = foam.nanos.controller.Memento.create();
-                        }
-                      }
+                      }, self, self.__subContext__);
 
                       this.start()
                         .add(propView)
@@ -443,6 +433,29 @@ foam.CLASS({
 
   listeners: [
     {
+      name: 'updateMementoString',
+      code: function() {
+        this.deFeedback(() => {
+          var mem = this.data.toMQL();
+          if ( ! mem || this.mementoString == mem ) return;
+          this.mementoString = '{' + mem + '}';
+        });
+      }
+    },
+    {
+      name: 'getData',
+      code: function() {
+        this.deFeedback(() => {
+          var queryParser = foam.parse.QueryParser.create({ of: this.dao.of }, this);
+          var value = this.mementoString;
+          if ( value && value.indexOf('{') != -1 && value.indexOf('}') != -1 ) {
+            value = value.substr(value.indexOf('{') + 1, value.indexOf('}') - 1);
+          }
+          this.data = value ? queryParser.parseString(value) : this.TRUE;
+        });
+      }
+    },
+    {
       name: 'toggleMode',
       code: function() {
         if ( this.filterController.isAdvanced ) {
@@ -467,41 +480,6 @@ foam.CLASS({
       }
     },
 
-    function updateCurrentMementoAndReturnCounter() {
-      if ( ! this.filters ) return 0;
-      if ( this.memento ) {
-        var m = this.memento;
-        //i + 1 as there is a textSearch that we also need for memento
-        for ( var i = 0 ; i < this.filters.length + 1 ; i++ ) {
-          if ( ! m ) {
-            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento });
-            this.memento.tail = m;
-          } else {
-            if ( ! m.tail )
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
-            m = m.tail;
-          }
-        }
-        this.currentMemento_ = this.memento.tail;
-      }
-
-      if ( this.currentMemento_ && this.currentMemento_.tail ) {
-        var m = this.memento;
-        var counter = 0;
-
-        while ( counter < this.filters.length &&  m != null ) {
-          m = m.tail;
-
-          counter++;
-
-          if ( ! m || m.head.length == 0 )
-            continue;
-        }
-      }
-      this.mementoUpdated = true;
-      this.mementoToggle = ! this.mementoToggle;
-      return counter;
-    },
     async function updateFilters() {
       var of = this.dao && this.dao.of;
 

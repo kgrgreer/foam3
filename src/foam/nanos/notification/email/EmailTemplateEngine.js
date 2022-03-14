@@ -15,6 +15,8 @@ foam.CLASS({
     'foam.lib.parse.*',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailTemplateSupport',
     'java.util.Map'
   ],
@@ -26,6 +28,7 @@ foam.CLASS({
       name: 'grammar',
       documentation: `grammar for parsing "{{ val }}", "{% if/else}}" symbols`,
       javaFactory: `
+        final Logger logger = Loggers.logger(getX(), this);
         Grammar grammar = new Grammar();
         grammar.addSymbol("START", grammar.sym("markup"));
 
@@ -64,7 +67,6 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
               logger.warning("No value provided for variable " + v);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
@@ -308,7 +310,10 @@ foam.CLASS({
       type: 'StringBuilder',
       javaCode: `
       EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
-      if ( template == null ) throw new RuntimeException("no template found with id " + id);
+      if ( template == null ) {
+        Loggers.logger(x, this).warning("Template not found", id);
+        throw new RuntimeException("Template not found");
+      }
       return renderTemplate(x, template.getBody(), values);
       `
     },
@@ -329,7 +334,7 @@ foam.CLASS({
       StringBuilder sb = sb_.get();
       parserX.set("sb", sb);
       parserX.set("values", values);
-      parserX.set("logger", x.get("logger"));
+      parserX.set("logger", Loggers.logger(x, this));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       getGrammar().parse(ps, parserX, "");
       return sb;
@@ -372,7 +377,7 @@ foam.CLASS({
       ParserContext parserX = new ParserContextImpl();
       parserX.set("sb", sbJoin);
       parserX.set("x", x);
-      parserX.set("logger", x.get("logger"));
+      parserX.set("logger", Loggers.logger(x, this));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
       getIncludeGrammar().parse(ps, parserX, "");
