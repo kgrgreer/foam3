@@ -71,6 +71,12 @@ foam.CLASS({
           pushWizardlets(subEntry);
         }
         if ( entry.afterWizardlet ) wizardlets.push(entry.afterWizardlet);
+        for ( let wizardlet of entry.wizardlets ) {
+          if ( this.isLiftingAware(wizardlet) ) {
+            wizardlet.handleLifting(entry.liftedWizardlets.map(
+              entry => entry.primaryWizardlet));
+          }
+        }
       };
       pushWizardlets(this.capabilityWizardletsMap[rootNode.id]);
       this.wizardlets = wizardlets;

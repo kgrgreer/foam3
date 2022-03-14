@@ -242,14 +242,15 @@ foam.CLASS({
       return this.consumePrerequisites;
     },
     function handleLifting(liftedWizardlets) {
-      this.ArraySlot.create({
-        slots: liftedWizardlets.map(w => w.isAvailable$)
-      }).sub(() => {
+      const updated = () => {
         const countLifted = liftedWizardlets
           .map(w => w.isAvailable ? 1 : 0)
           .reduce((count, val) => count + val);
         this.isVisible = countLifted < this.max && this.isAvailable;
-      });
+      }
+      const slots = liftedWizardlets.map(w => w.isAvailable$);
+      this.ArraySlot.create({ slots }).sub(updated);
+      this.isAvailable$.sub(updated);
     }
   ]
 });
