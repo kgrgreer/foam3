@@ -635,42 +635,40 @@ foam.CLASS({
     async function pushMenu(menu, opt_forceReload) {
       /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
-      let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
+      let currentMenuCheck = this.currentMenu?.id;
+      var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
       /** Used to load a specific menus. **/
-      if ( this.route !== idCheck || opt_forceReload ) {
-        if ( typeof menu == 'string' )
-          this.memento_.str = idCheck;
-        if  ( idCheck.includes('/') )
-          menu = idCheck.split('/')[0];
-      }
+      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+        realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        dao = this.client.menuDAO;
-        menu = await dao.find(menu);
-        if ( ! menu ) { 
-          menu = await this.findFirstMenuIHavePermissionFor(dao);
-          let newId = (menu && menu.id) || '';
-          if ( this.route !== newId ) 
-            this.route = newId;
-        }
-        menu && menu.launch(this);
-        this.menuListener(menu);
+        this.pushMenu_(realMenu, menu);
       } else {
         await this.clientPromise.then(async () => {
-          dao = this.client.menuDAO;
-          menu = await dao.find(menu);
-          if ( ! menu ) { 
-            menu = await this.findFirstMenuIHavePermissionFor(dao);
-            let newId = (menu && menu.id) || '';
-            if ( this.route !== newId ) 
-              this.route = newId;
-          }
-          menu && menu.launch(this);
-          this.menuListener(menu);
+          await this.pushMenu_(realMenu, menu);
         });
+      }
+    },
+
+    async function pushMenu_(realMenu, menu) {
+      dao = this.client.menuDAO;
+      realMenu = await dao.find(realMenu);
+      if ( ! realMenu ) { 
+        menu = await this.findFirstMenuIHavePermissionFor(dao);
+        let newId = (menu && menu.id) || '';
+        if ( this.route !== newId ) 
+          this.route = newId;
+        return;
+      }
+      if ( typeof menu == 'string' && ! menu.includes('/') )
+        menu = realMenu;
+      try {
+        menu && menu.launch && menu.launch(this);
+      } finally {
+        this.menuListener(realMenu);
       }
     },
 
