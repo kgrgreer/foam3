@@ -8,14 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.doc',
   name: 'DocumentationView',
   extends: 'foam.u2.View',
-
-  imports: [
-    'memento'
-  ],
-
-  requires: [
-    'foam.nanos.controller.Memento'
-  ],
+  mixins: ['foam.u2.memento.Memorable'],
 
   css: `
     ^ table { width: 100%; }
@@ -42,9 +35,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'docKey',
+      memorable: true,
+      shortName: 'route',
       documentation: 'ID of the document to render.',
       postSet: function(o, n) {
-        if ( o != n ) this.data = undefined;
+        if ( o == n ) return;
+        this.data = undefined;
       }
     },
     {
@@ -63,11 +59,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.launchDoc();
-    },
+    // function init() {
+    //   this.launchDoc();
+    // },
     function render() {
-      this.onDetach(this.memento.tail$.sub(this.launchDoc));
+      // this.onDetach(this.memento.tail$.sub(this.launchDoc));
       var dao = this.__context__[this.daoKey];
       this.addClass();
       if ( ! dao ) {
@@ -89,10 +85,10 @@ foam.CLASS({
       }));
     }
   ],
-  listeners: [
-    function launchDoc() {
-      var tmp = this.memento.value.split(this.Memento.SEPARATOR);
-      this.docKey = tmp.length > 1 && tmp[1];
-    }
-  ]
+  // listeners: [
+  //   function launchDoc() {
+  //     var tmp = this.memento.value.split(this.Memento.SEPARATOR);
+  //     this.docKey = tmp.length > 1 && tmp[1];
+  //   }
+  // ]
 });
