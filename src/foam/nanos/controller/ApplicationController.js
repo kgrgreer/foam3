@@ -665,11 +665,8 @@ foam.CLASS({
       }
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
-      try {
-        menu && menu.launch && menu.launch(this);
-      } finally {
-        this.menuListener(realMenu);
-      }
+      menu && menu.launch && menu.launch(this);
+      this.menuListener(realMenu);
     },
 
     async function findFirstMenuIHavePermissionFor(dao) {
