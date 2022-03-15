@@ -8,14 +8,10 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'UnstyledTabs',
   extends: 'foam.u2.Element',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: ['foam.u2.memento.Memorable'],
 
   documentation: 'An unstyled tab.',
   requires: [ 'foam.u2.Tab' ],
-
-  imports: [
-    'memento'
-  ],
 
   properties: [
     {
@@ -23,8 +19,7 @@ foam.CLASS({
       postSet: function(o, n) {
         if ( o ) o.selected = false;
         n.selected = true;
-
-        this.setMementoWithSelectedTab();
+        this.selectedLabel = n.label;
       }
     },
     'tabRow',
@@ -32,13 +27,15 @@ foam.CLASS({
       name: 'updateMemento',
       class: 'Boolean'
     },
-    'currentMemento_'
+    {
+      name: 'selectedLabel',
+      memorable: true
+    }
   ],
 
   methods: [
     function init() {
-      this.initMemento && this.initMemento();
-
+      this.selectedLabel$.sub(this.maybeResetMemento);
       this.
         addClass(this.myClass()).
         start('div', null, this.tabRow$).
@@ -51,15 +48,14 @@ foam.CLASS({
 
     function add(tab) {
       if ( this.Tab.isInstance(tab) ) {
-        if ( ! this.selected ) this.selected = tab;
-        if ( tab.selected ) this.selected = tab;
+        if ( ! this.selected && ! this.selectedLabel ) this.selected = tab;
+        if ( tab.selected || this.selectedLabel == tab.label ) this.selected = tab;
 
         this.tabRow.start('span').
           addClass(this.myClass('tab')).
           enableClass('selected', tab.selected$).
           on('click', function() {
             this.selected = tab;
-            this.setMementoWithSelectedTab(tab);
           }.bind(this)).
           add(tab.label$).
         end();
@@ -68,14 +64,12 @@ foam.CLASS({
       }
 
       this.SUPER(tab);
-    },
-
-    function setMementoWithSelectedTab() {
-      if ( ! this.updateMemento )
-        return;
-      if ( this.memento ) {
-        this.memento.head = this.selected.label;
-      }
+    }
+  ],
+  listeners: [
+    function maybeResetMemento() {
+      if ( ! this.selectedLabel ) return;
+      this.memento_ && this.memento_.removeMementoTail();
     }
   ]
 });
