@@ -8,11 +8,9 @@ foam.CLASS({
   package: 'foam.u2.detail',
   name: 'TabbedDetailView',
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.core.ArraySlot',
-    'foam.nanos.controller.Memento',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
     'foam.u2.Tab',
@@ -54,8 +52,6 @@ foam.CLASS({
     function render() {
       var self = this;
 
-      this.currentMemento_ = this.memento;
-
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -86,7 +82,7 @@ foam.CLASS({
 
                       var tab = foam.core.SimpleSlot.create();
                       this
-                        .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
+                        .start(self.Tab, { label$: title$ || self.defaultSectionLabel }, tab)
                          .call(function() {
                            this.tag(self.SectionView, {
                              data$: self.data$,
@@ -99,7 +95,6 @@ foam.CLASS({
                     }
                   })
                 .end();
-              self.tabs && ( self.tabs.updateMemento = true );
               return e;
             }));
         }));

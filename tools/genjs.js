@@ -20,7 +20,12 @@ var [argv, X, flags] = require('./processArgs.js')(
   { debug: true }
 );
 
-//globalThis.foam = { require: function(fn) { /* NOP */ } };
+if ( false ) {
+globalThis.foam = {
+  // No need to load non-POM/project JS files when building JS, since uglify will load them
+  loadFiles: function() { /* NOP */ }
+};
+}
 
 require('../src/foam_node.js');
 
