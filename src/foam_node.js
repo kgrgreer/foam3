@@ -5,15 +5,20 @@
  */
 
 (function() {
-  var foam = globalThis.foam = { ...(globalThis.foam || {}), isServer: true, flags: globalThis.FOAM_FLAGS || {} };
+  var foam = globalThis.foam = {
+    ...(globalThis.foam || {}),
+    isServer: true,
+    flags: globalThis.FOAM_FLAGS || {},
+
+    // Are replaced when lib.js is loaded.
+    adaptFlags: function() { return []; },
+    checkFlags: function() { return true; }
+  };
 
   // Imports used by the loadServer() loader
   globalThis.imports      = {};
   globalThis.imports.path = require('path');
   globalThis.loadedFiles  = [];
-
-  // Is replaced when lib.js is loaded.
-  foam.checkFlags = () => true;
 
   if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
   var flags = globalThis.foam.flags;
@@ -51,7 +56,11 @@
   }
 
   this.FOAM_FILES = foam.POM = function(pom) {
-    if ( Array.isArray(pom) ) pom = { projects: pom };
+    if ( Array.isArray(pom) ) {
+      pom = { files: pom };
+    } else {
+      console.log('*********** FOOBAR: Loading Project', pom.name);
+    }
 
     var load  = loadServer();
     var seen  = {};
@@ -61,6 +70,7 @@
       if ( ! files ) return;
       files.forEach(f => {
         var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
 
         // TODO: fix when all files properly flagged
         /*

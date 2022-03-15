@@ -105,7 +105,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isActive'
+      name: 'isActive',
+      value: true
     },
     {
       class: 'Enum',
