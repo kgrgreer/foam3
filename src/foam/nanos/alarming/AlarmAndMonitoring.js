@@ -37,6 +37,10 @@ foam.CLASS({
           }
 
           DAO omDAO = (DAO) ( config.getUseCCOMLogger() ? x.get("localCcom1MinuteDAO") : x.get("om1MinuteDAO") );
+          if ( omDAO == null ) {
+            // Force OM DAO if CCOM DAO is not enabled
+            omDAO = (DAO) x.get("om1MinuteDAO");
+          }
 
           Date currentCloseTime = new Date();
           currentCloseTime.setSeconds(0);
