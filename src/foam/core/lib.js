@@ -23,14 +23,14 @@ foam = {
   isServer: false,
   ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {
     // from a static build, models have already been filtered so checkFlags can be a NOP
-    //checkFlags: function(flags) { return true; }
+    // checkFlags: function(flags) { return true; }
   }),
-  core:     {},
+  core: {},
+  adaptFlags: function(flags) {
+    return typeof flags === 'string' ? flags.split('|') : flags;
+  },
   checkFlags: function(flags) {
-    if ( ! flags || flags.length == 0 ) return true;
-    if ( typeof flags === 'string' ) {
-      flags = flags.split('|');
-    }
+    if ( ! flags ) return true;
 
     function and(fs) {
       fs = fs.split('&');
@@ -43,6 +43,12 @@ foam = {
     // OR AND clauses
     for ( var i = 0 ; i < flags.length ; i++ ) {
       if ( and(flags[i]) ) return true;
+    }
+    return false;
+  },
+  checkForFlag: function (flags, desired) {
+    if ( flags ) for ( var f of flags ) {
+      if ( f.split('&').includes(desired) ) return true;
     }
     return false;
   },

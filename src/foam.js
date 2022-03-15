@@ -6,15 +6,19 @@
 
 
 (function() {
-  var foam = globalThis.foam || ( globalThis.foam = { isServer: false, flags: globalThis.FOAM_FLAGS || {} } );
+  var foam = globalThis.foam = {
+    isServer: false,
+    flags: globalThis.FOAM_FLAGS || {},
 
-  // Is replaced when lib.js is loaded.
-  foam.checkFlags = () => true;
+    // Are replaced when lib.js is loaded.
+    adaptFlags: function() { return []; },
+    checkFlags: function() { return true; }
+  };
 
   if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
   var flags = globalThis.foam.flags;
 
-  flags.web  = true;
+  flags.web     = true;
   flags.genjava = true;
 
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
@@ -55,7 +59,7 @@
   }
 
   this.FOAM_FILES = foam.POM = async function(pom) {
-    if ( Array.isArray(pom) ) pom = { projects: pom };
+    if ( Array.isArray(pom) ) pom = { files: pom };
 
     var jsLibs = pom.jsLib || [];
     var load   = createLoader();
@@ -65,6 +69,7 @@
       if ( ! files ) return;
       files.forEach(f => {
         var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
 
         // Do we need this check? Is it already done elsewhere?
         if ( seen[name] ) {

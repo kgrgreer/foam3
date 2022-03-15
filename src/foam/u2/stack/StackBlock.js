@@ -40,6 +40,9 @@ foam.CLASS({
       name: 'popup',
       documentation: `Used by DesktopStackView to determine if view should be wrapped in a popup, 
                       takes in arguments that are passed onto the Popup`
+    },
+    {
+      name: 'currentMemento'
     }
   ]
 
