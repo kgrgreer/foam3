@@ -1862,7 +1862,7 @@ foam.CLASS({
       return typeof x === 'number' ? '' + x :
         typeof x === 'string' ? '"' + x + '"' :
         Array.isArray(x) ? '[' + x.map(this.toString_.bind(this)).join(', ') + ']' :
-        x && (x).toString();
+        x && x.toString && x.toString();
     },
 
     {
@@ -4502,16 +4502,6 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'During Expr evaluation, nested formula partialEval are often stored along the way and they require a unique key, as the toString may be the same.',
-      class: 'String',
-      name: 'id',
-      transient: true,
-      javaFactory: `
-        java.util.Random r = java.util.concurrent.ThreadLocalRandom.current();
-        return new java.util.UUID(r.nextLong(), r.nextLong()).toString();
-      `
-    },
-    {
       class: 'foam.mlang.ExprArrayProperty',
       name: 'args'
     },
@@ -4638,7 +4628,12 @@ foam.CLASS({
     {
       name: 'reduce',
       abstract: false,
-      javaCode: 'return accumulator - currentValue;',
+      // javaCode: 'return accumulator - currentValue;'
+      javaCode: `
+var result = accumulator - currentValue;
+foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, " - ", currentValue, " = ", result);
+return result;
+`,
       code: (accumulator, currentValue) => accumulator - currentValue
     }
   ]
@@ -4655,7 +4650,12 @@ foam.CLASS({
     {
       name: 'reduce',
       abstract: false,
-      javaCode: 'return accumulator * currentValue;',
+      // javaCode: 'return accumulator * currentValue;',
+      javaCode: `
+var result = accumulator * currentValue;
+foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, " * ", currentValue, " = ", result);
+return  result;
+`,
       code: (accumulator, currentValue) => accumulator * currentValue
     }
   ]
