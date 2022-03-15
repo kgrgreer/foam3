@@ -674,11 +674,6 @@ foam.POM({
   { name: "foam/demos/u2/AllViews" },
   { name: "foam/demos/u2/MDAllViews" },
 
-  //IBAN
-  { name: "foam/nanos/iban/IBANInfo", flags: "java" },
-  { name: "foam/nanos/iban/ValidationIBAN", flags: "java" },
-  { name: "foam/nanos/iban/test/ValidationIBANTest", flags: "java" },
-
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification", flags: "java" },
 
