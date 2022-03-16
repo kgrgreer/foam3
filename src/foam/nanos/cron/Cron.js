@@ -46,7 +46,6 @@ foam.CLASS({
   sections: [
     {
       name: 'scheduling',
-      isAvailable: function(id) { return !! id; },
       order: 2
     },
     {
@@ -144,6 +143,13 @@ return getSchedule().getNextScheduledTime(x,
   new Date(System.currentTimeMillis())
 );
 `
+    },
+    {
+      name: 'runScript',
+      code: `
+        super.runScript();
+        getSchedule().postExecution();
+      `
     }
   ]
 });

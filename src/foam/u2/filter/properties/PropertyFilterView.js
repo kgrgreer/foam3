@@ -20,8 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'filterController',
-    'memento'
+    'filterController'
   ],
 
   requires: [
@@ -166,26 +165,12 @@ foam.CLASS({
 
       this.isInit = true;
 
-      if ( this.memento && this.memento.head.length != 0 ) {
-        var predicate = this.getPredicateFromMemento();
-        if ( predicate ) {
-          this.filterController.setExistingPredicate(0, this.property.name, predicate.partialEval());
-        }
-      }
 
       this.isFiltering();
       this.isInit = false;
       this.checkPresetPredicate();
     },
 
-    function getPredicateFromMemento() {
-      if ( this.memento && this.memento.head.length > 0 ) {
-        var predicate = this.queryParser.parseString(this.memento.head);
-        if ( predicate ) {
-          return predicate.partialEval();
-        }
-      }
-    },
     function checkPresetPredicate() {
       if ( this.preSetPredicate != null ) {
         this.switchActive();
@@ -234,14 +219,8 @@ foam.CLASS({
 
     function isFiltering() {
       if ( ! this.isInit ) {
-        if ( ! this.view_ || ! this.memento )
+        if ( ! this.view_ )
           return;
-
-        var pred;
-        if ( Object.keys(this.view_.predicate).length > 0 && ! foam.mlang.predicate.True.isInstance(this.view_.predicate) )
-          pred =  this.view_.predicate.toMQL && this.view_.predicate.toMQL();
-
-        this.memento.head = pred ? pred : '';
       }
 
       // Since the existing predicates are lazy loaded (on opening the view),

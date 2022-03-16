@@ -853,7 +853,7 @@ model from which to test ServiceProvider ID (spid)`,
           if ( getWriteOnly() ) {
             delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
           } else {
-            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster());
+            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster() && !getSAF());
           }
         }
         return delegate;

@@ -211,7 +211,7 @@ foam.CLASS({
       name: 'browseViews',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.NamedViewCollection);
+        return of && of.getAxiomsByClass(this.NamedViewCollection);
       }
     },
     {
@@ -220,7 +220,7 @@ foam.CLASS({
       name: 'cannedQueries',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.CannedQuery);
+        return of && of.getAxiomsByClass(this.CannedQuery);
       }
     },
     {

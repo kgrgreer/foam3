@@ -8,9 +8,13 @@ foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'MinMaxCapabilityWizardlet',
   extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
-  implements: [ 'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet' ],
+  implements: [
+    'foam.nanos.crunch.ui.LiftingAwareWizardlet',
+    'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet'
+  ],
 
   requires: [
+    'foam.core.ArraySlot',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection',
     'foam.u2.view.CardSelectView',
@@ -221,21 +225,32 @@ foam.CLASS({
       };
       this.choiceWizardlets.push(wizardlet);
 
-      // Auto-select lifted capabilities if they're available to start with
-      if ( meta.lifted && wizardlet.isAvailable ) {
-        this.selectedData = [...( this.selectedData || [] ), wizardlet.capability];
-
-        // Hide choice selection if maximum is reached by capability lifting
-        if ( this.selectedData.length >= this.max ) {
-          this.isVisible = false;
-        }
-      }
-
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
       if ( ! meta.lifted ) wizardlet.isAvailable = false;
 
       return this.consumePrerequisites;
+    },
+    function handleLifting(liftedWizardlets) {
+      const updated = () => {
+        // Hide choice selection if lifted choices reach maximum
+        const countLifted = liftedWizardlets
+          .map(w => w.isAvailable ? 1 : 0)
+          .reduce((count, val) => count + val);
+        this.isVisible = countLifted < this.max && this.isAvailable;
+      
+
+        // Update lifted choices based on their availability
+        let newSelectedData = [...this.selectedData];
+        for ( const w of liftedWizardlets ) {
+          if ( w.isAvailable ) newSelectedData.push(w.capability);
+          else foam.Array.remove(newSelectedData, w.capability);
+        }
+        this.selectedData = foam.Array.unique(newSelectedData);
+      }
+      const slots = liftedWizardlets.map(w => w.isAvailable$);
+      this.ArraySlot.create({ slots }).sub(updated);
+      this.isAvailable$.sub(updated);
     }
   ]
 });

@@ -23,6 +23,7 @@ foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'ApplicationController',
   extends: 'foam.u2.Element',
+  mixins: ['foam.u2.memento.Memorable'],
 
   documentation: 'FOAM Application Controller.',
 
@@ -34,7 +35,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
-    'foam.nanos.controller.Memento',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -82,7 +82,6 @@ foam.CLASS({
     'layoutInitialized',
     'loginSuccess',
     'loginVariables',
-    'memento',
     'menuListener',
     'notify',
     'pushMenu',
@@ -182,12 +181,6 @@ foam.CLASS({
         } catch { };
         return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
           ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
-      }
-    },
-    {
-      name: 'memento',
-      factory: function() {
-        return this.Memento.create({ replaceHistoryState: false });
       }
     },
     {
@@ -327,6 +320,13 @@ foam.CLASS({
         return foam.nanos.auth.Language.create({code: 'en'})
       }
     },
+    {
+      name: 'route',
+      memorable: true,
+      postSet: function(_, n) {
+        if ( n && this.currentMenu?.id != n) this.pushMenu(n);
+      }
+    },
     'currentMenu',
     'lastMenuLaunched',
     'webApp',
@@ -363,33 +363,8 @@ foam.CLASS({
 
       var self = this;
 
-      // Start Memento Support
-      var windowHash = this.WindowHash.create();
-      this.memento.value = windowHash.value;
-
-      this.onDetach(windowHash.value$.sub(function() {
-        if ( windowHash.feedback_ )
-          return;
-        self.memento.value = windowHash.value;
-      }));
-
-      this.onDetach(this.memento.changeIndicator$.sub(function () {
-        self.memento.value = self.memento.combine();
-        windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
-
-        if ( ! self.memento.feedback_ )
-          self.mementoChange();
-      }));
-
-      this.onDetach(this.memento.value$.sub(function () {
-        self.memento.parseValue();
-
-        if ( ! self.memento.feedback_ ) {
-          self.mementoChange();
-          windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
-        }
-      }));
-      // End Memento Support
+      // Update memento if updated through windowHash
+      this.memento_.str$.sub(this.memento_.update);
 
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
@@ -401,8 +376,8 @@ foam.CLASS({
         self.installLanguage();
 
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.memento.head ) {
-          var menu = await self.__subContext__.menuDAO.find(self.memento.head);
+        if ( self.route ) {
+          var menu = await self.__subContext__.menuDAO.find(self.route);
           // explicitly check that the menu is unauthenticated
           // since if there is a user session on refresh, this would also
           // find authenticated menus to try to push before fetching subject
@@ -446,7 +421,6 @@ foam.CLASS({
         // the line above before executing this one.
         await self.fetchTheme();
         await self.onUserAgentAndGroupLoaded();
-        self.mementoChange();
       });
 
       // Reload styling on theme change
@@ -661,44 +635,38 @@ foam.CLASS({
     async function pushMenu(menu, opt_forceReload) {
       /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
-      let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
+      let currentMenuCheck = this.currentMenu?.id;
+      var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
       /** Used to load a specific menus. **/
-      // Do it this way so as to not reset mementoTail if set
-      // needs to be updated prior to menu dao searchs - since some menus rely soley on the memento
-      if ( this.memento.head !== idCheck || opt_forceReload ) {
-        this.memento.value = idCheck;
-        if  ( idCheck.includes(this.Memento.SEPARATOR) )
-          menu = idCheck.split(this.Memento.SEPARATOR)[0];
-      }
+      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+        realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        dao = this.client.menuDAO;
-        menu = await dao.find(menu);
-        if ( ! menu ) { 
-          menu = await this.findFirstMenuIHavePermissionFor(dao);
-          let newId = (menu && menu.id) || '';
-          if ( this.memento.head !== newId ) 
-            this.memento.value = newId;
-        }
-        menu && menu.launch(this);
-        this.menuListener(menu);
+        this.pushMenu_(realMenu, menu);
       } else {
         await this.clientPromise.then(async () => {
-          dao = this.client.menuDAO;
-          menu = await dao.find(menu);
-          if ( ! menu ) { 
-            menu = await this.findFirstMenuIHavePermissionFor(dao);
-            let newId = (menu && menu.id) || '';
-            if ( this.memento.head !== newId ) 
-              this.memento.value = newId;
-          }
-          menu && menu.launch(this);
-          this.menuListener(menu);
+          await this.pushMenu_(realMenu, menu);
         });
       }
+    },
+
+    async function pushMenu_(realMenu, menu) {
+      dao = this.client.menuDAO;
+      realMenu = await dao.find(realMenu);
+      if ( ! realMenu ) { 
+        menu = await this.findFirstMenuIHavePermissionFor(dao);
+        let newId = (menu && menu.id) || '';
+        if ( this.route !== newId ) 
+          this.route = newId;
+        return;
+      }
+      if ( typeof menu == 'string' && ! menu.includes('/') )
+        menu = realMenu;
+      menu && menu.launch && menu.launch(this);
+      this.menuListener(realMenu);
     },
 
     async function findFirstMenuIHavePermissionFor(dao) {
@@ -761,11 +729,6 @@ foam.CLASS({
   ],
 
   listeners: [
-    async function mementoChange() {
-      // TODO: make a latch instead
-      this.pushMenu(this.memento.head);
-    },
-
     async function onUserAgentAndGroupLoaded() {
       /**
        * Called whenever the group updates.
@@ -780,11 +743,8 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-
       if ( hash ) {
-        window.onpopstate();
-      } else if ( this.theme ) {
-        this.window.location.hash = this.theme.defaultMenu;
+        this.window.onpopstate();
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
@@ -796,6 +756,7 @@ foam.CLASS({
        * by some Menu View. Is exported.
        */
       this.currentMenu = m;
+      this.route = m.id;
     },
 
     function lastMenuLaunchedListener(m) {
