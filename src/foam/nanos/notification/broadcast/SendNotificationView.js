@@ -22,7 +22,6 @@ foam.CLASS({
     'notificationDAO'
   ],
 
-  documentation: '',
   // Make an abstract SummaryView with this CSS and props for title and primary action,
   // everything else can be populated by the parent view, maybe a border??
   css: `
@@ -47,7 +46,6 @@ foam.CLASS({
   ],
   methods: [
     function render() {
-      var self = this;
       this.data.created = new Date();
       this
       .addClass()
@@ -57,12 +55,12 @@ foam.CLASS({
           .add('Send Notification')
           .addClass('h100')
         .end()
-        .start(self.CardBorder)
-          .addClass(self.myClass('sectionWrapper'))
+        .start(this.CardBorder)
+          .addClass(this.myClass('sectionWrapper'))
           .tag(this.VerticalDetailView, { data$: this.data$ })
           .start().add('Preview').addClass('p-semiBold').end()
           .start(this.NotificationRowView, { data$: this.data$, of: this.BroadcastNotification.id })
-            .addClass(self.myClass('button'))
+            .addClass(this.myClass('button'))
           .end()
         .end()
       .end();

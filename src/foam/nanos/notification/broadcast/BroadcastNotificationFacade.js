@@ -7,12 +7,12 @@
 foam.CLASS({
   package: 'foam.nanos.notification.broadcast',
   name: 'BroadcastNotificationFacade',
-  documentation: '',
+
   imports: [
     'auth?',
     'broadcastNotificationDAO',
-    'notificationDAO',
-    'ctrl'
+    'ctrl',
+    'notificationDAO'
   ],
   requires: [
     'foam.nanos.notification.Notification',
@@ -39,7 +39,6 @@ foam.CLASS({
         const group = foam.nanos.auth.Group;
         var dao = X[X.data.GROUP_ID.targetDAOKey] || X.data[X.data.GROUP_ID.name + '$dao'];
         // TODO: find a better way to only pick children
-        // dao = this.auth?.check(X, '*') ? dao : dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
         dao = dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
         return { class: 'foam.u2.view.ReferenceView', dao: dao };
       }
