@@ -4,7 +4,6 @@
 * http://www.apache.org/licenses/LICENSE-2.0
 */
 
-// Should this have a DAO of all notifs sent by this user using this model?
 foam.CLASS({
   package: 'foam.nanos.notification.broadcast',
   name: 'BroadcastNotificationFacade',
