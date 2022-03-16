@@ -84,7 +84,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setAuthorize(true)
-      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("sftestobjects")
       .setSAF(true)
       .setFuid(true)

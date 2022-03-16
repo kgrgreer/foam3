@@ -24,6 +24,12 @@
     'foam.nanos.cron.Schedule'
   ],
 
+  messages: [
+    { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
+    { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
+    { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' }
+],
+
   requires: [
     'foam.time.DayOfWeek',
     'foam.time.TimeUnit',
@@ -47,7 +53,12 @@
   properties: [
     {
       class: 'Date',
-      name: 'startDate'
+      name: 'startDate',
+      validateObj: function(startDate) {
+        if ( ! startDate ) return this.INVALID_DATE_ERROR;
+        // check against current date
+        if ( startDate <= new Date() ) return this.START_DATE_ERROR;
+      }
     },
     {
       class: 'Int',
@@ -184,6 +195,11 @@
         if ( ends != this.ScheduleEnd.ON )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      validateObj: function(endsOn) {
+        if ( ! endsOn ) return this.INVALID_DATE_ERROR;
+        // check against start date
+        if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
       }
     },
     {
