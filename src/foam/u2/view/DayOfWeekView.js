@@ -8,6 +8,10 @@ foam.CLASS({
   name: 'DayOfWeekView',
   extends: 'foam.u2.view.MultiChoiceView',
 
+  requires: [
+    'foam.time.DayOfWeek'
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -30,7 +34,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.choices = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri'];
+      this.choices = this.DayOfWeek.VALUES;
     }
   ]
 });
