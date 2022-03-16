@@ -59,11 +59,7 @@ foam.CLASS({
   ],
 
   methods: [
-    // function init() {
-    //   this.launchDoc();
-    // },
     function render() {
-      // this.onDetach(this.memento.tail$.sub(this.launchDoc));
       var dao = this.__context__[this.daoKey];
       this.addClass();
       if ( ! dao ) {
@@ -84,11 +80,5 @@ foam.CLASS({
         return data.toE(null, this.__subSubContext__);
       }));
     }
-  ],
-  // listeners: [
-  //   function launchDoc() {
-  //     var tmp = this.memento.value.split(this.Memento.SEPARATOR);
-  //     this.docKey = tmp.length > 1 && tmp[1];
-  //   }
-  // ]
+  ]
 });
