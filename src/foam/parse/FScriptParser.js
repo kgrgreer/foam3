@@ -113,7 +113,7 @@ foam.CLASS({
         return {
           START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: sym('or'),
+          expr: alt(sym('or'), sym('formula')),
 
           or: repeat(sym('and'), literal('||'), 1),
 
@@ -162,10 +162,36 @@ foam.CLASS({
             literal('true', true),
             literal('false', false),
             literal('null', null),
+            sym('formula'),
             sym('number'),
             sym('fieldLen'),
             sym('field'),
             sym('enum')
+          ),
+
+          formula: repeat(sym('minus'), literal('+'), 1),
+
+          minus: repeat(sym('form_expr'), literal('-'), 1),
+
+          form_expr: seq(
+            alt(
+              sym('number'),
+              sym('fieldLen'),
+              sym('field')
+            ),
+            optional(
+              seq(
+                alt(
+                  literal('*', this.MUL),
+                  literal('/', this.DIV)
+                ),
+                alt(
+                  sym('number'),
+                  sym('fieldLen'),
+                  sym('field')
+                )
+              )
+            )
           ),
 
           date: alt(
@@ -271,7 +297,7 @@ foam.CLASS({
           },
 
           number: function(v) {
-            return parseInt(compactToString(v));
+            return v[0] == null ? parseInt(v[1].join("")) : -parseInt(v[1].join(""));
           },
 
           comparison: function(v) {
@@ -309,6 +335,19 @@ foam.CLASS({
             return foam.mlang.StringLength.create({
               arg1: v[0]
             })
+          },
+
+          formula: function(v) {
+            return self.ADD.apply(self, v);
+          },
+
+          minus: function(v) {
+            return self.SUB.apply(self, v);
+          },
+
+          form_expr: function(v) {
+            if ( v.length == 1 || v[1] === null ) return v[0];
+            return v[1][0].call(self, v[0], v[1][1])
           },
 
           regex: function(v) {

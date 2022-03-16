@@ -9,16 +9,19 @@ package foam.parse;
 import foam.core.*;
 import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
+import foam.lib.parse.Action;
 import foam.lib.parse.Optional;
 import foam.mlang.Expr;
+import foam.mlang.Formula;
 import foam.mlang.IsValid;
 import foam.mlang.StringLength;
-import foam.mlang.expr.Dot;
+import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
 
 import java.lang.Exception;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -68,7 +71,7 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(expressions));
 
-    grammar.addSymbol("START", grammar.sym("OR"));
+    grammar.addSymbol("START", new Alt(grammar.sym("OR"), grammar.sym("FORMULA")));
 
     grammar.addSymbol(
       "OR",
@@ -189,7 +192,83 @@ public class FScriptParser
         ( Expr ) values[2] : new foam.mlang.Constant (values[2]));
       return bin;
     });
+    grammar.addSymbol(
+      "FORMULA",
+      new Repeat(grammar.sym("MINUS"), Literal.create("+"),1)
+    );
+    grammar.addAction("FORMULA", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      if ( vals[0] == null ) return null;
+      List<Expr> args = new ArrayList();
+      for ( int i = 0; i < vals.length; i++ ) {
+        args.add((Expr)vals[i]);
+      }
+      Formula formula = new Add();
+      formula.setArgs( args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
+      return formula;
+    });
 
+    grammar.addSymbol(
+      "MINUS",
+      new Repeat(grammar.sym("FORM_EXPR"), Literal.create("-"),1)
+    );
+    grammar.addAction("MINUS", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      if ( vals[0] == null ) return null;
+      List<Expr> args = new ArrayList();
+      for ( int i = 0; i < vals.length; i++ ) {
+        args.add((Expr)vals[i]);
+      }
+      Formula formula = new Subtract();
+      formula.setArgs( args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
+      return formula;
+    });
+
+    grammar.addSymbol("FORM_EXPR", new Seq(
+      new Alt(
+        grammar.sym("NUMBER"),
+        grammar.sym("FIELD_LEN"),
+        grammar.sym("FIELD")
+      ),
+      new Optional(
+        new Seq(
+          new Alt(
+            new AbstractLiteral("*") {
+              @Override
+              public Object value() {
+                return new Multiply();
+              }
+            },
+            new AbstractLiteral("/") {
+              @Override
+              public Object value() {
+                return new Divide();
+              }
+            }
+          ),
+          new Alt(
+            grammar.sym("NUMBER"),
+            grammar.sym("FIELD_LEN"),
+            grammar.sym("FIELD")
+          )
+        )
+      )
+    ));
+    grammar.addAction("FORM_EXPR", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) &&
+        !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
+        return Action.NO_PARSE;
+      }
+      if ( vals.length == 1 || vals[1] == null ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
+      Object [] formula = (Object[]) vals[1];
+      List<Expr> args = new ArrayList();
+      args.add(( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]));
+      args.add(( formula[1] instanceof Expr ) ? (Expr) formula[1] : new foam.mlang.Constant (formula[1]));
+      Formula ret = (Formula) formula[0];
+      ret.setArgs(args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
+      return ret;
+    });
 
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
       new Alt(
@@ -231,6 +310,7 @@ public class FScriptParser
       new Literal("false", false),
       new Literal("null", null),
       grammar.sym("NUMBER"),
+      grammar.sym("FORMULA"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("FIELD"),
       grammar.sym("ENUM")
@@ -396,10 +476,10 @@ public class FScriptParser
     grammar.addAction("FIELD", (val, x) -> {
       Object[] values = (Object[]) val;
       var expr = (Expr) values[0];
-      if ( values.length > 1 && values[1] != null ) {
-        Object[] values2 = ( Object[]) values[1];
+      if (values.length > 1 && values[1] != null) {
+        Object[] values2 = (Object[]) values[1];
 //        var parts = (String[]) values2[1];
-        for ( var i = 0 ; i < values2.length ; i++ ) {
+        for (var i = 0; i < values2.length; i++) {
           expr = new Dot(expr, NamedProperty.create((String) values2[i]));
         }
       }

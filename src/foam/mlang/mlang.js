@@ -4579,7 +4579,7 @@ foam.CLASS({
       code: function(o) {
         var result = null;
         for ( var i = 0; i < this.args.length; i++ ) {
-          var current = this.args[i].f(o);
+          var current = typeof this.args[i] === 'number' ? this.args[i] : this.args[i].f(o);
           if ( typeof current === 'number' ) {
             var oldResult = result;
             result = result === null ? current : this.reduce(result, current);

@@ -17,6 +17,7 @@ foam.CLASS({
   'foam.lib.parse.ParserContextImpl',
   'foam.lib.parse.StringPStream',
   'foam.mlang.predicate.Predicate',
+  'foam.mlang.Expr',
   'foam.nanos.auth.Address',
   'foam.nanos.auth.User',
   'foam.nanos.ruler.Rule',
@@ -89,6 +90,33 @@ foam.CLASS({
 
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
+
+    sps.setString("4+7");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==11, "4+7");
+
+    sps.setString("firstName.len+lastName.len");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==13, "firstname+lastname=13");
+
+    sps.setString("firstName.len+lastName.len==13");
+    test((((Predicate) parser.parse(sps, px).value()).f(user)), "firstname+lastname=13");
+
+    sps.setString("4+7+2");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==13, "13");
+
+    sps.setString("4+7-2");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==9, "9");
+
+    sps.setString("4+7*2");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==18, "18");
+
+    sps.setString("4+7/7");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==5, "5");
+
+    sps.setString("50/10-2");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==3, "3");
+
+    sps.setString("2*8-6");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==10, "10");
 
     addr.setCountryId("CA");
     addr.setCity("Toronto");
