@@ -201,13 +201,13 @@ foam.CLASS({
             delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();   
+            .build();
           } else {
             logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
             delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
               .setNSpec(getNSpec())
               .setDelegate(delegate)
-              .build();   
+              .build();
           }
         }
 
@@ -287,11 +287,6 @@ foam.CLASS({
           System.out.println("DEPRECATED: Will be completely removed after services journal migration script. No functionality as of now.");
         }
 
-        if ( getRuler() ) {
-          String name = foam.util.SafetyUtil.isEmpty(getRulerDaoKey()) ? getName() : getRulerDaoKey();
-          delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
-        }
-
         if ( getCreatedAware() ) {
           delegate = new foam.nanos.auth.CreatedAwareDAO.Builder(getX()).setDelegate(delegate).build();
           addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("created") });
@@ -304,6 +299,11 @@ foam.CLASS({
 
         if ( getLastModifiedByAware() )
           delegate = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
+
+        if ( getRuler() ) {
+          String name = foam.util.SafetyUtil.isEmpty(getRulerDaoKey()) ? getName() : getRulerDaoKey();
+          delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
+        }
 
         if ( getCapable() )
           delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
