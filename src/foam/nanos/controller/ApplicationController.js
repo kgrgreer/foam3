@@ -745,6 +745,12 @@ foam.CLASS({
       .on.put.sub(this.displayToastMessage.bind(this));
 
       this.fetchTheme();
+      this.initLayout.resolve();
+      var hash = this.window.location.hash;
+      if ( hash ) hash = hash.substring(1);
+      if ( hash ) {
+        window.onpopstate();
+      }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },
