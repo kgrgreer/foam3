@@ -92,6 +92,13 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(_,n) {
+        if ( ! n ) 
+          this.clearInput();
+      }
+    },
+    {
       class: 'String',
       name: 'height',
       value: '400'
@@ -195,6 +202,11 @@ foam.CLASS({
       }
 
       return '';
+    },
+
+    function clearInput() {
+      if ( this.richText && this.richText.el_() ) 
+        this.richText.el_().innerHTML = '';
     },
 
     function insertElement(e, sel) {
