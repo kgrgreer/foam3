@@ -7,5 +7,14 @@
 foam.CLASS({
   package: 'foam.nanos.notification.broadcast',
   name: 'BroadcastNotification',
-  extends: 'foam.nanos.notification.Notification'
+  extends: 'foam.nanos.notification.Notification',
+
+  tableColumns: [
+    'id',
+    'body',
+    'notificationType',
+    'broadcasted',
+    'groupId.id',
+    'createdBy.userName'
+  ],
 });

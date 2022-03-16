@@ -10,6 +10,8 @@ foam.CLASS({
   name: 'BroadcastNotificationFacade',
   documentation: '',
   imports: [
+    'auth?',
+    'broadcastNotificationDAO',
     'notificationDAO',
     'ctrl'
   ],
@@ -38,6 +40,7 @@ foam.CLASS({
         const group = foam.nanos.auth.Group;
         var dao = X[X.data.GROUP_ID.targetDAOKey] || X.data[X.data.GROUP_ID.name + '$dao'];
         // TODO: find a better way to only pick children
+        // dao = this.auth?.check(X, '*') ? dao : dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
         dao = dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
         return { class: 'foam.u2.view.ReferenceView', dao: dao };
       }
@@ -92,16 +95,17 @@ foam.CLASS({
           transient: false,
           toastState: this.showToast ? 'REQUESTED' : 'NONE'
         });
-        this.notificationDAO.put(a).then(() => {
-          // Reset all props
-          this.body = undefined;
-          this.toastMessage = undefined;
-          this.showToast = undefined;
-          this.groupId = undefined;
-          this.ctrl.notify(this.NOTIFICATION_SENT, '', 'INFO', true);
-        }, e => {
-          console.log('ehllo');
-          this.ctrl.notify(this.NOTIFICATION_ERROR, e.message, 'ERROR', true);
+        this.broadcastNotificationDAO.put(a).then(obj => {
+          this.notificationDAO.put(a).then(() => {
+            // Reset all props
+            this.body = undefined;
+            this.toastMessage = undefined;
+            this.showToast = undefined;
+            this.groupId = undefined;
+            this.ctrl.notify(this.NOTIFICATION_SENT, '', 'INFO', true);
+          }, e => {
+            this.ctrl.notify(this.NOTIFICATION_ERROR, e.message, 'ERROR', true);
+          });
         });
       }
     }
