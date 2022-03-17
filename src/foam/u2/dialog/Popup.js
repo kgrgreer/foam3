@@ -80,6 +80,7 @@ foam.CLASS({
       ^inner {
         height: auto;
         width: auto;
+        align-items: unset;
       }
     }
  `,

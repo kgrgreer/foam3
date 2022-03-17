@@ -328,17 +328,20 @@ foam.POM({
   { name: "foam/nanos/cron/IntervalSchedule", flags: "java" },
   { name: "foam/nanos/cron/MonthlyChoice", flags: "java" },
   { name: "foam/nanos/cron/NeverSchedule" },
-  { name: "foam/nanos/cron/OrSchedule", flags: "java" },
-  { name: "foam/nanos/cron/Schedule", flags: [ "java", "web" ] },
-  { name: "foam/nanos/cron/Schedulable", flags: [ "java", "web" ] },
-  { name: "foam/nanos/cron/ScheduleEnd", flags: [ "java", "web" ] },
-  { name: "foam/nanos/cron/SimpleIntervalSchedule", flags: [ "java", "web" ] },
-  { name: "foam/nanos/cron/SymbolicFrequency", flags: [ "java", "web" ] },
-  { name: "foam/nanos/cron/TimeHMS", flags: "java" },
-  { name: "foam/nanos/cron/TimeOfDaySchedule", flags: "java" },
-  { name: "foam/nanos/cron/test/IntervalScheduleTest", flags: "java" },
-  { name: "foam/nanos/cron/test/TimeOfDayScheduleTest", flags: "java" },
-  { name: "foam/nanos/export/ClientGoogleSheetsExportService", flags: "java" },
+  { name: "foam/nanos/cron/OrSchedule", flags: [ "java" ] },
+  { name: "foam/nanos/cron/Schedule", flags: [ "java" ] },
+  { name: "foam/nanos/cron/Schedulable", flags: [ "java" ] },
+  { name: "foam/nanos/cron/ScheduleEnd", flags: [ "java" ] },
+  { name: "foam/nanos/cron/SimpleIntervalSchedule", flags: [ "java" ] },
+  { name: "foam/nanos/cron/SymbolicFrequency", flags: [ "java" ] },
+  { name: "foam/nanos/cron/TimeHMS", flags: [ "java" ] },
+  { name: "foam/nanos/cron/TimeOfDaySchedule", flags: [ "java" ] },
+  { name: "foam/nanos/cron/NextDate", flags: [ "java" ] },
+  { name: "foam/nanos/cron/NextDateService", flags: [ "java" ] },
+  { name: "foam/nanos/cron/ClientNextDateService", flags: [ "java" ] },
+  { name: "foam/nanos/cron/test/IntervalScheduleTest", flags: [ "java" ] },
+  { name: "foam/nanos/cron/test/TimeOfDayScheduleTest", flags: [ "java" ] },
+  { name: "foam/nanos/export/ClientGoogleSheetsExportService", flags: [ "java" ] },
   { name: "foam/nanos/export/CSVTableExportDriver"},
   { name: "foam/nanos/export/ExportDriverRegistry", flags: "java" },
   { name: "foam/nanos/export/ExportDriver", flags: "java" },
@@ -674,17 +677,18 @@ foam.POM({
   { name: "foam/demos/u2/AllViews" },
   { name: "foam/demos/u2/MDAllViews" },
 
-  //IBAN
-  { name: "foam/nanos/iban/IBANInfo", flags: "java" },
-  { name: "foam/nanos/iban/ValidationIBAN", flags: "java" },
-  { name: "foam/nanos/iban/test/ValidationIBANTest", flags: "java" },
-
   //notification
   { name: "foam/nanos/crunch/TopLevelCapabilityStatusUpdateNotification", flags: "java" },
 
-  { name: "foam/nanos/auth/GroupPermissionJunctionRefinement", flags: "java" },
-
   { name: 'foam/nanos/om/OMRuleAction', flags: "java" },
   { name: 'foam/nanos/om/CCOMRuleAction', flags: "java" },
+
+  { name: "foam/nanos/theme/customisation/ThemeFacade", flags: 'web' },
+  { name: "foam/nanos/theme/customisation/ThemeCustomisation", flags: 'web' },
+  { name: "foam/nanos/theme/customisation/ThemeImageUploadView", flags: 'web' },
+  { name: "foam/nanos/notification/broadcast/BroadcastNotification", flags: 'java' },
+  { name: "foam/nanos/notification/broadcast/SendNotificationView", flags: 'web' },
+  { name: "foam/nanos/notification/broadcast/BroadcastNotificationFacade", flags: 'web' },
+  { name: "foam/nanos/notification/broadcast/BroadcastNotificationNotificationCitationView", flags: 'web' },
   ]
 });
