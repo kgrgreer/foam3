@@ -478,20 +478,18 @@ foam.CLASS({
             let x = this.ctrl.__subContext__;
             await this.grantAll(x, cap.id, this.subject);
 
+            // If only one visible capability then it grants if requirements met
             var data = null;
-            if ( cap.wizardlet && cap.wizardlet.submit ) {
+            if ( cap.of )
               data = cap.of.create({}, this);
-              var wizardlet = cap.wizardlet.clone(this);
-              wizardlet.copyFrom({ capability: cap });
-              wizardlet.data = data;
-              wizardlet.submit();
-            }
-
+            if ( data && ! data.submitted )
+              data.submitted = true;
             let capa = await this.crunchService.updateJunction(x, cap.id, data, this.CapabilityJunctionStatus.GRANTED);
 
-            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
+            if ( capa.status != this.CapabilityJunctionStatus.GRANTED ) {
+              data.submitted = false;
               this.openWizard(cap, false);
-            else
+            } else
               this.window.location.reload();
           }
         })
