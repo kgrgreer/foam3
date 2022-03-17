@@ -479,8 +479,13 @@ foam.CLASS({
             await this.grantAll(x, cap.id, this.subject);
 
             var data = null;
-            if ( cap.id.endsWith("general-admission") )
-              data = net.nanopay.crunch.onboardingModels.SubmitData.create({ submitted: true });
+            if ( cap.wizardlet && cap.wizardlet.submit ) {
+              data = cap.of.create({}, this);
+              var wizardlet = cap.wizardlet.clone(this);
+              wizardlet.copyFrom({ capability: cap });
+              wizardlet.data = data;
+              wizardlet.submit();
+            }
 
             let capa = await this.crunchService.updateJunction(x, cap.id, data, this.CapabilityJunctionStatus.GRANTED);
 
