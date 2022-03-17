@@ -6,6 +6,8 @@ p({"class":"foam.nanos.auth.Permission","id":"service.auth.checkUser","descripti
 p({"class":"foam.nanos.auth.Permission","id":"emailmessage.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"smsmessage.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin","description":"Ability to use the 'admin' menu."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.send-notification","description":"Ability to use Send Notification UI"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.customise-theme","description":"Ability to use Theme Customisation UI"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.groups","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.regions","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.tickets","description":""})

@@ -78,7 +78,6 @@ foam.CLASS({
       }
       if ( s.currentMemento ) {
         v = foam.u2.ViewSpec.createView(view, null, this, X);
-        console.log(view, s.currentMemento);
         this.ctrl.__subContext__.memento_.str = s.currentMemento;
       } else {
         v = foam.u2.ViewSpec.createView(view, null, this, X);
