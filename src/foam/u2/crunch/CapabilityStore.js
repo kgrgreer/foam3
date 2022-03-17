@@ -82,7 +82,9 @@ foam.CLASS({
     'crunchService',
     'menuDAO',
     'registerElement',
-    'theme'
+    'subject',
+    'theme',
+    'window'
   ],
 
   messages: [
@@ -473,7 +475,19 @@ foam.CLASS({
             if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
               || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
-            this.openWizard(cap, false);
+            let x = this.ctrl.__subContext__;
+            await this.grantAll(x, cap.id, this.subject);
+
+            var data = null;
+            if ( cap.id.endsWith("general-admission") )
+              data = net.nanopay.crunch.onboardingModels.SubmitData.create({ submitted: true });
+
+            let capa = await this.crunchService.updateJunction(x, cap.id, data, this.CapabilityJunctionStatus.GRANTED);
+
+            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
+              this.openWizard(cap, false);
+            else
+              this.window.location.reload();
           }
         })
     },
@@ -493,6 +507,21 @@ foam.CLASS({
           .execute().then(() => {
             this.wizardOpened = false
           });
+    },
+    async function grantAll(x, capabilityId, subject) {
+      let grantPath = await x.crunchService.getGrantPath(x, capabilityId);
+      return  await this.grantArray(x, grantPath, subject);
+    },
+    async function grantArray(x, capabilities, subject) {
+      for ( let i = 0 ; i < capabilities.length; i++ ) {
+        let capability = capabilities[i];
+        if ( Array.isArray(capability) ) {
+          await this.grantArray(x, capability, subject);
+          continue;
+        }
+
+        return await this.crunchService.updateJunction(x, capability.id, null, this.CapabilityJunctionStatus.GRANTED);
+      }
     }
   ],
 
