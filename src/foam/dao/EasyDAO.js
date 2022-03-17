@@ -287,13 +287,6 @@ foam.CLASS({
           System.out.println("DEPRECATED: Will be completely removed after services journal migration script. No functionality as of now.");
         }
 
-        if ( getCreatedAware() ) {
-          delegate = new foam.nanos.auth.CreatedAwareDAO.Builder(getX()).setDelegate(delegate).build();
-          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("created") });
-        }
-        if ( getCreatedByAware() )
-          delegate = new foam.nanos.auth.CreatedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
-
         if ( getLastModifiedAware() )
           delegate = new foam.nanos.auth.LastModifiedAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
@@ -304,6 +297,14 @@ foam.CLASS({
           String name = foam.util.SafetyUtil.isEmpty(getRulerDaoKey()) ? getName() : getRulerDaoKey();
           delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
         }
+
+        if ( getCreatedAware() ) {
+          delegate = new foam.nanos.auth.CreatedAwareDAO.Builder(getX()).setDelegate(delegate).build();
+          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("created") });
+        }
+        if ( getCreatedByAware() )
+          delegate = new foam.nanos.auth.CreatedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
+
 
         if ( getCapable() )
           delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
