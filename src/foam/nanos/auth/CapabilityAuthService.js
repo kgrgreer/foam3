@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -53,11 +54,17 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         PM pm = PM.create(getX(), this.getClass(), "check");
+        var value = false;
         try {
-          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission) );
+          value = getDelegate().check(x, permission);
+          if ( ! value ) {
+            value = ( user != null && capabilityCheck(x, user, permission) ) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission) );
+            if ( value ) ServerCrunchService.purgeCache(x); // update to permissions needs to update the preReq which are cached in the service
+          }
         } finally {
           pm.log(getX());
         }
+        return value;
       `
     },
     {
@@ -76,7 +83,11 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          sp.setX(x);
+          // service provider needs system context (getX()) 
+          // cause it does a call to prerequisiteImplies(getX(), permission);
+          // the prereq calls have another auth permission 
+          // which makes this a never ending recursive call without system override
+          sp.setX(getX());
           return sp.grantsPermission(permission);
         }
         return false;
@@ -86,11 +97,17 @@ foam.CLASS({
       name: 'checkUser',
       javaCode: `
         PM pm = PM.create(getX(), this.getClass(), "check");
+        var value = false;
         try {
-          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission));
+          value = getDelegate().checkUser(x, user, permission);
+          if ( ! value ) {
+            value = capabilityCheck(x, user, permission) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission));
+            if ( value ) ServerCrunchService.purgeCache(x);
+          }
         } finally {
           pm.log(getX());
         }
+        return value;
       `
     },
     {
