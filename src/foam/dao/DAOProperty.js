@@ -39,6 +39,14 @@ foam.CLASS({
       name: 'javaInfoType',
       flags: ['java'],
       value: 'foam.core.AbstractDAOPropertyPropertyInfo'
+    },
+    {
+      name: 'adapt',
+      value: function(_, o) {
+        if ( ! o ) return;
+        if ( foam.String.isInstance(o) && this.__subContext__ ) return this.__subContext__[o];
+        return o;
+      }
     }
   ],
 
