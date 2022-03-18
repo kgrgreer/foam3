@@ -162,12 +162,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['userName', 'type'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
-              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
-            );
-          },
+          query: 'type!="User"||userName!=""',
           errorMessage: 'USERNAME_REQUIRED'
         }
       ],
@@ -314,6 +309,7 @@ foam.CLASS({
         'en' :'Email Address',
         'fr' :'Adresse Email'
       },
+      required: true,
       includeInDigest: true,
       containsPII: true,
       documentation: 'The email address of the User.',

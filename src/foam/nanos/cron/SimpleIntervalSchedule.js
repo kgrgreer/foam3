@@ -216,16 +216,12 @@
       validationPredicates: [
         {
           args: ['endsAfter'],
-          predicateFactory: function(e) {
-            return e.LT(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 100);
-          },
+          query: 'endsAfter<100',
           errorMessage: 'INVALID_ENDS_ON_100'
         },
         {
           args: ['endsAfter'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 1);
-          },
+          query: 'endsAfter>1',
           errorMessage: 'INVALID_ENDS_ON_1'
         }
       ]
@@ -322,7 +318,7 @@
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
-        } 
+        }
         if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
@@ -551,7 +547,7 @@
         }
       ],
       javaCode: `
-        // Todo change end of week based off country 
+        // Todo change end of week based off country
         return date.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
       `
     },
@@ -569,7 +565,7 @@
         }
       ],
       javaCode: `
-        // Todo change start of week based off country 
+        // Todo change start of week based off country
         return date.minusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
       `
     },
