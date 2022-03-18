@@ -203,10 +203,13 @@ foam.CLASS({
       shortName: 'route',
       memorable: true,
       postSet: function(o, n) {
-        if ( o != n ) this.mementoChange();
+        if ( o == n || ! this.viewDidRender ) return;
+        if ( o && this.stack.pos > 1 ) this.stack.back();
+        this.mementoChange();
       }
     },
-    ['viewTitle', 'Data Management']
+    ['viewTitle', 'Data Management'],
+    ['viewDidRender', false]
   ],
 
   methods: [
@@ -306,6 +309,8 @@ foam.CLASS({
               });
         });
       });
+      this.mementoChange();
+      this.viewDidRender = true;
     }
   ],
 

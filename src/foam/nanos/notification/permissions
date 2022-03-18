@@ -8,3 +8,5 @@ p({"class":"foam.nanos.auth.Permission","id":"notificationsettingdefaults.create
 p({"class":"foam.nanos.auth.Permission","id":"notificationsettingdefaults.remove.*","description":"Permission to delete any default notificationsetting."})
 p({"class":"foam.nanos.auth.Permission","id":"notificationsettingdefaults.read.*","description":"Permission to read any default notificationsetting."})
 p({"class":"foam.nanos.auth.Permission","id":"notificationsettingdefaults.update.*","description":"Permission to update any default notificationsetting."})
+p({"class":"foam.nanos.auth.Permission","id":"service.broadcastNotificationDAO","description":"Allows sending broadcastNotifications and reading DAO for history of all sent notificaitons"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.broadcastNotifications","description":"Menu for all broadcastedNotifications"})
