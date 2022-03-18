@@ -28,7 +28,7 @@
     {
       name: 'addSymbol',
       args: [
-        { name: 'symName', type: 'String' },
+        { name: 'symName',   type: 'String' },
         { name: 'symParser', type: 'Parser' }
       ],
       javaCode: `
@@ -39,7 +39,7 @@
       name: 'parse',
       type: 'foam.lib.parse.PStream',
       args: [
-        { name: 'ps', type: 'PStream' },
+        { name: 'ps',      type: 'PStream' },
         { name: 'parserX', type: 'ParserContext' },
         { name: 'optName', type: 'String' }
       ],
@@ -62,7 +62,7 @@ return ps.apply((Parser)getSymbols().get(optName), parserX);
     {
       name:'addAction',
       args: [
-        { name: 'name', type: 'String'},
+        { name: 'name',   type: 'String'},
         { name: 'action', type: 'foam.lib.parse.Action' }
       ],
       javaCode: `
@@ -75,6 +75,7 @@ symbols.put(name, grParser);
     }
   ]
 });
+
 
 foam.INTERFACE({
   package: 'foam.lib.parse',
@@ -93,12 +94,13 @@ foam.INTERFACE({
       name: 'execute',
       args: [
         { name: 'val', type: 'Object' },
-        { name: 'x', type: 'foam.lib.parse.ParserContext' }
+        { name: 'x',   type: 'foam.lib.parse.ParserContext' }
       ],
       type: 'Object'
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.lib.parse',

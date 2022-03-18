@@ -68,6 +68,7 @@ foam.CLASS({
       position: relative;
     }
     ^title{
+      margin-right: min(10%, 16px);
       padding-bottom: 16px;
     }
     ^actionBar {

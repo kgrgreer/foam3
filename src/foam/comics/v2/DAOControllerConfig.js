@@ -113,6 +113,15 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
+      name: 'browseController',
+      factory: function() {
+        return {
+          class: 'foam.comics.v2.DAOBrowseControllerView'
+        };
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
       name: 'summaryView',
       expression: function(tableColumns) {
         return {
@@ -202,7 +211,7 @@ foam.CLASS({
       name: 'browseViews',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.NamedViewCollection);
+        return of && of.getAxiomsByClass(this.NamedViewCollection);
       }
     },
     {
@@ -211,7 +220,7 @@ foam.CLASS({
       name: 'cannedQueries',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.CannedQuery);
+        return of && of.getAxiomsByClass(this.CannedQuery);
       }
     },
     {

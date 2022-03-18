@@ -77,7 +77,10 @@ the notification will be handled. `,
               template.setSpid(notification.getSpid());
             }
             template.setTemplate(notification.getToastMessage());
-
+            if ( template.getEmailArgs() == null ||
+                 template.getEmailArgs().size() == 0 ) {
+              template.setEmailArgs(notification.getEmailArgs());
+            }
             // Notify a user directly
             DAO userDAO = (DAO) x.get("localUserDAO");
             User user = (User) userDAO.find(template.getUserId());

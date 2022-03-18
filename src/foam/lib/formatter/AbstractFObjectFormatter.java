@@ -70,6 +70,10 @@ public abstract class AbstractFObjectFormatter
     return maybeOutputDelta(oldFObject, newFObject, null, null);
   }
 
+  public int compare(PropertyInfo prop, FObject oldFObject, FObject newFObject) {
+    return prop.compare(oldFObject, newFObject);
+  }
+
   protected synchronized List getProperties(PropertyInfo parentProp, ClassInfo info) {
     String of = info.getObjClass().getName();
 

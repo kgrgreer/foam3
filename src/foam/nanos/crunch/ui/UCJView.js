@@ -37,24 +37,25 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.ControllerMode',
-    'foam.u2.DisplayMode',
     'foam.u2.crunch.EasyCrunchWizard',
-    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
-    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
-    'foam.u2.crunch.wizardflow.StepWizardAgent',
-    'foam.u2.crunch.wizardflow.DetachAgent',
-    'foam.u2.crunch.wizardflow.SpinnerAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.crunch.wizardflow.SubmitAgent',
-    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
-    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.DisplayMode',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'foam.u2.wizard.agents.ConfigureFlowAgent',
+    'foam.u2.wizard.agents.DetachAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.DeveloperModeAgent',
+    'foam.u2.wizard.agents.SpinnerAgent',
+    'foam.u2.wizard.agents.StepWizardAgent',
     'foam.u2.wizard.StepWizardConfig',
     'foam.util.async.Sequence'
   ],
@@ -75,9 +76,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'BACK_LABEL', message: 'Back'},
-    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated'},
-    { name: 'SUCCESS_REMOVED', message: 'Data successfuly removed'}
+    { name: 'BACK_LABEL',      message: 'Back' },
+    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated' },
+    { name: 'SUCCESS_REMOVED', message: 'Data successfuly removed' }
   ],
 
   properties: [
@@ -107,6 +108,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var user = undefined;
+      if ( ! this.data ) return;
       var realUser = await this.userDAO.find(this.data.sourceId);
       if ( this.data.effectiveUser ) {
         user = await this.userDAO.find(this.data.effectiveUser);
@@ -130,6 +132,7 @@ foam.CLASS({
         sequence = this.Sequence.create(null, x)
         .add(this.ConfigureFlowAgent, { popupMode: false })
         .add(this.WAOSettingAgent)
+        .add(this.DeveloperModeAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.LoadWizardletsAgent)
         .add(this.StepWizardAgent)
@@ -145,7 +148,7 @@ foam.CLASS({
           .reconfigure('LoadCapabilitiesAgent', {
             subject: subject })
           .reconfigure('GrantedEditAgent', {
-            subject: subject 
+            subject: subject
           })
           .reconfigure('ConfigureFlowAgent', {
             popupMode: false
@@ -163,7 +166,6 @@ foam.CLASS({
       this.config.applyTo(sequence);
       sequence.execute();
 
-
       // add back button and 'View Reference' title
       this.addClass()
         .startContext({ data: this })
@@ -176,12 +178,12 @@ foam.CLASS({
         .addClass(this.myClass('stack-container'))
           .tag(this.StackView.create({ data: stack, showActions: false }, x));
     },
+
     async function onSave(isValid, ucj) {
       if ( isValid && ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
         this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
         this.stack.back();
-      }
-      else {
+      } else {
         let { rejectOnInvalidatedSave, approval } = this.config;
         if ( rejectOnInvalidatedSave && approval ) {
           let rejectedApproval = approval.clone();
@@ -192,14 +194,13 @@ foam.CLASS({
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
             this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-            
+
             this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
           }, e => {
             this.notify(e.message, '', this.LogLevel.ERROR, true);
           });
-        }
-        else {
+        } else {
           this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
           this.stack.back();
         }

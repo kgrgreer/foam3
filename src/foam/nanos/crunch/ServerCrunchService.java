@@ -546,12 +546,12 @@ public class ServerCrunchService
     // Need Capability to associate UCJ correctly
     DAO capabilityDAO = (DAO) x.get("capabilityDAO");
 
-    // If the subject in context doesn't have the capability availabile, we
+    // If the subject in context doesn't have the capability available, we
     // should act as though it doesn't exist; this is why inX is here.
     Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
     if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
       throw new RuntimeException(String.format(
-        "Capability with id '%s' is either unavailabile or does not exist",
+        "Capability with id '%s' is either unavailable or does not exist",
         capabilityId
       ));
     }
