@@ -201,7 +201,9 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['title', 'type'],
-          query: 'title!=""',
+          predicateFactory: function(e) {
+            return e.NEQ(foam.nanos.ticket.Ticket.TITLE, "");
+          },
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
@@ -217,7 +219,16 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
+                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
+              ),
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
+            );
+          },
           errorString: 'Please provide a comment.'
         }
       ],
@@ -368,7 +379,16 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
+                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
+              ),
+              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
+              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
+            );
+          },
           errorString: 'Please provide a comment.'
         }
       ],

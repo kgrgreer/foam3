@@ -61,7 +61,11 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['newPassword'],
-          query: 'newPassword.len>=10',
+          predicateFactory: function(e) {
+            return e.GTE(foam.mlang.StringLength.create({
+              arg1: foam.nanos.auth.ResetPassword.NEW_PASSWORD
+            }), 10);
+          },
           errorMessage: 'PASSWORD_LENGTH_10_ERROR'
         }
       ]
@@ -78,7 +82,11 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['newPassword', 'confirmationPassword'],
-          query: 'newPassword==confirmationPassword',
+          predicateFactory: function(e) {
+            return e.EQ(
+              foam.nanos.auth.ResetPassword.NEW_PASSWORD,
+              foam.nanos.auth.ResetPassword.CONFIRMATION_PASSWORD);
+          },
           errorMessage: 'PASSWORD_NOT_MATCH'
         }
       ]

@@ -42,7 +42,7 @@ foam.CLASS({
           .build();
       CoreTypesValidationTestModel testModelInvalidLow =
         new CoreTypesValidationTestModel.Builder(getX())
-          .setTestDate(new Date(Long.MIN_VALUE))
+          .setTestDate(new Date(-8640000000000001L))
           .build();
       CoreTypesValidationTestModel testModelValidLow =
         new CoreTypesValidationTestModel.Builder(getX())
@@ -50,7 +50,7 @@ foam.CLASS({
           .build();
 
       boolean throwsIllegalState = false;
-
+      
       DAO m = new MDAO(
         CoreTypesValidationTestModel.getOwnClassInfo());
       DAO v = new ValidatingDAO(getX(), m);

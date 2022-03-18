@@ -10,8 +10,17 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'query'
+      name: 'predicateFactory'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'predicate',
+      expression: function(predicateFactory) {
+        return predicateFactory ?
+          predicateFactory(foam.mlang.ExpressionsSingleton.create()) :
+          null;
+      }
     },
     {
       class: 'StringArray',
@@ -22,10 +31,9 @@ foam.CLASS({
       // TODO: it isn't normal for JS functions to have a 'js' prefix
       // TODO: poor choice of name, should be something with 'assert'
       name: 'jsFunc',
-      expression: function(query, jsErr) {
-        return function(obj) {
-          var predicate = foam.mlang.predicate.FScript.create({query: query, prop: this});
-          if ( ! predicate.f(obj) ) return jsErr(obj);
+      expression: function(predicate, jsErr) {
+        return function() {
+          if ( ! predicate.f(this) ) return jsErr(this);
         };
       }
     },
@@ -68,7 +76,7 @@ foam.CLASS({
       return data.slot(this.jsFunc, this.args);
       /*
       return this.ExpressionSlot.create({
-        args: this.args.map(a => data[a+'$' ]),
+        args: this.args.map(a => data[a+'$']),
         code: this.jsFunc.bind(data)
       });
       */
@@ -101,12 +109,7 @@ foam.CLASS({
     },
     {
       name: 'validateObj',
-      factory: function(prop) {
-      var name = this.name;
-      var label = this.label;
-      var required = this.required;
-      var self_ = this;
-      var validationPredicates = this.validationPredicates;
+      expression: function(name, label, required, validationPredicates) {
         if ( validationPredicates.length ) {
           var args = foam.Array.unique(validationPredicates
             .map(vp => vp.args)
@@ -115,7 +118,7 @@ foam.CLASS({
             for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
               var vp   = validationPredicates[i];
               var self = this;
-              if ( vp.jsFunc.call(self_, this) ) return vp.jsErr.call(self, self);
+              if ( vp.jsFunc.call(this) ) return vp.jsErr.call(self, self);
             }
             return null;
           }];
@@ -157,7 +160,9 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: 'thisValue.len>='+self.minLength,
+            predicateFactory: function(e) {
+              return e.GTE(foam.mlang.StringLength.create({ arg1: self }), self.minLength);
+            },
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
         }
@@ -165,7 +170,9 @@ foam.CLASS({
         if ( foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len<='+self.maxLength,
+            predicateFactory: function(e) {
+              return e.LTE(foam.mlang.StringLength.create({ arg1: self }), self.maxLength);
+            },
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
           });
         }
@@ -173,7 +180,9 @@ foam.CLASS({
         if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
           a.push({
             args: [this.name],
-            query: this.name+'.len!=0',
+            predicateFactory: function(e) {
+              return e.GTE(foam.mlang.StringLength.create({ arg1: self }), 1);
+            },
             errorString: `${this.label} ${foam.core.String.REQUIRED}`
           });
         }
@@ -210,7 +219,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.VALIDATE_OBJ.expression.apply(this, arguments);
       }
     }
   ]
@@ -248,7 +257,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.VALIDATE_OBJ.expression.apply(this, arguments);
       }
     }
   ]
@@ -271,10 +280,13 @@ foam.CLASS({
         if ( ! this.autoValidate ) return [];
         var self = this;
         var a    = [];
+
         if ( foam.Number.isInstance(self.min) ) {
           a.push({
             args: [self.name],
-            query: self.name+">="+self.min,
+            predicateFactory: function(e) {
+              return e.GTE(self, self.min);
+            },
             errorString: `Please enter ${self.label.toLowerCase()} greater than or equal to ${self.min}.`
           });
         }
@@ -282,7 +294,9 @@ foam.CLASS({
         if ( foam.Number.isInstance(self.max) ) {
           a.push({
             args: [self.name],
-            query: self.name+"<="+self.max,
+            predicateFactory: function(e) {
+              return e.LTE(self, self.max);
+            },
             errorString: `Please enter ${self.label.toLowerCase()} less than or equal to ${self.max}`
           });
         }
@@ -404,23 +418,29 @@ foam.CLASS({
       name: 'validationPredicates',
       factory: function() {
         var self = this;
-        var ret = [];
+        var ret = [
+          {
+            args: [this.name],
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(self, ''),
+                e.REG_EXP(self, /\S+@\S+\.\S+/)
+              );
+            },
+            errorString: this.VALID_EMAIL_REQUIRED
+          }
+        ];
         if ( this.required ) {
           ret.push(
             {
               args: [this.name],
-              query: 'email!=""',
+              predicateFactory: function(e) {
+                return e.NEQ(self, '');
+              },
               errorString: this.EMAIL_REQUIRED
             }
           );
         }
-        ret.push(
-          {
-            args: [this.name],
-            query:'email~/^[a-zA-Z0-9.+_-]+@[a-zA-Z_]+?\\.[a-zA-Z]+$/',
-            errorString: this.VALID_EMAIL_REQUIRED
-          }
-        );
         return ret;
       }
     }
@@ -449,19 +469,28 @@ foam.CLASS({
           ? [
               {
                 args: [this.name],
-                query: this.name +' exists',
+                predicateFactory: function(e) {
+                  return e.HAS(self);
+                },
                 errorString: this.PHONE_NUMBER_REQUIRED
               },
               {
                 args: [this.name],
-                query: this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+                predicateFactory: function(e) {
+                  return e.REG_EXP(self, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX);
+                },
                 errorString: this.INVALID_PHONE_NUMBER
               }
             ]
           : [
               {
                 args: [this.name],
-                query: this.name +' !exists||' + this.name+'~'+foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+                predicateFactory: function(e) {
+                    return e.OR(
+                      e.EQ(foam.mlang.StringLength.create({ arg1: self }), 0),
+                      e.REG_EXP(self, foam.nanos.auth.Phone.PHONE_NUMBER_REGEX)
+                    );
+                },
                 errorString: this.INVALID_PHONE_NUMBER
               }
             ];
@@ -486,7 +515,25 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue !exists||thisValue<='+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>=' + foam.Date.MIN_DATE.toISOString().slice(0,16),
+            predicateFactory: function(e) {
+              return e.OR(
+                e.NOT(e.HAS(self)), // Allow null dates.
+                e.AND(
+                  e.LTE(
+                    self,
+                    // Maximum date supported by FOAM
+                    // (bounded by JavaScript's limit)
+                    foam.Date.MAX_DATE
+                  ),
+                  e.GTE(
+                    self,
+                    // Minimum date supported by FOAM
+                    // (bounded by JavaScript's limit)
+                    foam.Date.MIN_DATE
+                  )
+                )
+              );
+            },
             errorString: 'Invalid date value'
           }
         ];
@@ -516,7 +563,12 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            query: 'thisValue==""||thisValue~'+urlRegex,
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(self, ''),
+                e.REG_EXP(self, urlRegex)
+              );
+            },
             errorString: this.INVALID_URL
           }
         ];
@@ -546,7 +598,12 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            query: 'thisValue==""||thisValue~'+websiteRegex,
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(self, ''),
+                e.REG_EXP(self, websiteRegex)
+              );
+            },
             errorString: this.INVALID_WEBSITE
           }
         ];
