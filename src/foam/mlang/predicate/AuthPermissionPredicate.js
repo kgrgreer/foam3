@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -30,12 +30,6 @@
   methods: [
     {
       name: 'f',
-      args: [
-        {
-          name: 'obj',
-          type: 'Object'
-        }
-      ],
       javaCode: `
         X x = (X) obj;
         try {
@@ -46,7 +40,6 @@
             Logger logger = (Logger) x.get("logger");
             logger.warning(this.getClass().getSimpleName(), "predicate auth check - something went wrong checking permission: ", getPermission());
           }
-
           return false;
         }
       `
