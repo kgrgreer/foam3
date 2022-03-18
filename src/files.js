@@ -367,7 +367,6 @@ foam.POM({
   { name: "foam/parse/QueryParser" },
   { name: "foam/parse/FScriptParser" },
   { name: "foam/parse/FScriptParserTest", flags: [ "java" ] },
-  { name: "foam/parse/FScript" },
   { name: "foam/parse/QueryParserUserTest", flags: "java" },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },
