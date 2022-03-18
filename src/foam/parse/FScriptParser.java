@@ -199,12 +199,12 @@ public class FScriptParser
     grammar.addAction("FORMULA", (val, x) -> {
       Object[] vals = (Object[]) val;
       if ( vals[0] == null ) return null;
-      List<Expr> args = new ArrayList();
+      Expr[] args = new Expr[vals.length];
       for ( int i = 0; i < vals.length; i++ ) {
-        args.add((Expr)vals[i]);
+        args[i] = (Expr)vals[i];
       }
       Formula formula = new Add();
-      formula.setArgs( args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
+      formula.setArgs(args);
       return formula;
     });
 
@@ -215,12 +215,12 @@ public class FScriptParser
     grammar.addAction("MINUS", (val, x) -> {
       Object[] vals = (Object[]) val;
       if ( vals[0] == null ) return null;
-      List<Expr> args = new ArrayList();
+      Expr[] args = new Expr[vals.length];
       for ( int i = 0; i < vals.length; i++ ) {
-        args.add((Expr)vals[i]);
+        args[i] = (Expr)vals[i];
       }
       Formula formula = new Subtract();
-      formula.setArgs( args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
+      formula.setArgs(args);
       return formula;
     });
 
@@ -231,25 +231,27 @@ public class FScriptParser
         grammar.sym("FIELD")
       ),
       new Optional(
-        new Seq(
-          new Alt(
-            new AbstractLiteral("*") {
-              @Override
-              public Object value() {
-                return new Multiply();
+        new Repeat(
+          new Seq(
+            new Alt(
+              new AbstractLiteral("*") {
+                @Override
+                public Object value() {
+                  return new Multiply();
+                }
+              },
+              new AbstractLiteral("/") {
+                @Override
+                public Object value() {
+                  return new Divide();
+                }
               }
-            },
-            new AbstractLiteral("/") {
-              @Override
-              public Object value() {
-                return new Divide();
-              }
-            }
-          ),
-          new Alt(
-            grammar.sym("NUMBER"),
-            grammar.sym("FIELD_LEN"),
-            grammar.sym("FIELD")
+            ),
+            new Alt(
+              grammar.sym("NUMBER"),
+              grammar.sym("FIELD_LEN"),
+              grammar.sym("FIELD")
+            )
           )
         )
       )
@@ -260,14 +262,22 @@ public class FScriptParser
         !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
         return Action.NO_PARSE;
       }
-      if ( vals.length == 1 || vals[1] == null ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
-      Object [] formula = (Object[]) vals[1];
-      List<Expr> args = new ArrayList();
-      args.add(( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]));
-      args.add(( formula[1] instanceof Expr ) ? (Expr) formula[1] : new foam.mlang.Constant (formula[1]));
-      Formula ret = (Formula) formula[0];
-      ret.setArgs(args.toArray((Expr[]) Array.newInstance(Expr.class, args.size())));
-      return ret;
+      if ( vals.length == 1 || vals[1] == null || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
+      Expr[] args = new Expr[2];
+      Object [] formulas = (Object[]) vals[1];
+      var firstArg = ( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]);
+      var temp = (Object[]) formulas[0];
+      var cnst = ( temp[1] instanceof Expr ) ? (Expr) temp[1] : new foam.mlang.Constant (temp[1]);
+      Formula formula = (Formula) temp[0];
+      formula.setArgs(new Expr[] {firstArg, cnst});
+      for ( int i = 1 ; i < formulas.length; i++ ) {
+        var tempArr = (Object[]) formulas[i];
+        var tempFormula = (Formula) tempArr[0];
+        var constant = ( tempArr[1] instanceof Expr ) ? (Expr) tempArr[1] : new foam.mlang.Constant (tempArr[1]);
+        tempFormula.setArgs(new Expr[] { formula, constant });
+        formula = tempFormula;
+      }
+      return formula;
     });
 
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),

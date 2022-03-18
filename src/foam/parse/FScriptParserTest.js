@@ -112,6 +112,9 @@ foam.CLASS({
     sps.setString("4+7/7");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==5, "5");
 
+    sps.setString("4+7/7*8/4*2*3");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==16, "16");
+
     sps.setString("50/10-2");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==3, "3");
 

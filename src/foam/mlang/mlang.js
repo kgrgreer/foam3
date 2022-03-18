@@ -4128,7 +4128,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'FScript',
-  extends: 'foam.mlang.predicate.AbstractPredicate',
+  extends: 'foam.mlang.AbstractExpr',
 
   javaImports: [
     'foam.lib.parse.PStream',
@@ -4166,7 +4166,7 @@ foam.CLASS({
       ParserContext x = new ParserContextImpl();
       ps = parser.parse(ps, x);
       if (ps == null)
-        return false;
+        return null;
 
       return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
       `
