@@ -56,7 +56,9 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['value'],
-          query: 'value==true',
+          predicateFactory: function(e) {
+            return e.EQ(foam.core.RequiredBooleanHolder.VALUE, true);
+          },
           errorMessage: 'WRONG_VALUE'
         }
       ]

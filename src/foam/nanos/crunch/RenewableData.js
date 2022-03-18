@@ -54,7 +54,12 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['renewable', 'reviewed'],
-          query: 'renewable==false||reviewed==true',
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(foam.nanos.crunch.RenewableData.RENEWABLE, false),
+              e.EQ(foam.nanos.crunch.RenewableData.REVIEWED,  true)
+            )
+          },
           errorMessage: 'REVIEW_ERROR'
         }
       ]
