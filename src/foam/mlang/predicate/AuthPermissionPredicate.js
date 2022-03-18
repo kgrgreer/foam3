@@ -38,7 +38,7 @@
         } catch (Exception e) {
           if ( x != null ) {
             Logger logger = (Logger) x.get("logger");
-            logger.warning(this.getClass().getSimpleName(), "predicate auth check - something went wrong checking permission: ", getPermission());
+            logger.warning(this.getClass().getSimpleName(), "predicate auth check - something went wrong checking permission: ", getPermission(), e);
           }
           return false;
         }
