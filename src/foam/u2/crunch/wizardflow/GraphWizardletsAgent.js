@@ -22,8 +22,10 @@ foam.CLASS({
   requires: [
     'foam.graph.GraphTraverser',
     'foam.graph.TraversalOrder',
+    'foam.nanos.crunch.ui.CapabilityWizardlet',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
+    'foam.u2.wizard.NullWAO',
     'foam.u2.wizard.ProxyWAO'
   ],
 
@@ -141,9 +143,14 @@ foam.CLASS({
       if ( ! wizardlet ) return null;
       wizardlet = wizardlet.clone(this.__subContext__);
 
-      wizardlet.copyFrom({ capability: capability });
+      if ( this.CapabilityWizardlet.isInstance(wizardlet) ) {
+        wizardlet.copyFrom({ capability: capability });
+      } else {
+        wizardlet.id = capability.id;
+      }
 
       var wao = wizardlet.wao;
+      if ( ! wao ) wao = wizardlet.wao = this.NullWAO.create();
       while ( this.ProxyWAO.isInstance(wao) ) {
         // If there's already something at the end, don't replace it
         if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
