@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.wizard.common',
   name: 'SuccessWizardletView',
@@ -42,9 +48,10 @@ foam.CLASS({
             .addClass(this.myClass('image'))
           .end()
         .endContext()
-        .start('h2')
+        .start()
+          .addClass('h200')
           .add(this.message$)
-        .end()
+        .end();
     }
   ]
 });
