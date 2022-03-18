@@ -274,7 +274,7 @@ foam.CLASS({
         Object id = obj.getProperty("id");
         if ( id != null &&
              ! SafetyUtil.isEmpty(id.toString()) ) {
-          FObject old = dao.inX(getX()).find(id);
+          FObject old = dao.inX(x).find(id);
           if ( old != null ) {
             nu = old.fclone();
             nu.copyFrom(obj);
