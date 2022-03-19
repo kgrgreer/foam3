@@ -198,6 +198,8 @@ foam.CLASS({
           .remove('CheckNoDataAgent')
           .remove('AutoSaveWizardletsAgent')
           .remove('SaveAllAgent')
+          .remove('WizardStateAgent') // does not make sense in transient wizards
+          .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
