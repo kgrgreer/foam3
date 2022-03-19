@@ -390,7 +390,7 @@ foam.CLASS({
       name: 'implies',
       type: 'Boolean',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',          type: 'Context' },
         { name: 'permission', type: 'String' }
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
