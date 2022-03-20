@@ -774,11 +774,13 @@ foam.CLASS({
       name: 'toString',
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' +
-            this.arg1.toString() + ', ' +
-            this.arg2.toString() + ')';
+            this.arg1 && this.arg1.toString() || 'NA' + ', ' +
+            this.arg2 && this.arg2.toString() || 'NA' + ')';
       },
       javaCode: `
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), getArg1().toString(), getArg2().toString());
+        String arg1 = getArg1() != null ? getArg1().toString() : "NA";
+        String arg2 = getArg2() != null ? getArg2().toString() : "NA";
+        return String.format("%s(%s, %s)", getClass().getSimpleName(), arg1, arg2);
       `
     },
     {
@@ -4516,6 +4518,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         Double result = null;
+try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
           if ( current instanceof Number ) {
@@ -4530,7 +4533,19 @@ foam.CLASS({
             }
           }
         }
+        if ( result == null ) {
+foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,result,null,args", getArgs().length, this.toString());
+        }
         return getRounding() ? Math.round(result) : result;
+} catch (Throwable t) {
+foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,result", result, this.toString(), t);
+        for ( int i = 0; i < getArgs().length; i++) {
+          foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,arg", i, "arg", getArgs()[i]);
+          var current = getArgs()[i].f(obj);
+          foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,arg", i, "current", current);
+        }
+throw new RuntimeException(t);
+}
       `,
       code: function(o) {
         var result = null;
@@ -4573,6 +4588,7 @@ foam.CLASS({
 
         if ( list.size() == getArgs().length ) {
           var result = list.stream().reduce(this::reduce).get();
+
           if ( Double.isFinite(result) ) {
             return new Constant(result);
           }
@@ -4631,7 +4647,7 @@ foam.CLASS({
       // javaCode: 'return accumulator - currentValue;'
       javaCode: `
 var result = accumulator - currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, " - ", currentValue, " = ", result);
+foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, "-", currentValue, "=", result);
 return result;
 `,
       code: (accumulator, currentValue) => accumulator - currentValue
@@ -4653,7 +4669,7 @@ foam.CLASS({
       // javaCode: 'return accumulator * currentValue;',
       javaCode: `
 var result = accumulator * currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, " * ", currentValue, " = ", result);
+foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, "*", currentValue, "=", result);
 return  result;
 `,
       code: (accumulator, currentValue) => accumulator * currentValue
@@ -4752,7 +4768,14 @@ foam.CLASS({
           .append(", valueIfFalse:").append(getValueIfFalse())
           .append(")");
         return sb.toString();
-      `
+      `,
+      code: function() {
+        return this.cls_.name + '(' +
+          'predicate:' + this.predicate && this.predicate.toString() +
+          ', valueIfTrue:' + (this.valueIfTrue && this.valueIfTrue.toString() || 'NA') +
+          ', valueIfFalse:' + (this.valueIfFalse && this.valueIfFalse.toString() || 'NA') +
+          ')';
+      }
     }
   ]
 });
