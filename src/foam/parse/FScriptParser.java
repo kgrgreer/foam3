@@ -11,14 +11,12 @@ import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
 import foam.lib.parse.Action;
 import foam.lib.parse.Optional;
-import foam.mlang.Expr;
-import foam.mlang.Formula;
-import foam.mlang.IsValid;
-import foam.mlang.StringLength;
+import foam.mlang.*;
 import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
+import net.nanopay.smf.parser.NewlineParser;
 
 import java.lang.Exception;
 import java.lang.reflect.Array;
@@ -71,7 +69,7 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(expressions));
 
-    grammar.addSymbol("START", new Alt(grammar.sym("OR"), grammar.sym("FORMULA")));
+    grammar.addSymbol("START", new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")));
 
     grammar.addSymbol(
       "OR",
@@ -280,6 +278,50 @@ public class FScriptParser
       return formula;
     });
 
+    grammar.addSymbol("IF_ELSE", new SeqI(new int[] { 5, 11,14 },
+      Whitespace.instance(),
+      Literal.create("if"),
+      Whitespace.instance(),
+      Literal.create("("),
+      Whitespace.instance(),
+      grammar.sym("OR"),
+      Whitespace.instance(),
+      Literal.create(")"),
+      Whitespace.instance(),
+      Literal.create("{"),
+      new Alt(NewlineParser.create(), Whitespace.instance()),
+      new Alt(
+        grammar.sym("START"),
+        grammar.sym("VALUE")
+      ),
+      new Alt(NewlineParser.create(), Whitespace.instance()),
+      Literal.create("}"),
+      new Optional(
+        new Seq1(5,
+          new Alt(NewlineParser.create(), Whitespace.instance()),
+          Literal.create("else"),
+          Whitespace.instance(),
+          Literal.create("{"),
+          new Alt(NewlineParser.create(), Whitespace.instance()),
+          new Alt(
+            grammar.sym("START"),
+            grammar.sym("VALUE")
+          ),
+          new Alt(NewlineParser.create(), Whitespace.instance()),
+          Literal.create("}")
+        )
+      )
+    ));
+
+    grammar.addAction("IF_ELSE", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      var ifelse = new If();
+      ifelse.setPredicate((Predicate) vals[0]);
+      ifelse.setValueIfTrue((Expr) vals[1]);
+      if ( vals.length > 2 ) ifelse.setValueIfFalse((Expr) vals[2]);
+      return ifelse;
+    });
+
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
       new Alt(
         new AbstractLiteral("exists") {
@@ -325,6 +367,8 @@ public class FScriptParser
       grammar.sym("FIELD"),
       grammar.sym("ENUM")
     ));
+
+//    grammar.addAction("VALUE", (val, x) -> val instanceof Expr ? val : new Constant(val));
 
     grammar.addSymbol("REGEX", new Seq1(
       1, Literal.create("/"),

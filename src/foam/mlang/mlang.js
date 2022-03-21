@@ -4350,6 +4350,58 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'If',
+  extends: 'foam.mlang.AbstractExpr',
+
+  properties: [
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      javaFactory: 'return foam.mlang.MLang.TRUE;'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'valueIfTrue'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'valueIfFalse'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        if ( getPredicate().f(obj) )
+          return  getValueIfTrue() != null ? getValueIfTrue().f(obj) : null;
+        return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      javaCode: `
+        var sb = new StringBuilder();
+        sb.append("If(predicate:").append(getPredicate())
+          .append(", valueIfTrue:").append(getValueIfTrue())
+          .append(", valueIfFalse:").append(getValueIfFalse())
+          .append(")");
+        return sb.toString();
+      `,
+      code: function() {
+        return this.cls_.name + '(' +
+          'predicate:' + this.predicate && this.predicate.toString() +
+          ', valueIfTrue:' + (this.valueIfTrue && this.valueIfTrue.toString() || 'NA') +
+          ', valueIfFalse:' + (this.valueIfFalse && this.valueIfFalse.toString() || 'NA') +
+          ')';
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.mlang',
