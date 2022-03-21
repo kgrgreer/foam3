@@ -227,8 +227,24 @@ public class ServerCrunchService
         }
         public void eof() {}
       };
-
       ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
+
+      Sink purgeUSink = new Sink() {
+        public void put(Object obj, Detachable sub) {
+          var ucj = (UserCapabilityJunction) obj;
+          if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED
+            || ucj.getStatus() == CapabilityJunctionStatus.EXPIRED ) 
+            purgeCache(x);
+        }
+        public void remove(Object obj, Detachable sub) {
+          purgeCache(x);
+        }
+        public void reset(Detachable sub) {
+          purgeCache(x);
+        }
+        public void eof() {}
+      };
+      ((DAO) x.get("userCapabilityJunctionDAO")).listen(purgeUSink, TRUE);
     }
 
     Map map = new ConcurrentHashMap<String, List<String>>();
