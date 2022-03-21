@@ -38,7 +38,6 @@
           return auth.check(x, getPermission());
         } catch (Exception e) {
           if ( x != null ) {
-            Logger logger = (Logger) x.get("logger");
             Loggers.logger(x, this).warning("permission",getPermission(), e);
           }
           return false;
