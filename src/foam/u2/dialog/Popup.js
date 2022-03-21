@@ -74,6 +74,9 @@ foam.CLASS({
       position: relative;
       /* The following line fixes a stacking problem in certain browsers. */
       will-change: opacity;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
     }
 
     @media only screen and (min-width: 960px) {
@@ -82,6 +85,14 @@ foam.CLASS({
         width: auto;
         align-items: unset;
       }
+      ^fullscreen ^inner {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    ^fullscreen ^inner {
+      border-radius: 0;
     }
  `,
 
@@ -97,6 +108,11 @@ foam.CLASS({
       name: 'isStyled',
       value: true,
       documentation: 'Can be used to turn off all styling for modal container'
+    },
+    {
+      name: 'fullscreen',
+      class: 'Boolean',
+      value: true
     }
   ],
 
@@ -106,6 +122,7 @@ foam.CLASS({
       var content;
 
       this.addClass()
+        .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .on('keydown', this.onKeyDown)
         .start()
           .addClass(this.myClass('background'))
