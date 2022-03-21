@@ -27,9 +27,9 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'foam.mlang.expr.DateTypes',
+      of: 'foam.time.TimeUnit',
       name: 'dateGroupingType',
-      value: 'MONTHS'
+      value: 'MONTH'
     }
   ],
 
@@ -45,13 +45,13 @@ foam.CLASS({
       code: function(obj) {
         if ( obj.created ) {
           var dateCreated = new Date(obj.created);
-          if ( this.dateGroupingType == 'DAYS' ) {
+          if ( this.dateGroupingType == foam.time.TimeUnit.DAY ) {
             return dateCreated.toLocaleString([], { day: 'numeric', month: 'long',  year: 'numeric' });
           }
-          else if ( this.dateGroupingType == 'MONTHS' ) {
+          else if ( this.dateGroupingType == foam.time.TimeUnit.MONTH ) {
             return dateCreated.toLocaleString([], { month: 'long',  year: 'numeric' });
           }
-          else if ( this.dateGroupingType == 'YEARS' ) {
+          else if ( this.dateGroupingType == foam.time.TimeUnit.YEAR ) {
             return dateCreated.toLocaleString([], { year: 'numeric' });
           }
         }
@@ -65,13 +65,13 @@ foam.CLASS({
           Calendar c = Calendar.getInstance();
           c.setTime(dateCreated);
 
-          if ( getDateGroupingType().getName().equals("DAYS") ) {
+          if ( getDateGroupingType().getName().equals(foam.time.TimeUnit.DAY.getName()) ) {
             return Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + " " + c.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("en") ) + ", " + Integer.toString(c.get(Calendar.YEAR));
           }
-          else if ( getDateGroupingType().getName().equals("MONTHS") ) {
+          else if ( getDateGroupingType().getName().equals(foam.time.TimeUnit.MONTH.getName()) ) {
             return c.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("en") ) + " " + Integer.toString(c.get(Calendar.YEAR));
           }
-          else if ( getDateGroupingType().getName().equals("YEARS") ) {
+          else if ( getDateGroupingType().getName().equals(foam.time.TimeUnit.YEAR.getName()) ) {
             return Integer.toString(c.get(Calendar.YEAR));
           }
         }
