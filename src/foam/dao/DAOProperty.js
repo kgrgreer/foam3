@@ -42,16 +42,10 @@ foam.CLASS({
     },
     {
       name: 'adapt',
-      value: function(_, o, prop) {
-        if ( ! o ) return;
-        if ( foam.String.isInstance(o) && this.__subContext__ ) return this.__subContext__[o];
-        if ( o === null ) return v;
-        var type = foam.lookup(prop.type);
-        return type.isInstance(o) ?
-          o :
-          ( o.class ?
-            this.__context__.lookup(o.class) :
-            type ).create(o, this.__subContext__);
+      value: function(o, v, prop) {
+        if ( ! v ) return;
+        if ( foam.String.isInstance(v) && this.__subContext__ ) return this.__subContext__[v];
+        return foam.core.FObjectProperty.ADAPT.value.call(this, o, v, prop);
       }
     }
   ],
