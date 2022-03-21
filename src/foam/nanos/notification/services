@@ -169,6 +169,22 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "broadcastNotificationDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.broadcast.BroadcastNotification.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("broadcastNotifications")
+      .setAuthorize(true)
+      .setFuid(true)
+      .build();
+    """,
+  "client": "{\"of\":\"foam.nanos.notification.broadcast.BroadcastNotification\"}"
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pop3",
   "lazy":true,

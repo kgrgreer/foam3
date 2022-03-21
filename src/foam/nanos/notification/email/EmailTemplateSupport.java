@@ -126,12 +126,14 @@ public class EmailTemplateSupport
           EQ(EmailTemplate.LOCALE, locale)
         ));
 
-    if ( emailTemplate_ != null ) {
-      EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
-      setTemplateSource(x, name, clonedTemplate,templateArgs);
+    // NOTE: email is using during startup for error reporting. This put()
+    // itself can fail and lead to a cascade of errors.
+    // if ( emailTemplate_ != null ) {
+    //   EmailTemplate clonedTemplate = (EmailTemplate) emailTemplate_.fclone();
+    //   setTemplateSource(x, name, clonedTemplate,templateArgs);
 
-      emailTemplateDAO.put(clonedTemplate);
-    }
+    //   emailTemplateDAO.put(clonedTemplate);
+    // }
 
     return emailTemplate_;
   }

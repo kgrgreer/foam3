@@ -97,7 +97,7 @@ foam.CLASS({
             self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
           });
           if ( ! this.stack.stack_[index].breadcrumbTitle )
-            console.warn('Missing Title for BreadcrumbView ' + navStack[i].view.class);
+            console.warn('Missing Title for BreadcrumbView ' + navStack[i].view);
         });
       }
     }

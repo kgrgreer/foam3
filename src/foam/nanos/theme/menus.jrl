@@ -1,12 +1,13 @@
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"admin.theme",
-  "label":"Themes",
+  "id":"admin.customise-theme",
+  "label":"Customise Theme",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"spThemeDAO"
+      "daoKey":"spThemeDAO",
+      "browseController": {"class": "foam.nanos.theme.customisation.ThemeCustomisationBrowseController"}
     }
   },
   "parent":"admin"
@@ -36,6 +37,17 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"themeDomainDAO"
     }
+  },
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.send-notification",
+  "label":"Send Notification",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view": { "class": "foam.nanos.notification.broadcast.SendNotificationView" }
   },
   "parent":"admin"
 })
