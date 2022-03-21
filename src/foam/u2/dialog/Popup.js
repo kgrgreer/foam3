@@ -72,11 +72,11 @@ foam.CLASS({
       align-items: center;
       z-index: 3;
       position: relative;
+      border-radius: 3px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      overflow: auto;
       /* The following line fixes a stacking problem in certain browsers. */
       will-change: opacity;
-      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
-      overflow: hidden;
     }
 
     @media only screen and (min-width: 960px) {
