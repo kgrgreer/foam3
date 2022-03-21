@@ -26,9 +26,9 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'foam.mlang.expr.DateTypes',
+      of: 'foam.time.TimeUnit',
       name: 'dateGroupingType',
-      value: 'DAYS'
+      value: 'DAY'
     },
     {
       class: 'FObjectArray',
