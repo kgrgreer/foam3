@@ -45,7 +45,7 @@ foam.CLASS({
       value: function(_, o, prop) {
         if ( ! o ) return;
         if ( foam.String.isInstance(o) && this.__subContext__ ) return this.__subContext__[o];
-
+        if ( o === null ) return v;
         var type = foam.lookup(prop.type);
         return type.isInstance(o) ?
           o :
