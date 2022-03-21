@@ -270,11 +270,17 @@ foam.CLASS({
           // throw new ClassCastException(obj.getClass() + " isn't instance of " + dao.getOf());
         }
 
-        // adding system context in case if user has permission to update but not to read
         Object id = obj.getProperty("id");
         if ( id != null &&
-             ! SafetyUtil.isEmpty(id.toString()) ) {
-          FObject old = dao.inX(x).find(id);
+          ! SafetyUtil.isEmpty(id.toString()) ) {
+          AuthService auth = (AuthService) x.get("auth");
+          String prefix = obj.getClass().getSimpleName().toLowerCase();
+          String readPermissionAll = String.format("%s.read.*", prefix);
+          String readPermissionId = String.format("%s.read.%s", prefix, id);
+          Boolean hasReadPermission = auth.check(x, readPermissionAll) || auth.check(x, readPermissionId);
+
+          // use system context in case if user has permission to update but not to read
+          FObject old = dao.inX(hasReadPermission ? x : getX()).find(id);
           if ( old != null ) {
             nu = old.fclone();
             nu.copyFrom(obj);
