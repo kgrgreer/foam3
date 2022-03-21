@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
