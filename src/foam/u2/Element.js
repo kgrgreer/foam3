@@ -2089,9 +2089,6 @@ foam.CLASS({
 
     function addEventListener_(topic, listener, opt_args) {
       var el = this.el_();
-      if ( topic == 'keydown' ) {
-        console.log('KEYDOWN LIST', { el, listener, opt_args })
-      }
       el && el.addEventListener(topic, listener, opt_args || false);
     },
 
