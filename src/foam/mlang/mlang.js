@@ -207,7 +207,7 @@ foam.CLASS({
         return o;
       }
       if ( o.class && this.__context__.maybeLookup(o.class) ) {
-        return this.adaptValue(this.__context__.lookup(o.class).create(o, this.__subContext__));
+        return this.adaptValue(this.__context__.lookup(o.class).create(o, this));
       }
       if ( foam.core.FObject.isSubClass(o) ) {
         return foam.mlang.Constant.create({ value: o });
