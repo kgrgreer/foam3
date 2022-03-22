@@ -76,9 +76,7 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          // service provider needs system context (getX()) 
-          // to bypass auth call in prerequisiteImplies
-          sp.setX(getX());
+          sp.setX(x);
           return sp.grantsPermission(permission);
         }
         return false;
