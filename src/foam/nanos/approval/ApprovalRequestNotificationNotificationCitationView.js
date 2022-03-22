@@ -56,8 +56,27 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
       //this.SUPER();
+      var self = this;
+
+      let approval = await self.approvalRequestDAO.find(this.data.approvalRequest);
+      if ( approval ) {
+        self.created = approval.created.toUTCString();
+        self.classification = approval.classification;
+        self.showClassification = !! self.classification;
+        self.status = approval.status;
+
+        let user = await self.userDAO.find(approval.createdBy);
+          if ( user )
+            this.userSummary = user.toSummary();
+            // self.monogram = user.monogram;
+      } else {
+        this.created = self.data.created.toUTCString();
+        this.showClassification = false;
+        this.hideStatus = true;
+      }
+
       this.description = this.data.body;
       if ( this.description !== '' && this.description.length > 70 ) {
         this.description = this.description.substr(0, 70-1) + '...';
@@ -81,7 +100,7 @@ foam.CLASS({
             .start().addClass('classification')
               .show(this.showClassification$).add(this.classification$)
             .end()
-            .start().addClass('description')
+            .start().addClasses(['p', this.myClass('description')])
               .add(this.description$)
             .end()
             .start().addClass('status')
@@ -94,25 +113,6 @@ foam.CLASS({
             // .end()
           .end()
         .endContext();
-
-      var self = this;
-      this.approvalRequestDAO.find(this.data.approvalRequest).then(function(approval) {
-        if ( approval ) {
-          self.created = approval.created.toUTCString();
-          self.classification = approval.classification;
-          self.showClassification = !! self.classification;
-          self.status = approval.status;
-
-          self.userDAO.find(approval.createdBy).then(function(user) {
-            self.userSummary = user.toSummary();
-            // self.monogram = user.monogram;
-          });
-        } else {
-          self.created = self.data.created.toUTCString();
-          self.showClassification = false;
-          self.hideStatus = true;
-        }
-      });
     }
   ],
 
@@ -151,6 +151,7 @@ foam.CLASS({
       font-size: 1.4rem;
       color: #1e1f21;
       margin-left: 32px;
+      margin-top: 8px;
       display: inline-block;
     }
     ^ .status {
@@ -163,12 +164,19 @@ foam.CLASS({
       text-align: center;
       float: right;
       margin-right: 145px;
-      margin-top: 14px;
     }
     ^ .userSummaryDiv {
       position: relative;
-      top: 8;
       display: inline-block;
      }
+   ^ .p {
+     font-style: normal;
+     font-weight: normal;
+     font-size: 1.4rem;
+     margin-left: 16px;
+     line-height: 1.71;
+     margin: 0;
+     margin-left: 16px;
+    }
   `
 });
