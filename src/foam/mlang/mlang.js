@@ -4517,8 +4517,8 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        Double result = null;
-try {
+      Double result = null;
+      try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
           if ( current instanceof Number ) {
@@ -4533,19 +4533,17 @@ try {
             }
           }
         }
-        if ( result == null ) {
-foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,result,null,args", getArgs().length, this.toString());
-        }
         return getRounding() ? Math.round(result) : result;
-} catch (Throwable t) {
-foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,result", result, this.toString(), t);
+      } catch (Throwable t) {
+        foam.nanos.logger.Logger logger = foam.nanos.logger.Loggers.logger(getX(), this);
+        logger.warning("Formula,f,result", result, this.toString(), t);
         for ( int i = 0; i < getArgs().length; i++) {
-          foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,arg", i, "arg", getArgs()[i]);
+          logger.warning("Formula,f,arg", i, "arg", getArgs()[i]);
           var current = getArgs()[i].f(obj);
-          foam.nanos.logger.Loggers.logger(getX(), this).warning("Formula,f,arg", i, "current", current);
+          logger.warning("Formula,f,arg", i, "current", current);
         }
-throw new RuntimeException(t);
-}
+        throw new RuntimeException(t);
+      }
       `,
       code: function(o) {
         var result = null;
@@ -4753,8 +4751,12 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
+        if ( getValueIfTrue() == null ||
+            getValueIfFalse() == null )
+          foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
+
         if ( getPredicate().f(obj) )
-          return  getValueIfTrue() != null ? getValueIfTrue().f(obj) : null;
+          return getValueIfTrue() != null ? getValueIfTrue().f(obj) : null;
         return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
       `
     },
@@ -4770,8 +4772,8 @@ foam.CLASS({
         return sb.toString();
       `,
       code: function() {
-        return this.cls_.name + '(' +
-          'predicate:' + this.predicate && this.predicate.toString() +
+        return
+        'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
           ', valueIfTrue:' + (this.valueIfTrue && this.valueIfTrue.toString() || 'NA') +
           ', valueIfFalse:' + (this.valueIfFalse && this.valueIfFalse.toString() || 'NA') +
           ')';
