@@ -122,8 +122,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'fullscreen',
-      value: true
+      name: 'fullscreen'
     },
     {
       class: 'Boolean',
