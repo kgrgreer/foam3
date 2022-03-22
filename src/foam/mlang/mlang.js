@@ -4739,11 +4739,11 @@ foam.CLASS({
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'valueIfTrue'
+      name: 'trueExpr'
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'valueIfFalse'
+      name: 'falseExpr'
     }
   ],
 
@@ -4751,13 +4751,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        if ( getValueIfTrue() == null ||
-            getValueIfFalse() == null )
+        if ( getTrueExpr() == null ||
+            getFalseExpr() == null )
           foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
 
         if ( getPredicate().f(obj) )
-          return getValueIfTrue() != null ? getValueIfTrue().f(obj) : null;
-        return getValueIfFalse() != null ? getValueIfFalse().f(obj) : null;
+          return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
+        return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
       `
     },
     {
@@ -4766,16 +4766,16 @@ foam.CLASS({
       javaCode: `
         var sb = new StringBuilder();
         sb.append("If(predicate:").append(getPredicate())
-          .append(", valueIfTrue:").append(getValueIfTrue())
-          .append(", valueIfFalse:").append(getValueIfFalse())
+          .append(", trueExpr:").append(getTrueExpr())
+          .append(", falseExpr:").append(getFalseExpr())
           .append(")");
         return sb.toString();
       `,
       code: function() {
         return
         'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
-          ', valueIfTrue:' + (this.valueIfTrue && this.valueIfTrue.toString() || 'NA') +
-          ', valueIfFalse:' + (this.valueIfFalse && this.valueIfFalse.toString() || 'NA') +
+          ', trueExpr:' + (this.trueExpr && this.trueExpr.toString() || 'NA') +
+          ', falseExpr:' + (this.falseExpr && this.falseExpr.toString() || 'NA') +
           ')';
       }
     }
