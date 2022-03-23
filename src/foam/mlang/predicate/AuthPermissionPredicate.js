@@ -11,7 +11,7 @@
   extends: 'foam.mlang.predicate.AbstractPredicate',
 
   documentation: `
-    A predicate used for checking a permissioon.
+    A predicate used for checking a permission.
   `,
 
   javaImports: [
