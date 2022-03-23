@@ -111,6 +111,7 @@ foam.CLASS({
         This property is deprecated. Subscribe to 'action.closeModal' instead.
       `,
       setter: function (_, n) {
+        if ( ! n ) return;
         this.onDetach(this.sub('action', 'closeModal', n));
       }
     },
@@ -140,7 +141,7 @@ foam.CLASS({
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .start()
           .addClass(this.myClass('background'))
-          .on('click', this.closeable ? this.close : null)
+          .on('click', this.closeable ? this.closeModal.bind(this) : null)
         .end()
         .start()
           .call(function() { content = this; })
