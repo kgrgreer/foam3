@@ -76,7 +76,9 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          sp.setX(x);
+          // service provider needs system context (getX()) 
+          // to bypass auth call in prerequisiteImplies
+          sp.setX(getX());
           return sp.grantsPermission(permission);
         }
         return false;
@@ -128,7 +130,7 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          CapabilityAuthServicePredicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission, null);
+          CapabilityAuthServicePredicate predicate = new CapabilityAuthServicePredicate(getX(), capabilityDAO, permission, null);
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
