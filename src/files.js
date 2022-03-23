@@ -253,6 +253,7 @@ foam.POM({
   { name: "foam/mlang/expr/DateGroupingExpr", flags: "java" },
   { name: "foam/mlang/expr/Ref", flags: "java" },
   { name: "foam/mlang/expr/TimeOfDay", flags: "java" },
+  { name: "foam/mlang/predicate/AuthPermissionPredicate", flags: "java" },
   { name: "foam/mlang/predicate/ContextUserPredicate", flags: "java" },
   { name: "foam/mlang/predicate/CapabilityAuthServicePredicate", flags: "java" },
   { name: "foam/swift/refines/MLang", flags: "swift" },

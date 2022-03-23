@@ -84,7 +84,7 @@ foam.CLASS({
     {
       name: 'setupSpid',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       documentation: `
@@ -163,7 +163,7 @@ foam.CLASS({
     {
       name: 'invalidateDependents',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' },
         { name: 'spid', javaType: 'String' }
       ],
