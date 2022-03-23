@@ -21,6 +21,9 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'number',
       label: 'Phone Number',
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
       validationPredicates: [
         {
           args: ['number'],
