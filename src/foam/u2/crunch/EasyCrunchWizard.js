@@ -82,6 +82,10 @@ foam.CLASS({
         Set to true to disabled the creation of Approvables when updating a
         granted UCJ.
       `
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'popup'
     }
   ],
 
@@ -97,6 +101,15 @@ foam.CLASS({
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})
       });
+
+      if ( this.popup ) {
+        sequence.reconfigure('ConfigureFlowAgent', { popupMode: true });
+        config.popup = {
+          class: 'foam.u2.dialog.Popup',
+          ...this.popup,
+        };
+      }
+
       sequence.reconfigure('StepWizardAgent', { config: config });
       if ( this.skipMode )
         sequence.reconfigure('SkipGrantedAgent', {

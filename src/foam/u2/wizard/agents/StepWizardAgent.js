@@ -80,7 +80,7 @@ foam.CLASS({
       view.onClose = this.stack.back.bind(this.stack);
 
       const wizardStackBlock = this.StackBlock.create({
-        view, ...(this.popupMode ? { popup: {} } : {})
+        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {})
       });
 
       await new Promise(resolve => {

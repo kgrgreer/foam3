@@ -64,6 +64,10 @@ foam.CLASS({
           ? { class: 'foam.u2.wizard.views.FlexibleWizardFormView' }
           : { class: 'foam.u2.wizard.ScrollingStepWizardView' };
       }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'popup'
     }
   ],
 
