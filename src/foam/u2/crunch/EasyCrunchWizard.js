@@ -52,6 +52,10 @@ foam.CLASS({
       `
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'controller'
+    },
+    {
       class: 'String',
       name: 'view',
       value: 'foam.nanos.crunch.ui.UCJView'
@@ -87,6 +91,7 @@ foam.CLASS({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
         rejectOnInvalidatedSave: this.rejectOnInvalidatedSave,
+        controller: this.controller,
         requireAll: this.requireAll,
         ...(this.incrementalWizard ? {
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
