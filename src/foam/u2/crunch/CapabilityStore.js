@@ -469,7 +469,9 @@ foam.CLASS({
             this.IN('featured', this.Capability.KEYWORDS)
           )).select())
         .then(async sink => {
-          if ( sink.array.length == 1 ) {
+          if ( sink.array.length !== 1 )
+            return;
+
             let cap = sink.array[0];
             let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
             if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
@@ -477,21 +479,12 @@ foam.CLASS({
 
             let x = this.ctrl.__subContext__;
             await this.grantAll(x, cap.id, this.subject);
+            let capa = await this.crunchService.updateJunction(x, cap.id, null, this.CapabilityJunctionStatus.GRANTED);
 
-            // If only one visible capability then it grants if requirements met
-            var data = null;
-            if ( cap.of )
-              data = cap.of.create({}, this);
-            if ( data && ! data.submitted )
-              data.submitted = true;
-            let capa = await this.crunchService.updateJunction(x, cap.id, data, this.CapabilityJunctionStatus.GRANTED);
-
-            if ( capa.status != this.CapabilityJunctionStatus.GRANTED ) {
-              data.submitted = false;
+            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
               this.openWizard(cap, false);
-            } else
+            else
               this.window.location.reload();
-          }
         })
     },
     async function openWizard(cap, showToast) {
