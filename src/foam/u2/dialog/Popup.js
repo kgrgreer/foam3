@@ -103,18 +103,7 @@ foam.CLASS({
       name: 'closeable',
       value: true
     },
-    {
-      name: 'onClose',
-      deprecated: true,
-      documentation: `
-        Sets a listener for when the popup is closed.
-        This property is deprecated. Subscribe to 'action.closeModal' instead.
-      `,
-      setter: function (_, n) {
-        if ( ! n ) return;
-        this.onDetach(this.sub('action', 'closeModal', n));
-      }
-    },
+    'onClose',
     {
       class: 'Boolean',
       name: 'isStyled',
@@ -166,6 +155,7 @@ foam.CLASS({
 
   listeners: [
     function close() {
+      if ( this.onClose ) this.onClose();
       this.remove();
     }
   ],
@@ -176,11 +166,9 @@ foam.CLASS({
       icon: 'images/ic-cancelblack.svg',
       label: 'X',
       keyboardShortcuts: [ 27 /* Escape */ ],
-      code: () => {}
+      code: () => {
+        this.close();
+      }
     }
-  ],
-
-  reactions: [
-    ['', 'action.closeModal', 'close']
   ]
 });
