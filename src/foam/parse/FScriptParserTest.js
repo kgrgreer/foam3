@@ -79,6 +79,9 @@ foam.CLASS({
     sps.setString("firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists&&firstName !exists");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
+    sps.setString("firstName==\\"senorita\\"&&firstName.len==9||firstName.len==8");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
+
     sps.setString("!(firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists&&firstName !exists)");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
