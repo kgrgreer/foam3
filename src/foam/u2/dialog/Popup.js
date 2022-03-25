@@ -72,6 +72,9 @@ foam.CLASS({
       align-items: center;
       z-index: 3;
       position: relative;
+      border-radius: 3px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      overflow: auto;
       /* The following line fixes a stacking problem in certain browsers. */
       will-change: opacity;
     }
@@ -82,21 +85,39 @@ foam.CLASS({
         width: auto;
         align-items: unset;
       }
+      ^fullscreen ^inner {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    ^fullscreen ^inner {
+      border-radius: 0;
     }
  `,
 
   properties: [
     [ 'backgroundColor', '#fff' ],
     {
-      name: 'closeable',
       class: 'Boolean',
+      name: 'closeable',
       value: true
     },
     'onClose',
     {
+      class: 'Boolean',
       name: 'isStyled',
       value: true,
       documentation: 'Can be used to turn off all styling for modal container'
+    },
+    {
+      class: 'Boolean',
+      name: 'fullscreen'
+    },
+    {
+      class: 'Boolean',
+      name: 'showActions',
+      value: true
     }
   ],
 
@@ -106,17 +127,18 @@ foam.CLASS({
       var content;
 
       this.addClass()
-        .on('keydown', this.onKeyDown)
+        .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .start()
           .addClass(this.myClass('background'))
-          .on('click', this.closeable ? this.close : null)
+          .on('click', this.closeable ? this.closeModal.bind(this) : null)
         .end()
         .start()
           .call(function() { content = this; })
           .enableClass(this.myClass('inner'), this.isStyled$)
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY', label: '' })
+              .show(this.closeable$.and(this.showActions$))
               .addClass(this.myClass('X'))
             .end()
           .endContext()
@@ -135,11 +157,6 @@ foam.CLASS({
     function close() {
       if ( this.onClose ) this.onClose();
       this.remove();
-    },
-
-    function onKeyDown(e) {
-      var isEsc = (e.key === 'Escape' || e.keyCode === 27); // 27 is the keyCode for escape keys, keyCode is mainly for older browser support
-      if ( isEsc ) { this.close(); }
     }
   ],
 
@@ -147,8 +164,9 @@ foam.CLASS({
     {
       name: 'closeModal',
       icon: 'images/ic-cancelblack.svg',
-      label: '',
-      code: function(X) {
+      label: 'X',
+      keyboardShortcuts: [ 27 /* Escape */ ],
+      code: () => {
         this.close();
       }
     }

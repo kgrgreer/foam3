@@ -242,19 +242,14 @@ foam.CLASS({
       class: 'String',
       name: 'javaValidateObj',
       expression: function(validationPredicates) {
-        return validationPredicates.length == 0 ? `` : `var sps    = new foam.lib.parse.StringPStream();
-var parser = new foam.parse.FScriptParser(this);
-var px = new foam.lib.parse.ParserContextImpl();` +
-        validationPredicates
+        return validationPredicates
           .map((vp) => {
             var exception = vp.errorMessage ?
               `throw new IllegalStateException(((${this.forClass_}) obj).${vp.errorMessage});` :
               `throw new IllegalStateException(${foam.java.asJavaValue(vp.errorString)});`
-            return `
-sps.setString(${foam.java.asJavaValue(vp.query)});
-if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) {
-  ${exception}
-}`;
+            return `if ( ! ${foam.java.asJavaValue(vp.predicate)}.f(obj) ) {
+              ${exception}
+            }`;
           })
           .join('');
       }

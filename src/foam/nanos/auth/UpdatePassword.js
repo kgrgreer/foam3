@@ -55,7 +55,9 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['originalPassword'],
-          query: 'originalPassword!=""',
+          predicateFactory: function(e) {
+            return e.NEQ(foam.nanos.auth.UpdatePassword.ORIGINAL_PASSWORD, "");
+          },
           errorMessage: 'ORIGINAL_PASSWORD_MISSING'
         }
       ]
@@ -81,12 +83,18 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['newPassword'],
-          query: 'newPassword.len>=10',
+          predicateFactory: function(e) {
+            return e.GTE(foam.mlang.StringLength.create({
+              arg1: foam.nanos.auth.UpdatePassword.NEW_PASSWORD
+            }), 10);
+          },
           errorMessage: 'PASSWORD_LENGTH_10_ERROR'
         },
         {
           args: ['passwordAvailable'],
-          query: 'passwordAvailable==true',
+          predicateFactory: function(e) {
+            return e.EQ(foam.nanos.auth.UpdatePassword.PASSWORD_AVAILABLE, true);
+          },
           errorMessage: 'WEAK_PASSWORD_ERR'
         }
       ]
@@ -103,7 +111,11 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['newPassword', 'confirmationPassword'],
-          query: 'newPassword==confirmationPassword',
+          predicateFactory: function(e) {
+            return e.EQ(
+              foam.nanos.auth.UpdatePassword.NEW_PASSWORD,
+              foam.nanos.auth.UpdatePassword.CONFIRMATION_PASSWORD);
+          },
           errorMessage: 'PASSWORD_NOT_MATCH'
         }
       ]

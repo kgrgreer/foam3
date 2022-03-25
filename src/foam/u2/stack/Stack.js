@@ -176,6 +176,7 @@ foam.CLASS({
           var actionMemento;
           var parent = this.getContextFromParent(this.stack_[this.pos].parent);
         }
+        this.stack_[this.pos].removed.pub();
         this.pos--;
       }
       if ( this.navStackBottom > this.pos ) {

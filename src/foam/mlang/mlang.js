@@ -207,7 +207,7 @@ foam.CLASS({
         return o;
       }
       if ( o.class && this.__context__.maybeLookup(o.class) ) {
-        return this.adaptValue(this.__context__.lookup(o.class).create(o, this));
+        return this.adaptValue(this.__context__.lookup(o.class).create(o, this.__subContext__));
       }
       if ( foam.core.FObject.isSubClass(o) ) {
         return foam.mlang.Constant.create({ value: o });
@@ -3846,7 +3846,6 @@ foam.CLASS({
     'foam.mlang.predicate.Or',
     'foam.mlang.predicate.RegExp',
     'foam.mlang.predicate.IsClassOf',
-    'foam.mlang.IsValid',
     'foam.mlang.predicate.IsInstanceOf',
     'foam.mlang.predicate.StartsWith',
     'foam.mlang.predicate.StartsWithIC',
@@ -3960,8 +3959,7 @@ foam.CLASS({
     function INSTANCE_OF(cls) { return this.IsInstanceOf.create({ targetClass: cls }); },
     function CLASS_OF(cls) { return this.IsClassOf.create({ targetClass: cls }); },
     function MQL(mql) { return this.MQLExpr.create({query: mql}); },
-    function STRING_LENGTH(a) { return this._unary_("StringLength", a); },
-    function IS_VALID(o) { return this.IsValid.create({arg1: o}); }
+    function STRING_LENGTH(a) { return this._unary_("StringLength", a); }
   ]
 });
 
@@ -4004,7 +4002,7 @@ foam.CLASS({
       name: 'f',
       code: function(o) {
         var v1 = this.arg1.f(o);
-        return v1.toString().match(this.regExp) !== null;
+        return v1.toString().match(this.regExp);
       },
       javaCode: `
         return getRegExp().matcher(getArg1().f(obj).toString()).matches();
@@ -4035,23 +4033,29 @@ foam.CLASS({
     'java.util.concurrent.ConcurrentHashMap'
   ],
 
-  javaCode: `
-    protected final static Map map__ = new ConcurrentHashMap();
-    public static MQLExpr create(String query) {
-      MQLExpr p = (MQLExpr) map__.get(query);
-
-      if ( p == null ) {
-        p = new MQLExpr();
-        p.setQuery(query);
-        map__.put(query, p);
-      }
-
-      return p;
-    }
- `,
-
   axioms: [
-    foam.pattern.Multiton.create({property: 'query'})
+    foam.pattern.Multiton.create({property: 'query'}),
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(
+          `
+  protected final static Map map__ = new ConcurrentHashMap();
+  public static MQLExpr create(String query) {
+    MQLExpr p = (MQLExpr) map__.get(query);
+
+    if ( p == null ) {
+      p = new MQLExpr();
+      p.setQuery(query);
+      map__.put(query, p);
+    }
+
+    return p;
+  }
+ `
+        );
+      }
+    }
   ],
 
   properties: [
@@ -4128,55 +4132,6 @@ foam.CLASS({
   ]
 });
 
-foam.CLASS({
-  package: 'foam.mlang.predicate',
-  name: 'FScript',
-  extends: 'foam.mlang.AbstractExpr',
-
-  javaImports: [
-    'foam.lib.parse.PStream',
-    'foam.lib.parse.ParserContext',
-    'foam.lib.parse.ParserContextImpl',
-    'foam.lib.parse.StringPStream',
-    'foam.parse.FScriptParser',
-    'foam.core.PropertyInfo'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'query'
-    },
-    {
-      class: 'Object',
-      name: 'prop',
-      javaType: 'PropertyInfo'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'f',
-      code: function(o) {
-        var pred = foam.parse.FScriptParser.create({of: o.cls_, thisValue: this.prop}).parseString(this.query);
-        return pred ? pred.partialEval().f(o) : false;
-      },
-      javaCode: `
-      FScriptParser parser = new FScriptParser(getProp());
-      StringPStream sps = new StringPStream();
-      sps.setString(getQuery());
-      PStream ps = sps;
-      ParserContext x = new ParserContextImpl();
-      ps = parser.parse(ps, x);
-      if (ps == null)
-        return null;
-
-      return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
-      `
-    }
-  ]
-});
-
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
@@ -4244,7 +4199,7 @@ foam.CLASS({
         if ( ! ( obj instanceof FObject ) )
           return false;
 
-        return specialization(((FObject)obj).getClassInfo()).f(obj);
+        return specialization(((FObject)obj).getClassInfo());
       `
     },
     {
@@ -4422,6 +4377,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'IdentityExpr',
@@ -4442,24 +4398,21 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'IsValid',
-  extends: 'foam.mlang.predicate.Unary',
-  implements: [ 'foam.core.Serializable' ],
+  extends: 'foam.mlang.AbstractExpr',
   javaImports: [
     'foam.core.XLocator'
   ],
-
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
       name: 'arg1'
     }
   ],
-
   methods: [
     {
       name: 'f',
       code: function(o) {
-        return this.arg1.f(o) == undefined || this.arg1.f(o).errors_ ? false : true;
+        return this.arg1.f(o).errors_ ? false : true;
       },
       javaCode: `
 try {
@@ -4634,7 +4587,7 @@ foam.CLASS({
       code: function(o) {
         var result = null;
         for ( var i = 0; i < this.args.length; i++ ) {
-          var current = typeof this.args[i] === 'number' ? this.args[i] : this.args[i].f(o);
+          var current = this.args[i].f(o);
           if ( typeof current === 'number' ) {
             var oldResult = result;
             result = result === null ? current : this.reduce(result, current);

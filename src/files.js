@@ -253,6 +253,7 @@ foam.POM({
   { name: "foam/mlang/expr/DateGroupingExpr", flags: "java" },
   { name: "foam/mlang/expr/Ref", flags: "java" },
   { name: "foam/mlang/expr/TimeOfDay", flags: "java" },
+  { name: "foam/mlang/predicate/AuthPermissionPredicate", flags: "java" },
   { name: "foam/mlang/predicate/ContextUserPredicate", flags: "java" },
   { name: "foam/mlang/predicate/CapabilityAuthServicePredicate", flags: "java" },
   { name: "foam/swift/refines/MLang", flags: "swift" },
@@ -365,8 +366,12 @@ foam.POM({
   { name: "foam/dao/PutOnlyDAO", flags: "java" },
   { name: "foam/glang/glang", flags: "java" },
   { name: "foam/parse/QueryParser" },
+<<<<<<< HEAD
   { name: "foam/parse/FScriptParser" },
   { name: "foam/parse/FScriptParserTest", flags: [ "java" ] },
+=======
+  { name: "foam/parse/FScript" },
+>>>>>>> 2c7fbdd25cc2d58ed48f58453ade9731250898ba
   { name: "foam/parse/QueryParserUserTest", flags: "java" },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },
@@ -980,6 +985,8 @@ foam.POM({
   { name: "foam/u2/wizard/FObjectHolder", flags: ["web", "java"] },
   { name: "foam/u2/wizard/XORMinMaxWAO", flags: ["web"] },
   { name: "foam/u2/wizard/PrerequisiteWAO", flags: ["web"] },
+  { name: "foam/u2/wizard/common/SuccessWizardlet", flags: ["web"] },
+  { name: "foam/u2/wizard/common/SuccessWizardletView", flags: ["web"] },
   { name: "foam/u2/crunch/wizardflow/SkipMode", flags: [ "web", "java" ] },
   { name: "foam/u2/crunch/EasyCrunchWizard", flags: [ "web", "java" ] },
   { name: "foam/graphics/ZoomMapView" },
