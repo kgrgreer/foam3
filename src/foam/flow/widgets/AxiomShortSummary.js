@@ -17,6 +17,13 @@ foam.CLASS({
     ^preformatted {
       white-space: pre;
     }
+    ^ {
+      width: '100%';
+    }
+    ^td,
+    ^th {
+      word-break: break-all;
+    }
   `,
 
   properties: [
@@ -53,14 +60,18 @@ foam.CLASS({
         .start('table')
           .start('tr')
             .start('th').add('Name').end()
-            .call(self.generateAxiomClassHeadings.bind(self))
+            .call(function () {
+              self.generateAxiomClassHeadings.call(self, this)
+            })
             .start('th').add('Documentation').end()
           .end()
           .forEach(axs, function (ax) {
             this
               .start('tr')
                 .start('td').add(ax.name).end()
-                .call(self.generateAxiomClassFields.bind(self, ax))
+                .call(function () {
+                  self.generateAxiomClassFields.call(self, this, ax)
+                })
                 .start('td')
                   .addClass(self.myClass('preformatted'))
                   .add(ax.documentation)

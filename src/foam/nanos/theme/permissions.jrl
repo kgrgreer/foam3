@@ -1,2 +1,4 @@
 p({"class":"foam.nanos.auth.Permission","id":"theme.rw.primary1","description":"Update primary1"})
-p({"class":"foam.nanos.auth.Permission","id":"theme.rw.primary2","description":"Update primary2"})
+p({"class":"foam.nanos.auth.Permission","id":"theme.rw.topnavlogo","description":"Update topNav logo"})
+p({"class":"foam.nanos.auth.Permission","id":"theme.rw.loginimage","description":"Update login page logo"})
+p({"class":"foam.nanos.auth.Permission","id":"theme.rw.externalcommunicationlogo","description":"Update invoice header"})

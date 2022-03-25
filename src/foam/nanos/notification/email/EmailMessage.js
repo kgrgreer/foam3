@@ -21,6 +21,13 @@ foam.CLASS({
     'foam.nanos.medusa.ClusterableMixin'
   ],
 
+  javaImports: [
+    'foam.core.X',
+    'foam.util.SafetyUtil',
+    'java.util.HashMap',
+    'java.util.Map'
+  ],
+
   tableColumns: [
     'created',
     'subject',
@@ -47,6 +54,28 @@ foam.CLASS({
     },
   ],
 
+  javaCode: `
+  public EmailMessage(X x, Long userId, Map args) {
+    setX(x);
+    setUser(userId);
+    setTemplateArguments(args);
+  }
+  /**
+   * constructor for EmailsUtility migration
+   */
+  public EmailMessage(X x, Long userId, String template, Map args) {
+    setX(x);
+    setUser(userId);
+    if ( ! SafetyUtil.isEmpty(template) ) {
+      if ( args == null ) {
+        args = new HashMap();
+      }
+      args.put("template", template);
+    }
+    setTemplateArguments(args);
+  }
+  `,
+
   properties: [
     {
       class: 'Long',
@@ -55,6 +84,12 @@ foam.CLASS({
       section: 'emailInformation',
       order: 10,
       gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
@@ -128,6 +163,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.notification.email.Status',
       name: 'status',
+      value: 'DRAFT',
       includeInDigest: false,
       section: 'emailInformation',
       order: 100,
@@ -148,6 +184,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'Map',
+      name: 'templateArguments',
+      includeInDigest: true,
+      section: 'templateInformation',
+      order: 10,
+      view: { class: 'foam.u2.view.MapView' }
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
@@ -166,14 +210,6 @@ foam.CLASS({
       gridColumns: 6,
       documentation: 'User who created the entry',
       includeInDigest: true,
-    },
-    {
-      class: 'Map',
-      name: 'templateArguments',
-      includeInDigest: true,
-      section: 'templateInformation',
-      order: 10,
-      view: { class: 'foam.u2.view.MapView' }
     },
     {
       class: 'Reference',

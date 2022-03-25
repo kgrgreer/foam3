@@ -258,3 +258,80 @@ p({
     user has a junction with, and reput them in order to update the status appropriately
   """
 })
+
+// rule to be re-ran if a non-core ucj rule moves the ucj to APPROVED status
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-2-after",
+  "name":"Set UCJ Status On Put - after",
+  "priority":800,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.SetUCJStatusOnPut"},
+  "lifecycleState":1,
+  "documentation":"""
+  If status change to APPROVED, go through the setUcjStatus again
+  so it can be transitioned to GRANTED without having to do an explicit reput to the ucjDAO
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-3-after",
+  "name":"Configure UCJ Expiry On Granted - after",
+  "priority":700,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted"},
+  "lifecycleState":1,
+  "documentation":"""
+  Check if ucj has been set to granted after going through other non-ucjDAO rules and configure
+  the expiry if needed
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-4-after",
+  "name":"Save UCJ Data On Granted - after",
+  "priority":600,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"},
+  "lifecycleState":1,
+  "documentation":"""
+  Check if ucj has been set to granted after going through other non-ucjDAO rules and save the
+  ucj data if needed
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-crunch2-after",
+  "name":"Reput Dependents Rule - after",
+  "priority":1,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ReputDependentUCJs"},
+  "lifecycleState":1,
+  "documentation":"""
+  try to reput dependent ucjs again after status change to approved and subsequently to granted
+  """
+})

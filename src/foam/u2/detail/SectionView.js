@@ -177,7 +177,7 @@ foam.CLASS({
             .start(self.Cols)
               .style({
                 'justify-content': 'end',
-                'margin-top': section.actions.length ? '4vh' : 'initial'
+                'margin-top': section.actions.length ? '16px' : 'initial'
               })
               .forEach(section.actions, function(a) {
                 this.add(a);

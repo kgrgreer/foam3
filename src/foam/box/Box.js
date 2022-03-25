@@ -30,7 +30,7 @@ foam.INTERFACE({
           type: 'foam.box.Message'
         }
       ],
-      swiftThrows: true,
-    },
+      swiftThrows: true
+    }
   ]
 });

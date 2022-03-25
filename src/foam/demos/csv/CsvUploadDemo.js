@@ -15,6 +15,15 @@ foam.CLASS({
   ],
   properties: [
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao',
+      adapt: function(_, o) {
+        if ( foam.String.isInstance(o) )
+          return this.__subContext__[o];
+        return o;
+      }
+    },
+    {
       class: 'String',
       name: 'cls',
       label: 'class',
@@ -34,7 +43,7 @@ id,firstName,lastName,email,phone.number,address.city,address.postalCode,lastLog
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'dao',
+      name: 'tempDao',
       view: { class: 'foam.comics.v2.DAOBrowserView' },
       expression: function(cls) {
         return this.EasyDAO.create({
@@ -60,14 +69,14 @@ id,firstName,lastName,email,phone.number,address.city,address.postalCode,lastLog
         // A bit of a hack around the fact that we don't have a MultiSink.
         var sinks = [
           this.CSVSink.create(),
-          this.DAOSink.create({ dao: this.dao })
+          this.DAOSink.create({ dao: this.tempDao })
         ];
         var sink = {
           put: function(o) {
             sinks.forEach(s => s.put(o));
           }
         };
-        this.DynamicHeaderCSVParser.create().fromCSV(this.dao.of, this.csv.trim(), sink);
+        this.DynamicHeaderCSVParser.create().fromCSV(this.tempDao.of, this.csv.trim(), sink);
         this.csvOut = sinks[0].csv;
       }
     },
@@ -79,6 +88,14 @@ id,firstName,lastName,email,phone.number,address.city,address.postalCode,lastLog
       code: function() {
         this.csv = this.csvOut;
         this.csvOut = undefined;
+      }
+    },
+    {
+      name: 'save',
+      code: function() {
+        this.tempDao.select(function(obj){
+          dao.put(obj);
+        });
       }
     }
   ]

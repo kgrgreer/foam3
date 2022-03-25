@@ -13,6 +13,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  mixins: ['foam.u2.memento.Memorable'],
+
   requires: [
     'foam.core.SimpleSlot',
     'foam.comics.v2.DAOControllerConfig',
@@ -118,11 +120,13 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnNames',
-      expression: function(columns, of, memento) {
-        var ls = memento && memento.head.length != 0 ?
-          memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) :
-          JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
+      memorable: true,
+      expression: function(columns, of) {
+        var ls = JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
         return ls || columns;
+      },
+      adapt: function(_,n) {
+        return foam.Array.isInstance(n) ? n : n.split(',');
       }
     },
     {
@@ -342,22 +346,6 @@ foam.CLASS({
     },
     function updateColumns() {
       this.updateLocalStorage();
-      if ( ! this.memento )
-        return;
-
-      var newMementoColumns = [];
-      for ( var s of this.selectedColumnNames ) {
-        var columns = [];
-        if ( this.memento.head.length != 0 )
-          columns = this.memento.head.split(',');
-        var col = columns.find(c => this.returnMementoColumnNameDisregardSorting(c) === s);
-        if ( ! col ) {
-          newMementoColumns.push(s);
-        } else {
-          newMementoColumns.push(col);
-        }
-      }
-      this.memento.head = newMementoColumns.join(',');
 
       this.isColumnChanged = ! this.isColumnChanged;
     },
@@ -380,72 +368,6 @@ foam.CLASS({
       this.updateColumns_();
 
       this.onDetach(this.colWidthUpdated$.sub(this.updateLocalStorage));
-      //set memento's selected columns
-      if ( this.memento ) {
-        if ( this.memento.head.length != 0 ) {
-          var columns = this.memento.head.split(',');
-          for ( var c of columns ) {
-            if ( this.shouldColumnBeSorted(c) && ! c.includes('.')) {
-              var prop = view.props.find(p => p.fullPropertyName === c.substr(0, c.length - 1) );
-              if ( prop ) {
-                if ( c[c.length - 1] === this.DESCENDING_ORDER_CHAR )
-                  this.order = this.DESC(prop.property);
-                else
-                  this.order = prop.property;
-              }
-            }
-          }
-        } else {
-          this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.propertyNamesForColumnArray(c);
-          }).join(',');
-        }
-        if ( ! this.memento.tail ) {
-          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento}, this);
-        }
-        this.currentMemento_= this.memento.tail
-        var nextViewMemento = this.currentMemento_.tail;
-      }
-
-      if ( nextViewMemento && nextViewMemento.head.length != 0 ) {
-        if ( nextViewMemento.head == 'create' ) {
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: 'foam.comics.v2.DAOCreateView',
-              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
-              config$: this.config$,
-              of: this.data.of
-            }, parent: this.__subContext__.createSubContext({ memento: this.currentMemento_ })
-          }));
-        } else if ( nextViewMemento.tail && nextViewMemento.tail.head ) {
-          var id = nextViewMemento.tail.head;
-          if ( ! foam.core.MultiPartID.isInstance(this.data.of.ID) ) {
-            id = this.data.of.ID.fromString(id);
-          } else {
-            id = this.data.of.ID.of.create();
-            mementoHead = '{' + nextViewMemento.tail.head.replaceAll('=', ':') + '}';
-            var idFromJSON = foam.json.parseString(mementoHead);
-            for ( var key in idFromJSON ) {
-              var axiom = this.data.of.getAxiomByName(key);
-
-              if ( axiom )
-                axiom.set(id, idFromJSON[key]);
-            }
-          }
-          this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
-            if ( ! v ) return;
-            if ( self.state != self.LOADED ) return;
-            this.stack.push(this.StackBlock.create({
-              view: {
-                class: 'foam.comics.v2.DAOSummaryView',
-                data: null,
-                config: this.config,
-                idOfRecord: id
-              }, parent: this.__subContext__.createSubContext({ memento: nextViewMemento })
-            }));
-          });
-        }
-      }
       if ( view.editColumnsEnabled )
         var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
 
@@ -625,6 +547,7 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.of ) return [];
+        //TODO: Add functionality to use defaults if memento cols don't exist
         var auth = this.auth;
         var self = this;
         var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
