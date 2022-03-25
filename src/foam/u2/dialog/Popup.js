@@ -25,6 +25,10 @@ foam.CLASS({
     centers the "content" element. Clicking the background closes the
     dialog. Exports itself as "overlay", for use by OK and CANCEL buttons.`,
 
+  imports: [
+    'setTimeout'
+  ],
+
   exports: [
     'close as closeDialog'
   ],
@@ -154,10 +158,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function close() {
-      if ( this.onClose ) this.onClose();
-      this.remove();
-    }
+    function close() { this.closeModal(); }
   ],
 
   actions: [
@@ -166,8 +167,12 @@ foam.CLASS({
       icon: 'images/ic-cancelblack.svg',
       label: 'X',
       keyboardShortcuts: [ 27 /* Escape */ ],
-      code: () => {
-        this.close();
+      code: function() {
+        if ( this.onClose ) this.onClose();
+
+        // Delay removal by 32ms (two animation frames) so the action.closeModal
+        // topic has a chance to be published
+        this.setTimeout(() => this.remove(), 32);
       }
     }
   ]
