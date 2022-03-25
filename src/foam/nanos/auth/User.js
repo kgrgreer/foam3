@@ -309,7 +309,6 @@ foam.CLASS({
         'en' :'Email Address',
         'fr' :'Adresse Email'
       },
-      required: true,
       includeInDigest: true,
       containsPII: true,
       documentation: 'The email address of the User.',
