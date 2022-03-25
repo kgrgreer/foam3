@@ -72,16 +72,12 @@
       validationPredicates: [
         {
           args: ['repeat'],
-          predicateFactory: function(e) {
-            return e.LT(foam.nanos.cron.SimpleIntervalSchedule.REPEAT, 100);
-          },
+          query: 'repeat<100',
           errorMessage: 'INVALID_REPEAT_100'
         },
         {
           args: ['repeat'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.nanos.cron.SimpleIntervalSchedule.REPEAT, 1);
-          },
+          query: 'repeat>=1',
           errorMessage: 'INVALID_REPEAT_1'
         }
       ]
