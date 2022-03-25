@@ -97,6 +97,7 @@ foam.CLASS({
               logger.warning("heartbeat", "missed", health.getId());
               health = (Health) health.fclone();
               health.setStatus(getUnhealthyStatus());
+              health.setUpTime(0L);
               ((DAO) x.get("healthDAO")).put_(x, health);
 
               if ( alarm != null ) {
