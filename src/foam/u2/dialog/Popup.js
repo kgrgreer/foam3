@@ -25,6 +25,10 @@ foam.CLASS({
     centers the "content" element. Clicking the background closes the
     dialog. Exports itself as "overlay", for use by OK and CANCEL buttons.`,
 
+  imports: [
+    'setTimeout'
+  ],
+
   exports: [
     'close as closeDialog'
   ],
@@ -103,16 +107,7 @@ foam.CLASS({
       name: 'closeable',
       value: true
     },
-    {
-      name: 'onClose',
-      documentation: `
-        A convenient property for subscribing to 'closeModal' action.
-      `,
-      setter: function (fn) {
-        if ( ! fn ) return;
-        this.onDetach(this.sub('action', 'closeModal', fn));
-      }
-    },
+    'onClose',
     {
       class: 'Boolean',
       name: 'isStyled',
@@ -159,13 +154,11 @@ foam.CLASS({
     function open() {
       this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
       this.load();
-    },
-
-    function close(closingModal) {
-      var self = this;
-      if ( ! closingModal?.then ) return this.closeModal();
-      closingModal.then(() => self.remove());
     }
+  ],
+
+  listeners: [
+    function close() { this.closeModal(); }
   ],
 
   actions: [
@@ -175,7 +168,11 @@ foam.CLASS({
       label: 'X',
       keyboardShortcuts: [ 27 /* Escape */ ],
       code: function() {
-        this.close(Promise.resolve());
+        if ( this.onClose ) this.onClose();
+
+        // Delay removal by 32ms (two animation frames) so the action.closeModal
+        // topic has a chance to be published
+        this.setTimeout(() => this.remove(), 32);
       }
     }
   ]
