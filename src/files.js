@@ -366,12 +366,8 @@ foam.POM({
   { name: "foam/dao/PutOnlyDAO", flags: "java" },
   { name: "foam/glang/glang", flags: "java" },
   { name: "foam/parse/QueryParser" },
-<<<<<<< HEAD
   { name: "foam/parse/FScriptParser" },
   { name: "foam/parse/FScriptParserTest", flags: [ "java" ] },
-=======
-  { name: "foam/parse/FScript" },
->>>>>>> 2c7fbdd25cc2d58ed48f58453ade9731250898ba
   { name: "foam/parse/QueryParserUserTest", flags: "java" },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },

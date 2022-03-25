@@ -391,8 +391,6 @@ public class FScriptParser
       grammar.sym("ENUM")
     ));
 
-//    grammar.addAction("VALUE", (val, x) -> val instanceof Expr ? val : new Constant(val));
-
     grammar.addSymbol("REGEX", new Seq1(
       1, Literal.create("/"),
       new Repeat(new Alt(Literal.create("\\/"), new NotChars("/"))),

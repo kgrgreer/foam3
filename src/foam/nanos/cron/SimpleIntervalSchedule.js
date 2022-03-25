@@ -319,7 +319,7 @@
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
-        } 
+        }
         if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
@@ -548,7 +548,7 @@
         }
       ],
       javaCode: `
-        // Todo change end of week based off country 
+        // Todo change end of week based off country
         return date.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
       `
     },
@@ -566,7 +566,7 @@
         }
       ],
       javaCode: `
-        // Todo change start of week based off country 
+        // Todo change start of week based off country
         return date.minusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
       `
     },
