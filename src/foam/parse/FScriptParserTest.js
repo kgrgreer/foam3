@@ -172,6 +172,13 @@ foam.CLASS({
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
     test(( ((Expr) parser.parse(sps, px).value()).f(user)) == "Toronto", "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
 
+    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
+
+    sps.setString("let testVar2 = address.regionId.len; address.regionId.len==testVar2");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
+
+
     var sprtCnfg = new foam.nanos.app.SupportConfig();
     var theme = new foam.nanos.theme.Theme();
     sprtCnfg.setSupportAddress(addr);

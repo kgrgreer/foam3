@@ -27,6 +27,7 @@ public class FScriptParser
 {
   PropertyInfo prop_;
   protected List expressions;
+  protected List declaredFields;
 
   public FScriptParser(PropertyInfo property) {
     prop_ = property;
@@ -34,6 +35,7 @@ public class FScriptParser
     List<PropertyInfo>         properties  = property.getClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     expressions = new ArrayList();
+    declaredFields = new ArrayList();
     Map props = new HashMap<String, PropertyInfo>();
 
     props.put("thisValue", property);
@@ -61,15 +63,16 @@ public class FScriptParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
+//    declaredFields = new ArrayList();
     return getGrammar().parse(ps, x, "");
   }
 
   private Grammar getGrammar() {
 
     Grammar grammar = new Grammar();
-    grammar.addSymbol("FIELD_NAME", new Alt(expressions));
+    grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions), new Alt(declaredFields)));
 
-    grammar.addSymbol("START", new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")));
+    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
 
     grammar.addSymbol(
       "OR",
@@ -322,6 +325,26 @@ public class FScriptParser
       return ifelse;
     });
 
+    grammar.addSymbol("LET", new SeqI(new int[] { 2, 6 },
+      Literal.create("let"),
+      Whitespace.instance(),
+      grammar.sym("WORD"),
+      Whitespace.instance(),
+      Literal.create("="),
+      Whitespace.instance(),
+      grammar.sym("VALUE"),
+      Literal.create(";"),
+      Whitespace.instance()
+    ));
+
+    grammar.addAction("LET", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      if (vals.length < 2 ) return null;
+      declaredFields.add(new Literal((String) vals[0], ( vals[1] instanceof Expr ) ?
+        vals[1] : new foam.mlang.Constant (vals[1])));
+      return val;
+    });
+
     grammar.addSymbol("UNARY", new Seq(grammar.sym("VALUE"), Whitespace.instance(),
       new Alt(
         new AbstractLiteral("exists") {
@@ -361,8 +384,8 @@ public class FScriptParser
       new Literal("true", true),
       new Literal("false", false),
       new Literal("null", null),
-      grammar.sym("NUMBER"),
       grammar.sym("FORMULA"),
+      grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("FIELD"),
       grammar.sym("ENUM")
