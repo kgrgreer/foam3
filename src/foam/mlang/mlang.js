@@ -2185,7 +2185,12 @@ foam.CLASS({
       code: function(o) {
         return foam.util.compare(this.arg1.f(o), this.arg2.f(o)) <= 0;
       },
-      javaCode: 'return  foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;'
+      javaCode: `
+      var result = foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;
+      foam.nanos.logger.StdoutLogger.instance().info("Lte", "arg1", getArg1(), "arg2", getArg2(), "f", getArg1().f(obj), "<", getArg2().f(obj), result);
+      return result;
+     `
+ //     javaCode: 'return  foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;'
     },
     {
       name: 'createStatement',
