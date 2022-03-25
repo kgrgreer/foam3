@@ -4754,8 +4754,10 @@ foam.CLASS({
         if ( getTrueExpr() == null ||
             getFalseExpr() == null )
           foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
-
-        if ( getPredicate().f(obj) )
+        boolean result = getPredicate().f(obj);
+        foam.nanos.logger.StdoutLogger.instance().info("If.predicate", getPredicate().toString(), "result", result);
+        // if ( getPredicate().f(obj) )
+        if ( result )
           return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
         return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
       `
