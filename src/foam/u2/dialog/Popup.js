@@ -103,7 +103,16 @@ foam.CLASS({
       name: 'closeable',
       value: true
     },
-    'onClose',
+    {
+      name: 'onClose',
+      documentation: `
+        A convenient property for subscribing to 'closeModal' action.
+      `,
+      setter: function (fn) {
+        if ( ! fn ) return;
+        this.onDetach(this.sub('action', 'closeModal', fn));
+      }
+    },
     {
       class: 'Boolean',
       name: 'isStyled',
@@ -150,13 +159,12 @@ foam.CLASS({
     function open() {
       this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
       this.load();
-    }
-  ],
+    },
 
-  listeners: [
-    function close() {
-      if ( this.onClose ) this.onClose();
-      this.remove();
+    function close(closingModal) {
+      var self = this;
+      if ( ! closingModal?.then ) return this.closeModal();
+      closingModal.then(() => self.remove());
     }
   ],
 
@@ -166,8 +174,8 @@ foam.CLASS({
       icon: 'images/ic-cancelblack.svg',
       label: 'X',
       keyboardShortcuts: [ 27 /* Escape */ ],
-      code: () => {
-        this.close();
+      code: function() {
+        this.close(Promise.resolve());
       }
     }
   ]
