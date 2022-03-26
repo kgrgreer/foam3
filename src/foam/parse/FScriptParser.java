@@ -320,8 +320,8 @@ public class FScriptParser
       Object[] vals = (Object[]) val;
       var ifelse = new If();
       ifelse.setPredicate((Predicate) vals[0]);
-      ifelse.setValueIfTrue((Expr) vals[1]);
-      if ( vals.length > 2 ) ifelse.setValueIfFalse((Expr) vals[2]);
+      ifelse.setTrueExpr((Expr) vals[1]);
+      if ( vals.length > 2 ) ifelse.setFalseExpr((Expr) vals[2]);
       return ifelse;
     });
 
