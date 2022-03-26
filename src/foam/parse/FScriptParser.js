@@ -27,14 +27,13 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.parse',
-  name: 'FScript',
+  name: 'FScriptParser',
 
   documentation: 'A simple scripting language.',
 
   static: [
     function test__() {
-//      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
-      var fs = foam.parse.FScript.create({of: foam.parse.Test});
+      var fs = foam.parse.FScriptParser.create({of: foam.parse.Test});
 
       var data = foam.parse.Test.create({
         id: 42,
@@ -63,7 +62,7 @@ foam.CLASS({
     },
 
     function test2__() {
-      var fs = foam.parse.FScript.create({of: foam.util.Timer});
+      var fs = foam.parse.FScriptParser.create({of: foam.util.Timer});
 
       function test(s) {
         try {
@@ -84,11 +83,6 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    // Reuse parsers if created for same 'of' class.
-    foam.pattern.Multiton.create({property: 'of'})
-  ],
-
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
@@ -99,8 +93,12 @@ foam.CLASS({
     'foam.parse.Parsers',
     'foam.parse.StringPStream'
   ],
+  axioms: [
+      foam.pattern.Multiton.create({property: 'thisValue'})
+  ],
 
   properties: [
+    'thisValue',
     {
       class: 'Class',
       name: 'of'
@@ -111,10 +109,11 @@ foam.CLASS({
       name: 'baseGrammar_',
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
+        var self = this;
         return {
           START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: sym('or'),
+          expr: alt(sym('or'), sym('formula')),
 
           or: repeat(sym('and'), literal('||'), 1),
 
@@ -123,14 +122,13 @@ foam.CLASS({
           simpleexpr: alt(
             sym('paren'),
             sym('negate'),
+            sym('unary'),
             sym('comparison')
           ),
 
           paren: seq1(1, '(', sym('expr'), ')'),
 
           negate: seq(literal('!'), sym('expr')),
-
-          subQuery: alt(sym('compoundSubQuery'), sym('simpleSubQuery')),
 
           comparison: seq(
             sym('value'),
@@ -140,23 +138,94 @@ foam.CLASS({
               literal('<=', this.LTE),
               literal('>=', this.GTE),
               literal('<',  this.LT),
-              literal('>',  this.GT)
+              literal('>',  this.GT),
+              literal('~',  this.REG_EXP)
             ),
             sym('value')),
 
-          value: alt(
-            sym('string'),
-            sym('number'),
-            sym('field')
+          unary: seq(
+            sym('value'),
+            repeat0(" "),
+            alt(
+              literal('exists', this.HAS),
+              literal('!exists', function (arg) {
+                return self.NOT(self.HAS(arg));
+              }),
+              literal('isValid', this.IS_VALID)
+            )
           ),
+
+          value: alt(
+            sym('regex'),
+            sym('date'),
+            sym('string'),
+            literal('true', true),
+            literal('false', false),
+            literal('null', null),
+            sym('formula'),
+            sym('number'),
+            sym('fieldLen'),
+            sym('field'),
+            sym('enum')
+          ),
+
+          formula: repeat(sym('minus'), literal('+'), 1),
+
+          minus: repeat(sym('form_expr'), literal('-'), 1),
+
+          form_expr: seq(
+            alt(
+              sym('number'),
+              sym('fieldLen'),
+              sym('field')
+            ),
+            optional(
+              seq(
+                alt(
+                  literal('*', this.MUL),
+                  literal('/', this.DIV)
+                ),
+                alt(
+                  sym('number'),
+                  sym('fieldLen'),
+                  sym('field')
+                )
+              )
+            )
+          ),
+
+          date: alt(
+            // YYYY-MM-DDTHH:MM
+            seq(sym('number'), '-', sym('number'), '-', sym('number'), 'T',
+                sym('number'), ':', sym('number')),
+            // YYYY-MM-DDTHH
+            seq(sym('number'), '-', sym('number'), '-', sym('number'), 'T',
+                sym('number')),
+            // YYYY-MM-DD
+            seq(sym('number'), '-', sym('number'), '-', sym('number')),
+            // YYYY-MM
+            seq(sym('number'), '-', sym('number'))
+          ),
+
+          regex:
+            seq1(1,
+              '/',
+              str(repeat(alt('\\/', notChars('/'),))),
+              '/'
+            ),
+
+          fieldLen: seq(
+            sym('field'),'.len'),
 
           field: seq(
             sym('fieldname'),
-            optional(seq('.', repeat(sym('word'), '.')))),
+            optional(seq(notChars('len'), '.', repeat(sym('word'), '.')))),
+
+          enum: str(seq(sym('word'), repeat(str(seq(literal('.'), sym('word')))))),
 
           string: str(seq1(1, '"',
-            repeat(alt(literal('\\"', '"'), notChars('"'))),
-            '"')),
+                      repeat(alt(literal('\\"', '"'), notChars('"'))),
+                      '"')),
 
           word: str(repeat(sym('char'), null, 1)),
 
@@ -164,9 +233,10 @@ foam.CLASS({
             range('a', 'z'),
             range('A', 'Z'),
             range('0', '9'),
-            '-', '^', '_', '@', '%', '.'),
+            '-', '^', '_', '@', '%'),
 
-          number: repeat(range('0', '9'), null, 1)
+          number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
+//          number: repeat(range('0', '9'), null, 1)
         };
       }
     },
@@ -177,12 +247,27 @@ foam.CLASS({
         const cls        = this.of;
         const fields     = [];
         const properties = cls.getAxiomsByClass(foam.core.Property);
+        const constants = cls.getAxiomsByClass(foam.core.Constant);
+
+        if ( this.thisValue !== undefined ) {
+          fields.push(this.Literal.create({
+            s: 'thisValue',
+            value: this.thisValue
+          }));
+        }
 
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
           fields.push(this.Literal.create({
             s: prop.name,
             value: prop
+          }));
+        }
+        for ( var i = 0 ; i < constants.length ; i++ ) {
+          var con = constants[i];
+          fields.push(this.Literal.create({
+            s: con.name,
+            value: con.value
           }));
         }
 
@@ -212,15 +297,23 @@ foam.CLASS({
           },
 
           number: function(v) {
-            return parseInt(compactToString(v));
+            return v[0] == null ? parseInt(v[1].join("")) : -parseInt(v[1].join(""));
           },
 
           comparison: function(v) {
             var lhs = v[0];
             var op  = v[1];
             var rhs = v[2];
-
             return op.call(self, lhs, rhs);
+          },
+
+          unary: function(v) {
+            var lhs = v[0];
+            var op  = v[2];
+            if ( foam.mlang.predicate.Not.isInstance(op) ) {
+
+            }
+            return op.call(self, lhs);
           },
 
           or: function(v) { return self.OR.apply(self, v); },
@@ -236,6 +329,54 @@ foam.CLASS({
               }
             }
             return expr;
+          },
+
+          fieldLen: function(v) {
+            return foam.mlang.StringLength.create({
+              arg1: v[0]
+            })
+          },
+
+          formula: function(v) {
+            return self.ADD.apply(self, v);
+          },
+
+          minus: function(v) {
+            return self.SUB.apply(self, v);
+          },
+
+          form_expr: function(v) {
+            if ( v.length == 1 || v[1] === null ) return v[0];
+            return v[1][0].call(self, v[0], v[1][1])
+          },
+
+          regex: function(v) {
+            return new RegExp(v);
+          },
+
+          date: function(v) {
+          var args = [];
+            for (var i = 0; i < v.length; i ++ ) {
+              if ( i == 0 || i % 2 === 0 ) {
+                // we assume that the input for month is human readable(january is 1 but should be 0 when creating new date)
+                args.push( i == 2 ? v[i] - 1 : v[i]);
+              }
+            }
+            return new Date(...args);
+          },
+          word: function(v) {
+            if ( v == "len" ) {
+              return null;
+            }
+            return v;
+          },
+
+          enum: function(v) {
+            var enumArr = v.replaceAll(',','').split('.');
+            var val = enumArr[enumArr.length-1];
+            var enumCls = v.replaceAll(',','').split('.'+val)[0];
+            var en = this.__context__.lookup(enumCls);
+            return en == undefined ? null : en[val];
           }
         };
 
