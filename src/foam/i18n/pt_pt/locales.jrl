@@ -699,11 +699,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.WI
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.VERTICAL",target:"Vertical"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.ALL",target:"Todo "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.CREATE",target:"Crio"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.UPDATE",target:"Atualizar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.REMOVE",target:"Retirar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.CREATE_OR_UPDATE",target:"Crio/Atualizar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.CLEAR.label",target:"Claro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.OF_TEXT",target:"de"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.SELECTED_TEXT",target:"selecionado"})
@@ -1106,3 +1101,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.T
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_UPLOADER.label",target:"Subir arquivo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_1",target:"A atualização do logotipo aqui atualiza o"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_2",target:"para todos os usuários que usam este tema. Por favor, use SVGs ou PNGs de alta resolução para garantir melhores resultados para os usuários"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY1",target:"Você recebeu "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY2",target:" solicitação de aprovação com id: "})

@@ -5,3 +5,4 @@ p({"class":"foam.util.test.UIDUniquenessTest","id":"UIDUniquenessTest","descript
 p({"class":"foam.util.test.UIDGeneratorTest","id":"UIDGeneratorTest","description":"UID generator tests"})
 p({"class":"foam.util.test.SafetyUtilTest","id":"SafetyUtilTest","description":"SafetyUtil tests"})
 p({"class":"foam.parse.QueryParserUserTest","id":"QueryParserUserTest"})
+p({"class":"foam.parse.FScriptParserTest","id":"FScriptParserTest"})
