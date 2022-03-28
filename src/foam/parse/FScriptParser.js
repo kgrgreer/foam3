@@ -162,7 +162,7 @@ foam.CLASS({
             literal('true', true),
             literal('false', false),
             literal('null', null),
-            sym('formula'),
+//            sym('formula'),
             sym('number'),
             sym('fieldLen'),
             sym('field'),
