@@ -95,12 +95,8 @@ foam.CLASS({
       name: 'emptySubTitle'
     },
     {
-      name: 'dao',
-      adapt: function(_, o) {
-        if ( foam.String.isInstance(o) )
-          return this.__subContext__[o];
-        return o;
-      }
+      class: 'foam.dao.DAOProperty',
+      name: 'dao'
     },
     ['limit', 5],
     'mode'
@@ -172,7 +168,7 @@ foam.CLASS({
       code: function() {
         if ( ! this.dao ) return;
         var self = this;
-        self.dao.limit(self.limit).select().then((objects) => {
+        this.dao.limit(this.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;
