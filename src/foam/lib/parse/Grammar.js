@@ -81,6 +81,14 @@ foam.INTERFACE({
   package: 'foam.lib.parse',
   name: 'Action',
 
+  constants: [
+    {
+      type: 'Object',
+      name: 'NO_PARSE',
+      javaValue: 'new Object()'
+    }
+  ],
+
   methods: [
     {
       name: 'execute',
@@ -128,8 +136,11 @@ foam.CLASS({
       ],
       javaCode: `
 ps = getParser().parse(ps, x);
-if ( ps == null ) return null;
-return ps.setValue(getAction().execute(ps.value(), x));
+    if ( ps == null ) return null;
+    Action action = getAction();
+    Object val = action.execute(ps.value(), x);
+    if ( val == Action.NO_PARSE ) return null;
+    return ps.setValue(val);
       `
     }
   ]
