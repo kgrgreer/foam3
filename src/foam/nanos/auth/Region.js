@@ -40,6 +40,13 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'alternativeNames'
+    },
+    {
+//      class: 'FObjectProperty',
+//      of: 'net.nanopay.crunch.onboardingModels.PhoneNumberData',
+class: 'PhoneNumber',
+required: true,
+      name: 'test'
     }
   ]
 });
