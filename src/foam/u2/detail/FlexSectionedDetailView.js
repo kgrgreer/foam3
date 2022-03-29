@@ -10,10 +10,10 @@ foam.CLASS({
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
 
   requires: [
+    'foam.u2.borders.NullBorder',
     'foam.u2.detail.SectionView',
-    'foam.u2.layout.Grid',
     'foam.u2.layout.GUnit',
-    'foam.u2.borders.NullBorder'
+    'foam.u2.layout.Grid'
   ],
 
   css: `

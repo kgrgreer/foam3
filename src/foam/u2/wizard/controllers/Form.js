@@ -35,5 +35,5 @@ foam.CLASS({
         class: 'foam.u2.borders.NullBorder'
       }
     }
-  ],
+  ]
 });
