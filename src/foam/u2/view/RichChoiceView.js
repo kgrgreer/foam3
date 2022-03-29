@@ -579,9 +579,7 @@ foam.CLASS({
                                   .enableClass('disabled', section.disabled)
                                   .callIf(! section.disabled, function() {
                                     this.on('click', () => {
-                                      self.fullObject_ = obj;
-                                      self.data = obj.id;
-                                      self.isOpen_ = false;
+                                      self.onSelect(obj);
                                     });
                                   })
                                 .end();
@@ -605,6 +603,12 @@ foam.CLASS({
                 .end();
           }
         }));
+    },
+
+    function onSelect(obj) {
+      this.fullObject_ = obj;
+      this.data = obj.id;
+      this.isOpen_ = false;
     },
 
     function addAction(action, actionData) {
