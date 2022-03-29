@@ -117,6 +117,14 @@ foam.CLASS({
       view: {
         class: 'foam.u2.MultiView',
         views: [
+          function(_, X) {
+            return {
+              class: 'foam.u2.view.DAOListWithCreateView',
+              data: undefined,
+              dao: X.data.sampleDataDAO,
+              of: 'foam.demos.u2.SampleData'
+            };
+          },
           {
             class: 'foam.u2.DAOList',
             rowView: { class: 'foam.demos.heroes.CitationView' }
@@ -158,6 +166,43 @@ foam.CLASS({
       of: 'foam.demos.u2.SampleData',
       name: 'referenceWithCustomObjToChoice',
       view: { class: 'foam.u2.view.ReferenceView', objToChoice: function(obj) { return [obj.id, obj.name]; } },
+      targetDAOKey: 'sampleDataDAO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.demos.u2.SampleData',
+      name: 'referenceWithFilteredInlineCreate',
+      view: function(_, X)  {
+        return {
+          class: 'foam.u2.view.RichChoiceWithCreateView',
+          propertyWhitelist: [ X.data.sampleDataDAO.of.ID ],
+          search: true,
+          sections: [
+            {
+              heading: 'Data',
+              dao: X.data.sampleDataDAO
+            }
+          ]
+        };
+      },
+      targetDAOKey: 'sampleDataDAO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.demos.u2.SampleData',
+      name: 'referenceWithFullFObjectInlineCreate',
+      view: function(_, X)  {
+        return {
+          class: 'foam.u2.view.RichChoiceWithCreateView',
+          search: true,
+          sections: [
+            {
+              heading: 'Data',
+              dao: X.data.sampleDataDAO
+            }
+          ]
+        };
+      },
       targetDAOKey: 'sampleDataDAO'
     },
     {
