@@ -12,7 +12,9 @@ foam.CLASS({
 
   requires: ['foam.u2.view.DraftDetailView'],
 
-  documentation: '',
+  documentation: `RichChoiceView with support for inline create, 
+  ideally should be used with reference props that only reqire a few props to create a new object`,
+
   css: `
     ^createWrapper {
       padding: 8px 16px;
@@ -51,15 +53,17 @@ foam.CLASS({
       class: 'Map',
       name: 'baseArgs'
     },
-    'propertyWhitelist',
+    {
+      name: 'propertyWhitelist',
+      documentation: 'Passed to the createView, used by detailViews to only show some props of an FObject'
+    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       factory: function() {
         return this.sections[0]?.dao;
       }
-    },
-    ['feedback_', false]
+    }
   ],
 
   methods: [
@@ -84,6 +88,7 @@ foam.CLASS({
   ],
 
   listeners: [
+    // TODO: fix
     // function scrollTo() {
     //   var self = this;
     //   this.createEl_.el().then(() => {
@@ -103,7 +108,7 @@ foam.CLASS({
         this.feedback_ = false;
       }, e => {
         this.feedback_ = false; 
-        ctrl.notify('something went wrong', e.message, 'ERROR', true)
+        ctrl.notify('Something went wrong', e.message, 'ERROR', true)
       });
     },
     function cancel() {
