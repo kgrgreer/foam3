@@ -176,7 +176,11 @@ foam.CLASS({
       DAO approvalRequestDAO = getApprovalRequestDAO();
       DAO dao = (DAO) x.get(getDaoKey());
 
-      FObject currentObjectInDAO = (FObject) dao.find(String.valueOf(obj.getProperty("id")));
+      FObject currentObjectInDAO = null;
+      Object id = obj.getProperty("id");
+      if ( id != null ) {
+        currentObjectInDAO = (FObject) dao.find(String.valueOf(id));
+      }
       Predicate checkerPredicate = approvableAwareObj.getCheckerPredicate();
 
       if ( checkerPredicate != null && ! checkerPredicate.f(obj) ){
