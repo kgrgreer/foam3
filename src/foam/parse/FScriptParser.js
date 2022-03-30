@@ -113,7 +113,7 @@ foam.CLASS({
         return {
           START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: alt(sym('or'), sym('formula')),
+          expr: alt(sym('or')),
 
           or: repeat(sym('and'), literal('||'), 1),
 
@@ -219,7 +219,7 @@ foam.CLASS({
 
           field: seq(
             sym('fieldname'),
-            optional(seq(notChars('len'), '.', repeat(sym('word'), '.')))),
+            optional(seq1(1,literal('.'), repeat(not(literal('len'), sym('word')), '.', 1)))),
 
           enum: str(seq(sym('word'), repeat(str(seq(literal('.'), sym('word')))))),
 
@@ -323,7 +323,7 @@ foam.CLASS({
           field: function(v) {
             var expr = v[0];
             if ( v[1] ) {
-              var parts = v[1][1];
+              var parts = v[1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
                 expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
               }
