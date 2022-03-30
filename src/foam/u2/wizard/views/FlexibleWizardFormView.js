@@ -49,10 +49,8 @@ foam.CLASS({
         .add(current$)
         .start()
           .addClass(this.myClass('flexButtons'))
-          .startContext({ data: this.data })
-            .tag(this.data.GO_PREV, { size: 'LARGE' })
-            .tag(this.data.GO_NEXT, { size: 'LARGE', buttonStyle: 'PRIMARY' })
-          .endContext()
+          .tag(this.data.GO_PREV, { size: 'LARGE' })
+          .tag(this.data.GO_NEXT, { size: 'LARGE', buttonStyle: 'PRIMARY' })
         .end()
         ;
     },
