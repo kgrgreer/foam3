@@ -38,6 +38,12 @@ foam.CLASS({
     {
       name: 'halted_',
       class: 'Boolean'
+    },
+    {
+      class: 'Duration',
+      name: 'timeout',
+      documentation: `amount of time before a warning is displayed for an unresolved promise`,
+      value: 1000
     }
   ],
 
@@ -157,9 +163,21 @@ foam.CLASS({
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
         }
+        
+        // Setup a timeout to warn about unresolved promises
+        let stepResolved = false;
+        setTimeout(() => {
+          if ( ! stepResolved ) console.warn(
+            `context agent still pending after ${this.timeout}ms; ` +
+            `open the object for helpful details.`,
+            seqspec
+          );
+        }, this.timeout)
+
         // Call the context agent and pass its exports to the next one
         return contextAgent.execute().then(
           newX => {
+            stepResolved = true;
             return nextStep(newX || contextAgent.__subContext__);
           });
       };
