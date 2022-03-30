@@ -287,8 +287,9 @@ foam.CLASS({
       // If it exists, load the next wizardlet
       // TODO: Just load next wizardlet instead of loading all in the beginning
       var start = this.wizardPosition.wizardletIndex;
-      var end = this.nextScreen ?
-        this.nextScreen.wizardletIndex : this.wizardlets.length;
+      const nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
+      var end = nextScreen ?
+        nextScreen.wizardletIndex : this.wizardlets.length;
       var p = Promise.resolve();
       for ( let i = start ; i < end ; i++ ) {
         if ( ! this.wizardlets[i].isAvailable ) continue;
@@ -300,7 +301,7 @@ foam.CLASS({
           this.submitted = true;
           return true;
         }
-        this.wizardPosition = this.nextScreen;
+        this.wizardPosition = nextScreen;
         return false;
       });
     },
