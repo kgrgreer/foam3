@@ -12,6 +12,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -52,7 +53,8 @@ foam.CLASS({
     'subject',
     'ticketDAO',
     'ticketStatusDAO',
-    'userDAO'
+    'userDAO',
+    'ticketCommentDAO',
   ],
 
   tableColumns: [
@@ -64,7 +66,8 @@ foam.CLASS({
     'createdBy.legalName',
     'lastModified',
     'status',
-    'title'
+    'title',
+    'comment'
   ],
 
   messages: [
@@ -221,6 +224,18 @@ foam.CLASS({
           errorString: 'Please provide a comment.'
         }
       ],
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.COMMENT))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
       order: 9
     },
     {
