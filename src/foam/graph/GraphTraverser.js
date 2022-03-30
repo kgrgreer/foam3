@@ -25,7 +25,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.graph.Graph',
       name: 'graph'
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'allowDuplicatePairs',
+      documentation: `
+        If true, "process" may be published for relationships already visited.
+      `
+    },
+    'memo_'
   ],
 
   methods: [
@@ -36,13 +44,19 @@ foam.CLASS({
 
   actions: [
     function traverse() {
+      this.memo_ = {};
       const RECUR = x => {
         const childNodes = x.current.forwardLinks.map(id => this.graph.data[id]);
         for ( const current of childNodes ) {
           this.step({ ...x, parent: x.current, current });
         }
       };
-      const VISIT = x => { this.process.pub(x) };
+      const VISIT = x => {
+        const memoKey = JSON.stringify([x.parent?.id, x.current?.id]);
+        if ( this.memo_[memoKey] && ! this.allowDuplicatePairs ) return;
+        this.memo_[memoKey] = true;
+        this.process.pub(x)
+      };
       const sequence = this.order === this.TraversalOrder.PRE_ORDER ?
         [RECUR, VISIT] : [VISIT, RECUR];
       for ( const current of this.graph.roots ) {
