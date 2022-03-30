@@ -28,11 +28,12 @@
   javaImports: [
     'foam.core.DirectAgency',
     'foam.dao.DAO',
+    'foam.mlang.predicate.FScript',
     'foam.mlang.predicate.MQLExpr',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
     'foam.util.retry.RetryStrategy',
@@ -340,7 +341,7 @@
         if ( ! getEnabled() ) return false;
 
         try {
-          if ( getPredicate() instanceof MQLExpr ) {
+          if ( getPredicate() instanceof MQLExpr || getPredicate() instanceof FScript ) {
             RulerData data = new RulerData();
             Subject subject = (Subject) x.get("subject");
             data.setN(obj);
