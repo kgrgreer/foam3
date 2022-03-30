@@ -1,0 +1,70 @@
+p({
+  id: "schedulable",
+  wizardConfig: {
+    class: "foam.u2.crunch.EasyCrunchWizard",
+    incrementalWizard: true
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-create-success",
+  name: "Success Wizardlet",
+  wizardlet: {
+    class: "foam.u2.wizard.BaseWizardlet",
+    isVisible: true,
+    of: "net.nanopay.transfer.ResetPasswordConfirmation"
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-dao-put",
+  name: "Put Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    isVisible: false,
+    wao:{
+      class: "foam.u2.wizard.PrerequisiteWAO",
+      of: "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-fobject",
+      delegate: {
+        class: "foam.u2.wizard.DAOWAO",
+        daoKey: "schedulableDAO",
+        of: "foam.nanos.cron.Schedulable"
+      }
+    }
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-fobject",
+  name: "Schedulable",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    combinedSection: true,
+    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    wao:{
+      class: "foam.u2.wizard.XORMinMaxWAO",
+      minMaxCapabilityId: "schedulable-xorminxmax",
+      of: "foam.nanos.cron.Schedulable"
+    }
+  },
+})
+
+p({
+  class: 'foam.nanos.crunch.MinMaxCapability',
+  id: "schedulable-xorminxmax",
+  name: "Schedulable MinMax",
+  min: 1,
+  max: 1
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: 'generic-schedulable',
+  of: 'foam.nanos.cron.Schedulable',
+  name: "Generic Schedulable"
+})
