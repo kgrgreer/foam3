@@ -27,7 +27,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ img, ^ svg {
-      height: 27px;
+      height: 25px;
       max-height: 40px;
       width: 100%;
     }

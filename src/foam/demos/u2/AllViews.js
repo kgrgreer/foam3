@@ -27,12 +27,7 @@ foam.CLASS({
       xxxvalidationPredicates: [
         {
           args: ['firstName'],
-          predicateFactory: function(e) {
-            return e.GT(
-              foam.mlang.StringLength.create({
-                arg1: foam.demos.u2.FIRST_NAME
-              }), 0);
-          },
+          query: 'firstName.len>0',
           errorString: 'Please enter a first name.'
         }
       ]
@@ -45,12 +40,7 @@ foam.CLASS({
       xxxvalidationPredicates: [
         {
           args: ['lastName'],
-          predicateFactory: function(e) {
-            return e.GT(
-              foam.mlang.StringLength.create({
-                arg1: foam.demos.u2.LAST_NAME
-              }), 0);
-          },
+          query: 'lastName.len>0',
           errorString: 'Please enter a last name'
         }
       ]

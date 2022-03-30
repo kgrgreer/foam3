@@ -153,7 +153,7 @@ foam.CLASS({
           view: {
             class: this.DAOBrowseControllerView,
             data: this.__subContext__[this.dao],
-          }, parent: this.__subContext__ 
+          }, parent: this.__subContext__
         }));
       }
     }
