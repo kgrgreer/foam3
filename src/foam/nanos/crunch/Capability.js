@@ -358,6 +358,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'autoGrantPrereqs',
+      value:true,
       documentation: `
         If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
         before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites

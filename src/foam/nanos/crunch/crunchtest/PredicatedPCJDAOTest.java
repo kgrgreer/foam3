@@ -39,7 +39,7 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     Predicate isTestSpid = new IsSpid.Builder(x).setSpids(new String[]{"test"}).build();
     Predicate isMockSpid = new IsSpid.Builder(x).setSpids(new String[]{"mockSpid"}).build();
 
-    cap = new Capability.Builder(x).setId("cap").build();
+    cap = new Capability.Builder(x).setId("cap").setAutoGrantPrereqs(false).build();
     prereq = new Capability.Builder(x).setId("prereq").build();
     testPrereq = new Capability.Builder(x).setId("testPrereq").build();
     mockSpidPrereq = new Capability.Builder(x).setId("mockSpidPrereq").build();
