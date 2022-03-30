@@ -165,9 +165,8 @@ foam.CLASS({
         }
         
         // Setup a timeout to warn about unresolved promises
-        let stepResolved = false;
-        setTimeout(() => {
-          if ( ! stepResolved ) console.warn(
+        const stepResolvedTimeout = setTimeout(() => {
+          console.warn(
             `context agent still pending after ${this.timeout}ms; ` +
             `open the object for helpful details.`,
             seqspec
@@ -177,7 +176,7 @@ foam.CLASS({
         // Call the context agent and pass its exports to the next one
         return contextAgent.execute().then(
           newX => {
-            stepResolved = true;
+            clearTimeout(stepResolvedTimeout);
             return nextStep(newX || contextAgent.__subContext__);
           });
       };
