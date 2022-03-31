@@ -113,4 +113,73 @@ p({
   testAddressParse("1505-19 Western Battery Rd", "", "19", "Western Battery Rd");
   """
 })
+p({
+  class:"foam.nanos.test.Test",
+  id:"jrlCheckTest",
+  code:"""
+import java.util.HashMap;
 
+import foam.core.ProxyX;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.dao.EasyDAO;
+import foam.dao.ProxyDAO;
+import foam.dao.java.JDAO;
+import foam.mlang.MLang;
+import foam.nanos.boot.NSpec;
+
+import foam.lib.parse.ErrorReportingPStream;
+
+import static foam.mlang.MLang.*;
+import foam.dao.ArraySink;
+
+context = null;
+root_      = new ProxyX();
+factories_ = new HashMap();
+
+context = x;
+
+root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage("target/journals"));
+obj = new foam.lib.parse.ErrorReportingPStreamFactory(null,null);
+obj.EmptyListErps();
+
+//1 find the list of all jrl
+//2 load one by one
+//3 throw exception
+
+    nSpecDAO_ = x.get("nSpecDAO");
+    nspecs = nSpecDAO_.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink()).getArray();
+
+    for ( Object object : nspecs ) {
+      dao_ = x.get(object.id);
+      if ( dao_ instanceof DAO ) {
+        do {
+          if ( dao_ instanceof EasyDAO ) {
+            sc = dao_.getJournalName();
+            //read the jrl
+            if ( ! "".equals(sc) ) {
+              try {
+                print(sc);
+                serviceDAO_ = new JDAO(((foam.core.ProxyX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), sc);
+                break;
+              } catch (Exception e) {
+                test(false, sc + " has an error");
+                e.printStackTrace();
+              }
+            }
+          }
+          dao_ = dao_.getDelegate();
+        } while ( dao_ instanceof ProxyDAO );
+      }
+    }
+
+    lst = obj.getListErps();
+
+    if ( lst.size() == 0 ) test(true,"jrl are fine");
+
+    for ( int i = 0; i < lst.size(); i++ ) {
+      print(lst.get(i));
+      test(false, lst.get(i).substring(0, lst.get(i).indexOf(";"))+" jrl file error");
+    }
+  """
+})

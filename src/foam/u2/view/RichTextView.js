@@ -6,12 +6,12 @@
 
 /**
  * TODO:
- * - Migrate from execCommand as it has been deprecated, 
+ * - Migrate from execCommand as it has been deprecated,
  *   but it is still supported across browsers so maybe not?
  * - Add file support
  * - Add image support
  * - Add text formatting
- * - Add indentation buttons 
+ * - Add indentation buttons
  * - Add keyboard macros
  */
 
@@ -27,8 +27,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'window',
-    'document'
+    'document',
+    'window'
   ],
 
   css: `
@@ -84,14 +84,20 @@ foam.CLASS({
       padding: 6px 10px;
       max-height: unset;
     }
-    
   `,
 
   messages: [
-    {name: 'PLACEHOLDER_MSG', message: 'Enter text/drop HTML'}
+    { name: 'PLACEHOLDER_MSG', message: 'Enter text/drop HTML' }
   ],
 
   properties: [
+    {
+      name: 'data',
+      postSet: function(_,n) {
+        if ( ! n ) 
+          this.clearInput();
+      }
+    },
     {
       class: 'String',
       name: 'height',
@@ -124,6 +130,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -156,6 +163,9 @@ foam.CLASS({
           .start().addClass(this.myClass('seperator')).end()
           .start(this.NUMBERED_LIST, { themeIcon: 'numberedList', size: 'SMALL' }).addClass(this.myClass('tool')).end()
           .start(this.BULLET_LIST, { themeIcon: 'bulletedList', size: 'SMALL' }).addClass(this.myClass('tool')).end()
+          .start().addClass(this.myClass('seperator')).end()
+          .start(this.DECREASE_INDENTATION, { themeIcon: 'decreaseIndentation', size: 'SMALL' }).addClass(this.myClass('tool')).end()
+          .start(this.INCREASE_INDENTATION, { themeIcon: 'increaseIndentation', size: 'SMALL' }).addClass(this.myClass('tool')).end()
           .start(this.BLOCK_QUOTE, { themeIcon: 'blockQuote', size: 'SMALL' }).addClass(this.myClass('tool')).end()
         .end()
         .endContext()
@@ -179,9 +189,11 @@ foam.CLASS({
       this.italic_.actionState$.mapFrom(this.currentSel_$, () => { return this.document.queryCommandState('italic') })
       this.underline_.actionState$.mapFrom(this.currentSel_$, () => { return this.document.queryCommandState('underline') })
     },
+
     function sanitizeDroppedHtml(html) {
       return this.validator.sanitizeText(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
     },
+
     function getSelectionText() {
       var selection = this.window.getSelection();
 
@@ -191,6 +203,12 @@ foam.CLASS({
 
       return '';
     },
+
+    function clearInput() {
+      if ( this.richText && this.richText.el_() ) 
+        this.richText.el_().innerHTML = '';
+    },
+
     function insertElement(e, sel) {
       var selection = this.window.getSelection();
 
@@ -254,7 +272,6 @@ foam.CLASS({
             this.insertElement(this.sanitizeDroppedHtml(txt));
           }
         } else if ( e && e.type && e.type == 'paste' ) {
-          console.log( e.clipboardData.getData('text'));
           var txt = e.clipboardData.getData('text');
           this.insertElement(this.sanitizeDroppedHtml(txt));
         }
@@ -280,6 +297,7 @@ foam.CLASS({
       }
     }
   ],
+
   actions: [
     {
       name: 'bold',
@@ -370,26 +388,26 @@ foam.CLASS({
         this.document.execCommand('insertUnorderedList');
       }
     },
-    // {
-    //   name: 'decreaseIndentation',
-    //   label: '',
-    //   buttonStyle: 'TERTIARY',
-    //   toolTip: 'Indent Less',
-    //   code: function() {
-    //     this.richText.focus();
-    //     this.document.execCommand('outdent');
-    //   }
-    // },
-    // {
-    //   name: 'increaseIndentation',
-    //   label: '',
-    //   buttonStyle: 'TERTIARY',
-    //   toolTip: 'Indent More',
-    //   code: function() {
-    //     this.richText.focus();
-    //     this.document.execCommand('indent');
-    //   }
-    // },
+    {
+      name: 'decreaseIndentation',
+      label: '',
+      buttonStyle: 'TERTIARY',
+      toolTip: 'Indent Less',
+      code: function() {
+        this.richText.focus();
+        this.document.execCommand('outdent');
+      }
+    },
+    {
+      name: 'increaseIndentation',
+      label: '',
+      buttonStyle: 'TERTIARY',
+      toolTip: 'Indent More',
+      code: function() {
+        this.richText.focus();
+        this.document.execCommand('indent');
+      }
+    },
     {
       name: 'blockQuote',
       label: '',
@@ -401,6 +419,7 @@ foam.CLASS({
       }
     }
   ],
+
   classes: [
     {
       name: 'RichLink',
@@ -411,7 +430,7 @@ foam.CLASS({
       css: `
         ^ {
           display: flex;
-          flex-direction: column;  
+          flex-direction: column;
         }
         ^ > * + * {
           margin-top: 8px;
@@ -445,8 +464,8 @@ foam.CLASS({
             value = value.trim();
             // Disallow javascript URL's
             if ( value.toLowerCase().includes('javascript:') ||
-                 value.toLowerCase().includes('url') || 
-                 value.toLowerCase().includes('eval') ) 
+                 value.toLowerCase().includes('url') ||
+                 value.toLowerCase().includes('eval') )
               value = '';
             return value;
           }
@@ -499,6 +518,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'RichTextValidator',
@@ -506,9 +526,9 @@ foam.CLASS({
 
   axioms: [ foam.pattern.Singleton.create() ],
 
-  imports: ['document'],
+  imports: [ 'document' ],
 
-  requires: ['foam.u2.Element'],
+  requires: [ 'foam.u2.Element' ],
 
   methods: [
     function sanitizeText(text) {
@@ -542,6 +562,18 @@ foam.CLASS({
           attributes: []
         },
         {
+          name: 'OL',
+          attributes: []
+        },
+        {
+          name: 'UL',
+          attributes: []
+        },
+        {
+          name: 'LI',
+          attributes: []
+        },
+        {
           name: 'DIV',
           attributes: ['style']
         },
@@ -554,7 +586,7 @@ foam.CLASS({
         //     if ( node.src.startsWith('http') ) {
         //
         //     } else if ( node.src.startsWith('data:') ) {
-        //       
+        //
         //     } else {
         //       // Unsupported image scheme dropped in.
         //       return null;
@@ -575,6 +607,7 @@ foam.CLASS({
           attributes: []
         },
       ];
+
       function copyNodes(parent, node) {
         for ( var i = 0; i < allowedElements.length; i++ ) {
           if ( allowedElements[i].name === node.nodeName ) {
@@ -617,21 +650,20 @@ foam.CLASS({
           copyNodes(newNode, node.childNodes[j]);
         }
       }
-      
+
       var frame = this.document.createElement('iframe');
       frame.sandbox = 'allow-same-origin';
       frame.style.display = 'none';
       this.document.body.appendChild(frame);
       frame.contentDocument.body.innerHTML = text;
-      
+
       var sanitizedContent = new DocumentFragment();
       for ( var i = 0; i < frame.contentDocument.body.childNodes.length; i++ ) {
         copyNodes(sanitizedContent, frame.contentDocument.body.childNodes[i]);
       }
+      
       this.document.body.removeChild(frame);
       return sanitizedContent;
     }
   ]
 });
-
-

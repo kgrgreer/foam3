@@ -234,7 +234,7 @@ for ( var rg : ruleGroups ) {
     if ( rg.f(x, obj, oldObj) ) {
       var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
       if ( ! rules.isEmpty() ) {
-        new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
+        new RuleEngine(x, getX(), getDelegate()).execute(rules, obj, oldObj);
       }
     }
 }`

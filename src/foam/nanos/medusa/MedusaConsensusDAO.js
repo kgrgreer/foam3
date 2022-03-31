@@ -392,11 +392,11 @@ This is the heart of Medusa.`,
             try {
               nu = parser_.get().parseString(entry.getData());
             } catch ( RuntimeException e ) {
-              Throwable cause = e.getCause();
+              Throwable cause = e;
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData(), e);
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData(), cause.getMessage());
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
@@ -431,9 +431,25 @@ This is the heart of Medusa.`,
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
-            FObject tran = parser_.get().parseString(entry.getTransientData());
+            FObject tran = null;
+            try {
+              tran = parser_.get().parseString(entry.getTransientData());
+            } catch ( RuntimeException e ) {
+              Throwable cause = e;
+              while ( cause.getCause() != null ) {
+                cause = cause.getCause();
+              }
+              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData(), cause.getMessage());
+              Alarm alarm = new Alarm("Medusa Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
+              throw new MedusaException("Failed to parse.", cause);
+            }
             if ( tran == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
+              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
               Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());

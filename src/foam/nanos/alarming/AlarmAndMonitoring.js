@@ -35,9 +35,16 @@ foam.CLASS({
           if ( config == null || ! config.getEnabled() ) {
             return;
           }
-          DAO omDAO = (DAO) x.get("om1MinuteDAO");
+
+          DAO omDAO = (DAO) ( config.getUseCCOMLogger() ? x.get("localCcom1MinuteDAO") : x.get("om1MinuteDAO") );
+          if ( omDAO == null ) {
+            // Force OM DAO if CCOM DAO is not enabled
+            omDAO = (DAO) x.get("om1MinuteDAO");
+          }
+
           Date currentCloseTime = new Date();
           currentCloseTime.setSeconds(0);
+
           Candlestick receiveResponses = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
             EQ(Candlestick.KEY, config.getPostRequest())
           );
@@ -98,8 +105,10 @@ foam.CLASS({
               alarm.setIsActive(true);
             }
           } else if (sentCount > 0  && (responseCount / sentCount) < (float) config.getAlarmValue() / 100 ) {
-            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {
-              alarm.setReason(AlarmReason.CONGESTION);
+            AlarmReason checkReason = config.getMonitorType() == MonitorType.CONTROLCHECK ? AlarmReason.CONTROLCHECK : AlarmReason.CONGESTION;
+
+            if ( ! alarm.getIsActive() || !( alarm.getReason() == checkReason ) ) {
+              alarm.setReason(checkReason);
               alarm.setIsActive(true);
             }
           } else {
@@ -113,7 +122,7 @@ foam.CLASS({
           }
 
           // Have to do this manually as not all alarms modify the state and therefore lastModifiedAware decorator will not update lastModified
-          alarm.setLastModified(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+          alarm.setLastModified(new Date());
 
           alarmDAO.put(alarm);
         }

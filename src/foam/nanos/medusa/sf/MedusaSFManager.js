@@ -10,16 +10,34 @@ foam.CLASS({
   extends: 'foam.box.sf.SFManager',
   
   javaImports: [
-    'foam.core.X',
-    'foam.box.sf.SFManager',
+    'foam.box.sf.*',
     'foam.box.sf.SF',
+    'foam.box.sf.SFManager',
+    'foam.core.FObject',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.dao.DOP',
+    'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
+    'foam.nanos.fs.FileSystemStorage',
+    'foam.nanos.fs.Storage',
     'foam.nanos.medusa.ClusterConfig',
     'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.MedusaType',
     'foam.nanos.medusa.Status',
-    'foam.util.retry.RetryStrategy',
     'foam.util.retry.RetryForeverStrategy',
-    'java.util.PriorityQueue',
+    'foam.util.retry.RetryStrategy',
+    'java.nio.file.attribute.*',
+    'java.util.*',
+    'java.util.PriorityQueue'
+  ],
+
+  constants: [
+    {
+      class: 'Int',
+      name: 'MAXIMUM_REPLAY_DAYS',
+      value: 365
+    }
   ],
   
   properties: [
@@ -44,6 +62,24 @@ foam.CLASS({
       name: 'medusaFileCapacity',
       value: 4096
     },
+    {
+      class: 'String',
+      name: 'folderName',
+      value: '../saf/'
+    },
+    {
+      class: 'Int',
+      documentation: 'set 0 or less replay nothing; set to MAXIMUM_REPLAY_DAYS or bigger replay all',
+      name: 'replayStrategy',
+      units: 'days',
+      javaSetter: `
+        replayStrategyIsSet_ = true;
+        if ( val <= 0 ) replayStrategy_ = 0;
+        else if ( val >=  getMAXIMUM_REPLAY_DAYS() ) replayStrategy_ = getMAXIMUM_REPLAY_DAYS();
+        else replayStrategy_ = val;
+      `,
+      value: 0
+    }
   ],
   
   methods: [
@@ -52,11 +88,13 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       super.start();
-      
-      final SFManager manager = this;
-      X context = getX();
+
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(getX(), support.getConfigId());
+      final X context = getX();
+
+      //Setup SF between mediators.
+      final SFManager manager = this;
       if ( myConfig.getType() == MedusaType.MEDIATOR ) {
         for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
           try {
@@ -84,6 +122,15 @@ foam.CLASS({
         }
       }
       `
-    }
+    },
+    {
+      name: 'getFileSuffix',
+      documentation: 'help method to get suffix from file name',
+      javaType: 'int',
+      args: 'String filename',
+      javaCode: `
+        return Integer.parseInt(filename.split("\\\\.")[filename.split("\\\\.").length-1]);
+      `
+    },
   ]
 });

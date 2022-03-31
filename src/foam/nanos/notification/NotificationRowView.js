@@ -63,7 +63,12 @@
     `,
 
     properties: [
-      'of',
+      {
+        name: 'of',
+        factory: function() {
+          return this.data.cls_;
+        }
+      },
       'optionsBtn_',
       'optionPopup_'
     ],
@@ -86,7 +91,7 @@
               this.openModal();
             })
             .start(this.NotificationCitationView, {
-              of: this.data.cls_,
+              of: this.of,
               data: this.data
             })
               .addClasses(['p', this.myClass('msg')])
@@ -114,7 +119,8 @@
         //TODO: Mark as read?
         this.ctrl.add(this.StyledModal.create({ title: this.NOTIFICATION_MSG }).tag({
           class: 'foam.nanos.notification.NotificationMessageModal',
-          data: this.data
+          data: this.data,
+          of: this.of
         }));
       }
     ],

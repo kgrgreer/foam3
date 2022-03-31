@@ -137,7 +137,7 @@ and waits on a response.`,
           if ( SafetyUtil.isEmpty(data) &&
                SafetyUtil.isEmpty(transientData) ) {
             // No delta.
-            // getLogger().debug("update", dop, nu.getClass().getSimpleName(), id, "no delta", "return");
+            // getLogger().debug("update", dop, "No delta detected", nu.getClass().getSimpleName(), id);
             return nu;
           }
 
@@ -150,10 +150,14 @@ and waits on a response.`,
           entry.setCreated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
 
           entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
-          PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
-          registry.wait(x, (Long) entry.getId());
-          pmWait.log(x);
-
+          if ( ((Long) entry.getId()).longValue() != 0L ) {
+            PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
+            registry.wait(x, (Long) entry.getId());
+            pmWait.log(x);
+          } else {
+            // entry.id will be 0 (unassigned) when the primary detects no change.
+            // getLogger().debug("update", dop, "No delta detected on Primary", nu.getClass().getSimpleName(), id);
+          }
           id = entry.getObjectId();
           nu = getDelegate().find_(x, id);
 

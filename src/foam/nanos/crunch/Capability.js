@@ -354,6 +354,15 @@ foam.CLASS({
           setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
         }
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'autoGrantPrereqs',
+      documentation: `
+        If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
+        before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
+        that may not be explicitly put
+      `
     }
   ],
 
@@ -390,7 +399,7 @@ foam.CLASS({
       name: 'implies',
       type: 'Boolean',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',          type: 'Context' },
         { name: 'permission', type: 'String' }
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
@@ -497,7 +506,7 @@ foam.CLASS({
 
             UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
 
-            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj);
+            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, subject);
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
             if ( prereqChainedStatus != CapabilityJunctionStatus.GRANTED ) allGranted = false;
           }
@@ -510,12 +519,16 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
-        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'subject', javaType: 'foam.nanos.auth.Subject' }
       ],
       static: true,
       javaType: 'foam.nanos.crunch.CapabilityJunctionStatus',
       javaCode: `
         CapabilityJunctionStatus status = ucj.getStatus();
+
+        if ( prereq.getStatus() == CapabilityJunctionStatus.AVAILABLE && getAutoGrantPrereqs() )
+          prereq = ((CrunchService) x.get("crunchService")).updateUserJunction(x, subject, prereq.getTargetId(), null, null);
 
         boolean reviewRequired = getReviewRequired();
         CapabilityJunctionStatus prereqStatus = prereq.getStatus();

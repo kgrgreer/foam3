@@ -32,7 +32,14 @@
       documentation: `
         OPTIONAL: For grabbing only a specific property from the CapabilityJunction's data
       `,
-      name: 'propertyName'
+      name: 'loadFromPropertyName'
+    },
+    {
+      class: 'String',
+      documentation: `
+        OPTIONAL: For loading into only a specific property of the CapabilityJunction's data
+      `,
+      name: 'loadIntoPropertyName'
     },
     {
       class: 'Boolean',
@@ -67,22 +74,27 @@
         return;
     }
 
-      const prereqWizardletData = prereqWizardlet.data;
+      let prereqWizardletData = prereqWizardlet.data;
+
+      if ( ! prereqWizardletData ) {
+        // if data is undefined then create a fresh instance
+        prereqWizardletData = this.of.create({}, this)
+      }
 
       let clonedPrereqWizardletData;
 
-      if ( this.propertyName  ){
-        if (  ! prereqWizardletData.hasOwnProperty(this.propertyName) ){
+      if ( this.loadFromPropertyName  ){
+        if (  ! prereqWizardletData.hasOwnProperty(this.loadFromPropertyName) ){
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.propertyName}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.loadFromPropertyName}`
           );
           if ( this.of ) {
-            wizardlet.data = this.of.create();
+            wizardlet.data = this.of.create({}, this);
             return;
           }
         }
 
-        clonedPrereqWizardletData = prereqWizardletData[this.propertyName].clone();
+        clonedPrereqWizardletData = prereqWizardletData[this.loadFromPropertyName].clone();
       } else {
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
@@ -95,6 +107,18 @@
         wizardlet.isLoaded = true;
 
         return fObjectHolder;
+      }
+
+      if ( this.loadIntoPropertyName ){
+
+        if ( ! wizardlet.data ){
+          wizardlet.data = this.of.create({}, this);
+        }
+
+        wizardlet.data[this.loadIntoPropertyName] = clonedPrereqWizardletData;
+        wizardlet.isLoaded = true;
+
+        return;
       }
 
       wizardlet.data = clonedPrereqWizardletData;

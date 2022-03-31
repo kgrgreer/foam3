@@ -1,30 +1,24 @@
 /**
  * @license
- * Copyright 2016 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2016 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-(function() {
-  var foam = globalThis.foam || ( globalThis.foam = { isServer: false, flags: globalThis.FOAM_FLAGS || {} } );
 
-  // Is replaced when lib.js is loaded.
-  foam.checkFlags = () => true;
+(function() {
+  var foam = globalThis.foam = {
+    isServer: false,
+    flags: globalThis.FOAM_FLAGS || {},
+
+    // Are replaced when lib.js is loaded.
+    adaptFlags: function() { return []; },
+    checkFlags: function() { return true; }
+  };
 
   if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
   var flags = globalThis.foam.flags;
 
-  flags.web  = true;
+  flags.web     = true;
   flags.genjava = true;
 
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
@@ -41,17 +35,6 @@
 
   function createLoader() {
     var path = document.currentScript && document.currentScript.src;
-    // document.currentScript isn't supported on all browsers, so the following
-    // hack gets the job done on those browsers.
-    if ( ! path ) {
-      var scripts = document.getElementsByTagName('script');
-      for ( var i = 0 ; i < scripts.length ; i++ ) {
-        if ( scripts[i].src.match(/\/foam.js$/) ) {
-          path = scripts[i].src;
-          break;
-        }
-      }
-    }
 
     path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
     if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
@@ -75,27 +58,49 @@
     };
   }
 
-  this.FOAM_FILES = async function(files) {
-    var load = createLoader();
+  this.FOAM_FILES = foam.POM = async function(pom) {
+    if ( Array.isArray(pom) ) pom = { files: pom };
 
-    var seen = {};
-    files.forEach(f => {
-      if ( seen[f.name] ) {
-        console.log('duplicate', f.name);
-        return;
-      }
-      seen[f.name] = true;
+    var jsLibs = pom.jsLib || [];
+    var load   = createLoader();
+    var seen   = {};
 
-      if ( ! foam.checkFlags(f.flags) ) return;
+    function loadFiles(files) {
+      if ( ! files ) return;
+      files.forEach(f => {
+        var name = f.name;
+        f.flags = foam.adaptFlags(f.flags);
 
-      if ( f.predicate && ! f.predicate() ) return;
+        // Do we need this check? Is it already done elsewhere?
+        if ( seen[name] ) {
+          console.log('duplicate', name);
+          return;
+        }
+        seen[name] = true;
 
-      load(f.name, true);
+        if ( ! foam.checkFlags(f.flags) ) return;
+
+        if ( f.predicate && ! f.predicate() ) return;
+
+        load(name, true);
+      });
+
+      // force load, rather than just adding to batch
+      load(null, false);
+    }
+
+    loadFiles(pom.projects);
+    loadFiles(pom.files);
+
+    jsLibs.forEach(f => {
+      var s = '<script type="text/javascript" src="' + f.name + '"';
+      if ( f.defer ) s += ' defer';
+      if ( f.async ) s += ' async';
+      s += '></script>\n';
+
+      document.writeln(s);
     });
-
-    load(null, false);
-  //  delete this.FOAM_FILES;
   };
 
-  createLoader()('files', false);
+  createLoader()(document.currentScript.getAttribute("project") || 'files', false);
 })();

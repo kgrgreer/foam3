@@ -650,6 +650,36 @@ foam.CLASS({
         </svg>
         ` };
       }
+    },
+    {
+      name: 'decreaseIndentation',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 30 18" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="4" rx="2"/>
+        <rect x="12" y="7" width="18" height="4" rx="2"/>
+        <rect y="14" width="30" height="4" rx="2"/>
+        <path d="M2.19585 9.92202C1.37871 9.57891 1.37871 8.42109 2.19585 8.07798L6.86285 6.11835C7.52187 5.84163 8.25 6.32561 8.25 7.04037V10.9596C8.25 11.6744 7.52187 12.1584 6.86285 11.8817L2.19585 9.92202Z" />
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'increaseIndentation',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 30 18" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="4" rx="2" />
+        <rect x="12" y="7" width="18" height="4" rx="2"/>
+        <rect y="14" width="30" height="4" rx="2" />
+        <path d="M8.80415 8.07798C9.62129 8.42109 9.62129 9.57891 8.80415 9.92202L4.13715 11.8817C3.47813 12.1584 2.75 11.6744 2.75 10.9596V7.04037C2.75 6.32561 3.47813 5.84163 4.13715 6.11835L8.80415 8.07798Z"/>
+        </svg>
+        ` };
+      }
     }
   ]
 });
