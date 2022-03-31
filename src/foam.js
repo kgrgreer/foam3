@@ -6,101 +6,166 @@
 
 
 (function() {
-  var foam = globalThis.foam = {
+  var scripts = '';
+
+  var foam = globalThis.foam = Object.assign({
     isServer: false,
-    flags: globalThis.FOAM_FLAGS || {},
+    defaultFlags: {
+      debug: true,
+      java:  true, // TODO: fix, needed to run web client for some reason
+      js:    true,
+      web:   true
+    },
+    setup: function() {
+      foam.setupFlags();
 
-    // Are replaced when lib.js is loaded.
-    adaptFlags: function() { return []; },
-    checkFlags: function() { return true; }
-  };
-
-  if ( ! globalThis.FOAM_FLAGS ) globalThis.FOAM_FLAGS = foam.flags;
-  var flags = globalThis.foam.flags;
-
-  flags.web     = true;
-  flags.genjava = true;
-
-  if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
-  if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
-
-  // TODO: fix, needed to run web client for some reason
-  if ( ! flags.hasOwnProperty('java')  ) flags.java = true;
-
-  // set flags by url parameters
-  var urlParams = new URLSearchParams(window.location.search);
-  for ( var pair of urlParams.entries() ) {
-    flags[pair[0]] = (pair[1] == 'true');
-  }
-
-  function createLoader() {
-    var path = document.currentScript && document.currentScript.src;
-
-    path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
-    if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
-
-    var loadedMap = {};
-    var scripts   = '';
-
-    return function(filename, opt_batch) {
-      if ( filename && loadedMap[filename] ) {
-        console.warn(`Duplicated load of '${filename}'`);
-        return;
+      // set flags by url parameters
+      var urlParams = new URLSearchParams(window.location.search);
+      for ( var pair of urlParams.entries() ) {
+       flags[pair[0]] = (pair[1] == 'true');
       }
-      loadedMap[filename] = true;
-      if ( filename ) {
-        scripts += '<script type="text/javascript" src="' + path + filename + '.js"></script>\n';
+
+      var path = document.currentScript && document.currentScript.src;
+
+      path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
+      if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
+
+      foam.cwd = path;
+      foam.main();
+    },
+    main: function() {
+      foam.require(document.currentScript.getAttribute("project") || 'pom', false, true);
+    },
+    checkFlags: function(flags) {
+      if ( ! flags ) return true;
+
+      function and(fs) {
+        fs = fs.split('&');
+        for ( var i = 0 ; i < fs.length ; i++ ) {
+          if ( ! foam.flags[fs[i]] ) return false;
+        }
+        return true;
       }
-      if ( ! opt_batch ) {
+
+      // OR AND clauses
+      for ( var i = 0 ; i < flags.length ; i++ ) {
+        if ( and(flags[i]) ) return true;
+      }
+      return false;
+    },
+    require: function(fn, batch, isProject) {
+      if ( fn ) {
+        fn = path + fn;
+        if ( ! isProject && foam.seen(fn) ) return;
+        scripts += '<script type="text/javascript" src="' + fn + '.js"></script>\n';
+      }
+      if ( ! batch ) {
         document.writeln(scripts);
         scripts = '';
       }
-    };
-  }
+    },
+    loadJSLibs: function(libs) {
+      libs.forEach(f => {
+        var s = '<script type="text/javascript" src="' + f.name + '"';
+        if ( f.defer ) s += ' defer';
+        if ( f.async ) s += ' async';
+        s += '></script>\n';
 
-  this.FOAM_FILES = foam.POM = async function(pom) {
-    if ( Array.isArray(pom) ) pom = { files: pom };
-
-    var jsLibs = pom.jsLib || [];
-    var load   = createLoader();
-    var seen   = {};
-
-    function loadFiles(files) {
-      if ( ! files ) return;
-      files.forEach(f => {
-        var name = f.name;
-        f.flags = foam.adaptFlags(f.flags);
-
-        // Do we need this check? Is it already done elsewhere?
-        if ( seen[name] ) {
-          console.log('duplicate', name);
-          return;
-        }
-        seen[name] = true;
-
-        if ( ! foam.checkFlags(f.flags) ) return;
-
-        if ( f.predicate && ! f.predicate() ) return;
-
-        load(name, true);
+        document.writeln(s);
       });
+    },
+    flags:       {},
+    loaded:      {},
+    seen:        function(fn) {
+      if ( foam.loaded[fn] ) {
+        console.warn(`Duplicated load of '${fn}'`);
+        return true;
+      }
+      foam.loaded[fn] = true;
+      return false;
+    },
+    adaptFlags: function(flags) {
+      return typeof flags === 'string' ? flags.split('|') : flags;
+    },
+    checkForFlag: function (flags, desired) {
+      if ( flags ) for ( var f of flags ) {
+        if ( f.split('&').includes(desired) ) return true;
+      }
+      return false;
+    },
+    core: {},
+    util:     {
+      path: function(root, path, opt_ensure) {
+        var a = path.split('.');
 
-      // force load, rather than just adding to batch
-      load(null, false);
-    }
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var nextRoot = root[a[i]];
+          if ( nextRoot === undefined ) {
+            if ( opt_ensure ) {
+              nextRoot = root[a[i]] = {};
+            } else {
+              return;
+            }
+          }
+          root = nextRoot;
+        }
 
-    loadFiles(pom.projects);
-    loadFiles(pom.files);
+        return root;
+      }
+    },
+    language: typeof navigator === 'undefined' ? 'en' : navigator.language,
+    next$UID: (function() {
+      /* Return a unique id. */
+      var id = 1;
+      return function next$UID() { return id++; };
+    })(),
+    SCRIPT: function(m) {
+      m.class = '__Script__';
 
-    jsLibs.forEach(f => {
-      var s = '<script type="text/javascript" src="' + f.name + '"';
-      if ( f.defer ) s += ' defer';
-      if ( f.async ) s += ' async';
-      s += '></script>\n';
+      // An instance of the script isn't useful at this point so just
+      // execute the code. foam.SCRIPT can be overwritten later to
+      // capture the details of the script if need be.
 
-      document.writeln(s);
-    });
-  };
+      // Only execute if the script's flags match the curren runtime flags.
+      if ( foam.checkFlags(this.flags ) ) {
+        m.code();
+        return;
+      }
 
-  createLoader()(document.currentScript.getAttribute("project") || 'files', false);
+      m.code();
+    },
+    POM: function(pom) {
+      function loadFiles(files, isProjects) {
+        if ( ! files ) return;
+
+        files.forEach(f => {
+          var name = f.name;
+          f.flags  = foam.adaptFlags(f.flags);
+
+          if ( ! foam.checkFlags(f.flags) ) return;
+
+          if ( f.predicate && ! f.predicate() ) return;
+
+          foam.currentFlags = f.flags || [];
+
+          foam.require(name, ! isProjects, isProjects);
+        });
+      }
+
+      // TODO: requireModule vs requireFile -> require
+      (foam.loadModules || loadFiles)(pom.projects, true);
+      (foam.loadFiles   || loadFiles)(pom.files,    false);
+
+      foam.loadJSLibs(pom.JSLibs);
+    },
+    assert: console.assert.bind(console)
+  }, globalThis.foam || {});
+
+  foam.setup();
 })();
+
+// TODO: remove when all FOAM_FILES uses removed
+globalThis.FOAM_FILES = function(files) {
+  console.log('**************** DEPRECATED USE OF FOAM_FILES');
+  foam.POM({files: files});
+}
