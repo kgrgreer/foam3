@@ -13,7 +13,8 @@ foam.CLASS({
 
   imports: [
     'notify',
-    'stack'
+    'stack',
+    'theme'
   ],
 
   requires: [
@@ -99,7 +100,7 @@ foam.CLASS({
               .add('Back to Sign In')
               .on('click', function() {
                 window.location.href = '#';
-                self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+                self.stack.push({ ...self.theme.loginView, mode_: 'SignIn' }, self);
               })
             .end()
           .end()

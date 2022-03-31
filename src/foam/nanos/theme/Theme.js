@@ -185,6 +185,10 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'loginView',
+    },
+    {
       class: 'Image',
       name: 'logo',
       documentation: 'The logo to display in the application.',

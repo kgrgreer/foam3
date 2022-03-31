@@ -14,6 +14,7 @@ foam.CLASS({
     'ctrl',
     'resetPasswordToken',
     'stack',
+    'theme',
     'translationService',
   ],
 
@@ -74,7 +75,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
+          this.stack.push({ ...this.theme.loginView, mode_: 'SignIn' }, this);
         }).catch((err) => {
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
