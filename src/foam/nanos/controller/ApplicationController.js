@@ -562,7 +562,8 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
-        var result = await this.client.auth.getCurrentSubject(null);
+        var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
+          this.client.auth.authorizeAnonymous());
         this.subject = result;
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
