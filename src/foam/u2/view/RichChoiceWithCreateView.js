@@ -83,7 +83,10 @@ foam.CLASS({
             .addClass(this.myClass('createView'))
           .end();
       return this.E()
-        .tag(this.DefaultActionView, { action: this.ADD_ROW, data: this });
+        .tag(this.DefaultActionView, {
+          action: this.ADD_ROW, data: this,
+          label: this.of ? `Add ${this.of.model_.label.toLowerCase()}` : undefined
+        });
     }
   ],
 

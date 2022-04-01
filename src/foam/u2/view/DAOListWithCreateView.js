@@ -26,6 +26,8 @@ foam.CLASS({
     'foam.comics.v2.DAOBrowseControllerView'
   ],
 
+  implements: ['foam.mlang.Expressions'],
+
   imports: [
     'auth',
     'stack'
@@ -100,6 +102,7 @@ foam.CLASS({
             } else {
               // DAO 
               this.dao.remove(this.value);
+              this.updateData();
             }
           }
         }
@@ -150,12 +153,15 @@ foam.CLASS({
       name: 'propertyWhitelist',
       documentation: 'Passed to the createView, used by detailViews to only show some props of an FObject'
     },
+    'DAOCount'
   ],
   methods: [
     function init() {
       this.data = undefined;
       this.SUPER();
       this.dao$.sub(this.updateData);
+      this.dao$.sub(this.updateCount);
+      this.updateCount();
       this.updateData();
     },
     function fromProperty(p) {
@@ -184,11 +190,15 @@ foam.CLASS({
     }
   ],
   listeners: [
+    function updateCount() {
+      this.dao.select(this.Count.create()).then(s => this.DAOCount = s.value);
+    },
     function updateData() {
       if ( ! this.dao ) return;
       var self = this;
       this.dao.limit(10).select().then(r => {
         self.data = r.array;
+        self.updateCount();
       });
     },
     function onSave(obj) {
@@ -221,6 +231,9 @@ foam.CLASS({
     },
     {
       name: 'viewMore',
+      isAvailable: function (DAOCount) {
+        return DAOCount >= 10;
+      },
       code: function() {
         this.stack.push(this.StackBlock.create({
           view: {
