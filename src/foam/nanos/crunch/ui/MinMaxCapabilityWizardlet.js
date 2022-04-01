@@ -121,6 +121,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceSelectionView',
+      factory: () => ({
+        class: 'foam.u2.view.MultiChoiceView'
+      })
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceView',
+      factory: () => ({
+        class: 'foam.u2.view.CardSelectView'
+      })
+    },
+    {
       name: 'sections',
       flags: ['web'],
       transient: true,
@@ -160,7 +174,7 @@ foam.CLASS({
             choiceWizardlets$: this.choiceWizardlets$,
             isLoaded: true,
             customView: {
-              class: 'foam.u2.view.MultiChoiceView',
+              ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
               isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
@@ -168,7 +182,7 @@ foam.CLASS({
               minSelected$: this.min$,
               maxSelected$: this.max$,
               choiceView: {
-                class: 'foam.u2.view.CardSelectView',
+                ...this.choiceView,
                 of: this.choices[0][0].cls_.id,
                 largeCard: true
              }
