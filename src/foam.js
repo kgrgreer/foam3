@@ -12,9 +12,20 @@
     isServer: false,
     defaultFlags: {
       debug: true,
-      java:  true, // TODO: fix, needed to run web client for some reason
+      java:  true, // TODO: set to false when all flags properly set
       js:    true,
-      web:   true
+      node:  false,
+      sql:   false, // TODO: the following two shouldn't be needed and should be removed when possible
+      swift: false,
+      web:   true  // Needed because flinks code uses but needs to be compiled to java
+    },
+    setupFlags: function() {
+      var flags        = globalThis.foam.flags;
+      var defaultFlags = foam.defaultFlags;
+
+      for ( var key in defaultFlags )
+        if ( ! flags.hasOwnProperty(key) )
+          flags[key] = defaultFlags[key];
     },
     setup: function() {
       foam.setupFlags();
@@ -30,7 +41,7 @@
       path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
-      foam.cwd = path;
+      foam.cwd = '/'; // path
       foam.main();
     },
     main: function() {
@@ -55,17 +66,17 @@
     },
     require: function(fn, batch, isProject) {
       if ( fn ) {
-        fn = path + fn;
+        fn = foam.cwd + fn;
         if ( ! isProject && foam.seen(fn) ) return;
         scripts += '<script type="text/javascript" src="' + fn + '.js"></script>\n';
       }
-      if ( ! batch ) {
+      if ( ! batch || isProject ) {
         document.writeln(scripts);
         scripts = '';
       }
     },
     loadJSLibs: function(libs) {
-      libs.forEach(f => {
+      libs && libs.forEach(f => {
         var s = '<script type="text/javascript" src="' + f.name + '"';
         if ( f.defer ) s += ' defer';
         if ( f.async ) s += ' async';
@@ -127,7 +138,7 @@
       // capture the details of the script if need be.
 
       // Only execute if the script's flags match the curren runtime flags.
-      if ( foam.checkFlags(this.flags ) ) {
+      if ( foam.checkFlags(m.flags) ) {
         m.code();
         return;
       }
@@ -135,10 +146,14 @@
       m.code();
     },
     POM: function(pom) {
+      if ( globalThis.document ) {
+        var src = document.currentScript.src;
+        var i = src.lastIndexOf('/');
+        foam.cwd = src.substring(0, i+1);
+        console.log(foam.cwd);
+      }
       function loadFiles(files, isProjects) {
-        if ( ! files ) return;
-
-        files.forEach(f => {
+        files && files.forEach(f => {
           var name = f.name;
           f.flags  = foam.adaptFlags(f.flags);
 
@@ -155,6 +170,8 @@
       // TODO: requireModule vs requireFile -> require
       (foam.loadModules || loadFiles)(pom.projects, true);
       (foam.loadFiles   || loadFiles)(pom.files,    false);
+
+      foam.require(null, false);
 
       foam.loadJSLibs(pom.JSLibs);
     },

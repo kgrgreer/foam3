@@ -8,15 +8,16 @@ console.log('START GENJAVA');
 
 const startTime      = Date.now();
 var path_            = require('path');
+
+require('../src/foam_node.js');
+
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   { outdir: '/build/src/java', pom: 'pom' },
-  { java: true, genjava: true, node: true, debug: true }
+  { genjava: true }
 );
 
 X.outdir = path_.resolve(path_.normalize(X.outdir));
-
-require('../src/foam_node.js');
 
 foam.require(X.pom, false, true);
 

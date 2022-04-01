@@ -537,8 +537,6 @@ foam.POM({
   { name: "analytics/Candlestick", flags: "java" },
   { name: "test/ClientEchoService" },
 
-//  { name: "foam/dao/jdbc/JDBCConnectionSpec", flags: "java" },
-
   // crunch
   { name: "crunch/crunchtest/FakeTestObject", flags: "java" },
   // models

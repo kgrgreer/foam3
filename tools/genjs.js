@@ -7,6 +7,7 @@
 // TODO: don't actually load files
 // print warning if uglify not found
 // create sourcemap
+// merge with processArgs.js
 
 console.log('START GENJS');
 
@@ -14,13 +15,14 @@ const startTime      = Date.now();
 const path_          = require('path');
 const fs_            = require('fs');
 const uglify_        = require('uglify-js');
+
+require('../src/foam_node.js');
+
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   { version: '', license: '', pom: 'pom' },
   { debug: true }
 );
-
-require('../src/foam_node.js');
 
 foam.require(X.pom, false, true);
 
