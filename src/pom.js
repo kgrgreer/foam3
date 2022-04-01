@@ -161,7 +161,7 @@ foam.POM({
   { name: "foam/json2/Deserializer" },
   { name: "foam/java/Util", flags: "java" },
   { name: "foam/core/Fluent" },
-  { name: "foam/util/FluentSpec", flags: [ ] },
+  { name: "foam/util/FluentSpec" },
   { name: "foam/util/Timer" },
   { name: "foam/util/AddressUtil" },
   { name: "foam/util/EmailTest", flags: "java" },
