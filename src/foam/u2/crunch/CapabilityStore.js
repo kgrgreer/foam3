@@ -82,7 +82,9 @@ foam.CLASS({
     'crunchService',
     'menuDAO',
     'registerElement',
-    'theme'
+    'subject',
+    'theme',
+    'window'
   ],
 
   messages: [
@@ -467,14 +469,21 @@ foam.CLASS({
             this.IN('featured', this.Capability.KEYWORDS)
           )).select())
         .then(async sink => {
-          if ( sink.array.length == 1 ) {
+          if ( sink.array.length !== 1 )
+            return;
+
             let cap = sink.array[0];
             let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
             if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
               || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
-            this.openWizard(cap, false);
-          }
+            let x = this.ctrl.__subContext__;
+            let capa = await this.crunchService.updateJunction(x, cap.id, null, this.CapabilityJunctionStatus.GRANTED);
+
+            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
+              this.openWizard(cap, false);
+            else
+              this.window.location.reload();
         })
     },
     async function openWizard(cap, showToast) {
