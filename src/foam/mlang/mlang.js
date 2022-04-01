@@ -4245,7 +4245,7 @@ foam.CLASS({
     {
       name: 'f',
       code: function(o) {
-        return this.specialization(o.model_);
+        return this.specialization(o.model_).f(o);
       },
       javaCode: `
         if ( ! ( obj instanceof FObject ) )
