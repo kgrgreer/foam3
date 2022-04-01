@@ -370,7 +370,7 @@ foam.CLASS({
 
     function outputString(str) {
       if ( this.useTemplateLiterals && str.indexOf('\n') != -1 ) {
-        this.out('`', str.replaceAll(/`/, '\\`'), '`');
+        this.out('`', str.replaceAll(/`/g, '\\`'), '`');
       } else {
         this.out('"', this.escape(str), '"');
       }
