@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
-    'foam.core.FObject',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.fs.File'
   ],
 
@@ -19,7 +19,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         var oldObj = getDelegate().find_(x, obj);
-        if ( null == oldObj )
+        if ( null == oldObj ) {
           return getDelegate().put_(x, obj);
         }
 
