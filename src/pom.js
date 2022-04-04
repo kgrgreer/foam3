@@ -581,6 +581,8 @@ foam.POM({
   { name: "foam/u2/view/ChooseNView", flags: "web" },
   { name: "foam/u2/view/ChoiceWithOtherView", flags: "web" },
   { name: "foam/u2/view/RichChoiceView", flags: "web" },
+  { name: "foam/u2/view/RichChoiceWithCreateView", flags: "web" },
+  { name: "foam/u2/view/DAOListWithCreateView", flags: "web" },
   { name: "foam/u2/view/RichChoiceSummaryIdRowView", flags: "web" },
   { name: "foam/u2/view/OverlayActionListView", flags: "web" },
   { name: "foam/u2/view/TabChoiceView", flags: "web" },
