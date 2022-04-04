@@ -119,7 +119,7 @@ if ( ! Object.values ) {
 }
 
 // Required for IE 11.
-if( ! Object.is ) {
+if ( ! Object.is ) {
   // From ES6 specs, and also:
   // https://gist.github.com/matthewp/2036428
   Object.is = function(x, y) {

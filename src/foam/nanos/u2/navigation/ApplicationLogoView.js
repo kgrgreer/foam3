@@ -27,7 +27,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ img, ^ svg {
-      height: 27px;
+      height: 25px;
       max-height: 40px;
       width: 100%;
     }
@@ -38,8 +38,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start(this.Image, {
-          data$: this.slot(function(theme$largeLogoEnabled, theme$logo, theme$largeLogo) {
-            return theme$largeLogoEnabled ? theme$largeLogo : theme$logo;
+          data$: this.slot(function(theme$topNavLogo) {
+            return theme$topNavLogo;
           }),
           embedSVG: true
         })

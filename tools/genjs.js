@@ -7,6 +7,7 @@
 // TODO: don't actually load files
 // print warning if uglify not found
 // create sourcemap
+// merge with processArgs.js
 
 console.log('START GENJS');
 
@@ -14,35 +15,25 @@ const startTime      = Date.now();
 const path_          = require('path');
 const fs_            = require('fs');
 const uglify_        = require('uglify-js');
-var [argv, X, flags] = require('./processArgs.js')(
-  'sourcefiles*"',
-  { version: '', license: '' },
-  { debug: true }
-);
-
-if ( false ) {
-globalThis.foam = {
-  // No need to load non-POM/project JS files when building JS, since uglify will load them
-  loadFiles: function() { /* NOP */ }
-};
-}
 
 require('../src/foam_node.js');
 
-// Load Manifest (files.js) Files
-argv.forEach(fn => {
-  flags.src = fn.substring(0, fn.indexOf('/src/')+5);
-  require(fn);
-});
+var [argv, X, flags] = require('./processArgs.js')(
+  '',
+  { version: '', license: '', pom: 'pom' },
+  { debug: true }
+);
+
+foam.require(X.pom, false, true);
 
 var version = X.version;
 var files   = {}; // filename to content map for uglify
+var loaded  = Object.keys(globalThis.foam.loaded);
 
-// Remove foam_node.js from first of list
-globalThis.loadedFiles.shift();
+loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 
 // Build array of files for Uglify
-globalThis.loadedFiles.forEach(l => {
+loaded.forEach(l => {
   try {
     l = path_.resolve(__dirname, l);
     files[l] = fs_.readFileSync(l, "utf8");
@@ -55,7 +46,7 @@ try {
     {
       compress: false,
       mangle:   false,
-      output:   { preamble: `// Generated: ${new Date()}\n//\n${X.license}` }
+      output:   { preamble: `// Generated: ${new Date()}\n//\n${X.license}\nvar foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` }
     }).code;
 
   // Remove most Java and Swift Code

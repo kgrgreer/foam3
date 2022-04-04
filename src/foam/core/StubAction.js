@@ -8,9 +8,11 @@ foam.CLASS({
   package: 'foam.core',
   name: 'StubAction',
   extends: 'Action',
+
   requires: [
-    'foam.core.StubMethod',
+    'foam.core.StubMethod'
   ],
+
   properties: [
     'replyPolicyName',
     'boxPropName',
@@ -40,4 +42,3 @@ foam.CLASS({
     }
   ]
 });
-

@@ -699,11 +699,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.WI
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.VERTICAL",target:"Vertical"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOSummaryView.ALL",target:"Todo "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.CREATE",target:"Crio"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.UPDATE",target:"Atualizar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.REMOVE",target:"Retirar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.ruler.Operations.CREATE_OR_UPDATE",target:"Crio/Atualizar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.CLEAR.label",target:"Claro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.OF_TEXT",target:"de"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ReciprocalSearch.SELECTED_TEXT",target:"selecionado"})
@@ -1078,3 +1073,34 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.RIGHT_
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.NUMBERED_LIST.toolTip",target:"Lista numerada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BULLET_LIST.toolTip",target:"Lista com marcadores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichTextView.BLOCK_QUOTE.toolTip",target:"Citar"})
+
+//SendNotificationView
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.GROUP_REQUIRED",target:"O grupo é obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.BODY_REQUIRED",target:"O corpo de notificação é obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.TOAST_REQUIRED",target:"A mensagem de brinde é necessária ao mostrar o brinde"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.NOTIFICATION_SUMMARY",target:"notificação para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.NOTIFICATION_SENT",target:"Notificação enviada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.GROUP_ID.label",target:"Enviar para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.BODY.label",target:"Corpo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.TOAST_MESSAGE.label",target:"Mensagem de resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.SHOW_TOAST.label",target:"Mostrar notificação de brinde"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.broadcast.BroadcastNotificationFacade.SEND.label",target:"Mandar"})
+
+//ThemeCustomisation
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.TOP_NAV_BAR_LOGO.title",target:"Logo da barra superior"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.LOGIN_PAGE_IMAGE.title",target:"Logo de login"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeFacade.EXTERNAL_IMAGE.title",target:"Logo externo"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeCustomisation.THEME_MSG",target:"Tema"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeCustomisation.UPADTED_MSG",target:"Atualizada"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_REQUIRED",target:"Arquivo obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_REQUIRED_SUB",target:"Faça upload de um novo arquivo e tente novamente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.UPLOAD_ERROR",target:"Algo deu errado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.PREVIEW_MSG",target:"Visualizar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.FILE_UPLOADER.label",target:"Subir arquivo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_1",target:"A atualização do logotipo aqui atualiza o"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.ThemeImageUploadView.DESC_2",target:"para todos os usuários que usam este tema. Por favor, use SVGs ou PNGs de alta resolução para garantir melhores resultados para os usuários"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY1",target:"Você recebeu "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY2",target:" solicitação de aprovação com id: "})

@@ -20,6 +20,7 @@ foam.CLASS({
   name: 'Slot', // ???: Rename AbstractSlot or make an Interface
 
   requires: [
+    'foam.core.internal.And',
     'foam.core.internal.Or',
     'foam.core.internal.SubSlot'
   ],
@@ -162,6 +163,10 @@ foam.CLASS({
       };
       l();
       return other.sub(l);
+    },
+
+    function and(other) {
+      return this.And.create({ a$: this, b$: other }).output$;
     },
 
     function or(other) {
@@ -376,6 +381,23 @@ foam.CLASS({
       name: 'output',
       expression: function (a, b) {
         return a || b;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'And',
+
+  properties: [
+    'a',
+    'b',
+    {
+      name: 'output',
+      expression: function (a, b) {
+        return a && b;
       }
     }
   ]

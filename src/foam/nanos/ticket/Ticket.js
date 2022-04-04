@@ -12,6 +12,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -52,7 +53,8 @@ foam.CLASS({
     'subject',
     'ticketDAO',
     'ticketStatusDAO',
-    'userDAO'
+    'userDAO',
+    'ticketCommentDAO',
   ],
 
   tableColumns: [
@@ -64,7 +66,8 @@ foam.CLASS({
     'createdBy.legalName',
     'lastModified',
     'status',
-    'title'
+    'title',
+    'comment'
   ],
 
   messages: [
@@ -201,9 +204,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['title', 'type'],
-          predicateFactory: function(e) {
-            return e.NEQ(foam.nanos.ticket.Ticket.TITLE, "");
-          },
+          query: 'title!=""',
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
@@ -219,19 +220,22 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.COMMENT))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
       order: 9
     },
     {
@@ -379,16 +383,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],

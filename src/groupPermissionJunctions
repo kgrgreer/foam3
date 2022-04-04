@@ -3,6 +3,4 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"system","target
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"auth.promptlogin"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.groupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.agentJunctionDAO"})
-
-
-
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.prerequisiteCapabilityJunctionDAO"})

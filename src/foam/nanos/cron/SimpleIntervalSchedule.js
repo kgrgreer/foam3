@@ -27,7 +27,9 @@
   messages: [
     { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
-    { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' }
+    { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
+    { name: 'INVALID_REPEAT_100', message: 'Please chose a value less than 100' },
+    { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' }
 ],
 
   requires: [
@@ -44,11 +46,6 @@
       font-style: italic;
     }
   `,
-
-  messages: [
-    { name: 'INVALID_ENDS_ON_100', message: 'Please chose a value less than 100' },
-    { name: 'INVALID_ENDS_ON_1', message: 'Please chose a value greater than 0' }
-  ],
 
   properties: [
     {
@@ -71,7 +68,19 @@
           this.frequency = this.Frequency.DAY;
           this.ends = this.ScheduleEnd.NEVER;
         }
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['repeat'],
+          query: 'repeat<100',
+          errorMessage: 'INVALID_REPEAT_100'
+        },
+        {
+          args: ['repeat'],
+          query: 'repeat>=1',
+          errorMessage: 'INVALID_REPEAT_1'
+        }
+      ]
     },
     {
       class: 'Enum',
@@ -212,23 +221,7 @@
         if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
-      },
-      validationPredicates: [
-        {
-          args: ['endsAfter'],
-          predicateFactory: function(e) {
-            return e.LT(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 100);
-          },
-          errorMessage: 'INVALID_ENDS_ON_100'
-        },
-        {
-          args: ['endsAfter'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.nanos.cron.SimpleIntervalSchedule.ENDS_AFTER, 1);
-          },
-          errorMessage: 'INVALID_ENDS_ON_1'
-        }
-      ]
+      }
     }
   ],
   methods: [
@@ -322,7 +315,7 @@
       javaCode: `
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
-        } 
+        }
         if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
@@ -551,7 +544,7 @@
         }
       ],
       javaCode: `
-        // Todo change end of week based off country 
+        // Todo change end of week based off country
         return date.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
       `
     },
@@ -569,7 +562,7 @@
         }
       ],
       javaCode: `
-        // Todo change start of week based off country 
+        // Todo change start of week based off country
         return date.minusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
       `
     },

@@ -33,9 +33,21 @@
     {
       class: 'Class',
       name: 'of'
-    }
-    // TODO: LOAD INTO PROPERTY support
-    // TODO: LOAD FROM PROPERTY support
+    },
+    {
+      class: 'String',
+      documentation: `
+        OPTIONAL: For grabbing only a specific property from the CapabilityJunction's data
+      `,
+      name: 'loadFromPropertyName'
+    },
+    {
+      class: 'String',
+      documentation: `
+        OPTIONAL: For loading into only a specific property of the CapabilityJunction's data
+      `,
+      name: 'loadIntoPropertyName'
+    },
   ],
 
   methods: [
@@ -80,7 +92,31 @@
         return;
       }
 
-      const clonedWizardletData = selectedCapabilityWizardlet.data.clone(this);
+
+      let selectedCapabilityWizardletData = selectedCapabilityWizardlet.data;
+
+      if ( ! selectedCapabilityWizardletData ) {
+        // if data is undefined then create a fresh instance
+        selectedCapabilityWizardletData = this.of.create({}, this)
+      }
+
+      let clonedWizardletData;
+
+      if ( this.loadFromPropertyName  ){
+        if (  ! selectedCapabilityWizardletData.hasOwnProperty(this.loadFromPropertyName) ){
+          console.error(
+            `xorCapabilityId: ${this.minMaxCapabilityId}'s data does not have the property ${this.loadFromPropertyName}`
+          );
+          if ( this.of ) {
+            wizardlet.data = this.of.create({}, this);
+            return;
+          }
+        }
+
+        clonedWizardletData = selectedCapabilityWizardletData[this.loadFromPropertyName].clone();
+      } else {
+        clonedWizardletData = selectedCapabilityWizardletData.clone();
+      }
 
       if ( this.isWrappedInFObjectHolder ){
         const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
@@ -90,6 +126,19 @@
         wizardlet.isLoaded = true;
   
         return fObjectHolder;
+      }
+
+
+      if ( this.loadIntoPropertyName ){
+
+        if ( ! wizardlet.data ){
+          wizardlet.data = this.of.create({}, this);
+        }
+
+        wizardlet.data[this.loadIntoPropertyName] = clonedWizardletData;
+        wizardlet.isLoaded = true;
+
+        return;
       }
 
       wizardlet.data = clonedWizardletData;

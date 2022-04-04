@@ -184,7 +184,7 @@ foam.CLASS({
               title: this.title,
               isAvailable: true,
               customView: {
-                class: 'foam.u2.detail.SectionedDetailView'
+                class: 'foam.u2.detail.FlexSectionedDetailView'
               }
             })
           ];
