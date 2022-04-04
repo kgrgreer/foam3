@@ -76,7 +76,8 @@ public class FScriptParser
 
     grammar.addSymbol(
       "OR",
-      new Repeat(grammar.sym("AND"), Literal.create("||"),1)
+      new Repeat(grammar.sym("AND"),
+        new Seq1(1, Whitespace.instance(), Literal.create("||"), Whitespace.instance()),1)
     );
     grammar.addAction("OR", (val, x) -> {
       Object[] values = (Object[])val;
@@ -91,7 +92,8 @@ public class FScriptParser
 
     grammar.addSymbol(
       "AND",
-      new Repeat(grammar.sym("EXPR"), Literal.create("&&"),1));
+      new Repeat(grammar.sym("EXPR"),
+        new Seq1(1, Whitespace.instance(), Literal.create("&&"), Whitespace.instance()),1));
     grammar.addAction("AND", (val, x) -> {
       And and = new And();
       Object[] valArr = (Object[]) val;
@@ -122,8 +124,9 @@ public class FScriptParser
       return predicate;
     });
 
-    grammar.addSymbol("COMPARISON", new Seq(
+    grammar.addSymbol("COMPARISON", new SeqI( new int[] { 0, 2,4 },
       grammar.sym("VALUE"),
+      Whitespace.instance(),
       new Alt(
         new AbstractLiteral("==")  {
           @Override
@@ -168,6 +171,7 @@ public class FScriptParser
           }
         }
       ),
+      Whitespace.instance(),
       new Alt(
         grammar.sym("VALUE"),
         new Literal("null", null)
