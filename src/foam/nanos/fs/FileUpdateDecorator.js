@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
-    'foam.core.FObject'
+    'foam.core.FObject',
+    'foam.nanos.fs.File'
   ],
 
   methods: [
@@ -19,9 +20,11 @@ foam.CLASS({
       javaCode: `
         Object id = obj.getProperty("id");
         FObject oldObj = getDelegate().find(id);
-        boolean isCreate = id == null || oldObj == null;
-
-        if ( ! isCreate ) return obj;
+        
+        // Restrict file update unless lifecycleState changed
+        if ( oldObj != null && File.LIFECYCLE_STATE.compare(obj, oldObj) == 0 ) {
+          return obj;
+        }
 
         return getDelegate().put_(x, obj);
       `
