@@ -169,7 +169,7 @@ foam.CLASS({
       name: 'data',
       updateVisibility: 'HIDDEN',
       readVisibility: 'HIDDEN',
-      transient: true,
+      // transient: true,
       javaGetter:`
         if ( dataIsSet_ ) return data_;
 
