@@ -437,6 +437,8 @@ foam.CLASS({
   name: 'ManyToManyRelationshipImpl',
   implements: ['foam.dao.ManyToManyRelationship'],
 
+  requires: ['foam.u2.stack.StackBlock'],
+
   properties: [
     {
       class: 'Class',
@@ -638,8 +640,7 @@ return junction`
         });
 
         x.stack.push(this.StackBlock.create({
-          view: { class: 'foam.comics.DAOControllerView', data: controller }
-        }));
+          view: { class: 'foam.comics.DAOControllerView', data: controller }, parent: x }));
       }
     },
     {
