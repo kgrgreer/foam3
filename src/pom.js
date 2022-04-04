@@ -935,6 +935,7 @@ foam.POM({
   { name: "foam/u2/detail/ChoiceSectionDetailView" },
   { name: "foam/u2/detail/SectionView" },
   { name: "foam/u2/detail/SectionedDetailView" },
+  { name: "foam/u2/detail/FlexSectionedDetailView" },
   { name: "foam/u2/detail/VerticalDetailView" },
   { name: "foam/u2/detail/WizardSectionsView" },
   { name: "foam/u2/detail/DAOWizardSectionsView" },
