@@ -10,13 +10,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   topics: [
-    'dataUpdate',
-    'cancelUpdate'
+    'cancelUpdate',
+    'dataUpdate'
   ],
 
   imports: [
-    'onSave?',
-    'onCancel?'
+    'onCancel?',
+    'onSave?'
   ],
 
   documentation: `

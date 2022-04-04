@@ -34,9 +34,9 @@ foam.CLASS({
   ],
 
   exports: [
-    'onSave',
-    'onCancel',
     'dao',
+    'onCancel',
+    'onSave',
     'updateData'
   ],
 
@@ -62,11 +62,11 @@ foam.CLASS({
     {
       name: 'Row',
       imports: [
-        'dao',
-        'updateData',
         'data',
+        'dao',
         'enableRemoving',
-        'mode'
+        'mode',
+        'updateData'
       ],
       properties: [
         {
