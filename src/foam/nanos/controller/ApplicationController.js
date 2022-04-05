@@ -665,7 +665,6 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-        console.log(`Could not find ${menu.id || menu},Pushing ${newId}`)
         if ( this.route !== newId ) 
           this.route = newId;
         return;
