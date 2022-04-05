@@ -174,6 +174,16 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
+      class: 'Reference',
+      targetDAOKey: 'menuDAO',
+      name: 'unauthenticatedDefaultMenu',
+      documentation: 'Menu user redirects to before login.',
+      of: 'foam.nanos.menu.Menu',
+      section: 'navigation',
+      value: 'sign-in',
+      writePermissionRequired: true
+    },
+    {
       documentation: 'See LocaleSupport for default fallback',
       class: 'String',
       name: 'defaultLocaleLanguage',
@@ -859,8 +869,9 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
           var m1 = (Map) prop.get(t1);
           var m2 = (Map) prop.get(t2);
 
@@ -888,8 +899,9 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 

@@ -94,9 +94,14 @@ foam.CLASS({
       class: 'String',
       name: 'emptySubTitle'
     },
+    'dao',
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'dao'
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'predicate',
+      factory: function() {
+        return foam.mlang.predicate.True.create();
+      }
     },
     ['limit', 5],
     'mode'
@@ -155,7 +160,7 @@ foam.CLASS({
         this.stack.push(this.StackBlock.create({
           view: {
             class: this.DAOBrowseControllerView,
-            data: this.dao,
+            data: this.__subContext__[this.dao].where(this.predicate),
           }, parent: this.__subContext__
         }));
       }
@@ -166,9 +171,8 @@ foam.CLASS({
     {
       name: 'fetchValues',
       code: function() {
-        if ( ! this.dao ) return;
         var self = this;
-        this.dao.limit(this.limit).select().then((objects) => {
+        self.__subContext__[self.dao].where(self.predicate).limit(self.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;

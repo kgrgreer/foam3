@@ -50,6 +50,22 @@ foam.CLASS({
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "quoted string kristina2 returns false");
     sps.setString("thisValue.len==8");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "thisValue.len==8");
+
+    sps.setString("thisValue.len == 8");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "whitespace test: thisValue.len == 8");
+
+    sps.setString("thisValue.len ==8");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "whitespace test: thisValue.len ==8");
+
+    sps.setString("thisValue.len== 8");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "whitespace test: thisValue.len== 8");
+
+    sps.setString("thisValue.len== 8 && thisValue.len > 5");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "thisValue.len== 8 && thisValue.len > 5");
+
+    sps.setString("thisValue.len== 9 || thisValue.len > 5");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "thisValue.len== 9 || thisValue.len > 5");
+
     sps.setString("firstName.len!=9");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName.len!=9");
     sps.setString("firstName.len>9");
