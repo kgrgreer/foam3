@@ -291,9 +291,9 @@ foam.CLASS({
 
     function escape(str) {
       return str
-        .replaceAll(/\\/g, '\\\\')
-        .replaceAll(/"/g, '\\"')
-        .replaceAll(/[\x00-\x1f]/g, function(c) {
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"')
+        .replace(/[\x00-\x1f]/g, function(c) {
           return "\\u00" + ((c.charCodeAt(0) < 0x10) ?
             '0' + c.charCodeAt(0).toString(16) :
             c.charCodeAt(0).toString(16));
@@ -370,7 +370,7 @@ foam.CLASS({
 
     function outputString(str) {
       if ( this.useTemplateLiterals && str.indexOf('\n') != -1 ) {
-        this.out('`', str.replaceAll(/`/g, '\\`'), '`');
+        this.out('`', str.replace(/`/g, '\\`'), '`');
       } else {
         this.out('"', this.escape(str), '"');
       }

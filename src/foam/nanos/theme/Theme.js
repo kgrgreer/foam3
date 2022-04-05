@@ -859,8 +859,9 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
           var m1 = (Map) prop.get(t1);
           var m2 = (Map) prop.get(t2);
 
@@ -888,8 +889,9 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 
