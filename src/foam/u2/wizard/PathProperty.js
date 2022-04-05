@@ -66,15 +66,3 @@ foam.CLASS({
   ]
 
 });
-
-foam.CLASS({
-  package: 'foam.u2.wizard',
-  name: 'Tester',
-
-  properties: [
-    {
-      class: 'foam.u2.wizard.PathProperty',
-      name: 'path'
-    }
-  ],
-});
