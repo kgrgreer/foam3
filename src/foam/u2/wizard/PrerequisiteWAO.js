@@ -88,7 +88,7 @@
 
         if ( ! loadedFromData ){
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);

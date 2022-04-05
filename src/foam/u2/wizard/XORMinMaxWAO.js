@@ -107,7 +107,7 @@
 
         if ( ! loadedFromData ){
           console.error(
-            `xorCapabilityId: ${this.minMaxCapabilityId}'s data returns null for the path ${this.loadFromPath}`
+            `xorCapabilityId: ${this.minMaxCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);
