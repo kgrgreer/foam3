@@ -137,7 +137,7 @@
           wizardlet.data = this.of.create({}, this);
         }
 
-        this.loadIntoPath.f(wizardlet.data, clonedSelectedWizardletData);
+        this.loadIntoPath$set(wizardlet.data, clonedSelectedWizardletData);
         wizardlet.isLoaded = true;
 
         return;
