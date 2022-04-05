@@ -16,7 +16,7 @@ foam.CLASS({
     'ctrl',
     'loginSuccess',
     'menuDAO',
-    'memento',
+    'memento_',
     'stack',
     'translationService',
     'subject'
@@ -110,7 +110,7 @@ foam.CLASS({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
           } else {
-            if ( ! this.memento || this.memento.value.length === 0 )
+            if ( ! this.memento_ || this.memento_.str.length === 0 )
               window.location.hash = '';
             this.loginSuccess = !! this.subject;
           }

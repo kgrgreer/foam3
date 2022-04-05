@@ -251,6 +251,7 @@ foam.POM({
   { name: "foam/mlang/expr/DateTypes", flags: "java" },
   { name: "foam/mlang/expr/DateGrouping", flags: "java" },
   { name: "foam/mlang/expr/DateGroupingExpr", flags: "java" },
+  { name: "foam/mlang/expr/DateTimeGroupingExpr", flags: "java" },
   { name: "foam/mlang/expr/Ref", flags: "java" },
   { name: "foam/mlang/expr/TimeOfDay", flags: "java" },
   { name: "foam/mlang/predicate/ContextUserPredicate", flags: "java" },
@@ -960,6 +961,12 @@ foam.POM({
   { name: "foam/u2/wizard/debug/DebugWAO" },
   { name: "foam/u2/wizard/debug/DebugContextIntercept" },
   { name: "foam/u2/wizard/debug/DebugWizardletView" },
+  { name: "foam/u2/wizard/controllers/Form", flags: ["web"] },
+  { name: "foam/u2/wizard/controllers/WizardForm", flags: ["web"] },
+  { name: "foam/u2/wizard/views/FlexibleWizardFormView", flags: "web" },
+  { name: "foam/u2/wizard/views/ProgressBarWizardView", flags: "web" },
+  { name: "foam/u2/wizard/views/FocusWizardForm", flags: "web" },
+  { name: "foam/u2/wizard/PathProperty" },
   { name: "foam/u2/wizard/DAOWAO" },
   { name: "foam/u2/wizard/debug/WizardInspector" },
   { name: "foam/u2/wizard/WAO" },
@@ -1208,5 +1215,7 @@ foam.POM({
   { name: "foam/support/model/Ticket", flags: "java" },
   { name: "foam/support/model/TicketMessage", flags: "java" },
   { name: "foam/support/model/SupportEmail", flags: "java" },
+  { name: "foam/dashboard/view/CenteredDashboardCitationView", flags: "web" },
+  { name: "foam/dashboard/view/GroupedDAOTableWidget", flags: "web" }
   ]
 });
