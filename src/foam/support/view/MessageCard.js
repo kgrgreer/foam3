@@ -20,9 +20,9 @@ foam.CLASS({
     'userDAO',
     'ticketDAO',
     'ticketMessageDAO'
-  ],  
+  ],
 
-  css: `
+  css: `
     ^ {
       box-sizing: border-box;
     }
@@ -120,11 +120,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('bg')
-          .start('hr').end() 
+          .start('hr').end()
             .start().addClass('spaceline')
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
-                .start().add(this.requestName$).addClass('company-name').end() 
+                .start().add(this.requestName$).addClass('company-name').end()
                 .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('internal-status')
@@ -132,9 +132,9 @@ foam.CLASS({
                   .end()
                 })
               .end()
-              .start().add(this.message.message).addClass('text').end()   
-          .end()     
-        .end()               
+              .start().add(this.message.message).addClass('text').end()
+          .end()
+        .end();
     }
   ]
 });

@@ -15,86 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * Top-Level of foam package
- */
-foam = {
-  flags: {},
-  isServer: false,
-  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {
-    // from a static build, models have already been filtered so checkFlags can be a NOP
-    // checkFlags: function(flags) { return true; }
-  }),
-  core: {},
-  adaptFlags: function(flags) {
-    return typeof flags === 'string' ? flags.split('|') : flags;
-  },
-  checkFlags: function(flags) {
-    if ( ! flags ) return true;
-
-    function and(fs) {
-      fs = fs.split('&');
-      for ( var i = 0 ; i < fs.length ; i++ ) {
-        if ( ! foam.flags[fs[i]] ) return false;
-      }
-      return true;
-    }
-
-    // OR AND clauses
-    for ( var i = 0 ; i < flags.length ; i++ ) {
-      if ( and(flags[i]) ) return true;
-    }
-    return false;
-  },
-  checkForFlag: function (flags, desired) {
-    if ( flags ) for ( var f of flags ) {
-      if ( f.split('&').includes(desired) ) return true;
-    }
-    return false;
-  },
-  util:     {
-    path: function(root, path, opt_ensure) {
-      var a = path.split('.');
-
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        var nextRoot = root[a[i]];
-        if ( nextRoot === undefined ) {
-          if ( opt_ensure ) {
-            nextRoot = root[a[i]] = {};
-          } else {
-            return;
-          }
-        }
-        root = nextRoot;
-      }
-
-      return root;
-    }
-  },
-  language: typeof navigator === 'undefined' ? 'en' : navigator.language,
-  next$UID: (function() {
-    /* Return a unique id. */
-    var id = 1;
-    return function next$UID() { return id++; };
-  })(),
-  SCRIPT: function(m) {
-    m.class = '__Script__';
-
-    // An instance of the script isn't useful at this point so just
-    // execute the code. foam.SCRIPT can be overwritten later to
-    // capture the details of the script if need be.
-
-    // Only execute if the script's flags match the curren runtime flags.
-    if ( foam.checkFlags(this.flags ) ) {
-      m.code();
-      return;
-    }
-
-    m.code();
-  }
-};
-
-
 Object.defineProperty(
   Object.prototype,
   '$UID',
@@ -124,8 +44,6 @@ if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
     dataFile: globalThis.FOAMLINK_DATA
   };
 }
-
-foam.assert = console.assert.bind(console);
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of

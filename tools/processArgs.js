@@ -4,9 +4,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-function processArgs(usage, x, flags) {
-  var flags = globalThis.FOAM_FLAGS = flags || { genjava: true };
+function processArgs(usage, x, defaultFlags) {
+  var flags = globalThis.foam.flags;
   var argv  = process.argv.slice(2);
+
+  if ( defaultFlags ) for ( var key in defaultFlags ) {
+    flags[key] = defaultFlags[key];
+  }
 
   // Flags
   while ( argv.length ) {

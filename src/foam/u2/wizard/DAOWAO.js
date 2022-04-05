@@ -49,29 +49,12 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'foam.u2.wizard.PathProperty',
       name: 'path',
       documentation: `
         Optional path used to specify the location of the desired wizardlet's data object that will
         be updated.
       `,
-    },
-    {
-      class: 'foam.mlang.ExprProperty',
-      name: 'path_',
-      expression: function(path) {
-        if ( typeof path !== 'string' || path == '' ) return path;
-        const parts = path.split('.');
-        let expr = null;
-
-        for ( let part of parts ) {
-          const partialProperty = foam.core.Property.create({
-            name: part
-          });
-          expr = expr ? this.DOT(expr, partialProperty) : partialProperty;
-        }
-        return expr;
-      }
     },
     {
       class: 'Boolean',
@@ -85,7 +68,7 @@ foam.CLASS({
       if ( ! wizardlet.isAvailable ) return;
       wizardlet.loading = true;
 
-      let dataToPut = this.path_ ? this.path_.f(wizardlet.data) : wizardlet.data;
+      let dataToPut = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
 
       return await this.dao.put(dataToPut).then(savedData => {
           this.setValue_(wizardlet, savedData);
@@ -103,7 +86,7 @@ foam.CLASS({
       if ( wizardlet.loading ) return;
       if ( ! this.disableFind ) {
 
-        let dataToFind = this.path_ ? this.path_.f(wizardlet.data) : wizardlet.data;
+        let dataToFind = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
 
         if ( ! dataToFind || ( dataToFind && ! dataToFind.id ) ) return;
 
@@ -121,7 +104,7 @@ foam.CLASS({
       return;
     },
     function setValue_(wizardlet, data) {
-      let path = this.path_;
+      let path = this.path;
       let lastObject = null;
       let lastKey = null;
       if ( ! path ) {

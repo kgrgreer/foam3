@@ -8,23 +8,24 @@
 
 console.log('START GENXSD');
 
-require('../../foam3/src/foam_node.js');
+var startTime     = Date.now();
+var fs            = require('fs');
+var path          = require('path');
+var mkdirp        = require('mkdirp')
+var DOMParser     = require('xmldom').DOMParser;
+var pack          = require('../../package.json');
+var simpleType    = require('./simpleType');
+var complexType   = require('./complexType');
+var types         = require('./typeMapping');
+var iso20022Types = require('./iso20022Types');
 
-foam.require("../../pom", false, true);
+require('../src/foam_node.js');
 
-var startTime      = Date.now();
+foam.require('pom', false, true);
+
 var stringify = require("json-stringify-pretty-compact");
 var _ = require('underscore');
 
-var fs = require('fs');
-var path = require('path');
-var mkdirp = require('mkdirp')
-var DOMParser = require('xmldom').DOMParser;
-var pack = require('../../package.json');
-var simpleType = require('./simpleType');
-var complexType = require('./complexType');
-var types = require('./typeMapping');
-var iso20022Types = require('./iso20022Types');
 
 if ( process.argv.length < 3 ) {
   console.log('Usage: node tools/xsd/index.js package [files]');

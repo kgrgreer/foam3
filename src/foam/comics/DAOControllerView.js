@@ -104,7 +104,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
-      value: { class: 'foam.u2.view.ScrollTableView' }
+      value: { class: 'foam.u2.table.TableView' }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -188,7 +188,7 @@ foam.CLASS({
             .end()
             .callIfElse(self.data.createLabel, function() {
               this.tag(self.data.primaryAction, {
-                label: self.translationService.getTranslation(foam.locale, `${self.parentNode.createControllerView.menu}.createLabel`, self.data.createLabel),
+                label: self.translationService.getTranslation(foam.locale, `${self.createControllerView.menu}.createLabel`, self.data.createLabel),
                 size: 'LARGE',
                 buttonStyle: foam.u2.ButtonStyle.PRIMARY
               });
