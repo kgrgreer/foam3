@@ -97,7 +97,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao'
-    }
+    },
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
