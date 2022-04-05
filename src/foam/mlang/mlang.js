@@ -2187,7 +2187,7 @@ foam.CLASS({
       },
       javaCode: `
       var result = foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;
-      foam.nanos.logger.StdoutLogger.instance().info("Lte", "arg1", getArg1(), "arg2", getArg2(), "f", getArg1().f(obj), "<", getArg2().f(obj), result);
+      foam.nanos.logger.StdoutLogger.instance().debug("Lte", "arg1", getArg1(), "arg2", getArg2(), "f", getArg1().f(obj), "<", getArg2().f(obj), result);
       return result;
      `
  //     javaCode: 'return  foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;'
@@ -4386,7 +4386,7 @@ foam.CLASS({
             getFalseExpr() == null )
           foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
         boolean result = getPredicate().f(obj);
-        foam.nanos.logger.StdoutLogger.instance().info("If.predicate", getPredicate().toString(), "result", result);
+        foam.nanos.logger.StdoutLogger.instance().debug("If.predicate", getPredicate().toString(), "result", result);
         // if ( getPredicate().f(obj) )
         if ( result )
           return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
@@ -4755,7 +4755,7 @@ foam.CLASS({
       // javaCode: 'return accumulator - currentValue;'
       javaCode: `
 var result = accumulator - currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, "-", currentValue, "=", result);
+foam.nanos.logger.Loggers.logger(getX(), this).debug(accumulator, "-", currentValue, "=", result);
 return result;
 `,
       code: (accumulator, currentValue) => accumulator - currentValue
@@ -4777,7 +4777,7 @@ foam.CLASS({
       // javaCode: 'return accumulator * currentValue;',
       javaCode: `
 var result = accumulator * currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).info(accumulator, "*", currentValue, "=", result);
+foam.nanos.logger.Loggers.logger(getX(), this).debug(accumulator, "*", currentValue, "=", result);
 return  result;
 `,
       code: (accumulator, currentValue) => accumulator * currentValue
@@ -4865,7 +4865,7 @@ foam.CLASS({
             getFalseExpr() == null )
           foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
         boolean result = getPredicate().f(obj);
-        foam.nanos.logger.StdoutLogger.instance().info("If.predicate", getPredicate().toString(), "result", result);
+        foam.nanos.logger.StdoutLogger.instance().debug("If.predicate", getPredicate().toString(), "result", result);
         // if ( getPredicate().f(obj) )
         if ( result )
           return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
