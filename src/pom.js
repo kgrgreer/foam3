@@ -994,6 +994,8 @@ foam.POM({
   { name: "foam/u2/wizard/PrerequisiteWAO", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardlet", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardletView", flags: ["web"] },
+  { name: "foam/u2/wizard/common/ReviewWizardletView", flags: ["web"] },
+  { name: "foam/u2/wizard/common/ReviewWizardlet", flags: ["web"] },
   { name: "foam/u2/crunch/wizardflow/SkipMode", flags: [ "web", "java" ] },
   { name: "foam/u2/crunch/EasyCrunchWizard", flags: [ "web", "java" ] },
   { name: "foam/graphics/ZoomMapView" },
