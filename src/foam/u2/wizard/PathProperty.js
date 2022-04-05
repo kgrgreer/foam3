@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'PathProperty',
@@ -5,21 +11,28 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
   ],
+  documentation: `
+    Represents the path to a property from a known object.
+
+    For example, given this.path as a PathProperty:
+
+    const data = { a: { b: { c: 5 } } }
+    this.path$get(this.data);    // 5
+
+    this.path$set(this.data, 7);
+    this.data.a.b.c;             // 7
+  `,
 
   requires: [
     'foam.core.Property',
     'foam.mlang.expr.Dot'
   ],
 
-  documentation: `
-    Represents the path to a property from a known object.
-  `,
-
   properties: [
     {
       name: 'adapt',
       value: function (_, o, p) {
-        if ( typeof o !== 'string'  ) return p.adaptValue(o);
+        if ( foam.String.isInstance(o)  ) return p.adaptValue(o);
 
         const parts = o.split('.');
         let expr = null;
