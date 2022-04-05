@@ -961,6 +961,11 @@ foam.POM({
   { name: "foam/u2/wizard/debug/DebugWAO" },
   { name: "foam/u2/wizard/debug/DebugContextIntercept" },
   { name: "foam/u2/wizard/debug/DebugWizardletView" },
+  { name: "foam/u2/wizard/controllers/Form", flags: ["web"] },
+  { name: "foam/u2/wizard/controllers/WizardForm", flags: ["web"] },
+  { name: "foam/u2/wizard/views/FlexibleWizardFormView", flags: "web" },
+  { name: "foam/u2/wizard/views/ProgressBarWizardView", flags: "web" },
+  { name: "foam/u2/wizard/views/FocusWizardForm", flags: "web" },
   { name: "foam/u2/wizard/PathProperty" },
   { name: "foam/u2/wizard/DAOWAO" },
   { name: "foam/u2/wizard/debug/WizardInspector" },
@@ -989,6 +994,8 @@ foam.POM({
   { name: "foam/u2/wizard/PrerequisiteWAO", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardlet", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardletView", flags: ["web"] },
+  { name: "foam/u2/wizard/common/ReviewWizardletView", flags: ["web"] },
+  { name: "foam/u2/wizard/common/ReviewWizardlet", flags: ["web"] },
   { name: "foam/u2/crunch/wizardflow/SkipMode", flags: [ "web", "java" ] },
   { name: "foam/u2/crunch/EasyCrunchWizard", flags: [ "web", "java" ] },
   { name: "foam/graphics/ZoomMapView" },
@@ -1210,5 +1217,7 @@ foam.POM({
   { name: "foam/support/model/Ticket", flags: "java" },
   { name: "foam/support/model/TicketMessage", flags: "java" },
   { name: "foam/support/model/SupportEmail", flags: "java" },
+  { name: "foam/dashboard/view/CenteredDashboardCitationView", flags: "web" },
+  { name: "foam/dashboard/view/GroupedDAOTableWidget", flags: "web" }
   ]
 });

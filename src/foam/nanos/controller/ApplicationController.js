@@ -656,8 +656,14 @@ foam.CLASS({
 
     async function pushMenu_(realMenu, menu) {
       dao = this.client.menuDAO;
+      let m = this.memento_.str;
       realMenu = await dao.find(realMenu);
-      if ( ! realMenu ) { 
+      if ( ! realMenu ) {
+        if ( ! this.loginSuccess ) {
+          await this.requestLogin();
+          this.memento_.str = m;
+          return;
+        }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
         if ( this.route !== newId ) 
@@ -670,9 +676,22 @@ foam.CLASS({
       this.menuListener(realMenu);
     },
 
+    async function findDefaultMenu(dao) {
+      var menu;
+      var menuArray = [this.theme?.defaultMenu, this.theme?.unauthenticatedDefaultMenu]
+      if ( ! menuArray || ! menuArray.length ) return null;
+      for ( menuId in menuArray ) {
+        menu = await dao.find(menuArray[menuId]);
+        if ( menu ) break; 
+      };
+      return menu;
+    },
+
     async function findFirstMenuIHavePermissionFor(dao) {
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
+      var maybeMenu = await this.findDefaultMenu(dao);
+      if ( maybeMenu ) return maybeMenu;
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
         .select().then(a => a.array.length && a.array[0])
         .catch(e => console.error(e.message || e));
