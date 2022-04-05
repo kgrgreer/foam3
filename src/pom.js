@@ -1210,5 +1210,7 @@ foam.POM({
   { name: "foam/support/model/Ticket", flags: "java" },
   { name: "foam/support/model/TicketMessage", flags: "java" },
   { name: "foam/support/model/SupportEmail", flags: "java" },
+  { name: "foam/dashboard/view/CenteredDashboardCitationView", flags: "web" },
+  { name: "foam/dashboard/view/GroupedDAOTableWidget", flags: "web" }
   ]
 });
