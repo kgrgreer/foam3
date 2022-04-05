@@ -174,6 +174,16 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
+      class: 'Reference',
+      targetDAOKey: 'menuDAO',
+      name: 'unauthenticatedDefaultMenu',
+      documentation: 'Menu user redirects to before login.',
+      of: 'foam.nanos.menu.Menu',
+      section: 'navigation',
+      value: 'sign-in',
+      writePermissionRequired: true
+    },
+    {
       documentation: 'See LocaleSupport for default fallback',
       class: 'String',
       name: 'defaultLocaleLanguage',
