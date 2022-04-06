@@ -38,11 +38,12 @@ public class LiveScriptBundler
   protected boolean scheduled_;
 
   // Configuration
-  protected static final String FOAM_BIN_PATH = "./tools/js_build/foam-bin.js";
-  protected static final String JS_BUILD_PATH = "./tools/js_build/build.js";
+  protected static final String[] BIN_PATHS = {"./foam-bin.js"};
+  protected static final String JS_BUILD_PATH = "./foam3/tools/genjs.js";
   protected static final String GENJAVA_SRC_PATH = "build/src/java";
   protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
   protected static final String GENJAVA_OUTPUT_PATH = "tools/classes.js";
+  protected String[] binFiles = { "./foam-bin.js" };
 
   // Modified files
   protected StringJoiner modified_;
@@ -58,6 +59,10 @@ public class LiveScriptBundler
 
   public void setX(X x) {
     x_ = x;
+  }
+
+  public void setBinFiles(String[] v) {
+    this.binFiles = v;
   }
 
   public LiveScriptBundler() {
@@ -160,7 +165,10 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
+      String contents = "";
+      for ( String path : binFiles ) {
+        contents += new String(Files.readAllBytes(Paths.get(path)));
+      }
       javascriptBuffer_ = contents;
       log_("DONE", "JS");
     } catch (IOException e) {
@@ -183,7 +191,10 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
+      String contents = "";
+      for ( String path : binFiles ) {
+        contents += new String(Files.readAllBytes(Paths.get(path)));
+      }
       javascriptBuffer_ = contents;
       log_("DONE", "JS");
     } catch (IOException e) {
@@ -204,7 +215,10 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
+      String contents = "";
+      for ( String path : binFiles ) {
+        contents += new String(Files.readAllBytes(Paths.get(path)));
+      }
       javascriptBuffer_ = contents;
 
       modified_ = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]");
