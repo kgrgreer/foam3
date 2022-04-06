@@ -38,7 +38,6 @@ public class LiveScriptBundler
   protected boolean scheduled_;
 
   // Configuration
-  protected static final String[] BIN_PATHS = {"./foam-bin.js"};
   protected static final String JS_BUILD_PATH = "./foam3/tools/genjs.js";
   protected static final String GENJAVA_SRC_PATH = "build/src/java";
   protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
