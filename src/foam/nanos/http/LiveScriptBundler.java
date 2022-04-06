@@ -164,11 +164,11 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = "";
+      StringBuilder sb = new StringBuilder();
       for ( String path : binFiles ) {
-        contents += new String(Files.readAllBytes(Paths.get(path)));
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
       }
-      javascriptBuffer_ = contents;
+      javascriptBuffer_ = sb.toString();
       log_("DONE", "JS");
     } catch (IOException e) {
       log_("ERROR", e.getMessage());
@@ -190,11 +190,11 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = "";
+      StringBuilder sb = new StringBuilder();
       for ( String path : binFiles ) {
-        contents += new String(Files.readAllBytes(Paths.get(path)));
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
       }
-      javascriptBuffer_ = contents;
+      javascriptBuffer_ = sb.toString();
       log_("DONE", "JS");
     } catch (IOException e) {
       log_("ERROR", e.getMessage());
@@ -214,11 +214,11 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = "";
+      StringBuilder sb = new StringBuilder();
       for ( String path : binFiles ) {
-        contents += new String(Files.readAllBytes(Paths.get(path)));
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
       }
-      javascriptBuffer_ = contents;
+      javascriptBuffer_ = sb.toString();
 
       modified_ = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]");
       modified_.setEmptyValue("{\"modified\":[]");
