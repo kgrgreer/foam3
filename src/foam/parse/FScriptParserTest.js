@@ -215,6 +215,9 @@ foam.CLASS({
     rule.setOperation(foam.nanos.dao.Operation.CREATE);
     sps.setString("thisValue==foam.nanos.dao.Operation.CREATE");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
+    sps.setString("instanceof foam.nanos.ruler.Rule");
+    test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
+
     `
     }
   ]
