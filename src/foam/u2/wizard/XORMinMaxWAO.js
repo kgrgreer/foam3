@@ -33,9 +33,21 @@
     {
       class: 'Class',
       name: 'of'
-    }
-    // TODO: LOAD INTO PROPERTY support
-    // TODO: LOAD FROM PROPERTY support
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading from the CapabilityJunction's data using a path
+      `,
+      name: 'loadFromPath'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
+      `,
+      name: 'loadIntoPath'
+    },
   ],
 
   methods: [
@@ -80,10 +92,36 @@
         return;
       }
 
-      const clonedWizardletData = selectedCapabilityWizardlet.data.clone(this);
+
+      let selectedCapabilityWizardletData = selectedCapabilityWizardlet.data;
+
+      if ( ! selectedCapabilityWizardletData ) {
+        // if data is undefined then create a fresh instance
+        selectedCapabilityWizardletData = this.of.create({}, this)
+      }
+
+      let clonedSelectedWizardletData;
+
+      if ( this.loadFromPath  ){
+        var loadedFromData = this.loadFromPath.f(selectedCapabilityWizardletData);
+
+        if ( ! loadedFromData ){
+          console.error(
+            `xorCapabilityId: ${this.minMaxCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
+          );
+          if ( this.of ) {
+            wizardlet.data = this.of.create({}, this);
+            return;
+          }
+        }
+
+        clonedSelectedWizardletData = loadedFromData.clone();
+      } else {
+        clonedSelectedWizardletData = selectedCapabilityWizardletData.clone();
+      }
 
       if ( this.isWrappedInFObjectHolder ){
-        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
+        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedSelectedWizardletData });
 
         wizardlet.data = fObjectHolder;
   
@@ -92,10 +130,23 @@
         return fObjectHolder;
       }
 
-      wizardlet.data = clonedWizardletData;
+
+      if ( this.loadIntoPath ){
+
+        if ( ! wizardlet.data ){
+          wizardlet.data = this.of.create({}, this);
+        }
+
+        this.loadIntoPath$set(wizardlet.data, clonedSelectedWizardletData);
+        wizardlet.isLoaded = true;
+
+        return;
+      }
+
+      wizardlet.data = clonedSelectedWizardletData;
       wizardlet.isLoaded = true;
 
-      return clonedWizardletData;
+      return clonedSelectedWizardletData;
     }
   ]
 });

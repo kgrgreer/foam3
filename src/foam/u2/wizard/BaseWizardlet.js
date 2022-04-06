@@ -153,6 +153,15 @@ foam.CLASS({
       `
     },
     {
+      name: 'defaultSections',
+      class: 'StringArray',
+      factory: function () {
+        return this.AbstractSectionedDetailView.create({
+          of: this.of
+        }, this).sections.map(s => s.name);
+      }
+    },
+    {
       name: 'sections',
       flags: ['web'],
       transient: true,
@@ -175,27 +184,15 @@ foam.CLASS({
               title: this.title,
               isAvailable: true,
               customView: {
-                class: 'foam.u2.detail.SectionedDetailView'
+                class: 'foam.u2.detail.FlexSectionedDetailView'
               }
             })
           ];
         }
 
         // Default case: render each model section as a wizardlet section
-        var sections = foam.u2.detail.AbstractSectionedDetailView.create({
-          of: this.of,
-        }, this).sections.map(section => this.WizardletSection.create({
-          section: section,
-          wizardlet: this,
-          isAvailable$: section.createIsAvailableFor(
-            this.data$,
-          )
-        }));
-        for ( let section of sections ) {
-          this.onDetach(section.isAvailable$.sub(
-            this.updateVisibilityFromSectionCount));
-        }
-        this.updateVisibilityFromSectionCount();
+        const sections = this.createWizardletSectionsFromModel_();
+        this.commitToSections_(sections);
         return sections;
       }
     },
@@ -313,6 +310,31 @@ foam.CLASS({
     function pushContext(m) {
       this.__subSubContext__ = this.__subSubContext__.createSubContext(m);
       if ( this.data ) this.data = this.data.clone(this.__subSubContext__);
+    },
+    function createWizardletSectionsFromModel_() {
+      // Internal method used by SECTIONS.factory
+      var sections = this.AbstractSectionedDetailView.create({
+        of: this.of,
+      }, this).sections
+        .filter(section => this.defaultSections.includes(section.name))
+        .map(section => {
+          return this.WizardletSection.create({
+            section: section,
+            wizardlet: this,
+            isAvailable$: section.createIsAvailableFor(
+              this.data$,
+            )
+          });
+        });
+      return sections;
+    },
+    function commitToSections_(sections) {
+      // Internal method used by SECTIONS.factory
+      for ( let section of sections ) {
+        this.onDetach(section.isAvailable$.sub(
+          this.updateVisibilityFromSectionCount));
+      }
+      this.updateVisibilityFromSectionCount();
     }
   ],
 

@@ -32,9 +32,9 @@ foam.CLASS({
         var pDAO = this.PromisedDAO.create();
 
         this.documentDAO
-          .select((doc) => {
+          .select(doc => {
             var menu = this.Menu.create({
-              id:     this.id + this.Memento.SEPARATOR + doc.id,
+              id:     this.id + '/' + doc.id,
               // label:  doc.title,
               label:  foam.String.labelize(doc.id),
               parent: this.id,

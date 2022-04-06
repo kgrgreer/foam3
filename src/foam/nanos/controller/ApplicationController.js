@@ -562,7 +562,8 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
-        var result = await this.client.auth.getCurrentSubject(null);
+        var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
+          this.client.auth.authorizeAnonymous());
         this.subject = result;
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
@@ -635,48 +636,62 @@ foam.CLASS({
     async function pushMenu(menu, opt_forceReload) {
       /** Setup **/
       let idCheck = menu && menu.id ? menu.id : menu;
-      let currentMenuCheck = this.currentMenu && this.currentMenu.id ? this.currentMenu.id : this.currentMenu;
+      let currentMenuCheck = this.currentMenu?.id;
+      var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
       /** Used to load a specific menus. **/
-      if ( this.route !== idCheck || opt_forceReload ) {
-        if ( typeof menu == 'string' )
-          this.memento_.str = idCheck;
-        if  ( idCheck.includes('/') )
-          menu = idCheck.split('/')[0];
-      }
+      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+        realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        dao = this.client.menuDAO;
-        menu = await dao.find(menu);
-        if ( ! menu ) { 
-          menu = await this.findFirstMenuIHavePermissionFor(dao);
-          let newId = (menu && menu.id) || '';
-          if ( this.route !== newId ) 
-            this.route = newId;
-        }
-        menu && menu.launch(this);
-        this.menuListener(menu);
+        this.pushMenu_(realMenu, menu);
       } else {
         await this.clientPromise.then(async () => {
-          dao = this.client.menuDAO;
-          menu = await dao.find(menu);
-          if ( ! menu ) { 
-            menu = await this.findFirstMenuIHavePermissionFor(dao);
-            let newId = (menu && menu.id) || '';
-            if ( this.route !== newId ) 
-              this.route = newId;
-          }
-          menu && menu.launch(this);
-          this.menuListener(menu);
+          await this.pushMenu_(realMenu, menu);
         });
       }
+    },
+
+    async function pushMenu_(realMenu, menu) {
+      dao = this.client.menuDAO;
+      let m = this.memento_.str;
+      realMenu = await dao.find(realMenu);
+      if ( ! realMenu ) {
+        if ( ! this.loginSuccess ) {
+          await this.requestLogin();
+          this.memento_.str = m;
+          return;
+        }
+        menu = await this.findFirstMenuIHavePermissionFor(dao);
+        let newId = (menu && menu.id) || '';
+        if ( this.route !== newId ) 
+          this.route = newId;
+        return;
+      }
+      if ( typeof menu == 'string' && ! menu.includes('/') )
+        menu = realMenu;
+      menu && menu.launch && menu.launch(this);
+      this.menuListener(realMenu);
+    },
+
+    async function findDefaultMenu(dao) {
+      var menu;
+      var menuArray = [this.theme?.defaultMenu, this.theme?.unauthenticatedDefaultMenu]
+      if ( ! menuArray || ! menuArray.length ) return null;
+      for ( menuId in menuArray ) {
+        menu = await dao.find(menuArray[menuId]);
+        if ( menu ) break; 
+      };
+      return menu;
     },
 
     async function findFirstMenuIHavePermissionFor(dao) {
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
+      var maybeMenu = await this.findDefaultMenu(dao);
+      if ( maybeMenu ) return maybeMenu;
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
         .select().then(a => a.array.length && a.array[0])
         .catch(e => console.error(e.message || e));
@@ -745,6 +760,12 @@ foam.CLASS({
       .on.put.sub(this.displayToastMessage.bind(this));
 
       this.fetchTheme();
+      this.initLayout.resolve();
+      var hash = this.window.location.hash;
+      if ( hash ) hash = hash.substring(1);
+      if ( hash ) {
+        this.window.onpopstate();
+      }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },

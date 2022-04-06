@@ -115,7 +115,7 @@ p({
 })
 p({
   class:"foam.nanos.test.Test",
-  id:"jrl check test",
+  id:"jrlCheckTest",
   code:"""
 import java.util.HashMap;
 
