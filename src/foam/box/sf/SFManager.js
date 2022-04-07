@@ -55,7 +55,7 @@ foam.CLASS({
       name: 'sfs',
       class: 'Map',
       javaCloneProperty: '//noop',
-      javaFactory: `return new java.util.concurrent.ConcurrentHashMap();`,
+      javaFactory: `return new java.util.concurrent.ConcurrentHashMap();`
     },
     {
       class: 'String',
