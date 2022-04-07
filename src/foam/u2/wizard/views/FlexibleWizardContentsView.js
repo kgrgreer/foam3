@@ -51,7 +51,6 @@ foam.CLASS({
       this.addClass()
         .add(current$)
         .add(this.slot(function (data$actionBar) {
-          console.log('got actions', data$actionBar, self)
           return this.E()
             .addClass(self.myClass('flexButtons'))
             .forEach(data$actionBar.reverse(), function (action) {
