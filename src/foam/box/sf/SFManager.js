@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.Detachable',
     'foam.core.FObject',
-    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
@@ -31,7 +30,6 @@ foam.CLASS({
     'java.util.concurrent.locks.Condition',
     'java.util.concurrent.locks.ReentrantLock',
     'java.util.concurrent.TimeUnit',
-    'java.util.List',
     'java.util.PriorityQueue',
   ],
 
@@ -40,6 +38,7 @@ foam.CLASS({
       class: 'Object',
       javaType: 'PriorityQueue',
       name: 'prorityQueue',
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PriorityQueue<SFEntry>(16, (n, p) -> {
           if ( n.getScheduledTime() < p.getScheduledTime() ) {
@@ -55,7 +54,8 @@ foam.CLASS({
     {
       name: 'sfs',
       class: 'Map',
-      javaFactory: `return new java.util.concurrent.ConcurrentHashMap();`
+      javaCloneProperty: '//noop',
+      javaFactory: `return new java.util.concurrent.ConcurrentHashMap();`,
     },
     {
       class: 'String',
@@ -205,27 +205,6 @@ foam.CLASS({
             }
           }
         });
-      `
-    },
-    {
-      name: 'fclone',
-      type: 'FObject',
-      documentation: 'Override default fclone, skip properties that could cause infite loop',
-      javaCode:`
-        try {
-          FObject ret = getClass().newInstance();
-          List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
-          for ( PropertyInfo prop : props ) {
-            if ( ! prop.isSet(this) ) continue;
-            // properties that cause infite looping.
-            if ( foam.util.SafetyUtil.equals("prorityQueue", prop.getName()) ) continue;
-            if ( foam.util.SafetyUtil.equals("sfs", prop.getName()) ) continue;
-            prop.cloneProperty(this, ret);
-          }
-          return ret;
-        } catch (IllegalAccessException | InstantiationException e) {
-          return this;
-        }
       `
     }
   ],
