@@ -14,6 +14,10 @@
     'Explore an efficient way to be able to load from any prequisite descendent of a wizardlet'
   ],
 
+  imports: [
+    'wizardlets',
+    'capabilityToPrerequisite'
+  ],
   requires: [
     'foam.u2.wizard.FObjectHolder'
   ],
@@ -55,17 +59,17 @@
     async function load(wizardlet) {
       wizardlet.isLoaded = false;
 
-      const prereqWizardlet = wizardlet.prerequisiteWizardlets.find(w =>
-        w.capability && w.capability.id == this.prerequisiteCapabilityId
-      );
+      const isDescendantCheck = this.capabilityToPrerequisite[`${wizardlet.id}:${this.prerequisiteCapabilityId}`];
 
-
-      if ( ! prereqWizardlet ) {
+      if ( ! isDescendantCheck ) {
         console.error(
-          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a direct prerequisite to ${wizardlet.id}`
+          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${wizardlet.id}`
         );
         return;
       }
+
+      const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
+
 
       if ( ! prereqWizardlet.of ) {
         console.error(
