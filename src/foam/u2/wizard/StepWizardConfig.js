@@ -61,7 +61,7 @@ foam.CLASS({
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       expression: function (controller) {
         return controller
-          ? { class: 'foam.u2.wizard.views.FlexibleWizardFormView' }
+          ? { class: 'foam.u2.wizard.views.FlexibleWizardContentsView' }
           : { class: 'foam.u2.wizard.ScrollingStepWizardView' };
       }
     },

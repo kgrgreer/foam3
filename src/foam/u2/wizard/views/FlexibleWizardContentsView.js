@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.views',
-  name: 'FlexibleWizardFormView',
+  name: 'FlexibleWizardContentsView',
   extends: 'foam.u2.View',
 
   issues: [
@@ -26,10 +26,12 @@ foam.CLASS({
     }
     ^flexButtons {
       display: flex;
+      flex-direction: column;
       gap: 20pt;
     }
     ^flexButtons > * {
       flex-grow: 1;
+      margin-left: 0 !important;
     }
   `,
 
@@ -42,16 +44,20 @@ foam.CLASS({
 
   methods: [
     function render() {
+      const self = this;
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
         return data$currentSection.createView();
       })
       this.addClass()
         .add(current$)
-        .start()
-          .addClass(this.myClass('flexButtons'))
-          .tag(this.data.GO_PREV, { size: 'LARGE' })
-          .tag(this.data.GO_NEXT, { size: 'LARGE', buttonStyle: 'PRIMARY' })
-        .end()
+        .add(this.slot(function (data$actionBar) {
+          console.log('got actions', data$actionBar, self)
+          return this.E()
+            .addClass(self.myClass('flexButtons'))
+            .forEach(data$actionBar.reverse(), function (action) {
+              this.tag(action, { size: 'LARGE' });
+            });
+        }))
         ;
     },
   ]

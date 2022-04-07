@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'FocusWizardForm',
-  extends: 'foam.u2.wizard.controllers.WizardForm',
+  extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
 
   css: `
     ^ {
