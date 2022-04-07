@@ -11,6 +11,9 @@
   flags: ['web'],
   extends: 'foam.u2.wizard.ProxyWAO',
   
+  imports: [
+    'wizardlets'
+  ],
   requires: [
     'foam.u2.wizard.FObjectHolder'
   ],
@@ -54,13 +57,12 @@
     async function load(wizardlet) {
       wizardlet.isLoaded = false;
 
-      const prereqMinMaxWizardlet = wizardlet.prerequisiteWizardlets.find(w =>
-        w.capability && w.capability.id == this.minMaxCapabilityId
-      );
+      // TODO: Add descendant check
+      const prereqMinMaxWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.minMaxCapabilityId )[0];
 
       if ( ! prereqMinMaxWizardlet ) {
         console.error(
-          `MinMaxCapabilityId: ${this.minMaxCapabilityId} is not a direct prerequisite to ${wizardlet.id}`
+          `MinMaxCapabilityId: ${this.minMaxCapabilityId} is not a prerequisite to ${wizardlet.id}`
         );
         return;
       }
