@@ -13,24 +13,26 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.box.Box',
     'foam.box.ReplyBox',
     'foam.core.Agency',
-    'foam.dao.AbstractSink',
-    'foam.core.Detachable',
     'foam.core.ContextAgent',
-    'foam.core.X',
+    'foam.core.Detachable',
     'foam.core.FObject',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.core.PropertyInfo',
+    'foam.core.X',
+    'foam.dao.AbstractSink',
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
     'foam.util.concurrent.AssemblyLine',
-    'foam.util.retry.RetryStrategy',
     'foam.util.retry.RetryForeverStrategy',
-    'java.util.PriorityQueue',
-    'java.util.concurrent.TimeUnit',
-    'java.util.concurrent.locks.ReentrantLock',
+    'foam.util.retry.RetryStrategy',
     'java.util.concurrent.locks.Condition',
+    'java.util.concurrent.locks.ReentrantLock',
+    'java.util.concurrent.TimeUnit',
+    'java.util.List',
+    'java.util.PriorityQueue',
   ],
 
   properties: [
@@ -203,6 +205,27 @@ foam.CLASS({
             }
           }
         });
+      `
+    },
+    {
+      name: 'fclone',
+      type: 'FObject',
+      documentation: 'Override default fclone, skip properties that could cause infite loop',
+      javaCode:`
+        try {
+          FObject ret = getClass().newInstance();
+          List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+          for ( PropertyInfo prop : props ) {
+            if ( ! prop.isSet(this) ) continue;
+            // properties that cause infite looping.
+            if ( foam.util.SafetyUtil.equals("prorityQueue", prop.getName()) ) continue;
+            if ( foam.util.SafetyUtil.equals("sfs", prop.getName()) ) continue;
+            prop.cloneProperty(this, ret);
+          }
+          return ret;
+        } catch (IllegalAccessException | InstantiationException e) {
+          return this;
+        }
       `
     }
   ],
