@@ -35,18 +35,18 @@
       name: 'of'
     },
     {
-      class: 'String',
+      class: 'foam.u2.wizard.PathProperty',
       documentation: `
-        OPTIONAL: For grabbing only a specific property from the CapabilityJunction's data
+        OPTIONAL: For loading from the CapabilityJunction's data using a path
       `,
-      name: 'loadFromPropertyName'
+      name: 'loadFromPath'
     },
     {
-      class: 'String',
+      class: 'foam.u2.wizard.PathProperty',
       documentation: `
-        OPTIONAL: For loading into only a specific property of the CapabilityJunction's data
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
-      name: 'loadIntoPropertyName'
+      name: 'loadIntoPath'
     },
   ],
 
@@ -100,12 +100,14 @@
         selectedCapabilityWizardletData = this.of.create({}, this)
       }
 
-      let clonedWizardletData;
+      let clonedSelectedWizardletData;
 
-      if ( this.loadFromPropertyName  ){
-        if (  ! selectedCapabilityWizardletData.hasOwnProperty(this.loadFromPropertyName) ){
+      if ( this.loadFromPath  ){
+        var loadedFromData = this.loadFromPath.f(selectedCapabilityWizardletData);
+
+        if ( ! loadedFromData ){
           console.error(
-            `xorCapabilityId: ${this.minMaxCapabilityId}'s data does not have the property ${this.loadFromPropertyName}`
+            `xorCapabilityId: ${this.minMaxCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);
@@ -113,13 +115,13 @@
           }
         }
 
-        clonedWizardletData = selectedCapabilityWizardletData[this.loadFromPropertyName].clone();
+        clonedSelectedWizardletData = loadedFromData.clone();
       } else {
-        clonedWizardletData = selectedCapabilityWizardletData.clone();
+        clonedSelectedWizardletData = selectedCapabilityWizardletData.clone();
       }
 
       if ( this.isWrappedInFObjectHolder ){
-        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedWizardletData });
+        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedSelectedWizardletData });
 
         wizardlet.data = fObjectHolder;
   
@@ -129,22 +131,22 @@
       }
 
 
-      if ( this.loadIntoPropertyName ){
+      if ( this.loadIntoPath ){
 
         if ( ! wizardlet.data ){
           wizardlet.data = this.of.create({}, this);
         }
 
-        wizardlet.data[this.loadIntoPropertyName] = clonedWizardletData;
+        this.loadIntoPath$set(wizardlet.data, clonedSelectedWizardletData);
         wizardlet.isLoaded = true;
 
         return;
       }
 
-      wizardlet.data = clonedWizardletData;
+      wizardlet.data = clonedSelectedWizardletData;
       wizardlet.isLoaded = true;
 
-      return clonedWizardletData;
+      return clonedSelectedWizardletData;
     }
   ]
 });

@@ -28,18 +28,18 @@
       name: 'prerequisiteCapabilityId'
     },
     {
-      class: 'String',
+      class: 'foam.u2.wizard.PathProperty',
       documentation: `
-        OPTIONAL: For grabbing only a specific property from the CapabilityJunction's data
+        OPTIONAL: For loading from the CapabilityJunction's data using a path
       `,
-      name: 'loadFromPropertyName'
+      name: 'loadFromPath'
     },
     {
-      class: 'String',
+      class: 'foam.u2.wizard.PathProperty',
       documentation: `
-        OPTIONAL: For loading into only a specific property of the CapabilityJunction's data
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
-      name: 'loadIntoPropertyName'
+      name: 'loadIntoPath'
     },
     {
       class: 'Boolean',
@@ -83,10 +83,12 @@
 
       let clonedPrereqWizardletData;
 
-      if ( this.loadFromPropertyName  ){
-        if (  ! prereqWizardletData.hasOwnProperty(this.loadFromPropertyName) ){
+      if ( this.loadFromPath  ){
+        var loadedFromData = this.loadFromPath.f(prereqWizardletData);
+
+        if ( ! loadedFromData ){
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data does not have the property ${this.loadFromPropertyName}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);
@@ -94,7 +96,7 @@
           }
         }
 
-        clonedPrereqWizardletData = prereqWizardletData[this.loadFromPropertyName].clone();
+        clonedPrereqWizardletData = loadedFromData.clone();
       } else {
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
@@ -109,13 +111,13 @@
         return fObjectHolder;
       }
 
-      if ( this.loadIntoPropertyName ){
+      if ( this.loadIntoPath ){
 
         if ( ! wizardlet.data ){
           wizardlet.data = this.of.create({}, this);
         }
 
-        wizardlet.data[this.loadIntoPropertyName] = clonedPrereqWizardletData;
+        this.loadIntoPath$set(wizardlet.data, clonedPrereqWizardletData);
         wizardlet.isLoaded = true;
 
         return;
