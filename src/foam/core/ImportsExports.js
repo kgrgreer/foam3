@@ -172,22 +172,26 @@ foam.CLASS({
         if ( b.key ) {
           var path = b.key.split('.');
           var a    = this.cls_.getAxiomByName(path[0]);
+          if ( a ) {
+            foam.assert(
+              a,
+              'Unknown axiom: "',
+              path[0],
+              '" in model: ',
+              this.cls_.id,
+              ", trying to export: '",
+              b.key,
+              "'");
 
-          foam.assert(
-            a,
-            'Unknown axiom: "',
-            path[0],
-            '" in model: ',
-            this.cls_.id,
-            ", trying to export: '",
-            b.key,
-            "'");
+            // Axioms have an option of wrapping a value for export.
+            // This could be used to bind a method to 'this', for example.
+            var e = a.exportAs ? a.exportAs(this, path.slice(1)) : this[path[0]];
 
-          // Axioms have an option of wrapping a value for export.
-          // This could be used to bind a method to 'this', for example.
-          var e = a.exportAs ? a.exportAs(this, path.slice(1)) : this[path[0]];
-
-          m[b.exportName] = e;
+            m[b.exportName] = e;
+          } else {
+            console.error('Invalid export', path[0]);
+            m[b.exportName] = this;
+          }
         } else {
           // Ex. 'as Bank', which exports an implicit 'this'
           m[b.exportName] = this;
