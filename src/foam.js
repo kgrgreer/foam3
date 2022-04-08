@@ -33,7 +33,7 @@
       // set flags by url parameters
       var urlParams = new URLSearchParams(window.location.search);
       for ( var pair of urlParams.entries() ) {
-       flags[pair[0]] = (pair[1] == 'true');
+        globalThis.foam.flags[pair[0]] = (pair[1] == 'true');
       }
 
       var path = document.currentScript && document.currentScript.src;
