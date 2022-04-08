@@ -183,13 +183,13 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==10");
 
     sps.setString("if ( address.regionId.len==5 ) { firstName } else { lastName.len+3 }");
-    test(((Expr) parser.parse(sps, px).value()).f(user) == "senorita", "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    test(eval((Expr) parser.parse(sps, px).value(), user).equals("senorita"), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
-    test(((Double) ((Expr) parser.parse(sps, px).value()).f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    test(((Double) eval((Expr) parser.parse(sps, px).value(), user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
-    test(( ((Expr) parser.parse(sps, px).value()).f(user)) == "Toronto", "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
+    test(eval((Expr) parser.parse(sps, px).value(), user).equals("Toronto"), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
 
 //TODO: under construction
 //    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
@@ -216,6 +216,18 @@ foam.CLASS({
     sps.setString("thisValue==foam.nanos.dao.Operation.CREATE");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
     `
+    },
+    {
+      name: 'eval',
+      type: 'Object',
+      args: 'Expr expr, Object obj',
+      javaCode: `
+        var result = expr.f(obj);
+        if ( result instanceof Expr ) {
+          return eval((Expr) result, obj);
+        }
+        return result;
+      `
     }
   ]
 });
