@@ -6,8 +6,12 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.controllers',
-  name: 'WizardForm',
-  extends: 'foam.u2.wizard.controllers.Form',
+  name: 'IncrementalWizardController',
+  extends: 'foam.u2.wizard.controllers.WizardController',
+
+  requires: [
+    'foam.u2.wizard.axiom.WizardAction'
+  ],
 
   issues: [
     'should not depend on legacy controller'
@@ -34,23 +38,38 @@ foam.CLASS({
       name: 'isLoading_',
       documentation: `Condition to synchronize code execution and user response.`,
       value: false
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.Action',
+      name: 'actionBar',
+      getter: function () {
+        const currentWizardlet = this.currentWizardlet;
+        let wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
+
+        let goNextAction = this.GO_NEXT;
+        let goPrevAction = this.GO_PREV;
+        const actionBar = [];
+
+        for ( let action of wizardletActions ) {
+          if ( action.name === 'goNext' ) {
+            goNextAction = action;
+            continue;
+          }
+          if ( action.name === 'goPrev' ) {
+            goPrevAction = action;
+            continue;
+          }
+          actionBar.push(action);
+        }
+        actionBar.push(goPrevAction, goNextAction);
+
+        return actionBar;
+      }
     }
   ],
 
   actions: [
-    {
-      name: 'discard',
-      label: 'Dismiss',
-      isAvailable: function () {
-        return this.showDiscardOption;
-      },
-      confirmationRequired: function() {
-        return true;
-      },
-      code: function(x) {
-        this.onClose({ discard: true });
-      }
-    },
     {
       name: 'saveAndClose',
       label: 'Save and exit',
@@ -79,6 +98,7 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
+      buttonStyle: 'PRIMARY',
       isEnabled: function (data$canGoNext, isLoading_) {
         return data$canGoNext && ! isLoading_;
       },

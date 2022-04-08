@@ -33,12 +33,38 @@ foam.CLASS({
         If true, "process" may be published for relationships already visited.
       `
     },
-    'memo_'
+    'memo_',
+    {
+      class: 'Map',
+      documentation: `
+        Essentially stores a set.
+        Key is 'node:descendant'.
+        Value is 'true'
+      `,
+      name: 'nodeToDescendants'
+    },
+    {
+      class: 'StringArray',
+      name: 'currentPath'
+    }
   ],
 
   methods: [
     function step(x) {
       for ( const fn of x.sequence ) fn({ ...x });
+    },
+    function updateNodeToDescendants(currentNodeId) {
+      this.currentPath.forEach(ancestorId => {
+        this.nodeToDescendants[`${ancestorId}:${currentNodeId}`] = true
+      });
+    },
+
+    function addToCurrentPath(currentNodeId){
+      this.currentPath.push(currentNodeId);
+    },
+
+    function removeFromCurrentPath(currentNodeId){
+      this.currentPath.filter(nodeId => nodeId !== currentNodeId);
     }
   ],
 
@@ -48,7 +74,13 @@ foam.CLASS({
       const RECUR = x => {
         const childNodes = x.current.forwardLinks.map(id => this.graph.data[id]);
         for ( const current of childNodes ) {
+          this.updateNodeToDescendants(current.id);
+
+          this.addToCurrentPath(current.id);
+
           this.step({ ...x, parent: x.current, current });
+
+          this.removeFromCurrentPath(current.id);
         }
       };
       const VISIT = x => {
@@ -60,7 +92,11 @@ foam.CLASS({
       const sequence = this.order === this.TraversalOrder.PRE_ORDER ?
         [RECUR, VISIT] : [VISIT, RECUR];
       for ( const current of this.graph.roots ) {
+        this.addToCurrentPath(current.id);
+
         this.step({ current, sequence });
+
+        this.removeFromCurrentPath(current.id);
       }
     }
   ]
