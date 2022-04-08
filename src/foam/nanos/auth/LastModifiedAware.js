@@ -14,7 +14,6 @@ foam.INTERFACE({
       name: 'lastModified',
       documentation: 'Last modified date',
       storageOptional: true,
-      javaCompare: 'return 0;',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     }
