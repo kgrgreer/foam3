@@ -16,7 +16,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'wizardlets'
+    'wizardlets',
+    'capabilityToPrerequisite'
   ],
 
   requires: [
@@ -38,6 +39,10 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'capabilityWizardletsMap'
+    },
+    {
+      class: 'Map',
+      name: 'capabilityToPrerequisite'
     }
   ],
 
@@ -51,6 +56,9 @@ foam.CLASS({
         graph: this.capabilityGraph,
         order: this.TraversalOrder.POST_ORDER
       });
+
+      this.capabilityToPrerequisite = traverser.nodeToDescendants;
+
       traverser.sub('process', (_1, _2, { parent, current }) => {
         const createdHere = this.createWizardletsForCapability(current);
         const entry = this.capabilityWizardletsMap[current.id];
