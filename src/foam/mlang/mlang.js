@@ -4788,8 +4788,8 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         if ( getPredicate().f(obj) )
-          return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
-        return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
+          return getTrueExpr();
+        return getFalseExpr();
       `
     },
     {
