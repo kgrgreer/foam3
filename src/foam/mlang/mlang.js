@@ -2185,12 +2185,7 @@ foam.CLASS({
       code: function(o) {
         return foam.util.compare(this.arg1.f(o), this.arg2.f(o)) <= 0;
       },
-      javaCode: `
-      var result = foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;
-      // foam.nanos.logger.StdoutLogger.instance().debug("Lte", "arg1", getArg1(), "arg2", getArg2(), "f", getArg1().f(obj), "<", getArg2().f(obj), result);
-      return result;
-     `
- //     javaCode: 'return  foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;'
+      javaCode: 'return  foam.util.SafetyUtil.compare(getArg1().f(obj),getArg2().f(obj))<=0;'
     },
     {
       name: 'createStatement',
@@ -4693,12 +4688,7 @@ foam.CLASS({
     {
       name: 'reduce',
       abstract: false,
-      // javaCode: 'return accumulator - currentValue;'
-      javaCode: `
-var result = accumulator - currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).debug(accumulator, "-", currentValue, "=", result);
-return result;
-`,
+      javaCode: 'return accumulator - currentValue;',
       code: (accumulator, currentValue) => accumulator - currentValue
     }
   ]
@@ -4715,12 +4705,7 @@ foam.CLASS({
     {
       name: 'reduce',
       abstract: false,
-      // javaCode: 'return accumulator * currentValue;',
-      javaCode: `
-var result = accumulator * currentValue;
-foam.nanos.logger.Loggers.logger(getX(), this).debug(accumulator, "*", currentValue, "=", result);
-return  result;
-`,
+      javaCode: 'return accumulator * currentValue;',
       code: (accumulator, currentValue) => accumulator * currentValue
     }
   ]
@@ -4802,9 +4787,7 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        boolean result = getPredicate().f(obj);
-        // foam.nanos.logger.StdoutLogger.instance().debug("If.predicate", getPredicate().toString(), "result", result);
-        if ( result )
+        if ( getPredicate().f(obj) )
           return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
         return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
       `
@@ -4812,14 +4795,7 @@ foam.CLASS({
     {
       name: 'toString',
       type: 'String',
-      javaCode: `
-        var sb = new StringBuilder();
-        sb.append("If(predicate:").append(getPredicate())
-          .append(", trueExpr:").append(getTrueExpr())
-          .append(", falseExpr:").append(getFalseExpr())
-          .append(")");
-        return sb.toString();
-      `,
+      javaCode: 'return "If(predicate:" + getPredicate() + ", trueExpr:" + getTrueExpr() + ", falseExpr:" + getFalseExpr() + ")";',
       code: function() {
         return
         'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
