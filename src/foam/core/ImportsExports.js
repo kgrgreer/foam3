@@ -173,6 +173,12 @@ foam.CLASS({
           var path = b.key.split('.');
           var a    = this.cls_.getAxiomByName(path[0]);
           if ( a ) {
+            // Axioms have an option of wrapping a value for export.
+            // This could be used to bind a method to 'this', for example.
+            var e = a.exportAs ? a.exportAs(this, path.slice(1)) : this[path[0]];
+
+            m[b.exportName] = e;
+          } else {
             foam.assert(
               a,
               'Unknown axiom: "',
@@ -182,14 +188,6 @@ foam.CLASS({
               ", trying to export: '",
               b.key,
               "'");
-
-            // Axioms have an option of wrapping a value for export.
-            // This could be used to bind a method to 'this', for example.
-            var e = a.exportAs ? a.exportAs(this, path.slice(1)) : this[path[0]];
-
-            m[b.exportName] = e;
-          } else {
-            console.error('Invalid export', path[0]);
             m[b.exportName] = this;
           }
         } else {
