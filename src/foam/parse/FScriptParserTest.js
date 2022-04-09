@@ -182,14 +182,18 @@ foam.CLASS({
     sps.setString("address.regionId.len==5");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==10");
 
+    Expr result = null;
     sps.setString("if ( address.regionId.len==5 ) { firstName } else { lastName.len+3 }");
-    test(((Expr) parser.parse(sps, px).value()).f(user) == "senorita", "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test("senorita".equals(result.f(user)), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
-    test(((Double) ((Expr) parser.parse(sps, px).value()).f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result.f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
-    test(( ((Expr) parser.parse(sps, px).value()).f(user)) == "Toronto", "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test("Toronto".equals(result.f(user)), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
 
 //TODO: under construction
 //    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
