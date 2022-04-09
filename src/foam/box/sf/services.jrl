@@ -98,7 +98,6 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"demoHttpSinkUsingAtime",
   "description": "A demo http sink for SFSink",
-  "serve":true,
   "serviceScript":
   """
     return new foam.dao.HTTPSink(
