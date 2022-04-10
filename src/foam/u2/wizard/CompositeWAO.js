@@ -14,6 +14,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
+      of: 'foam.u2.wizard.WAO',
       name: 'delegates'
     }
   ],
@@ -27,6 +28,14 @@ foam.CLASS({
     },
     async function cancel(...args) {
       for ( const delegate of this.delegates ) await delegate.cancel(...args);
+    },
+    
+    function clone(opt_X) {
+      const o = this.SUPER(opt_X);
+      for ( let i = 0 ; i < o.delegates.length ; i++ ) {
+        o.delegates[i] = o.delegates[i].clone(opt_X);
+      }
+      return o;
     }
   ]
 });
