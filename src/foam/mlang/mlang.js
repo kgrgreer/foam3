@@ -2522,7 +2522,7 @@ public IsInstanceOf(foam.core.ClassInfo targetClass) {
     },
     {
       name: 'f',
-      code: function f(obj) { return this.targetClass.isInstance(obj); },
+      code: function f(obj) { return this.proprExpr == null ? this.targetClass.isInstance(obj) : this.targetClass.isInstance(this.propExpr.f(obj)); },
       javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
 

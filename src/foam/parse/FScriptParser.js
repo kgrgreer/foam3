@@ -162,7 +162,7 @@ foam.CLASS({
             literal('true', true),
             literal('false', false),
             literal('null', null),
-//            sym('formula'),
+            sym('formula'),
             sym('number'),
             sym('fieldLen'),
             sym('field'),
@@ -176,19 +176,21 @@ foam.CLASS({
           form_expr: seq(
             alt(
               sym('number'),
-              sym('fieldLen'),
-              sym('field')
+              sym('field'),
+              sym('fieldLen')
             ),
             optional(
-              seq(
-                alt(
-                  literal('*', this.MUL),
-                  literal('/', this.DIV)
-                ),
-                alt(
-                  sym('number'),
-                  sym('fieldLen'),
-                  sym('field')
+              repeat(
+                seq(
+                  alt(
+                    literal('*', this.MUL),
+                    literal('/', this.DIV)
+                  ),
+                  alt(
+                    sym('number'),
+                    sym('fieldLen'),
+                    sym('field')
+                  )
                 )
               )
             )
@@ -346,6 +348,7 @@ foam.CLASS({
           },
 
           form_expr: function(v) {
+          return foam.parse.ParserWithAction.NO_PARSE;
             if ( v.length == 1 || v[1] === null ) return v[0];
             return v[1][0].call(self, v[0], v[1][1])
           },
