@@ -395,6 +395,12 @@ foam.CLASS({
 
         await self.fetchSubject();
 
+        // on user logged in, reload client and refetch subject
+        var reloadClient = await self.ClientBuilder.create({}, self).promise;
+        self.client = reloadClient.create(null, self);
+        self.setPrivate_('__subContext__', self.client.__subContext__);
+        await self.fetchSubject();
+
         await self.fetchGroup();
 
         await self.maybeReinstallLanguage(client);
