@@ -255,6 +255,7 @@ foam.POM({
   { name: "foam/mlang/predicate/ContextUserPredicate", flags: "java" },
   { name: "foam/mlang/predicate/CapabilityAuthServicePredicate", flags: "java" },
   { name: "foam/mlang/predicate/AuthPermissionPredicate", flags: "java" },
+  { name: "foam/mlang/predicate/IsAnonymousPredicate", flags: "java" },
   { name: "foam/swift/refines/MLang", flags: "swift" },
   { name: "foam/swift/refines/Predicate", flags: "swift" },
   { name: "foam/swift/refines/AbstractDAO", flags: "swift" },
