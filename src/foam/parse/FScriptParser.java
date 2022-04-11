@@ -382,14 +382,20 @@ public class FScriptParser
       return pred;
     });
 
-    grammar.addSymbol("INSTANCE_OF", new Seq1(2,
+    grammar.addSymbol("INSTANCE_OF", new Seq2(0,4,
+      new Optional(grammar.sym("FIELD")),
+      Whitespace.instance(),
       Literal.create("instanceof"),
       Whitespace.instance(),
       grammar.sym("CLASS_INFO")));
     grammar.addAction("INSTANCE_OF", (val, x) -> {
-      ClassInfo cls = (ClassInfo) val;
+      Object[] vals = (Object[]) val;
+      ClassInfo cls = (ClassInfo) vals[1];
       IsInstanceOf pred = new IsInstanceOf();
       pred.setTargetClass(cls);
+      if ( vals[0] != null ) {
+        pred.setPropExpr((Expr) vals[0]);
+      }
       return pred;
     });
 

@@ -191,6 +191,15 @@ foam.CLASS({
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
     test(( ((Expr) parser.parse(sps, px).value()).f(user)) == "Toronto", "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
 
+    sps.setString("address instanceof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+
+    sps.setString("!(address instanceof foam.nanos.auth.User)");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "!(address instanceof foam.nanos.auth.User)");
+
+    sps.setString("address instanceof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+
 //TODO: under construction
 //    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
 //    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
@@ -209,6 +218,8 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     sps.setString("supportConfig.supportAddress.regionId==\\"CA-ON\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId==\\"CA-ON\\"");
+    sps.setString("supportConfig.supportAddress instanceof foam.nanos.auth.Address");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress instanceof oam.nanos.auth.Address");
 
     var rule = new Rule();
     parser = new FScriptParser(foam.nanos.ruler.Rule.OPERATION);
