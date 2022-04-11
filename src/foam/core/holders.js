@@ -63,3 +63,15 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'MapHolder',
+
+  properties: [
+    {
+      name: 'value',
+      class: 'Map'
+    }
+  ]
+});
