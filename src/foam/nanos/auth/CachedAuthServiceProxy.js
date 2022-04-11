@@ -32,7 +32,7 @@ foam.CLASS({
       if ( this.loginSuccess$ ) {
         this.onDetach(this.loginSuccess$.sub(this.resetCache));
       }
-      this.onDetach(this.userCapabilityJunctionDAO.on.sub(
+      this.onDetach(this.loginSuccess && this.userCapabilityJunctionDAO.on.sub(
         (sub, _on, event, ucj) => {
           if ( event !== 'put' && event !== 'remove' ) return;
           this.capabilityDAO.find(ucj.targetId).then(cap => {
