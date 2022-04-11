@@ -774,8 +774,8 @@ foam.CLASS({
       name: 'toString',
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' +
-            this.arg1 && this.arg1.toString() || 'NA' + ', ' +
-            this.arg2 && this.arg2.toString() || 'NA' + ')';
+            (this.arg1 && this.arg1.toString() || 'NA') + ', ' +
+            (this.arg2 && this.arg2.toString() || 'NA') + ')';
       },
       javaCode: `
         String arg1 = getArg1() != null ? getArg1().toString() : "NA";
