@@ -9,7 +9,6 @@ foam.POM({
   version: 3,
 
   files: [
-  { name: "foam/core/poly" },
   { name: "foam/core/lib" },
   { name: "foam/core/stdlib" },
   { name: "foam/core/events" },
