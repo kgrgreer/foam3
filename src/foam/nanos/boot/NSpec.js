@@ -317,7 +317,7 @@ foam.CLASS({
   
         if ( ! auth.check(x, permission) ) {
           ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
-          throw new AuthorizationException("Permission denied: Cannot reda this NSpec.");
+          throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
         }
       `
     },
