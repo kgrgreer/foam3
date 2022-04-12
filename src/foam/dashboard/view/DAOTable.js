@@ -43,19 +43,24 @@ foam.CLASS({
       border-bottom: none;
     }
     ^ .view-more button {
-      position: absolute;
-      bottom: 0;
       width: 100%;
-      height: 60px;
-      max-height: 60px;
+      height: 100%;
+      max-height: max-content;
     }
     ^ .view-more button:hover {
       background: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
+      border-bottom-left-radius: 22px;
+      border-bottom-right-radius: 22px;
     }
-    ^scroll {
-      max-height: 528px;
-      overflow-y: auto;
+    ^scroll-container {
+      overflow-y: scroll;
+      height: 100%;
+    }
+    ^grid-container {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      height: 100%;
     }
   `,
 
@@ -121,11 +126,15 @@ foam.CLASS({
       this.fetchValues();
       this
         .addClass(this.myClass())
-        .callIf(!self.viewMore, function() {
-          self.addClass(self.myClass('scroll'));
-        })
         .add(this.slot(function(currentValues) {
           var e = self.E();
+          self.callIfElse(self.viewMore, function() {
+            if ( currentValues.length != 0 ) {
+              e.addClass(self.myClass('grid-container'));
+            }
+          }, function() {
+            e.addClass(self.myClass('scroll-container'));
+          });
           return e
             .callIf(currentValues.length == 0, function() {
               e.start().addClass(self.myClass('center'))
