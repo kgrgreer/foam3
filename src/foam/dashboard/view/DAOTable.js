@@ -55,6 +55,8 @@ foam.CLASS({
     }
     ^scroll-container {
       overflow-y: scroll;
+      display: grid;
+      grid-auto-rows: 20%;
       height: 100%;
     }
     ^grid-container {
