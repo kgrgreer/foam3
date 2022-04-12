@@ -583,6 +583,7 @@ this.select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
         },
       ],
       javaCode: `
+var isCount = sink instanceof foam.mlang.sink.Count;
 if ( ( limit > 0 ) && ( limit < AbstractDAO.MAX_SAFE_INTEGER ) ) {
   sink = new LimitedSink(limit, 0, sink);
 }
@@ -591,7 +592,7 @@ if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
   sink = new SkipSink(skip, 0, sink);
 }
 
-if ( order != null && ! ( sink instanceof foam.mlang.sink.Count ) ) {
+if ( order != null && ! isCount ) {
   sink = new OrderedSink(order, null, sink);
 }
 
