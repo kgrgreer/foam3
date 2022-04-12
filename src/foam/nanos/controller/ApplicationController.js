@@ -501,7 +501,6 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
-      // await this.fetchSubject();
     },
 
     function installLanguage() {
