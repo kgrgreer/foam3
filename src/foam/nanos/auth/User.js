@@ -323,7 +323,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'emailVerified',value:true,
+      name: 'emailVerified',
       includeInDigest: false,
       documentation: 'Determines whether the email address of the User is valid.',
       writePermissionRequired: true,
