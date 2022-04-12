@@ -591,7 +591,7 @@ if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
   sink = new SkipSink(skip, 0, sink);
 }
 
-if ( order != null ) {
+if ( order != null && ! ( sink instanceof foam.mlang.sink.Count ) ) {
   sink = new OrderedSink(order, null, sink);
 }
 
