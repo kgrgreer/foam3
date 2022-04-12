@@ -9,7 +9,7 @@ foam.CLASS({
   extends: 'foam.nanos.dig.bench.DIGBenchmark',
 
   mixins: [
-    'foam.nanos.medusa.ClusterableMinin'
+    'foam.nanos.medusa.ClusterableMixin'
   ],
 
   javaImports: [

@@ -50,8 +50,8 @@ foam.CLASS({
       background: rgb(238, 238, 238);
       overflow: none;
     }
-    button { padding: 6px; background: white !important; }
-    button span { background: white; }
+    button { padding: 6px; background: /*%WHITE%*/ !important; }
+    button span { background:/*%WHITE%*/ #ffffff; }
     .foam-u2-ActionView-medium { height: 34px !important; background: pink; }
     .foam-u2-view-TableView-th-editColumns { display: none; }
     .foam-u2-view-TableView-td[name="contextMenuCell"] { display: none; }

@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.controllers',
-  name: 'Form',
+  name: 'WizardController',
   extends: 'foam.u2.Controller',
 
   issues: [

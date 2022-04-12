@@ -154,6 +154,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
+      javaCloneProperty: 'set(dest, get(source));',
       readPermissionRequired:  true,
       writePermissionRequired: true
     },

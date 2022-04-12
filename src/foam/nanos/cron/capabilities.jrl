@@ -10,10 +10,18 @@ p({
   class: "foam.nanos.crunch.Capability",
   id: "schedulable-create-success",
   name: "Success Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
-    class: "foam.u2.wizard.BaseWizardlet",
-    isVisible: true,
-    of: "net.nanopay.transfer.ResetPasswordConfirmation"
+    class: 'foam.u2.wizard.common.SuccessWizardlet',
+    title: 'Done',
+    message: 'Scheduled successfully!',
+    of: 'foam.nanos.cron.Schedulable',
+    combinedSection: true,
+    wao: {
+      class: "foam.u2.wizard.PrerequisiteWAO",
+      prerequisiteCapabilityId: "schedulable-dao-put",
+      delegate: { class: 'foam.u2.wizard.NullWAO' }
+    }
   }
 })
 
@@ -24,11 +32,13 @@ p({
   of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
     class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    of: "foam.nanos.cron.Schedulable",
     isVisible: false,
+    saveOnAvailable: false,
+    saveOnCurrent: true,
     wao:{
       class: "foam.u2.wizard.PrerequisiteWAO",
-      of: "foam.nanos.cron.Schedulable",
-      prerequisiteCapabilityId: "schedulable-fobject",
+      prerequisiteCapabilityId: "schedulable-review",
       delegate: {
         class: "foam.u2.wizard.DAOWAO",
         daoKey: "schedulableDAO",
@@ -39,19 +49,20 @@ p({
 })
 
 p({
-  class: "foam.nanos.crunch.Capability",
-  id: "schedulable-fobject",
-  name: "Schedulable",
-  of:  "foam.nanos.cron.Schedulable",
+  id: 'schedulable-review',
+  name: 'Schedulable Review',
+  of: 'foam.nanos.cron.Schedulable',
   wizardlet: {
+    class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+    of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
-    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
-    wao:{
+    wao: {
       class: "foam.u2.wizard.XORMinMaxWAO",
       minMaxCapabilityId: "schedulable-xorminxmax",
-      of: "foam.nanos.cron.Schedulable"
+      of: "foam.nanos.cron.Schedulable",
+      delegate: { class: 'foam.u2.wizard.NullWAO' }
     }
-  },
+  }
 })
 
 p({
