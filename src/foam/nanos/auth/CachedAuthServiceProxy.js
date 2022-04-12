@@ -27,7 +27,6 @@ foam.CLASS({
   ],
   methods: [
     function init() {
-      debugger
       this.onDetach(this.group$.sub(this.resetCache));
       this.onDetach(this.subject$.sub(this.resetCache));
       if ( this.loginSuccess$ ) {
