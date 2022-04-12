@@ -395,8 +395,6 @@ foam.CLASS({
 
         await self.fetchSubject();
 
-        // on user logged in, reload client and refetch subject
-
         await self.fetchGroup();
 
         await self.maybeReinstallLanguage(client);
