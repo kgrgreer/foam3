@@ -308,10 +308,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.ThemeGlyphs',
       name: 'glyphs',
-      documentation: `
-        Glyphs are simple vectors which can be used as menu items
-        or indicators.
-      `.replace('\n',' ').trim(),
+      documentation: 'Glyphs are simple vectors which can be used as menu items or indicators.',
       factory: function () {
         return this.ThemeGlyphs.create();
       },

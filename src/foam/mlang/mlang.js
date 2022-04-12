@@ -774,8 +774,8 @@ foam.CLASS({
       name: 'toString',
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' +
-            this.arg1 && this.arg1.toString() || 'NA' + ', ' +
-            this.arg2 && this.arg2.toString() || 'NA' + ')';
+            (this.arg1 && this.arg1.toString() || 'NA') + ', ' +
+            (this.arg2 && this.arg2.toString() || 'NA') + ')';
       },
       javaCode: `
         String arg1 = getArg1() != null ? getArg1().toString() : "NA";
@@ -902,12 +902,12 @@ for arg in args {
 }
 return false
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-        + '  if ( getArgs()[i].f(obj) ) return true;\n'
-        + '}\n'
-        + 'return false;\n'
-    },
-
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+          if ( getArgs()[i].f(obj) ) return true;
+        }
+        return false;
+    `
+  },
     {
       name: 'createStatement',
       type: 'String',
@@ -1062,10 +1062,10 @@ for arg in args {
 }
 return true
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-                + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
-                + '}\n'
-                + 'return true;'
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+                  if ( ! getArgs()[i].f(obj) ) return false;
+                }
+                return true;`
     },
 
     {
@@ -1161,7 +1161,6 @@ if ( update ) {
 }
 return this;`
     },
-
 
     function toIndex(tail, depth) {
       /** Builds the ideal index for this predicate. The indexes will be chained
@@ -1289,7 +1288,7 @@ return this;`
       var mqlStringsArr = [];
       for ( var a in this.args ) {
         if ( ! this.args[a].toMQL )
-          throw new Error( 'Predicate\'s argument does not support toMQL' );
+          throw new Error('Predicate\'s argument does not support toMQL');
         var mql = this.args[a].toMQL();
         if ( mql )
           mqlStringsArr.push(mql);
@@ -1455,7 +1454,8 @@ if ( arg1 instanceof String[] ) {
       return true;
   }
 }
-return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );`
+return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );
+`
     },
     {
       name: 'createStatement',
@@ -3514,11 +3514,11 @@ foam.CLASS({
         if !hasOwnProperty("value") || FOAM_utils.compare(value, arg1.f(obj)) < 0 {
           value = arg1.f(obj);
         }
-`,
-      javaCode: 'if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {\n' +
-      '      setValue(getArg1().f(obj));\n' +
-      '    }'
-    },
+      `,
+      javaCode: `if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {
+            setValue(getArg1().f(obj));
+          }`
+    }
   ]
 });
 
@@ -4787,9 +4787,11 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        if ( getPredicate().f(obj) )
-          return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
-        return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
+        var expr = getPredicate().f(obj) ? getTrueExpr() : getFalseExpr();
+        if ( expr instanceof If ) {
+          return ((If) expr).f(obj);
+        }
+        return expr;
       `
     },
     {
