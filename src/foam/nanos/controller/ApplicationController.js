@@ -396,10 +396,6 @@ foam.CLASS({
         await self.fetchSubject();
 
         // on user logged in, reload client and refetch subject
-        var reloadClient = await self.ClientBuilder.create({}, self).promise;
-        self.client = reloadClient.create(null, self);
-        self.setPrivate_('__subContext__', self.client.__subContext__);
-        await self.fetchSubject();
 
         await self.fetchGroup();
 
@@ -503,6 +499,13 @@ foam.CLASS({
       });
     },
 
+    async function reloadClient() {
+      var newClient = await this.ClientBuilder.create({}, this).promise;
+      this.client = newClient.create(null, this);
+      this.setPrivate_('__subContext__', this.client.__subContext__);
+      // await this.fetchSubject();
+    },
+
     function installLanguage() {
       for ( var i = 0 ; i < this.languageDefaults_.length ; i++ ) {
         var ld = this.languageDefaults_[i];
@@ -576,6 +579,7 @@ foam.CLASS({
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
 
+        this.reloadClient();
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
