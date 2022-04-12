@@ -39,7 +39,7 @@ foam.CLASS({
       width: 700px;
       padding-bottom: 13px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       margin-top: 50px;
       margin-left: 160px;
     }
@@ -115,7 +115,7 @@ foam.CLASS({
       width: 14px;
       height: 14px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{

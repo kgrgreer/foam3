@@ -30,7 +30,7 @@ foam.CLASS({
           border: 1px solid;
           border-radius: 3px;
           color: /*%BLACK%*/ #1e1f21;
-          background-color: /*%WHITE%*/;
+          background-color:/*%WHITE%*/ #ffffff;
           border-color: /*%GREY3%*/ #cbcfd4;
           width: 100%;
         }

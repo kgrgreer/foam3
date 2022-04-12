@@ -24,7 +24,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background-color: /*%WHITE%*/;
+      background-color: /*%WHITE%*/ #ffffff;
       border-bottom: 1px solid #e9e9e9;
       color: /*%BLACK%*/ #1e1f21;
       padding: 0;

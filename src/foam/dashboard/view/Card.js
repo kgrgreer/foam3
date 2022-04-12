@@ -64,7 +64,7 @@ foam.CLASS({
   css: `
     ^ {
       border-radius: 10px;
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       box-shadow: 3px 8px 6px -2px /*%GREY4%*/;;
     }
 

@@ -32,13 +32,13 @@ foam.CLASS({
       width: 490px;
       height: 142px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/;
+      background-color:/*%WHITE%*/ #ffffff;
       padding: 20px;
     }
     ^ .foam-u2-ActionView-resendEmail {
       width: 100%;
       height: 40px;
-      background: /*%WHITE%*/;
+      background:/*%WHITE%*/ #ffffff;
       border: solid 1px #59a5d5;
       display: inline-block;
       color: #59a5d5;

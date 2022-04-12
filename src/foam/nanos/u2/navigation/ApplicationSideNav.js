@@ -33,7 +33,7 @@ foam.CLASS({
     }
     ^bottom-container {
       align-content: flex-start;
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       bottom: 0;
       display: flex;
       flex-direction: column;
