@@ -570,13 +570,12 @@ foam.CLASS({
       try {
         var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
           this.client.auth.authorizeAnonymous());
+        if ( result && result.user ) await this.reloadClient();
         this.subject = result;
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
-
-        this.reloadClient();
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
