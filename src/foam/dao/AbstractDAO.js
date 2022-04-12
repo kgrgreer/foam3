@@ -583,11 +583,6 @@ this.select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
         },
       ],
       javaCode: `
-var innerSink = sink;
-while ( innerSink instanceof ProxySink ) {
-  innerSink = ((ProxySink) innerSink).getDelegate();
-}
-
 // REVIEW: limit, skip may not be compatible with select(COUNT), eg.
 // Are the below queries valid use cases we needs to support?
 // 1) dao.limit(5).select(COUNT) => return the number of record or 5 when there are more records
@@ -597,16 +592,21 @@ while ( innerSink instanceof ProxySink ) {
 // 1) max(result, 5)
 // 2) result - 5
 // which could make the intention easier to understand than the former.
-if ( ! ( innerSink instanceof foam.mlang.sink.Count ) ) {
-  if ( ( limit > 0 ) && ( limit < AbstractDAO.MAX_SAFE_INTEGER ) ) {
-    sink = new LimitedSink(limit, 0, sink);
+if ( ( limit > 0 ) && ( limit < AbstractDAO.MAX_SAFE_INTEGER ) ) {
+  sink = new LimitedSink(limit, 0, sink);
+}
+
+if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
+  sink = new SkipSink(skip, 0, sink);
+}
+
+if ( order != null ) {
+  var innerSink = sink;
+  while ( innerSink instanceof ProxySink ) {
+    innerSink = ((ProxySink) innerSink).getDelegate();
   }
 
-  if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
-    sink = new SkipSink(skip, 0, sink);
-  }
-
-  if ( order != null ) {
+  if ( ! ( innerSink instanceof foam.mlang.sink.Count ) ) {
     sink = new OrderedSink(order, null, sink);
   }
 }
