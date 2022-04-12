@@ -20,7 +20,7 @@ foam.CLASS({
   css: `
     ^ {
       height: 370px;
-      background: white;
+      background: /*%WHITE%*/;
       position: relative;
       vertical-align: top;
       border-radius: 2px;

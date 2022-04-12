@@ -18,16 +18,16 @@ foam.CLASS({
     }
     ^ th {
       font-weight: bold;
-      background-color: #E0E0E0;
+      background-color: /*%GREY3%*/;
     }
     ^ tr:nth-child(even) td:nth-child(odd) {
-      background-color: #F5F5F5;
+      background-color: /*%GREY5%*/;
     }
     ^ tr:nth-child(even) td:nth-child(even) {
-      background-color: #F0F0F0;
+      background-color: /*%GREY4%*/;
     }
     ^ tr:nth-child(odd) td:nth-child(even) {
-      background-color: #F7F7F7;
+      background-color: /*%GREY5%*/;
     }
   `,
 
