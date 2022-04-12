@@ -571,7 +571,7 @@ foam.CLASS({
         var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
           this.client.auth.authorizeAnonymous());
         if ( result && result.user ) await this.reloadClient();
-        this.subject = result;
+        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
