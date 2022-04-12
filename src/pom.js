@@ -344,6 +344,7 @@ foam.POM({
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAgentNameAware", flags: "java" },
+  { name: "foam/nanos/auth/predicate/IsAnonymousPredicate", flags: "java" },
   { name: "foam/nanos/script/Language", flags: [ "java", "web" ] },
   { name: "foam/dao/EasyDAO", flags: "java" },
   { name: "foam/dao/NoSelectAllDAO" },
