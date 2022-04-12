@@ -41,7 +41,7 @@ foam.CLASS({
       box-sizing: border-box;
       height: 100%;
       justify-content: flex-start;
-      background-color: /*%WHITE%*/;
+      background-color:/*%WHITE%*/ #ffffff;
     }
 
     ^top-bar {

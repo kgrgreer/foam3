@@ -145,7 +145,7 @@ foam.CLASS({
     }
     ^header {
       background: /*%GREY1%*/ #1e1f21;
-      color: /*%WHITE%*/;
+      color:/*%WHITE%*/ #ffffff;
       font-weight: 800;
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
