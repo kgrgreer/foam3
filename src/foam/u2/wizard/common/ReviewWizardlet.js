@@ -16,7 +16,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.comics.v2.namedViews.NamedViewInstance',
+      of: 'foam.u2.wizard.common.ReviewItem',
       name: 'items'
     },
     {
@@ -32,12 +32,6 @@ foam.CLASS({
             }
           })
         ];
-      }
-    },
-    {
-      name: 'data',
-      factory: function () {
-        return foam.core.FObject.create();
       }
     }
   ]

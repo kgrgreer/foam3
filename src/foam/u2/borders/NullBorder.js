@@ -12,5 +12,18 @@ foam.CLASS({
   documentation: `
     An unstyled border. Intended for use as a default value for
     border properties.
-  `
+  `,
+
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'cssClass'
+    },
+  ],
+
+  methods: [
+    function render() {
+      this.addClasses(this.cssClasses).tag('', {}, this.contents$);
+    }
+  ]
 });

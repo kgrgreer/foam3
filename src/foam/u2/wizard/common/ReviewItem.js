@@ -12,7 +12,13 @@ foam.CLASS({
   properties: [
     {
       name: 'border',
-      class: 'foam.u2.ViewSpec'
+      class: 'foam.u2.ViewSpec',
+      value: { class: 'foam.u2.borders.NullBorder' }
+    },
+    {
+      class: 'Boolean',
+      name: 'noData',
+      value: false
     }
   ]
 });
