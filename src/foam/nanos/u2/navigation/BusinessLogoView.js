@@ -65,7 +65,7 @@ foam.CLASS({
       height: 40px;
       margin: 5px;
       border-radius: 50%;
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
     }
   `,
 

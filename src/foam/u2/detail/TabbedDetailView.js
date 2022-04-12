@@ -19,7 +19,7 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-Tabs-content > div {
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       padding: 14px 16px;
       border-bottom-left-radius: 6px;
       border-bottom-right-radius: 6px;

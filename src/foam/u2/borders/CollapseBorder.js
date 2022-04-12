@@ -42,7 +42,7 @@ foam.CLASS({
       padding-top: 0;
     }
     ^title {
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       position: relative;
     }
     ^toggle-button {
@@ -52,7 +52,7 @@ foam.CLASS({
       padding: 3px;
     }
     ^toggle-button:focus {
-      background-color: /*%WHITE%*/;
+      background-color: /*%WHITE%*/ #ffffff;
     }
     ^control > ^toggle-button {
       transform: rotate(-90deg);

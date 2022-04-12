@@ -419,13 +419,13 @@ foam.CLASS({
       width: 100%;
     }
     ^title {
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       padding: 3px;
       position: relative;
       top: -3px;
     }
     ^content {
-      background: /*%WHITE%*/;
+      background: /*%WHITE%*/ #ffffff;
       height: 200px;
       width: 300px;
     }
@@ -493,7 +493,7 @@ foam.CLASS({
 
   css: `
     ^ { background: gray; padding: 10px; display: inline-flex; }
-    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: /*%WHITE%*/; }
+    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: /*%WHITE%*/ #ffffff; }
   `,
 
   properties: [

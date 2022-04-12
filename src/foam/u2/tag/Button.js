@@ -147,7 +147,7 @@ foam.CLASS({
     /* Secondary destructive */
 
     ^secondary-destructive{
-      background-color: /*%WHITE%*/;
+      background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%DESTRUCTIVE2%*/ #a61414;
     }

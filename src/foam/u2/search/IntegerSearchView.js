@@ -142,7 +142,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-tag-Select {
-      background-color: /*%WHITE%*/;
+      background-color: /*%WHITE%*/ #ffffff;
       border-radius: 2px;
       border: 1px solid #dce0e7;
       color: /*%BLACK%*/ #1e1f21;
