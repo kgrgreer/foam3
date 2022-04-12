@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
  foam.CLASS({
-  package: 'foam.mlang.predicate',
+  package: 'foam.nanos.auth.predicate',
   name: 'IsAnonymousPredicate',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
