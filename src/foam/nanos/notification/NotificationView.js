@@ -34,7 +34,7 @@ foam.CLASS({
 
   css: `
      ^ .foam-u2-DAOList > div {
-      background: white;
+      background: /*%WHITE%*/;
       margin-top:16px;
       min-height: 50px;
       border-radius: 3px;

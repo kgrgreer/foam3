@@ -20,7 +20,7 @@ foam.CLASS({
     }
     ^wizard-body {
       height: 100%;
-      background-color: white;
+      background-color: /*%WHITE%*/;
     }
 
     ^footer {
@@ -142,4 +142,4 @@ foam.CLASS({
         .end();
     }
   ]
-}); 
+});

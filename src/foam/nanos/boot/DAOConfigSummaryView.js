@@ -132,7 +132,7 @@ foam.CLASS({
       width: 220px;
     }
     ^dao {
-      color: #555;
+      color: /*%GREY2%*/;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -144,8 +144,8 @@ foam.CLASS({
       vertical-align: baseline;
     }
     ^header {
-      background: /*%BLACK%*/ #1e1f21;
-      color: white;
+      background: /*%GREY1%*/ #1e1f21;
+      color: /*%WHITE%*/;
       font-weight: 800;
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
@@ -325,7 +325,7 @@ foam.CLASS({
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
-      this.stack.push(this.StackBlock.create({ 
+      this.stack.push(this.StackBlock.create({
         view: {
           class: this.BackBorder,
           title: this.currentDAO,

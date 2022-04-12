@@ -42,7 +42,7 @@ foam.CLASS({
       border-radius: 0;
       padding: 6px 10px;
       border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
+      background-color: /*%WHITE%*/;
       outline: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
       -webkit-appearance: none;

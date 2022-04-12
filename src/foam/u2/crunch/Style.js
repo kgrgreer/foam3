@@ -127,7 +127,7 @@ foam.CLASS({
       width: 100%;
       height: 100%;
 
-      background-color: white;
+      background-color: /*%WHITE%*/;
 
       border: 2px solid #f3f3f3;
       border-radius: 5px;
@@ -204,7 +204,7 @@ foam.CLASS({
 
     ^tooltip {
       position: absolute;
-      bottom: 12px; 
+      bottom: 12px;
     }
     ^tooltip ^tooltiptext {
       visibility: hidden;
