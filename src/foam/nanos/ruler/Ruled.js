@@ -43,7 +43,11 @@
       name: 'predicate',
       documentation: 'predicate is checked against an object; if returns true, the action is executed. Defaults to return true.',
       factory: function () { return this.TRUE; },
-      javaFactory: 'return foam.mlang.MLang.TRUE;'
+      javaFactory: 'return foam.mlang.MLang.TRUE;',
+      view: { class: 'foam.u2.view.JSONTextView' },
+      tableCellFormatter: function(value) {
+        this.add(value.toString());
+      }
     },
     {
       class: 'Reference',

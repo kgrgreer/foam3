@@ -28,7 +28,7 @@ foam.CLASS({
     }
     ^ .bg {
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       padding-bottom: 30px;
     }
     ^ .company-name {

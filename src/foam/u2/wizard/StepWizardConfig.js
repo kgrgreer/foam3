@@ -61,13 +61,16 @@ foam.CLASS({
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       expression: function (controller) {
         return controller
-          ? { class: 'foam.u2.wizard.views.FlexibleWizardFormView' }
+          ? { class: 'foam.u2.wizard.views.FlexibleWizardContentsView' }
           : { class: 'foam.u2.wizard.ScrollingStepWizardView' };
       }
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'popup'
+      name: 'popup',
+      factory: function () {
+        return { class: 'foam.u2.dialog.Popup' };
+      }
     }
   ],
 

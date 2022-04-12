@@ -30,7 +30,7 @@ foam.CLASS({
       border-radius: 10px;
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
       border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
 
       overflow: hidden;
     }
@@ -156,7 +156,7 @@ foam.CLASS({
           columns = of.getAxiomByName('tableColumns');
           columns = columns && columns.columns;
         }
-  
+
         if ( columns ) {
           columns = columns.filter(function(c) {
             var axiom = of.getAxiomByName(c);
@@ -170,7 +170,7 @@ foam.CLASS({
 
         count += columns.length;
       }
-      
+
       var mementoValue = daoName;
       while ( count > 0 ) {
         mementoValue += foam.nanos.controller.Memento.SEPARATOR;

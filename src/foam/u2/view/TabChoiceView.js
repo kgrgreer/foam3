@@ -85,8 +85,9 @@ foam.CLASS({
               checked: self.slot(function (data) { return data === c[0]; })
             }).
             setID(id = self.NEXT_ID()).
-            on('change', function(evt) {
+            on('change', function() {
               self.data = c[0];
+              self.route = c[1];
             }).
           end().
           start('label').

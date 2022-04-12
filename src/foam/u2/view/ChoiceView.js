@@ -48,8 +48,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'label',
-      documentation: 'User-visible label. Not to be confused with "text", ' +
-          'which is the user-visible name of the currently selected choice.'
+      documentation: `User-visible label. Not to be confused with "text",
+          'which is the user-visible name of the currently selected choice.`
     },
     {
       name: 'choice',
@@ -79,10 +79,10 @@ foam.CLASS({
     },
     {
       name: 'choices',
-      documentation: 'Array of [value, text] choices. You can pass in just ' +
-          'an array of strings, which are expanded to [str, str]. Can also ' +
-          'be a map, which results in [key, value] pairs listed in ' +
-          'enumeration order.',
+      documentation: `Array of [value, text] choices. You can pass in just
+          an array of strings, which are expanded to [str, str]. Can also
+          be a map, which results in [key, value] pairs listed in
+          enumeration order.`,
       factory: function() { return []; },
       adapt: function(old, nu) {
         if ( typeof nu === 'object' && ! Array.isArray(nu) ) {
@@ -135,8 +135,7 @@ foam.CLASS({
     {
       class: 'Function',
       name: 'objToChoice',
-      documentation: 'A function which adapts an object from the DAO to a ' +
-          '[key, value] choice. Required when a DAO is provided.'
+      documentation: 'A function which adapts an object from the DAO to a [key, value] choice. Required when a DAO is provided.'
     },
     {
       class: 'foam.dao.DAOProperty',
