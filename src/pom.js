@@ -97,6 +97,7 @@ foam.POM({
   { name: "foam/core/Agency", flags: "java" },
   { name: "foam/core/AbstractAgency", flags: "java" },
   { name: "foam/nanos/auth/Authorizable", flags: "java" },
+  { name: "foam/nanos/auth/AuthorizableMixin", flags: "java" },
   { name: "foam/i18n/TranslationFormatStringParser" },
   { name: "foam/swift/SwiftLib", flags: "swift" },
   { name: "foam/swift/SwiftClass", flags: "swift" },

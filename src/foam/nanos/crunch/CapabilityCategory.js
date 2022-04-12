@@ -7,8 +7,8 @@ foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'CapabilityCategory',
 
-  implements: [
-    'foam.nanos.auth.Authorizable'
+  mixins: [
+    'foam.nanos.auth.AuthorizableMixin'
   ],
 
   documentation: `
@@ -43,17 +43,6 @@ foam.CLASS({
     {
       name: 'visibilityCondition',
       class: 'foam.mlang.predicate.PredicateProperty',
-      readVisibility: 'HIDDEN'
-    },
-    {
-      name: 'defaultAuthorizer',
-      class: 'Object',
-      flags: ['java'],
-      javaType: 'foam.nanos.auth.Authorizer',
-      javaFactory: `
-        return new foam.nanos.auth.StandardAuthorizer(getClass().getSimpleName().toLowerCase());
-      `,
-      transient: true,
       readVisibility: 'HIDDEN'
     }
   ],
