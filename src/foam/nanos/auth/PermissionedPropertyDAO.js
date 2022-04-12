@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
+    'foam.dao.ProxySink',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.GroupBy',
     'java.util.Iterator',
