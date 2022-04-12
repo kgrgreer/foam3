@@ -41,7 +41,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/;
       background-position: 50% 50%;
     }
 
@@ -112,7 +112,7 @@ foam.CLASS({
       height: 80px;
       border-radius: 40px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/;
     }
 
     ^mode-card {
