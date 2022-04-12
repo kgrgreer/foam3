@@ -8,10 +8,10 @@ p({
 })
 p({
   sourceId: 'schedulable-dao-put',
-  targetId: 'schedulable-fobject'
+  targetId: 'schedulable-review'
 })
 p({
-  sourceId: 'schedulable-fobject',
+  sourceId: 'schedulable-review',
   targetId: 'schedulable-xorminxmax'
 })
 p({
