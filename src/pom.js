@@ -990,6 +990,7 @@ foam.POM({
   { name: "foam/u2/wizard/FObjectHolder", flags: ["web", "java"] },
   { name: "foam/u2/wizard/XORMinMaxWAO", flags: ["web"] },
   { name: "foam/u2/wizard/PrerequisiteWAO", flags: ["web"] },
+  { name: "foam/u2/wizard/CompositeWAO", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardlet", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardletView", flags: ["web"] },
   { name: "foam/u2/wizard/common/ReviewWizardletView", flags: ["web"] },
