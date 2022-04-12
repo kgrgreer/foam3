@@ -593,7 +593,7 @@ while ( innerSink instanceof ProxySink ) {
 // 1) dao.limit(5).select(COUNT) => return the number of record or 5 when there are more records
 // 2) dao.skip(5).select(COUNT) => return the number of record - 5
 //
-// These use cases can be accomplished with dao.select(COUNT) followed by a custom operation
+// These use cases can be accomplished with dao.select(COUNT) and arithmetic operation
 // 1) max(result, 5)
 // 2) result - 5
 // which could make the intention easier to understand than the former.
