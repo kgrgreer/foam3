@@ -67,7 +67,9 @@ foam.CLASS({
     'lastModified',
     'status',
     'title',
-    'comment'
+    'comment',
+    'dateCommented',
+    'createdFor'
   ],
 
   messages: [
@@ -237,6 +239,26 @@ foam.CLASS({
           }.bind(this));
       },
       order: 9
+    },
+    {
+      class: 'String',
+      name: 'dateCommented',
+      value: '',
+      storageTransient: true,
+      section: 'infoSection',
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.CREATED))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
+      order: 10
     },
     {
       class: 'DateTime',
