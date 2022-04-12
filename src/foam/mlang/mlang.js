@@ -2517,10 +2517,15 @@ foam.CLASS({
       code: function f(obj) { return this.targetClass.isInstance(obj); },
       javaCode: 'return getTargetClass().isInstance(obj);'
     },
-
-    function toString() {
-      return foam.String.constantize(this.cls_.name) +
-          '(' + this.targetClass.id + ')';
+    {
+      name: 'toString',
+      code: function toString() {
+        return foam.String.constantize(this.cls_.name) +
+            '(' + this.targetClass.id + ')';
+      },
+      javaCode: `
+        return getClass().getSimpleName() + "(" + getTargetClass().getId() + ")";
+      `
     }
   ]
 });
