@@ -151,7 +151,7 @@ foam.CLASS({
     ^fullscreen {
       display: flex;
       flex-direction: column;
-      background-color: white !important;
+      background-color: /*%WHITE%*/ !important;
       position: fixed !important;
       top: 0;
       left: 0;
