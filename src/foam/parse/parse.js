@@ -402,7 +402,7 @@ foam.CLASS({
     function toString() {
       return 'opt(' + this.SUPER() + ')';
     }
-  ],
+  ]
 });
 
 
@@ -757,7 +757,7 @@ foam.CLASS({
     {
       name: 'name',
       final: true
-    },
+    }
   ],
 
   methods: [
@@ -1227,7 +1227,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.parse',
   name: 'ImperativeGrammar',
-  extends: 'foam.parse.Grammar',
+  extends: 'foam.parse.Grammar'
 });
 
 /*
