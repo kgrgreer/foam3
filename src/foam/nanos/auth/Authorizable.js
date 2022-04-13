@@ -13,6 +13,20 @@ foam.INTERFACE({
       users are allowed to operate on (create, read, update, or delete) that
       object but others are not.
     `,
+
+    properties: [
+      {
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.Authorizer',
+        name: 'defaultAuthorizer',
+        visibility: 'HIDDEN',
+        transient: true,
+        documentation: `
+          An optional defaultAuthorizer to be used in the case that a custom
+          implementation is not required for a method
+        `,
+      }
+    ],
   
     methods: [
       {
