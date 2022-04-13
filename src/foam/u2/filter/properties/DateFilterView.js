@@ -107,6 +107,7 @@ foam.CLASS({
           });
         }
 
+        if ( ! date2 || isNaN(date2.valueOf()) ) return this.TRUE;
         return this.AND(this.GT(this.property, date1), this.LT(this.property, date2));
       }
     },
