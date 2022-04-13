@@ -149,6 +149,7 @@ foam.POM({
   { name: "foam/java/JavaImport", flags: "genjava" },
   { name: "foam/java/Builder", flags: "genjava" },
   { name: "foam/java/refinements", flags: "genjava" },
+  /* Only used for swift.
   { name: "foam/json2/Json2PropertyRefine" },
   { name: "foam/json2/OutputterOutput" },
   { name: "foam/json2/ProxyOutputterOutput" },
@@ -157,6 +158,7 @@ foam.POM({
   { name: "foam/json2/Outputter" },
   { name: "foam/json2/Serializer" },
   { name: "foam/json2/Deserializer" },
+  */
   { name: "foam/java/Util", flags: "java" },
   { name: "foam/core/Fluent" },
   { name: "foam/util/FluentSpec" },
