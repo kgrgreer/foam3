@@ -592,7 +592,14 @@ if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
 }
 
 if ( order != null ) {
-  sink = new OrderedSink(order, null, sink);
+  var innerSink = sink;
+  while ( innerSink instanceof ProxySink ) {
+    innerSink = ((ProxySink) innerSink).getDelegate();
+  }
+
+  if ( ! ( innerSink instanceof foam.mlang.sink.Count ) ) {
+    sink = new OrderedSink(order, null, sink);
+  }
 }
 
 if ( predicate != null && predicate.partialEval() != null && ! ( predicate instanceof foam.mlang.predicate.True) ) {
