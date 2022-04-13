@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    ^  {
+    ^ {
       width: 100%;
       background: #ffffff;
       border: 1px solid/*%GREY5%*/ #f5f7fa;

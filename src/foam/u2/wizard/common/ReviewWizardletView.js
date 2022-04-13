@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .generic-container  {
+    ^ .generic-container {
       width: 343px;
     }
     ^ .h200 {
