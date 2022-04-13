@@ -765,6 +765,8 @@ foam.CLASS({
       if ( hash ) hash = hash.substring(1);
       if ( hash ) {
         this.window.onpopstate();
+      } else {
+        this.pushMenu('');
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
