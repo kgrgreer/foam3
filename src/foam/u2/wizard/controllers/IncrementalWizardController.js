@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.controllers.WizardController',
 
   requires: [
+    'foam.u2.wizard.DynamicActionWizardlet',
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
@@ -45,7 +46,13 @@ foam.CLASS({
       name: 'actionBar',
       getter: function () {
         const currentWizardlet = this.currentWizardlet;
-        let wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
+
+        let wizardletActions = [];
+        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) ) {
+          wizardletActions = currentWizardlet.dynamicActions;
+        } else {
+          wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
+        }
 
         let goNextAction = this.GO_NEXT;
         let goPrevAction = this.GO_PREV;
@@ -54,6 +61,7 @@ foam.CLASS({
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
             goNextAction = action;
+            goNextAction.buttonStyle = 'PRIMARY';
             continue;
           }
           if ( action.name === 'goPrev' ) {
@@ -63,6 +71,7 @@ foam.CLASS({
           actionBar.push(action);
         }
         actionBar.push(goPrevAction, goNextAction);
+        
 
         return actionBar;
       }
@@ -85,11 +94,11 @@ foam.CLASS({
     {
       name: 'goPrev',
       label: 'Back',
-      isEnabled: function (data$canGoBack) {
-        return data$canGoBack;
+      isEnabled: function (isLoading_) {
+        return ! isLoading_;
       },
-      isAvailable: function (backDisabled, isLoading_) {
-        return ! backDisabled && ! isLoading_;
+      isAvailable: function (data$canGoBack, backDisabled) {
+        return ! backDisabled && data$canGoBack;
       },
       code: function() {
         this.data.back();

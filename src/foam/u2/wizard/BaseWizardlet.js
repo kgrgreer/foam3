@@ -312,11 +312,19 @@ foam.CLASS({
       if ( this.data ) this.data = this.data.clone(this.__subSubContext__);
     },
     function createWizardletSectionsFromModel_() {
+      // This method fails if the wizardlet's data is undefined
+      if ( ! this.data ) {
+        if ( ! this.of ) return [];
+
+        this.warn('initializing wizardlet data to initialize sections');
+        this.data = this.of.create();
+      }
+
       // Internal method used by SECTIONS.factory
       var sections = this.AbstractSectionedDetailView.create({
         of: this.of,
       }, this).sections
-        .filter(section => this.defaultSections.includes(section.name))
+        .filter(section => this.defaultSections.includes('' + section.name))
         .map(section => {
           return this.WizardletSection.create({
             section: section,
@@ -335,6 +343,9 @@ foam.CLASS({
           this.updateVisibilityFromSectionCount));
       }
       this.updateVisibilityFromSectionCount();
+    },
+    function warn(...args) {
+      console.warn(`[wizardlet:${this.id}]`, ...args, { wizardlet: this });
     }
   ],
 
