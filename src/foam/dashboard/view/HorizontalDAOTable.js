@@ -65,7 +65,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass(this.myClass('title-container'))
-          .start().addClass('h500').style({ 'height': '2em' }).add(self.title).end()
+          .start().addClass('h500').add(self.title).end()
           .start()
             .startContext({data: self})
               .tag(self.VIEW_MORE_ACTION, {
