@@ -160,7 +160,7 @@ foam.CLASS({
       bottom: -4px;
       left: 0;
       transform: translateY(100%);
-      background: white;
+      background: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       max-height: 378px;
       overflow-y: auto;

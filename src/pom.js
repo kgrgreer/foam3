@@ -150,6 +150,7 @@ foam.POM({
   { name: "foam/java/JavaImport", flags: "genjava" },
   { name: "foam/java/Builder", flags: "genjava" },
   { name: "foam/java/refinements", flags: "genjava" },
+  /* Only used for swift.
   { name: "foam/json2/Json2PropertyRefine" },
   { name: "foam/json2/OutputterOutput" },
   { name: "foam/json2/ProxyOutputterOutput" },
@@ -158,6 +159,7 @@ foam.POM({
   { name: "foam/json2/Outputter" },
   { name: "foam/json2/Serializer" },
   { name: "foam/json2/Deserializer" },
+  */
   { name: "foam/java/Util", flags: "java" },
   { name: "foam/core/Fluent" },
   { name: "foam/util/FluentSpec" },
@@ -345,6 +347,7 @@ foam.POM({
   { name: "foam/nanos/auth/LastModifiedAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAwareMixin" },
   { name: "foam/nanos/auth/LastModifiedByAgentNameAware", flags: "java" },
+  { name: "foam/nanos/auth/predicate/IsAnonymousPredicate", flags: "java" },
   { name: "foam/nanos/script/Language", flags: [ "java", "web" ] },
   { name: "foam/dao/EasyDAO", flags: "java" },
   { name: "foam/dao/NoSelectAllDAO" },
@@ -991,6 +994,7 @@ foam.POM({
   { name: "foam/u2/wizard/FObjectHolder", flags: ["web", "java"] },
   { name: "foam/u2/wizard/XORMinMaxWAO", flags: ["web"] },
   { name: "foam/u2/wizard/PrerequisiteWAO", flags: ["web"] },
+  { name: "foam/u2/wizard/CompositeWAO", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardlet", flags: ["web"] },
   { name: "foam/u2/wizard/common/SuccessWizardletView", flags: ["web"] },
   { name: "foam/u2/wizard/common/ReviewWizardletView", flags: ["web"] },

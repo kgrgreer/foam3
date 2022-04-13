@@ -33,7 +33,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
 
       background-image: url(images/ic-search.svg);
       background-repeat: no-repeat;

@@ -108,6 +108,7 @@ public class FScriptParser
     grammar.addSymbol("EXPR", new Alt(
       grammar.sym("PAREN"),
       grammar.sym("NEGATE"),
+      grammar.sym("INSTANCE_OF"),
       grammar.sym("UNARY"),
       grammar.sym("COMPARISON")
     ));
@@ -368,7 +369,8 @@ public class FScriptParser
             return new IsValid();
           }
         }
-      )));
+      ),
+      new Optional(grammar.sym("VALUE"))));
     grammar.addAction("UNARY", (val, x) -> {
       Object[] values = (Object[]) val;
       Predicate pred = (Predicate) values[2];
@@ -377,6 +379,23 @@ public class FScriptParser
         return pred;
       }
       ((Unary) pred).setArg1((Expr) values[0]);
+      return pred;
+    });
+
+    grammar.addSymbol("INSTANCE_OF", new Seq2(0,4,
+      new Optional(grammar.sym("FIELD")),
+      Whitespace.instance(),
+      Literal.create("instanceof"),
+      Whitespace.instance(),
+      grammar.sym("CLASS_INFO")));
+    grammar.addAction("INSTANCE_OF", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      ClassInfo cls = (ClassInfo) vals[1];
+      IsInstanceOf pred = new IsInstanceOf();
+      pred.setTargetClass(cls);
+      if ( vals[0] != null ) {
+        pred.setPropExpr((Expr) vals[0]);
+      }
       return pred;
     });
 
@@ -487,7 +506,7 @@ public class FScriptParser
           var field = this.prop_.getClassInfo().getObjClass().getDeclaredField((String) values[0]).get(null);
           if ( field != null ) return field;
         } catch (Exception e) {
-          return null;
+          return Action.NO_PARSE;
         }
       }
       var sb = new StringBuilder();
@@ -499,7 +518,7 @@ public class FScriptParser
       try {
         cls = Class.forName(sb.toString());
       } catch (ClassNotFoundException e) {
-        return null;
+        return Action.NO_PARSE;
       }
       String name = (String)((Object[]) pckArr[pckArr.length-1])[1];
       if ( ! cls.isEnum() ) return null;
@@ -507,7 +526,39 @@ public class FScriptParser
         Enum en= (Enum) cls.getEnumConstants()[i];
         if ( en.name().equals(name)) return en;
       }
-      return null;
+      return Action.NO_PARSE;
+    });
+
+    grammar.addSymbol("CLASS_INFO", new Seq(
+      grammar.sym("WORD"),
+      new Repeat(
+        new Seq(
+          Literal.create("."),
+          grammar.sym("WORD")
+        )
+      )
+    ));
+    grammar.addAction("CLASS_INFO", (val, x) -> {
+      Object[] values = (Object[]) val;
+      Object[] pckArr = (Object[]) values[1];
+      if ( pckArr.length == 0 ) {
+        try {
+          var field = this.prop_.getClassInfo().getObjClass().getDeclaredField((String) values[0]).get(null);
+          if ( field != null ) return field;
+        } catch (Exception e) {
+          return null;
+        }
+      }
+      var sb = new StringBuilder();
+      sb.append(values[0]);
+      for ( int i = 0; pckArr.length > i; i ++) {
+        sb.append(compactToString(pckArr[i]));
+      }
+      try {
+        return Class.forName(sb.toString()).getMethod("getOwnClassInfo") .invoke(null);
+      } catch (Exception e) {
+        return Action.NO_PARSE;
+      }
     });
 
     grammar.addSymbol("WORD", new Repeat(
@@ -586,5 +637,12 @@ public class FScriptParser
       sb.append(num);
     }
     return sb.toString();
+  }
+
+  protected Boolean isCapitalized(String str) {
+    for ( int i = 0; i < str.length(); i++ ) {
+      if ( ! Character.isUpperCase(str.charAt(i)) ) return false;
+    }
+    return true;
   }
 }

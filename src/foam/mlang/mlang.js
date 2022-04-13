@@ -2493,6 +2493,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'Predicate which checks if objects are instances of the specified class.',
+  javaCode: `
+public IsInstanceOf(foam.core.ClassInfo targetClass) {
+      setTargetClass(targetClass);
+    }
+  `,
 
   properties: [
     {
@@ -2503,6 +2508,11 @@ foam.CLASS({
         class: 'foam.u2.view.StrategizerChoiceView',
         desiredModelId: 'foam.Class'
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.Expr',
+      name: 'propExpr'
     }
   ],
 
@@ -2515,12 +2525,17 @@ foam.CLASS({
     {
       name: 'f',
       code: function f(obj) { return this.targetClass.isInstance(obj); },
-      javaCode: 'return getTargetClass().isInstance(obj);'
+      javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
-
-    function toString() {
-      return foam.String.constantize(this.cls_.name) +
-          '(' + this.targetClass.id + ')';
+    {
+      name: 'toString',
+      code: function toString() {
+        return foam.String.constantize(this.cls_.name) +
+            '(' + this.targetClass.id + ')';
+      },
+      javaCode: `
+        return getClass().getSimpleName() + "(" + getTargetClass().getId() + ")";
+      `
     }
   ]
 });

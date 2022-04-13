@@ -50,8 +50,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'unrolled',
-      documentation: 'Set this to true to get an unrolled list. Defaults to ' +
-          'size > 1.',
+      documentation: 'Set this to true to get an unrolled list. Defaults to size > 1.',
       expression: function(size) {
         return size > 1;
       }
