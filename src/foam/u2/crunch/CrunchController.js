@@ -57,6 +57,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.wizard.agents.AssignAnonymousAgent',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
@@ -116,6 +117,7 @@ foam.CLASS({
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
+          .add(this.AssignAnonymousAgent)
           .add(this.DeveloperModeAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
