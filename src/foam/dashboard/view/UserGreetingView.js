@@ -31,8 +31,26 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'MORNING_TITLE', message: 'Good morning' },
+    { name: 'AFTERNOON_TITLE', message: 'Good afternoon' },
+    { name: 'EVENING_TITLE', message: 'Good evening' }
+  ],
+
   properties: [
-    'prefix'
+    {
+      name: 'title',
+      factory: function() {
+        let hours = new Date().getHours();
+        if ( hours >= 5 && hours < 12 ) {
+          return this.MORNING_TITLE;
+        }
+        if ( hours >= 12 && hours < 17 ) {
+          return this.AFTERNOON_TITLE;
+        }
+        return this.EVENING_TITLE;
+      }
+    }
   ],
 
   methods: [
@@ -40,7 +58,7 @@ foam.CLASS({
       this.addClasses([this.myClass(), 'h200'])
         .start()
           .add(this.slot(function(subject$user) {
-            return this.prefix + ((this.subject.user != null) ? ', ' + this.subject.user.firstName : '');
+            return this.title + ((this.subject.user != null) ? ', ' + this.subject.user.firstName : '');
           }))
         .end();
     }
