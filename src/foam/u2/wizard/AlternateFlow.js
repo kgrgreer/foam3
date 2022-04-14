@@ -13,7 +13,7 @@ foam.CLASS({
   ],
 
   properties: [
-    // IDEA: maybe these two properties can come form a mixin
+    // IDEA: maybe these two properties can come from a mixin
     {
       class: 'String',
       name: 'name'
