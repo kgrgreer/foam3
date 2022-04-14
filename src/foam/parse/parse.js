@@ -750,11 +750,11 @@ foam.CLASS({
   methods: [
     function parse(ps, obj) {
       ps = ps.apply(this.p, obj);
-//      debugger;
-      if ( ps && this.action(ps.value) == foam.parse.ParserWithAction.NO_PARSE ) return null;
-      return ps ?
-        ps.setValue(this.action(ps.value)) :
-        undefined;
+      if ( !!! ps ) return undefined;
+      var ret = this.action(ps.value);
+      return ret === foam.parse.ParserWithAction.NO_PARSE ?
+        undefined :
+        ps.setValue(ret);
     }
   ]
 });
