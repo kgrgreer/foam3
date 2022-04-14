@@ -947,6 +947,7 @@ foam.POM({
   { name: "foam/u2/detail/SectionedDetailPropertyView" },
   { name: "foam/u2/dialog/SimpleActionDialog" },
   { name: "foam/u2/tag/CircleIndicator" },
+  { name: "foam/u2/wizard/agents/AssignAnonymousAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/ConfigureFlowAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/DeveloperModeAgent", flags: ['web'] },
   { name: "foam/u2/wizard/agents/RootCapabilityAgent", flags: ['web'] },
