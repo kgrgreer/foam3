@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.u2.ModalHeader',
     'foam.u2.dialog.Popup'
   ],
-  
+
   imports: [
     'ctrl',
     'closeDialog'
@@ -69,7 +69,7 @@ foam.CLASS({
       margin-bottom: 79px;
       width: 408px;
       height: 40px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .Rectangle-8 {
@@ -92,9 +92,9 @@ foam.CLASS({
 
     messages:[
       {name:'title', message:'New Email'},
-      {name:'titlelabel', message:'Please go to the email box to validate the email address before you can connect to the help desk.'},  
+      {name:'titlelabel', message:'Please go to the email box to validate the email address before you can connect to the help desk.'},
     ],
-        
+
     methods:[
       function render(){
         this.addClass()
@@ -109,7 +109,7 @@ foam.CLASS({
         .end();
       }
     ],
-    
+
     actions: [
       {
         name: 'closeModal',

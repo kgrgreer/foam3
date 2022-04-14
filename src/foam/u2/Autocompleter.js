@@ -19,9 +19,9 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Autocompleter',
 
-  documentation: 'Basic autocomplete controller. Supports simple ' +
-      'autocomplete, defaulting to querying by Keyword. Use this as a base ' +
-      'class for other, more sophisticated autocompleters.',
+  documentation: `Basic autocomplete controller. Supports simple
+    autocomplete, defaulting to querying by Keyword. Use this as a base
+    class for other, more sophisticated autocompleters.`,
 
   properties: [
     {
@@ -32,13 +32,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'partial',
-      documentation: 'The string the user has entered so far. Usually bound ' +
-          'to some text field.'
+      documentation: 'The string the user has entered so far. Usually bound to some text field.'
     },
     {
       name: 'queryFactory',
-      documentation: 'Turns the user\'s string into an mLang query. Defaults ' +
-          'to Keyword.',
+      documentation: 'Turns the user\'s string into an mLang query. Defaults to Keyword.',
       value: function(str) {
         return foam.mlang.predicate.Keyword.create({ arg1: str });
       }

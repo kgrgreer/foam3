@@ -180,9 +180,3 @@
 
   foam.setup();
 })();
-
-// TODO: remove when all FOAM_FILES uses removed
-globalThis.FOAM_FILES = function(files) {
-  console.log('**************** DEPRECATED USE OF FOAM_FILES');
-  foam.POM({files: files});
-}

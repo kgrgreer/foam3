@@ -112,14 +112,14 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ {
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background-color:/*%WHITE%*/ #ffffff; }
   `,
   methods: [
     function render() {
