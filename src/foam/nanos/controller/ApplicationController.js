@@ -323,8 +323,9 @@ foam.CLASS({
     {
       name: 'route',
       memorable: true,
-      postSet: function(_, n) {
-        if ( n && this.currentMenu?.id != n) this.pushMenu(n);
+      postSet: function(o, n) {
+        // do not try to push the menu the first time route is being set
+        if ( o && n && this.currentMenu?.id != n ) this.pushMenu(n);
       }
     },
     'currentMenu',
