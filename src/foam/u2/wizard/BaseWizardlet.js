@@ -324,7 +324,10 @@ foam.CLASS({
       var sections = this.AbstractSectionedDetailView.create({
         of: this.of,
       }, this).sections
-        .filter(section => this.defaultSections.includes('' + section.name))
+        .filter(section => this.defaultSections.includes(
+          // section.name can be undefined, so it must be converted to a string
+          '' + section.name
+        ))
         .map(section => {
           return this.WizardletSection.create({
             section: section,
