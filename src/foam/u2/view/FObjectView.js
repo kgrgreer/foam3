@@ -73,7 +73,10 @@ foam.CLASS({
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      factory: function() {
+        return this.data.cls_;
+      }
     },
     {
       class: 'Boolean',
