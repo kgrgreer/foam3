@@ -21,7 +21,7 @@ require('../src/foam_node.js');
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   { version: '', license: '', pom: 'pom' },
-  { debug: true }
+  { debug: true, java: false, web: true }
 );
 
 foam.require(X.pom, false, true);
