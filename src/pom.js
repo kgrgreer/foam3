@@ -1125,9 +1125,6 @@ foam.POM({
     { name: "foam/u2/view/ComparisonView",                                                flags: "web" },
     { name: "foam/u2/view/SuggestedTextField",                                            flags: "web" },
     { name: "foam/demos/csv/CsvUploadDemo",                                               flags: "demo&web" },
-    { name: "foam/support/model/Ticket",                                                  flags: "js|java" },
-    { name: "foam/support/model/TicketMessage",                                           flags: "js|java" },
-    { name: "foam/support/model/SupportEmail",                                            flags: "js|java" },
     { name: "foam/dashboard/view/CenteredDashboardCitationView",                          flags: "web" },
     { name: "foam/dashboard/view/GroupedDAOTableWidget",                                  flags: "web" }
   ]
