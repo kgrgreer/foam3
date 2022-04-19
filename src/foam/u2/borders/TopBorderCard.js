@@ -12,29 +12,30 @@ foam.CLASS({
   css: `
     ^ {
       width: 100%;
-      background: #ffffff;
       border: 1px solid/*%GREY5%*/ #f5f7fa;
-      border-top: none;
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
-      margin-bottom: 24px;
     }
-    ^ .bar {
+    ^bar {
       width: 100%;
       height: 8px;
-      background: /*%PRIMARY1%*/ #406dea;
-      border: 1px solid /*%PRIMARY1%*/ #406dea;
-      padding: 0px;
-      box-sizing: border-box;
       border-top-left-radius: 4px;
       border-top-right-radius: 4px;
     }
   `,
 
+  properties: [
+    {
+      class: 'Color',
+      name: 'color'
+    }
+  ],
+
   methods: [
     function init() {
-      this.addClass().start('div', null, this.content$)
-        .start().addClass('bar').end()
+      this.start().addClass(this.myClass('bar')).end()
+      .start('div', null, this.content$)
+        .addClass()
+        .style({ 'background' : this.color$,
+                 'border' : '1px solid' + this.color$ })
       .end();
     }
   ]
