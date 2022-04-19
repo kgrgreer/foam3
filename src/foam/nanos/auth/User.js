@@ -322,7 +322,7 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'Boolean',value:true,
+    class: 'Boolean',
       name: 'emailVerified',
       includeInDigest: false,
       documentation: 'Determines whether the email address of the User is valid.',
