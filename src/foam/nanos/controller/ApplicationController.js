@@ -386,7 +386,8 @@ foam.CLASS({
             if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
               // only push the unauthenticated menu if there is no subject
               // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-              self.pushMenu(menu);
+              // use the route instead of the menu so that the menu could be re-created under the updated context
+              self.pushMenu(self.route);
               self.languageInstalled.resolve();
               return;
             }
@@ -568,8 +569,7 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
-        var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
-          this.client.auth.authorizeAnonymous());
+        var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
         this.subject = await this.client.auth.getCurrentSubject(null);
 
