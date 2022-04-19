@@ -61,13 +61,14 @@ foam.CLASS({
 
     }
   ],
-  reactions: [
-    ['parentEl_', 'onload', 'onResize']
-  ],
+
   listeners: [
     {
       name: 'onResize',
       isFramed: true,
+      on: [
+        'parentEl_.onload'
+      ],
       code: function() {
         this.chart_ = undefined;
       }
