@@ -12,32 +12,36 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxySink;
 import foam.dao.Sink;
-import foam.mlang.predicate.Predicate;
 import foam.mlang.predicate.Nary;
+import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.GroupBy;
-import foam.nanos.NanoService;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.CompositeApprovable;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
 import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
 import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
+import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
 import java.lang.Exception;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
 
-public class ServerCrunchService extends ContextAwareSupport implements CrunchService, NanoService {
+public class ServerCrunchService
+  extends    ContextAwareSupport
+  implements CrunchService, NanoService
+{
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
   @Override
@@ -104,7 +108,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       Capability cap = (Capability) capabilityDAO.find(sourceCapabilityId);
 
       // Skip missing capability
-      if ( cap == null ) {
+      if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
         continue;
       }
       alreadyListed.add(sourceCapabilityId);
@@ -223,8 +227,24 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         }
         public void eof() {}
       };
-
       ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
+
+      Sink purgeUSink = new Sink() {
+        public void put(Object obj, Detachable sub) {
+          var ucj = (UserCapabilityJunction) obj;
+          if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED
+            || ucj.getStatus() == CapabilityJunctionStatus.EXPIRED ) 
+            purgeCache(x);
+        }
+        public void remove(Object obj, Detachable sub) {
+          purgeCache(x);
+        }
+        public void reset(Detachable sub) {
+          purgeCache(x);
+        }
+        public void eof() {}
+      };
+      ((DAO) x.get("userCapabilityJunctionDAO")).listen(purgeUSink, TRUE);
     }
 
     Map map = new ConcurrentHashMap<String, List<String>>();
@@ -246,7 +266,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     Session session = x.get(Session.class);
     if ( cache && session != null ) {
-      session.setContext(session.getContext().put(CACHE_KEY, map));
+      session.setApplyContext(session.getContext().put(CACHE_KEY, map));
     }
 
     return map;
@@ -278,14 +298,14 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Map<String, List<String>> cache = (Map) session.getContext().get(CACHE_KEY);
     cache.put(ccj.getSourceId(), getPrereqs_(x.put("subject", subject), ccj.getSourceId()));
 
-    session.setContext(session.getContext().put(CACHE_KEY, cache));
+    session.setApplyContext(session.getContext().put(CACHE_KEY, cache));
   }
 
   // sets the prerequisite cache to null, is used when session info changes
   public static void purgeCache(X x) {
     Session session = x.get(Session.class);
     if ( session != null ){
-      session.setContext(session.getContext().put(CACHE_KEY, null));
+      session.setApplyContext(session.getContext().put(CACHE_KEY, null));
     }
   }
 
@@ -357,12 +377,11 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   }
 
   // see documentation in CrunchService interface
-  public boolean hasPreconditionsMet(
-    X sessionX, String capabilityId
-  ) {
+  public boolean hasPreconditionsMet(X sessionX, String capabilityId) {
     // Return false if capability does not exist or is not available
     var capabilityDAO = ((DAO) sessionX.get("capabilityDAO")).inX(sessionX);
-    if ( capabilityDAO.find(capabilityId) == null ) return false;
+    Capability cap = (Capability) capabilityDAO.find(capabilityId);
+    if ( cap == null ||  cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
 
     // TODO: use MapSink to simplify/optimize this code
     var preconditions = Arrays.stream(((CapabilityCapabilityJunction[]) ((ArraySink) ((DAO) sessionX.get("prerequisiteCapabilityJunctionDAO"))
@@ -377,7 +396,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     for ( String preconditionId : preconditions ) {
       // Return false if capability does not exist or is not available
-      if ( capabilityDAO.find(preconditionId) == null ) return false;
+      Capability precondition = (Capability) capabilityDAO.find(preconditionId);
+      if ( precondition == null || precondition.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
       var ucj = getJunction(sessionX, preconditionId);
       if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
     }
@@ -542,12 +562,12 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     // Need Capability to associate UCJ correctly
     DAO capabilityDAO = (DAO) x.get("capabilityDAO");
 
-    // If the subject in context doesn't have the capability availabile, we
+    // If the subject in context doesn't have the capability available, we
     // should act as though it doesn't exist; this is why inX is here.
     Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
-    if ( cap == null ) {
+    if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
       throw new RuntimeException(String.format(
-        "Capability with id '%s' is either unavailabile or does not exist",
+        "Capability with id '%s' is either unavailable or does not exist",
         capabilityId
       ));
     }
@@ -619,7 +639,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Capability capability = (Capability) capabilityDAO.find(capabilityId);
     UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
 
-    if ( ! capability.getEnabled() ) return false;
+    if ( capability == null || capability.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
     // if topLevel capability.isInternalCapability then returns capRenewability
     // if a preReq capability.isInternalCapability then that capability renewablity is ignored
     if ( ! firstCall && capability.getIsInternalCapability() ) return false;
@@ -794,7 +814,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     if ( capabilityId != null ) {
       DAO capabilityDAO = (DAO) x.get("capabilityDAO");
       Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
-      if ( cap == null ) {
+      if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
         throw new RuntimeException(String.format(
           "Attempting a UCJ find and asked Capability, not found - Capid: %s, subject.user(ucj.effectiveUser): %s, subject.realUser(ucj.sourceId): %s",
           capabilityId, user.getId(), realUser.getId()
@@ -812,7 +832,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
           EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
         );
       }
-    
+
     return result;
   }
 }

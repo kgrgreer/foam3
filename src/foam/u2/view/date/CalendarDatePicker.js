@@ -26,55 +26,52 @@ foam.CLASS({
       value: false
     }
   ],
-  axioms: [
-    foam.u2.CSS.create({
-      code: `
-        ^selected_day_cell {
-          background-color: #e5f1fc;
-        }
-        ^prev_month_cell, ^next_month_cell {
-          color: lightgray !important;
-        }
-        ^calendar_table td {
-          text-align: center;
-        }
-        ^calendar_table th {
-          cursor: default;
-        }
-        ^calendar_table td {
-          cursor: pointer;
-        }
+  css: `
+    ^selected_day_cell {
+      background-color: #e5f1fc;
+    }
+    ^prev_month_cell, ^next_month_cell {
+      color: lightgray !important;
+    }
+    ^calendar_table td {
+      text-align: center;
+    }
+    ^calendar_table th {
+      cursor: default;
+    }
+    ^calendar_table td {
+      cursor: pointer;
+    }
 
-        ^calendar_table td:hover {
-          background-color: #F5F7FA;
-        }
+    ^calendar_table td:hover {
+      background-color: #F5F7FA;
+    }
 
-        ^calendar_table tr > td {
-          border:1px solid #cbcfd4;
-          color: #5e6061;
-          padding: 6px 7px 6px 7px;
-          font-size: 1.4rem;
-          font-weight: 300;
-        }
+    ^calendar_table tr > td {
+      border:1px solid #cbcfd4;
+      color: #5e6061;
+      padding: 6px 7px 6px 7px;
+      font-size: 1.4rem;
+      font-weight: 300;
+    }
 
-        ^calendar_table  {
-          border-collapse: collapse;
-          width: 224px;
-          height: 160px;
-        }
+    ^calendar_table  {
+      border-collapse: collapse;
+      width: 224px;
+      height: 160px;
+    }
 
-        ^calendar_table tbody > tr > th {
-          font-size: 1rem;
-          color: #5e6061;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: 1.5;
-          letter-spacing: normal;
-        }
-      `
-    })
-  ],
+    ^calendar_table tbody > tr > th {
+      font-size: 1rem;
+      color: #5e6061;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+    }
+  `,
+
   methods: [
     function daysInMonth(month, year) {
       var d = new Date();

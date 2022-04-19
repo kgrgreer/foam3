@@ -150,11 +150,15 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localUserDAO",
+  "serve": false,
   "serviceScript": """
-    return
-      new foam.dao.PMDAO(x,
-      new foam.dao.SequenceNumberDAO(1000,
-      new foam.dao.java.JDAO(x, foam.nanos.auth.User.getOwnClassInfo(), "users")));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setPm(true)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("users")
+      .build();
   """
 })
 
@@ -296,7 +300,10 @@ p({
       .setJournalName(\"regions\")
       .setOf(foam.nanos.auth.Region.getOwnClassInfo())
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Region.NAME})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ISO_CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ALTERNATIVE_NAMES });
   """,
   "client": "{\"of\":\"foam.nanos.auth.Region\"}",
   "documentation": "A DAO which contains information about regions in countries. A region is a province or a state, for example.",
@@ -697,11 +704,15 @@ p({
       .setJournalName("ruleHistory")
       .setRuler(false)
       .setPm(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.ruler.RuleHistory.CREATED))
+        .setSize(100000)
+        .build())
       .build();
     """,
     "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"
 })
-//p({"class":"foam.nanos.boot.NSpec", "name":"ruleHistoryDAO",                     "serve":true,  "serviceScript":"dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setSeqNo(true).setOf(foam.nanos.ruler.RuleHistory.getOwnClassInfo()).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"ruleHistory\").build(); ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(dao).build(); lma = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(ca).build(); return lma;", "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"serializationTestEchoService", "boxClass": "foam.nanos.test.EchoServiceSkeleton",  "serve":true, "serviceClass":"foam.nanos.test.SerializationTestEchoService", "client":"{\"class\":\"foam.nanos.test.ClientEchoService\",\"delegate\":{\"class\":\"foam.box.SessionClientBox\",\"delegate\":{\"class\":\"foam.box.HTTPBox\",\"method\":\"POST\",\"url\":\"service/serializationTestEchoService\"}}}"})
 
 p({
@@ -877,11 +888,11 @@ p({
   "name": "googleSheetsDataImport",
   "serve": true,
   "authenticate": true,
-  "boxClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceSkeleton",
-  "serviceClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceImpl",
+  "boxClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceSkeleton",
+  "serviceClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceImpl",
   "client":"""
     {
-      "class": "foam.nanos.google.api.sheets.ClientGoogleSheetsDataImportService",
+      "class": "foam.nanos.google.api.sheets.views.ClientGoogleSheetsDataImportService",
       "delegate":
         {
           "class": "foam.box.HTTPBox",
@@ -896,11 +907,11 @@ p({
   "name": "googleSheetsTransactionsDataImport",
   "serve": true,
   "authenticate": true,
-  "boxClass": "foam.nanos.google.api.sheets.GoogleSheetsDataImportServiceSkeleton",
+  "boxClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceSkeleton",
   "serviceClass": "foam.nanos.google.api.sheets.GoogleSheetsTransactionsDataImportServiceImpl",
   "client":"""
     {
-      "class": "foam.nanos.google.api.sheets.ClientGoogleSheetsDataImportService",
+      "class": "foam.nanos.google.api.sheets.views.ClientGoogleSheetsDataImportService",
       "delegate":
         {
           "class": "foam.box.HTTPBox",
@@ -956,26 +967,6 @@ p({
     """
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "timezoneDAO",
-  "description": "A DAO which contains information about timezones in countries.",
-  "serve": true,
-  "serviceScript": """
-    dao = new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("timezoneDAO"))
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("timezones")
-      .setOf(foam.nanos.auth.TimeZone.getOwnClassInfo())
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.DISPLAY_NAME })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.TimeZone.COUNTRY_ID });
-
-    return dao;
-  """,
-  "client": "{\"of\":\"foam.nanos.auth.TimeZone\"}"
-})
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "templateEngine",
@@ -1041,4 +1032,18 @@ p({
       "of": "foam.nanos.approval.ApprovalRequestClassification"
     }
   """
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "ruleRetryStrategy",
+  lazy: true,
+  service: {
+    class: "foam.util.retry.RetryStrategyFactory",
+    prototype: {
+      class: "foam.util.retry.SimpleRetryStrategy",
+      maxRetry: 5,
+      retryDelay: 10000
+    }
+  }
 })

@@ -3,7 +3,7 @@
  * Copyright 2020 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
- 
+
 
 foam.CLASS({
   package: 'foam.u2.property',
@@ -11,7 +11,7 @@ foam.CLASS({
   extends: 'foam.u2.property.MDInput',
 
   imports: [
-    'setTimeout',
+    'setTimeout'
   ],
 
   properties: [
@@ -31,8 +31,7 @@ foam.CLASS({
       type: 'Boolean',
       name: 'onKey',
       value: true,
-      documentation: 'Set true to update $$DOC{ref:".data"} on every ' +
-          'keystroke, rather than on blur.',
+      documentation: 'Set true to update $$DOC{ref:".data"} on every keystroke, rather than on blur.',
     },
     {
       type: 'Boolean',
@@ -75,29 +74,26 @@ foam.CLASS({
     },
     {
       name: 'autocompleter',
-      documentation: 'Optional. If set, this is the Autocompleter that will ' +
-          'handle autocomplete results.',
+      documentation: 'Optional. If set, this is the Autocompleter that will handle autocomplete results.'
     },
     {
       type: 'ViewFactory',
       name: 'autocompleteView',
-      documentation: 'Factory for the autocompletion view. Override to ' +
-          'configure how autocomplete results are displayed.',
-      defaultValue: 'foam.u2.search.AutocompleteView',
+      documentation: 'Factory for the autocompletion view. Override to configure how autocomplete results are displayed.',
+      defaultValue: 'foam.u2.search.AutocompleteView'
     },
     {
       type: 'ViewFactory',
       name: 'autocompleteRowView',
-      documentation: 'View for each row in the autocomplete popup.',
+      documentation: 'View for each row in the autocomplete popup.'
     },
     {
       name: 'autocompleteView_',
-      documentation: 'Internal cache of the autocompletion view.',
+      documentation: 'Internal cache of the autocompletion view.'
     },
     {
       name: 'autocompletePopup_',
-      documentation: 'Internal cache of the popup containing the ' +
-          'autocomplete view.',
+      documentation: 'Internal cache of the popup containing the autocomplete view.'
     },
     'isInvalid'
   ],
@@ -106,16 +102,15 @@ foam.CLASS({
     {
       name: 'AutocompletePopup',
       extends: 'foam.u2.Element',
-      documentation: 'Exactly what it says on the tin. This is an MD-spec ' +
-          'popup for autocomplete that appears right below the text field.',
+      documentation: 'Exactly what it says on the tin. This is an MD-spec popup for autocomplete that appears right below the text field.',
       properties: [
-        'inline',
+        'inline'
       ],
       methods: [
         function render() {
            this.addClass().enableClass(this.myClass('inline'), this.inline$);
-        },
-      ],
-    },
+        }
+      ]
+    }
   ]
 });

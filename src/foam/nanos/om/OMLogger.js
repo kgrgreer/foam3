@@ -15,11 +15,19 @@ foam.CLASS({
     'java.util.Date'
   ],
 
+  properties: [
+    {
+      name: 'foldManagerContextKey',
+      class: 'String',
+      value: 'omFoldManager'
+    }
+  ],
+
   methods: [
     {
       name: 'log',
       javaCode: `
-        ((FoldManager) getX().get("omFoldManager")).foldForState(combine(args), new Date(), 1);
+        ((FoldManager) getX().get(getFoldManagerContextKey())).foldForState(combine(args), new Date(), 1);
       `
     },
     {

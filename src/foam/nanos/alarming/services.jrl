@@ -29,8 +29,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setRuler(true)
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.MonitoringReport.NAME });
+      .build();
   """,
   "client":"{\"of\":\"foam.nanos.alarming.MonitoringReport\"}"
 })
@@ -54,14 +53,21 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
       .setWriteOnly(true)
+      .setCluster(false)
       .setOrder(new foam.mlang.order.Comparator[] {
         foam.nanos.alarming.Alarm.LAST_MODIFIED,
         new foam.mlang.order.Desc.Builder(x).setArg1(
           foam.nanos.alarming.Alarm.IS_ACTIVE).build()})
      .build()
+     .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.Alarm.NAME })
      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.Alarm.HOSTNAME })
      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.Alarm.SEVERITY })
-     .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.Alarm.IS_ACTIVE });
+     .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.Alarm.IS_ACTIVE })
+     .addPropertyIndex(new foam.core.PropertyInfo[] {
+       foam.nanos.alarming.Alarm.HOSTNAME,
+       foam.nanos.alarming.Alarm.SEVERITY,
+       foam.nanos.alarming.Alarm.IS_ACTIVE
+     });
   `,
   "client":"{\"of\":\"foam.nanos.alarming.Alarm\"}"
 })
@@ -76,4 +82,20 @@ p({
       .build();
     `
   ,"client":"{\"of\":\"foam.nanos.alarming.OMName\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"candlestickAlarmDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.alarming.CandlestickAlarm.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("candlestickalarms")
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.CandlestickAlarm.KEY });
+  """,
+  "client":"{\"of\":\"foam.nanos.alarming.CandlestickAlarm\"}"
 })

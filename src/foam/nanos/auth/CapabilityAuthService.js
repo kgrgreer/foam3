@@ -26,8 +26,10 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
     'foam.mlang.predicate.Predicate',
+    'foam.mlang.predicate.CapabilityAuthServicePredicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.AssociatedEntity',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -74,7 +76,9 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          sp.setX(x);
+          // service provider needs system context (getX()) 
+          // to bypass auth call in prerequisiteImplies
+          sp.setX(getX());
           return sp.grantsPermission(permission);
         }
         return false;
@@ -126,32 +130,14 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          AbstractPredicate predicate = new AbstractPredicate(x) {
-            @Override
-            public boolean f(Object obj) {
-              Logger logger = (Logger) x.get("logger");
-              UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-              if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
-                Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
-                if ( c != null &&
-                    ! c.isDeprecated(x) ) {
-                  c.setX(x);
-                  if ( c.grantsPermission(permission) ) {
-                   return true;
-                  }
-                } else if ( c == null ) {
-                  logger.warning(this.getClass().getSimpleName(), "capabilityCheck", "targetId not found", ucj);
-                }
-              }
-              return false;
-            }
-          };
+          CapabilityAuthServicePredicate predicate = new CapabilityAuthServicePredicate(getX(), capabilityDAO, permission, null);
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
+          predicate.setEntity(AssociatedEntity.USER);
           if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
           }
@@ -162,6 +148,7 @@ foam.CLASS({
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
               NOT(INSTANCE_OF(AgentCapabilityJunction.class))
             );
+            predicate.setEntity(AssociatedEntity.REAL_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }
@@ -174,6 +161,7 @@ foam.CLASS({
               EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
               INSTANCE_OF(AgentCapabilityJunction.class)
             );
+            predicate.setEntity(AssociatedEntity.ACTING_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }

@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.jetty.JettyThreadPoolConfig',
     'foam.nanos.security.KeyStoreManager',
+    'foam.net.Port',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.io.FileInputStream',
@@ -36,6 +37,7 @@ foam.CLASS({
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
@@ -44,15 +46,6 @@ foam.CLASS({
     'org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse',
     'org.eclipse.jetty.websocket.servlet.WebSocketCreator',
     'static foam.mlang.MLang.EQ'
-  ],
-
-  constants: [
-    {
-      documentation: 'When http.port specificed, but https.port is not, use this offset to calculated the https.port',
-      name: 'HTTPS_PORT_OFFSET',
-      value: 2,
-      type: 'Integer'
-    }
   ],
 
   properties: [
@@ -64,16 +57,14 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'port',
-      value: 8080
+      javaFactory: `
+      if ( getEnableHttps() ) return 8443;
+      return 8080;
+      `
     },
     {
       class: 'Boolean',
       name: 'enableHttps'
-    },
-    {
-      class: 'Int',
-      name: 'httpsPort',
-      value: 8443
     },
     {
       name: 'keystoreFileName',
@@ -153,13 +144,10 @@ foam.CLASS({
 
       try {
         int port = getPort();
-        String portStr = System.getProperty("http.port");
-        if ( ! foam.util.SafetyUtil.isEmpty(portStr) ) {
-          try {
-            port = Integer.parseInt(portStr);
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTP port", portStr);
-          }
+        try {
+          port = Port.get(getX(), "http");
+        } catch (IllegalArgumentException e) {
+          port = getPort();
         }
 
         JettyThreadPoolConfig jettyThreadPoolConfig = (JettyThreadPoolConfig) getX().get("jettyThreadPoolConfig");
@@ -284,7 +272,19 @@ foam.CLASS({
         });
 
         addJettyShutdownHook(server);
-        server.setHandler(handler);
+
+        // Install GzipHandler to transparently gzip .js, .svg and .html files
+        GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.addIncludedMimeTypes(
+          "application/javascript",
+          "image/svg+xml",
+          "text/html"
+        );
+        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
+        gzipHandler.setCompressionLevel(9);
+        gzipHandler.setHandler(handler);
+        server.setHandler(gzipHandler);
 
         this.configHttps(server);
 
@@ -337,24 +337,11 @@ foam.CLASS({
       foam.dao.DAO fileDAO = ((foam.dao.DAO) getX().get("fileDAO"));
 
       if ( this.getEnableHttps() ) {
-        int port = getHttpsPort();
-        if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("https.port")) ) {
-          try {
-            port = Integer.parseInt(System.getProperty("https.port"));
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTPS port", System.getProperty("https.port"));
-          }
-        } else if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
-          // when https.port is not specified and http.port is and http is not
-          // enabled, then use http.port for HTTPS.
-          try {
-            port = Integer.parseInt(System.getProperty("http.port"));
-            if ( this.getEnableHttp() ) {
-              port += HTTPS_PORT_OFFSET;
-            }
-          } catch ( NumberFormatException e ) {
-            getLogger().error("invalid HTTPS port", System.getProperty("http.port"));
-          }
+        int port = getPort();
+        try {
+          port = Port.get(getX(), "http");
+        } catch (IllegalArgumentException e) {
+          port = getPort();
         }
 
         ByteArrayOutputStream baos = null;

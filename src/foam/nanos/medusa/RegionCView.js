@@ -19,6 +19,7 @@ foam.CLASS({
   exports: [
     'zoneRingWidth'
   ],
+
   requires: [
     'foam.graphics.Box',
     'foam.graphics.Label',

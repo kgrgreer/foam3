@@ -118,12 +118,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
       if ( getClients().length == 0 ) {
         throw new RuntimeException("No clients found");

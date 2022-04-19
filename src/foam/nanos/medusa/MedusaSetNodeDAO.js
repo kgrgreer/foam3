@@ -12,25 +12,15 @@ foam.CLASS({
   documentation: `Set 'node' property, so when broadcast we know where it's coming from`,
 
   javaImports: [
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Loggers'
   ],
 
-  properties: [
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
-    }
-  ],
+  javaCode: `
+  public MedusaSetNodeDAO(foam.core.X x, foam.dao.DAO delegate) {
+    super(x);
+    setDelegate(delegate);
+  }
+  `,
   
   methods: [
     {
@@ -41,7 +31,11 @@ foam.CLASS({
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       // REVIEW: When entries are written to STANDBY Nodes by STANDBY Mediator, if the Node property is not updated, then all entries have same node value and later replay fails as consensus count is always 1. 
       if ( myConfig.getRegionStatus() == RegionStatus.ACTIVE ||
-           myConfig.getType() == MedusaType.NODE ) {
+           myConfig.getType() == MedusaType.NODE &&
+           ! support.getConfigId().equals(entry.getNode()) ) {
+        if ( entry.isFrozen() ) {
+          entry = (MedusaEntry) entry.fclone();
+        }
         entry.setNode(support.getConfigId());
       }
       return getDelegate().put_(x, entry);

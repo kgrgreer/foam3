@@ -17,10 +17,6 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  requires: [
-    // 'foam.core.Duration', -- don't require, triggers Java compilation.
-  ],
-
   properties: [
     {
       name: 'id',
@@ -39,12 +35,6 @@ foam.CLASS({
     {
       documentation: 'Index, when received will mark replay complete.',
       name: 'replayIndex',
-      class: 'Long',
-      visibility: 'RO',
-    },
-    {
-      documentation: 'MedusaEntry has not reached consensus on this index.',
-      name: 'nonConsensusIndex',
       class: 'Long',
       visibility: 'RO',
     },
@@ -177,13 +167,6 @@ foam.CLASS({
       class: 'Map',
       javaFactory: 'return new ConcurrentHashMap();',
       visibility: 'RO'
-    },
-    {
-      name: 'lastModified',
-      label: 'Stored',
-      class: 'DateTime',
-      visibility: 'RO',
-      includeInDigest: false,
     }
   ],
 

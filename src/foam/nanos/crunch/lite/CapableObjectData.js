@@ -56,10 +56,12 @@ foam.CLASS({
       //   behaviour works with mlang.Expressions so it's odd that
       //   it doesn't work for this case.
       name: 'setRequirements',
-      flags: ['web'],
+      flags: [ 'java' ],
+      args: 'String[] capabilityIds',
       code: function(capabilityIds) {
         this.capabilityIds = capabilityIds;
-      }
+      },
+      javaCode: 'setCapabilityIds(capabilityIds);'
     },
     {
       name: 'getCapablePayloadDAO',
@@ -70,5 +72,19 @@ foam.CLASS({
         });
       }
     }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.nanos.crunch.lite',
+  name: 'BaseCapable',
+
+  flags: [ 'java' ],
+
+  implements: [
+    'foam.nanos.crunch.lite.Capable'
+  ],
+  mixins: [
+    'foam.nanos.crunch.lite.CapableObjectData'
   ]
 });

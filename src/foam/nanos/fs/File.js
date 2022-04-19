@@ -184,6 +184,8 @@ foam.CLASS({
         return null;
       `,
       getter: function() {
+        if ( this.instance_.data ) return this.instance_.data;
+
         if ( this.dataString ) {
           let b64Data = this.dataString.split(',')[1];
           const b64toBlob = (b64Data, contentType = this.mimeType, sliceSize = 512) => {
@@ -204,10 +206,10 @@ foam.CLASS({
             return new Blob(byteArrays, { type: contentType });
           }
 
-          this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
+          return this.BlobBlob.create({ blob: b64toBlob(b64Data) });
         }
 
-        return this.instance_.data || null;
+        return null;
       },
       /**
        * When we export this as the CSV, we are trying to create a new object if this property is undefined.
@@ -228,7 +230,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      hidden: true,
+      visibility: 'RO',
       storageTransient: true,
       section: 'systemInformation',
       javaFactory: `

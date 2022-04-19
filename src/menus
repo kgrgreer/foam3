@@ -14,24 +14,12 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.menu.Menu","id":"admin.cron","label":"Cron Jobs","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"cronDAO"}},"parent":"admin"})
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "admin.crunchlab",
-  "label": "CRUNCH Lab",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {"class":"foam.u2.crunch.CrunchLab"}
-  },
-  "parent":"admin"
-})
 p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DAOConfigSummaryView"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessages","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailMessageDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailtemplates","label":"Email Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailTemplateDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.export","label":"Export Drivers","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"exportDriverRegistryDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.groups","label":"Groups","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"groupDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.lang","label":"Languages","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"languageDAO"}},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.capabilities","label":"Capabilities","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"capabilityDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.natureCodes","label":"Nature Codes","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"natureCodeDAO"}},"parent":"admin"})
 p({
   "class":"foam.nanos.menu.Menu",
@@ -123,19 +111,6 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"sessionDAO"
-    }
-  },
-  "parent":"admin"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"admin.scripts",
-  "label":"Scripts",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"scriptDAO"
     }
   },
   "parent":"admin"
@@ -260,6 +235,7 @@ p({
   "parent":"integration"
 })
 p({"class":"foam.nanos.menu.Menu","id":"integration.model-doc","label":"UML API Models","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser","allowedModels":{"net.nanopay.fx.afex.AFEXLog":true}}},"parent":"integration"})
+
 p({"class":"foam.flow.DocumentMenu","id":"admin.flowdoc","label":"FLOW Documents","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.doc.DocumentationView"}},"parent":"admin"})
 
 // settings
@@ -296,7 +272,7 @@ p({
           "class":"foam.nanos.notification.NotificationRowView"
         },
         "groupExpr":{
-          "class":"foam.mlang.expr.DateGroupingExpr",
+          "class":"foam.mlang.expr.DateTimeGroupingExpr",
           "dateGroupType":0,
           "dateGroups":[
             {

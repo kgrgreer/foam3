@@ -27,6 +27,12 @@ public class SafetyUtil {
     return compare(o1, o2) == 0;
   }
 
+  public static boolean equalsIgnoreCase(String o1, String o2) {
+    if ( o1 == o2 )  return true;
+    if ( o1 == null ) return false;
+    return o1.equalsIgnoreCase(o2);
+  }
+
   public static int compare(Object o1, Object o2) {
     if ( o1 == o2   ) return  0;
     if ( o2 == null ) return  1;
@@ -157,10 +163,10 @@ public class SafetyUtil {
 
   public static Object deepClone(Object o) {
     if ( o == null ) return null;
-    if ( o instanceof foam.core.FObject ) return ((foam.core.FObject)o).deepClone();
+    if ( o instanceof foam.core.FObject ) return ((foam.core.FObject) o).deepClone();
     if ( o.getClass().isArray() ) return foam.util.Arrays.deepClone(o);
-    if ( o instanceof java.util.Map ) return deepCloneMap((java.util.Map)o);
-    if ( o instanceof java.util.Collection ) return deepCloneCollection((java.util.Collection)o);
+    if ( o instanceof java.util.Map ) return deepCloneMap((java.util.Map) o);
+    if ( o instanceof java.util.Collection ) return deepCloneCollection((java.util.Collection) o);
 
     // TODO: Non FObjects arn't cloneable, should we throw?
     // Certainly not for immutable boxed types Int, String, Double, etc,

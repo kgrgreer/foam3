@@ -26,7 +26,9 @@ and waits on a response.`,
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.Calendar',
+    'java.util.TimeZone'
   ],
 
   properties: [
@@ -135,7 +137,7 @@ and waits on a response.`,
           if ( SafetyUtil.isEmpty(data) &&
                SafetyUtil.isEmpty(transientData) ) {
             // No delta.
-            // getLogger().debug("update", dop, nu.getClass().getSimpleName(), id, "no delta", "return");
+            // getLogger().debug("update", dop, "No delta detected", nu.getClass().getSimpleName(), id);
             return nu;
           }
 
@@ -144,11 +146,18 @@ and waits on a response.`,
           entry.setDop(dop);
           entry.setObject(obj);
           entry.setObjectId(id);
-          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
-          PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
-          registry.wait(x, (Long) entry.getId());
-          pmWait.log(x);
+          // created required to test for timeout.
+          entry.setCreated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
 
+          entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
+          if ( ((Long) entry.getId()).longValue() != 0L ) {
+            PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
+            registry.wait(x, (Long) entry.getId());
+            pmWait.log(x);
+          } else {
+            // entry.id will be 0 (unassigned) when the primary detects no change.
+            // getLogger().debug("update", dop, "No delta detected on Primary", nu.getClass().getSimpleName(), id);
+          }
           id = entry.getObjectId();
           nu = getDelegate().find_(x, id);
 

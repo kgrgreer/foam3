@@ -85,13 +85,13 @@ foam.CLASS({
     }
     ^rightside ^entry {
       flex-grow: 1;
-      -webkit-mask-image: -webkit-gradient(linear, left 15, left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+      -webkit-mask-image: linear-gradient(rgb(0, 0, 0) 95%, rgba(0,0,0,0.5));
       overflow-y: auto;
       padding: 0px 50px 100px 50px;
     }
     ^rightside ^hide-X-entry {
       flex-grow: 1;
-      -webkit-mask-image: -webkit-gradient(linear, left 15, left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+      -webkit-mask-image: linear-gradient(rgb(0, 0, 0) 95%, rgba(0,0,0,0.5));
       overflow-y: auto;
       padding: 50px 50px 100px 50px;
     }
@@ -151,7 +151,7 @@ foam.CLASS({
     ^fullscreen {
       display: flex;
       flex-direction: column;
-      background-color: white !important;
+      background-color: /*%WHITE%*/ !important;
       position: fixed !important;
       top: 0;
       left: 0;
@@ -259,14 +259,15 @@ foam.CLASS({
               .addClass(this.myClass('bottom-buttons'))
               .add(this.slot(function (data$isLastScreen, isLoading_) {
                 return this.E()
+                  .tag(this.data.OPEN_WIZARD_INSPECTOR)
                   .startContext({ data: self })
-                  .addClass(self.myClass('buttons'))
-                  .tag(this.GO_PREV, btn)
-                  .tag(this.GO_NEXT,
-                    data$isLastScreen
-                      ? { ...primaryBtn, label: this.ACTION_LABEL }
-                      : primaryBtn
-                  )
+                    .addClass(self.myClass('buttons'))
+                    .tag(this.GO_PREV, btn)
+                    .tag(this.GO_NEXT,
+                      data$isLastScreen
+                        ? { ...primaryBtn, label: this.ACTION_LABEL }
+                        : primaryBtn
+                    )
                   .endContext();
               }))
             .end()

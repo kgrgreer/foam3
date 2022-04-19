@@ -10,3 +10,9 @@ p({
   "desiredModelId": "foam.nanos.bench.Benchmark",
   "strategy": "foam.nanos.bench.TestScriptBenchmark"
 })
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "foam.nanos.bench.BenchmarkRunner",
+  "desiredModelId": "foam.nanos.bench.BenchmarkRunner",
+  "strategy": "foam.nanos.bench.BenchmarkRunner"
+})

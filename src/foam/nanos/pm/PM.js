@@ -262,7 +262,12 @@ foam.CLASS({
       if ( args.length == 1 ) return args[0].toString();
       StringBuilder sb = new StringBuilder();
       for ( Object o: args) {
-        sb.append(o).append(":");
+        if ( o instanceof FObject ) {
+          sb.append(o.getClass().getSimpleName());
+        } else {
+          sb.append(o);
+        }
+        sb.append(":");
       }
       return sb.deleteCharAt(sb.length() - 1).toString();
     }

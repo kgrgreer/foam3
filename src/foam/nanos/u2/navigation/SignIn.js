@@ -16,10 +16,10 @@ foam.CLASS({
     'ctrl',
     'loginSuccess',
     'menuDAO',
-    'memento',
+    'memento_',
     'stack',
     'translationService',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -97,22 +97,22 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function(X) {
-        if ( this.user.twoFactorEnabled ) {
+        if ( this.subject.realUser.twoFactorEnabled ) {
           this.loginSuccess = false;
           window.history.replaceState({}, document.title, '/');
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
         } else {
-          if ( ! this.user.emailVerified ) {
+          if ( ! this.subject.realUser.emailVerified ) {
             await this.auth.logout();
             this.stack.push(this.StackBlock.create({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
           } else {
-            if ( ! this.memento || this.memento.value.length === 0 )
+            if ( ! this.memento_ || this.memento_.str.length === 0 )
               window.location.hash = '';
-            this.loginSuccess = !! this.user;
+            this.loginSuccess = !! this.subject;
           }
         }
       }
@@ -141,11 +141,13 @@ foam.CLASS({
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {
               if ( ! logedInUser ) return;
+
               if ( this.token_ ) {
                 logedInUser.signUpToken = this.token_;
                 this.dao_.put(logedInUser)
                   .then(updatedUser => {
-                    this.user.copyFrom(updatedUser);
+                    this.subject.user = updatedUser;
+                    this.subject.realUser = updatedUser;
                     this.nextStep();
                   }).catch(err => {
                     this.ctrl.add(this.NotificationMessage.create({
@@ -155,7 +157,8 @@ foam.CLASS({
                     }));
                   });
               } else {
-                this.user.copyFrom(logedInUser);
+                this.subject.user = logedInUser;
+                this.subject.realUser = logedInUser;
                 this.nextStep();
               }
             }

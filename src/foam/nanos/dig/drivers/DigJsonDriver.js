@@ -116,7 +116,14 @@ foam.CLASS({
 
       outputterJson.setOutputDefaultValues(true);
       outputterJson.setOutputClassNames(true);
-      outputterJson.setMultiLine(true);
+
+      HttpParameters p = x.get(HttpParameters.class);
+      if ( p != null &&
+          "false".equals(p.getParameter("multiline")) ) {
+        outputterJson.setMultiLine(false);
+      } else {
+        outputterJson.setMultiLine(true);
+      }
 
       if ( fobjects.size() == 1 )
         outputterJson.output(fobjects.get(0));

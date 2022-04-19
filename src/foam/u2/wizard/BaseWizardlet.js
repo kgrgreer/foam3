@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'BaseWizardlet',
 
+  todo: [
+    'rename wizardlet.loading to wizardlet.busy',
+    'add support for notification banner'
+  ],
+
   topics: ['saveEvent'],
 
   implements: [
@@ -111,6 +116,16 @@ foam.CLASS({
       `,
       value: false
     },
+    {
+      name: 'isCurrent',
+      class: 'Boolean',
+      documentation: `
+        This is true when this wizardlet is "current", meaning previous wizardlets
+        have been filled in by the user.
+
+        Currently this only works in incremental wizards.
+      `
+    },
     { name: 'atLeastOneSectionVisible_', class: 'Boolean', value: true },
     {
       name: 'reloadAfterSave',
@@ -129,28 +144,62 @@ foam.CLASS({
       }
     },
     {
+      name: 'combinedSection',
+      class: 'Boolean',
+      description: `
+        Setting this to true makes this wizardlet render only one section with
+        a SectionedDetailView for the entire model specified by 'of'.
+        This is a convenient shorthand for overriding 'sections'.
+      `
+    },
+    {
+      name: 'defaultSections',
+      class: 'StringArray',
+      factory: function () {
+        return this.AbstractSectionedDetailView.create({
+          of: this.of
+        }, this).sections.map(s => s.name);
+      }
+    },
+    {
       name: 'sections',
       flags: ['web'],
       transient: true,
       class: 'FObjectArray',
       of: 'foam.u2.wizard.WizardletSection',
-      factory: function () {
-        var sections = foam.u2.detail.AbstractSectionedDetailView.create({
-          of: this.of,
-        }, this).sections.map(section => this.WizardletSection.create({
-          section: section,
-          wizardlet: this,
-          isAvailable$: section.createIsAvailableFor(
-            this.data$,
-          )
-        }));
-        for ( let section of sections ) {
-          this.onDetach(section.isAvailable$.sub(
-            this.updateVisibilityFromSectionCount));
+      preSet: function (_, val) {
+        // Set 'wizardlet' reference in case this was configured in a journal.
+        // Note: when this preSet was added it broke FlatteningCapabilityWizardlet.
+        //   Now FlatteningCapabilityWizardlet overrides this preSet.
+        for ( let wizardletSection of val ) {
+          wizardletSection.wizardlet = this;
         }
-        this.updateVisibilityFromSectionCount();
+        return val;
+      },
+      factory: function () {
+        // Simplified case: render just one section for the whole model
+        if ( this.combinedSection ) {
+          return [
+            this.WizardletSection.create({
+              title: this.title,
+              isAvailable: true,
+              customView: {
+                class: 'foam.u2.detail.FlexSectionedDetailView'
+              }
+            })
+          ];
+        }
+
+        // Default case: render each model section as a wizardlet section
+        const sections = this.createWizardletSectionsFromModel_();
+        this.commitToSections_(sections);
         return sections;
       }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.u2.wizard.BaseWizardlet',
+      name: 'prerequisiteWizardlets'
     },
     {
       name: 'wao',
@@ -261,14 +310,57 @@ foam.CLASS({
     function pushContext(m) {
       this.__subSubContext__ = this.__subSubContext__.createSubContext(m);
       if ( this.data ) this.data = this.data.clone(this.__subSubContext__);
+    },
+    function createWizardletSectionsFromModel_() {
+      // This method fails if the wizardlet's data is undefined
+      if ( ! this.data ) {
+        if ( ! this.of ) return [];
+
+        this.warn('initializing wizardlet data to initialize sections');
+        this.data = this.of.create();
+      }
+
+      // Internal method used by SECTIONS.factory
+      var sections = this.AbstractSectionedDetailView.create({
+        of: this.of,
+      }, this).sections
+        .filter(section => this.defaultSections.includes(
+          // section.name can be undefined, so it must be converted to a string
+          '' + section.name
+        ))
+        .map(section => {
+          return this.WizardletSection.create({
+            section: section,
+            wizardlet: this,
+            isAvailable$: section.createIsAvailableFor(
+              this.data$,
+            )
+          });
+        });
+      return sections;
+    },
+    function commitToSections_(sections) {
+      // Internal method used by SECTIONS.factory
+      for ( let section of sections ) {
+        this.onDetach(section.isAvailable$.sub(
+          this.updateVisibilityFromSectionCount));
+      }
+      this.updateVisibilityFromSectionCount();
+    },
+    function warn(...args) {
+      console.warn(`[wizardlet:${this.id}]`, ...args, { wizardlet: this });
     }
   ],
 
   listeners: [
-    function updateVisibilityFromSectionCount() {
-      if ( ! this.sections ) return;
-      this.atLeastOneSectionVisible_ = this.sections.filter(
-        v => v.isAvailable).length > 0;
+    {
+      name: 'updateVisibilityFromSectionCount',
+      isFramed: true,
+      code: function() {
+        if ( ! this.sections ) return;
+        this.atLeastOneSectionVisible_ = this.sections.filter(
+          v => v.isAvailable).length > 0;
+      }
     }
   ]
 });

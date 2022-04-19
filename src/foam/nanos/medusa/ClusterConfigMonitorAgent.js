@@ -26,9 +26,10 @@ foam.CLASS({
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GTE',
+    'foam.nanos.app.Health',
     'foam.nanos.alarming.Alarm',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.HashMap',
     'java.util.List',
@@ -39,6 +40,11 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
+  public ClusterConfigMonitorAgent(foam.core.X x, String id) {
+    setX(x);
+    setId(id);
+  }
+
   public ClusterConfigMonitorAgent(foam.core.X x, String id, foam.dao.DAO dao) {
     setX(x);
     setId(id);
@@ -56,16 +62,19 @@ foam.CLASS({
     },
     {
       name: 'dao',
-      class: 'foam.dao.DAOProperty'
+      class: 'foam.dao.DAOProperty',
+      javaFactory: 'return (DAO) getX().get("localClusterConfigDAO");'
     },
     {
       name: 'timerInterval',
       class: 'Long',
+      units: 'ms',
       value: 10000
     },
     {
       name: 'initialTimerDelay',
       class: 'Int',
+      units: 'ms',
       value: 5000
     },
     {
@@ -74,18 +83,11 @@ foam.CLASS({
       javaFactory: 'return new java.util.Date(1081157732);'
     },
     {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
       visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getId()
-        }, (Logger) getX().get("logger"));
-      `
+      networkTransient: true
     }
  ],
 
@@ -94,19 +96,15 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
-      getLogger().info("start", "interval", getTimerInterval());
+      Loggers.logger(getX(), this).info(getId(), "start", "interval", getTimerInterval());
       Timer timer = new Timer(this.getClass().getSimpleName()+"-"+getId(), true);
+      setTimer(timer);
       timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -118,26 +116,32 @@ foam.CLASS({
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         try {
-          long startTime = System.currentTimeMillis();
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
           if ( cfg != null ) {
-            cfg.setPingTime(System.currentTimeMillis() - startTime);
             getDao().put_(x, cfg);
           } else {
-            getLogger().warning("client,find", "null");
+            Loggers.logger(x, this).warning(getId(), "client,find", "null");
           }
         } catch ( Throwable t ) {
           if ( config.getStatus() != Status.OFFLINE ) {
-            getLogger().debug(t.getMessage());
+            Loggers.logger(x, this).debug(getId(), t.getMessage());
             ClusterConfig cfg = (ClusterConfig) config.fclone();
             cfg.setStatus(Status.OFFLINE);
+            cfg.setIsPrimary(false);
             config = (ClusterConfig) getDao().put_(x, cfg);
+            Health health = (Health) ((DAO) x.get("healthDAO")).find(config.getId());
+            if ( health != null &&
+                 health instanceof MedusaHealth ) {
+              MedusaHealth medusaHealth = (MedusaHealth) health.fclone();
+              medusaHealth.setMedusaStatus(config.getStatus());
+              ((DAO) x.get("healthDAO")).put(medusaHealth);
+            }
           }
           Throwable cause = t.getCause();
           if ( cause == null ||
                ! ( cause instanceof java.io.IOException ) &&
                config.getStatus() != Status.OFFLINE ) {
-            getLogger().warning(t.getMessage(), t);
+            Loggers.logger(x, this).warning(getId(), t.getMessage(), t);
           }
           return;
         }
@@ -166,7 +170,7 @@ foam.CLASS({
         if ( cause == null ||
              ! ( cause instanceof java.io.IOException ) &&
              config.getStatus() != Status.OFFLINE ) {
-          getLogger().debug(t.getMessage(), t);
+          Loggers.logger(x, this).debug(getId(), t.getMessage(), t);
         }
         pm.error(x, t);
       } finally {

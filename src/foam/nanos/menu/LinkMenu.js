@@ -17,12 +17,20 @@ foam.CLASS({
     {
       class: 'URL',
       name: 'link'
+    },
+    {
+      class: 'Boolean',
+      name: 'openNewTab'
     }
   ],
 
   methods: [
     function launch(X, menu) {
-      this.window.location = this.link;
+      if ( this.openNewTab ) {
+        this.window.open(this.link, '_blank');
+      } else {
+        this.window.location = this.link;
+      }
     }
   ]
 });

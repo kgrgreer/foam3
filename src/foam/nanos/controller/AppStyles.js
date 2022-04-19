@@ -26,6 +26,14 @@ foam.CLASS({
       overscroll-behavior: none;
     }
 
+    blockquote{
+      border-left-color: #ccc;
+      border-left-style: solid;
+      margin: 0;
+      margin-left: 2ch;
+      padding-left: 1ch;
+    }
+
     /* TYPOGRAPHY */ 
     .h100{
       font-style: normal;
@@ -273,6 +281,11 @@ foam.CLASS({
     font-size: 2.8rem;
   }
 
+  .flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* mobile */
   @media only screen and (min-width: 321px) {

@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.pool',
   name: 'AbstractFixedThreadPool',
   abstract: true,
+  extends: 'foam.core.AbstractAgency',
 
   properties: [
     {

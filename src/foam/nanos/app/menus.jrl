@@ -1,0 +1,14 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"health",
+  "label":"Health",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"healthDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})

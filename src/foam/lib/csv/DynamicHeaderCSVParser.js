@@ -56,7 +56,7 @@ foam.CLASS({
 
       var headers = ps.value;
       headers.forEach(h => {
-        if ( ! propMap[h] ) {
+        if ( ! propMap[h.trim()] ) {
           console.warn('Unknown label', h, 'for class', cls.id);
         }
       });

@@ -15,57 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * Top-Level of foam package
- */
-foam = {
-  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
-  isServer: globalThis.FOAM_FLAGS.node,
-  core:     {},
-  util:     {
-    path: function(root, path, opt_ensure) {
-      var a = path.split('.');
-      var i;
-
-      for ( var i = 0 ; i < a.length && root ; i++ ) {
-        root = root[a[i]] || ( root[a[i]] = {} );
-        if ( opt_ensure && root == undefined ) {
-          root = root[a[i]] = {};
-        }
-      }
-
-      return root;
-    }
-  },
-  language: typeof navigator === 'undefined' ? 'en' : navigator.language,
-  next$UID: (function() {
-    /* Return a unique id. */
-    var id = 1;
-    return function next$UID() { return id++; };
-  })(),
-  SCRIPT: function(m) {
-    m.class = '__Script__';
-
-    // An instance of the script isn't useful at this point so just
-    // execute the code. foam.SCRIPT can be overwritten later to
-    // capture the details of the script if need be.
-
-    // Only execute if the script's flags match the curren runtime flags.
-    if ( m.flags && globalThis.FOAM_FLAGS ) {
-      for ( var i = 0 ; i < m.flags.length ; i++ ) {
-        if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
-          m.code();
-          return;
-        }
-      }
-      return;
-    }
-
-    m.code();
-  }
-};
-
-
 Object.defineProperty(
   Object.prototype,
   '$UID',
@@ -95,8 +44,6 @@ if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
     dataFile: globalThis.FOAMLINK_DATA
   };
 }
-
-foam.assert = console.assert.bind(console);
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of

@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.net.Port',
     'java.io.IOException',
     'java.net.ServerSocket',
     'java.net.Socket',
@@ -28,25 +29,11 @@ foam.CLASS({
     'javax.net.ssl.SSLServerSocket'
   ],
 
-  constants: [
-    {
-      name: 'PORT_OFFSET',
-      value: 3,
-      type: 'Integer'
-    }
-  ],
-
   properties: [
     {
       class: 'Int',
       name: 'port',
-      javaFactory: `
-        String portStr = System.getProperty("http.port");
-        if ( foam.util.SafetyUtil.isEmpty(portStr) ) {
-          portStr = "8080";
-        }
-        return Integer.parseInt(portStr) + PORT_OFFSET;
-      `
+      javaFactory: 'return Port.get(getX(), "SocketServer");'
     },
     {
       class: 'String',

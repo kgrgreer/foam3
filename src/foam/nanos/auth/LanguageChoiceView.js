@@ -32,24 +32,11 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   css: `
-    ^container {
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-    ^container:hover {
-      cursor: pointer;
-    }
-    ^container span {
-      font-size: 1.2rem;
-    }
-    ^ .foam-nanos-u2-navigation-TopNavigation-LanguageChoiceView {
-      align-items: center;
-    }
     ^dropdown span, ^dropdown svg {
-      font-size: 1.5rem;
+      color: /*%GREY2%*/ #6B778C;
+      fill: /*%GREY2%*/ #6B778C;
+      font-size: 1.4rem;
       font-weight: 500;
-      color: /*%WHITE%*/ #ffffff;
     }
   `,
 
@@ -66,6 +53,10 @@ foam.CLASS({
         localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'longName'
     }
   ],
 
@@ -88,13 +79,12 @@ foam.CLASS({
             user.language = c.id;
             await self.userDAO.put(user);
             location.reload();
-            // TODO: Figure out a better way to store user preferences
             localStorage.setItem('localeLanguage', c.toString());
           }
         });
       });
 
-      var label = this.formatLabel(this.lastLanguage);
+      var label = this.formatLabel(this.lastLanguage, ! this.longName);
 
       this
         .addClass(this.myClass())
@@ -102,16 +92,21 @@ foam.CLASS({
           label:       label,
           data:        actionArray,
           obj:         self,
-          buttonStyle: 'UNSTYLED'
+          buttonStyle: 'TERTIARY'
         })
           .addClass(this.myClass('dropdown'))
         .end()
       .end();
     },
 
-    async function formatLabel(language) {
+    async function formatLabel(language, shortName) {
       let country = await this.countryDAO.find(language.variant);
-      let label   = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label;
+      if ( shortName ) {
+        return language.code.toUpperCase();
+      } else {
+        label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      }
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }

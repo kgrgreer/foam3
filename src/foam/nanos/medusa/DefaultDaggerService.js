@@ -25,6 +25,8 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
     'foam.nanos.security.KeyStoreManager',
     'foam.util.SafetyUtil',
@@ -139,6 +141,8 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      Logger logger = Loggers.logger(getX(), this);
+      logger.info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       setHashingEnabled(support.getHashingEnabled());
 
@@ -146,7 +150,7 @@ foam.CLASS({
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
            config.getZone() > 0L ) {
-        getLogger().debug("start", "exit");
+        logger.debug("start", "exit");
         return;
       }
 
@@ -174,12 +178,7 @@ foam.CLASS({
     - Explicitly set in DaggerService NSpec
     - // TODO: HSM`,
       name: 'getBootstrapHash',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'String',
       javaCode: `
       String alias = BOOTSTRAP_HASH.toLowerCase();
@@ -201,6 +200,7 @@ foam.CLASS({
       name: 'link',
       javaCode: `
       DaggerLinks links = getNextLinks(x);
+      ((OMLogger) x.get("OMLogger")).log("Medusa.index");
       entry.setIndex(links.getGlobalIndex());
       entry.setIndex1(links.getLink1().getIndex());
       entry.setHash1(links.getLink1().getHash());

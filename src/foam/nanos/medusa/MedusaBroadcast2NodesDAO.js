@@ -20,11 +20,31 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
-    'java.util.Set'
+    'java.util.Set',
+    'java.util.concurrent.atomic.AtomicLong',
+  ],
+
+  javaCode: `
+    protected AtomicLong inFlight_ = new AtomicLong();
+  `,
+
+  constants: [
+    {
+      documentation: 'return inFlight_ count.',
+      name: 'IN_FLIGHT_CMD',
+      type: 'String',
+      value: 'IN_FLIGHT_CMD',
+    }
   ],
 
   properties: [
@@ -38,6 +58,11 @@ foam.CLASS({
     {
       // TODO: clear on ClusterConfig DAO updates
       name: 'clients',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
+    },
+    {
+      name: 'queues',
       class: 'Map',
       javaFactory: 'return new HashMap();'
     },
@@ -62,38 +87,60 @@ foam.CLASS({
       documentation: `Distribute entry to each node in one bucket. Mod of entry.id and bucket.size selects the bucket to receive the entry.`,
       name: 'put_',
       javaCode: `
-      final MedusaEntry entry = (MedusaEntry) obj;
-      final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-      Agency agency = (Agency) x.get(support.getThreadPoolName());
+      Logger logger = Loggers.logger(x, this);
+      MedusaEntry entry = (MedusaEntry) obj;
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      OMLogger om = (OMLogger) x.get("OMLogger");
 
       List<Set> buckets = support.getNodeBuckets();
       int index = (int) (entry.getIndex() % buckets.size());
       Set<String> bucket = buckets.get(index);
       for ( String id : bucket ) {
-        ClusterConfig config = support.getConfig(x, id);
-        agency.submit(x, new ContextAgent() {
-          public void execute(X x) {
-            try {
-              DAO dao = (DAO) getClients().get(config.getId());
-              if ( dao == null ) {
-                dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                // dao = new RetryClientSinkDAO.Builder(x)
-                //           .setDelegate(dao)
-                //           .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                //           .setMaxRetryDelay(support.getMaxRetryDelay())
-                //           .build();
-                getClients().put(config.getId(), dao);
-              }
-
-              dao.put_(x, entry);
-            } catch ( Throwable t ) {
-              getLogger().error(t);
+        om.log("MedusaBroadcast2NodesDAO", "request");
+        inFlight_.getAndIncrement();
+        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
+        if ( queue == null ) {
+          synchronized ( this ) {
+            queue = (AssemblyLine) getQueues().get(id);
+            if ( queue == null ) {
+              ClusterConfig config = support.getConfig(x, id);
+              DAO dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
+              // TODO: implment java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+              dao = new RetryClientSinkDAO.Builder(x)
+                       .setDelegate(dao)
+                       .setMaxRetryAttempts(-1) // forever
+                       .setMaxRetryDelay(support.getMaxRetryDelay())
+                       .build();
+              getClients().put(id, dao);
+              // Create one AssemblyLine per node and perform dao put under lock
+              // to force node writes to be sequential, but more importantly,
+              // there will only be one retry, rather than every thread retrying.
+              // To be replaced by SAF (Store and Forward)
+              queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+              getQueues().put(id, queue);
             }
           }
-        }, this.getClass().getSimpleName());
+        }
+        queue.enqueue(new AbstractAssembly() {
+          public void executeUnderLock() {
+            // logger.debug("AssemblyLine", "executeUnderLock", id);
+            ((DAO) getClients().get(id)).put_(x, entry);
+            inFlight_.getAndDecrement();
+            om.log("MedusaBroadcast2NodesDAO", "response");
+          }
+        });
       }
       return obj;
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( IN_FLIGHT_CMD.equals(obj) ) {
+        return inFlight_.get();
+      }
+      return getDelegate().cmd_(x, obj);
       `
     }
   ]

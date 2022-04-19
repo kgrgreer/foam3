@@ -40,7 +40,9 @@ foam.CLASS({
 
           var ucj = (UserCapabilityJunction) obj;
           var cap = (Capability) capabilityDAO.find(ucj.getTargetId());
-
+          if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
+            throw new RuntimeException("Target Capability not found.");
+          }
           // Create UCJ subject context
           x = x.put("subject", ucj.getSubject(x));
 

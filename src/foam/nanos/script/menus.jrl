@@ -1,0 +1,27 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.scripts",
+  "label":"Scripts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"scriptDAO"
+    }
+  },
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.scriptevents",
+  "label":"Script Events",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"scriptEventDAO"
+    }
+  },
+  "parent":"admin"
+})

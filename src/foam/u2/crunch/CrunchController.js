@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.CheckRootIdAgent',
     'foam.u2.crunch.wizardflow.GrantedEditAgent',
@@ -44,10 +43,8 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.WizardStateAgent',
     'foam.u2.crunch.wizardflow.RequirementsPreviewAgent',
     'foam.u2.crunch.wizardflow.AutoSaveWizardletsAgent',
-    'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.PutFinalPayloadsAgent',
-    'foam.u2.crunch.wizardflow.DetachAgent',
     'foam.u2.crunch.wizardflow.TestAgent',
     'foam.u2.crunch.wizardflow.LoadTopConfig',
     'foam.u2.crunch.wizardflow.CapableDefaultConfigAgent',
@@ -58,10 +55,14 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
-    'foam.u2.crunch.wizardflow.SpinnerAgent',
-    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.wizard.agents.ConfigureFlowAgent',
+    'foam.u2.wizard.agents.DeveloperModeAgent',
+    'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.DetachAgent',
+    'foam.u2.wizard.agents.SpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.util.async.Sequence',
     'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -115,6 +116,7 @@ foam.CLASS({
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
+          .add(this.DeveloperModeAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
@@ -170,6 +172,34 @@ foam.CLASS({
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
+          .add(this.MaybeDAOPutAgent)
+          ;
+      }
+    },
+    {
+      name: 'createTransientWizardSequence',
+      documentation: `
+        A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
+        To use this sequence, a context agent exporting rootCapabilityId should be inserted
+        before CapabilityAdaptAgent; this capability will be set as the requirement for a
+        new BaseCapable object that will be discarded at the end of the sequence.
+      `,
+      code: function createTransientWizardSequence(x) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+        return this.createWizardSequence('no-capability-id', x)
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
+          .remove('SkipGrantedAgent')
+          .remove('CheckRootIdAgent')
+          .remove('CheckPendingAgent')
+          .remove('CheckNoDataAgent')
+          .remove('AutoSaveWizardletsAgent')
+          .remove('SaveAllAgent')
+          .remove('WizardStateAgent') // does not make sense in transient wizards
+          .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;

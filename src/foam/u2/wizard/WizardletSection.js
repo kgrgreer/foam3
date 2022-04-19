@@ -42,7 +42,10 @@ foam.CLASS({
       of: 'foam.u2.wizard.Wizardlet',
       documentation: `
         This is a reference to the aggregating wizardlet.
-      `
+      `,
+      cloneProperty: function (v, m) {
+        m[this.name] = v;
+      }
     },
     {
       name: 'data',
@@ -71,6 +74,14 @@ foam.CLASS({
       expression: function (wizardlet$of, data, data$errors_) {
         if ( ! wizardlet$of ) return true;
         if ( ! data ) return false;
+
+        if ( ! this.section ) {
+          let valid = data.validate();
+          if ( valid === undefined ) {
+            valid = ! data.errors_ || data.errors_.length < 1;
+          }
+          return valid;
+        }
 
         let sectionErrors = [];
         if ( data$errors_ ) {
@@ -106,7 +117,7 @@ foam.CLASS({
 
       if ( this.customView ) {
         return this.ViewSpec.createView(
-          this.customView, null, this, ctx);
+          this.customView, { data$: this.wizardlet.data$ }, this, ctx);
       }
 
 

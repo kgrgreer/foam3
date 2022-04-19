@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'DAOBrowseControllerView',
   extends: 'foam.u2.View',
 
+  mixins: ['foam.u2.memento.Memorable'],
+
   documentation: `
     The inline DAO controller for a collection of instances of a model that can
     switch between multiple views
@@ -17,15 +19,15 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'memento',
     'stack',
     'translationService'
   ],
 
   exports: [
     'config',
-    'memento',
-    'click'
+    'click',
+    'route as currentControllerMode',
+    'setControllerMode'
   ],
 
   requires: [
@@ -84,6 +86,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'route',
+      documentation: 'Current controller mode',
+      memorable: true,
+      value: 'browse'
+    },
+    {
       class: 'foam.dao.DAOProperty',
       name: 'data'
     },
@@ -122,13 +130,18 @@ foam.CLASS({
       expression: function(config$click) {
         if ( this.config.click && typeof this.config.click === 'function' )
           return this.config.click;
+        // This function is exported and is not always called with the 'this' being the current view
+        // which is why we need to fetch config from subContext
         return function(obj, id) {
-          if ( ! this.stack ) return;
+          if ( ! this.stack ) {
+            console.warn('Missing stack, can not push view');
+            return;
+          }
           this.stack.push(foam.u2.stack.StackBlock.create({
           view: {
             class: 'foam.comics.v2.DAOSummaryView',
             data: obj,
-            config: this.__context__.config,
+            config: this.config || this.__subContext__.config,
             idOfRecord: id
           }, parent: this.__subContext__ }, this));
         };
@@ -165,7 +178,7 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: {
               class: this.config.createController.class,
-              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
             }, parent: this,
@@ -193,10 +206,22 @@ foam.CLASS({
   ],
 
   methods: [
+    function setControllerMode(mode) {
+      this.route = mode;
+    },
     function render() {
       this.SUPER();
 
       var self = this;
+
+      // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
+      // Right now each view controls it's own controller mode
+      if ( this.route != 'browse' && ( this.route == 'view' || this.route == 'edit' ) ) {
+        self.click.call(this, null, null);
+      } else {
+        this.route = 'browse';
+      }
+
       var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
       var nav = this.showNav ? self.BreadcrumbView : '';
       this.addClass()

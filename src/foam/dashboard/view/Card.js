@@ -28,7 +28,7 @@ foam.CLASS({
         SMALL:   [312, '-'],
         SMEDIUM: [312, 358],
         MEDIUM:  [424, 356],
-        LMEDIUM: [624, 528],
+        LMEDIUM: [570, 450],
         LARGE:   [936, 528],
         XLARGE:  [1580, 698],
       }
@@ -64,9 +64,8 @@ foam.CLASS({
   css: `
     ^ {
       border-radius: 10px;
-      background: white;
-      margin: 8px;
-      box-shadow: 3px 8px 6px -2px #cccccc;
+      background: /*%WHITE%*/ #ffffff;
+      box-shadow: 3px 8px 6px -2px /*%GREY4%*/;;
     }
 
     ^header {
@@ -103,19 +102,20 @@ foam.CLASS({
         addClass(this.myClass()).
         start('div').
         addClass(this.myClass('header')).
+        show(!!this.data.label || !!this.data.configView).
         start().
           style({ float: 'left' }).
           add(this.data.label$).
         end().
         start().
           style({ float: 'right' }).
-          add(this.data.configView$).
+          tag(this.data.configView).
         end().
         end('div').
         start('div').
         addClass(this.myClass('content')).
         tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, null, this, this.__subSubContext__);
+          return foam.u2.ViewSpec.createView(data$currentView, {obj: this.data.obj}, this, this.__subSubContext__);
         })).
         end('div');
     }

@@ -158,35 +158,30 @@ foam.CLASS({
                 logger.warning(getName(), "Index not added, no access to MDAO");
               }
             }
-            if ( getFixedSize() != null ) {
+            if ( getFixedSize() != null &&
+                 ! getCluster() ) {
+              // FixedSize is not compatible Clustering
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
             }
-            delegate = getJournalDelegate(getX(), delegate);
+            // hook for NDiff-related stuff downstream
+            // code in JDAO.js is looking for nSpecName set in a subX
+            delegate = getJournalDelegate(getX().put(foam.nanos.boot.NSpec.NSPEC_CTX_KEY, getNSpec()), delegate);
           }
         }
 
-        if ( (getGuid() && getSeqNo())
-          || (getGuid() && getFuid())
-          || (getFuid() && getSeqNo())
-        ) {
-          throw new RuntimeException("EasyDAO GUID, SeqNo and FUID are mutually exclusive");
-        }
-
-        if ( getSeqNo() ) {
+        if ( getFuid() ) {
+          delegate = new foam.dao.FUIDDAO(getX(), getName(), getSeqPropertyName(), delegate);
+        } else if ( getSeqNo() ) {
           delegate = new foam.dao.SequenceNumberDAO.Builder(getX()).
-          setDelegate(delegate).
-          setProperty(getSeqPropertyName()).
-          setStartingValue(getSeqStartingValue()).
-          build();
+            setDelegate(delegate).
+            setProperty(getSeqPropertyName()).
+            setStartingValue(getSeqStartingValue()).
+            build();
+        } else if ( getGuid() ) {
+          delegate = new foam.dao.GUIDDAO(getX(), delegate);
         }
-
-        if ( getGuid() )
-          delegate = new foam.dao.GUIDDAO.Builder(getX()).setDelegate(delegate).build();
-
-        if ( getFuid() )
-          delegate = new foam.dao.FUIDDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getMdao() != null &&
              getLastDao() == null ) {
@@ -202,11 +197,18 @@ foam.CLASS({
 
         if ( getCluster() &&
              getMdao() != null ) {
-          logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
-          delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
+          if ( getSAF() ) {
+            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();
+            .build();   
+          } else {
+            logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
+            delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
+              .setNSpec(getNSpec())
+              .setDelegate(delegate)
+              .build();   
+          }
         }
 
         if ( getServiceProviderAware() ) {
@@ -278,6 +280,7 @@ foam.CLASS({
             .setDelegate(delegate)
             .setName(getPermissionPrefix())
             .build();
+          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("lifecycleState") });
         }
 
         if ( getDeletedAware() ) {
@@ -289,9 +292,10 @@ foam.CLASS({
           delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
         }
 
-        if ( getCreatedAware() )
+        if ( getCreatedAware() ) {
           delegate = new foam.nanos.auth.CreatedAwareDAO.Builder(getX()).setDelegate(delegate).build();
-
+          addPropertyIndex(new foam.core.PropertyInfo[] { (foam.core.PropertyInfo) getOf().getAxiomByName("created") });
+        }
         if ( getCreatedByAware() )
           delegate = new foam.nanos.auth.CreatedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
@@ -343,7 +347,7 @@ foam.CLASS({
         if ( getLogging() )
           delegate = new foam.nanos.logger.LoggingDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
-        if ( ( foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false")) || getPipelinePm() ) &&
+        if ( ( foam.util.SafetyUtil.equals("true", System.getProperty("PIPELINEPMDAO", "false")) && getPipelinePm() ) &&
             getMdao() != null &&
             ( delegate instanceof ProxyDAO ) )
             delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);
@@ -673,6 +677,12 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Store and forward this DAO',
+      name: 'SAF',
+      class: 'Boolean',
+      value: false
+    },
+    {
       documentation: 'Simpler alternative than providing serverBox.',
       name: 'serviceName',
       class: 'String',
@@ -843,7 +853,7 @@ model from which to test ServiceProvider ID (spid)`,
           if ( getWriteOnly() ) {
             delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
           } else {
-            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster());
+            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster() && !getSAF());
           }
         }
         return delegate;

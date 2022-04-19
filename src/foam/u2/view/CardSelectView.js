@@ -23,40 +23,44 @@ foam.CLASS({
   ],
 
   css: `
-    ^selected {
-      border-color: /*%PRIMARY3%*/ #406dea !important;
-    }
-
-    ^disabled {
-      background-color: /*%GREY5%*/ #f5f7fa !important;
-      color: /*%GREY2%*/ #9ba1a6;
-    }
-
-    ^selected-disabled {
-      border-color: /*%PRIMARY5%*/ #b2c4f6 !important;
-      background-color: /*%GREY5%*/ #f5f7fa !important;
-      color: /*%GREY2%*/ #9ba1a6;
-    }
-
     ^innerFlexer {
       min-width: -webkit-fill-available;
     }
 
-    ^ .foam-u2-borders-CardBorder {
+    ^base {
       box-sizing: content-box;
-      background-color: #ffffff;
-      border: solid 1px #e7eaec;
+      background-color: /*%WHITE%*/ #ffffff;
       border-radius: 5px;
-      min-height: 10vh;
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;
-      margin: 4px;
+      display: flex;
+      align-items: center;
+    }
+    ^ .foam-u2-borders-CardBorder {
+      min-height: auto;
+    }
+    .foam-u2-borders-CardBorder^large-card {
+      min-height: 10vh;
+    }
+    ^ .foam-u2-borders-CardBorder^selected {
+      border-color: /*%PRIMARY3%*/ #406dea;
+    }
+
+    ^ .foam-u2-borders-CardBorder^disabled {
+      background-color: /*%GREY5%*/ #f5f7fa;
+      color: /*%GREY2%*/ #9ba1a6;
+    }
+
+    ^ .foam-u2-borders-CardBorder^selected-disabled {
+      border-color: /*%PRIMARY5%*/ #b2c4f6;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      color: /*%GREY2%*/ #9ba1a6;
     }
   `,
 
   documentation: `
-    A selectable card which takes a boolean as data, has three stares: disabled, selected and unselected
+    A selectable card which takes a boolean as data, has three states: disabled, selected and unselected
   `,
 
   properties: [
@@ -77,7 +81,9 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) this.selectionDisabled.pub();
       }
-    }
+    },
+    'largeCard',
+    'of'
   ],
 
   methods: [
@@ -86,6 +92,8 @@ foam.CLASS({
       .addClass(this.myClass())
       .addClass(this.myClass('innerFlexer'))
       .start(this.CardBorder)
+        .addClass(this.myClass('base'))
+        .enableClass(this.myClass('large-card'), this.largeCard$)
         .enableClass(this.myClass('selected'), this.isSelected$)
         .enableClass(this.myClass('disabled'), this.isDisabled$)
         .enableClass(this.myClass('selected-disabled'), this.slot((isSelected, isDisabled) => {

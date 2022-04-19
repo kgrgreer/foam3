@@ -8,11 +8,16 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'StepWizardController',
 
+  imports: [
+    'developerMode'
+  ],
+
   requires: [
     'foam.core.FObject',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardletIndicator',
-    'foam.u2.wizard.StepWizardConfig'
+    'foam.u2.wizard.StepWizardConfig',
+    'foam.u2.wizard.debug.WizardInspector'
   ],
 
   properties: [
@@ -69,6 +74,16 @@ foam.CLASS({
           wizardletIndex: 0,
           sectionIndex: 0,
         });
+      },
+      preSet: function(_, n){
+        this.wizardlets[n.wizardletIndex].load()
+        return n;
+      },
+      postSet: function (o, n) {
+        if ( o && n && o.wizardletIndex !== n.wizardletIndex ) {
+          this.wizardlets[o.wizardletIndex].isCurrent = false;
+          this.wizardlets[n.wizardletIndex].isCurrent = true;
+        }
       }
     },
 
@@ -272,8 +287,9 @@ foam.CLASS({
       // If it exists, load the next wizardlet
       // TODO: Just load next wizardlet instead of loading all in the beginning
       var start = this.wizardPosition.wizardletIndex;
-      var end = this.nextScreen ?
-        this.nextScreen.wizardletIndex : this.wizardlets.length;
+      const nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
+      var end = nextScreen ?
+        nextScreen.wizardletIndex : this.wizardlets.length;
       var p = Promise.resolve();
       for ( let i = start ; i < end ; i++ ) {
         if ( ! this.wizardlets[i].isAvailable ) continue;
@@ -285,7 +301,7 @@ foam.CLASS({
           this.submitted = true;
           return true;
         }
-        this.wizardPosition = this.nextScreen;
+        this.wizardPosition = nextScreen;
         return false;
       });
     },
@@ -328,6 +344,18 @@ foam.CLASS({
     },
     function skipTo(pos) {
       this.wizardPosition = pos;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'openWizardInspector',
+      isAvailable: function (developerMode) { return developerMode },
+      code: function(x) {
+        this.WizardInspector.OPEN({}, this.__subContext__.createSubContext({
+          wizardController: this
+        }));
+      }
     }
   ],
 

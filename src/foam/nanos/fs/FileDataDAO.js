@@ -75,7 +75,7 @@ foam.CLASS({
             }
           }
           file.setDataString("data:"+file.getMimeType()+";base64," + encodedString);
-          file.setData(null);
+          file.clearData();
           return getDelegate().put_(x, file);
         } catch (Exception e) {
           ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
@@ -93,7 +93,7 @@ foam.CLASS({
         BlobService blobStore = (BlobService) x.get("blobStore");
         IdentifiedBlob result = (IdentifiedBlob) blobStore.put(blob);
         file.setId(result.getId());
-        file.setData(null);
+        file.clearData();
         return getDelegate().put_(x, file);
       } catch (Exception e) {
         ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)

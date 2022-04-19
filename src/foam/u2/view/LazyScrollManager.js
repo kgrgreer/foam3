@@ -8,15 +8,15 @@
   package: 'foam.u2.view',
   name: 'LazyScrollManager',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'A configurable scroll manager that dynamically lazy loads dao data',
 
   requires: [
     'foam.dao.FnSink',
+    'foam.core.Latch',
     'foam.dao.ProxyDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.controller.Memento'
   ],
 
   implements: [
@@ -51,6 +51,8 @@
     {
       type: 'Int',
       name: 'pageSize',
+      // Used to prevent extra large datasets being requested as it caused chrome to crash
+      max: 1000,
       value: 30,
       documentation: 'The number of items in each "page". There are three pages.'
     },
@@ -81,15 +83,13 @@
     {
       class: 'Int',
       name: 'topRow',
+      memorable: true,
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
-        }
-        if ( this.memento ) {
-          this.memento.head = this.topRow || 1;
         }
       }
     },
@@ -162,7 +162,17 @@
       name: 'offsetTop',
       value: 0,
       documentation: 'Offset property that is passed to IntersectionObserver'
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'dataLatch',
+      documentation: 'A latch used to wait for table data load.',
+      factory: function () {
+        return this.Latch.create();
+      }
+    },
+    ['isInit', true]
   ],
 
   methods: [
@@ -172,7 +182,6 @@
     },
 
     function render() {
-      this.initMemento();
       var self = this;
       var resize = new ResizeObserver (this.checkPageSize_);
       let options = {
@@ -180,7 +189,15 @@
         rootMargin: `-${this.offsetTop}px 0px 0px`,
         threshold: [0.25, 0.5, 0.75]
       };
-      resize.observe(this.rootElement?.el_());
+
+      // defer till after atleast one page has been loaded in order
+      // to ensure correct value for displayedRowCount_
+      this.dataLatch.then(() => {
+        this.rootElement?.el().then(el => {
+          resize.observe(el);
+        })
+      })
+
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
       // This needs to be here because intersectionObserver does not bind the correct this during callback
       function handleIntersect(entries, observer) {
@@ -279,7 +296,8 @@
         // If there is a scroll in progress and all pages have been loaded, try to scroll again
         if ( this.scrollToIndex && Object.keys(this.renderedPages_).length == Math.min(this.NUM_PAGES_TO_RENDER, this.numPages_) )
           self.safeScroll();
-        if ( this.displayedRowCount_ <= 0 ) this.bottomRow = this.daoCount
+        this.dataLatch.resolve();
+        if ( this.displayedRowCount_ < 0 ) this.bottomRow = this.daoCount
       });
     }
   ],
@@ -307,15 +325,15 @@
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
-        this.currentTopPage_ = 0;
-        this.topRow = 0;
-        this.bottomRow = 0;
+        if ( ! this.isInit ) {
+          this.currentTopPage_ = 0;
+          this.topRow = 0;
+          this.bottomRow = 0;
+        }
+        this.isInit = false;
         this.updateRenderedPages_();
-        if ( ! this.memento ) return;
-        if ( this.memento.head.length != 0 && Number(this.memento.head)) {
-          this.scrollToIndex = this.memento.head;
-        } else {
-          this.scrollToIndex = 1;
+        if ( this.topRow > 1) {
+          this.scrollToIndex = this.topRow;
         }
       }
     },
@@ -365,13 +383,19 @@
           if ( entry.boundingClientRect.top <= entry.rootBounds.top ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) <= entry.rootBounds.top )
               index += 1;
+
             self.topRow = index;
           } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
               index -= 1;
-            self.bottomRow = index;
+
+            if ( index > 0 )
+              self.bottomRow = index;
           }
         });
+
+        if ( ! self.bottomRow && self.displayedRowCount_ < 0 )
+          self.bottomRow = self.pageSize > entries.length ? entries.length : self.pageSize;
       }
     }
   ],

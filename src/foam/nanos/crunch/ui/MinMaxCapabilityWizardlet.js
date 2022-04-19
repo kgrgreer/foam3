@@ -8,18 +8,22 @@ foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'MinMaxCapabilityWizardlet',
   extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
-  implements: [ 'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet' ],
+  implements: [
+    'foam.nanos.crunch.ui.LiftingAwareWizardlet',
+    'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet'
+  ],
 
   requires: [
-    'foam.u2.view.MultiChoiceView',
-    'foam.u2.view.CardSelectView',
+    'foam.core.ArraySlot',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection'
+    'foam.nanos.crunch.ui.MinMaxCapabilityWizardletSection',
+    'foam.u2.view.CardSelectView',
+    'foam.u2.view.MultiChoiceView'
   ],
 
   imports: [
-    'translationService',
-    'capabilityDAO'
+    'capabilityDAO',
+    'translationService'
   ],
 
   properties: [
@@ -117,6 +121,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceSelectionView',
+      factory: () => ({
+        class: 'foam.u2.view.MultiChoiceView'
+      })
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceView',
+      factory: () => ({
+        class: 'foam.u2.view.CardSelectView'
+      })
+    },
+    {
       name: 'sections',
       flags: ['web'],
       transient: true,
@@ -156,13 +174,18 @@ foam.CLASS({
             choiceWizardlets$: this.choiceWizardlets$,
             isLoaded: true,
             customView: {
-              class: 'foam.u2.view.MultiChoiceView',
-              choices$: this.choices$,
+              ...this.choiceSelectionView,
+              choices$: this.slot(function(choices) { return choices.sort(); }),
               isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,
-              maxSelected$: this.max$
+              maxSelected$: this.max$,
+              choiceView: {
+                ...this.choiceView,
+                of: this.choices[0][0].cls_.id,
+                largeCard: true
+             }
             }
           })
         ];
@@ -209,10 +232,39 @@ foam.CLASS({
   ],
 
   methods: [
-    function addPrerequisite(wizardlet) {
-      wizardlet.isAvailable = false;
+    function addPrerequisite(wizardlet, opt_meta) {
+      const meta = {
+        lifted: false,
+        ...opt_meta
+      };
       this.choiceWizardlets.push(wizardlet);
+
+      // isAvailable defaults to false if this MinMax is in control of the
+      //   prerequisite wizardlet
+      if ( ! meta.lifted ) wizardlet.isAvailable = false;
+
       return this.consumePrerequisites;
+    },
+    function handleLifting(liftedWizardlets) {
+      const updated = () => {
+        // Hide choice selection if lifted choices reach maximum
+        const countLifted = liftedWizardlets
+          .map(w => w.isAvailable ? 1 : 0)
+          .reduce((count, val) => count + val);
+        this.isVisible = countLifted < this.max && this.isAvailable;
+      
+
+        // Update lifted choices based on their availability
+        let newSelectedData = [...this.selectedData];
+        for ( const w of liftedWizardlets ) {
+          if ( w.isAvailable ) newSelectedData.push(w.capability);
+          else foam.Array.remove(newSelectedData, w.capability);
+        }
+        this.selectedData = foam.Array.unique(newSelectedData);
+      }
+      const slots = liftedWizardlets.map(w => w.isAvailable$);
+      this.ArraySlot.create({ slots }).sub(updated);
+      this.isAvailable$.sub(updated);
     }
   ]
 });

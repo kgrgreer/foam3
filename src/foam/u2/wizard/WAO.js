@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.u2.wizard',
   name: 'WAO',
   label: 'Wizardlet Access Object',
+  todo: [
+    'add AbstractWAO to handle wizardlet.loading checks'
+  ],
   flags: ['web'],
   documentation: `
     Controls how a wizardlet's data is created, saved, and cancelled. A WAO may

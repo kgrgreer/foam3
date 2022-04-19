@@ -13,6 +13,20 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
+  css: `
+    ^row {
+      background-color:/*%WHITE%*/ #ffffff;
+      font-size: 1.2rem;
+      padding: 8px 16px;
+      color: #424242;
+    }
+
+    ^rw:hover {
+      background: #f4f4f9;
+      cursor: pointer;
+    }
+  `,
+
   properties: [
     {
       class: 'Class',
@@ -42,7 +56,10 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateSummary();
-      this.add(this.summary$);
+      this
+        .addClass(this.myClass('row'))
+        .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
+        .add(this.summary$);
     }
   ]
 });

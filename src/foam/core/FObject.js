@@ -813,7 +813,7 @@ foam.CLASS({
     function detach() {
       /**
        * Detach this object. Free any referenced objects and destory
-       * any registered detroyables.
+       * any registered destroyables.
        */
       if ( this.instance_.detaching_ ) return;
 
@@ -916,7 +916,7 @@ foam.CLASS({
         if ( this.instance_[key] === undefined ) continue; // Skip previously cleared keys.
 
         var value = this[key];
-        this.cls_.getAxiomByName(key).cloneProperty(value, m, opt_X);
+        this.cls_.getAxiomByName(key).cloneProperty(value, m, opt_X, this);
       }
       return this.cls_.create(m, opt_X || this.__context__);
     },
@@ -927,7 +927,7 @@ foam.CLASS({
       for ( var key in this.instance_ ) {
         if ( this.instance_[key] === undefined ) continue; // Skip previously cleared keys.
 
-        var value = this[key];
+        var value = this.instance_[key];
         m[key] = value;
       }
       return this.cls_.create(m, opt_X || this.__context__);
@@ -1024,10 +1024,8 @@ foam.CLASS({
           this.cls_.prototype === this ? 'Proto' : '');
     },
 
-    function toSummary() {
-      var prop = this.cls_.getAxiomsByClass(foam.core.String)
-        .find(p => !p.hidden);
-      return prop ? prop.f(this) : this.toString();
+    function toSummary() { 
+      return this.id;
     },
 
     function dot(name) {

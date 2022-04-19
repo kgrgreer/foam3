@@ -11,17 +11,17 @@ import foam.dao.*;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.*;
 import foam.nanos.crunch.*;
+import foam.nanos.crunch.predicate.*;
 import java.util.*;
-import net.nanopay.crunch.*;
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
 
 public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
 
   DAO capabilityDAO, userCapabilityJunctionDAO, prerequisiteCapabilityJunctionDAO, userDAO;
-  User nanoUser, nanoAdmin;
-  X testX, nanoX, adminX;
-  Capability cap, prereq, testPrereq, nanoPrereq;
+  User user, admin;
+  X testX, userX, adminX;
+  Capability cap, prereq, testPrereq, mockSpidPrereq;
 
   public void runTest(X x) {
     capabilityDAO = (DAO) x.get("capabilityDAO");
@@ -29,24 +29,24 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     prerequisiteCapabilityJunctionDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
     userDAO = (DAO) x.get("localUserDAO");
 
-    nanoUser = new User.Builder(x).setId(101L).setSpid("nanopay").setEmail("user@nano.pay").setUserName("nano_user").setGroup("basicUser").setFirstName("user").setLastName("nano").build();
-    nanoAdmin = new User.Builder(x).setId(1234L).setSpid("nanopay").setEmail("admin@nano.pay").setUserName("nano_admin").setGroup("admin").setFirstName("admin").setLastName("nano").build();
-    nanoUser = (User) userDAO.put(nanoUser);
-    nanoAdmin = (User) userDAO.put(nanoAdmin);
-    nanoX = x.put("subject", new Subject(nanoUser));
-    adminX = x.put("subject", new Subject(nanoAdmin));
+    user = new User.Builder(x).setId(101L).setSpid("mockSpid").setEmail("user@mock.spid").setUserName("mock_user").setGroup("basicUser").setFirstName("user").setLastName("mock").build();
+    admin = new User.Builder(x).setId(1234L).setSpid("mockSpid").setEmail("admin@mock.spid").setUserName("mock_admin").setGroup("admin").setFirstName("admin").setLastName("mock").build();
+    user = (User) userDAO.put(user);
+    admin = (User) userDAO.put(admin);
+    userX = x.put("subject", new Subject(user));
+    adminX = x.put("subject", new Subject(admin));
 
-    Predicate isTestSpid = new IsSpid.Builder(x).setSpid("test").build();
-    Predicate isNanoSpid = new IsSpid.Builder(x).setSpid("nanopay").build();
+    Predicate isTestSpid = new IsSpid.Builder(x).setSpids(new String[]{"test"}).build();
+    Predicate isMockSpid = new IsSpid.Builder(x).setSpids(new String[]{"mockSpid"}).build();
 
-    cap = new Capability.Builder(x).setId("cap").build();
+    cap = new Capability.Builder(x).setId("cap").setAutoGrantPrereqs(false).build();
     prereq = new Capability.Builder(x).setId("prereq").build();
     testPrereq = new Capability.Builder(x).setId("testPrereq").build();
-    nanoPrereq = new Capability.Builder(x).setId("nanoPrereq").build();
+    mockSpidPrereq = new Capability.Builder(x).setId("mockSpidPrereq").build();
     cap = (Capability) capabilityDAO.put(cap);
     prereq = (Capability) capabilityDAO.put(prereq);
     testPrereq = (Capability) capabilityDAO.put(testPrereq);
-    nanoPrereq = (Capability) capabilityDAO.put(nanoPrereq);
+    mockSpidPrereq = (Capability) capabilityDAO.put(mockSpidPrereq);
     
     CapabilityCapabilityJunction capToPrereq = new CapabilityCapabilityJunction.Builder(x)
       .setSourceId("cap")
@@ -57,14 +57,14 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
       .setTargetId("testPrereq")
       .setPredicate(isTestSpid)
       .build();
-    CapabilityCapabilityJunction capToNanoPrereq = new CapabilityCapabilityJunction.Builder(x)
+    CapabilityCapabilityJunction capTomockSpidPrereq = new CapabilityCapabilityJunction.Builder(x)
       .setSourceId("cap")
-      .setTargetId("nanoPrereq")
-      .setPredicate(isNanoSpid)
+      .setTargetId("mockSpidPrereq")
+      .setPredicate(isMockSpid)
       .build();
     prerequisiteCapabilityJunctionDAO.put(capToPrereq);
     prerequisiteCapabilityJunctionDAO.put(capToTestPrereq);
-    prerequisiteCapabilityJunctionDAO.put(capToNanoPrereq);
+    prerequisiteCapabilityJunctionDAO.put(capTomockSpidPrereq);
 
     testPredicatedCCJFind();
     testPredicatedCCJSelect();
@@ -73,20 +73,20 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
   }
 
   public void testPredicatedCCJFind() {
-    // test nanoUser access
-    CapabilityCapabilityJunction nanoFindCTP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(nanoX).find(AND(
+    // test user access
+    CapabilityCapabilityJunction userFindCTP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(userX).find(AND(
       EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap"),
       EQ(CapabilityCapabilityJunction.TARGET_ID, "prereq")));
-    CapabilityCapabilityJunction nanoFindCTTP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(nanoX).find(AND(
+    CapabilityCapabilityJunction userFindCTTP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(userX).find(AND(
       EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap"),
       EQ(CapabilityCapabilityJunction.TARGET_ID, "testPrereq")));
-    CapabilityCapabilityJunction nanoFindCTNP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(nanoX).find(AND(
+    CapabilityCapabilityJunction userFindCTNP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(userX).find(AND(
       EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap"),
-      EQ(CapabilityCapabilityJunction.TARGET_ID, "nanoPrereq")));
-    test(nanoFindCTP != null, "nanoUser can see ccj[cap, prereq]");
-    test(nanoFindCTTP == null, "nanoUser cannot see ccj[cap, testPrereq]");
-    test(nanoFindCTNP != null, "nanoUser can see ccj[cap, nanoPrereq]");
-    // test nanoAdmin access
+      EQ(CapabilityCapabilityJunction.TARGET_ID, "mockSpidPrereq")));
+    test(userFindCTP != null, "user can see ccj[cap, prereq]");
+    test(userFindCTTP == null, "user cannot see ccj[cap, testPrereq]");
+    test(userFindCTNP != null, "user can see ccj[cap, mockSpidPrereq]");
+    // test admin access
     CapabilityCapabilityJunction adminFindCTP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(adminX).find(AND(
       EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap"),
       EQ(CapabilityCapabilityJunction.TARGET_ID, "prereq")));
@@ -95,49 +95,49 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
       EQ(CapabilityCapabilityJunction.TARGET_ID, "testPrereq")));
     CapabilityCapabilityJunction adminFindCTNP = (CapabilityCapabilityJunction) prerequisiteCapabilityJunctionDAO.inX(adminX).find(AND(
       EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap"),
-      EQ(CapabilityCapabilityJunction.TARGET_ID, "nanoPrereq")));
-    test(adminFindCTP != null, "nanoAdmin can see ccj[cap, prereq]");
-    test(adminFindCTTP != null, "nanoAdmin can see ccj[cap, testPrereq]");
-    test(adminFindCTNP != null, "nanoAdmin can see ccj[cap, nanoPrereq]");
+      EQ(CapabilityCapabilityJunction.TARGET_ID, "mockSpidPrereq")));
+    test(adminFindCTP != null, "admin can see ccj[cap, prereq]");
+    test(adminFindCTTP != null, "admin can see ccj[cap, testPrereq]");
+    test(adminFindCTNP != null, "admin can see ccj[cap, mockSpidPrereq]");
   }
 
   public void testPredicatedCCJSelect() {
-    // test nanoUser access
-    List<CapabilityCapabilityJunction> nanoSelect = ((ArraySink) prerequisiteCapabilityJunctionDAO.inX(nanoX).where(EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap")).select(new ArraySink())).getArray();
-    test(nanoSelect.size() == 2, "nanoUser select yields 2 prereqs: " + nanoSelect);
+    // test user access
+    List<CapabilityCapabilityJunction> userSelect = ((ArraySink) prerequisiteCapabilityJunctionDAO.inX(userX).where(EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap")).select(new ArraySink())).getArray();
+    test(userSelect.size() == 2, "user select yields 2 prereqs: " + userSelect);
     // test admin access
     List<CapabilityCapabilityJunction> adminSelect = ((ArraySink) prerequisiteCapabilityJunctionDAO.inX(adminX).where(EQ(CapabilityCapabilityJunction.SOURCE_ID, "cap")).select(new ArraySink())).getArray();
-    test(adminSelect.size() == 3, "nanoAdmin select yields 3 prereqs: " + adminSelect);
+    test(adminSelect.size() == 3, "admin select yields 3 prereqs: " + adminSelect);
   }
 
   public void testUserUCJGranting(X x) {
     // part 1 - test non-admin user - "cap" should become granted for user as long as the user has been granted all the prerequisites 
-    // they can see, i.e., nanoPrereq
-    UserCapabilityJunction n_ucjP = new UserCapabilityJunction.Builder(x).setSourceId(nanoUser.getId()).setTargetId(prereq.getId()).build();
-    UserCapabilityJunction n_ucjTP = new UserCapabilityJunction.Builder(x).setSourceId(nanoUser.getId()).setTargetId(testPrereq.getId()).build();
-    UserCapabilityJunction n_ucjNP = new UserCapabilityJunction.Builder(x).setSourceId(nanoUser.getId()).setTargetId(nanoPrereq.getId()).build();
-    UserCapabilityJunction n_ucjC = new UserCapabilityJunction.Builder(x).setSourceId(nanoUser.getId()).setTargetId(cap.getId()).build();
-    n_ucjP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(nanoX).put(n_ucjP);
-    n_ucjTP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(nanoX).put(n_ucjTP);
-    n_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(nanoX).put(n_ucjC); 
+    // they can see, i.e., mockSpidPrereq
+    UserCapabilityJunction n_ucjP = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(prereq.getId()).build();
+    UserCapabilityJunction n_ucjTP = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(testPrereq.getId()).build();
+    UserCapabilityJunction n_ucjNP = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(mockSpidPrereq.getId()).build();
+    UserCapabilityJunction n_ucjC = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(cap.getId()).build();
+    n_ucjP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(userX).put(n_ucjP);
+    n_ucjTP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(userX).put(n_ucjTP);
+    n_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(userX).put(n_ucjC); 
     // Testing when all prerequisites of "cap" are granted except for the capability satisfied by 
-    // the capabilityCapabilityPredicate (user.isSpid=nanopay) between capability "cap" and capability "nanoPrereq".
+    // the capabilityCapabilityPredicate (user.isSpid=mockSpid) between capability "cap" and capability "mockSpidPrereq".
     // Results in "cap" not being GRANTED.
     test(n_ucjP.getStatus() == GRANTED, "prereq is granted for testUser: " + n_ucjP.getStatus());
     test(n_ucjTP.getStatus() == GRANTED, "testPrereq is granted for testUser: " + n_ucjTP.getStatus());
     test(n_ucjC.getStatus() != GRANTED, "cap is not granted for testUser: " + n_ucjC.getStatus());
 
     // After adding the missing prerequisite, test if "cap" becomes granted
-    n_ucjNP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(nanoX).put(n_ucjNP);
-    test(n_ucjNP.getStatus() == GRANTED, "nanoPrereq is granted for testUser: " + n_ucjNP.getStatus());
-    n_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(nanoX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, nanoUser.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
+    n_ucjNP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(userX).put(n_ucjNP);
+    test(n_ucjNP.getStatus() == GRANTED, "mockSpidPrereq is granted for testUser: " + n_ucjNP.getStatus());
+    n_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(userX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
     test(n_ucjC.getStatus() == GRANTED, "cap is granted for testUser: " + n_ucjC.getStatus());
 
     // part 2 - test admin user. Since admin users have permission to view all prerequisites, the top-level ucj "cap" will not become GRANTED until all prerequisites are GRANTED
-    UserCapabilityJunction a_ucjP = new UserCapabilityJunction.Builder(x).setSourceId(nanoAdmin.getId()).setTargetId(prereq.getId()).build();
-    UserCapabilityJunction a_ucjTP = new UserCapabilityJunction.Builder(x).setSourceId(nanoAdmin.getId()).setTargetId(testPrereq.getId()).build();
-    UserCapabilityJunction a_ucjNP = new UserCapabilityJunction.Builder(x).setSourceId(nanoAdmin.getId()).setTargetId(nanoPrereq.getId()).build();
-    UserCapabilityJunction a_ucjC = new UserCapabilityJunction.Builder(x).setSourceId(nanoAdmin.getId()).setTargetId(cap.getId()).build();
+    UserCapabilityJunction a_ucjP = new UserCapabilityJunction.Builder(x).setSourceId(admin.getId()).setTargetId(prereq.getId()).build();
+    UserCapabilityJunction a_ucjTP = new UserCapabilityJunction.Builder(x).setSourceId(admin.getId()).setTargetId(testPrereq.getId()).build();
+    UserCapabilityJunction a_ucjNP = new UserCapabilityJunction.Builder(x).setSourceId(admin.getId()).setTargetId(mockSpidPrereq.getId()).build();
+    UserCapabilityJunction a_ucjC = new UserCapabilityJunction.Builder(x).setSourceId(admin.getId()).setTargetId(cap.getId()).build();
     // Testing when all prerequisites of "cap" are granted except for prerequisite where the predicate returns true for users in 'test' spid
     // if the ucj owner did not have permission "predicatedprerequisite.read.*",
     // this should satisfy the prerequiste requirement for "cap", but since admin users have the permission
@@ -146,15 +146,15 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     a_ucjNP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).put(a_ucjNP);
     a_ucjP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).put(a_ucjP);
     a_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).put(a_ucjC);
-    test(a_ucjP.getStatus() == GRANTED, "prereq is granted for nanoAdmin: " + a_ucjP.getStatus());
-    test(a_ucjNP.getStatus() == GRANTED, "nanoPrereq is granted for nanoAdmin: " + a_ucjNP.getStatus());
-    a_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, nanoAdmin.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
-    test(a_ucjC.getStatus() != GRANTED, "cap is not granted for nanoAdmin: " + a_ucjC.getStatus());
+    test(a_ucjP.getStatus() == GRANTED, "prereq is granted for admin: " + a_ucjP.getStatus());
+    test(a_ucjNP.getStatus() == GRANTED, "mockSpidPrereq is granted for admin: " + a_ucjNP.getStatus());
+    a_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, admin.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
+    test(a_ucjC.getStatus() != GRANTED, "cap is not granted for admin: " + a_ucjC.getStatus());
 
     // after granting "testPrereq" for admin user, "cap" becomes granted
     a_ucjTP = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).put(a_ucjTP);
-    test(a_ucjTP.getStatus() == GRANTED, "testPrereq is granted for nanoAdmin: " + a_ucjTP.getStatus());
-    a_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, nanoAdmin.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
-    test(a_ucjC.getStatus() == GRANTED, "cap is granted for nanoAdmin: " + a_ucjC.getStatus());
+    test(a_ucjTP.getStatus() == GRANTED, "testPrereq is granted for admin: " + a_ucjTP.getStatus());
+    a_ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(adminX).find(AND(EQ(UserCapabilityJunction.SOURCE_ID, admin.getId()), EQ(UserCapabilityJunction.TARGET_ID, "cap")));
+    test(a_ucjC.getStatus() == GRANTED, "cap is granted for admin: " + a_ucjC.getStatus());
   }
 }

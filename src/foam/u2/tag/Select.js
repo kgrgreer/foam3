@@ -18,9 +18,6 @@ foam.CLASS({
       appearance: none;
       -moz-appearance: none;
       -webkit-appearance: none;
-      border: none;
-      background: rgba(0,0,0,0);
-      color: initial;
     }
     ^ {
       appearance: none;

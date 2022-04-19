@@ -126,9 +126,10 @@ foam.CLASS({
         setTotalTime(getTotalTime() + other.getTotalTime());
         setMinTime(Math.min(getMinTime(), other.getMinTime()));
         setMaxTime(Math.max(getMaxTime(), other.getMaxTime()));
-        if ( foam.util.SafetyUtil.isEmpty(other.getCaptureTrace()) ) {
+
+        if ( ! foam.util.SafetyUtil.isEmpty(other.getCaptureTrace()) ) {
           setCaptureTrace(other.getCaptureTrace());
-          setCapture(false);
+          other.setCaptureTrace("");
         }
       `
     }

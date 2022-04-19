@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailTemplateEngine',
     'foam.util.SafetyUtil',
     'java.nio.charset.StandardCharsets'
@@ -46,7 +47,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'Template name'
+      documentation: 'Template name - NOTE: EmailTemlateSupport searches on this name, not id',
+      factory: function() { return this.id; },
+      javaFactory: 'return getId();'
     },
     {
       class: 'String',
@@ -141,7 +144,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = Loggers.logger(x, this);
 
         if ( emailMessage == null ) {
           throw new NoSuchFieldException("emailMessage is Null");
@@ -149,7 +152,7 @@ foam.CLASS({
 
         EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
         // BODY:
-        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(emailMessage.getBody()) ) {
+        if ( ! emailMessage.isPropertySet("body") || ! SafetyUtil.isEmpty(getBody()) ) {
           emailMessage.setBody(templateEngine.renderTemplate(x, getBody(), templateArgs).toString());
         }
 

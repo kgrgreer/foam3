@@ -92,5 +92,6 @@ foam.SCRIPT({
   name: 'FoamTagLoaderScript',
   requires: [ 'foam.u2.FoamTagLoader' ],
   flags: [ 'web' ],
-  code: function() { foam.u2.FoamTagLoader.create(); }
+  // TODO: globalThis.window check shouldn't be necessary
+  code: function() { globalThis.window && foam.u2.FoamTagLoader.create(); }
 });

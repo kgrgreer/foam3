@@ -7,7 +7,7 @@
 foam.CLASS({
   name: 'DaggerException',
   package: 'foam.nanos.medusa',
-  javaExtends: 'foam.core.FOAMException',
+  extends: 'foam.nanos.medusa.MedusaException',
 
   javaCode: `
     public DaggerException(String message) {

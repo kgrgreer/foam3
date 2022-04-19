@@ -29,6 +29,12 @@ foam.CLASS({
     { name: 'OPTIONAL', message: 'Optional' }
   ],
 
+  css: `
+    ^inner {
+      align-items: stretch;
+    }
+  `,
+
   properties: [
     {
       class: 'Function',

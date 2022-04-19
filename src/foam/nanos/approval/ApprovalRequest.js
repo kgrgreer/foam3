@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
   plural: 'Approval Requests',
-  documentation: 'Approval requests are stored in approvalRequestDAO and' +
-  'represent a single approval request for a single user.',
+  documentation: 'Approval requests are stored in approvalRequestDAO and represent a single approval request for a single user.',
 
   implements: [
     'foam.nanos.auth.CreatedAware',
@@ -286,6 +285,16 @@ foam.CLASS({
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 105,
+      gridColumns: 6,
+      columnPermissionRequired: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdForAgent',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 106,
       gridColumns: 6,
       columnPermissionRequired: true
     },

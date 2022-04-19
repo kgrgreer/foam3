@@ -26,7 +26,14 @@ foam.CLASS({
   properties: [
     {
       name: 'click',
-      documentation: 'Used to override the default click listener exported by DAOController'
+      documentation: 'Used to override the default click listener exported by DAOController',
+      adapt: function(_, n) {
+        if ( typeof n === 'function' ) return n;
+        // adapt a class method path
+        var lastIndex = n.lastIndexOf('.');
+        var classObj = foam.lookup(n.substring(0, lastIndex));
+        return classObj[n.substring(lastIndex + 1)];
+      }
     },
     {
       class: 'String',
@@ -101,6 +108,15 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.FObjectView',
           detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'browseController',
+      factory: function() {
+        return {
+          class: 'foam.comics.v2.DAOBrowseControllerView'
         };
       }
     },
@@ -195,7 +211,7 @@ foam.CLASS({
       name: 'browseViews',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.NamedViewCollection);
+        return of && of.getAxiomsByClass(this.NamedViewCollection);
       }
     },
     {
@@ -204,7 +220,7 @@ foam.CLASS({
       name: 'cannedQueries',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.CannedQuery);
+        return of && of.getAxiomsByClass(this.CannedQuery);
       }
     },
     {
@@ -344,7 +360,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.View',
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
       value: null
@@ -352,8 +367,8 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'createPopup',
-      documentation: `Given a ViewSpec the createView will be rendered using 
-      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a 
+      documentation: `Given a ViewSpec the createView will be rendered using
+      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a
       default Popup`
     },
     {

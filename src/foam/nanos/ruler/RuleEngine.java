@@ -9,6 +9,7 @@ package foam.nanos.ruler;
 import foam.core.*;
 import foam.dao.DAO;
 import foam.nanos.auth.*;
+import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 
@@ -182,7 +183,7 @@ public class RuleEngine extends ContextAwareSupport {
 
   private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
     asyncExecutor_.submit(new ContextAgentRunnable(userX_, x -> {
-      if ( stops_.get() ) asyncExecutor_.shutdownNow();
+      if ( stops_.get() ) return;
 
       // Reload the "obj" as it might be stale by the time the async rule is
       // executed. Re-run the rule predicate on the reloaded object to ensure
@@ -192,11 +193,15 @@ public class RuleEngine extends ContextAwareSupport {
       // isActive and permission as it was the rule at the time RuleEngine.execute()
       // is called that the rule engine honors and should commit to, not the
       // future version of the same rule.
-      var nu = reloadObject(obj);
+      var nu = rule.getOperation() != Operation.REMOVE ? reloadObject(obj) : obj;
       if ( ! rule.f(x, nu, oldObj) ) return;
 
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
+      var before = rule.getOperation() != Operation.REMOVE ? nu.fclone() : obj;
       rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
+      if ( rule.getOperation() != Operation.REMOVE && ! before.equals(nu) ) {
+        getDelegate().put_(userX_, nu);
+      }
       pm.log(getX());
     }, "Async apply rule id: " + rule.getId()));
   }
@@ -224,8 +229,6 @@ public class RuleEngine extends ContextAwareSupport {
 
   private FObject reloadObject(FObject obj) {
     var reloaded = getDelegate().find_(userX_, obj);
-    // For rules with operation=REMOVE, the object was removed from the DAO thus
-    // returning the original object.
     if ( reloaded == null ) {
       return obj;
     }

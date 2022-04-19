@@ -15,9 +15,9 @@ foam.CLASS({
     'as dropdown'
   ],
 
-  documentation: 'A popup overlay that grows from the top-right corner of ' +
-      'its container. Useful for e.g. "..." overflow menus in action bars. ' +
-      'Just $$DOC{ref:".add"} things to this container.',
+  documentation: `A popup overlay that grows from the top-right corner of
+    its container. Useful for e.g. "..." overflow menus in action bars.
+    Just $$DOC{ref:".add"} things to this container.`,
 
   css: `
     ^overlay {
@@ -39,7 +39,6 @@ foam.CLASS({
       position: absolute;
       padding: 8px;
       z-index: 1010;
-      transform: translate(-100%, 8px);
     }
 
     ^open {
@@ -82,7 +81,10 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'x'
+      name: 'left'
+    },
+    {
+      name: 'right'
     },
     {
       name: 'top'
@@ -90,7 +92,12 @@ foam.CLASS({
     {
       name: 'bottom'
     },
-    'parentEl'
+    'parentEl',
+    {
+      class: 'Boolean',
+      name: 'closeOnLeave',
+      value: true
+    }
   ],
 
   methods: [
@@ -106,6 +113,7 @@ foam.CLASS({
     },
 
     function open(x, y) {
+      var screenWidth  = this.window.innerWidth;
       var domRect       = this.parentEl.getBoundingClientRect();
       var screenHeight  = this.window.innerHeight;
       var scrollY       = this.window.scrollY;
@@ -114,7 +122,13 @@ foam.CLASS({
       } else {
         this.top = 'auto'; this.bottom = screenHeight - y;
       }
-      this.x = x;
+      if ( domRect.left > 3 * (screenWidth / 4) ) {
+        this.left = 'auto';
+        this.right = screenWidth - x + 10;
+      } else {
+        this.left = x + 10;
+        this.right = 'auto';
+      }
       this.opened = true;
       window.addEventListener('resize', this.onResize);
     },
@@ -147,7 +161,8 @@ foam.CLASS({
         .show(this.opened$)
         .style({
           top: this.top$,
-          left: this.x$,
+          left: this.left$,
+          right: this.right$,
           bottom: this.bottom$
         })
         .on('mouseenter', this.onMouseEnter)
@@ -180,6 +195,8 @@ foam.CLASS({
     function onMouseLeave(e) {
       console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
+      // If mouse moves to a nested dropdown, do not close the parent dropdown
+      if ( e.toElement?.nodeName == 'DROPDOWN' || ! this.closeOnLeave ) return;
       this.timer = setTimeout(() => { this.close(); }, 500);
     },
 

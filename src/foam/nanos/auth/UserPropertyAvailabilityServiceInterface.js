@@ -8,6 +8,9 @@ foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'UserPropertyAvailabilityServiceInterface',
 
+  proxy: true,
+  skeleton: true,
+
   methods: [
     {
       name: 'checkAvailability',

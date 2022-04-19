@@ -28,13 +28,16 @@
   javaImports: [
     'foam.core.DirectAgency',
     'foam.dao.DAO',
+    'foam.mlang.predicate.FScript',
     'foam.mlang.predicate.MQLExpr',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.util.retry.RetryStrategy',
+    'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
     'java.util.Date'
   ],
@@ -137,8 +140,8 @@
       name: 'after',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      documentation: 'Defines if the rule needs to be applied before or after operation is completed'+
-      'E.g. on dao.put: before object was stored in a dao or after.'
+      documentation: `Defines if the rule needs to be applied before or after operation is completed
+      E.g. on dao.put: before object was stored in a dao or after.`
     },
     {
       class: 'Boolean',
@@ -154,7 +157,8 @@
       of: 'foam.nanos.ruler.RuleAction',
       name: 'action',
       view: { class: 'foam.u2.view.JSONTextView' },
-      documentation: 'The action to be executed if predicates returns true for passed object.'
+      documentation: 'The action to be executed if predicates returns true for passed object.',
+      javaCloneProperty: 'set(dest, get(source));'
     },
     {
       name: 'enabled',
@@ -295,6 +299,23 @@
       section: 'basicInfo',
       value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       documentation: 'Service Provider Id of the rule. Default to ServiceProviderAware.GLOBAL_SPID for rule applicable to all service providers.'
+    },
+    {
+      class: 'Int',
+      name: 'maxRetry',
+      documentation: 'The number of max retry when failed to execute the action. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'retryDelay',
+      unit: 'ms',
+      documentation: 'The delay time in millisecond to retry executing the action after failure. Only applicable to async rule.',
+      visibility: function(async) {
+        return async ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ],
 
@@ -320,7 +341,7 @@
         if ( ! getEnabled() ) return false;
 
         try {
-          if ( getPredicate() instanceof MQLExpr ) {
+          if ( getPredicate() instanceof MQLExpr || getPredicate() instanceof FScript ) {
             RulerData data = new RulerData();
             Subject subject = (Subject) x.get("subject");
             data.setN(obj);
@@ -406,7 +427,11 @@
         try {
           apply(x, obj, oldObj, ruler, rule, new DirectAgency());
         } catch ( Exception e ) {
-          new RetryManager(rule.getName()).submit(x, userX -> {
+          var strategy = getMaxRetry() > 0 ?
+            new SimpleRetryStrategy(getMaxRetry(), getRetryDelay()) :
+            (RetryStrategy) x.get("ruleRetryStrategy");
+
+          new RetryManager(strategy, rule.getName()).submit(x, userX -> {
             apply(x, obj, oldObj, ruler, rule, new DirectAgency());
           });
         }
@@ -415,8 +440,8 @@
     {
       name: 'updateRule',
       type: 'foam.nanos.ruler.Rule',
-      documentation: 'since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.' +
-      'the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.',
+      documentation: `since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.
+      the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.`,
       args: [
         {
           name: 'rule',

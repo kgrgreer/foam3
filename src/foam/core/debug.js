@@ -144,7 +144,7 @@ foam.CLASS({
           foam.assert(
             axiom,
             'Unknown argument ', name, ' in ', pName, expression);
-          foam.assert(
+          axiom && foam.assert(
             axiom.toSlot,
             'Non-Slot argument ', name, ' in ', pName, expression);
         }
@@ -366,8 +366,7 @@ foam.CLASS({
   package: 'foam.debug',
   name: 'Window',
 
-  documentation: 'Decorated merged() and framed() to have debug friendly ' +
-    'toString() methods.',
+  documentation: 'Decorated merged() and framed() to have debug friendly toString() methods.',
 
   exports: [ 'merged', 'framed' ],
 

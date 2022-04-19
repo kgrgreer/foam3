@@ -36,6 +36,8 @@ public interface FObjectFormatter
 
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass);
 
+  public int compare(PropertyInfo prop, FObject oldFObject, FObject newFObject);
+
   public void output(String val);
 
   public void output(short val);

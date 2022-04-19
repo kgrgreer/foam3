@@ -57,6 +57,8 @@ foam.CLASS({
         if ( o.class ) {
           var m = this.__context__.lookup(o.class);
           if ( ! m ) throw 'Unknown class : ' + o.class;
+          if ( ! foam.core.Property.isSubClass(m) )
+            throw o.class + " isn't a sub-class of Property. Try using class: 'FObjectProperty', of: '" + o.class + "'";
           return m.create(o, this);
         }
 
@@ -309,11 +311,18 @@ foam.CLASS({
       return;
     }
 
+    if ( ! m.flags && foam.currentFlags ) m.flags = foam.currentFlags;
+
     var f = foam.Function.memoize0(function() {
       delete foam.UNUSED[m.id];
-      var c = CLASS(m);
-      foam.USED[m.id] = m;
-      return c;
+      try {
+        var c = CLASS(m);
+        foam.USED[m.id] = m;
+        return c;
+      } catch(x) {
+        console.log('ERROR: Class definition error in', m.id, x);
+        throw x;
+      }
     });
 
     foam.__context__.registerFactory(m, f);

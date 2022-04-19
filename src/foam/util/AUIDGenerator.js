@@ -47,9 +47,15 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getNext',
+      args: [ 'java.lang.Class type' ],
+      type: 'Object',
+      javaCode: 'return getNextString();'
+    },
+    {
       name: 'getNextLong',
       javaCode: `
-        throw new UnsupportedOperationException("AUIDGenerator: not support generating long uid.");
+        throw new UnsupportedOperationException("AUIDGenerator: long uid generation not supported.");
       `
     },
     {
@@ -81,4 +87,4 @@ foam.CLASS({
       `
     }
   ]
-})
+});

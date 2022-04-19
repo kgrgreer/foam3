@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'PrimaryNotFoundException',
-  javaExtends: 'foam.core.ClientRuntimeException',
+  javaExtends: 'foam.nanos.medusa.MedusaException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 

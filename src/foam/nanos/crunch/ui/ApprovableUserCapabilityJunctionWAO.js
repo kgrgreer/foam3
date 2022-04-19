@@ -58,6 +58,7 @@ foam.CLASS({
           wizardlet.status = ucj.status;
           wizardlet.loading = false;
         }
+        return ucj;
       } catch (e) {
         console.error(e);
         this.reportNetworkFailure(wizardlet, 'save', options);
