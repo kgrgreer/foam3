@@ -50,7 +50,7 @@ foam.CLASS({
       })
       this.addClass()
         .add(current$)
-        .add(this.slot(function (data$actionBar) {
+        .add(this.slot(function (data$actionBar, data$currentWizardlet) {
           return this.E()
             .addClass(self.myClass('flexButtons'))
             .forEach(data$actionBar.reverse(), function (action) {

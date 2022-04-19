@@ -15,8 +15,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 100%;
-      height: auto;
+      display: grid;
+      grid-template-rows: 2em 1fr;
     }
     ^title-container {
       display: flex;
@@ -24,29 +24,17 @@ foam.CLASS({
     }
     ^entry-container {
       display: flex;
+      gap: 30px;
+      padding-bottom: 3vh;
+      overflow: scroll;
     }
     ^ .foam-u2-ActionView-viewMoreAction {
       padding-top: 0;
     }
-    ^ .foam-dashboard-view-Card {
-      margin-right: 16px;
+    @media only screen and (max-height: 850px) {
+      ^entry-container { padding-bottom: 1.5vh; }
     }
   `,
-
-  constants: [
-    {
-      name: 'SIZES',
-      value: {
-        TINY:    ['-', 100],
-        SMALL:   ['-', 150],
-        SMEDIUM: ['-', 200],
-        MEDIUM:  ['-', 277],
-        LMEDIUM: ['-', 300],
-        LARGE:   ['-', 400],
-        XLARGE:  ['-', 500],
-      }
-    }
-  ],
 
   properties: [
     'title',
@@ -76,14 +64,8 @@ foam.CLASS({
       this.fetchValues();
       this
         .addClass(this.myClass())
-        .style({
-          width: 'inherit',
-          height: this.slot(function(size) {
-            return ( this.SIZES[size.name][1] + 'px' );
-          })
-        })
         .start().addClass(this.myClass('title-container'))
-          .start().addClass('h500').style({ 'margin-bottom': '16px' }).add(self.title).end()
+          .start().addClass('h500').add(self.title).end()
           .start()
             .startContext({data: self})
               .tag(self.VIEW_MORE_ACTION, {
@@ -96,18 +78,12 @@ foam.CLASS({
         .add(this.slot(function(currentValues) {
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
-            .callIf(currentValues.length == 0, function() {
-              e.start().addClass(self.myClass('center'))
-                .start().addClass('p-semiBold').translate(self.emptyTitle, self.emptyTitle,).end()
-                .start().addClass('p').translate(self.emptySubTitle, self.emptySubTitle).end()
-              .end();
-            })
             .forEach(currentValues, function(obj) {
               e.tag(self.citationView, { obj: obj });
-           })
-           .callIf(self.actionView, function() {
-             e.tag(self.actionView);
-           })
+            })
+            .callIf(self.actionView, function() {
+              e.tag(self.actionView);
+            });
         }));
     }
   ]

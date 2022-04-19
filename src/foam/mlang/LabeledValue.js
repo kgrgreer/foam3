@@ -19,9 +19,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'LabeledValue',
 
-  documentation: 'A basic model for any id-label-value triple. This is ' +
-      'useful when you need essentially a DAO of strings, and need to wrap ' +
-      'those strings into a modeled object.',
+  documentation: `A basic model for any id-label-value triple. This is
+      useful when you need essentially a DAO of strings, and need to wrap
+      those strings into a modeled object.`,
 
   properties: [
     {
