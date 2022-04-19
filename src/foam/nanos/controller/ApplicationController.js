@@ -324,7 +324,9 @@ foam.CLASS({
       name: 'route',
       memorable: true,
       postSet: function(_, n) {
-        if ( n && this.currentMenu?.id != n) this.pushMenu(n);
+        // only pushmenu on route change after the fetchsubject process has been initiated
+        // as the init process will also check the route and pushmenu if required
+        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
       }
     },
     'currentMenu',
@@ -352,6 +354,10 @@ foam.CLASS({
       name: 'layoutInitialized',
       documentation: 'True if layout has been initialized.',
     },
+    {
+      class: 'Boolean',
+      name: 'initSubject'
+    }
   ],
 
   methods: [
@@ -569,6 +575,7 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
+        this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
         this.subject = await this.client.auth.getCurrentSubject(null);
