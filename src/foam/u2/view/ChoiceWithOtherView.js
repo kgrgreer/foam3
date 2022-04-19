@@ -71,16 +71,13 @@ foam.CLASS({
       margin-top: 20px;
   }
   `,
-  reactions: [
-    ['', 'propertyChange.choiceData_', 'toData'],
-    ['', 'propertyChange.otherData_', 'toData'],
-    ['', 'propertyChange.data', 'fromData'],
-    ['', 'propertyChange.choiceView_', 'fromData'],
-    ['choiceView_', 'propertyChange.choices', 'fromData'],
-  ],
   listeners: [
     {
       name: 'toData',
+      on: [
+        'this.propertyChange.choiceData_',
+        'this.propertyChange.otherData_'
+      ],
       code: function() {
         if ( this.preventFeedback_ ) return;
         this.preventFeedback_ = true;
@@ -90,6 +87,11 @@ foam.CLASS({
     },
     {
       name: 'fromData',
+      on: [
+        'this.propertyChange.data',
+        'this.propertyChange.choiceView_',
+        'choiceView_.propertyChange.choices'
+      ],
       code: function() {
         if ( ! this.choiceView_ || this.preventFeedback_ ) return;
         this.preventFeedback_ = true;
