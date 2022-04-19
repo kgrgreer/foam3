@@ -26,6 +26,8 @@ foam.CLASS({
 
   reactions: [
     ['', 'propertyChange.config', 'invalidate']
+    // TODO we need to delete this reaction,
+    // invalidate is a method not a listener
   ],
 
   methods: [
