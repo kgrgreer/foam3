@@ -164,18 +164,22 @@ foam.CLASS({
       return x.lookup('foam.dashboard.view.Card').create({ data: this }, x);
     }
   ],
-  reactions: [
-    [ 'sink', 'propertyChange', 'update' ],
-    [ 'sink', 'nestedPropertyChange', 'update' ],
-    [ '', 'propertyChange.sink', 'update' ],
-    [ '', 'propertyChange.dao', 'update' ],
-  ],
+
   listeners: [
-    function update() {
-      var sink = this.sink.clone();
-      this.dao.select(sink).then(function(result) {
-        this.data = result;
-      }.bind(this));
+    {
+      name: 'update',
+      on: [
+        'sink.propertyChange',
+        'sink.nestedPropertyChange',
+        'this.propertyChange.sink',
+        'this.propertyChange.dao'
+      ],
+      code: function() {
+        var sink = this.sink.clone();
+        this.dao.select(sink).then(function(result) {
+          this.data = result;
+        }.bind(this));
+      }
     }
   ]
 });
