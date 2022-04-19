@@ -119,6 +119,12 @@ foam.CLASS({
       // TODO: Add responsive View switching
       this.onDetach(this.headerSlot_$.sub(this.adjustTopBarHeight));
       this.onDetach(this.displayWidth$.sub(this.maybeCloseNav));
+
+      // on initlayout reset context so that navigation views will be created
+      // under the correct context
+      this.initLayout.then(() => {
+        this.__subSubContext__ = ctrl.__subContext__;
+      });
       this.maybeCloseNav();
 
       this.addClass()

@@ -10,9 +10,9 @@ foam.CLASS({
   extends: 'foam.u2.View',
   mixins: ['foam.u2.memento.Memorable'],
 
-  documentation: "Provides the ability to switch between multiple views for data set" +
-  "Takes a views property which should be the value of an array containing arrays that contain desired views, and label." +
-  "Ex. views: [[ { class: 'foam.u2.view.TableView' }, 'Table' ]]",
+  documentation: `Provides the ability to switch between multiple views for a data set.
+    Takes a views property which should be the value of an array containing arrays that contain desired views, and label.
+    Ex. views: [[ { class: 'foam.u2.view.TableView' }, 'Table' ]]`,
 
   requires: [ 'foam.u2.view.RadioView' ],
 
@@ -123,13 +123,9 @@ foam.CLASS({
 
   actions: [
     function setMementoWithSelectedView() {
-      if ( ! this.memento_ )
-        return;
+      if ( ! this.memento_ ) return;
       var view = this.views.find(v => v[0] == this.selectedView);
-      if ( view )
-        this.selectedViewLabel = view[1];
-      else
-        this.selectedViewLabel = '';
+      this.selectedViewLabel = view ? view[1] : '';
     }
   ]
 });

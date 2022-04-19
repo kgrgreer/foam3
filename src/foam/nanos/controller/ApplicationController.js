@@ -497,6 +497,12 @@ foam.CLASS({
       });
     },
 
+    async function reloadClient() {
+      var newClient = await this.ClientBuilder.create({}, this).promise;
+      this.client = newClient.create(null, this);
+      this.setPrivate_('__subContext__', this.client.__subContext__);
+    },
+
     function installLanguage() {
       for ( var i = 0 ; i < this.languageDefaults_.length ; i++ ) {
         var ld = this.languageDefaults_[i];
@@ -564,12 +570,12 @@ foam.CLASS({
       try {
         var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
           this.client.auth.authorizeAnonymous());
-        this.subject = result;
+        if ( result && result.user ) await this.reloadClient();
+        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
-
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
@@ -765,6 +771,8 @@ foam.CLASS({
       if ( hash ) hash = hash.substring(1);
       if ( hash ) {
         this.window.onpopstate();
+      } else {
+        this.pushMenu('');
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));

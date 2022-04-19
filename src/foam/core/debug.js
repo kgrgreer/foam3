@@ -366,8 +366,7 @@ foam.CLASS({
   package: 'foam.debug',
   name: 'Window',
 
-  documentation: 'Decorated merged() and framed() to have debug friendly ' +
-    'toString() methods.',
+  documentation: 'Decorated merged() and framed() to have debug friendly toString() methods.',
 
   exports: [ 'merged', 'framed' ],
 

@@ -89,8 +89,6 @@
         config.browseTitle = this.translationService.getTranslation(foam.locale, `${this.redirectMenu.id}.browseTitle`, this.redirectMenu.handler.config.browseTitle);
         config.dao = this.dao;
         
-        this.currentMemento_.head = this.redirectMenu.id;
-
         this.stack.push(this.StackBlock.create({
           view: {
             class: this.DAOBrowseControllerView,

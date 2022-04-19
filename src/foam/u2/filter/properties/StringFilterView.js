@@ -38,7 +38,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
 
       background-image: url(images/ic-search.svg);
       background-repeat: no-repeat;
@@ -140,8 +140,8 @@ foam.CLASS({
       postSet: function(_, n) {
         this.isOverLimit = false;
 
-        var pred = this.search && this.search.trim().length > 0 
-          ? this.STARTS_WITH(this.property, this.search) 
+        var pred = this.search && this.search.trim().length > 0
+          ? this.STARTS_WITH(this.property, this.search)
           : this.TRUE;
 
         this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
@@ -321,8 +321,8 @@ foam.CLASS({
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
-        var pred = this.search && this.search.trim().length > 0 
-          ? this.STARTS_WITH(this.property, this.search) 
+        var pred = this.search && this.search.trim().length > 0
+          ? this.STARTS_WITH(this.property, this.search)
           : this.TRUE;
 
         this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {

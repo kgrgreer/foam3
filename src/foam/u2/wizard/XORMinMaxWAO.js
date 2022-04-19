@@ -12,7 +12,8 @@
   extends: 'foam.u2.wizard.ProxyWAO',
   
   imports: [
-    'wizardlets'
+    'wizardlets',
+    'capabilityToPrerequisite'
   ],
   requires: [
     'foam.u2.wizard.FObjectHolder'
@@ -57,15 +58,16 @@
     async function load(wizardlet) {
       wizardlet.isLoaded = false;
 
-      // TODO: Add descendant check
-      const prereqMinMaxWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.minMaxCapabilityId )[0];
+      const isDescendantCheck = this.capabilityToPrerequisite[`${wizardlet.id}:${this.minMaxCapabilityId}`];
 
-      if ( ! prereqMinMaxWizardlet ) {
+      if ( ! isDescendantCheck ) {
         console.error(
           `MinMaxCapabilityId: ${this.minMaxCapabilityId} is not a prerequisite to ${wizardlet.id}`
         );
         return;
       }
+
+      const prereqMinMaxWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.minMaxCapabilityId )[0];
 
       const minMaxSelectedData = prereqMinMaxWizardlet.data.selectedData;
 

@@ -41,6 +41,7 @@ foam.CLASS({
       box-sizing: border-box;
       height: 100%;
       justify-content: flex-start;
+      background-color:/*%WHITE%*/ #ffffff;
     }
 
     ^top-bar {
@@ -315,9 +316,8 @@ foam.CLASS({
 
       this.addClass();
       this.SUPER();
-
       this
-        .add(this.slot(async function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
+        .add(this.slot(function(config$cannedQueries, config$hideQueryBar) {
           // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
@@ -387,7 +387,7 @@ foam.CLASS({
                 this
                   .start(self.Cols).addClass(self.myClass('query-bar'))
                     .startContext({
-                      dao: searchFilterDAO
+                      dao: self.searchFilterDAO
                     })
                       .callIf(self.config.searchMode === self.SearchMode.SIMPLE, function() {
                         this.add(simpleSearch);

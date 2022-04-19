@@ -32,7 +32,7 @@ foam.CLASS({
     async function init() {
       this.SUPER();
       var self = this;
-      result = await self.__subContext__[self.daoKey].select(self.GroupBy.create({
+      result = await self.__subContext__[self.daoKey].where(self.predicate).select(self.GroupBy.create({
         arg1: self.arg1,
         arg2: self.arg2
       }));
