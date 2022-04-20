@@ -1104,3 +1104,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.T
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY1",target:"Você recebeu "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY2",target:" solicitação de aprovação com id: "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.dashboard.view.DashboardView.TITLE",target:"Painel"})
