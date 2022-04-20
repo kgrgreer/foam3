@@ -93,10 +93,10 @@ foam.CLASS({
       this.
         style({
           width: this.slot(function(data$mode, width) {
-            return data$mode == 'config' ? 'initial' : ( width + 'px' );
+            return data$mode == 'config' ? 'inherit' : ( width + 'px' );
           }),
           height: this.slot(function(data$mode, height) {
-            return data$mode == 'config' ? 'initial' : ( height + 'px' );
+            return data$mode == 'config' ? 'inherit' : ( height + 'px' );
           })
         }).
         addClass(this.myClass()).
