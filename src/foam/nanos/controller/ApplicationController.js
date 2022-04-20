@@ -776,7 +776,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
