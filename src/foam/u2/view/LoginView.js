@@ -40,7 +40,8 @@ foam.CLASS({
     'memento',
     'stack',
     'theme',
-    'displayWidth?'
+    'displayWidth?',
+    'loginSuccess'
   ],
 
   requires: [
