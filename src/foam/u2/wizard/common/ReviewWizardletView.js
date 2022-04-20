@@ -14,9 +14,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .generic-container {
-      width: 343px;
-    }
     ^ .h200 {
       text-align: center;
       margin: 32px 0;
