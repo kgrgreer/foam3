@@ -54,7 +54,8 @@ foam.CLASS({
     'notify',
     'stack',
     'subject',
-    'translationService'
+    'translationService',
+    'rfiTicketDAO'
   ],
 
   searchColumns: [
@@ -71,7 +72,9 @@ foam.CLASS({
     'createdForSummary',
     'assignedTo.legalName',
     'status',
-    'memo'
+    'memo',
+    'rfiStatus',
+    'rfiLink'
   ],
 
   sections: [
@@ -570,6 +573,42 @@ foam.CLASS({
         Optional field to specify the request to be sent to multiple  groups.
         Should remain non-transient to handle fulfilled requests being visible to different groups.
       `,
+    },
+    {
+      class: 'String',
+      name: 'rfiStatus',
+      columnPermissionRequired: true,
+      section: 'approvalRequestInformation',
+      visibility: 'HIDDEN',
+      gridColumns: 6,
+      order: 70,
+      tableCellFormatter: function(_, obj) {
+        var userId = obj.createdFor;
+        var m = foam.mlang.Expressions.create();
+
+        // the status of newest rfi ticket
+        this.__subSubContext__.rfiTicketDAO
+          .where(
+              m.EQ(net.nanopay.ticket.RfiTicket.ASSIGNED_TO, userId)
+          )
+          .orderBy(m.DESC(net.nanopay.ticket.RfiTicket.CREATED))
+          .limit(1)
+          .select(m.PROJECTION(net.nanopay.ticket.RfiTicket.STATUS))
+          .then(function(ticket) {
+            if ( ticket ) {
+              this.add(ticket.projection);
+            }
+          }.bind(this));
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'rfiLink',
+      of: 'net.nanopay.ticket.RfiTicket',
+      columnPermissionRequired: true,
+      section: 'approvalRequestInformation',
+      gridColumns: 6,
+      order: 100
     }
   ],
 
