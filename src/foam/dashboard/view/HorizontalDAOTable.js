@@ -25,14 +25,14 @@ foam.CLASS({
     ^entry-container {
       display: flex;
       gap: 30px;
-      padding-bottom: 3vh;
+      padding-bottom: 1.5vh;
       overflow: scroll;
     }
     ^ .foam-u2-ActionView-viewMoreAction {
       padding-top: 0;
     }
-    @media only screen and (max-height: 850px) {
-      ^entry-container { padding-bottom: 1.5vh; }
+    @media only screen and (min-height: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^entry-container { padding-bottom: 3vh; }
     }
   `,
 

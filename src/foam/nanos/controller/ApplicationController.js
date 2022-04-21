@@ -404,7 +404,7 @@ foam.CLASS({
 
         await self.fetchGroup();
 
-        await self.maybeReinstallLanguage(client);
+        await self.maybeReinstallLanguage(self.client);
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
@@ -776,7 +776,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
