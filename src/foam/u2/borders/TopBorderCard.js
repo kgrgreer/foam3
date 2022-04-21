@@ -31,11 +31,12 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.start().addClass(this.myClass('bar')).end()
+      this.start().addClass(this.myClass('bar'))
+        .style({ 'background' : this.color$, 'border' : '1px solid' + this.color$ })
+      .end()
+
       .start('div', null, this.content$)
         .addClass()
-        .style({ 'background' : this.color$,
-                 'border' : '1px solid' + this.color$ })
       .end();
     }
   ]
