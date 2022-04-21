@@ -44,14 +44,11 @@ foam.CLASS({
                 this.start(item.border).tag(item.view).end();
                 return;
               }
-                // TODO: uncomment this line once we have data
-//              else if ( ! self.data.value[item.name] ) return;
+              // if there is no data
+              else if ( ! self.data.value[item.name] ) return;
 
-              // TODO: remove this line once we have data(testing)
-              this.start(item.border).tag(item.view).end();
-
-              // TODO: uncomment this line once we have data
-//              this.start(item.border).tag(item.view, {data: self.data.value[item.name]}).end();
+              // if there is data
+              this.start(item.border).tag(item.view, {data: self.data.value[item.name]}).end();
             })
           .end()
         .end();
