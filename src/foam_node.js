@@ -23,6 +23,7 @@ var foam = globalThis.foam = {
     this.setupFlags();
   },
   cwd: process.cwd(),
+  /*
   checkFlags: function(flags) {
     if ( ! flags ) return true;
 
@@ -32,6 +33,7 @@ var foam = globalThis.foam = {
 
     return true;
   },
+  */
   require: function (fn, batch, isProject) {
     if ( ! fn ) return;
 

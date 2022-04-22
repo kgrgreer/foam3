@@ -12,10 +12,9 @@
     isServer: false,
     defaultFlags: {
       debug: true,
-      java:  true, // TODO: set to false when all flags properly set
+      java:  false,
       js:    true,
       node:  false,
-      sql:   false, // TODO: the following two shouldn't be needed and should be removed when possible
       swift: false,
       web:   true  // Needed because flinks code uses but needs to be compiled to java
     },
@@ -180,9 +179,3 @@
 
   foam.setup();
 })();
-
-// TODO: remove when all FOAM_FILES uses removed
-globalThis.FOAM_FILES = function(files) {
-  console.log('**************** DEPRECATED USE OF FOAM_FILES');
-  foam.POM({files: files});
-}

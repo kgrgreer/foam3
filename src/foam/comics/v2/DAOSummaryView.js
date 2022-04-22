@@ -301,7 +301,7 @@ foam.CLASS({
       if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {
-        this.setControllerMode('view');
+        if ( this.setControllerMode ) this.setControllerMode('view');
         this
         .addClass(this.myClass())
         .add(self.slot(function(data, config$viewBorder, viewView) {
