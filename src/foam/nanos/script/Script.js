@@ -324,6 +324,12 @@ foam.CLASS({
         return getId();
       `
     },
+    function clone() {
+      return this;
+    },
+    function shallowClone() {
+      return this;
+    },
     {
       name: 'createInterpreter',
       args: [
@@ -519,7 +525,7 @@ foam.CLASS({
           self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
             self.copyFrom(script);
-            if ( script.status === self.ScriptStatus.SCHEDULED ) {
+            if ( script.status === self.ScriptStatus.SCHEDULED || script.status === self.ScriptStatus.RUNNING ) {
               self.poll();
             }
           }).catch(function(e) {
