@@ -409,7 +409,7 @@ foam.CLASS({
           ret.push(
             {
               args: [this.name],
-              query: 'email!=""',
+              query: this.name+'!=""',
               errorString: this.EMAIL_REQUIRED
             }
           );
@@ -417,7 +417,7 @@ foam.CLASS({
         ret.push(
           {
             args: [this.name],
-            query:'email==""||email~/\\S+@\\S+\\.\\S+/',
+            query:this.name+'==""||'+this.name+'~/\\S+@\\S+\\.\\S+/',
             errorString: this.VALID_EMAIL_REQUIRED
           }
         );
