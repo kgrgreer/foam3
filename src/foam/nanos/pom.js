@@ -100,6 +100,8 @@ foam.POM({
   { name: "theme/ThemeDomain", flags: "java" },
   { name: "theme/ThemeDomainsDAO", flags: "java" },
   { name: "theme/Themes", flags: "java" },
+  { name: "theme/customisation/CSSTokenOverride", flags: "java" },
+  { name: "theme/customisation/TokenOverrideService", flags: "web" },
   { name: "auth/User", flags: "java" },
   { name: "auth/UserNotFoundException", flags: "java" },
   { name: "auth/PermissionTableView" },

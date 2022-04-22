@@ -199,6 +199,8 @@ foam.POM({
   { name: "foam/u2/RowFormatter" },
   { name: "foam/u2/WeakMap", flags: "web" },
   { name: "foam/u2/Element"/*, flags: "java" */},
+  { name: "foam/u2/CSSToken",  flags: "web|java" },
+  { name: "foam/u2/CSSTokens", flags: "web"},
   { name: "foam/u2/MNRowFormatter", flags: "web" },
   { name: "foam/u2/ProgressView", flags: "web" },
   { name: "foam/u2/LoadingSpinner", flags: "web" },
