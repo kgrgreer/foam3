@@ -33,14 +33,6 @@ foam.CLASS({
     {
       name: 'simpleTypes',
       factory: () => []
-    },
-    {
-      name: 'outputter',
-      factory: function() {
-        var o = foam.json.Pretty;
-        o.useTemplateLiterals = true;
-        return o;
-      }
     }
   ],
 
@@ -601,15 +593,6 @@ foam.CLASS({
           }
         }
       }
-    },
-
-    /**
-     * Converts the FOAM model to string
-     * @param  {Object} m FOAM model
-     * @return {String}   String of FOAM model
-     */
-    function modelToStr(m) {
-      return this.outputter.stringify(m).toString();
     },
 
     /**
