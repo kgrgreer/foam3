@@ -61,3 +61,34 @@ p({
   "serve": false,
   "serviceClass": "foam.nanos.theme.Themes",
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"tokenOverrideService",
+  "serve":true,
+  "authenticate":false,
+  "client":"{ \"class\": \"foam.nanos.theme.customisation.TokenOverrideService\" }"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"tokenOverrideDAO",
+  "description":"Theme CSS Token Override DAO",
+  "serve":true,
+  "authenticate":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("tokenOverrideDAO"))
+      .setJournalName("tokenOverrides")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(foam.nanos.theme.customisation.CSSTokenOverride.getOwnClassInfo())
+      .build()
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.theme.customisation.CSSTokenOverride"
+    }
+  """
+})
