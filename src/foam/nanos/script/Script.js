@@ -324,12 +324,6 @@ foam.CLASS({
         return getId();
       `
     },
-    function clone() {
-      return this;
-    },
-    function shallowClone() {
-      return this;
-    },
     {
       name: 'createInterpreter',
       args: [
