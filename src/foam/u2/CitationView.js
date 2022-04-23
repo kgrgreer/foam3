@@ -15,14 +15,17 @@ foam.CLASS({
 
   css: `
     ^row {
-      background-color:/*%WHITE%*/ #ffffff;
       font-size: 1.2rem;
+    }
+
+    ^rw {
+      background: /*%WHITE%*/ white;
       padding: 8px 16px;
-      color: #424242;
+      color: /*%BALCK%*/ #424242;
     }
 
     ^rw:hover {
-      background: #f4f4f9;
+      background: /*%GREY5%*/ #f4f4f9;
       cursor: pointer;
     }
   `,
