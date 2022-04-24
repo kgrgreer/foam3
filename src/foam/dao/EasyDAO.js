@@ -119,7 +119,8 @@ foam.CLASS({
     {
       name: 'nSpec',
       class: 'FObjectProperty',
-      type: 'foam.nanos.boot.NSpec'
+      type: 'foam.nanos.boot.NSpec',
+      javaPostSet: 'setName(val.getName());'
     },
     {
       documentation: 'Hold Last usuable dao in decorator chain. For example, an MDAO wrapped in FixedSizeDAO should always go through the FixedSizeDAO and not update the MDAO directly.',
