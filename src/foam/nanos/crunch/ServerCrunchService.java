@@ -30,6 +30,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
+import foam.util.Auth;
+
 import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,12 +55,9 @@ public class ServerCrunchService
 
   //TODO: Needs to be refactored once Subject is serializable
   public List getCapabilityPathFor(X x, String rootId, boolean filterGrantedUCJ, User effectiveUser, User user) {
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+    AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.getCapabilityPathFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      x = x.put("subject", requestedSubject);
+      x = Auth.sudo(x, effectiveUser, user, user.findGroup(x));
     }
     return this.getCapabilityPath(x, rootId, filterGrantedUCJ, true);
   }
@@ -203,7 +202,11 @@ public class ServerCrunchService
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
-    if ( ucj != null ) x = x.put("subject", ucj.getSubject(x));
+    if ( ucj != null ) {
+      Subject s = ucj.getSubject(x);
+      User user = s.getRealUser();
+      x = Auth.sudo(x, s.getUser(), user, user.findGroup(x));
+    }
     Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
     if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
@@ -337,14 +340,11 @@ public class ServerCrunchService
 
   //TODO: Needs to be refactored once Subject is serializable
   public UserCapabilityJunction getJunctionFor(X x, String capabilityId, User effectiveUser, User user) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+    AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.getJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.getJunctionForSubject(x, capabilityId, requestedSubject);
+      x = Auth.sudo(x, effectiveUser, user, user.findGroup(x));
     }
+    Subject subject = (Subject) x.get("subject");
     return this.getJunctionForSubject(x, capabilityId, subject);
   }
 
@@ -526,14 +526,11 @@ public class ServerCrunchService
     X x, String capabilityId, FObject data,
     CapabilityJunctionStatus status, User effectiveUser, User user
   ) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+    AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.updateUserJunction(x, requestedSubject, capabilityId, data, status);
+      x = Auth.sudo(x, effectiveUser, user, user.findGroup(x));
     }
+    Subject subject = (Subject) x.get("subject");
     return this.updateUserJunction(x, subject, capabilityId, data, status);
   }
 
