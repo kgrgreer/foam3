@@ -144,14 +144,12 @@ foam.CLASS({
         var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
         if ( ! map[cls.id] ) {
           map[cls.id] = true;
-          var a = this.expandCSS(cls, this.code, X);
-          X.installCSS(a, cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       } else {
         if ( ! installedStyles[this.$UID] ) {
           installedStyles[this.$UID] = true;
-          var a = this.expandCSS(cls, this.code, X);
-          X.installCSS(a, cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       }
     },

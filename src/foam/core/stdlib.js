@@ -1217,8 +1217,8 @@ foam.LIB({
      * globalThis.some.package.MyClass.
      */
     function registerClass(cls) {
-      // if ( typeof cls !== 'object' ) debugger;
-      // if ( ! cls.name ) debugger;
+      if ( typeof cls !== 'object' ) debugger;
+      if ( ! cls.name ) debugger;
       foam.assert(typeof cls === 'object',
         'cls must be an object');
       foam.assert(typeof cls.name === 'string' && cls.name !== '',
