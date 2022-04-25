@@ -11,6 +11,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.GroupPermissionJunction;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
 
@@ -28,7 +29,8 @@ public class Auth {
   */
   public static X sudo(X x, User user) {
     if ( user == null ) throw new RuntimeException("Unknown user");
-
+    Subject requestedSubject = new Subject(user);
+    x = x.put("subject", requestedSubject);
     Session session = new Session();
     session.setUserId(user.getId());
     X y = session.applyTo(x);
@@ -74,6 +76,9 @@ public class Auth {
     @param realUser User that will be acting as the @param user. References realUser within context' subject.
    */
   public static X sudo(X x, User user, User realUser) {
+    Subject requestedSubject = new Subject(realUser);
+    requestedSubject.setUser(user);
+    x = x.put("subject", requestedSubject);
     Session session = new Session.Builder(x)
       .setUserId(user.getId())
       .setAgentId(realUser.getId())
