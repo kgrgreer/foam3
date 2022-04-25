@@ -30,8 +30,8 @@ foam.CLASS({
     'foam.u2.wizard.WizardletAware',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.wizardlet.WizardletSection',
-    'foam.u2.wizard.WAO',
-    'foam.u2.wizard.ProxyWAO',
+    'foam.u2.wizard.wao.WAO',
+    'foam.u2.wizard.wao.ProxyWAO',
     'foam.u2.wizard.internal.FObjectRecursionSlot',
     'foam.u2.wizard.internal.WizardletAutoSaveSlot'
   ],
@@ -204,7 +204,7 @@ foam.CLASS({
     {
       name: 'wao',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.WAO',
+      of: 'foam.u2.wizard.wao.WAO',
       flags: ['web'],
       documentation: `
         A wizardlet's WAO (Wizardlet Access Object) implements the behavior of

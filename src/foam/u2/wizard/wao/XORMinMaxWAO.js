@@ -5,11 +5,11 @@
  */
 
  foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'XORMinMaxWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
+  implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
-  extends: 'foam.u2.wizard.ProxyWAO',
+  extends: 'foam.u2.wizard.wao.ProxyWAO',
   
   imports: [
     'wizardlets',

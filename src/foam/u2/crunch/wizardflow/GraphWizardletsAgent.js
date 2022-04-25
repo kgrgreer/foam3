@@ -26,8 +26,8 @@ foam.CLASS({
     'foam.nanos.crunch.ui.CapabilityWizardlet',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
-    'foam.u2.wizard.NullWAO',
-    'foam.u2.wizard.ProxyWAO'
+    'foam.u2.wizard.wao.NullWAO',
+    'foam.u2.wizard.wao.ProxyWAO'
   ],
 
   properties: [

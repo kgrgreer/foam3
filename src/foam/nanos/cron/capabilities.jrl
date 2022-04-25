@@ -18,9 +18,9 @@ p({
     of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
     wao: {
-      class: "foam.u2.wizard.PrerequisiteWAO",
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
       prerequisiteCapabilityId: "schedulable-dao-put",
-      delegate: { class: 'foam.u2.wizard.NullWAO' }
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
     }
   }
 })
@@ -37,10 +37,10 @@ p({
     saveOnAvailable: false,
     saveOnCurrent: true,
     wao:{
-      class: "foam.u2.wizard.PrerequisiteWAO",
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
       prerequisiteCapabilityId: "schedulable-review",
       delegate: {
-        class: "foam.u2.wizard.DAOWAO",
+        class: "foam.u2.wizard.wao.DAOWAO",
         daoKey: "schedulableDAO",
         of: "foam.nanos.cron.Schedulable"
       }
@@ -57,10 +57,10 @@ p({
     of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
     wao: {
-      class: "foam.u2.wizard.XORMinMaxWAO",
+      class: "foam.u2.wizard.wao.XORMinMaxWAO",
       minMaxCapabilityId: "schedulable-xorminxmax",
       of: "foam.nanos.cron.Schedulable",
-      delegate: { class: 'foam.u2.wizard.NullWAO' }
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
     }
   }
 })

@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
-    'foam.u2.wizard.DAOWAO'
+    'foam.u2.wizard.wao.DAOWAO'
   ],
 
   properties: [

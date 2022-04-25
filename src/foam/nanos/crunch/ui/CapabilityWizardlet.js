@@ -10,7 +10,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.u2.wizard.ProxyWAO',
+    'foam.u2.wizard.wao.ProxyWAO',
     'foam.u2.wizard.WizardletIndicator'
   ],
 
