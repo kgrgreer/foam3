@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'ReviewWizardletView',
   extends: 'foam.u2.View',
 
@@ -23,7 +23,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.common.ReviewItem',
+      of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
     },
     {

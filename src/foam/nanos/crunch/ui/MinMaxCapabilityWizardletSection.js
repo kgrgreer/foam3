@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'MinMaxCapabilityWizardletSection',
-  extends: 'foam.u2.wizard.WizardletSection',
+  extends: 'foam.u2.wizard.wizardlet.WizardletSection',
   flags: ['web'],
   documentation: `
     Describes a sub-section of a wizardlet.
@@ -22,7 +22,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       name: 'choiceWizardlets',
       factory: function() {
         return [];

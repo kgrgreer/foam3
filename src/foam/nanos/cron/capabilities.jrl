@@ -12,7 +12,7 @@ p({
   name: "Success Wizardlet",
   of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
-    class: 'foam.u2.wizard.common.SuccessWizardlet',
+    class: 'foam.u2.wizard.wizardlet.SuccessWizardlet',
     title: 'Done',
     message: 'Scheduled successfully!',
     of: 'foam.nanos.cron.Schedulable',
