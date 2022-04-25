@@ -84,6 +84,13 @@ foam.CLASS({
           return cs;
         }
         return foam.core.AxiomArray.ADAPT.value.call(this, _, a, prop);
+      },
+      adaptArrayElement: function(o, prop) {
+        if ( Array.isArray(o) ) {
+          return foam.u2.CSSToken.create({ name: o[0], value: o[1] });
+        }
+
+        return foam.core.AxiomArray.ADAPT_ARRAY_ELEMENT.value.call(this, o, prop);
       }
     }
   ]
