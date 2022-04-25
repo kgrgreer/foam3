@@ -206,6 +206,8 @@ foam.POM({
     { name: "foam/u2/borders/BrowserSupportBorder",                                       flags: "web" },
     { name: "foam/u2/borders/NullBorder",                                                 flags: "web" },
     { name: "foam/u2/borders/CardBorder",                                                 flags: "web" },
+    { name: "foam/u2/borders/TopBorderCard",                                                 flags: "web" },
+    { name: "foam/u2/borders/BackgroundCard",                                                 flags: "web" },
     { name: "foam/u2/borders/CollapseBorder",                                             flags: "web" },
     { name: "foam/u2/borders/ExpandableBorder",                                           flags: "web" },
     { name: "foam/u2/borders/MarginBorder",                                               flags: "web" },
