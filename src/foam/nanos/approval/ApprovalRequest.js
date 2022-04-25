@@ -693,8 +693,8 @@ foam.CLASS({
         oldMemo = this.memo;
         newMemo = memo + ' -- '
                   + X.subject.user.firstName + ' '
-                  + X.subject.user.lastName
-                  + ' ' + (new Date()).toString()
+                  + X.subject.user.lastName + ' '
+                  + (new Date()).toString()
                   + (oldMemo && '\n')
                   + oldMemo;
         return newMemo;
