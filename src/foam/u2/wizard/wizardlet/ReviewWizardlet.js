@@ -5,18 +5,18 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'ReviewWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
-    'foam.u2.wizard.WizardletSection',
+    'foam.u2.wizard.wizardlet.WizardletSection',
   ],
 
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.common.ReviewItem',
+      of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
     },
     {
@@ -27,7 +27,7 @@ foam.CLASS({
             isAvailable: true,
             title: 'Review',
             customView: {
-              class: 'foam.u2.wizard.common.ReviewWizardletView',
+              class: 'foam.u2.wizard.wizardlet.ReviewWizardletView',
               items$: this.items$
             }
           })

@@ -6,11 +6,11 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'CapabilityWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.u2.wizard.ProxyWAO',
+    'foam.u2.wizard.wao.ProxyWAO',
     'foam.u2.wizard.WizardletIndicator'
   ],
 
