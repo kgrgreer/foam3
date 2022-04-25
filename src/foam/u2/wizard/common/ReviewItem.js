@@ -17,8 +17,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'noData',
-      value: false
+      name: 'noData'
     }
   ]
 });

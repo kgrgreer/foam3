@@ -27,7 +27,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.addClass().style({ 'background' : this.backgroundColor$ })
-        .start('', null, this.content$).end();
+        .tag('', null, this.content$);
     }
   ]
 });
