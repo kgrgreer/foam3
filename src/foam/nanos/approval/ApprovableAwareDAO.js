@@ -96,7 +96,7 @@ foam.CLASS({
         ApprovalRequest request = (ApprovalRequest) req.fclone();
         request.clearId();
         request.setApprover(userId);
-        getApprovalRequestDAO().inX(x).put(request);
+        getApprovalRequestDAO().inX(getX()).put(request);
       `
     },
     {
