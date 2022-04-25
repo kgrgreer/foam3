@@ -96,6 +96,8 @@ foam.CLASS({
         ApprovalRequest request = (ApprovalRequest) req.fclone();
         request.clearId();
         request.setApprover(userId);
+        // NOTE: Explicit use of system context as ApprovalRequests can be
+       // triggered by normal user UI actions.
         getApprovalRequestDAO().inX(getX()).put(request);
       `
     },
