@@ -44,7 +44,7 @@ foam.CLASS({
           );
     
           this.choiceWizardlets.forEach((choiceWizardlet) => {
-            choiceWizardlet.isAvailable$ = vs.getSelectedSlot(choiceWizardlet.capability);
+            vs.getSelectedSlot(choiceWizardlet.capability).linkFrom(choiceWizardlet.isAvailable$);
           })
     
           return vs;
