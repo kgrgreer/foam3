@@ -14,9 +14,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .generic-container {
-      width: 343px;
-    }
     ^ .h200 {
       text-align: center;
       margin: 32px 0;
@@ -28,6 +25,11 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.u2.wizard.common.ReviewItem',
       name: 'items'
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle',
+      value: true
     }
   ],
 
@@ -37,7 +39,7 @@ foam.CLASS({
       this.SUPER();
       this.addClass(this.myClass())
         .start()
-          .start().addClass('h200').add(this.TITLE).end()
+          .start().addClass('h200').show(this.showTitle$).add(this.TITLE).end()
           .start().addClass('generic-container')
             .forEach(this.items, function (item) {
               if ( item.noData )  {
