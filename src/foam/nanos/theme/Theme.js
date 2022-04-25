@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.theme.ThemeGlyphs',
     'foam.u2.layout.DisplayWidth'
   ],
