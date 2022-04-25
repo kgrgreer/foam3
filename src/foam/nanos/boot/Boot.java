@@ -156,7 +156,7 @@ public class Boot {
     ((ProxyDAO) root_.get("nSpecDAO")).setDelegate(
       new foam.nanos.auth.AuthorizationDAO.Builder(getX())
         .setDelegate(serviceDAO_)
-        .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("service"))
+        .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("service"))
         .build());
 
     serviceDAO_.where(EQ(NSpec.LAZY, false)).select(new AbstractSink() {

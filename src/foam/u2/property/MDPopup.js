@@ -23,8 +23,7 @@ foam.CLASS({
     'as popup'
   ],
 
-  documentation: 'A floating menu that pops up, positioning itself over the ' +
-      'element that launches it with $$DOC{ref:".open"}.',
+  documentation: 'A floating menu that pops up, positioning itself over the element that launches it with $$DOC{ref:".open"}.',
 
   properties: [
     ['hMargin', 8],
