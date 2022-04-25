@@ -37,7 +37,7 @@ foam.CLASS({
 
   css: `
     ^ thead th {
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       padding: 0;
       text-align: center;
     }
@@ -52,7 +52,7 @@ foam.CLASS({
        height: 150px;
      }
 
-    ^ tbody tr { background: white; }
+    ^ tbody tr { background:/*%WHITE%*/ #ffffff; }
 
     ^ .foam-u2-md-CheckBox {
       margin: 1px;
@@ -75,13 +75,13 @@ foam.CLASS({
 
     ^header {
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       padding: 8px;
       margin: 8px 0;
     }
 
     ^ .permissionHeader {
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       color: #444;
       text-align: left;
       padding-left: 6px;
@@ -95,8 +95,8 @@ foam.CLASS({
     ^ thead th {
       position: sticky;
       top: 0;
-    } 
-    
+    }
+
     ^ tbody td:first-child, ^ thead th:first-child {
       position: sticky;
       left: 0;

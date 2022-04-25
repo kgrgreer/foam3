@@ -30,12 +30,13 @@ foam.CLASS({
 
   methods: [
     function select_(x, sink, skip, limit, order, predicate) {
-        if ( predicate &&
-             ( ! this.True.isInstance(predicate) &&
-               ! this.False.isInstance(predicate) ) ||
+      const simplePredicate = predicate?.partialEval();
+      if ( simplePredicate &&
+          ( ! this.True.isInstance(simplePredicate) &&
+            ! this.False.isInstance(simplePredicate) ) ||
           ( foam.Number.isInstance(limit) && Number.isFinite(limit) && limit != 0 ) ||
           ( foam.Number.isInstance(skip) && Number.isFinite(skip) && skip != 0 ) ) {
-        return this.delegate.select_(x, sink, skip, limit, order, predicate);
+        return this.delegate.select_(x, sink, skip, limit, order, simplePredicate);
       } else {
         sink && sink.eof();
         return Promise.resolve(sink || this.ArraySink.create());

@@ -73,6 +73,9 @@ foam.CLASS({
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
       `,
       javaCode: `
+        Session session = x.get(Session.class);
+        if ( session != null && session.getUserId() != 0 ) return (Subject) session.getContext().get("subject");
+
         ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
         if ( serviceProvider == null ) {
           throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize anonymous user.");
@@ -83,7 +86,6 @@ foam.CLASS({
           throw new AuthorizationException("Unable to find anonymous user.");
         }
 
-        Session session = x.get(Session.class);
         if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
         session.setUserId(anonymousUser.getId());
         session.setAgentId(0);
@@ -99,6 +101,11 @@ foam.CLASS({
     {
       name: 'getCurrentSubject',
       javaCode: `
+        try {
+          authorizeAnonymous(x);
+        } catch ( AuthorizationException e ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).warning(e);
+        }
         Session session = x.get(Session.class);
         // fetch context and check if not null or user id is 0
         if ( session == null || session.getUserId() == 0 ) {
@@ -112,7 +119,7 @@ foam.CLASS({
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("Group disabled");
         }
-        Subject subject = (Subject) x.get("subject");
+        Subject subject = (Subject) session.getContext().get("subject");
         return subject;
       `
     },

@@ -5,19 +5,21 @@
  */
 
 foam.POM({
+  name: "support",
+  version: 3,
   files: [
-    { name: "model/SupportEmail" },
-    { name: "modal/NewEmailSupportModal"},
-    { name: "modal/NewEmailSupportConfirmationModal"},
-    { name: "modal/DeleteEmailSupportModal"},
-    { name: "view/SupportEmailView"},
-    { name: "model/TicketMessage" },
-    { name: "model/Ticket" },
-    { name: "view/TicketView" },
-    { name: "view/TicketDetailView" },
-    { name: "view/CreateTicketView" },
-    { name: "view/TicketSummaryView" },
-    { name: "view/SummaryCard" },
-    { name: "view/MessageCard" },
-    { name: "view/ReplyView" }
+    { name: "modal/NewEmailSupportModal",                                                 flags: "web" },
+    { name: "modal/NewEmailSupportConfirmationModal",                                    flags: "web" },
+    { name: "modal/DeleteEmailSupportModal",                                              flags: "web" },
+    { name: "model/SupportEmail",                                                         flags: "js|java" },
+    { name: "model/TicketMessage",                                                        flags: "js|java", },
+    { name: "model/Ticket",                                                               flags: "js|java" },
+    { name: "view/CreateTicketView",                                                      flags: "web" },
+    { name: "view/MessageCard",                                                           flags: "web" },
+    { name: "view/ReplyView",                                                             flags: "web" },
+    { name: "view/SupportEmailView",                                                      flags: "web" },
+    { name: "view/SummaryCard",                                                           flags: "web" },
+    { name: "view/TicketView",                                                            flags: "web" },
+    { name: "view/TicketDetailView",                                                      flags: "web" },
+    { name: "view/TicketSummaryView",                                                     flags: "web" }
 ]});

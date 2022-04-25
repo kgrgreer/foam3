@@ -375,7 +375,7 @@ foam.CLASS({
             var enumArr = v.replaceAll(',','').split('.');
             var val = enumArr[enumArr.length-1];
             var enumCls = v.replaceAll(',','').split('.'+val)[0];
-            var en = this.__context__.lookup(enumCls);
+            var en = this.__context__.maybeLookup(enumCls);
             return en == undefined ? null : en[val];
           }
         };

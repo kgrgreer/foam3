@@ -21,7 +21,6 @@ foam.CLASS({
 
   methods: [
     async function load(...args) {
-      console.log('load called', this)
       for ( const delegate of this.delegates ) await delegate.load(...args);
     },
     async function save(...args) {
