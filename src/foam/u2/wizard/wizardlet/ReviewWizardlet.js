@@ -16,7 +16,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.common.ReviewItem',
+      of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
     },
     {
