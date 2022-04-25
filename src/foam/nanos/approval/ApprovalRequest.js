@@ -1015,7 +1015,12 @@ foam.CLASS({
       code: function(X, memo) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
-        approvedApprovalRequest.memo = memo;
+        approvedApprovalRequest.memo = memo + ' -- '
+                                        + X.subject.user.firstName + ' '
+                                        + X.subject.user.lastName
+                                        + ' ' + (new Date()).toString()
+                                        + (approvedApprovalRequest.memo && '\n')
+                                        + approvedApprovalRequest.memo;
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1042,7 +1047,12 @@ foam.CLASS({
       name: 'addMemoL',
       code: function(X, memo) {
         var newMemoRequest = this.clone();
-        newMemoRequest.memo = memo;
+        newMemoRequest.memo = memo + ' -- '
+                              + X.subject.user.firstName + ' '
+                              + X.subject.user.lastName
+                              + ' ' + (new Date()).toString()
+                              + (newMemoRequest.memo && '\n')
+                              + newMemoRequest.memo;
 
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1070,7 +1080,12 @@ foam.CLASS({
       code: function(X, memo) {
         var rejectedApprovalRequest = this.clone();
         rejectedApprovalRequest.status = this.ApprovalStatus.REJECTED;
-        rejectedApprovalRequest.memo = memo;
+        rejectedApprovalRequest.memo = memo + ' -- '
+                                      + X.subject.user.firstName + ' '
+                                      + X.subject.user.lastName
+                                      + ' ' + (new Date()).toString()
+                                      + (rejectedApprovalRequest.memo && '\n')
+                                      + rejectedApprovalRequest.memo;
 
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
