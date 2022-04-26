@@ -5,14 +5,19 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'ReviewItem',
   extends: 'foam.comics.v2.namedViews.NamedViewInstance',
 
   properties: [
     {
       name: 'border',
-      class: 'foam.u2.ViewSpec'
+      class: 'foam.u2.ViewSpec',
+      value: { class: 'foam.u2.borders.NullBorder' }
+    },
+    {
+      class: 'Boolean',
+      name: 'noData'
     }
   ]
 });

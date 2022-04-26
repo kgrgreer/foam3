@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'SubmitWizardlet',
   extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
 

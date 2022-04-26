@@ -26,15 +26,15 @@ foam.CLASS({
     'foam.nanos.crunch.ui.CapabilityWizardlet',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
-    'foam.u2.wizard.NullWAO',
-    'foam.u2.wizard.ProxyWAO'
+    'foam.u2.wizard.wao.NullWAO',
+    'foam.u2.wizard.wao.ProxyWAO'
   ],
 
   properties: [
     {
       name: 'wizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     },
     {
       class: 'Map',
@@ -139,11 +139,11 @@ foam.CLASS({
       if ( ! entry.parentControlled ) {
         if ( ! entry.availabilitySlot ) {
           entry.availabilitySlot = source.primaryWizardlet.isAvailable$;
-          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.follow(entry.availabilitySlot);
         } else {
           entry.availabilityDetach.detach();
           entry.availabilitySlot = entry.availabilitySlot.or(source.primaryWizardlet.isAvailable$)
-          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.follow(entry.availabilitySlot);
         }
       }
     },

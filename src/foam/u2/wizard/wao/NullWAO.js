@@ -5,9 +5,9 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'NullWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
+  implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
   methods: [
     async function save() {},

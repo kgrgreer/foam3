@@ -29,14 +29,14 @@ foam.CLASS({
     'foam.nanos.crunch.MinMaxCapability',
     'foam.nanos.crunch.ui.CapableWAO',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
-    'foam.u2.wizard.ProxyWAO'
+    'foam.u2.wizard.wao.ProxyWAO'
   ],
 
   properties: [
     {
       name: 'wizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     }
   ],
 

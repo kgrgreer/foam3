@@ -5,12 +5,12 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'DAOWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
-    'foam.u2.wizard.DAOWAO'
+    'foam.u2.wizard.wao.DAOWAO'
   ],
 
   properties: [
