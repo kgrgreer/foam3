@@ -63,6 +63,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'null',
+      label: 'Generate Proxy',
+      help: 'If enabled, causes automatic null generation.'
+    },
+    {
+      class: 'Boolean',
       name: 'client',
       label: 'Generate Client Stub',
       help: 'If enabled, causes automatic client generation.'
@@ -107,21 +113,37 @@ foam.CLASS({
           ]
         });
 
-        if ( this.client )
-          foam.CLASS({
-            package: this.package,
-            name: 'Client' + this.name,
-            implements: [ this.id ],
-            flags: this.flags,
-            source: this.source,
-            properties: [
-              {
-                class: 'Stub',
-                of: this.id,
-                name: 'delegate'
-              }
-            ]
-          });
+      if ( this.client )
+        foam.CLASS({
+          package: this.package,
+          name: 'Client' + this.name,
+          implements: [ this.id ],
+          flags: this.flags,
+          source: this.source,
+          properties: [
+            {
+              class: 'Stub',
+              of: this.id,
+              name: 'delegate'
+            }
+          ]
+        });
+    
+      if ( this.null )
+        foam.CLASS({
+          package: this.package,
+          name: 'Null' + this.name,
+          implements: [ this.id ],
+          flags: this.flags,
+          source: this.source,
+          axioms: [
+            {
+              class: 'foam.core.Null',
+              of: this.id,
+              name: 'implementor'
+            }
+          ]
+        });
     },
 
     function validate() {

@@ -39,6 +39,7 @@ foam.POM({
     { name: "foam/core/Requires",                                                         flags: "js" },
     { name: "foam/core/Slot",                                                             flags: "js" },
     { name: "foam/core/Proxy",                                                            flags: "js" },
+    { name: "foam/core/Null",                                                            flags: "js" },
     { name: "foam/core/Latch",                                                            flags: "js" },
     { name: "foam/core/Lock",                                                             flags: "js" },
     { name: "foam/core/CountingSemaphore",                                                flags: "js" },
