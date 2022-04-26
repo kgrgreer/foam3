@@ -6,11 +6,56 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.debug',
-  name: 'TestWizard',
+  name: 'TestWizardMenu',
+  extends: 'foam.nanos.menu.Menu',
+
+  imports: [
+    'stack'
+  ],
+
+  requires: [
+    'foam.dao.ArrayDAO',
+    'foam.nanos.menu.Menu',
+    'foam.u2.wizard.debug.TestWizardScenarioMenu'
+  ],
+
+  properties: [
+    {
+      name: 'children_',
+      factory: function () {
+        // ???: is it possible to ask foam for all models extending TestWizardScenario?
+        const scenarios = Object.getOwnPropertyNames(foam.u2.wizard.debug.scenarios);
+        
+        return this.ArrayDAO.create({
+          array: scenarios.map(scenarioName => {
+            return this.Menu.create({
+              id: this.id + '/' + scenarioName,
+              label: foam.String.labelize(scenarioName),
+              parent: this.id,
+              handler: this.TestWizardScenarioMenu.create({ scenarioName })
+            });
+          })
+        })
+      }
+    },
+    {
+      name: 'children',
+      // Use getter instead of factory to have higher precedence
+      // than than 'children' factory from relationship
+      getter: function() { return this.children_; }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2.wizard.debug',
+  name: 'TestWizardScenarioMenu',
   extends: 'foam.nanos.menu.AbstractMenu',
 
   imports: [
-    'crunchController'
+    'crunchController',
+    'stack'
   ],
 
   exports: [
@@ -20,9 +65,10 @@ foam.CLASS({
 
   requires: [
     'foam.dao.ArrayDAO',
-    'foam.u2.wizard.agents.RootCapabilityAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilityGraphAgent',
     'foam.u2.crunch.wizardflow.GraphWizardletsAgent',
+    'foam.u2.stack.StackBlock',
+    'foam.u2.wizard.agents.RootCapabilityAgent',
     'foam.u2.wizard.debug.scenarios.MinMaxChoicePrereqLiftScenario',
     'foam.util.async.Sequence'
   ],
@@ -31,35 +77,44 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'fakeCapabilityDAO',
-      factory: function () {
+      expression: function (scenario) {
         return this.ArrayDAO.create({
           of: 'foam.nanos.crunch.Capability',
-          array: this.scenario.capabilities
+          array: scenario.capabilities
         });
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'fakePrerequisiteCapabilityDAO',
-      factory: function () {
+      expression: function (scenario) {
         return this.ArrayDAO.create({
           of: 'foam.nanos.crunch.CapabilityCapabilityJunction',
-          array: this.scenario.capabilityCapabilityJunctions
+          array: scenario.capabilityCapabilityJunctions
         });
       }
+    },
+    {
+      class: 'String',
+      name: 'scenarioName'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.debug.TestWizardScenario',
       name: 'scenario',
-      factory: function () {
-        return this.MinMaxChoicePrereqLiftScenario.create();
+      expression: function (scenarioName) {
+        if ( ! scenarioName ) return null;
+        const cls = foam.u2.wizard.debug.scenarios[scenarioName]
+        return cls.create({}, this);
       }
     }
   ],
 
   methods: [
     function launch(X) {
+      this.launch_(X);
+    },
+    async function launch_(X) {
       X = X.createSubContext({
         capabilityDAO: this.fakeCapabilityDAO,
         prerequisiteCapabilityJunctionDAO: this.fakePrerequisiteCapabilityDAO
@@ -72,9 +127,9 @@ foam.CLASS({
         .addBefore('CreateWizardletsAgent', this.GraphWizardletsAgent)
         .remove('CreateWizardletsAgent')
         .remove('GrantedEditAgent')
+        .remove('CapabilityStoreAgent')
         ;
-      console.log(sequence.contextAgentSpecs.map(spec => spec.name))
-      sequence.execute();
+      await sequence.execute();
     }
   ]
 });
