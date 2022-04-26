@@ -8,10 +8,10 @@ foam.CLASS({
   package: 'foam.parse',
   name: 'Test',
   properties: [
-    'id',
-    'firstName',
-    'lastName',
-    { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
+    { class: 'Int', name: 'id' },
+    { class: 'String', name: 'firstName' },
+    { class: 'String', name: 'lastName' },
+    { class: 'FObjectProperty', of: 'foam.nanos.auth.Address', name: 'address' }
   ]
 });
 
@@ -39,26 +39,41 @@ foam.CLASS({
         id: 42,
         firstName: 'Kevin',
         lastName: 'Greer',
-        address: { city: 'Toronto', province: 'ON' }
+        address: { city: 'Toronto', regionId: 'ON' }
       });
 
       function test(s) {
         try {
           var p = fs.parseString(s).partialEval();
-          console.log(s, '->', p.toString(), '=', p.f(data));
+            console.log(s, '->', p.toString(), '=', p.f(data));
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      function testFormula(s, val) {
+        try {
+          var p = fs.parseString(s);
+          console.log(s, '==', val, '=', p.f(data)==val);
         } catch (x) {
           console.log('ERROR: ', x);
         }
       }
 
       test('address.city=="Toronto"');
-      test('address.city==address.province');
-      test('address.city!=address.province');
+      test('address.city==address.regionId');
+      test('address.city == address.regionId');
+      test('address.city!=address.regionId');
       test('id==42');
       test('"Kevin"=="Kevin"');
       test('firstName=="Kevin"');
+      test('firstName.len==2+3');
+      test('firstName.len==2*3');
       test('firstName=="Kevin"&&lastName=="Greer"');
       test('firstName=="Kevin"||id==42');
+      test('address instanceof foam.nanos.auth.Address');
+      test('instanceof foam.parse.Test');
+      testFormula('2+8', 10);
     },
 
     function test2__() {
@@ -113,15 +128,16 @@ foam.CLASS({
         return {
           START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: alt(sym('or')),
+          expr: alt(sym('or'), sym('formula')),
 
-          or: repeat(sym('and'), literal('||'), 1),
+          or: repeat(sym('and'), seq1(optional(' '), literal('||'), optional(' ')), 1),
 
-          and: repeat(sym('simpleexpr'), literal('&&'), 1),
+          and: repeat(sym('simpleexpr'), seq1(optional(' '), literal('&&'), optional(' ')), 1),
 
           simpleexpr: alt(
             sym('paren'),
             sym('negate'),
+            sym('instance_of'),
             sym('unary'),
             sym('comparison')
           ),
@@ -132,6 +148,7 @@ foam.CLASS({
 
           comparison: seq(
             sym('value'),
+            optional(' '),
             alt(
               literal('==', this.EQ),
               literal('!=', this.NEQ),
@@ -141,6 +158,7 @@ foam.CLASS({
               literal('>',  this.GT),
               literal('~',  this.REG_EXP)
             ),
+            optional(' '),
             sym('value')),
 
           unary: seq(
@@ -157,8 +175,8 @@ foam.CLASS({
 
           value: alt(
             sym('regex'),
-            sym('date'),
             sym('string'),
+            sym('date'),
             literal('true', true),
             literal('false', false),
             literal('null', null),
@@ -237,6 +255,10 @@ foam.CLASS({
             range('0', '9'),
             '-', '^', '_', '@', '%'),
 
+          class_info: seq(sym('word'), repeat(seq('.', sym('word')))),
+
+          instance_of: seq(optional(sym('field')), optional(' '), literal('instanceof'), ' ', sym('class_info')),
+
           number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
 //          number: repeat(range('0', '9'), null, 1)
         };
@@ -304,8 +326,8 @@ foam.CLASS({
 
           comparison: function(v) {
             var lhs = v[0];
-            var op  = v[1];
-            var rhs = v[2];
+            var op  = v[2];
+            var rhs = v[4];
             return op.call(self, lhs, rhs);
           },
 
@@ -348,9 +370,24 @@ foam.CLASS({
           },
 
           form_expr: function(v) {
-          return foam.parse.ParserWithAction.NO_PARSE;
-            if ( v.length == 1 || v[1] === null ) return v[0];
-            return v[1][0].call(self, v[0], v[1][1])
+          if ( foam.mlang.expr.Dot.isInstance(v[0]) || foam.core.Property.isInstance(v[0]) && ! foam.core.Int.isInstance(v[0]) ) return foam.parse.ParserWithAction.NO_PARSE;
+
+            if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
+
+            var formulas = v[1];
+            var firstArg = v[0];
+            var temp = formulas[0];
+            var cnst = temp[1];
+            var formula = temp[0];
+            formula = formula.call(self, firstArg, cnst);
+            for ( var i = 1; i < formulas.length; i++ ) {
+              var tempArr = formulas[i];
+              var tempForm = tempArr[0];
+              var constant = tempArr[1];
+              tempForm = tempForm.call(self, formula, constant);
+              formula = tempForm;
+            }
+            return formula;
           },
 
           regex: function(v) {
@@ -380,6 +417,14 @@ foam.CLASS({
             var enumCls = v.replaceAll(',','').split('.'+val)[0];
             var en = this.__context__.maybeLookup(enumCls);
             return en == undefined ? null : en[val];
+          },
+
+          instance_of: function(v) {
+            return foam.mlang.predicate.IsInstanceOf.create({targetClass: v[4], propExpr: v[0]});
+          },
+
+          class_info: function(v) {
+            return this.__context__.maybeLookup(v[0]+v[1].join().replaceAll(',',''));
           }
         };
 
