@@ -946,8 +946,6 @@ foam.POM({
     { name: "foam/u2/wizard/PrereqPropertySpec",                                   flags: "web" },
     { name: "foam/u2/wizard/wao/WAO",                                                     flags: "web" },
     { name: "foam/u2/wizard/wao/DAOWAO",                                                  flags: "web" },
-    { name: "foam/u2/wizard/wao/ProxyWAO",                                                flags: "web" },
-    { name: "foam/u2/wizard/wao/NullWAO",                                                 flags: "web" },
     { name: "foam/u2/wizard/wao/XORMinMaxWAO",                                            flags: "web" },
     { name: "foam/u2/wizard/wao/PrerequisiteWAO",                                         flags: "web" },
     { name: "foam/u2/wizard/wao/CompositeWAO",                                            flags: "web" },

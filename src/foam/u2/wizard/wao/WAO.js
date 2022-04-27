@@ -15,6 +15,7 @@ foam.INTERFACE({
     Controls how a wizardlet's data is created, saved, and cancelled. A WAO may
     also set custom properties when passed recognized wizardlet subclasses.
   `,
+  proxy: true,
   nullStrategy: true,
 
   methods: [
