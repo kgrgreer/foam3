@@ -31,6 +31,7 @@ public class Auth {
     if ( user == null ) throw new RuntimeException("Unknown user");
     Subject requestedSubject = new Subject(user);
     x = x.put("subject", requestedSubject);
+    x = x.put("group", user.findGroup(x));
     Session session = new Session();
     session.setUserId(user.getId());
     X y = session.applyTo(x);
@@ -60,17 +61,6 @@ public class Auth {
   }
 
   /**
-  Applies provided user into session, context and applies the group provided.
-  @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
-  @param group Group that the context will be applying its permission list from
-  */
-  public static X sudo(X x, User user, Group group) {
-    x = sudo(x, user);
-    x = x.put("group", group);
-    return x;
-  }
-
-  /**
     Applies user acting as another user within the context provided. user and realuser of context' subject would be typically different.
     @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
     @param realUser User that will be acting as the @param user. References realUser within context' subject.
@@ -79,25 +69,13 @@ public class Auth {
     Subject requestedSubject = new Subject(realUser);
     requestedSubject.setUser(user);
     x = x.put("subject", requestedSubject);
+    x = x.put("group", user.findGroup(x));
     Session session = new Session.Builder(x)
       .setUserId(user.getId())
       .setAgentId(realUser.getId())
       .build();
     session.setContext(session.applyTo(session.getContext()));
     x = x.put(Session.class, session);
-    return x;
-  }
-
-  /**
-    Applies user acting as another user within the context provided. Applies provided
-    group to the session. Flexible use of permissioning (AgentJunction between user and realUser isn't required.)
-    @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
-    @param realUser User that will be acting as the @param user. References realUser within context' subject.
-    @param group Group the context will be applying its permission list from.
-   */
-  public static X sudo(X x, User user, User realUser, Group group) {
-    x = sudo(x, user, realUser);
-    x = x.put("group", group);
     return x;
   }
 
