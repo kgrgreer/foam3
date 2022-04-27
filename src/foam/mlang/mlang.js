@@ -966,8 +966,9 @@ return stmt.toString();`
       javaCode:
         `java.util.List<Predicate> args = new java.util.ArrayList<>();
 boolean update = false;
-for ( int i = 0; i < this.args_.length; i++ ) {
-  Predicate arg = this.args_[i];
+
+for ( int i = 0 ; i < this.args_.length ; i++ ) {
+  Predicate arg    = this.args_[i];
   Predicate newArg = this.args_[i].partialEval();
   if ( newArg == foam.mlang.MLang.TRUE ) return foam.mlang.MLang.TRUE;
   if ( newArg instanceof Or ) {
@@ -984,7 +985,8 @@ for ( int i = 0; i < this.args_.length; i++ ) {
     }
   }
 }
-if ( args.size() == 0 ) return foam.mlang.MLang.TRUE;
+
+if ( args.size() == 0 ) return foam.mlang.MLang.FALSE;
 if ( args.size() == 1 ) return args.get(0);
 if ( update ) {
   Predicate newArgs[] = new Predicate[args.size()];
