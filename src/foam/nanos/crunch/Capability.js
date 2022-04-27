@@ -480,23 +480,6 @@ foam.CLASS({
 
         boolean allGranted = true;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        DAO userDAO = (DAO) x.get("userDAO");
-        Subject currentSubject = (Subject) x.get("subject");
-
-        Subject subject = new Subject(x);
-        if ( ucj instanceof AgentCapabilityJunction ) {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-          AgentCapabilityJunction acj = (AgentCapabilityJunction) ucj;
-          subject.setUser((User) userDAO.find(acj.getEffectiveUser())); // "user"
-        } else if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
-          // Call setUser() twice
-          // Because it builds a user path and adds a user to the chain for each setUser()
-          subject.setUser(currentSubject.getRealUser());
-          subject.setUser(currentSubject.getUser());
-        } else {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-        }
 
         var prereqs = crunchService.getPrereqs(x, getId(), ucj);
         CapabilityJunctionStatus prereqChainedStatus = null;
@@ -505,9 +488,9 @@ foam.CLASS({
             var cap = (Capability) capabilityDAO.find(capId);
             if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
-            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
+            UserCapabilityJunction prereqUcj = crunchService.getJunction(x, capId);
 
-            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, subject);
+            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, (Subject)x.get("subject"));
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
             if ( prereqChainedStatus != CapabilityJunctionStatus.GRANTED ) allGranted = false;
           }
