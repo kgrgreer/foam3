@@ -30,10 +30,13 @@ foam.CLASS({
         ];
         for ( var i = 0; i < args.length && ! result; i ++) {
           result = await this.tokenValueHelper.apply(self, args[i]);
+          if ( result ) {
+            if ( result.startsWith('$') )
+              return this.getTokenValue.call(this, result, cls, ctx);
+            return result;
+          }
         }
       }
-      if ( result ) 
-        return result.target || `/* invalid token target ${tokenString}, ${cls}*/`;
       //TODO: Put to default theme in override dao
       return foam.CSS.getTokenValue.call(this, tokenName, cls, ctx, true);
     },
@@ -47,7 +50,7 @@ foam.CLASS({
       // let r = await this.tokenOverrideDAO.find(pred);
       let r = await this.tokenOverrideDAO.select();
       r = r?.array.filter(obj => pred.f(obj))
-      return r.length ? r[0] : undefined;
+      return r.length ? r[0]?.target : undefined;
     }
   ]
 });
