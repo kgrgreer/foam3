@@ -193,20 +193,30 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
-      long startTime = System.currentTimeMillis();
       Logger logger = (Logger) x.get("logger");
       LogLevelFilterLogger loggerFilter = null;
-      while ( true ) {
+      while ( logger != null ) {
         if ( logger instanceof LogLevelFilterLogger ) {
           loggerFilter = (LogLevelFilterLogger) logger;
           break;
         }
-        logger = ((ProxyLogger) logger).getDelegate();
+        if ( logger instanceof ProxyLogger ) {
+          logger = ((ProxyLogger) logger).getDelegate();
+        } else {
+          break;
+        }
+      }
+      if ( loggerFilter == null ) {
+        throw new RuntimeException("LogLevelFilterLogger not found");
       }
       boolean savedDebugLoggingEnabled = loggerFilter.getLogDebug();
+      boolean savedInfoLoggingEnabled = loggerFilter.getLogInfo();
+
+      long startTime = System.currentTimeMillis();
       try {
         loggerFilter.setLogDebug(getDebugLoggingEnabled());
         loggerFilter.setLogInfo(getInfoLoggingEnabled());
+
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
@@ -223,7 +233,7 @@ foam.CLASS({
         ((DAO) x.get(getEventDaoKey())).put(event);
 
         loggerFilter.setLogDebug(savedDebugLoggingEnabled);
-        loggerFilter.setLogInfo(true);
+        loggerFilter.setLogInfo(savedInfoLoggingEnabled);
       }
       `
     },
