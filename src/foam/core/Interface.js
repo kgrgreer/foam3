@@ -63,8 +63,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'null',
-      label: 'Generate Proxy',
+      name: 'nullStrategy',
+      label: 'Generate Null',
       help: 'If enabled, causes automatic null generation.'
     },
     {
@@ -129,7 +129,7 @@ foam.CLASS({
           ]
         });
     
-      if ( this.null )
+      if ( this.nullStrategy )
         foam.CLASS({
           package: this.package,
           name: 'Null' + this.name,
