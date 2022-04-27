@@ -108,7 +108,9 @@ foam.CLASS({
           if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
           if ( ! wao.delegate ) {
             wao.delegate = this.getWAO();
+            break;
           }
+          wao = wao.delegate;
         }
 
         return wizardlet;
