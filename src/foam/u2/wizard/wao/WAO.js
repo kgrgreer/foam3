@@ -11,11 +11,11 @@ foam.INTERFACE({
   todo: [
     'add AbstractWAO to handle wizardlet.loading checks'
   ],
-  flags: ['web'],
   documentation: `
     Controls how a wizardlet's data is created, saved, and cancelled. A WAO may
     also set custom properties when passed recognized wizardlet subclasses.
   `,
+  nullStrategy: true,
 
   methods: [
     {

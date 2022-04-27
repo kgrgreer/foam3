@@ -10,7 +10,7 @@ foam.CLASS({
   documentation: "An axiom which adds null implementations for methods of 'of'.",
 
   requires: [
-    'foam.core.Method'
+    'foam.core.NullMethod'
   ],
 
   properties: [
@@ -23,14 +23,26 @@ foam.CLASS({
   methods: [
     function installInClass(cls) {
       cls.installAxioms(this.of.getOwnAxiomsByClass(foam.core.Method).map(
-        method => this.Method.create({
+        method => this.NullMethod.create({
           flags: this.flags,
           name: method.name,
           type: method.type,
-          args: method.args,
-          code: function () {}
+          args: method.args
         })
       ));
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'NullMethod',
+  extends: 'Method',
+
+  properties: [
+    {
+      name: 'code',
+      factory: () => function () {}
     }
   ]
 });
