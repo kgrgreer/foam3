@@ -30,6 +30,10 @@ foam.CLASS({
     'subject'
   ],
 
+  exports: [
+    'as Script'
+  ],
+
   javaImports: [
     'foam.core.*',
     'foam.dao.*',
@@ -379,7 +383,7 @@ foam.CLASS({
           this.output += Array.from(arguments).join('') + '\n';
         };
         try {
-          with ({ log: log, print: log, x: this.__context__ })
+          with ({ log: log, print: log, x: this.__subContext__ })
             return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
