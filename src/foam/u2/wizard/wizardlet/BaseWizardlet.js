@@ -23,6 +23,10 @@ foam.CLASS({
     'wizardCloseSub?'
   ],
 
+  exports: [
+    'id as wizardletId'
+  ],
+
   requires: [
     'foam.core.SimpleSlot',
     'foam.u2.borders.LoadingLevel',

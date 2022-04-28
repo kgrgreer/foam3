@@ -102,9 +102,18 @@ foam.CLASS({
           wizardlet: {
             class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
             wao: {
-              class: 'foam.u2.wizard.wao.PrerequisiteWAO',
-              of: 'foam.core.StringHolder',
-              prerequisiteCapabilityId: 'HasData'
+              // class: 'foam.u2.wizard.wao.PrerequisiteWAO',
+              // of: 'foam.core.StringHolder',
+              // prerequisiteCapabilityId: 'HasData'
+              class: 'foam.u2.wizard.wao.SplitWAO',
+              loader: {
+                class: 'foam.u2.wizard.data.PrerequisiteLoader',
+                of: 'foam.core.StringHolder',
+                prerequisiteCapabilityId: 'HasData',
+                delegate: { class: 'foam.u2.wizard.data.NullLoader' }
+              },
+              saver: { class: 'foam.u2.wizard.data.NullSaver' },
+              canceller: { class: 'foam.u2.wizard.data.NullCanceller' },
             }
           }
         }
