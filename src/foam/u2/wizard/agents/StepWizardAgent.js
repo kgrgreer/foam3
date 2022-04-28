@@ -20,7 +20,6 @@ foam.CLASS({
     'ctrl',
     'initialPosition?',
     'popupMode',
-    'pushView',
     'stack',
     'wizardlets'
   ],
