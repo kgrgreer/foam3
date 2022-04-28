@@ -139,8 +139,7 @@ foam.CLASS({
           axioms: [
             {
               class: 'foam.core.Null',
-              of: this.id,
-              name: 'implementor'
+              of: this.id
             }
           ]
         });

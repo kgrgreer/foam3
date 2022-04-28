@@ -17,6 +17,13 @@ foam.CLASS({
     {
       class: 'Class',
       name: 'of'
+    },
+    {
+      class: 'String',
+      name: 'name',
+      factory: function () {
+        return this.of + 'Implementor';
+      }
     }
   ],
 
