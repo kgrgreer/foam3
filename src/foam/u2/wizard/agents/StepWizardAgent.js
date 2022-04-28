@@ -79,6 +79,8 @@ foam.CLASS({
         if ( this.stack.BACK.isEnabled(this.stack.pos) )
           this.stack.back();
         else
+          // This is temporarily necessary to fake a StackBlock removal
+          // in case the stack is empty when the wizard is pushed.
           wizardStackBlock.removed.pub();
       }).bind(this);
 
