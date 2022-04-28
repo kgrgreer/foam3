@@ -296,6 +296,10 @@ public interface FObject
   }
 
   default FObject copyFrom(FObject obj) {
+    return copyFrom_(obj, obj.getClass());
+  }
+
+  default <T extends FObject> T copyFrom_(FObject obj, Class<T> type) {
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
@@ -311,7 +315,7 @@ public interface FObject
         System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
       }
     }
-    return this;
+    return (T) this;
   }
 
   /**
