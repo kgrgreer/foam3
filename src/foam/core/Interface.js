@@ -209,6 +209,13 @@ foam.LIB({
             return foam.lookup(id);
           });
         }
+        if ( m.nullStrategy ) {
+          let id = m.package + '.Null' + m.name;
+          foam.__context__.registerFactory({id: id, package: m.package, name: 'Null' + m.name}, function() {
+            foam.lookup(m.id);
+            return foam.lookup(id);
+          });
+        }
       }
     }
   ]
