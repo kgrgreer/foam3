@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'as Script'
+    'as script'
   ],
 
   javaImports: [
