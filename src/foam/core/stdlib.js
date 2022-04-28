@@ -1347,10 +1347,10 @@ foam.LIB({
       if ( tokenString.indexOf('.') != -1 ) {
         fullString = tokenString;
         tokenName = tokenString.substring(tokenString.lastIndexOf('.')+1);
-        cls = foam.lookup(tokenString.substring(0,tokenString.lastIndexOf('.')));
+        cls = foam.maybeLookup(tokenString.substring(0,tokenString.lastIndexOf('.'))) || '';
       } else {
         tokenName = tokenString;
-        cls = foam.String.isInstance(cls) ? foam.lookup(cls) : cls;
+        cls = foam.String.isInstance(cls) ? ( foam.maybeLookup(cls) || '' ) : cls;
         fullString = cls?.id + '.' + tokenName;
       }
       return [ tokenName, cls, fullString ]
