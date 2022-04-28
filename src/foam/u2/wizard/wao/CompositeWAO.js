@@ -5,16 +5,16 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'CompositeWAO',
-  extends: 'foam.u2.wizard.ProxyWAO',
+  extends: 'foam.u2.wizard.wao.ProxyWAO',
   flags: ['web'],
   documentation: 'Applies multiple WAOs to a wizardlet',
 
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WAO',
+      of: 'foam.u2.wizard.wao.WAO',
       name: 'delegates'
     }
   ],

@@ -5,14 +5,14 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'ProxyWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
+  implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
   properties: [
     {
       class: 'Proxy',
-      of: 'foam.u2.wizard.WAO',
+      of: 'foam.u2.wizard.wao.WAO',
       name: 'delegate'
     }
   ]

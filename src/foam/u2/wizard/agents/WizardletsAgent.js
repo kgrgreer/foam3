@@ -23,7 +23,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       name: 'wizardlets',
       documentation: `
         The specified wizardlets will be exported as 'wizardlets' in this
@@ -34,7 +34,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       name: 'laterWizardlets',
       factory: function () {
         const output = this.priorWizardlets || [];

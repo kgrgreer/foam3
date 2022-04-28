@@ -5,11 +5,11 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'DAOWAO',
   implements: [
     'foam.mlang.Expressions',
-    'foam.u2.wizard.WAO'
+    'foam.u2.wizard.wao.WAO'
   ],
 
   requires: [
