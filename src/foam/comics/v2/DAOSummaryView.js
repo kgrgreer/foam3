@@ -283,8 +283,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
-      // Question: why find is needed here? if there is already a find call in render()
-      // self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
+      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
     },
     function render() {
       var self = this;
@@ -292,6 +291,8 @@ foam.CLASS({
 
       // Get a fresh copy of the data, especially when we've been returned
       // to this view from the edit view on the stack.
+      /*
+      // NOTE: Remove duplicate call, already a dao.find call done in init()
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
         if ( d ) { 
           self.data = d;
@@ -299,6 +300,7 @@ foam.CLASS({
             self.edit();
         }
       });
+      */
       if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {
