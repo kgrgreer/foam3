@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.mlang.order.ThenBy',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
+    'static foam.core.ContextAware.maybeContextualize'
   ],
 
   classes: [
@@ -58,7 +59,7 @@ foam.CLASS({
             try {
               innerObject = (FObject) obj;
               outerObject = (FObject) getOf().newInstance();
-              outerObject = outerObject.copyFrom(innerObject);
+              outerObject = outerObject.copyFrom(maybeContextualize(ctx, innerObject));
             } catch ( Exception ex ) {
               throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
             }
@@ -148,7 +149,7 @@ foam.CLASS({
         try {
           delegateObject = (FObject) obj;
           ofObject = (FObject) getOf().newInstance();
-          ofObject = ofObject.copyFrom(delegateObject);
+          ofObject = ofObject.copyFrom(maybeContextualize(ctx, delegateObject));
         } catch ( Exception ex ) {
           throw new RuntimeException("Cannot adapt from delegate: " + ex.getMessage(), ex);
         }
