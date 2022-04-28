@@ -283,7 +283,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
-      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
+      // Question: why find is needed here? if there is already a find call in render()
+      // self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
     },
     function render() {
       var self = this;
