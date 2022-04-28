@@ -916,7 +916,7 @@ foam.POM({
     { name: "foam/u2/wizard/debug/DebugWAO",                                              flags: "web" },
     { name: "foam/u2/wizard/debug/DebugContextIntercept",                                 flags: "web" },
     { name: "foam/u2/wizard/debug/DebugWizardletView",                                    flags: "web" },
-    { name: "foam/u2/wizard/debug/TestWizard",                                            flags: "web&debug" },
+    { name: "foam/u2/wizard/debug/TestWizard",                                            flags: "java|web&debug" },
     { name: "foam/u2/wizard/debug/TestWizardScenario",                                    flags: "web&debug" },
     { name: "foam/u2/wizard/debug/scenarios",                                             flags: "web&debug" },
     { name: "foam/u2/wizard/controllers/WizardController",                                flags: "web" },
