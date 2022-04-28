@@ -77,6 +77,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'fakeCapabilityDAO',
+      flags: ['web'],
       expression: function (scenario) {
         return this.ArrayDAO.create({
           of: 'foam.nanos.crunch.Capability',
@@ -87,6 +88,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'fakePrerequisiteCapabilityDAO',
+      flags: ['web'],
       expression: function (scenario) {
         return this.ArrayDAO.create({
           of: 'foam.nanos.crunch.CapabilityCapabilityJunction',
@@ -96,12 +98,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'scenarioName'
+      name: 'scenarioName',
+      flags: ['web']
     },
     {
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.debug.TestWizardScenario',
       name: 'scenario',
+      flags: ['web'],
       expression: function (scenarioName) {
         if ( ! scenarioName ) return null;
         const cls = foam.u2.wizard.debug.scenarios[scenarioName]
