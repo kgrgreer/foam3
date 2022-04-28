@@ -123,6 +123,12 @@ foam.CLASS({
       value: function(json, ctx) {
         return foam.json.parse(json, null, ctx);
       }
+    },
+    {
+      name: 'cloneProperty',
+      value: function(value, cloneMap, opt_X) {
+        cloneMap[this.name] = value && value.clone ? value.clone(opt_X) : value;
+      }
     }
   ],
 
