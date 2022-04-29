@@ -1061,6 +1061,40 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.java',
+  name: 'NullMethodJavaRefinement',
+  refines: 'foam.core.NullMethod',
+  // flags: ['java'],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'javaSupport',
+      value: true
+    },
+    {
+      name: 'javaCode',
+      getter: function() {
+        // TODO: This could be an expression if the copyFrom in createChildMethod
+        // didn't finalize its value
+        var code = 'return';
+
+        const numberTypes = ['byte','int','short','long','float','double'];
+        if ( this.javaType && this.javaType !== 'void' ) {
+          code += ' ' + ( numberTypes.includes(javaType) ) ? '0' :
+            ( javaType === 'boolean' ) ? 'false' : 'null';
+        }
+
+        code += ';';
+
+        return code;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.java',
   name: 'ImportJavaRefinement',
   refines: 'foam.core.Import',
   // flags: ['java'],

@@ -63,6 +63,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'nullStrategy',
+      label: 'Generate Null',
+      help: 'If enabled, causes automatic null generation.'
+    },
+    {
+      class: 'Boolean',
       name: 'client',
       label: 'Generate Client Stub',
       help: 'If enabled, causes automatic client generation.'
@@ -107,21 +113,36 @@ foam.CLASS({
           ]
         });
 
-        if ( this.client )
-          foam.CLASS({
-            package: this.package,
-            name: 'Client' + this.name,
-            implements: [ this.id ],
-            flags: this.flags,
-            source: this.source,
-            properties: [
-              {
-                class: 'Stub',
-                of: this.id,
-                name: 'delegate'
-              }
-            ]
-          });
+      if ( this.client )
+        foam.CLASS({
+          package: this.package,
+          name: 'Client' + this.name,
+          implements: [ this.id ],
+          flags: this.flags,
+          source: this.source,
+          properties: [
+            {
+              class: 'Stub',
+              of: this.id,
+              name: 'delegate'
+            }
+          ]
+        });
+    
+      if ( this.nullStrategy )
+        foam.CLASS({
+          package: this.package,
+          name: 'Null' + this.name,
+          implements: [ this.id ],
+          flags: this.flags,
+          source: this.source,
+          axioms: [
+            {
+              class: 'foam.core.Null',
+              of: this.id
+            }
+          ]
+        });
     },
 
     function validate() {
@@ -183,6 +204,13 @@ foam.LIB({
         if ( m.client ) {
           let id = m.package + '.Client' + m.name;
           foam.__context__.registerFactory({id: id, package: m.package, name: 'Client' + m.name}, function() {
+            foam.lookup(m.id);
+            return foam.lookup(id);
+          });
+        }
+        if ( m.nullStrategy ) {
+          let id = m.package + '.Null' + m.name;
+          foam.__context__.registerFactory({id: id, package: m.package, name: 'Null' + m.name}, function() {
             foam.lookup(m.id);
             return foam.lookup(id);
           });
