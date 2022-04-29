@@ -69,7 +69,7 @@ foam.CLASS({
         name: 'evaluateBearerToken',
         type: 'String',
         javaCode: `
-        return "";
+        return getBearerToken();
         `
     }
   ],
