@@ -25,34 +25,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'code',
-      javaFactory: 'return getCountryId() + "-" + getIsoCode();'
-    },
-    {
-      class: 'String',
       name: 'isoCode'
     },
     {
       class: 'String',
-      name: 'name',
-      validationPredicates: [
-      {
-        args: ['name'],
-        query: 'name=="true"',
-        errorString: 'lalala'
-      }
-    ]
-    },
-    {
-      class: 'Int',
-      name: 'test',
-      validationPredicates: [
-      {
-        args: ['test'],
-        query: 'test==5',
-        errorString: 'lalala'
-      }
-    ]
+      name: 'name'
     },
     {
       class: 'Reference',
