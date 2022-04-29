@@ -102,6 +102,61 @@ foam.CLASS({
           wizardlet: {
             class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
             wao: {
+              class: 'foam.u2.wizard.wao.SplitWAO',
+              loader: {
+                class: 'foam.u2.wizard.data.PrerequisiteLoader',
+                of: 'foam.core.StringHolder',
+                prerequisiteCapabilityId: 'HasData',
+                delegate: { class: 'foam.u2.wizard.data.NullLoader' }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.CapabilityCapabilityJunction',
+      name: 'capabilityCapabilityJunctions',
+      factory: () => [
+        ['Entry','WantsData'],
+        ['WantsData','HasData'],
+      ]
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.wizard.debug.scenarios',
+  name: 'PrerequisiteWAOScenario',
+  extends: 'foam.u2.wizard.debug.TestWizardScenario',
+
+  properties: [
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilities',
+      factory: () => [
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: 'Entry',
+          wizardConfig: {
+            class: 'foam.u2.crunch.EasyCrunchWizard',
+            incrementalWizard: true
+          }
+        },
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: `HasData`,
+          of: 'foam.core.StringHolder'
+        },
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: `WantsData`,
+          of: 'foam.core.StringHolder',
+          wizardlet: {
+            class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+            wao: {
               class: 'foam.u2.wizard.wao.PrerequisiteWAO',
               of: 'foam.core.StringHolder',
               prerequisiteCapabilityId: 'HasData'
