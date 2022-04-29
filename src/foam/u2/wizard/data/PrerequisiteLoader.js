@@ -14,9 +14,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'wizardlets',
+    'capabilityToPrerequisite',
     'wizardletId',
-    'capabilityToPrerequisite'
+    'wizardlets'
   ],
 
   properties: [
@@ -80,10 +80,10 @@ foam.CLASS({
 
       let clonedPrereqWizardletData;
 
-      if ( this.loadFromPath  ){
+      if ( this.loadFromPath  ) {
         var loadedFromData = this.loadFromPath.f(prereqWizardletData);
 
-        if ( ! loadedFromData ){
+        if ( ! loadedFromData ) {
           console.error(
             `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
@@ -97,13 +97,13 @@ foam.CLASS({
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
 
-      if ( this.isWrappedInFObjectHolder ){
+      if ( this.isWrappedInFObjectHolder ) {
         return this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
       }
 
-      if ( this.loadIntoPath ){
+      if ( this.loadIntoPath ) {
 
-        if ( ! initialData ){
+        if ( ! initialData ) {
           initialData = this.of.create({}, this);
         }
 

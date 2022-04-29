@@ -10,12 +10,18 @@ foam.CLASS({
   extends: 'foam.u2.wizard.wao.ProxyWAO',
 
   requires: [
-    'foam.u2.wizard.data.NullLoader',
-    'foam.u2.wizard.data.NullSaver',
     'foam.u2.wizard.data.NullCanceler',
+    'foam.u2.wizard.data.NullLoader',
+    'foam.u2.wizard.data.NullSaver'
   ],
 
   properties: [
+    {
+      class: 'foam.util.FObjectSpec',
+      of: 'foam.u2.wizard.data.Canceler',
+      name: 'canceler',
+      factory: () => ({ class: 'foam.u2.wizard.data.NullCanceler' })
+    },
     {
       class: 'foam.util.FObjectSpec',
       of: 'foam.u2.wizard.data.Loader',
@@ -28,16 +34,14 @@ foam.CLASS({
       of: 'foam.u2.wizard.data.Saver',
       name: 'saver',
       factory: () => ({ class: 'foam.u2.wizard.data.NullSaver' })
-    },
-    {
-      class: 'foam.util.FObjectSpec',
-      of: 'foam.u2.wizard.data.Canceler',
-      name: 'canceler',
-      factory: () => ({ class: 'foam.u2.wizard.data.NullCanceler' })
     }
   ],
 
   methods: [
+    async function cancel (wizardlet) {
+      const canceler = foam.json.parse(this.canceler, undefined, wizardlet.__subContext__);
+      await canceler.cancel();
+    },
     async function load (wizardlet) {
       const loader = foam.json.parse(this.loader, undefined, wizardlet.__subContext__);
       if ( wizardlet.loading ) return;
@@ -52,10 +56,6 @@ foam.CLASS({
       wizardlet.loading = true;
       await saver.save(wizardlet.data);
       wizardlet.loading = false;
-    },
-    async function cancel (wizardlet) {
-      const canceler = foam.json.parse(this.canceler, undefined, wizardlet.__subContext__);
-      await canceler.cancel();
     }
   ]
 });
