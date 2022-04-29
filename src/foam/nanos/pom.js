@@ -616,6 +616,7 @@ foam.POM({
     { name: "crunch/CapabilityCategory",                                                  flags: "js|java" },
     { name: "crunch/UserCapabilityJunctionRefine",                                        flags: "js|java" },
     { name: "crunch/CapabilityCapabilityJunctionRefine",                                  flags: "js" },
+    { name: "crunch/PrerequisiteCapabilityJunctionRefine",                                flags: "js" },
     { name: "crunch/CapabilityCategoryCapabilityJunctionRefine",                          flags: "js" },
     { name: "crunch/RenewableData",                                                       flags: "js|java" },
     { name: "crunch/UCJProperty",                                                         flags: "js" },
