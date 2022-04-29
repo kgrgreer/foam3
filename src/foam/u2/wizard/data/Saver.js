@@ -17,3 +17,13 @@ foam.INTERFACE({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.u2.wizard.data',
+  name: 'NullSaver',
+  implements: [ 'foam.u2.wizard.data.Saver' ],
+
+  methods: [
+    function save() {}
+  ]
+});

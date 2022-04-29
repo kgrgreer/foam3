@@ -16,3 +16,13 @@ foam.INTERFACE({
     }
   ]
 })
+
+foam.CLASS({
+  package: 'foam.u2.wizard.data',
+  name: 'NullCanceler',
+  implements: [ 'foam.u2.wizard.data.Canceler' ],
+
+  methods: [
+    function cancel() {}
+  ]
+});

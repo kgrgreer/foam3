@@ -56,7 +56,7 @@ foam.CLASS({
 
       if ( ! isDescendantCheck ) {
         console.error(
-          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${wizardlet.id}`
+          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${this.wizardletId}`
         );
         return;
       }

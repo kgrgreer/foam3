@@ -8,12 +8,23 @@ foam.INTERFACE({
   package: 'foam.u2.wizard.data',
   name: 'Loader',
   proxy: true,
-  nullStrategy: true,
 
   methods: [
     {
       name: 'load',
       async: true
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.wizard.data',
+  name: 'NullLoader',
+  implements: [ 'foam.u2.wizard.data.Loader' ],
+
+  methods: [
+    function load() {
+      return null;
     }
   ]
 });
