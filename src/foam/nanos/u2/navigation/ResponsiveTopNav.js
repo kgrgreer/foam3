@@ -95,7 +95,7 @@ foam.CLASS({
           .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .addClass(this.myClass('logo'))
             .on('click', () => {
-              this.pushMenu(this.theme.logoRedirect, true);
+              this.pushMenu('', true);
             })
           .end()
         .end()
