@@ -170,6 +170,11 @@ foam.CLASS({
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
       section: 'navigation',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
       writePermissionRequired: true
     },
     {
