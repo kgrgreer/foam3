@@ -26,6 +26,9 @@
         foam.u2.wizard.data.PrerequisiteLoader
           .getOwnAxiomsByClass(foam.core.Property)
           .forEach(a => {
+            // We use toJSON here because some property values, such as those
+            // of Class properties, are recursive and therefore invalid inside
+            // FObjectSpec property values (of which spec is one)
             spec[a.name] = a.toJSON(this[a.name]);
           });
         return spec;
