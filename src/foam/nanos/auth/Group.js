@@ -76,11 +76,9 @@ foam.CLASS({
       menuKeys: ['admin.groups']
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
-      documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu'
+      documentation: 'Menu user redirects to after login.'
     },
     {
       class: 'Reference',

@@ -166,11 +166,9 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu',
       section: 'navigation',
       writePermissionRequired: true
     },
