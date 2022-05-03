@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.util.Arrays',
     'javax.servlet.http.HttpServletRequest',
     'org.eclipse.jetty.server.Request'
   ],
@@ -110,8 +111,7 @@ Later themes:
           }
 
           if ( !! defaultMenu ) {
-            theme.defaultMenu = defaultMenu;
-            theme.logoRedirect = defaultMenu;
+            theme.defaultMenu = defaultMenu.concat(theme.defaultMenu);
           }
 
           var userTheme = await user.theme$find;
@@ -200,7 +200,7 @@ Later themes:
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
-        var defaultMenu = group != null ? group.getDefaultMenu() : "";
+        String[] defaultMenu = group != null ? group.getDefaultMenu() : null;
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null && ! SafetyUtil.equals(theme, groupTheme) ) {
@@ -211,9 +211,9 @@ Later themes:
         }
 
         // Use default menu from user group if present
-        if ( ! SafetyUtil.isEmpty(defaultMenu) ) {
-          theme.setDefaultMenu(defaultMenu);
-          theme.setLogoRedirect(defaultMenu);
+        if ( defaultMenu != null && defaultMenu.length != 0 ) {
+          String[] bothDefaults = Arrays.append(defaultMenu, theme.getDefaultMenu());
+          theme.setDefaultMenu(bothDefaults);
         }
 
         Theme userTheme = user.findTheme(x);

@@ -353,6 +353,9 @@ foam.CLASS({
         this.isLoading_ = true;
         this.data.next().then((isFinished) => {
           if ( isFinished ) {
+            for ( let w of this.data.wizardlets ) {
+              if ( w.submit ) w.submit();
+            }
             this.onClose(x, true);
           }
         }).catch(e => {

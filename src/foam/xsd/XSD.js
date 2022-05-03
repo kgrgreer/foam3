@@ -33,7 +33,8 @@ foam.CLASS({
     {
       name: 'simpleTypes',
       factory: () => []
-    }
+    },
+    'xmlns'
   ],
 
   methods: [
@@ -319,8 +320,8 @@ foam.CLASS({
      * @returns {String}    The computed type.
      */
     function getPropType(baseType) {
-        if ( this.simpleTypes[baseType] ) return this.package + '.' + baseType;
-        return this.TYPES[baseType] || 'FObjectProperty';
+      if ( this.simpleTypes[baseType] ) return this.package + '.' + baseType;
+      return this.TYPES[baseType] || 'FObjectProperty';
     },
 
     /**
@@ -430,6 +431,13 @@ foam.CLASS({
       }
     },
 
+    function createProperty(modelName, type, name) {
+      return {
+        class: this.getPropType(type),
+        name: name
+      };
+    },
+
     /**
      * Process a sequence element type
      * @param  {Object} m     FOAM model
@@ -444,11 +452,7 @@ foam.CLASS({
       if ( maxOccurs !== 'unbounded') maxOccurs = parseInt(maxOccurs, 10);
       let minOccurs = parseInt(doc.getAttribute('minOccurs'), 10) || 1;
 
-
-      let property = {
-        class: this.getPropType(doc.getAttribute('type')),
-        name: doc.getAttribute('name')
-      };
+      let property  = this.createProperty(m.name, doc.getAttribute('type'), doc.getAttribute('name'));
 
       /*
       // for ISO 20022 properties convert short name to long name and add documentation
@@ -511,6 +515,9 @@ foam.CLASS({
         switch ( child.localName ) {
           case 'element':
             this.processSequenceElement(m, child);
+            break;
+          case 'choice':
+            this.processChoice(m, child);
             break;
         }
       }
@@ -606,6 +613,13 @@ foam.CLASS({
       return foam[modelType](m);
     },
 
+    function createClass(package, name) {
+      return {
+        package: package,
+        name: name
+      };
+    },
+
     function compile() {
       var parser = new (globalThis.DOMParser || require('xmldom').DOMParser)();
 
@@ -614,9 +628,9 @@ foam.CLASS({
       // preparse all the simple types
       var children = docElement.childNodes;
 
-      this.preparse(children);
+      this.xmlns = docElement._nsMap[''] || '';
 
-      let models = [];
+      this.preparse(children);
 
       for ( var key in children ) {
         var child = children[key];
@@ -624,12 +638,14 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1 ) continue;
 
-        var name = child.getAttribute('name');
+        var name = child.getAttribute('name')
+        var id   = this.package + '.' + name;
+
+        // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
+        if ( name !== 'Document' &&  foam.maybeLookup(id) ) continue;
+
         // create foam model
-        var m = {
-          package: this.package,
-          name: name
-        };
+        var m = this.createClass(this.package, name);
 
         /*
         // check iso20022 type & add documentation
@@ -672,9 +688,9 @@ foam.CLASS({
 
         if ( m.type === 'enum' ) {
           delete m.type;
-          models.push(this.genModel(m, 'ENUM'));
+          this.genModel(m, 'ENUM');
         } else {
-          models.push(this.genModel(m));
+          this.genModel(m);
         }
       }
     }
