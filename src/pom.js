@@ -1125,7 +1125,6 @@ foam.POM({
     { name: "foam/dao/FreezingDAO",                                   flags: "js|java" },
     { name: "foam/nanos/geocode/GoogleMapsGeocodingDAO",              flags: "js|java" },
     { name: "foam/dao/history/HistoryDAO",                            flags: "js|java" },
-    { name: "foam/nanos/script/ScriptRunnerDAO",                      flags: "js|java" },
     { name: "foam/dao/UnreliableDAO",                                 flags: "js|java" },
     { name: "foam/nanos/auth/UserPasswordHashingDAO",                 flags: "js|java" },
     { name: "foam/dao/ValidatingDAO",                                 flags: "js|java" },
@@ -1141,5 +1140,5 @@ foam.POM({
     { name: "foam/demos/csv/CsvUploadDemo",                           flags: "demo&web" },
     { name: "foam/dashboard/view/CenteredDashboardCitationView",      flags: "web" },
     { name: "foam/dashboard/view/GroupedDAOTableWidget",              flags: "web" },
-  ]
+ ]
 });
