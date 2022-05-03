@@ -11,15 +11,15 @@ foam.ENUM({
   values: [
     {
       name: 'DEFAULT',
-      color: '/*%WHITE%*/ #FFFFFF'
+      color: '$white'
     },
     {
       name: 'DESTRUCTIVE',
-      color: '/*%DESTRUCTIVE3%*/ #D9170E'
+      color: '$red400'
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00'
+      color: '$yellow400'
     }
   ]
 });
@@ -51,8 +51,8 @@ foam.CLASS({
       z-index: 4;
     }
     ^inner {
-      background-color: /*%WHITE%*/ white;
-      border: 1px solid /*%GREY4%*/ #DADDE2;
+      background-color: $white;
+      border: 1px solid $grey200;
       border-radius: 0 0 3px 3px;
       border-top: none;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);      
@@ -129,7 +129,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('/*%GREY4%*/ #DADDE2')})
+              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('$grey200')})
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)

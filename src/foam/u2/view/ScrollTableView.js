@@ -63,13 +63,13 @@
       overflow: visible;
     }
     ^scrolled .foam-u2-view-TableView-thead {
-      box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
+      box-shadow: 0 1.5px 4px $grey200;
     }
     ^nav{
       align-items: center;
-      background: /*%WHITE%*/ white;
+      background: $white;
       border-radius: 0 0 4px 4px;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey200;
       box-sizing: border-box;
       gap: 8px;
       justify-content: flex-end;
@@ -86,7 +86,7 @@
       border-radius: 0px;
       padding: 0px;
       height: auto;
-      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+      border-bottom: 2px solid $primary400;
     }
     ^counters:hover {
       cursor: pointer;

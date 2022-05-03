@@ -74,12 +74,12 @@ foam.CLASS({
 
   css: `
     ^disabled button {
-      color: /*%GREY4%*/ grey;
+      color: $grey200;
     }
 
     ^button-container button {
       border: 1px solid transparent;
-      background-color: /*%WHITE%*/ #FFFFFF;
+      background-color: $white;
       justify-content: space-between;
       text-align: left;
       white-space: nowrap;
@@ -92,12 +92,12 @@ foam.CLASS({
     }
 
     ^button-container button:hover:not(:disabled) {
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+      background-color: $primary50;
     }
 
     ^button-container button:focus {
-      border-color: /*%PRIMARY4%*/ #C6D2FF;
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+      border-color: $primary200;
+      background-color: $primary50;
     }
 
     ^button-container button:focus:not(:focus-visible){

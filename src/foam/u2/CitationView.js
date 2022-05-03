@@ -19,13 +19,13 @@ foam.CLASS({
     }
 
     ^rw {
-      background: /*%WHITE%*/ white;
+      background: $white;
       padding: 8px 16px;
       color: /*%BALCK%*/ #424242;
     }
 
     ^rw:hover {
-      background: /*%GREY5%*/ #f4f4f9;
+      background: $grey50;
       cursor: pointer;
     }
   `,

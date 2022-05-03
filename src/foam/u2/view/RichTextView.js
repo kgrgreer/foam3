@@ -40,13 +40,13 @@ foam.CLASS({
       content: attr(placeholder);
       pointer-events: none;
       display: block;
-      color: /*%GREY3%*/ #B2B6BD;
+      color: $grey400;
     }
     ^ > * + * {
       margin-top: 4px;
     }
     ^editor {
-      border: 1px solid /*%GREY4%*/ #6B778C;
+      border: 1px solid $grey200;
       border-radius: 4px;
       height: unset;
       overflow: auto;
@@ -55,8 +55,8 @@ foam.CLASS({
       width: 100%;
     }
     ^dragged{
-      background: /*%PRIMARY5%*/ #E5F1FC;
-      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+      background: $primary50;
+      border: 2px dashed $primary400;
     }
     ^dragged::after{
       content: "Drop Here";
@@ -75,7 +75,7 @@ foam.CLASS({
       margin-left: 0 !important;
     }
     ^seperator{
-      background: /*%GREY2%*/ #6B778C;
+      background: $grey500;
       width: 1px;
       height: 2em;
       align-self: center;

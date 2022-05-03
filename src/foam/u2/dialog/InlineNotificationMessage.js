@@ -23,27 +23,27 @@
   values: [
     {
       name: 'DEFAULT',
-      color: '/*%PRIMARY3%*/ #406DEA',
+      color: '$primary400',
       glyph: 'checkmark'
     },
     {
       name: 'ERROR',
-      color: '/*%DESTRUCTIVE3%*/ #A61414',
+      color: '$red400',
       glyph: 'exclamation'
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00',
+      color: '$yellow400',
       glyph: 'exclamation'
     },
     {
       name: 'SUCCESS',
-      color: ' /*%APPROVAL3%*/ #117A41',
+      color: ' $green400',
       glyph: 'checkmark'
     },
     {
       name: 'UNSTYLED',
-      color: ' /*%WHITE%*/ #FFFFFF'
+      color: ' $white'
     }
   ]
 });

@@ -12,22 +12,22 @@ foam.ENUM({
     {
       name: 'ACTIVE',
       label: 'Active',
-      color: '/*%APPROVAL1%*/ #04612E',
-      background: '/*%APPROVAL5%*/ #EEF7ED',
+      color: '$green700',
+      background: '$green50',
       documentation: 'Junction is satisfied and agent may act as entity.'
     },
     {
       name: 'DISABLED',
       label: 'Disabled',
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #FFE9E7',
+      color: '$red500',
+      background: '$red700',
       documentation: 'Junction is unsatisfied disabling agent from acting as entity.'
     },
     {
       name: 'INVITED',
       label: 'Invited',
-      color: '/*%WARNING1%*/ #865300',
-      background: '/*%WARNING4%*/ #FFF3C1',
+      color: '$yellow700',
+      background: '$yellow200',
       documentation: 'The person has been invited to join the business.'
     }
   ]

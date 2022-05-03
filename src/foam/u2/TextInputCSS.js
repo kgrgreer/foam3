@@ -29,37 +29,37 @@ foam.CLASS({
           padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
           border: 1px solid;
           border-radius: 3px;
-          color: /*%BLACK%*/ #1e1f21;
-          background-color:/*%WHITE%*/ #ffffff;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          color: $black700;
+          background-color:$white;
+          border-color: $grey400;
           width: 100%;
         }
 
         ^:hover {
-          border-color: /*%GREY2%*/ #9ba1a6;
+          border-color: $grey500;
         }
 
         ^:hover::placeholder,
         ^:hover:-ms-input-placeholder,
         ^:hover::-ms-input-placeholder {
-          color: /*%GREY2%*/ #9ba1a6;
+          color: $grey500;
         }
 
         ^:focus {
           outline: none;
-          border-color: /*%PRIMARY3%*/ #406dea;
+          border-color: $primary400;
         }
 
         ^:disabled {
-          color: /*%GREY1%*/ #5e6061;
-          background-color: /*%GREY5%*/ #f5f7fa;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          color: $grey700;
+          background-color: $grey50;
+          border-color: $grey400;
         }
 
         ^.error {
-          color: /*%DESTRUCTIVE3%*/ #d9170e;
-          background-color: /*%DESTRUCTIVE5%*/ #fbedec;
-          border-color: /*%DESTRUCTIVE3%*/ #d9170e;
+          color: $red400;
+          background-color: $red700;
+          border-color: $red400;
         }
       `,
     },

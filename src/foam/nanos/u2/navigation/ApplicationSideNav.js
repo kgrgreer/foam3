@@ -28,7 +28,7 @@ foam.CLASS({
   css: `
     ^ {
       align-items: flex-start;
-      border-right: 1px solid /*%GREY4%*/ #DADDE2;
+      border-right: 1px solid $grey200;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -36,7 +36,7 @@ foam.CLASS({
     }
     ^sticky-container {
       align-content: flex-start;
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -52,7 +52,7 @@ foam.CLASS({
       top: 0;
     }
     ^divider {
-      border-top: 2px solid /*%GREY4%*/;
+      border-top: 2px solid $grey200;
       box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1);
     }
     ^bottom-container > * + * {

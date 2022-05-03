@@ -47,9 +47,9 @@ foam.CLASS({
     }
     ^container {
       align-items: flex-start;
-      background-color: /*%WHITE%*/ #f9f9f9;
+      background-color: $white;
       border-radius: 5px;
-      border: 1px solid /*%GREY4%*/ #e7eaec;
+      border: 1px solid $grey200;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;

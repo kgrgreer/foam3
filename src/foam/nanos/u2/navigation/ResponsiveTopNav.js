@@ -23,7 +23,7 @@ foam.CLASS({
   css: `
     ^ {
       align-items: center;
-      background-color: /*%WHITE%*/ #FFFFFF;
+      background-color: $white;
       border-bottom: 2px solid rgba(0, 0, 0, 0.06);
       display: flex;
       min-height: 64px;

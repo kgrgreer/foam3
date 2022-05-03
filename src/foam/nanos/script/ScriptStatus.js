@@ -12,29 +12,29 @@ foam.ENUM({
       name: 'SCHEDULED',
       label: 'Scheduled',
       ordinal: 0,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f'
+      color: '$yellow700',
+      background: '$yellow200'
     },
     {
       name: 'UNSCHEDULED',
       label: 'Unscheduled',
       ordinal: 1,
-      color: '/*%GREY1%*/ #5e6061',
-      background: '/*%GREY4%*/ #e7eaec',
+      color: '$grey700',
+      background: '$grey200',
     },
     {
       name: 'RUNNING',
       label: 'Running',
       ordinal: 2,
-      color: '/*%APPROVAL2%*/ #117a41',
-      background: '/*%APPROVAL5%*/ #e2f2dd',
+      color: '$green500',
+      background: '$green50',
     },
     {
       name: 'ERROR',
       label: 'Error',
       ordinal: 3,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec'
+      color: '$red500',
+      background: '$red700'
     }
   ]
 });

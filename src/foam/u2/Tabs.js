@@ -51,7 +51,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^tab.selected {
-      border-bottom: 3px solid /*%PRIMARY3%*/ #406dea;
+      border-bottom: 3px solid $primary400;
     }
   `
 });
@@ -62,9 +62,9 @@ foam.CLASS({
   extends: 'foam.u2.UnstyledTabs',
   css: `
     ^tabRow {
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       border-radius: 4px 4px 0 0;
-      border-bottom: 1px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 1px solid $grey200;
       display: flex;
       gap: 12px 24px;
       padding: 12px;
@@ -75,18 +75,18 @@ foam.CLASS({
       align-items: center;
       background: none;
       border-radius: 4px;
-      color: /*%GREY1%*/ #494F59;
+      color: $grey700;
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
     ^tab:hover {
-      background: /*%PRIMARY5%*/ #C6D2FF;
+      background: $primary50;
       cursor: pointer;
     }
     ^tab.selected {
-      background: /*%PRIMARY5%*/ #C6D2FF;
-      color: /*%PRIMARY1%*/ #202341;
+      background: $primary50;
+      color: $primary700;
       font-weight: 600;
     }
   `

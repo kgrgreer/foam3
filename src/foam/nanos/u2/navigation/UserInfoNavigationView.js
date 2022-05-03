@@ -29,12 +29,12 @@ foam.CLASS({
       align-items: center;
     }
     ^userName {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       font-weight: 600;
       font-size: 1.2rem;
     }
     ^agentName{
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       font-weight: 400;
       font-size: 1.1rem;
     }
@@ -59,7 +59,7 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
     ^dropdown svg {
-      fill:  /*%GREY2%*/ #6B778C;
+      fill:  $grey500;
     }
   `,
 

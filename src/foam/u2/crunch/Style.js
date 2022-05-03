@@ -41,7 +41,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px #e7eaec;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       background-position: 50% 50%;
     }
 
@@ -112,7 +112,7 @@ foam.CLASS({
       height: 80px;
       border-radius: 40px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
 
     ^mode-card {
@@ -127,7 +127,7 @@ foam.CLASS({
       width: 100%;
       height: 100%;
 
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
 
       border: 2px solid #f3f3f3;
       border-radius: 5px;
@@ -179,12 +179,12 @@ foam.CLASS({
     ^renewable-description {
       height: 24px;
       padding: 2px 8px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       font-size: 1rem;
       font-weight: 500;
       font-style: normal;
       font-stretch: normal;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       line-height: 24px;
       letter-spacing: normal;
       text-align: center;

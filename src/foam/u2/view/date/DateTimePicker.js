@@ -49,7 +49,7 @@ foam.CLASS({
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: solid 1px #cbcfd4;
       border-radius: 5px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       padding-bottom: 25px;
       margin-top: 16px;
       z-index: 100002;
@@ -69,7 +69,7 @@ foam.CLASS({
 
     ^ .year {
       border-radius: 5px 5px 0px 0px;
-      background-color: /*%PRIMARY3%*/ #406dea;
+      background-color: $primary400;
       color: #ffffff;
       display: inline-block;
       align-items: center;
@@ -174,7 +174,7 @@ foam.CLASS({
       height: 36px;
       width: 100%;
       font-size: 1.4rem;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border: 1px solid #cbcfd4;
       border-radius: 3px;
     }

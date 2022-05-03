@@ -48,7 +48,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       margin-top:20px;
       margin-left:20px;
       margin-bottom: 79px;
@@ -62,14 +62,14 @@ foam.CLASS({
     ^ .Rectangle-13 {
       width: 448px;
       height: 40px;
-      background-color: /*%BLACK%*/ #1e1f21;
+      background-color: $black700;
     }
     ^ .input {
       margin-top: 15px;
       margin-bottom: 79px;
       width: 408px;
       height: 40px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .Rectangle-8 {

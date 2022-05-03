@@ -34,9 +34,9 @@ foam.CLASS({
   }
 
   ^ {
-    background: /*%WHITE%*/ #FFFFFF;
-    border-right: 1px solid /*%GREY4%*/ #e7eaec;
-    color: /*%GREY2%*/ #9ba1a6;
+    background: $white;
+    border-right: 1px solid $grey200;
+    color: $grey500;
     display: flex;
     flex-direction: column;
     height: 100%;

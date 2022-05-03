@@ -39,7 +39,7 @@ foam.CLASS({
       width: 700px;
       padding-bottom: 13px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       margin-top: 50px;
       margin-left: 160px;
     }
@@ -50,7 +50,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       display: inline-block;
     }
     ^ h2{
@@ -59,7 +59,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       display: inline-block;
     }
     ^ .update-BTN{
@@ -72,14 +72,14 @@ foam.CLASS({
       text-align: center;
       color: #ffffff;
       cursor: pointer;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
-      background-color: /*%PRIMARY3%*/ #406dea;
+      border: 1px solid $primary400;
+      background-color: $primary400;
       margin-left: 20px;
       margin-top: 19px;
     }
     ^ .update-BTN:hover {
       opacity: 0.9;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
+      border: 1px solid $primary400;
     }
     ^ .check-Box{
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -115,7 +115,7 @@ foam.CLASS({
       width: 14px;
       height: 14px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
@@ -124,7 +124,7 @@ foam.CLASS({
       display: inline-block;
       letter-spacing: 0.2px;
       margin-left: 20px;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       padding-bottom: 10px;
     }
   `,

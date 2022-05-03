@@ -412,7 +412,7 @@ foam.CLASS({
       value: function(value) {
         let formatted = foam.core.Duration.duration(value);
         let negative = value < 0;
-        this.add(formatted || '0ms').style({ color: negative ? this.__subContext__.returnExpandedCSS('/*%DESTRUCTIVE2%*/ #a61414') : 'inherit' });
+        this.add(formatted || '0ms').style({ color: negative ? this.__subContext__.returnExpandedCSS('$red500') : 'inherit' });
       }
     }
   ]

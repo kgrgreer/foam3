@@ -67,13 +67,13 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
       margin: 0px;
     }
     ^ .foam-u2-TextField {
       margin-bottom:20px;
       margin-top:8px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .foam-u2-tag-TextArea {
@@ -104,12 +104,12 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
     }
     ^ .bg2 {
       margin-top:20px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       padding: 20px;
     }
     ^ .popUpDropDown {
@@ -132,7 +132,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black700;
     }
     ^ .popUpDropDown > div > div:hover {
       background-color: rgba(89, 165, 213, 0.3);

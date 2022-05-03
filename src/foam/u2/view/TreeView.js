@@ -35,8 +35,8 @@ foam.CLASS({
     }
 
     ^button:hover {
-      background-color: /*%GREY5%*/ #e7eaec;
-      color:  /*%PRIMARY1%*/ #406dea;
+      background-color: $grey50;
+      color:  $primary700;
     }
 
     ^label-container {
@@ -72,8 +72,8 @@ foam.CLASS({
     }
 
     ^selected > ^heading > ^button {
-      background-color: /*%PRIMARY5%*/ #e5f1fc !important;
-      color:  /*%PRIMARY1%*/ #406dea;
+      background-color: $primary50;
+      color:  $primary700;
     }
     ^toggle-icon {
       align-self: center;
@@ -258,9 +258,9 @@ foam.CLASS({
               style({
                 'fill': this.slot(function(selected, id) {
                   if ( selected && foam.util.equals(selected.id, id) ) {
-                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
+                    return foam.CSS.replaceTokens('$primary400', this.cls_.id, self.__subContext__);
                   }
-                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
+                  return foam.CSS.replaceTokens('$grey500', this.cls_.id, self.__subContext__);
                 }, this.selection$, this.data$.dot('id'))
               }).
             end().

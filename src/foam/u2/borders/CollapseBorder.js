@@ -51,7 +51,7 @@ foam.CLASS({
       outline: none;
     }
     ^toggle-button:focus {
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^control {
       transition: transform 0.3s;
