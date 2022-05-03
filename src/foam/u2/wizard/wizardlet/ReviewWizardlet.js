@@ -20,6 +20,13 @@ foam.CLASS({
       name: 'items'
     },
     {
+      class: 'String',
+      name: 'title',
+      factory: function(){
+        return 'Review Your Request';
+      }
+    },
+    {
       name: 'sections',
       factory: function () {
         return [
@@ -28,6 +35,7 @@ foam.CLASS({
             title: 'Review',
             customView: {
               class: 'foam.u2.wizard.wizardlet.ReviewWizardletView',
+              title$: this.title$,
               items$: this.items$
             }
           })
