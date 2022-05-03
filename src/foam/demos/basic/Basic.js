@@ -15,13 +15,22 @@ foam.CLASS({
     {
       name: 'symbols',
       factory: function() {
-        return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars) {
+        return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal) {
           return {
             START: repeat(sym('line'), '\n'),
 
-            line: seq(sym('number'), ' ', sym('statement')),
+            line: seq(sym('number'), ' ', sym('statements')),
 
-            statement: str(repeat(notChars('\n'))),
+            statements: repeat(sym('statement'), ':'),
+
+            statement: alt(
+              sym('end'),
+              sym('goto'),
+              str(repeat(notChars(':\n')))),
+
+            goto: seq('GOTO ', sym('number')),
+
+            end: literal('END', 'return;'),
 
             expr: alt(
               sym('number'),
@@ -76,6 +85,14 @@ foam.CLASS({
         }
       }
     }
+  ],
+
+  methods: [
+    function init() {
+      this.addActions({
+        goto: function(a) { return `_line = ${a[1]}; break;`; }
+      });
+    }
   ]
 });
 
@@ -114,6 +131,12 @@ foam.CLASS({
     {
       class: 'Code',
       name: 'targetCode'
+    },
+    {
+      class: 'String',
+      name: 'output',
+      width: 80,
+      view: { class: 'foam.u2.tag.TextArea', rows: 20 }
     }
   ],
 
@@ -132,8 +155,13 @@ foam.CLASS({
           -1:
           <% for ( var i = 0 ; i < lines.length ; i++ ) {
             var line = lines[i];
-          %>
-          <%=line[0]%>: <%=line[2]%>
+          %><!--
+            --><%=line[0]%>: <!--
+            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
+              var stmt = line[2][j];
+            %><!--
+              --><%=stmt%>
+            <%}%>
           <%}%>
         }
       }
@@ -155,6 +183,8 @@ foam.CLASS({
     {
       name: 'run',
       code: function() {
+        this.output = '';
+        this.output = 'done';
       }
     }
   ]
