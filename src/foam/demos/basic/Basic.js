@@ -17,6 +17,10 @@ foam.CLASS({
       factory: function() { return {}; }
     },
     {
+      name: 'defs',
+      factory: function() { return []; }
+    },
+    {
       name: 'symbols',
       factory: function() {
         return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal, until) {
@@ -43,16 +47,16 @@ foam.CLASS({
 
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
 
-            print: seq1(2, 'PRINT', optional(' '), repeat(sym('printArg'), ';')),
+            print: seq('PRINT', optional(' '), repeat(sym('printArg'), ';'), optional(';')),
 
             printArg: alt(
               sym('string'),
               sym('tab')
             ),
 
-            string: str(seq1(1, '"', repeat(notChars('"')), '"')),
+            string: seq1(1, '"', repeat(notChars('"')), '"'),
 
-            tab: str(seq('TAB(', sym('number'), ')')), // TODO: make expression
+            tab: str(seq('TAB(', alt(sym('number'), sym('symbol')), ')')), // TODO: make expression
 
             let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
 
@@ -120,12 +124,29 @@ foam.CLASS({
       var self = this;
       this.addActions({
         def: function(a) {
-          self.vars[`${a[1]} = function(${a[3]}) { return ${a[5]}; }`] = true;
+          self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
         },
         if: function(a) { return `if ( ${a[1]}) { _line = ${a[2]}; break; }`; },
-        string: function(a) { return `"${a[0]}"`; },
-        print: function(a) { return `PRINT(${a.join(',')});`; },
+        string: function(a) { return `"${a.join('')}"`; },
+        print: function(a) {
+          debugger;
+          var ret = '';
+          function append(s) {
+            ret += ( ret ? '.' : '' ) + s;
+          }
+//          print: seq('PRINT', optional(' '), repeat(sym('printArg'), ';'), optional(';')),
+          for ( var i = 0 ; i < a[2].length ; i++ ) {
+            var l = a[2][i];
+            if ( l.startsWith('TAB') ) {
+              append(l);
+            } else {
+              append('PRINT(' + l + ')');
+            }
+          }
+          if ( ! a[3] ) append('NL()');
+          return ret + ';'
+        },
         goto: function(a) { return `_line = ${a[1]}; break;`; },
         let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
       });
@@ -183,23 +204,26 @@ foam.CLASS({
   templates: [
     {
       name: 'jsGenerator',
-      args: [ 'vars', 'lines' ],
+      args: [ 'defs', 'vars', 'lines' ],
       template: `
       // Compiled from BASIC to JS
-      async function main() {
-        var <%= vars.join(', ') %>;
-        var _line = <%= lines[0][0]%>;
-        while ( true ) switch ( _line ) {
-            <% for ( var i = 0 ; i < lines.length ; i++ ) {
-            var line = lines[i];
-          %><!--
-            --><%=line[0]%>: <!--
-            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
-              var stmt = line[2][j];
+      async function main(lib) {
+        with ( lib ) {
+          <%= defs.join(', ') %>
+          var <%= vars.join(', ') %>;
+          var _line = <%= lines[0][0]%>;
+          while ( true ) switch ( _line ) {
+              <% for ( var i = 0 ; i < lines.length ; i++ ) {
+              var line = lines[i];
             %><!--
-              --><%=stmt%>
-            <%}%><!--
-          --><%}%>
+              --><%=line[0]%>: <!--
+              --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
+                var stmt = line[2][j];
+              %><!--
+                --><%=stmt%>
+              <%}%><!--
+            --><%}%>
+          }
         }
       }
       `
@@ -213,7 +237,7 @@ foam.CLASS({
         var compiler = this.Compiler.create();
         var ret = compiler.parseString(this.sourceCode.trim());
         if ( ret ) {
-          this.targetCode = this.jsGenerator(Object.keys(compiler.vars), ret);
+          this.targetCode = this.jsGenerator(compiler.defs, Object.keys(compiler.vars), ret);
         }
         console.log(ret);
       }
