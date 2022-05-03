@@ -16,6 +16,10 @@ foam.CLASS({
    * Use the color generator to create these
   */
   cssTokens: {
+    'font': 'sans-serif',
+    'inputHeight': '34px',
+    'inputHorizontalPadding': '8px',
+
     'Blue50': '#D7E4FF',
     'Blue100': '#96B8F9',
     'Blue200': '#6795EE',
