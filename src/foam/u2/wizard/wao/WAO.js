@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wao',
   name: 'WAO',
   label: 'Wizardlet Access Object',
   todo: [

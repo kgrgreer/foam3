@@ -151,7 +151,16 @@ foam.CLASS({
       if ( dao == null )
         return;
 
-      ClassInfo cInfo = dao.getOf();
+      String className = p.getParameter("of");
+      ClassInfo cInfo;
+      try {
+        cInfo = SafetyUtil.isEmpty(className) ? dao.getOf() :
+         ((FObject) Class.forName(className).newInstance()).getClassInfo();
+      } catch ( Throwable t ) {
+        getLogger().error("Failed to get class info", className);
+        cInfo = dao.getOf();
+      }
+
       Predicate pred = new WebAgentQueryParser(cInfo).parse(x, q);
       getLogger().debug(pred.toString());
       dao = dao.where(pred);

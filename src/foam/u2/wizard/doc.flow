@@ -15,7 +15,7 @@ The `of` property may also be null to indicate that this wizardlet doesn't have
 any data to enter. (although, the wizardlet may still appear if the `sections`
 property is overridden to display a custom view)
 
-<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="methods" of="foam.u2.wizard.Wizardlet" />
+<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="methods" of="foam.u2.wizard.wizardlet.Wizardlet" />
 
 <h2>WizardletSection</h2>
 
@@ -26,7 +26,7 @@ allows adding custom views to a wizardlet independently from the data model.
 The MinMaxCapabilityWizardlet is an example where a custom WizardletSection is
 used to display a selection of choices.
 
-<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="properties" of="foam.u2.wizard.WizardletSection" />
+<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="properties" of="foam.u2.wizard.wizardlet.WizardletSection" />
 
 <h1>Wizards</h1>
 

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'WizardletSection',
   flags: ['web'],
   documentation: `
@@ -39,7 +39,7 @@ foam.CLASS({
     {
       name: 'wizardlet',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       documentation: `
         This is a reference to the aggregating wizardlet.
       `,

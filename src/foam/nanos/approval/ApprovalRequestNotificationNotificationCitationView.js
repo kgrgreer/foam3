@@ -78,105 +78,70 @@ foam.CLASS({
       }
 
       this.description = this.data.body;
-      if ( this.description !== '' && this.description.length > 70 ) {
-        this.description = this.description.substr(0, 70-1) + '...';
-      }
 
       this
         .addClass(this.myClass())
         .startContext({ mode: foam.u2.DisplayMode.RO, controllerMode: foam.u2.ControllerMode.VIEW })
-          .start()
             // .start().addClass('monogram')
             //   .add(this.monogram)
             // .end()
-            .start().addClass('userSummaryDiv')
-              .start().addClass('userSummary')
-                .add(this.userSummary$)
-              .end()
-              .start().addClass('created')
+            .start().addClass(this.myClass('userSummaryDiv'))
+              .callIf(this.userSummary, function() {
+                this.start().addClasses([this.myClass('userSummary'), 'p-label'])
+                  .add(this.userSummary$)
+                .end();
+              })
+              .start().addClasses([this.myClass('created'), 'p-legal-light'])
                 .add(this.created$)
               .end()
-            .end()
-            .start().addClass('classification')
-              .show(this.showClassification$).add(this.classification$)
+              .start().addClasses([this.myClass('classification'), 'p-legal-light'])
+                .show(this.showClassification$).add(this.classification$)
+              .end()
+              .start().addClass(this.myClass('status'))
+                .hide(this.hideStatus$)
+                .add(this.STATUS)
+              .end()
             .end()
             .start().addClasses(['p', this.myClass('description')])
               .add(this.description$)
-            .end()
-            .start().addClass('status')
-              .hide(this.hideStatus$)
-              .add(this.STATUS)
             .end()
             // TODO: Enable when memento support and ability to jump to detail view
             // .start().addClass('viewMore')
             //   .add(this.VIEW_MORE)
             // .end()
-          .end()
         .endContext();
     }
   ],
 
   css: `
     ^ {
-      line-height: 17px;
       width: 100%;
+      display; flex;
+      flex-direction: column;
+      gap: 0.4rem;
     }
-    ^ .userSummary {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #1e1f21;
-      margin-left: 16px;
-    }
-    ^ .created {
-      font-size: 1.1rem;
-      color: #5e6061;
-      margin-left: 16px;
-    }
-    ^ .classification {
-      padding-left: 8px;
-      padding-right: 8px;
-      min-width: 84px;
-      height: 20px;
-      border-radius: 3px;
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
-      background-color: #e7eaec;
-      color: #5e6061;
-      text-align: center;
-      line-height: 20px;
-      font-size: 1.2rem;
-      margin-left: 32px;
-      display: inline-block;
-    }
-    ^ .description {
-      font-size: 1.4rem;
-      color: #1e1f21;
-      margin-left: 32px;
-      margin-top: 8px;
-      display: inline-block;
-    }
-    ^ .status {
-      width: 94px;
-      height: 20px;
-      line-height: 20px;
-      border-radius: 3px;
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
-      font-size: 1.2rem;
-      text-align: center;
-      float: right;
-      margin-right: 145px;
-    }
-    ^ .userSummaryDiv {
+    ^userSummaryDiv {
       position: relative;
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    ^userSummary {
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^classification {
+      background-color: /*%GREY5%*/ #e7eaec;
+      color: /*%GREY1%*/ #5e6061;
       display: inline-block;
-     }
-   ^ .p {
-     font-style: normal;
-     font-weight: normal;
-     font-size: 1.4rem;
-     margin-left: 16px;
-     line-height: 1.71;
-     margin: 0;
-     margin-left: 16px;
+      min-width: 8.4rem;
+      line-height: 2.1;
+      padding: 0 0.8rem;
+    }
+    ^description {
+      overflow: hidden;
+      text-overflow: ellipsis;  
+      white-space: nowrap;
     }
   `
 });

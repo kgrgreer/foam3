@@ -20,8 +20,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.wizard.ProxyWAO',
-    'foam.u2.wizard.WizardletSection',
+    'foam.u2.wizard.wao.ProxyWAO',
+    'foam.u2.wizard.wizardlet.WizardletSection',
     'foam.u2.wizard.debug.DebugContextIntercept',
     'foam.u2.wizard.debug.DebugWAO'
   ],
