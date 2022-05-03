@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'symbols',
       factory: function() {
-        return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal) {
+        return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal, until) {
           return {
             START: repeat(sym('line'), '\n'),
 
@@ -28,10 +28,31 @@ foam.CLASS({
             statements: repeat(sym('statement'), ':'),
 
             statement: alt(
+              sym('next'),
+              sym('if'),
+              sym('def'),
+              sym('print'),
               sym('let'),
               sym('end'),
               sym('goto'),
               str(repeat(notChars(':\n')))),
+
+            next: seq1(1, 'NEXT ', sym('symbol')),
+
+            if: seq('IF ', str(until('THEN ')), sym('number')),
+
+            def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
+
+            print: seq1(2, 'PRINT', optional(' '), repeat(sym('printArg'), ';')),
+
+            printArg: alt(
+              sym('string'),
+              sym('tab')
+            ),
+
+            string: str(seq1(1, '"', repeat(notChars('"')), '"')),
+
+            tab: str(seq('TAB(', sym('number'), ')')), // TODO: make expression
 
             let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
 
@@ -87,9 +108,7 @@ foam.CLASS({
 
             symbol: str(seq(
               alt(range('a', 'z'), range('A', 'Z')),
-              str(repeat(alt(range('a', 'z'), range('A', 'Z'), range('0', '9')))))),
-
-            string: str(repeat(anyChar()))
+              str(repeat(alt(range('a', 'z'), range('A', 'Z'), range('0', '9'))))))
           };
         }
       }
@@ -100,6 +119,13 @@ foam.CLASS({
     function init() {
       var self = this;
       this.addActions({
+        def: function(a) {
+          self.vars[`${a[1]} = function(${a[3]}) { return ${a[5]}; }`] = true;
+          return '';
+        },
+        if: function(a) { return `if ( ${a[1]}) { _line = ${a[2]}; break; }`; },
+        string: function(a) { return `"${a[0]}"`; },
+        print: function(a) { return `PRINT(${a.join(',')});`; },
         goto: function(a) { return `_line = ${a[1]}; break;`; },
         let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
       });
@@ -162,10 +188,9 @@ foam.CLASS({
       // Compiled from BASIC to JS
       async function main() {
         var <%= vars.join(', ') %>;
-        var _line = -1
+        var _line = <%= lines[0][0]%>;
         while ( true ) switch ( _line ) {
-          -1:
-          <% for ( var i = 0 ; i < lines.length ; i++ ) {
+            <% for ( var i = 0 ; i < lines.length ; i++ ) {
             var line = lines[i];
           %><!--
             --><%=line[0]%>: <!--
@@ -173,8 +198,8 @@ foam.CLASS({
               var stmt = line[2][j];
             %><!--
               --><%=stmt%>
-            <%}%>
-          <%}%>
+            <%}%><!--
+          --><%}%>
         }
       }
       `
