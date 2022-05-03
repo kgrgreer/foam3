@@ -51,6 +51,7 @@ foam.CLASS({
     },
     async function save (wizardlet) {
       const saver = foam.json.parse(this.saver, undefined, wizardlet.__subContext__);
+      // temp workaround until daosaver is implemented
       if ( this.NullSaver.isInstance(saver) ) {
         await this.delegate.save(wizardlet);
       } else {
