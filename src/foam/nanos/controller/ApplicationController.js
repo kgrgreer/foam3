@@ -691,7 +691,7 @@ foam.CLASS({
 
     async function findDefaultMenu(dao) {
       var menu;
-      var menuArray = [this.theme?.defaultMenu, this.theme?.unauthenticatedDefaultMenu]
+      var menuArray = this.theme?.defaultMenu.concat(this.theme?.unauthenticatedDefaultMenu)
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
