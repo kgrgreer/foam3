@@ -13,6 +13,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'vars',
+      factory: function() { return {}; }
+    },
+    {
       name: 'symbols',
       factory: function() {
         return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal) {
@@ -24,13 +28,18 @@ foam.CLASS({
             statements: repeat(sym('statement'), ':'),
 
             statement: alt(
+              sym('let'),
               sym('end'),
               sym('goto'),
               str(repeat(notChars(':\n')))),
 
+            let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
+
             goto: seq('GOTO ', sym('number')),
 
             end: literal('END', 'return;'),
+
+            expression: str(repeat(notChars(':\n'))),
 
             expr: alt(
               sym('number'),
@@ -89,8 +98,10 @@ foam.CLASS({
 
   methods: [
     function init() {
+      var self = this;
       this.addActions({
-        goto: function(a) { return `_line = ${a[1]}; break;`; }
+        goto: function(a) { return `_line = ${a[1]}; break;`; },
+        let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
       });
     }
   ]
@@ -146,10 +157,11 @@ foam.CLASS({
   templates: [
     {
       name: 'jsGenerator',
-      args: [ 'lines' ],
+      args: [ 'vars', 'lines' ],
       template: `
       // Compiled from BASIC to JS
       async function main() {
+        var <%= vars.join(', ') %>;
         var _line = -1
         while ( true ) switch ( _line ) {
           -1:
@@ -173,9 +185,10 @@ foam.CLASS({
     {
       name: 'compile',
       code: function() {
-        var ret = this.Compiler.create().parseString(this.sourceCode.trim());
+        var compiler = this.Compiler.create();
+        var ret = compiler.parseString(this.sourceCode.trim());
         if ( ret ) {
-          this.targetCode = this.jsGenerator(ret);
+          this.targetCode = this.jsGenerator(Object.keys(compiler.vars), ret);
         }
         console.log(ret);
       }
