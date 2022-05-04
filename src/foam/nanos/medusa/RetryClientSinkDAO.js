@@ -163,7 +163,8 @@ foam.CLASS({
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            if ( replaying != null &&
+            if ( isMediator(x) &&
+                 replaying != null &&
                  replaying.getIndex() > ((MedusaEntry) obj).getIndex() ) {
               // This entry has been saved quorum times, no need to retry.
               return obj;
@@ -238,6 +239,18 @@ foam.CLASS({
     {
       name: 'reset',
       javaCode: `//nop`
+    },
+    {
+      name: 'isMediator',
+      args: 'Context x',
+      type: 'boolean',
+      javaCode:`
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        if ( support == null ) return false;
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        if ( myConfig == null ) return false;
+        return myConfig.getType() == MedusaType.MEDIATOR ? true : false;
+      `
     }
   ]
 });

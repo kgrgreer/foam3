@@ -451,7 +451,10 @@ foam.CLASS({
           if ( value && value.indexOf('{') != -1 && value.indexOf('}') != -1 ) {
             value = value.substr(value.indexOf('{') + 1, value.indexOf('}') - 1);
           }
-          this.data = value ? queryParser.parseString(value) : this.TRUE;
+          if ( value ) {
+            var mementoPredicate = queryParser.parseString(value);
+            this.data = (this.data != this.TRUE) ? this.AND(mementoPredicate, this.data) : mementoPredicate;
+          }
         });
       }
     },

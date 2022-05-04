@@ -35,12 +35,12 @@ foam.CLASS({
   imports: [
     'viewData'
   ],
-  
+
   css: `
     ^ {
       height: 250px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
     }
     ^ .firstdiv {
       width: 1200px;
@@ -92,7 +92,7 @@ foam.CLASS({
       width: 820px;
       height: 160px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       margin-left:77px;
       margin-top:40px;
@@ -138,15 +138,15 @@ foam.CLASS({
       code: function(X) {
         this.variant = false;
         this.message = "";
-      }             
+      }
     },
     {
       name: 'internalNote',
-      label: 'Internal Note',  
+      label: 'Internal Note',
       code: function(X) {
         this.variant = true;
         this.message = "";
-      }              
+      }
     }
   ]
 });

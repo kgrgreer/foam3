@@ -13,6 +13,8 @@ foam.CLASS({
       align-items: center;
       margin: auto;
       width: 75%;
+      height: 100%;
+      padding: 0;
     }
 
     ^id {

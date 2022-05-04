@@ -182,14 +182,27 @@ foam.CLASS({
     sps.setString("address.regionId.len==5");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==10");
 
+    Expr result = null;
     sps.setString("if ( address.regionId.len==5 ) { firstName } else { lastName.len+3 }");
-    test(((Expr) parser.parse(sps, px).value()).f(user) == "senorita", "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test("senorita".equals(result.f(user)), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
-    test(((Double) ((Expr) parser.parse(sps, px).value()).f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result.f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
-    test(( ((Expr) parser.parse(sps, px).value()).f(user)) == "Toronto", "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
+    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
+    test("Toronto".equals(result.f(user)), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
+
+    sps.setString("address instanceof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+
+    sps.setString("!(address instanceof foam.nanos.auth.User)");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "!(address instanceof foam.nanos.auth.User)");
+
+    sps.setString("address instanceof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
 
 //TODO: under construction
 //    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
@@ -209,12 +222,17 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     sps.setString("supportConfig.supportAddress.regionId==\\"CA-ON\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId==\\"CA-ON\\"");
+    sps.setString("supportConfig.supportAddress instanceof foam.nanos.auth.Address");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress instanceof oam.nanos.auth.Address");
 
     var rule = new Rule();
     parser = new FScriptParser(foam.nanos.ruler.Rule.OPERATION);
     rule.setOperation(foam.nanos.dao.Operation.CREATE);
     sps.setString("thisValue==foam.nanos.dao.Operation.CREATE");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
+    sps.setString("instanceof foam.nanos.ruler.Rule");
+    test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
+
     `
     }
   ]

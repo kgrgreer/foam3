@@ -27,8 +27,7 @@ foam.CLASS({
     'foam.mlang.predicate.ContainsIC'
   ],
 
-  documentation: 'Expects "groups" to be an array of strings, and ' +
-      'autocompletes on them.',
+  documentation: 'Expects "groups" to be an array of strings, and autocompletes on them.',
 
   properties: [
     'groups',

@@ -46,6 +46,11 @@ foam.CLASS({
       class: 'Int',
       name:  'mergeDelay',
       units: 'ms'
+    },
+    {
+      class: 'String',
+      name: 'keyProp',
+      value: 'id'
     }
   ],
 
@@ -58,7 +63,7 @@ foam.CLASS({
           return;
         }
 
-        var key = rule.getId() + ":" + obj.getProperty("id");
+        var key = rule.getId() + ":" + obj.getProperty(getKeyProp());
         agency.schedule(x, new ContextAgent() {
           @Override
           public void execute(X x) {

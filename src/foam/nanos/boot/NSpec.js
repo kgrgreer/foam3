@@ -8,6 +8,7 @@ foam.CLASS({
   name: 'NSpec',
 
   javaImplements: [
+    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.EnabledAware'
   ],
 
@@ -154,6 +155,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
+      javaCloneProperty: 'set(dest, get(source));',
       readPermissionRequired:  true,
       writePermissionRequired: true
     },
@@ -280,6 +282,78 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service." + getName()) ) {
           throw new AuthorizationException("You do not have permission to access the service named " + getName());
+        }
+      `,
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        String permission = "nspec.create";
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( ! auth.check(x, permission) ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+          throw new AuthorizationException("Permission denied: Cannot create NSpec.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        if ( ! getAuthenticate() ) return;
+
+        String permission = "service." + getId();
+        AuthService auth = (AuthService) x.get("auth");
+  
+        if ( ! auth.check(x, permission) ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+          throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+
+      String permission = "nspec.update." + getId();
+      AuthService auth = (AuthService) x.get("auth");
+  
+      if ( ! auth.check(x, permission) ) {
+        ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+        throw new AuthorizationException("Permission denied: Cannot update this NSpec.");
+      }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        String permission  = "nspec.remove." + getId();
+        AuthService auth = (AuthService) x.get("auth");
+    
+        if ( ! auth.check(x, permission) ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+          throw new AuthorizationException("Permission denied: Cannot delete this NSpec.");
         }
       `
     }

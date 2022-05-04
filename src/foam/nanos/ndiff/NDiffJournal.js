@@ -52,7 +52,7 @@ foam.CLASS({
         String nSpecName = getNSpecName();
         boolean runtimeOrigin = getRuntimeOrigin();
 
-        logger.info("Replaying to NDiffDAO",
+        logger.debug("Replaying to NDiffDAO",
                     nSpecName,
                     "runtimeOrigin",
                     runtimeOrigin);
@@ -62,7 +62,7 @@ foam.CLASS({
                                             .setRuntimeOrigin(runtimeOrigin)
                                             .build()
         );
-        logger.info("Replaying to NDiffDAO",
+        logger.debug("Replaying to NDiffDAO",
                     nSpecName,
                     "runtimeOrigin",
                     runtimeOrigin,

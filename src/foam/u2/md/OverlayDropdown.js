@@ -15,9 +15,9 @@ foam.CLASS({
     'as dropdown'
   ],
 
-  documentation: 'A popup overlay that grows from the top-right corner of ' +
-      'its container. Useful for e.g. "..." overflow menus in action bars. ' +
-      'Just $$DOC{ref:".add"} things to this container.',
+  documentation: `A popup overlay that grows from the top-right corner of
+    its container. Useful for e.g. "..." overflow menus in action bars.
+    Just $$DOC{ref:".add"} things to this container.`,
 
   css: `
     ^overlay {

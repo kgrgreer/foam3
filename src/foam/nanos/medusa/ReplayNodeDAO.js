@@ -31,6 +31,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      value: 2
+    },
+    {
       name: 'journal',
       class: 'FObjectProperty',
       of: 'foam.dao.Journal'
@@ -83,14 +88,11 @@ foam.CLASS({
           if ( ((Long) count.getValue()) > 0 &&
                min.getValue() != null &&
                details.getMinIndex() >= (Long) min.getValue() ) {
-            cache.where(GTE(MedusaEntry.INDEX, details.getMinIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 0, clientDAO)));
+            cache.where(GTE(MedusaEntry.INDEX, details.getMinIndex())).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), clientDAO)));
           } else {
             // TODO: JournalSink to only send requested
-            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, 0, clientDAO)));
-            if ( info.getIndex() > indexAtStart ) {
-              // send the extra received since we started the journal replay
-              cache.where(GT(MedusaEntry.INDEX, indexAtStart)).select(new SetNodeSink(x, new RetryClientSinkDAO(x, 0, clientDAO)));
-            }
+            getJournal().replay(x, new MedusaSetNodeDAO(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), clientDAO)));
+            cache.select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), clientDAO)));
           }
         } else {
           logger.debug("ReplayCmd", "requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getMaxIndex());
