@@ -18,8 +18,17 @@ foam.CLASS({
   exports: [ 'parentData as data' ],
 
   css: `
+    ^wrapper {
+      display: flex;
+    }
+    ^wrapper^vertical {
+      flex-direction: column;
+    }
     ^container {
       margin: 2px 8px 2px 0;
+    }
+    ^container:last-child {
+      margin-right: 0;
     }
   `,
 
@@ -36,6 +45,13 @@ foam.CLASS({
         return foam.Array.isInstance(a) ? a.map((o) => foam.String.isInstance(o) ? { class: o } : o) : a;
       }
     },
+    {
+      class: 'Array',
+      name: 'viewStyles',
+      documentation: `
+        Parallel array to views for custom CSS, for example setting flex-grow per view.
+      `
+    },
     'prop'
   ],
 
@@ -48,18 +64,23 @@ foam.CLASS({
       this.addClass();
 
       this.add(this.slot(function(views) {
-        return self.E().forEach(views, function(v) {
-          return this.
-            start().
-              addClass(self.myClass('container')).
-              callIf(self.horizontal, function() { this.style({float: 'left'}); }).
-              start(v, { data$: self.data$ }).
-                call(function() {
-                  self.prop && this.fromProperty && this.fromProperty(self.prop);
+        return self.E()
+          .addClass(this.myClass('wrapper'))
+          .enableClass(this.myClass('vertical'), this.horizontal$.map(v => ! v))
+          .forEach(views, function(v, i) {
+            return this.
+              start().
+                addClass(self.myClass('container')).
+                callIf(i < self.viewStyles.length, function () {
+                  this.style(self.viewStyles[i]);
                 }).
-              end().
-            end();
-        });
+                start(v, { data$: self.data$ }).
+                  call(function() {
+                    self.prop && this.fromProperty && this.fromProperty(self.prop);
+                  }).
+                end().
+              end();
+          });
       }));
     },
 
