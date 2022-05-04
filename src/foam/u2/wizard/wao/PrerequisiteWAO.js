@@ -15,7 +15,32 @@
   `,
 
   properties: [
-    ...(k => foam.USED[k] || foam.UNUSED[k])('foam.u2.wizard.data.PrerequisiteLoader').properties,
+    {
+      class: 'String',
+      name: 'prerequisiteCapabilityId'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading from the CapabilityJunction's data using a path
+      `,
+      name: 'loadFromPath'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
+      `,
+      name: 'loadIntoPath'
+    },
+    {
+      class: 'Boolean',
+      name: 'isWrappedInFObjectHolder'
+    },
+    {
+      class: 'Class',
+      name: 'of'
+    },
     {
       name: 'loader',
       factory: function () {
