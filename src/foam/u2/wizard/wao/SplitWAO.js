@@ -51,10 +51,15 @@ foam.CLASS({
     },
     async function save (wizardlet) {
       const saver = foam.json.parse(this.saver, undefined, wizardlet.__subContext__);
-      if ( wizardlet.loading ) return;
-      if ( ! wizardlet.isAvailable ) return;
-      wizardlet.loading = true;
-      await saver.save(wizardlet.data);
+      // temp workaround until daosaver is implemented
+      if ( this.NullSaver.isInstance(saver) ) {
+        await this.delegate.save(wizardlet);
+      } else {
+        if ( wizardlet.loading ) return;
+        if ( ! wizardlet.isAvailable ) return;
+        wizardlet.loading = true;
+        await saver.save(wizardlet.data);
+      }
       wizardlet.loading = false;
     }
   ]
