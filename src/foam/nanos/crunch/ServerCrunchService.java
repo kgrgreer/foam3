@@ -30,6 +30,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
+import foam.util.Auth;
 import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,12 +54,9 @@ public class ServerCrunchService
 
   //TODO: Needs to be refactored once Subject is serializable
   public List getCapabilityPathFor(X x, String rootId, boolean filterGrantedUCJ, User effectiveUser, User user) {
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.getCapabilityPathFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      x = x.put("subject", requestedSubject);
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, effectiveUser, user);
     }
     return this.getCapabilityPath(x, rootId, filterGrantedUCJ, true);
   }
@@ -203,7 +201,10 @@ public class ServerCrunchService
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
-    if ( ucj != null ) x = x.put("subject", ucj.getSubject(x));
+    if ( ucj != null ) {
+      Subject s = ucj.getSubject(x);
+      x = Auth.sudo(x, s.getUser(), s.getRealUser());
+    }
     Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
     if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
@@ -337,15 +338,10 @@ public class ServerCrunchService
 
   //TODO: Needs to be refactored once Subject is serializable
   public UserCapabilityJunction getJunctionFor(X x, String capabilityId, User effectiveUser, User user) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.getJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.getJunctionForSubject(x, capabilityId, requestedSubject);
-    }
-    return this.getJunctionForSubject(x, capabilityId, subject);
+    Subject s = new Subject(user);
+    s.setUser(effectiveUser);
+    // note the next function call does an auth check too see if the subject really should change
+    return this.getJunctionForSubject(x, capabilityId, s);
   }
 
   public UserCapabilityJunction getJunction(X x, String capabilityId) {
@@ -434,20 +430,23 @@ public class ServerCrunchService
   }
 
   public UserCapabilityJunction getJunctionForSubject(
-    X x, String capabilityId,  Subject subject
+    X x, String capabilityId, Subject subject
   ) {
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+    }
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-      x = x.put("subject", subject);
       Predicate associationPredicate = getAssociationPredicate_(x, capabilityId);
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
         userCapabilityJunctionDAO.find(AND(associationPredicate,targetPredicate));
       if ( ucj == null ) {
-        ucj = buildAssociatedUCJ(x, capabilityId, subject);
+        ucj = buildAssociatedUCJ(x, capabilityId, (Subject) x.get("subject"));
       } else {
         ucj = (UserCapabilityJunction) ucj.fclone();
       }
@@ -458,7 +457,7 @@ public class ServerCrunchService
       logger.error("getJunction", capabilityId, e);
 
       // On failure, report that the capability is available
-      var ucj = buildAssociatedUCJ(x, capabilityId, subject);
+      var ucj = buildAssociatedUCJ(x, capabilityId, (Subject) x.get("subject"));
       return ucj;
     }
   }
@@ -506,16 +505,6 @@ public class ServerCrunchService
       ucj.setStatus(status);
     }
 
-    AuthService auth = (AuthService) x.get("auth");
-    if (
-      auth.check(x, "usercapabilityjunction.warn.update")
-      && subject.getRealUser() != subject.getUser()
-    ) {
-      var logger = (Logger) x.get("logger");
-      // This may be correct when testing features as an admin user
-      logger.warning(
-        subject.getUser().toSummary() + " user is lastUpdatedRealUser on an agent-associated UCJ");
-    }
     ucj.setLastUpdatedRealUser(subject.getRealUser().getId());
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
@@ -526,15 +515,11 @@ public class ServerCrunchService
     X x, String capabilityId, FObject data,
     CapabilityJunctionStatus status, User effectiveUser, User user
   ) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.updateJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.updateUserJunction(x, requestedSubject, capabilityId, data, status);
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, effectiveUser, user);
     }
-    return this.updateUserJunction(x, subject, capabilityId, data, status);
+    return this.updateUserJunction(x, (Subject) x.get("subject"), capabilityId, data, status);
   }
 
   public UserCapabilityJunction updateUserJunction(
@@ -550,10 +535,12 @@ public class ServerCrunchService
     if ( status != null ) {
       ucj.setStatus(status);
     }
-
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+    }
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-    var subjectX = x.put("subject", subject);
-    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(subjectX).put(ucj);
+    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
   }
 
   public UserCapabilityJunction buildAssociatedUCJ(

@@ -12,6 +12,8 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.*;
 import foam.nanos.crunch.*;
 import foam.nanos.crunch.predicate.*;
+import foam.util.Auth;
+
 import java.util.*;
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
@@ -29,12 +31,14 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     prerequisiteCapabilityJunctionDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
     userDAO = (DAO) x.get("localUserDAO");
 
-    user = new User.Builder(x).setId(101L).setSpid("mockSpid").setEmail("user@mock.spid").setUserName("mock_user").setGroup("anonymous").setFirstName("user").setLastName("mock").build();
-    admin = new User.Builder(x).setId(1234L).setSpid("mockSpid").setEmail("admin@mock.spid").setUserName("mock_admin").setGroup("admin").setFirstName("admin").setLastName("mock").build();
+    user = new User.Builder(x).setId(101L).setSpid("mockSpid").setEmail("user@mock.spid").setUserName("mock_user").setGroup("anonymous").setFirstName("user").setLastName("mock").setLifecycleState(LifecycleState.ACTIVE).build();
+    admin = new User.Builder(x).setId(1234L).setSpid("mockSpid").setEmail("admin@mock.spid").setUserName("mock_admin").setGroup("admin").setFirstName("admin").setLastName("mock").setLifecycleState(LifecycleState.ACTIVE).build();
     user = (User) userDAO.put(user);
     admin = (User) userDAO.put(admin);
-    userX = x.put("subject", new Subject(user));
-    adminX = x.put("subject", new Subject(admin));
+    test(user != null && user.getId() > 0, "User created");
+    test(admin != null && admin.getId() > 0, "Admin created");
+    userX = Auth.sudo(x, user);
+    adminX = Auth.sudo(x, admin);
 
     Predicate isTestSpid = new IsSpid.Builder(x).setSpids(new String[]{"test"}).build();
     Predicate isMockSpid = new IsSpid.Builder(x).setSpids(new String[]{"mockSpid"}).build();
