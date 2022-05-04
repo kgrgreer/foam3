@@ -405,7 +405,7 @@ foam.CLASS({
       // since installInClass() may have created a modified version
       // to inherit Property Properties from a super-Property.
       var prop = proto.cls_.getAxiomByName(this.name);
-      if ( prop !== this ) {
+      if ( prop.installInProto !== this.installInProto ) {
         // Delegate to the installInProto found in the class in case it
         // has custom behaviour it wants to do.  See Class property for
         // and example.
