@@ -54,6 +54,7 @@ foam.CLASS({
     ^button.foam-u2-ActionView{
       padding: 8px;
       width: 100%;
+      fill: $grey400;
     }
 
     ^select-level {
@@ -74,6 +75,7 @@ foam.CLASS({
     ^selected > ^heading > ^button {
       background-color: $primary50;
       color:  $primary700;
+      fill: $primary400;
     }
     ^toggle-icon {
       align-self: center;
@@ -255,14 +257,6 @@ foam.CLASS({
             }).
               // make not be a button so that other buttons can be nested              setNodeName('span').
               addClass(this.myClass('button')).
-              style({
-                'fill': this.slot(function(selected, id) {
-                  if ( selected && foam.util.equals(selected.id, id) ) {
-                    return foam.CSS.replaceTokens('$primary400', this.cls_.id, self.__subContext__);
-                  }
-                  return foam.CSS.replaceTokens('$grey500', this.cls_.id, self.__subContext__);
-                }, this.selection$, this.data$.dot('id'))
-              }).
             end().
           endContext().
         end().
