@@ -24,6 +24,8 @@ foam.CLASS({
       name: 'Cell',
       extends: 'foam.u2.TextField',
 
+      css: '^ { width: auto; min-width:auto; }',
+
       properties: [
         [ 'size', 1 ],
         {

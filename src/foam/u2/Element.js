@@ -220,6 +220,60 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
+  name: 'JsLib',
+
+  documentation: 'Axiom to install a JS Library on demand.',
+
+  constants: {
+    LOADED: {} // loaded libraries
+  },
+
+  properties: [
+    {
+      class: 'String',
+      name: 'src'
+    },
+    {
+      name: 'name',
+      factory: function() { return 'JsLib-' + this.src; }
+    },
+    [ 'priority', 20 ]
+  ],
+
+  methods: [
+    function installInProto(proto) {
+      var oldRender = proto.render, self = this;
+
+      proto.render = async function() {
+        await self.installLib();
+        oldRender.apply(this, arguments);
+      }
+    },
+
+    function installLib() {
+      if ( ! document ) return;
+      var installedStyles = document.installedStyles || ( document.installedStyles = {} );
+      if ( ! this.LOADED[this.name] ) {
+        var self = this;
+        this.LOADED[this.name] = new Promise(function(resolve, reject) {
+          var id = foam.next$UID();
+          let e  = document.createElement('script')
+          e.setAttribute('id', id)
+          e.setAttribute('src', self.src)
+          document.body.appendChild(e);
+          e.onload = function() {
+            resolve(true);
+          };
+        });
+      }
+      return this.LOADED[this.name];
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
   name: 'DefaultValidator',
 
   documentation: 'Default Element validator.',
@@ -2333,13 +2387,15 @@ foam.CLASS({
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView({ class: 'foam.u2.view.PropertyView', prop: this }, args, this, X);
+      // Uncomment to use property view
+      // return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
 
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
+      // Fallback till PropertyView is complete
+      return this.toE_(args, X);
+    },
 
-      e.fromProperty && e.fromProperty(this);
+    function toE_(args, X) {
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
@@ -2347,19 +2403,16 @@ foam.CLASS({
       return e;
     },
 
-    function toE_(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
 
       if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
+        el.data$ = X.data$.dot(this.name);
       }
 
-      e.fromProperty && e.fromProperty(this);
+      el.fromProperty && el.fromProperty(this);
 
-      // e could be a Slot, so check if addClass exists
-      e.addClass && e.addClass('property-' + this.name);
-
-      return e;
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2619,12 +2672,7 @@ foam.CLASS({
         class: 'foam.u2.view.ModeAltView',
         readView: { class: 'foam.u2.view.ReadColorView' },
         writeView: {
-          class: 'foam.u2.MultiView',
-          views: [
-            { class: 'foam.u2.TextField' },
-            { class: 'foam.u2.view.ColorPicker', onKey: true },
-            { class: 'foam.u2.view.ReadColorView' }
-          ]
+          class: 'foam.u2.view.ColorEditView'
         }
       }
     }

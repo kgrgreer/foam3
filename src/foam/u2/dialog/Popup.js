@@ -141,7 +141,7 @@ foam.CLASS({
           .enableClass(this.myClass('inner'), this.isStyled$)
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY', label: '' })
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
               .show(this.closeable$.and(this.showActions$))
               .addClass(this.myClass('X'))
             .end()
@@ -165,7 +165,7 @@ foam.CLASS({
     {
       name: 'closeModal',
       icon: 'images/ic-cancelblack.svg',
-      label: 'X',
+      label: '',
       keyboardShortcuts: [ 27 /* Escape */ ],
       code: function() {
         if ( this.onClose ) this.onClose();

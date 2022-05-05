@@ -54,6 +54,7 @@ foam.CLASS({
           ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
+              x = x.put(Script.class, script);
               Logger logger = (Logger) x.get("logger");
               if ( logger == null ) {
                 logger = StdoutLogger.instance();

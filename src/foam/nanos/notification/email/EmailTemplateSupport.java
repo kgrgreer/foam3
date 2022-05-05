@@ -37,7 +37,8 @@ public class EmailTemplateSupport
   protected String locale_;
   protected String spid_;
 
-  public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid, Map templateArgs) {
+  public static EmailTemplate findTemplate(X x, String idOrName, String groupId, String locale, String spid, Map templateArgs) {
+    String name = idOrName;
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
@@ -53,7 +54,7 @@ public class EmailTemplateSupport
       Y     *     *     *
     */
 
-    logger.info("name", name, "groupId", groupId, "locale", locale, "spid", spid);
+    // logger.debug("name", name, "groupId", groupId, "locale", locale, "spid", spid);
 
     List<String> groupIdList = new ArrayList<>();
 
@@ -120,7 +121,10 @@ public class EmailTemplateSupport
     EmailTemplate emailTemplate_ = (EmailTemplate) emailTemplateDAO
       .find(
         AND(
-          EQ(EmailTemplate.NAME, name),
+            OR(
+               EQ(EmailTemplate.ID, name),
+               EQ(EmailTemplate.NAME, name)
+               ),
           EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(groupId) ? "*" : groupId),
           EQ(EmailTemplate.SPID, spid),
           EQ(EmailTemplate.LOCALE, locale)

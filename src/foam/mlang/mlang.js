@@ -774,11 +774,13 @@ foam.CLASS({
       name: 'toString',
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' +
-            this.arg1.toString() + ', ' +
-            this.arg2.toString() + ')';
+            (this.arg1 && this.arg1.toString() || 'NA') + ', ' +
+            (this.arg2 && this.arg2.toString() || 'NA') + ')';
       },
       javaCode: `
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), getArg1().toString(), getArg2().toString());
+        String arg1 = getArg1() != null ? getArg1().toString() : "NA";
+        String arg2 = getArg2() != null ? getArg2().toString() : "NA";
+        return String.format("%s(%s, %s)", getClass().getSimpleName(), arg1, arg2);
       `
     },
     {
@@ -900,12 +902,12 @@ for arg in args {
 }
 return false
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-        + '  if ( getArgs()[i].f(obj) ) return true;\n'
-        + '}\n'
-        + 'return false;\n'
-    },
-
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+          if ( getArgs()[i].f(obj) ) return true;
+        }
+        return false;
+    `
+  },
     {
       name: 'createStatement',
       type: 'String',
@@ -964,8 +966,9 @@ return stmt.toString();`
       javaCode:
         `java.util.List<Predicate> args = new java.util.ArrayList<>();
 boolean update = false;
-for ( int i = 0; i < this.args_.length; i++ ) {
-  Predicate arg = this.args_[i];
+
+for ( int i = 0 ; i < this.args_.length ; i++ ) {
+  Predicate arg    = this.args_[i];
   Predicate newArg = this.args_[i].partialEval();
   if ( newArg == foam.mlang.MLang.TRUE ) return foam.mlang.MLang.TRUE;
   if ( newArg instanceof Or ) {
@@ -982,7 +985,8 @@ for ( int i = 0; i < this.args_.length; i++ ) {
     }
   }
 }
-if ( args.size() == 0 ) return foam.mlang.MLang.TRUE;
+
+if ( args.size() == 0 ) return foam.mlang.MLang.FALSE;
 if ( args.size() == 1 ) return args.get(0);
 if ( update ) {
   Predicate newArgs[] = new Predicate[args.size()];
@@ -1060,10 +1064,10 @@ for arg in args {
 }
 return true
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-                + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
-                + '}\n'
-                + 'return true;'
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+                  if ( ! getArgs()[i].f(obj) ) return false;
+                }
+                return true;`
     },
 
     {
@@ -1159,7 +1163,6 @@ if ( update ) {
 }
 return this;`
     },
-
 
     function toIndex(tail, depth) {
       /** Builds the ideal index for this predicate. The indexes will be chained
@@ -1287,7 +1290,7 @@ return this;`
       var mqlStringsArr = [];
       for ( var a in this.args ) {
         if ( ! this.args[a].toMQL )
-          throw new Error( 'Predicate\'s argument does not support toMQL' );
+          throw new Error('Predicate\'s argument does not support toMQL');
         var mql = this.args[a].toMQL();
         if ( mql )
           mqlStringsArr.push(mql);
@@ -1453,7 +1456,8 @@ if ( arg1 instanceof String[] ) {
       return true;
   }
 }
-return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );`
+return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );
+`
     },
     {
       name: 'createStatement',
@@ -1862,7 +1866,7 @@ foam.CLASS({
       return typeof x === 'number' ? '' + x :
         typeof x === 'string' ? '"' + x + '"' :
         Array.isArray(x) ? '[' + x.map(this.toString_.bind(this)).join(', ') + ']' :
-        x && (x).toString();
+        x && x.toString?.();
     },
 
     {
@@ -2491,6 +2495,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'Predicate which checks if objects are instances of the specified class.',
+  javaCode: `
+public IsInstanceOf(foam.core.ClassInfo targetClass) {
+      setTargetClass(targetClass);
+    }
+  `,
 
   properties: [
     {
@@ -2501,6 +2510,11 @@ foam.CLASS({
         class: 'foam.u2.view.StrategizerChoiceView',
         desiredModelId: 'foam.Class'
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.Expr',
+      name: 'propExpr'
     }
   ],
 
@@ -2513,12 +2527,17 @@ foam.CLASS({
     {
       name: 'f',
       code: function f(obj) { return this.targetClass.isInstance(obj); },
-      javaCode: 'return getTargetClass().isInstance(obj);'
+      javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
-
-    function toString() {
-      return foam.String.constantize(this.cls_.name) +
-          '(' + this.targetClass.id + ')';
+    {
+      name: 'toString',
+      code: function toString() {
+        return foam.String.constantize(this.cls_.name) +
+            '(' + this.targetClass.id + ')';
+      },
+      javaCode: `
+        return getClass().getSimpleName() + "(" + getTargetClass().getId() + ")";
+      `
     }
   ]
 });
@@ -3512,11 +3531,11 @@ foam.CLASS({
         if !hasOwnProperty("value") || FOAM_utils.compare(value, arg1.f(obj)) < 0 {
           value = arg1.f(obj);
         }
-`,
-      javaCode: 'if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {\n' +
-      '      setValue(getArg1().f(obj));\n' +
-      '    }'
-    },
+      `,
+      javaCode: `if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {
+            setValue(getArg1().f(obj));
+          }`
+    }
   ]
 });
 
@@ -4352,65 +4371,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.mlang',
-  name: 'If',
-  extends: 'foam.mlang.AbstractExpr',
-
-  properties: [
-    {
-      class: 'foam.mlang.predicate.PredicateProperty',
-      name: 'predicate',
-      javaFactory: 'return foam.mlang.MLang.TRUE;'
-    },
-    {
-      class: 'foam.mlang.ExprProperty',
-      name: 'trueExpr'
-    },
-    {
-      class: 'foam.mlang.ExprProperty',
-      name: 'falseExpr'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'f',
-      javaCode: `
-        if ( getTrueExpr() == null ||
-            getFalseExpr() == null )
-          foam.nanos.logger.Loggers.logger(getX(), this).warning(this.toString());
-        boolean result = getPredicate().f(obj);
-        foam.nanos.logger.StdoutLogger.instance().info("If.predicate", getPredicate().toString(), "result", result);
-        // if ( getPredicate().f(obj) )
-        if ( result )
-          return getTrueExpr() != null ? getTrueExpr().f(obj) : null;
-        return getFalseExpr() != null ? getFalseExpr().f(obj) : null;
-      `
-    },
-    {
-      name: 'toString',
-      type: 'String',
-      javaCode: `
-        var sb = new StringBuilder();
-        sb.append("If(predicate:").append(getPredicate())
-          .append(", trueExpr:").append(getTrueExpr())
-          .append(", falseExpr:").append(getFalseExpr())
-          .append(")");
-        return sb.toString();
-      `,
-      code: function() {
-        return
-        'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
-          ', trueExpr:' + (this.trueExpr && this.trueExpr.toString() || 'NA') +
-          ', falseExpr:' + (this.falseExpr && this.falseExpr.toString() || 'NA') +
-          ')';
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.mlang',
   name: 'StringLength',
   extends: 'foam.mlang.AbstractExpr',
   properties: [
@@ -4620,7 +4580,8 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        Double result = null;
+      Double result = null;
+      try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
           if ( current instanceof Number ) {
@@ -4636,6 +4597,16 @@ foam.CLASS({
           }
         }
         return getRounding() ? Math.round(result) : result;
+      } catch (Throwable t) {
+        foam.nanos.logger.Logger logger = foam.nanos.logger.StdoutLogger.instance();
+        logger.warning("Formula,f,result", result, this.toString(), t);
+        for ( int i = 0; i < getArgs().length; i++) {
+          logger.warning("Formula,f,arg", i, "arg", getArgs()[i]);
+          var current = getArgs()[i].f(obj);
+          logger.warning("Formula,f,arg", i, "current", current);
+        }
+        throw new RuntimeException(t);
+      }
       `,
       code: function(o) {
         var result = null;
@@ -4678,6 +4649,7 @@ foam.CLASS({
 
         if ( list.size() == getArgs().length ) {
           var result = list.stream().reduce(this::reduce).get();
+
           if ( Double.isFinite(result) ) {
             return new Constant(result);
           }
@@ -4803,6 +4775,53 @@ foam.CLASS({
       abstract: false,
       javaCode: 'return accumulator >= currentValue ? accumulator : currentValue;',
       code: (accumulator, currentValue) => Math.max(accumulator, currentValue)
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'If',
+  extends: 'foam.mlang.AbstractExpr',
+
+  properties: [
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      javaFactory: 'return foam.mlang.MLang.TRUE;'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'trueExpr'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'falseExpr'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        var expr = getPredicate().f(obj) ? getTrueExpr() : getFalseExpr();
+        if ( expr instanceof If ) {
+          return ((If) expr).f(obj);
+        }
+        return expr;
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      javaCode: 'return "If(predicate:" + getPredicate() + ", trueExpr:" + getTrueExpr() + ", falseExpr:" + getFalseExpr() + ")";',
+      code: function() {
+        return
+        'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
+          ', trueExpr:' + (this.trueExpr && this.trueExpr.toString() || 'NA') +
+          ', falseExpr:' + (this.falseExpr && this.falseExpr.toString() || 'NA') +
+          ')';
+      }
     }
   ]
 });

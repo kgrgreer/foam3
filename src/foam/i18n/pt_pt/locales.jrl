@@ -184,11 +184,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapability
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.REQUEST_SEND_MSG",target:"Um pedido de aprovação foi enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.FOR",target:" pra "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.OF.label",target:"do"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.DATA.label",target:"dados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.Wizardlet.TITLE.label",target:"título"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.BaseWizardlet.MUST_BE_VALID.label",target:"Deve ser válido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.BaseWizardlet.IS_VALID.label",target:"é válido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.Wizardlet.OF.label",target:"do"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.Wizardlet.DATA.label",target:"dados"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.Wizardlet.TITLE.label",target:"título"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.BaseWizardlet.MUST_BE_VALID.label",target:"Deve ser válido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.BaseWizardlet.IS_VALID.label",target:"é válido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.WizardPosition.WIZARDLET_INDEX.label",target:"wizardletIndex pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.WizardPosition.SECTION_INDEX.label",target:"sectionIndex pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.WizardletView.TITLE.label",target:"título"})
@@ -250,8 +250,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.ScrollingStepWiza
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.ScrollingStepWizardView.NO_ACTION_LABEL",target:"Feito"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.ScrollingStepWizardView.REJECT_LABEL",target:"Rejeitar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.ScrollingStepWizardView.NETWORK_FAILURE_MESSAGE",target:"Há um problema de conexão com o servidor. Por favor, aguarde."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.DAOWizardlet.OF.label",target:"do"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.DAOWizardlet.DATA.label",target:"dados"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.DAOWizardlet.OF.label",target:"do"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.wizardlet.DAOWizardlet.DATA.label",target:"dados"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING.label",target:"pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.GRANTED.label",target:"concedido"})
@@ -1104,3 +1104,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.theme.customisation.T
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY1",target:"Você recebeu "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestNotification.MSG_BODY2",target:" solicitação de aprovação com id: "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.dashboard.view.DashboardView.TITLE",target:"Painel"})

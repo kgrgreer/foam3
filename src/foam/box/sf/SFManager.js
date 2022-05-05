@@ -13,24 +13,24 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.box.Box',
     'foam.box.ReplyBox',
     'foam.core.Agency',
-    'foam.dao.AbstractSink',
-    'foam.core.Detachable',
     'foam.core.ContextAgent',
-    'foam.core.X',
+    'foam.core.Detachable',
     'foam.core.FObject',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.core.X',
+    'foam.dao.AbstractSink',
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
     'foam.util.concurrent.AssemblyLine',
-    'foam.util.retry.RetryStrategy',
     'foam.util.retry.RetryForeverStrategy',
-    'java.util.PriorityQueue',
-    'java.util.concurrent.TimeUnit',
-    'java.util.concurrent.locks.ReentrantLock',
+    'foam.util.retry.RetryStrategy',
     'java.util.concurrent.locks.Condition',
+    'java.util.concurrent.locks.ReentrantLock',
+    'java.util.concurrent.TimeUnit',
+    'java.util.PriorityQueue',
   ],
 
   properties: [
@@ -38,6 +38,7 @@ foam.CLASS({
       class: 'Object',
       javaType: 'PriorityQueue',
       name: 'prorityQueue',
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PriorityQueue<SFEntry>(16, (n, p) -> {
           if ( n.getScheduledTime() < p.getScheduledTime() ) {
@@ -53,6 +54,7 @@ foam.CLASS({
     {
       name: 'sfs',
       class: 'Map',
+      javaCloneProperty: '//noop',
       javaFactory: `return new java.util.concurrent.ConcurrentHashMap();`
     },
     {

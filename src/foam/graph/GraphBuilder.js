@@ -25,11 +25,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function fromCompositeRelationship(
-      rootObject,
-      compositeRelationship,
-      noRootAdd
-    ) {
+    function fromCompositeRelationship(rootObject, compositeRelationship, noRootAdd) {
       if ( ! foam.dao.CompositeRelationship.isInstance(compositeRelationship) ) {
         throw new Error("No CompositeRelationship object detected")
       }
@@ -59,8 +55,8 @@ foam.CLASS({
 
       // if root object
       if (
-        compositeRelationship 
-        && compositeRelationship.getSecondaryForwardNames().length > 0 
+        compositeRelationship
+        && compositeRelationship.getSecondaryForwardNames().length > 0
         && isRoot
       ){
         // TODO: make this work with an array
@@ -75,7 +71,7 @@ foam.CLASS({
       // Iterate over rootObject's children
       var parent = this.data[rootObject.id];
       var relationshipDAO = rootObject[relationshipKey].dao || rootObject[relationshipKey];
-      
+
       return relationshipDAO
         .select().then(r => Promise.all(r.array.map(o => {
           parent.forwardLinks = [...parent.forwardLinks, o.id];
@@ -92,7 +88,7 @@ foam.CLASS({
           }
 
           // Add child and its children (recursively)
-          var fromPromise = compositeRelationship 
+          var fromPromise = compositeRelationship
             ? this.fromCompositeRelationship(o, compositeRelationship, true)
             : this.fromRelationship(o, relationshipKey, true);
 
@@ -108,5 +104,5 @@ foam.CLASS({
       graph.roots = this.roots;
       return graph;
     }
-  ],
+  ]
 });

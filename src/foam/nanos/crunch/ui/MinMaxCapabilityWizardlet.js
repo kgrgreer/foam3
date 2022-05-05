@@ -36,7 +36,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       name: 'choiceWizardlets',
       factory: function() {
         return [];
@@ -139,7 +139,7 @@ foam.CLASS({
       flags: ['web'],
       transient: true,
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WizardletSection',
+      of: 'foam.u2.wizard.wizardlet.WizardletSection',
       factory: function() {
         // to account for isFinal: true in choices
         var finalData = this.choices.filter(choice => choice[2]).map(selectedChoice => selectedChoice[0]);
@@ -238,6 +238,7 @@ foam.CLASS({
         ...opt_meta
       };
       this.choiceWizardlets.push(wizardlet);
+      console.log('addPrerequisite', this.id, wizardlet.id, meta);
 
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
@@ -246,6 +247,7 @@ foam.CLASS({
       return this.consumePrerequisites;
     },
     function handleLifting(liftedWizardlets) {
+      console.log('handleLifting', this.id, liftedWizardlets.map(w => w.id));
       const updated = () => {
         // Hide choice selection if lifted choices reach maximum
         const countLifted = liftedWizardlets

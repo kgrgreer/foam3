@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
   plural: 'Approval Requests',
-  documentation: 'Approval requests are stored in approvalRequestDAO and' +
-  'represent a single approval request for a single user.',
+  documentation: 'Approval requests are stored in approvalRequestDAO and represent a single approval request for a single user.',
 
   implements: [
     'foam.nanos.auth.CreatedAware',
@@ -686,6 +685,20 @@ foam.CLASS({
       javaCode: `
         return this.classificationEnumIsSet_;
       `
+    },
+    {
+      name: 'appendMemoReverse',
+      type: 'String',
+      code: function(X, memo) {
+        oldMemo = this.memo;
+        newMemo = memo + ' -- '
+                  + X.subject.user.firstName + ' '
+                  + X.subject.user.lastName + ' '
+                  + (new Date()).toString()
+                  + (oldMemo && '\n')
+                  + oldMemo;
+        return newMemo;
+      }
     }
   ],
 
@@ -1016,7 +1029,7 @@ foam.CLASS({
       code: function(X, memo) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
-        approvedApprovalRequest.memo = memo;
+        approvedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1043,8 +1056,7 @@ foam.CLASS({
       name: 'addMemoL',
       code: function(X, memo) {
         var newMemoRequest = this.clone();
-        newMemoRequest.memo = memo;
-
+        newMemoRequest.memo = this.appendMemoReverse(X, memo);
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
           this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1071,7 +1083,7 @@ foam.CLASS({
       code: function(X, memo) {
         var rejectedApprovalRequest = this.clone();
         rejectedApprovalRequest.status = this.ApprovalStatus.REJECTED;
-        rejectedApprovalRequest.memo = memo;
+        rejectedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);

@@ -5,8 +5,8 @@
  */
 
 foam.CLASS({
-  name: 'FOAMException',
   package: 'foam.core',
+  name: 'FOAMException',
   implements: [ 'foam.core.Exception' ],
   javaExtends: 'RuntimeException',
   javaGenerateConvenienceConstructor: false,

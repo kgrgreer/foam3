@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.theme.ThemeGlyphs',
     'foam.u2.layout.DisplayWidth'
   ],
@@ -165,12 +166,25 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
+      section: 'navigation',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
+      writePermissionRequired: true
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'menuDAO',
+      name: 'unauthenticatedDefaultMenu',
+      documentation: 'Menu user redirects to before login.',
       of: 'foam.nanos.menu.Menu',
       section: 'navigation',
+      value: 'sign-in',
       writePermissionRequired: true
     },
     {
@@ -298,10 +312,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.ThemeGlyphs',
       name: 'glyphs',
-      documentation: `
-        Glyphs are simple vectors which can be used as menu items
-        or indicators.
-      `.replace('\n',' ').trim(),
+      documentation: 'Glyphs are simple vectors which can be used as menu items or indicators.',
       factory: function () {
         return this.ThemeGlyphs.create();
       },
