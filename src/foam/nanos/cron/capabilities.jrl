@@ -20,6 +20,7 @@ p({
     wao: {
       class: "foam.u2.wizard.wao.PrerequisiteWAO",
       prerequisiteCapabilityId: "schedulable-dao-put",
+      of: "foam.nanos.cron.Schedulable",
       delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
     }
   }
@@ -39,6 +40,7 @@ p({
     wao:{
       class: "foam.u2.wizard.wao.PrerequisiteWAO",
       prerequisiteCapabilityId: "schedulable-review",
+      of: "foam.nanos.cron.Schedulable",
       delegate: {
         class: "foam.u2.wizard.wao.DAOWAO",
         daoKey: "schedulableDAO",
