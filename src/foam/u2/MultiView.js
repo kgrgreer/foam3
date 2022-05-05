@@ -45,13 +45,6 @@ foam.CLASS({
         return foam.Array.isInstance(a) ? a.map((o) => foam.String.isInstance(o) ? { class: o } : o) : a;
       }
     },
-    {
-      class: 'Array',
-      name: 'viewStyles',
-      documentation: `
-        Parallel array to views for custom CSS, for example setting flex-grow per view.
-      `
-    },
     'prop'
   ],
 
@@ -71,9 +64,6 @@ foam.CLASS({
             return this.
               start().
                 addClass(self.myClass('container')).
-                callIf(i < self.viewStyles.length, function () {
-                  this.style(self.viewStyles[i]);
-                }).
                 start(v, { data$: self.data$ }).
                   call(function() {
                     self.prop && this.fromProperty && this.fromProperty(self.prop);
