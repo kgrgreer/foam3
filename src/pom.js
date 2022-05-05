@@ -596,7 +596,6 @@ foam.POM({
   { name: "foam/u2/view/FileUploadTextField", flags: "web" },
   { name: "foam/u2/view/AltView", flags: "web" },
   { name: "foam/u2/view/CILayoutView", flags: "web" },
-  { name: "foam/u2/view/PropertyView", flags: "web" },
   { name: "foam/u2/view/ResponsiveAltView", flags: "web" },
   { name: "foam/u2/view/ObjAltView", flags: "web" },
   { name: "foam/u2/view/ModeAltView", flags: "web" },
