@@ -10,9 +10,14 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    ^ {
+    ^container {
       width: 100%;
+      padding: 2.4rem;
+      background: #ffffff;
       border: 1px solid/*%GREY5%*/ #f5f7fa;
+      border-top: none;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
     }
     ^bar {
       width: 100%;
@@ -31,13 +36,12 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.start().addClass(this.myClass('bar'))
-        .style({ 'background' : this.color$, 'border' : '1px solid' + this.color$ })
-      .end()
-
-      .start('div', null, this.content$)
-        .addClass()
-      .end();
+      this.addClass()
+        .start().addClass(this.myClass('bar')).end()
+        .start('div', null, this.content$)
+          .addClass(this.myClass('container'))
+        .end()
+        ;
     }
   ]
 });

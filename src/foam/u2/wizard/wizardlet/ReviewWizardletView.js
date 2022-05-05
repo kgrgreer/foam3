@@ -9,8 +9,12 @@ foam.CLASS({
   name: 'ReviewWizardletView',
   extends: 'foam.u2.View',
 
-  messages: [
-    { name: 'TITLE', message: 'Review your Deposit ' }
+  requires: [
+    'foam.u2.ControllerMode'
+  ],
+
+  exports: [
+    'controllerMode'
   ],
 
   css: `
@@ -22,6 +26,13 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'title',
+      factory: function(){
+        return 'Review Your Request';
+      }
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
@@ -30,7 +41,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showTitle',
       value: true
-    }
+    },
+    {
+      name: 'controllerMode',
+      factory: function() {
+        return this.ControllerMode.VIEW;
+      }
+    },
   ],
 
   methods: [
@@ -39,7 +56,7 @@ foam.CLASS({
       this.SUPER();
       this.addClass(this.myClass())
         .start()
-          .start().addClass('h200').show(this.showTitle$).add(this.TITLE).end()
+          .start().addClass('h200').show(this.showTitle$).add(this.title$).end()
           .start().addClass('generic-container')
             .forEach(this.items, function (item) {
               if ( item.noData )  {

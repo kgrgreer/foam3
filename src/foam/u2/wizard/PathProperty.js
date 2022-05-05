@@ -55,6 +55,7 @@ foam.CLASS({
 
       const prop = this;
       Object.defineProperty(proto, this.name + '$get', {
+        configurable: true,
         get: function pathGetter() {
           return function (target) {
             return this[prop.name].f(target);
@@ -63,6 +64,7 @@ foam.CLASS({
       });
 
       Object.defineProperty(proto, this.name + '$set', {
+        configurable: true,
         get: function pathSetter() {
           return function (target, value) {
             const expr = this[prop.name];
