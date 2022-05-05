@@ -2672,12 +2672,7 @@ foam.CLASS({
         class: 'foam.u2.view.ModeAltView',
         readView: { class: 'foam.u2.view.ReadColorView' },
         writeView: {
-          class: 'foam.u2.MultiView',
-          views: [
-            { class: 'foam.u2.TextField' },
-            { class: 'foam.u2.view.ColorPicker', onKey: true },
-            { class: 'foam.u2.view.ReadColorView' }
-          ]
+          class: 'foam.u2.view.ColorEditView'
         }
       }
     }
