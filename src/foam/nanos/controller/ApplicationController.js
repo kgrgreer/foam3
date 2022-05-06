@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.WindowHash',

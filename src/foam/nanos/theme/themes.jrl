@@ -1,6 +1,7 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"79B87FC0-C622-417A-A14A-2A04DD348CBD",
+  "spid":"foam",
   "name":"foam",
   "appName":"FOAM",
   "description":"The default FOAM theme.",
