@@ -9,6 +9,8 @@
 // http://vintage-basic.net/games.html
 // https://github.com/GReaperEx/bcg
 // https://www.roug.org/retrocomputing/languages/basic/morebasicgames
+//
+// TODO: http://aleclownes.com/2017/02/01/crt-display.html
 
 foam.CLASS({
   package: 'foam.demos.basic',
@@ -48,6 +50,7 @@ foam.CLASS({
               sym('next'),
               sym('on'),
               sym('print'),
+              sym('read'),
               sym('rem'),
               sym('return'),
               str(repeat(notChars(':\n')))),
@@ -82,6 +85,8 @@ foam.CLASS({
 
             printArg: alt(sym('string'), sym('tab')),
 
+            read: seq1(1, 'READ ', repeat(sym('symbol'), ',')),
+
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
 
             return: literal('RETURN'),
@@ -90,29 +95,27 @@ foam.CLASS({
 
             tab: str(seq('TAB(', sym('expression'), ')')),
 
-//            expression: str(repeat(notChars(':\n'))),
-
             expression: str(seq(
               alt(
                 seq('(', sym('expression'), ')'),
                 seq('-', sym('expression')),
                 sym('number'),
                 sym('string'),
-                sym('symbol'),
-                sym('fn')),
+                sym('fn'),
+                sym('symbol')),
               optional(str(seq(alt('+','-','*','/'), sym('expression')))))),
 
             predicate: str(seq(
               alt(
-                seq(sym('expression'), alt('=','<>','<=','>=','<','>'), sym('expression')),
+                seq(sym('expression'), alt('=', literal('<>', '!='),'<=','>=','<','>'), sym('expression')),
                 seq('(', sym('predicate'), ')'),
-                seq('NOT ', sym('predicate'))),
+                seq(literal('NOT ', '! '), sym('predicate'))),
               optional(seq(
-                alt('AND','OR'),
+                alt(literal('AND','&&'),literal('OR', '||')),
                 sym('predicate')
               )))),
 
-            fn: str(seq(sym('symbol'), '(', sym('expression', ')'))),
+            fn: str(seq(sym('symbol'), '(', sym('expression'), ')')),
 
             number: str(seq(
               optional('-'),
@@ -181,6 +184,12 @@ foam.CLASS({
         },
         gotoLine: function(l) { return `_line = ${l}; break;`; },
         gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
+        read: function(a) {
+          return a.map(s => {
+            self.vars[s] = true;
+            return `${s} = _data[_d++];`;
+          }).join('');
+        },
         return: function() { return '_line = _stack.pop(); break;' },
         let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
       });
@@ -250,7 +259,7 @@ foam.CLASS({
       template: `<%
         // Add return statement at end of code, if not already present
         if ( lines[lines.length-1][2] !== 'return;' )
-          lines.push([[lines[lines.length-1][0].valueOf()+1], ' ', 'return;']);
+          lines.push([[(lines[lines.length-1][0]).valueOf()+1], ' ', 'return;']);
       %>
       // Compiled from BASIC to JS
       async function main(lib) {
