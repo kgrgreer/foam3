@@ -10,6 +10,8 @@
 // https://github.com/GReaperEx/bcg
 // https://www.roug.org/retrocomputing/languages/basic/morebasicgames
 //
+// https://esprima.org/demo/validate.html
+//
 // TODO: http://aleclownes.com/2017/02/01/crt-display.html
 
 foam.CLASS({
@@ -66,9 +68,9 @@ foam.CLASS({
 
             end: literal('END', 'return;'),
 
-            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n')))),
+            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('expression')),
 
-            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('number')),
+            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n')))),
 
             gosub: seq('GOSUB ', sym('number')),
 
@@ -76,7 +78,7 @@ foam.CLASS({
 
             gotoLine: sym('number'),
 
-            if: seq('IF ', str(until('THEN ')), alt(sym('gotoLine'), str(sym('statements')))),
+            if: seq('IF ', seq1(0, sym('predicate'), ' THEN '), alt(sym('gotoLine'), str(sym('statements')))),
 
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
 
@@ -102,8 +104,8 @@ foam.CLASS({
 
             expression: str(seq(
               alt(
-                seq('(', sym('expression'), ')'),
-                seq('-', sym('expression')),
+                str(seq('(', sym('expression'), ')')),
+                str(seq('-', sym('expression'))),
                 sym('number'),
                 sym('string'),
                 sym('fn'),
@@ -111,10 +113,10 @@ foam.CLASS({
               optional(str(seq(alt('+','-','*','/'), sym('expression')))))),
 
             predicate: str(seq(
-              alt(
+              str(alt(
                 seq(sym('expression'), alt('=', literal('<>', '!='),'<=','>=','<','>'), sym('expression')),
                 seq('(', sym('predicate'), ')'),
-                seq(literal('NOT ', '! '), sym('predicate'))),
+                seq(literal('NOT ', '! '), sym('predicate')))),
               optional(seq(
                 alt(literal('AND','&&'),literal('OR', '||')),
                 sym('predicate')
