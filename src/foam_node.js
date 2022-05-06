@@ -35,10 +35,12 @@ var foam = globalThis.foam = {
   },
   */
   require: function (fn, batch, isProject) {
+//  console.log('!!!!'+foam.cwd);
     if ( ! fn ) return;
 
     // ???: foam.resolve()?
     var cwd = foam.cwd;
+    foam.oldCwd = cwd;
     try {
       var path = path_.resolve(foam.cwd, fn) + '.js';
       if ( ! isProject && globalThis.foam.seen(path) ) return;

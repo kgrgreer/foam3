@@ -4,11 +4,16 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 (function() {
   var scripts = '';
-
-  var foam = globalThis.foam = Object.assign({
+  function assign(target, source) {
+    // Copy source values into target if missing from target
+    for ( var key in source )
+      if ( ! target.hasOwnProperty(key) )
+        target[key] = source[key];
+    return target;
+  }
+  var foam = globalThis.foam = assign(globalThis.foam || {}, {
     isServer: false,
     defaultFlags: {
       debug: true,
@@ -144,14 +149,18 @@
 
       m.code();
     },
+    poms: {},
     POM: function(pom) {
+//      console.log('!!!!'+foam.cwd);
       if ( globalThis.document ) {
         var src = document.currentScript.src;
         var i = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
         console.log(foam.cwd);
       }
+      foam.poms[pom.name] = pom;
       function loadFiles(files, isProjects) {
+      console.log('!!!!'+foam.cwd);
         files && files.forEach(f => {
           var name = f.name;
           f.flags  = foam.adaptFlags(f.flags);
@@ -161,7 +170,7 @@
           if ( f.predicate && ! f.predicate() ) return;
 
           foam.currentFlags = f.flags || [];
-
+          debugger;
           foam.require(name, ! isProjects, isProjects);
         });
       }
@@ -175,7 +184,7 @@
       foam.loadJSLibs(pom.JSLibs);
     },
     assert: console.assert.bind(console)
-  }, globalThis.foam || {});
+  });
 
   foam.setup();
 })();
