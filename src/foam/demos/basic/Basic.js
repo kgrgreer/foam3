@@ -174,8 +174,8 @@ foam.CLASS({
           return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
         },
         next: function(a) {
-          var f = self.fors[a[0]];
-          return `${a[0]} = ${a[0]} + (${f[2]}); if ( ${a[0]} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _pc = ${f[0]}.5; break; } `;
+          var f = self.fors[a];
+          return `${a} = ${a} + (${f[2]}); if ( ${a} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _pc = ${f[0]}.5; break; } `;
         },
         if: function(a) { return `if ( ${a[1]}) { ${a[2]} }`; },
         string: function(a) { return `"${a.join('')}"`; },

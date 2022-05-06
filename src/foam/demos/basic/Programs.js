@@ -306,6 +306,4 @@ foam.CLASS({
 70 NEXT i
 999 END
 `]
-
-// 10 PRINT(CHR$(205+RND(1)*2)); : GOTO 10
 ].map(e => [e[1], e[0]])}});
