@@ -79,6 +79,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
@@ -275,6 +276,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showNav',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        return globalThis.localStorage['isMenuOpen'] === 'true'
+         || ( globalThis.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        globalThis.localStorage['isMenuOpen'] = n;
+      }
     },
     {
       class: 'Boolean',
