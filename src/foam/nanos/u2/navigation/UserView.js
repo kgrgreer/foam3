@@ -128,6 +128,7 @@ foam.CLASS({
             .addClass(this.myClass('carrot'))
           .end()
         .end();
-    }
+    },
+    function otherViews() {}
   ]
 });
