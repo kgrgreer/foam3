@@ -29,6 +29,7 @@ foam.CLASS({
 110 DATA 1,2,3
 120 READ A,B,C
 130 PRINT A;B;C
+140 DIM X(10),Y(20,2),Z$(2,3,4)
 ` ],
 [ '3D Plot', `
 1 PRINT TAB(32);"3D PLOT"

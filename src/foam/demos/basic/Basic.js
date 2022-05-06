@@ -39,6 +39,7 @@ foam.CLASS({
             statement: alt(
               sym('data'),
               sym('def'),
+              sym('dim'),
               sym('end'),
               sym('forStep'),
               sym('for'),
@@ -58,6 +59,10 @@ foam.CLASS({
             data: seq1(1, 'DATA ', repeat(sym('number'), ',')),
 
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
+
+            dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
+
+            dimElement: seq(sym('symbol'), '(', repeat(sym('number'),','), ')'),
 
             end: literal('END', 'return;'),
 
@@ -145,12 +150,18 @@ foam.CLASS({
           a[2].forEach(v => self.vars[v] = true);
           return `${a[2][0]} = INPUT(${a[1]});`;
         },
-        on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`; },
+        on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _pc = l; break; } }`; },
         def: function(a) {
           self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
         },
         data: function(a) { a.forEach(d => self.data.push(d)); return ''; },
+        dim: function(a) {
+          return a.map(e => {
+            self.vars[e[0]] = true;
+            return `${e[0]} = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
+          }).join('');
+        },
         rem: function(a) { return '// REM' + a; },
         forStep: function(a) {
           self.vars[a[1]] = true;
@@ -164,7 +175,7 @@ foam.CLASS({
         },
         next: function(a) {
           var f = self.fors[a[0]];
-          return `${a[0]} = ${a[0]} + (${f[2]}); if ( ${a[0]} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _line = ${f[0]}.5; break; } `;
+          return `${a[0]} = ${a[0]} + (${f[2]}); if ( ${a[0]} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _pc = ${f[0]}.5; break; } `;
         },
         if: function(a) { return `if ( ${a[1]}) { ${a[2]} }`; },
         string: function(a) { return `"${a.join('')}"`; },
@@ -182,15 +193,15 @@ foam.CLASS({
           if ( ! a[3] ) append('NL()');
           return ret + ';'
         },
-        gotoLine: function(l) { return `_line = ${l}; break;`; },
-        gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
+        gotoLine: function(l) { return `_pc = ${l}; break;`; },
+        gosub: function(a) { return `_pc = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
         read: function(a) {
           return a.map(s => {
             self.vars[s] = true;
             return `${s} = _data[_d++];`;
           }).join('');
         },
-        return: function() { return '_line = _stack.pop(); break;' },
+        return: function() { return '_pc = _stack.pop(); break;' },
         let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
       });
     }
@@ -268,12 +279,12 @@ foam.CLASS({
           const _data = [ <%= data.join(',') %> ];<!--
           --><%= defs.join(', ') %>
           <!--
-          -->var <%= vars.map(v => v + '=0').join(', ') %>;<!--
+          -->var <%= vars.map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
           -->
-          var _line = <%= lines[0][0]%>;
+          var _pc = <%= lines[0][0]%>;
           while ( true ) {
-            // console.log(_line);
-            switch ( _line ) {
+            // console.log(_pc);
+            switch ( _pc ) {
             <% for ( var i = 0 ; i < lines.length ; i++ ) {
               var line = lines[i];
               %><!--
