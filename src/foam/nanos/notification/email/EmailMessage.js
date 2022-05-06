@@ -186,7 +186,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'templateArguments',
-      includeInDigest: true,
+      storageTransient: true,
       section: 'templateInformation',
       order: 10,
       view: { class: 'foam.u2.view.MapView' }

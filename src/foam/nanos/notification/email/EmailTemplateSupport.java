@@ -54,7 +54,7 @@ public class EmailTemplateSupport
       Y     *     *     *
     */
 
-    logger.info("name", name, "groupId", groupId, "locale", locale, "spid", spid);
+    // logger.debug("name", name, "groupId", groupId, "locale", locale, "spid", spid);
 
     List<String> groupIdList = new ArrayList<>();
 
