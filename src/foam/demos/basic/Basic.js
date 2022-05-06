@@ -5,7 +5,7 @@
  */
 
 // See:
-//  http://vintage-basic.net/downloads/Vintage_BASIC_Users_Guide.html
+// http://vintage-basic.net/downloads/Vintage_BASIC_Users_Guide.html
 // http://vintage-basic.net/games.html
 // https://github.com/GReaperEx/bcg
 // https://www.roug.org/retrocomputing/languages/basic/morebasicgames
@@ -17,22 +17,10 @@ foam.CLASS({
 
   properties: [
     'currentLine',
-    {
-      name: 'vars',
-      factory: function() { return {}; }
-    },
-    {
-      name: 'defs',
-      factory: function() { return []; }
-    },
-    {
-      name: 'data',
-      factory: function() { return []; }
-    },
-    {
-      name: 'fors',
-      factory: function() { return {}; }
-    },
+    { name: 'vars', factory: function() { return { '_d': true }; } },
+    { name: 'defs', factory: function() { return []; } },
+    { name: 'data', factory: function() { return []; } },
+    { name: 'fors', factory: function() { return {}; } },
     {
       name: 'symbols',
       factory: function() {
@@ -47,60 +35,84 @@ foam.CLASS({
             statements: repeat(sym('statement'), seq(':', optional(' '))),
 
             statement: alt(
-              sym('on'),
               sym('data'),
-              sym('rem'),
+              sym('def'),
+              sym('end'),
               sym('forStep'),
               sym('for'),
-              sym('next'),
-              sym('if'),
-              sym('def'),
-              sym('print'),
-              sym('let'),
-              sym('end'),
-              sym('goto'),
               sym('gosub'),
+              sym('goto'),
+              sym('if'),
+              sym('input'),
+              sym('let'),
+              sym('next'),
+              sym('on'),
+              sym('print'),
+              sym('rem'),
               sym('return'),
               str(repeat(notChars(':\n')))),
 
-            on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
-
             data: seq1(1, 'DATA ', repeat(sym('number'), ',')),
-
-            rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
-
-            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('number')),
-
-            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n')))),
-
-            next: seq1(1, 'NEXT ', sym('symbol')),
-
-            // TODO: should support number or statement
-            if: seq('IF ', str(until('THEN ')), alt(sym('gotoLine'), str(sym('statements')))),
 
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
 
-            print: seq('PRINT', optional(' '), repeat(sym('printArg'), ';'), optional(';')),
+            end: literal('END', 'return;'),
 
-            printArg: alt(sym('string'), sym('tab')),
+            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n')))),
 
-            string: seq1(1, '"', repeat(notChars('"')), '"'),
-
-            tab: str(seq('TAB(', alt(sym('number'), sym('symbol')), ')')), // TODO: make expression
-
-            let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
-
-            goto: seq1(1, 'GOTO ', sym('gotoLine')),
+            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('number')),
 
             gosub: seq('GOSUB ', sym('number')),
 
-            return: literal('RETURN'),
-
-            end: literal('END', 'return;'),
-
-            expression: str(repeat(notChars(':\n'))),
+            goto: seq1(1, 'GOTO ', sym('gotoLine')),
 
             gotoLine: sym('number'),
+
+            if: seq('IF ', str(until('THEN ')), alt(sym('gotoLine'), str(sym('statements')))),
+
+            input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
+
+            let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
+
+            next: seq1(1, 'NEXT ', sym('symbol')),
+
+            on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
+
+            print: seq('PRINT', optional(' '), repeat(alt(sym('tab'), sym('expression')), ';'), optional(';')),
+
+            printArg: alt(sym('string'), sym('tab')),
+
+            rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
+
+            return: literal('RETURN'),
+
+            string: seq1(1, '"', repeat(notChars('"')), '"'),
+
+            tab: str(seq('TAB(', sym('expression'), ')')),
+
+//            expression: str(repeat(notChars(':\n'))),
+
+            expression: str(seq(
+              alt(
+                seq('(', sym('expression'), ')'),
+                seq('-', sym('expression')),
+                sym('number'),
+                sym('string'),
+                sym('symbol'),
+                sym('fn')),
+              optional(str(seq(alt('+','-','*','/'), sym('expression')))))),
+
+            predicate: str(seq(
+              alt(
+                seq(sym('expression'), alt('=','<>','<=','>=','<','>'), sym('expression')),
+                seq('(', sym('predicate'), ')'),
+                seq('NOT ', sym('predicate'))),
+              optional(seq(
+                alt('AND','OR'),
+                sym('predicate')
+              )))),
+
+            fn: str(seq(sym('symbol'), '(', sym('expression', ')'))),
 
             number: str(seq(
               optional('-'),
@@ -125,24 +137,18 @@ foam.CLASS({
     function init() {
       var self = this;
       this.addActions({
-        lineNumber: function(a) {
-          self.currentLine = a;
-          return a;
+        lineNumber: function(a) { self.currentLine = a; return a; },
+        input: function(a) {
+          a[2].forEach(v => self.vars[v] = true);
+          return `${a[2][0]} = INPUT(${a[1]});`;
         },
-        on: function(a) {
-          return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`;
-        },
+        on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
           self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
         },
-        data: function(a) {
-          a.forEach(d => self.data.push(d));
-          return '';
-        },
-        rem: function(a) {
-          return '// REM' + a;
-        },
+        data: function(a) { a.forEach(d => self.data.push(d)); return ''; },
+        rem: function(a) { return '// REM' + a; },
         forStep: function(a) {
           self.vars[a[1]] = true;
           self.fors[a[1]] = [self.currentLine, a[4], a[6]];
@@ -161,9 +167,7 @@ foam.CLASS({
         string: function(a) { return `"${a.join('')}"`; },
         print: function(a) {
           var ret = '';
-          function append(s) {
-            ret += ( ret ? ';' : '' ) + s;
-          }
+          function append(s) { ret += ( ret ? ';' : '' ) + s; }
           for ( var i = 0 ; i < a[2].length ; i++ ) {
             var l = a[2][i];
             if ( l.startsWith('TAB') ) {
@@ -193,26 +197,33 @@ foam.CLASS({
 
   constants: {
     LIB: {
-      LEFT$: function(s, n) { return s.substring(0, n); },
-      RIGHT$:function(s, n) { return s.substring(s.length-n); },
-      MID$:  function(s, b, n) { return s.substring(b, b+n); },
-      PRINT: function(s) { this.output += s; },
-      LEN:   function(s) { return s.length; },
-      NL:    function()  { this.output += '\n'; },
-      EXP:   function(n) { return Math.exp(n); },
-      SQR:   function(n) { return Math.sqrt(n); },
-      INT:   function(n) { return Math.floor(n); },
-      SIN:   function(n) { return Math.sin(n); },
-      COS:   function(n) { return Math.cos(n); },
-      TAN:   function(n) { return Math.tan(n); },
-      RND:   function(n) { return Math.random() * n; },
       ABS:   function(n) { return Math.abs(n); },
+      CLS:   function() { this.output = ''; },
+      CHR$:  function(c) { return String.fromCharCode(c); },
+      COS:   function(n) { return Math.cos(n); },
+      DIM:   function(v, ...dims) {
+        function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
+        return f(v, 0, dims);
+      },
+      EXP:   function(n) { return Math.exp(n); },
+      INPUT: function(m) { this.output += m; var ret = prompt(m); this.output += ret + '\n'; return ret; },
+      INT:   function(n) { return Math.floor(n); },
+      LEFT$: function(s, n) { return s.substring(0, n); },
+      LEN:   function(s) { return s.length; },
+      MID$:  function(s, b, n) { return s.substring(b-1, b+n); },
+      NL:    function() { this.output += '\n'; },
+      PRINT: function(s) { this.output += s; },
+      RIGHT$:function(s, n) { return s.substring(s.length-n); },
+      RND:   function(n) { return Math.random() * n; },
+      SIN:   function(n) { return Math.sin(n); },
+      SQR:   function(n) { return Math.sqrt(n); },
       TAB:   function(n) {
         var i = this.output.lastIndexOf('\n');
         if ( i == -1 ) i = 0;
         var pos = this.output.length - i;
-        this.output += ' '.repeat(n-pos);
-      }
+        this.output += ' '.repeat(Math.max(0, n-pos));
+      },
+      TAN:   function(n) { return Math.tan(n); }
     }
   },
 
@@ -222,14 +233,8 @@ foam.CLASS({
       view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
       postSet: function(o, n) { this.sourceCode = n.trim(); }
     },
-    {
-      class: 'Code',
-      name: 'sourceCode',
-    },
-    {
-      class: 'Code',
-      name: 'targetCode'
-    },
+    { class: 'Code', name: 'sourceCode' },
+    { class: 'Code', name: 'targetCode' },
     {
       class: 'String',
       name: 'output',
@@ -238,23 +243,24 @@ foam.CLASS({
     }
   ],
 
-  methods: [
-  ],
-
   templates: [
     {
       name: 'jsGenerator',
       args: [ 'data', 'defs', 'vars', 'lines' ],
-      template: `
+      template: `<%
+        // Add return statement at end of code, if not already present
+        if ( lines[lines.length-1][2] !== 'return;' )
+          lines.push([[lines[lines.length-1][0].valueOf()+1], ' ', 'return;']);
+      %>
       // Compiled from BASIC to JS
       async function main(lib) {
         with ( lib ) {
           const _stack = [];
-          const _data = [ <%= data.join(',') %> ];
-          <%= defs.join(', ') %>
-          <% if ( vars.length ) { %><!--
+          const _data = [ <%= data.join(',') %> ];<!--
+          --><%= defs.join(', ') %>
+          <!--
           -->var <%= vars.map(v => v + '=0').join(', ') %>;<!--
-          --><% } %>
+          -->
           var _line = <%= lines[0][0]%>;
           while ( true ) {
             // console.log(_line);
@@ -297,8 +303,7 @@ foam.CLASS({
         for ( var key in this.LIB ) lib[key] = this.LIB[key].bind(this);
         try {
           var fn = eval('(' + this.targetCode + ')');
-          for ( var i = 0 ; i < 10 ; i++ ) fn.call(this, lib);
-          this.output = '';
+//          for ( var i = 0 ; i < 10 ; i++ ) fn.call(this, lib); this.output = '';
           console.time('run');
           fn.call(this, lib);
         } catch(x) {

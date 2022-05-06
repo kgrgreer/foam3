@@ -15,6 +15,13 @@ foam.CLASS({
   constants: {
     PROGRAMS: [
 [ 'Empty', '' ],
+[ 'Test', `
+10 PRINT "HELLO"
+20 PRINT 42
+30 PRINT 1+2
+40 PRINT TAB(10);"X"
+50 PRINT TAB(1+2);"Y"
+` ],
 [ '3D Plot', `
 1 PRINT TAB(32);"3D PLOT"
 2 PRINT TAB(15);"CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY"
@@ -291,4 +298,5 @@ foam.CLASS({
 999 END
 `]
 
+// 10 PRINT(CHR$(205+RND(1)*2)); : GOTO 10
 ].map(e => [e[1], e[0]])}});
