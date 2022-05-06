@@ -36,7 +36,7 @@ foam.CLASS({
 
             lineNumber: sym('number'),
 
-            statements: repeat(sym('statement'), seq(':', optional(' '))),
+            statements: repeat(sym('statement'), seq(optional(' '), ':', optional(' '))),
 
             statement: alt(
               sym('data'),
@@ -70,7 +70,7 @@ foam.CLASS({
 
             forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('expression')),
 
-            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n')))),
+            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n:')))),
 
             gosub: seq('GOSUB ', sym('number')),
 
@@ -102,7 +102,7 @@ foam.CLASS({
 
             tab: str(seq('TAB(', sym('expression'), ')')),
 
-            expression: str(seq(
+            expression: seq(
               alt(
                 str(seq('(', sym('expression'), ')')),
                 str(seq('-', sym('expression'))),
@@ -110,16 +110,16 @@ foam.CLASS({
                 sym('string'),
                 sym('fn'),
                 sym('symbol')),
-              optional(str(seq(alt('+','-','*','/'), sym('expression')))))),
-
+              optional(seq(alt('+','-','*','/','^'), sym('expression')))),
+              // TODO: Support ^
             predicate: str(seq(
               str(alt(
-                seq(sym('expression'), alt('=', literal('<>', '!='),'<=','>=','<','>'), sym('expression')),
+                seq(sym('expression'), alt(literal('=', '=='), literal('<>', '!='),'<=','>=','<','>'), sym('expression')),
                 seq('(', sym('predicate'), ')'),
                 seq(literal('NOT ', '! '), sym('predicate')))),
-              optional(seq(
-                alt(literal('AND','&&'),literal('OR', '||')),
-                sym('predicate')
+              optional(str(seq(
+                alt(literal(' AND ','&&'), literal(' OR ', '||')),
+                sym('predicate'))
               )))),
 
             fn: seq(sym('symbol'), '(', repeat(sym('expression'), ','), ')'),
@@ -163,6 +163,11 @@ foam.CLASS({
             self.vars[e[0]] = true;
             return `${e[0]} = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
           }).join('');
+        },
+        expression: function(a) {
+          if ( a[1] && a[1][0] === '^' ) return `Math.pow(${a[0]}, ${a[1][1]})`;
+          if ( a[1] ) return a[0] + a[1].join('');
+          return a[0];
         },
         rem: function(a) { return '// REM' + a; },
         fn: function(a) {
@@ -234,7 +239,7 @@ foam.CLASS({
         return f(v, 0, dims);
       },
       EXP:   function(n) { return Math.exp(n); },
-      INPUT: function(m) { this.output += m; var ret = prompt(m); this.output += ret + '\n'; return ret; },
+      INPUT: function(m) { this.output += m; var ret = prompt(m || undefined); this.output += ret + '\n'; return ret; },
       INT:   function(n) { return Math.floor(n); },
       LEFT$: function(s, n) { return s.substring(0, n); },
       LEN:   function(s) { return s.length; },
@@ -275,11 +280,7 @@ foam.CLASS({
     {
       name: 'jsGenerator',
       args: [ 'data', 'defs', 'vars', 'lines' ],
-      template: `<%
-        // Add return statement at end of code, if not already present
-        if ( lines[lines.length-1][2] !== 'return;' )
-          lines.push([[(lines[lines.length-1][0]).valueOf()+1], ' ', 'return;']);
-      %>
+      template: `
       // Compiled from BASIC to JS
       async function main(lib) {
         with ( lib ) {
@@ -303,6 +304,7 @@ foam.CLASS({
                 --><%=stmt%><!--
               --><%}%>
             <%}%>
+            return;
             }
           }
         }
