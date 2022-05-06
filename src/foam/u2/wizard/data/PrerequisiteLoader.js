@@ -16,6 +16,7 @@ foam.CLASS({
   imports: [
     'capabilityToPrerequisite',
     'wizardletId',
+    'wizardletOf',
     'wizardlets'
   ],
 
@@ -44,7 +45,10 @@ foam.CLASS({
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      expression: function (wizardletOf) {
+        return wizardletOf;
+      }
     }
   ],
   
