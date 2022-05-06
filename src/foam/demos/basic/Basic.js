@@ -80,7 +80,7 @@ foam.CLASS({
 
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
 
-            let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
+            let: seq(optional('LET '), alt(sym('fn'), sym('symbol')), '=', sym('expression')),
 
             next: seq1(1, 'NEXT ', sym('symbol')),
 
@@ -120,7 +120,7 @@ foam.CLASS({
                 sym('predicate')
               )))),
 
-            fn: str(seq(sym('symbol'), '(', sym('expression'), ')')),
+            fn: seq(sym('symbol'), '(', repeat(sym('expression'), ','), ')'),
 
             number: str(seq(
               optional('-'),
@@ -163,6 +163,12 @@ foam.CLASS({
           }).join('');
         },
         rem: function(a) { return '// REM' + a; },
+        fn: function(a) {
+          // array lookup
+          if ( self.vars[a[0]] ) return `${a[0]}[${a[2].join()}]`;
+          // function call
+          return `${a[0]}(${a[2].join()})`;
+        },
         forStep: function(a) {
           self.vars[a[1]] = true;
           self.fors[a[1]] = [self.currentLine, a[4], a[6]];
@@ -173,12 +179,13 @@ foam.CLASS({
           self.fors[a[1]] = [self.currentLine, a[4], 1];
           return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
         },
+        let: function(a) { if ( a[1].indexOf('[') == -1 ) self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; },
         next: function(a) {
           var f = self.fors[a];
           return `${a} = ${a} + (${f[2]}); if ( ${a} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _pc = ${f[0]}.5; break; } `;
         },
         if: function(a) { return `if ( ${a[1]}) { ${a[2]} }`; },
-        string: function(a) { return `"${a.join('')}"`; },
+        string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
         print: function(a) {
           var ret = '';
           function append(s) { ret += ( ret ? ';' : '' ) + s; }
@@ -201,8 +208,7 @@ foam.CLASS({
             return `${s} = _data[_d++];`;
           }).join('');
         },
-        return: function() { return '_pc = _stack.pop(); break;' },
-        let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
+        return: function() { return '_pc = _stack.pop(); break;' }
       });
     }
   ]
