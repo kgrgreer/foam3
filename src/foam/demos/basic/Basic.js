@@ -68,7 +68,7 @@ foam.CLASS({
 
             end: literal('END', 'return;'),
 
-            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('expression')),
+            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('expr')),
 
             for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n:')))),
 
@@ -82,13 +82,13 @@ foam.CLASS({
 
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
 
-            let: seq(optional('LET '), alt(sym('fn'), sym('symbol')), '=', sym('expression')),
+            let: seq(optional('LET '), alt(sym('fn'), sym('symbol')), '=', sym('expr')),
 
             next: seq1(1, 'NEXT ', sym('symbol')),
 
             on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
 
-            print: seq('PRINT', optional(' '), repeat(alt(sym('tab'), sym('expression')), ';'), optional(';')),
+            print: seq('PRINT', optional(' '), repeat(alt(sym('tab'), sym('expr')), ';'), optional(';')),
 
             printArg: alt(sym('string'), sym('tab')),
 
@@ -100,21 +100,38 @@ foam.CLASS({
 
             string: seq1(1, '"', repeat(notChars('"')), '"'),
 
-            tab: str(seq('TAB(', sym('expression'), ')')),
+            tab: str(seq('TAB(', sym('expr'), ')')),
 
-            expression: seq(
+            expr: seq(sym('expr1'), optional(seq(alt('+', '-'), sym('expr')))),
+
+            expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
+
+            expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
+
+            expr3: alt(
+              str(seq('(', sym('expr'), ')')),
+              str(seq('-', sym('expr'))),
+              sym('number'),
+              sym('string'),
+              sym('fn'),
+              sym('symbol')
+            ),
+
+            /*
+            expr: seq(
               alt(
-                str(seq('(', sym('expression'), ')')),
-                str(seq('-', sym('expression'))),
+                str(seq('(', sym('expr'), ')')),
+                str(seq('-', sym('expr'))),
                 sym('number'),
                 sym('string'),
                 sym('fn'),
                 sym('symbol')),
-              optional(seq(alt('+','-','*','/','^'), sym('expression')))),
-              // TODO: Support ^
+              optional(seq(alt('+','-','*','/','^'), sym('expr')))),
+              */
+
             predicate: str(seq(
               str(alt(
-                seq(sym('expression'), alt(literal('=', '=='), literal('<>', '!='),'<=','>=','<','>'), sym('expression')),
+                seq(sym('expr'), alt(literal('=', '=='), literal('<>', '!='),'<=','>=','<','>'), sym('expr')),
                 seq('(', sym('predicate'), ')'),
                 seq(literal('NOT ', '! '), sym('predicate')))),
               optional(str(seq(
@@ -122,7 +139,7 @@ foam.CLASS({
                 sym('predicate'))
               )))),
 
-            fn: seq(sym('symbol'), '(', repeat(sym('expression'), ','), ')'),
+            fn: seq(sym('symbol'), '(', repeat(sym('expr'), ','), ')'),
 
             number: str(seq(
               optional('-'),
@@ -164,11 +181,9 @@ foam.CLASS({
             return `${e[0]} = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
           }).join('');
         },
-        expression: function(a) {
-          if ( a[1] && a[1][0] === '^' ) return `Math.pow(${a[0]}, ${a[1][1]})`;
-          if ( a[1] ) return a[0] + a[1].join('');
-          return a[0];
-        },
+        expr: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
+        expr1: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
+        expr2: function(a) { return a[1] ? `Math.pow(${a[0]}, ${a[1][1]})` : a[0]; },
         rem: function(a) { return '// REM' + a; },
         fn: function(a) {
           // array lookup
