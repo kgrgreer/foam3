@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'ImportFromGoogleSheetsForm',
-  extends: 'net.nanopay.ui.wizardModal.WizardModal',
+  extends: 'foam.nanos.google.api.sheets.views.wizardModal.WizardModal',
 
   imports: [
     'config'
