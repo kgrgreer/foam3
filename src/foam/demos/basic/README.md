@@ -2,7 +2,7 @@
 
 A simple BASIC to JS compiler.
 
-Designed to run BASIC games from the classic book [BASIC Computer Games](https://www.amazon.com/BASIC-Computer-Games-Microcomputer-David/dp/0894800523. Source code for the games is available from the [Vintage Basic Website](http://vintage-basic.net/games.html) or from this [Gihub Repo](https://github.com/GReaperEx/bcg).
+Designed to run BASIC games from the classic book [BASIC Computer Games](https://www.amazon.com/BASIC-Computer-Games-Microcomputer-David/dp/0894800523). Source code for the games is available from the [Vintage Basic Website](http://vintage-basic.net/games.html) or from this [Github Repo](https://github.com/GReaperEx/bcg).
 
 If the compiled code produces a syntax error, you can find out more information by pasting the code into this [Online Validator](https://esprima.org/demo/validate.html).
 
