@@ -4,20 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// See:
-// http://vintage-basic.net/downloads/Vintage_BASIC_Users_Guide.html
-// http://vintage-basic.net/games.html
-// https://github.com/GReaperEx/bcg
-// https://www.roug.org/retrocomputing/languages/basic/morebasicgames
-//
-// https://esprima.org/demo/validate.html
-// https://joystickandcursorkeys.github.io/basic64-js/emulator/index.html
-//
-// TODO:
-//   http://aleclownes.com/2017/02/01/crt-display.html
-//   scroll to bottom of output text area
-//   get rid of 'with'
-
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Compiler',
@@ -120,18 +106,6 @@ foam.CLASS({
               sym('fn'),
               sym('symbol')
             ),
-
-            /*
-            expr: seq(
-              alt(
-                str(seq('(', sym('expr'), ')')),
-                str(seq('-', sym('expr'))),
-                sym('number'),
-                sym('string'),
-                sym('fn'),
-                sym('symbol')),
-              optional(seq(alt('+','-','*','/','^'), sym('expr')))),
-              */
 
             predicate: str(seq(
               str(alt(
@@ -249,38 +223,6 @@ foam.CLASS({
 
   imports: [ 'setTimeout' ],
 
-  constants: {
-    LIB: {
-      ABS:   function(n) { return Math.abs(n); },
-      CLS:   function() { this.output = ''; },
-      CHR$:  function(c) { return String.fromCharCode(c); },
-      COS:   function(n) { return Math.cos(n); },
-      DIM:   function(v, ...dims) {
-        function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
-        return f(v, 0, dims);
-      },
-      EXP:   function(n) { return Math.exp(n); },
-      INPUT: function(m) { this.output += m; var ret = prompt(m || undefined); this.output += ret + '\n'; return ret; },
-      INT:   function(n) { return Math.floor(n); },
-      LEFT$: function(s, n) { return s.substring(0, n); },
-      LEN:   function(s) { return s.length; },
-      MID$:  function(s, b, n) { return s.substring(b-1, b+n); },
-      NL:    function() { this.output += '\n'; },
-      PRINT: function(s) { this.output += s; },
-      RIGHT$:function(s, n) { return s.substring(s.length-n); },
-      RND:   function(n) { return Math.random() * n; },
-      SIN:   function(n) { return Math.sin(n); },
-      SQR:   function(n) { return Math.sqrt(n); },
-      TAB:   function(n) {
-        var i = this.output.lastIndexOf('\n');
-        if ( i == -1 ) i = 0;
-        var pos = this.output.length - i;
-        this.output += ' '.repeat(Math.max(0, n-pos));
-      },
-      TAN:   function(n) { return Math.tan(n); }
-    }
-  },
-
   properties: [
     {
       name: 'program',
@@ -297,37 +239,63 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    function ABS(n) { return Math.abs(n); },
+    function CLS() { this.output = ''; },
+    function CHR$(c) { return String.fromCharCode(c); },
+    function COS(n) { return Math.cos(n); },
+    function DIM(v, ...dims) {
+      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
+      return f(v, 0, dims);
+    },
+    function EXP(n) { return Math.exp(n); },
+    function INPUT(m) { this.output += m; var ret = prompt(m || undefined); this.output += ret + '\n'; return ret; },
+    function INT(n) { return Math.floor(n); },
+    function LEFT$(s, n) { return s.substring(0, n); },
+    function LEN(s) { return s.length; },
+    function MID$(s, b, n) { return s.substring(b-1, b+n); },
+    function NL() { this.output += '\n'; },
+    function PRINT(s) { this.output += s; },
+    function RIGHT$(s, n) { return s.substring(s.length-n); },
+    function RND(n) { return Math.random() * n; },
+    function SIN(n) { return Math.sin(n); },
+    function SQR(n) { return Math.sqrt(n); },
+    function TAB(n) {
+      var pos = this.output.length - Math.max(0, this.output.lastIndexOf('\n'));
+      this.output += ' '.repeat(Math.max(0, n-pos));
+    },
+    function TAN(n) { return Math.tan(n); }
+  ],
+
   templates: [
     {
       name: 'jsGenerator',
       args: [ 'data', 'defs', 'vars', 'lines' ],
       template: `
       // Compiled from BASIC to JS
-      async function main(lib) {
-        with ( lib ) {
-          const _stack = [];
-          const _data = [ <%= data.join(',') %> ];<!--
-          --><%= defs.join(', ') %>
-          <!--
-          -->var <%= vars.map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
-          -->
-          var _line = <%= lines[0][0]%>;
-          while ( true ) {
-            // await new Promise(r => this.setTimeout(r, 1));
-            // console.log(_line);
-            switch ( _line ) {
-            <% for ( var i = 0 ; i < lines.length ; i++ ) {
-              var line = lines[i];
-              %><!--
-              -->case <%=line[0]%>: <!--
-              --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
-                var stmt = line[2][j];
-              %><!--
-                --><%=stmt%><!--
-              --><%}%>
-            <%}%>
-            return;
-            }
+      async function main() {
+        const _stack = [];
+        const _data = [ <%= data.join(',') %> ];<!--
+        --><%= defs.join(', ') %>
+        <!--
+        -->var <%= vars.map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
+        -->
+        var _line = <%= lines[0][0]%>;
+        while ( true ) {
+          // await new Promise(r => this.setTimeout(r, 1));
+          // console.log(_line);
+          switch ( _line ) {
+          <% for ( var i = 0 ; i < lines.length ; i++ ) {
+            var line = lines[i];
+            %><!--
+            -->case <%=line[0]%>: <!--
+            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
+              var stmt = line[2][j];
+            %><!--
+              --><%=stmt%><!--
+            --><%}%>
+          <%}%>
+          return;
           }
         }
       }
@@ -341,23 +309,20 @@ foam.CLASS({
       code: function() {
         var compiler = this.Compiler.create();
         var ret = compiler.parseString(this.sourceCode.trim());
-        if ( ret ) {
+        if ( ret )
           this.targetCode = this.jsGenerator(compiler.data, compiler.defs, Object.keys(compiler.vars), ret);
-        }
       }
     },
     {
       name: 'run',
       code: function() {
-        var lib = {};
         this.output = '';
-        for ( var key in this.LIB ) lib[key] = this.LIB[key].bind(this);
         try {
-          // TODO: Can we do with ( LIB ) eval?
-          var fn = eval('(' + this.targetCode + ')');
-//          for ( var i = 0 ; i < 10 ; i++ ) fn.call(this, lib); this.output = '';
+          var fn;
+          with ( this ) { fn = eval('(' + this.targetCode + ')'); }
+          // for ( var i = 0 ; i < 10 ; i++ ) fn.call(this); this.output = '';
           console.time('run');
-          fn.call(this, lib);
+          fn.call(this);
         } catch(x) {
           this.output = 'SYNTAX ERROR: ' + x;
         } finally {
