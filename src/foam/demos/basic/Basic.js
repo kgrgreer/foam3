@@ -39,13 +39,13 @@ foam.CLASS({
               sym('goto'),
               sym('if'),
               sym('input'),
-              sym('let'),
               sym('next'),
               sym('on'),
               sym('print'),
               sym('read'),
               sym('rem'),
               sym('return'),
+              sym('let'),
               str(repeat(notChars(':\n')))), // passthrough Javascript code
 
             data: seq1(1, 'DATA ', repeat(sym('number'), ',')),
@@ -72,7 +72,9 @@ foam.CLASS({
 
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
 
-            let: seq(optional('LET '), alt(sym('fn'), sym('symbol')), '=', sym('expr')),
+            let: seq(optional('LET '), sym('lhs'), '=', sym('expr')),
+
+            lhs: alt(sym('fn'), sym('symbol')),
 
             next: seq1(1, 'NEXT ', sym('symbol')),
 
@@ -82,7 +84,7 @@ foam.CLASS({
 
             printArg: alt(sym('string'), sym('tab')),
 
-            read: seq1(1, 'READ ', repeat(sym('symbol'), ',')),
+            read: seq1(1, 'READ ', repeat(sym('lhs'), ',')),
 
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
 
@@ -145,7 +147,7 @@ foam.CLASS({
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
           a[2].forEach(v => self.vars[v] = true);
-          return `${a[2][0]} = INPUT(${a[1]});`;
+          return `${a[2][0]} = INPUT(${a[1] || ''});`;
         },
         on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
@@ -179,7 +181,8 @@ foam.CLASS({
           self.fors[a[1]] = [self.currentLine, a[4], 1];
           return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
         },
-        let: function(a) { if ( a[1].indexOf('[') == -1 ) self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; },
+        let: function(a) { return `${a[1]} = ${a[3]};`; },
+        lhs: function(v) { if ( v.indexOf('[') == -1 ) self.vars[v] = true; return v; },
         next: function(a) {
           var f = self.fors[a];
           return `${a} = ${a} + (${f[2]}); if ( ${a} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _line = ${f[0]}.5; break; } `;
@@ -204,7 +207,7 @@ foam.CLASS({
         gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
         read: function(a) {
           return a.map(s => {
-            self.vars[s] = true;
+            if ( s.indexOf('[') == -1 ) self.vars[s] = true;
             return `${s} = _data[_d++];`;
           }).join('');
         },
@@ -235,7 +238,7 @@ foam.CLASS({
       class: 'String',
       name: 'output',
       width: 80,
-      view: { class: 'foam.u2.tag.TextArea', rows: 24 }
+      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80 }
     }
   ],
 
@@ -249,11 +252,11 @@ foam.CLASS({
       return f(v, 0, dims);
     },
     function EXP(n) { return Math.exp(n); },
-    function INPUT(m) { this.output += m; var ret = prompt(m || undefined); this.output += ret + '\n'; return ret; },
+    function INPUT(m) { this.output += m; var ret = prompt(m); this.output += ret + '\n'; return ret; },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
     function LEN(s) { return s.length; },
-    function MID$(s, b, n) { return s.substring(b-1, b+n); },
+    function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
     function NL() { this.output += '\n'; },
     function PRINT(s) { this.output += s; },
     function RIGHT$(s, n) { return s.substring(s.length-n); },
