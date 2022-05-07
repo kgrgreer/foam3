@@ -45,12 +45,13 @@ foam.CLASS({
               sym('on'),
               sym('print'),
               sym('read'),
+              sym('restore'),
               sym('rem'),
               sym('return'),
               sym('let'),
               str(repeat(notChars(':\n')))), // passthrough Javascript code
 
-            data: seq1(1, 'DATA ', repeat(sym('number'), ',')),
+            data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), ',')),
 
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
 
@@ -89,6 +90,8 @@ foam.CLASS({
             read: seq1(1, 'READ ', repeat(sym('lhs'), ',')),
 
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
+
+            restore: literal('RESTORE', '_d = 0;'),
 
             return: literal('RETURN'),
 
@@ -176,18 +179,18 @@ foam.CLASS({
         forStep: function(a) {
           self.addVar(a[1]);
           self.fors[a[1]] = [self.currentLine, a[4], a[6]];
-          return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
+          return `${a[1]} = ${a[3]}; case '${a[1]}${self.currentLine}': `;
         },
         for: function(a) {
           self.addVar(a[1]);
           self.fors[a[1]] = [self.currentLine, a[4], 1];
-          return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
+          return `${a[1]} = ${a[3]}; case '${a[1]}${self.currentLine}': `;
         },
         let: function(a) { return `${a[1]} = ${a[3]};`; },
         lhs: function(v) { self.addVar(v); return v; },
         next: function(a) {
           var f = self.fors[a];
-          return `${a} = ${a} + (${f[2]}); if ( ${a} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _line = ${f[0]}.5; break; } `;
+          return `${a} = ${a} + (${f[2]}); if ( ${a} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _line = '${a}${f[0]}'; break; } `;
         },
         if: function(a) { return `if ( ${a[1]}) { ${a[2]} }`; },
         string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
@@ -206,7 +209,7 @@ foam.CLASS({
           return ret + ';'
         },
         gotoLine: function(l) { return `_line = ${l}; break;`; },
-        gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
+        gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5: `; },
         read: function(a) {
           return a.map(s => {
             self.addVar(s);
