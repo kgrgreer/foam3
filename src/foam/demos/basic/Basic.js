@@ -61,9 +61,9 @@ foam.CLASS({
 
             end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
 
-            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' ')), 'STEP ', sym('expr')),
+            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), sym('expr'), ' STEP ', sym('expr')),
 
-            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(repeat(notChars('\n:')))),
+            for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), sym('expr')),
 
             gosub: seq('GOSUB ', sym('number')),
 
