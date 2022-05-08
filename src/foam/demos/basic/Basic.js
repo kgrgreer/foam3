@@ -152,7 +152,7 @@ foam.CLASS({
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
           a[2].forEach(v => self.addVar(v));
-          return `${a[2][0]} = INPUT(${a[1] || ''});`;
+          return `${a[2][0]} = await INPUT(${a[1] || ''});`;
         },
         on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
@@ -227,10 +227,22 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Basic',
+  extends: 'foam.u2.Controller',
 
   requires: [ 'foam.demos.basic.Compiler' ],
 
   imports: [ 'setTimeout' ],
+
+  constants: { BLOCK_CURSOR: '\u2588' },
+
+  css: `
+  .property-screen {
+    background: black !important;
+    color: green !important;
+    font-size: 42px !important;
+    width: auto !important;
+  }
+  `,
 
   properties: [
     {
@@ -240,17 +252,25 @@ foam.CLASS({
     },
     { class: 'Code', name: 'sourceCode' },
     { class: 'Code', name: 'targetCode' },
+    { class: 'String', name: 'inp' },
+    { class: 'String', name: 'out' },
+    { class: 'String', name: 'cursor', value: ' ' },
     {
       class: 'String',
-      name: 'output',
+      name: 'screen',
       width: 80,
-      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80 }
+      expression: function(out, inp, cursor) { return out + inp + cursor; },
+      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80, mode: foam.u2.DisplayMode.RO }
     }
   ],
 
   methods: [
+    function render() {
+      this.blink();
+      this.add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).start(this.SCREEN).attrs({readonly:true}).on('keypress', this.keypress).on('keyup', this.keyup).end();
+    },
     function ABS(n) { return Math.abs(n); },
-    function CLS() { this.output = ''; },
+    function CLS() { this.out = ''; },
     function CHR$(c) { return String.fromCharCode(c); },
     function COS(n) { return Math.cos(n); },
     function DIM(v, ...dims) {
@@ -258,21 +278,37 @@ foam.CLASS({
       return f(v, 0, dims);
     },
     function EXP(n) { return Math.exp(n); },
-    function INPUT(m) { this.output += m; var ret = prompt(m); this.output += ret + '\n'; return ret; },
+    async function INPUT(m) {
+      return new Promise(r => {
+        var l = () => {
+          if ( this.inp.endsWith('\n') ) {
+            var ret = this.inp.substring(0, this.inp.length-1);
+            this.out += ret;
+            this.inp = '';
+            r(ret);
+          } else {
+            this.inp$.sub(foam.events.oneTime(l));
+          }
+        };
+
+        l();
+      });
+//      this.out += m; var ret = prompt(m); this.out += ret + '\n'; return ret;
+    },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
     function LEN(s) { return s.length; },
     function LOG(n) { return Math.log(n); },
     function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
-    function NL() { this.output += '\n'; },
-    function PRINT(s) { this.output += s; },
+    function NL() { this.out += '\n'; },
+    function PRINT(s) { this.out += s; },
     function RIGHT$(s, n) { return s.substring(s.length-n); },
     function RND(n) { return Math.random() * n; },
     function SIN(n) { return Math.sin(n); },
     function SQR(n) { return Math.sqrt(n); },
     function TAB(n) {
-      var pos = this.output.length - Math.max(0, this.output.lastIndexOf('\n'));
-      this.output += ' '.repeat(Math.max(0, n-pos));
+      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
+      this.out += ' '.repeat(Math.max(0, n-pos));
     },
     function TAN(n) { return Math.tan(n); }
   ],
@@ -313,6 +349,32 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'keypress',
+      code: function(e) {
+        this.inp += e.key === 'Enter' ? '\n' : e.key;
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'keyup',
+      code: function(e) {
+        if ( e.key === 'Backspace' ) this.inp = this.inp.substring(0, this.inp.length-1);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'blink',
+      isMerged: true,
+      mergeDelay: 333,
+      code: function() {
+        this.cursor = this.cursor === this.BLOCK_CURSOR ? ' ' : this.BLOCK_CURSOR;
+        this.blink();
+      }
+    }
+  ],
+
   actions: [
     {
       name: 'compile',
@@ -326,15 +388,15 @@ foam.CLASS({
     {
       name: 'run',
       code: function() {
-        this.output = '';
+        this.out = '';
         try {
           var fn;
           with ( this ) { fn = eval('(' + this.targetCode + ')'); }
-          // for ( var i = 0 ; i < 10 ; i++ ) fn.call(this); this.output = '';
+          // for ( var i = 0 ; i < 10 ; i++ ) fn.call(this); this.out = '';
           console.time('run');
           fn.call(this);
         } catch(x) {
-          this.output = 'SYNTAX ERROR: ' + x;
+          this.out = 'SYNTAX ERROR: ' + x;
         } finally {
           console.timeEnd('run');
         }
