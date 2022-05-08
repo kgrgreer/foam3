@@ -82,7 +82,7 @@ foam.CLASS({
             ),
             predicate: str(seq(
               str(alt(
-                seq(sym('expr'), alt(literal('=', '=='), literal('<>', '!='),'<=','>=','<','>'), sym('expr')),
+                seq(sym('expr'), alt(literal('=', '==='), literal('<>', '!='),'<=','>=','<','>'), sym('expr')),
                 seq('(', sym('predicate'), ')'),
                 seq(literal('NOT ', '! '), sym('predicate')))),
               optional(str(seq(
@@ -249,6 +249,7 @@ foam.CLASS({
     },
     function EXP(n) { return Math.exp(n); },
     async function INPUT$(m) {
+      if ( m ) this.PRINT(m);
       return new Promise(r => {
         var l = () => {
           if ( this.inp.endsWith('\n') || this.inp.endsWith(',') ) {
@@ -263,9 +264,7 @@ foam.CLASS({
         l();
       });
     },
-    async function INPUT(m) {
-      return this.INPUT$(m).then(s => parseInt(s));
-    },
+    async function INPUT(m) { return this.INPUT$(m).then(s => parseInt(s)); },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
     function LEN(s) { return s.length; },
