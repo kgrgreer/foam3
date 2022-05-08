@@ -21,15 +21,10 @@ foam.CLASS({
         return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal, until, not) {
           return {
             START: repeat(sym('line'), '\n'),
-
             line: seq(sym('lineNumber'), sym('ws'), sym('statements')),
-
             ws: repeat(' ', null, 1),
-
             lineNumber: sym('number'),
-
             statements: repeat(sym('statement'), seq(optional(' '), ':', optional(' '))),
-
             statement: alt(
               sym('data'),
               sym('def'),
@@ -50,61 +45,33 @@ foam.CLASS({
               sym('return'),
               sym('let'),
               str(repeat(notChars(':\n')))), // passthrough Javascript code
-
             data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), ',')),
-
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
-
             dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
-
             dimElement: seq(sym('symbol'), '(', repeat(sym('number'),','), ')'),
-
             end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
-
             forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), sym('expr'), ' STEP ', sym('expr')),
-
             for: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), sym('expr')),
-
             gosub: seq('GOSUB ', sym('number')),
-
             goto: seq1(1, 'GOTO ', sym('gotoLine')),
-
             gotoLine: sym('number'),
-
             if: seq('IF ', seq1(0, sym('predicate'), ' THEN '), alt(sym('gotoLine'), str(sym('statements')))),
-
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
-
             let: seq(optional('LET '), sym('lhs'), '=', sym('expr')),
-
             lhs: alt(sym('fn'), sym('symbol')),
-
             next: seq1(1, 'NEXT ', sym('symbol')),
-
             on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
-
             print: seq('PRINT', optional(' '), repeat(alt(sym('tab'), sym('expr')), ';'), optional(';')),
-
             printArg: alt(sym('string'), sym('tab')),
-
             read: seq1(1, 'READ ', repeat(sym('lhs'), ',')),
-
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
-
             restore: literal('RESTORE', '_d = 0;'),
-
             return: literal('RETURN'),
-
             string: seq1(1, '"', repeat(notChars('"')), '"'),
-
             tab: str(seq('TAB(', sym('expr'), ')')),
-
             expr: seq(sym('expr1'), optional(seq(alt('+', '-'), sym('expr')))),
-
             expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
-
             expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
-
             expr3: alt(
               str(seq('(', sym('expr'), ')')),
               str(seq('-', sym('expr'))),
@@ -113,7 +80,6 @@ foam.CLASS({
               sym('fn'),
               sym('symbol')
             ),
-
             predicate: str(seq(
               str(alt(
                 seq(sym('expr'), alt(literal('=', '=='), literal('<>', '!='),'<=','>=','<','>'), sym('expr')),
@@ -123,17 +89,13 @@ foam.CLASS({
                 alt(literal(' AND ','&&'), literal(' OR ', '||')),
                 sym('predicate'))
               )))),
-
             fn: seq(sym('symbol'), '(', repeat(sym('expr'), ','), ')'),
-
             number: str(seq(
               optional('-'),
               str(alt(
                 seq(str(repeat(sym('digit'))), '.', str(plus(sym('digit')))),
                 plus(sym('digit')))))),
-
             digit: range('0', '9'),
-
             symbol: str(seq(
               alt(range('a', 'z'), range('A', 'Z')),
               str(repeat(alt(range('a', 'z'), range('A', 'Z'), range('0', '9')))),
@@ -202,7 +164,7 @@ foam.CLASS({
             if ( l.startsWith('TAB') ) {
               append(l);
             } else {
-              append('PRINT(' + ( i ? "' ' +" : '') + l + ')');
+              append(`PRINT(${l})`);
             }
           }
           if ( ! a[3] ) append('NL()');
@@ -241,8 +203,7 @@ foam.CLASS({
     color: green !important;
     font-size: 42px !important;
     width: auto !important;
-  }
-  `,
+  }`,
 
   properties: [
     {
@@ -305,7 +266,7 @@ foam.CLASS({
     function LOG(n) { return Math.log(n); },
     function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
     function NL() { this.out += '\n'; },
-    function PRINT(s) { this.out += s; },
+    function PRINT(s) { this.out += typeof s === 'number' ? ` ${s} ` : s; },
     function RIGHT$(s, n) { return s.substring(s.length-n); },
     function RND(n) { return Math.random() * n; },
     function SIN(n) { return Math.sin(n); },
@@ -317,6 +278,7 @@ foam.CLASS({
     function TAN(n) { return Math.tan(n); }
   ],
 
+  // TODO: Move to Compiler
   templates: [
     {
       name: 'jsGenerator',
