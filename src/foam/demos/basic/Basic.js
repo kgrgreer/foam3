@@ -111,6 +111,7 @@ foam.CLASS({
     function init() {
       var self = this;
       this.addActions({
+        START: function(lines) { return self.jsGenerator(lines); },
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
           a[2].forEach(v => self.addVar(v));
@@ -182,6 +183,42 @@ foam.CLASS({
       });
     },
     function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; }
+  ],
+
+  // TODO: Move to Compiler
+  templates: [
+    {
+      name: 'jsGenerator',
+      args: [ 'lines' ],
+      template: `
+      // Compiled from BASIC to JS
+      async function main() {
+        const _stack = [];
+        const _data = [ <%= this.data.join(',') %> ];<!--
+        --><%= this.defs.join(', ') %>
+        <!--
+        -->var <%= Object.keys(this.vars).map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
+        -->
+        var _line = <%= lines[0][0]%>;
+        while ( true ) {
+          await new Promise(r => this.setTimeout(r, 0));
+          // console.log(_line);
+          switch ( _line ) {
+          <% for ( var i = 0 ; i < lines.length ; i++ ) {
+            var line = lines[i];
+            %><!--
+            -->case <%=line[0]%>: <!--
+            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
+              var stmt = line[2][j];
+            %><!--
+              --><%=stmt%><!--
+            --><%}%>
+          <%}%>
+          return;
+          }
+        }
+      }`
+    }
   ]
 });
 
@@ -287,42 +324,6 @@ foam.CLASS({
     function TAN(n) { return Math.tan(n); }
   ],
 
-  // TODO: Move to Compiler
-  templates: [
-    {
-      name: 'jsGenerator',
-      args: [ 'data', 'defs', 'vars', 'lines' ],
-      template: `
-      // Compiled from BASIC to JS
-      async function main() {
-        const _stack = [];
-        const _data = [ <%= data.join(',') %> ];<!--
-        --><%= defs.join(', ') %>
-        <!--
-        -->var <%= vars.map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
-        -->
-        var _line = <%= lines[0][0]%>;
-        while ( true ) {
-          await new Promise(r => this.setTimeout(r, 0));
-          // console.log(_line);
-          switch ( _line ) {
-          <% for ( var i = 0 ; i < lines.length ; i++ ) {
-            var line = lines[i];
-            %><!--
-            -->case <%=line[0]%>: <!--
-            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
-              var stmt = line[2][j];
-            %><!--
-              --><%=stmt%><!--
-            --><%}%>
-          <%}%>
-          return;
-          }
-        }
-      }`
-    }
-  ],
-
   listeners: [
     {
       name: 'keypress',
@@ -353,16 +354,12 @@ foam.CLASS({
     {
       name: 'compile',
       code: function() {
-        var compiler = this.Compiler.create();
-        var ret = compiler.parseString(this.sourceCode.trim());
-        if ( ret )
-          this.targetCode = this.jsGenerator(compiler.data, compiler.defs, Object.keys(compiler.vars), ret);
+        this.targetCode = this.Compiler.create().parseString(this.sourceCode.trim()) || '';
       }
     },
     {
       name: 'run',
       code: async function() {
-        this.out = '';
         try {
           var fn;
           with ( this ) { fn = eval('(' + this.targetCode + ')'); }
