@@ -114,7 +114,7 @@ foam.CLASS({
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
           a[2].forEach(v => self.addVar(v));
-          return `${a[2][0]} = await INPUT(${a[1] || ''});`;
+          return a[2].map((v,i) => `${v} = await INPUT${ v.endsWith('$') ? '$' : ''}(${(! i && a[1]) || ''});`).join(' ');
         },
         on: function(a) { return `{ var l = [${a[2]}][${a[1]}]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
@@ -245,12 +245,12 @@ foam.CLASS({
       return f(v, 0, dims);
     },
     function EXP(n) { return Math.exp(n); },
-    async function INPUT(m) {
+    async function INPUT$(m) {
       return new Promise(r => {
         var l = () => {
-          if ( this.inp.endsWith('\n') ) {
+          if ( this.inp.endsWith('\n') || this.inp.endsWith(',') ) {
             var ret = this.inp.substring(0, this.inp.length-1);
-            this.out += ret;
+            this.out += this.inp;
             this.inp = '';
             r(ret);
           } else {
@@ -259,6 +259,9 @@ foam.CLASS({
         };
         l();
       });
+    },
+    async function INPUT(m) {
+      return this.INPUT$(m).then(s => parseInt(s));
     },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
