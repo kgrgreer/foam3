@@ -202,7 +202,7 @@ foam.CLASS({
             if ( l.startsWith('TAB') ) {
               append(l);
             } else {
-              append('PRINT(' + l + ')');
+              append('PRINT(' + ( i ? "' ' +" : '') + l + ')');
             }
           }
           if ( ! a[3] ) append('NL()');
