@@ -232,7 +232,7 @@ foam.CLASS({
       this.add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).
       start(this.SCREEN).
         call(function() {
-          self.screen$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
+          self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
           self.status$.sub(this.focus.bind(this));
         }).
         attrs({readonly:true}).on('keypress', this.keypress).
