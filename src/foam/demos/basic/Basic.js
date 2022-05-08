@@ -198,12 +198,15 @@ foam.CLASS({
   constants: { BLOCK_CURSOR: '\u2588' },
 
   css: `
-  .property-screen {
+  ^ .property-screen {
     background: black !important;
     color: green !important;
     font-size: 42px !important;
     width: auto !important;
-  }`,
+    padding: 100px;
+    border-radius: 80px;
+    margin: 48px;
+  }  }`,
 
   properties: [
     {
@@ -214,7 +217,7 @@ foam.CLASS({
     { class: 'Code',   name: 'sourceCode' },
     { class: 'Code',   name: 'targetCode' },
     { class: 'String', name: 'inp' },
-    { class: 'String', name: 'out' },
+    { class: 'String', name: 'out',    value: 'READY.\n' },
     { class: 'String', name: 'cursor', value: ' ' },
     {
       class: 'String',
@@ -229,7 +232,7 @@ foam.CLASS({
     function render() {
       var self = this;
       this.blink();
-      this.add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).
+      this.addClass(this.myClass()).add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).
       start(this.SCREEN).
         call(function() {
           self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
@@ -249,6 +252,7 @@ foam.CLASS({
     },
     function EXP(n) { return Math.exp(n); },
     async function INPUT$(m) {
+      this.inp = '';
       if ( m ) this.PRINT(m);
       return new Promise(r => {
         var l = () => {
@@ -299,7 +303,7 @@ foam.CLASS({
         -->
         var _line = <%= lines[0][0]%>;
         while ( true ) {
-          await new Promise(r => this.setTimeout(r, 1));
+          await new Promise(r => this.setTimeout(r, 0));
           // console.log(_line);
           switch ( _line ) {
           <% for ( var i = 0 ; i < lines.length ; i++ ) {
@@ -357,17 +361,19 @@ foam.CLASS({
     },
     {
       name: 'run',
-      code: function() {
+      code: async function() {
         this.out = '';
         try {
           var fn;
           with ( this ) { fn = eval('(' + this.targetCode + ')'); }
-          // for ( var i = 0 ; i < 10 ; i++ ) fn.call(this); this.out = '';
+          // for ( var i = 0 ; i < 10 ; i++ ) await fn.call(this);
           console.time('run');
+          this.CLS();
           this.status = 'running';
-          fn.call(this);
+          await fn.call(this);
+          this.PRINT("\n" + this.OUT.value);
         } catch(x) {
-          this.out = 'SYNTAX ERROR: ' + x;
+          this.PRINT('SYNTAX ERROR: ' + x);
         } finally {
           this.status = '';
           console.timeEnd('run');

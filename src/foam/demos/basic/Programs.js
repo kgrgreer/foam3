@@ -536,14 +536,14 @@ foam.CLASS({
 `
 1 REM From https://www.youtube.com/watch?v=H05hM_Guoqk
 2 REM https://docs.google.com/spreadsheets/d/1bfWSR2Ngy1RPedS6j-M607eeAhsd40-nhAfswILzzS8/edit#gid=1310743651
-10 FOR i=1 TO 10
-20 s=0
-30 FOR j=1 TO 1000
-40 s=s+j
-50 NEXT j
+10 FOR I=1 TO 10
+20 S=0
+30 FOR J=1 TO 1000
+40 S=S+J
+50 NEXT J
 60 PRINT ".";
-70 NEXT i
-999 END
+70 NEXT I
+80 PRINT S
 `],
 [ 'Buzzword',
 `
