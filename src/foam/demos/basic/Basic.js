@@ -250,24 +250,30 @@ foam.CLASS({
       view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
       postSet: function(o, n) { this.sourceCode = n.trim(); }
     },
-    { class: 'Code', name: 'sourceCode' },
-    { class: 'Code', name: 'targetCode' },
+    { class: 'Code',   name: 'sourceCode' },
+    { class: 'Code',   name: 'targetCode' },
     { class: 'String', name: 'inp' },
     { class: 'String', name: 'out' },
     { class: 'String', name: 'cursor', value: ' ' },
     {
       class: 'String',
       name: 'screen',
-      width: 80,
       expression: function(out, inp, cursor) { return out + inp + cursor; },
       view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80, mode: foam.u2.DisplayMode.RO }
-    }
+    },
+    { name: 'status' }
   ],
 
   methods: [
     function render() {
+      var self = this;
       this.blink();
-      this.add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).start(this.SCREEN).attrs({readonly:true}).on('keypress', this.keypress).on('keyup', this.keyup).end();
+      this.add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).
+      start(this.SCREEN).
+        call(function() { self.status$.sub(this.focus.bind(this)); }).
+        attrs({readonly:true}).on('keypress', this.keypress).
+        on('keyup', this.keyup).
+      end();
     },
     function ABS(n) { return Math.abs(n); },
     function CLS() { this.out = ''; },
@@ -290,10 +296,8 @@ foam.CLASS({
             this.inp$.sub(foam.events.oneTime(l));
           }
         };
-
         l();
       });
-//      this.out += m; var ret = prompt(m); this.out += ret + '\n'; return ret;
     },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
@@ -344,8 +348,7 @@ foam.CLASS({
           return;
           }
         }
-      }
-      `
+      }`
     }
   ],
 
@@ -394,10 +397,12 @@ foam.CLASS({
           with ( this ) { fn = eval('(' + this.targetCode + ')'); }
           // for ( var i = 0 ; i < 10 ; i++ ) fn.call(this); this.out = '';
           console.time('run');
+          this.status = 'running';
           fn.call(this);
         } catch(x) {
           this.out = 'SYNTAX ERROR: ' + x;
         } finally {
+          this.status = '';
           console.timeEnd('run');
         }
       }
