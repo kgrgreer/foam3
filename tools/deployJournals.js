@@ -47,17 +47,12 @@ async function findJournals({ jrls, srcPath, jrlName }) {
 
  foam.require(X.pom, false, true);
  const jrls = [];
-// await findJournals({jrls, srcPath: 'nanopay/src'})
-// await findJournals({jrls, srcPath: 'nanopay/src'})
-console.log(Object.keys(foam.poms));
  asyncForEach(Object.keys(foam.poms), async(p) => {
    if ( foam.poms[p].journals ) {
-   console.log(foam.poms[p].journals[0]);
      foam.poms[p].journals.forEach(async (j) => {
       await findJournals({jrls, srcPath: p, jrlName: j});
      })
    } else {
-   console.log('b');
    if ( foam.poms[p].projects ) return;
      await findJournals({jrls, srcPath: p});
    }

@@ -155,9 +155,7 @@
         var src = document.currentScript.src;
         var i = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
-        console.log(foam.cwd);
       }
-      console.log(foam.cwd);
       foam.poms[foam.cwd] = pom;
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
@@ -169,7 +167,6 @@
           if ( f.predicate && ! f.predicate() ) return;
 
           foam.currentFlags = f.flags || [];
-          debugger;
           foam.require(name, ! isProjects, isProjects);
         });
       }
