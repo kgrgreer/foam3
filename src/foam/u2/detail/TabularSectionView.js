@@ -18,7 +18,7 @@ foam.CLASS({
 
   css: `
     ^ > .foam-u2-layout-Rows > .foam-u2-layout-Grid {
-      grid-row-gap: 5px !important;
+      grid-row-gap: 4px !important;
     }
   `,
 

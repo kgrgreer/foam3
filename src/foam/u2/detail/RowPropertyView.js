@@ -22,12 +22,7 @@ foam.CLASS({
   `,
 
   properties: [
-    'prop',
-    {
-      
-      name: 'label',
-      factory: function() { return this.prop.label }
-    }
+    'prop'
   ],
 
   methods: [
