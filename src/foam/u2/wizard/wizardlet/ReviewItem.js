@@ -16,8 +16,17 @@ foam.CLASS({
       value: { class: 'foam.u2.borders.NullBorder' }
     },
     {
+      name: 'headingBorder',
+      class: 'foam.u2.ViewSpec',
+      value: { class: 'foam.u2.borders.NullBorder' }
+    },
+    {
       class: 'Boolean',
       name: 'noData'
+    },
+    {
+      class: 'String',
+      name: 'title'
     }
   ]
 });
