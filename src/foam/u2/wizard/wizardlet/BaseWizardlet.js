@@ -24,7 +24,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'id as wizardletId'
+    'id as wizardletId',
+    'of as wizardletOf'
   ],
 
   requires: [
