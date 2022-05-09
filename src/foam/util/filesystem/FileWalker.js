@@ -81,6 +81,7 @@ foam.CLASS({
                   name: file,
                   fullPath: fullPath,
                   stats: stats,
+                  path: path
                 }
               } catch (e) {
                 console.warn('Failed to stat file: ' + fullPath);

@@ -151,16 +151,15 @@
     },
     poms: {},
     POM: function(pom) {
-//      console.log('!!!!'+foam.cwd);
       if ( globalThis.document ) {
         var src = document.currentScript.src;
         var i = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
         console.log(foam.cwd);
       }
-      foam.poms[pom.name] = pom;
+      console.log(foam.cwd);
+      foam.poms[foam.cwd] = pom;
       function loadFiles(files, isProjects) {
-      console.log('!!!!'+foam.cwd);
         files && files.forEach(f => {
           var name = f.name;
           f.flags  = foam.adaptFlags(f.flags);

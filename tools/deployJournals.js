@@ -16,7 +16,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   { debug: true, java: false, web: true }
 );
 
-//foam.require(X.pom, false, true);
+foam.require(X.pom, false, true);
 
 const outPath = 'runtime/journals';
 
@@ -24,10 +24,11 @@ if ( ! fs_.existsSync(outPath) ) {
     fs_.mkdirSync(outPath, { recursive: true });
 }
 
-async function findJournals({ jrls, srcPath, jrlName, poms }) {
+async function findJournals({ jrls, srcPath, jrlName }) {
     const walker = foam.util.filesystem.FileWalker.create();
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
+            if ( foam.poms[fileInfo.path] != undefined ) continue;
             const extName = path_.extname(fileInfo.name);
             if ( extName !== '' && extName !== '.jrl' ) continue;
             if ( jrlName && fileInfo.name != jrlName ) continue;
@@ -48,16 +49,17 @@ async function findJournals({ jrls, srcPath, jrlName, poms }) {
  const jrls = [];
 // await findJournals({jrls, srcPath: 'nanopay/src'})
 // await findJournals({jrls, srcPath: 'nanopay/src'})
+console.log(Object.keys(foam.poms));
  asyncForEach(Object.keys(foam.poms), async(p) => {
    if ( foam.poms[p].journals ) {
-   console.log('a');
-     p.journals.forEach(async (j) => {
-      await findJournals({jrls, srcPath: 'nanopay/src', jrlName: j});
+   console.log(foam.poms[p].journals[0]);
+     foam.poms[p].journals.forEach(async (j) => {
+      await findJournals({jrls, srcPath: p, jrlName: j});
      })
    } else {
    console.log('b');
    if ( foam.poms[p].projects ) return;
-     await findJournals({jrls, srcPath: 'nanopay/src'});
+     await findJournals({jrls, srcPath: p});
    }
   }).then(function() {
     for ( const key in jrls ) {
