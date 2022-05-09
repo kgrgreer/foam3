@@ -133,6 +133,7 @@ foam.CLASS({
         .remove('GrantedEditAgent')
         .remove('CapabilityStoreAgent')
         ;
+      this.scenario.installInSequence(sequence);
       await sequence.execute();
     }
   ]
