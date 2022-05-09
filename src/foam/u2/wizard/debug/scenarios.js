@@ -251,6 +251,7 @@ foam.CLASS({
           of: 'foam.core.MapHolder',
           wizardlet: {
             class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
+            showTitle: false,
             of: 'foam.core.MapHolder',
             items: [
               {
