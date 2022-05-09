@@ -105,9 +105,7 @@ foam.CLASS({
               class: 'foam.u2.wizard.wao.SplitWAO',
               loader: {
                 class: 'foam.u2.wizard.data.PrerequisiteLoader',
-                of: 'foam.core.StringHolder',
-                prerequisiteCapabilityId: 'HasData',
-                delegate: { class: 'foam.u2.wizard.data.NullLoader' }
+                prerequisiteCapabilityId: 'HasData'
               }
             }
           }
@@ -173,6 +171,156 @@ foam.CLASS({
         ['Entry','WantsData'],
         ['WantsData','HasData'],
       ]
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.wizard.debug.scenarios',
+  name: 'AddCardScenario',
+  extends: 'foam.u2.wizard.debug.TestWizardScenario',
+
+  requires: [
+    'foam.u2.wizard.agents.ValueAgent'
+  ],
+
+  properties: [
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'capabilities',
+      factory: () => [
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: 'Entry',
+          wizardConfig: {
+            class: 'foam.u2.crunch.EasyCrunchWizard',
+            // incrementalWizard: true
+            controller: {
+              class: 'foam.u2.wizard.views.FocusWizardForm',
+              progressWizardView: 'foam.u2.borders.NullBorder',
+              showTitle: true
+            }
+          }
+          // wizardConfig: {
+          //   class: 'foam.u2.crunch.EasyCrunchWizard',
+          //   incrementalWizard: true
+          // }
+        },
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: 'CardBasicInfo',
+          of: 'net.nanopay.cards.mock.MockCard',
+          wizardlet: {
+            // class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+            class: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
+            of: 'net.nanopay.cards.mock.MockCard',
+            title: 'Add new subscription',
+            defaultSections: ['basicInfo', 'limits'],
+            choices: [
+              {
+                class: 'foam.u2.wizard.AlternateFlow',
+                name: 'goNext',
+                label: 'Review Card',
+                unavailable: ['AddSchedule'],
+                invisible: ['CardCapabilitiesMinMax']
+              },
+              {
+                class: 'foam.u2.wizard.AlternateFlow',
+                name: 'scheduleFunds',
+                label: 'Add a Schedule',
+                available: ['AddSchedule'],
+                invisible: ['CardCapabilitiesMinMax']
+              }
+            ]
+          }
+        },
+        {
+          class: 'foam.nanos.crunch.MinMaxCapability',
+          id: 'CardCapabilitiesMinMax',
+          min: 0, max: 1
+        },
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: 'AddSchedule',
+          of: 'net.nanopay.cards.DepositScheduleData'
+        },
+        {
+          class: 'foam.nanos.crunch.Capability',
+          id: 'Review',
+          of: 'foam.core.MapHolder',
+          wizardlet: {
+            class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
+            of: 'foam.core.MapHolder',
+            items: [
+              {
+                class: 'foam.u2.wizard.wizardlet.ReviewItem',
+                name: 'card',
+                border: {
+                  class: 'foam.u2.borders.TopBorderCard',
+                  color: '#406dea'
+                },
+                view: {
+                  class: 'foam.u2.detail.SectionView',
+                  sectionName: 'review'
+                }
+              },
+              {
+                class: 'foam.u2.wizard.wizardlet.ReviewItem',
+                name: 'schedule',
+                border: {
+                  class: 'foam.u2.borders.BackgroundCard',
+                  backgroundColor: '#DADDE2'
+                },
+                view: {
+                  class: 'foam.u2.detail.SectionView',
+                  sectionName: 'review'
+                }
+              },
+            ],
+            wao: {
+              class: 'foam.u2.wizard.wao.CompositeWAO',
+              of: 'foam.core.MapHolder',
+              delegates: [
+                {
+                  class: 'foam.u2.wizard.wao.PrerequisiteWAO',
+                  of: 'foam.core.MapHolder',
+                  prerequisiteCapabilityId: 'CardBasicInfo',
+                  loadIntoPath: 'value.card'
+                },
+                {
+                  class: 'foam.u2.wizard.wao.PrerequisiteWAO',
+                  of: 'foam.core.MapHolder',
+                  prerequisiteCapabilityId: 'AddSchedule',
+                  loadIntoPath: 'value.schedule'
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.CapabilityCapabilityJunction',
+      name: 'capabilityCapabilityJunctions',
+      factory: () => [
+        ['Review','CardBasicInfo'],
+        ['Review','CardCapabilitiesMinMax'],
+        ['CardCapabilitiesMinMax', 'AddSchedule'],
+        ['Entry','Review']
+      ]
+    }
+  ],
+
+  methods: [
+    function installInSequence (sequence) {
+      sequence.remove('RequirementsPreviewAgent');
+      sequence.addBefore('ConfigureFlowAgent', this.ValueAgent, {
+        value: {
+          showWizardletSectionTitles: false
+        }
+      })
     }
   ]
 });
