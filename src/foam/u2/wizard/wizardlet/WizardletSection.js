@@ -12,6 +12,10 @@ foam.CLASS({
     Describes a sub-section of a wizardlet.
   `,
 
+  imports: [
+    'showWizardletSectionTitles?'
+  ],
+
   requires: [
     'foam.u2.detail.SectionView',
     'foam.u2.detail.VerticalDetailView',
@@ -128,7 +132,9 @@ foam.CLASS({
       return this.SectionView.create({
         section: this.section,
         data$: this.wizardlet.data$,
-        ...opt_spec
+        ...opt_spec,
+        ...(this.showWizardletSectionTitles !== undefined
+            ? { showTitle: this.showWizardletSectionTitles } : {})
       }, ctx);
     }
   ],

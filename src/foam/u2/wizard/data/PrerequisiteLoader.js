@@ -16,6 +16,7 @@ foam.CLASS({
   imports: [
     'capabilityToPrerequisite',
     'wizardletId',
+    'wizardletOf',
     'wizardlets'
   ],
 
@@ -44,13 +45,16 @@ foam.CLASS({
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      expression: function (wizardletOf) {
+        return wizardletOf;
+      }
     }
   ],
   
   methods: [
-    async function load() {
-      let initialData = await this.SUPER();
+    async function load({ old }) {
+      let initialData = old || await this.SUPER();
 
       const isDescendantCheck = this.capabilityToPrerequisite[`${this.wizardletId}:${this.prerequisiteCapabilityId}`];
 

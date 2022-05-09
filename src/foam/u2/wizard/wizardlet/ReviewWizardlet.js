@@ -27,6 +27,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'showTitle'
+    },
+    {
       name: 'sections',
       factory: function () {
         return [
@@ -36,7 +40,8 @@ foam.CLASS({
             customView: {
               class: 'foam.u2.wizard.wizardlet.ReviewWizardletView',
               title$: this.title$,
-              items$: this.items$
+              items$: this.items$,
+              showTitle$: this.showTitle$
             }
           })
         ];
