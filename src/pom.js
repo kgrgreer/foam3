@@ -901,6 +901,8 @@ foam.POM({
     { name: "foam/u2/detail/DAOWizardSectionsView",                   flags: "web" },
     { name: "foam/u2/detail/TabbedDetailView",                        flags: "web" },
     { name: "foam/u2/detail/SectionedDetailPropertyView",             flags: "web" },
+    { name: "foam/u2/detail/RowPropertyView",                         flags: "web" },
+    { name: "foam/u2/detail/TabularSectionView",                      flags: "web" },
     { name: "foam/u2/dialog/SimpleActionDialog",                      flags: "web" },
     { name: "foam/u2/tag/CircleIndicator",                            flags: "web" },
     { name: "foam/u2/wizard/agents/ConfigureFlowAgent",               flags: "web" },

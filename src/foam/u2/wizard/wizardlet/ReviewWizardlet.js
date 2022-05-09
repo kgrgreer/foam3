@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
+    'foam.u2.detail.TabularSectionView',
     'foam.u2.wizard.wizardlet.WizardletSection',
   ],
 
@@ -46,6 +47,13 @@ foam.CLASS({
           })
         ];
       }
+    }
+  ],
+
+  methods: [
+    function init() {
+      const x = this.__subContext__;
+      x.register(this.TabularSectionView, 'foam.u2.detail.SectionView');
     }
   ]
 });
