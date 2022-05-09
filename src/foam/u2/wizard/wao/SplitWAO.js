@@ -51,7 +51,7 @@ foam.CLASS({
       this.ensure_terminal(loader, this.ProxyLoader, this.NullLoader);
       if ( wizardlet.loading ) return;
       wizardlet.loading = true;
-      wizardlet.data = await loader.load();
+      wizardlet.data = await loader.load({ old: wizardlet.data });
       wizardlet.loading = false;
     },
     async function save (wizardlet) {
