@@ -110,6 +110,8 @@ foam.POM({
     { name: "theme/Theme",                                                                flags: "js|java" },
     { name: "theme/ThemeGlyphs",                                                          flags: "js|java" },
     { name: "theme/ThemeDomain",                                                          flags: "js|java" },
+    { name: "theme/SubdomainAware",                                                       flags: "js|java" },
+    { name: "theme/SubdomainAwareDAO",                                                    flags: "js|java" },
     { name: "theme/ThemeDomainsDAO",                                                      flags: "js|java" },
     { name: "theme/Themes",                                                               flags: "js|java" },
     { name: "auth/User",                                                                  flags: "js|java" },
