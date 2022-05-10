@@ -195,7 +195,7 @@ foam.CLASS({
       name: 'themeDomain',
       expression: function(themeDomainDAO, window) {
         return themeDomainDAO
-          .find(window.location.hostname);
+          .find(this.window.location.hostname);
       }
     },
     {
@@ -263,7 +263,7 @@ foam.CLASS({
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
           var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
-            return ret.getCapabilities(ctrl.__subContext__).dao.select();
+            return ret.getCapabilities(this.ctrl.__subContext__).dao.select();
           });
           if ( themeCaps.array.length != 0 ) return self.renderFeatured(themeCaps.array);
           var featured = await this.featuredCapabilities.select();
