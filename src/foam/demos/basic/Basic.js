@@ -235,14 +235,14 @@ foam.CLASS({
   textarea, select { font-size: 14px !important; }
   ^ .property-sourceCode, .property-targetCode {
     display: inline-flex;
-    padding: 10px;
-    width: 48%;
+    padding: 8px;
+    width: 49%;
   }
   ^ .property-program { display: inline-flex; }
   ^ .property-screen {
-    background: black !important;
+    background: #121 !important;
     border-radius: 40px;
-    color: green !important;
+    color: #0f0 !important;
     font-size: 24px !important;
     line-height: 20px;
     margin: 12px;
@@ -274,7 +274,7 @@ foam.CLASS({
     function render() {
       var self = this;
       this.blink();
-      this.addClass(this.myClass()).start().add('Program: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
+      this.addClass(this.myClass()).start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
       start('center').start(this.SCREEN).
         call(function() {
           self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
