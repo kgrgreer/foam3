@@ -22,7 +22,7 @@ foam.CLASS({
           return {
             START: repeat(sym('line'), '\n'),
             line: seq(sym('lineNumber'), sym('ws'), sym('statements')),
-            ws: repeat(' ', null, 1),
+            ws: repeat(' '),
             lineNumber: sym('number'),
             statements: repeat(sym('statement'), seq(optional(' '), ':', optional(' '))),
             statement: alt(
@@ -44,29 +44,28 @@ foam.CLASS({
               sym('return'),
               sym('let'),
               str(repeat(notChars(':\n')))), // passthrough Javascript code
-            data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), ',')),
+            data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), seq(sym('ws'), ',', sym('ws')))),
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
             dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
             dimElement: seq(sym('symbol'), '(', repeat(sym('expr'),','), ')'),
             end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
             for: seq('FOR ', sym('symbol'), '=', sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
-            gosub: seq('GOSUB ', sym('number')),
-            goto: seq1(1, 'GOTO ', sym('gotoLine')),
+            gosub: seq1(2, 'GOSUB',  sym('ws'), sym('number')),
+            goto: seq1(2, 'GOTO', sym('ws'), sym('gotoLine')),
             gotoLine: sym('number'),
             if: seq('IF ', seq1(0, sym('predicate'), ' THEN '), alt(sym('gotoLine'), str(sym('statements')))),
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
-            let: seq(optional('LET '), sym('lhs'), '=', sym('expr')),
+            let: seq(optional('LET '), sym('lhs'), sym('ws'), '=', sym('ws'), sym('expr')),
             lhs: alt(sym('fn'), sym('symbol')),
             next: seq1(2, 'NEXT', sym('ws'), sym('symbol')),
             on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
-            print: seq('PRINT', optional(' '), repeat(alt(sym('tab'), sym('expr')), ';'), optional(';')),
-            printArg: alt(sym('string'), sym('tab')),
+            print: seq('PRINT', optional(' '), optional(sym('printArgs')), optional(alt(';',','))),
+            printArgs: seq(sym('expr'), optional(seq(alt(',',';'), sym('printArgs')))),
             read: seq1(1, 'READ ', repeat(sym('lhs'), ',')),
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
             restore: literal('RESTORE', '_d = 0;'),
             return: literal('RETURN'),
             string: seq1(1, '"', repeat(notChars('"')), '"'),
-            tab: str(seq('TAB(', sym('expr'), ')')),
             expr: seq(sym('expr1'), optional(seq(alt('+', '-'), sym('expr')))),
             expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
             expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
@@ -80,14 +79,16 @@ foam.CLASS({
             ),
             predicate: str(seq(
               str(alt(
-                seq(sym('expr'), alt(literal('=', '==='), literal('<>', '!='),'<=','>=','<','>'), sym('expr')),
-                seq('(', sym('predicate'), ')'),
-                seq(literal('NOT ', '! '), sym('predicate')))),
+                seq(sym('expr'), sym('ws'), alt(literal('=', '==='), literal('<>', '!='),'<=','>=','<','>'), sym('ws'), sym('expr')),
+                seq('(', sym('ws'), sym('predicate'), sym('ws'), ')'),
+                seq(literal('NOT', '!'), sym('ws'), sym('predicate')))),
               optional(str(seq(
-                alt(literal(' AND ','&&'), literal(' OR ', '||')),
+                sym('ws'),
+                alt(literal('AND','&&'), literal('OR', '||')),
+                sym('ws'),
                 sym('predicate'))
               )))),
-            fn: seq(sym('symbol'), '(', repeat(sym('expr'), ','), ')'),
+            fn: seq(sym('symbol'), '(', repeat(sym('expr'), seq(sym('ws'), ',', sym('ws'))), ')'),
             number: str(seq(
               optional('-'),
               str(alt(
@@ -123,8 +124,8 @@ foam.CLASS({
         data: function(a) { a.forEach(d => self.data.push(d)); return ''; },
         dim: function(a) {
           return a.map(e => {
-            self.addVar(e[0]);
-            return `${e[0]} = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
+            self.addVar(e[0] + '_A');
+            return `${e[0]}_A = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
           }).join('');
         },
         expr: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
@@ -133,7 +134,7 @@ foam.CLASS({
         rem: function(a) { return '// REM' + a; },
         fn: function(a) {
           // array lookup
-          if ( self.vars[a[0]] ) return `${a[0]}[${a[2].join('-1][')}-1]`;
+          if ( self.vars[a[0] + '_A'] ) return `${a[0]}_A[${a[2].join('-1][')}-1]`;
           // function call
           return `${a[0]}(${a[2].join()})`;
         },
@@ -147,26 +148,27 @@ foam.CLASS({
           var name = self.fors[a];
           return `${a} += ${name}INCR; _line = '${name}FOR'; break; case '${name}END':`;
         },
-        let: function(a) { return `${a[1]} = ${a[3]};`; },
+        let: function(a) { return `${a[1]} = ${a[5]};`; },
         lhs: function(v) { self.addVar(v); return v; },
         if: function(a) { return `if ( ${a[1]} ) { ${a[2]} }`; },
         string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
         print: function(a) {
           var ret = '';
-          function append(s) { ret += ( ret ? ';' : '' ) + s; }
-          for ( var i = 0 ; i < a[2].length ; i++ ) {
-            var l = a[2][i];
-            if ( l.startsWith('TAB') ) {
-              append(l);
-            } else {
-              append(`PRINT(${l})`);
+          function tail(p) {
+            if ( ! p ) return;
+            var h = p[0], t = p[1];
+            ret += h.startsWith('TAB') ? h + ';' : `PRINT(${h});`;
+            if ( t ) {
+              if ( t[0] === ',' ) ret += 'TAB();';
+              tail(t[1]);
             }
           }
-          if ( ! a[3] ) append('NL()');
-          return ret + ';'
+          tail(a[2]);
+          if ( ! a[3] ) ret += 'NL();'; else if ( a[3] === ',' ) ret += 'TAB();';
+          return ret;
         },
         gotoLine: function(l) { return `_line = ${l}; break;`; },
-        gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5: `; },
+        gosub: function(l) { return `_line = ${l}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5: `; },
         read: function(a) {
           return a.map(s => {
             self.addVar(s);
@@ -176,7 +178,7 @@ foam.CLASS({
         return: function() { return '_line = _stack.pop(); break;' }
       });
     },
-    function addVar(v) { if ( v.startsWith('S(') ) debugger; if ( v.indexOf('[') == -1 ) this.vars[v] = true; }
+    function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; }
   ],
 
   // TODO: Move to Compiler
@@ -188,13 +190,12 @@ foam.CLASS({
       // Compiled from BASIC to JS
       async function main() {
         const _stack = [];
-        const _data = [ <%= this.data.join(',') %> ];<!--
-        --><%= this.defs.join(', ') %>
-        <!--
-        -->var <%= Object.keys(this.vars).map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
+        const _data = [<%= this.data.join(',') %>];
+        <%= this.defs.join(';\\n') %>
+        var <%= Object.keys(this.vars).map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
         -->
         var _line = <%= lines[0][0]%>;
-        while ( true ) {
+        while ( this.status === 'running' ) {
           if ( Math.random() < 0.1 ) await new Promise(r => this.setTimeout(r, 0));
           // console.log(_line);
           switch ( _line ) {
@@ -229,6 +230,15 @@ foam.CLASS({
   constants: { BLOCK_CURSOR: '\u2588' },
 
   css: `
+  body { font-family: sans-serif; }
+  button { padding-top: 6px !important; }
+  textarea, select { font-size: 14px !important; }
+  ^ .property-sourceCode, .property-targetCode {
+    display: inline-flex;
+    padding: 10px;
+    width: 48%;
+  }
+  ^ .property-program { display: inline-flex; }
   ^ .property-screen {
     background: black !important;
     border-radius: 40px;
@@ -264,15 +274,15 @@ foam.CLASS({
     function render() {
       var self = this;
       this.blink();
-      this.addClass(this.myClass()).add(this.PROGRAM).br().add(this.COMPILE, this.RUN).br().add(this.SOURCE_CODE).br().add(this.TARGET_CODE).
-      start(this.SCREEN).
+      this.addClass(this.myClass()).start().add('Program: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
+      start('center').start(this.SCREEN).
         call(function() {
           self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
           self.status$.sub(this.focus.bind(this));
         }).
         attrs({readonly:true}).on('keypress', this.keypress).
         on('keyup', this.keyup).
-      end();
+      end().end();
     },
     function ABS(n) { return Math.abs(n); },
     function ASC(s) { return s.charCodeAt(0); },
@@ -314,8 +324,8 @@ foam.CLASS({
     function SIN(n) { return Math.sin(n); },
     function SQR(n) { return Math.sqrt(n); },
     function TAB(n) {
-      n = Math.round(n);
       var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
+      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
       this.out += ' '.repeat(Math.max(0, n-pos));
     },
     function TAN(n) { return Math.tan(n); }
@@ -357,6 +367,7 @@ foam.CLASS({
     },
     {
       name: 'run',
+      isEnabled: function(targetCode) { return !! targetCode; },
       code: async function() {
         try {
           var fn;
@@ -374,6 +385,11 @@ foam.CLASS({
           console.timeEnd('run');
         }
       }
+    },
+    {
+      name: 'stop',
+      isEnabled: function(status) { return status === 'running'; },
+      code: function() { this.status = ''; }
     }
   ]
 });
