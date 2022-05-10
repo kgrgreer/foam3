@@ -291,10 +291,6 @@
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
@@ -485,6 +481,9 @@
     {
       name: 'updateRenderedPages_',
       isFramed: true,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         if ( ! this.table_ ) return;
 

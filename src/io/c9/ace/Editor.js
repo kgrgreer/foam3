@@ -16,11 +16,7 @@ foam.CLASS({
   imports: [
     'warn'
   ],
-  reactions: [
-    ['container', 'onload', 'renderditor'],
-    ['config', 'propertyChange', 'updateEditor'],
-    ['', 'propertyChange.data', 'dataToEditor']
-  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -82,16 +78,22 @@ foam.CLASS({
     }
   ],
   listeners: [
-    function renderditor() {
-      var self = this;
-      io.c9.ace.Lib.ACE().then(function(ace) {
-        self.editor = ace.edit(self.container.id);
-        self.editor.session.on('change', self.editorToData);
-        self.updateEditor();
-        self.dataToEditor();
-      }).catch(function() {
-        self.warn('Unable to load ace editor.');
-      });
+    {
+      name: 'renderditor',
+      on: [
+        'container.onload'
+      ],
+      code: function() {
+        var self = this;
+        io.c9.ace.Lib.ACE().then(function(ace) {
+          self.editor = ace.edit(self.container.id);
+          self.editor.session.on('change', self.editorToData);
+          self.updateEditor();
+          self.dataToEditor();
+        }).catch(function() {
+          self.warn('Unable to load ace editor.');
+        });
+      }
     },
     {
       name: 'editorToData',
@@ -105,19 +107,28 @@ foam.CLASS({
     },
     {
       name: 'dataToEditor',
+      on: [
+        'this.propertyChange.data'
+      ],
       code: function() {
         if ( ! this.editor ) return;
         if ( this.preventFeedback ) return;
         this.editor.session.setValue(this.data || '');
       }
     },
-    function updateEditor() {
-      if ( ! this.editor ) return;
-      this.editor.setTheme(this.config.theme.path);
-      this.editor.setReadOnly(this.config.isReadOnly);
-      this.editor.resize();
-      this.editor.session.setMode(this.config.mode.path); 
-      this.editor.setKeyboardHandler(this.config.keyBinding.path);
+    {
+      name: 'updateEditor',
+      on: [
+        'config.propertyChange'
+      ],
+      code: function() {
+        if ( ! this.editor ) return;
+        this.editor.setTheme(this.config.theme.path);
+        this.editor.setReadOnly(this.config.isReadOnly);
+        this.editor.resize();
+        this.editor.session.setMode(this.config.mode.path);
+        this.editor.setKeyboardHandler(this.config.keyBinding.path);
+      }
     }
   ]
 });

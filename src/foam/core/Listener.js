@@ -69,6 +69,10 @@ foam.CLASS({
           })
         ];
       }
+    },
+    {
+      class:  'StringArray',
+      name: 'on'
     }
   ],
 
@@ -87,6 +91,7 @@ foam.CLASS({
       var isMerged   = this.isMerged;
       var isFramed   = this.isFramed;
       var mergeDelay = this.mergeDelay;
+      var on         = this.on;
 
       Object.defineProperty(proto, name, {
         get: function listenerGetter() {
@@ -97,7 +102,9 @@ foam.CLASS({
             var l = function(sub) {
               // Is it possible to detect stale subscriptions?
               // ie. after an object has been detached.
-              return code.apply(self, arguments);
+              return code && code.apply(self, arguments);//@kgr After make the change in the listener,
+              // it will generate an exception.
+              // I tried adding initObject(), but the problem remain.
             };
 
             if ( isMerged ) {
@@ -113,6 +120,26 @@ foam.CLASS({
         configurable: true,
         enumerable: false
       });
+
+      if ( on.length > 0 ) {
+        var listener = proto[this.name];
+        for ( var i = 0 ; i < on.length ; i++ ) {
+          let o        = on[i].split('.');
+          let objectOn = o.shift();
+          let topic    = o;
+
+          if ( objectOn !== 'this' && objectOn !== '' ) {
+            var path = objectOn.split('.');
+
+            var slot = objectOn ;
+            for ( var i = 0 ; i < path.length ; i++ ) {
+               slot = slot.dot(path[i]);//just data
+            }
+            objectOn.onDetach(listener.sub.apply(target, topic.concat(listener)));
+
+          }
+        }
+      }
     }
   ]
 });

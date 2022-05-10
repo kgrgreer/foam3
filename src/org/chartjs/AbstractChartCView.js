@@ -178,11 +178,7 @@ foam.CLASS({
       }
     },
   ],
-  reactions: [
-    ['data', 'propertyChange', 'update' ],
-    ['', 'propertyChange.data', 'update' ],
-    ['', 'propertyChange.chart', 'update' ],
-  ],
+
   classes: [
     {
       name: 'ChartData',
@@ -281,6 +277,11 @@ foam.CLASS({
     {
       name: 'update',
       isFramed: true,
+      on: [
+        'data.propertyChange',
+        'this.propertyChange.data',
+        'this.propertyChange.chart'
+      ],
       code: function() {
         if ( this.chart && this.data ) {
           // Simply doing this.chart.data = this.data will cause the entire
