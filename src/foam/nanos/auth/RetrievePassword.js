@@ -41,9 +41,10 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'EMail',
-      name: 'email',
+      class: 'String',
+      name: 'identifier',
       section: 'emailPasswordSection',
+      label: 'Email or Username',
       required: true
     },
     {
@@ -66,7 +67,7 @@ foam.CLASS({
         return ! errors_;
       },
       code: function(X) {
-        const user = this.User.create({ email: this.email });
+        const user = this.User.create({ email: this.identifier });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
             message: `${this.INSTRUC_TITLE}`,
