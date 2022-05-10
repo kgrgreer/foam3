@@ -16,7 +16,7 @@ import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
-import net.nanopay.smf.parser.NewlineParser;
+import foam.parse.NewlineParser;
 
 import java.lang.Exception;
 import java.lang.reflect.Array;
