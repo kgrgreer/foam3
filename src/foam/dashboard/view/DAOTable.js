@@ -16,8 +16,8 @@ foam.CLASS({
   ],
   imports: [
     'dashboardController',
-    'stack',
-    'pushMenu'
+    'pushMenu',
+    'stack'
   ],
 
   css: `
