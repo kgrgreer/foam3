@@ -112,7 +112,6 @@ foam.CLASS({
 
   properties: [
     [ 'showCreate', false ],
-    [ 'noAuthCheck', false ],
     {
       class:'foam.dao.DAOProperty',
       name: 'dao'
@@ -217,10 +216,7 @@ foam.CLASS({
     {
       name: 'addRow',
       isAvailable: function(enableAdding, mode, of) {
-        return enableAdding && mode === foam.u2.DisplayMode.RW && (
-          this.noAuthCheck ||
-          this.auth.check(this, `${of.name}.create`)
-        );
+        return enableAdding && mode === foam.u2.DisplayMode.RW;
       },
       code: function() {
         var newItem = this.defaultNewItem;
