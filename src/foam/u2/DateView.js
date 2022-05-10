@@ -69,7 +69,14 @@ foam.CLASS({
 
       function updateData() {
         var value = slot.get();
-        self.data = value ? Date.parse(value) : undefined;
+
+        var date = undefined;
+        if ( value ) {
+          date = Date.parse(value);
+          if ( isNaN(date) ) date = undefined;
+        }
+
+        self.data = date;
       }
 
       if ( this.onKey ) {
