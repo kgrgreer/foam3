@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.WindowHash',
@@ -45,6 +46,7 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
+    'foam.nanos.u2.navigation.NavigationController',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
@@ -77,6 +79,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
@@ -89,6 +92,8 @@ foam.CLASS({
     'returnExpandedCSS',
     'sessionID',
     'sessionTimer',
+    'showFooter',
+    'showNav',
     'signUpEnabled',
     'stack',
     'subject',
@@ -261,6 +266,27 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginSuccess'
+    },
+    {
+      class: 'Boolean',
+      name: 'showFooter',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        return globalThis.localStorage['isMenuOpen'] === 'true'
+         || ( globalThis.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        globalThis.localStorage['isMenuOpen'] = n;
+      }
     },
     {
       class: 'Boolean',
@@ -475,13 +501,14 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .tag(this.NavigationController, {
-              topNav: this.topNavigation_,
+              topNav$: this.topNavigation_$,
               mainView: {
                 class: 'foam.u2.stack.DesktopStackView',
                 data: this.stack,
-                showActions: false
+                showActions: false,
+                nodeName: 'main'
               },
-              footer: this.footerView_,
+              footer$: this.footerView_$,
               sideNav: {
                 class: 'foam.u2.view.ResponsiveAltView',
                 views: [
@@ -500,7 +527,7 @@ foam.CLASS({
                 ]
               }
             });
-          });
+        });
       });
     },
 
@@ -771,6 +798,8 @@ foam.CLASS({
        */
       this.__subSubContext__.myNotificationDAO
       .on.put.sub(this.displayToastMessage.bind(this));
+
+      this.loginSuccess = true;
 
       this.fetchTheme();
       this.initLayout.resolve();

@@ -4651,6 +4651,7 @@ foam.CLASS({
           var result = list.stream().reduce(this::reduce).get();
 
           if ( Double.isFinite(result) ) {
+            result = getRounding() ? Math.round(result) : result;
             return new Constant(result);
           }
         }
