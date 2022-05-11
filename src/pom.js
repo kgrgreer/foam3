@@ -170,7 +170,7 @@ foam.POM({
     { name: "foam/util/test/DummyNuid",                               flags: "js|java" },
     { name: "foam/util/test/UIDGeneratorTest",                        flags: "js|java" },
     { name: "foam/util/test/UIDUniquenessTest",                       flags: "js|java" },
-    { name: "foam/util/test/SafetyUtilTest",                          flags: "js|java" },
+    { name: "foam/util/test/SafetyUtilTest",                          flags: "java" },
     { name: "foam/util/uid/GlobalSearchService",                      flags: "js|java" },
     { name: "foam/util/uid/FuidSearchService",                        flags: "js|java" },
     { name: "foam/util/uid/ClientGlobalSearchService",                flags: "js|java" },
