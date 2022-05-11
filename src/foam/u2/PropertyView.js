@@ -63,8 +63,8 @@
           add(this.units$.map(units => {
             if ( ! units ) return '';
             return this.E().
-              style({position: 'relative', 'align-self': 'center'}).
-              add(units).
+              style({'padding-left': '4px', 'align-self': 'center'}).
+              add(' ' + units).
               call(function() {
                 this.el().then((el) => {
                   // TODO: find parent and add extra padding
