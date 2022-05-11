@@ -32,6 +32,14 @@ foam.CLASS({
       factory: function() { return new Date(); }
     },
     {
+      class: 'Date',
+      name: 'terminated',
+      // TODO: doesn't work
+      visibility: function(isEmployee, enabled) {
+        return isEmployee & ! enabled ? 'RW' : 'RO';
+      }
+    },
+    {
       class: 'Boolean',
       name: 'enabled',
       value: true
@@ -163,7 +171,7 @@ foam.CLASS({
             add(data.IS_EMPLOYEE, data.CREATED, data.LAST_NAME, data.BIRTHDAY).
           end().
           start(Column).
-            add(data.EMPLOYEE_ID).
+            add(data.EMPLOYEE_ID, data.TERMINATED).
           end().
         end().
         br().
