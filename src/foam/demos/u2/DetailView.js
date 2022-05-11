@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'terminated',
       // TODO: doesn't work
       visibility: function(isEmployee, enabled) {
-        return isEmployee & ! enabled ? 'RW' : 'RO';
+        return isEmployee & ! enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO;
       }
     },
     {
