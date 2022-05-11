@@ -67,6 +67,8 @@ foam.CLASS({
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-left: none;
       border-radius: 0 3px 3px 0;
+
+      width: 100%;
     }
   `,
 

@@ -494,7 +494,6 @@ foam.POM({
     { name: "foam/u2/UnstyledTabs",                                   flags: "web" },
     { name: "foam/u2/Tabs",                                           flags: "web" },
     { name: "foam/u2/TimeView",                                       flags: "web" },
-    { name: "foam/u2/StartContextView",                               flags: "web" },
     { name: "foam/u2/history/HistoryItemView",                        flags: "web" },
     { name: "foam/u2/history/HistoryView",                            flags: "web" },
     { name: "foam/u2/svg/map2d/PlacementPlan",                        flags: "web" },
