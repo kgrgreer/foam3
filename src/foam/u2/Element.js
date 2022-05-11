@@ -2388,8 +2388,8 @@ foam.CLASS({
   methods: [
     function toE(args, X) {
       // Uncomment to use property view
-      // return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
-      
+       return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
+
       // Fallback till PropertyView is complete
       return this.toE_(args, X);
     },
