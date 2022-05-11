@@ -146,7 +146,7 @@ foam.CLASS({
               .end()
             .endContext();
           }
-          return self.E().start('p').addClass(self.myClass('label-currency'))
+          return self.E().start('div').addClass(self.myClass('label-currency'))
             .add(self.getDisplayValue())
             .end();
         }));
