@@ -9,6 +9,16 @@
   name: 'PropertyView',
   extends: 'foam.u2.Element', // isn't actually a View (no data), more like a border or wrapper
 
+  documentation: `
+    Wraps a Property's underlying View with extra functionality to:
+      1. Display a Label from Property's label:
+      2. Display Units, if set in Property's units:
+      3. Show/Hide the View based on the Property's visibility:
+      4. Change the underlying View's Visibility to RO/RW/etc based on visibility:
+      5. Display error messages based on teh Proeprty's validateObj:
+      6. Add tooltip from Property's help:
+  `,
+
   properties: [
     'prop',
     'args',
@@ -26,12 +36,6 @@
   ],
 
   methods: [
-    function createVisibilitySlot() {
-      return this.prop.createVisibilityFor(
-        this.__context__.data$,
-        this.controllerMode$).map(m => m != foam.u2.DisplayMode.HIDDEN);
-    },
-
     function render() {
       var prop = this.prop;
 
@@ -46,9 +50,16 @@
         data.slot(prop.validateObj) :
         foam.core.ConstantSlot.create({ value: null });
 
+      var modeSlot = this.prop.createVisibilityFor(
+        this.__context__.data$,
+        this.controllerMode$);
+
+      // Boolean version of modeSlot for use with show()
+      var visibilitySlot = modeSlot.map(m => m != foam.u2.DisplayMode.HIDDEN)
+
       this.
         addClass().
-        show(this.createVisibilitySlot()).
+        show(visibilitySlot).
         style({'padding-top': '8px'}).
 
         start('div').style({'padding-bottom': '2px'}).add(this.label).end().
@@ -58,7 +69,7 @@
           tag(this.view$.map(v => {
             // TODO: add a method to Property to bind a view
             var p = v ? prop.clone().copyFrom({view: v}) : prop;
-            return p.toE_({}, this.__context__);
+            return p.toE_({mode$: modeSlot}, this.__context__);
           })).
           add(this.units$.map(units => {
             if ( ! units ) return '';
