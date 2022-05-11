@@ -21,6 +21,7 @@ foam.CLASS({
       class: 'String',
       name: 'id',
       width: 12,
+      help: 'Unique identifier for this User.',
       documentation: 'Unique name of the Group.'
     },
     {
@@ -40,6 +41,12 @@ foam.CLASS({
       name: 'isEmployee',
       label: 'Employee',
       value: true
+    },
+    {
+      class: 'Int',
+      name: 'employeeId',
+      help: 'Date of start of employment.',
+      visibility: function(isEmployee) { return isEmployee ? 'RW' : 'HIDDEN'; }
     },
     {
       class: 'Int',
@@ -122,101 +129,6 @@ foam.CLASS({
     'User'
   ],
 
-  classes: [
-    /*
-    Responsibilities:
-      1. display property's view
-      2. label
-      3. units
-      4. visibility
-      5. validation
-      6. tooltip
-      7. help
-      */
-
-    {
-      name: 'PropertyView',
-      extends: 'foam.u2.Element', // isn't actually a View (no data), more like a border or wrapper
-      properties: [
-        'prop',
-        'args',
-        {
-          name: 'label',
-          factory: function() { return this.prop.label; }
-        },
-        {
-          name: 'units',
-          factory: function() { return this.prop.units; }
-        },
-        {
-          name: 'view'
-        }
-      ],
-      methods: [
-        function xxxtoE(args, X) {
-          return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
-        },
-
-        function createVisibilitySlot() {
-          return this.prop.createVisibilityFor(
-            this.__context__.data$,
-            this.controllerMode$).map(m => m != foam.u2.DisplayMode.HIDDEN);
-        },
-
-        function render() {
-          var prop = this.prop;
-
-          if ( prop.help ) this.tooltip = prop.help;
-
-          // Needs to be called after tooltip is set, which seems like a bug. KGR
-          this.SUPER();
-
-          var data = this.__context__.data;
-          var view = prop.toE_(this.args, this.__subContext__);
-
-          var errorSlot = prop.validateObj && prop.validationTextVisible ?
-            data.slot(prop.validateObj) :
-            foam.core.ConstantSlot.create({ value: null });
-
-          this.
-            addClass().
-            show(this.createVisibilitySlot()).
-            style({'padding-top': '8px'}).
-
-            start('div').style({'padding-bottom': '2px'}).add(this.label).end().
-
-            start('div').
-              style({display: 'flex', 'flex-wrap': 'wrap'}).
-              tag(this.view$.map(v => {
-                // TODO: add a method to Property to bind a view
-                var p = v ? prop.clone().copyFrom({view: v}) : prop;
-                return p.toE_({}, this.__context__);
-              })).
-              add(this.units$.map(units => {
-                if ( ! units ) return '';
-                return this.E().
-                  style({position: 'relative', 'align-self': 'center'}).
-                  add(units).
-                  call(function() {
-                    this.el().then((el) => {
-                      // TODO: find parent and add extra padding
-                      var style = this.__context__.window.getComputedStyle(el);
-                      this.style({'margin-left': -8-parseFloat(style.width)});
-                    });
-                  });
-              })).
-              start('div').
-                style({'flex-basis': '100%', width: '0', color: 'red'}).
-                show(errorSlot).
-                br().
-                add(errorSlot).
-              end().
-            end();
-        }
-      ]
-    }
-  ],
-
   // css: foam.u2.DetailView.model_.css,
 
   css: `
@@ -232,7 +144,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
+//      this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
 
       var self = this, data = this.data;
 
@@ -248,7 +160,10 @@ foam.CLASS({
             add(data.ID, data.ENABLED, data.FIRST_NAME, data.EMAIL).
           end().
           start(Column).
-            add(data.CREATED, data.IS_EMPLOYEE, data.LAST_NAME, data.BIRTHDAY).
+            add(data.IS_EMPLOYEE, data.CREATED, data.LAST_NAME, data.BIRTHDAY).
+          end().
+          start(Column).
+            add(data.EMPLOYEE_ID).
           end().
         end().
         br().
