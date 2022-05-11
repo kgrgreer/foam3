@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'BaseWizardlet',
 
   todo: [
@@ -16,11 +16,16 @@ foam.CLASS({
   topics: ['saveEvent'],
 
   implements: [
-    'foam.u2.wizard.Wizardlet'
+    'foam.u2.wizard.wizardlet.Wizardlet'
   ],
 
   imports: [
     'wizardCloseSub?'
+  ],
+
+  exports: [
+    'id as wizardletId',
+    'of as wizardletOf'
   ],
 
   requires: [
@@ -29,9 +34,9 @@ foam.CLASS({
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.wizard.WizardletAware',
     'foam.u2.wizard.WizardletIndicator',
-    'foam.u2.wizard.WizardletSection',
-    'foam.u2.wizard.WAO',
-    'foam.u2.wizard.ProxyWAO',
+    'foam.u2.wizard.wizardlet.WizardletSection',
+    'foam.u2.wizard.wao.WAO',
+    'foam.u2.wizard.wao.ProxyWAO',
     'foam.u2.wizard.internal.FObjectRecursionSlot',
     'foam.u2.wizard.internal.WizardletAutoSaveSlot'
   ],
@@ -166,7 +171,7 @@ foam.CLASS({
       flags: ['web'],
       transient: true,
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WizardletSection',
+      of: 'foam.u2.wizard.wizardlet.WizardletSection',
       preSet: function (_, val) {
         // Set 'wizardlet' reference in case this was configured in a journal.
         // Note: when this preSet was added it broke FlatteningCapabilityWizardlet.
@@ -198,13 +203,13 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.BaseWizardlet',
+      of: 'foam.u2.wizard.wizardlet.BaseWizardlet',
       name: 'prerequisiteWizardlets'
     },
     {
       name: 'wao',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.WAO',
+      of: 'foam.u2.wizard.wao.WAO',
       flags: ['web'],
       documentation: `
         A wizardlet's WAO (Wizardlet Access Object) implements the behavior of

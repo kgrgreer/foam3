@@ -5,9 +5,9 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'SuccessWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   properties: [
     {
@@ -17,7 +17,7 @@ foam.CLASS({
     {
       name: 'sections',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WizardletSection',
+      of: 'foam.u2.wizard.wizardlet.WizardletSection',
       preSet: function (_, val) {
         // Set 'wizardlet' reference in case this was configured in a journal.
         // Note: when this preSet was added it broke FlatteningCapabilityWizardlet.
@@ -33,7 +33,7 @@ foam.CLASS({
             title: this.title,
             isAvailable: true,
             customView: {
-              class: 'foam.u2.wizard.common.SuccessWizardletView',
+              class: 'foam.u2.wizard.wizardlet.SuccessWizardletView',
               message$: this.message$
             }
           })

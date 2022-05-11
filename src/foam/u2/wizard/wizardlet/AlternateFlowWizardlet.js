@@ -5,9 +5,9 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'AlternateFlowWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
   implements: ['foam.u2.wizard.DynamicActionWizardlet'],
   documentation: `
     Overrides wizard actions to affect the availability of other wizardlets.

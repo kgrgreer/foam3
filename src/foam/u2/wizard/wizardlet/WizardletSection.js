@@ -5,12 +5,16 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'WizardletSection',
   flags: ['web'],
   documentation: `
     Describes a sub-section of a wizardlet.
   `,
+
+  imports: [
+    'showWizardletSectionTitles?'
+  ],
 
   requires: [
     'foam.u2.detail.SectionView',
@@ -39,7 +43,7 @@ foam.CLASS({
     {
       name: 'wizardlet',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       documentation: `
         This is a reference to the aggregating wizardlet.
       `,
@@ -128,7 +132,9 @@ foam.CLASS({
       return this.SectionView.create({
         section: this.section,
         data$: this.wizardlet.data$,
-        ...opt_spec
+        ...opt_spec,
+        ...(this.showWizardletSectionTitles !== undefined
+            ? { showTitle: this.showWizardletSectionTitles } : {})
       }, ctx);
     }
   ],

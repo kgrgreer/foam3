@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.u2.wizard',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'Wizardlet',
 
   properties: [

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.wizard.common',
+  package: 'foam.u2.wizard.wizardlet',
   name: 'ReviewItem',
   extends: 'foam.comics.v2.namedViews.NamedViewInstance',
 

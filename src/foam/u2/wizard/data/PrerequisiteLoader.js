@@ -4,28 +4,22 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
-  package: 'foam.u2.wizard',
-  name: 'PrerequisiteWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
-  flags: ['web'],
-  extends: 'foam.u2.wizard.ProxyWAO',
+foam.CLASS({
+  package: 'foam.u2.wizard.data',
+  name: 'PrerequisiteLoader',
+  extends: 'foam.u2.wizard.data.ProxyLoader',
+
   issues: [
-    'Explore an efficient way to be able to load from any prequisite descendent of a wizardlet'
+    'Property "of" needs to specified, which is inconvenient.'
   ],
 
   imports: [
-    'wizardlets',
-    'capabilityToPrerequisite'
-  ],
-  requires: [
-    'foam.u2.wizard.FObjectHolder'
+    'capabilityToPrerequisite',
+    'wizardletId',
+    'wizardletOf',
+    'wizardlets'
   ],
 
-  documentation: `
-  A WAO that loads from a direct (for now) prerequisite wizardlet's data
-  `,
-  
   properties: [
     {
       class: 'String',
@@ -51,19 +45,22 @@
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      expression: function (wizardletOf) {
+        return wizardletOf;
+      }
     }
   ],
-
+  
   methods: [
-    async function load(wizardlet) {
-      wizardlet.isLoaded = false;
+    async function load({ old }) {
+      let initialData = old || await this.SUPER();
 
-      const isDescendantCheck = this.capabilityToPrerequisite[`${wizardlet.id}:${this.prerequisiteCapabilityId}`];
+      const isDescendantCheck = this.capabilityToPrerequisite[`${this.wizardletId}:${this.prerequisiteCapabilityId}`];
 
       if ( ! isDescendantCheck ) {
         console.error(
-          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${wizardlet.id}`
+          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${this.wizardletId}`
         );
         return;
       }
@@ -76,7 +73,7 @@
           `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} has no data`
         );
         return;
-    }
+      }
 
       let prereqWizardletData = prereqWizardlet.data;
 
@@ -87,16 +84,15 @@
 
       let clonedPrereqWizardletData;
 
-      if ( this.loadFromPath  ){
+      if ( this.loadFromPath  ) {
         var loadedFromData = this.loadFromPath.f(prereqWizardletData);
 
-        if ( ! loadedFromData ){
+        if ( ! loadedFromData ) {
           console.error(
             `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
           );
           if ( this.of ) {
-            wizardlet.data = this.of.create({}, this);
-            return;
+            return this.of.create({}, this);
           }
         }
 
@@ -105,30 +101,20 @@
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
 
-      if ( this.isWrappedInFObjectHolder ){
-        const fObjectHolder = this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
-
-        wizardlet.data = fObjectHolder;
-
-        wizardlet.isLoaded = true;
-
-        return fObjectHolder;
+      if ( this.isWrappedInFObjectHolder ) {
+        return this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
       }
 
-      if ( this.loadIntoPath ){
+      if ( this.loadIntoPath ) {
 
-        if ( ! wizardlet.data ){
-          wizardlet.data = this.of.create({}, this);
+        if ( ! initialData ) {
+          initialData = this.of.create({}, this);
         }
 
-        this.loadIntoPath$set(wizardlet.data, clonedPrereqWizardletData);
-        wizardlet.isLoaded = true;
+        this.loadIntoPath$set(initialData, clonedPrereqWizardletData);
 
-        return;
+        return initialData;
       }
-
-      wizardlet.data = clonedPrereqWizardletData;
-      wizardlet.isLoaded = true;
 
       return clonedPrereqWizardletData;
     }

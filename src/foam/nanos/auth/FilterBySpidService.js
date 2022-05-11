@@ -36,6 +36,9 @@ foam.CLASS({
       name: 'getUser',
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserUserDAO");
+        if ( userDAO == null ) {
+          userDAO = (DAO) x.get("localUserDAO");
+        }
         userDAO = userDAO
           .where(OR(
             EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()),

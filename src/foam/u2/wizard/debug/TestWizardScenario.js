@@ -23,7 +23,7 @@ foam.CLASS({
           ...o,
           name: o.name || foam.String.labelize(o.id)
         }));
-        return foam.core.FObjectArray.ADAPT.value.call(this, o, n, prop);
+        return foam.json.parse(n, prop.of, this.__subContext__)
       }
     },
     {
@@ -35,8 +35,12 @@ foam.CLASS({
           sourceId: spec[0],
           targetId: spec[1]
         } : spec);
-        return foam.core.FObjectArray.ADAPT.value.call(this, o, n, prop);
+        return foam.json.parse(n, prop.of, this.__subContext__)
       }
     }
+  ],
+
+  methods: [
+    function installInSequence (sequence) {}
   ]
 });
