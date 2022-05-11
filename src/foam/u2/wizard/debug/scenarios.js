@@ -200,6 +200,9 @@ foam.CLASS({
               class: 'foam.u2.wizard.views.FocusWizardForm',
               progressWizardView: 'foam.u2.borders.NullBorder',
               showTitle: true
+            },
+            popup: {
+              class: 'foam.u2.dialog.ApplicationPopup'
             }
           }
           // wizardConfig: {
