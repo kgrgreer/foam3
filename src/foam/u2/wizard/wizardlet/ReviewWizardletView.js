@@ -70,7 +70,7 @@ foam.CLASS({
                     .callIf(item.title, function() {
                       this
                       .start()
-                        .addClass('h200')
+                        .addClass('h600')
                         .add(item.title)
                       .end();
                     })
@@ -89,7 +89,7 @@ foam.CLASS({
                   .callIf(item.title, function() {
                     this
                       .start()
-                        .addClass('h200')
+                        .addClass('h600')
                         .add(item.title)
                       .end();
                   })
