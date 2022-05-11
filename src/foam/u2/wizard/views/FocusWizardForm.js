@@ -18,6 +18,8 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       margin: 40pt;
+      width: 45vw;
+      min-height: 65vh;
     }
     ^contents {
       flex-grow: 1;

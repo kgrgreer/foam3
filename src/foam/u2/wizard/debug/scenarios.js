@@ -263,6 +263,7 @@ foam.CLASS({
                 },
                 view: {
                   class: 'foam.u2.detail.SectionView',
+                  showTitle: false,
                   sectionName: 'review'
                 }
               },
@@ -275,6 +276,7 @@ foam.CLASS({
                 },
                 view: {
                   class: 'foam.u2.detail.SectionView',
+                  showTitle: false,
                   sectionName: 'review'
                 }
               },
