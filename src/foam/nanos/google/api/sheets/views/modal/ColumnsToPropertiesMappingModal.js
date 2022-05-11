@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'ColumnsToPropertiesMappingModal',
-  extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
+  extends: 'foam.nanos.google.api.sheets.views.wizardModal.WizardModalSubView',
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.google.api.sheets.views.ColumnHeaderToPropertyMapping',

@@ -313,7 +313,12 @@ foam.CLASS({
     }
   },
 
-  css: '^ { margin-top: 4px; }',
+  css: `
+    ^ {
+      height: /*%INPUTHEIGHT%*/ 34px;
+      padding: 0;
+    }
+  `,
 
   properties: [
     {

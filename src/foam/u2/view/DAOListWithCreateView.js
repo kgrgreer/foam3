@@ -216,7 +216,7 @@ foam.CLASS({
     {
       name: 'addRow',
       isAvailable: function(enableAdding, mode, of) {
-        return enableAdding && mode === foam.u2.DisplayMode.RW && this.auth.check(this, `${of.name}.create`);;
+        return enableAdding && mode === foam.u2.DisplayMode.RW;
       },
       code: function() {
         var newItem = this.defaultNewItem;

@@ -1,29 +1,27 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
   package: 'foam.nanos.crunch',
-  name: 'CapabilityCapabilityJunctionRefine',
+  name: 'PrerequisiteCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.CapabilityCapabilityJunction',
 
   documentation: `
-    Refine capabilitycapabilityjunction to add tablecellformatters for source and target id
+    A refinement of CapabilityCapabilityJunction for prerequisiteCapabilityJunctions where
+    a property 'priority' of class int is added to provide order of precedence for prerequisite capabilities
   `,
 
   implements: [
-    {
-      path: 'foam.mlang.Expressions',
-      flags: ['js']
-    }
+    'foam.mlang.Expressions'
   ],
 
   properties: [
     {
-      class: 'Int',
-      name: 'priority'
+      name: 'priority',
+      class: 'Int'
     },
     {
       class: 'Reference',
@@ -54,8 +52,7 @@ foam.CLASS({
             }
             this.add(result.array[0]);
           });
-      },
-      menuKeys: ['admin.capabilities']
+      }
     },
     {
       class: 'Reference',
@@ -88,26 +85,6 @@ foam.CLASS({
           });
       },
       menuKeys: ['admin.capabilities']
-    },
-    {
-      class: 'Boolean',
-      name: 'precondition',
-      documentation: `
-        This property applies to prerequisite capability junctions.
-
-        If a prerequisite is considered a "precondition", it must be granted
-        before the corresponding dependant is shown in the capability store.
-      `
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.mlang.predicate.Predicate',
-      name: 'predicate',
-      view: { class: 'foam.u2.view.JSONTextView' },
-      javaFactory: `
-        return foam.mlang.MLang.TRUE;
-      `,
-      documentation: 'The condition under which this capabilitycapabilityjunction would hold.'
     }
   ]
 });
