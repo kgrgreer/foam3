@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.ActionReference'
+    'foam.u2.ActionReference'
   ],
 
   documentation: `

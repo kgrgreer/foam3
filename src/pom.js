@@ -610,7 +610,7 @@ foam.POM({
     { name: "foam/u2/view/FullReferenceView",                         flags: "web" },
     { name: "foam/u2/view/StrategizerChoiceView",                     flags: "web" },
     { name: "foam/u2/tag/Card",                                       flags: "web" },
-    { name: "foam/u2/dialog/ActionReference",                         flags: "web" },
+    { name: "foam/u2/ActionReference",                                flags: "web" },
     { name: "foam/u2/dialog/Popup",                                   flags: "web" },
     { name: "foam/u2/dialog/ApplicationPopup",                        flags: "web" },
     { name: "foam/u2/dialog/StyledModal",                             flags: "web" },

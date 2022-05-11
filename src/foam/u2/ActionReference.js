@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.dialog',
+  package: 'foam.u2',
   name: 'ActionReference',
 
   properties: [

@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.ActionReference',
+    'foam.u2.ActionReference',
     'foam.u2.tag.Image'
   ],
 
@@ -71,7 +71,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.u2.dialog.ActionReference',
+      of: 'foam.u2.ActionReference',
       name: 'customActions'
     }
   ],
