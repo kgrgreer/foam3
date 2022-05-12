@@ -9,6 +9,7 @@ host: {{alarm.host}}
 started: {{alarm.started}}
 cleared: {{alarm.cleared}}
 severity: {{alarm.severity}}
+reason: {{alarm.reason}}
 info: {{alarm.note}}
   """
 })
