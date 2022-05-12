@@ -184,7 +184,6 @@ foam.CLASS({
     function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; }
   ],
 
-  // TODO: Move to Compiler
   templates: [
     {
       name: 'jsGenerator',
