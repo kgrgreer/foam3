@@ -238,27 +238,21 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
+      includeInDigest: true,
       tableWidth: 120,
       section: 'systemInformation',
       order: 10,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       storageTransient: true,
-      javaGetter: `
-        if ( spidIsSet_ || ! userIsSet_ ) return spid_;
+      javaFactory: `
         var map = new java.util.HashMap();
         map.put(
           EmailMessage.class.getName(),
           new foam.core.PropertyInfo[] { EmailMessage.USER }
         );
-        try {
-          spid_ = new ServiceProviderAwareSupport()
-            .findSpid(foam.core.XLocator.get(), map, this);
-          spidIsSet_ = true;
-        } catch ( Exception e ) {
-          // nop - occurs during replay
-        }
-        return spid_;
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
     {
