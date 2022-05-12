@@ -4,13 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/*
-  TODO:
-    - help
-    - required
-    - more validation
-*/
-
 var E = foam.__context__.E.bind(foam.__context__);
 
 foam.CLASS({
@@ -20,7 +13,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
+      label: 'ID',
       width: 12,
+      value: '1234',
+      updateVisibility: 'DISABLED',
       help: 'Unique identifier for this User.',
       documentation: 'Unique name of the Group.'
     },
@@ -34,7 +30,6 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'terminated',
-      // TODO: doesn't work
       visibility: function(isEmployee, enabled) {
         return isEmployee & ! enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO;
       }
@@ -59,10 +54,10 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'salary',
+      help: "The employee's anual salary.",
       units: 'CAD$',
-      // TODO:
-      xxxvalidateObj: function(salary) {
-        if ( salary && salary < 30000 ) throw 'Salary must be at least $30,000.';
+      validateObj: function(salary) {
+        if ( salary < 30000 ) return 'Salary must be at least $30,000.';
       },
       visibility: function(isEmployee) {
         return isEmployee ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -77,11 +72,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'firstName'
+      name: 'firstName',
+      required: true
     },
     {
       class: 'String',
-      name: 'lastName'
+      name: 'lastName',
+      required: true
     },
     {
       class: 'EMail',
@@ -123,6 +120,10 @@ foam.CLASS({
       name: 'country',
       value: 'Canada',
       view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Canada', 'United States' ] },
+      postSet: function(_,n) {
+        if ( n == 'Canada' ) this.region = 'ON';
+        if ( n == 'United States' ) this.region = '';
+      },
       width: 30
     }
   ]
@@ -134,7 +135,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'User'
+    'User', 'foam.u2.PropertyView'
   ],
 
   // css: foam.u2.DetailView.model_.css,
@@ -152,8 +153,6 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-//      this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
-
       var self = this, data = this.data;
 
 //      this.add(this.data.cls_.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
@@ -165,22 +164,22 @@ foam.CLASS({
         start('h3').add('Title').end().
         start(Columns).
           start(Column).
-            add(data.ID, data.ENABLED, data.FIRST_NAME, data.EMAIL).
+            add(data.ID.__, data.ENABLED.__, data.FIRST_NAME.__, data.EMAIL.__).
           end().
           start(Column).
-            add(data.IS_EMPLOYEE, data.CREATED, data.LAST_NAME, data.BIRTHDAY).
+            add(data.CREATED.__, data.TERMINATED.__, data.LAST_NAME.__, data.BIRTHDAY.__).
           end().
           start(Column).
-            add(data.EMPLOYEE_ID, data.TERMINATED).
+            add(data.IS_EMPLOYEE.__, data.EMPLOYEE_ID.__).
           end().
         end().
         br().
         start(Tabs).
           start(Tab, {label: 'Address'}).
-            add(data.ADDRESS).
+            add(data.ADDRESS.__).
             start(Columns).
               start(Column).
-                add(data.CITY, data.COUNTRY).
+                add(data.CITY.__, data.COUNTRY.__).
               end().
               start(Column).
                 tag(self.PropertyView, {
@@ -192,14 +191,16 @@ foam.CLASS({
                 tag(self.PropertyView, {
                   prop: data.REGION,
                   view$: this.data.country$.map(c => {
-                    if ( c === 'Canada' ) return {
-                      class: 'foam.u2.view.ChoiceView',
-                      choices: [
-                        [ 'ON', 'Ontario' ],
-                        [ 'PQ', 'Quebec' ],
-                        [ 'OT', 'Other' ]
-                      ]
-                    };
+                    if ( c === 'Canada' ) {
+                      return {
+                        class: 'foam.u2.view.ChoiceView',
+                        choices: [
+                          [ 'ON', 'Ontario' ],
+                          [ 'PQ', 'Quebec' ],
+                          [ 'OT', 'Other' ]
+                        ]
+                      };
+                    }
                     return data.REGION.view;
                   }),
                   label: this.data.country$.map(c => {
@@ -211,15 +212,18 @@ foam.CLASS({
           end().
           start(Tab, {label: 'Employee Information'}).
             show(data.isEmployee$).
-            add(data.JOB_TITLE, data.SALARY).
+            add(data.JOB_TITLE.__, data.SALARY.__).
           end().
         end().
         start(FoldingSection, {title: 'Employee Information'}).
           show(data.isEmployee$).
+          add(data.JOB_TITLE.__).
+          // How to add a Property view without wrapping in a PropertyView
           add(data.JOB_TITLE).
+          add(data.JOB_TITLE.toE_({}, this.__subSubContext__)).
           tag(self.PropertyView, {
             prop: data.SALARY,
-            units: this.data.country$.map(c => {
+            units$: this.data.country$.map(c => {
               return { Canada: 'CAD$', 'United States': '$' }[c];
             })
           }).
