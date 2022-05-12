@@ -428,6 +428,7 @@ public class JSONFObjectFormatter
         append(':');
         output(newInfo.getId());
       }
+      if (output.length() > 0 ) append(',');
       append(output);
       addInnerNewline();
       append('}');
