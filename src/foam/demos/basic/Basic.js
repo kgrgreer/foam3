@@ -20,7 +20,7 @@ foam.CLASS({
       factory: function() {
         return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal, until, not) {
           return {
-            START: repeat(sym('line'), '\n'),
+            START: repeat(sym('line'), seq(sym('ws'), '\n')),
             line: seq(sym('lineNumber'), sym('ws'), sym('statements')),
             ws: repeat(' '),
             lineNumber: sym('number'),
@@ -42,6 +42,7 @@ foam.CLASS({
               sym('restore'),
               sym('rem'),
               sym('return'),
+              sym('sound'),
               sym('let'),
               str(repeat(notChars(':\n')))), // passthrough Javascript code
             data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), seq(sym('ws'), ',', sym('ws')))),
@@ -53,7 +54,7 @@ foam.CLASS({
             gosub: seq1(2, 'GOSUB',  sym('ws'), sym('number')),
             goto: seq1(2, 'GOTO', sym('ws'), sym('gotoLine')),
             gotoLine: sym('number'),
-            if: seq('IF ', seq1(0, sym('predicate'), ' THEN '), alt(sym('gotoLine'), str(sym('statements')))),
+            if: seq('IF ', seq1(0, sym('predicate'), sym('ws'), 'THEN', sym('ws')), alt(sym('gotoLine'), str(sym('statements')))),
             input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
             let: seq(optional('LET '), sym('lhs'), sym('ws'), '=', sym('ws'), sym('expr')),
             lhs: alt(sym('fn'), sym('symbol')),
@@ -61,8 +62,9 @@ foam.CLASS({
             on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
             print: seq('PRINT', optional(' '), optional(sym('printArgs')), optional(alt(';',','))),
             printArgs: seq(sym('expr'), optional(seq(alt(',',';'), sym('printArgs')))),
-            read: seq1(1, 'READ ', repeat(sym('lhs'), ',')),
+            read: seq1(2, 'READ', sym('ws'), repeat(sym('lhs'), ',')),
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
+            sound: seq('SOUND', sym('ws'), sym('expr'), sym('ws'), ',', sym('ws'), sym('expr')),
             restore: literal('RESTORE', '_d = 0;'),
             return: literal('RETURN'),
             string: seq1(1, '"', repeat(notChars('"')), '"'),
@@ -149,6 +151,7 @@ foam.CLASS({
           return `${a} += ${name}INCR; _line = '${name}FOR'; break; case '${name}END':`;
         },
         let: function(a) { return `${a[1]} = ${a[5]};`; },
+        sound: function(a) { return `await SOUND(${a[2]},${a[6]});`; },
         lhs: function(v) { self.addVar(v); return v; },
         if: function(a) { return `if ( ${a[1]} ) { ${a[2]} }`; },
         string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
@@ -191,7 +194,7 @@ foam.CLASS({
       async function main() {
         const _stack = [];
         const _data = [<%= this.data.join(',') %>];
-        <%= this.defs.join(';\\n') %>
+        <%= this.defs.join(';\\n  ') %>
         var <%= Object.keys(this.vars).map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
         -->
         var _line = <%= lines[0][0]%>;
@@ -223,7 +226,7 @@ foam.CLASS({
   name: 'Basic',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'foam.demos.basic.Compiler' ],
+  requires: [ 'foam.audio.Beep', 'foam.demos.basic.Compiler' ],
 
   imports: [ 'setTimeout' ],
 
@@ -280,8 +283,9 @@ foam.CLASS({
           self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
           self.status$.sub(this.focus.bind(this));
         }).
-        attrs({readonly:true}).on('keypress', this.keypress).
-        on('keyup', this.keyup).
+        attrs({readonly:true}).
+        on('keypress', this.keypress).
+        on('keyup',    this.keyup).
       end().end();
     },
     function ABS(n) { return Math.abs(n); },
@@ -310,7 +314,7 @@ foam.CLASS({
         l();
       });
     },
-    async function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
+    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
     function LEN(s) { return s.length; },
@@ -321,14 +325,18 @@ foam.CLASS({
     function RANGE(i, end, incr) { return incr > 0 ? i <= end : i >= end },
     function RIGHT$(s, n) { return s.substring(s.length-n); },
     function RND(n) { return Math.random(); },
+    function SGN(n) { return Math.sign(n); },
     function SIN(n) { return Math.sin(n); },
+    function SOUND(f, d) { this.Beep.create({frequency: 100+4*f, duration: d*60}).play(); return new Promise(r => this.setTimeout(r, d*60)); },
     function SQR(n) { return Math.sqrt(n); },
+    function STR$(n) { return n.toString(); },
     function TAB(n) {
       var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
       n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
       this.out += ' '.repeat(Math.max(0, n-pos));
     },
-    function TAN(n) { return Math.tan(n); }
+    function TAN(n) { return Math.tan(n); },
+    function VAL(s) { return parseFloat(s); }
   ],
 
   listeners: [
