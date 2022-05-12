@@ -10,13 +10,10 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.DAO',
-    'foam.mlang.predicate.Predicate',
     'foam.mlang.MLang',
-    'foam.nanos.theme.SubdomainPredicate',
-    'javax.servlet.http.HttpServletRequest',
-    'java.util.ArrayList'
+    'foam.mlang.predicate.Predicate',
+    'java.util.ArrayList',
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   properties: [
