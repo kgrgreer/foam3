@@ -21,7 +21,7 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       gap: 40pt;
     }
     ^flexButtons {
