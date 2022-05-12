@@ -67,6 +67,20 @@ foam.CLASS({
 
       const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
 
+      if ( ! prereqWizardlet.isAvailable ){
+        if ( this.loadIntoPath ) {
+
+          if ( ! initialData ) {
+            initialData = this.of.create({}, this);
+          }
+  
+          this.loadIntoPath$set(initialData, null);
+  
+          return initialData;
+        }
+
+        return null;
+      }
 
       if ( ! prereqWizardlet.of ) {
         console.error(

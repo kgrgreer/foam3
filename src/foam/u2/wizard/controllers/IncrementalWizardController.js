@@ -94,6 +94,7 @@ foam.CLASS({
     {
       name: 'goPrev',
       label: 'Back',
+      icon: 'images/arrow-back-24px.svg',
       isEnabled: function (isLoading_) {
         return ! isLoading_;
       },

@@ -200,6 +200,9 @@ foam.CLASS({
               class: 'foam.u2.wizard.views.FocusWizardForm',
               progressWizardView: 'foam.u2.borders.NullBorder',
               showTitle: true
+            },
+            popup: {
+              class: 'foam.u2.dialog.ApplicationPopup'
             }
           }
           // wizardConfig: {
@@ -215,7 +218,7 @@ foam.CLASS({
             // class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
             class: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
             of: 'net.nanopay.cards.mock.MockCard',
-            title: 'Add new subscription',
+            title: 'Add New Subscription',
             defaultSections: ['basicInfo', 'limits'],
             choices: [
               {
@@ -251,6 +254,7 @@ foam.CLASS({
           of: 'foam.core.MapHolder',
           wizardlet: {
             class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
+            title: "Review Your Subscription",
             showTitle: false,
             of: 'foam.core.MapHolder',
             items: [
