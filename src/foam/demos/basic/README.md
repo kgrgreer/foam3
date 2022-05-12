@@ -15,6 +15,7 @@ If the compiled code produces a syntax error, you can find out more information 
   * [More Computer Games](https://www.roug.org/retrocomputing/languages/basic/morebasicgames)
 
 ## TODO:
+  * Make work on command-line with NodeJS
   * [Give More Retro Display](http://aleclownes.com/2017/02/01/crt-display.html)
   * Maybe add graphics and sound support to run old Vic 20 or [MC-10](https://mymc10.tripod.com/software.htm) games
   * More [BASIC Programs](https://mymc10.tripod.com/commonbasic.htm)
