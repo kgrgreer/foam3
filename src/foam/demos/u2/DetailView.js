@@ -54,7 +54,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'salary',
-      help: "The employee's anual salary.",
+      help: "The employee's annual salary.",
       units: 'CAD$',
       validateObj: function(salary) {
         if ( salary < 30000 ) return 'Salary must be at least $30,000.';
