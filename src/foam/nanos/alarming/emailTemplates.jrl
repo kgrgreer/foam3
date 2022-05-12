@@ -5,7 +5,7 @@ p({
   "subject": "Alarm {{alarm.status}} - {{alarm.name}}",
   "body": """name: {{alarm.name}}
 status: {{alarm.status}}
-host: {{alar.host}}
+host: {{alarm.host}}
 started: {{alarm.started}}
 cleared: {{alarm.cleared}}
 severity: {{alarm.severity}}
