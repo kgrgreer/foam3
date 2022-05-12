@@ -11,6 +11,7 @@ foam.CLASS({
 
   properties: [
     'currentLine',
+    { class: 'Int', name: 'nextLabel_' },
     { name: 'vars', factory: function() { return { '_d': true }; } },
     { name: 'defs', factory: function() { return []; } },
     { name: 'data', factory: function() { return []; } },
@@ -153,7 +154,7 @@ foam.CLASS({
         let: function(a) { return `${a[1]} = ${a[5]};`; },
         sound: function(a) { return `await SOUND(${a[2]},${a[6]});`; },
         lhs: function(v) { self.addVar(v); return v; },
-        if: function(a) { return `if ( ${a[1]} ) { ${a[2]} }`; },
+        if: function(a) { var l = self.nextLabel(); return `if ( ! ( ${a[1]} ) ) { _line = ${l}; break; } ${a[2]} case ${l}:`; },
         string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
         print: function(a) {
           var ret = '';
@@ -181,7 +182,8 @@ foam.CLASS({
         return: function() { return '_line = _stack.pop(); break;' }
       });
     },
-    function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; }
+    function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; },
+    function nextLabel() { return `'L${this.nextLabel_++}'`; }
   ],
 
   templates: [
