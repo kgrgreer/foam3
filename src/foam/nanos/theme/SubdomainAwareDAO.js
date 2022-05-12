@@ -20,8 +20,10 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         if ( obj instanceof SubdomainAware ) {
-          var host = x.get(HttpServletRequest.class).getServerName();
-          if ( ! ((SubdomainAware) obj).getSubdomains().contains(host) ) ((SubdomainAware) obj).getSubdomains().add(host);
+          if ( "".equals(((SubdomainAware) obj).getSubdomain()) ) {
+            var host = x.get(HttpServletRequest.class).getServerName();
+            ((SubdomainAware) obj).setSubdomain(host);
+          }
         }
         return super.put_(x, obj);
       `

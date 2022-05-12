@@ -10,8 +10,8 @@ foam.INTERFACE({
 
   properties: [
     {
-      class: 'List',
-      name: 'subdomains'
+      class: 'String',
+      name: 'subdomain'
     }
   ]
 });
