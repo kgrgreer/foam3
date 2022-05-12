@@ -22,6 +22,21 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      name: 'config',
+      expression: function(section){
+        var newPropOverrides = {};
+
+        section.properties.forEach(prop => {
+          newPropOverrides[prop.name] = { gridColumns: 12 } 
+        })
+    
+        return newPropOverrides;
+      }
+    }
+  ],
+
   methods: [
     function init () {
       const x = this.__context__.createSubContext();
