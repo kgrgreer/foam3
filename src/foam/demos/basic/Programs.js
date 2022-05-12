@@ -14,7 +14,7 @@ foam.CLASS({
 
   constants: {
     PROGRAMS: [
-[ 'Empty', '' ],
+[ '-- Empty --', '' ],
 [ 'Test', `
 10 PRINT "HELLO"
 20 PRINT 42
@@ -1603,4 +1603,4 @@ foam.CLASS({
 `
 `],
 */
-].map(e => [e[1], e[0]])}});
+].sort((a,b) => a[0].localeCompare(b[0])).map(e => [e[1], e[0]])}});
