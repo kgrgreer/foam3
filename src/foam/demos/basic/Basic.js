@@ -223,6 +223,46 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.demos.basic',
+  name: 'Stdlib',
+
+  methods: [
+    function ABS(n) { return Math.abs(n); },
+    function ASC(s) { return s.charCodeAt(0); },
+    function CHR$(c) { return String.fromCharCode(c); },
+    function COS(n) { return Math.cos(n); },
+    function DIM(v, ...dims) {
+      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
+      return f(v, 0, dims);
+    },
+    function EXP(n) { return Math.exp(n); },
+    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
+    function INT(n) { return Math.floor(n); },
+    function LEFT$(s, n) { return s.substring(0, n); },
+    function LEN(s) { return s.length; },
+    function LOG(n) { return Math.log(n); },
+    function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
+    function NL() { this.out += '\n'; },
+    function RANGE(i, end, incr) { return incr > 0 ? i <= end : i >= end },
+    function RIGHT$(s, n) { return s.substring(s.length-n); },
+    function RND(n) { return Math.random(); },
+    function SGN(n) { return Math.sign(n); },
+    function SIN(n) { return Math.sin(n); },
+    function SOUND(f, d) { this.Beep.create({frequency: 100+4*f, duration: d*60}).play(); return new Promise(r => this.setTimeout(r, d*60)); },
+    function SQR(n) { return Math.sqrt(n); },
+    function STR$(n) { return n.toString(); },
+    function TAB(n) {
+      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
+      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
+      this.out += ' '.repeat(Math.max(0, n-pos));
+    },
+    function TAN(n) { return Math.tan(n); },
+    function VAL(s) { return parseFloat(s); }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.basic',
   name: 'Basic',
   extends: 'foam.u2.Controller',
 
@@ -232,6 +272,8 @@ foam.CLASS({
 
   constants: { BLOCK_CURSOR: '\u2588' },
 
+  mixins: [ 'foam.demos.basic.Stdlib' ],
+
   css: `
   body { font-family: sans-serif; }
   button { padding-top: 6px !important; }
@@ -239,7 +281,7 @@ foam.CLASS({
   ^ .property-sourceCode, .property-targetCode {
     display: inline-flex;
     padding: 8px;
-    width: 49%;
+    width: 48%;
   }
   ^ .property-program { display: inline-flex; }
   ^ .property-screen {
@@ -288,16 +330,9 @@ foam.CLASS({
         on('keyup',    this.keyup).
       end().end();
     },
-    function ABS(n) { return Math.abs(n); },
-    function ASC(s) { return s.charCodeAt(0); },
+
+    // BIOS:
     function CLS() { this.out = ''; },
-    function CHR$(c) { return String.fromCharCode(c); },
-    function COS(n) { return Math.cos(n); },
-    function DIM(v, ...dims) {
-      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
-      return f(v, 0, dims);
-    },
-    function EXP(n) { return Math.exp(n); },
     async function INPUT$() {
       this.inp = '';
       return new Promise(r => {
@@ -314,29 +349,7 @@ foam.CLASS({
         l();
       });
     },
-    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
-    function INT(n) { return Math.floor(n); },
-    function LEFT$(s, n) { return s.substring(0, n); },
-    function LEN(s) { return s.length; },
-    function LOG(n) { return Math.log(n); },
-    function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
-    function NL() { this.out += '\n'; },
     function PRINT(s) { this.out += typeof s === 'number' ? ` ${s} ` : s; },
-    function RANGE(i, end, incr) { return incr > 0 ? i <= end : i >= end },
-    function RIGHT$(s, n) { return s.substring(s.length-n); },
-    function RND(n) { return Math.random(); },
-    function SGN(n) { return Math.sign(n); },
-    function SIN(n) { return Math.sin(n); },
-    function SOUND(f, d) { this.Beep.create({frequency: 100+4*f, duration: d*60}).play(); return new Promise(r => this.setTimeout(r, d*60)); },
-    function SQR(n) { return Math.sqrt(n); },
-    function STR$(n) { return n.toString(); },
-    function TAB(n) {
-      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
-      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
-      this.out += ' '.repeat(Math.max(0, n-pos));
-    },
-    function TAN(n) { return Math.tan(n); },
-    function VAL(s) { return parseFloat(s); }
   ],
 
   listeners: [
