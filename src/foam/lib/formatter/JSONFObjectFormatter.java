@@ -427,8 +427,8 @@ public class JSONFObjectFormatter
         outputKey("class");
         append(':');
         output(newInfo.getId());
+        if (output.length() > 0 ) append(',');
       }
-      if (output.length() > 0 ) append(',');
       append(output);
       addInnerNewline();
       append('}');
