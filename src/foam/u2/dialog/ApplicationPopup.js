@@ -19,7 +19,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'close as closeDialog',
     'as actionProvider'
   ],
 
