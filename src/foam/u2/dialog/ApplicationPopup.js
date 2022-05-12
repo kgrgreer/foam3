@@ -29,7 +29,7 @@ foam.CLASS({
 
   css: `
     ^header-action {
-      margin: 15px;
+      margin: 12px;
       z-index: 1000;
       cursor: pointer;
       transition: all ease-in 0.1s;
@@ -45,6 +45,7 @@ foam.CLASS({
       justify-content: space-between;
       flex-basis: 15px;
       border-bottom: 1px solid /*%GREY4%*/ #777777;
+      padding: 12px;
     }
 
     ^header-left {
