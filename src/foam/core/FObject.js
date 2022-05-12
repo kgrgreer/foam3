@@ -161,7 +161,6 @@ foam.LIB({
         this.axiomMap_[a.name] = a;
       }
 
-
       for ( var i = 0 ; i < axs.length ; i++ ) {
         var a = axs[i];
 
@@ -963,8 +962,19 @@ foam.CLASS({
               key ;
 
           var a = this.cls_.getAxiomByName(name);
-          if ( a && foam.core.Property.isInstance(a) ) {
-            this[key] = o[key];
+          if ( a ) {
+            if ( foam.core.Property.isInstance(a) ) {
+              this[key] = o[key];
+            } else if ( foam.core.Import.isInstance(a) ) {
+              var slot = foam.core.ConstantSlot.create({ value: o[key] });
+
+              Object.defineProperty(this, key + '$', {
+                get: function() { return slot; },
+                configurable: true,
+                enumerable: false
+              });
+            }
+            //|| foam.core.Requires.isInstance(a) )) {
           } else if ( opt_warn ) {
             this.unknownArg(key, o[key]);
           }
@@ -1024,7 +1034,7 @@ foam.CLASS({
           this.cls_.prototype === this ? 'Proto' : '');
     },
 
-    function toSummary() { 
+    function toSummary() {
       return this.id;
     },
 
