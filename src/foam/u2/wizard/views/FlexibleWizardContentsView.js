@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'popup?'
+    'actionProvider?'
   ],
 
   requires: [
@@ -61,7 +61,7 @@ foam.CLASS({
         .add(current$)
         .add(this.slot(function (data$actionBar, data$currentWizardlet) {
           let actions = data$actionBar;
-          if ( self.popup ) {
+          if ( self.actionProvider ) {
             const prevIndex = actions.findIndex(a => a.name == 'goPrev');
             if ( prevIndex != -1 ) {
               actions = [...actions];
@@ -71,9 +71,9 @@ foam.CLASS({
               });
               actionsDetachable.detach();
               actionsDetachable = foam.core.FObject.create();
-              self.popup.addAction(actionRef);
+              self.actionProvider.addAction(actionRef);
               actionsDetachable.onDetach(function () {
-                self.popup.removeAction(actionRef);
+                self.actionProvider.removeAction(actionRef);
               });
               actions.splice(prevIndex, 1);
             }

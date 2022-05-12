@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.dialog',
   name: 'ApplicationPopup',
@@ -14,7 +20,7 @@ foam.CLASS({
 
   exports: [
     'close as closeDialog',
-    'as popup'
+    'as actionProvider'
   ],
 
   requires: [
@@ -23,11 +29,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^X {
+    ^header-action {
       margin: 15px;
-      position: initial !important;
-      top: initial !imporant;
-      right: initial !important;
+      z-index: 1000;
+      cursor: pointer;
+      transition: all ease-in 0.1s;
+      padding: 0;
     }
 
     ^inner {
@@ -105,7 +112,7 @@ foam.CLASS({
                   .forEach(customActions, function (ar) {
                     this
                       .start(ar.action, { label: '', buttonStyle: 'TERTIARY', data$: ar.data$ })
-                        .addClass(self.myClass('X'))
+                        .addClass(self.myClass('header-action'))
                       .end()
                       ;
                   });
@@ -127,7 +134,7 @@ foam.CLASS({
               .startContext({ data: this })
                 .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
                   .show(this.closeable$.and(this.showActions$))
-                  .addClass(this.myClass('X'))
+                  .addClass(this.myClass('header-action'))
                 .end()
               .endContext()
             .end()
