@@ -63,7 +63,7 @@ public class SafetyUtil {
 
     // Handle array comparison
     if ( o1.getClass().isArray() && o2.getClass().isArray() ) {
-      return compare(Arrays.toArray(o1), Arrays.toArray(o2));
+      return compare((Object[]) o1, (Object[]) o2);
     }
 
     if ( o1.equals(o2) ||
