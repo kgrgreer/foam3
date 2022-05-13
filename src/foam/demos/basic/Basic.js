@@ -25,7 +25,7 @@ foam.CLASS({
             line: seq(sym('lineNumber'), sym('ws'), sym('statements')),
             ws: repeat(' '),
             lineNumber: sym('number'),
-            statements: repeat(sym('statement'), seq(optional(' '), ':', optional(' '))),
+            statements: repeat(sym('statement'), seq(sym('ws'), ':', sym('ws'))),
             statement: alt(
               sym('data'),
               sym('def'),
@@ -51,16 +51,16 @@ foam.CLASS({
             dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
             dimElement: seq(sym('symbol'), '(', repeat(sym('expr'),','), ')'),
             end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
-            for: seq('FOR ', sym('symbol'), '=', sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
+            for: seq('FOR ', sym('symbol'), sym('ws'), '=', sym('ws'), sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
             gosub: seq1(2, 'GOSUB',  sym('ws'), sym('number')),
             goto: seq1(2, 'GOTO', sym('ws'), sym('gotoLine')),
             gotoLine: sym('number'),
             if: seq('IF ', seq1(0, sym('predicate'), sym('ws'), 'THEN', sym('ws')), alt(sym('gotoLine'), str(sym('statements')))),
-            input: seq('INPUT ', optional(seq1(0, sym('string'), ';', optional(' '))), repeat(sym('symbol'), ',')),
+            input: seq('INPUT', sym('ws'), optional(seq1(0, sym('string'), ';', sym('ws'))), repeat(sym('lhs'), ',')),
             let: seq(optional('LET '), sym('lhs'), sym('ws'), '=', sym('ws'), sym('expr')),
             lhs: alt(sym('fn'), sym('symbol')),
             next: seq1(2, 'NEXT', sym('ws'), sym('symbol')),
-            on: seq('ON ', until(' GOTO '), str(repeat(notChars('\n')))),
+            on: seq('ON ', sym('expr'), sym('ws'), 'GOTO', str(repeat(notChars('\n')))),
             print: seq('PRINT', optional(' '), optional(sym('printArgs')), optional(seq1(1,sym('ws'), alt(';',','), sym('ws')))),
             printArgs: seq(sym('expr'), optional(seq(seq1(1,sym('ws'), alt(';',','), sym('ws')), sym('printArgs')))),
             read: seq1(2, 'READ', sym('ws'), repeat(sym('lhs'), ',')),
@@ -74,12 +74,14 @@ foam.CLASS({
             expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
             expr3: alt(
               str(seq('(', sym('expr'), ')')),
+              seq1(1, '(', sym('predexpr'), ')'),
               str(seq('-', sym('expr3'))),
               sym('number'),
               sym('string'),
               sym('fn'),
               sym('symbol')
             ),
+            predexpr: sym('predicate'),
             predicate: str(seq(
               str(alt(
                 seq(sym('expr'), sym('ws'), alt(literal('=', '==='), literal('<>', '!='),'<=','>=','<','>'), sym('ws'), sym('expr')),
@@ -116,10 +118,10 @@ foam.CLASS({
         START: function(lines) { return self.jsGenerator(lines).replace(/\n      /g,'\n').substring(1); },
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
-          a[2].forEach(v => self.addVar(v));
-          return `PRINT(${(a[1] ? a[1].substring(0, a[1].length-1) : '"') + '? "'}); ` + a[2].map((v,i) => `${v} = await INPUT${ v.endsWith('$') ? '$' : ''}();`).join(' ');
+          a[3].forEach(v => self.addVar(v));
+          return `PRINT(${(a[2] ? a[2].substring(0, a[2].length-1) : '"') + '? "'}); ` + a[3].map((v,i) => `${v} = await INPUT${ v.endsWith('$') ? '$' : ''}();`).join(' ');
         },
-        on: function(a) { return `{ var l = [${a[2]}][${a[1]}-1]; if ( l ) { _line = l; break; } }`; },
+        on: function(a) { return `{ var l = [${a[4]}][${a[1]}-1]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
           self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
@@ -134,6 +136,7 @@ foam.CLASS({
         expr: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
         expr1: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
         expr2: function(a) { return a[1] ? `Math.pow(${a[0]}, ${a[1][1]})` : a[0]; },
+        predexpr: function(p) { return `((${p}) ? -1 : 0)`; },
         rem: function(a) { return '// REM' + a; },
         fn: function(a) {
           // array lookup
@@ -145,7 +148,7 @@ foam.CLASS({
           self.addVar(a[1]);
           var name = a[1] + self.currentLine + '_';
           self.fors[a[1]] = name;
-          return `${a[1]} = ${a[3]}; ${name}END = ${a[7]}; ${name}INCR = ${a[8]}; case '${name}FOR': if ( ! RANGE(${a[1]}, ${name}END, ${name}INCR) ) { _line = '${name}END'; break; }`;
+          return `${a[1]} = ${a[5]}; ${name}END = ${a[9]}; ${name}INCR = ${a[10]}; case '${name}FOR': if ( ! RANGE(${a[1]}, ${name}END, ${name}INCR) ) { _line = '${name}END'; break; }`;
         },
         next: function(a) {
           var name = self.fors[a];
@@ -172,7 +175,7 @@ foam.CLASS({
           return ret;
         },
         gotoLine: function(l) { return `_line = ${l}; break;`; },
-        gosub: function(l) { return `_line = ${l}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5: `; },
+        gosub: function(l) { var ret = self.nextLabel(); return `_line = ${l}; _stack.push(${ret}); break; case ${ret}: `; },
         read: function(a) {
           return a.map(s => {
             self.addVar(s);
@@ -276,21 +279,30 @@ foam.CLASS({
   mixins: [ 'foam.demos.basic.Stdlib' ],
 
   css: `
+  @font-face {
+  font-family: '5x7_dot_matrixregular';
+  src: url('5x7-dot-matrix-webfont.eot');
+  src: url('5x7-dot-matrix-webfont.eot?#iefix') format('embedded-opentype'),url('5x7-dot-matrix-webfont.woff') format('woff'),url('5x7-dot-matrix-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal
+}
+
   body { font-family: sans-serif; }
   button { padding-top: 6px !important; }
-  textarea, select { font-size: 14px !important; }
+  textarea, select { font-size: 10px !important; }
   ^ .property-sourceCode, .property-targetCode {
     display: inline-flex;
-    padding: 8px;
+    padding: 6px;
     width: 48%;
   }
   ^ .property-program { display: inline-flex; }
   ^ .property-screen {
+    font-family: "5x7_dot_matrixregular",courier,monospace;
     background: #121 !important;
     border-radius: 40px;
     color: #0f0 !important;
-    font-size: 24px !important;
-    line-height: 20px;
+    font-size: 11px !important;
+    line-height: 11px;
     margin: 12px;
     padding: 24px;
     width: auto !important;
@@ -389,7 +401,8 @@ foam.CLASS({
     },
     {
       name: 'run',
-      isEnabled: function(targetCode) { return !! targetCode; },
+      label: '▶ Run',
+      isEnabled: function(targetCode) { return targetCode.length; },
       code: async function() {
         try {
           var fn;
@@ -410,6 +423,7 @@ foam.CLASS({
     },
     {
       name: 'stop',
+      label: '◼ Stop',
       isEnabled: function(status) { return status === 'running'; },
       code: function() { this.status = ''; }
     }
