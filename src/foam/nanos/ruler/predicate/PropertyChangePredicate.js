@@ -35,7 +35,8 @@ foam.CLASS({
         var prop = (PropertyInfo) ((FObject) nu)
           .getClassInfo().getAxiomByName(getPropName());
 
-        return old != null && nu != null && prop.compare(nu, old) != 0;
+        return old != null && nu != null
+          && prop != null && prop.compare(nu, old) != 0;
       `
     }
   ]
