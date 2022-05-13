@@ -38,6 +38,11 @@ public class SafetyUtil {
     if ( o2 == null ) return  1;
     if ( o1 == null ) return -1;
 
+    // Compare classes if the classes are different
+    if ( o1.getClass() != o2.getClass() ) {
+      compare(o1.getClass().getName(), o2.getClass().getName());
+    }
+
     // Number subtypes (Long, Integer, etc.) are type-specific comparable and
     // can only be compareTo the same type eg., Long can only compareTo Long.
     //
@@ -62,9 +67,7 @@ public class SafetyUtil {
     }
 
     // Handle array comparison
-    if ( o1.getClass().isArray() && o2.getClass().isArray()
-      && o1.getClass() == o2.getClass()
-    ) {
+    if ( o1.getClass().isArray() ) {
       if ( o1.getClass() == boolean[].class ) return compare((boolean[]) o1, (boolean[]) o2);
       if ( o1.getClass() == byte[].class    ) return compare((byte[])    o1, (byte[]) o2);
       if ( o1.getClass() == char[].class    ) return compare((char[])    o1, (char[]) o2);
