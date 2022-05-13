@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.email.EmailTemplateSupport',
     'java.util.Map'
   ],
@@ -314,7 +315,12 @@ foam.CLASS({
         Loggers.logger(x, this).warning("Template not found", id);
         throw new RuntimeException("Template not found");
       }
-      return renderTemplate(x, template.getBody(), values);
+      Logger logger = new PrefixLogger( new Object[] {
+        this.getClass().getSimpleName(),
+        "template",
+        id
+      }, (Logger) x.get("logger"));
+      return renderTemplate(x.put("logger", logger), template.getBody(), values);
       `
     },
     {
