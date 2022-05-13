@@ -796,7 +796,7 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      this.__subSubContext__.myNotificationDAO
+      this.__subContext__.myNotificationDAO
       .on.put.sub(this.displayToastMessage.bind(this));
 
       this.loginSuccess = true;
