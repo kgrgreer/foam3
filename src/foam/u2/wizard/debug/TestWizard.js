@@ -31,7 +31,9 @@ foam.CLASS({
         const scenarioMenus = [];
 
         for ( const packageString of this.packages ) {
-          const pkg = packageString.split('.').reduce((o, k) => o[k], globalThis);
+          const pkg = packageString.split('.').reduce((o, k) => o?.[k], globalThis);
+          if ( pkg === undefined ) throw new Error(
+            `could not load wizard scenarios from: ${packageString}`);
           scenarioMenus.push(...Object.getOwnPropertyNames(pkg).map(scenarioName =>
             this.Menu.create({
               id: this.id + '/' + scenarioName,
