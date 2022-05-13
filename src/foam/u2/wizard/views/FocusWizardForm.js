@@ -20,6 +20,17 @@ foam.CLASS({
       margin: 40pt;
       width: 45vw;
       min-height: 65vh;
+      margin-top: 0;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^ {
+        width: 45vw;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+      ^ {
+        width: 25vw;
+      }
     }
     ^contents {
       flex-grow: 1;

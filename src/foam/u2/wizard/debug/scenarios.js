@@ -246,7 +246,11 @@ foam.CLASS({
         {
           class: 'foam.nanos.crunch.Capability',
           id: 'AddSchedule',
-          of: 'net.nanopay.cards.DepositScheduleData'
+          of: 'net.nanopay.cards.DepositScheduleData',
+          wizardlet: {
+            class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+            title: 'Add Your Schedule'
+          }
         },
         {
           class: 'foam.nanos.crunch.Capability',
