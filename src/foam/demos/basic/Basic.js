@@ -302,7 +302,7 @@ foam.CLASS({
     border-radius: 40px;
     color: #0f0 !important;
     font-size: 11px !important;
-    line-height: 11px;
+    line-height: 14px;
     margin: 12px;
     padding: 24px;
     width: auto !important;
