@@ -62,8 +62,8 @@ foam.CLASS({
             lhs: alt(sym('fn'), sym('symbol')),
             next: seq1(2, 'NEXT', sym('ws'), sym('symbol')),
             on: seq('ON', sym('ws'), sym('expr'), sym('ws'), 'GOTO', str(repeat(notChars('\n')))),
-            print: seq('PRINT', optional(' '), optional(sym('printArgs')), optional(seq1(1,sym('ws'), alt(';',','), sym('ws')))),
-            printArgs: seq(sym('expr'), optional(seq(seq1(1,sym('ws'), alt(';',','), sym('ws')), sym('printArgs')))),
+            print: seq('PRINT', sym('ws'), optional(sym('printArgs')), optional(seq1(1, sym('ws'), alt(';',','), sym('ws')))),
+            printArgs: seq(sym('expr'), optional(seq(seq1(1,sym('ws'), alt(';',',',''), sym('ws')), sym('printArgs')))),
             read: seq1(2, 'READ', sym('ws'), repeat(sym('lhs'), ',')),
             rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
             sound: seq('SOUND', sym('ws'), sym('expr'), sym('ws'), ',', sym('ws'), sym('expr')),
@@ -122,7 +122,7 @@ foam.CLASS({
         lineNumber: function(a) { self.currentLine = a; return a; },
         input: function(a) {
           a[3].forEach(v => self.addVar(v));
-          return `PRINT(${(a[2] ? a[2].substring(0, a[2].length-1) : '"') + '? "'}); ` + a[3].map((v,i) => `${v} = await INPUT${ v.endsWith('$') ? '$' : ''}();`).join(' ');
+          return `PRINT(${(a[2] ? a[2].substring(0, a[2].length-1) : '"') + '? "'}); ` + a[3].map((v,i) => `${v} = await INPUT${ v.indexOf('$') != -1 ? '$' : ''}();`).join(' ');
         },
         on: function(a) { return `{ var l = [${a[5]}][${a[2]}-1]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
@@ -269,6 +269,14 @@ foam.CLASS({
     function VAL(s) { return parseFloat(s); }
   ]
 });
+
+/*
+foam.CLASS({
+  package: 'foam.demos.basic',
+  name: 'Terminal',
+  extends: 'foam.u2.tag.TextArea',
+});
+*/
 
 
 foam.CLASS({
