@@ -51,16 +51,16 @@ foam.CLASS({
             dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
             dimElement: seq(sym('symbol'), '(', repeat(sym('expr'),','), ')'),
             end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
-            for: seq('FOR ', sym('symbol'), sym('ws'), '=', sym('ws'), sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
+            for: seq('FOR', sym('ws'), sym('symbol'), sym('ws'), '=', sym('ws'), sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
             gosub: seq1(2, 'GOSUB',  sym('ws'), sym('number')),
             goto: seq1(2, 'GOTO', sym('ws'), sym('gotoLine')),
             gotoLine: sym('number'),
-            if: seq('IF ', seq1(0, sym('predicate'), sym('ws'), 'THEN', sym('ws')), alt(sym('gotoLine'), str(sym('statements')))),
+            if: seq('IF', sym('ws'), seq1(0, sym('predicate'), sym('ws'), 'THEN', sym('ws')), alt(sym('gotoLine'), str(sym('statements')))),
             input: seq('INPUT', sym('ws'), optional(seq1(0, sym('string'), ';', sym('ws'))), repeat(sym('lhs'), ',')),
             let: seq(optional('LET '), sym('lhs'), sym('ws'), '=', sym('ws'), sym('expr')),
             lhs: alt(sym('fn'), sym('symbol')),
             next: seq1(2, 'NEXT', sym('ws'), sym('symbol')),
-            on: seq('ON ', sym('expr'), sym('ws'), 'GOTO', str(repeat(notChars('\n')))),
+            on: seq('ON', sym('ws'), sym('expr'), sym('ws'), 'GOTO', str(repeat(notChars('\n')))),
             print: seq('PRINT', optional(' '), optional(sym('printArgs')), optional(seq1(1,sym('ws'), alt(';',','), sym('ws')))),
             printArgs: seq(sym('expr'), optional(seq(seq1(1,sym('ws'), alt(';',','), sym('ws')), sym('printArgs')))),
             read: seq1(2, 'READ', sym('ws'), repeat(sym('lhs'), ',')),
@@ -121,7 +121,7 @@ foam.CLASS({
           a[3].forEach(v => self.addVar(v));
           return `PRINT(${(a[2] ? a[2].substring(0, a[2].length-1) : '"') + '? "'}); ` + a[3].map((v,i) => `${v} = await INPUT${ v.endsWith('$') ? '$' : ''}();`).join(' ');
         },
-        on: function(a) { return `{ var l = [${a[4]}][${a[1]}-1]; if ( l ) { _line = l; break; } }`; },
+        on: function(a) { return `{ var l = [${a[5]}][${a[2]}-1]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
           self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
@@ -145,10 +145,10 @@ foam.CLASS({
           return `${a[0]}(${a[2].join()})`;
         },
         for: function(a) {
-          self.addVar(a[1]);
-          var name = a[1] + self.currentLine + '_';
-          self.fors[a[1]] = name;
-          return `${a[1]} = ${a[5]}; ${name}END = ${a[9]}; ${name}INCR = ${a[10]}; case '${name}FOR': if ( ! RANGE(${a[1]}, ${name}END, ${name}INCR) ) { _line = '${name}END'; break; }`;
+          self.addVar(a[2]);
+          var name = a[2] + self.currentLine + '_';
+          self.fors[a[2]] = name;
+          return `${a[2]} = ${a[6]}; ${name}END = ${a[10]}; ${name}INCR = ${a[11]}; case '${name}FOR': if ( ! RANGE(${a[2]}, ${name}END, ${name}INCR) ) { _line = '${name}END'; break; }`;
         },
         next: function(a) {
           var name = self.fors[a];
@@ -157,7 +157,7 @@ foam.CLASS({
         let: function(a) { return `${a[1]} = ${a[5]};`; },
         sound: function(a) { return `await SOUND(${a[2]},${a[6]});`; },
         lhs: function(v) { self.addVar(v); return v; },
-        if: function(a) { var l = self.nextLabel(); return `if ( ! ( ${a[1]} ) ) { _line = ${l}; break; } ${a[2]} case ${l}:`; },
+        if: function(a) { var l = self.nextLabel(); return `if ( ! ( ${a[2]} ) ) { _line = ${l}; break; } ${a[3]} case ${l}:`; },
         string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
         print: function(a) {
           var ret = '';
