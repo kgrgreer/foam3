@@ -45,7 +45,8 @@ foam.CLASS({
               sym('return'),
               sym('sound'),
               sym('let'),
-              str(repeat(notChars(':\n')))), // passthrough Javascript code
+              sym('javascript'),
+              sym('syntaxerror')),
             data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), seq(sym('ws'), ',', sym('ws')))),
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
             dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
@@ -94,6 +95,8 @@ foam.CLASS({
                 sym('predicate'))
               )))),
             fn: seq(sym('symbol'), '(', repeat(sym('expr'), seq(sym('ws'), ',', sym('ws'))), ')'),
+            javascript: seq1(1, 'JAVASCRIPT ', str(repeat(notChars(':\n')))),
+            syntaxerror: str(repeat(notChars(':\n'))),
             number: str(seq(
               optional('-'),
               str(alt(
@@ -182,7 +185,10 @@ foam.CLASS({
             return `${s} = _data[_d++];`;
           }).join('');
         },
-        return: function() { return '_line = _stack.pop(); break;' }
+        return: function() { return '_line = _stack.pop(); break;' },
+        syntaxerror: function(a) {
+          return ' SYNTAX ERROR: ' + a;
+        }
       });
     },
     function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; },
