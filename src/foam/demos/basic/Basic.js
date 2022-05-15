@@ -274,6 +274,8 @@ foam.CLASS({
 
   constants: { BLOCK_CURSOR: '\u2588' },
 
+  documentation: 'Simple web based terminal emulator / BIOS.',
+
   css: `
   @font-face {
     font-family: '5x7_dot_matrixregular';
@@ -299,7 +301,7 @@ foam.CLASS({
   properties: [
     { class: 'String', name: 'inp' },
     { class: 'String', name: 'out',    value: 'READY.\n' },
-    { class: 'String', name: 'cursor', value: ' ' },
+    'cursor',
     { name: 'data', expression: function(out, inp, cursor) { return out + inp + cursor; } },
     [ 'rows', 32 ],
     [ 'cols', 80 ],
@@ -395,8 +397,6 @@ foam.CLASS({
 
   imports: [ 'setTimeout' ],
 
-  mixins: [ 'foam.demos.basic.Stdlib' ],
-
   css: `
   body { font-family: sans-serif; }
 
@@ -423,6 +423,7 @@ foam.CLASS({
     },
     { class: 'Code', name: 'sourceCode' },
     { class: 'Code', name: 'targetCode' },
+    { name: 'rom', factory: function() { return foam.demos.basic.Stdlib.create({}, this); } },
     'terminal',
     'status'
   ],
@@ -448,7 +449,7 @@ foam.CLASS({
       code: async function() {
         try {
           var fn;
-          with ( this.terminal ) { with ( this ) { fn = eval('(' + this.targetCode + ')'); } }
+          with ( this.terminal ) { with ( this.rom ) { fn = eval('(' + this.targetCode + ')'); } }
           // for ( var i = 0 ; i < 10 ; i++ ) await fn.call(this);
           console.time('run');
           this.terminal.CLS();
