@@ -245,122 +245,88 @@ foam.CLASS({
       return f(v, 0, dims);
     },
     function EXP(n) { return Math.exp(n); },
-    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
     function INT(n) { return Math.floor(n); },
     function LEFT$(s, n) { return s.substring(0, n); },
     function LEN(s) { return s.length; },
     function LOG(n) { return Math.log(n); },
     function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
-    function NL() { this.out += '\n'; },
     function RANGE(i, end, incr) { return incr > 0 ? i <= end : i >= end },
     function RIGHT$(s, n) { return s.substring(s.length-n); },
     function RND(n) { return Math.random(); },
     function SGN(n) { return Math.sign(n); },
     function SIN(n) { return Math.sin(n); },
-    function SOUND(f, d) { this.Beep.create({frequency: 100+4*f, duration: d*60}).play(); return new Promise(r => this.setTimeout(r, d*60)); },
     function SQR(n) { return Math.sqrt(n); },
     function STR$(n) { return n.toString(); },
-    function TAB(n) {
-      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
-      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
-      this.out += ' '.repeat(Math.max(0, n-pos));
-    },
     function TAN(n) { return Math.tan(n); },
     function VAL(s) { return parseFloat(s); }
   ]
 });
 
-/*
+
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Terminal',
   extends: 'foam.u2.tag.TextArea',
-});
-*/
 
-
-foam.CLASS({
-  package: 'foam.demos.basic',
-  name: 'Basic',
-  extends: 'foam.u2.Controller',
-
-  requires: [ 'foam.audio.Beep', 'foam.demos.basic.Compiler' ],
+  requires: [ 'foam.audio.Beep' ],
 
   imports: [ 'setTimeout' ],
 
   constants: { BLOCK_CURSOR: '\u2588' },
 
-  mixins: [ 'foam.demos.basic.Stdlib' ],
-
   css: `
   @font-face {
-  font-family: '5x7_dot_matrixregular';
-  src: url('5x7-dot-matrix-webfont.eot');
-  src: url('5x7-dot-matrix-webfont.eot?#iefix') format('embedded-opentype'),url('5x7-dot-matrix-webfont.woff') format('woff'),url('5x7-dot-matrix-webfont.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal
-}
-
-  body { font-family: sans-serif; }
-  button { padding-top: 6px !important; }
-  textarea, select { font-size: 10px !important; }
-  ^ .property-sourceCode, .property-targetCode {
-    display: inline-flex;
-    padding: 6px;
-    width: 48%;
+    font-family: '5x7_dot_matrixregular';
+    src: url('5x7-dot-matrix-webfont.eot');
+    src: url('5x7-dot-matrix-webfont.eot?#iefix') format('embedded-opentype'),url('5x7-dot-matrix-webfont.woff') format('woff'),url('5x7-dot-matrix-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal
   }
-  ^ .property-program { display: inline-flex; }
-  ^ .property-screen {
+
+  ^ {
     font-family: "5x7_dot_matrixregular",courier,monospace;
     background: #121 !important;
     border-radius: 40px;
     color: #0f0 !important;
-    font-size: 11px !important;
+    font-size: 10px !important;
     line-height: 14px;
-    margin: 12px;
-    padding: 24px;
+    margin: 8px;
+    padding: 15px;
     width: auto !important;
-  }`,
+  }
+  `,
 
   properties: [
-    {
-      name: 'program',
-      view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
-      postSet: function(o, n) { this.sourceCode = n.trim(); }
-    },
-    { class: 'Code',   name: 'sourceCode' },
-    { class: 'Code',   name: 'targetCode' },
     { class: 'String', name: 'inp' },
     { class: 'String', name: 'out',    value: 'READY.\n' },
     { class: 'String', name: 'cursor', value: ' ' },
-    {
-      class: 'String',
-      name: 'screen',
-      expression: function(out, inp, cursor) { return out + inp + cursor; },
-      view: { class: 'foam.u2.tag.TextArea', rows: 36, cols: 80, mode: foam.u2.DisplayMode.RO }
-    },
-    { name: 'status' }
+    { name: 'data', expression: function(out, inp, cursor) { return out + inp + cursor; } },
+    [ 'rows', 32 ],
+    [ 'cols', 80 ],
+    [ 'mode', foam.u2.DisplayMode.RO ]
   ],
 
   methods: [
     function render() {
-      var self = this;
-      this.blink();
-      this.addClass(this.myClass()).start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
-      start('center').start(this.SCREEN).
-        call(function() {
-          self.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
-          self.status$.sub(this.focus.bind(this));
-        }).
-        attrs({readonly:true}).
+      this.SUPER();
+
+      this.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
+
+      this.
         on('keypress', this.keypress).
-        on('keyup',    this.keyup).
-      end().end();
+        on('keyup',    this.keyup);
+
+      this.blink();
     },
 
-    // BIOS:
     function CLS() { this.out = ''; },
+
+    function NL() { this.out += '\n'; },
+
+    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
+
     async function INPUT$() {
+      this.focus();
       this.inp = '';
       return new Promise(r => {
         var l = () => {
@@ -376,7 +342,19 @@ foam.CLASS({
         l();
       });
     },
+
     function PRINT(s) { this.out += typeof s === 'number' ? ` ${s} ` : s; },
+
+    function TAB(n) {
+      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
+      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
+      this.out += ' '.repeat(Math.max(0, n-pos));
+    },
+
+    function SOUND(f, d) {
+      this.Beep.create({frequency: 100+4*f, duration: d*60}).play();
+      return new Promise(r => this.setTimeout(r, d*60));
+    }
   ],
 
   listeners: [
@@ -404,6 +382,56 @@ foam.CLASS({
         this.blink();
       }
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.basic',
+  name: 'Basic',
+  extends: 'foam.u2.Controller',
+
+  requires: [ 'foam.demos.basic.Terminal', 'foam.demos.basic.Compiler' ],
+
+  imports: [ 'setTimeout' ],
+
+  mixins: [ 'foam.demos.basic.Stdlib' ],
+
+  css: `
+  body { font-family: sans-serif; }
+
+  ^ .property-program { display: inline-flex; }
+
+  ^ .property-program select { font-size: 12px !important; }
+
+  ^ button { padding-top: 6px; }
+
+  ^ textarea { font-size: 10px; }
+
+  ^ .property-sourceCode, .property-targetCode {
+    display: inline-flex;
+    padding: 6px;
+    width: 48%;
+  }
+`,
+
+  properties: [
+    {
+      name: 'program',
+      view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
+      postSet: function(o, n) { this.sourceCode = n.trim(); }
+    },
+    { class: 'Code', name: 'sourceCode' },
+    { class: 'Code', name: 'targetCode' },
+    'terminal',
+    'status'
+  ],
+
+  methods: [
+    function render() {
+      this.addClass().start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
+      start('center').tag(this.Terminal, {}, this.terminal$).end();
+    },
   ],
 
   actions: [
@@ -420,15 +448,15 @@ foam.CLASS({
       code: async function() {
         try {
           var fn;
-          with ( this ) { fn = eval('(' + this.targetCode + ')'); }
+          with ( this.terminal ) { with ( this ) { fn = eval('(' + this.targetCode + ')'); } }
           // for ( var i = 0 ; i < 10 ; i++ ) await fn.call(this);
           console.time('run');
-          this.CLS();
+          this.terminal.CLS();
           this.status = 'running';
           await fn.call(this);
-          this.PRINT("\n" + this.OUT.value);
+          this.terminal.PRINT("\n" + this.terminal.OUT.value);
         } catch(x) {
-          this.PRINT('SYNTAX ERROR: ' + x);
+          this.terminal.PRINT('SYNTAX ERROR: ' + x);
         } finally {
           this.status = '';
           console.timeEnd('run');
