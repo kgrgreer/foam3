@@ -111,8 +111,7 @@ public class TreeIndex
   public Object put(Object state, FObject value) {
     if ( state == null ) state = TreeNode.getNullNode();
     Object key = returnKeyForValue(value);
-    return ((TreeNode) state).putKeyValue((TreeNode)state,
-      prop_, key, value, tail_);
+    return ((TreeNode) state).putKeyValue((TreeNode) state, prop_, key, value, tail_);
   }
 
   public Object remove(Object state, FObject value) {
