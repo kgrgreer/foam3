@@ -106,7 +106,7 @@ Suitable for usage against backends that don't support listen(), such as plain H
           this.on.reset.pub();
           return true;
         }
-        if ( ! foam.dao.DAO.PURGE_CMD === obj ) {
+        if ( !(foam.dao.DAO.PURGE_CMD === obj) ) {
           return this.SUPER(x, obj);
         }
         return obj;

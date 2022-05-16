@@ -1211,6 +1211,10 @@ foam.POM({
   { name: "foam/support/model/TicketMessage", flags: "java" },
   { name: "foam/support/model/SupportEmail", flags: "java" },
   { name: "foam/dashboard/view/CenteredDashboardCitationView", flags: "web" },
-  { name: "foam/dashboard/view/GroupedDAOTableWidget", flags: "web" }
+  { name: "foam/dashboard/view/GroupedDAOTableWidget", flags: "web" },
+  { name: "foam/u2/view/GlobalFuidSearch", flags: "web" },
+  { name: "foam/u2/FUIDAutocompleter", flags: "web" },
+  { name: "foam/u2/view/FUIDSearch", flags: "web" }
+
   ]
 });

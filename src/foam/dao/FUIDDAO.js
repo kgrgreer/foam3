@@ -25,6 +25,14 @@ foam.CLASS({
     if the value is set to the default value.
   `,
 
+  constants: [
+    {
+        name: 'SALT_CMD',
+        type: 'String',
+        value: 'SALT_CMD'
+    }
+  ],
+
   implements: [
     'foam.nanos.boot.NSpecAware'
   ],
@@ -127,6 +135,14 @@ foam.CLASS({
             (long) getPropertyInfo().get(obj));
         }
         return getDelegate().put_(x, obj);
+      `
+    },
+    {
+      name: 'cmd_',
+      args: 'Context x, Object obj',
+      javaCode:
+      `
+        return getSalt();
       `
     }
   ]
