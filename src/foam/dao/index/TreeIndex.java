@@ -38,8 +38,8 @@ public class TreeIndex
   }
 
   /**
-   *This fuction help to smaller state by predicate efficiently
-   * @param state: When we could deal with predicate efficiently by index, the return sata will smaller than origin state
+   * This fuction helps to create a smaller state by applying predicates.
+   * @param state: When we could deal with predicate efficiently by index, the returned sate will be smaller than original state
    * @param predicate: If the state is kind of Binary state, when we deal with it it will become null. If it is kind of N-arry state, the part of their predicate will become True or null.
    * @return Return an Object[] which contains two elements, first one is update state and second one is update predicate.
    */
@@ -52,7 +52,7 @@ public class TreeIndex
     if ( predicate instanceof Binary ) {
       Binary expr = (Binary) predicate;
       if ( predicate.getClass().equals(Eq.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
-        state = ( (TreeNode) state ).get((TreeNode) state, expr.getArg2().f(expr), prop_);
+        state = ((TreeNode) state).get((TreeNode) state, expr.getArg2().f(expr), prop_);
         return new Object[]{state, null};
       }
 
@@ -84,16 +84,16 @@ public class TreeIndex
     } else if ( predicate instanceof And ) {
       int length = ((And) predicate).getArgs().length;
       // Just deepClone the predicate to not alter the original predicate
-      p = (Predicate) ( (And) predicate ).shallowClone();
-      for ( int i = 0; i < length; i++ ) {
-        Predicate arg = ( (And) predicate ).getArgs()[i];
+      p = (Predicate) ((And) predicate).shallowClone();
+      for ( int i = 0 ; i < length ; i++ ) {
+        Predicate arg = ((And) predicate).getArgs()[i];
         if ( arg != null && state != null ) {
           // Each args deal with by 'simplifyPredicate()' function recursively.
           Object[] statePredicate = simplifyPredicate(state, arg);
           state = statePredicate[0];
           arg   = (Predicate) statePredicate[1];
         }
-        
+
         if ( arg == null ) {
           ((And) p).getArgs()[i] = new True();
         }
@@ -104,6 +104,7 @@ public class TreeIndex
     }
 
     if ( p instanceof True ) p = null;
+
     return new Object[]{state, p};
   }
 
