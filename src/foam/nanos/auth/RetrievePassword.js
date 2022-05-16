@@ -41,11 +41,23 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'identifier',
+      class: 'EMail',
+      name: 'email',
       section: 'emailPasswordSection',
-      label: 'Email or Username',
       required: true
+    },
+    {
+      class: 'String',
+      name: 'userName',
+      createVisibility: function(userNameVisible) {
+       return userNameVisible ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'emailPasswordSection',
+    },
+    {
+      class: 'Boolean',
+      name: 'userNameVisible',
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -67,7 +79,7 @@ foam.CLASS({
         return ! errors_;
       },
       code: function(X) {
-        const user = this.User.create({ email: this.identifier });
+        const user = this.User.create({ email: this.email, userName: this.userName });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
             message: `${this.INSTRUC_TITLE}`,
@@ -83,6 +95,9 @@ foam.CLASS({
             type: this.LogLevel.ERROR,
             transient: true
           }));
+          if ( foam.nanos.auth.DuplicateEmailException.isInstance(err.data.exception) ) {
+            this.userNameVisible = true;
+          }
         });
       }
     }
