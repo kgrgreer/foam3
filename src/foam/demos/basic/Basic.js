@@ -143,7 +143,7 @@ foam.CLASS({
         rem: function(a) { return '// REM' + a; },
         fn: function(a) {
           // array lookup
-          if ( self.vars[a[0] + '_A'] ) return `${a[0]}_A[${a[2].join('-1][')}-1]`;
+          if ( self.vars[a[0] + '_A'] ) return `${a[0]}_A[${a[2].join('][')}]`;
           // function call
           return `${a[0]}(${a[2].join()})`;
         },
@@ -241,7 +241,7 @@ foam.CLASS({
     function CHR$(c) { return String.fromCharCode(c); },
     function COS(n) { return Math.cos(n); },
     function DIM(v, ...dims) {
-      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]).fill().map(a => f(v, i+1, dims)); }
+      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]+1).fill().map(a => f(v, i+1, dims)); }
       return f(v, 0, dims);
     },
     function EXP(n) { return Math.exp(n); },
@@ -327,7 +327,7 @@ foam.CLASS({
 
     function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
 
-    async function INPUT$() {
+    function INPUT$() {
       this.focus();
       this.inp = '';
       return new Promise(r => {
