@@ -71,7 +71,6 @@ foam.CLASS({
     ^inner {
       height: auto;
       width: auto;
-      align-items: center;
       display: flex;
       justify-content: center;
       z-index: 3;
