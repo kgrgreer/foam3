@@ -195,7 +195,6 @@ foam.CLASS({
           id: 'Entry',
           wizardConfig: {
             class: 'foam.u2.crunch.EasyCrunchWizard',
-            // incrementalWizard: true
             controller: {
               class: 'foam.u2.wizard.views.FocusWizardForm',
               progressWizardView: 'foam.u2.borders.NullBorder',

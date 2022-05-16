@@ -21,21 +21,32 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'StringArray',
+      name: 'packages',
+      factory: () => ['foam.u2.wizard.debug.scenarios']
+    },
+    {
       name: 'children_',
       factory: function () {
-        // ???: is it possible to ask foam for all models extending TestWizardScenario?
-        const scenarios = Object.getOwnPropertyNames(foam.u2.wizard.debug.scenarios);
-        
-        return this.ArrayDAO.create({
-          array: scenarios.map(scenarioName => {
-            return this.Menu.create({
+        const scenarioMenus = [];
+
+        for ( const packageString of this.packages ) {
+          const pkg = packageString.split('.').reduce((o, k) => o?.[k], globalThis);
+          if ( pkg === undefined ) throw new Error(
+            `could not load wizard scenarios from: ${packageString}`);
+          scenarioMenus.push(...Object.getOwnPropertyNames(pkg).map(scenarioName =>
+            this.Menu.create({
               id: this.id + '/' + scenarioName,
               label: foam.String.labelize(scenarioName),
               parent: this.id,
-              handler: this.TestWizardScenarioMenu.create({ scenarioName })
-            });
-          })
-        })
+              handler: this.TestWizardScenarioMenu.create({
+                scenarioCls: pkg[scenarioName]
+              })
+            })
+          ));
+        }
+        
+        return this.ArrayDAO.create({ array: scenarioMenus });
       }
     },
     {
@@ -97,8 +108,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'scenarioName',
+      class: 'Class',
+      name: 'scenarioCls',
       flags: ['web']
     },
     {
@@ -106,10 +117,9 @@ foam.CLASS({
       of: 'foam.u2.wizard.debug.TestWizardScenario',
       name: 'scenario',
       flags: ['web'],
-      expression: function (scenarioName) {
-        if ( ! scenarioName ) return null;
-        const cls = foam.u2.wizard.debug.scenarios[scenarioName]
-        return cls.create({}, this);
+      expression: function (scenarioCls) {
+        if ( ! scenarioCls ) return null;
+        return scenarioCls.create({}, this);
       }
     }
   ],
