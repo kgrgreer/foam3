@@ -135,6 +135,7 @@ p({
     decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
     decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
     dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
