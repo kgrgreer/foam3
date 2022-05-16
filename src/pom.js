@@ -860,6 +860,7 @@ foam.POM({
     { name: "foam/u2/view/MapView",                                   flags: "web" },
     { name: "foam/u2/view/AnyView",                                   flags: "web" },
     { name: "foam/u2/view/ArrayView",                                 flags: "web" },
+    { name: "foam/u2/view/SummaryView",                               flags: "web" },
     { name: "io/c9/ace/Config",                                       flags: "js" },
     { name: "io/c9/ace/Editor",                                       flags: "js" },
     { name: "io/c9/ace/KeyBinding",                                   flags: "js" },
