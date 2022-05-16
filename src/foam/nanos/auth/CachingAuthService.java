@@ -129,6 +129,8 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userId = ((User) obj).getId();
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
+    } else if (obj instanceof GroupPermissionJunction) {
+      return; //TODO select all user from that group and perge all of them.
     }
 
     if ( userId != null ) {
