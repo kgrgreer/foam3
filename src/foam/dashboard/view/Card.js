@@ -66,6 +66,7 @@ foam.CLASS({
       border-radius: 10px;
       background: /*%WHITE%*/ #ffffff;
       box-shadow: 3px 8px 6px -2px /*%GREY4%*/;;
+      background-clip: border-box;
     }
 
     ^header {
@@ -97,7 +98,8 @@ foam.CLASS({
           }),
           height: this.slot(function(data$mode, height) {
             return data$mode == 'config' ? 'inherit' : ( height + 'px' );
-          })
+          }),
+          'background': ( this.data.obj && this.data.obj.color ) ? this.data.obj.color : /*%WHITE%*/ '#ffffff'
         }).
         addClass(this.myClass()).
         start('div').
