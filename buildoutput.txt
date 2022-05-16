@@ -1,1 +1,0 @@
-/home/edube/build.sh: line 3: ./build.sh: No such file or directory
