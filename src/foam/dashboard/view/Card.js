@@ -98,8 +98,7 @@ foam.CLASS({
           }),
           height: this.slot(function(data$mode, height) {
             return data$mode == 'config' ? 'inherit' : ( height + 'px' );
-          }),
-          'background': ( this.data.obj && this.data.obj.color ) ? this.data.obj.color : /*%WHITE%*/ '#ffffff'
+          })
         }).
         addClass(this.myClass()).
         start('div').
