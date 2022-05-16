@@ -84,7 +84,8 @@ foam.CLASS({
     'registerElement',
     'subject',
     'theme',
-    'window'
+    'window',
+    'themeDomainDAO'
   ],
 
   messages: [
@@ -191,6 +192,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'themeDomain',
+      expression: function(themeDomainDAO, window) {
+        return themeDomainDAO
+          .find(this.window.location.hostname);
+      }
+    },
+    {
       name: 'visibleCategoryDAO',
       class: 'foam.dao.DAOProperty',
       documentation: `
@@ -253,8 +261,13 @@ foam.CLASS({
         .start('p').addClass(this.myClass('label-subtitle'))
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
-        .add(this.slot(function(junctions, featuredCapabilities){
-          return self.renderFeatured();
+        .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
+          var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
+            return ret.getCapabilities(this.ctrl.__subContext__).dao.select();
+          });
+          if ( themeCaps.array.length != 0 ) return self.renderFeatured(themeCaps.array);
+          var featured = await this.featuredCapabilities.select();
+          return self.renderFeatured(featured.array);
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
@@ -278,11 +291,9 @@ foam.CLASS({
         .end();
     },
 
-    function renderFeatured() { // Featured Capabilities in carousel view
+    function renderFeatured(arr) { // Featured Capabilities in carousel view
       var self = this;
       var spot = self.E();
-      this.featuredCapabilities.select().then(result => {
-        var arr = result.array;
         self.totalNumCards = arr.length;
         self.featureCardArray = [];
         for ( let i = 0 ; i < self.totalNumCards ; i++ ) { // build featured cards as elements
@@ -335,7 +346,6 @@ foam.CLASS({
         self.onDetach(() => {
           window.removeEventListener('resize', checkCardsOverflow);
         });
-      });
       return spot;
     },
 
