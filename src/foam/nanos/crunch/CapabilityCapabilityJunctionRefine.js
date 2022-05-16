@@ -42,19 +42,19 @@ foam.CLASS({
           ]
         };
       },
-      tableCellFormatter: function(value, obj, _) {
-        this.__subContext__.capabilityDAO
-          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
-          .limit(1)
-          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
-          .then((result) => {
-            if ( ! result || result.array.size < 1 || ! result.array[0]) {
-              this.add(value);
-              return;
-            }
-            this.add(result.array[0]);
-          });
-      },
+      // tableCellFormatter: function(value, obj, _) {
+      //   this.__subContext__.capabilityDAO
+      //     .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+      //     .limit(1)
+      //     .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
+      //     .then((result) => {
+      //       if ( ! result || result.array.size < 1 || ! result.array[0]) {
+      //         this.add(value);
+      //         return;
+      //       }
+      //       this.add(result.array[0]);
+      //     });
+      // },
       menuKeys: ['admin.capabilities']
     },
     {
@@ -74,19 +74,19 @@ foam.CLASS({
           ]
         };
       },
-      tableCellFormatter: function(value, obj, _) {
-        this.__subContext__.capabilityDAO
-          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
-          .limit(1)
-          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
-          .then((result) => {
-            if ( ! result || result.array.size < 1 || ! result.array[0]) {
-              this.add(value);
-              return;
-            }
-            this.add(result.array[0]);
-          });
-      },
+      // tableCellFormatter: function(value, obj, _) {
+      //   this.__subContext__.capabilityDAO
+      //     .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+      //     .limit(1)
+      //     .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
+      //     .then((result) => {
+      //       if ( ! result || result.array.size < 1 || ! result.array[0]) {
+      //         this.add(value);
+      //         return;
+      //       }
+      //       this.add(result.array[0]);
+      //     });
+      // },
       menuKeys: ['admin.capabilities']
     },
     {
