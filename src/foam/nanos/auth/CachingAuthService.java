@@ -17,6 +17,7 @@ import foam.util.LRULinkedHashMap;
 import java.security.Permission;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
 import static foam.mlang.MLang.TRUE;
