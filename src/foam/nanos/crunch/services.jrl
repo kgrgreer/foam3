@@ -136,6 +136,7 @@ p({
     decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
+      .setRuler(false)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
