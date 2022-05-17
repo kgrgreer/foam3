@@ -394,7 +394,7 @@
         }
       ],
       javaCode: `
-        PM pm = PM.create(x, this.getClass(), getName());
+        PM pm = PM.create(x, this.getClass(), getId());
         try {
           getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
         } finally {
