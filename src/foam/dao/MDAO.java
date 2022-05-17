@@ -275,6 +275,15 @@ public class MDAO
       }
       return this;
     }
+    if ( cmd instanceof AddIndexCommand ) {
+      AddIndexCommand indexCmd = (AddIndexCommand) cmd;
+      if ( indexCmd.getUnique() ) {
+        addUniqueIndex(indexCmd.getProps());
+      } else {
+        addIndex(indexCmd.getProps());
+      }
+      return true;
+    }
     return super.cmd_(x, cmd);
   }
 
