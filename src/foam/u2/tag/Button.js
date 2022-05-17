@@ -400,6 +400,7 @@ foam.CLASS({
       this.addClass(this.myClass(this.size.label.toLowerCase()));
       this.enableClass(this.myClass('iconOnly'), ! (this.contents || this.label));
       this.enableClass(this.myClass('iconAfter'), this.isIconAfter$);
+      this.enableClass('destructive', this.isDestructive$);
     },
 
     function initCls() {
