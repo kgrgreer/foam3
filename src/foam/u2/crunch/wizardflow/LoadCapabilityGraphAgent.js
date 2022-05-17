@@ -36,7 +36,13 @@ foam.CLASS({
   methods: [
     async function execute() {
       let graphBuilder = this.GraphBuilder.create();
-      await graphBuilder.fromRelationship(this.rootCapability, 'prerequisites');
+      await graphBuilder.fromJunction(
+        this.rootCapability,
+        'capabilityDAO',
+        'prerequisiteCapabilityJunctionDAO',
+        'priority'
+      );
+
       this.capabilityGraph = graphBuilder.build();
     }
   ]

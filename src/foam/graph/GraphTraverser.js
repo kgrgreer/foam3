@@ -22,6 +22,12 @@ foam.CLASS({
       value: 'PRE_ORDER'
     },
     {
+      class: 'Enum',
+      of: 'foam.graph.WeightPriorityStrategy',
+      name: 'weightPriorityStrategy',
+      value: 'NONE'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.graph.Graph',
       name: 'graph'
@@ -72,7 +78,18 @@ foam.CLASS({
     function traverse() {
       this.memo_ = {};
       const RECUR = x => {
-        const childNodes = x.current.forwardLinks.map(id => this.graph.data[id]);
+        const forwardLinks = x.current.forwardLinks;
+
+        if ( this.weightPriorityStrategy == this.weightPriorityStrategy.MIN ){
+          forwardLinks.sort((l1,l2) => l1.weight - l2.weight);
+        }
+
+        if ( this.weightPriorityStrategy == this.weightPriorityStrategy.MAX ){
+          forwardLinks.sort((l1,l2) => l2.weight - l1.weight)
+        }
+
+        const childNodes = forwardLinks.map(link => this.graph.data[link.id]);
+
         for ( const current of childNodes ) {
           this.updateNodeToDescendants(current.id);
 

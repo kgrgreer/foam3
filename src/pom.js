@@ -508,6 +508,7 @@ foam.POM({
     { name: "foam/graph/GraphNode",                                   flags: "js" },
     { name: "foam/graph/GraphBuilder",                                flags: "js" },
     { name: "foam/graph/TraversalOrder",                              flags: "js" },
+    { name: "foam/graph/WeightPriorityStrategy",                      flags: "js" },
     { name: "foam/graph/GraphTraverser",                              flags: "js" },
     { name: "foam/u2/svg/Position",                                   flags: "web" },
     { name: "foam/u2/svg/RelativePosition",                           flags: "web" },
