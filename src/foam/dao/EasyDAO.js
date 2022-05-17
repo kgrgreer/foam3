@@ -364,12 +364,14 @@ foam.CLASS({
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
-        if ( indexes.size() > 0 ) {
-          Object result = delegate.cmd_(getX(), new AddIndexCommand(false, indexes.toArray(new PropertyInfo[indexes.size()])));
+        for ( PropertyInfo prop : indexes ) {
+          AddIndexCommand cmd = new AddIndexCommand();
+          cmd.setProps(new PropertyInfo[] { prop });
+          Object result = delegate.cmd_(getX(), cmd);
           if ( result == null ||
               ! ( result instanceof Boolean ) ||
               ((Boolean) result).booleanValue() != true ) {
-            ((Logger) getX().get("logger")).warning(getName(), "Index(es) not added, no access to MDAO");
+            ((Logger) getX().get("logger")).warning(getName(), "Index not added, no access to MDAO", prop);
           }
         }
 
@@ -1128,7 +1130,9 @@ model from which to test ServiceProvider ID (spid)`,
         return this;
       },
       javaCode: `
-        Object result = getDelegate().cmd_(getX(), new AddIndexCommand(false, props));
+        AddIndexCommand cmd = new AddIndexCommand();
+        cmd.setProps(props);
+        Object result = getDelegate().cmd_(getX(), cmd);
         if ( result == null ||
             ! ( result instanceof Boolean ) ||
             ((Boolean) result).booleanValue() != true ) {
@@ -1137,6 +1141,33 @@ model from which to test ServiceProvider ID (spid)`,
         return this;
       `
     },
+    // /** Only relevant if cache is true or if daoType
+    //   was set to MDAO, but harmless otherwise. Adds an existing index
+    //   to the MDAO.
+    //   @param index The index to add.
+    // */
+    // {
+    //   name: 'addIndex',
+    //   type: 'foam.dao.EasyDAO',
+    //   documentation: 'Only relavent if the cache is true or if daoType was set to MDAO, but harmless otherwise. Adds an existing index to the MDAO',
+    //   // TODO: The java Index interface conflicts with the js CLASS Index
+    //   args: [ { javaType: 'foam.dao.index.Index', name: 'index' } ],
+    //   code: function addIndex(index) {
+    //     this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+    //     return this;
+    //   },
+    //   javaCode: `
+    //     AddIndexCommand cmd = new AddIndexCommand();
+    //     cmd.setIndex(index);
+    //     Object result = getDelegate().cmd_(getX(), cmd);
+    //     if ( result == null ||
+    //         ! ( result instanceof Boolean ) ||
+    //         ((Boolean) result).booleanValue() != true ) {
+    //       ((Logger) getX().get("logger")).warning(getName(), "Index not added, no access to MDAO");
+    //     }
+    //     return this;
+    //   `
+    // },
     {
       name: 'addDecorator',
       documentation: 'Places a decorator chain ending in a null delegate at a specified point in the chain. Automatically insterts between given decorator and mdao. If "before" flag is true, decorator chain placed before the dao instead of inbetween the supplied dao and mdao. Return true on success.',
