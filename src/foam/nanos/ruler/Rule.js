@@ -394,7 +394,7 @@
         }
       ],
       javaCode: `
-        PM pm = PM.create(x, this.getClass(), getId());
+        PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
         try {
           getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
         } finally {
