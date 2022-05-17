@@ -16,6 +16,7 @@ foam.CLASS({
   ],
   imports: [
     'dashboardController',
+    'pushMenu',
     'stack'
   ],
 
@@ -113,6 +114,14 @@ foam.CLASS({
         return foam.mlang.predicate.True.create();
       }
     },
+    {
+      class: 'String',
+      name: 'viewMoreMenuItem',
+      documentation: `
+      If set, this will cause viewMoreAction() to instead open the given
+      menu item. Default is empty.
+      `
+    },
     ['limit', 5],
     'mode'
   ],
@@ -171,12 +180,16 @@ foam.CLASS({
       name: 'viewMoreAction',
       label: 'View more activities',
       code: function() {
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: this.DAOBrowseControllerView,
-            data: this.dao.where(this.predicate),
-          }, parent: this.__subContext__
-        }));
+        if ( ! (this.viewMoreMenuItem) ) {
+          this.pushMenu(this.viewMoreMenuItem);
+        } else {
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.DAOBrowseControllerView,
+              data: this.dao.where(this.predicate),
+            }, parent: this.__subContext__
+          }));
+        }
       }
     }
   ],

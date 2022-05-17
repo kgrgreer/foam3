@@ -69,11 +69,10 @@ foam.CLASS({
       top: 0;
     }
     ^inner {
-      height: 100%;
-      width: 100%;
+      height: auto;
+      width: auto;
       display: flex;
       justify-content: center;
-      align-items: center;
       z-index: 3;
       position: relative;
       border-radius: 3px;
@@ -83,19 +82,9 @@ foam.CLASS({
       will-change: opacity;
     }
 
-    @media only screen and (min-width: 960px) {
-      ^inner {
-        height: auto;
-        width: auto;
-        align-items: unset;
-      }
-      ^fullscreen ^inner {
-        height: 100%;
-        width: 100%;
-      }
-    }
-
     ^fullscreen ^inner {
+      height: 100%;
+      width: 100%;
       border-radius: 0;
     }
  `,

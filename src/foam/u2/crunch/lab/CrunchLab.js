@@ -110,12 +110,54 @@ foam.CLASS({
       },
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredCapabilityDAO',
+      hidden: true,
+      expression: function (showAllCapabilities, effectiveUser, crunchUser) {
+        if ( crunchUser == 0 || showAllCapabilities) return this.capabilityDAO;
+        let predicate = effectiveUser ?
+            this.AND(
+              this.EQ(this.AgentCapabilityJunction.SOURCE_ID, crunchUser),
+              this.EQ(this.AgentCapabilityJunction.EFFECTIVE_USER, effectiveUser)
+            ) :
+            this.EQ(this.UserCapabilityJunction.SOURCE_ID, crunchUser);
+        return this.PromisedDAO.create({
+          of: 'foam.nanos.crunch.Capability',
+          promise: this.userCapabilityJunctionDAO.where(predicate)
+            .select(this.MAP(this.UserCapabilityJunction.TARGET_ID))
+            .then((sink) => {
+              let capabilities = sink.delegate.array ? sink.delegate.array : [];
+              return this.capabilityDAO.where(
+                this.IN(this.Capability.ID, capabilities.flat())
+              );
+            })
+        });
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'featuredCapabilityDAO',
+      hidden: true,
+      expression: function (filteredCapabilityDAO) {
+        return filteredCapabilityDAO.where(this.CONTAINS(this.Capability.KEYWORDS, "featured"))
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'otherCapabilityDAO',
+      hidden: true,
+      expression: function (filteredCapabilityDAO) {
+        return filteredCapabilityDAO.where(this.NOT(this.CONTAINS(this.Capability.KEYWORDS, "featured")))
+      }
+    },
+    {
       class: 'Reference',
       name: 'rootCapability',
       of: 'foam.nanos.crunch.Capability',
       help: `Root capability reference used to populate graph.
           Graph renders prerequisites downward of the selected capabilty.`,
       view: function(_, X) {
+        const self = X.data;
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
@@ -123,27 +165,12 @@ foam.CLASS({
           rowView: { class: 'foam.u2.view.RichChoiceSummaryIdRowView' },
           sections: [
             {
-              heading: 'Capabilities',
-              dao$: X.data.slot(function(showAllCapabilities, effectiveUser, crunchUser) {
-                if ( crunchUser == 0 || showAllCapabilities) return this.capabilityDAO;
-                let predicate = effectiveUser ?
-                    this.AND(
-                      this.EQ(this.AgentCapabilityJunction.SOURCE_ID, crunchUser),
-                      this.EQ(this.AgentCapabilityJunction.EFFECTIVE_USER, effectiveUser)
-                    ) :
-                    this.EQ(this.UserCapabilityJunction.SOURCE_ID, crunchUser);
-                return this.PromisedDAO.create({
-                  of: 'foam.nanos.crunch.Capability',
-                  promise: this.userCapabilityJunctionDAO.where(predicate)
-                    .select(this.MAP(this.UserCapabilityJunction.TARGET_ID))
-                    .then((sink) => {
-                      let capabilities = sink.delegate.array ? sink.delegate.array : [];
-                      return this.capabilityDAO.where(
-                        this.IN(this.Capability.ID, capabilities.flat())
-                      );
-                    })
-                });
-              })
+              heading: 'Store Capabilities',
+              dao$: self.featuredCapabilityDAO$
+            },
+            {
+              heading: 'Other Capabilities',
+              dao$: self.otherCapabilityDAO$
             }
           ]
         };

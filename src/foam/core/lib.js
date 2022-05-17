@@ -20,12 +20,11 @@ Object.defineProperty(
   '$UID',
   {
     get: function() {
-      if ( ! Object.hasOwnProperty.call(this, '$UID__') &&
-           ! Object.isFrozen(this) ) {
+      if ( ! Object.hasOwnProperty.call(this, '$UID__') && ! Object.isFrozen(this) ) {
         Object.defineProperty(
-            this,
-            '$UID__',
-            {value: foam.next$UID(), enumerable: false});
+          this,
+          '$UID__',
+          {value: foam.next$UID(), enumerable: false});
       }
       return this.$UID__;
     },
@@ -33,17 +32,6 @@ Object.defineProperty(
   }
 );
 
-
-/**
- * Check for the FOAMLINK_DATA globalThis. If it is set, FOAMLink will be
- * enabled in the server-side classloader
- */
-if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
-  foam.hasFoamlink = true;
-  foam.foamlink = {
-    dataFile: globalThis.FOAMLINK_DATA
-  };
-}
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of

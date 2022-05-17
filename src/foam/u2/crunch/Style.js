@@ -54,7 +54,7 @@ foam.CLASS({
       font-stretch: normal;
       line-height: 1.25;
       letter-spacing: normal;
-      color: #1e1f21;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^card-subtitle {

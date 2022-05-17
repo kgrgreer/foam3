@@ -60,13 +60,13 @@ foam.CLASS({
     function listenStackView() {
       this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
     },
-    function renderStackView(s) {
+    function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
       var view   = s.view;
       var parent = s.parent;
 
-      var X = this.data.getContextFromParent(parent, this);
+      var X = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(parent, this);
       var v;
       var ctrlMem = this.ctrl.memento_;
       // Clear any memento tail that the view might replace

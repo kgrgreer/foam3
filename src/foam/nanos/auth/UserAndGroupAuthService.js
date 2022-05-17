@@ -390,7 +390,7 @@ foam.CLASS({
       javaCode: `
         Session session = x.get(Session.class);
         if ( session != null && session.getUserId() != 0 ) {
-((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "logout", session.getId());
+((foam.nanos.logger.Logger) getX().get("logger")).info(this.getClass().getSimpleName(), "logout", session.getId());
           ((DAO) getLocalSessionDAO()).remove(session);
         }
       `
@@ -446,7 +446,7 @@ foam.CLASS({
         ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
 
         if ( serviceProvider == null ||
-             serviceProvider.getAnonymousUser() == 0 || 
+             serviceProvider.getAnonymousUser() == 0 ||
              session == null || session.getUserId() == 0 ||
              session.getUserId() != serviceProvider.getAnonymousUser() )
              return false;

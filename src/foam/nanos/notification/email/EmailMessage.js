@@ -23,6 +23,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map'
@@ -215,21 +216,20 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      includeInDigest: true,
       tableWidth: 120,
       section: 'systemInformation',
       order: 10,
-      writePermissionRequired: true,
-      documentation: `
-        Need to override getter to return "" because its trying to
-        return null (probably as a result of moving order of files
-        in nanos), which breaks tests
-      `,
-      javaGetter: `
-        if ( ! spidIsSet_ ) {
-          return "";
-        }
-        return spid_;
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      storageTransient: true,
+      javaFactory: `
+        var map = new java.util.HashMap();
+        map.put(
+          EmailMessage.class.getName(),
+          new foam.core.PropertyInfo[] { EmailMessage.USER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), map, this);
       `
     },
     {

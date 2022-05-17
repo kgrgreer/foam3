@@ -31,7 +31,7 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         User user = ((Subject) x.get("subject")).getRealUser();
-
+        if ( user == null ) return sink;
         return getDelegate().where(
             MLang.EQ(Notification.USER_ID, user.getId())
           ).select_(getX(), sink, skip, limit, order, predicate);
