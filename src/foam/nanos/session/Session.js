@@ -323,7 +323,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       AuthService auth  = (AuthService) x.get("auth");
       User user         = (User) localUserDAO.find(getUserId());
       User agent        = getAgentId() == 0 ? null : (User) localUserDAO.find(getAgentId());
-\
+
       // Validate
       validate(x, user, agent);
 
