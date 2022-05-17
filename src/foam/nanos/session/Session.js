@@ -316,17 +316,18 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         return rtn;
       }
 
-      // Validate
-      validate(x);
-
       X rtn = getApplyContext();
 
       DAO localUserDAO  = (DAO) x.get("localUserDAO");
       DAO localGroupDAO = (DAO) x.get("localGroupDAO");
       AuthService auth  = (AuthService) x.get("auth");
       User user         = (User) localUserDAO.find(getUserId());
-      User agent        = (User) localUserDAO.find(getAgentId());
-      User subjectUser = null;
+      User agent        = getAgentId() == 0 ? null : (User) localUserDAO.find(getAgentId());
+\
+      // Validate
+      validate(x, user, agent);
+
+     User subjectUser  = null;
       User subjectAgent = null;
       if ( rtn != null ) {
         Subject subject = (Subject) rtn.get("subject");
@@ -434,44 +435,33 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       name: 'validate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x, User user, User agent',
       javaCode: `
-        if ( getUserId() < 0 ) {
+        if ( user == null || user.getId() < 0 ) {
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getUserId() > 0 ) {
-          checkUserEnabled(x, getUserId());
+        if ( user.getId() > 0 ) {
+          checkUserEnabled(x, user);
         }
 
-        if ( getUserId() != getAgentId() ) {
-          if ( getAgentId() < 0  ) {
+        if ( agent != null && user.getId() != agent.getId() ) {
+          if ( agent.getId() < 0  ) {
             throw new IllegalStateException("Agent id is invalid.");
           }
 
           if ( getAgentId() > 0 ) {
-            checkUserEnabled(x, getAgentId());
+            checkUserEnabled(x, agent);
           }
         }
       `
     },
     {
       name: 'checkUserEnabled',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'userId', type: 'Long' }
-      ],
+      args: 'Context x, User user',
       javaCode: `
-        User user = (User) ((DAO) x.get("localUserDAO")).find(userId);
-
-        if ( user == null ) {
-          ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
-          throw new foam.nanos.auth.UserNotFoundException();
-        }
         if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
-          ((Logger) x.get("logger")).warning("Session", "User not active", userId);
+          ((Logger) x.get("logger")).warning("Session", "User not active", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
