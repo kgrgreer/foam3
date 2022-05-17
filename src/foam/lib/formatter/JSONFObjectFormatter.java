@@ -216,7 +216,6 @@ public class JSONFObjectFormatter
         String after = builder().toString();
         reset();
         append(before);
-        append(',');
         addInnerNewline();
         outputKey(getPropertyName(prop));
         append(':');
