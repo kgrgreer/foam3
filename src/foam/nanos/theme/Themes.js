@@ -163,6 +163,9 @@ Later themes:
           // if ( theme == null ) {
           //   logger.debug("Themes", "Theme not found", td.getTheme());
           // }
+          if ( theme != null ) {
+            theme = (Theme) theme.fclone();
+          }
         }
       }
 
@@ -178,7 +181,10 @@ Later themes:
               MLang.EQ(Theme.ENABLED, true)
             )
           );
-          if ( theme != null ) break;
+          if ( theme != null ) {
+            theme = (Theme) theme.fclone();
+            break;
+          }
 
           var pos = spid.lastIndexOf(".");
           spid = spid.substring(0, pos > 0 ? pos : 0);
@@ -193,6 +199,9 @@ Later themes:
           ));
         if ( theme == null ) {
           theme = new Theme.Builder(x).setName("foam").setAppName("FOAM").build();
+        }
+        if ( theme != null ) {
+          theme = (Theme) theme.fclone();
         }
       }
 
