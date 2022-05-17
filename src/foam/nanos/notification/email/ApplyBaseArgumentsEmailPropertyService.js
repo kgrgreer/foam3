@@ -38,6 +38,7 @@
         Logger logger = Loggers.logger(x, this);
 
         User user = (User) emailMessage.findUser(x);
+        x = foam.util.Auth.sudo(x, user);
 
         if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
           emailMessage.setSpid(user.getSpid());
@@ -73,7 +74,6 @@
         String sendTo = (String) templateArgs.get("sendTo");
         if ( SafetyUtil.isEmpty(sendTo) )
           templateArgs.put("sendTo", user.getEmail());
-
 
         AppConfig appConfig = (AppConfig) x.get("appConfig");
         String url = appConfig.getUrl();

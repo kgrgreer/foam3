@@ -39,10 +39,13 @@ foam.CLASS({
   methods: [
     function render() {
       var dims = {
-        x: '' + this.position[0],
-        y: '' + this.position[1],
-        width:  '' + this.size[0],
-        height: '' + this.size[1],
+        // x: '' + this.position[0],
+        // y: '' + this.position[1],
+        x: 0, y: 0,
+        width: '100%',
+        height: '100%'
+        // width:  '' + this.size[0],
+        // height: '' + this.size[1],
       };
       this
         .addClass(this.myClass())

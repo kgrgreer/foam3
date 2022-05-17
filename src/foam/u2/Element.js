@@ -1710,7 +1710,7 @@ foam.CLASS({
         return this.add(translation);
       }
       console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
     },
 
@@ -2382,15 +2382,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyView
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     }
   ],
 
   methods: [
     function toE(args, X) {
-      // Uncomment to use property view
-      // return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
-      
-      // Fallback till PropertyView is complete
       return this.toE_(args, X);
     },
 
@@ -2401,6 +2404,10 @@ foam.CLASS({
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
     },
 
     function createElFromSpec_(spec, args, X) {

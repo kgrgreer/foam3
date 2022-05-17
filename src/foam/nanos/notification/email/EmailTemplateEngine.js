@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.email.EmailTemplateSupport',
     'java.util.Map'
   ],
@@ -28,7 +29,6 @@ foam.CLASS({
       name: 'grammar',
       documentation: `grammar for parsing "{{ val }}", "{% if/else}}" symbols`,
       javaFactory: `
-        final Logger logger = Loggers.logger(getX(), this);
         Grammar grammar = new Grammar();
         grammar.addSymbol("START", grammar.sym("markup"));
 
@@ -67,7 +67,7 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-              logger.warning("No value provided for variable " + v);
+              ((Logger) x.get("logger")).warning("No value provided for variable", v);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
@@ -273,8 +273,7 @@ foam.CLASS({
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate((X)x.get("x"), templateName.toString());
             if ( extendedEmailTemplate == null ) {
-              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-              logger.warning("Extended template not found " + templateName);
+              ((Logger) x.get("logger")).warning("Extended template not found", templateName);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
@@ -309,12 +308,17 @@ foam.CLASS({
       ],
       type: 'StringBuilder',
       javaCode: `
+      Logger logger = new PrefixLogger( new Object[] {
+        this.getClass().getSimpleName(),
+        "template",
+        id
+      }, (Logger) x.get("logger"));
       EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
       if ( template == null ) {
-        Loggers.logger(x, this).warning("Template not found", id);
+        logger.warning("Template not found");
         throw new RuntimeException("Template not found");
       }
-      return renderTemplate(x, template.getBody(), values);
+      return renderTemplate(x.put("logger", logger), template.getBody(), values);
       `
     },
     {
@@ -334,7 +338,7 @@ foam.CLASS({
       StringBuilder sb = sb_.get();
       parserX.set("sb", sb);
       parserX.set("values", values);
-      parserX.set("logger", Loggers.logger(x, this));
+      parserX.set("logger", x.get("logger"));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       getGrammar().parse(ps, parserX, "");
       return sb;
@@ -377,7 +381,7 @@ foam.CLASS({
       ParserContext parserX = new ParserContextImpl();
       parserX.set("sb", sbJoin);
       parserX.set("x", x);
-      parserX.set("logger", Loggers.logger(x, this));
+      parserX.set("logger", x.get("logger"));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
       getIncludeGrammar().parse(ps, parserX, "");

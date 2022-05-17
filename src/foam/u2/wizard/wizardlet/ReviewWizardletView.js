@@ -65,14 +65,38 @@ foam.CLASS({
           .start().addClass(this.myClass('generic-container'))
             .forEach(this.items, function (item) {
               if ( item.noData )  {
-                this.start(item.border).tag(item.view).end();
+                this
+                  .start(item.border)
+                    .callIf(item.title, function() {
+                      this
+                      .start()
+                        .addClass('h600')
+                        .add(item.title)
+                      .end();
+                    })
+                    .start(item.headingBorder)
+                      .tag(item.view, {data: self.data.value[item.name]})
+                    .end()
+                  .end();
                 return;
               }
               // if there is no data
               else if ( ! self.data.value[item.name] ) return;
 
               // if there is data
-              this.start(item.border).tag(item.view, {data: self.data.value[item.name]}).end();
+              this
+                .start(item.border)
+                  .callIf(item.title, function() {
+                    this
+                      .start()
+                        .addClass('h600')
+                        .add(item.title)
+                      .end();
+                  })
+                  .start(item.headingBorder)
+                    .tag(item.view, {data: self.data.value[item.name]})
+                  .end()
+                .end();
             })
           .end()
         .end();
