@@ -172,4 +172,8 @@ public class TreeIndex
   public long size(Object state) {
     return ((TreeNode) state).size;
   }
+
+  public String toString() {
+    return "TreeIndex(" + prop_.getName() + "," + tail_ + ")";
+  }
 }
