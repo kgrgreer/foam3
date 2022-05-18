@@ -131,6 +131,8 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
     } else if (obj instanceof GroupPermissionJunction) {
+      /*
+      TODO: is breaking CI
       // select all user from that group and purge all of them.
       DAO groupDAO                = (DAO) getX().get("localGroupDAO");
       GroupPermissionJunction gpj = ((GroupPermissionJunction) obj);
@@ -141,6 +143,8 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       for ( User user : usersInGroup ) {
         userPermissionCache_.remove(user.getId());
       }
+      */
+      userPermissionCache_.clear();
       return;
     }
 
