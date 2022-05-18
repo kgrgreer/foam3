@@ -36,6 +36,7 @@
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'foam.util.retry.RetryStrategy',
     'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
@@ -140,8 +141,8 @@
       name: 'after',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      documentation: 'Defines if the rule needs to be applied before or after operation is completed'+
-      'E.g. on dao.put: before object was stored in a dao or after.'
+      documentation: `Defines if the rule needs to be applied before or after operation is completed
+      E.g. on dao.put: before object was stored in a dao or after.`
     },
     {
       class: 'Boolean',
@@ -393,7 +394,12 @@
         }
       ],
       javaCode: `
-        getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
+        try {
+          getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        } finally {
+          pm.log(x);
+        }
         try {
           ruler.saveHistory(this, obj);
         } catch ( Exception e ) { /* Ignored */ }
@@ -440,8 +446,8 @@
     {
       name: 'updateRule',
       type: 'foam.nanos.ruler.Rule',
-      documentation: 'since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.' +
-      'the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.',
+      documentation: `since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.
+      the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.`,
       args: [
         {
           name: 'rule',

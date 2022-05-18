@@ -49,7 +49,7 @@ foam.CLASS({
     {
       name: 'wizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       documentation: `
         An array containing all the wizardlets to use in this wizard. This may
         include wizardlets with isAvailable initially set to false.
@@ -102,7 +102,7 @@ foam.CLASS({
     {
       name: 'visitedWizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     },
 
     // Convenience properties

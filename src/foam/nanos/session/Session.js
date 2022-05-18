@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.boot.NSpec',
     'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
     'foam.nanos.theme.Theme',
@@ -316,17 +317,19 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         return rtn;
       }
 
-      // Validate
-      validate(x);
-
       X rtn = getApplyContext();
+
+      validate(x);
 
       DAO localUserDAO  = (DAO) x.get("localUserDAO");
       DAO localGroupDAO = (DAO) x.get("localGroupDAO");
       AuthService auth  = (AuthService) x.get("auth");
-      User user         = (User) localUserDAO.find(getUserId());
-      User agent        = (User) localUserDAO.find(getAgentId());
-      User subjectUser = null;
+      User user         = getUserId() == 0 ? null : (User) localUserDAO.find(getUserId());
+      if ( getUserId() > 0 ) checkUserEnabled(x, user);
+      User agent        = getAgentId() == 0 ? null : (User) localUserDAO.find(getAgentId());
+      if ( getAgentId() > 0 ) checkUserEnabled(x, agent);
+
+      User subjectUser  = null;
       User subjectAgent = null;
       if ( rtn != null ) {
         Subject subject = (Subject) rtn.get("subject");
@@ -434,44 +437,29 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       name: 'validate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaCode: `
         if ( getUserId() < 0 ) {
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getUserId() > 0 ) {
-          checkUserEnabled(x, getUserId());
-        }
-
-        if ( getUserId() != getAgentId() ) {
-          if ( getAgentId() < 0  ) {
-            throw new IllegalStateException("Agent id is invalid.");
-          }
-
-          if ( getAgentId() > 0 ) {
-            checkUserEnabled(x, getAgentId());
-          }
+        if ( getAgentId() < 0 &&
+             getUserId() != getAgentId() ) {
+          throw new IllegalStateException("Agent id is invalid.");
         }
       `
     },
     {
       name: 'checkUserEnabled',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'userId', type: 'Long' }
-      ],
+      args: 'Context x, User user',
       javaCode: `
-        User user = (User) ((DAO) x.get("localUserDAO")).find(userId);
-
         if ( user == null ) {
-          ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
+          Loggers.logger(x, this).warning("User not found", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
+
         if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
-          ((Logger) x.get("logger")).warning("Session", "User not active", userId);
+          Loggers.logger(x, this).warning("User not active", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
 

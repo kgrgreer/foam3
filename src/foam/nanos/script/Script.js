@@ -30,6 +30,10 @@ foam.CLASS({
     'subject'
   ],
 
+  exports: [
+    'as script'
+  ],
+
   javaImports: [
     'foam.core.*',
     'foam.dao.*',
@@ -379,7 +383,7 @@ foam.CLASS({
           this.output += Array.from(arguments).join('') + '\n';
         };
         try {
-          with ({ log: log, print: log, x: this.__context__ })
+          with ({ log: log, print: log, x: this.__subContext__ })
             return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
@@ -449,9 +453,7 @@ foam.CLASS({
         var self = this;
         var interval = setInterval(function() {
           self.__context__[self.daoKey].find(self.id).then(function(script) {
-            if ( script.status === self.ScriptStatus.UNSCHEDULED
-              || script.status === self.ScriptStatus.ERROR
-            ) {
+            if ( script.status === self.ScriptStatus.UNSCHEDULED || script.status === self.ScriptStatus.ERROR ) {
               self.copyFrom(script);
               clearInterval(interval);
 
@@ -519,7 +521,7 @@ foam.CLASS({
           self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
             self.copyFrom(script);
-            if ( script.status === self.ScriptStatus.SCHEDULED ) {
+            if ( script.status === self.ScriptStatus.SCHEDULED || script.status === self.ScriptStatus.RUNNING ) {
               self.poll();
             }
           }).catch(function(e) {

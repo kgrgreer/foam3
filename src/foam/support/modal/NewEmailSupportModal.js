@@ -56,7 +56,7 @@ foam.CLASS({
       width: 448px;
       height: 231px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
     }
     ^ .Rectangle-7 {
       float: left;
@@ -89,7 +89,7 @@ foam.CLASS({
       color: #ffffff;
     }
     ^ .div {
-      margin-top: 40px; 
+      margin-top: 40px;
     }
     ^ .div2 {
       padding: 20px;
@@ -149,7 +149,7 @@ foam.CLASS({
           .end()
         .end();
       }
-    ], 
+    ],
 
     actions: [
       {

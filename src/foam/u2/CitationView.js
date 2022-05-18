@@ -15,14 +15,17 @@ foam.CLASS({
 
   css: `
     ^row {
-      background: white;
       font-size: 1.2rem;
+    }
+
+    ^rw {
+      background: /*%WHITE%*/ white;
       padding: 8px 16px;
-      color: #424242;
+      color: /*%BALCK%*/ #424242;
     }
 
     ^rw:hover {
-      background: #f4f4f9;
+      background: /*%GREY5%*/ #f4f4f9;
       cursor: pointer;
     }
   `,
@@ -47,8 +50,21 @@ foam.CLASS({
     {
       name: 'updateSummary',
       isFramed: true,
-      code: function() {
-        this.summary = this.data && this.data.toSummary ? this.data.toSummary() : undefined;
+      code: async function() {   
+        let newSummary;
+        
+        if ( this.data && this.data.toSummary ){
+          var toSummary = this.data.toSummary();
+
+          newSummary = toSummary instanceof Promise 
+            ? await toSummary
+            : toSummary;
+
+        } else {
+          newSummary = undefined;
+        }
+
+        this.summary = newSummary;
       }
     }
   ],

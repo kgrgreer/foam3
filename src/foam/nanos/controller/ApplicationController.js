@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.WindowHash',
@@ -45,6 +46,7 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
+    'foam.nanos.u2.navigation.NavigationController',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
@@ -77,6 +79,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
@@ -89,6 +92,8 @@ foam.CLASS({
     'returnExpandedCSS',
     'sessionID',
     'sessionTimer',
+    'showFooter',
+    'showNav',
     'signUpEnabled',
     'stack',
     'subject',
@@ -264,6 +269,27 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'showFooter',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        return globalThis.localStorage['isMenuOpen'] === 'true'
+         || ( globalThis.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        globalThis.localStorage['isMenuOpen'] = n;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'capabilityAcquired',
       documentation: `
         The purpose of this is to handle the intercept flow for a capability that was granted,
@@ -324,7 +350,9 @@ foam.CLASS({
       name: 'route',
       memorable: true,
       postSet: function(_, n) {
-        if ( n && this.currentMenu?.id != n) this.pushMenu(n);
+        // only pushmenu on route change after the fetchsubject process has been initiated
+        // as the init process will also check the route and pushmenu if required
+        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
       }
     },
     'currentMenu',
@@ -352,6 +380,10 @@ foam.CLASS({
       name: 'layoutInitialized',
       documentation: 'True if layout has been initialized.',
     },
+    {
+      class: 'Boolean',
+      name: 'initSubject'
+    }
   ],
 
   methods: [
@@ -363,8 +395,6 @@ foam.CLASS({
 
       var self = this;
 
-      // Update memento if updated through windowHash
-      this.memento_.str$.sub(this.memento_.update);
 
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
@@ -386,7 +416,8 @@ foam.CLASS({
             if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
               // only push the unauthenticated menu if there is no subject
               // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-              self.pushMenu(menu);
+              // use the route instead of the menu so that the menu could be re-created under the updated context
+              self.pushMenu(self.route);
               self.languageInstalled.resolve();
               return;
             }
@@ -397,7 +428,7 @@ foam.CLASS({
 
         await self.fetchGroup();
 
-        await self.maybeReinstallLanguage(client);
+        await self.maybeReinstallLanguage(self.client);
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
@@ -468,13 +499,14 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .tag(this.NavigationController, {
-              topNav: this.topNavigation_,
+              topNav$: this.topNavigation_$,
               mainView: {
                 class: 'foam.u2.stack.DesktopStackView',
                 data: this.stack,
-                showActions: false
+                showActions: false,
+                nodeName: 'main'
               },
-              footer: this.footerView_,
+              footer$: this.footerView_$,
               sideNav: {
                 class: 'foam.u2.view.ResponsiveAltView',
                 views: [
@@ -493,8 +525,14 @@ foam.CLASS({
                 ]
               }
             });
-          });
+        });
       });
+    },
+
+    async function reloadClient() {
+      var newClient = await this.ClientBuilder.create({}, this).promise;
+      this.client = newClient.create(null, this);
+      this.setPrivate_('__subContext__', this.client.__subContext__);
     },
 
     function installLanguage() {
@@ -562,14 +600,14 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
-        var result = await this.client.auth.getCurrentSubject(null).catch( _ =>
-          this.client.auth.authorizeAnonymous());
-        this.subject = result;
+        this.initSubject = true;
+        var result = await this.client.auth.getCurrentSubject(null);
+        if ( result && result.user ) await this.reloadClient();
+        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
-
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
         this.languageInstalled.resolve();
@@ -678,7 +716,7 @@ foam.CLASS({
 
     async function findDefaultMenu(dao) {
       var menu;
-      var menuArray = [this.theme?.defaultMenu, this.theme?.unauthenticatedDefaultMenu]
+      var menuArray = this.theme?.defaultMenu.concat(this.theme?.unauthenticatedDefaultMenu)
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
@@ -756,15 +794,19 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      this.__subSubContext__.myNotificationDAO
+      this.__subContext__.myNotificationDAO
       .on.put.sub(this.displayToastMessage.bind(this));
+
+      this.loginSuccess = true;
 
       this.fetchTheme();
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */) {
         this.window.onpopstate();
+      } else {
+        this.pushMenu('');
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));

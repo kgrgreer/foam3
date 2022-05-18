@@ -9,13 +9,13 @@ foam.CLASS({
   name: 'SFSink',
   extends: 'foam.box.sf.SF',
   implements: [ 'foam.dao.Sink' ],
-  
+
   javaImports: [
-    'foam.dao.HTTPSink',
     'foam.core.FObject',
+    'foam.dao.HTTPSink',
     'foam.dao.Sink'
   ],
-  
+
   properties: [
     {
       class: 'String',
@@ -28,7 +28,7 @@ foam.CLASS({
       transient: true
     }
   ],
-  
+
   methods: [
     {
       name: 'put',
@@ -36,7 +36,6 @@ foam.CLASS({
       swiftCode: '// NOOP',
       javaCode: `
         this.storeAndForward((FObject) obj);
-      
       `
     },
     {
@@ -69,7 +68,7 @@ foam.CLASS({
       swiftCode: '// NOOP',
       javaCode: `
       throw new UnsupportedOperationException("SFSink do not implement 'remove' method");
-      `    
+      `
     },
     {
       name: 'reset',
@@ -80,4 +79,4 @@ foam.CLASS({
       `
     }
   ]
-})  
+})

@@ -16,28 +16,34 @@ foam.CLASS({
   ],
 
   exports: [
-    'wizardlets'
+    'wizardlets',
+    'capabilityToPrerequisite'
   ],
 
   requires: [
     'foam.graph.GraphTraverser',
     'foam.graph.TraversalOrder',
+    'foam.graph.WeightPriorityStrategy',
     'foam.nanos.crunch.ui.CapabilityWizardlet',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
-    'foam.u2.wizard.NullWAO',
-    'foam.u2.wizard.ProxyWAO'
+    'foam.u2.wizard.wao.NullWAO',
+    'foam.u2.wizard.wao.ProxyWAO'
   ],
 
   properties: [
     {
       name: 'wizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     },
     {
       class: 'Map',
       name: 'capabilityWizardletsMap'
+    },
+    {
+      class: 'Map',
+      name: 'capabilityToPrerequisite'
     }
   ],
 
@@ -49,8 +55,12 @@ foam.CLASS({
       // Step 1: Traverse capability graph to create wizardlets
       const traverser = this.GraphTraverser.create({
         graph: this.capabilityGraph,
-        order: this.TraversalOrder.POST_ORDER
+        order: this.TraversalOrder.POST_ORDER,
+        weightPriorityStrategy: this.WeightPriorityStrategy.MIN
       });
+
+      this.capabilityToPrerequisite = traverser.nodeToDescendants;
+
       traverser.sub('process', (_1, _2, { parent, current }) => {
         const createdHere = this.createWizardletsForCapability(current);
         const entry = this.capabilityWizardletsMap[current.id];
@@ -131,11 +141,11 @@ foam.CLASS({
       if ( ! entry.parentControlled ) {
         if ( ! entry.availabilitySlot ) {
           entry.availabilitySlot = source.primaryWizardlet.isAvailable$;
-          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.follow(entry.availabilitySlot);
         } else {
           entry.availabilityDetach.detach();
           entry.availabilitySlot = entry.availabilitySlot.or(source.primaryWizardlet.isAvailable$)
-          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.linkFrom(entry.availabilitySlot);
+          entry.availabilityDetach = entry.primaryWizardlet.isAvailable$.follow(entry.availabilitySlot);
         }
       }
     },
@@ -156,7 +166,9 @@ foam.CLASS({
         if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
         if ( ! wao.delegate ) {
           wao.delegate = this.getWAO();
+          break;
         }
+        wao = wao.delegate;
       }
 
       return wizardlet;

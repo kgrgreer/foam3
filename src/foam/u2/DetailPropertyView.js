@@ -56,7 +56,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.initMemento();
+      this.initMemento && this.initMemento();
       var prop = this.prop;
 
       this.show(

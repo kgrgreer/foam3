@@ -54,3 +54,30 @@ p({
   """,
   "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"scriptParameterDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.script.ScriptParameter.getOwnClassInfo())
+      .setGuid(true)
+      .setPm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("scriptparameters")
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.ScriptParameter.NAME).build(),
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.ScriptParameter.DATE).build()
+      })
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptParameter.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptParameter.DATE });
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.script.ScriptParameter",
+      "cache":false
+    }
+  """
+})

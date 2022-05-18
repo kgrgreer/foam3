@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.theme.ThemeGlyphs',
     'foam.u2.layout.DisplayWidth'
   ],
@@ -165,12 +166,15 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu',
       section: 'navigation',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
       writePermissionRequired: true
     },
     {
@@ -308,10 +312,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.ThemeGlyphs',
       name: 'glyphs',
-      documentation: `
-        Glyphs are simple vectors which can be used as menu items
-        or indicators.
-      `.replace('\n',' ').trim(),
+      documentation: 'Glyphs are simple vectors which can be used as menu items or indicators.',
       factory: function () {
         return this.ThemeGlyphs.create();
       },
@@ -834,13 +835,13 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].push(...t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (Object[]) prop.get(t1);
           var value2 = (Object[]) prop.get(t2);
 
@@ -864,14 +865,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           Object.assign(t1[name], t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var m1 = (Map) prop.get(t1);
           var m2 = (Map) prop.get(t2);
 
@@ -894,14 +895,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].copyFrom(t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 

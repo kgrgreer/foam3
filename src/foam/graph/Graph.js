@@ -22,8 +22,7 @@ foam.CLASS({
   methods: [
     function getDirectChildren(parentId, order) {
       var parentNode = this.data[parentId];
-      var childNodes = parentNode.forwardLinks.map(id => this.data[id]);
-      
+      var childNodes = parentNode.forwardLinks.map(link => this.data[link.id]);
       if ( order ) {
         let i = 0;
         let idsBehind = {};
@@ -36,8 +35,8 @@ foam.CLASS({
           let needToSwap = false;
           for ( let j = 0 ; j < node.forwardLinks.length ; j ++ ) {
             let link = node.forwardLinks[j];
-            if ( link == parentNode.data.id ) continue;
-            if ( ! idsBehind[link] ) {
+            if ( link.id == parentNode.data.id ) continue;
+            if ( ! idsBehind[link.id] ) {
               needToSwap = link;
               break;
             }

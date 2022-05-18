@@ -15,12 +15,14 @@ foam.CLASS({
       value: 'G'
     },
     {
-      name: 'startPos',
-      class: 'Array'
+      class: 'FObjectProperty',
+      of: 'foam.u2.svg.Position',
+      name: 'startPos'
     },
     {
-      name: 'endPos',
-      class: 'Array'
+      class: 'FObjectProperty',
+      of: 'foam.u2.svg.Position',
+      name: 'endPos'
     }
   ]
 });
@@ -83,8 +85,6 @@ foam.CLASS({
 
   properties: [
     { name: 'anchors', class: 'Array' },
-    { name: 'startPos', class: 'Array' },
-    { name: 'endPos', class: 'Array' },
     {
       name: 'lines',
       expression: function(startPos, anchors, endPos) {
@@ -92,10 +92,11 @@ foam.CLASS({
         var lines = [];
         let lastNode = startPos;
         for ( let anchor of anchors ) {
-          lines.push([
-            lastNode[0], lastNode[1], // x1, y1
-            anchor[0]  , anchor[1]    // x2, y2
-          ]);
+          lines.push([lastNode, anchor])
+          // lines.push([
+          //   lastNode[0], lastNode[1], // x1, y1
+          //   anchor[0]  , anchor[1]    // x2, y2
+          // ]);
           lastNode = anchor;
         }
         return lines;
@@ -126,10 +127,10 @@ foam.CLASS({
           this
             .start('line')
               .attrs({
-                x1: line[0],
-                y1: line[1],
-                x2: line[2],
-                y2: line[3],
+                x1: line[0].x$,
+                y1: line[0].y$,
+                x2: line[1].x$,
+                y2: line[1].y$,
                 stroke: this.stroke$,
                 'stroke-width': 3,
               })

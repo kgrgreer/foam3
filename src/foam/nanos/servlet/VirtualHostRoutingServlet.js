@@ -52,6 +52,11 @@ foam.CLASS({
       transient: true,
       javaType: 'ServletConfig',
       name: 'servletConfig'
+    },
+    {
+      class: 'String',
+      name: 'controller',
+      value: 'foam.nanos.controller.ApplicationController'
     }
   ],
 
@@ -145,41 +150,16 @@ foam.CLASS({
           out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.umd.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.plugin.autotable.min.js\\"></script>");
-
-          out.println("<script async language=\\"javascript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
         } else {
           // development
           if ( x.get("liveScriptBundler") == null ) {
             out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"pom\\"></script>");
-            /*
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/nanos/nanos.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/support/support.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso20022/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
-            */
-          } else if ( ! SafetyUtil.isEmpty(queryString) ) {
-            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
-            out.println(queryString);
-            out.println("\\"></script>");
           } else {
-            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
+            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
+            if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
+            out.println("\\"></script>");
           }
-          /*
-          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
-          out.println("<script       language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.umd.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
-          */
         }
-
-        /*
-        out.println("<script async language=\\"javascript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
-        out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
-        */
       }
 
       // custom fonts
@@ -254,7 +234,7 @@ foam.CLASS({
 
         out.println("<!-- Instantiate FOAM Application Controller -->");
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
-        out.print("<foam\\nclass=\\"net.nanopay.ui.Controller\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
+        out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
         out.println("\\">\\n</foam>");
 

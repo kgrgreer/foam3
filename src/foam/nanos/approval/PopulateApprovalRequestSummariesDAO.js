@@ -10,7 +10,7 @@
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
-    Adds referenceSummary and createdForSummary to ApprovalRequest 
+    Adds referenceSummary and createdForSummary to ApprovalRequest
   `,
 
   javaImports: [
@@ -33,7 +33,7 @@
         if ( approval == null ) {
           return approval;
         }
-        
+
         populateSummaries(x, approval);
 
         return approval;
@@ -68,12 +68,13 @@
       javaCode:`
         DAO userDAO = (DAO) x.get("userDAO");
         DAO referenceDAO = (DAO) x.get(approval.getDaoKey());
+        approval = (ApprovalRequest) approval.fclone();
 
         // handle createdForSummary
-        String createdForSummaryString = approval.getCreatedFor() != 0 
+        String createdForSummaryString = approval.getCreatedFor() != 0
           ? "ID:" + Long.toString(approval.getCreatedFor())
           : "N/A";
-        
+
         User createdForUser = (User) userDAO.find(approval.getCreatedFor());
         if ( createdForUser != null ) {
           createdForUser.setX(x);

@@ -64,6 +64,13 @@ foam.CLASS({
           throw new AuthorizationException("You do not have permission to create a rule on the specified dao.");
         }
       `
+    },
+    {
+        name: 'evaluateBearerToken',
+        type: 'String',
+        javaCode: `
+        return getBearerToken();
+        `
     }
   ],
 

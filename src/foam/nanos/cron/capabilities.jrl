@@ -10,10 +10,19 @@ p({
   class: "foam.nanos.crunch.Capability",
   id: "schedulable-create-success",
   name: "Success Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
-    class: "foam.u2.wizard.BaseWizardlet",
-    isVisible: true,
-    of: "net.nanopay.transfer.ResetPasswordConfirmation"
+    class: 'foam.u2.wizard.wizardlet.SuccessWizardlet',
+    title: 'Done',
+    message: 'Scheduled successfully!',
+    of: 'foam.nanos.cron.Schedulable',
+    combinedSection: true,
+    wao: {
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of: "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-dao-put",
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
+    }
   }
 })
 
@@ -24,13 +33,17 @@ p({
   of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
     class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    of: "foam.nanos.cron.Schedulable",
     isVisible: false,
+    saveOnAvailable: false,
+    saveOnCurrent: true,
     wao:{
-      class: "foam.u2.wizard.PrerequisiteWAO",
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of:  "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-review",
       of: "foam.nanos.cron.Schedulable",
-      prerequisiteCapabilityId: "schedulable-fobject",
       delegate: {
-        class: "foam.u2.wizard.DAOWAO",
+        class: "foam.u2.wizard.wao.DAOWAO",
         daoKey: "schedulableDAO",
         of: "foam.nanos.cron.Schedulable"
       }
@@ -39,19 +52,20 @@ p({
 })
 
 p({
-  class: "foam.nanos.crunch.Capability",
-  id: "schedulable-fobject",
-  name: "Schedulable",
-  of:  "foam.nanos.cron.Schedulable",
+  id: 'schedulable-review',
+  name: 'Schedulable Review',
+  of: 'foam.nanos.cron.Schedulable',
   wizardlet: {
+    class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+    of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
-    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
-    wao:{
-      class: "foam.u2.wizard.XORMinMaxWAO",
+    wao: {
+      class: "foam.u2.wizard.wao.XORMinMaxWAO",
       minMaxCapabilityId: "schedulable-xorminxmax",
-      of: "foam.nanos.cron.Schedulable"
+      of: "foam.nanos.cron.Schedulable",
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
     }
-  },
+  }
 })
 
 p({

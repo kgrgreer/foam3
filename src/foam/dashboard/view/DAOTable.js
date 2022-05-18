@@ -16,6 +16,7 @@ foam.CLASS({
   ],
   imports: [
     'dashboardController',
+    'pushMenu',
     'stack'
   ],
 
@@ -43,19 +44,26 @@ foam.CLASS({
       border-bottom: none;
     }
     ^ .view-more button {
-      position: absolute;
-      bottom: 0;
       width: 100%;
-      height: 60px;
-      max-height: 60px;
+      height: 100%;
+      max-height: max-content;
     }
     ^ .view-more button:hover {
       background: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
+      border-bottom-left-radius: 22px;
+      border-bottom-right-radius: 22px;
     }
-    ^scroll {
-      max-height: 528px;
-      overflow-y: auto;
+    ^scroll-container {
+      overflow-y: scroll;
+      display: grid;
+      grid-auto-rows: 20%;
+      height: 100%;
+    }
+    ^grid-container {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      height: 100%;
     }
   `,
 
@@ -94,7 +102,10 @@ foam.CLASS({
       class: 'String',
       name: 'emptySubTitle'
     },
-    'dao',
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao'
+    },
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
@@ -102,6 +113,14 @@ foam.CLASS({
       factory: function() {
         return foam.mlang.predicate.True.create();
       }
+    },
+    {
+      class: 'String',
+      name: 'viewMoreMenuItem',
+      documentation: `
+      If set, this will cause viewMoreAction() to instead open the given
+      menu item. Default is empty.
+      `
     },
     ['limit', 5],
     'mode'
@@ -118,11 +137,15 @@ foam.CLASS({
       this.fetchValues();
       this
         .addClass(this.myClass())
-        .callIf(!self.viewMore, function() {
-          self.addClass(self.myClass('scroll'));
-        })
         .add(this.slot(function(currentValues) {
           var e = self.E();
+          self.callIfElse(self.viewMore, function() {
+            if ( currentValues.length != 0 ) {
+              e.addClass(self.myClass('grid-container'));
+            }
+          }, function() {
+            e.addClass(self.myClass('scroll-container'));
+          });
           return e
             .callIf(currentValues.length == 0, function() {
               e.start().addClass(self.myClass('center'))
@@ -157,12 +180,16 @@ foam.CLASS({
       name: 'viewMoreAction',
       label: 'View more activities',
       code: function() {
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: this.DAOBrowseControllerView,
-            data: this.__subContext__[this.dao].where(this.predicate),
-          }, parent: this.__subContext__
-        }));
+        if ( this.viewMoreMenuItem ) {
+          this.pushMenu(this.viewMoreMenuItem);
+        } else {
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.DAOBrowseControllerView,
+              data: this.dao.where(this.predicate),
+            }, parent: this.__subContext__
+          }));
+        }
       }
     }
   ],
@@ -172,7 +199,8 @@ foam.CLASS({
       name: 'fetchValues',
       code: function() {
         var self = this;
-        self.__subContext__[self.dao].where(self.predicate).limit(self.limit).select().then((objects) => {
+        if ( ! this.dao ) return;
+        this.dao.where(this.predicate).limit(this.limit).select().then((objects) => {
           var fetchedValues = objects.array;
           if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;
