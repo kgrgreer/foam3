@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'CapabilityAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
+
   documentation: `
   This decorator checks for either a capability or permission string. If the check returns false, delegate to next authservice. Return true otherwise.
   `,
@@ -23,6 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.LimitedSink',
     'foam.dao.ProxySink',
+    'foam.dao.AbstractSink',
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
     'foam.mlang.predicate.Predicate',
@@ -44,6 +46,36 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  properties: [
+    {
+      name: 'capabilityPermissions',
+      class: 'Map',
+      javaFactory: `
+        Map  m    = new java.util.concurrent.ConcurrentHashMap();
+        Sink sink = new AbstractSink() {
+          public void put(Object obj, Detachable sub) {
+            Capability c = (Capability) obj;
+            for ( var j = 0 ; j < c.getPermissionsGranted().length ; j++ ) {
+              String p = c.getPermissionsGranted()[j];
+              m.put(p, Boolean.TRUE);
+            }
+          }
+        };
+
+        DAO d1 = (DAO) getX().get("localCapabilityDAO");
+        DAO d2 = (DAO) getX().get("localServiceProviderDAO");
+
+        d1.select(sink);
+        d2.select(sink);
+
+        d1.listen(sink, foam.mlang.MLang.TRUE);
+        d2.listen(sink, foam.mlang.MLang.TRUE);
+
+        return m;
+      `
+    }
+  ],
+
   methods: [
     {
       name: 'check',
@@ -54,7 +86,16 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
         PM pm = PM.create(getX(), this.getClass(), "check");
         try {
-          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission) );
+          // TODO: Temporary fix for only wildcard capability permission
+          if ( permission.startsWith("language.read.*" ) ) return true;
+
+          if ( getDelegate().check(x, permission) ) return true;
+
+          if ( ! getCapabilityPermissions().containsKey(permission) ) return false;
+
+          if ( user == null ) return checkSpid_(x, (String) x.get("spid"), permission);
+
+          return capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission);
         } finally {
           pm.log(getX());
         }
@@ -76,7 +117,7 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          // service provider needs system context (getX()) 
+          // service provider needs system context (getX())
           // to bypass auth call in prerequisiteImplies
           sp.setX(getX());
           return sp.grantsPermission(permission);
@@ -87,9 +128,18 @@ foam.CLASS({
     {
       name: 'checkUser',
       javaCode: `
-        PM pm = PM.create(getX(), this.getClass(), "check");
+        PM pm = PM.create(getX(), this.getClass(), "checkUser");
         try {
-          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission));
+          // TODO: Temporary fix for only wildcard capability permission
+          if ( permission.startsWith("language.read.*" ) ) return true;
+
+          if ( getDelegate().checkUser(x, user, permission) ) return true;
+
+          if ( ! getCapabilityPermissions().containsKey(permission) ) return false;
+
+          if ( user == null ) return checkSpid_(x, (String) x.get("spid"), permission);
+
+          return capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission);
         } finally {
           pm.log(getX());
         }
@@ -120,6 +170,7 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
+
         User realUser = ((Subject) x.get("subject")).getRealUser();
 
         try {

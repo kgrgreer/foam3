@@ -13,7 +13,7 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
 
   imports: [
-    'translationService'
+    'translationService?'
   ],
 
   javaImports: [
@@ -111,6 +111,7 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
+        if ( ! this.translationService ) return msg;
         var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
         let m = this.getTemplateValues();
         for ( let [key, value] of m.entries() ) {

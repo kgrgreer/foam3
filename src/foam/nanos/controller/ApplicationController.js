@@ -395,8 +395,6 @@ foam.CLASS({
 
       var self = this;
 
-      // Update memento if updated through windowHash
-      this.memento_.str$.sub(this.memento_.update);
 
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
