@@ -21,6 +21,11 @@
   ],
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
@@ -59,13 +64,29 @@
     {
       name: 'runScript',
       javaCode: `
-        // TODO: simple submit itself to the threadpool agency which will call 'execute'
+        ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            try {
+              execute(x);
+            } catch (Exception e){
+              ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+                .setName("Failed to execute schedulable event")
+                .setSeverity(foam.log.LogLevel.ERROR)
+                .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+                .setNote(getId() + " " + e.getMessage())
+                .build());
+            }
+          }
+        }, "");
       `
     },
     {
       name: 'execute',
       javaCode: `
-        // TODO: submitting the entry to the dao
+        DAO dao = (DAO) x.get(getObjectDAOKey());
+        dao.put(getObjectToSchedule());
+
       `
     },
     {
