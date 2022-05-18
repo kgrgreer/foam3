@@ -10,11 +10,11 @@ foam.CLASS({
   extends: 'foam.u2.view.SuggestedTextField',
 
   requires: [
-    'foam.u2.FUIDAutocompleter',
-    'foam.nanos.menu.Menu',
-    'foam.u2.stack.StackBlock',
     'foam.core.Action',
-    'foam.u2.md.OverlayDropdown'
+    'foam.nanos.menu.Menu',
+    'foam.u2.FUIDAutocompleter',
+    'foam.u2.md.OverlayDropdown',
+    'foam.u2.stack.StackBlock'
   ],
 
   implements: [
@@ -60,16 +60,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'title',
-      factory: function() {
-        return '';
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'emptyTitle',
-      factory: function() {
-        return '';
-      }
+      value: ''
     },
     {
       name: 'onSelect',
