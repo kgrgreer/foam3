@@ -58,11 +58,13 @@ foam.CLASS({
       }
     },
     {
+      //overriding parent class factory
       class: 'String',
       name: 'title',
       value: ''
     },
     {
+      //overriding parent class factory
       class: 'String',
       name: 'emptyTitle',
       value: ''
