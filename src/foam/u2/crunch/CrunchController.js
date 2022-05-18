@@ -57,6 +57,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
@@ -159,19 +160,20 @@ foam.CLASS({
         form of capabilities that are stored object-locally rather than in
         association with a user.
       `,
-      code: function createCapableWizardSequence(intercept, capable, x) {
+      code: function createCapableWizardSequence(intercept, capable, capabilityId, x) {
         x = x || this.__subContext__;
         x = x.createSubContext({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capable && capable.capabilityIds[0], x)
+        return this.createWizardSequence(capabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('LoadTopConfig',this.CheckGrantedAgent)
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
@@ -355,12 +357,14 @@ foam.CLASS({
       var p = Promise.resolve(true);
 
       intercept.capables.forEach(capable => {
-        var seq = this.createCapableWizardSequence(intercept, capable);
-        p = p.then(() => {
-          return seq.execute().then(x => {
-            return x;
+        capable.capabilityIds.forEach((c) => {
+          var seq = this.createCapableWizardSequence(intercept, capable, c);
+          p = p.then(() => {
+            return seq.execute().then(x => {
+              return x;
+            });
           });
-        });
+        })
       })
 
       return p;
