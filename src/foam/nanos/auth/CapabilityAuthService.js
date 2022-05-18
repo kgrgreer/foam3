@@ -78,27 +78,58 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isMatch',
+      type: 'Boolean',
+      args: 'String p',
+      javaCode: `
+        if ( p.startsWith("serviceprovider") ) return true; // TODO: why?
+        
+        while ( true ) {
+          if ( getCapabilityPermissions().containsKey(p) ) return true;
+          if ( p.endsWith(".*") ) p = p.substring(0,p.length()-2);
+          int i = p.lastIndexOf(".");
+          if ( i == -1 ) return false;
+          p = p.substring(0,i+1) + "*";
+        }
+      `
+    },
+    {
       name: 'check',
       documentation: `
       Check if the given input string is in the userCapabilityJunctions or implied by a capability in userCapabilityJunctions for the current context user
       `,
       javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
         PM pm = PM.create(getX(), this.getClass(), "check");
         try {
-          // TODO: Temporary fix for only wildcard capability permission
-          if ( permission.startsWith("language.read.*" ) ) return true;
+          User user = ((Subject) x.get("subject")).getUser();
 
           if ( getDelegate().check(x, permission) ) return true;
 
-          if ( ! getCapabilityPermissions().containsKey(permission) ) return false;
+          if ( ! isMatch(permission) ) return false;
 
-          if ( user == null ) return checkSpid_(x, (String) x.get("spid"), permission);
-
-          return capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission);
+          return user == null ?
+            checkSpid_(x, (String) x.get("spid"), permission) :
+            capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
         } finally {
           pm.log(getX());
         }
+      `
+    },
+    {
+      name: 'checkUser',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass(), "checkUser");
+      try {
+        if ( getDelegate().checkUser(x, user, permission) ) return true;
+
+        if ( ! isMatch(permission) ) return false;
+
+        return user == null ?
+          checkSpid_(x, (String) x.get("spid"), permission) :
+          capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
+     } finally {
+        pm.log(getX());
+      }
       `
     },
     {
@@ -123,26 +154,6 @@ foam.CLASS({
           return sp.grantsPermission(permission);
         }
         return false;
-      `
-    },
-    {
-      name: 'checkUser',
-      javaCode: `
-        PM pm = PM.create(getX(), this.getClass(), "checkUser");
-        try {
-          // TODO: Temporary fix for only wildcard capability permission
-          if ( permission.startsWith("language.read.*" ) ) return true;
-
-          if ( getDelegate().checkUser(x, user, permission) ) return true;
-
-          if ( ! getCapabilityPermissions().containsKey(permission) ) return false;
-
-          if ( user == null ) return checkSpid_(x, (String) x.get("spid"), permission);
-
-          return capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission);
-        } finally {
-          pm.log(getX());
-        }
       `
     },
     {
