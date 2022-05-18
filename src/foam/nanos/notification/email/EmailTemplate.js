@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailTemplateEngine',
@@ -144,7 +145,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        Logger logger = Loggers.logger(x, this);
+        Logger logger = new PrefixLogger( new Object[] {
+          this.getClass().getSimpleName(),
+          getName()
+        }, (Logger) x.get("logger"));
+        x = x.put("logger", logger);
 
         if ( emailMessage == null ) {
           throw new NoSuchFieldException("emailMessage is Null");

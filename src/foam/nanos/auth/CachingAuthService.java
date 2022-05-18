@@ -17,6 +17,7 @@ import foam.util.LRULinkedHashMap;
 import java.security.Permission;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
 import static foam.mlang.MLang.TRUE;
@@ -129,6 +130,22 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userId = ((User) obj).getId();
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
+    } else if (obj instanceof GroupPermissionJunction) {
+      /*
+      TODO: is breaking CI because it doesn't also recursively clear for sub-groups
+      // select all user from that group and purge all of them.
+      DAO groupDAO                = (DAO) getX().get("localGroupDAO");
+      GroupPermissionJunction gpj = ((GroupPermissionJunction) obj);
+      Group gp                    = (Group) groupDAO.find(gpj.getSourceId());// using groupName
+
+      List<User> usersInGroup = ((foam.dao.ArraySink) gp.getUsers(getX()).select(new foam.dao.ArraySink())).getArray();
+
+      for ( User user : usersInGroup ) {
+        userPermissionCache_.remove(user.getId());
+      }
+      */
+      userPermissionCache_.clear();
+      return;
     }
 
     if ( userId != null ) {

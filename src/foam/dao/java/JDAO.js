@@ -62,6 +62,12 @@ In this current implementation setDelegate must be called last.`,
       name: 'journal'
     },
     {
+      documentation: 'Perform replay synchronously. Manual workaround for deadlock with AsyncAssemblyLine',
+      class: 'Boolean',
+      name: 'syncReplay',
+      value: true
+    },
+    {
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
@@ -82,6 +88,7 @@ In this current implementation setDelegate must be called last.`,
                   .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(false)
+                  .setSyncReplay(getSyncReplay())
                   .build());
               }
             }

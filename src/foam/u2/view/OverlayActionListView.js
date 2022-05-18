@@ -91,7 +91,7 @@ foam.CLASS({
       height: 100%;
     }
 
-    ^button-container button:hover {
+    ^button-container button:hover:not(:disabled) {
       background-color: /*%PRIMARY5%*/ #E5F1FC;
     }
 
@@ -103,6 +103,29 @@ foam.CLASS({
     ^button-container button:focus:not(:focus-visible){
       border-color: transparent;
     }
+
+    /* destructive */
+
+    ^button-container .destructive{
+      color: /*%DESTRUCTIVE2%*/ #a61414;
+    }
+
+    ^button-container .destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
+
+    ^button-container .destructive:hover:not(:disabled) {
+      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+    }
+
+    ^button-container .destructive:focus {
+      border-color: /*%DESTRUCTIVE2%*/ #a61414;
+      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+    }
+
+    ^button-container .destructive:disabled {
+      color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+    }
+
+    ^button-container .destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
 
     ^iconOnly{
       padding: 0px;
