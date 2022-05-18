@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -24,7 +24,6 @@
   ],
 
   methods: [
-    // If Property expressions ever unwrap promises this method can be blank.
     async function execute() {
       this.capable.capablePayloads.find(payload => {
         if ( payload.capability == this.rootCapability.id && payload.status == this.CapabilityJunctionStatus.GRANTED ) {
