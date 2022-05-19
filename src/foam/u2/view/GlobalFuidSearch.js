@@ -46,10 +46,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'viewTitle',
-      value: 'FUID Search'
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.u2.FUIDAutocompleter',
       name: 'autocompleter',
@@ -75,7 +71,7 @@ foam.CLASS({
         var menus = []
         var menuDAOS = this.saltMap[obj.daoKey];
         for ( var i = 0; i < menuDAOS.length; i++ ) {
-          var result = await menuDAOS[i].handler.config.dao.find(obj.obj1);
+          var result = await menuDAOS[i].handler.config.dao.find(obj.data);
           if ( result )
             menus.push(menuDAOS[i]);
         }
@@ -83,7 +79,7 @@ foam.CLASS({
           return this.Action.create({
             label: c.label + ' (' + c.id + ')',
             code: function() {
-              this.menuPush(obj.obj1, c);
+              this.menuPush(obj.data, c);
             }
           });
         });
@@ -116,7 +112,7 @@ foam.CLASS({
       var a = this.E().addClass(this.myClass('suggestions')).add(this.title)
       for ( var i = 0; i < self.filteredValues.length; i++) {
         let obj = self.filteredValues[i];
-        a.start(this.rowView, { data: obj.obj1, of: obj.obj1.cls_.id })
+        a.start(this.rowView, { data: obj.data, of: obj.data.cls_.id })
           .addClass(self.myClass('row'))
           .on('mousedown', function(e) {
             self.onRowSelect ? self.onRowSelect(obj,e) : self.onSelect.call(self,obj, e);
@@ -138,7 +134,7 @@ foam.CLASS({
         var menuDao = this.__subContext__['menuDAO'];
         if ( Object.keys(this.saltMap).length > 0 ) return;
         menuDao.select( async function(obj) {
-           if ( ! obj?.handler?.config?.daoKey && ! self.__subContext__[obj.handler.config.daoKey] ) return;
+           if ( ! obj?.handler?.config?.daoKey && ! self.__subContext__[obj?.handler?.config?.daoKey] ) return;
            try {
              var salt = await self.__subContext__[obj.handler.config.daoKey].cmd_(self, foam.dao.FUIDDAO.SALT_CMD);
            } catch {
@@ -164,7 +160,7 @@ foam.CLASS({
           data: obj,
           config: menu.handler.config,
           idOfRecord: obj.id
-        }, parent: this.__subContext__.createSubContext({ memento_: this.memento_, currentControllerMode: 'view' }) }, this));
+        }, parent: this.__subContext__.createSubContext({ currentControllerMode: 'view' }) }, this));
     }
   ]
 });

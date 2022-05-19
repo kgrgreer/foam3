@@ -142,7 +142,12 @@ foam.CLASS({
       args: 'Context x, Object obj',
       javaCode:
       `
-        return getSalt();
+        if ( FUIDDAO.SALT_CMD.equals(obj) ) {
+          return getSalt();
+        }
+        else {
+          return getDelegate().cmd_(x, obj);
+        }
       `
     }
   ]

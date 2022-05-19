@@ -24,8 +24,8 @@ foam.CLASS({
       code: async function onUpdate() {
         var res = this.partial ? await this.globalSearchService.searchById(this, this.partial) : [];
         var temp = [];
-        for ( var [daoKey, obj1] of Object.entries(res) ) {
-          temp.push({ daoKey: daoKey, obj1: obj1 });
+        for ( var [daoKey, data] of Object.entries(res) ) {
+          temp.push({ daoKey: daoKey, data: data });
         }
         this.filtered = temp;
       }

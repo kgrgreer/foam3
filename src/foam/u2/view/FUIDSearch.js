@@ -31,7 +31,14 @@ foam.CLASS({
     }
   `,
   messages: [
-    { name: 'title', message: 'FUID Search' }
+    { name: 'TITLE', message: 'FUID Search' }
+  ],
+
+  properties: [
+    {
+      name: 'viewTitle',
+      value: 'FUID Search'
+    }
   ],
 
   methods: [
