@@ -263,9 +263,9 @@ foam.CLASS({
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
           var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
-            return ret.getCapabilities(this.ctrl.__subContext__).dao.select();
+            return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
           });
-          if ( themeCaps.array.length != 0 ) return self.renderFeatured(themeCaps.array);
+          if ( themeCaps?.array?.length != 0 ) return self.renderFeatured(themeCaps.array);
           var featured = await this.featuredCapabilities.select();
           return self.renderFeatured(featured.array);
         }))
