@@ -64,29 +64,22 @@
     {
       name: 'runScript',
       javaCode: `
-        ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
-          @Override
-          public void execute(X x) {
-            try {
-              execute(x);
-            } catch (Exception e){
-              ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
-                .setName("Failed to execute schedulable event")
-                .setSeverity(foam.log.LogLevel.ERROR)
-                .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
-                .setNote(getId() + " " + e.getMessage())
-                .build());
-            }
-          }
-        }, "");
+        ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
       `
     },
     {
       name: 'execute',
       javaCode: `
-        DAO dao = (DAO) x.get(getObjectDAOKey());
-        dao.put(getObjectToSchedule());
-
+        try {
+          ((DAO) x.get(getObjectDAOKey())).put(getObjectToSchedule());
+        } catch (Exception e){
+          ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("Failed to execute schedulable event")
+            .setSeverity(foam.log.LogLevel.ERROR)
+            .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+            .setNote(getId() + " " + e.getMessage())
+            .build());
+        }
       `
     },
     {
