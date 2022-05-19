@@ -62,10 +62,8 @@ foam.LIB = function LIB(model) {
       'Constants must be a map.');
 
     if ( Array.isArray(model.constants) ) {
-      for ( const constSpec of model.constants ) {
-        const constObj = foam.json.parse(constSpec, foam.core.Constant, foam.__context__);
-        if ( constObj.factory ) constObj.factory = constObj.factory.bind(root);
-        constObj.installInProto(root);
+      for ( const v of model.constants ) {
+        root[foam.String.constantize(v.name)] = v.value || v.factory.call(root);
       }
     } else {
       for ( var key in model.constants ) {
