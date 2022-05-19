@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'ReviewItem',
   extends: 'foam.comics.v2.namedViews.NamedViewInstance',
+  implements: ['foam.mlang.Expressions'],
+
+  requires: [
+    'foam.core.AnyHolder'
+  ],
 
   properties: [
     {
@@ -21,8 +26,15 @@ foam.CLASS({
       value: { class: 'foam.u2.borders.NullBorder' }
     },
     {
-      class: 'Boolean',
-      name: 'noData'
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      documentation: `
+        A predicate that must pass for this ReviewItem to be shown.
+        Default value checks that the data is not null or undefined.
+      `,
+      factory: function () {
+        return this.HAS(this.AnyHolder.VALUE);
+      }
     },
     {
       class: 'String',

@@ -103,14 +103,14 @@ foam.CLASS({
 
         if ( ! loadedFromData ) {
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toString()}`,
           );
           if ( this.of ) {
             return this.of.create({}, this);
           }
         }
 
-        clonedPrereqWizardletData = loadedFromData.clone();
+        clonedPrereqWizardletData = loadedFromData.clone ? loadedFromData.clone() : loadedFromData;
       } else {
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }
