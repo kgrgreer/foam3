@@ -186,7 +186,7 @@ foam.CLASS({
           }).join('');
         },
         return: function() { return '_line = _stack.pop(); break;' },
-        syntaxerror: function(a) {
+        xxxsyntaxerror: function(a) {
           return ' SYNTAX ERROR: ' + a;
         }
       });
@@ -354,7 +354,7 @@ foam.CLASS({
     },
 
     function SOUND(f, d) {
-      this.Beep.create({frequency: 100+4*f, duration: d*60}).play();
+      this.Beep.create({frequency: f, duration: d*60}).play();
       return new Promise(r => this.setTimeout(r, d*60));
     }
   ],
