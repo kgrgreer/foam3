@@ -128,7 +128,7 @@ foam.CLASS({
     {
       name: 'mergedViewListener',
       isMerged: true,
-      mergeDelay: 1000,
+      mergeDelay: 500,
       code: function() { this.viewListenerFn(); }
     }
   ]
