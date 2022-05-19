@@ -72,7 +72,9 @@ foam.CLASS({
       } else if ( ids.size() > 1 ) {
         return MLang.IN(getPropertyInfo(), ids.toArray(new String[0]));
       }
-      throw new AuthorizationException();
+      Subject s = (Subject) x.get("subject");
+      User u = s != null ? s.getUser() : null;
+      throw new AuthorizationException("User in context has no access to ServiceProviders. User.id:"+ (u != null ? u.getId() : "0") );
       `
     },
     {
