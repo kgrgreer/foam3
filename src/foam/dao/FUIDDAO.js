@@ -145,9 +145,7 @@ foam.CLASS({
         if ( FUIDDAO.SALT_CMD.equals(obj) ) {
           return getSalt();
         }
-        else {
-          return getDelegate().cmd_(x, obj);
-        }
+        return getDelegate().cmd_(x, obj);
       `
     }
   ]
