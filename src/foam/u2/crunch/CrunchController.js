@@ -360,9 +360,7 @@ foam.CLASS({
         capable.capabilityIds.forEach((c) => {
           var seq = this.createCapableWizardSequence(intercept, capable, c);
           p = p.then(() => {
-            return seq.execute().then(x => {
-              return x;
-            });
+            return seq.execute().then(x => x);
           });
         })
       })
