@@ -40,17 +40,17 @@
        //.start('h1').add(this.MESSAGE).end()
        .start()
          .addClass(this.myClass('container'))
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.START_DATE }).style({'grid-column': `span ${this.data.START_DATE.gridColumns}`}).end()
+         .start(this.data.START_DATE.__).style({'grid-column': `span ${this.data.START_DATE.gridColumns}`}).end()
 
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.REPEAT }).style({'grid-column': `span ${this.data.REPEAT.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.FREQUENCY }).style({'grid-column': `span ${this.data.FREQUENCY.gridColumns}`}).end()
+         .start(this.data.REPEAT.__).style({'grid-column': `span ${this.data.REPEAT.gridColumns}`}).end()
+         .start(this.data.FREQUENCY.__).style({'grid-column': `span ${this.data.FREQUENCY.gridColumns}`}).end()
 
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.DAY_OF_WEEK }).style({'grid-column': `span ${this.data.DAY_OF_WEEK.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.MONTHLY_CHOICE }).style({'grid-column': `span ${this.data.MONTHLY_CHOICE.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.DAY_OF_MONTH }).style({'grid-column': `span ${this.data.DAY_OF_MONTH.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.VAGUE_FREQ }).style({'grid-column': `span ${this.data.VAGUE_FREQ.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.EXPANDED_DAY_OF_WEEK }).style({'grid-column': `span ${this.data.EXPANDED_DAY_OF_WEEK.gridColumns}`}).end()
-         .start(this.SectionedDetailPropertyView, { data: this.data, prop: this.data.ENDS }).style({'grid-column': `span ${this.data.ENDS.gridColumns}`}).end()
+         .start(this.data.DAY_OF_WEEK.__).style({'grid-column': `span ${this.data.DAY_OF_WEEK.gridColumns}`}).end()
+         .start(this.data.MONTHLY_CHOICE.__).style({'grid-column': `span ${this.data.MONTHLY_CHOICE.gridColumns}`}).end()
+         .start(this.data.DAY_OF_MONTH.__).style({'grid-column': `span ${this.data.DAY_OF_MONTH.gridColumns}`}).end()
+         .start(this.data.VAGUE_FREQ.__).style({'grid-column': `span ${this.data.VAGUE_FREQ.gridColumns}`}).end()
+         .start(this.data.EXPANDED_DAY_OF_WEEK.__).style({'grid-column': `span ${this.data.EXPANDED_DAY_OF_WEEK.gridColumns}`}).end()
+         .start(this.data.ENDS.__).style({'grid-column': `span ${this.data.ENDS.gridColumns}`}).end()
        .end()
      }
    ]
