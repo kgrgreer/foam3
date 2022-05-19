@@ -10,23 +10,23 @@ foam.CLASS({
   extends: 'foam.u2.tag.Button',
 
   imports: [
+    'menu',
     // If rendered in a dropdown, close the dropdown after launching menu
     'dropdown? as parentMenuDropdown'
   ],
 
   properties: [
-    'menu',
     {
       name: 'label',
-      factory: function() { return this.menu.label || ''; }
+      expression: function(menu) { return menu.label || ''; }
     },
     {
       name: 'icon',
-      factory: function() { return this.menu.icon; }
+      expression: function(menu) { return menu.icon || ''; }
     },
     {
       name: 'themeIcon',
-      factory: function() { return this.menu.themeIcon; }
+      expression: function(menu) { return menu.themeIcon || ''; }
     }
   ],
 

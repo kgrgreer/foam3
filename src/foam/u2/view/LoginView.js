@@ -40,7 +40,8 @@ foam.CLASS({
     'memento',
     'stack',
     'theme',
-    'displayWidth?'
+    'displayWidth?',
+    'loginSuccess'
   ],
 
   requires: [
@@ -305,7 +306,7 @@ foam.CLASS({
             .addClass('cover-img-block1')
             .start('img')
               .addClass(self.myClass('image-one'))
-              .attr('src', this.imgPath)
+              .attr('src', this.imgPath$)
               .enableClass(self.myClass('wideImage'), self.shouldResize$)
             .end()
             // add a disclaimer under img

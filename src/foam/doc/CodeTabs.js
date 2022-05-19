@@ -25,12 +25,12 @@ foam.CLASS({
       padding: 8px;
     }
     ^tab.selected {
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       position: relative;
       z-index: 1;
     }
     ^bottomEdge {
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       height: 2.5px;
       left: 0;
       position: absolute;
@@ -40,7 +40,7 @@ foam.CLASS({
     ^content {
       margin: 4px;
       padding: 6px;
-      background: white;
+      background:/*%WHITE%*/ #ffffff;
       border: 1px solid black;
       position: relative;
       top: -13px;

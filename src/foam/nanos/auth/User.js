@@ -39,6 +39,7 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.HashSet',
     'java.util.List',
+    'static foam.mlang.MLang.EQ'
   ],
 
   documentation: `The User represents a person or entity with the ability
@@ -162,12 +163,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['userName', 'type'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
-              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
-            );
-          },
+          query: 'type!="User"||userName!=""',
           errorMessage: 'USERNAME_REQUIRED'
         }
       ],
@@ -686,7 +682,16 @@ foam.CLASS({
         }
         return set;
       `
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: 'HIDDEN',
+      externalTransient: true,
+      columnPermissionRequired: true
+    },
   ],
 
   methods: [

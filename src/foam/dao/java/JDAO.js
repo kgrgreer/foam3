@@ -21,8 +21,10 @@ In this current implementation setDelegate must be called last.`,
     'foam.dao.F3FileJournal',
     'foam.dao.MDAO',
     'foam.dao.NullJournal',
+    'foam.nanos.boot.NSpec',
     'foam.dao.ReadOnlyF3FileJournal',
-    'foam.dao.WriteOnlyF3FileJournal'
+    'foam.dao.WriteOnlyF3FileJournal',
+    'foam.nanos.ndiff.NDiffJournal'
   ],
 
   javaCode: `
@@ -60,6 +62,12 @@ In this current implementation setDelegate must be called last.`,
       name: 'journal'
     },
     {
+      documentation: 'Perform replay synchronously. Manual workaround for deadlock with AsyncAssemblyLine',
+      class: 'Boolean',
+      name: 'syncReplay',
+      value: true
+    },
+    {
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
@@ -80,6 +88,7 @@ In this current implementation setDelegate must be called last.`,
                   .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(false)
+                  .setSyncReplay(getSyncReplay())
                   .build());
               }
             }
@@ -97,13 +106,40 @@ In this current implementation setDelegate must be called last.`,
               .setFilename(getFilename() + ".0")
               .build();
 
-            new CompositeJournal.Builder(resourceStorageX)
+            // if NSpec present in X then go through NDiff
+            // (set up in EasyDAO's decorator chain)
+            NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_CTX_KEY);
+            
+            if ( nspec != null ) {
+              String nSpecName = nspec.getName();
+
+              new CompositeJournal.Builder(resourceStorageX)
               .setDelegates(new foam.dao.Journal[] {
-                journal0,
-                getJournal()
+                // replays the repo journal
+                new NDiffJournal.Builder(resourceStorageX)
+                .setDelegate(journal0)
+                .setNSpecName(nSpecName)
+                .setRuntimeOrigin(false) 
+                .build(),
+
+                // replays the runtime journal
+                new NDiffJournal.Builder(getX())
+                .setDelegate(getJournal())
+                .setNSpecName(nSpecName)
+                .setRuntimeOrigin(true) 
+                .build()
               })
               .build()
               .replay(resourceStorageX, delegate);
+            } else {
+              new CompositeJournal.Builder(resourceStorageX)
+                .setDelegates(new foam.dao.Journal[] {
+                  journal0,
+                  getJournal()
+                })
+                .build()
+                .replay(resourceStorageX, delegate);
+            }
     `
     }
   ],

@@ -2,6 +2,7 @@ p({
   "class": "foam.nanos.crunch.Capability",
   "id": "crunch.example",
   "name": "Example Capability",
+  "of": "foam.nanos.crunch.example.ExampleData",
   "enabled": true,
   "visible": false
 })

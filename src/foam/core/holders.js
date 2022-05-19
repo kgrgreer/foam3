@@ -56,12 +56,31 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['value'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.core.RequiredBooleanHolder.VALUE, true);
-          },
+          query: 'value==true',
           errorMessage: 'WRONG_VALUE'
         }
       ]
     }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'MapHolder',
+
+  properties: [
+    {
+      name: 'value',
+      class: 'Map'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'AnyHolder',
+
+  properties: [
+    'value'
   ]
 });

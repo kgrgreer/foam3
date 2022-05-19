@@ -13,6 +13,23 @@ foam.CLASS({
     foam.pattern.Faceted.create()
   ],
 
+  css: `
+    ^row {
+      font-size: 1.2rem;
+    }
+
+    ^rw {
+      background: /*%WHITE%*/ white;
+      padding: 8px 16px;
+      color: /*%BALCK%*/ #424242;
+    }
+
+    ^rw:hover {
+      background: /*%GREY5%*/ #f4f4f9;
+      cursor: pointer;
+    }
+  `,
+
   properties: [
     {
       class: 'Class',
@@ -33,8 +50,21 @@ foam.CLASS({
     {
       name: 'updateSummary',
       isFramed: true,
-      code: function() {
-        this.summary = this.data && this.data.toSummary ? this.data.toSummary() : undefined;
+      code: async function() {   
+        let newSummary;
+        
+        if ( this.data && this.data.toSummary ){
+          var toSummary = this.data.toSummary();
+
+          newSummary = toSummary instanceof Promise 
+            ? await toSummary
+            : toSummary;
+
+        } else {
+          newSummary = undefined;
+        }
+
+        this.summary = newSummary;
       }
     }
   ],
@@ -43,7 +73,10 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateSummary();
-      this.add(this.summary$);
+      this
+        .addClass(this.myClass('row'))
+        .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
+        .add(this.summary$);
     }
   ]
 });

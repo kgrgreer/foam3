@@ -22,12 +22,41 @@ foam.CLASS({
       }
     },
     {
+      /**
+
+       */
       name: 'forwardLinks',
-      class: 'StringArray'
+      class: 'Array',
+      documentation: `
+        {
+          id: String
+          weight?: Integer
+        }
+      `,
+      adapt: function (_, n) {
+        // Remove duplicate entries
+        var ids = new Set();
+        var newArray = [];
+
+        for ( const v of n ) {
+          if (! ids.has(v.id) ){
+            ids.add(v.id);
+            newArray.push(v);
+          }
+        }
+
+        return newArray;
+      }
     },
     {
       name: 'inverseLinks',
-      class: 'StringArray'
+      class: 'Array',
+      documentation: `
+        {
+          id: String
+          weight?: Integer
+        }
+      `,
     },
     {
       name: 'data'

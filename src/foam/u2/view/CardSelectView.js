@@ -30,24 +30,29 @@ foam.CLASS({
     ^base {
       box-sizing: content-box;
       background-color: /*%WHITE%*/ #ffffff;
-      border: solid 1px /*%GREY4%*/ #e7eaec;
       border-radius: 5px;
-      min-height: 10vh;
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;
+      display: flex;
+      align-items: center;
     }
-
-    ^selected {
+    ^ .foam-u2-borders-CardBorder {
+      min-height: auto;
+    }
+    .foam-u2-borders-CardBorder^large-card {
+      min-height: 10vh;
+    }
+    ^ .foam-u2-borders-CardBorder^selected {
       border-color: /*%PRIMARY3%*/ #406dea;
     }
 
-    ^disabled {
+    ^ .foam-u2-borders-CardBorder^disabled {
       background-color: /*%GREY5%*/ #f5f7fa;
       color: /*%GREY2%*/ #9ba1a6;
     }
 
-    ^selected-disabled {
+    ^ .foam-u2-borders-CardBorder^selected-disabled {
       border-color: /*%PRIMARY5%*/ #b2c4f6;
       background-color: /*%GREY5%*/ #f5f7fa;
       color: /*%GREY2%*/ #9ba1a6;
@@ -55,7 +60,7 @@ foam.CLASS({
   `,
 
   documentation: `
-    A selectable card which takes a boolean as data, has three stares: disabled, selected and unselected
+    A selectable card which takes a boolean as data, has three states: disabled, selected and unselected
   `,
 
   properties: [
@@ -76,7 +81,9 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) this.selectionDisabled.pub();
       }
-    }
+    },
+    'largeCard',
+    'of'
   ],
 
   methods: [
@@ -86,6 +93,7 @@ foam.CLASS({
       .addClass(this.myClass('innerFlexer'))
       .start(this.CardBorder)
         .addClass(this.myClass('base'))
+        .enableClass(this.myClass('large-card'), this.largeCard$)
         .enableClass(this.myClass('selected'), this.isSelected$)
         .enableClass(this.myClass('disabled'), this.isDisabled$)
         .enableClass(this.myClass('selected-disabled'), this.slot((isSelected, isDisabled) => {

@@ -294,8 +294,8 @@ foam.CLASS({
     {
       name: 'reconstructCalendars',
       isFramed: true,
-      documentation: 'Called whenever viewMonth changes. Centers a calendar ' +
-          'for the currently viewed month, and creates the adjacent months.',
+      documentation: `Called whenever viewMonth changes. Centers a calendar
+          for the currently viewed month, and creates the adjacent months.`,
       code: function() {
         var newCals = [
           this.MDCalendar.create({ data$: this.softData$, year: this.leftYear, month: this.leftMonth }),
@@ -346,7 +346,7 @@ foam.CLASS({
         this.softData   = new Date(this.year, this.month, this.date, this.softData.getHours(), this.softData.getMinutes());
         this.showYears_ = false;
       }
-    },
+    }
   ],
 
   methods: [

@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO: no longer works, updated based on genjava
+
 var execSync = require('child_process').execSync
 var path_ = require('path');
 

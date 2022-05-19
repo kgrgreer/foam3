@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'subject',
     'blobService',
     'notify'
   ],
@@ -48,7 +48,7 @@ foam.CLASS({
       min-width: 700px;
       max-width: 275px;
       height: 40px;
-      background-color: #ffffff;
+      background-color:/*%WHITE%*/ #ffffff;
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 5px;
@@ -255,7 +255,7 @@ foam.CLASS({
       }
 
       this.data = this.File.create({
-        owner: this.user.id,
+        owner: this.subject.user.id,
         filename: file.name,
         filesize: file.size,
         mimeType: file.type,

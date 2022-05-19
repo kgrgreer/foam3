@@ -1,0 +1,84 @@
+p({
+  id: "schedulable",
+  wizardConfig: {
+    class: "foam.u2.crunch.EasyCrunchWizard",
+    incrementalWizard: true
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-create-success",
+  name: "Success Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    class: 'foam.u2.wizard.wizardlet.SuccessWizardlet',
+    title: 'Done',
+    message: 'Scheduled successfully!',
+    of: 'foam.nanos.cron.Schedulable',
+    combinedSection: true,
+    wao: {
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of: "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-dao-put",
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
+    }
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-dao-put",
+  name: "Put Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    of: "foam.nanos.cron.Schedulable",
+    isVisible: false,
+    saveOnAvailable: false,
+    saveOnCurrent: true,
+    wao:{
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of:  "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-review",
+      of: "foam.nanos.cron.Schedulable",
+      delegate: {
+        class: "foam.u2.wizard.wao.DAOWAO",
+        daoKey: "schedulableDAO",
+        of: "foam.nanos.cron.Schedulable"
+      }
+    }
+  }
+})
+
+p({
+  id: 'schedulable-review',
+  name: 'Schedulable Review',
+  of: 'foam.nanos.cron.Schedulable',
+  wizardlet: {
+    class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+    of: 'foam.nanos.cron.Schedulable',
+    combinedSection: true,
+    wao: {
+      class: "foam.u2.wizard.wao.XORMinMaxWAO",
+      minMaxCapabilityId: "schedulable-xorminxmax",
+      of: "foam.nanos.cron.Schedulable",
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
+    }
+  }
+})
+
+p({
+  class: 'foam.nanos.crunch.MinMaxCapability',
+  id: "schedulable-xorminxmax",
+  name: "Schedulable MinMax",
+  min: 1,
+  max: 1
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: 'generic-schedulable',
+  of: 'foam.nanos.cron.Schedulable',
+  name: "Generic Schedulable"
+})

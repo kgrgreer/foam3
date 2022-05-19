@@ -74,6 +74,7 @@ public class EvalInstruction {
         exc.printStackTrace(pw);
         output = ((EvalException) exc).getExceptionClassName() + "\n" + sw.toString();
         System.out.println("JShell Error: " + output);
+        throw new RuntimeException(output);
       }
     }
     return output;

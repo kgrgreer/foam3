@@ -37,10 +37,8 @@ foam.CLASS({
     {
       name: 'obj',
       factory: function() {
-        var self = this;
-        this.dao.find(this.data).then(function(obj) {
-          self.obj = obj.clone();
-        });
+        /* ignoreWarning */
+        this.dao.find(this.data).then(obj => this.obj = obj.clone());
         return null;
       }
     }

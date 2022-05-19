@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOSummaryView',
   extends: 'foam.u2.View',
+  mixins: ['foam.u2.memento.Memorable'],
 
   documentation: 'A configurable summary view for a specific instance',
 
@@ -46,7 +47,6 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.nanos.controller.Memento',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
@@ -58,14 +58,14 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'memento',
+    'currentControllerMode',
+    'setControllerMode',
     'stack',
     'translationService'
   ],
 
   exports: [
-    'controllerMode',
-    'currentMemento_ as memento'
+    'controllerMode'
   ],
 
   messages: [
@@ -129,27 +129,28 @@ foam.CLASS({
         return () => this.stack.back();
       }
     },
-    'currentMemento_',
     {
       class: 'String',
-      name: 'mementoHead',
+      name: 'route',
+      memorable: true,
       documentation: 'This stores the id we want to add to the memento of the view',
       factory: function() {
-        if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
           if ( ! this.idOfRecord )
-            return '::';
+            return '';
           var id = '' + this.idOfRecord;
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
           return id;
-        }
+      }, 
+      postSet: function(_,n) {
+        if ( ! this.idOfRecord && n ) this.idOfRecord = n;
       }
     },
     {
       name: 'idOfRecord',
       factory: function() {
-        return this.data ? this.data.id : null;
+        return this.route ? this.route : this.data ? this.data.id : null;
       }
     },
     {
@@ -194,10 +195,8 @@ foam.CLASS({
         }
       },
       code: function() {
-        if ( ! this.stack ) return;
         // Wait to get data before loading edit
-        if ( ! this.data ) return;
-
+        if ( ! this.stack || ! this.data ) return;
         this.stack.push(this.StackBlock.create({
           view: {
             class:  'foam.comics.v2.DAOUpdateView',
@@ -289,45 +288,23 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
-      if ( this.memento ) {
-        this.currentMemento_ = this.memento;
-        var counter = 0;
-
-        // counter < 2 is as at this point we need to skip 2 memento
-        // head of first one will be DAOSummaryView mode
-        // and second will be the id for the view
-        while ( counter < 2 ) {
-          if ( ! this.currentMemento_.tail ) {
-            this.currentMemento_.tail = this.Memento.create();
-          }
-          this.currentMemento_ = this.currentMemento_.tail;
-          counter++;
-        }
-
-        if ( ! this.currentMemento_ ) {
-          this.currentMemento_ = foam.nanos.controller.Memento.create();
-        }
-      }
 
       // Get a fresh copy of the data, especially when we've been returned
       // to this view from the edit view on the stack.
+      /*
+      // NOTE: Remove duplicate call, already a dao.find call done in init()
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
         if ( d ) { 
           self.data = d;
-          if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) 
+          if ( this.currentControllerMode === 'edit' )
             self.edit();
         }
       });
-      if ( self.memento && self.memento.head && self.memento.head.toLowerCase() === 'edit' ) {
+      */
+      if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {
-        if ( this.memento && ! this.memento.head.startsWith('view') && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
-          this.memento.head = 'view';
-          this.memento.tail.head = this.mementoHead;
-          if ( ! this.memento.tail.tail ) 
-            this.memento.tail.tail = foam.nanos.controller.Memento.create({ value: '', parent: this.memento.tail });
-          this.currentMemento_ = this.memento.tail.tail;
-        }
+        if ( this.setControllerMode ) this.setControllerMode('view');
         this
         .addClass(this.myClass())
         .add(self.slot(function(data, config$viewBorder, viewView) {
@@ -372,7 +349,9 @@ foam.CLASS({
                 .end()
               .end()
               .start(config$viewBorder)
-                .start(viewView, { data }).addClass(self.myClass('view-container')).end()
+                .start(viewView, { data: data, memento_$: self.memento_$ })
+                  .addClass(self.myClass('view-container'))
+                .end()
               .end()
             .end();
         }));

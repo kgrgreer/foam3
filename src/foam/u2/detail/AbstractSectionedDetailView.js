@@ -48,6 +48,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'hideActions'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.Property',
       name: 'propertyWhitelist',
@@ -123,7 +127,7 @@ foam.CLASS({
 
         if ( this.propertyWhitelist ) {
           sections = sections
-            .map((s) => {
+            .map(s => {
               s.properties = s.properties.reduce((acc, sectionProp) => {
                 var prop = this.propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
                 if ( prop ) acc.push(prop);
@@ -131,8 +135,8 @@ foam.CLASS({
               }, []);
               return s;
             })
-            .filter((s) => {
-              return s.properties.length > 0 || s.actions.length > 0;
+            .filter(s => {
+              return s.properties.length > 0 || ( ! this.hideActions && s.actions.length > 0 );
             });
         }
 
@@ -141,7 +145,7 @@ foam.CLASS({
         // For example, the visibility value could be a function, which means
         // it could be hidden under certain conditions and visible otherwise.
         sections = sections.filter(s => {
-          return s.actions.length > 0 ||
+          return ( ! this.hideActions && s.actions.length > 0 ) ||
             s.properties.some(p => {
               var visVal = this.controllerMode.getVisibilityValue(p);
               return visVal !== foam.u2.DisplayMode.HIDDEN && visVal !== 'HIDDEN';

@@ -94,11 +94,7 @@ foam.CLASS({
       name: 'hostname',
       visibility: 'RO',
       javaFactory: `
-      String hostname = System.getProperty("hostname", "localhost");
-      if ( "localhost".equals(hostname) ) {
-        hostname = System.getProperty("user.name");
-      }
-      return hostname;
+      return System.getProperty("hostname", "localhost");
       `
     },
     {
@@ -109,7 +105,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isActive'
+      name: 'isActive',
+      value: true
     },
     {
       class: 'Enum',

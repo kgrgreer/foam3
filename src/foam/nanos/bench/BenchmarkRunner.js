@@ -33,8 +33,10 @@ foam.CLASS({
     'foam.nanos.app.Mode',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.LogLevelFilterLogger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.ProxyLogger',
     'foam.nanos.logger.StdoutLogger',
     'foam.nanos.pm.PM',
     'foam.nanos.pm.PMInfo',
@@ -143,6 +145,16 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'debugLoggingEnabled',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'infoLoggingEnabled',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'oneTimeSetup'
     },
     {
@@ -181,8 +193,30 @@ foam.CLASS({
     {
       name: 'runScript',
       javaCode: `
+      Logger logger = (Logger) x.get("logger");
+      LogLevelFilterLogger loggerFilter = null;
+      while ( logger != null ) {
+        if ( logger instanceof LogLevelFilterLogger ) {
+          loggerFilter = (LogLevelFilterLogger) logger;
+          break;
+        }
+        if ( logger instanceof ProxyLogger ) {
+          logger = ((ProxyLogger) logger).getDelegate();
+        } else {
+          break;
+        }
+      }
+      if ( loggerFilter == null ) {
+        throw new RuntimeException("LogLevelFilterLogger not found");
+      }
+      boolean savedDebugLoggingEnabled = loggerFilter.getLogDebug();
+      boolean savedInfoLoggingEnabled = loggerFilter.getLogInfo();
+
       long startTime = System.currentTimeMillis();
       try {
+        loggerFilter.setLogDebug(getDebugLoggingEnabled());
+        loggerFilter.setLogInfo(getInfoLoggingEnabled());
+
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
@@ -197,6 +231,9 @@ foam.CLASS({
         event.setHostname(System.getProperty("hostname", "localhost"));
         event.setClusterable(this.getClusterable());
         ((DAO) x.get(getEventDaoKey())).put(event);
+
+        loggerFilter.setLogDebug(savedDebugLoggingEnabled);
+        loggerFilter.setLogInfo(savedInfoLoggingEnabled);
       }
       `
     },
@@ -223,7 +260,7 @@ foam.CLASS({
 
         Logger log = (Logger) x.get("logger");
         if ( log == null ) {
-          log = new StdoutLogger();
+          log = StdoutLogger.instance();
         }
         final Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),

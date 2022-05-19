@@ -10,6 +10,7 @@ foam.CLASS({
   name: 'Group',
 
   implements: [
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.EnabledAware'
   ],
@@ -34,7 +35,7 @@ foam.CLASS({
 
   documentation: 'A Group of Users.',
 
-  tableColumns: [ 'id', 'description', 'defaultMenu.id', 'parent.id' ],
+  tableColumns: [ 'id', 'description', 'defaultMenu', 'parent.id' ],
 
   searchColumns: [ 'id', 'description' ],
 
@@ -75,11 +76,14 @@ foam.CLASS({
       menuKeys: ['admin.groups']
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu'
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
     },
     {
       class: 'Reference',
@@ -207,7 +211,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       code: async function(x, permissionId) {
         // TODO: Support inheritance via @
         var arraySink = await this.permissions.junctionDAO
-          .where(foam.mlang.Expressions.EQ(foam.nanos.auth.GroupPermissionJunction.SOURCE_ID, this.id))
+          .where(this.EQ(foam.nanos.auth.GroupPermissionJunction.SOURCE_ID, this.id))
           .select();
         var junctions = arraySink != null && Array.isArray(arraySink.array)
           ? arraySink.array

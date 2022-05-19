@@ -24,7 +24,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'ticketDAO',
-    'user',
+    'subject',
     'hideSummary',
     'stack'
   ],
@@ -73,7 +73,7 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       margin-bottom:20px;
       margin-top:8px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .foam-u2-tag-TextArea {
@@ -109,7 +109,7 @@ foam.CLASS({
     ^ .bg2 {
       margin-top:20px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       padding: 20px;
     }
     ^ .popUpDropDown {
@@ -160,7 +160,7 @@ foam.CLASS({
     'submitAsPopUp',
     {
       name: 'dao',
-      factory: function() { return this.user.tickets; }
+      factory: function() { return this.subject.user.tickets; }
     },
     {
       class: 'String',
@@ -267,7 +267,7 @@ foam.CLASS({
         var ticket = this.Ticket.create({
           requestorEmail: this.requestorEmail,
           requestorName: this.requestorName,
-          userId: this.user.id,
+          userId: this.subject.user.id,
           subject: this.subject,
           status: this.status
         });
@@ -275,7 +275,7 @@ foam.CLASS({
         this.dao.put(ticket).then(function(ticket) {
           if (self.message == "") return;
           var message = self.TicketMessage.create({
-            senderId: self.user.id,
+            senderId: self.subject.user.id,
             dateCreated: new Date(),
             message: self.message,
             type: 'Internal'

@@ -27,7 +27,11 @@ foam.CLASS({
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',
-    'user'
+    'subject'
+  ],
+
+  exports: [
+    'as script'
   ],
 
   javaImports: [
@@ -315,6 +319,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.id;
+      },
+      javaCode: `
+        return getId();
+      `
+    },
+    {
       name: 'createInterpreter',
       args: [
         { name: 'x', type: 'Context' },
@@ -326,7 +340,8 @@ foam.CLASS({
         Language l = getLanguage();
         if ( l == foam.nanos.script.Language.JSHELL ) {
           JShell jShell = new JShellExecutor().createJShell(ps);
-          Script.X_HOLDER[0] = x.put("out",  ps);
+          Script.X_HOLDER[0] = x.put("out",  ps)
+            .put("currentScript", this);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
           return jShell;
@@ -368,7 +383,7 @@ foam.CLASS({
           this.output += Array.from(arguments).join('') + '\n';
         };
         try {
-          with ({ log: log, print: log, x: this.__context__ })
+          with ({ log: log, print: log, x: this.__subContext__ })
             return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
@@ -396,10 +411,8 @@ foam.CLASS({
             shell.setOut(ps);
             shell.eval(getCode());
           } else if ( l == foam.nanos.script.Language.JSHELL ) {
-            String print = null;
             JShell jShell = (JShell) createInterpreter(x,ps);
-            print = new JShellExecutor().execute(x, jShell, getCode(), true);
-            ps.print(print);
+            new JShellExecutor().execute(x, jShell, getCode(), true);
           } else {
             throw new RuntimeException("Script language not supported");
           }
@@ -440,9 +453,7 @@ foam.CLASS({
         var self = this;
         var interval = setInterval(function() {
           self.__context__[self.daoKey].find(self.id).then(function(script) {
-            if ( script.status === self.ScriptStatus.UNSCHEDULED
-              || script.status === self.ScriptStatus.ERROR
-            ) {
+            if ( script.status === self.ScriptStatus.UNSCHEDULED || script.status === self.ScriptStatus.ERROR ) {
               self.copyFrom(script);
               clearInterval(interval);
 
@@ -510,7 +521,7 @@ foam.CLASS({
           self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
             self.copyFrom(script);
-            if ( script.status === self.ScriptStatus.SCHEDULED ) {
+            if ( script.status === self.ScriptStatus.SCHEDULED || script.status === self.ScriptStatus.RUNNING ) {
               self.poll();
             }
           }).catch(function(e) {
@@ -527,7 +538,7 @@ foam.CLASS({
         } else {
           var notification = this.Notification.create();
           notification.userId = this.subject && this.subject.realUser ?
-            this.subject.realUser.id : this.user.id;
+            this.subject.realUser.id : this.subject.user.id;
           notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
           notification.toastState = this.ToastState.REQUESTED;
           notification.severity = foam.log.LogLevel.INFO;
@@ -541,7 +552,7 @@ foam.CLASS({
               this.__context__[this.daoKey].put(this);
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.user.id;
+                this.subject.realUser.id : this.subject.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_COMPLETED;
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
@@ -551,7 +562,7 @@ foam.CLASS({
             (e) => {
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.user.id;
+                this.subject.realUser.id : this.subject.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_FAILED;
               notification.toastSubMessage = e.message || e;
               notification.toastState = this.ToastState.REQUESTED;

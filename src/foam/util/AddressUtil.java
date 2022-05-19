@@ -13,6 +13,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -87,12 +88,16 @@ public class AddressUtil {
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
-        STARTS_WITH_IC(Region.NAME, regionCode)
+        STARTS_WITH_IC(Region.NAME, regionCode),
+        IN(regionCode, Region.ALTERNATIVE_NAMES)
       )
     )).select(new AbstractSink() {
       public void put(Object o, Detachable d) {
         Region region = (Region) o;
-        if ( region.getIsoCode().equals(regionCode) || region.getName().equalsIgnoreCase(regionCode) ) {
+        if ( region.getIsoCode().equals(regionCode) 
+          || region.getName().equalsIgnoreCase(regionCode) 
+          || Arrays.stream(region.getAlternativeNames()).anyMatch(n -> n.equals(regionCode))
+           ) {
           normalizedRegion[0] = region.getCode();
           d.detach();
         }

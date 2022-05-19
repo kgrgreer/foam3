@@ -36,13 +36,10 @@ foam.CLASS({
 
       // set iframe dimensions according to the document / its content
       el.style.height = Math.max(
-        el.contentDocument.documentElement.offsetHeight,
-        el.contentDocument.body.firstElementChild.offsetHeight
+        el.contentDocument.documentElement.scrollHeight,
+        el.contentDocument.body.firstElementChild.scrollHeight
       );
-      el.style.width = Math.max(
-        el.contentDocument.documentElement.offsetWidth,
-        el.contentDocument.body.firstElementChild.offsetWidth
-      );
+      el.style.width = "100%";
     }
   ]
 });

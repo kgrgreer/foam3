@@ -26,7 +26,7 @@ foam.CLASS({
     'stack',
     'userDAO',
     'hideSummary',
-    'user'
+    'subject'
   ],
 
   exports: [
@@ -228,7 +228,7 @@ foam.CLASS({
           type: messageType
         });
 
-        this.user.tickets.put(this.data).then(function(a) {
+        this.subject.user.tickets.put(this.data).then(function(a) {
           if ( ! a ) return;
           if ( self.viewData.message === '' ) {
             self.stack.push({ class: 'foam.support.view.TicketView' });
@@ -239,7 +239,7 @@ foam.CLASS({
             if ( ! a ) return;
             if ( ! self.data.emailId ) {
               self.data.emailId = 2;
-              self.user.tickets.put(self.data);
+              self.subject.user.tickets.put(self.data);
             }
 
             self.stack.push({ class: 'foam.support.view.TicketView' });
@@ -293,7 +293,7 @@ foam.CLASS({
         var self = this;
         this.data.status = 'Pending';
 
-        this.user.tickets.put(this.data).then(function(a){
+        this.subject.user.tickets.put(this.data).then(function(a){
           if ( ! a ){
             throw new Error('No ticket created');
           }
