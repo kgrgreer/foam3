@@ -35,7 +35,9 @@ foam.CLASS({
       documentation: `The amount that the value should increment or decrement by
           when the arrow buttons in the input are clicked.`,
       value: 0.01
-    }
+    },
+    'preventFeedback',
+    'isMerged'
   ],
 
   methods: [
@@ -67,26 +69,20 @@ foam.CLASS({
       // to ensure it's formatted properly.
       this.on('blur', function () {
         var value = self.dataToText(data.get());
-        preventFeedback = true;
+        this.preventFeedback = true;
         view.set('0');
         view.set(value);
-        preventFeedback = false;
+        this.preventFeedback = false;
       });
 
-      var preventFeedback = false;
-      view.sub(function() {
-        if ( preventFeedback ) return;
-        preventFeedback = true;
-        // check bounds on data update and set to boundary values if out of bounds
-        data.set(self.textToData(foam.Number.clamp(self.min, view.get(), self.max)));
-        preventFeedback = false;
-      });
+      this.preventFeedback = false;
+      view.sub(self.isMerged ? self.mergedViewListener : self.viewListener);
 
       data.sub(function() {
-        if ( preventFeedback ) return;
-        preventFeedback = true;
+        if ( this.preventFeedback ) return;
+        this.preventFeedback = true;
         view.set(self.dataToText(data.get()));
-        preventFeedback = false;
+        this.preventFeedback = false;
       });
     },
 
@@ -111,6 +107,29 @@ foam.CLASS({
 
     function textToData(text) {
       return parseFloat(text) || 0;
+    },
+
+    function viewListenerFn() {
+      var data = this.data$;
+      var view = this.attrSlot(null, this.onKey ? 'input' : null);
+      if ( this.preventFeedback ) return;
+      this.preventFeedback = true;
+      // check bounds on data update and set to boundary values if out of bounds
+      data.set(this.textToData(foam.Number.clamp(this.min, view.get(), this.max)));
+      this.preventFeedback = false;
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'viewListener',
+      code: function() { this.viewListenerFn(); }
+    },
+    {
+      name: 'mergedViewListener',
+      isMerged: true,
+      mergeDelay: 1000,
+      code: function() { this.viewListenerFn(); }
     }
   ]
 });
