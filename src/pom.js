@@ -1154,5 +1154,6 @@ foam.POM({
     { name: "foam/demos/csv/CsvUploadDemo",                           flags: "demo&web" },
     { name: "foam/dashboard/view/CenteredDashboardCitationView",      flags: "web" },
     { name: "foam/dashboard/view/GroupedDAOTableWidget",              flags: "web" },
+    { name: "foam/u2/view/SimpleIntervalScheduleView",                flags: "web" }
  ]
 });
