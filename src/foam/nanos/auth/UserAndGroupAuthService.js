@@ -438,6 +438,23 @@ foam.CLASS({
         Returns true if session user matches the anonymus user of the current spid.
       `,
       javaCode: `
+        Session session = x.get(Session.class);
+        if ( session == null ) return false;
+
+        return isUserAnonymous(x, session.getUserId());
+      `
+    },
+    {
+      name: 'isUserAnonymous',
+      documentation: `
+        Returns true if user being checked matches the anonymus user of the current spid.
+      `,
+      javaCode: `
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User user = (User) userDAO.find(userId);
+
+        if ( user == null ) throw new RuntimeException("Cannot find user.");
+
         DAO dao = x.get("localServiceProviderDAO") == null ? (DAO) getX().get("localServiceProviderDAO") : (DAO) x.get("localServiceProviderDAO");
         if ( dao == null )
           throw new NullPointerException("Cannot find localServiceProviderDAO");
@@ -447,8 +464,8 @@ foam.CLASS({
 
         if ( serviceProvider == null ||
              serviceProvider.getAnonymousUser() == 0 || 
-             session == null || session.getUserId() == 0 ||
-             session.getUserId() != serviceProvider.getAnonymousUser() )
+             session == null ||
+             user.getId() != serviceProvider.getAnonymousUser() )
              return false;
         return true;
       `
