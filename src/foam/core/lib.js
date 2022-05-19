@@ -61,12 +61,20 @@ foam.LIB = function LIB(model) {
       typeof model.constants === 'object',
       'Constants must be a map.');
 
-    for ( var key in model.constants ) {
-      var v = root[key] = model.constants[key];
-      if ( foam.Object.isInstance(v) && v.class ) {
-        v = foam.lookup(v.class).create(v);
+    if ( Array.isArray(model.constants) ) {
+      for ( const constSpec of model.constants ) {
+        const constObj = foam.json.parse(constSpec, foam.core.Constant, foam.__context__);
+        if ( constObj.factory ) constObj.factory = constObj.factory.bind(root);
+        constObj.installInProto(root);
       }
-      root[key] = v;
+    } else {
+      for ( var key in model.constants ) {
+        var v = root[key] = model.constants[key];
+        if ( foam.Object.isInstance(v) && v.class ) {
+          v = foam.lookup(v.class).create(v);
+        }
+        root[key] = v;
+      }
     }
   }
 
