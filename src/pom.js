@@ -96,6 +96,7 @@ foam.POM({
     { name: "foam/core/Agency",                                       flags: "js|java" },
     { name: "foam/core/AbstractAgency",                               flags: "js|java" },
     { name: "foam/i18n/TranslationFormatStringParser",                flags: "js" },
+    { name: "foam/color/colorlib",                                    flags: "js" },
     { name: "foam/swift/SwiftLib",                                    flags: "swift" },
     { name: "foam/swift/SwiftClass",                                  flags: "swift" },
     { name: "foam/swift/Outputter",                                   flags: "swift" },
