@@ -74,6 +74,12 @@ foam.CLASS({
       class: 'String',
       name: 'token_',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      visibility: 'HIDDEN',
+      value: true
     }
   ],
 
@@ -128,6 +134,7 @@ foam.CLASS({
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
+      isAvailable: function(showAction) { return showAction; },
       code: async function(X) {
         this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {
