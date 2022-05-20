@@ -12,20 +12,18 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.mlang.Expressions'
   ],
-  documentation: 'Add before merge',
+  documentation: `Renders a wizardView using current controller in an Element`,
 
   imports: [
     'elSlot?',
-    'resolveCurrentAgent',
-    'detachListener?'
+    'detachListener?',
+    'resolveCurrentAgent?'
   ],
 
   properties: [
     {
       name: 'resolved_',
-      documentation: `
-        When set to true the execute returns without adding a wizardView since wizardController.back() calls the execute again even after embedded wizard ahs been resolved
-      `
+      documentation: 'Used to store and detach contextAgent listener'
     }
   ],
   methods: [
@@ -54,7 +52,7 @@ foam.CLASS({
       this.elSlot.add(v);
 
       await new Promise(resolve => {
-        this.resolved_ = this.resolveCurrentAgent.sub(this.cls_.name, () => {
+        this.resolved_ = this.resolveCurrentAgent?.sub(this.cls_.name, () => {
           resolve();
           this.resolveAgent();
         });
@@ -65,7 +63,7 @@ foam.CLASS({
     function resolveAgent() {
       this.elSlot.removeAllChildren();
       this.detachListener?.pub('res');
-      this.resolved_.detach();
+      this.resolved_?.detach();
     }
   ]
 });

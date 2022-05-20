@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.mlang.Expressions'
   ],
-  documentation: 'Add before merge',
+  documentation: 'Creates WizardController',
 
   requires: [
     'foam.u2.wizard.StepWizardConfig',
@@ -24,9 +24,9 @@ foam.CLASS({
   ],
 
   exports: [
-    'wizardController',
+    'config',
     'submitted',
-    'config'
+    'wizardController'
   ],
 
   properties: [

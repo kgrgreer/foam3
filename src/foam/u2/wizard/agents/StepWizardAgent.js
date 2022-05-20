@@ -18,11 +18,11 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'popupMode',
-    'stack',
     'config? as importedConfig',
-    'wizardController?',
-    'resolveCurrentAgent'
+    'popupMode',
+    'resolveCurrentAgent',
+    'stack',
+    'wizardController?'
   ],
 
   requires: [
