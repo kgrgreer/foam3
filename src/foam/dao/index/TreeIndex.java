@@ -46,14 +46,15 @@ public class TreeIndex
   protected Object[] simplifyPredicate(Object state, Predicate predicate) {
     Predicate p = predicate;
     if ( predicate == null || prop_ == null ) {
-      return new Object[]{state, predicate};
+      return new Object[] {state, predicate};
     }
 
     if ( predicate instanceof Binary ) {
       Binary expr = (Binary) predicate;
+
       if ( predicate.getClass().equals(Eq.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
         state = ((TreeNode) state).get((TreeNode) state, expr.getArg2().f(expr), prop_);
-        return new Object[]{state, null};
+        return new Object[] {state, null};
       }
 
       // TODO: Handle NEQ
@@ -63,27 +64,28 @@ public class TreeIndex
 //      }
 
       if ( predicate.getClass().equals(Gt.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
-        state = ( (TreeNode) state ).gt((TreeNode) state, expr.getArg2().f(expr), prop_);
-        return new Object[]{state, null};
+        state = ((TreeNode) state).gt((TreeNode) state, expr.getArg2().f(expr), prop_);
+        return new Object[] {state, null};
       }
 
       if ( predicate.getClass().equals(Gte.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
-        state = ( (TreeNode) state ).gte((TreeNode) state, expr.getArg2().f(expr), prop_);
-        return new Object[]{state, null};
+        state = ((TreeNode) state).gte((TreeNode) state, expr.getArg2().f(expr), prop_);
+        return new Object[] {state, null};
       }
 
       if ( predicate.getClass().equals(Lt.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
-        state = ( (TreeNode) state ).lt((TreeNode) state, expr.getArg2().f(expr), prop_);
-        return new Object[]{state, null};
+        state = ((TreeNode) state).lt((TreeNode) state, expr.getArg2().f(expr), prop_);
+        return new Object[] {state, null};
       }
 
       if ( predicate.getClass().equals(Lte.class) && expr.getArg1().toString().equals(prop_.toString()) ) {
         state = ( (TreeNode) state ).lte((TreeNode) state, expr.getArg2().f(expr), prop_);
-        return new Object[]{state, null};
+        return new Object[] {state, null};
       }
     } else if ( predicate instanceof And ) {
       int length = ((And) predicate).getArgs().length;
-      // Just deepClone the predicate to not alter the original predicate
+
+      // Just clone the predicate to not alter the original predicate
       p = (Predicate) ((And) predicate).shallowClone();
       for ( int i = 0 ; i < length ; i++ ) {
         Predicate arg = ((And) predicate).getArgs()[i];
@@ -95,7 +97,7 @@ public class TreeIndex
         }
 
         if ( arg == null ) {
-          ((And) p).getArgs()[i] = new True();
+          ((And) p).getArgs()[i] = foam.mlang.MLang.TRUE;
         }
       }
 
@@ -105,7 +107,7 @@ public class TreeIndex
 
     if ( p instanceof True ) p = null;
 
-    return new Object[]{state, p};
+    return new Object[] {state, p};
   }
 
   public Object put(Object state, FObject value) {
