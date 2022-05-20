@@ -1155,5 +1155,8 @@ foam.POM({
     { name: "foam/demos/csv/CsvUploadDemo",                           flags: "demo&web" },
     { name: "foam/dashboard/view/CenteredDashboardCitationView",      flags: "web" },
     { name: "foam/dashboard/view/GroupedDAOTableWidget",              flags: "web" },
+    { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
+    { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
+    { name: "foam/u2/view/FUIDSearch",                                flags: "web" }
  ]
 });
