@@ -56,6 +56,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.StepWizardConfig',
     'foam.util.async.Sequence'
   ],
@@ -135,6 +136,7 @@ foam.CLASS({
         .add(this.DeveloperModeAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.LoadWizardletsAgent)
+        .add(this.CreateControllerAgent)
         .add(this.StepWizardAgent)
         .add(this.DetachAgent)
         .add(this.SpinnerAgent)
