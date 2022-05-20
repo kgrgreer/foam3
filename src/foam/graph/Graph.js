@@ -28,7 +28,6 @@ foam.CLASS({
         let idsBehind = {};
         let swappedFrom = {};
         while ( i < childNodes.length ) {
-          console.log(i);
           let node = childNodes[i];
 
           // Determine if/what this node should be swapped with
@@ -66,7 +65,7 @@ foam.CLASS({
             // Don't increment `i` if a swap was done
             continue;
           }
-          
+
           swappedFrom = {};
           idsBehind[childNodes[i].data.id] = true;
           i++;
