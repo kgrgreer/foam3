@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
-  name: 'FowAgentWizardlet',
+  name: 'FlowAgentWizardlet',
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
   imports: ['flowAgent?'],
   properties: [
