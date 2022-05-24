@@ -107,53 +107,60 @@ foam.CLASS({
     'themeChange'
   ],
 
-  constants: {
-    MACROS: [
-      'customCSS',
-      'logoBackgroundColour',
-      'font1',
-      'DisplayWidth.XS',
-      'DisplayWidth.SM',
-      'DisplayWidth.MD',
-      'DisplayWidth.LG',
-      'DisplayWidth.XL',
-      'primary1',
-      'primary2',
-      'primary3',
-      'primary4',
-      'primary5',
-      'approval1',
-      'approval2',
-      'approval3',
-      'approval4',
-      'approval5',
-      'secondary1',
-      'secondary2',
-      'secondary3',
-      'secondary4',
-      'secondary5',
-      'warning1',
-      'warning2',
-      'warning3',
-      'warning4',
-      'warning5',
-      'destructive1',
-      'destructive2',
-      'destructive3',
-      'destructive4',
-      'destructive5',
-      'grey1',
-      'grey2',
-      'grey3',
-      'grey4',
-      'grey5',
-      'black',
-      'white',
-      'inputHeight',
-      'inputVerticalPadding',
-      'inputHorizontalPadding'
-    ]
-  },
+  constants: [
+    {
+      name: 'MACROS', 
+      value: [
+        'customCSS',
+        'logoBackgroundColour',
+        'font1',
+        'DisplayWidth.XS',
+        'DisplayWidth.SM',
+        'DisplayWidth.MD',
+        'DisplayWidth.LG',
+        'DisplayWidth.XL',
+        'primary1',
+        'primary2',
+        'primary3',
+        'primary4',
+        'primary5',
+        'approval1',
+        'approval2',
+        'approval3',
+        'approval4',
+        'approval5',
+        'secondary1',
+        'secondary2',
+        'secondary3',
+        'secondary4',
+        'secondary5',
+        'warning1',
+        'warning2',
+        'warning3',
+        'warning4',
+        'warning5',
+        'destructive1',
+        'destructive2',
+        'destructive3',
+        'destructive4',
+        'destructive5',
+        'grey1',
+        'grey2',
+        'grey3',
+        'grey4',
+        'grey5',
+        'black',
+        'white',
+        'inputHeight',
+        'inputVerticalPadding',
+        'inputHorizontalPadding'
+      ]
+    },
+    {
+      name: 'THEME_OVERRIDE_REGEXP',
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+    }
+  ],
 
   messages: [
     { name: 'GROUP_FETCH_ERR',         message: 'Error fetching group' },
@@ -320,7 +327,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.Theme',
       name: 'theme',
-      postSet: function() {
+      postSet: function(o, n) {
+        if ( o && n && o.equals(n)) return;
         this.pub('themeChange');
       }
     },
@@ -455,13 +463,16 @@ foam.CLASS({
       });
 
       // Reload styling on theme change
+      // TODO BEFORE MERGE: Refactor this to work with new theme system
       this.onDetach(this.sub('themeChange', () => {
         for ( const eid in this.styles ) {
-          const text = this.returnExpandedCSS(this.styles[eid]);
-          const el = this.getElementById(eid);
-          if ( text !== el.textContent ) {
-            el.textContent = text;
-          }
+          const style = this.styles[eid];
+          // If cssTokens are still being installed then no need to reinstall
+          if ( ! foam.String.isInstance(style.text) ) continue;
+          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
+          Promise.resolve(text).then( t => {
+            this.replaceStyleTag(t, eid)
+          });
         }
       }));
     },
@@ -648,16 +659,21 @@ foam.CLASS({
 
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
-      if ( text ) {
-        var eid = 'style' + (new Object()).$UID;
-        this.styles[eid] = text;
-
+      if ( ! text ) return;
+      var eid = 'style' + (new Object()).$UID;
+      this.styles[eid] = { text: text, cls: id };
+      if ( foam.String.isInstance(text) ) {
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
           const m = this.MACROS[i];
           text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
         }
-
         this.installCSS(text, id, eid);
+      } else {
+        // If css is a promise add the style tag but add the css only when returned from promise
+        this.installCSS('', id, eid);
+        Promise.resolve(text).then(t => {
+          this.replaceStyleTag(t, eid)
+        });
       }
     },
 
@@ -867,6 +883,15 @@ foam.CLASS({
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
           .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
+      }
+    },
+    function replaceStyleTag(text, eid) {
+      if ( ! text ) return;
+      text = this.returnExpandedCSS(text);
+      this.styles[eid].text = text;
+      const el = this.getElementById(eid);
+      if ( text !== el?.textContent ) {
+        el.textContent = text;
       }
     }
   ]
