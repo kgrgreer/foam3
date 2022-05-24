@@ -91,10 +91,7 @@ foam.CLASS({
             addClass('p-bold').
             add(this.title$).
           end().
-          start(this.Image, {
-            glyph: this.controlGlyph,
-            vars: { fill: this.theme.black }
-          }).
+          start(this.Image, { glyph: this.controlGlyph }).
             addClass(this.myClass('control')).
           end().
         end().
