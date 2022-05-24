@@ -28,7 +28,7 @@ foam.CLASS({
           ['',fullString],
           ['',tokenName]
         ];
-        for ( var i = 0; i < args.length && ! result; i ++) {
+        for ( var i = 0 ; i < args.length && ! result ; i ++) {
           result = await this.tokenValueHelper.apply(self, args[i]);
           if ( result ) {
             if ( result.startsWith('$') )

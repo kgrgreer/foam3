@@ -863,7 +863,7 @@ foam.CLASS({
       text = this.returnExpandedCSS(text);
       this.styles[eid].text = text;
       const el = this.getElementById(eid);
-      if ( text !== el.textContent ) {
+      if ( text !== el?.textContent ) {
         el.textContent = text;
       }
     }
