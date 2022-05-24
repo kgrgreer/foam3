@@ -677,6 +677,7 @@ foam.POM({
     { name: "foam/u2/crunch/wizardflow/RequirementsPreviewAgent",     flags: "web" },
     { name: "foam/u2/crunch/wizardflow/AutoSaveWizardletsAgent",      flags: "web" },
     { name: "foam/u2/crunch/wizardflow/lite/MaybeDAOPutAgent",        flags: "web" },
+    { name: "foam/u2/crunch/wizardflow/lite/CheckGrantedAgent",       flags: "web" },
     { name: "foam/u2/crunch/wizardflow/PutFinalJunctionsAgent",       flags: "web" },
     { name: "foam/u2/crunch/wizardflow/PutFinalPayloadsAgent",        flags: "web" },
     { name: "foam/u2/crunch/wizardflow/TestAgent",                    flags: "web" },
