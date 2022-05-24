@@ -17,7 +17,7 @@ foam.CLASS({
   imports: [
     'elSlot?',
     'detachListener?',
-    'resolveCurrentAgent?'
+    'flowAgent?'
   ],
 
   properties: [
@@ -52,7 +52,7 @@ foam.CLASS({
       this.elSlot.add(v);
 
       await new Promise(resolve => {
-        this.resolved_ = this.resolveCurrentAgent?.sub(this.cls_.name, () => {
+        this.resolved_ = this.flowAgent?.sub(this.cls_.name, () => {
           resolve();
           this.resolveAgent();
         });
