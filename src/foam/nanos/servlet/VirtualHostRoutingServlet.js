@@ -153,7 +153,7 @@ foam.CLASS({
         } else {
           // development
           if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"pom\\"></script>");
+            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"" + appConfig.getPom() + "\\"></script>");
           } else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
             if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);

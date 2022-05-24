@@ -63,13 +63,10 @@ foam.CLASS({
         };
 
         DAO d1 = (DAO) getX().get("localCapabilityDAO");
-        DAO d2 = (DAO) getX().get("localServiceProviderDAO");
 
         d1.select(sink);
-        d2.select(sink);
 
         d1.listen(sink, foam.mlang.MLang.TRUE);
-        d2.listen(sink, foam.mlang.MLang.TRUE);
 
         return m;
       `
@@ -83,7 +80,7 @@ foam.CLASS({
       args: 'String p',
       javaCode: `
         if ( p.startsWith("serviceprovider") ) return true; // TODO: why?
-        
+
         while ( true ) {
           if ( getCapabilityPermissions().containsKey(p) ) return true;
           if ( p.endsWith(".*") ) p = p.substring(0,p.length()-2);
