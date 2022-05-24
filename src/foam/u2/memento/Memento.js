@@ -65,8 +65,6 @@ foam.CLASS({
         // parser & separated string of key=value bindings and store in bs
         var bs = [];
 
-        if ( s && s.indexOf('=') == -1 ) s += '?';
-
         s = this.addRouteKeys(s);
 
         if ( s ) {
@@ -153,6 +151,7 @@ foam.CLASS({
     },
 
     function addRouteKeys(s) {
+      if ( s && s.indexOf('=') == -1 ) s += '?';
       var i = s.indexOf('?');
       if ( i != -1 ) {
         var route = s.substring(0, i).split('/');

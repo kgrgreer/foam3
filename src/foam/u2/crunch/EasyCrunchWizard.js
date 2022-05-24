@@ -110,7 +110,7 @@ foam.CLASS({
         };
       }
 
-      sequence.reconfigure('StepWizardAgent', { config: config });
+      sequence.reconfigure('CreateControllerAgent', { config: config });
       if ( this.skipMode )
         sequence.reconfigure('SkipGrantedAgent', {
           mode: this.skipMode });

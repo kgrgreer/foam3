@@ -23,6 +23,22 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "themeDomainCapabilityJunctionDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.theme.ThemeDomainCapabilityJunction.getOwnClassInfo())
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("themeDomainCapabilityJunctions")
+      .setPm(true)
+      .build()
+  """,
+  "client": "{\"of\":\"foam.nanos.theme.ThemeDomainCapabilityJunction\"}",
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "spThemeDAO",
   "description": "Access to Themes specific to Service Provider",
   "serve": true,

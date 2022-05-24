@@ -16,10 +16,10 @@ foam.CLASS({
   css: `
     ^created {
       font-size: 1.1rem;
-      color: #5e6061;
+      color: /*%GREY2%*/ #5e6061;
     }
     ^description {
-      color: #1e1f21;
+      color: /*%BLACK%*/ #1e1f21;
       width: 100%;
     }
   `,

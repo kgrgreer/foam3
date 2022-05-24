@@ -1713,7 +1713,7 @@ foam.CLASS({
         return this.add(translation);
       }
       console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
     },
 
@@ -2385,23 +2385,44 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyView
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     }
   ],
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
+      return this.toE_(args, X);
+    },
 
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
-
-      e.fromProperty && e.fromProperty(this);
+    function toE_(args, X) {
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
+    },
+
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        el.data$ = X.data$.dot(this.name);
+      }
+
+      el.fromProperty && el.fromProperty(this);
+
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2661,12 +2682,7 @@ foam.CLASS({
         class: 'foam.u2.view.ModeAltView',
         readView: { class: 'foam.u2.view.ReadColorView' },
         writeView: {
-          class: 'foam.u2.MultiView',
-          views: [
-            { class: 'foam.u2.TextField' },
-            { class: 'foam.u2.view.ColorPicker', onKey: true },
-            { class: 'foam.u2.view.ReadColorView' }
-          ]
+          class: 'foam.u2.view.ColorEditView'
         }
       }
     }

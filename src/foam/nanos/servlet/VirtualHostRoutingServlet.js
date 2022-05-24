@@ -52,6 +52,11 @@ foam.CLASS({
       transient: true,
       javaType: 'ServletConfig',
       name: 'servletConfig'
+    },
+    {
+      class: 'String',
+      name: 'controller',
+      value: 'foam.nanos.controller.ApplicationController'
     }
   ],
 
@@ -229,7 +234,7 @@ foam.CLASS({
 
         out.println("<!-- Instantiate FOAM Application Controller -->");
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
-        out.print("<foam\\nclass=\\"net.nanopay.ui.Controller\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
+        out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
         out.println("\\">\\n</foam>");
 

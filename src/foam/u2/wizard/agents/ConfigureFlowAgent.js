@@ -23,8 +23,11 @@ foam.CLASS({
     'pushView',
     'popView',
     'wizardCloseSub',
-    'popupMode'
+    'popupMode',
+    'flowAgent'
   ],
+
+  topics: ['flowAgent'],
 
   requires: [
     'foam.u2.dialog.Popup'

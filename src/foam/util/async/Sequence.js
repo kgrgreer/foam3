@@ -151,6 +151,7 @@ foam.CLASS({
         if ( i >= this.contextAgentSpecs.length ) return Promise.resolve(x);
         if ( this.halted_ ) return Promise.resolve(x);
         let seqspec = this.contextAgentSpecs[i++];
+        let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib

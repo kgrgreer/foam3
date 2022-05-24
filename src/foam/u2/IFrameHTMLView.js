@@ -39,10 +39,7 @@ foam.CLASS({
         el.contentDocument.documentElement.scrollHeight,
         el.contentDocument.body.firstElementChild.scrollHeight
       );
-      el.style.width = Math.max(
-        el.contentDocument.documentElement.scrollWidth,
-        el.contentDocument.body.firstElementChild.scrollWidth
-      );
+      el.style.width = "100%";
     }
   ]
 });
