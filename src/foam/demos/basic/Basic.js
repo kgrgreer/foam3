@@ -432,7 +432,7 @@ foam.CLASS({
     function render() {
       this.addClass().start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
       start('center').tag(this.Terminal, {}, this.terminal$).end();
-    },
+    }
   ],
 
   actions: [
