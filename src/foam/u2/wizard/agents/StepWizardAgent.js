@@ -20,7 +20,7 @@ foam.CLASS({
     'ctrl',
     'config? as importedConfig',
     'popupMode',
-    'resolveCurrentAgent',
+    'flowAgent?',
     'stack',
     'wizardController?'
   ],
@@ -45,7 +45,8 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      if ( ! this.wizardController || ! this.config ) console.warn('what?');
+      if ( ! this.wizardController || ! this.config ) 
+        console.warn('Missing controller or config');
       const usingFormController = this.config && this.config.controller;
 
       const view = usingFormController ? {
@@ -68,7 +69,7 @@ foam.CLASS({
         this.wizardStackBlock.removed.sub(() => {
           resolve();
         })
-        this.resolveCurrentAgent.sub(this.cls_.name,() => {
+        this.flowAgent?.sub(this.cls_.name,() => {
           resolve();
         })
         this.stack.push(this.wizardStackBlock);
