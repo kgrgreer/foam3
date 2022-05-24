@@ -144,6 +144,8 @@ foam.CLASS({
                    ( myConfig.getType() == MedusaType.NERF &&
                      support.getHasMediatorQuorum() ) ) {
                   getLogger().info("baseline dectected");
+                  replaying.updateIndex(x, dagger.getGlobalIndex(x));
+                  replaying.setReplayIndex(replaying.getIndex());
                   ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
                 }
               }
