@@ -35,6 +35,10 @@ foam.CLASS({
       color: #666;
       padding: 0.8rem 0;
       cursor: pointer;
+      /* button overrides */
+      width: 100%;
+      border: none;
+      background: none;
     }
     ^toggle-button {
       font-size: inherit !important;
@@ -82,7 +86,8 @@ foam.CLASS({
       this.
         addClass(this.myClass()).
         enableClass('expanded', this.expanded$).
-        start('div').
+        start('button').
+          attrs({ name: this.TOGGLE.name, 'aria-label': this.TOGGLE.ariaLabel }).
           on('click', this.toggle.bind(this)).
           addClass(this.myClass('toolbar')).
           start('span').
