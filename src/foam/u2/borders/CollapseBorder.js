@@ -17,6 +17,7 @@ foam.CLASS({
   css: `
     ^ {
       position: relative;
+      padding: 0.8rem;
     }
     ^.expanded {
     }
@@ -33,12 +34,14 @@ foam.CLASS({
       left: 1.5vmin;
       top: max(-12px, -2vmin);
       color: #666;
-      padding: 0.8rem 0;
       cursor: pointer;
       /* button overrides */
       width: 100%;
       border: none;
       background: none;
+    }
+    ^.expanded > ^toolbar {
+      padding-bottom: 0.8rem;
     }
     ^toggle-button {
       font-size: inherit !important;
@@ -57,9 +60,6 @@ foam.CLASS({
     ^control svg {
       max-height: 14px;
       fill: /*%BLACK%*/ #000;
-    }
-    ^content {
-      padding-bottom: 0.8rem;
     }
   `,
 
