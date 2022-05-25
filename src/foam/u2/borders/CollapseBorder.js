@@ -58,7 +58,7 @@ foam.CLASS({
       transform: rotate(90deg);
     }
     ^control svg {
-      max-height: 14px;
+      max-height: 1em;
       fill: /*%BLACK%*/ #000;
     }
   `,
