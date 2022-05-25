@@ -1,6 +1,7 @@
 
 const path_ = require('path');
 const fs_ = require('fs');
+const path = require('path');
 
 require('../src/foam_node.js');
 
@@ -11,8 +12,12 @@ const TOOL_DIR = __dirname;
 
 var [argv, X, flags] = require('./processArgs.js')(
   '',
-  { version: '', license: '', pom: 'pom' },
-  { debug: true, java: false, web: true, buildDebug: false }
+  {
+      version: '', license: '', pom: 'pom',
+      buildDebug: false,
+      task: 'CleanBuild'
+  },
+  { debug: true, java: false, web: true }
 );
 
 // FOOBAR only loads FOAM's POM file, so we don't refer to X.pom here
@@ -70,11 +75,8 @@ const main = async function main () {
     });
 
     const ctrl = foam.foobar.FoobarController.create({}, foobarX);
-    for ( const thing of (await ctrl.capabilityDAO.select()).array ) {
-        console.log(thing.id, ...( thing.args ? [thing.args] : [] ));
-    }
 
-    await ctrl.runTask('Build');
+    await ctrl.runTask(X.task);
 }
 
 const mainWithSimpleErrors = async function mainWithSimpleErrors () {

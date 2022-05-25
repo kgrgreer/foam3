@@ -27,6 +27,8 @@ foam.CLASS({
         'foam.foobar.FoobarTemplateUtil',
         'foam.graph.GraphBuilder',
         'foam.graph.GraphTraverser',
+        'foam.graph.TraversalOrder',
+        'foam.graph.WeightPriorityStrategy',
         'foam.util.async.Sequence'
     ],
 
@@ -120,12 +122,19 @@ foam.CLASS({
                 const graph = await (async () => {
                     const rootCapability = await this.capabilityDAO.find(id);
                     const graphBuilder = this.GraphBuilder.create();
-                    await graphBuilder.fromRelationship(rootCapability, 'prerequisites');
+                    await graphBuilder.fromJunction(
+                        rootCapability,
+                        'capabilityDAO',
+                        'prerequisiteCapabilityJunctionDAO',
+                        'priority'
+                    );
                     return graphBuilder.build();
                 })();
 
                 const traverser = this.GraphTraverser.create({
-                    graph
+                    graph,
+                    order: this.TraversalOrder.PRE_ORDER,
+                    weightPriorityStrategy: this.WeightPriorityStrategy.MIN
                 });
                 traverser.sub('process', (_1, _2, { parent, current }) => {
                     if ( ! current.data.of ) return;

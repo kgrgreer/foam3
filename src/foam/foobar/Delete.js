@@ -44,6 +44,7 @@ foam.CLASS({
     methods: [
         async function execute () {
             const absPath = this.path_.resolve(this.path);
+            console.log("\033[31;1mDELETING\033[0m " + absPath);
             
             // Path must be in allowed directories
             for ( const allowedDir of this.allowedDirectories ) {
