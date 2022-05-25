@@ -8,8 +8,17 @@ foam.POM({
     name: 'foobar',
     version: 1,
     files: [
+        { name: 'node/ModelRefine' },
+        { name: 'foobarlib' },
+        { name: 'FoobarTemplateUtil' },
+        { name: 'FoobarCapabilityRefinement' },
+        { name: 'FoobarController' },
         { name: 'Delete' },
         { name: 'Exec' },
         { name: 'CreateDir' }
+    ],
+    journals: [
+        'capabilities.jrl',
+        'prerequisiteCapabilityJunctions.jrl'
     ]
 });
