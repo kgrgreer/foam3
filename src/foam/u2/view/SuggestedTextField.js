@@ -93,6 +93,7 @@
       }
     },
     {
+      class: 'Array',
       name: 'filteredValues'
     },
     {
@@ -128,6 +129,7 @@
       .add(this.slot(this.populate));
     },
     function populate(filteredValues, data, inputFocused){
+      const self = this;
       if ( ! data || ! inputFocused ) return this.E();
       if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
       return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
