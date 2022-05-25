@@ -9,12 +9,8 @@ foam.CLASS({
   name: 'SimpleIntervalScheduleView',
   extends: 'foam.u2.View',
 
-  requires: [
-    'foam.u2.detail.SectionedDetailPropertyView',
-    'foam.u2.layout.Grid',
-    'foam.u2.layout.GUnit'
-  ],
   imports: ['displayWidth?'],
+
   css: `
     ^ {
       width: 100%;
@@ -37,13 +33,6 @@ foam.CLASS({
     function render() {
       var self = this;
       let data = this.data;
-      var el = this.E().style(
-        { 'grid-template-columns': this.displayWidth$.map(dw => {
-            dw = dw || foam.u2.layout.DisplayWidth.XL;
-            return `repeat(${dw.cols}, 1fr)`;
-          })
-        }
-      ).addClass(this.myClass('container'));
       this
       .addClass()
       .start()
