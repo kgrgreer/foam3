@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.borders',
   name: 'SpacingBorder',
   extends: 'foam.u2.Element',
-  documentation: 'A border which adds equal margin to all sides.',
+  documentation: 'A border which adds padding or margin.',
 
   imports: [
     'returnExpandedCSS'
