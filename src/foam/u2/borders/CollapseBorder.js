@@ -9,7 +9,6 @@ foam.CLASS({
   name: 'CollapseBorder',
   extends: 'foam.u2.Controller',
 
-  imports: [ 'theme' ],
   requires: [
     'foam.u2.ActionView',
     'foam.u2.tag.Image'
