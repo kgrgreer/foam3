@@ -86,7 +86,16 @@
       class: 'Enum',
       of: 'foam.time.TimeUnit',
       name: 'frequency',
-      label: '',
+      label: 'Frequency',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          'Day',
+          'Week',
+          'Month',
+          'Year'
+        ]
+      },
       gridColumns: 6,
       visibility: function(repeat) {
         if ( repeat < 1 ) {
