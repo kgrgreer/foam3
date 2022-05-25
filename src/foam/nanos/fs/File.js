@@ -173,7 +173,8 @@ foam.CLASS({
         if ( dataIsSet_ ) return data_;
 
         if ( ! SafetyUtil.isEmpty(this.getDataString()) ) {
-          String          encodedString = this.getDataString().split(",")[1];
+          String[]        s             = this.getDataString().split(",");
+          String          encodedString = s.length != 2 ? "" : s[1];
           byte[]          decodedBytes  = Base64.getDecoder().decode(encodedString);
           InputStream     is            = new ByteArrayInputStream(decodedBytes);
           InputStreamBlob blob          = new foam.blob.InputStreamBlob(is, decodedBytes.length);

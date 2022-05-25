@@ -79,6 +79,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Array',
+      name: 'tabs'
+    },
+    {
       name: 'selected',
       postSet: function(o, n) {
         if ( o ) o.selected = false;
@@ -103,6 +107,8 @@ foam.CLASS({
     function add(tab) {
       if ( Tab.isInstance(tab) ) {
 
+        this.tabs.push(tab);
+
         if ( ! this.selected ) this.selected = tab;
 
         this.tabRow.start('span').
@@ -114,6 +120,16 @@ foam.CLASS({
           br().
           start('div').addClass(this.myClass('bottomEdge')).show(tab.selected$).end().
         end();
+
+        tab.shown$.sub(() => {
+          if ( ! tab.shown && tab.selected ) {
+            for ( var i = 0 ; i < this.tabs.length ; i++ ) {
+              var t = this.tabs[i];
+              if ( t.shown ) this.selected = t;
+              return;
+            }
+          }
+        });
 
         // tab.shown$ = tab.selected$;
         // Rather than using 'shown', setting visibility maintains the size of the

@@ -61,6 +61,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
@@ -138,6 +139,7 @@ foam.CLASS({
           .callIf(this.debugMode, function () {
             this.add(self.DebugAgent)
           })
+          .add(this.CreateControllerAgent)
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
@@ -214,6 +216,7 @@ foam.CLASS({
         .remove('FilterGrantModeAgent')
         .remove('SkipGrantedAgent')
         .remove('RequirementsPreviewAgent')
+        .remove('CreateControllerAgent')
         .remove('StepWizardAgent')
         .remove('MaybeDAOPutAgent')
         .remove('PutFinalPayloadsAgent')
@@ -360,12 +363,10 @@ foam.CLASS({
         capable.capabilityIds.forEach((c) => {
           var seq = this.createCapableWizardSequence(intercept, capable, c);
           p = p.then(() => {
-            return seq.execute().then(x => {
-              return x;
-            });
+            return seq.execute().then(x => x);
           });
-        })
-      })
+        });
+      });
 
       return p;
     }

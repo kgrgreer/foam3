@@ -23,6 +23,7 @@ foam.CLASS({
   requires: [
     'foam.graph.GraphTraverser',
     'foam.graph.TraversalOrder',
+    'foam.graph.WeightPriorityStrategy',
     'foam.nanos.crunch.ui.CapabilityWizardlet',
     'foam.nanos.crunch.ui.LiftingAwareWizardlet',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
@@ -54,7 +55,8 @@ foam.CLASS({
       // Step 1: Traverse capability graph to create wizardlets
       const traverser = this.GraphTraverser.create({
         graph: this.capabilityGraph,
-        order: this.TraversalOrder.POST_ORDER
+        order: this.TraversalOrder.POST_ORDER,
+        weightPriorityStrategy: this.WeightPriorityStrategy.MIN
       });
 
       this.capabilityToPrerequisite = traverser.nodeToDescendants;

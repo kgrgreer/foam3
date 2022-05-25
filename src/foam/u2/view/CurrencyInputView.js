@@ -67,6 +67,8 @@ foam.CLASS({
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-left: none;
       border-radius: 0 3px 3px 0;
+
+      width: 100%;
     }
   `,
 
@@ -146,7 +148,7 @@ foam.CLASS({
               .end()
             .endContext();
           }
-          return self.E().start('p').addClass(self.myClass('label-currency'))
+          return self.E().start('div').addClass(self.myClass('label-currency'))
             .add(self.getDisplayValue())
             .end();
         }));
