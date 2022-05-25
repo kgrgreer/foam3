@@ -93,8 +93,6 @@
       }
     },
     {
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
       name: 'filteredValues'
     },
     {
@@ -127,21 +125,22 @@
           this.inputFocused = false;
         })
       .end()
-      .add(this.slot(function(filteredValues, data, inputFocused) {
-        if ( ! data || ! inputFocused ) return this.E();
-        if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
-        return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
-          this
-           .start(self.rowView, { data: obj })
-             .addClass(self.myClass('row'))
-             .on('mousedown', function() {
-                //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
-                //otherwise when using click the blur gets fired first and the row listener is never called
-                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
+      .add(this.slot(this.populate));
+    },
+    function populate(filteredValues, data, inputFocused){
+      if ( ! data || ! inputFocused ) return this.E();
+      if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
+      return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
+        this
+          .start(self.rowView, { data: obj })
+            .addClass(self.myClass('row'))
+            .on('mousedown', function() {
+             //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
+             //otherwise when using click the blur gets fired first and the row listener is never called
+               self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
              })
-           .end()
-        })
-      }))
+          .end()
+      })
     }
   ],
 

@@ -12,6 +12,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "crunch.crunchlab",
   "label": "Lab",
+  "keywords": ["crunchlab", "crunch lab", "crunch", "lab", "debug crunch", "debug capabilities"],
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {"class":"foam.u2.crunch.CrunchLab"}

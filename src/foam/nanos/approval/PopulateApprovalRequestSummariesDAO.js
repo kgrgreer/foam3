@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'PopulateApprovalRequestSummariesDAO',
   extends: 'foam.dao.ProxyDAO',
@@ -46,7 +46,7 @@
           ProxySink refinedSink = new ProxySink(x, sink) {
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
-              ApprovalRequest approval = (ApprovalRequest) obj;
+              ApprovalRequest approval = (ApprovalRequest) ((FObject) obj).fclone();
 
               populateSummaries(x, approval);
 
@@ -68,7 +68,6 @@
       javaCode:`
         DAO userDAO = (DAO) x.get("userDAO");
         DAO referenceDAO = (DAO) x.get(approval.getDaoKey());
-        approval = (ApprovalRequest) approval.fclone();
 
         // handle createdForSummary
         String createdForSummaryString = approval.getCreatedFor() != 0

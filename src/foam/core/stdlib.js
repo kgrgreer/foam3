@@ -1217,8 +1217,6 @@ foam.LIB({
      * globalThis.some.package.MyClass.
      */
     function registerClass(cls) {
-      if ( typeof cls !== 'object' ) debugger;
-      if ( ! cls.name ) debugger;
       foam.assert(typeof cls === 'object',
         'cls must be an object');
       foam.assert(typeof cls.name === 'string' && cls.name !== '',
@@ -1317,3 +1315,61 @@ foam.LIB({
     }
   ]
 });
+
+foam.LIB({
+  name: 'foam.CSS',
+  methods: [
+    async function getTokenValue(tokenString, cls, ctx, opt_skipNameValidation) {
+      if ( opt_skipNameValidation ) {
+        var [ tokenName, cls ] = [ tokenString, cls ]
+      } else {
+        var [ tokenName, cls ] = foam.CSS.returnTokenAndClass(tokenString, cls);
+      }
+      var result = cls && cls[foam.String.constantize(tokenName)];
+      if ( ! result ) {
+        // Try to find in global tokens
+        // Do we need to do this every time?
+        var defaultsCls = ctx.lookup('foam.u2.CSSTokens');
+        result = defaultsCls[foam.String.constantize(tokenName)];
+      }
+      if ( result?.value?.startsWith('$') ) {
+        // Using await as this method may be overriden with one that returns a promise
+        var ret = await this.getTokenValue(result.value, cls, ctx);
+        return ret || result.fallback || `/* failed token replacement ${tokenString}, ${cls}*/`;
+      }
+      return result?.value ||
+        result?.fallback;
+    },
+    function returnTokenAndClass(tokenString, cls) {
+      tokenString = tokenString.substring(1);
+      if ( tokenString.indexOf('.') != -1 ) {
+        fullString = tokenString;
+        tokenName = tokenString.substring(tokenString.lastIndexOf('.')+1);
+        cls = foam.maybeLookup(tokenString.substring(0,tokenString.lastIndexOf('.'))) || '';
+      } else {
+        tokenName = tokenString;
+        cls = foam.String.isInstance(cls) ? ( foam.maybeLookup(cls) || '' ) : cls;
+        fullString = cls?.id + '.' + tokenName;
+      }
+      return [ tokenName, cls, fullString ]
+    },
+    async function replaceTokens(text, cls, ctx, opt_tokenPattern) {
+      let foundTokens = [];
+      //TODO: This reg exp breaks when tokens have function values like rgb()/hsl()
+      // Need the ) for media queries
+      const tokenPattern = opt_tokenPattern || new RegExp(/\$[^);!]*/, 'g');
+      let tokensToFind = text.match(tokenPattern);
+      if ( ! tokensToFind?.length ) return text;
+      let tokenFinder = ctx?.tokenOverrideService?.getTokenValue || foam.CSS.getTokenValue;
+      for ( var i = 0 ; i < tokensToFind.length ; i++ ) {
+        let sanitizedToken = opt_tokenPattern ? tokensToFind[i].match(/\$[^\*\s]*/)[0] : tokensToFind[i] //if using a non-standard token pattern
+        let replacement = await tokenFinder(sanitizedToken, cls, ctx);
+        foundTokens[tokensToFind[i]] = { sanitizedToken: sanitizedToken, value: replacement}
+      }
+      return text.replace(tokenPattern, function(match) {
+        return foundTokens[match] ? `/*${foundTokens[match].sanitizedToken}*/ ${foundTokens[match].value}` : '/* Token not found */';
+      });
+    }
+  ]
+});
+

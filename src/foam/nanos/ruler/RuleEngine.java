@@ -12,7 +12,6 @@ import foam.nanos.auth.*;
 import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
-
 import java.lang.Exception;
 import java.time.Duration;
 import java.time.Instant;
@@ -69,10 +68,10 @@ public class RuleEngine extends ContextAwareSupport {
     for ( Rule rule : rules ) {
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey(), rule.getId());
       try {
-        if ( stops_.get() ) break;
-        if ( ! isRuleActive(rule)                   ) continue;
-        if ( ! checkPermission(rule, obj)           ) continue;
-        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+        if ( stops_.get()                  ) break;
+        if ( ! isRuleActive(rule)          ) continue;
+        if ( ! checkPermission(rule, obj)  ) continue;
+        if ( ! rule.f(userX_, obj, oldObj) ) continue;
 
         applyRule(rule, obj, oldObj, agency);
       } catch (Exception e) {

@@ -67,6 +67,20 @@ foam.CLASS({
 
       const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
 
+      if ( ! prereqWizardlet.isAvailable ){
+        if ( this.loadIntoPath ) {
+
+          if ( ! initialData ) {
+            initialData = this.of.create({}, this);
+          }
+  
+          this.loadIntoPath$set(initialData, null);
+  
+          return initialData;
+        }
+
+        return null;
+      }
 
       if ( ! prereqWizardlet.of ) {
         console.error(
@@ -89,14 +103,14 @@ foam.CLASS({
 
         if ( ! loadedFromData ) {
           console.error(
-            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toSummary()}`
+            `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toString()}`,
           );
           if ( this.of ) {
             return this.of.create({}, this);
           }
         }
 
-        clonedPrereqWizardletData = loadedFromData.clone();
+        clonedPrereqWizardletData = loadedFromData.clone ? loadedFromData.clone() : loadedFromData;
       } else {
         clonedPrereqWizardletData = prereqWizardletData.clone();
       }

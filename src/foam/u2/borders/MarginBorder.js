@@ -16,12 +16,28 @@ foam.CLASS({
       name: 'margin',
       class: 'String',
       value: '24px'
+    },
+    {
+      name: 'marginVertical',
+      class: 'String',
+      expression: function (margin) {
+        return margin;
+      }
+    },
+    {
+      name: 'marginHorizontal',
+      class: 'String',
+      expression: function (margin) {
+        return margin;
+      }
     }
   ],
 
   methods: [
     function render() {
-      this.style({'margin': this.margin$});
+      this.style({'margin': this.slot(function (marginHorizontal, marginVertical) {
+        return `${marginVertical} ${marginHorizontal}`;
+      })});
     }
   ]
 });
