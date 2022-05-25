@@ -91,7 +91,6 @@ foam.CLASS({
           on('click', this.toggle.bind(this)).
           addClass(this.myClass('toolbar')).
           start('span').
-            addClass(this.myClass('title')).
             addClass('p-bold').
             add(this.title$).
           end().
