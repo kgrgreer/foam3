@@ -28,7 +28,11 @@ p({
     id: 'foam.foobar.tasks.GenJava',
     of: 'foam.foobar.Exec',
     args: {
-        path: '{foobar.toolsDir}/genjava.js'
+        passParentArgs: true,
+        path: '{foobar.toolsDir}/genjava.js',
+        args: [
+            '-outdir={build.javaOutDir}'
+        ]
     }
 })
 

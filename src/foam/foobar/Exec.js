@@ -68,7 +68,8 @@ foam.CLASS({
                 spawnArgs[0] = this.path;
                 spawnArgs[1] = [];
             }
-            if ( this.passParentArgs ) spawnArgs[1].push(...this.args);
+            if ( this.passParentArgs ) spawnArgs[1].push(...this.parentArgs);
+            spawnArgs[1].push(...this.args);
             console.log(`┏┫${spawnArgs[0]} ${spawnArgs[1].join(' ')}┃`);
             const child = this.spawn_(...spawnArgs);
             return await new Promise((rslv, rjct) => {

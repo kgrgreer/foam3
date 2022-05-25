@@ -22,13 +22,13 @@ p({
 // === CLEAN BUILD ===
 p({
     sourceId: 'foam.foobar.tasks.CleanBuild',
-    targetId: 'foam.foobar.tasks.DeleteBuildFolder',
-    priority: 1
+    targetId: 'foam.foobar.tasks.Build',
+    priority: 200
 })
 p({
     sourceId: 'foam.foobar.tasks.CleanBuild',
-    targetId: 'foam.foobar.tasks.Build',
-    priority: 2
+    targetId: 'foam.foobar.tasks.DeleteBuildFolder',
+    priority: 100
 })
 
 // === BUILD JAVA ===
