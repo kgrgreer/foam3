@@ -203,6 +203,8 @@ foam.POM({
     { name: "foam/u2/PropertyView",                                   flags: "web" },
     { name: "foam/u2/LoadingSpinner",                                 flags: "web" },
     { name: "foam/u2/ListCreateController",                           flags: "web" },
+    { name: "foam/u2/CSSToken",                                       flags: "web|java" },
+    { name: "foam/u2/CSSTokens",                                      flags: "web" },
     { name: "foam/u2/view/SearchViewWrapper",                         flags: "web" },
     { name: "foam/u2/view/StringArrayRowView",                        flags: "web" },
     { name: "foam/u2/borders/BrowserSupportBorder",                   flags: "web" },
@@ -217,6 +219,7 @@ foam.POM({
     { name: "foam/u2/borders/SplitScreenGridBorder",                  flags: "web" },
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
     { name: "foam/u2/borders/Block",                                  flags: "web" },
+    { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
     { name: "foam/nanos/u2/navigation/IFrameTopNavigation",           flags: "web" },
     { name: "foam/version/VersionTrait",                              flags: "js" },
     { name: "foam/version/VersionedClass",                            flags: "js" },
@@ -1161,6 +1164,7 @@ foam.POM({
     { name: "foam/dashboard/view/GroupedDAOTableWidget",              flags: "web" },
     { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
-    { name: "foam/u2/view/FUIDSearch",                                flags: "web" }
+    { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
+    { name: "foam/u2/view/SimpleIntervalScheduleView",                flags: "web" }
  ]
 });
