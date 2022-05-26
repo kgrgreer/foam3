@@ -216,6 +216,7 @@ public class JSONFObjectFormatter
         String after = builder().toString();
         reset();
         append(before);
+        addInnerNewline();
         outputKey(getPropertyName(prop));
         append(':');
         append(after);
@@ -224,6 +225,7 @@ public class JSONFObjectFormatter
       append(before);
       return false;
     }
+    addInnerNewline();
     outputProperty(newFObject, prop);
     return true;
   }
@@ -367,16 +369,18 @@ public class JSONFObjectFormatter
     String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
     List      axioms    = getProperties(parentProp, newInfo);
     int       size      = axioms.size();
-    int       delta     = 0;
     int       ids       = 0;
+    int       delta     = 0;
     int       optional  = 0;
 
     String before = builder().toString();
     reset();
+
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
-      if ( prop.includeInID() || prop.compare(oldFObject, newFObject) != 0 ) {
-        if ( delta > 0 ) {
+      if ( prop.includeInID() ||
+           compare(prop, oldFObject, newFObject) != 0 ) {
+        if ( ids > 0 || delta > 0 ) {
           append(',');
           addInnerNewline();
         }
@@ -385,26 +389,32 @@ public class JSONFObjectFormatter
           // IDs only relevant on root objects
           outputProperty(newFObject, prop);
           ids += 1;
-          delta += 1;
         } else {
           if ( calculateDeltaForNestedFObjects_ &&
                prop.get(newFObject) != null && prop.get(oldFObject) != null &&
                prop.get(newFObject).getClass().getCanonicalName().equals(prop.get(oldFObject).getClass().getCanonicalName()) ) {
-            if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
+            if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) {
+              delta += 1;
+              if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
+                optional += 1;
+              }
+            }
           } else {
+            addInnerNewline();
             outputProperty(newFObject, prop);
             delta += 1;
-          }
-          if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
-            optional += 1;
+            if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
+              optional += 1;
+            }
           }
         }
       }
     }
-    String output = builder().toString();
+
+    String after = builder().toString();
     reset();
 
-    if ( delta > ids + optional ) {
+    if ( delta > optional ) {
       append(before);
       append('{');
       addInnerNewline();
@@ -414,9 +424,8 @@ public class JSONFObjectFormatter
         append(':');
         output(newInfo.getId());
         append(',');
-        addInnerNewline();
       }
-      append(output);
+      append(after);
       addInnerNewline();
       append('}');
 

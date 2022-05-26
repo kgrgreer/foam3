@@ -14,6 +14,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.mlang.MLang',
+    'foam.mlang.predicate.*',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.ndiff.NDiffId.Builder'
@@ -59,53 +61,78 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         Logger logger = Loggers.logger(x, this);
-        Sink originalSink = prepareSink(sink);
 
-        // originalSink exists because we need to return the original sink later
-        Sink ourSink = originalSink;
-
-        // TODO: the order/predicate are applied too late and filtering
-        // and sorting do not work correctly in the views. this is something
-        // that will need to be solved later
-
-        ourSink = new ProxySink(x, ourSink) {
-          public void put(Object obj, Detachable sub) {
-            NDiff ndiff = (NDiff)( ((NDiff)obj).fclone() );
+        // select_ operation below will filter by predicate first
+        Predicate deltaPredicate = new AbstractPredicate(x) {
+          @Override
+          public boolean f(Object obj) {
+            if ( predicate != null && ! predicate.f(obj) ) return false;
+            if ( ! ( obj instanceof NDiff ) ) return false;
+            
+            NDiff ndiff = (NDiff)obj;
             FObject initialFObject = ndiff.getInitialFObject();
           
-            // rare - but there's a chance it'll happen
-            if (initialFObject != null) {
-              
-              // we grab the runtime object as a select is running
+            // nullcheck is here for rare, but possible, case the
+            // initial FObject is null
+            if ( initialFObject != null ) { 
+
               String nSpecName = ndiff.getNSpecName();
               DAO dao = (DAO)x.get(nSpecName);
 
-              if (dao != null) {
+              if ( dao != null ) {
                 Object id = initialFObject.getProperty("id");
-                if (id != null) {
+                if ( id != null ) {
+                  // ndiffs are considered changed if
+                  // - record deleted from the runtime dao, or
+                  // - the record does not match the initial one
                   FObject runtimeFObject = dao.find(id);
-
-                  var deletedAtRuntime = runtimeFObject == null;
-
-                  ndiff.setDeletedAtRuntime(deletedAtRuntime);
-                  ndiff.setDelta(deletedAtRuntime || !initialFObject.equals(runtimeFObject));
-                  if (!deletedAtRuntime) {
-                    ndiff.setRuntimeFObject(runtimeFObject);
-                  }
+                  return ( runtimeFObject == null || ! initialFObject.equals(runtimeFObject) );
                 }
-                else {
-                  logger.warning("No ID for initialFObject",initialFObject);  
-                }
-              } else {
-                logger.warning("NDiff points to missing dao", nSpecName);
               }
             }
+            return false;
+          }
+        };
 
+        // we're creating a sink here to apply changes to the results
+        // in real time. originalSink must be returned to the caller,
+        // which is why it's here as its own variable
+        //
+        // TODO: filtering and sorting do not work correctly in the views
+        // because the predicate sent in by the views is applied before
+        // the sink can make changes. we'll need to solve this later
+        Sink originalSink = prepareSink(sink);
+
+        Sink ourSink = originalSink;
+
+        ourSink = new ProxySink(x, ourSink) {
+          public void put(Object obj, Detachable sub) {
+            // we have to call the DAO to get the runtime object
+            // and to set the deletedAtRuntime flag.
+            // looks slow, but the predicate filters out unchanged
+            // ndiffs ahead of time. 
+            // (important: predicate MUST be applied or problems happen)
+
+            NDiff ndiff = (NDiff)( ((NDiff)obj).fclone() );
+            FObject initialFObject = ndiff.getInitialFObject();
+          
+            String nSpecName = ndiff.getNSpecName();
+            DAO dao = (DAO)x.get(nSpecName);
+            Object id = initialFObject.getProperty("id");    
+            FObject runtimeFObject = dao.find(id);
+
+            var deletedAtRuntime = runtimeFObject == null;
+            ndiff.setDeletedAtRuntime(deletedAtRuntime);
+            if ( ! deletedAtRuntime ) {
+              ndiff.setRuntimeFObject(runtimeFObject);
+            }
+            
             super.put(ndiff,sub);
           }
         };
 
-        super.select_(x, ourSink, skip, limit, order, predicate);
+        Predicate p = predicate != null ? MLang.AND(deltaPredicate,predicate) : predicate;
+        super.select_(x, ourSink, skip, limit, order, p);
         
         return originalSink;
         `,

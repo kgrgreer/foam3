@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'ClientSink',
   implements: [ 'foam.dao.Sink' ],
+
   properties: [
     {
       class: 'Stub',

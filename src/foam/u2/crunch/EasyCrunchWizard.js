@@ -52,6 +52,10 @@ foam.CLASS({
       `
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'controller'
+    },
+    {
       class: 'String',
       name: 'view',
       value: 'foam.nanos.crunch.ui.UCJView'
@@ -78,6 +82,10 @@ foam.CLASS({
         Set to true to disabled the creation of Approvables when updating a
         granted UCJ.
       `
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'popup'
     }
   ],
 
@@ -87,12 +95,22 @@ foam.CLASS({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
         rejectOnInvalidatedSave: this.rejectOnInvalidatedSave,
+        controller: this.controller,
         requireAll: this.requireAll,
         ...(this.incrementalWizard ? {
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})
       });
-      sequence.reconfigure('StepWizardAgent', { config: config });
+
+      if ( this.popup ) {
+        sequence.reconfigure('ConfigureFlowAgent', { popupMode: true });
+        config.popup = {
+          class: 'foam.u2.dialog.Popup',
+          ...this.popup,
+        };
+      }
+
+      sequence.reconfigure('CreateControllerAgent', { config: config });
       if ( this.skipMode )
         sequence.reconfigure('SkipGrantedAgent', {
           mode: this.skipMode });

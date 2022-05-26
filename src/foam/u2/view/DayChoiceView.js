@@ -38,7 +38,7 @@ foam.CLASS({
         }))
         .on('click', this.onClick)
         .add(this.label)
-        .enableClass('h600', this.isSelected$)
+        .enableClass('h600', this.isSelected$);
     }
   ]
 });

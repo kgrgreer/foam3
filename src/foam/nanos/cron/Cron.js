@@ -46,7 +46,6 @@ foam.CLASS({
   sections: [
     {
       name: 'scheduling',
-      isAvailable: function(id) { return !! id; },
       order: 2
     },
     {
@@ -122,8 +121,8 @@ foam.CLASS({
           foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
           if ( support != null &&
                ! support.cronEnabled(x, getClusterable()) ) {
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
-            throw new ClientRuntimeException(this.getClass().getSimpleName() + " " + EXECUTION_DISABLED);
+            // ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
+            return false;
           }
         }
         return true;
@@ -144,6 +143,13 @@ return getSchedule().getNextScheduledTime(x,
   new Date(System.currentTimeMillis())
 );
 `
+    },
+    {
+      name: 'runScript',
+      code: `
+        super.runScript();
+        getSchedule().postExecution();
+      `
     }
   ]
 });

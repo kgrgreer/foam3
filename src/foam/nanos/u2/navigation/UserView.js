@@ -69,7 +69,7 @@ foam.CLASS({
       float: right;
       z-index: 10001;
       width: 215px;
-      background: white;
+      background: /*%WHITE%*/ #ffffff;
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
       top: 65px;
       right: 0px;
@@ -128,6 +128,7 @@ foam.CLASS({
             .addClass(this.myClass('carrot'))
           .end()
         .end();
-    }
+    },
+    function otherViews() {}
   ]
 });

@@ -126,6 +126,12 @@ if ( ! dateFound ) {
   throw new IllegalArgumentException("Unable to get next scheduled time");
 }
 return next.getTime();`
+    },
+    {
+      name: 'postExecution',
+      javaCode: `
+        return;
+      `
     }
   ]
 });

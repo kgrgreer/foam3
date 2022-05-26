@@ -73,6 +73,9 @@ foam.CLASS({
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
       `,
       javaCode: `
+        Session session = x.get(Session.class);
+        if ( session != null && session.getUserId() != 0 ) return (Subject) session.getContext().get("subject");
+
         ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
         if ( serviceProvider == null ) {
           throw new AuthorizationException("Service Provider doesn't exist. Unable to authorize anonymous user.");
@@ -83,7 +86,6 @@ foam.CLASS({
           throw new AuthorizationException("Unable to find anonymous user.");
         }
 
-        Session session = x.get(Session.class);
         if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
         session.setUserId(anonymousUser.getId());
         session.setAgentId(0);
@@ -99,6 +101,11 @@ foam.CLASS({
     {
       name: 'getCurrentSubject',
       javaCode: `
+        try {
+          authorizeAnonymous(x);
+        } catch ( AuthorizationException e ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).warning(e);
+        }
         Session session = x.get(Session.class);
         // fetch context and check if not null or user id is 0
         if ( session == null || session.getUserId() == 0 ) {
@@ -112,7 +119,7 @@ foam.CLASS({
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("Group disabled");
         }
-        Subject subject = (Subject) x.get("subject");
+        Subject subject = (Subject) session.getContext().get("subject");
         return subject;
       `
     },
@@ -383,7 +390,7 @@ foam.CLASS({
       javaCode: `
         Session session = x.get(Session.class);
         if ( session != null && session.getUserId() != 0 ) {
-((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "logout", session.getId());
+((foam.nanos.logger.Logger) getX().get("logger")).info(this.getClass().getSimpleName(), "logout", session.getId());
           ((DAO) getLocalSessionDAO()).remove(session);
         }
       `
@@ -431,12 +438,15 @@ foam.CLASS({
         Returns true if session user matches the anonymus user of the current spid.
       `,
       javaCode: `
+        DAO dao = x.get("localServiceProviderDAO") == null ? (DAO) getX().get("localServiceProviderDAO") : (DAO) x.get("localServiceProviderDAO");
+        if ( dao == null )
+          throw new NullPointerException("Cannot find localServiceProviderDAO");
+
         Session session = x.get(Session.class);
-        ServiceProvider serviceProvider = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find((String) x.get("spid"));
-        if ( serviceProvider == null ) {
-          throw new AuthorizationException("Service Provider doesn't exist.");
-        }
-        if ( serviceProvider.getAnonymousUser() == 0 || 
+        ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
+
+        if ( serviceProvider == null ||
+             serviceProvider.getAnonymousUser() == 0 ||
              session == null || session.getUserId() == 0 ||
              session.getUserId() != serviceProvider.getAnonymousUser() )
              return false;

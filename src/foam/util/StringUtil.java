@@ -101,4 +101,17 @@ public class StringUtil {
     }
     return sb.toString();
   }
+
+  /**
+   * Sets the suffix of a string to the provided suffix, will not set the suffix if it's already set
+   * @param s String to add suffix too
+   * @param suffix The suffix to add to the string
+   * @param ignoreCase Whether of not the suffix check is case-sensitive
+   * @return The string s with the suffix set
+   */
+  public static String setSuffix(String s, String suffix, boolean ignoreCase) {
+    if ( suffix.regionMatches(ignoreCase, 0, s, s.length() - suffix.length(), suffix.length()) )
+      return s;
+    return s + suffix;
+  }
 }

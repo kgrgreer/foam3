@@ -37,6 +37,7 @@ foam.CLASS({
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
@@ -271,7 +272,19 @@ foam.CLASS({
         });
 
         addJettyShutdownHook(server);
-        server.setHandler(handler);
+
+        // Install GzipHandler to transparently gzip .js, .svg and .html files
+        GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.addIncludedMimeTypes(
+          "application/javascript",
+          "image/svg+xml",
+          "text/html"
+        );
+        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
+        gzipHandler.setCompressionLevel(9);
+        gzipHandler.setHandler(handler);
+        server.setHandler(gzipHandler);
 
         this.configHttps(server);
 

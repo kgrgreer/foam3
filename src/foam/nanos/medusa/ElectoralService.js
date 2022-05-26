@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.medusa',
   name: 'ElectoralService',
 
+  skeleton: true,
+
   documentation: `Coordinate a single primary medusa mediator. When a quorum of mediators are ONLINE, initiate a vote to determine the primary.`,
 
   methods: [

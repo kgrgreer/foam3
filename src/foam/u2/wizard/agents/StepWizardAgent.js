@@ -18,20 +18,17 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'initialPosition?',
-    'popView',
-    'pushView',
-    'wizardlets'
-  ],
-
-  exports: [
-    'submitted'
+    'config? as importedConfig',
+    'popupMode',
+    'flowAgent?',
+    'stack',
+    'wizardController?'
   ],
 
   requires: [
     'foam.u2.dialog.Popup',
-    'foam.u2.wizard.StepWizardConfig',
-    'foam.u2.wizard.StepWizardController'
+    'foam.u2.stack.StackBlock',
+    'foam.u2.wizard.StepWizardConfig'
   ],
 
   properties: [
@@ -40,39 +37,53 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.StepWizardConfig',
       factory: function() {
-        return this.StepWizardConfig.create();
+        return this.importedConfig || this.StepWizardConfig.create();
       }
     },
-    {
-      name: 'submitted',
-      class: 'Boolean'
-    }
+    'wizardStackBlock'
   ],
 
   methods: [
-    function execute() {
-      return new Promise((resolve, reject) => {
-        var data = this.StepWizardController.create({
-          wizardlets: this.wizardlets,
-          config: this.config,
-          submitted$: this.submitted$,
-          ...(this.initialPosition ? {
-            wizardPosition: this.initialPosition
-          } : {})
-        })
+    async function execute() {
+      if ( ! this.wizardController || ! this.config ) 
+        console.warn('Missing controller or config');
+      const usingFormController = this.config && this.config.controller;
 
-        this.pushView({
-          ...this.config.wizardView,
-          data: data,
-          closeable: true,
-          onClose: (x) => {
-            this.popView(x)
-            resolve();
-          }
-        }, (x) => {
-          resolve();
-        });
+      const view = usingFormController ? {
+        // new approach
+        ...this.config.controller,
+        view: this.config.wizardView 
+      } : {
+        // deprecated
+        ...this.config.wizardView
+      };
+
+      view.data = this.wizardController;
+      view.onClose = this.resolveAgent;
+
+      this.wizardStackBlock = this.StackBlock.create({
+        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {})
       });
+
+      await new Promise(resolve => {
+        this.wizardStackBlock.removed.sub(() => {
+          resolve();
+        })
+        this.flowAgent?.sub(this.cls_.name,() => {
+          resolve();
+        })
+        this.stack.push(this.wizardStackBlock);
+      });
+    }
+  ],
+  listeners: [
+    function resolveAgent() {
+      if ( this.stack.BACK.isEnabled(this.stack.pos) )
+        this.stack.back();
+      else
+        // This is temporarily necessary to fake a StackBlock removal
+        // in case the stack is empty when the wizard is pushed.
+        this.wizardStackBlock.removed.pub();
     }
   ]
 });

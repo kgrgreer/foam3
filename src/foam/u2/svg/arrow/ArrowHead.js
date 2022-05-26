@@ -15,8 +15,9 @@ foam.CLASS({
       value: 'G'
     },
     {
-      name: 'originPos',
-      class: 'Array'
+      class: 'FObjectProperty',
+      of: 'foam.u2.svg.Position',
+      name: 'pos'
     },
     {
       name: 'angle',
@@ -42,19 +43,19 @@ foam.CLASS({
       this
         .start('line')
           .attrs({
-            x1: this.originPos[0],
-            y1: this.originPos[1],
-            x2: this.originPos[0] + Math.sin(a1) * this.size,
-            y2: this.originPos[1] + Math.cos(a1) * this.size,
+            x1: this.pos.x$,
+            y1: this.pos.y$,
+            x2: this.pos.x$.map(x => x + Math.sin(a1) * this.size),
+            y2: this.pos.y$.map(y => y + Math.cos(a1) * this.size),
             stroke: 'black' // TODO: prop
           })
         .end()
         .start('line')
           .attrs({
-            x1: this.originPos[0],
-            y1: this.originPos[1],
-            x2: this.originPos[0] + Math.sin(a2) * this.size,
-            y2: this.originPos[1] + Math.cos(a2) * this.size,
+            x1: this.pos.x$,
+            y1: this.pos.y$,
+            x2: this.pos.x$.map(x => x + Math.sin(a2) * this.size),
+            y2: this.pos.y$.map(y => y + Math.cos(a2) * this.size),
             stroke: 'black' // TODO: prop
           })
         .end()

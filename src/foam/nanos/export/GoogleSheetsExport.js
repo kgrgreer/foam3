@@ -7,6 +7,9 @@
 foam.INTERFACE({
   package: 'foam.nanos.export',
   name: 'GoogleSheetsExport',
+
+  skeleton: true,
+
   methods: [
     {
       name: 'createSheetAndPopulateWithData',

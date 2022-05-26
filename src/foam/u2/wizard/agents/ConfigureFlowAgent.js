@@ -22,8 +22,12 @@ foam.CLASS({
   exports: [
     'pushView',
     'popView',
-    'wizardCloseSub'
+    'wizardCloseSub',
+    'popupMode',
+    'flowAgent'
   ],
+
+  topics: ['flowAgent'],
 
   requires: [
     'foam.u2.dialog.Popup'
@@ -53,6 +57,8 @@ foam.CLASS({
     {
       name: 'pushView',
       class: 'Function',
+      deprecated: true,
+      documentation: 'use stack directly instead',
       expression: function () {
         var self = this;
         return this.popupMode
@@ -76,6 +82,8 @@ foam.CLASS({
     },
     {
       name: 'popView',
+      deprecated: true,
+      documentation: 'use stack directly instead',
       class: 'Function',
       expression: function () {
         var self = this;

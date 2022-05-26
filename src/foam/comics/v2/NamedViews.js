@@ -27,6 +27,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.comics.v2.namedViews',
   name: 'NamedViewInstance',

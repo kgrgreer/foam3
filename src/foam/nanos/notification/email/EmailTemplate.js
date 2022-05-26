@@ -30,7 +30,9 @@ foam.CLASS({
     'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailTemplateEngine',
     'foam.util.SafetyUtil',
     'java.nio.charset.StandardCharsets'
@@ -46,7 +48,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'Template name'
+      documentation: 'Template name - NOTE: EmailTemlateSupport searches on this name, not id',
+      factory: function() { return this.id; },
+      javaFactory: 'return getId();'
     },
     {
       class: 'String',
@@ -141,7 +145,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = new PrefixLogger( new Object[] {
+          this.getClass().getSimpleName(),
+          getName()
+        }, (Logger) x.get("logger"));
+        x = x.put("logger", logger);
 
         if ( emailMessage == null ) {
           throw new NoSuchFieldException("emailMessage is Null");

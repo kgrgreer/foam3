@@ -32,7 +32,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AnonymousSink',
     'foam.dao.index.NoPlan',
-    'foam.mlang.sink.NullSink',
+    'foam.mlang.sink.NullSink'
   ],
 
   constants: {

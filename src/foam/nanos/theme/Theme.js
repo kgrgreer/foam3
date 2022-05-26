@@ -15,6 +15,7 @@ foam.CLASS({
   `,
 
   implements: [
+    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     // REVIEW: implementation properties are class: 'Long' as we have a cyclic reference with User, and hence can't use class: 'Reference'. But even as Long, enable these interfaces causes genjava failures: ERROR: Unhandled promise rejection TypeError: Cannot read property 'id' of null
     // 'foam.nanos.auth.CreatedByAware',
@@ -29,6 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.theme.ThemeGlyphs',
     'foam.u2.layout.DisplayWidth'
   ],
@@ -36,6 +38,11 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
+    'foam.core.X',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Arrays',
     'java.util.HashSet',
@@ -102,42 +109,32 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       section: 'infoSection',
+      writePermissionRequired: true
     },
     {
       class: 'String',
-      name: 'registrationGroup'
+      name: 'registrationGroup',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'description',
       section: 'infoSection',
+      writePermissionRequired: true
     },
     {
       class: 'Boolean',
       name: 'enabled',
       value: true,
       includeInDigest: true,
-      section: 'administration'
+      section: 'administration',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'appName',
       section: 'infoSection',
-    },
-    {
-      class: 'Image',
-      name: 'loginImage',
-      displayWidth: 60,
-      view: {
-        class: 'foam.u2.MultiView',
-        views: [
-          {
-            class: 'foam.u2.tag.TextArea',
-            rows: 4, cols: 80
-          },
-          { class: 'foam.u2.view.ImageView' },
-        ]
-      }
+      writePermissionRequired: true
     },
     {
       class: 'Array',
@@ -148,38 +145,58 @@ foam.CLASS({
       },
       javaFactory: 'return new String[] { "localhost" };',
       includeInDigest: true,
-      section: 'urlMapping'
+      section: 'urlMapping',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'navigationRootMenu',
-      documentation: 'Specifies the root menu to be used in side navigation.'
+      documentation: 'Specifies the root menu to be used in side navigation.',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'settingsRootMenu',
-      documentation: 'Specifies the root menu to be used in top navigation settings drop-down.'
+      documentation: 'Specifies the root menu to be used in top navigation settings drop-down.',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'logoRedirect',
+      writePermissionRequired: true
+    },
+    {
+      class: 'StringArray',
+      name: 'defaultMenu',
+      documentation: 'Menu user redirects to after login.',
+      section: 'navigation',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
+      writePermissionRequired: true
     },
     {
       class: 'Reference',
       targetDAOKey: 'menuDAO',
-      name: 'defaultMenu',
-      documentation: 'Menu user redirects to after login.',
+      name: 'unauthenticatedDefaultMenu',
+      documentation: 'Menu user redirects to before login.',
       of: 'foam.nanos.menu.Menu',
-      section: 'navigation'
+      section: 'navigation',
+      value: 'sign-in',
+      writePermissionRequired: true
     },
     {
       documentation: 'See LocaleSupport for default fallback',
       class: 'String',
       name: 'defaultLocaleLanguage',
+      writePermissionRequired: true
     },
     {
       class: 'Map',
-      name: 'headConfig'
+      name: 'headConfig',
+      writePermissionRequired: true
     },
     {
       class: 'Image',
@@ -196,29 +213,16 @@ foam.CLASS({
           { class: 'foam.u2.view.ImageView' },
         ]
       },
-      section: 'images'
-    },
-    {
-      class: 'Image',
-      name: 'rasterLogo',
-      documentation: 'A raster logo to display in the application. Use when svg is not supported',
-      displayWidth: 60,
-      view: {
-        class: 'foam.u2.MultiView',
-        views: [
-          {
-            class: 'foam.u2.tag.TextArea',
-            rows: 4, cols: 80
-          },
-          { class: 'foam.u2.view.ImageView' },
-        ]
-      },
-      section: 'images'
+      section: 'images',
+      writePermissionRequired: true
     },
     {
       class: 'Image',
       name: 'largeLogo',
       documentation: 'A large logo to display in the application.',
+      factory: function() {
+        return this.logo;
+      },
       displayWidth: 60,
       view: {
         class: 'foam.u2.MultiView',
@@ -230,12 +234,12 @@ foam.CLASS({
           { class: 'foam.u2.view.ImageView' },
         ]
       },
-      section: 'images'
+      section: 'images',
+      writePermissionRequired: true
     },
     {
       class: 'Image',
-      name: 'largeRasterLogo',
-      documentation: 'A large raster logo to display in the application. Use when svg is not supported.',
+      name: 'loginImage',
       displayWidth: 60,
       view: {
         class: 'foam.u2.MultiView',
@@ -247,31 +251,72 @@ foam.CLASS({
           { class: 'foam.u2.view.ImageView' },
         ]
       },
-      section: 'images'
+      section: 'images',
+      writePermissionRequired: true
+    },
+    {
+      class: 'Image',
+      name: 'externalCommunicationImage',
+      factory: function() {
+        return this.logo;
+      },
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images',
+      writePermissionRequired: true
+    },
+    {
+      class: 'Image',
+      name: 'topNavLogo',
+      displayWidth: 60,
+      factory: function() {
+        return this.largeLogoEnabled ? this.largeLogo : this.logo;
+      },
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+      section: 'images',
+      writePermissionRequired: true
     },
     {
       class: 'Boolean',
       name: 'largeLogoEnabled',
       documentation: 'Uses largeLogo image on various views instead of logo.',
-      section: 'images'
+      section: 'images',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'logoBackgroundColour',
       documentation: 'The logo background colour to display in the application.',
-      section: 'images'
+      section: 'images',
+      writePermissionRequired: true
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.ThemeGlyphs',
       name: 'glyphs',
-      documentation: `
-        Glyphs are simple vectors which can be used as menu items
-        or indicators.
-      `.replace('\n',' ').trim(),
+      documentation: 'Glyphs are simple vectors which can be used as menu items or indicators.',
       factory: function () {
         return this.ThemeGlyphs.create();
-      }
+      },
+      writePermissionRequired: true
     },
     {
       class: 'String',
@@ -279,7 +324,8 @@ foam.CLASS({
       documentation: 'A custom top nav view to use.',
       value: 'foam.nanos.u2.navigation.TopNavigation',
       displayWidth: 45,
-      section: 'navigation'
+      section: 'navigation',
+      writePermissionRequired: true
     },
     {
       class: 'String',
@@ -287,200 +333,239 @@ foam.CLASS({
       documentation: 'A custom footer view to use.',
       value: 'foam.nanos.u2.navigation.FooterView',
       displayWidth: 45,
-      section: 'navigation'
+      section: 'navigation',
+      writePermissionRequired: true
     },
     {
       class: 'Code',
       name: 'customCSS',
-      section: 'sectionCss'
+      section: 'sectionCss',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'font1',
-      section: 'sectionCss'
+      section: 'sectionCss',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey1',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey2',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey3',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey4',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey5',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'black',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'white',
-      section: 'colours'
+      section: 'colours',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'inputHeight',
       documentation: 'Used to enforce consistent height across text-based inputs.',
-      section: 'inputs'
+      section: 'inputs',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'inputVerticalPadding',
-      section: 'inputs'
+      section: 'inputs',
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'inputHorizontalPadding',
-      section: 'inputs'
+      section: 'inputs',
+      writePermissionRequired: true
     },
     {
       class: 'foam.core.FObjectProperty',
       name: 'appConfig',
       of: 'foam.nanos.app.AppConfig',
       section: 'applicationSection',
-      factory: function() { return foam.nanos.app.AppConfig.create({}); }
+      factory: function() { return foam.nanos.app.AppConfig.create({}); },
+      writePermissionRequired: true
     },
     {
       class: 'Long',
@@ -501,12 +586,14 @@ foam.CLASS({
             this.add(value);
           });
       },
-      section: 'administration'
+      section: 'administration',
+      writePermissionRequired: true
     },
     {
       class: 'Long',
       name: 'createdByAgent',
       visibility: 'HIDDEN',
+      writePermissionRequired: true
     },
     {
       class: 'DateTime',
@@ -515,7 +602,8 @@ foam.CLASS({
       documentation: 'The date and time the User was last modified.',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      section: 'administration'
+      section: 'administration',
+      writePermissionRequired: true
     },
     {
       class: 'Long',
@@ -580,18 +668,21 @@ foam.CLASS({
       factory: function() { return foam.nanos.app.SupportConfig.create({}, this)},
       javaFactory: `
         return new foam.nanos.app.SupportConfig();
-      `
+      `,
+      writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'customRefinement',
-      displayWidth: 80
+      displayWidth: 80,
+      writePermissionRequired: true
     },
     {
       class: 'Boolean',
       name: 'allowDuplicateEmails',
       section: 'administration',
-      value: false
+      value: false,
+      writePermissionRequired: true
     },
     {
       class: 'FObjectProperty',
@@ -608,7 +699,8 @@ foam.CLASS({
         class: 'foam.u2.view.FObjectPropertyView',
         readView: { class: 'foam.u2.detail.VerticalDetailView' }
       },
-      includeInDigest: true
+      includeInDigest: true,
+      writePermissionRequired: true
     },
     {
       class: 'Array',
@@ -617,8 +709,14 @@ foam.CLASS({
         List of capabilities whose entries should be ignored when querying capabilityDAO.
       `,
       javaPostSet: `
-        setRestrictedCapabilities_(new HashSet<>(Arrays.asList(getRestrictedCapabilities())));
-      `
+        Object[] caps = getRestrictedCapabilities();
+        if ( caps != null && caps.length > 0 ) {
+          setRestrictedCapabilities_(new HashSet<>(Arrays.asList(caps)));
+        } else {
+          setRestrictedCapabilities_(new HashSet());
+        }
+      `,
+      writePermissionRequired: true
     },
     {
       class: 'Object',
@@ -644,6 +742,50 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'authorizeOnCreate',
+      args: 'X x',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "theme.create.*") ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: 'X x',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      // global read
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: 'X x',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if ( auth.check(x, "theme.update."+ this.getId()) ) return;
+        User user = ((Subject) x.get("subject")).getUser();
+        if ( user != null &&
+             user.getSpid().equals(this.getSpid()) )  return;
+
+        throw new AuthorizationException();
+     `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: 'X x',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "theme.remove."+ this.getId()) ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
     {
       name: 'toSummary',
       type: 'String',
@@ -693,13 +835,13 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].push(...t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (Object[]) prop.get(t1);
           var value2 = (Object[]) prop.get(t2);
 
@@ -723,13 +865,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           Object.assign(t1[name], t2[name]);
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var m1 = (Map) prop.get(t1);
           var m2 = (Map) prop.get(t2);
 
@@ -752,13 +895,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].copyFrom(t2[name]);
         }
       },
       javaCode: `
-        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        if ( ! prop.isSet(t1) ) {
+          prop.set(t1, prop.get(t2));
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 

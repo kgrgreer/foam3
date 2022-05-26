@@ -21,6 +21,12 @@ foam.CLASS({
       name: 'name'
     },
     {
+      class: 'String',
+      name: 'pom',
+      value: 'pom',
+      documentation: 'Name of POM file to provide to foam.js loader (minus .js extension).'
+    },
+    {
       documentation: 'Set at startup in bootscript.',
       class: 'String',
       name: 'version',

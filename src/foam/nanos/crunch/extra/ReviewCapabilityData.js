@@ -19,12 +19,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['reviewed'],
-          predicateFactory: function(e) {
-            return e.EQ(
-              foam.nanos.crunch.extra.ReviewCapabilityData.REVIEWED,
-              true
-            );
-          },
+          query: 'reviewed==true',
           errorMessage: 'REVIEW_REQUIRED_ERROR'
         }
       ]

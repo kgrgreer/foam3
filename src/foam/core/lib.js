@@ -15,72 +15,16 @@
  * limitations under the License.
  */
 
-/**
- * Top-Level of foam package
- */
-foam = {
-  ...(globalThis.hasOwnProperty('foam') ? globalThis.foam : {}),
-  isServer: globalThis.FOAM_FLAGS.node,
-  core:     {},
-  util:     {
-    path: function(root, path, opt_ensure) {
-      var a = path.split('.');
-
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        var nextRoot = root[a[i]];
-        if ( nextRoot === undefined ) {
-          if ( opt_ensure ) {
-            nextRoot = root[a[i]] = {};
-          } else {
-            return;
-          }
-        }
-        root = nextRoot;
-      }
-
-      return root;
-    }
-  },
-  language: typeof navigator === 'undefined' ? 'en' : navigator.language,
-  next$UID: (function() {
-    /* Return a unique id. */
-    var id = 1;
-    return function next$UID() { return id++; };
-  })(),
-  SCRIPT: function(m) {
-    m.class = '__Script__';
-
-    // An instance of the script isn't useful at this point so just
-    // execute the code. foam.SCRIPT can be overwritten later to
-    // capture the details of the script if need be.
-
-    // Only execute if the script's flags match the curren runtime flags.
-    if ( m.flags && globalThis.FOAM_FLAGS ) {
-      for ( var i = 0 ; i < m.flags.length ; i++ ) {
-        if ( globalThis.FOAM_FLAGS[m.flags[i]] ) {
-          m.code();
-          return;
-        }
-      }
-      return;
-    }
-
-    m.code();
-  }
-};
-
-
 Object.defineProperty(
   Object.prototype,
   '$UID',
   {
     get: function() {
-      if ( ! Object.hasOwnProperty.call(this, '$UID__') &&
-           ! Object.isFrozen(this) ) {
+      if ( ! Object.hasOwnProperty.call(this, '$UID__') && ! Object.isFrozen(this) ) {
         Object.defineProperty(
-            this,
-            '$UID__',
-            {value: foam.next$UID(), enumerable: false});
+          this,
+          '$UID__',
+          {value: foam.next$UID(), enumerable: false});
       }
       return this.$UID__;
     },
@@ -88,19 +32,6 @@ Object.defineProperty(
   }
 );
 
-
-/**
- * Check for the FOAMLINK_DATA globalThis. If it is set, FOAMLink will be
- * enabled in the server-side classloader
- */
-if ( typeof globalThis.FOAMLINK_DATA !== 'undefined' ) {
-  foam.hasFoamlink = true;
-  foam.foamlink = {
-    dataFile: globalThis.FOAMLINK_DATA
-  };
-}
-
-foam.assert = console.assert.bind(console);
 
 /**
  * Creates a small library in the foam package. A LIB is a collection of
@@ -130,12 +61,18 @@ foam.LIB = function LIB(model) {
       typeof model.constants === 'object',
       'Constants must be a map.');
 
-    for ( var key in model.constants ) {
-      var v = root[key] = model.constants[key];
-      if ( foam.Object.isInstance(v) && v.class ) {
-        v = foam.lookup(v.class).create(v);
+    if ( Array.isArray(model.constants) ) {
+      for ( const v of model.constants ) {
+        root[foam.String.constantize(v.name)] = v.value || v.factory.call(root);
       }
-      root[key] = v;
+    } else {
+      for ( var key in model.constants ) {
+        var v = root[key] = model.constants[key];
+        if ( foam.Object.isInstance(v) && v.class ) {
+          v = foam.lookup(v.class).create(v);
+        }
+        root[key] = v;
+      }
     }
   }
 

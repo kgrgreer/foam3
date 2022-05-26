@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.swift',
   name: 'GenSwift',
-  flags: ['swift'],
+  flags: ['swift','node'],
   requires: [
     'foam.core.Model',
     'foam.swift.Enum',

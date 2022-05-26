@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
@@ -150,7 +151,16 @@ foam.CLASS({
       if ( dao == null )
         return;
 
-      ClassInfo cInfo = dao.getOf();
+      String className = p.getParameter("of");
+      ClassInfo cInfo;
+      try {
+        cInfo = SafetyUtil.isEmpty(className) ? dao.getOf() :
+         ((FObject) Class.forName(className).newInstance()).getClassInfo();
+      } catch ( Throwable t ) {
+        getLogger().error("Failed to get class info", className);
+        cInfo = dao.getOf();
+      }
+
       Predicate pred = new WebAgentQueryParser(cInfo).parse(x, q);
       getLogger().debug(pred.toString());
       dao = dao.where(pred);
@@ -270,11 +280,17 @@ foam.CLASS({
           // throw new ClassCastException(obj.getClass() + " isn't instance of " + dao.getOf());
         }
 
-        // adding system context in case if user has permission to update but not to read
         Object id = obj.getProperty("id");
         if ( id != null &&
-             ! SafetyUtil.isEmpty(id.toString()) ) {
-          FObject old = dao.inX(getX()).find(id);
+          ! SafetyUtil.isEmpty(id.toString()) ) {
+          AuthService auth = (AuthService) x.get("auth");
+          String prefix = obj.getClass().getSimpleName().toLowerCase();
+          String readPermissionAll = String.format("%s.read.*", prefix);
+          String readPermissionId = String.format("%s.read.%s", prefix, id);
+          Boolean hasReadPermission = auth.check(x, readPermissionAll) || auth.check(x, readPermissionId);
+
+          // use system context in case if user has permission to update but not to read
+          FObject old = dao.inX(hasReadPermission ? x : getX()).find(id);
           if ( old != null ) {
             nu = old.fclone();
             nu.copyFrom(obj);

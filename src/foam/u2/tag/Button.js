@@ -147,7 +147,7 @@ foam.CLASS({
     /* Secondary destructive */
 
     ^secondary-destructive{
-      background-color: white;
+      background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%DESTRUCTIVE2%*/ #a61414;
     }
@@ -282,7 +282,7 @@ foam.CLASS({
       height: 100%;
     }
 
-    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    /* SVGs outside themeGlyphs may have their own heights and widths,
     these ensure those are respected rather than imposing new dimensions */
     ^imgSVGIcon {
       display: flex;
@@ -400,6 +400,7 @@ foam.CLASS({
       this.addClass(this.myClass(this.size.label.toLowerCase()));
       this.enableClass(this.myClass('iconOnly'), ! (this.contents || this.label));
       this.enableClass(this.myClass('iconAfter'), this.isIconAfter$);
+      this.enableClass('destructive', this.isDestructive$);
     },
 
     function initCls() {

@@ -57,8 +57,11 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
+    'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
@@ -115,6 +118,7 @@ foam.CLASS({
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
+          .add(this.DeveloperModeAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
@@ -135,6 +139,7 @@ foam.CLASS({
           .callIf(this.debugMode, function () {
             this.add(self.DebugAgent)
           })
+          .add(this.CreateControllerAgent)
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
@@ -157,19 +162,48 @@ foam.CLASS({
         form of capabilities that are stored object-locally rather than in
         association with a user.
       `,
-      code: function createCapableWizardSequence(intercept, capable, x) {
+      code: function createCapableWizardSequence(intercept, capable, capabilityId, x) {
         x = x || this.__subContext__;
         x = x.createSubContext({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capable && capable.capabilityIds[0], x)
+        return this.createWizardSequence(capabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('LoadTopConfig',this.CheckGrantedAgent)
+          .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
+          .add(this.MaybeDAOPutAgent)
+          ;
+      }
+    },
+    {
+      name: 'createTransientWizardSequence',
+      documentation: `
+        A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
+        To use this sequence, a context agent exporting rootCapabilityId should be inserted
+        before CapabilityAdaptAgent; this capability will be set as the requirement for a
+        new BaseCapable object that will be discarded at the end of the sequence.
+      `,
+      code: function createTransientWizardSequence(x) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+        return this.createWizardSequence('no-capability-id', x)
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
+          .remove('SkipGrantedAgent')
+          .remove('CheckRootIdAgent')
+          .remove('CheckPendingAgent')
+          .remove('CheckNoDataAgent')
+          .remove('AutoSaveWizardletsAgent')
+          .remove('SaveAllAgent')
+          .remove('WizardStateAgent') // does not make sense in transient wizards
+          .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
@@ -182,6 +216,7 @@ foam.CLASS({
         .remove('FilterGrantModeAgent')
         .remove('SkipGrantedAgent')
         .remove('RequirementsPreviewAgent')
+        .remove('CreateControllerAgent')
         .remove('StepWizardAgent')
         .remove('MaybeDAOPutAgent')
         .remove('PutFinalPayloadsAgent')
@@ -325,12 +360,12 @@ foam.CLASS({
       var p = Promise.resolve(true);
 
       intercept.capables.forEach(capable => {
-        var seq = this.createCapableWizardSequence(intercept, capable);
-        p = p.then(() => {
-          return seq.execute().then(x => {
-            return x;
+        capable.capabilityIds.forEach((c) => {
+          var seq = this.createCapableWizardSequence(intercept, capable, c);
+          p = p.then(() => {
+            return seq.execute().then(x => x);
           });
-        });
+        })
       })
 
       return p;

@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'DetailPropertyView',
+  mixins: ['foam.nanos.controller.MementoMixin'],
   extends: 'foam.u2.Element',
 
   documentation: 'View for one row/property of a DetailView.',
@@ -55,6 +56,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.initMemento && this.initMemento();
       var prop = this.prop;
 
       this.show(

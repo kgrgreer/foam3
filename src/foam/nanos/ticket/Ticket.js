@@ -12,6 +12,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -39,6 +40,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.Date'
   ],
@@ -51,7 +53,8 @@ foam.CLASS({
     'subject',
     'ticketDAO',
     'ticketStatusDAO',
-    'userDAO'
+    'userDAO',
+    'ticketCommentDAO',
   ],
 
   tableColumns: [
@@ -63,7 +66,10 @@ foam.CLASS({
     'createdBy.legalName',
     'lastModified',
     'status',
-    'title'
+    'title',
+    'comment',
+    'dateCommented',
+    'createdFor'
   ],
 
   messages: [
@@ -76,8 +82,12 @@ foam.CLASS({
       message: 'You have successfully unassigned this ticket'
     },
     {
+      name: 'SUCCESS_CLOSED',
+      message: 'You have successfully closed this ticket'
+    },
+    {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A ticket assigned to you has been updated'
+      message: 'A ticket assigned to you has been updated '
     }
   ],
 
@@ -196,9 +206,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['title', 'type'],
-          predicateFactory: function(e) {
-            return e.NEQ(foam.nanos.ticket.Ticket.TITLE, "");
-          },
+          query: 'title!=""',
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
@@ -214,20 +222,43 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.COMMENT))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
       order: 9
+    },
+    {
+      class: 'String',
+      name: 'dateCommented',
+      value: '',
+      storageTransient: true,
+      section: 'infoSection',
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.CREATED))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
+      order: 10
     },
     {
       class: 'DateTime',
@@ -374,16 +405,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -399,31 +421,42 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
-            Notification notification = new Notification.Builder(x)
+            Notification notification = new TicketNotification.Builder(x)
               .setBody(this.COMMENT_NOTIFICATION)
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
+              .setTicket(this.getId())
               .build();
-            findAssignedTo(x).doNotify(x, notification);
+            try {
+              findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+            } catch (NullPointerException e) {
+              notificationDAO.put_(x, notification);
+            }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-            Notification notification = new Notification.Builder(x)
+            Notification notification = new TicketNotification.Builder(x)
               .setBody(this.COMMENT_NOTIFICATION)
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
+              .setTicket(this.getId())
               .build();
             notificationDAO.put(notification);
           }
         } else if ( getCreatedFor() != 0 ){
-          Notification notification = new Notification.Builder(x)
+          Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
-          findCreatedFor(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getCreatedFor()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         }
       `
     },
@@ -434,19 +467,25 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         if ( getAssignedTo() != 0 ) {
-          Notification notification = new Notification.Builder(x)
+          Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
-            findAssignedTo(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-          Notification notification = new Notification.Builder(x)
+          Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setGroupId(getAssignedToGroup())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
           notificationDAO.put(notification);
         }
@@ -490,9 +529,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
-          throw new AuthorizationException("You don't have permission to update this ticket.");
-        }
+        // The creator of the ticket can update
+        if ( user.getId() == this.getCreatedBy() ) return;
+
+        // The assignee of the ticket can update
+        Ticket oldTicket = (Ticket) ((DAO) x.get("localTicketDAO")).find(this.getId());
+        if ( user.getId() == this.getAssignedTo() || user.getId() == oldTicket.getAssignedTo() ) return;
+
+        // Group with update permission can update
+        if ( auth.check(x, "ticket.update." + this.getId()) ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
@@ -515,14 +562,14 @@ foam.CLASS({
         return true;
       },
       isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
+        return id && status !== 'CLOSED';
       },
       code: function() {
         this.status = 'CLOSED';
         this.assignedTo = 0;
         this.ticketDAO.put(this).then(function(ticket) {
           this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
         }.bind(this));
       }
     },

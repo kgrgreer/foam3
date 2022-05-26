@@ -84,7 +84,7 @@ foam.CLASS({
       this.qualifier = predicate.cls_.name;
       this.amount = predicate.arg2.value;
     },
-    
+
     function render() {
       this
         .addClass(this.myClass())
@@ -142,7 +142,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-tag-Select {
-      background-color: white;
+      background-color: /*%WHITE%*/ #ffffff;
       border-radius: 2px;
       border: 1px solid #dce0e7;
       color: /*%BLACK%*/ #1e1f21;

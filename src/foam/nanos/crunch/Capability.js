@@ -258,6 +258,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'wizardlet',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Defines a wizardlet to display this capability in a wizard. This
         wizardlet will display after this capability's prerequisites.
@@ -282,6 +284,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.crunch.EasyCrunchWizard',
       name: 'wizardConfig',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Configuration placed on top level capabilities defining various
         configuration options supported by client capability wizards.
@@ -289,6 +293,12 @@ foam.CLASS({
       includeInDigest: false,
       factory: function() {
         return this.EasyCrunchWizard.create({}, this);
+      },
+      adapt: function(_, n) {
+        if ( foam.lib.json.UnknownFObject.isInstance(n) && n.json ) {
+          n = foam.lookup(n.json.class).create(n.json);
+        }
+        return n
       }
     },
     {
@@ -344,6 +354,16 @@ foam.CLASS({
           setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
         }
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'autoGrantPrereqs',
+      value:true,
+      documentation: `
+        If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
+        before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
+        that may not be explicitly put
+      `
     }
   ],
 
@@ -380,7 +400,7 @@ foam.CLASS({
       name: 'implies',
       type: 'Boolean',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',          type: 'Context' },
         { name: 'permission', type: 'String' }
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
@@ -392,10 +412,7 @@ foam.CLASS({
     {
       name: 'prerequisiteImplies',
       type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String permission',
       documentation: `Checks if a permission or capability string is implied by the prerequisites of a capability`,
       javaCode: `
         // temporary prevent infinite loop when checking the permission "predicatedprerequisite.read.*"
@@ -490,7 +507,7 @@ foam.CLASS({
 
             UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
 
-            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj);
+            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, subject);
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
             if ( prereqChainedStatus != CapabilityJunctionStatus.GRANTED ) allGranted = false;
           }
@@ -503,12 +520,16 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
-        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'subject', javaType: 'foam.nanos.auth.Subject' }
       ],
       static: true,
       javaType: 'foam.nanos.crunch.CapabilityJunctionStatus',
       javaCode: `
         CapabilityJunctionStatus status = ucj.getStatus();
+
+        if ( prereq.getStatus() == CapabilityJunctionStatus.AVAILABLE && getAutoGrantPrereqs() )
+          prereq = ((CrunchService) x.get("crunchService")).updateUserJunction(x, subject, prereq.getTargetId(), null, null);
 
         boolean reviewRequired = getReviewRequired();
         CapabilityJunctionStatus prereqStatus = prereq.getStatus();

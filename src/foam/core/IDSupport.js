@@ -133,6 +133,7 @@ foam.CLASS({
       foam.CLASS({
         package: c.package,
         name: c.name + 'Id',
+        flags: c.model_.flags,
         properties: this.propNames.map(function(n) {
           var prop = c.getAxiomByName(n);
           foam.assert(prop, 'Unknown ids property:', c.id + '.' + n);

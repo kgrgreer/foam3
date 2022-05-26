@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'CapabilityAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
+
   documentation: `
   This decorator checks for either a capability or permission string. If the check returns false, delegate to next authservice. Return true otherwise.
   `,
@@ -23,12 +24,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.LimitedSink',
     'foam.dao.ProxySink',
+    'foam.dao.AbstractSink',
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.CapabilityAuthServicePredicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.AssociatedEntity',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -43,20 +46,87 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  properties: [
+    {
+      name: 'capabilityPermissions',
+      class: 'Map',
+      javaFactory: `
+        Map  m    = new java.util.concurrent.ConcurrentHashMap();
+        Sink sink = new AbstractSink() {
+          public void put(Object obj, Detachable sub) {
+            Capability c = (Capability) obj;
+            for ( var j = 0 ; j < c.getPermissionsGranted().length ; j++ ) {
+              String p = c.getPermissionsGranted()[j];
+              m.put(p, Boolean.TRUE);
+            }
+          }
+        };
+
+        DAO d1 = (DAO) getX().get("localCapabilityDAO");
+
+        d1.select(sink);
+
+        d1.listen(sink, foam.mlang.MLang.TRUE);
+
+        return m;
+      `
+    }
+  ],
+
   methods: [
+    {
+      name: 'isMatch',
+      type: 'Boolean',
+      args: 'String p',
+      javaCode: `
+        if ( p.startsWith("serviceprovider") ) return true; // TODO: why?
+
+        while ( true ) {
+          if ( getCapabilityPermissions().containsKey(p) ) return true;
+          if ( p.endsWith(".*") ) p = p.substring(0,p.length()-2);
+          int i = p.lastIndexOf(".");
+          if ( i == -1 ) return false;
+          p = p.substring(0,i+1) + "*";
+        }
+      `
+    },
     {
       name: 'check',
       documentation: `
       Check if the given input string is in the userCapabilityJunctions or implied by a capability in userCapabilityJunctions for the current context user
       `,
       javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
         PM pm = PM.create(getX(), this.getClass(), "check");
         try {
-          return getDelegate().check(x, permission) || ( user != null && capabilityCheck(x, user, permission) ) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission) );
+          User user = ((Subject) x.get("subject")).getUser();
+
+          if ( getDelegate().check(x, permission) ) return true;
+
+          if ( ! isMatch(permission) ) return false;
+
+          return user == null ?
+            checkSpid_(x, (String) x.get("spid"), permission) :
+            capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
         } finally {
           pm.log(getX());
         }
+      `
+    },
+    {
+      name: 'checkUser',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass(), "checkUser");
+      try {
+        if ( getDelegate().checkUser(x, user, permission) ) return true;
+
+        if ( ! isMatch(permission) ) return false;
+
+        return user == null ?
+          checkSpid_(x, (String) x.get("spid"), permission) :
+          capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
+     } finally {
+        pm.log(getX());
+      }
       `
     },
     {
@@ -75,21 +145,12 @@ foam.CLASS({
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
           if ( sp == null ) return false;
-          sp.setX(x);
+          // service provider needs system context (getX())
+          // to bypass auth call in prerequisiteImplies
+          sp.setX(getX());
           return sp.grantsPermission(permission);
         }
         return false;
-      `
-    },
-    {
-      name: 'checkUser',
-      javaCode: `
-        PM pm = PM.create(getX(), this.getClass(), "check");
-        try {
-          return getDelegate().checkUser(x, user, permission) || capabilityCheck(x, user, permission) || ( user == null ? checkSpid_(x, (String) x.get("spid"), permission) : checkSpid_(x, user.getSpid(), permission));
-        } finally {
-          pm.log(getX());
-        }
       `
     },
     {
@@ -117,6 +178,7 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
+
         User realUser = ((Subject) x.get("subject")).getRealUser();
 
         try {
@@ -127,13 +189,14 @@ foam.CLASS({
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
           );
-          Predicate predicate = new CapabilityAuthServicePredicate(x, capabilityDAO, permission);
+          CapabilityAuthServicePredicate predicate = new CapabilityAuthServicePredicate(getX(), capabilityDAO, permission, null);
 
           // Check if a ucj implies the subject.user(business) has this permission
           Predicate userPredicate = AND(
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
+          predicate.setEntity(AssociatedEntity.USER);
           if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
           }
@@ -144,6 +207,7 @@ foam.CLASS({
               EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
               NOT(INSTANCE_OF(AgentCapabilityJunction.class))
             );
+            predicate.setEntity(AssociatedEntity.REAL_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }
@@ -156,6 +220,7 @@ foam.CLASS({
               EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
               INSTANCE_OF(AgentCapabilityJunction.class)
             );
+            predicate.setEntity(AssociatedEntity.ACTING_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
             }

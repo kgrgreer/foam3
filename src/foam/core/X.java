@@ -41,6 +41,8 @@ public interface X {
   public Object getInstanceOf(Object value, Class type);
   public <T> T create(Class<T> type);
   public <T> T create(Class<T> type, Map<String, Object> args);
+  public Object create(String clsName);
+  public Object create(String clsName, Map<String, Object> args);
 
   // cd methods
   X cd(String path);

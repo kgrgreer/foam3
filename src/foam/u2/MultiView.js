@@ -18,8 +18,17 @@ foam.CLASS({
   exports: [ 'parentData as data' ],
 
   css: `
+    ^wrapper {
+      display: flex;
+    }
+    ^wrapper^vertical {
+      flex-direction: column;
+    }
     ^container {
       margin: 2px 8px 2px 0;
+    }
+    ^container:last-child {
+      margin-right: 0;
     }
   `,
 
@@ -48,18 +57,20 @@ foam.CLASS({
       this.addClass();
 
       this.add(this.slot(function(views) {
-        return self.E().forEach(views, function(v) {
-          return this.
-            start().
-              addClass(self.myClass('container')).
-              callIf(self.horizontal, function() { this.style({float: 'left'}); }).
-              start(v, { data$: self.data$ }).
-                call(function() {
-                  self.prop && this.fromProperty && this.fromProperty(self.prop);
-                }).
-              end().
-            end();
-        });
+        return self.E()
+          .addClass(this.myClass('wrapper'))
+          .enableClass(this.myClass('vertical'), this.horizontal$.map(v => ! v))
+          .forEach(views, function(v, i) {
+            return this.
+              start().
+                addClass(self.myClass('container')).
+                start(v, { data$: self.data$ }).
+                  call(function() {
+                    self.prop && this.fromProperty && this.fromProperty(self.prop);
+                  }).
+                end().
+              end();
+          });
       }));
     },
 

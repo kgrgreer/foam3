@@ -41,7 +41,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
       background-position: 50% 50%;
     }
 
@@ -54,7 +54,7 @@ foam.CLASS({
       font-stretch: normal;
       line-height: 1.25;
       letter-spacing: normal;
-      color: #1e1f21;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^card-subtitle {
@@ -112,7 +112,7 @@ foam.CLASS({
       height: 80px;
       border-radius: 40px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      background-color: #ffffff;
+      background-color: /*%WHITE%*/ #ffffff;
     }
 
     ^mode-card {
@@ -127,7 +127,7 @@ foam.CLASS({
       width: 100%;
       height: 100%;
 
-      background-color: white;
+      background-color: /*%WHITE%*/ #ffffff;
 
       border: 2px solid #f3f3f3;
       border-radius: 5px;
@@ -204,7 +204,7 @@ foam.CLASS({
 
     ^tooltip {
       position: absolute;
-      bottom: 12px; 
+      bottom: 12px;
     }
     ^tooltip ^tooltiptext {
       visibility: hidden;

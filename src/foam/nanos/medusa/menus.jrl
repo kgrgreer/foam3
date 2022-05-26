@@ -20,7 +20,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -40,7 +40,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -60,7 +60,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -92,7 +92,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }

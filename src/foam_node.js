@@ -4,69 +4,53 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-(function() {
-  var foam  = globalThis.foam || ( globalThis.foam = {} );
-  // Imports used by the loadServer() loader
-  globalThis.imports = {}; globalThis.imports.path = require('path');
+ var path_ = require('path');
 
-  var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
-  foam.flags = flags;
+var foam = globalThis.foam = {
+  isServer: true,
+  defaultFlags: {
+    node:  false,
+    java:  true,
+    swift: false,
+    debug: true,
+    js:    true,
+    // TODO: the following two shouldn't be needed and should be removed when possible
+    sql:   true,
+    // Needed because flinks code uses but needs to be compiled to java
+    web:   true
+  },
+  setup:    function() {
+    this.setupFlags();
+  },
+  cwd: process.cwd(),
+  /*
+  checkFlags: function(flags) {
+    if ( ! flags ) return true;
 
-  // TODO: remove the genjava flag and let genjava set it
-  if ( ! flags.hasOwnProperty('genjava')  ) flags.genjava = true;
-  if ( ! flags.hasOwnProperty('node')     ) flags.node   = true;
-  if ( ! flags.hasOwnProperty('java')     ) flags.java   = true;
-  if ( ! flags.hasOwnProperty('swift')    ) flags.swift  = false;
-  if ( ! flags.hasOwnProperty('debug')    ) flags.debug  = true;
-  if ( ! flags.hasOwnProperty('js')       ) flags.js     = true;
+    if ( flags.includes('swift') ) return false;
 
-  // TODO: the following two shouldn't be needed and should be removed when possible
-  if ( ! flags.hasOwnProperty('sql')      ) flags.sql    = true;
-  // Needed because flinks code uses but needs to be compiled to java
-  if ( ! flags.hasOwnProperty('web')      ) flags.web    = true;
+    if ( flags.includes('node') ) return false;
 
-  function loadServer() {
-    var caller = flags.src || __filename;
-    var path   = caller.substring(0, caller.lastIndexOf('src/')+4);
+    return true;
+  },
+  */
+  require: function (fn, batch, isProject) {
+    if ( ! fn ) return;
 
-    if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
-
-    return function (filename) {
-      if ( ! filename ) return;
-      // console.log('Loading...', filename);
-      // Set document.currentScript.src, as expected by EndBoot.js
-      let normalPath = globalThis.imports.path.relative(
-        '.',
-        globalThis.imports.path.normalize(path + filename + '.js'));
-      globalThis.document = { currentScript: { src: normalPath } };
-      require(path + filename + '.js');
+    // ???: foam.resolve()?
+    var cwd = foam.cwd;
+    try {
+      var path = path_.resolve(foam.cwd, fn) + '.js';
+      if ( ! isProject && globalThis.foam.seen(path) ) return;
+      foam.cwd = path_.dirname(path);
+      require(path);
+    } finally {
+      foam.cwd = cwd;
     }
+  },
+  loadJSLibs: function(libs) {
+    /* NOP */
   }
+};
 
-  this.FOAM_FILES = function(files) {
-    var load = loadServer();
-    var seen = {};
-    files.
-      filter(f => {
-        // If flags are defined, don't load unless one is true
-        if ( f.flags ) {
-          for ( var i = 0 ; i < f.flags.length ; i++ ) {
-            if ( foam.flags[f.flags[i]] ) {
-              // console.log('Not loading', f, 'because', f.flags[i], 'not set.');
-              return true;
-            }
-          }
-          if ( foam.flags.js ) return true;
-          console.log('****************************** NOT LOADING ', f.name, f.flags);
-          return false;
-        }
-        return true;
-      }).
-      filter(f => { if ( seen[f.name] ) { console.log('duplicate', f.name); return false; } seen[f.name] = true; return true; }).
-      filter(f => (! f.predicate) || f.predicate()).
-      map(function(f) { return f.name; }).
-      forEach(load);
-  };
-
-  loadServer()('files');
-})();
+require('./foam.js');

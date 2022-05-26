@@ -18,15 +18,68 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EXPORT', message: 'Export' },
+    { name: 'EXPORT',        message: 'Export' },
     { name: 'DATA_TYPE_MSG', message: 'Data Type' },
-    { name: 'RESPONSE', message: 'Response' }
+    { name: 'RESPONSE',      message: 'Response' }
   ],
 
   requires: [
-    'foam.u2.ModalHeader',
-    'foam.u2.layout.Cols'
+    'foam.u2.layout.Cols',
+    'foam.u2.ModalHeader'
   ],
+
+  css: `
+    ^{
+      width: 448px;
+      margin: auto;
+      padding-bottom: 24px;
+    }
+    ^ .property-dataType {
+      margin-right: 24px;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      border-radius: 0;
+      padding: 6px 10px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      background-color:/*%WHITE%*/ #ffffff;
+      outline: none;
+      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
+      -webkit-appearance: none;
+    }
+    ^ .foam-u2-ModalHeader {
+      border-bottom: none;
+    }
+    ^ .foam-u2-tag-Select:hover {
+      cursor: pointer;
+    }
+    ^ .foam-u2-tag-Select:focus {
+      border: solid 1px #59A5D5;
+    }
+    ^ .label{
+      font-family: /*%FONT1%*/ 'IBM Plex Sans';
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.1rem;
+      line-height: 14px;
+      color: #000000;
+      margin: 10px 0px 0px 24px;
+    }
+    ^ .note {
+      height: 150px;
+      width: 398px;
+      margin-left: 24px;
+    }
+    ^buttons {
+      padding: 12px 12px 0px 24px;
+      position: relative;
+      top: 10;
+    }
+
+    ^ .foam-u2-ActionView-primary {
+      margin: 12px;
+    }
+  `,
 
   properties: [
     {
@@ -40,7 +93,7 @@ foam.CLASS({
           },
           placeholder: 'Select'
         }, X);
-      },
+      }
     },
     {
       name: 'isDataTypeSelected',
@@ -86,59 +139,6 @@ foam.CLASS({
     'exportDriver'
   ],
 
-  css: `
-    ^{
-      width: 448px;
-      margin: auto;
-      padding-bottom: 24px;
-    }
-    ^ .property-dataType {
-      margin-right: 24px;
-    }
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      border-radius: 0;
-      padding: 6px 10px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none;
-      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
-      -webkit-appearance: none;
-    }
-    ^ .foam-u2-ModalHeader {
-      border-bottom: none;
-    }
-    ^ .foam-u2-tag-Select:hover {
-      cursor: pointer;
-    }
-    ^ .foam-u2-tag-Select:focus {
-      border: solid 1px #59A5D5;
-    }
-    ^ .label{
-      font-family: /*%FONT1%*/ 'IBM Plex Sans';
-      font-style: normal;
-      font-weight: normal;
-      font-size: 1.1rem;
-      line-height: 14px;
-      color: #000000;
-      margin: 10px 0px 0px 24px;
-    }
-    ^ .note {
-      height: 150px;
-      width: 398px;
-      margin-left: 24px;
-    }
-    ^buttons {
-      padding: 12px 12px 0px 24px;
-      position: relative;
-      top: 10;
-    }
-
-    ^ .foam-u2-ActionView-primary {
-      margin: 12px;
-    }
-  `,
-
   methods: [
     function render() {
       var self = this;
@@ -154,7 +154,7 @@ foam.CLASS({
             self.exportDriver = undefined;
           } else {
             self.exportDriverReg = val;
-            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();           
+            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
           }
         });
       });
@@ -298,5 +298,4 @@ foam.CLASS({
       }
     }
   ]
-
 });

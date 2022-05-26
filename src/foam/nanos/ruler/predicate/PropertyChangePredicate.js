@@ -15,7 +15,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
-    'static foam.mlang.MLang.*'
+    'foam.core.PropertyInfo',
+    'static foam.mlang.MLang.NEW_OBJ',
+    'static foam.mlang.MLang.OLD_OBJ'
   ],
   properties: [
     {
@@ -28,12 +30,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        FObject nu  = (FObject) NEW_OBJ.f(obj);
-        FObject old = (FObject) OLD_OBJ.f(obj);
-        return old != null && nu != null &&
-          ! foam.util.SafetyUtil.equals(
-            nu.getProperty(getPropName()),
-            old.getProperty(getPropName()));
+        var nu  = NEW_OBJ.f(obj);
+        var old = OLD_OBJ.f(obj);
+        var prop = (PropertyInfo) ((FObject) nu)
+          .getClassInfo().getAxiomByName(getPropName());
+
+        return old != null && nu != null
+          && prop != null && prop.compare(nu, old) != 0;
       `
     }
   ]
