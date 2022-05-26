@@ -179,16 +179,17 @@ foam.CLASS({
       Map map = new HashMap();
       List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo prop : props ) {
-        if ( prop.isSet(this) ) {
-          Object value = null;
-          if ( "message".equals(prop.getName()) ) {
-            value = message_;
-          } else {
-            value = prop.get(this);
+        Object value = null;
+        if ( "message".equals(prop.getName()) ) {
+          value = message_;
+          if ( value == null ) {
+            value = "";
           }
-          if ( value != null ) {
-            map.put(prop.getName(), String.valueOf(value));
-          }
+        } else if ( prop.isSet(this) ) {
+          value = prop.get(this);
+        }
+        if ( value != null ) {
+          map.put(prop.getName(), String.valueOf(value));
         }
       }
       return map;
