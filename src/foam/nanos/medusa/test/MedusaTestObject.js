@@ -48,41 +48,41 @@
        name: 'networkTransientData',
        networkTransient: true
      },
-     // {
-     //   name: 'specificFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   }
-     // },
-     // {
-     //   name: 'genericFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.core.FObject',
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   },
-     //   view: 'foam.u2.view.AnyView'
-     // },
-     // {
-     //   name: 'storageTransientFobjectWithFactory',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   storageTransient: true,
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   }
-     // },
-     // {
-     //   name: 'storageTransientFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   storageTransient: true
-     // },
      {
        name: 'storageTransientObject',
        class: 'Object',
+       storageTransient: true
+     },
+     {
+       name: 'specificFobject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.MedusaMessage',
+       factory: function() {
+         return foam.nanos.medusa.MedusaMessage.create();
+       }
+     },
+     {
+       name: 'genericFobject',
+       class: 'FObjectProperty',
+       of: 'foam.core.FObject',
+       factory: function() {
+         return foam.nanos.medusa.MedusaMessage.create();
+       },
+       view: 'foam.u2.view.AnyView'
+     },
+     {
+       name: 'storageTransientFobjectWithFactory',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.MedusaMessage',
+       storageTransient: true,
+       factory: function() {
+         return foam.nanos.medusa.MedusaMessage.create();
+       }
+     },
+     {
+       name: 'storageTransientFobject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.MedusaMessage',
        storageTransient: true
      }
    ]
