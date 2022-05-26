@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.boot.NSpec',
     'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
     'foam.nanos.theme.Theme',
@@ -318,16 +319,17 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
       X rtn = getApplyContext();
 
+      validate(x);
+
       DAO localUserDAO  = (DAO) x.get("localUserDAO");
       DAO localGroupDAO = (DAO) x.get("localGroupDAO");
       AuthService auth  = (AuthService) x.get("auth");
-      User user         = (User) localUserDAO.find(getUserId());
+      User user         = getUserId() == 0 ? null : (User) localUserDAO.find(getUserId());
+      if ( getUserId() > 0 ) checkUserEnabled(x, user);
       User agent        = getAgentId() == 0 ? null : (User) localUserDAO.find(getAgentId());
+      if ( getAgentId() > 0 ) checkUserEnabled(x, agent);
 
-      // Validate
-      validate(x, user, agent);
-
-     User subjectUser  = null;
+      User subjectUser  = null;
       User subjectAgent = null;
       if ( rtn != null ) {
         Subject subject = (Subject) rtn.get("subject");
@@ -435,24 +437,15 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       name: 'validate',
-      args: 'Context x, User user, User agent',
+      args: 'Context x',
       javaCode: `
-        if ( user == null || user.getId() < 0 ) {
+        if ( getUserId() < 0 ) {
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( user.getId() > 0 ) {
-          checkUserEnabled(x, user);
-        }
-
-        if ( agent != null && user.getId() != agent.getId() ) {
-          if ( agent.getId() < 0  ) {
-            throw new IllegalStateException("Agent id is invalid.");
-          }
-
-          if ( getAgentId() > 0 ) {
-            checkUserEnabled(x, agent);
-          }
+        if ( getAgentId() < 0 &&
+             getUserId() != getAgentId() ) {
+          throw new IllegalStateException("Agent id is invalid.");
         }
       `
     },
@@ -460,8 +453,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       name: 'checkUserEnabled',
       args: 'Context x, User user',
       javaCode: `
+        if ( user == null ) {
+          Loggers.logger(x, this).warning("User not found", user.getId());
+          throw new foam.nanos.auth.UserNotFoundException();
+        }
+
         if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
-          ((Logger) x.get("logger")).warning("Session", "User not active", user.getId());
+          Loggers.logger(x, this).warning("User not active", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
 

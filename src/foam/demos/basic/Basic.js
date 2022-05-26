@@ -186,7 +186,7 @@ foam.CLASS({
           }).join('');
         },
         return: function() { return '_line = _stack.pop(); break;' },
-        syntaxerror: function(a) {
+        xxxsyntaxerror: function(a) {
           return ' SYNTAX ERROR: ' + a;
         }
       });
@@ -354,7 +354,7 @@ foam.CLASS({
     },
 
     function SOUND(f, d) {
-      this.Beep.create({frequency: 100+4*f, duration: d*60}).play();
+      this.Beep.create({frequency: f, duration: d*60}).play();
       return new Promise(r => this.setTimeout(r, d*60));
     }
   ],
@@ -432,7 +432,7 @@ foam.CLASS({
     function render() {
       this.addClass().start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
       start('center').tag(this.Terminal, {}, this.terminal$).end();
-    },
+    }
   ],
 
   actions: [

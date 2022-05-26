@@ -180,7 +180,7 @@ foam.CLASS({
       name: 'viewMoreAction',
       label: 'View more activities',
       code: function() {
-        if ( ! (this.viewMoreMenuItem) ) {
+        if ( this.viewMoreMenuItem ) {
           this.pushMenu(this.viewMoreMenuItem);
         } else {
           this.stack.push(this.StackBlock.create({
