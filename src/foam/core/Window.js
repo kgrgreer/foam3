@@ -225,6 +225,21 @@ foam.CLASS({
 
     function installCSS(text,  /* optional */ owner, /* optional */ id) {
       /* Create a new <style> tag containing the given CSS code. */
+      if ( text instanceof Promise ) {
+        var id = id ?? 'style' + (new Object()).$UID;
+        this.installCSS_('', owner, id);
+        text.then(t => {
+          const el = this.getElementById(id);
+          if ( t !== el?.textContent ) {
+            el.textContent = t;
+          }
+        })
+      } else {
+        this.installCSS_(text, owner, id);
+      }
+    },
+
+    function installCSS_(text, owner, id) {
       this.document && this.document.head && this.document.head.insertAdjacentHTML(
         'beforeend',
         '<style' +
