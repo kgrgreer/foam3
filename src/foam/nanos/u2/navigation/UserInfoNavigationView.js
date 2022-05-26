@@ -29,12 +29,10 @@ foam.CLASS({
       align-items: center;
     }
     ^userName {
-      color: $grey500;
       font-weight: 600;
       font-size: 1.2rem;
     }
     ^agentName{
-      color: $grey500;
       font-weight: 400;
       font-size: 1.1rem;
     }

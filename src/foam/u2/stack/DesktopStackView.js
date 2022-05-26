@@ -37,6 +37,7 @@ foam.CLASS({
           delete this.popupsOpened[pos + 1];
           popup.close();
         }
+        var X = this.data.getContextFromParent(top.parent, this);
         if ( top.popup && ! this.popupsOpened[pos] ) {
           let cls = this.__subContext__.lookup(top.popup.class) || foam.u2.dialog.Popup;
           let X = this.data.getContextFromParent(top.parent, this);

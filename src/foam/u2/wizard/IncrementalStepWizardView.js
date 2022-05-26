@@ -258,6 +258,8 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('bottom-buttons'))
               .add(this.slot(function (data$isLastScreen, isLoading_) {
+                console.log('sub', this.__subContext__.lookup('foam.u2.ActionView'));
+                console.log('subSub',this.__subSubContext__.lookup('foam.u2.ActionView'));
                 return this.E()
                   .tag(this.data.OPEN_WIZARD_INSPECTOR)
                   .startContext({ data: self })

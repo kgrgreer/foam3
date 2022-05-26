@@ -86,7 +86,6 @@ foam.CLASS({
 
     ^general-field input {
       border: 1px solid $grey200;
-      border-radius: 5px;
       height: 34px;
       width: 100%;
     }

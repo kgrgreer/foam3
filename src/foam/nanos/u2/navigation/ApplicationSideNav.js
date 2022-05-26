@@ -25,6 +25,14 @@ foam.CLASS({
     'foam.nanos.u2.navigation.UserInfoNavigationView'
   ],
 
+  cssTokens: [
+    {
+      name: 'bottomContainerColor',
+      value: '$foam.nanos.menu.VerticalMenu.menuBackground',
+      fallback: '#FFFFFF'
+    }
+  ],
+
   css: `
     ^ {
       align-items: flex-start;
@@ -36,7 +44,7 @@ foam.CLASS({
     }
     ^sticky-container {
       align-content: flex-start;
-      background: $white;
+      background: $bottomContainerColor;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -52,7 +60,6 @@ foam.CLASS({
       top: 0;
     }
     ^divider {
-      border-top: 2px solid $grey200;
       box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1);
     }
     ^bottom-container > * + * {

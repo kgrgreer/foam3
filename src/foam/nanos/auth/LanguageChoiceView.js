@@ -33,8 +33,6 @@ foam.CLASS({
 
   css: `
     ^dropdown span, ^dropdown svg {
-      color: $grey500;
-      fill: $grey500;
       font-size: 1.4rem;
       font-weight: 500;
     }
@@ -63,6 +61,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var self = this;
+      this.__subContext__.register(foam.u2.ActionView, 'foam.u2.ActionView');
       this.supportedLanguages = (await this.languageDAO
         .where(foam.mlang.predicate.Eq.create({
           arg1: foam.nanos.auth.Language.ENABLED,

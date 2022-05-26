@@ -28,13 +28,20 @@ foam.CLASS({
     'foam.dao.ArraySink'
   ],
 
+  cssTokens: [
+    {
+      name: 'menuBackground',
+      value: '$white'
+    }
+  ],
+
   css: `
   ^ input[type="search"] {
     width: 100%;
   }
 
   ^ {
-    background: $white;
+    background: $menuBackground;
     border-right: 1px solid $grey200;
     color: $grey500;
     display: flex;
@@ -46,10 +53,10 @@ foam.CLASS({
     width: 100%;
   }
 
-    ^ .side-nav-view,
-    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
-      width: 100%;
-    }
+  ^ .side-nav-view,
+  ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+    width: 100%;
+  }
 
   ^search {
     box-sizing: border-box;

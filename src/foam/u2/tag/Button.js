@@ -21,12 +21,50 @@ foam.CLASS({
 
   imports: [ 'theme?' ],
 
+  cssTokens: [
+    {
+      name: 'buttonRadius',
+      value: '4px'
+    },
+    {
+      name: 'buttonPrimaryDefaultColor',
+      value: '$primary400'
+    },
+    {
+      name: 'buttonPrimaryHoverColor',
+      value: '$primary500'
+    },
+    {
+      name: 'buttonPrimaryActiveColor',
+      value: '$primary700'
+    },
+    {
+      name: 'buttonPrimaryDisabledColor',
+      value: '$primary200'
+    },
+    {
+      name: 'buttonSecondaryDefaultColor',
+      value: '$grey600'
+    },
+    {
+      name: 'buttonSecondaryHoverColor',
+      value: '$grey50'
+    },
+    {
+      name: 'buttonSecondaryActiveColor',
+      value: '$primary400'
+    },
+    {
+      name: 'buttonSecondaryDisabledColor',
+      value: '$grey200'
+    }
+  ],
   css: `
     ^ {
       font: inherit;
       align-items: center;
       border: 1px solid transparent;
-      border-radius: 4px;
+      border-radius: $buttonRadius;
       box-sizing: border-box;
       display: inline-flex;
       gap: 8px;
@@ -34,6 +72,10 @@ foam.CLASS({
       margin: 0;
       outline: none;
       text-align: center;
+    }
+
+    ^:focus-visible {
+      outline: 1px solid $primary700;
     }
 
     ^iconAfter {
@@ -74,24 +116,27 @@ foam.CLASS({
     }
 
     /* Primary */
-    ^primary, ^primary svg {
-      background-color: $primary400;
+    ^primary{
+      background-color: $buttonPrimaryDefaultColor;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       color: $white;
+    }
+
+    ^primary svg {
       fill: $white;
     }
 
     ^primary:hover:not(:disabled) {
-      background-color: $primary500;
+      background-color: $buttonPrimaryHoverColor;
     }
 
-    ^primary:focus {
-      background-color: $primary500;
-      border-color: $primary700;
+    ^primary:active {
+      background-color: $buttonPrimaryActiveColor;
+      border-color: $buttonPrimaryHoverColor;
     }
 
     ^primary:disabled {
-      background-color: $primary200;
+      background-color: $buttonPrimaryDisabledColor;
     }
 
     /* Primary destructive */
@@ -106,7 +151,7 @@ foam.CLASS({
       background-color: $red500;
     }
 
-    ^primary-destructive:focus {
+    ^primary-destructive:active {
       background-color: $red500;
       border: 1px solid $red700;
       box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
@@ -121,28 +166,29 @@ foam.CLASS({
 
     ^secondary{
       background-color: $white;
-      border: 1px solid $grey400;
-      color: $grey700;
+      border: 1px solid $buttonSecondaryDefaultColor;
+      color: $buttonSecondaryDefaultColor;
     }
 
-    ^secondary svg { fill: $grey700; }
+    ^secondary svg { fill: $buttonSecondaryDefaultColor; }
 
     ^secondary:hover:not(:disabled) {
-      background-color: $grey50;
+      background-color: $buttonSecondaryHoverColor;
     }
 
-    ^secondary:focus {
-      background-color: $grey50;
-      border: 1px solid $primary400;
+    ^secondary:active {
+      color: $buttonPrimaryDefaultColor;
+      background-color: $buttonSecondaryHoverColor;
+      border: 1px solid $buttonPrimaryDefaultColor;
     }
 
     ^secondary:disabled{
-      background-color: $grey50;
-      border-color: $grey200;
-      color: $grey200;
+      background-color: $buttonSecondaryHoverColor;
+      border-color: $buttonSecondaryDisabledColor;
+      color: $buttonSecondaryDisabledColor;
     }
 
-    ^secondary:disabled svg { fill: $grey200; }
+    ^secondary:disabled svg { fill: $buttonSecondaryDisabledColor; }
 
     /* Secondary destructive */
 
@@ -155,17 +201,17 @@ foam.CLASS({
     ^secondary-destructive svg { fill: $red500; }
 
     ^secondary-destructive:hover {
-      background-color: $grey50;
+      background-color: $buttonSecondaryHoverColor;
     }
 
-    ^secondary-destructive:focus {
-      background-color: $grey50;
+    ^secondary-destructive:active {
+      background-color: $buttonSecondaryHoverColor;
       border-color: $red500;
     }
 
     ^secondary-destructive:disabled {
-      background-color: $grey50;
-      border-color: $grey200;
+      background-color: $buttonSecondaryHoverColor;
+      border-color: $buttonSecondaryDisabledColor;
       color: $red700;
     }
 
@@ -176,26 +222,31 @@ foam.CLASS({
     ^tertiary{
       background: none;
       border: 1px solid transparent;
-      color: $grey700;
+      color: $buttonSecondaryDefaultColor;
     }
 
-    ^tertiary svg { fill: $grey700; }
+    ^tertiary svg { fill: $buttonSecondaryDefaultColor; }
 
     ^tertiary:hover:not(:disabled) {
-      background-color: $grey50;
+      background-color: $buttonSecondaryHoverColor;
     }
 
-    ^tertiary:focus,^tertiary:focus svg {
-      background-color: $grey50;
-      color: $primary400;
-      fill: $primary400;
+    ^tertiary:active{
+      background-color: $buttonSecondaryHoverColor;
+      color: $buttonPrimaryDefaultColor;
     }
 
-    ^tertiary:disabled,^tertiary:disabled svg {
-      color: $grey200;
-      fill: $grey200;
+    ^tertiary:active svg {
+      fill: $buttonPrimaryDefaultColor;
     }
 
+    ^tertiary:disabled {
+      color: $buttonSecondaryDisabledColor;
+    }
+
+    ^tertiary:disabled svg {
+      fill: $buttonSecondaryDisabledColor;
+    }
 
     /* Tertiary destructive */
 
@@ -208,26 +259,32 @@ foam.CLASS({
     ^tertiary-destructive svg { fill: $red400; }
 
     ^tertiary-destructive:hover:not(:disabled) {
-      background-color: $grey50;
+      background-color: $buttonSecondaryHoverColor;
     }
 
-    ^tertiary-destructive:focus,^tertiary-destructive:focus svg {
-      background-color: $grey50;
+    ^tertiary-destructive:focus {
+      background-color: $buttonSecondaryHoverColor;
       color: $red400;
+    }
+
+    ^tertiary-destructive:focus svg {
       fill: $red400;
     }
 
-    ^tertiary-destructive:disabled,^tertiary-destructive:diabled svg {
-      color: $grey200;
-      fill: $grey200;
+    ^tertiary-destructive:disabled {
+      color: $buttonSecondaryDisabledColor;
+    }
+
+    ^tertiary-destructive:diabled svg{
+      fill: $buttonSecondaryDisabledColor;
     }
 
     /* Link */
 
     ^link,^link svg {
       background: none;
-      color: $grey700;
-      fill: $grey700;
+      color: $buttonSecondaryDefaultColor;
+      fill: $buttonSecondaryDefaultColor;
     }
 
     ^link:hover:not(:disabled),^link:hover svg {
@@ -237,8 +294,8 @@ foam.CLASS({
     }
 
     ^link:focus,^link:focus svg {
-      color: $primary400;
-      fill: $primary400;
+      color: $buttonPrimaryDefaultColor;
+      fill: $buttonPrimaryDefaultColor;
     }
 
     /* Sizes */
