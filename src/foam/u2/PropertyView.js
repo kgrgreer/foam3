@@ -110,7 +110,7 @@
             }).
             start('span').
               show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
-              start('img').attrs({src: 'http://localhost:8080/images/inline-error-icon.svg', width: 16, height: 16}).end().
+              start('img').attrs({src: '/images/inline-error-icon.svg', width: 16, height: 16}).end().
               start('span').style({'vertical-align': 'top'}).add(' ', errorSlot).end().
             end().
           end().

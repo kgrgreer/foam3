@@ -216,7 +216,6 @@ public class JSONFObjectFormatter
         String after = builder().toString();
         reset();
         append(before);
-        append(',');
         addInnerNewline();
         outputKey(getPropertyName(prop));
         append(':');
@@ -226,7 +225,6 @@ public class JSONFObjectFormatter
       append(before);
       return false;
     }
-    append(',');
     addInnerNewline();
     outputProperty(newFObject, prop);
     return true;
@@ -382,14 +380,13 @@ public class JSONFObjectFormatter
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
       if ( prop.includeInID() ||
            compare(prop, oldFObject, newFObject) != 0 ) {
+        if ( ids > 0 || delta > 0 ) {
+          append(',');
+          addInnerNewline();
+        }
         if ( parentProp == null &&
           prop.includeInID() ) {
           // IDs only relevant on root objects
-          if ( ids > 0 ||
-               delta > 0 ) {
-            append(',');
-            addInnerNewline();
-          }
           outputProperty(newFObject, prop);
           ids += 1;
         } else {
@@ -403,7 +400,6 @@ public class JSONFObjectFormatter
               }
             }
           } else {
-            append(',');
             addInnerNewline();
             outputProperty(newFObject, prop);
             delta += 1;
@@ -427,9 +423,7 @@ public class JSONFObjectFormatter
         outputKey("class");
         append(':');
         output(newInfo.getId());
-        if ( ! after.startsWith(",") ) {
-          append(',');
-        }
+        append(',');
       }
       append(after);
       addInnerNewline();

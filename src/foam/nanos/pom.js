@@ -112,6 +112,8 @@ foam.POM({
     { name: "theme/ThemeDomain",                                                          flags: "js|java" },
     { name: "theme/ThemeDomainsDAO",                                                      flags: "js|java" },
     { name: "theme/Themes",                                                               flags: "js|java" },
+    { name: "theme/customisation/CSSTokenOverride",                                       flags: "js|java" },
+    { name: "theme/customisation/TokenOverrideService",                                   flags: "web" },
     { name: "auth/User",                                                                  flags: "js|java" },
     { name: "auth/UserNotFoundException",                                                 flags: "js|java" },
     { name: "auth/PasswordPolicy",                                                        flags: "js|java" },

@@ -30,6 +30,15 @@ foam.CLASS({
       factory: function () {
         const scenarioMenus = [];
 
+        scenarioMenus.push(this.Menu.create({
+          id: this.id + '/ElementWizardTest',
+          label: 'Element Wizard Test',
+          parent: this.id,
+          handler: foam.nanos.menu.ViewMenu.create({
+            view: { class: 'net.nanopay.cards.test.wizards.ElementTest' }
+          }, this)
+        }));
+
         for ( const packageString of this.packages ) {
           const pkg = packageString.split('.').reduce((o, k) => o?.[k], globalThis);
           if ( pkg === undefined ) throw new Error(

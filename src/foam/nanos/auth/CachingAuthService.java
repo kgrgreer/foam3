@@ -131,20 +131,20 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
     } else if (obj instanceof GroupPermissionJunction) {
-      /*
-      TODO: is breaking CI because it doesn't also recursively clear for sub-groups
-      // select all user from that group and purge all of them.
-      DAO groupDAO                = (DAO) getX().get("localGroupDAO");
-      GroupPermissionJunction gpj = ((GroupPermissionJunction) obj);
-      Group gp                    = (Group) groupDAO.find(gpj.getSourceId());// using groupName
-
-      List<User> usersInGroup = ((foam.dao.ArraySink) gp.getUsers(getX()).select(new foam.dao.ArraySink())).getArray();
-
-      for ( User user : usersInGroup ) {
-        userPermissionCache_.remove(user.getId());
+      GroupPermissionJunction gpj = (GroupPermissionJunction) obj;
+      for ( Object o  : userPermissionCache_.values() ) {
+        Map m = (Map) o;
+        String p = gpj.getTargetId();
+        if ( p.endsWith(".*") ) {
+          p = p.substring(0, p.length()-2);
+          for ( Object o2 : m.keySet() ) {
+            String p2 = (String) o2;
+            if ( p2.startsWith(p) )
+              m.remove(p2);
+          }
+        }
+        m.remove(p);
       }
-      */
-      userPermissionCache_.clear();
       return;
     }
 
