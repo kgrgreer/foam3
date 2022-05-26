@@ -660,7 +660,7 @@ foam.CLASS({
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
       if ( ! text ) return;
-      var eid = 'style' + (new Object()).$UID;
+      var eid = 'style' + foam.next$UID();
       this.styles[eid] = { text: text, cls: id };
       if ( foam.String.isInstance(text) ) {
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {

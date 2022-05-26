@@ -226,7 +226,7 @@ foam.CLASS({
     function installCSS(text,  /* optional */ owner, /* optional */ id) {
       /* Create a new <style> tag containing the given CSS code. */
       if ( text instanceof Promise ) {
-        var id = id ?? 'style' + (new Object()).$UID;
+        var id = id ?? 'style' + foam.next$UID();
         this.installCSS_('', owner, id);
         text.then(t => {
           const el = this.getElementById(id);
