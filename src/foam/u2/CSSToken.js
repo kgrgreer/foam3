@@ -59,6 +59,19 @@ foam.CLASS({
     },
     function installInProto(proto) {
       this.installInClass(proto);
+      const ax = this;
+      Object.defineProperty(
+        proto,
+        this.name + '$',
+        {
+          get: function () {
+            const e = this.ColorExprBuilder.create();
+            return foam.slot.PromiseSlot.create({
+              promise: ax.value(e).f(this)
+            })
+          }
+        }
+      )
     }
   ]
 });

@@ -203,3 +203,49 @@ foam.LIB({
     }
   ]
 });
+
+foam.CLASS({
+  name: 'TokenExpr',
+  properties: [
+    { name: 'arg1' }
+  ],
+  methods: [
+    async function f (o) {
+      return await replaceTokens(o.cls_, o.__context__, this.arg1.f(o));
+    }
+  ]
+});
+
+foam.CLASS({
+  name: 'LightenExpr',
+  properties: [
+    'arg1',
+    {
+      name: 'arg2',
+      adapt: function (_, n) {
+        if ( typeof n === 'number' ) {
+          return this.Literal.create({ arg1: n });
+        }
+        return n;
+      }
+    }
+  ],
+  methods: [
+    async function f (o) {
+      const color = await this.arg1.f(o);
+      const amount = await this.arg2.f(o);
+      return some_math_stuff(color, amount)
+    }
+  ]
+})
+
+foam.CLASS({
+  name: 'ColorExprBuilder',
+
+  methods: [
+    function TOKEN(name) { return this.TokenExpr.create({
+      arg1: name
+    }); },
+  ]
+
+});

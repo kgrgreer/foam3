@@ -17,6 +17,20 @@ foam.CLASS({
     }
   `,
 
+  cssTokens: [
+    {
+      name: 'backgroundColor',
+      value: function (e) {
+        return e.LIGHTEN(
+          e.TOKEN('someOtherToken'),
+          20
+        )
+        return e.FScript("lighten(token('anotherName'), 20)")
+        return e.LIGHTEN(e.COLOR('red'), 20);
+      }
+    }
+  ],
+
   properties: [
     {
       class: 'Color',
