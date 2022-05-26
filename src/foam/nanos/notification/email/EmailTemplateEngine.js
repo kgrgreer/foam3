@@ -72,6 +72,7 @@ foam.CLASS({
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
               alarm.setNote("No value provided for variable " + v);
+              alarm.setClusterable(false);
               ((DAO) x.get("alarmDAO")).put(alarm);
             }
             ((StringBuilder) x.get("sb")).append(value);
