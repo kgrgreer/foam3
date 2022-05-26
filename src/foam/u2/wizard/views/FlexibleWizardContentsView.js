@@ -54,7 +54,7 @@ foam.CLASS({
     function render() {
       const self = this;
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
-        return data$currentSection.createView();
+        return data$currentSection?.createView() ?? this.E();
       })
       let actionsDetachable = foam.core.FObject.create();
       this.addClass()

@@ -389,7 +389,7 @@ public class JSONFObjectFormatter
           // IDs only relevant on root objects
           outputProperty(newFObject, prop);
           ids += 1;
-      } else {
+        } else {
           if ( calculateDeltaForNestedFObjects_ &&
                prop.get(newFObject) != null && prop.get(oldFObject) != null &&
                prop.get(newFObject).getClass().getCanonicalName().equals(prop.get(oldFObject).getClass().getCanonicalName()) ) {
@@ -411,7 +411,7 @@ public class JSONFObjectFormatter
       }
     }
 
-    String output = builder().toString();
+    String after = builder().toString();
     reset();
 
     if ( delta > optional ) {
@@ -425,7 +425,7 @@ public class JSONFObjectFormatter
         output(newInfo.getId());
         append(',');
       }
-      append(output);
+      append(after);
       addInnerNewline();
       append('}');
 
