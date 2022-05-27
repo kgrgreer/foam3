@@ -365,8 +365,8 @@ foam.CLASS({
           p = p.then(() => {
             return seq.execute().then(x => x);
           });
-        })
-      })
+        });
+      });
 
       return p;
     }
