@@ -214,11 +214,12 @@ foam.POM({
     { name: "foam/u2/borders/BackgroundCard",                         flags: "web" },
     { name: "foam/u2/borders/CollapseBorder",                         flags: "web" },
     { name: "foam/u2/borders/ExpandableBorder",                       flags: "web" },
-    { name: "foam/u2/borders/MarginBorder",                           flags: "web" },
+    { name: "foam/u2/borders/SpacingBorder",                          flags: "web" },
     { name: "foam/u2/borders/SplitScreenBorder",                      flags: "web" },
     { name: "foam/u2/borders/SplitScreenGridBorder",                  flags: "web" },
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
     { name: "foam/u2/borders/Block",                                  flags: "web" },
+    { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
     { name: "foam/nanos/u2/navigation/IFrameTopNavigation",           flags: "web" },
     { name: "foam/version/VersionTrait",                              flags: "js" },
     { name: "foam/version/VersionedClass",                            flags: "js" },
@@ -1163,6 +1164,7 @@ foam.POM({
     { name: "foam/dashboard/view/GroupedDAOTableWidget",              flags: "web" },
     { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
-    { name: "foam/u2/view/FUIDSearch",                                flags: "web" }
+    { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
+    { name: "foam/u2/view/SimpleIntervalScheduleView",                flags: "web" }
  ]
 });

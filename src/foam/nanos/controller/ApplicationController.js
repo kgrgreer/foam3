@@ -52,7 +52,6 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
-    'foam.u2.borders.MarginBorder',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
@@ -660,7 +659,7 @@ foam.CLASS({
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
       if ( ! text ) return;
-      var eid = 'style' + (new Object()).$UID;
+      var eid = 'style' + foam.next$UID();
       this.styles[eid] = { text: text, cls: id };
       if ( foam.String.isInstance(text) ) {
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {

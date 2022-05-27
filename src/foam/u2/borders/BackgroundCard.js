@@ -14,6 +14,10 @@ foam.CLASS({
       width: 100%;
       padding: 2.4rem;
       border-radius: 4px;
+      overflow: auto;
+    }
+    ^.disablePadding {
+      padding: 0;
     }
   `,
 
@@ -21,12 +25,19 @@ foam.CLASS({
     {
       class: 'Color',
       name: 'backgroundColor'
+    },
+    {
+      class: 'Boolean',
+      name: 'padding',
+      value: true
     }
   ],
 
   methods: [
     function init() {
-      this.addClass().style({ 'background' : this.backgroundColor$ })
+      this.addClass()
+        .enableClass('disablePadding', this.padding$.map(v => ! v))
+        .style({ 'background' : this.backgroundColor$ })
         .tag('', null, this.content$);
     }
   ]
