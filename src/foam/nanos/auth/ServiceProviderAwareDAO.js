@@ -24,7 +24,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.session.Session',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
@@ -74,7 +74,8 @@ foam.CLASS({
       }
       Subject s = (Subject) x.get("subject");
       User u = s != null ? s.getUser() : null;
-      throw new AuthorizationException("User in context has no access to ServiceProviders. User.id:"+ (u != null ? u.getId() : "0") );
+      Loggers.logger(x, this).debug("User in context has no access to ServiceProviders. User.id:"+ (u != null ? u.getId() : "0"));
+      throw new AuthorizationException();
       `
     },
     {
@@ -116,7 +117,7 @@ foam.CLASS({
              ! SafetyUtil.isEmpty(theme.getSpid()) ) {
           spid = theme.getSpid();
         } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Theme not found", ( theme != null ? theme.getId()+":"+theme.getName() : "null"));
+          Loggers.logger(x, this).warning("Theme not found", ( theme != null ? theme.getId()+":"+theme.getName() : "null"));
         }
       }
       if ( SafetyUtil.isEmpty(spid) ) {
@@ -259,10 +260,10 @@ foam.CLASS({
       `,
       javaCode: `
         if ( x.get("spid") != null ) {
-          ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "getUnauthenticatedPredicate", "spid restrictions set to context spid.");
+          Loggers.logger(x, this).debug("getUnauthenticatedPredicate", "spid restrictions set to context spid.");
           return MLang.EQ(getPropertyInfo(), x.get("spid"));
         }
-        ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "getUnauthenticatedPredicate", "spid restrictions disabled.");
+        Loggers.logger(x, this).debug("getUnauthenticatedPredicate", "spid restrictions disabled.");
         return null;
       `
     }
