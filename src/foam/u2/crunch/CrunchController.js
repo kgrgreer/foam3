@@ -66,7 +66,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.util.async.Sequence',
-    'foam.u2.borders.MarginBorder',
+    'foam.u2.borders.SpacingBorder',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.dialog.Popup'
   ],
