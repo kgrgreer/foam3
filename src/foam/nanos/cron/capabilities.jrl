@@ -68,7 +68,8 @@ p({
           color: '#406dea'
         },
         view: {
-          class: 'foam.u2.detail.TabbedDetailView'
+          class: 'foam.u2.detail.VerticalDetailView',
+          showTitle: false
         }
       },
       {
@@ -79,8 +80,9 @@ p({
           backgroundColor: '#DADDE2'
         },
         view: {
-          class: 'foam.u2.view.SimpleIntervalScheduleView'
-        }
+          class: 'foam.u2.detail.VerticalDetailView'
+        },
+        title: 'Schedule Details'
       }
     ],
     wao: {
@@ -98,7 +100,7 @@ p({
           class: 'foam.u2.wizard.wao.XORMinMaxWAO',
           of: 'foam.core.MapHolder',
           minMaxCapabilityId: 'schedulable-xorminmax',
-          loadFromPath: 'objectToSchedule',
+          loadFromPath: 'schedule',
           loadIntoPath: 'value.schedule'
         }
       ]
