@@ -453,7 +453,7 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = (User) userDAO.find(userId);
 
-        if ( user == null ) throw new RuntimeException("Cannot find user.");
+        if ( user == null ) throw new UserNotFoundException();
 
         DAO dao = x.get("localServiceProviderDAO") == null ? (DAO) getX().get("localServiceProviderDAO") : (DAO) x.get("localServiceProviderDAO");
         if ( dao == null )
