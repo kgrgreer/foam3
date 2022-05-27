@@ -20,13 +20,17 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.auth.UserNotFoundException',
+    'foam.nanos.auth.DuplicateEmailException'
   ],
 
   messages: [
     { name: 'INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
     { name: 'INSTRUC', message: 'Please check your inbox to continue' },
-    { name: 'REDIRECTION_TO', message: 'Back to Sign in' }
+    { name: 'REDIRECTION_TO', message: 'Back to Sign in' },
+    { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires both email and username' },
+    { name: 'ERROR_MSG', message: 'Issue resetting your password. Please try again' },
   ],
 
   sections: [
@@ -45,6 +49,19 @@ foam.CLASS({
       name: 'email',
       section: 'emailPasswordSection',
       required: true
+    },
+    {
+      class: 'String',
+      name: 'userName',
+      createVisibility: function(userNameVisible) {
+       return userNameVisible ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'emailPasswordSection',
+    },
+    {
+      class: 'Boolean',
+      name: 'userNameVisible',
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -66,7 +83,7 @@ foam.CLASS({
         return ! errors_;
       },
       code: function(X) {
-        const user = this.User.create({ email: this.email });
+        const user = this.User.create({ email: this.email, userName: this.userName });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
             message: `${this.INSTRUC_TITLE}`,
@@ -76,9 +93,21 @@ foam.CLASS({
           }));
           this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
         }).catch((err) => {
+          if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
+              this.ctrl.add(this.NotificationMessage.create({
+                err: err.data,
+                type: this.LogLevel.ERROR,
+                transient: true
+              }));
+              return;
+          }
+          var msg = this.ERROR_MSG;
+          if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
+            this.userNameVisible = true;
+            msg = this.DUPLICATE_ERROR_MSG;
+          }
           this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.ERROR_MSG,
+            message: msg,
             type: this.LogLevel.ERROR,
             transient: true
           }));
