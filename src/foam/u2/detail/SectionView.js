@@ -110,15 +110,17 @@ foam.CLASS({
       var self = this;
       self.SUPER();
 
+      if ( this.section )
+        this.shown$ = this.section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$);
+
       self
         .addClass(self.myClass())
         .callIf(self.section, function() {
           self.addClass(self.myClass(self.section.name))
         })
-        .add(self.slot(function(section, showTitle, section$title, section$subTitle) {
-          if ( ! section ) return;
+        .add(self.slot(function(section, showTitle, section$title, section$subTitle, shown) {
+          if ( ! section || ! shown ) return;
           return self.Rows.create()
-            .show(section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
             .callIf(showTitle && section$title, function() {
               if ( foam.Function.isInstance(self.section.title) ) {
                 const slot$ = foam.core.ExpressionSlot.create({
@@ -162,12 +164,14 @@ foam.CLASS({
                       }
                     }
                   }
+                  var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN);
                   this.start(self.GUnit, { columns: p.gridColumns })
-                    .show(p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN))
-                    .tag(self.SectionedDetailPropertyView, {
+                    .show(shown$)
+
+                    .add(shown$.map(shown => { return shown ? self.SectionedDetailPropertyView.create({
                       prop: p,
                       data$: self.data$
-                    })
+                    }, self) : self.E();}))
                   .end();
                 });
               }
