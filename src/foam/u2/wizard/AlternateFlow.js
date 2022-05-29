@@ -42,6 +42,10 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'removals'
+    },
+    {
+      class: 'Array',
+      name: 'select'
     }
   ],
 
@@ -58,6 +62,17 @@ foam.CLASS({
           w[propToChange] = newValue;
         }
       })
+
+      if ( this.select.length != 0 ) {
+        for ( let item of this.select ) {
+          foam.assert(item.length == 2, "'select' entries in AlternateFlow must have two elements")
+
+          let minMaxId = item[0];
+          let choices = item[1];
+          let w = x.wizardlets.find(w => w.id === minMaxId);
+          w.data.selectedData = choices;
+        }
+      }
     }
   ]
 })

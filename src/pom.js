@@ -214,7 +214,7 @@ foam.POM({
     { name: "foam/u2/borders/BackgroundCard",                         flags: "web" },
     { name: "foam/u2/borders/CollapseBorder",                         flags: "web" },
     { name: "foam/u2/borders/ExpandableBorder",                       flags: "web" },
-    { name: "foam/u2/borders/MarginBorder",                           flags: "web" },
+    { name: "foam/u2/borders/SpacingBorder",                          flags: "web" },
     { name: "foam/u2/borders/SplitScreenBorder",                      flags: "web" },
     { name: "foam/u2/borders/SplitScreenGridBorder",                  flags: "web" },
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
