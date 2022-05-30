@@ -1165,6 +1165,6 @@ foam.POM({
     { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
-    { name: "foam/u2/view/SimpleIntervalScheduleView",                flags: "web" }
+    { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" }
  ]
 });
