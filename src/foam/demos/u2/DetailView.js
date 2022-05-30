@@ -224,7 +224,7 @@ foam.CLASS({
           tag(self.PropertyView, {
             prop: data.SALARY,
             units$: this.data.country$.map(c => {
-              return { Canada: 'CAD$', 'United States': '$' }[c];
+              return { Canada: 'CAD', 'United States': '$' }[c];
             })
           }).
         end();
