@@ -114,8 +114,6 @@ foam.CLASS({
 
   documentation: 'Axiom to install CSS.',
 
-  imports: ['tokenOverrideService?'],
-
   properties: [
     {
       class: 'String',
