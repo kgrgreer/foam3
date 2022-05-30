@@ -1360,7 +1360,7 @@ foam.LIB({
       const tokenPattern = opt_tokenPattern || new RegExp(/\$[^);!]*/, 'g');
       let tokensToFind = text.match(tokenPattern);
       if ( ! tokensToFind?.length ) return text;
-      let tokenFinder = ctx?.CSSTokenOverrideService?.getTokenValue || foam.CSS.getTokenValue;
+      let tokenFinder = ctx?.cssTokenOverrideService?.getTokenValue || foam.CSS.getTokenValue;
       for ( var i = 0 ; i < tokensToFind.length ; i++ ) {
         let sanitizedToken = opt_tokenPattern ? tokensToFind[i].match(/\$[^\*\s]*/)[0] : tokensToFind[i] //if using a non-standard token pattern
         let replacement = await tokenFinder(sanitizedToken, cls, ctx);
