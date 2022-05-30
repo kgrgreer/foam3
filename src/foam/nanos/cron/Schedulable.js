@@ -52,7 +52,7 @@
       },
       view: function (_, X){
         return {
-          class: 'foam.u2.view.SimpleIntervalScheduleView',
+          class: 'foam.nanos.cron.SimpleIntervalScheduleView',
           data$: X.data.schedule$
         }
       }
