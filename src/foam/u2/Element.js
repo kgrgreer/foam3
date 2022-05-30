@@ -114,8 +114,6 @@ foam.CLASS({
 
   documentation: 'Axiom to install CSS.',
 
-  imports: ['tokenOverrideService?'],
-
   properties: [
     {
       class: 'String',
@@ -2388,7 +2386,7 @@ foam.CLASS({
     },
     {
       // Experimental Code to make it easier to add underlying Property View
-      // Without wrapping in a PropertyView
+      // Without wrapping in a PropertyBorder
       name: '__',
       transient: true,
       factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
@@ -2410,7 +2408,7 @@ foam.CLASS({
     },
 
     function toPropertyView(args, X) {
-      return this.createElFromSpec_({ class: 'foam.u2.PropertyView', prop: this }, args, X);
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: this }, args, X);
     },
 
     function createElFromSpec_(spec, args, X) {

@@ -73,12 +73,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      label: '',
       required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'toggleNameLabel',
+      value: false
     },
     {
       class: 'String',
       name: 'lastName',
-      required: true
+      required: true,
+      validateObj: function(lastName) {
+        if ( ! lastName ) return 'Required';
+        if ( lastName && lastName.length < 2 ) return 'Last Name must be at least 2 chars';
+      },
     },
     {
       class: 'EMail',
@@ -135,10 +145,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'User', 'foam.u2.PropertyView'
+    'User', 'foam.u2.PropertyBorder'
   ],
-
-  // css: foam.u2.DetailView.model_.css,
 
   css: `
     ^ {
@@ -164,7 +172,11 @@ foam.CLASS({
         start('h3').add('Title').end().
         start(Columns).
           start(Column).
-            add(data.ID.__, data.ENABLED.__, data.FIRST_NAME.__, data.EMAIL.__).
+            add(data.TOGGLE_NAME_LABEL.__).
+            add(data.ID.__, data.ENABLED.__).
+            tag(data.FIRST_NAME.__, { config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+            tag(data.FIRST_NAME.__, { reserveLabelSpace: true, config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+            add(data.EMAIL.__).
           end().
           start(Column).
             add(data.CREATED.__, data.TERMINATED.__, data.LAST_NAME.__, data.BIRTHDAY.__).
@@ -182,13 +194,13 @@ foam.CLASS({
                 add(data.CITY.__, data.COUNTRY.__).
               end().
               start(Column).
-                tag(self.PropertyView, {
+                tag(self.PropertyBorder, {
                   prop: data.POSTAL_CODE,
                   label: this.data.country$.map(c => {
                     return { Canada: 'Postal Code', 'United States': 'Zip Code' }[c];
                   })
                 }).
-                tag(self.PropertyView, {
+                tag(self.PropertyBorder, {
                   prop: data.REGION,
                   view$: this.data.country$.map(c => {
                     if ( c === 'Canada' ) {
@@ -203,9 +215,9 @@ foam.CLASS({
                     }
                     return data.REGION.view;
                   }),
-                  label: this.data.country$.map(c => {
-                    return { Canada: 'Province', 'United States': 'State' }[c];
-                  })
+                  config: {
+                    label$: this.data.country$.map(c => { return { Canada: 'Province', 'United States': 'State' }[c] })
+                  }
                 }).
               end().
             end().
@@ -218,15 +230,24 @@ foam.CLASS({
         start(FoldingSection, {title: 'Employee Information'}).
           show(data.isEmployee$).
           add(data.JOB_TITLE.__).
-          // How to add a Property view without wrapping in a PropertyView
+          tag(data.JOB_TITLE.__, { config: { label: 'somthing', units: '123' } }).
+          // How to add a Property view without wrapping in a PropertyBorder
           add(data.JOB_TITLE).
           add(data.JOB_TITLE.toE_({}, this.__subSubContext__)).
-          tag(self.PropertyView, {
+          tag(self.PropertyBorder, {
             prop: data.SALARY,
-            units$: this.data.country$.map(c => {
-              return { Canada: 'CAD', 'United States': '$' }[c];
-            })
+            config: {
+              units$: this.data.country$.map(c => {
+                return { Canada: 'CAD', 'United States': '$' }[c];
+              })
+            }
           }).
+        end().
+        start(FoldingSection, {title: 'Reserve Label Space test'}).
+          add(data.TOGGLE_NAME_LABEL.__).
+          tag(data.FIRST_NAME.__, { config: { label: 'Name' }}).
+          tag(data.FIRST_NAME.__, { config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+          tag(data.FIRST_NAME.__, { reserveLabelSpace: true, config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
         end();
     }
   ]
