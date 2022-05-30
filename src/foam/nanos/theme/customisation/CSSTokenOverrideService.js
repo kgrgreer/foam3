@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.theme.customisation',
   name: 'CSSTokenOverrideService',
 
-  imports: ['CSSTokenOverrideDAO? as tokenOverrideDAO', 'theme?'],
+  imports: ['cssTokenOverrideDAO? as tokenOverrideDAO', 'theme?'],
 
   implements: ['foam.mlang.Expressions'],
 
