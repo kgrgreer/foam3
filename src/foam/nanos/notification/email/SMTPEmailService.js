@@ -178,7 +178,7 @@ foam.CLASS({
               File file = (File) fileDAO.find(fileId);
               if ( file != null ) {
                 InputStreamBlob blob = (InputStreamBlob) file.getData();
-                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), file.getMimeType()); //"application/octet-stream");
+                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), file.getMimeType());
                 BodyPart part = new MimeBodyPart();
                 part.setDataHandler(new DataHandler(source));
                 part.setFileName(file.getFilename());
