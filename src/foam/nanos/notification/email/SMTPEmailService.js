@@ -19,15 +19,23 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.blob.InputStreamBlob',
+    'foam.dao.DAO',
+    'foam.nanos.fs.File',
     'foam.nanos.notification.email.SMTPConfig',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
     'static foam.mlang.MLang.EQ',
+    'java.io.ByteArrayInputStream',
+    'java.io.InputStream',
     'java.util.Date',
     'java.util.Properties',
+    'javax.activation.DataHandler',
+    'javax.activation.DataSource',
     'javax.mail.*',
-    'javax.mail.internet.InternetAddress',
-    'javax.mail.internet.MimeMessage',
+    'javax.mail.internet.*',
+    'javax.mail.util.ByteArrayDataSource',
     'org.apache.commons.lang3.StringUtils',
   ],
 
@@ -74,7 +82,7 @@ foam.CLASS({
       name: 'transport_',
       javaFactory:
       `
-        Logger logger = (Logger) getX().get("logger");
+        Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
         SMTPConfig smtpConfig = (SMTPConfig) getX().get("SMTPConfig");
         Transport transport = null;
@@ -82,10 +90,10 @@ foam.CLASS({
           omLogger.log(this.getClass().getSimpleName(), "transport", "connecting");
           transport = getSession_().getTransport("smtp");
           transport.connect(smtpConfig.getUsername(), smtpConfig.getPassword());
-          logger.info("SMTPEmailService connected.");
+          logger.info("connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
         } catch ( Exception e ) {
-          logger.error("Transport failed to initialize: " + e);
+          logger.error("Transport failed initialization", e);
         }
         return transport;
       `
@@ -105,7 +113,7 @@ foam.CLASS({
       ],
       javaCode:
       `
-        Logger logger = (Logger) getX().get("logger");
+        Logger logger = Loggers.logger(getX(), this);
         try {
           MimeMessage message = new MimeMessage(getSession_());
 
@@ -129,9 +137,6 @@ foam.CLASS({
 
           if ( emailMessage.isPropertySet("subject") )
             message.setSubject(emailMessage.getSubject());
-
-          if ( emailMessage.isPropertySet("body") )
-            message.setContent(emailMessage.getBody(), "text/html; charset=utf-8");
 
           if ( emailMessage.isPropertySet("to") ) {
             if ( emailMessage.getTo().length == 1 ) {
@@ -157,11 +162,40 @@ foam.CLASS({
             }
           }
 
+          Multipart multipart = new MimeMultipart();
+
+          if ( emailMessage.isPropertySet("body") ) {
+            MimeBodyPart part = new MimeBodyPart();
+            part.setText(emailMessage.getBody(), "utf-8", "text/html");
+            multipart.addBodyPart(part);
+          }
+
+          String[] attachments = emailMessage.getAttachments();
+          if ( attachments != null &&
+               attachments.length > 0 ) {
+            DAO fileDAO = ((DAO) getX().get("fileDAO"));
+            for ( String fileId : attachments ) {
+              File file = (File) fileDAO.find(fileId);
+              if ( file != null ) {
+                InputStreamBlob blob = (InputStreamBlob) file.getData();
+                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), file.getMimeType()); //"application/octet-stream");
+                BodyPart part = new MimeBodyPart();
+                part.setDataHandler(new DataHandler(source));
+                part.setFileName(file.getFilename());
+                multipart.addBodyPart(part);
+              } else {
+                logger.warning("File not found", fileId);
+              }
+            }
+          }
+
+          message.setContent(multipart);
+
           message.setSentDate(new Date());
-          logger.info("SMTPEmailService Created MimeMessage.");
+          logger.info("MimeMessage created");
           return message;
         } catch (Throwable t) {
-          logger.error("SMTPEmailService failed to created MimeMessage. " + t);
+          logger.error("MimeMessage creation failed", t);
           return null;
         }
       `
@@ -169,7 +203,7 @@ foam.CLASS({
     {
       name: 'sendEmail',
       javaCode: `
-        Logger logger = (Logger) getX().get("logger");
+        Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
 
         emailMessage = (EmailMessage) emailMessage.fclone();
@@ -186,19 +220,19 @@ foam.CLASS({
         try {
           getTransport_().send(message);
           emailMessage.setStatus(Status.SENT);
-          logger.debug("SMTPEmailService sent MimeMessage.");
+          logger.debug("MimeMessage sent");
           omLogger.log(this.getClass().getSimpleName(), "message", "sent");
         } catch ( SendFailedException e ) {
           emailMessage.setStatus(Status.FAILED);
-          logger.error("SMTPEmailService sending MimeMessage failed. " + e);
+          logger.error("MimeMessage send failed", e);
         } catch ( MessagingException e ) {
           try {
             getTransport_().close();
           } catch ( Exception e2 ) {
-            logger.error("Failed to close transport. " + e2);
+            logger.error("Transport close failed", e2);
           }
           clearTransport_();
-          logger.error("SMTPEmailService sending MimeMessage failed. " + e);
+          logger.error("MimeMessage send failed", e);
         }
         return emailMessage;
       `

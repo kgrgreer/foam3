@@ -250,6 +250,17 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaFactory: 'return 1L;'
+    },
+    {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      // view: function(_, X) {
+      //   return foam.nanos.fs.fileDropZone.FileDropZone.create({ files$: X.data.attachments$ }, X);
+      // },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
     }
   ]
 });
