@@ -24,11 +24,9 @@ foam.CLASS({
 
   css: `
     ^label {
-      color: #444;
       flex-grow: 1;
       margin-left: 12px;
       overflow: hidden;
-      white-space: nowrap;
       display: inline;
     }
 
