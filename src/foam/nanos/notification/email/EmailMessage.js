@@ -250,6 +250,14 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaFactory: 'return 1L;'
+    },
+    {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
     }
   ]
 });
