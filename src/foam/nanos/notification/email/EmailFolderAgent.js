@@ -130,7 +130,6 @@ foam.CLASS({
             logger.warning("store", "connection", "failed", e.getMessage());
             throw e;
           }
-          logger.info("store", "connected");
           omLogger.log(this.getClass().getSimpleName(), "store", "connected");
 
           folder = store.getFolder(getFolderName());
@@ -142,7 +141,7 @@ foam.CLASS({
 
           DAO dao = (DAO) x.get("emailMessageDAO");
           Message[] messages = folder.getMessages();
-          logger.info("messages", messages.length);
+          logger.debug("messages", messages.length);
           for ( Message message : messages ) {
             dao.put(buildEmailMessage(x, message));
             message.setFlag(Flags.Flag.DELETED, getDelete());
