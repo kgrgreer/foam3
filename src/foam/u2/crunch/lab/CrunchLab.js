@@ -49,7 +49,7 @@ foam.CLASS({
     'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.crunch.lab.CapabilityGraphNodeView',
-    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.PropertyBorder',
     'foam.u2.view.RichChoiceSummaryIdRowView',
     'foam.u2.svg.TreeGraph',
     'foam.u2.svg.graph.DAGView',
@@ -214,16 +214,18 @@ foam.CLASS({
             label: this.ALL_TAB,
             selected: true,
           })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
+            .tag(this.ROOT_CAPABILITY.__, { data: this })
             .start().style({ display: 'block' }).add(this.getGraphSlot()).end()
           .end()
           .start(this.Tab, {
             label: this.UCJ_TAB,
           })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.CRUNCH_USER })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.EFFECTIVE_USER })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.SHOW_ALL_CAPABILITIES })
+            .startContext({ data: this })
+              .tag(this.ROOT_CAPABILITY.__)
+              .tag(this.CRUNCH_USER.__)
+              .tag(this.EFFECTIVE_USER.__)
+              .tag(this.SHOW_ALL_CAPABILITIES.__)
+            .endContext()
             .start().style({ display: 'block' }).add(this.getGraphSlot(true)).end()
           .end()
         .end()
