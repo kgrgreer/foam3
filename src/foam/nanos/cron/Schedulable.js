@@ -43,11 +43,18 @@
       value: 'schedulableEventDAO'
     },
     {
-      name: 'schedule',
+      class: 'FObjectProperty',
       of: 'foam.nanos.cron.Schedule',
-      view: {
-        class: 'foam.u2.view.FObjectView',
-        of: 'foam.nanos.cron.SimpleIntervalSchedule'
+      name: 'schedule',
+      label: '',
+      factory: function(){
+        return foam.nanos.cron.SimpleIntervalSchedule.create();
+      },
+      view: function (_, X){
+        return {
+          class: 'foam.nanos.cron.SimpleIntervalScheduleView',
+          data$: X.data.schedule$
+        }
       }
     },
     {
