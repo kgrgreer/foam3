@@ -18,6 +18,7 @@ foam.ENUM({
     { name: 'NSF', label: 'Not sufficient funds' },
     { name: 'UNSUPPORTED', label: 'Unsupported request' },
     { name: 'CONFIGURATION', label: 'Invalid Configuration' },
-    { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' }
+    { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' },
+    { name: 'RATELIMIT', label: 'Checks if a rate is exceeded' }
   ]
 });

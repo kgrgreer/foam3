@@ -111,6 +111,11 @@ foam.CLASS({
               alarm.setReason(checkReason);
               alarm.setIsActive(true);
             }
+          } else if ( config.getMonitorType() == MonitorType.RATELIMIT && sentCount > config.getAlarmValue() ) {
+            if ( ! alarm.getIsActive() ) {
+              alarm.setReason(AlarmReason.RATELIMIT);
+              alarm.setIsActive(true);
+            }
           } else {
             if ( alarm.getIsActive() ) {
               report.setStartCount(0);
