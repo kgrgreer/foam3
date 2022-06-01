@@ -17,7 +17,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.fs.fileDropZone.FileDropZone',
-    'foam.u2.detail.SectionedDetailPropertyView'
   ],
   imports: [
     'controllerMode as CM',
@@ -120,7 +119,11 @@ foam.CLASS({
               .start(foam.u2.dialog.InlineNotificationMessage, { icon: null, type: 'WARN' })
                 .add(this.descriptionMessage)
               .end()
-              .tag(this.SectionedDetailPropertyView, { data: self, prop: self.FILE_UPLOADER })
+              // TODO: Something weird is happening here with PropertyBorder not using the right data when 
+              // set as a part of args --> .add(self.FILE_UPLOADER.__, {data: self})
+              .startContext({ data: self })
+                .add(self.FILE_UPLOADER.__)
+              .endContext()
               .start()
                 .start()
                   .addClass('p-semiBold')

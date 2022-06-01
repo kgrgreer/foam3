@@ -52,7 +52,6 @@ foam.CLASS({
     'foam.layout.SectionAxiom',
     'foam.layout.Section',
     'foam.u2.borders.CardBorder',
-    'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   css: `
