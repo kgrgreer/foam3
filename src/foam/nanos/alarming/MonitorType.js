@@ -8,6 +8,7 @@ foam.ENUM({
     { name: 'CONGESTION', label: 'Congestion monitoring' },
     { name: 'CREDENTIALS', label: 'Valid credentials monitoring' },
     { name: 'OTHER', label: 'Other OM Monitoring' },
-    { name: 'CONTROLCHECK', label: 'Check expected vs actual' }
+    { name: 'CONTROLCHECK', label: 'Check expected vs actual' },
+    { name: 'RATELIMIT', label: 'Checks if a rate is exceeded' }
   ]
 });
