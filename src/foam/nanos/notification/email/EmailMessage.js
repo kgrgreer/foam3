@@ -193,6 +193,13 @@ foam.CLASS({
       view: { class: 'foam.u2.view.MapView' }
     },
     {
+      class: 'DateTime',
+      name: 'sentDate',
+      visibility: 'RO',
+      section: 'emailInformation',
+      order: '115'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',

@@ -50,3 +50,25 @@ p({
     }
   """
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 30
+  },
+  "scheduledTime": "2019-09-09T16:56:30.000Z",
+  "id": "EmailFolderAgent",
+  "description": "Retrieve Email Folder Messages",
+  "code":
+  """
+    import foam.nanos.notification.email.EmailFolderAgent;
+
+    new EmailFolderAgent(x).execute(x);
+  """
+})
