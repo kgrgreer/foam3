@@ -104,7 +104,6 @@ foam.CLASS({
           // setting data to empty array should have made isAvailable automatically evaluate to false
           this.choiceWizardlets.forEach(cw => {
             let alternateFlow = cw.__subContext__.sequence.contextAgentSpecs.filter(x => x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent");
-            let available;
             for ( let af of alternateFlow ) {
               if ( af.spec.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
                 return;
