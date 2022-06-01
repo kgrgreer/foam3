@@ -103,6 +103,14 @@ foam.CLASS({
           // TODO: investigate why this is still needed,
           // setting data to empty array should have made isAvailable automatically evaluate to false
           this.choiceWizardlets.forEach(cw => {
+            let alternateFlow = cw.__subContext__.sequence.contextAgentSpecs.filter(x => x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent");
+            let available;
+            for ( let af of alternateFlow ) {
+              if ( af.spec.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+                return;
+              }
+            }
+
             cw.isAvailable = false
           });
 
@@ -254,7 +262,7 @@ foam.CLASS({
           .map(w => w.isAvailable ? 1 : 0)
           .reduce((count, val) => count + val);
         this.isVisible = countLifted < this.max && this.isAvailable;
-      
+
 
         // Update lifted choices based on their availability
         let newSelectedData = [...this.selectedData];
