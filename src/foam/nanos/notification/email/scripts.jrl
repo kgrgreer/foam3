@@ -3,32 +3,37 @@ p({
   "id":"Test Email",
   "enabled":true,
   "description":"",
-  "lastRun":"2018-07-24T19:09:31.798Z",
-  "lastDuration":1063,
   "server":true,
   "status":1,
-  "code":
-  """
-    import foam.nanos.notification.email.EmailMessage;
-    import foam.nanos.notification.email.SMTPEmailService;
-    import foam.nanos.notification.email.Status;
+  "code": """
+    // Send Email;
     import foam.nanos.auth.User;
     import foam.nanos.auth.Subject;
+    import foam.nanos.notification.email.Status;
+    import foam.nanos.notification.email.EmailMessage;
+    import foam.nanos.notification.email.SMTPEmailService;
     import java.util.HashMap;
-    import foam.util.Emails.EmailsUtility;
-    user = ((Subject) x.get("subject")).getUser();
-    //Configure sending email inside the string array.
-    String[] emails = new String[]{user.getEmail()};
+
+    String[] emails = new String[] { "joel@nanopay.net" };
     EmailMessage message = new EmailMessage.Builder(x)
+              .setUser(((Subject) x.get("subject")).getUser().getId())
               .setTo(emails)
+              .setSubject("Test")
+              .setBody("Test")
+              .setStatus(Status.UNSENT)
               .build();
-    HashMap map = new HashMap();
-    map.put("content", "test");
-    EmailsUtility.sendEmailFromTemplate(x, user, message, "testEmail", map);
-  """,
-  "output":"",
-  "notes":""
+
+    // NOTE: this relies on a valid SMTPConfig in the system.
+    emailService = new foam.nanos.notification.email.SMTPEmailService(x);
+    try {
+      message = emailService.sendEmail(x, message);
+      print("sent, please check your email");
+    } catch (Exception e) {
+      print("ERROR: "+e.getMessage());
+    }
+  """
 })
+
 p({
   class:"foam.nanos.script.Script",
   id:"Send Email with Attachment",
@@ -56,8 +61,10 @@ p({
               .setUser(((Subject) x.get("subject")).getUser().getId())
               .setTo(emails)
               .setSubject("Test: "+file.getFilename())
+              .setBody("Test")
               .setStatus(Status.UNSENT)
               .build();
+
     HashMap map = new HashMap();
     map.put("content", "test with attachment");
     message.setTemplateArguments(map);
@@ -72,6 +79,14 @@ p({
     } catch (Exception e) {
       print("ERROR: "+e.getMessage());
     }
-  """,
-  lastModified:1654020163595
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"EmailFolderAgent",
+  description:"EmailFolderAgent",
+  code:"""
+    import foam.nanos.notification.email.EmailFolderAgent;
+    new EmailFolderAgent(x).execute(x);
+  """
 })

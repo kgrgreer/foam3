@@ -14,10 +14,6 @@ foam.CLASS({
 
   documentation: 'Implementation of Email Service using SMTP',
 
-  imports: [
-    'threadPool?'
-  ],
-
   javaImports: [
     'foam.blob.InputStreamBlob',
     'foam.dao.DAO',
@@ -90,7 +86,7 @@ foam.CLASS({
           omLogger.log(this.getClass().getSimpleName(), "transport", "connecting");
           transport = getSession_().getTransport("smtp");
           transport.connect(smtpConfig.getUsername(), smtpConfig.getPassword());
-          logger.info("connected");
+          logger.info("transport", "connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
         } catch ( Exception e ) {
           logger.error("Transport failed initialization", e);
@@ -162,23 +158,21 @@ foam.CLASS({
             }
           }
 
-          Multipart multipart = new MimeMultipart();
-
-          if ( emailMessage.isPropertySet("body") ) {
-            MimeBodyPart part = new MimeBodyPart();
-            part.setText(emailMessage.getBody(), "utf-8", "text/html");
-            multipart.addBodyPart(part);
-          }
-
           String[] attachments = emailMessage.getAttachments();
           if ( attachments != null &&
                attachments.length > 0 ) {
+            Multipart multipart = new MimeMultipart();
+            if ( emailMessage.isPropertySet("body") ) {
+              MimeBodyPart part = new MimeBodyPart();
+              part.setText(emailMessage.getBody(), "utf-8", "text/html");
+              multipart.addBodyPart(part);
+            }
             DAO fileDAO = ((DAO) getX().get("fileDAO"));
             for ( String fileId : attachments ) {
               File file = (File) fileDAO.find(fileId);
               if ( file != null ) {
                 InputStreamBlob blob = (InputStreamBlob) file.getData();
-                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), file.getMimeType());
+                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), "application/octet-stream");
                 BodyPart part = new MimeBodyPart();
                 part.setDataHandler(new DataHandler(source));
                 part.setFileName(file.getFilename());
@@ -187,9 +181,10 @@ foam.CLASS({
                 logger.warning("File not found", fileId);
               }
             }
+            message.setContent(multipart);
+          } else {
+            message.setContent(emailMessage.getBody(), "text/html; charset=utf-8");
           }
-
-          message.setContent(multipart);
 
           message.setSentDate(new Date());
           logger.info("MimeMessage created");
@@ -220,6 +215,7 @@ foam.CLASS({
         try {
           getTransport_().send(message);
           emailMessage.setStatus(Status.SENT);
+          emailMessage.setSentDate(message.getSentDate());
           logger.debug("MimeMessage sent");
           omLogger.log(this.getClass().getSimpleName(), "message", "sent");
         } catch ( SendFailedException e ) {
