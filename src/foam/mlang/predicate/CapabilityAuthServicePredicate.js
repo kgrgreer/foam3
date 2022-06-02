@@ -53,7 +53,7 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
             Capability c = (Capability) getCapabilityDAO().find(ucj.getTargetId());
-            if ( c != null && c.getAssociatedEntity().equals(getEntity()) && ! c.isDeprecated(x) ) {
+            if ( c != null && ( getEntity() == null || c.getAssociatedEntity().equals(getEntity()) ) && ! c.isDeprecated(x) ) {
               // only set context - which is system - to spid caps - for prerequisiteImplies
               if ( c instanceof ServiceProvider ) c.setX(x);
               if ( c.grantsPermission(getPermission()) ) {
