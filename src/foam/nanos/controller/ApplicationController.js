@@ -707,7 +707,7 @@ foam.CLASS({
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
-      if ( this.client ) 
+      if ( this.client ) {
         this.pushMenu_(realMenu, menu);
       } else {
         await this.clientPromise.then(async () => {
