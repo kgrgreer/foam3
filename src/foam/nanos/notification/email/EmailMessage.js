@@ -193,6 +193,13 @@ foam.CLASS({
       view: { class: 'foam.u2.view.MapView' }
     },
     {
+      class: 'DateTime',
+      name: 'sentDate',
+      visibility: 'RO',
+      section: 'emailInformation',
+      order: '115'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
@@ -250,6 +257,14 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaFactory: 'return 1L;'
+    },
+    {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
     }
   ]
 });

@@ -167,9 +167,7 @@ foam.CLASS({
               setMdao(new foam.dao.MDAO(getOf()));
             }
             delegate = getMdao();
-            if ( getFixedSize() != null &&
-                 ! getCluster() ) {
-              // TODO: FixedSizeDAO is not compatible with Clustering
+            if ( getFixedSize() != null ) {
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(delegate);
               delegate = fixedSizeDAO;

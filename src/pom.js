@@ -200,7 +200,7 @@ foam.POM({
     { name: "foam/u2/Element",                                        flags: "web" },
     { name: "foam/u2/MNRowFormatter",                                 flags: "web" },
     { name: "foam/u2/ProgressView",                                   flags: "web" },
-    { name: "foam/u2/PropertyView",                                   flags: "web" },
+    { name: "foam/u2/PropertyBorder",                                 flags: "web" },
     { name: "foam/u2/LoadingSpinner",                                 flags: "web" },
     { name: "foam/u2/ListCreateController",                           flags: "web" },
     { name: "foam/u2/CSSToken",                                       flags: "web|java" },
@@ -1165,6 +1165,6 @@ foam.POM({
     { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
-    { name: "foam/u2/view/SimpleIntervalScheduleView",                flags: "web" }
+    { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" }
  ]
 });
