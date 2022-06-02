@@ -29,7 +29,7 @@
       class: 'FObjectProperty',
       of: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig',
       expression: function(of, dao) {
-        return foam.nanos.google.api.sheets.GoogleSheetsImportConfig.create({importClassInfo: of, DAO: dao.includes('/') ? dao.split('/')[1] : dao });
+        return foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig.create({importClassInfo: of, DAO: dao.includes('/') ? dao.split('/')[1] : dao });
       }
     },
     'of',

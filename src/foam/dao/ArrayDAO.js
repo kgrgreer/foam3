@@ -99,7 +99,7 @@ foam.CLASS({
       skip = skip || 0;
       limit = foam.Number.isInstance(limit) ? limit : Number.MAX_VALUE;
 
-      for ( var i = 0; i < this.array.length && limit > 0; i++ ) {
+      for ( var i = 0 ; i < this.array.length && limit > 0 ; i++ ) {
         if ( predicate.f(this.array[i]) ) {
           if ( skip > 0 ) {
             skip--;

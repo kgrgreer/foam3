@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.core.ProxySlot',
     'foam.core.SimpleSlot',
     'foam.layout.Section',
-    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.PropertyBorder',
     'foam.u2.DisplayMode',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Grid',
@@ -110,15 +110,17 @@ foam.CLASS({
       var self = this;
       self.SUPER();
 
+      if ( this.section )
+        this.shown$ = this.section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$);
+
       self
         .addClass(self.myClass())
         .callIf(self.section, function() {
           self.addClass(self.myClass(self.section.name))
         })
-        .add(self.slot(function(section, showTitle, section$title, section$subTitle) {
-          if ( ! section ) return;
+        .add(self.slot(function(section, showTitle, section$title, section$subTitle, shown) {
+          if ( ! section || ! shown ) return;
           return self.Rows.create()
-            .show(section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
             .callIf(showTitle && section$title, function() {
               if ( foam.Function.isInstance(self.section.title) ) {
                 const slot$ = foam.core.ExpressionSlot.create({
@@ -162,12 +164,17 @@ foam.CLASS({
                       }
                     }
                   }
+                  var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN);
                   this.start(self.GUnit, { columns: p.gridColumns })
-                    .show(p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN))
-                    .tag(self.SectionedDetailPropertyView, {
-                      prop: p,
-                      data$: self.data$
-                    })
+                    .show(shown$)
+                    .add(shown$.map(shown => {
+                      return shown ? self.PropertyBorder.create({
+                        prop: p,
+                        data$: self.data$,
+                        reserveLabelSpace: true
+                      }) :
+                      self.E();
+                    }))
                   .end();
                 });
               }
