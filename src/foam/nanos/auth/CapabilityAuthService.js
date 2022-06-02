@@ -198,7 +198,7 @@ foam.CLASS({
           );
           
           // if realuser and user is the same, we can check without specifying entity
-          if ( realUser != null && realUser.geteId() == user.getId() && 
+          if ( realUser != null && realUser.getId() == user.getId() && 
               userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
           } else {
