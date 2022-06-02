@@ -135,12 +135,6 @@ foam.CLASS({
     },
     function jump(jumpPos) {
       while ( this.pos > jumpPos ) {
-      // Check if the class of the view to which current memento points has property viewTitle set 
-      // using the identifier added to the memento params by stackView
-        if ( this.stack_[this.pos].parent ) {
-          var actionMemento;
-          var parent = this.getContextFromParent(this.stack_[this.pos].parent);
-        }
         this.stack_[this.pos].removed.pub();
         this.pos--;
       }
