@@ -731,9 +731,10 @@ foam.CLASS({
         if ( this.route !== newId ) this.pushMenu(newId);
         return;
       }
-      if ( ! this.buildingStack ) this.memento_.removeMementoTail();
+      if ( ! (this.buildingStack || foam.nanos.menu.LinkMenu.isInstance(menu?.handler)) ) this.memento_.removeMementoTail();
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
+      this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
       this.menuListener(realMenu);
     },
