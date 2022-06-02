@@ -133,42 +133,7 @@ foam.CLASS({
       if ( block.shouldResetBreadcrumbs )
         this.navStackBottom = pos;
     },
-
-    function deleteMemento(mementoToDelete) {
-      /** setting the last not null memento in memento chain to null to update application controller memento value on stack.back **/
-      var m = this.findCurrentMemento();
-      if ( ! m ) return;
-
-      var tail = this.memento.tail;
-
-      if ( tail == null ) {
-        this.memento.value$.set('');
-        return;
-      }
-
-      while ( m != null && m.parent != null && m.value.indexOf(mementoToDelete) != 0 ) {
-        m = m.parent;
-      }
-
-      if ( m && m.parent ) {
-        m.value = '';
-        return m.parent;
-      }
-    },
-
-    function findCurrentMemento() {
-      var tail = this.memento;
-      if ( ! tail )
-        return tail;
-      while ( true ) {
-        if ( tail.tail == null ) {
-          return tail;
-        }
-        tail = tail.tail;
-      }
-    },
     function jump(jumpPos) {
-
       while ( this.pos > jumpPos ) {
       // Check if the class of the view to which current memento points has property viewTitle set 
       // using the identifier added to the memento params by stackView
