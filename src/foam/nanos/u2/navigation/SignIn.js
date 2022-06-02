@@ -79,7 +79,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       visibility: 'HIDDEN',
-      value: true
+      value: true,
+      documentation: 'Optional boolean used to display this model without login action'
     }
   ],
 
