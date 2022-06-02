@@ -179,7 +179,7 @@ foam.CLASS({
       name: 'updateWidths',
       isFramed: true,
       code: function(width) {
-        if ( ! this.selectedColumnsWidth || ! this.colWidthUpdated ) return;
+        if ( ! this.selectedColumnsWidth$ || ! this.colWidthUpdated$ ) return;
         this.selectedColumnsWidth[this.propName] = width;
         this.colWidthUpdated = ! this.colWidthUpdated;
       }
