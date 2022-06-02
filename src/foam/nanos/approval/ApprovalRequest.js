@@ -165,6 +165,12 @@ foam.CLASS({
       columnPermissionRequired: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      hidden: true
+    },
+    {
       class: 'String',
       name: 'id',
       section: 'approvalRequestInformation',
