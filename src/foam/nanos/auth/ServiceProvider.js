@@ -69,6 +69,12 @@ foam.CLASS({
       class: 'Long',
       name: 'anonymousUser',
       documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'gaCap',
+      documentation: 'general capability'
     }
   ],
 
