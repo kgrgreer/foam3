@@ -5,7 +5,7 @@
   */
 
 foam.CLASS({
-  package: 'foam.u2.view',
+  package: 'foam.nanos.cron',
   name: 'SimpleIntervalScheduleView',
   extends: 'foam.u2.View',
 

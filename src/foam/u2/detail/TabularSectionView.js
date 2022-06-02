@@ -40,7 +40,7 @@ foam.CLASS({
   methods: [
     function init () {
       const x = this.__context__.createSubContext();
-      x.register(this.RowPropertyView, 'foam.u2.detail.SectionedDetailPropertyView');
+      x.register(this.RowPropertyView, 'foam.u2.PropertyBorder');
       this.__context__ = x;
     }
   ]

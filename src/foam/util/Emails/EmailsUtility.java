@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * deprecated
+ * @Deprecated use emailMessageDAO directly
  */
 public class EmailsUtility {
 
   /**
-   * deprecated
+   * @Deprecated use emailMessageDAO directly
    */
   public static EmailMessage sendEmailFromTemplate(X x, User user, EmailMessage emailMessage, String templateName, Map templateArgs) {
 
