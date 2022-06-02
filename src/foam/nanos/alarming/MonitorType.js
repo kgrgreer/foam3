@@ -9,6 +9,6 @@ foam.ENUM({
     { name: 'CREDENTIALS', label: 'Valid credentials monitoring' },
     { name: 'OTHER', label: 'Other OM Monitoring' },
     { name: 'CONTROLCHECK', label: 'Check expected vs actual' },
-    { name: 'RATELIMIT', label: 'Checks if a rate is exceeded' }
+    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' }
   ]
 });
