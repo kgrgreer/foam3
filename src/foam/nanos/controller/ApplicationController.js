@@ -99,7 +99,8 @@ foam.CLASS({
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'buildingStack'
   ],
 
   topics: [
@@ -359,8 +360,16 @@ foam.CLASS({
       postSet: function(_, n) {
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
-        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
+        if ( this.initSubject && n && this.currentMenu?.id != n) {
+          if ( ! this.currentMenu?.id ) this.buildingStack = true;
+          this.pushMenu(n);
+        }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'buildingStack',
+      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -698,7 +707,7 @@ foam.CLASS({
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
-      if ( this.client ) {
+      if ( this.client ) 
         this.pushMenu_(realMenu, menu);
       } else {
         await this.clientPromise.then(async () => {
@@ -719,10 +728,10 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-        if ( this.route !== newId ) 
-          this.route = newId;
+        if ( this.route !== newId ) this.pushMenu(newId);
         return;
       }
+      if ( ! this.buildingStack ) this.memento_.removeMementoTail();
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
       menu && menu.launch && menu.launch(this);
