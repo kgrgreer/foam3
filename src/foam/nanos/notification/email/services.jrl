@@ -55,6 +55,7 @@ p({
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
         .setSize(100000)
         .build())
+      .setNDiff(false)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.email.EmailMessage.CREATED});
   """
@@ -69,6 +70,7 @@ p({
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageDAO"))
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
