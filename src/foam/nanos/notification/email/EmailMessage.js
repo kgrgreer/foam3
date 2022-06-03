@@ -48,9 +48,14 @@ foam.CLASS({
       order: 20
     },
     {
+      name: 'attachmentInformation',
+      title: 'Attachments',
+      order: 30
+    },
+    {
       name: 'systemInformation',
       help: 'Properties that are used internally by the system.',
-      order: 30,
+      order: 40,
       permissionRequired: true
     },
   ],
@@ -193,6 +198,15 @@ foam.CLASS({
       view: { class: 'foam.u2.view.MapView' }
     },
     {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      section: 'attachmentInformation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
+    },
+    {
       class: 'DateTime',
       name: 'sentDate',
       visibility: 'RO',
@@ -229,14 +243,21 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       storageTransient: true,
-      javaFactory: `
+      javaGetter: `
+        if ( spidIsSet_ ) return spid_;
         var map = new java.util.HashMap();
         map.put(
           EmailMessage.class.getName(),
           new foam.core.PropertyInfo[] { EmailMessage.USER }
         );
-        return new ServiceProviderAwareSupport()
-          .findSpid(foam.core.XLocator.get(), map, this);
+        try {
+          spid_ = new ServiceProviderAwareSupport()
+            .findSpid(foam.core.XLocator.get(), map, this);
+          spidIsSet_ = true;
+        } catch ( NullPointerException e ) {
+          // nop - occurs during replay
+        }
+        return spid_;
       `
     },
     {
@@ -257,14 +278,6 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaFactory: 'return 1L;'
-    },
-    {
-      class: 'StringArray',
-      name: 'attachments',
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.add(value && value.length || 0);
-      }
     }
   ]
 });
