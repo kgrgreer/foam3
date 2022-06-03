@@ -254,7 +254,7 @@ foam.CLASS({
           spid_ = new ServiceProviderAwareSupport()
             .findSpid(foam.core.XLocator.get(), map, this);
           spidIsSet_ = true;
-        } catch ( NullPointerException e ) {
+        } catch ( Exception e ) {
           // nop - occurs during replay
         }
         return spid_;
