@@ -58,9 +58,9 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'currentControllerMode',
-    'setControllerMode',
-    'stack',
+    'currentControllerMode?',
+    'setControllerMode?',
+    'stack?',
     'translationService'
   ],
 
@@ -301,6 +301,10 @@ foam.CLASS({
         }
       });
       */
+      if ( ! this.route ) {
+        this.setControllerMode?.('browse');
+        this.stack?.back();
+      }
       if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {

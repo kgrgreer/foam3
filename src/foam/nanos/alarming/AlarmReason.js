@@ -19,6 +19,6 @@ foam.ENUM({
     { name: 'UNSUPPORTED', label: 'Unsupported request' },
     { name: 'CONFIGURATION', label: 'Invalid Configuration' },
     { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' },
-    { name: 'RATELIMIT', label: 'Checks if a rate is exceeded' }
+    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' }
   ]
 });

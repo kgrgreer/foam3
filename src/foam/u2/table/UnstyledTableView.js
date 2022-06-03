@@ -110,16 +110,24 @@ foam.CLASS({
     {
       name: 'order'
     },
-    //TODO: CLEAN UP ALL THESE COLUMN PROPS...
     {
       name: 'columns_',
+      documentation: `Internal prop used by the table view to render the columns, 
+        should always have the current table columns`,
       factory: function() { return []; }
     },
     {
       name: 'allColumns',
+      documentation: `Array that stores all properties and actions defined
+        in the model and filters out any the user does not have permission to access
+        Should be accessed through the 'columns' prop instead of being used directly`
     },
     {
       name: 'selectedColumnNames',
+      documentation: `Property responsible for deciding what columns to use when tableView is rendered 
+        Order of precedece: Memento -> localStorage -> default cols. 
+        Gets updated when 'columns' changes and tries to fetch the latest value from localStorage. 
+        Can also be set by any column config view to change the current columns loaded by the table`,
       memorable: true,
       expression: function(columns, of) {
         var ls = JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
@@ -131,6 +139,9 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnsWidth',
+      documentation: `Manages preferred column widths for a user, responsible for 
+        grabbing widths from LS and passing them to table columns. Updating column 
+        widths here should propogate changes to the rest of the view and LS`,
       factory: function() {
         var local = {};
         JSON.parse(localStorage.getItem(this.of.id))?.map(c => {
@@ -145,11 +156,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'colWidthUpdated',
       documentation: `used to trigger/listen to columnWidth changes as they are stored
-        in an object where value cahnges do not trigger slots`
+        in an object where value changes do not trigger slots`
     },
     {
       name: 'columns',
-      expression: function(of, allColumns, isColumnChanged) {
+      documentation:  `Stores an Array of preferred columns defined in the tableColumns 
+      axiom on the model, if undefined this acts as an alias for allColumns`,
+      expression: function(of, allColumns) {
         if ( ! of ) return [];
         var tc = of.getAxiomByName('tableColumns');
         return tc ? tc.columns : allColumns;
@@ -275,7 +288,7 @@ foam.CLASS({
       name: 'updateValues',
       class: 'Boolean',
       value: false,
-      documentation: 'If isColumnChanged is changed, columns_ will be updated'
+      documentation: 'If updateValues is changed, rows are re-rendered'
     },
     'currentMemento_',
     {
@@ -360,11 +373,9 @@ foam.CLASS({
         .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns') ? view.of.getAxiomByName('tableColumns').columns.includes(a) : false)
       );
 
-      this.columns$.sub(this.updateColumns_);
-      this.of$.sub(this.updateColumns_);
       this.editColumnsEnabled$.sub(this.updateColumns_);
       this.selectedColumnNames$.sub(this.updateColumns_);
-      this.allColumns$.sub(this.updateColumns_);
+      this.isColumnChanged$.sub(this.updateColumns_);
       this.updateColumns_();
 
       this.onDetach(this.colWidthUpdated$.sub(this.updateLocalStorage));
@@ -511,9 +522,13 @@ foam.CLASS({
       code: function(obj) {
         var actions = {};
         var actionsMerger = action => { actions[action.name] = action; };
-
-        // Model actions
-        obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
+        if ( obj?.cls_ ) {
+          // Model actions
+          obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);  
+        } else {
+          console.error('FObject is missing cls_', obj);
+        }
+        
         // Context menu actions
         this.contextMenuActions.forEach(actionsMerger);
 
@@ -547,18 +562,14 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.of ) return [];
-        //TODO: Add functionality to use defaults if memento cols don't exist
-        var auth = this.auth;
-        var self = this;
-        var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
+        var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns;
+        // Filter out any columns not preset in allColumns since that performs the permission checks before being populated
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c =>{
-          return c;
-        }))
-        .then(columns => this.columns_ = columns.filter(c => c));
+        ))
+        .then(columns => this.columns_ = columns );
       }
     }
   ]

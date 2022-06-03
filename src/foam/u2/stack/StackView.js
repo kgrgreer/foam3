@@ -69,20 +69,14 @@ foam.CLASS({
       var X = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(parent, this);
       var v;
       var ctrlMem = this.ctrl.memento_;
-      // Clear any memento tail that the view might replace
-      // Skip when loading a menu for the first time and the stack is building from the URL
-      // or when jumping around in the stack
-      // TODO: might not be enoguh to cover all cases look to improve
-      if ( ! ctrlMem.addRouteKeys(ctrlMem.str).includes(ctrlMem.tailStr) || ctrlMem.str == ctrlMem.usedStr ) {
-        X.memento_.removeMementoTail();
-      }
       if ( s.currentMemento ) {
+        this.ctrl.window.location = '#' + s.currentMemento;
         v = foam.u2.ViewSpec.createView(view, null, this, X);
-        this.ctrl.__subContext__.memento_.str = s.currentMemento;
+        console.log('setting memento', s.currentMemento);
       } else {
         v = foam.u2.ViewSpec.createView(view, null, this, X);
       }
-      if (  v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/ ) {
+      if ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/ ) {
         this.data.top.breadcrumbTitle$.follow(v.viewTitle$ || v.children[0].viewTitle$);
       }
 
