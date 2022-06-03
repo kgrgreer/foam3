@@ -127,7 +127,10 @@ foam.CLASS({
       });
       var sequence = undefined;
       if ( this.isSettingCapabilities ) {
-        sequence = this.crunchController.createWizardSequence(this.capabilitiesList, x);
+        x = x.createSubContext({
+          capabilities: this.capabilitiesList
+        });
+        sequence = this.crunchController.createWizardSequence(null, x);
         sequence
           .reconfigure('ConfigureFlowAgent', { popupMode: false })
           .remove('LoadTopConfig')
