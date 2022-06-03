@@ -730,12 +730,7 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-<<<<<<< HEAD
-        if ( this.route !== newId ) 
-          this.route = newId;
-=======
         this.pushMenu(newId, opt_forceReload);
->>>>>>> 51310b86a1 (Fix another edge case (#1779))
         return;
       }
       const preserveMem = this.buildingStack || (
