@@ -91,7 +91,9 @@ foam.CLASS({
         // Remove bindings for 'obj' properties and set remaining bindings in 'tail'
         this.props.forEach(p => {
           var value = consumeBinding(p.shortName || p.name);
-          this.obj[p.name] = value || undefined;
+          // Required to avoid setting memento props as the string 'undefined'
+          if ( !! value )
+            this.obj[p.name] = value;
         });
 
         this.tailStr = this.encodeBindings(bs);
