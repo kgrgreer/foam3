@@ -42,6 +42,11 @@
       name: 'of'
     },
     {
+      class: 'Boolean',
+      name: 'cloneValue',
+      value: true
+    },
+    {
       name: 'loader',
       factory: function () {
         const spec = {

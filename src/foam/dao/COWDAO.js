@@ -173,6 +173,21 @@ foam.CLASS({
         }
         return (String) ((foam.core.FObject) obj).getProperty("id");
       `
+    },
+    {
+      name: 'applyToDAO',
+      async: true,
+      code: async function (targetDAO) {
+        for ( const id of idsCopied ) {
+          const obj = this.copyDAO.find(id);
+          if ( obj ) {
+            targetDAO.put(obj);
+            continue;
+          }
+          const srcObj = this.delegate.find(id);
+          if ( srcObj ) targetDAO.remove(srcObj);
+        }
+      }
     }
   ]
 });

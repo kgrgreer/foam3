@@ -22,7 +22,11 @@ foam.CLASS({
 
   documentation: 'Property for storing a reference to a DAO.',
 
-  requires: [ 'foam.dao.ProxyDAO' ],
+  requires: [
+    'foam.dao.ArrayDAO',
+    'foam.dao.COWDAO',
+    'foam.dao.ProxyDAO'
+  ],
 
   properties: [
     {
@@ -59,7 +63,7 @@ foam.CLASS({
 
       Object.defineProperty(proto, name + '$proxy', {
         get: function daoProxyGetter() {
-          var proxy = prop.ProxyDAO.create({delegate: this[name]}, this[name]);
+          var proxy = prop.ProxyDAO.create({ delegate: this[name] }, this[name]);
           this[name + '$proxy'] = proxy;
 
           this.sub('propertyChange', name, function(_, __, ___, s) {
@@ -70,6 +74,20 @@ foam.CLASS({
         },
         configurable: true
       });
+
+      Object.defineProperty(proto, name + '$cow', {
+        get: function dowCOWGetter() {
+          if ( ! this.hasOwnPrivate_(name + '$cow') ) {
+            this.setPrivate_(name + '$cow', prop.COWDAO.create({
+              delegate: this[name],
+              copyDAO: prop.ArrayDAO.create(),
+              of: this[name].of
+            }));
+          }
+          return this.getPrivate_(name + '$cow');
+        },
+        configurable: true
+      })
     }
   ]
 });
