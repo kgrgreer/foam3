@@ -97,7 +97,7 @@ foam.CLASS({
       `,
       postSet: function(_,n){
         if ( !n ){
-          this.selectedData = [];
+          this.data.selectedData = [];
 
           // to cascade hiding all descendent wizardlets
           // TODO: investigate why this is still needed,
@@ -112,12 +112,6 @@ foam.CLASS({
         } else {
           this.save();
         }
-      }
-    },
-    {
-      name: 'selectedData',
-      postSet: function(_,n){
-        this.data.selectedData = n.map(capability => capability.id);
       }
     },
     {
@@ -165,7 +159,7 @@ foam.CLASS({
           selectedData = finalData.concat(savedSelectedData);
         }
 
-        this.selectedData = selectedData;
+        this.data.selectedData = selectedData;
 
         var sections = [
           this.MinMaxCapabilityWizardletSection.create({
@@ -178,7 +172,7 @@ foam.CLASS({
               choices$: this.slot(function(choices) { return choices.sort(); }),
               isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
-              data$: this.selectedData$,
+              data$: this.data.selectedData$,
               minSelected$: this.min$,
               maxSelected$: this.max$,
               choiceView: {
@@ -257,12 +251,12 @@ foam.CLASS({
       
 
         // Update lifted choices based on their availability
-        let newSelectedData = [...this.selectedData];
+        let newSelectedData = [...this.data.selectedData];
         for ( const w of liftedWizardlets ) {
           if ( w.isAvailable ) newSelectedData.push(w.capability);
           else foam.Array.remove(newSelectedData, w.capability);
         }
-        this.selectedData = foam.Array.unique(newSelectedData);
+        this.data.selectedData = foam.Array.unique(newSelectedData);
       }
       const slots = liftedWizardlets.map(w => w.isAvailable$);
       this.ArraySlot.create({ slots }).sub(updated);

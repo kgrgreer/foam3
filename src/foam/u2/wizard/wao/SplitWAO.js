@@ -64,7 +64,7 @@ foam.CLASS({
         if ( wizardlet.loading ) return;
         if ( ! wizardlet.isAvailable ) return;
         wizardlet.loading = true;
-        await saver.save(wizardlet.data);
+        await saver.save(wizardlet);
       }
       wizardlet.loading = false;
     },
