@@ -92,7 +92,7 @@ foam.CLASS({
         this.props.forEach(p => {
           var value = consumeBinding(p.shortName || p.name);
           // Required to avoid setting memento props as the string 'undefined'
-          if ( !! value ) 
+          if ( !! value )
             this.obj[p.name] = value;
         });
 
