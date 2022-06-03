@@ -24,11 +24,6 @@
       name: 'id'
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid'
-    },
-    {
       class: 'String',
       name: 'name'
     },
