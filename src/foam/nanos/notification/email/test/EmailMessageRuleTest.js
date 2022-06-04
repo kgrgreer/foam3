@@ -21,7 +21,6 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailConfig',
     'foam.nanos.notification.email.EmailTemplate',
     'foam.nanos.notification.email.Status',
-    'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map'
   ],
@@ -106,32 +105,37 @@ foam.CLASS({
     test(msg.getStatus() == Status.UNSENT, "EmailMessage status==UNSENT: "+msg.getStatus());
     test(subjectResolved_.equals(msg.getSubject()), "EmailMessage subject=="+subjectResolved_+": "+msg.getSubject());
 
-    // Test EmailsUtility
-    args = new HashMap();
-    args.put("template", template_.getId());
-    args.put("subject", subject_);
-    args.put("args1", "args1");
-    msg = EmailsUtility.sendEmailFromTemplate(x, user_, null, null, args);
-    test(msg!=null, "EmailsUtility found: "+msg.getId());
-    test(msg.getStatus() == Status.UNSENT, "EmailsUtility status==UNSENT: "+msg.getStatus());
-    test(subjectResolved_.equals(msg.getSubject()), "EmailsUtility subject=="+subjectResolved_+": "+msg.getSubject());
+    // Test EmailsUtility - deprecated
+    // args = new HashMap();
+    // args.put("template", template_.getId());
+    // args.put("subject", subject_);
+    // args.put("args1", "args1");
+    // msg = EmailsUtility.sendEmailFromTemplate(x, user_, null, null, args);
+    // test(msg!=null, "EmailsUtility found: "+msg.getId());
+    // test(msg.getStatus() == Status.UNSENT, "EmailsUtility status==UNSENT: "+msg.getStatus());
+    // test(subjectResolved_.equals(msg.getSubject()), "EmailsUtility subject=="+subjectResolved_+": "+msg.getSubject());
 
-    // no args
     msg = new EmailMessage();
     msg.setSubject(subjectResolved_);
     msg.setBody("Body: args1");
-    msg = EmailsUtility.sendEmailFromTemplate(x, user_, msg, template_.getId(), null);
+    msg.setUser(user_.getId());
+    args = new HashMap();
+    args.put("template", template_.getId());
+    msg.setTemplateArguments(args);
+    msg = (EmailMessage) ((DAO) x.get("emailMessageDAO")).put(msg);
     test(msg!=null, "EmailsUtility(2) found: "+msg.getId());
     test(msg.getStatus() == Status.UNSENT, "EmailsUtility(2) status==UNSENT: "+msg.getStatus());
     test(subjectResolved_.equals(msg.getSubject()), "EmailsUtility(2) subject=="+subjectResolved_+": "+msg.getSubject());
 
-    // explicit to, no template in args
     args = new HashMap();
     args.put("subject", subject_);
     args.put("args1", "args1");
+    args.put("template", template_.getId());
     EmailMessage msg3 = new EmailMessage();
     msg3.setTo(new String[] { "another@example.com" });
-    msg3 = EmailsUtility.sendEmailFromTemplate(x, user_, msg3, template_.getId(), args);
+    msg3.setUser(user_.getId());
+    msg3.setTemplateArguments(args);
+    msg3 = (EmailMessage) ((DAO) x.get("emailMessageDAO")).put(msg3);
     test(msg3 != null, "EmailsUtility(3) found: "+msg3.getId());
     test(msg3.getStatus() == Status.UNSENT, "EmailsUtility(3) status==UNSENT: "+msg.getStatus());
     test(subjectResolved_.equals(msg3.getSubject()), "EmailsUtility(3) subject=="+subjectResolved_+": "+msg3.getSubject());
