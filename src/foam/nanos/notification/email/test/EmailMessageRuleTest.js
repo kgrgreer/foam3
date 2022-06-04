@@ -105,16 +105,6 @@ foam.CLASS({
     test(msg.getStatus() == Status.UNSENT, "EmailMessage status==UNSENT: "+msg.getStatus());
     test(subjectResolved_.equals(msg.getSubject()), "EmailMessage subject=="+subjectResolved_+": "+msg.getSubject());
 
-    // Test EmailsUtility - deprecated
-    // args = new HashMap();
-    // args.put("template", template_.getId());
-    // args.put("subject", subject_);
-    // args.put("args1", "args1");
-    // msg = EmailsUtility.sendEmailFromTemplate(x, user_, null, null, args);
-    // test(msg!=null, "EmailsUtility found: "+msg.getId());
-    // test(msg.getStatus() == Status.UNSENT, "EmailsUtility status==UNSENT: "+msg.getStatus());
-    // test(subjectResolved_.equals(msg.getSubject()), "EmailsUtility subject=="+subjectResolved_+": "+msg.getSubject());
-
     msg = new EmailMessage();
     msg.setSubject(subjectResolved_);
     msg.setBody("Body: args1");
