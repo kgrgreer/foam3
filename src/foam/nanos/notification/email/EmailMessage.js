@@ -68,6 +68,7 @@ foam.CLASS({
   }
   /**
    * constructor for EmailsUtility migration
+   * @Deprecated
    */
   public EmailMessage(X x, Long userId, String template, Map args) {
     setX(x);
