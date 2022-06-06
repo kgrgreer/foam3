@@ -25,6 +25,12 @@ foam.CLASS({
   properties: [
     [ 'type', 'Boolean' ],
     [ 'value', false ],
-    [ 'adapt', function adaptBoolean(_, v) { return !! v; } ]
+    [ 'adapt', function adaptBoolean(_, v) {
+      if ( typeof v === 'string' ) {
+        v = v.trim().toLowerCase();
+        return v != 'false' && v != '0' & v != 'no' && v != 'off';
+      }
+      return !! v;
+    } ]
   ]
 });
