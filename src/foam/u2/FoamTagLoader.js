@@ -71,7 +71,7 @@ foam.CLASS({
       for ( var j = 0 ; j < el.attributes.length ; j++ ) {
         var attr = el.attributes[j];
         var p = this.findPropertyIC(obj.cls_, attr.name);
-        if ( p ) p.set(obj, attr.value);
+        if ( p ) p.set(obj, p.fromString(attr.value));
       }
     }
   ],
