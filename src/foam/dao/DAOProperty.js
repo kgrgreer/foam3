@@ -22,11 +22,7 @@ foam.CLASS({
 
   documentation: 'Property for storing a reference to a DAO.',
 
-  requires: [
-    'foam.dao.ArrayDAO',
-    'foam.dao.COWDAO',
-    'foam.dao.ProxyDAO'
-  ],
+  requires: [ 'foam.dao.ProxyDAO' ],
 
   properties: [
     {
