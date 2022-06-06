@@ -277,7 +277,7 @@ foam.POM({
     { name: "foam/dao/index/PersistedIndexTest",                      flags: "js|java" },
     { name: "foam/dao/MDAO",                                          flags: "js" },
     { name: "foam/dao/ArrayDAO",                                      flags: "js|java" },
-    { name: "foam/dao/COWDAO",                                        flags: "js|java" },
+    { name: "foam/dao/CopyOnWriteDAO",                                flags: "js|java" },
     { name: "foam/dao/COWDAOTest",                                    flags: "js|java" },
     { name: "foam/dao/TimestampDAO",                                  flags: "js" },
     { name: "foam/dao/CopyFromDAO",                                   flags: "js|java" },

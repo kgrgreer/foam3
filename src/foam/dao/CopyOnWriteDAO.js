@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'COWDAO',
+  name: 'CopyOnWriteDAO',
   extends: 'foam.dao.ProxyDAO',
   documentation: `
     <pre>
@@ -25,8 +25,8 @@ foam.CLASS({
     For each object updated, 'copyDAO' will store the original object as well
     as the changes.
 
-    Serialize the COWDAO itself to store copied data; storing the contents of
-    copyDAO will omit information about removals against the source DAO.
+    Serialize the CopyOnWriteDAO itself to store copied data; storing contents
+    of copyDAO will omit information about removals against the source DAO.
   `,
 
   requires: [
@@ -173,6 +173,21 @@ foam.CLASS({
         }
         return (String) ((foam.core.FObject) obj).getProperty("id");
       `
+    },
+    {
+      name: 'applyToDAO',
+      async: true,
+      code: async function (targetDAO) {
+        for ( const id of idsCopied ) {
+          const obj = this.copyDAO.find(id);
+          if ( obj ) {
+            targetDAO.put(obj);
+            continue;
+          }
+          const srcObj = this.delegate.find(id);
+          if ( srcObj ) targetDAO.remove(srcObj);
+        }
+      }
     }
   ]
 });
