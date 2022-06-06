@@ -153,12 +153,13 @@ public class NSpecFactory
     if ( logger == null ) {
       logger = StdoutLogger.instance();
     }
-    logger.warning("Invalidating Service", spec_.getName());
+    logger.warning("Invalidating Service", spec.getName());
     if ( ! SafetyUtil.equals(spec.getService(), spec_.getService())
       || ! SafetyUtil.equals(spec.getServiceClass(), spec_.getServiceClass())
       || ! SafetyUtil.equals(spec.getServiceScript(), spec_.getServiceScript())
     ) {
       if ( ns_ instanceof NanoService ) {
+        spec_ = spec;
         Object ns = buildService(x_);
         if ( ns instanceof FObject ) {
           ((FObject) ns_).copyFrom((FObject) ns);

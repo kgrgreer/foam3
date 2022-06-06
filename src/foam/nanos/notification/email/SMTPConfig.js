@@ -4,9 +4,11 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.notification.email',
   name: 'SMTPConfig',
+
+  documentation: 'Deprecated',
 
   properties: [
     {
@@ -38,6 +40,6 @@
       class: 'Boolean',
       name: 'starttls',
       value: false
-    },
+    }
   ]
- })
+ });
