@@ -12,6 +12,7 @@ foam.POM({
         { name: 'foobarlib' },
         { name: 'FoobarTemplateUtil' },
         { name: 'FoobarCapabilityRefinement' },
+        { name: 'FoobarConfig' },
         { name: 'FoobarController' },
         { name: 'Delete' },
         { name: 'Exec' },

@@ -60,23 +60,6 @@ foam.CLASS({
             class: 'FObjectArray',
             name: 'capablePayloads',
             of: 'foam.nanos.crunch.CapabilityJunctionPayload'
-        },
-        {
-            class: 'Map',
-            name: 'buildVariables',
-            factory: function () {
-                const o = foam.Foobar.flattenObject(this.config);
-                if ( ! o.hasOwnProperty('foobar.toolsDir') ) {
-                    o['foobar.toolsDir'] = this.toolsDir;
-                }
-                if ( ! o.hasOwnProperty('target.jrlDir') ) {
-                    o['target.jrlDir'] = this.path_.join(o['target.runDir'], 'journals');
-                }
-                if ( ! o.hasOwnProperty('project.srcDirs') ) {
-                    o['project.srcDirs'] = this.srcDirs;
-                }
-                return o;
-            }
         }
     ],
 
@@ -149,7 +132,7 @@ foam.CLASS({
         // Resolves build variables found in a string
         function resolveString (str) {
             const templateCompiler = this.FoobarTemplateUtil.create();
-            return templateCompiler.lazyCompile(str, 'toString', []).call(this.buildVariables)
+            return templateCompiler.lazyCompile(str, 'toString', []).call(this.config.toObject())
         },
         // Preprocesses an entire object deeply to resolve build variables
         {

@@ -38,13 +38,13 @@ X = foam.__context__.createSubContext({
     ]
 });
 
-var config;
+var configData;
 var pomData;
 const foobarPomCtx = {
     foam: {
         POM: function FOOBAR_POM (pom) {
             pomData = pom;
-            config = pom.foobar;
+            configData = pom.foobar;
         }
     }
 };
@@ -56,13 +56,17 @@ with ( foobarPomCtx ) {
     eval(pomScript);
 }
 
-if ( config.hasOwnProperty('protected') ) {
-    for ( const protectedPath of config.protected ) {
+const config = foam.foobar.FoobarConfig.create({
+    config: configData,
+    toolsDir: TOOL_DIR,
+    srcDirs: pomData.projects.map(p => path_.dirname(p.name)).join(',')
+});
+
+if ( config.get('protected') ) {
+    for ( const protectedPath of config.get('protected') ) {
         X.protectedDirectories.push(path_.resolve(protectedPath));
     }
 }
-
-config.jrlOutdir = path_.resolve(config.runtime, 'journals');
 
 console.log("\033[31;1mFOAM\033[0m Object Oriented Build Application and Runtime\n");
 
