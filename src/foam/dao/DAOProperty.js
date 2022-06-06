@@ -74,20 +74,6 @@ foam.CLASS({
         },
         configurable: true
       });
-
-      Object.defineProperty(proto, name + '$cow', {
-        get: function dowCOWGetter() {
-          if ( ! this.hasOwnPrivate_(name + '$cow') ) {
-            this.setPrivate_(name + '$cow', prop.COWDAO.create({
-              delegate: this[name],
-              copyDAO: prop.ArrayDAO.create(),
-              of: this[name].of
-            }));
-          }
-          return this.getPrivate_(name + '$cow');
-        },
-        configurable: true
-      })
     }
   ]
 });
