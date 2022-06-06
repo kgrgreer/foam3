@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'JSONTextView',
   extends: 'foam.u2.View',
   requires: [
-    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.PropertyBorder',
     'foam.u2.tag.TextArea',
   ],
   properties: [
@@ -48,7 +48,7 @@ foam.CLASS({
   ],
   methods: [
     function render() {
-      this.tag(this.SectionedDetailPropertyView, {
+      this.tag(this.PropertyBorder, {
         prop: this.DATA_,
         data: this
       });

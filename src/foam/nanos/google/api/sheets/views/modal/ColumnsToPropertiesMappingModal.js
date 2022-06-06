@@ -11,8 +11,7 @@
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.google.api.sheets.views.ColumnHeaderToPropertyMapping',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.u2.detail.SectionedDetailPropertyView'
+    'foam.u2.dialog.NotificationMessage'
   ],
   imports: [
     'importConfig',
@@ -49,10 +48,9 @@
               self
               .start()
                 .style({'padding': '0 16px'})
-                .tag(self.SectionedDetailPropertyView, {
-                  data: c,
-                  prop: self.ColumnHeaderToPropertyMapping.COLUMN_HEADER
-                })
+                .startContext({ data: c })
+                .add(self.ColumnHeaderToPropertyMapping.COLUMN_HEADER.__)
+                .endContext()
               .end()
               .br();
             })

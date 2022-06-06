@@ -21,6 +21,8 @@ foam.CLASS({
     }
     ^image {
       width: 120pt;
+      margin-bottom: 69px;
+      margin-top: 122px;
     }
   `,
 

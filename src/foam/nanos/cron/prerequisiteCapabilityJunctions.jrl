@@ -12,9 +12,9 @@ p({
 })
 p({
   sourceId: 'schedulable-review',
-  targetId: 'schedulable-xorminxmax'
+  targetId: 'schedulable-xorminmax'
 })
 p({
-  sourceId: 'schedulable-xorminxmax',
+  sourceId: 'schedulable-xorminmax',
   targetId: 'generic-schedulable'
 })
