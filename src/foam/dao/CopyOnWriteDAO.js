@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.dao',
-  name: 'COWDAO',
+  name: 'CopyOnWriteDAO',
   extends: 'foam.dao.ProxyDAO',
   documentation: `
     <pre>
@@ -25,8 +25,8 @@ foam.CLASS({
     For each object updated, 'copyDAO' will store the original object as well
     as the changes.
 
-    Serialize the COWDAO itself to store copied data; storing the contents of
-    copyDAO will omit information about removals against the source DAO.
+    Serialize the CopyOnWriteDAO itself to store copied data; storing contents
+    of copyDAO will omit information about removals against the source DAO.
   `,
 
   requires: [
