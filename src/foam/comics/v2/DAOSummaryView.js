@@ -301,10 +301,6 @@ foam.CLASS({
         }
       });
       */
-      if ( ! this.route ) {
-        this.setControllerMode?.('browse');
-        this.stack?.back();
-      }
       if ( this.currentControllerMode === 'edit' ) {
         self.edit();
       } else {
