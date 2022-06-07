@@ -28,15 +28,16 @@ async function findJournals({ jrls, srcPath, jrlName }) {
     const walker = foam.util.filesystem.FileWalker.create();
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
-            if ( foam.poms[fileInfo.path] != undefined ) continue;
+            if ( foam.poms[fileInfo.path] != undefined ) {
+              // skip directory
+            }
             const extName = path_.extname(fileInfo.name);
-            if ( extName !== '' && extName !== '.jrl' ) continue;
+            if ( extName !== '.jrl' ) continue;
             if ( jrlName && fileInfo.name != jrlName ) continue;
             const fullPath = fileInfo.fullPath;
             const baseName = path_.basename(fileInfo.name, extName);
             if ( ! jrls[baseName] ) jrls[baseName] = '';
             jrls[baseName] += fs_.readFileSync(fullPath).toString();
-            if ( jrlName && fileInfo.name == jrlName ) return;
         }
     })
     await walker.walk(srcPath);
@@ -46,12 +47,12 @@ async function findJournals({ jrls, srcPath, jrlName }) {
  const main = async function() {
 
  foam.require(X.pom, false, true);
- const jrls = [];
+ const jrls = {};
  asyncForEach(Object.keys(foam.poms), async(p) => {
    if ( foam.poms[p].journals ) {
-     foam.poms[p].journals.forEach(async (j) => {
-      await findJournals({jrls, srcPath: p, jrlName: j});
-     })
+//     foam.poms[p].journals.forEach(async (j) => {
+//      await findJournals({jrls, srcPath: p, jrlName: j});
+//     })
    } else {
    if ( foam.poms[p].projects ) return;
      await findJournals({jrls, srcPath: p});
