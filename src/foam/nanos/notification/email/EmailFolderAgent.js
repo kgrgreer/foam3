@@ -17,16 +17,28 @@ foam.CLASS({
   documentation: `Agent which retrieves a email folders messages`,
 
   javaImports: [
+    'foam.blob.Blob',
+    'foam.blob.InputStreamBlob',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
+    'foam.nanos.fs.File',
+    'static foam.mlang.MLang.EQ',
+    'java.io.InputStream',
+    'java.io.ByteArrayOutputStream',
+    'java.io.ByteArrayInputStream',
     'java.util.Date',
     'java.util.Properties',
+    'java.util.List',
+    'java.util.ArrayList',
     'javax.mail.*',
     'javax.mail.Message',
+    'javax.mail.internet.MimeBodyPart'
   ],
 
   javaCode: `
@@ -143,8 +155,12 @@ foam.CLASS({
           Message[] messages = folder.getMessages();
           logger.debug("messages", messages.length);
           for ( Message message : messages ) {
-            dao.put(buildEmailMessage(x, message));
-            message.setFlag(Flags.Flag.DELETED, getDelete());
+            try {
+              dao.put(buildEmailMessage(x, message));
+              message.setFlag(Flags.Flag.DELETED, getDelete());
+            } catch ( Exception e ) {
+              logger.error("unable to process email ","email-from", message.getFrom()[0].toString(), "email-subject", message.getSubject(), e);
+            }
           }
         } catch ( Exception e ) {
           logger.error(e);
@@ -163,12 +179,22 @@ foam.CLASS({
       name: 'buildEmailMessage',
       args: 'X x, javax.mail.Message message',
       type: 'foam.nanos.notification.email.EmailMessage',
-      javaThrows: [ 'javax.mail.MessagingException' ],
+      javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
       javaCode: `
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setSubject(message.getSubject());
         emailMessage.setFrom(message.getFrom()[0].toString());
         emailMessage.setReplyTo(message.getReplyTo()[0].toString());
+
+        String fromAddr = message.getFrom()[0].toString();
+        String fromEmail = fromAddr;
+        if ( fromAddr.contains("<") && fromAddr.contains(">") ) {
+          fromEmail = fromAddr.substring(fromAddr.indexOf("<")+1, fromAddr.indexOf(">"));
+        }
+
+        DAO userDAO = (DAO) getX().get("localUserDAO");
+        User user = (User) userDAO.find(EQ(User.EMAIL, fromEmail));
+        if ( user == null ) throw new foam.core.FOAMException("Can not find user: " + fromEmail);
 
         Address[] addresses = message.getRecipients(Message.RecipientType.TO);
         if ( addresses != null && addresses.length > 0 ) {
@@ -197,7 +223,37 @@ foam.CLASS({
         emailMessage.setSentDate(message.getSentDate());
         emailMessage.setStatus(Status.RECEIVED);
 
-        // TODO: Part, Multipart body, attachments
+        DAO fileDAO = (DAO) getX().get("fileDAO");
+
+        // Check if message contents multipart.
+        if ( message.getContentType().contains("multipart") ) {
+          Multipart multiPart = (Multipart) message.getContent();
+          List<String> attachments = new ArrayList<String>();
+          for (int i = 0; i < multiPart.getCount(); i++) {
+            MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(i);
+            // Check if part represents an email attachment.
+            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+              try ( InputStream in = part.getInputStream();
+                    ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
+                org.apache.commons.io.IOUtils.copy(in, os);
+                byte[] bytes = os.toByteArray();
+                long fileLength = bytes.length;
+                try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
+                  Blob data = new InputStreamBlob(bin, fileLength);
+                  File file = new File();
+                  file.setOwner(user.getId());
+                  file.setFilename(part.getFileName());
+                  file.setFilesize(fileLength);
+                  file.setData(data);
+                  file.setLifecycleState(LifecycleState.ACTIVE);
+                  file = (File) fileDAO.put(file);
+                  attachments.add(file.getId());
+                }
+              }
+            }
+          }
+          if ( attachments.size() > 0 ) emailMessage.setAttachments(attachments.toArray(new String[0]));
+        }
 
         return emailMessage;
       `
