@@ -2558,6 +2558,22 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'EMailViewRefinement',
+  refines: 'foam.core.EMail',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'email' }
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2',
