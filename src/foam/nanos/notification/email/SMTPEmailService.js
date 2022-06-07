@@ -185,7 +185,7 @@ foam.CLASS({
             Multipart multipart = new MimeMultipart();
             if ( emailMessage.isPropertySet("body") ) {
               MimeBodyPart part = new MimeBodyPart();
-              part.setText(emailMessage.getBody(), "utf-8", "html");
+              part.setText(emailMessage.getBody(), "utf-8", "text/html");
               multipart.addBodyPart(part);
             }
             DAO fileDAO = ((DAO) getX().get("fileDAO"));
