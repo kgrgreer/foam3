@@ -73,7 +73,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      name: 'gaCap',
+      name: 'generalCapability',
       documentation: `Capability that needs to be granted to proceed to the app.
       Checked for status in ApplicationController.`
     }
