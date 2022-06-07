@@ -1598,7 +1598,7 @@ foam.CLASS({
             { name: 'o', type: 'Object'}
           ],
           type: 'boolean',
-          body: `return foam.util.SafetyUtil.compare(get_(o), "${this.value}") == 0;`
+          body: `return foam.util.SafetyUtil.compare(get_(o), ${this.javaValue}) == 0;`
         });
       }
 
