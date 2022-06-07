@@ -32,6 +32,14 @@ foam.CLASS({
   javaCode: `
   public EmailFolderAgent() {}
 
+  public EmailFolderAgent(X x) {
+    this(x, (SMTPConfig) x.get("SMTPConfig"));
+  }
+
+  public EmailFolderAgent(X x, SMTPConfig config) {
+    this(x, config.getUsername(), config.getPassword());
+  }
+
   public EmailFolderAgent(X x, String username, String password) {
     this(x, username, password, "INBOX");
   }

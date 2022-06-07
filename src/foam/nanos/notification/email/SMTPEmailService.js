@@ -9,7 +9,6 @@ foam.CLASS({
   name: 'SMTPEmailService',
 
   implements: [
-    'foam.core.NanoService',
     'foam.nanos.notification.email.EmailService'
   ],
 
@@ -59,50 +58,19 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'host',
-      value: '127.0.0.1'
-    },
-    {
-      class: 'String',
-      name: 'port',
-      value: '25'
-    },
-    {
-      class: 'String',
-      name: 'username',
-      value: null
-    },
-    {
-      class: 'String',
-      name: 'password',
-      value: null
-    },
-    {
-      class: 'Boolean',
-      name: 'authenticate',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'starttls',
-      value: false
-    },
-    {
       name: 'session_',
       javaType: 'Session',
       class: 'Object',
-      visibility: 'HIDDEN',
-      transient: true,
       javaFactory:
       `
+        SMTPConfig smtpConfig = (SMTPConfig) getX().get("SMTPConfig");
         Properties props = new Properties();
-        props.setProperty("mail.smtp.auth", getAuthenticate() ? "true" : "false");
-        props.setProperty("mail.smtp.starttls.enable", getStarttls() ? "true" : "false");
-        props.setProperty("mail.smtp.host", getHost());
-        props.setProperty("mail.smtp.port", getPort());
-        if ( getAuthenticate() ) {
-          return Session.getInstance(props, new SMTPAuthenticator(getUsername(), getPassword()));
+        props.setProperty("mail.smtp.auth", smtpConfig.getAuthenticate() ? "true" : "false");
+        props.setProperty("mail.smtp.starttls.enable", smtpConfig.getStarttls() ? "true" : "false");
+        props.setProperty("mail.smtp.host", smtpConfig.getHost());
+        props.setProperty("mail.smtp.port", smtpConfig.getPort());
+        if ( smtpConfig.getAuthenticate() ) {
+          return Session.getInstance(props, new SMTPAuthenticator(smtpConfig.getUsername(), smtpConfig.getPassword()));
         }
         return Session.getInstance(props);
       `
@@ -111,17 +79,16 @@ foam.CLASS({
       class: 'Object',
       javaType: 'Transport',
       name: 'transport_',
-      visibility: 'HIDDEN',
-      transient: true,
       javaFactory:
       `
         Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
+        SMTPConfig smtpConfig = (SMTPConfig) getX().get("SMTPConfig");
         Transport transport = null;
         try {
           omLogger.log(this.getClass().getSimpleName(), "transport", "connecting");
           transport = getSession_().getTransport("smtp");
-          transport.connect(getUsername(), getPassword());
+          transport.connect(smtpConfig.getUsername(), smtpConfig.getPassword());
           logger.info("transport", "connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
         } catch ( Exception e ) {
@@ -151,13 +118,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'reload',
-      javaCode: `
-        clearTransport_();
-        clearSession_();
-      `
-    },
     {
       name: 'createMimeMessage',
       javaType: 'MimeMessage',
@@ -225,7 +185,7 @@ foam.CLASS({
             Multipart multipart = new MimeMultipart();
             if ( emailMessage.isPropertySet("body") ) {
               MimeBodyPart part = new MimeBodyPart();
-              part.setText(emailMessage.getBody(), "utf-8", "text/html");
+              part.setText(emailMessage.getBody(), "utf-8", "html");
               multipart.addBodyPart(part);
             }
             DAO fileDAO = ((DAO) getX().get("fileDAO"));
