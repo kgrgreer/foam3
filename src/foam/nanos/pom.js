@@ -701,6 +701,7 @@ foam.POM({
     { name: "approval/CustomViewReferenceApprovable",                                     flags: "js|java" },
     { name: "approval/FulfilledCompositeApprovableRule",                                  flags: "js|java" },
     { name: "approval/RestrictedApprovableDAO",                                           flags: "js|java" },
+    { name: "approval/ReleaseCashInApprovalType",                                         flags: "js|java" },
     { name: "approval/PopulateApprovalRequestSummariesDAO",                               flags: "js|java" },
     { name: "approval/SendGroupRequestApprovalDAO",                                       flags: "js|java" },
     { name: "approval/UCJApprovable",                                                     flags: "js|java" },

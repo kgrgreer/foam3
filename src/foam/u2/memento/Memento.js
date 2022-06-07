@@ -68,13 +68,7 @@ foam.CLASS({
         s = this.addRouteKeys(s);
 
         if ( s ) {
-          // Do not split inside '{}', can be used as an escape char
-          // This only works for one level of nesting, can we use a foam parser?
-          s.split(/&(?=[^\}]*(?:\{|$))/).forEach(p => {
-            // Limit split to one in order to preserve nested mementos
-            var [k,v] = p.split(/=(.*)/, 2)
-            bs.push([k,v]);
-          });
+          bs = this.createBindings(s);
         }
 
         function consumeBinding(k) {
@@ -91,7 +85,9 @@ foam.CLASS({
         // Remove bindings for 'obj' properties and set remaining bindings in 'tail'
         this.props.forEach(p => {
           var value = consumeBinding(p.shortName || p.name);
-          this.obj[p.name] = value || undefined;
+          // Required to avoid setting memento props as the string 'undefined'
+          if ( !! value )
+            this.obj[p.name] = value;
         });
 
         this.tailStr = this.encodeBindings(bs);
@@ -140,6 +136,18 @@ foam.CLASS({
         this.memento_.tail = this;
         this.str           = this.memento_.tailStr;
       }
+    },
+
+    function createBindings(s) {
+      let arr = [];
+      // Do not split inside '{}', can be used as an escape char
+      // This only works for one level of nesting, can we use a foam parser?
+      s.split(/&(?=[^\}]*(?:\{|$))/).forEach(p => {
+        // Limit split to one in order to preserve nested mementos
+        var [k,v] = p.split(/=(.*)/, 2)
+        arr.push([k,v]);
+      });
+      return arr;
     },
 
     function getBoundNames(set) {
@@ -225,7 +233,8 @@ foam.CLASS({
 
   listeners: [
     function removeMementoTail() {
-      console.log('Detaching tail ', this.obj?.cls_.name);
+      // Logging to track memento issues
+      console.log('Detaching tail ', this.obj?.cls_.name, this.tailStr);
       this.tail = null;
       this.tails = [];
       this.tailStr = undefined;

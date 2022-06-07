@@ -99,7 +99,8 @@ foam.CLASS({
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'buildingStack'
   ],
 
   topics: [
@@ -359,8 +360,16 @@ foam.CLASS({
       postSet: function(_, n) {
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
-        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
+        if ( this.initSubject && n ) {
+          if ( ! this.currentMenu?.id ) this.buildingStack = true;
+          this.pushMenu(n);
+        }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'buildingStack',
+      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -692,22 +701,30 @@ foam.CLASS({
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
-      if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
-      /** Used to load a specific menus. **/
-      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
+        this.buildingStack = false;
+        return;
+      }
+      /**  Used for data management menus that are constructed on the fly 
+       * required as those menus are not put in menuDAO and hence fail the 
+       * find call in pushMenu_.
+       * This approach allows any generated menus to be permissioned/loaded as long as 
+       * they are a child of a real menuDAO menu
+       * **/
+      if ( idCheck.includes('/') ) 
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu);
+        this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
         await this.clientPromise.then(async () => {
-          await this.pushMenu_(realMenu, menu);
+          await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
     },
 
-    async function pushMenu_(realMenu, menu) {
+    async function pushMenu_(realMenu, menu, opt_forceReload) {
       dao = this.client.menuDAO;
       let m = this.memento_.str;
       realMenu = await dao.find(realMenu);
@@ -719,12 +736,19 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-        if ( this.route !== newId ) 
-          this.route = newId;
+        this.pushMenu(newId, opt_forceReload);
         return;
       }
+      const preserveMem = this.buildingStack || (
+        typeof menu === 'string' ? 
+        foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
+        foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
+      );
+      if ( ! preserveMem )
+        this.memento_.removeMementoTail();
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
+      this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
       this.menuListener(realMenu);
     },

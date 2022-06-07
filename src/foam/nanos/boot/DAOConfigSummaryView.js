@@ -204,7 +204,7 @@ foam.CLASS({
       memorable: true,
       postSet: function(o, n) {
         if ( o == n || ! this.viewDidRender ) return;
-        if ( o && this.stack.pos > 1 ) this.stack.back();
+        if ( o && this.stack.pos >= 1 ) this.stack.back();
         this.mementoChange();
       }
     },
