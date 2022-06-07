@@ -435,6 +435,7 @@ foam.CLASS({
               // use the route instead of the menu so that the menu could be re-created under the updated context
               self.pushMenu(self.route);
               self.languageInstalled.resolve();
+              self.subToNotifications();
               return;
             }
           }
@@ -833,8 +834,7 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      this.__subContext__.myNotificationDAO
-      .on.put.sub(this.displayToastMessage.bind(this));
+      this.subToNotifications();
 
       this.loginSuccess = true;
 
@@ -849,6 +849,11 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    function subToNotifications() {
+      this.__subContext__.myNotificationDAO
+      .on.put.sub(this.displayToastMessage.bind(this));
     },
 
     function menuListener(m) {
