@@ -39,16 +39,17 @@ foam.CLASS({
         }
         if ( top.popup && ! this.popupsOpened[pos] ) {
           let cls = this.__subContext__.lookup(top.popup.class) || foam.u2.dialog.Popup;
+          let X = this.data.getContextFromParent(top.parent, this);
           let popup = cls.create({
             ...top.popup
-          }, this);
+          }, X);
           popup.sub('action', 'closeModal', () => {
             if ( this.popupsOpened[pos] ) {
               delete this.popupsOpened[pos];
               this.data.back();
             }
           })
-          popup.add(this.renderStackView(top));
+          popup.add(this.renderStackView(top, popup));
           this.popupsOpened[pos] = popup;
           ctrl.add(popup);
         }

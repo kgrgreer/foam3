@@ -32,7 +32,6 @@ foam.CLASS({
       white-space: nowrap;
       inset: none;
       cursor: pointer;
-      width: 240px;
     }
 
     ^button:hover {
@@ -386,6 +385,7 @@ foam.CLASS({
     ^ {
       padding-top: 10px;
       overflow-y: auto;
+      overflow-x: hidden;
     }
   `,
 

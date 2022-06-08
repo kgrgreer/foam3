@@ -28,8 +28,6 @@ foam.CLASS({
 ^ {
   display: flex;
   flex-wrap: wrap;
-  align-items: start;
-  justify-content: center;
 }
 `,
   methods: [

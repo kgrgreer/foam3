@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'ImportFromGoogleSheetsForm',
-  extends: 'net.nanopay.ui.wizardModal.WizardModal',
+  extends: 'foam.nanos.google.api.sheets.views.wizardModal.WizardModal',
 
   imports: [
     'config'
@@ -29,7 +29,7 @@
       class: 'FObjectProperty',
       of: 'foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig',
       expression: function(of, dao) {
-        return foam.nanos.google.api.sheets.GoogleSheetsImportConfig.create({importClassInfo: of, DAO: dao.includes('/') ? dao.split('/')[1] : dao });
+        return foam.nanos.google.api.sheets.views.GoogleSheetsImportConfig.create({importClassInfo: of, DAO: dao.includes('/') ? dao.split('/')[1] : dao });
       }
     },
     'of',

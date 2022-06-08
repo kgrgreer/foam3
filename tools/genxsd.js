@@ -13,18 +13,18 @@ var fs            = require('fs');
 var path          = require('path');
 var mkdirp        = require('mkdirp')
 var DOMParser     = require('xmldom').DOMParser;
-var pack          = require('../../package.json');
 var simpleType    = require('./simpleType');
 var complexType   = require('./complexType');
 var types         = require('./typeMapping');
-var iso20022Types = require('./iso20022Types');
+var iso20022Types = require('./iso20022Types'); // TODO: only load when needed
+
+globalThis.foam = { flags: { java: true } };
 
 require('../src/foam_node.js');
 
 foam.require('pom', false, true);
 
 var stringify = require("json-stringify-pretty-compact");
-var _ = require('underscore');
 
 
 if ( process.argv.length < 3 ) {
@@ -40,7 +40,7 @@ var outdir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/');
 
 var classesOutDir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/');
 
-var classes = [];
+var classes     = [];
 var simpleTypes = [];
 
 // push document interface
@@ -238,7 +238,7 @@ function addToClasses(classes, models) {
  *
  * @param {FOAMModel} m         FOAM Model to be generated
  * @param {String}    modelType CLASS or ENUM, default CLASS
- * @return {Object}        Object containing model name and string representation
+ * @return {Object}   Object containing model name and string representation
  */
 function genModel(m, modelType) {
   modelType = modelType || 'CLASS';
@@ -260,7 +260,7 @@ if ( ! fs.existsSync(outdir) ) {
 // generate classes
 for ( var i = 0; i < files.length; i++ ) {
   var messageClasses = [];
-  var file = fs.readFileSync(indir + files[i], 'utf8');
+  var file   = fs.readFileSync(indir + files[i], 'utf8');
   let models = processFile(file, files[i]);
 
   // change generic document type to be name of ISO20022 message

@@ -23,7 +23,7 @@ foam.require(X.pom, false, true);
 
 // Promote all UNUSED Models to USED
 for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
-// Call a 2nd time incase interfaces generated new classes in the 1st pass
+// Call a 2nd time in case interfaces generated new classes in the 1st pass
 for ( var key in foam.UNUSED ) try { foam.maybeLookup(key); } catch(x) { }
 
 var mCount = 0, jCount = 0;

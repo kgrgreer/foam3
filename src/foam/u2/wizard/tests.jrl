@@ -7,7 +7,7 @@ p({
     async function execute(x) {
       try {      
         // CASE: 1 - SAVE FOBJECT AS DATA (NO PATH)
-        dw = foam.u2.wizard.DAOWizardlet.create({ of: foam.nanos.auth.User }, x);
+        dw = foam.u2.wizard.wizardlet.DAOWizardlet.create({ of: foam.nanos.auth.User }, x);
         
         dw.data.email = 'francis@filth.com'
         dw.data.userName = 'francis'
@@ -23,7 +23,7 @@ p({
        
 
         // CASE: 2 - LOAD FOBJECT AS DATA (NO PATH)
-        dw = foam.u2.wizard.DAOWizardlet.create({ of: foam.nanos.auth.User }, x);
+        dw = foam.u2.wizard.wizardlet.DAOWizardlet.create({ of: foam.nanos.auth.User }, x);
 
         dw.data.id = resp.id;
 
@@ -37,7 +37,7 @@ p({
 
 
         // CASE: 3 - SAVE DATA WITH NESTED FOBJECT (WITH PATH)
-        dw = foam.u2.wizard.DAOWizardlet.create({ of: foam.nanos.crunch.UserCapabilityJunction, path: 'payload' }, x);
+        dw = foam.u2.wizard.wizardlet.DAOWizardlet.create({ of: foam.nanos.crunch.UserCapabilityJunction, path: 'payload' }, x);
         
         ucj = foam.nanos.crunch.UserCapabilityJunction.create({ 
               sourceId: 1348,

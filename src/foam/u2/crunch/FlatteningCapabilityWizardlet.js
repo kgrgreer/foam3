@@ -89,7 +89,7 @@ foam.CLASS({
       flags: ['web'],
       transient: true,
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WizardletSection',
+      of: 'foam.u2.wizard.wizardlet.WizardletSection',
       // Override BaseWizardlet preSet
       preSet: function (_, val) {
         return val;

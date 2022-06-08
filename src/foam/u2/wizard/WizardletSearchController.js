@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'wizardlet',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     }
   ]
 });
@@ -52,7 +52,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet',
+      of: 'foam.u2.wizard.wizardlet.Wizardlet',
       name: 'wizardlets'
     },
     {

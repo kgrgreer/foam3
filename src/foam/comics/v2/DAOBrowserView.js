@@ -253,9 +253,9 @@ foam.CLASS({
       },
       code: function(X) {
         var adao;
-        if ( summaryView.selectedObjects && ! foam.Object.equals(summaryView.selectedObjects, {}) ) {
+        if ( this.config?.summaryView?.selectedObjects && ! foam.Object.equals(this.config.summaryView.selectedObjects, {}) ) {
           adao = foam.dao.ArrayDAO.create({ of: this.data.of });
-          foam.Object.forEach(summaryView.selectedObjects, function(y) { adao.put(y) })
+          foam.Object.forEach(this.config.summaryView.selectedObjects, function(y) { adao.put(y) })
         }
 
         this.add(this.Popup.create(null, X).tag({
