@@ -58,7 +58,7 @@ foam.CLASS({
       class: 'Object',
       name: 'idCache',
       documentation: 'Working memory for copied IDs.',
-      javaType: 'java.util.HashSet',
+      javaType: 'java.util.HashSet<String>',
       hidden: true,
       transient: true,
       factory: function () {
@@ -66,7 +66,7 @@ foam.CLASS({
       },
       javaFactory: `
         var set = new HashSet<String>();
-        for ( String id : idsCopied_ ) {
+        if ( this.idsCopied_ != null ) for ( String id : idsCopied_ ) {
           set.add(id);
         }
         return set;
@@ -100,7 +100,22 @@ foam.CLASS({
         }
 
         return await this.copyDAO.put_(x, obj);
-      }
+      },
+      javaCode: `
+        var id = adaptFindId_(obj);
+
+        if ( ! getIdCache().contains(id) ) {
+          getIdCache().add(id);
+
+          // Copy from source DAO if it already has this object
+          var sourceObj = super.find_(x, obj);
+          if ( sourceObj != null ) {
+            getCopyDAO().put_(x, sourceObj);
+          }
+        }
+
+        return getCopyDAO().put_(x, obj);
+      `
     },
     {
       name: 'find_',
@@ -108,7 +123,12 @@ foam.CLASS({
         const id = this.adaptFindId_(obj);
         if ( this.idCache.has(id) ) return this.copyDAO.find_(x, obj);
         return this.delegate.find_(x, obj);
-      }
+      },
+      javaCode: `
+        var stringId = adaptFindId_(id);
+        if ( getIdCache().contains(stringId) ) return getCopyDAO().find_(x, id);
+        return super.find_(x, id);
+      `
     },
     {
       name: 'remove_',
@@ -125,7 +145,18 @@ foam.CLASS({
         if ( ! this.enableRetroRemove && ! originalObj ) return;
         this.idCache.add(id);
         return await this.copyDAO.remove_(x, obj);
-      }
+      },
+      javaCode: `
+        var id = adaptFindId_(obj);
+        if ( getIdCache().contains(id) ) {
+          return getCopyDAO().remove_(x, obj);
+        }
+
+        var originalObj = super.find_(x, obj);
+        if ( ! getEnableRetroRemove() && originalObj == null ) return null;
+        getIdCache().add(id);
+        return getCopyDAO().remove_(x, obj);
+      `
     },
     {
       name: 'select_',
@@ -144,6 +175,7 @@ foam.CLASS({
         var ddSink = new DedupSink();
         ddSink.setDelegate(sink);
         getCopyDAO().select_(x, ddSink, skip, limit, order, predicate);
+        for ( String k : getIdCache() ) ddSink.getResults().add(k);
         super.select_(x, ddSink, skip, limit, order, predicate);
         return sink;
         
@@ -153,7 +185,10 @@ foam.CLASS({
       name: 'removeAll_',
       code: function (x, ...selectArgs) {
         this.select_(x, this.RemoveSink.create({ x, dao: this }), ...selectArgs)
-      }
+      },
+      javaCode: `
+        select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
+      `
     },
     {
       name: 'adaptFindId_',
