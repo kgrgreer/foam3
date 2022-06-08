@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CapabilityPayload',
   documentation: `
     CapabilityPayload is created with an id for a specific requested capability and its
-    associated capabilities mapped to required data objects in the specified in its grant path 
+    associated capabilities mapped to required data objects in the specified in its grant path
   `,
 
   javaImports: [

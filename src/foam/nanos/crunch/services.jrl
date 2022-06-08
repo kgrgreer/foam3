@@ -258,7 +258,7 @@ p({
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
+  "client":"{\"of\":\"foam.nanos.crunch.connection.CapabilityPayload\"}"
 })
 
 p({
