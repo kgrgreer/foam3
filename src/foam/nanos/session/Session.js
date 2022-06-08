@@ -15,10 +15,9 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
     'foam.core.OrX',
+    'foam.core.X',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Subject',
@@ -36,7 +35,8 @@ foam.CLASS({
     'java.util.Random',
     'java.util.UUID',
     'javax.servlet.http.HttpServletRequest',
-    'org.eclipse.jetty.server.Request'
+    'org.eclipse.jetty.server.Request',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
