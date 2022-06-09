@@ -51,7 +51,8 @@ foam.CLASS({
   properties: [
     {
       name: 'dao_',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       class: 'Boolean',
