@@ -64,7 +64,7 @@ foam.CLASS({
     ^body {
       flex-grow: 1;
       max-height: 90vh;
-      overflow: scroll;
+      overflow: auto;
     }
 
     ^logo img, ^logo svg {
