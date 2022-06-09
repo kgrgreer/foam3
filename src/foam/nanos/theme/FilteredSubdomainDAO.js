@@ -35,7 +35,7 @@ foam.CLASS({
       list.add(x.get(HttpServletRequest.class).getServerName());
       var pred = new SubdomainPredicate(x, list);
       predicate = predicate == null ? pred : MLang.AND(new Predicate[] {predicate, pred});
-      return super.select_(x, sink, skip, limit, order, pred);
+      return super.select_(x, sink, skip, limit, order, predicate);
       `
     }
   ]
