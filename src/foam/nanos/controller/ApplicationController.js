@@ -745,7 +745,6 @@ foam.CLASS({
         menu = realMenu;
       this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
-      this.menuListener(realMenu);
     },
 
     async function findDefaultMenu(dao) {
