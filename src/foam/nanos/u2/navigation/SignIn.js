@@ -122,7 +122,7 @@ foam.CLASS({
             if ( ! this.memento_ || this.memento_.str.length === 0 || this.currentMenu?.id == this.memento_.str )
             this.loginSuccess = !! this.subject;
             // reload the client on loginsuccess in case login not called from controller
-            if ( this.loginSuccess ) await ctrl.reloadClient();
+            if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
       }
