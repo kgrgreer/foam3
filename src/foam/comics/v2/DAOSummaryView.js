@@ -58,9 +58,9 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'currentControllerMode',
-    'setControllerMode',
-    'stack',
+    'currentControllerMode?',
+    'setControllerMode?',
+    'stack?',
     'translationService'
   ],
 

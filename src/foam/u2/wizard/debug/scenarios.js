@@ -105,9 +105,7 @@ foam.CLASS({
               class: 'foam.u2.wizard.wao.SplitWAO',
               loader: {
                 class: 'foam.u2.wizard.data.PrerequisiteLoader',
-                of: 'foam.core.StringHolder',
-                prerequisiteCapabilityId: 'HasData',
-                delegate: { class: 'foam.u2.wizard.data.NullLoader' }
+                prerequisiteCapabilityId: 'HasData'
               }
             }
           }

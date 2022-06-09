@@ -153,6 +153,13 @@ foam.CLASS({
         if ( ! passwordAvailable ) return this.WEAK_PASSWORD_ERR;
       },
       required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      visibility: 'HIDDEN',
+      value: true,
+      documentation: 'Optional boolean used to display this model without login action'
     }
   ],
 
@@ -171,7 +178,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'updateUser',
+      name: 'nextStep',
       code: async function(x) {
         await this.finalRedirectionCall(x);
       }
@@ -212,7 +219,8 @@ foam.CLASS({
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
       },
-      code: function(x) {
+      isAvailable: function(showAction) { return showAction; },
+      code: function(x, updateUser) {
         this.isLoading_ = true;
 
         this.dao_
@@ -227,7 +235,7 @@ foam.CLASS({
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.updateUser(x);
+            await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,

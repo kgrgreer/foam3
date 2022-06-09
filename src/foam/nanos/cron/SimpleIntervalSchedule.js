@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.cron',
   name: 'SimpleIntervalSchedule',
 
@@ -86,12 +86,35 @@
       class: 'Enum',
       of: 'foam.time.TimeUnit',
       name: 'frequency',
-      label: '',
+      label: 'Frequency',
+      view: function(_, X) {
+        var arr = ['Day', 'Week', 'Month', 'Year'];
+        var choices = X.data.typeOfLabel$.map(type => {
+          return (type == 'singular') ? arr.map(v => [v, v]) : arr.map(v => [v, v + 's']);
+        });
+
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: choices,
+          data$: X.data.frequency$
+        }
+      },
       gridColumns: 6,
       visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.DISABLED};
         return foam.u2.DisplayMode.RW;
+      }
+    },
+    {
+      class: 'String',
+      name: 'typeOfLabel',
+      documentation: `An internal prop used to change labels on the choiceView for frequency
+        in the scheduled transfer depending on singular or plural frequency(repeat)
+        e.g.  1 Week, 2 Weeks `,
+      hidden: true,
+      expression: function(repeat) {
+        return repeat > 1 ? 'plural' : 'singular';
       }
     },
     {

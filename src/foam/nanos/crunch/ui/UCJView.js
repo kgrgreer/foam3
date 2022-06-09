@@ -56,6 +56,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.StepWizardConfig',
     'foam.util.async.Sequence'
   ],
@@ -129,19 +130,21 @@ foam.CLASS({
         x = x.createSubContext({
           capabilities: this.capabilitiesList
         });
-        sequence = this.Sequence.create(null, x)
-        .add(this.ConfigureFlowAgent, { popupMode: false })
-        .add(this.WAOSettingAgent)
-        .add(this.DeveloperModeAgent)
-        .add(this.CreateWizardletsAgent)
-        .add(this.LoadWizardletsAgent)
-        .add(this.StepWizardAgent)
-        .add(this.DetachAgent)
-        .add(this.SpinnerAgent)
-        .add(this.SaveAllAgent)
-        .add(this.SubmitAgent)
-        .add(this.DetachSpinnerAgent)
-        .add(this.CapabilityStoreAgent);
+        sequence = this.crunchController.createWizardSequence(null, x);
+        sequence
+          .reconfigure('ConfigureFlowAgent', { popupMode: false })
+          .remove('LoadTopConfig')
+          .remove('CapabilityAdaptAgent')
+          .remove('GrantedEditAgent')
+          .remove('LoadCapabilitiesAgent')
+          .remove('CheckRootIdAgent')
+          .remove('CheckPendingAgent')
+          .remove('CheckNoDataAgent')
+          .remove('WizardStateAgent')
+          .remove('FilterGrantModeAgent')
+          .remove('SkipGrantedAgent')
+          .remove('RequirementsPreviewAgent')
+          .remove('AutoSaveWizardletsAgent')
       } else {
         sequence = this.crunchController.createWizardSequence(this.data.targetId, x);
         sequence

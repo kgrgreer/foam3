@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.WindowHash',
@@ -45,12 +46,12 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
+    'foam.nanos.u2.navigation.NavigationController',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
-    'foam.u2.borders.MarginBorder',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
@@ -77,6 +78,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
@@ -89,66 +91,76 @@ foam.CLASS({
     'returnExpandedCSS',
     'sessionID',
     'sessionTimer',
+    'showFooter',
+    'showNav',
     'signUpEnabled',
     'stack',
     'subject',
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'buildingStack'
   ],
 
   topics: [
     'themeChange'
   ],
 
-  constants: {
-    MACROS: [
-      'customCSS',
-      'logoBackgroundColour',
-      'font1',
-      'DisplayWidth.XS',
-      'DisplayWidth.SM',
-      'DisplayWidth.MD',
-      'DisplayWidth.LG',
-      'DisplayWidth.XL',
-      'primary1',
-      'primary2',
-      'primary3',
-      'primary4',
-      'primary5',
-      'approval1',
-      'approval2',
-      'approval3',
-      'approval4',
-      'approval5',
-      'secondary1',
-      'secondary2',
-      'secondary3',
-      'secondary4',
-      'secondary5',
-      'warning1',
-      'warning2',
-      'warning3',
-      'warning4',
-      'warning5',
-      'destructive1',
-      'destructive2',
-      'destructive3',
-      'destructive4',
-      'destructive5',
-      'grey1',
-      'grey2',
-      'grey3',
-      'grey4',
-      'grey5',
-      'black',
-      'white',
-      'inputHeight',
-      'inputVerticalPadding',
-      'inputHorizontalPadding'
-    ]
-  },
+  constants: [
+    {
+      name: 'MACROS', 
+      value: [
+        'customCSS',
+        'logoBackgroundColour',
+        'font1',
+        'DisplayWidth.XS',
+        'DisplayWidth.SM',
+        'DisplayWidth.MD',
+        'DisplayWidth.LG',
+        'DisplayWidth.XL',
+        'primary1',
+        'primary2',
+        'primary3',
+        'primary4',
+        'primary5',
+        'approval1',
+        'approval2',
+        'approval3',
+        'approval4',
+        'approval5',
+        'secondary1',
+        'secondary2',
+        'secondary3',
+        'secondary4',
+        'secondary5',
+        'warning1',
+        'warning2',
+        'warning3',
+        'warning4',
+        'warning5',
+        'destructive1',
+        'destructive2',
+        'destructive3',
+        'destructive4',
+        'destructive5',
+        'grey1',
+        'grey2',
+        'grey3',
+        'grey4',
+        'grey5',
+        'black',
+        'white',
+        'inputHeight',
+        'inputVerticalPadding',
+        'inputHorizontalPadding'
+      ]
+    },
+    {
+      name: 'THEME_OVERRIDE_REGEXP',
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+    }
+  ],
 
   messages: [
     { name: 'GROUP_FETCH_ERR',         message: 'Error fetching group' },
@@ -264,6 +276,27 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'showFooter',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        return globalThis.localStorage['isMenuOpen'] === 'true'
+         || ( globalThis.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        globalThis.localStorage['isMenuOpen'] = n;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'capabilityAcquired',
       documentation: `
         The purpose of this is to handle the intercept flow for a capability that was granted,
@@ -294,7 +327,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.Theme',
       name: 'theme',
-      postSet: function() {
+      postSet: function(o, n) {
+        if ( o && n && o.equals(n)) return;
         this.pub('themeChange');
       }
     },
@@ -326,8 +360,16 @@ foam.CLASS({
       postSet: function(_, n) {
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
-        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
+        if ( this.initSubject && n ) {
+          if ( ! this.currentMenu?.id ) this.buildingStack = true;
+          this.pushMenu(n);
+        }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'buildingStack',
+      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -369,8 +411,6 @@ foam.CLASS({
 
       var self = this;
 
-      // Update memento if updated through windowHash
-      this.memento_.str$.sub(this.memento_.update);
 
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
@@ -395,6 +435,7 @@ foam.CLASS({
               // use the route instead of the menu so that the menu could be re-created under the updated context
               self.pushMenu(self.route);
               self.languageInstalled.resolve();
+              self.subToNotifications();
               return;
             }
           }
@@ -431,13 +472,16 @@ foam.CLASS({
       });
 
       // Reload styling on theme change
+      // TODO BEFORE MERGE: Refactor this to work with new theme system
       this.onDetach(this.sub('themeChange', () => {
         for ( const eid in this.styles ) {
-          const text = this.returnExpandedCSS(this.styles[eid]);
-          const el = this.getElementById(eid);
-          if ( text !== el.textContent ) {
-            el.textContent = text;
-          }
+          const style = this.styles[eid];
+          // If cssTokens are still being installed then no need to reinstall
+          if ( ! foam.String.isInstance(style.text) ) continue;
+          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
+          Promise.resolve(text).then( t => {
+            this.replaceStyleTag(t, eid)
+          });
         }
       }));
     },
@@ -475,13 +519,14 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .tag(this.NavigationController, {
-              topNav: this.topNavigation_,
+              topNav$: this.topNavigation_$,
               mainView: {
                 class: 'foam.u2.stack.DesktopStackView',
                 data: this.stack,
-                showActions: false
+                showActions: false,
+                nodeName: 'main'
               },
-              footer: this.footerView_,
+              footer$: this.footerView_$,
               sideNav: {
                 class: 'foam.u2.view.ResponsiveAltView',
                 views: [
@@ -500,7 +545,7 @@ foam.CLASS({
                 ]
               }
             });
-          });
+        });
       });
     },
 
@@ -623,16 +668,21 @@ foam.CLASS({
 
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
-      if ( text ) {
-        var eid = 'style' + (new Object()).$UID;
-        this.styles[eid] = text;
-
+      if ( ! text ) return;
+      var eid = 'style' + foam.next$UID();
+      this.styles[eid] = { text: text, cls: id };
+      if ( foam.String.isInstance(text) ) {
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
           const m = this.MACROS[i];
           text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
         }
-
         this.installCSS(text, id, eid);
+      } else {
+        // If css is a promise add the style tag but add the css only when returned from promise
+        this.installCSS('', id, eid);
+        Promise.resolve(text).then(t => {
+          this.replaceStyleTag(t, eid)
+        });
       }
     },
 
@@ -652,22 +702,30 @@ foam.CLASS({
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
-      if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
-      /** Used to load a specific menus. **/
-      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
+        this.buildingStack = false;
+        return;
+      }
+      /**  Used for data management menus that are constructed on the fly 
+       * required as those menus are not put in menuDAO and hence fail the 
+       * find call in pushMenu_.
+       * This approach allows any generated menus to be permissioned/loaded as long as 
+       * they are a child of a real menuDAO menu
+       * **/
+      if ( idCheck.includes('/') ) 
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu);
+        this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
         await this.clientPromise.then(async () => {
-          await this.pushMenu_(realMenu, menu);
+          await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
     },
 
-    async function pushMenu_(realMenu, menu) {
+    async function pushMenu_(realMenu, menu, opt_forceReload) {
       dao = this.client.menuDAO;
       let m = this.memento_.str;
       realMenu = await dao.find(realMenu);
@@ -679,14 +737,20 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-        if ( this.route !== newId ) 
-          this.route = newId;
+        this.pushMenu(newId, opt_forceReload);
         return;
       }
+      const preserveMem = this.buildingStack || (
+        typeof menu === 'string' ? 
+        foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
+        foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
+      );
+      if ( ! preserveMem )
+        this.memento_.removeMementoTail();
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
+      this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
-      this.menuListener(realMenu);
     },
 
     async function findDefaultMenu(dao) {
@@ -769,8 +833,9 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      this.__subSubContext__.myNotificationDAO
-      .on.put.sub(this.displayToastMessage.bind(this));
+      this.subToNotifications();
+
+      this.loginSuccess = true;
 
       this.fetchTheme();
       this.initLayout.resolve();
@@ -783,6 +848,11 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    function subToNotifications() {
+      this.__subContext__.myNotificationDAO
+      .on.put.sub(this.displayToastMessage.bind(this));
     },
 
     function menuListener(m) {
@@ -840,6 +910,15 @@ foam.CLASS({
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
           .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
+      }
+    },
+    function replaceStyleTag(text, eid) {
+      if ( ! text ) return;
+      text = this.returnExpandedCSS(text);
+      this.styles[eid].text = text;
+      const el = this.getElementById(eid);
+      if ( text !== el?.textContent ) {
+        el.textContent = text;
       }
     }
   ]

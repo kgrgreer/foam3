@@ -43,7 +43,7 @@ foam.CLASS({
       this.addClass()
         .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
           .tag({
-            class: 'foam.u2.detail.SectionedDetailPropertyView',
+            class: 'foam.u2.PropertyBorder',
             data: this,
             prop: this.SEARCH
           })

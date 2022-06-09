@@ -36,6 +36,7 @@
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'foam.util.retry.RetryStrategy',
     'foam.util.retry.SimpleRetryStrategy',
     'java.util.Collection',
@@ -393,7 +394,12 @@
         }
       ],
       javaCode: `
-        getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
+        try {
+          getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        } finally {
+          pm.log(x);
+        }
         try {
           ruler.saveHistory(this, obj);
         } catch ( Exception e ) { /* Ignored */ }

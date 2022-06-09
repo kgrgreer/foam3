@@ -52,6 +52,11 @@ foam.CLASS({
       transient: true,
       javaType: 'ServletConfig',
       name: 'servletConfig'
+    },
+    {
+      class: 'String',
+      name: 'controller',
+      value: 'foam.nanos.controller.ApplicationController'
     }
   ],
 
@@ -148,7 +153,7 @@ foam.CLASS({
         } else {
           // development
           if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"pom\\"></script>");
+            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\" project=\\"" + appConfig.getPom() + "\\"></script>");
           } else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
             if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
@@ -229,7 +234,7 @@ foam.CLASS({
 
         out.println("<!-- Instantiate FOAM Application Controller -->");
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
-        out.print("<foam\\nclass=\\"net.nanopay.ui.Controller\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
+        out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
         out.println("\\">\\n</foam>");
 

@@ -104,11 +104,19 @@ foam.CLASS({
               alarm.setReason(AlarmReason.TIMEOUT);
               alarm.setIsActive(true);
             }
-          } else if (sentCount > 0  && (responseCount / sentCount) < (float) config.getAlarmValue() / 100 ) {
+          } else if (( config.getMonitorType() == MonitorType.CONTROLCHECK ||
+                      config.getMonitorType() == MonitorType.CONGESTION ) &&
+                      sentCount > 0  &&
+                      (responseCount / sentCount) < (float) config.getAlarmValue() / 100 ) {
             AlarmReason checkReason = config.getMonitorType() == MonitorType.CONTROLCHECK ? AlarmReason.CONTROLCHECK : AlarmReason.CONGESTION;
 
             if ( ! alarm.getIsActive() || !( alarm.getReason() == checkReason ) ) {
               alarm.setReason(checkReason);
+              alarm.setIsActive(true);
+            }
+          } else if ( config.getMonitorType() == MonitorType.THRESHOLD && sentCount > config.getAlarmValue() ) {
+            if ( ! alarm.getIsActive() ) {
+              alarm.setReason(AlarmReason.THRESHOLD);
               alarm.setIsActive(true);
             }
           } else {

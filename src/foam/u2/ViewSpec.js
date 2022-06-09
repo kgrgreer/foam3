@@ -29,12 +29,13 @@ foam.CLASS({
   axioms: [
     {
       installInClass: function(cls) {
-        var Element, FObject = foam.core.FObject, Str = foam.String;
+        var Element;
+        var FObject = foam.core.FObject;
+        var Str     = foam.String;
+
         cls.createView = function(spec, args, self, ctx, disableWarning) {
           if ( ! Element ) Element = foam.u2.Element;
-          if ( FObject.isInstance(ctx) ) {
-            ctx = ctx.__subContext__;
-          }
+          if ( FObject.isInstance(ctx) ) ctx = ctx.__subContext__;
 
           if ( ! spec || Str.isInstance(spec) ) {
             if ( args ) {

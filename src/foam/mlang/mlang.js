@@ -1136,8 +1136,8 @@ for ( int i = 0 ; i < this.args_.length ; i++ ) {
   if ( newArg == foam.mlang.MLang.FALSE ) return foam.mlang.MLang.FALSE;
   if ( newArg instanceof And ) {
     if ( args == null ) args = new java.util.ArrayList<>();
-    for ( int j = 0 ; j < ( ( (And) newArg ).args_.length ) ; j++ ) {
-      args.add(( (And) newArg ).args_[j]);
+    for ( int j = 0 ; j < (((And) newArg).args_.length ) ; j++ ) {
+      args.add(((And) newArg).args_[j]);
     }
     update = true;
   } else {
@@ -4651,6 +4651,7 @@ foam.CLASS({
           var result = list.stream().reduce(this::reduce).get();
 
           if ( Double.isFinite(result) ) {
+            result = getRounding() ? Math.round(result) : result;
             return new Constant(result);
           }
         }

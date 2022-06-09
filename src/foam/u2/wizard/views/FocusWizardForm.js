@@ -9,14 +9,34 @@ foam.CLASS({
   name: 'FocusWizardForm',
   extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
 
+  exports: [
+    'showTitle'
+  ],
+
   css: `
     ^ {
       display: flex;
       flex-direction: column;
       margin: 40pt;
+      width: 45vw;
+      min-height: 65vh;
+      margin-top: 0;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^ {
+        width: 45vw;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+      ^ {
+        width: 25vw;
+      }
     }
     ^contents {
       flex-grow: 1;
+    }
+    ^wizardletTitle {
+      text-align: center;
     }
   `,
 
@@ -28,15 +48,27 @@ foam.CLASS({
         // class: 'foam.u2.borders.NullBorder'
         class: 'foam.u2.wizard.views.ProgressBarWizardView',
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle'
     }
   ],
 
   methods: [
     function render() {
+      const self = this;
       this.addClass()
         .start(this.progressWizardView, { data: this })
           .addClass(this.myClass('progress'))
         .end()
+        .add(this.slot(function (showTitle, data$currentWizardlet) {
+          return showTitle ?
+            this.E().start('h1')
+              .addClass(self.myClass('wizardletTitle'))
+              .add(data$currentWizardlet.title)
+            .end('h2') : this.E()
+        }))
         .start(this.view, { data: this })
           .addClass(this.myClass('contents'))
         .end()

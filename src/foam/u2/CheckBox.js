@@ -28,11 +28,11 @@ foam.CLASS({
       appearance: none;
       border-radius: 2px;
       border: solid 2px /*%GREY2%*/ #5a5a5a;
-      height: 18px;
+      height: 1.8rem;
       margin: 7px 0;
       padding: 0px;
       transition: background-color 140ms, border-color 140ms;
-      width: 18px;
+      width: 1.8rem;
     }
     ^:disabled {
       border-color:  /*%GREY4%*/ #DADDE2;

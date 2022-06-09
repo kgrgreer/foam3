@@ -23,6 +23,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map'
@@ -47,9 +48,14 @@ foam.CLASS({
       order: 20
     },
     {
+      name: 'attachmentInformation',
+      title: 'Attachments',
+      order: 30
+    },
+    {
       name: 'systemInformation',
       help: 'Properties that are used internally by the system.',
-      order: 30,
+      order: 40,
       permissionRequired: true
     },
   ],
@@ -62,6 +68,7 @@ foam.CLASS({
   }
   /**
    * constructor for EmailsUtility migration
+   * @Deprecated
    */
   public EmailMessage(X x, Long userId, String template, Map args) {
     setX(x);
@@ -192,6 +199,22 @@ foam.CLASS({
       view: { class: 'foam.u2.view.MapView' }
     },
     {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      section: 'attachmentInformation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'sentDate',
+      visibility: 'RO',
+      section: 'emailInformation',
+      order: '115'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
@@ -215,19 +238,25 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      includeInDigest: true,
       tableWidth: 120,
       section: 'systemInformation',
       order: 10,
-      writePermissionRequired: true,
-      documentation: `
-        Need to override getter to return "" because its trying to
-        return null (probably as a result of moving order of files
-        in nanos), which breaks tests
-      `,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      storageTransient: true,
       javaGetter: `
-        if ( ! spidIsSet_ ) {
-          return "";
+        if ( spidIsSet_ ) return spid_;
+        var map = new java.util.HashMap();
+        map.put(
+          EmailMessage.class.getName(),
+          new foam.core.PropertyInfo[] { EmailMessage.USER }
+        );
+        try {
+          spid_ = new ServiceProviderAwareSupport()
+            .findSpid(foam.core.XLocator.get(), map, this);
+          spidIsSet_ = true;
+        } catch ( Exception e ) {
+          // nop - occurs during replay
         }
         return spid_;
       `

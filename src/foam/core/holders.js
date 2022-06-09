@@ -75,3 +75,12 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'AnyHolder',
+
+  properties: [
+    'value'
+  ]
+});

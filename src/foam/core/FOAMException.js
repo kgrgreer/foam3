@@ -13,7 +13,7 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
 
   imports: [
-    'translationService'
+    'translationService?'
   ],
 
   javaImports: [
@@ -111,6 +111,7 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
+        if ( ! this.translationService ) return msg;
         var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
         let m = this.getTemplateValues();
         for ( let [key, value] of m.entries() ) {
@@ -178,16 +179,17 @@ foam.CLASS({
       Map map = new HashMap();
       List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo prop : props ) {
-        if ( prop.isSet(this) ) {
-          Object value = null;
-          if ( "message".equals(prop.getName()) ) {
-            value = message_;
-          } else {
-            value = prop.get(this);
+        Object value = null;
+        if ( "message".equals(prop.getName()) ) {
+          value = message_;
+          if ( value == null ) {
+            value = "";
           }
-          if ( value != null ) {
-            map.put(prop.getName(), String.valueOf(value));
-          }
+        } else if ( prop.isSet(this) ) {
+          value = prop.get(this);
+        }
+        if ( value != null ) {
+          map.put(prop.getName(), String.valueOf(value));
         }
       }
       return map;

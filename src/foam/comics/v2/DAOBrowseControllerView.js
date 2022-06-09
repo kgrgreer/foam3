@@ -209,7 +209,7 @@ foam.CLASS({
     function setControllerMode(mode) {
       this.route = mode;
     },
-    function render() {
+    async function render() {
       this.SUPER();
 
       var self = this;
@@ -217,7 +217,16 @@ foam.CLASS({
       // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
       // Right now each view controls it's own controller mode
       if ( this.route != 'browse' && ( this.route == 'view' || this.route == 'edit' ) ) {
-        self.click.call(this, null, null);
+        let b = this.memento_.createBindings(this.memento_.tailStr);
+        let idCheck = false;
+        if ( b.length && b[0][0] == 'route' && b[0][1] ) {
+          idCheck = !! await this.data.find(b[0][1]);
+        }
+        if ( idCheck ) {
+          self.click.call(this, null, null);
+        } else {
+          this.route = 'browse';
+        }
       } else {
         this.route = 'browse';
       }
