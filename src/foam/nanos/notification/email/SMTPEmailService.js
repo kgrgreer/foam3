@@ -15,6 +15,10 @@ foam.CLASS({
   documentation: 'Implementation of Email Service using SMTP',
 
   javaImports: [
+    'foam.blob.Blob',
+    'foam.blob.BlobService',
+    'foam.blob.FileBlob',
+    'foam.blob.IdentifiedBlob',
     'foam.blob.InputStreamBlob',
     'foam.dao.DAO',
     'foam.nanos.fs.File',
@@ -24,6 +28,7 @@ foam.CLASS({
     'foam.nanos.om.OMLogger',
     'static foam.mlang.MLang.EQ',
     'java.io.ByteArrayInputStream',
+    'java.io.ByteArrayOutputStream',
     'java.io.InputStream',
     'java.util.Date',
     'java.util.Properties',
@@ -171,12 +176,27 @@ foam.CLASS({
             for ( String fileId : attachments ) {
               File file = (File) fileDAO.find(fileId);
               if ( file != null ) {
-                InputStreamBlob blob = (InputStreamBlob) file.getData();
-                DataSource source = new ByteArrayDataSource((ByteArrayInputStream) blob.getInputStream(), "application/octet-stream");
-                BodyPart part = new MimeBodyPart();
-                part.setDataHandler(new DataHandler(source));
-                part.setFileName(file.getFilename());
-                multipart.addBodyPart(part);
+                Blob blob = (Blob) file.getData();
+                InputStream stream = null;
+                if ( blob instanceof  IdentifiedBlob || blob == null ) {
+                  String id = blob == null ? file.getId(): ((IdentifiedBlob) blob).getId();
+                  BlobService blobStore = (BlobService) getX().get("blobStore");
+                  FileBlob temp = (FileBlob) blobStore.find(id);
+                  var os = new ByteArrayOutputStream();
+                  temp.read(os, 0, temp.getSize());
+                  var bytes = os.toByteArray();
+                  stream = new ByteArrayInputStream(bytes);
+                  os.close();
+                } else {
+                  stream = ((InputStreamBlob) blob).getInputStream();
+                }
+                try ( var in = stream; ) {
+                  DataSource source = new ByteArrayDataSource(in, "application/octet-stream");
+                  BodyPart part = new MimeBodyPart();
+                  part.setDataHandler(new DataHandler(source));
+                  part.setFileName(file.getFilename());
+                  multipart.addBodyPart(part);
+                }
               } else {
                 logger.warning("File not found", fileId);
               }
