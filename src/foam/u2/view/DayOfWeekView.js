@@ -12,6 +12,16 @@ foam.CLASS({
     'foam.time.DayOfWeek'
   ],
 
+  css: `
+    ^flexer {
+      flex-direction: row;
+    }
+
+    ^flexer > div {
+      width: fit-content !important;
+    }
+  `,
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
