@@ -57,14 +57,16 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.util.async.Sequence',
-    'foam.u2.borders.MarginBorder',
+    'foam.u2.borders.SpacingBorder',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.dialog.Popup'
   ],
@@ -137,6 +139,7 @@ foam.CLASS({
           .callIf(this.debugMode, function () {
             this.add(self.DebugAgent)
           })
+          .add(this.CreateControllerAgent)
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
@@ -159,19 +162,20 @@ foam.CLASS({
         form of capabilities that are stored object-locally rather than in
         association with a user.
       `,
-      code: function createCapableWizardSequence(intercept, capable, x) {
+      code: function createCapableWizardSequence(intercept, capable, capabilityId, x) {
         x = x || this.__subContext__;
         x = x.createSubContext({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capable && capable.capabilityIds[0], x)
+        return this.createWizardSequence(capabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('LoadTopConfig',this.CheckGrantedAgent)
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
@@ -212,6 +216,7 @@ foam.CLASS({
         .remove('FilterGrantModeAgent')
         .remove('SkipGrantedAgent')
         .remove('RequirementsPreviewAgent')
+        .remove('CreateControllerAgent')
         .remove('StepWizardAgent')
         .remove('MaybeDAOPutAgent')
         .remove('PutFinalPayloadsAgent')
@@ -355,13 +360,13 @@ foam.CLASS({
       var p = Promise.resolve(true);
 
       intercept.capables.forEach(capable => {
-        var seq = this.createCapableWizardSequence(intercept, capable);
-        p = p.then(() => {
-          return seq.execute().then(x => {
-            return x;
+        capable.capabilityIds.forEach((c) => {
+          var seq = this.createCapableWizardSequence(intercept, capable, c);
+          p = p.then(() => {
+            return seq.execute().then(x => x);
           });
         });
-      })
+      });
 
       return p;
     }

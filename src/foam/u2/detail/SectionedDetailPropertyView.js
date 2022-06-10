@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'SectionedDetailPropertyView',
   extends: 'foam.u2.View',
 
-  documentation: 'View for one property of a SectionedDetailView.',
+  documentation: 'DEPRECATED: View for one property of a SectionedDetailView.',
 
   css: `
     ^ {
@@ -130,6 +130,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      console.warn('Deprecated: Use foam.u2.PropertyBorder instead');
       var self = this;
       this.SUPER();
 

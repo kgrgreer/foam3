@@ -12,12 +12,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.PropertyInfo',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'java.util.HashSet',
     'java.util.Iterator',
     'java.util.Map',
@@ -39,7 +40,7 @@ foam.CLASS({
         { name: 'user', type: 'User' }
       ],
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = Loggers.logger(x, this);
 
         Iterator entries = arguments.entrySet().iterator();
         while (entries.hasNext()) {
@@ -75,7 +76,7 @@ foam.CLASS({
           }
         }
 
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = Loggers.logger(x, this);
         EmailMessage message = new EmailMessage();
         message.setSpid(user.getSpid());
         message.setTo(new String[] { user.getEmail() });
@@ -102,9 +103,13 @@ foam.CLASS({
 
         try {
           if ( ! SafetyUtil.isEmpty(notification.getEmailName()) ) {
-            EmailsUtility.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
+            message.setUser(user.getId());
+            Map args = notification.getEmailArgs();
+            args.put("template", notification.getEmailName());
+            message.setTemplateArguments(args);
+            ((DAO) x.get("emailMessageDAO")).put(message);
           } else {
-            logger.warning("No email template found");
+            logger.warning("EmailTemplate not found", notification.getEmailName());
           }
         } catch(Throwable t) {
           logger.error("Error sending notification email message: " + message + ". Error: " + t);

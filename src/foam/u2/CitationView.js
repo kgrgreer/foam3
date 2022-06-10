@@ -50,8 +50,21 @@ foam.CLASS({
     {
       name: 'updateSummary',
       isFramed: true,
-      code: function() {
-        this.summary = this.data && this.data.toSummary ? this.data.toSummary() : undefined;
+      code: async function() {   
+        let newSummary;
+        
+        if ( this.data && this.data.toSummary ){
+          var toSummary = this.data.toSummary();
+
+          newSummary = toSummary instanceof Promise 
+            ? await toSummary
+            : toSummary;
+
+        } else {
+          newSummary = undefined;
+        }
+
+        this.summary = newSummary;
       }
     }
   ],

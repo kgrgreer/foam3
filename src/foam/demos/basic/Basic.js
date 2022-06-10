@@ -4,10 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// See:
-// http://vintage-basic.net/games.html
-// https://github.com/GReaperEx/bcg
-
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Compiler',
@@ -15,96 +11,103 @@ foam.CLASS({
 
   properties: [
     'currentLine',
-    {
-      name: 'vars',
-      factory: function() { return {}; }
-    },
-    {
-      name: 'defs',
-      factory: function() { return []; }
-    },
-    {
-      name: 'data',
-      factory: function() { return []; }
-    },
-    {
-      name: 'fors',
-      factory: function() { return {}; }
-    },
+    { class: 'Int', name: 'nextLabel_' },
+    { name: 'vars', factory: function() { return { '_d': true }; } },
+    { name: 'defs', factory: function() { return []; } },
+    { name: 'data', factory: function() { return []; } },
+    { name: 'fors', factory: function() { return {}; } },
     {
       name: 'symbols',
       factory: function() {
         return function(alt, sym, seq1, seq, literalIC, repeat, str, optional, plus, range, anyChar, notChars, literal, until, not) {
           return {
-            START: repeat(sym('line'), '\n'),
-
-            line: seq(sym('lineNumber'), ' ', sym('statements')),
-
+            START: repeat(sym('line'), seq(sym('ws'), '\n')),
+            line: seq(sym('lineNumber'), sym('ws'), sym('statements')),
+            ws: repeat(' '),
             lineNumber: sym('number'),
-
-            statements: repeat(sym('statement'), seq(':', optional(' '))),
-
+            statements: repeat(sym('statement'), seq(sym('ws'), ':', sym('ws'))),
             statement: alt(
               sym('data'),
-              sym('rem'),
-              sym('forStep'),
-              sym('next'),
-              sym('if'),
               sym('def'),
-              sym('print'),
-              sym('let'),
+              sym('dim'),
               sym('end'),
-              sym('goto'),
+              sym('for'),
               sym('gosub'),
+              sym('goto'),
+              sym('if'),
+              sym('input'),
+              sym('next'),
+              sym('on'),
+              sym('print'),
+              sym('read'),
+              sym('restore'),
+              sym('rem'),
               sym('return'),
-              str(repeat(notChars(':\n')))),
-
-            data: seq1(1, 'DATA ', repeat(sym('number'), ',')),
-
-            rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
-
-            forStep: seq('FOR ', sym('symbol'), '=', str(until(' TO ')), str(until(' STEP ')), sym('number')),
-
-            next: seq1(1, 'NEXT ', sym('symbol')),
-
-            if: seq('IF ', str(until('THEN ')), sym('number')),
-
+              sym('sound'),
+              sym('let'),
+              sym('javascript'),
+              sym('syntaxerror')),
+            data: seq1(1, 'DATA ', repeat(alt(sym('number'), sym('string')), seq(sym('ws'), ',', sym('ws')))),
             def: seq('DEF ', sym('symbol'), '(', str(repeat(notChars(')'))), ')=', str(repeat(notChars('\n')))),
-
-            print: seq('PRINT', optional(' '), repeat(sym('printArg'), ';'), optional(';')),
-
-            printArg: alt(
-              sym('string'),
-              sym('tab')
-            ),
-
-            string: seq1(1, '"', repeat(notChars('"')), '"'),
-
-            tab: str(seq('TAB(', alt(sym('number'), sym('symbol')), ')')), // TODO: make expression
-
-            let: seq(optional('LET '), sym('symbol'), '=', sym('expression')),
-
-            goto: seq('GOTO ', sym('number')),
-
-            gosub: seq('GOSUB ', sym('number')),
-
+            dim: seq1(1, 'DIM ', repeat(sym('dimElement'), ',')),
+            dimElement: seq(sym('symbol'), '(', repeat(sym('expr'),','), ')'),
+            end: alt(literal('END', 'return;'), literal('STOP', 'return;')),
+            for: seq('FOR', sym('ws'), sym('symbol'), sym('ws'), '=', sym('ws'), sym('expr'), sym('ws'), 'TO', sym('ws'), sym('expr'), optional(seq1(3, sym('ws'), 'STEP', sym('ws'), sym('expr')), 1)),
+            gosub: seq1(2, 'GOSUB',  sym('ws'), sym('number')),
+            goto: seq1(2, 'GOTO', sym('ws'), sym('gotoLine')),
+            gotoLine: sym('number'),
+            if: seq('IF', sym('ws'), seq1(0, sym('predicate'), sym('ws'), 'THEN', sym('ws')), alt(sym('gotoLine'), str(sym('statements')))),
+            input: seq('INPUT', sym('ws'), optional(seq1(0, sym('string'), ';', sym('ws'))), repeat(sym('lhs'), ',')),
+            let: seq(optional('LET '), sym('lhs'), sym('ws'), '=', sym('ws'), sym('expr')),
+            lhs: alt(sym('fn'), sym('symbol')),
+            next: seq1(2, 'NEXT', sym('ws'), sym('symbol')),
+            on: seq('ON', sym('ws'), sym('expr'), sym('ws'), 'GOTO', str(repeat(notChars('\n')))),
+            print: seq('PRINT', sym('ws'), optional(sym('printArgs')), optional(seq1(1, sym('ws'), alt(';',','), sym('ws')))),
+            printArgs: seq(sym('expr'), optional(seq(seq1(1,sym('ws'), alt(';',',',''), sym('ws')), sym('printArgs')))),
+            read: seq1(2, 'READ', sym('ws'), repeat(sym('lhs'), ',')),
+            rem: seq1(1, 'REM', str(repeat(notChars('\n')))),
+            sound: seq('SOUND', sym('ws'), sym('expr'), sym('ws'), ',', sym('ws'), sym('expr')),
+            restore: literal('RESTORE', '_d = 0;'),
             return: literal('RETURN'),
-
-            end: literal('END', 'return;'),
-
-            expression: str(repeat(notChars(':\n'))),
-
+            string: seq1(1, '"', repeat(notChars('"')), '"'),
+            expr: seq(sym('expr1'), optional(seq(alt('+', '-'), sym('expr')))),
+            expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
+            expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
+            expr3: alt(
+              str(seq('(', sym('expr'), ')')),
+              seq1(1, '(', sym('predexpr'), ')'),
+              str(seq('-', sym('expr3'))),
+              sym('number'),
+              sym('string'),
+              sym('fn'),
+              sym('symbol')
+            ),
+            predexpr: sym('predicate'),
+            predicate: str(seq(
+              str(alt(
+                seq(sym('expr'), sym('ws'), alt(literal('=', '==='), literal('<>', '!='),'<=','>=','<','>'), sym('ws'), sym('expr')),
+                seq('(', sym('ws'), sym('predicate'), sym('ws'), ')'),
+                seq(literal('NOT', '!'), sym('ws'), sym('predicate')))),
+              optional(str(seq(
+                sym('ws'),
+                alt(literal('AND','&&'), literal('OR', '||')),
+                sym('ws'),
+                sym('predicate'))
+              )))),
+            fn: seq(sym('symbol'), '(', repeat(sym('expr'), seq(sym('ws'), ',', sym('ws'))), ')'),
+            javascript: seq1(1, 'JAVASCRIPT ', str(repeat(notChars(':\n')))),
+            syntaxerror: str(repeat(notChars(':\n'))),
             number: str(seq(
               optional('-'),
               str(alt(
                 seq(str(repeat(sym('digit'))), '.', str(plus(sym('digit')))),
                 plus(sym('digit')))))),
-
             digit: range('0', '9'),
-
             symbol: str(seq(
               alt(range('a', 'z'), range('A', 'Z')),
-              str(repeat(alt(range('a', 'z'), range('A', 'Z'), range('0', '9'))))))
+              str(repeat(alt(range('a', 'z'), range('A', 'Z'), range('0', '9')))),
+              optional('$')
+            ))
           };
         }
       }
@@ -115,53 +118,271 @@ foam.CLASS({
     function init() {
       var self = this;
       this.addActions({
-        lineNumber: function(a) {
-          self.currentLine = a;
-          return a;
+        START: function(lines) { return self.jsGenerator(lines).replace(/\n      /g,'\n').substring(1); },
+        lineNumber: function(a) { self.currentLine = a; return a; },
+        input: function(a) {
+          a[3].forEach(v => self.addVar(v));
+          return `PRINT(${(a[2] ? a[2].substring(0, a[2].length-1) : '"') + '? "'}); ` + a[3].map((v,i) => `${v} = await INPUT${ v.indexOf('$') != -1 ? '$' : ''}();`).join(' ');
         },
+        on: function(a) { return `{ var l = [${a[5]}][${a[2]}-1]; if ( l ) { _line = l; break; } }`; },
         def: function(a) {
           self.defs.push(`function ${a[1]}(${a[3]}) { return ${a[5]}; }`);
           return '';
         },
-        data: function(a) {
-          a.forEach(d => self.data.push(d));
-          return '';
+        data: function(a) { a.forEach(d => self.data.push(d)); return ''; },
+        dim: function(a) {
+          return a.map(e => {
+            self.addVar(e[0] + '_A');
+            return `${e[0]}_A = DIM(${e[0].endsWith('$') ? '""' : 0},${e[2].join()});`;
+          }).join('');
         },
-        rem: function(a) {
-          return '// REM' + a;
+        expr: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
+        expr1: function(a) { return a[1] ? a[0] + a[1].join('') : a[0]; },
+        expr2: function(a) { return a[1] ? `Math.pow(${a[0]}, ${a[1][1]})` : a[0]; },
+        predexpr: function(p) { return `((${p}) ? -1 : 0)`; },
+        rem: function(a) { return '// REM' + a; },
+        fn: function(a) {
+          // array lookup
+          if ( self.vars[a[0] + '_A'] ) return `${a[0]}_A[${a[2].join('][')}]`;
+          // function call
+          return `${a[0]}(${a[2].join()})`;
         },
-        forStep: function(a) {
-          self.vars[a[1]] = true;
-          self.fors[a[1]] = [self.currentLine, a[4], a[5]];
-          return `${a[1]} = ${a[3]}; case ${self.currentLine}.5:`;
+        for: function(a) {
+          self.addVar(a[2]);
+          var name = a[2] + self.currentLine + '_';
+          self.fors[a[2]] = name;
+          return `${a[2]} = ${a[6]}; ${name}END = ${a[10]}; ${name}INCR = ${a[11]}; case '${name}FOR': if ( ! RANGE(${a[2]}, ${name}END, ${name}INCR) ) { _line = '${name}END'; break; }`;
         },
         next: function(a) {
-          var f = self.fors[a[0]];
-          return `${a[0]} = ${a[0]} + (${f[2]}); if ( ${a[0]} ${ f[2] > 0 ? '<=' : '>=' } ${f[1]} ) { _line = ${f[0]}.5; break; } `;
+          var name = self.fors[a];
+          return `${a} += ${name}INCR; _line = '${name}FOR'; break; case '${name}END':`;
         },
-        if: function(a) { return `if ( ${a[1]}) { _line = ${a[2]}; break; }`; },
-        string: function(a) { return `"${a.join('')}"`; },
+        let: function(a) { return `${a[1]} = ${a[5]};`; },
+        sound: function(a) { return `await SOUND(${a[2]},${a[6]});`; },
+        lhs: function(v) { self.addVar(v); return v; },
+        if: function(a) { var l = self.nextLabel(); return `if ( ! ( ${a[2]} ) ) { _line = ${l}; break; } ${a[3]} case ${l}:`; },
+        string: function(a) { return `"${a.map(c => (c == '\\') ? '\\\\' : c).join('')}"`; },
         print: function(a) {
           var ret = '';
-          function append(s) {
-            ret += ( ret ? ';' : '' ) + s;
-          }
-          for ( var i = 0 ; i < a[2].length ; i++ ) {
-            var l = a[2][i];
-            if ( l.startsWith('TAB') ) {
-              append(l);
-            } else {
-              append('PRINT(' + l + ')');
+          function tail(p) {
+            if ( ! p ) return;
+            var h = p[0], t = p[1];
+            ret += h.startsWith('TAB') ? h + ';' : `PRINT(${h});`;
+            if ( t ) {
+              if ( t[0] === ',' ) ret += 'TAB();';
+              tail(t[1]);
             }
           }
-          if ( ! a[3] ) append('NL()');
-          return ret + ';'
+          tail(a[2]);
+          if ( ! a[3] ) ret += 'NL();'; else if ( a[3] === ',' ) ret += 'TAB();';
+          return ret;
         },
-        goto: function(a) { return `_line = ${a[1]}; break;`; },
-        gosub: function(a) { return `_line = ${a[1]}; _stack.push(${self.currentLine}.5); break; case ${self.currentLine}.5:`; },
+        gotoLine: function(l) { return `_line = ${l}; break;`; },
+        gosub: function(l) { var ret = self.nextLabel(); return `_line = ${l}; _stack.push(${ret}); break; case ${ret}: `; },
+        read: function(a) {
+          return a.map(s => {
+            self.addVar(s);
+            return `${s} = _data[_d++];`;
+          }).join('');
+        },
         return: function() { return '_line = _stack.pop(); break;' },
-        let: function(a) { self.vars[a[1]] = true; return `${a[1]} = ${a[3]};`; }
+        xxxsyntaxerror: function(a) {
+          return ' SYNTAX ERROR: ' + a;
+        }
       });
+    },
+    function addVar(v) { if ( v.indexOf('[') == -1 ) this.vars[v] = true; },
+    function nextLabel() { return `'L${this.nextLabel_++}'`; }
+  ],
+
+  templates: [
+    {
+      name: 'jsGenerator',
+      args: [ 'lines' ],
+      template: `
+      // Compiled from BASIC to JS
+      async function main() {
+        const _stack = [];
+        const _data = [<%= this.data.join(',') %>];
+        <%= this.defs.join(';\\n  ') %>
+        var <%= Object.keys(this.vars).map(v => v + '=' + ( v.endsWith('$') ? '""' : 0)).join(', ') %>;<!--
+        -->
+        var _line = <%= lines[0][0]%>;
+        while ( this.status === 'running' ) {
+          if ( Math.random() < 0.1 ) await new Promise(r => this.setTimeout(r, 0));
+          // console.log(_line);
+          switch ( _line ) {
+          <% for ( var i = 0 ; i < lines.length ; i++ ) {
+            var line = lines[i];
+            %><!--
+            -->case <%=line[0]%>: <!--
+            --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
+              var stmt = line[2][j];
+            %><!--
+              --><%=stmt%><!--
+            --><%}%>
+          <%}%>
+          return;
+          }
+        }
+      }`
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.basic',
+  name: 'Stdlib',
+
+  methods: [
+    function ABS(n) { return Math.abs(n); },
+    function ASC(s) { return s.charCodeAt(0); },
+    function CHR$(c) { return String.fromCharCode(c); },
+    function COS(n) { return Math.cos(n); },
+    function DIM(v, ...dims) {
+      function f(v, i, dims) { return i == dims.length ? v : Array(dims[i]+1).fill().map(a => f(v, i+1, dims)); }
+      return f(v, 0, dims);
+    },
+    function EXP(n) { return Math.exp(n); },
+    function INT(n) { return Math.floor(n); },
+    function LEFT$(s, n) { return s.substring(0, n); },
+    function LEN(s) { return s.length; },
+    function LOG(n) { return Math.log(n); },
+    function MID$(s, b, n) { return s.substring(b-1, b+n-1); },
+    function RANGE(i, end, incr) { return incr > 0 ? i <= end : i >= end },
+    function RIGHT$(s, n) { return s.substring(s.length-n); },
+    function RND(n) { return Math.random(); },
+    function SGN(n) { return Math.sign(n); },
+    function SIN(n) { return Math.sin(n); },
+    function SQR(n) { return Math.sqrt(n); },
+    function STR$(n) { return n.toString(); },
+    function TAN(n) { return Math.tan(n); },
+    function VAL(s) { return parseFloat(s); }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.basic',
+  name: 'Terminal',
+  extends: 'foam.u2.tag.TextArea',
+
+  requires: [ 'foam.audio.Beep' ],
+
+  imports: [ 'setTimeout' ],
+
+  constants: { BLOCK_CURSOR: '\u2588' },
+
+  documentation: 'Simple web based terminal emulator / BIOS.',
+
+  css: `
+  @font-face {
+    font-family: '5x7_dot_matrixregular';
+    src: url('5x7-dot-matrix-webfont.eot');
+    src: url('5x7-dot-matrix-webfont.eot?#iefix') format('embedded-opentype'),url('5x7-dot-matrix-webfont.woff') format('woff'),url('5x7-dot-matrix-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal
+  }
+
+  ^ {
+    font-family: "5x7_dot_matrixregular",courier,monospace;
+    background: #121 !important;
+    border-radius: 40px;
+    color: #0f0 !important;
+    font-size: 10px !important;
+    line-height: 14px;
+    margin: 8px;
+    padding: 15px;
+    width: auto !important;
+  }
+  `,
+
+  properties: [
+    { class: 'String', name: 'inp' },
+    { class: 'String', name: 'out',    value: 'READY.\n' },
+    'cursor',
+    { name: 'data', expression: function(out, inp, cursor) { return out + inp + cursor; } },
+    [ 'rows', 32 ],
+    [ 'cols', 80 ],
+    [ 'mode', foam.u2.DisplayMode.RO ]
+  ],
+
+  methods: [
+    function render() {
+      this.SUPER();
+
+      this.out$.sub(() => this.el().then(e => e.scrollTop = e.scrollHeight));
+
+      this.
+        on('keypress', this.keypress).
+        on('keyup',    this.keyup);
+
+      this.blink();
+    },
+
+    function CLS() { this.out = ''; },
+
+    function NL() { this.out += '\n'; },
+
+    function INPUT() { return this.INPUT$().then(s => parseFloat(s)); },
+
+    function INPUT$() {
+      this.focus();
+      this.inp = '';
+      return new Promise(r => {
+        var l = () => {
+          if ( this.inp.endsWith('\n') || this.inp.endsWith(',') ) {
+            var ret = this.inp.substring(0, this.inp.length-1);
+            this.out += this.inp;
+            this.inp = '';
+            r(ret);
+          } else {
+            this.inp$.sub(foam.events.oneTime(l));
+          }
+        };
+        l();
+      });
+    },
+
+    function PRINT(s) { this.out += typeof s === 'number' ? ` ${s} ` : s; },
+
+    function TAB(n) {
+      var pos = this.out.length - Math.max(0, this.out.lastIndexOf('\n'));
+      n = n === undefined ? pos + ((14 - (pos % 14)) || 14) : Math.round(n);
+      this.out += ' '.repeat(Math.max(0, n-pos));
+    },
+
+    function SOUND(f, d) {
+      this.Beep.create({frequency: f, duration: d*60}).play();
+      return new Promise(r => this.setTimeout(r, d*60));
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'keypress',
+      code: function(e) {
+        // if ( e.ctrlKey && e.key === 'c' ) throw "TERMINATED"; // TODO: terminate
+        this.inp += e.key === 'Enter' ? '\n' : e.key.toUpperCase();
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'keyup',
+      code: function(e) {
+        if ( e.key === 'Backspace' ) this.inp = this.inp.substring(0, this.inp.length-1);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'blink',
+      isMerged: true,
+      mergeDelay: 333,
+      code: function() {
+        this.cursor = this.cursor === this.BLOCK_CURSOR ? ' ' : this.BLOCK_CURSOR;
+        this.blink();
+      }
     }
   ]
 });
@@ -170,194 +391,47 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Basic',
-//  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.Controller',
 
-  requires: [ 'foam.demos.basic.Compiler' ],
+  requires: [ 'foam.demos.basic.Terminal', 'foam.demos.basic.Compiler' ],
 
-  constants: {
-    LIB: {
-      PRINT: function(s) { this.output += s; },
-      NL:    function()  { this.output += '\n'; },
-      EXP:   function(n) { return Math.exp(n); },
-      SQR:   function(n) { return Math.sqrt(n); },
-      INT:   function(n) { return Math.floor(n); },
-      SIN:   function(n) { return Math.sin(n); },
-      COS:   function(n) { return Math.cos(n); },
-      TAN:   function(n) { return Math.tan(n); },
-      RND:   function(n) { return Math.random() * n; },
-      ABS:   function(n) { return Math.abs(n); },
-      TAB:   function(n) {
-        var i = this.output.lastIndexOf('\n');
-        if ( i == -1 ) i = 0;
-        var pos = this.output.length - i;
-        this.output += ' '.repeat(n-pos);
-      }
-    }
-  },
+  imports: [ 'setTimeout' ],
+
+  css: `
+  body { font-family: sans-serif; }
+
+  ^ .property-program { display: inline-flex; }
+
+  ^ .property-program select { font-size: 12px !important; }
+
+  ^ button { padding-top: 6px; }
+
+  ^ textarea { font-size: 10px; }
+
+  ^ .property-sourceCode, .property-targetCode {
+    display: inline-flex;
+    padding: 6px;
+    width: 48%;
+  }
+`,
 
   properties: [
     {
-      class: 'Code',
-      name: 'sourceCode',
-      valuex: `
-1 PRINT TAB(32);"3D PLOT"
-2 PRINT TAB(15);"CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY"
-3 PRINT:PRINT:PRINT
-5 DEF FNA(Z)=30*EXP(-Z*Z/100)
-100 PRINT
-110 FOR X=-30 TO 30 STEP 1.5
-120 L=0
-130 Y1=5*INT(SQR(900-X*X)/5)
-140 FOR Y=Y1 TO -Y1 STEP -5
-150 Z=INT(25+FNA(SQR(X*X+Y*Y))-.7*Y)
-160 IF Z<=L THEN 190
-170 L=Z
-180 PRINT TAB(Z);"*";
-190 NEXT Y
-200 PRINT
-210 NEXT X
-300 END
-`,
-value: `
-10 PRINT TAB(30);"SINE WAVE"
-20 PRINT TAB(15);"CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY"
-30 PRINT: PRINT: PRINT: PRINT: PRINT
-40 REMARKABLE PROGRAM BY DAVID AHL
-50 B=0
-100 REM  START LONG LOOP
-110 FOR T=0 TO 40 STEP .25
-120 A=INT(26+25*SIN(T))
-130 PRINT TAB(A);
-140 IF B=1 THEN 180
-150 PRINT "CREATIVE"
-160 B=1
-170 GOTO 200
-180 PRINT "COMPUTING"
-190 B=0
-200 NEXT T
-999 END
-`,
-xvalue:`
-2 PRINT TAB(33);"LOVE"
-4 PRINT TAB(15);"CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY"
-6 PRINT: PRINT: PRINT
-20 PRINT "A TRIBUTE TO THE GREAT AMERICAN ARTIST, ROBERT INDIANA."
-30 PRINT "HIS GREATEST WORK WILL BE REPRODUCED WITH A MESSAGE OF"
-40 PRINT "YOUR CHOICE UP TO 60 CHARACTERS.  IF YOU CAN'T THINK OF"
-50 PRINT "A MESSAGE, SIMPLE TYPE THE WORD 'LOVE'": PRINT
-60 INPUT "YOUR MESSAGE, PLEASE";A$: L=LEN(A$)
-70 DIM T$(120): FOR I=1 TO 10: PRINT: NEXT I
-100 FOR J=0 TO INT(60/L)
-110 FOR I=1 TO L
-120 T$(J*L+I)=MID$(A$,I,1)
-130 NEXT I: NEXT J
-140 C=0
-200 A1=1: P=1: C=C+1: IF C=37 THEN 999
-205 PRINT
-210 READ A: A1=A1+A: IF P=1 THEN 300
-240 FOR I=1 TO A: PRINT " ";: NEXT I: P=1: GOTO 400
-300 FOR I=A1-A TO A1-1: PRINT T$(I);: NEXT I: P=0
-400 IF A1>60 THEN 200
-410 GOTO 210
-600 DATA 60,1,12,26,9,12,3,8,24,17,8,4,6,23,21,6,4,6,22,12,5,6,5
-610 DATA 4,6,21,11,8,6,4,4,6,21,10,10,5,4,4,6,21,9,11,5,4
-620 DATA 4,6,21,8,11,6,4,4,6,21,7,11,7,4,4,6,21,6,11,8,4
-630 DATA 4,6,19,1,1,5,11,9,4,4,6,19,1,1,5,10,10,4,4,6,18,2,1,6,8,11,4
-640 DATA 4,6,17,3,1,7,5,13,4,4,6,15,5,2,23,5,1,29,5,17,8
-650 DATA 1,29,9,9,12,1,13,5,40,1,1,13,5,40,1,4,6,13,3,10,6,12,5,1
-660 DATA 5,6,11,3,11,6,14,3,1,5,6,11,3,11,6,15,2,1
-670 DATA 6,6,9,3,12,6,16,1,1,6,6,9,3,12,6,7,1,10
-680 DATA 7,6,7,3,13,6,6,2,10,7,6,7,3,13,14,10,8,6,5,3,14,6,6,2,10
-690 DATA 8,6,5,3,14,6,7,1,10,9,6,3,3,15,6,16,1,1
-700 DATA 9,6,3,3,15,6,15,2,1,10,6,1,3,16,6,14,3,1,10,10,16,6,12,5,1
-710 DATA 11,8,13,27,1,11,8,13,27,1,60
-999 FOR I=1 TO 10: PRINT: NEXT I: END
-`,
-value4:`
-10 PRINT TAB(33);"KINEMA"
-20 PRINT TAB(15);"CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY"
-30 PRINT: PRINT: PRINT
-100 PRINT
-105 PRINT
-106 Q=0
-110 V=5+INT(35*RND(1))
-111 PRINT "A BALL IS THROWN UPWARDS AT";V;"METERS PER SECOND."
-112 PRINT
-115 A=.05*V^2
-116 PRINT "HOW HIGH WILL IT GO (IN METERS)";
-117 GOSUB 500
-120 A=V/5
-122 PRINT "HOW LONG UNTIL IT RETURNS (IN SECONDS)";
-124 GOSUB 500
-130 T=1+INT(2*V*RND(1))/10
-132 A=V-10*T
-134 PRINT "WHAT WILL ITS VELOCITY BE AFTER";T;"SECONDS";
-136 GOSUB 500
-140 PRINT
-150 PRINT Q;"RIGHT OUT OF 3.";
-160 IF Q<2 THEN 100
-170 PRINT "  NOT BAD."
-180 GOTO 100
-500 INPUT G
-502 IF ABS((G-A)/A)<.15 THEN 510
-504 PRINT "NOT EVEN CLOSE...."
-506 GOTO 512
-510 PRINT "CLOSE ENOUGH."
-511 Q=Q+1
-512 PRINT "CORRECT ANSWER IS ";A
-520 PRINT
-530 RETURN
-999 END
-`
+      name: 'program',
+      view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
+      postSet: function(o, n) { this.sourceCode = n.trim(); }
     },
-    {
-      class: 'Code',
-      name: 'targetCode'
-    },
-    {
-      class: 'String',
-      name: 'output',
-      width: 80,
-      view: { class: 'foam.u2.tag.TextArea', rows: 20 }
-    }
+    { class: 'Code', name: 'sourceCode' },
+    { class: 'Code', name: 'targetCode' },
+    { name: 'rom', factory: function() { return foam.demos.basic.Stdlib.create({}, this); } },
+    'terminal',
+    'status'
   ],
 
   methods: [
-  ],
-
-  templates: [
-    {
-      name: 'jsGenerator',
-      args: [ 'data', 'defs', 'vars', 'lines' ],
-      template: `
-      // Compiled from BASIC to JS
-      async function main(lib) {
-        with ( lib ) {
-          const _stack = [];
-          const _data = [ <%= data.join(',') %> ];
-          <%= defs.join(', ') %>
-          <% if ( vars.length ) { %><!--
-          -->var <%= vars.join(', ') %>;<!--
-          --><% } %>
-          var _line = <%= lines[0][0]%>;
-          while ( true ) {
-            // console.log(_line);
-            switch ( _line ) {
-            <% for ( var i = 0 ; i < lines.length ; i++ ) {
-              var line = lines[i];
-              %><!--
-              -->case <%=line[0]%>: <!--
-              --><% for ( var j = 0 ; j < line[2].length ; j++ ) {
-                var stmt = line[2][j];
-              %><!--
-                --><%=stmt%><!--
-              --><%}%>
-            <%}%>
-            }
-          }
-        }
-      }
-      `
+    function render() {
+      this.addClass().start().add('Load: ').style({display:'inline-flex', padding: '10px'}).end().add(this.PROGRAM, ' ', this.COMPILE, this.RUN, this.STOP).br().add(this.SOURCE_CODE, this.TARGET_CODE).
+      start('center').tag(this.Terminal, {}, this.terminal$).end();
     }
   ],
 
@@ -365,23 +439,36 @@ value4:`
     {
       name: 'compile',
       code: function() {
-        var compiler = this.Compiler.create();
-        var ret = compiler.parseString(this.sourceCode.trim());
-        if ( ret ) {
-          this.targetCode = this.jsGenerator(compiler.data, compiler.defs, Object.keys(compiler.vars), ret);
-        }
-        console.log(ret);
+        this.targetCode = this.Compiler.create().parseString(this.sourceCode.trim()) || '';
       }
     },
     {
       name: 'run',
-      code: function() {
-        var lib = {};
-        for ( var key in this.LIB ) lib[key] = this.LIB[key].bind(this);
-        this.output = 'running\n';
-        eval('(' + this.targetCode + ')').call(this, lib);
-        this.output += 'done\n';
+      label: '▶ Run',
+      isEnabled: function(targetCode) { return targetCode.length; },
+      code: async function() {
+        try {
+          var fn;
+          with ( this.terminal ) { with ( this.rom ) { fn = eval('(' + this.targetCode + ')'); } }
+          // for ( var i = 0 ; i < 10 ; i++ ) await fn.call(this);
+          console.time('run');
+          this.terminal.CLS();
+          this.status = 'running';
+          await fn.call(this);
+          this.terminal.PRINT("\n" + this.terminal.OUT.value);
+        } catch(x) {
+          this.terminal.PRINT('SYNTAX ERROR: ' + x);
+        } finally {
+          this.status = '';
+          console.timeEnd('run');
+        }
       }
+    },
+    {
+      name: 'stop',
+      label: '◼ Stop',
+      isEnabled: function(status) { return status === 'running'; },
+      code: function() { this.status = ''; }
     }
   ]
 });

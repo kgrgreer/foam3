@@ -22,6 +22,7 @@ p({"class":"foam.nanos.auth.Country", "code":"MY", "iso31661Code":"MYS","name":"
 p({"class":"foam.nanos.auth.Country", "code":"MT", "iso31661Code":"MLT","name":"Malta"})
 p({"class":"foam.nanos.auth.Country", "code":"MX", "iso31661Code":"MEX","name":"Mexico"})
 p({"class":"foam.nanos.auth.Country", "code":"NL", "iso31661Code":"NLD","name":"Netherlands"})
+p({"class":"foam.nanos.auth.Country", "code":"PK", "iso31661Code":"PAK","name":"Pakistan"})
 p({"class":"foam.nanos.auth.Country", "code":"PT", "iso31661Code":"PRT","name":"Portugal"})
 p({"class":"foam.nanos.auth.Country", "code":"RS", "iso31661Code":"SRB","name":"Serbia"})
 p({"class":"foam.nanos.auth.Country", "code":"SK", "iso31661Code":"SVK","name":"Slovakia"})

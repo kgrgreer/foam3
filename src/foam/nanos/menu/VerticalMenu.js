@@ -41,7 +41,7 @@ foam.CLASS({
     flex-direction: column;
     height: 100%;
     overflow-x: hidden;
-    padding: 16px 0;
+    padding-top: 16px;
     overflow: auto;
     width: 100%;
   }

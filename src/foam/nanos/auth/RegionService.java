@@ -6,8 +6,6 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.NanoService;
-import foam.nanos.notification.email.EmailMessage;
-import foam.util.Emails.EmailsUtility;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

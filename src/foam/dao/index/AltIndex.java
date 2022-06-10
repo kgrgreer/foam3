@@ -115,19 +115,12 @@ public class AltIndex
   public SelectPlan planSelect(Object state, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     if ( state == null ) return NotFoundPlan.instance();
 
-    Object[]   s                 = (Object[]) state;
-    SelectPlan bestPlan          = NoPlan.instance();
-    Object     bestState         = null;
-    Predicate  originalPredicate = null;
+    Object[]   s         = (Object[]) state;
+    SelectPlan bestPlan  = NoPlan.instance();
+    Object     bestState = null;
 
     for ( int i = 0 ; i < delegates_.size() ; i++ ) {
-      // To keep the original predicate, because in our next operation the predicate could be changed.
-      if ( predicate != null ) {
-        // not safe to move to shallowClone()
-        originalPredicate = (Predicate) ((FObject) predicate).deepClone();
-      }
-
-      SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, originalPredicate);
+      SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, predicate);
 
       if ( plan.cost() < bestPlan.cost() ) {
         bestPlan  = plan;

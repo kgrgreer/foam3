@@ -38,5 +38,9 @@ foam.CLASS({
         return foam.json.parse(n, prop.of, this.__subContext__)
       }
     }
+  ],
+
+  methods: [
+    function installInSequence (sequence) {}
   ]
 });

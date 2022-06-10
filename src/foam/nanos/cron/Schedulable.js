@@ -21,6 +21,11 @@
   ],
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
@@ -38,11 +43,18 @@
       value: 'schedulableEventDAO'
     },
     {
-      name: 'schedule',
+      class: 'FObjectProperty',
       of: 'foam.nanos.cron.Schedule',
-      view: {
-        class: 'foam.u2.view.FObjectView',
-        of: 'foam.nanos.cron.SimpleIntervalSchedule'
+      name: 'schedule',
+      label: '',
+      factory: function(){
+        return foam.nanos.cron.SimpleIntervalSchedule.create();
+      },
+      view: function (_, X){
+        return {
+          class: 'foam.nanos.cron.SimpleIntervalScheduleView',
+          data$: X.data.schedule$
+        }
       }
     },
     {
@@ -59,13 +71,22 @@
     {
       name: 'runScript',
       javaCode: `
-        // TODO: simple submit itself to the threadpool agency which will call 'execute'
+        ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
       `
     },
     {
       name: 'execute',
       javaCode: `
-        // TODO: submitting the entry to the dao
+        try {
+          ((DAO) x.get(getObjectDAOKey())).put(getObjectToSchedule());
+        } catch (Exception e){
+          ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("Failed to execute schedulable event")
+            .setSeverity(foam.log.LogLevel.ERROR)
+            .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+            .setNote(getId() + " " + e.getMessage())
+            .build());
+        }
       `
     },
     {

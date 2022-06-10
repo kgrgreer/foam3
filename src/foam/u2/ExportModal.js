@@ -259,14 +259,17 @@ foam.CLASS({
           }
 
           if ( href.length > 524288 ) {
-            self.note = result;
-            alert('Results exceed maximum download size.\nPlease cut and paste response data.');
-          } else {
-            link.setAttribute('href', href);
-            link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
-            document.body.appendChild(link);
-            link.click();
+            var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
+            href = URL.createObjectURL(blob);
           }
+          link.setAttribute('href', href);
+          link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
+          document.body.appendChild(link);
+          link.click();
+
+          // Cleanup data blob and link
+          if ( blob ) URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
         }).finally(() => {
           if ( this.exportAllColumns )
             this.filteredTableColumns = filteredColumnsCopy;

@@ -69,21 +69,38 @@
 
       const prereqMinMaxWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.minMaxCapabilityId )[0];
 
-      const minMaxSelectedData = prereqMinMaxWizardlet.data.selectedData;
+      let selectedCapabilityId;
 
-      if ( minMaxSelectedData.length != 1 ){
-        console.error(
-          `Cannot apply XOR to MinMaxCapabilityId: ${this.minMaxCapabilityId}`
-        );
+      if ( ! prereqMinMaxWizardlet.isVisible ){
+        // check if any of its children are available as this implies selection
+        var impliedChoiceArray = prereqMinMaxWizardlet.choiceWizardlets.filter(cw => cw.isAvailable);
 
-        if ( this.of ) {
-          wizardlet.data = this.of.create({}, this);
+        if ( impliedChoiceArray.length != 1 ){
+          console.error(
+            `Cannot apply XOR to MinMaxCapabilityId: ${this.minMaxCapabilityId}`
+          );
+          return;
         }
-        
-        return;
-      }
 
-      const selectedCapabilityId = minMaxSelectedData[0];
+        selectedCapabilityId = impliedChoiceArray[0].id;
+
+      } else {
+        const minMaxSelectedData = prereqMinMaxWizardlet.data.selectedData;
+
+        if ( minMaxSelectedData.length != 1 ){
+          console.error(
+            `Cannot apply XOR to MinMaxCapabilityId: ${this.minMaxCapabilityId}`
+          );
+  
+          if ( this.of ) {
+            wizardlet.data = this.of.create({}, this);
+          }
+          
+          return;
+        }
+  
+        selectedCapabilityId = minMaxSelectedData[0];
+      }
 
       const selectedCapabilityWizardlet = prereqMinMaxWizardlet.prerequisiteWizardlets.find(w =>
         w.capability && w.capability.id == selectedCapabilityId

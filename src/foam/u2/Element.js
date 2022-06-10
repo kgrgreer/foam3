@@ -126,9 +126,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'expands_',
-      documentation: 'True iff the CSS contains a ^ which needs to be expanded.',
+      documentation: 'True if the CSS contains a ^ which needs to be expanded.',
       expression: function(code) {
-        return code.includes('^');
+        return code.includes('^') || code.includes('$');
       }
     }
   ],
@@ -142,12 +142,12 @@ foam.CLASS({
         var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
         if ( ! map[cls.id] ) {
           map[cls.id] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       } else {
         if ( ! installedStyles[this.$UID] ) {
           installedStyles[this.$UID] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       }
     },
@@ -194,14 +194,14 @@ foam.CLASS({
       };
     },
 
-    function expandCSS(cls, text) {
+    async function expandCSS(cls, text, ctx) {
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^ shorthand on the CSS. */
       // TODO(braden): Parse and validate the CSS.
       // TODO(braden): Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/\^(.)/g, function(match, next) {
+      text = text.replace(/\^(.)/g, function(match, next) {
         var c = next.charCodeAt(0);
         // Check if the next character is an uppercase or lowercase letter,
         // number, - or _. If so, add a - because this is a modified string.
@@ -213,6 +213,7 @@ foam.CLASS({
 
         return base + next;
       });
+      return await foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]
 });
@@ -1710,7 +1711,7 @@ foam.CLASS({
         return this.add(translation);
       }
       console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
     },
 
@@ -2382,23 +2383,44 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyBorder
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     }
   ],
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
+      return this.toE_(args, X);
+    },
 
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
-
-      e.fromProperty && e.fromProperty(this);
+    function toE_(args, X) {
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: this }, args, X);
+    },
+
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        el.data$ = X.data$.dot(this.name);
+      }
+
+      el.fromProperty && el.fromProperty(this);
+
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2536,6 +2558,22 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'EMailViewRefinement',
+  refines: 'foam.core.EMail',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'email' }
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2',
@@ -2658,12 +2696,7 @@ foam.CLASS({
         class: 'foam.u2.view.ModeAltView',
         readView: { class: 'foam.u2.view.ReadColorView' },
         writeView: {
-          class: 'foam.u2.MultiView',
-          views: [
-            { class: 'foam.u2.TextField' },
-            { class: 'foam.u2.view.ColorPicker', onKey: true },
-            { class: 'foam.u2.view.ReadColorView' }
-          ]
+          class: 'foam.u2.view.ColorEditView'
         }
       }
     }

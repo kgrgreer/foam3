@@ -15,8 +15,37 @@
   `,
 
   properties: [
-    foam.u2.wizard.data.PrerequisiteLoader
-      .getOwnAxiomsByClass(foam.core.Property).map(a => a.clone()),
+    {
+      class: 'String',
+      name: 'prerequisiteCapabilityId'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading from the CapabilityJunction's data using a path
+      `,
+      name: 'loadFromPath'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
+      `,
+      name: 'loadIntoPath'
+    },
+    {
+      class: 'Boolean',
+      name: 'isWrappedInFObjectHolder'
+    },
+    {
+      class: 'Class',
+      name: 'of'
+    },
+    {
+      class: 'Boolean',
+      name: 'cloneValue',
+      value: true
+    },
     {
       name: 'loader',
       factory: function () {
@@ -27,7 +56,10 @@
         foam.u2.wizard.data.PrerequisiteLoader
           .getOwnAxiomsByClass(foam.core.Property)
           .forEach(a => {
-            spec[a.name] = this[a.name]
+            // We use toJSON here because some property values, such as those
+            // of Class properties, are recursive and therefore invalid inside
+            // FObjectSpec property values (of which spec is one)
+            spec[a.name] = a.toJSON(this[a.name]);
           });
         return spec;
       }

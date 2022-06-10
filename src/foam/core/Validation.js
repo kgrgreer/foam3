@@ -174,7 +174,8 @@ foam.CLASS({
           a.push({
             args: [this.name],
             query: this.name+'.len!=0',
-            errorString: `${this.label} ${foam.core.String.REQUIRED}`
+           // errorString: `${this.label} ${foam.core.String.REQUIRED}`
+            errorString: foam.core.String.REQUIRED
           });
         }
         return a;
