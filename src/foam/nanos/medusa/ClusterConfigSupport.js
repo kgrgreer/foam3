@@ -428,8 +428,7 @@ configuration for contacting the primary node.`,
       type: 'Integer',
       javaCode: `
       int c = getNodeCount();
-      // maximize groups for small test/staging clusters - sacrifice HA
-      if ( c < 4 ) return 0;
+      if ( c < 3 ) return 0; // size 2 test cluster - sacrifice HA
       if ( c < 9 ) return 1;
       return 2;
       `

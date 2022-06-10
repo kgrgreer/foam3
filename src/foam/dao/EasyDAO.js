@@ -21,8 +21,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   implements: [
-    'foam.mlang.Expressions',
-    'foam.nanos.boot.NSpecAware'
+    'foam.mlang.Expressions'
   ],
 
   documentation: `
@@ -113,7 +112,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       factory: function() {
-        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
+        return this.of && this.of.id;
       },
       javaFactory: `
       NSpec nspec = getNSpec();
@@ -124,7 +123,7 @@ foam.CLASS({
         String name = id.substring(id.lastIndexOf('.') + 1);
         name += "DAO";
         return foam.util.StringUtil.daoize(name);
-      } 
+      }
       Loggers.logger(getX(), this).warning("Of not found");
       return "EasyDAO: DAO not found";
      `
@@ -208,13 +207,13 @@ foam.CLASS({
             delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();   
+            .build();
           } else {
             logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
             delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
               .setNSpec(getNSpec())
               .setDelegate(delegate)
-              .build();   
+              .build();
           }
         }
 

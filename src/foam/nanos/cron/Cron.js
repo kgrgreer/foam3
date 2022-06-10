@@ -151,5 +151,35 @@ return getSchedule().getNextScheduledTime(x,
         getSchedule().postExecution();
       `
     }
+  ],
+
+  actions: [
+    {
+      name: 'disable',
+      isAvailable: function() {
+        return this.enabled;
+      },
+      code: function(X) {
+        var self = this;
+        this.enabled = false;
+        this.__context__['cronDAO'].put(this).then(function(cron) {
+          self.copyFrom(cron);
+        });
+      }
+    },
+    {
+      name: 'enable',
+      isAvailable: function() {
+        return ! this.enabled;
+      },
+      code: function(X) {
+        var self = this;
+        this.enabled = true;
+        this.__context__['cronDAO'].put(this).then(function(cron) {
+          self.copyFrom(cron);
+        });
+      }
+    }
   ]
+
 });
