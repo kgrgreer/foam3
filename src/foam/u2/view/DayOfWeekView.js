@@ -13,10 +13,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^flexer {
-      flex-direction: row;
-    }
-
     ^flexer > div {
       width: fit-content !important;
     }
