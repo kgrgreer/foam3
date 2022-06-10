@@ -1319,18 +1319,22 @@ foam.LIB({
 foam.LIB({
   name: 'foam.CSS',
   methods: [
-    async function getTokenValue(tokenString, cls, ctx, opt_skipNameValidation) {
-      if ( opt_skipNameValidation ) {
-        var [ tokenName, cls ] = [ tokenString, cls ]
-      } else {
-        var [ tokenName, cls ] = foam.CSS.returnTokenAndClass(tokenString, cls);
-      }
+    async function getTokenValue(tokenString, cls, ctx) {
+      if ( ! tokenString?.startsWith('$') ) return tokenString;
+      var [ tokenName, cls ] = foam.CSS.returnTokenAndClass(tokenString, cls);
       var result = cls && cls[foam.String.constantize(tokenName)];
       if ( ! result ) {
         // Try to find in global tokens
         // Do we need to do this every time?
         var defaultsCls = ctx.lookup('foam.u2.CSSTokens');
         result = defaultsCls[foam.String.constantize(tokenName)];
+      }
+      if ( foam.Function.isInstance(result?.value) ) {
+        const expr = foam.css.ColorExprBuilder.create();
+        // Fake an fobject to get token value in current ctx from mlang
+        var ret = await result.value(expr).f({cls_: cls, __subContext__: ctx});
+        ret = await foam.CSS.returnTokenValue(ret, cls, ctx);
+        return ret || result.fallback || `/* failed mlang token replacement ${tokenString}, ${cls}*/`
       }
       if ( result?.value?.startsWith('$') ) {
         // Using await as this method may be overriden with one that returns a promise
@@ -1353,17 +1357,21 @@ foam.LIB({
       }
       return [ tokenName, cls, fullString ]
     },
+    async function returnTokenValue(token, cls, ctx) {
+      // Safe method to always call the right getTokenValue() depending on ctx
+      let tokenFinder = ctx?.cssTokenOverrideService?.getTokenValue || foam.CSS.getTokenValue;
+      return await tokenFinder(token, cls, ctx);
+    },
     async function replaceTokens(text, cls, ctx, opt_tokenPattern) {
       let foundTokens = [];
       //TODO: This reg exp breaks when tokens have function values like rgb()/hsl()
-      // Need the ) for media queries
-      const tokenPattern = opt_tokenPattern || new RegExp(/\$[^);!]*/, 'g');
+      // Need the ) for media queries. Fix before using tokens for media queries
+      const tokenPattern = opt_tokenPattern || new RegExp(/\$[^;!]*/, 'g');
       let tokensToFind = text.match(tokenPattern);
       if ( ! tokensToFind?.length ) return text;
-      let tokenFinder = ctx?.cssTokenOverrideService?.getTokenValue || foam.CSS.getTokenValue;
       for ( var i = 0 ; i < tokensToFind.length ; i++ ) {
         let sanitizedToken = opt_tokenPattern ? tokensToFind[i].match(/\$[^\*\s]*/)[0] : tokensToFind[i] //if using a non-standard token pattern
-        let replacement = await tokenFinder(sanitizedToken, cls, ctx);
+        let replacement = await foam.CSS.returnTokenValue(sanitizedToken, cls, ctx);
         foundTokens[tokensToFind[i]] = { sanitizedToken: sanitizedToken, value: replacement}
       }
       return text.replace(tokenPattern, function(match) {

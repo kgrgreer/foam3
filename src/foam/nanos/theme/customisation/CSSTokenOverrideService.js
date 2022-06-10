@@ -38,7 +38,7 @@ foam.CLASS({
         }
       }
       //TODO: Put to default theme in override dao
-      return foam.CSS.getTokenValue.call(this, tokenName, cls, ctx, true);
+      return foam.CSS.getTokenValue.call(this, tokenString, cls, ctx);
     },
     async function tokenValueHelper(theme, name) {
       var pred = this.AND(

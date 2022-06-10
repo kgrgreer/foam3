@@ -158,7 +158,7 @@ foam.CLASS({
     },
     {
       name: 'THEME_OVERRIDE_REGEXP',
-      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^;!]*/, 'g'); }
     }
   ],
 
