@@ -313,7 +313,11 @@ foam.CLASS({
           delegate = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getCapable() )
-          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
+          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX())
+            .setDaoKey(getName())
+            .setDelegate(delegate)
+            .setAllowActionRequiredPuts(getAllowActionRequiredPuts())
+            .build();
 
         if ( getContextualize() ) {
           delegate = new foam.dao.ContextualizingDAO.Builder(getX()).
@@ -776,6 +780,10 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'capable',
       class: 'Boolean',
       javaFactory: 'return getEnableInterfaceDecorators() && foam.nanos.crunch.lite.Capable.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'allowActionRequiredPuts',
+      class: 'Boolean'
     },
     {
       name: 'fixedSize',
