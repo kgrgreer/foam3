@@ -265,8 +265,8 @@ public class ServerCrunchService
     }
 
     Session session = x.get(Session.class);
-    if ( cache && session != null ) {
-      session.setApplyContext(session.getContext().put(CACHE_KEY, map));
+    if ( cache && session != null && session.getApplyContext() != null ) {
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, map));
     }
 
     return map;
@@ -298,14 +298,16 @@ public class ServerCrunchService
     Map<String, List<String>> cache = (Map) session.getContext().get(CACHE_KEY);
     cache.put(ccj.getSourceId(), getPrereqs_(x.put("subject", subject), ccj.getSourceId()));
 
-    session.setApplyContext(session.getContext().put(CACHE_KEY, cache));
+    if ( session != null && session.getApplyContext() != null ) {
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
+    }
   }
 
   // sets the prerequisite cache to null, is used when session info changes
   public static void purgeCache(X x) {
     Session session = x.get(Session.class);
-    if ( session != null ){
-      session.setApplyContext(session.getContext().put(CACHE_KEY, null));
+    if ( session != null && session.getApplyContext() != null ) {
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, null));
     }
   }
 
