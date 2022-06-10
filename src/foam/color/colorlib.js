@@ -198,7 +198,7 @@ foam.LIB({
     
     function getBestForeground(str, black, white) {
       with ( foam.Color.parse(str) ) {
-        return red*0.3 + green*0.6 + blue*0.1 > 170 ? black : white;
+        return red*0.299 + green*0.587 + blue*0.114 > 186 ? black : white;
       }
     },
 
