@@ -207,7 +207,6 @@ foam.LIB({
       var [r, g, b] = [colorObj.red, colorObj.green, colorObj.blue];
       let l = foam.Color.rgbToGrey([r, g, b])*1000;
       let scale = l + (l*(value/100));
-      console.log(l, scale);
       var [r, g, b] = foam.Color.adjustRGBBrightness([r, g, b], scale/1000);
       return `rgb(${r.toFixed(4)},${g.toFixed(4)},${b.toFixed(4)})`;
     },
