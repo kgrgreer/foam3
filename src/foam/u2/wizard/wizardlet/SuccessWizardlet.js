@@ -9,10 +9,21 @@ foam.CLASS({
   name: 'SuccessWizardlet',
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
+  imports: [
+    'currentMenu'
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'message'
+    },
+    {
+      class: 'String',
+      name: 'actionLabel',
+      factory: function() {
+        return "Return to " + this.currentMenu.label;
+      }
     },
     {
       name: 'sections',
