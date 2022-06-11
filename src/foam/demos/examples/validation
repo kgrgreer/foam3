@@ -26,6 +26,19 @@ foam.CLASS({
         if ( age < this.age ) throw 'Age can not go backwards.';
       }
     }
+    /*
+    {
+      class: 'Int',
+      name: 'age',
+      minValue: 0,
+      maValue: 130
+    },
+    {
+      class: 'String',
+      name: 'password',
+      required: true,
+      minLength: 5
+    }*/
   ]
 });
 
@@ -121,5 +134,5 @@ var f = Flight.create();
 add(f);
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
 
-# ValidationPredicates
+## ValidationPredicates
 --
