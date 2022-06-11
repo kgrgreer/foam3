@@ -120,3 +120,6 @@ validateFlight();
 var f = Flight.create();
 add(f);
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
+
+# ValidationPredicates
+--
