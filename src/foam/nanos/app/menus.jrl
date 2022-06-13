@@ -5,10 +5,10 @@ p({
   "keywords": ["health","heartbeat","check","cluster"],
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
-    "browseTitle":"Health Check",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"healthDAO",
+      "browseTitle":"Health Check",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
