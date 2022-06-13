@@ -22,6 +22,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.Email',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.ServiceProvider',
     'static foam.mlang.MLang.*'
   ],
 
@@ -66,7 +68,7 @@ foam.CLASS({
           // and isn't changing their email address.
           // assumption here is that if a user successfully registered,
           // they would have run by this check already.
-          if ( SafetyUtil.equalsIgnoreCase(user.getEmail(), ((User)oldObj).getEmail() ) {
+          if ( SafetyUtil.equalsIgnoreCase(user.getEmail(), ((User)oldObj).getEmail()) ) {
             return; 
           }
 
