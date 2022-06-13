@@ -2,8 +2,10 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"health",
   "label":"Health",
+  "keywords": ["health","heartbeat","check","cluster"],
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
+    "browseTitle":"Health Check",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"healthDAO",

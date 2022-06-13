@@ -52,7 +52,8 @@ p({
   "service": {
     class: "foam.nanos.app.HealthHeartbeatService",
     multicastAddress: "230.22.41.0",
-    port: 52241
+    port: 52241,
+    sendPort: 52242
   }
 })
 

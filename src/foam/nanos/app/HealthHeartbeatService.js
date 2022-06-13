@@ -58,6 +58,12 @@ foam.CLASS({
       class: 'Int'
     },
     {
+      documentation: 'Some environments like AWS prefer different send/receive ports for UDP broadcasts',
+      name: 'sendPort',
+      class: 'Int',
+      javaFactory: 'return getPort();'
+    },
+    {
       name: 'multicastAddress',
       class: 'String'
     },
@@ -108,7 +114,11 @@ foam.CLASS({
 
               DatagramSocket socket = null;
               try {
-                socket = new DatagramSocket();
+                if ( getPort() == getSendPort() ) {
+                  socket = new DatagramSocket();
+                } else {
+                  socket = new DatagramSocket(getSendPort());
+                }
                 DatagramPacket packet
                   = new DatagramPacket(buf, buf.length, InetAddress.getByName(getMulticastAddress()), getPort());
                 socket.send(packet);
