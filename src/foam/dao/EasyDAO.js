@@ -783,7 +783,11 @@ model from which to test ServiceProvider ID (spid)`,
     },
     {
       name: 'allowActionRequiredPuts',
-      class: 'Boolean'
+      class: 'Boolean',
+      documentation: `
+        For Capable objects, setting this to true disables CapabilityIntercepts
+        and instead allows putting objects with ACTION_REQUIRED payloads.
+      `
     },
     {
       name: 'fixedSize',
