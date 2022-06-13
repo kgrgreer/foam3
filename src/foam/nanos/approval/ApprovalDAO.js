@@ -108,8 +108,9 @@ foam.CLASS({
           initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedFor());
         }
         subject.setUser(initiatingUser);
-        
-        X initiatingUserX = x.put("subject", subject);
+
+        X initiatingUserX = x.put("subject", subject)
+                             .put("ApprovalRequest", request);
 
         if ( ((ApprovalRequest) request).getOperation() == Operation.REMOVE ) {
           dao.inX(initiatingUserX).remove(found);
