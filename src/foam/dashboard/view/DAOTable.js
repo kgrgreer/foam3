@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'DAOTable',
   extends: 'foam.u2.Element',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+
   requires: [
     'foam.dashboard.view.DashboardCitationView',
     'foam.comics.v2.DAOBrowseControllerView',
