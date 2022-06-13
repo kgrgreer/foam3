@@ -94,7 +94,6 @@ foam.CLASS({
     width: 75%;
     padding: 2vw;
     box-sizing: border-box;
-    
   }
 
   /* ON ALL FOOTER TEXT */
@@ -102,8 +101,12 @@ foam.CLASS({
     font-weight: bold;
     margin-right: 0.2em;
   }
-  ^ .center-footer {
+  ^center-footer {
     text-align: center;
+  }
+
+  ^center-footer > ^signupLink {
+    margin-bottom: 2rem;
   }
 
   /* TOP-TOP BAR NAV to go with backLink_ */
@@ -254,7 +257,8 @@ foam.CLASS({
         .br()
       // first footer
       .br()
-      .start().addClass('center-footer')
+      .start().addClass(this.myClass('center-footer'))
+        .start().addClass(this.myClass('signupLink'))
           .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
           .start('span').addClass('link')
             .add(this.model.FOOTER_LINK)
@@ -262,8 +266,9 @@ foam.CLASS({
               this.model.footerLink(this.topBarShow_, this.param);
             })
           .end()
+        .end()
       // second footer
-        .br().br()
+        .start()
           .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
           .start('span').addClass('link')
             .add(this.model.SUB_FOOTER_LINK)
@@ -271,7 +276,8 @@ foam.CLASS({
               this.model.subfooterLink();
             })
           .end()
-        .end();
+        .end()
+      .end();
 
       // CREATE SPLIT VIEW
       if ( this.imgPath ) {

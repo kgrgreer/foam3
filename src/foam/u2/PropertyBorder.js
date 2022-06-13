@@ -20,10 +20,10 @@
   `,
 
   requires: [
-    'foam.core.ConstantSlot',
     'foam.core.ArraySlot',
-    'foam.u2.DisplayMode',
+    'foam.core.ConstantSlot',
     'foam.u2.borders.ExpandableBorder',
+    'foam.u2.DisplayMode',
     'foam.u2.tag.CircleIndicator'
   ],
 
@@ -58,8 +58,8 @@
       align-items: center;
       line-height: 1.25;
       /*
-        Have to use this style here since nanos uses CSS resets to 
-        set 1 rem = 10px instead of the default 16px 
+        Have to use this style here since nanos uses CSS resets to
+        set 1 rem = 10px instead of the default 16px
         May cause weird styling outside nanos
       */
       font-size: 1.2rem;
@@ -76,6 +76,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      gap: 0.2rem
     }
     ^propHolder > :first-child{
       display: flex;
@@ -98,7 +99,7 @@
       name: 'config',
       documentation: `
         Map of propertyProperty: value for configuring properties
-        values include 'label', 'units', and 'view'. 
+        values include 'label', 'units', and 'view'.
         WARNING: Config accepts slots as key value pairs however config's slot does not update the prop. Eg:
           VALID: config: { label$: someLabelSlot$ }; --> Will update prop label
           INVALID: config$: someLabelSlot$.map(v => { return {label: v} }) --> Will not update prop label
@@ -110,7 +111,7 @@
       value: true,
       documentation: `When set to true space for label is reserved even if label is empty, useful for grid based detailViews`
     },
-    ['helpEnabled', false],
+    ['helpEnabled', false]
   ],
 
   methods: [
@@ -148,12 +149,13 @@
         start().
           addClass(this.myClass('propHolder')).
           start().
-            tag(prop.view$.map(v => {
+            add(prop.view$.map(v => {
               // Add the Property's View
-              return prop.toE_({ ...self.viewArgs, mode$: modeSlot}, this.__context__)
+              return this.E().add(prop.toE_({ ...self.viewArgs, mode$: modeSlot}, this.__context__))
+                .style({ 'flex-grow': 1,'max-width': '100%' })
                 .enableClass('error', errorSlot.and(colorSlot));
             })).
-            add(prop.units$).
+            start().add(prop.units$).end().
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
@@ -172,14 +174,16 @@
           /**
            * ERROR BEHAVIOUR:
            * - data == nullish, error == true: Show error in default text color, hide icon
-           * - data == ! null, error == true: Show error and icon in destructive, highlight field border 
+           * - data == ! null, error == true: Show error and icon in destructive, highlight field border
            * Allows for errors to act as suggestions until the user enters a value
            * Potential improvement area: this approach makes it slightly harder to understand why
            * submit action may be unavilable for long/tabbed  forms
            */
           addClass(this.myClass('errorText')).
           enableClass(this.myClass('colorText'), colorSlot).
-          show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
+          // show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
+          // Using the line below we can reserve error text space instead of shifting layouts
+          show(modeSlot.map(m => m == foam.u2.DisplayMode.RW)).
           start({
             class: 'foam.u2.tag.Image',
             data: '/images/inline-error-icon.svg',

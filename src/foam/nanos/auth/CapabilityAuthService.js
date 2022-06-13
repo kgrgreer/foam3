@@ -196,20 +196,27 @@ foam.CLASS({
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
-          predicate.setEntity(AssociatedEntity.USER);
-          if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
+          
+          // if realuser and user is the same, we can check without specifying entity
+          if ( realUser != null && realUser.getId() == user.getId() && 
+              userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
-          }
-
-          // Check if a ucj implies the subject.realUser has this permission
-          if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
-            userPredicate = AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-              NOT(INSTANCE_OF(AgentCapabilityJunction.class))
-            );
-            predicate.setEntity(AssociatedEntity.REAL_USER);
+          } else {
+            predicate.setEntity(AssociatedEntity.USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
+            }
+  
+            // Check if a ucj implies the subject.realUser has this permission
+            if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
+              userPredicate = AND(
+                EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+                NOT(INSTANCE_OF(AgentCapabilityJunction.class))
+              );
+              predicate.setEntity(AssociatedEntity.REAL_USER);
+              if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
+                return true;
+              }
             }
           }
 

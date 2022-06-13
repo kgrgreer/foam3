@@ -238,7 +238,7 @@ foam.CLASS({
             prop: data.SALARY,
             config: {
               units$: this.data.country$.map(c => {
-                return { Canada: 'CAD$', 'United States': '$' }[c];
+                return { Canada: 'CAD', 'United States': '$' }[c];
               })
             }
           }).

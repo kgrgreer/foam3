@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.layout',
   name: 'Grid',
   extends: 'foam.u2.Element',
+
   documentation: `
     A grid of responsive elements
   `,
@@ -35,11 +36,13 @@ foam.CLASS({
         this.shown = false;
         var currentWidth = 0;
         this.childNodes.forEach(ret => {
-          var cols = this.displayWidth ? this.displayWidth.cols : 12;
-          var width = Math.min(this.GUnit.isInstance(ret) && ret.columns &&
-            ret.columns[`${this.displayWidth.name.toLowerCase()}Columns`] ||
-            cols, cols);
-
+          var cols = 12, width = 12;
+          if ( this.displayWidth ) {
+            cols = this.displayWidth.cols;
+            width = Math.min(this.GUnit.isInstance(ret) && ret.columns &&
+              ret.columns[`${this.displayWidth.name.toLowerCase()}Columns`] ||
+              cols, cols);
+          }
           var startCol = currentWidth + 1;
           currentWidth += width;
 

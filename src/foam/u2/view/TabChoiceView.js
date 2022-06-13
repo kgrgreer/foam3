@@ -45,7 +45,8 @@ foam.CLASS({
       factory: function() { return this.choices[0]; },
     },
     {
-      name: 'route',
+      name: 'cannedQuery',
+      shortName: 'query',
       memorable: true,
       factory: function() { return this.choice[1]; }
     }
@@ -74,7 +75,7 @@ foam.CLASS({
       this.removeAllChildren();
 
       this.add(this.choices.map(function(c) {
-        if ( this.route == c[1] )
+        if ( this.cannedQuery == c[1] )
           this.data = c[0];
         return this.E('div').
           addClass(this.myClass('item')).
@@ -87,7 +88,7 @@ foam.CLASS({
             setID(id = self.NEXT_ID()).
             on('change', function() {
               self.data = c[0];
-              self.route = c[1];
+              self.cannedQuery = c[1];
             }).
           end().
           start('label').

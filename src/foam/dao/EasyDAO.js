@@ -21,8 +21,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   implements: [
-    'foam.mlang.Expressions',
-    'foam.nanos.boot.NSpecAware'
+    'foam.mlang.Expressions'
   ],
 
   documentation: `
@@ -113,7 +112,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       factory: function() {
-        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
+        return this.of && this.of.id;
       },
       javaFactory: `
       NSpec nspec = getNSpec();
@@ -124,7 +123,7 @@ foam.CLASS({
         String name = id.substring(id.lastIndexOf('.') + 1);
         name += "DAO";
         return foam.util.StringUtil.daoize(name);
-      } 
+      }
       Loggers.logger(getX(), this).warning("Of not found");
       return "EasyDAO: DAO not found";
      `
@@ -167,9 +166,7 @@ foam.CLASS({
               setMdao(new foam.dao.MDAO(getOf()));
             }
             delegate = getMdao();
-            if ( getFixedSize() != null &&
-                 ! getCluster() ) {
-              // TODO: FixedSizeDAO is not compatible with Clustering
+            if ( getFixedSize() != null ) {
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(delegate);
               delegate = fixedSizeDAO;
@@ -210,13 +207,13 @@ foam.CLASS({
             delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();   
+            .build();
           } else {
             logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
             delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
               .setNSpec(getNSpec())
               .setDelegate(delegate)
-              .build();   
+              .build();
           }
         }
 
@@ -316,7 +313,11 @@ foam.CLASS({
           delegate = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getCapable() )
-          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
+          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX())
+            .setDaoKey(getName())
+            .setDelegate(delegate)
+            .setAllowActionRequiredPuts(getAllowActionRequiredPuts())
+            .build();
 
         if ( getContextualize() ) {
           delegate = new foam.dao.ContextualizingDAO.Builder(getX()).
@@ -779,6 +780,14 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'capable',
       class: 'Boolean',
       javaFactory: 'return getEnableInterfaceDecorators() && foam.nanos.crunch.lite.Capable.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'allowActionRequiredPuts',
+      class: 'Boolean',
+      documentation: `
+        For Capable objects, setting this to true disables CapabilityIntercepts
+        and instead allows putting objects with ACTION_REQUIRED payloads.
+      `
     },
     {
       name: 'fixedSize',
