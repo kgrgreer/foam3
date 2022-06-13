@@ -39,6 +39,42 @@ foam.CLASS({
           }, this)
         }));
 
+        scenarioMenus.push(this.Menu.create({
+          id: this.id + '/MyElementWizardTest',
+          label: 'My Element Wizard Test',
+          parent: this.id,
+          handler: foam.nanos.menu.ViewMenu.create({
+            view: {
+              class: 'net.nanopay.cards.test.wizards.MyElementTest',
+              imagePath: '/images/connect/us.svg'
+            }
+          }, this)
+        }));
+
+        scenarioMenus.push(this.Menu.create({
+          id: this.id + '/MyMyElementWizardTest',
+          label: 'My My Element Wizard Test',
+          parent: this.id,
+          handler: foam.nanos.menu.ViewMenu.create({
+            view: {
+              class: 'net.nanopay.cards.test.wizards.MyMyElementTest',
+              imagePath: '/images/flags/spain.svg'
+            }
+          }, this)
+        }));
+
+        scenarioMenus.push(this.Menu.create({
+          id: this.id + '/MyMyElementWizardTest',
+          label: '2 My My Element Wizard Test',
+          parent: this.id,
+          handler: foam.nanos.menu.ViewMenu.create({
+            view: {
+              class: 'net.nanopay.cards.test.wizards.MyMyElementTest',
+              imagePath: '/images/flags/malta.svg'
+            }
+          }, this)
+        }));
+
         for ( const packageString of this.packages ) {
           const pkg = packageString.split('.').reduce((o, k) => o?.[k], globalThis);
           if ( pkg === undefined ) throw new Error(
