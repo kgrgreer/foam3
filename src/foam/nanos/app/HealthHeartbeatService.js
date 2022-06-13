@@ -58,10 +58,10 @@ foam.CLASS({
       class: 'Int'
     },
     {
-      documentation: 'Some environments like AWS prefer different send/receive ports for UDP broadcasts',
+      documentation: 'Some environments like AWS prefer different send/receive ports for UDP broadcasts. Value 0 will default to system selected port.',
       name: 'sendPort',
       class: 'Int',
-      javaFactory: 'return getPort();'
+      value: 0
     },
     {
       name: 'multicastAddress',
@@ -91,7 +91,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-      Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getPort());
+      Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getSendPort(), getPort());
       Agency agency = (Agency) getX().get("threadPool");
       agency.submit(getX(), this, this.getClass().getSimpleName());
 
@@ -114,7 +114,7 @@ foam.CLASS({
 
               DatagramSocket socket = null;
               try {
-                if ( getPort() == getSendPort() ) {
+                if ( getSendPort() == 0 ) {
                   socket = new DatagramSocket();
                 } else {
                   socket = new DatagramSocket(getSendPort());
