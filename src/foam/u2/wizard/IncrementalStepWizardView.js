@@ -265,7 +265,10 @@ foam.CLASS({
                     .tag(this.GO_PREV, btn)
                     .tag(this.GO_NEXT,
                       data$isLastScreen
-                        ? { ...primaryBtn, label: this.ACTION_LABEL }
+                        ? { ...primaryBtn, label:
+                          this.data.wizardlets[this.data.wizardPosition.wizardletIndex].actionLabel
+                            ? this.data.wizardlets[this.data.wizardPosition.wizardletIndex].actionLabel
+                            : this.ACTION_LABEL }
                         : primaryBtn
                     )
                   .endContext();

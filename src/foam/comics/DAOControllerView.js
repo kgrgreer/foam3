@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'foam.comics',
   name: 'DAOControllerView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -145,12 +144,11 @@ foam.CLASS({
     function render() {
       var self = this;
       var summaryViewParent;
-      this.initMemento();
 
       var reciprocalSearch = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.ReciprocalSearch',
         data$: this.data.predicate$
-      }, {}, self, self.__subContext__.createSubContext({ memento: this.currentMemento_ }));
+      }, {}, self, self.__subContext__.createSubContext({ memento_: this.memento_ }));
 
       var searchView = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.SimpleSearch',

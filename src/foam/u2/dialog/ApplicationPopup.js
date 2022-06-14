@@ -38,6 +38,7 @@ foam.CLASS({
 
     ^inner {
       flex-direction: column;
+      overflow: hidden;
     }
 
     ^header {
@@ -62,6 +63,8 @@ foam.CLASS({
 
     ^body {
       flex-grow: 1;
+      max-height: 90vh;
+      overflow: auto;
     }
 
     ^logo img, ^logo svg {

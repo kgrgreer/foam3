@@ -28,12 +28,20 @@ foam.CLASS({
     'foam.u2.LoadingSpinner',
     'foam.u2.dialog.Popup'
   ],
-
+  properties: [
+    {
+      name: 'pushLast',
+      class: 'Boolean'
+    }
+  ],
   methods: [
     async function execute() {
       var popup = this.Popup.create({
         closeable: false,
-        isStyled: false
+        isStyled: false,
+        onClose: this.pushLast ? () => {
+          ctrl.__subContext__.pushMenu(ctrl.__subContext__.lastMenuLaunched);
+        } : undefined
       })
         .tag(this.LoadingSpinner, { size: 56 });
       this.ctrl.add(popup);

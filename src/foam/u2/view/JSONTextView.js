@@ -48,10 +48,7 @@ foam.CLASS({
   ],
   methods: [
     function render() {
-      this.tag(this.PropertyBorder, {
-        prop: this.DATA_,
-        data: this
-      });
+      this.startContext({ data: this }).tag(this.DATA.__).endContext();
     }
   ]
 });

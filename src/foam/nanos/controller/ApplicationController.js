@@ -553,6 +553,7 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
+      this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
     function installLanguage() {
@@ -623,7 +624,6 @@ foam.CLASS({
         this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
-        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
@@ -751,7 +751,6 @@ foam.CLASS({
         menu = realMenu;
       this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
-      this.menuListener(realMenu);
     },
 
     async function findDefaultMenu(dao) {

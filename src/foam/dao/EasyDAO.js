@@ -241,7 +241,7 @@ foam.CLASS({
         delegate = getOuterDAO(delegate);
 
         if ( getDecorator() != null ) {
-          if ( ! ( getDecorator() instanceof ProxyDAO ) ) {
+          if ( ! ( getDecorator() instanceof ProxyDAO) ) {
             logger.error(getName(), "delegateDAO", getDecorator(), "not instanceof ProxyDAO");
             System.exit(1);
           }
@@ -313,7 +313,11 @@ foam.CLASS({
           delegate = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getCapable() )
-          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
+          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX())
+            .setDaoKey(getName())
+            .setDelegate(delegate)
+            .setAllowActionRequiredPuts(getAllowActionRequiredPuts())
+            .build();
 
         if ( getContextualize() ) {
           delegate = new foam.dao.ContextualizingDAO.Builder(getX()).
@@ -776,6 +780,14 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'capable',
       class: 'Boolean',
       javaFactory: 'return getEnableInterfaceDecorators() && foam.nanos.crunch.lite.Capable.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'allowActionRequiredPuts',
+      class: 'Boolean',
+      documentation: `
+        For Capable objects, setting this to true disables CapabilityIntercepts
+        and instead allows putting objects with ACTION_REQUIRED payloads.
+      `
     },
     {
       name: 'fixedSize',
@@ -1264,16 +1276,17 @@ model from which to test ServiceProvider ID (spid)`,
       `
     },
     {
-      name: 'toString',
+      name: 'append',
+      args: 'StringBuilder sb',
       javaCode: `
-        var sb = new StringBuilder();
         sb.append("EasyDAO");
         if ( of_ != null ) {
           sb.append("(of: ")
             .append(of_.getId())
             .append(")");
+        } else {
+          sb.append("()");
         }
-        return sb.toString();
       `
     }
   ]
