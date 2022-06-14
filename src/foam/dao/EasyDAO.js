@@ -241,7 +241,7 @@ foam.CLASS({
         delegate = getOuterDAO(delegate);
 
         if ( getDecorator() != null ) {
-          if ( ! ( getDecorator() instanceof ProxyDAO ) ) {
+          if ( ! ( getDecorator() instanceof ProxyDAO) ) {
             logger.error(getName(), "delegateDAO", getDecorator(), "not instanceof ProxyDAO");
             System.exit(1);
           }
@@ -1264,16 +1264,17 @@ model from which to test ServiceProvider ID (spid)`,
       `
     },
     {
-      name: 'toString',
+      name: 'append',
+      args: 'StringBuilder sb',
       javaCode: `
-        var sb = new StringBuilder();
         sb.append("EasyDAO");
         if ( of_ != null ) {
           sb.append("(of: ")
             .append(of_.getId())
             .append(")");
+        } else {
+          sb.append("()");
         }
-        return sb.toString();
       `
     }
   ]
