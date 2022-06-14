@@ -31,7 +31,7 @@ foam.CLASS({
     {
       name: 'ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME',
       type: 'String',
-      value: 'foam.allowDuplicateEmail'
+      value: 'spid.default.allowDuplicateEmails'
     }
   ],
 
@@ -79,19 +79,8 @@ foam.CLASS({
           }
         }
 
-        if ( oldObj == null ) {
-          // if user is being created for the first time,
-          // check if the spid grants the allowDuplicateEmail permission.
-          // (this code is almost the exact same as in CapabilityAuthService)
-          DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
-          ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
-          if ( sp != null ) {
-            // setX(getX()) exact same hack as in CapabilityAuthService
-            sp.setX(getX());
-            if ( sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME) ) {
-              return;
-            }
-          }
+        if ( oldObj == null && spidGrantsDuplicateEmailPermission(x, spid) ) {
+          return;
         }
 
         Count count = new Count();
@@ -108,5 +97,25 @@ foam.CLASS({
         }
       `
     }
+  ],
+
+  static: [
+    {
+      name: 'spidGrantsDuplicateEmailPermission',
+      type: 'Boolean',
+      documentation: `
+      Common function for checking if the given SPID allows
+      duplicate emails.
+      `,
+      args: 'foam.core.X x, String spid',
+      javaCode: `
+      DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
+      ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
+      
+      return sp != null &&
+             sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
+      `
+    }
   ]
+
 });

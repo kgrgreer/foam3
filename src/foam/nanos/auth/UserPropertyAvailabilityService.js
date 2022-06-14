@@ -27,7 +27,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+
+    'foam.nanos.auth.ruler.PreventDuplicateEmailAction'
   ],
 
   methods: [
@@ -39,9 +41,12 @@ foam.CLASS({
         ) {
           throw new AuthorizationException();
         }
-
+        
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(x);
-        if ( targetProperty.equals("email") && theme.getAllowDuplicateEmails() ) {
+        var spid = theme.getSpid();
+
+        if ( "email".equals(targetProperty) &&
+             PreventDuplicateEmailAction.spidGrantsDuplicateEmailPermission(x, spid) ) {
           return true;
         }
 
@@ -49,7 +54,7 @@ foam.CLASS({
         User user = (User) userUserDAO
           .find(AND(
             EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
-            EQ(User.SPID, theme.getSpid())));
+            EQ(User.SPID, spid)));
 
         return user == null;
       `
