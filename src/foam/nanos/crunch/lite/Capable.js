@@ -20,6 +20,8 @@ foam.INTERFACE({
     'foam.core.Validator',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -188,15 +190,19 @@ foam.INTERFACE({
               .setOf(CapabilityJunctionPayload.getOwnClassInfo())
               .build();
 
-            x = x.put("capablePayloadDAO", capablePayloadDAO);
+            ProxyDAO proxyDAO = new ProxyDAO(x);
+            x = x.put("capablePayloadDAO", proxyDAO);
 
-            // TODO: Look into why rulerdao acts sketchy here and if it can replace CapablePayloadStatusDAO
-            DAO CapablePayloadStatusDAO = new CapablePayloadStatusDAO.Builder(x)
-              .setDelegate(capablePayloadDAO)
+            capablePayloadDAO = new EasyDAO.Builder(x)
+              .setAuthorize(false)
+              .setInnerDAO(capablePayloadDAO)
+              .setName("capablePayloadDAO")
               .setOf(CapabilityJunctionPayload.getOwnClassInfo())
               .build();
+            
+            proxyDAO.setDelegate(capablePayloadDAO);
 
-            return CapablePayloadStatusDAO;
+            return capablePayloadDAO;
           `
         }));
       }
