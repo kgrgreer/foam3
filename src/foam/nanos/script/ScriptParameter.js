@@ -9,6 +9,16 @@ foam.CLASS({
   name: 'ScriptParameter',
 
   documentation: 'Key/value map intended to be used by a Script for time series input data.',
+
+  implements: [ 'foam.nanos.auth.EnabledAware' ],
+
+  tableColumns: [
+    'enabled',
+    'id',
+    'name',
+    'date'
+  ],
+
   properties: [
     {
       class: 'String',
