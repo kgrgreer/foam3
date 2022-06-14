@@ -70,7 +70,7 @@ foam.CLASS({
                 script.setStatus(ScriptStatus.ERROR);
                 logger.error("agency", script.getId(), t);
               } finally {
-                getDelegate().put_(x, script);
+                ((DAO) x.get(script.getDaoKey())).put_(x, script);
               }
             }
           }, "Run script: " + script.getId());
