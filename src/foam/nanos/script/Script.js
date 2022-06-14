@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',

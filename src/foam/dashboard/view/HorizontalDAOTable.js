@@ -31,8 +31,9 @@ foam.CLASS({
     ^ .foam-u2-ActionView-viewMoreAction {
       padding-top: 0;
     }
-    @media only screen and (min-height: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^entry-container { padding-bottom: 3vh; }
+    ^entry-container > * {
+      max-width: 400px;
+      max-height: 200px;
     }
   `,
 
