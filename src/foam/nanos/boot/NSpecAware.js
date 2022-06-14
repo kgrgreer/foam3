@@ -16,3 +16,23 @@ foam.INTERFACE({
     }
   ]
 });
+
+
+foam.CLASS({
+  package: 'foam.nanos.boot',
+  name: 'EasyDAONSpecAwareRefinemtn',
+  refines: 'foam.dao.EasyDAO',
+
+  implements: [
+    'foam.nanos.boot.NSpecAware'
+  ],
+
+  properties: [
+    {
+      name: 'name',
+      factory: function() {
+        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
+      }
+    }
+  ]
+});

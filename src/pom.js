@@ -231,6 +231,7 @@ foam.POM({
     { name: "foam/dao/PredicatedDualDelegateDAO",                     flags: "js|java" },
     { name: "foam/dao/daoUtils",                                      flags: "js|java" },
     { name: "foam/dao/ArraySink",                                     flags: "js|java" },
+    { name: "foam/dao/RemoveSink",                                    flags: "js|java" },
     { name: "foam/dao/DAOCopySink",                                   flags: "js|java" },
     { name: "foam/dao/DAOInterceptor",                                flags: "js|java" },
     { name: "foam/dao/AbstractDAO",                                   flags: "js|java" },
@@ -276,6 +277,8 @@ foam.POM({
     { name: "foam/dao/index/PersistedIndexTest",                      flags: "js|java" },
     { name: "foam/dao/MDAO",                                          flags: "js" },
     { name: "foam/dao/ArrayDAO",                                      flags: "js|java" },
+    { name: "foam/dao/CopyOnWriteDAO",                                flags: "js|java" },
+    { name: "foam/dao/CopyOnWriteDAOTest",                            flags: "js|java" },
     { name: "foam/dao/TimestampDAO",                                  flags: "js" },
     { name: "foam/dao/CopyFromDAO",                                   flags: "js|java" },
     { name: "foam/dao/GUIDDAO",                                       flags: "js|java" },
@@ -313,8 +316,8 @@ foam.POM({
     { name: "foam/dao/sync/SyncRecord",                               flags: "js" },
     { name: "foam/dao/SyncDAO",                                       flags: "js" },
     { name: "foam/dao/FUIDDAO",                                       flags: "js|java" },
-    { name: "foam/nanos/u2/navigation/SignUp",                        flags: "web" },
-    { name: "foam/nanos/u2/navigation/SignIn",                        flags: "web" },
+    { name: "foam/nanos/u2/navigation/SignUp",                        flags: "js|java" },
+    { name: "foam/nanos/u2/navigation/SignIn",                        flags: "js|java" },
     { name: "foam/dao/EasyDAO",                                       flags: "js|java" },
     { name: "foam/dao/NoSelectAllDAO",                                flags: "js" },
     { name: "foam/dao/NullDAO",                                       flags: "js|java" },
@@ -1165,6 +1168,7 @@ foam.POM({
     { name: "foam/u2/view/GlobalFuidSearch",                          flags: "web" },
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
-    { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" }
+    { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" },
+    { name: "foam/u2/view/ClassCompleterView",                        flags: "web" }
  ]
 });

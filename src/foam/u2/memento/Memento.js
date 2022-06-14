@@ -233,7 +233,8 @@ foam.CLASS({
 
   listeners: [
     function removeMementoTail() {
-      console.log('Detaching tail ', this.obj?.cls_.name);
+      // Logging to track memento issues
+      console.log('Detaching tail ', this.obj?.cls_.name, this.tailStr);
       this.tail = null;
       this.tails = [];
       this.tailStr = undefined;

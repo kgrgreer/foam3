@@ -43,7 +43,8 @@ foam.CLASS({
   properties: [
     {
       name: 'dao_',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       class: 'String',
@@ -74,6 +75,13 @@ foam.CLASS({
       class: 'String',
       name: 'token_',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      visibility: 'HIDDEN',
+      value: true,
+      documentation: 'Optional boolean used to display this model without login action'
     }
   ],
 
@@ -113,8 +121,9 @@ foam.CLASS({
             }));
           } else {
             if ( ! this.memento_ || this.memento_.str.length === 0 || this.currentMenu?.id == this.memento_.str )
-              this.pushMenu('');
             this.loginSuccess = !! this.subject;
+            // reload the client on loginsuccess in case login not called from controller
+            if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
       }
@@ -128,6 +137,7 @@ foam.CLASS({
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
+      isAvailable: function(showAction) { return showAction; },
       code: async function(X) {
         this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {

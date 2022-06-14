@@ -86,7 +86,13 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'popup'
-    }
+    },
+    {
+      class: 'FObjectArray',
+      // of: 'foam.util.FluentSpec',
+      of: 'foam.core.FObject',
+      name: 'sequenceExtras'
+    },
   ],
 
   methods: [
@@ -118,6 +124,11 @@ foam.CLASS({
         sequence.remove('WizardStateAgent');
       if ( this.preventApprovableCreation )
         sequence.remove('GrantedEditAgent');
+      
+      // Apply sequence extras
+      for ( const fluentSpec of this.sequenceExtras ) {
+        fluentSpec.apply(sequence);
+      }
     },
     async function execute () {
       // Subclasses which fetch information asynchronously can override this

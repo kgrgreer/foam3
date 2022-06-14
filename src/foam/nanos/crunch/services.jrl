@@ -229,12 +229,17 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
       .setAuthorize(false)
       .setSeqNo(true)
       .setSeqPropertyName("seqNo")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctionHistory")
-      .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
+      .setSAF(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP))
+        .setSize(100000)
+        .build())
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP));
   """,

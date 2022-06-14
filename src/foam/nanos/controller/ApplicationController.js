@@ -99,7 +99,8 @@ foam.CLASS({
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'buildingStack'
   ],
 
   topics: [
@@ -365,6 +366,11 @@ foam.CLASS({
         }
       }
     },
+    {
+      class: 'Boolean',
+      name: 'buildingStack',
+      documentation: 'when set to true, memento tails are not cleared when pushing menus'
+    },
     'currentMenu',
     'lastMenuLaunched',
     'webApp',
@@ -547,6 +553,7 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
+      this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
     function installLanguage() {
@@ -617,7 +624,6 @@ foam.CLASS({
         this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
-        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');

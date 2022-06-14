@@ -322,7 +322,7 @@ foam.CLASS({
         if ( ! this.of ) return [];
 
         this.warn('initializing wizardlet data to initialize sections');
-        this.data = this.of.create();
+        this.data = this.of.create({}, this);
       }
 
       // Internal method used by SECTIONS.factory

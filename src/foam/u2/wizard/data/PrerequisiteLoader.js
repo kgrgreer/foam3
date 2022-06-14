@@ -49,6 +49,11 @@ foam.CLASS({
       expression: function (wizardletOf) {
         return wizardletOf;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'cloneValue',
+      value: true
     }
   ],
   
@@ -110,9 +115,9 @@ foam.CLASS({
           }
         }
 
-        clonedPrereqWizardletData = loadedFromData.clone ? loadedFromData.clone() : loadedFromData;
+        clonedPrereqWizardletData = (loadedFromData.clone && this.cloneValue) ? loadedFromData.clone() : loadedFromData;
       } else {
-        clonedPrereqWizardletData = prereqWizardletData.clone();
+        clonedPrereqWizardletData = this.cloneValue ? prereqWizardletData.clone() : prereqWizardletData;
       }
 
       if ( this.isWrappedInFObjectHolder ) {

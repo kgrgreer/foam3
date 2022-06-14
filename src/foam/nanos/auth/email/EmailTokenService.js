@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.token.Token',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
@@ -45,17 +45,16 @@ foam.CLASS({
 
           EmailMessage message = new EmailMessage();
           message.setTo(new String[]{user.getEmail()});
-
+          message.setUser(user.getId());
           HashMap<String, Object> args = new HashMap<>();
           args.put("name", user.getFirstName());
           args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
           args.put("templateSource", this.getClass().getName());
-
-          EmailsUtility.sendEmailFromTemplate(x, user, message, "verifyEmail", args);
-
+          args.put("template", "verifyEmail");
+          ((DAO) getX().get("emailMessageDAO")).put(message);
           return true;
         } catch(Throwable t) {
-          t.printStackTrace();
+          Loggers.logger(getX(), this).error("generateTokenWithParameters", t);
           return false;
         }
       `
