@@ -33,6 +33,10 @@ foam.CLASS({
       name: 'defaultStatus',
       of: 'foam.nanos.crunch.CapabilityJunctionStatus',
       value: foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED
+    },
+    {
+      class: 'Boolean',
+      name: 'allowActionRequiredPuts'
     }
   ],
 
@@ -42,7 +46,7 @@ foam.CLASS({
       javaCode: `
         FObject currentObjectInDao = getDelegate().find_(x, obj);
         Capable toPutCapableObj =  (Capable) obj;
-        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(x);
+        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(getX());
 
         CapabilityJunctionPayload[] toPutCapablePayloadArray =
           (CapabilityJunctionPayload[]) toPutCapableObj.getCapablePayloads();
@@ -103,7 +107,8 @@ foam.CLASS({
         if ( 
           ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.GRANTED) &&
           ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.PENDING) &&
-          ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.REJECTED)
+          ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.REJECTED) &&
+          ! getAllowActionRequiredPuts()
         ) {
           CapabilityIntercept cre = new CapabilityIntercept();
           cre.setDaoKey(getDaoKey());

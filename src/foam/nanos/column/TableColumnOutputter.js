@@ -44,7 +44,7 @@ foam.CLASS({
             return ( val / 100 ).toString();
           }
           if ( foam.core.DateTime.isInstance(prop) ) {
-            return val.toString().substring(0, 24);
+            return val.toString();
           }
           if ( foam.core.Date.isInstance(prop) ) {
             return val.toLocaleDateString(foam.locale);
