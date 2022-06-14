@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.dashboard.view.Dashboard',
 
   imports: [
-    'menuDAO'
+    'menuDAO',
+    'displayWidth?'
   ],
 
   requires: [
@@ -25,6 +26,7 @@ foam.CLASS({
       flex-direction: column;
     }
     ^main {
+      height: min(600px,100%);
       padding: 24px 32px;
     }
     ^widget-container {
@@ -55,17 +57,20 @@ foam.CLASS({
     {
       name: 'width',
       documentation: 'The fixed number of grid columns for the dashboard.',
-      value: 12
+      expression: function(displayWidth) {
+        if ( ! displayWidth ) return 'repeat(12, 1fr)';
+        return `repeat(${displayWidth.cols}, 1fr)`;
+      }
     },
     {
       name: 'height',
       documentation: 'The fixed number of grid rows for the dashboard.',
-      value: 12
+      value: 'min-content'
     },
     {
       name: 'gap',
       documentation: 'The px gap between dashboard widgets.',
-      value: 15
+      value: '1.6em'
     },
     {
       class: 'Map',
@@ -83,22 +88,24 @@ foam.CLASS({
 
       var widgetContainer = this.E()
         .addClass(this.myClass('widget-container'))
-        .style({ 
-          'grid-template-columns': 'repeat(' + this.width + ', 1fr)',
-          'grid-template-rows': 'repeat(' + this.height + ', 1fr)',
-          'grid-gap': this.gap + 'px'
+        .style({
+          'grid-template-columns': this.width$,
+          'grid-template-rows': this.height$,
+          'grid-gap': this.gap$
         });
 
       Object.keys(this.widgets).map( async menuId => {
         let menu = await this.menuDAO.find(menuId);
         if ( menu ) {
           let aspectRatio = this.widgets[menu.id];
-          widgetContainer.start(menu.handler.view).style({
-            'grid-column': 'span ' + aspectRatio.split('/')[0],
+          widgetContainer.startContext().start(menu.handler.view).style({
+            'grid-column': this.displayWidth$.map(v => {
+              return 'span ' + (v?.cols ? Math.min(aspectRatio.split('/')[0], v?.cols) : aspectRatio.split('/')[0]);
+            }),
             'grid-row': 'span ' + aspectRatio.split('/')[1]
-          }).end();
+          }).end().endContext();
         }
-      })
+      });
 
       this
         .addClass(this.myClass())
