@@ -17,27 +17,36 @@
 
 package foam.nanos.dig;
 
+import static foam.mlang.MLang.EQ;
+
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletResponse;
+
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
-import foam.lib.Outputter;
-import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
+import foam.lib.Outputter;
 import foam.lib.PropertyPredicate;
+import foam.lib.json.OutputterMode;
+import foam.log.LogLevel;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
+import net.nanopay.partner.intuit.EmailWebhook;
 
 public class HTTPDigestSink extends AbstractSink {
 
@@ -73,11 +82,11 @@ public class HTTPDigestSink extends AbstractSink {
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
         conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
       }
-      
+
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {
-        outputter = 
+        outputter =
           propertyPredicate_ == null ?
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
@@ -108,6 +117,22 @@ public class HTTPDigestSink extends AbstractSink {
       // check response code
       int code = conn.getResponseCode();
       if ( code != HttpServletResponse.SC_OK ) {
+        if ( code == HttpServletResponse.SC_BAD_REQUEST ) { // error 400
+          EmailWebhook ewh = (EmailWebhook) fobj ;
+          DAO alarmDAO = (DAO) getX().get("alarmDAO");
+          String emailAddress = ewh.getEmail();
+          String name = "Unable to send request information email to : " + emailAddress;
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+          if ( alarm != null && alarm.getIsActive() ) { return; }
+          alarm = new Alarm.Builder(getX())
+            .setName(ewh.getFirstName() + " "+ ewh.getLastName())
+            .setSeverity(LogLevel.ERROR)
+            .setIsActive(true)
+            .setReason(AlarmReason.UNSPECIFIED )
+            .setNote(emailAddress + " user did not receive the email")
+            .build();
+          alarmDAO.put(alarm);
+        } else
         throw new RuntimeException("Http server did not return 200.");
       }
     } catch (Throwable t) {
@@ -132,7 +157,7 @@ public class HTTPDigestSink extends AbstractSink {
     return stringBuffer.toString();
   }
 
-  protected String getDigest(X x, DUGDigestConfig config, String payload) 
+  protected String getDigest(X x, DUGDigestConfig config, String payload)
     throws Exception {
     try {
       if (removeWhitespacesInPayloadDigest_)
@@ -143,7 +168,7 @@ public class HTTPDigestSink extends AbstractSink {
         // @see https://commons.apache.org/proper/commons-codec/apidocs/src-html/org/apache/commons/codec/digest/HmacUtils.html
         // @see https://sorenpoulsen.com/calculate-hmac-sha256-with-java
         Mac mac = Mac.getInstance(config.getAlgorithm()); // "HmacSHA256"
-        SecretKeySpec secretKeySpec = new SecretKeySpec(config.getSecretKey().getBytes(StandardCharsets.UTF_8), config.getAlgorithm()); 
+        SecretKeySpec secretKeySpec = new SecretKeySpec(config.getSecretKey().getBytes(StandardCharsets.UTF_8), config.getAlgorithm());
         mac.init(secretKeySpec);
         byte[] digest = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
         return byte2Hex(digest);
