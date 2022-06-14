@@ -103,7 +103,7 @@ foam.CLASS({
               return 'span ' + (v?.cols ? Math.min(aspectRatio.split('/')[0], v?.cols) : aspectRatio.split('/')[0]);
             }),
             'grid-row': 'span ' + aspectRatio.split('/')[1]
-          }).end().endContext();
+          }).end();
         }
       });
 
