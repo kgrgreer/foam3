@@ -273,7 +273,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2.view',
-  name: 'BooleanTableCellFormatter',
+  name: 'YesNoTableCellFormatter',
   implements: ['foam.u2.view.Formatter'],
   documentation: `Shows 'Y'/'N' for boolean props`,
 
