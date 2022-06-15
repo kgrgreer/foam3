@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.Email',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.ServiceProvider',
     'static foam.mlang.MLang.*'
@@ -63,23 +64,9 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
-        if ( oldObj != null ) {
-          // do not run the following checks if the user already exists
-          // and isn't changing their email address.
-          // assumption here is that if a user successfully registered,
-          // they would have run by this check already.
-          if ( SafetyUtil.equalsIgnoreCase(user.getEmail(), ((User)oldObj).getEmail()) ) {
-            return; 
-          }
-
-          // if user already exists, check for allowDuplicateEmail permission.
-          AuthService authService = (AuthService)x.get("auth");
-          if ( authService.checkUser(x, user, ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME) ) {
-            return;
-          }
-        }
-
-        if ( oldObj == null && spidGrantsDuplicateEmailPermission(x, spid) ) {
+        // check if the allowDuplicateEmail permission has been granted;
+        // if it has, then skip over the duplicate email check below.
+        if ( spidGrantsDuplicateEmailPermission(getX(), spid) ) {
           return;
         }
 
@@ -109,11 +96,25 @@ foam.CLASS({
       `,
       args: 'foam.core.X x, String spid',
       javaCode: `
+      // this is a hack that prevents a crash in CRUNCH.
+      // if this isn't here, NPEs will happen.
+      if ( x.get("crunchService") == null ) {
+        foam.nanos.logger.Loggers.logger(x).error("crunchService not present in x");
+        throw new AuthorizationException();
+      }
+      
       DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
       ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
       
-      return sp != null &&
-             sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
+      if ( sp == null ) {
+        return false;
+      }
+
+      // need to do setX() here; at this point we know that
+      // the crunchService is present.
+      sp.setX(x);
+
+      return sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
       `
     }
   ]

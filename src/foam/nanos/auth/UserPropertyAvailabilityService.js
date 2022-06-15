@@ -36,27 +36,29 @@ foam.CLASS({
     {
       name: 'checkAvailability',
       javaCode: `
-        if ( ! targetProperty.equals("userName") &&
-             ! targetProperty.equals("email")
+        if ( getX().get("crunchService") == null ||
+             ( ! targetProperty.equals("userName") &&
+               ! targetProperty.equals("email") )
         ) {
           throw new AuthorizationException();
         }
         
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(x);
         var spid = theme.getSpid();
-
         if ( "email".equals(targetProperty) &&
-             PreventDuplicateEmailAction.spidGrantsDuplicateEmailPermission(x, spid) ) {
-          return true;
+             PreventDuplicateEmailAction.spidGrantsDuplicateEmailPermission(getX(), spid) ) {
+            return true;
         }
 
-        DAO userUserDAO = ((DAO) getX().get("localUserUserDAO")).inX(x);
-        User user = (User) userUserDAO
-          .find(AND(
-            EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
-            EQ(User.SPID, spid)));
-
-        return user == null;
+        DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);
+        return
+          (
+            userDAO
+            .find(AND(
+              EQ("email".equals(targetProperty) ? User.EMAIL : User.USER_NAME, value),
+              EQ(User.TYPE, "User"),
+              EQ(User.SPID, spid)))
+          ) == null;
       `
     }
   ]
