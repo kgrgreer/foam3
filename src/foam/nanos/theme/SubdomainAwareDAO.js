@@ -12,7 +12,7 @@ foam.CLASS({
   documentation: 'DAO that adds value to subdomains property',
 
   javaImports: [
-    'javax.servlet.http.HttpServletRequest'
+    'foam.dao.DAO'
   ],
 
   methods: [
@@ -20,9 +20,10 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         if ( obj instanceof SubdomainAware ) {
-          if ( ((SubdomainAware) obj).getSubdomain().isEmpty() ) {
-            var host = x.get(HttpServletRequest.class).getServerName();
-            ((SubdomainAware) obj).setSubdomain(host);
+          if ( ( (SubdomainAware) obj).getSubdomain().isEmpty() ) {
+            var theme = ((Themes) x.get("themes")).findTheme(x);
+            var themedomain = ((DAO) x.get("themeDomainDAO")).find(theme);
+            if (themedomain != null) ((SubdomainAware) obj).setSubdomain(((ThemeDomain) themedomain).getSubdomain());
           }
         }
         return super.put_(x, obj);
