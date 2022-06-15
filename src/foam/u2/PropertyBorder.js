@@ -52,6 +52,7 @@
     ^label {
       line-height: 1;
       min-height: 1em;
+      width: 100%;
     }
     ^errorText {
       display: flex;
@@ -155,7 +156,7 @@
                 .style({ 'flex-grow': 1,'max-width': '100%' })
                 .enableClass('error', errorSlot.and(colorSlot));
             })).
-            start().add(prop.units$).end().
+            add(prop.units$).
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
