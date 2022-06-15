@@ -43,7 +43,8 @@ foam.CLASS({
   properties: [
     {
       name: 'dao_',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       class: 'String',
@@ -119,9 +120,9 @@ foam.CLASS({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
           } else {
-            if ( ! this.memento_ || this.memento_.str.length === 0 || this.currentMenu?.id == this.memento_.str )
-              this.pushMenu('');
             this.loginSuccess = !! this.subject;
+            // reload the client on loginsuccess in case login not called from controller
+            if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
       }

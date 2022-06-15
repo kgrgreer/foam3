@@ -604,7 +604,6 @@ foam.POM({
     { name: "crunch/CapabilityJunctionStatus",                                            flags: "js|java" },
     { name: "crunch/CapabilityIntercept",                                                 flags: "js|java" },
     { name: "crunch/CapabilityJunctionPayload",                                           flags: "js|java" },
-    { name: "crunch/lite/CapablePayloadStatusDAO",                                        flags: "js|java" },
     { name: "crunch/lite/Capable",                                                        flags: "js|java" },
     { name: "crunch/lite/CapableDAO",                                                     flags: "js|java" },
     { name: "crunch/lite/CapableAdapterDAO",                                              flags: "js|java" },
