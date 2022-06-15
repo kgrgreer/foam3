@@ -46,6 +46,7 @@ foam.CLASS({
 
   methods: [
     function installInClass(cls) {
+      const axiom = this;
       var oldCreate = cls.create;
 
       cls.getFacetOf = function(of, X) {
@@ -64,8 +65,14 @@ foam.CLASS({
 
         var id = ( pkg ? pkg + '.' : '' ) + name + this.name;
 
-        // The of[this.name] checks for an inner-class facet
-        return X.maybeLookup(id) || of[this.name] || this;
+        let facet = X.maybeLookup(id) || of[this.name] || this;
+        if ( axiom.inherit && facet === this ) {
+          const ofCls = foam.String.isInstance(of) ? X.maybeLookup(of) : of;
+          if ( ! ofCls || ! ofCls.model_.extends ) return facet;
+          if ( ofCls == foam.core.FObject ) return facet;
+          return cls.getFacetOf(X.maybeLookup(ofCls.model_.extends)) || facet;
+        }
+        return facet;
       };
 
       // ignoreFacets is set to true when called to prevent a second-level
@@ -85,6 +92,17 @@ foam.CLASS({
   ],
 
   properties: [
-    ['name', 'foam.pattern.Faceted']
+    ['name', 'foam.pattern.Faceted'],
+    {
+      class: 'Boolean',
+      name: 'inherit',
+      documentation: `
+        Setting this to true will enable climbing the inheritance tree when
+        searching for an implementation. This works well with views that
+        display a subset of an object's properties such as CitationView or
+        RowView as it may result in a generalized representation with missing
+        information.
+      `
+    }
   ]
 });

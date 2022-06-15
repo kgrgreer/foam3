@@ -8,6 +8,10 @@ foam.CLASS({
   package: 'foam.nanos.crunch.lite',
   name: 'CapableObjectData',
 
+  imports: [
+    'crunchController?'
+  ],
+
   properties: [
     {
       name: 'capablePayloads',
@@ -37,8 +41,7 @@ foam.CLASS({
       class: 'StringArray',
       name: 'capabilityIds',
       columnPermissionRequired: true,
-      section: 'capabilityInformation',
-      visibility: 'HIDDEN'
+      section: 'capabilityInformation'
     },
     {
       class: 'String',
@@ -70,6 +73,21 @@ foam.CLASS({
         return this.CapableAdapterDAO.create({
           capable: this
         });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'openCapableWizard',
+      code: async function () {
+        if ( ! this.crunchController ) return;
+        for ( const capabilityId of this.capabilityIds ) {
+          const seq = this.crunchController.createCapableWizardSequence(
+            undefined, this, capabilityId
+          );
+          await seq.execute();
+        }
       }
     }
   ]
