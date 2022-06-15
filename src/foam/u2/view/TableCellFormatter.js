@@ -285,10 +285,6 @@ foam.CLASS({
         })
         .add(value ? ' Y' : '-')
       .end();
-      e.tag({
-        class: 'foam.u2.CheckBox',
-        data: value
-      });
     }
   ]
 });
