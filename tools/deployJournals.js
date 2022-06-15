@@ -10,7 +10,7 @@ const path = path_.posix;
 
 require('../src/foam_node.js');
 
-var [argv, X, flags] = require('./processArgs.js')(
+var [argv, X, flags] = require('./processArgs.js') (
   '',
   { version: '', license: '', pom: 'pom' },
   { debug: true, java: false, web: true }
@@ -28,8 +28,10 @@ async function findJournals({ jrls, srcPath, jrlName }) {
     const walker = foam.util.filesystem.FileWalker.create();
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
-            if ( foam.poms[fileInfo.path] != undefined ) {
-              // skip directory
+            if ( fileInfo.path !== srcPath &&
+              foam.poms[foam.poms.findIndex(p => p.location == fileInfo.path)] != undefined ) {
+              walker.skip.pub();
+              return;
             }
             const extName = path_.extname(fileInfo.name);
             if ( extName !== '.jrl' ) continue;
@@ -48,20 +50,20 @@ async function findJournals({ jrls, srcPath, jrlName }) {
 
  foam.require(X.pom, false, true);
  const jrls = {};
- asyncForEach(Object.keys(foam.poms), async(p) => {
-   if ( foam.poms[p].journals ) {
-//     foam.poms[p].journals.forEach(async (j) => {
-//      await findJournals({jrls, srcPath: p, jrlName: j});
-//     })
+ await asyncForEach(foam.poms, async(p) => {
+   if ( !!p.pom.journals ) {
+     p.pom.journals.forEach(async (j) => {
+     var jArr =j.split('/');
+      jrls[jArr[jArr.length-1]] += fs_.readFileSync(p.location+'/'+j+'.jrl').toString();
+     })
    } else {
-   if ( foam.poms[p].projects ) return;
-     await findJournals({jrls, srcPath: p});
+   if ( p.pom.projects ) return;
+     await findJournals({jrls, srcPath: p.location});
    }
-  }).then(function() {
-    for ( const key in jrls ) {
-        fs_.writeFileSync(path_.join(outPath, key + '.0'), jrls[key]);
-    }
   });
+  for ( const key in jrls ) {
+      fs_.writeFileSync(path_.join(outPath, key + '.0'), jrls[key]);
+  }
  }
 
  async function asyncForEach(array, callback) {
