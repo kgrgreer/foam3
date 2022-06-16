@@ -9,16 +9,15 @@ foam.CLASS({
   name: 'TokenExpr',
 
   documentation: `
-    Mlang expr for getting the value of the token from current context
-    WARNING: Unlike most Mlang exprs, this expr is async and can only be used with other exprs that support async
+    Expr for getting the value of the token from current context
   `,
 
   properties: [
     { name: 'arg1' }
   ],
   methods: [
-    async function f(o) {
-      return await foam.CSS.returnTokenValue(this.arg1, o.cls_, o.__subContext__);
+    function f(o) {
+      return foam.CSS.returnTokenValue(this.arg1, o.cls_, o.__subContext__);
     }
   ]
 });
@@ -48,9 +47,9 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function f(o) {
-      const color = await this.arg1.f(o);
-      const amount = await this.arg2.f(o);
+    function f(o) {
+      const color = this.arg1.f(o);
+      const amount = this.arg2.f(o);
       return foam.Color.lighten(color, amount);
     }
   ]
@@ -91,10 +90,10 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function f(o) {
-      const color = await this.baseColor.f(o);
-      const dark = await this.darkColor.f(o);
-      const light = await this.lightColor.f(o);
+    function f(o) {
+      const color = this.baseColor.f(o);
+      const dark = this.darkColor.f(o);
+      const light = this.lightColor.f(o);
       return foam.Color.getBestForeground(color, dark, light);
     }
   ]
@@ -103,7 +102,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.css',
-  name: 'ColorExprBuilder',
+  name: 'TokenUtilsBuilder',
   requires: [
     'foam.css.LightenExpr',
     'foam.css.TokenExpr',

@@ -110,7 +110,6 @@ foam.CLASS({
         X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'test1', target: this.color }, this))
           .then(() => {
             if ( this.ctrl ) {
-              this.ctrl.themeChange.pub();
               return;
             }
             // Trying to imitate ApplicationController's fancy CSS live update

@@ -1170,6 +1170,6 @@ foam.POM({
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
     { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" },
     { name: "foam/u2/view/ClassCompleterView",                        flags: "web" },
-    { name: "foam/css/mlang",                                         flags: "web" }
+    { name: "foam/css/TokenUtils",                                    flags: "web" }
  ]
 });
