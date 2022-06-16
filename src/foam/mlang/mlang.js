@@ -3812,6 +3812,7 @@ foam.CLASS({
     {
       name: 'f',
       code: function(obj) {
+        if ( ! obj ) return null;
         return this.targetClass.id == obj.cls_.id;
       },
       javaCode: `
