@@ -9,6 +9,14 @@ foam.CLASS({
   name: 'DAOSaver',
   extends: 'foam.u2.wizard.data.ProxySaver',
 
+  documentation: `
+    The DAOSaver class is a ProxySaver that is used to save data to a DAO. The
+    user can optionally specify a path to the desired data object that they
+    wish to update.
+
+    (written by OpenAI)
+  `,
+
   properties: [
     {
       name: 'of',
