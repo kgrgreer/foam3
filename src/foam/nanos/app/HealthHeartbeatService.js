@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.app',
   name: 'HealthHeartbeatService',
 
-  documentation: 'Health check UDP broadcaster and listener.',
-  // see https://www.baeldung.com/java-broadcast-multicast
+  documentation: 'Health check broadcaster and listener.',
 
   implements: [
     'foam.core.ContextAgent',
@@ -68,6 +67,12 @@ foam.CLASS({
       class: 'String'
     },
     {
+      documentation: 'Evironments such as AWS do not support multicast',
+      name: 'useMulticast',
+      class: 'Boolean',
+      value: true
+    },
+    {
       name: 'timer',
       class: 'Object'
     },
@@ -119,11 +124,20 @@ foam.CLASS({
                 } else {
                   socket = new DatagramSocket(getSendPort());
                 }
-                DatagramPacket packet
-                  = new DatagramPacket(buf, buf.length, InetAddress.getByName(getMulticastAddress()), getPort());
-                socket.send(packet);
+                DatagramPacket[] packets = getPackets(x, data);
+                for ( DatagramPacket packet : packets ) {
+                  try {
+                    socket.send(packet);
+                  } catch ( IOException e ) {
+                    if ( "Host is down".equals(e.getMessage()) ) {
+                      ((Logger) x.get("logger")).debug("HealthHeartbeatService", "broadcasting", packet.getAddress()+":"+packet.getPort(), e.getMessage());
+                    } else {
+                      ((Logger) x.get("logger")).warning("HealthHeartbeatService", "broadcasting", packet.getAddress()+":"+packet.getPort(), data, e.getMessage());
+                    }
+                  }
+                }
               } catch ( IOException e ) {
-                Loggers.logger(x, this).warning("broadcaster", e);
+                ((Logger) x.get("logger")).error("HealthHeartbeatService", "broadcasting", data, e.getMessage(), e);
               } finally {
                 if ( socket != null ) socket.close();
                 pm.log(x);
@@ -140,7 +154,7 @@ foam.CLASS({
       name: 'execute',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
-      logger.info("listener", "start", getMulticastAddress(), getPort());
+      logger.info("listener", "start", "multicast", getUseMulticast(), getMulticastAddress(), getPort());
       byte[] buf = new byte[512];
       MulticastSocket socket = null;
       InetAddress group = null;
@@ -193,6 +207,19 @@ foam.CLASS({
           }
         }
       }
+      `
+    },
+    {
+      name: 'getPackets',
+      args: 'X x, String data',
+      javaType: 'java.net.DatagramPacket[]',
+      javaThrows: [ 'java.io.IOException' ],
+      javaCode: `
+        if ( getUseMulticast() ) {
+          byte[] buf = data.getBytes();
+          return new DatagramPacket[] { new DatagramPacket(buf, buf.length, InetAddress.getByName(getMulticastAddress()), getPort()) };
+        }
+        throw new UnsupportedOperationException("getSockets");
       `
     }
   ]

@@ -64,7 +64,7 @@ foam.CLASS({
             ((ArraySink) payloadDAO.select(new ArraySink())).getArray().stream()
             .filter(cp -> Arrays.stream(depIds).anyMatch(((CapabilityJunctionPayload) cp).getCapability()::equals))
             .forEach(cp -> {
-              payloadDAO.put((CapabilityJunctionPayload) cp);
+              payloadDAO.inX(agencyX).put((CapabilityJunctionPayload) cp);
             });
           }
         }, "Set capable payload status on put");
