@@ -46,7 +46,7 @@ foam.CLASS({
       javaCode: `
         FObject currentObjectInDao = getDelegate().find_(x, obj);
         Capable toPutCapableObj =  (Capable) obj;
-        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(x);
+        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(getX());
 
         CapabilityJunctionPayload[] toPutCapablePayloadArray =
           (CapabilityJunctionPayload[]) toPutCapableObj.getCapablePayloads();

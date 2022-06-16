@@ -37,9 +37,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         agency.submit(x, (agencyX) -> {
-          CapableAdapterDAO tempPayloadDAO = (CapableAdapterDAO) agencyX.get("capablePayloadDAO");
-          Capable capableTarget = tempPayloadDAO.getCapable();
-          var payloadDAO = (DAO) capableTarget.getCapablePayloadDAO(agencyX);
+          var payloadDAO = (DAO) agencyX.get("capablePayloadDAO");
 
           CapabilityJunctionPayload payload = (CapabilityJunctionPayload) obj;
 
@@ -48,6 +46,7 @@ foam.CLASS({
           try {
             payload.validate(agencyX);
           } catch ( IllegalStateException e ) {
+            payload.setStatus(ACTION_REQUIRED);
             return;
           }
 
@@ -65,7 +64,7 @@ foam.CLASS({
             ((ArraySink) payloadDAO.select(new ArraySink())).getArray().stream()
             .filter(cp -> Arrays.stream(depIds).anyMatch(((CapabilityJunctionPayload) cp).getCapability()::equals))
             .forEach(cp -> {
-              payloadDAO.put((CapabilityJunctionPayload) cp);
+              payloadDAO.inX(agencyX).put((CapabilityJunctionPayload) cp);
             });
           }
         }, "Set capable payload status on put");

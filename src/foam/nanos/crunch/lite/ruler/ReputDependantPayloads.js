@@ -41,7 +41,7 @@ foam.CLASS({
             // reputting all the payloads, since there will never be a large
             // amount and it doesn't create journal writes.
             for ( CapabilityJunctionPayload currentPayload : payloads ) {
-              payloadDAO.put(currentPayload);
+              payloadDAO.inX(x).put(currentPayload);
             }
           }
         }, "Reput dependent payloads");

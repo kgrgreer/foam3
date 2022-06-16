@@ -35,7 +35,7 @@ p({
     import foam.nanos.notification.email.NullEmailService;
     import foam.nanos.notification.email.ProxyEmailService;;
     return new ProxyEmailService.Builder(x)
-      .setDelegate(new NullEmailService.Builder(x).build())
+      .setDelegate((ProxyEmailService) x.get("smtpEmailService"))
       .build();
   """
 })
@@ -103,6 +103,15 @@ p({
   "name":"SMTPConfig",
   "lazy": false,
   "service":{"class":"foam.nanos.notification.email.SMTPConfig"}
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"smtpEmailService",
+  lazy: false,
+  service:{
+    class:"foam.nanos.notification.email.SMTPEmailService"
+  }
 })
 
 p({

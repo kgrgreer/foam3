@@ -67,7 +67,15 @@ foam.CLASS({
             package:    'foam.nanos.client',
             name:       'Client',
             exports:    [],
-            properties: []
+            constants: { eagerClients_: [] },
+            properties: [
+            ],
+            methods: [
+              function init() {
+                // Wake up any eager clients
+                this.EAGER_CLIENTS_.forEach(c => this[c]);
+              }
+            ]
           };
 
           var references = [];
@@ -104,8 +112,10 @@ foam.CLASS({
             query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
           }
 
+          let nspec = foam.nanos.boot.NSpec;
+
           self.nSpecDAO.where(query).select(
-            foam.mlang.Expressions.create().PROJECTION(foam.nanos.boot.NSpec.NAME, foam.nanos.boot.NSpec.CLIENT))
+            foam.mlang.Expressions.create().PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
             .then(p => {
               foam.dao.ArrayDAO.create({array: p.array})
               .select({
@@ -120,6 +130,9 @@ foam.CLASS({
                     } catch (err) {
                       console.error('invalid nspec.client', spec.client, err);
                     }
+
+                    if ( ! spec.lazyClient )
+                      client.constants.eagerClients_.push(spec.name);
 
                     //references = references.concat(foam.json.references(self.__context__, json));
 
