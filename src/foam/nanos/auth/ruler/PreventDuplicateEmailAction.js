@@ -96,8 +96,9 @@ foam.CLASS({
       `,
       args: 'foam.core.X x, String spid',
       javaCode: `
-      // this is a hack that prevents a crash in CRUNCH.
-      // if this isn't here, NPEs will happen.
+      // the X must contain a crunchService otherwise an NPE
+      // might happen when we try to check the ServiceProvider
+      // for the permission
       if ( x.get("crunchService") == null ) {
         foam.nanos.logger.Loggers.logger(x).error("crunchService not present in x");
         throw new AuthorizationException();
@@ -110,8 +111,10 @@ foam.CLASS({
         return false;
       }
 
-      // need to do setX() here; at this point we know that
-      // the crunchService is present.
+      // need to do setX() here. at this point we know that
+      // the crunchService is present, but it might not be
+      // present in the ServiceProvider's x. this avoids
+      // a crash
       sp.setX(x);
 
       return sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
