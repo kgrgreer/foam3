@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'SMTPEmailService',
 
   implements: [
+    'foam.nanos.NanoService',
     'foam.nanos.notification.email.EmailService'
   ],
 
@@ -44,7 +45,6 @@ foam.CLASS({
   ],
 
   javaCode: `
-
     private class SMTPAuthenticator extends javax.mail.Authenticator {
       protected String username_;
       protected String password_;
@@ -63,19 +63,47 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'host',
+      value: '127.0.0.1'
+    },
+    {
+      class: 'String',
+      name: 'port',
+      value: '587'
+    },
+    {
+      class: 'String',
+      name: 'username'
+    },
+    {
+      class: 'String',
+      name: 'password'
+    },
+    {
+      class: 'Boolean',
+      name: 'authenticate',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'starttls',
+      value: true
+    },
+    {
       name: 'session_',
       javaType: 'Session',
       class: 'Object',
-      javaFactory:
-      `
-        SMTPConfig smtpConfig = (SMTPConfig) getX().get("SMTPConfig");
+      visibility: 'HIDDEN',
+      transient: true,
+      javaFactory: `
         Properties props = new Properties();
-        props.setProperty("mail.smtp.auth", smtpConfig.getAuthenticate() ? "true" : "false");
-        props.setProperty("mail.smtp.starttls.enable", smtpConfig.getStarttls() ? "true" : "false");
-        props.setProperty("mail.smtp.host", smtpConfig.getHost());
-        props.setProperty("mail.smtp.port", smtpConfig.getPort());
-        if ( smtpConfig.getAuthenticate() ) {
-          return Session.getInstance(props, new SMTPAuthenticator(smtpConfig.getUsername(), smtpConfig.getPassword()));
+        props.setProperty("mail.smtp.auth", getAuthenticate() ? "true" : "false");
+        props.setProperty("mail.smtp.starttls.enable", getStarttls() ? "true" : "false");
+        props.setProperty("mail.smtp.host", getHost());
+        props.setProperty("mail.smtp.port", getPort());
+        if ( getAuthenticate() ) {
+          return Session.getInstance(props, new SMTPAuthenticator(getUsername(), getPassword()));
         }
         return Session.getInstance(props);
       `
@@ -84,16 +112,16 @@ foam.CLASS({
       class: 'Object',
       javaType: 'Transport',
       name: 'transport_',
-      javaFactory:
-      `
+      visibility: 'HIDDEN',
+      transient: true,
+      javaFactory: `
         Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
-        SMTPConfig smtpConfig = (SMTPConfig) getX().get("SMTPConfig");
         Transport transport = null;
         try {
           omLogger.log(this.getClass().getSimpleName(), "transport", "connecting");
           transport = getSession_().getTransport("smtp");
-          transport.connect(smtpConfig.getUsername(), smtpConfig.getPassword());
+          transport.connect(getUsername(), getPassword());
           logger.info("transport", "connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
         } catch ( Exception e ) {
@@ -124,6 +152,30 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'start',
+      javaCode: `
+        // SMTPConfig migration support
+        if ( USERNAME.isDefaultValue(this) &&
+             PASSWORD.isDefaultValue(this) ) {
+          SMTPConfig cfg = (SMTPConfig) getX().get("SMTPConfig");
+          if ( cfg != null &&
+               ! SMTPConfig.USERNAME.isDefaultValue(cfg) &&
+               ! SMTPConfig.PASSWORD.isDefaultValue(cfg) ) {
+            Loggers.logger(getX(), this).info("initializing from SMTPConfig");
+            copyFrom(cfg);
+          }
+        }
+      `,
+    },
+    {
+      name: 'reload',
+      javaCode: `
+        Loggers.logger(getX(), this).info("reload");
+        clearTransport_();
+        clearSession_();
+      `
+    },
+    {
       name: 'createMimeMessage',
       javaType: 'MimeMessage',
       documentation: `Create a MimeMessage from the passed EmailMessage`,
@@ -133,8 +185,7 @@ foam.CLASS({
           type: 'foam.nanos.notification.email.EmailMessage'
         }
       ],
-      javaCode:
-      `
+      javaCode: `
         Logger logger = Loggers.logger(getX(), this);
         try {
           MimeMessage message = new MimeMessage(getSession_());
