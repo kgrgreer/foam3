@@ -7,8 +7,13 @@
 foam.CLASS({
   package: 'foam.nanos.auth.token',
   name: 'Token',
+  extends: 'foam.nanos.crunch.lite.BaseCapable',
 
   documentation: 'Represents a one-time access code linked to a specific User',
+
+  javaImports: [
+    'java.util.UUID'
+  ],
 
   properties: [
     {
@@ -34,6 +39,7 @@ foam.CLASS({
       class: 'String',
       name: 'data',
       documentation: 'The token data',
+      javaFactory: `return UUID.randomUUID().toString();`,
       tableWidth: 350
     },
     {
