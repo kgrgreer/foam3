@@ -2513,7 +2513,7 @@ public IsInstanceOf(foam.core.ClassInfo targetClass) {
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.mlang.Expr',
+      javaType: 'foam.mlang.Expr',
       name: 'propExpr'
     }
   ],
@@ -2526,7 +2526,7 @@ public IsInstanceOf(foam.core.ClassInfo targetClass) {
     },
     {
       name: 'f',
-      code: function f(obj) { return this.targetClass.isInstance(obj); },
+      code: function f(obj) { return this.propExpr == null || this.propExpr == undefined ? this.targetClass.isInstance(obj) : this.targetClass.isInstance(this.propExpr.f(obj)); },
       javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
     {

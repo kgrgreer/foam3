@@ -52,6 +52,7 @@
     ^label {
       line-height: 1;
       min-height: 1em;
+      width: 100%;
     }
     ^errorText {
       display: flex;
@@ -144,7 +145,10 @@
         show(visibilitySlot).
         add(this.slot(function(reserveLabelSpace, prop$label){
           let el = this.E().addClasses([this.myClass('label'), 'p-semiBold']);
-          return prop$label ? el.add(prop.label$) : ( reserveLabelSpace ? el : undefined )
+          return prop$label ? el.callIfElse(prop.labelFormatter,
+            function() { prop.labelFormatter.call(this, data) },
+            function() { this.add(prop.label$); }
+          ) : ( reserveLabelSpace ? el : undefined )
         })).
         start().
           addClass(this.myClass('propHolder')).
@@ -155,7 +159,7 @@
                 .style({ 'flex-grow': 1,'max-width': '100%' })
                 .enableClass('error', errorSlot.and(colorSlot));
             })).
-            start().add(prop.units$).end().
+            add(prop.units$).
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
