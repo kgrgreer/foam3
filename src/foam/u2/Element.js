@@ -286,10 +286,6 @@ foam.CLASS({
       return true;
     },
 
-    function validateClass(cls) {
-      // TODO
-    },
-
     function validateAttributeName(name) {
       // TODO
     },
@@ -2663,16 +2659,16 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      expression: function(label, labelFormatter) {
+      expression: function(label, checkboxLabelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
           label: this.help,
-          labelFormatter: labelFormatter
+          labelFormatter: checkboxLabelFormatter
         };
       }
     },
     {
-      name: 'labelFormatter'
+      name: 'checkboxLabelFormatter'
     }
   ]
 });
