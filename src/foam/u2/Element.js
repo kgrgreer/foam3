@@ -286,10 +286,6 @@ foam.CLASS({
       return true;
     },
 
-    function validateClass(cls) {
-      // TODO
-    },
-
     function validateAttributeName(name) {
       // TODO
     },
