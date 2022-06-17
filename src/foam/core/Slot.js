@@ -22,6 +22,7 @@ foam.CLASS({
   requires: [
     'foam.core.internal.And',
     'foam.core.internal.Or',
+    'foam.core.internal.Not',
     'foam.core.internal.SubSlot'
   ],
 
@@ -171,6 +172,10 @@ foam.CLASS({
 
     function or(other) {
       return this.Or.create({ a$: this, b$: other }).output$;
+    },
+
+    function not() {
+      return this.Not.create({ a$: this }).output$;
     },
 
     /**
@@ -398,6 +403,21 @@ foam.CLASS({
       name: 'output',
       expression: function (a, b) {
         return a && b;
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'Not',
+
+  properties: [
+    'a',
+    {
+      name: 'output',
+      expression: function(a) {
+        return !! (! a) ;
       }
     }
   ]
