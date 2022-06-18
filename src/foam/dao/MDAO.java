@@ -300,4 +300,8 @@ public class MDAO
     newMDAO.setState(state);
     return newMDAO;
   }
+
+  public String toString() {
+    return "MDAO()";
+  }
 }
