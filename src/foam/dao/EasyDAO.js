@@ -74,7 +74,8 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAwareDAO',
     'foam.nanos.crunch.box.CrunchClientBox',
     'foam.nanos.logger.Logger',
-    'foam.nanos.logger.LoggingDAO'
+    'foam.nanos.logger.LoggingDAO',
+    'foam.nanos.theme.SubdomainAwareDAO'
   ],
 
   imports: [ 'document', 'log' ],
@@ -215,6 +216,12 @@ foam.CLASS({
               .setDelegate(delegate)
               .build();
           }
+        }
+
+        if ( getSubdomainAware() ) {
+          delegate = new foam.nanos.theme.SubdomainAwareDAO.Builder(getX())
+            .setDelegate(delegate)
+            .build();
         }
 
         if ( getServiceProviderAware() ) {
@@ -741,6 +748,10 @@ foam.CLASS({
       name: 'serviceProviderAware',
       class: 'Boolean',
       javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'subdomainAware',
+      class: 'Boolean'
     },
     {
       /* deprecated */

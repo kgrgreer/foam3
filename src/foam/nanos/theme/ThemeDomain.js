@@ -36,6 +36,10 @@ foam.CLASS({
             this.add(value);
           });
       },
+    },
+    {
+      class: 'String',
+      name: 'subdomain'
     }
   ]
 });
