@@ -29,7 +29,8 @@ async function findJournals({ jrls, srcPath, jrlName }) {
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
             if ( fileInfo.path !== srcPath &&
-              foam.poms[foam.poms.findIndex(p => p.location == fileInfo.path)] != undefined ) {
+              foam.poms[foam.poms.findIndex(p => p.location == fileInfo.path)] != undefined
+            ) {
               walker.skip.pub();
               return;
             }
