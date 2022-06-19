@@ -29,7 +29,8 @@ async function findJournals({ jrls, srcPath }) {
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
             if ( fileInfo.path !== srcPath &&
-              foam.poms[foam.poms.findIndex(p => p.location == fileInfo.path)] != undefined ) {
+              foam.poms[foam.poms.findIndex(p => p.location == fileInfo.path)] != undefined
+            ) {
               walker.skip.pub();
               return;
             }
@@ -52,9 +53,8 @@ async function findJournals({ jrls, srcPath }) {
  await asyncForEach(foam.poms, async(p) => {
    if ( !!p.pom.journals ) {
      p.pom.journals.forEach(async (j) => {
-     var jArr =j.split('/');
-     if ( ! jrls[jArr[jArr.length-1]] ) jrls[jArr[jArr.length-1]] = '';
-      jrls[jArr[jArr.length-1]] += fs_.readFileSync(p.location+'/'+j+'.jrl').toString();
+       if ( ! jrls[path_.basename(j)] ) jrls[path_.basename(j)] = '';
+       jrls[path_.basename(j)] += fs_.readFileSync(path_.join(p.location, j+'.jrl')).toString();
      })
    } else {
    if ( p.pom.projects ) return;
