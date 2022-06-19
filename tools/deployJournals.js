@@ -53,8 +53,7 @@ async function findJournals({ jrls, srcPath, jrlName }) {
  await asyncForEach(foam.poms, async(p) => {
    if ( !!p.pom.journals ) {
      p.pom.journals.forEach(async (j) => {
-     var jArr =j.split('/');
-      jrls[jArr[jArr.length-1]] += fs_.readFileSync(p.location+'/'+j+'.jrl').toString();
+     jrls[path_.basename(j)] += fs_.readFileSync(path_.join(p.location, j+'.jrl')).toString();
      })
    } else {
    if ( p.pom.projects ) return;
