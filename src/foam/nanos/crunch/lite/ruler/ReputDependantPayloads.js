@@ -17,12 +17,15 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.nanos.crunch.Capability',
+    'foam.nanos.crunch.CrunchService',
     'static foam.nanos.crunch.CapabilityJunctionStatus.*',
     'foam.nanos.crunch.lite.Capable',
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.lite.CapableAdapterDAO',
     'foam.dao.DAO',
+    'java.util.Arrays',
     'java.util.List',
+    'foam.core.XLocator',
     'foam.dao.ArraySink',
   ],
 
@@ -33,16 +36,20 @@ foam.CLASS({
         agency.submit(x, new ContextAwareAgent() {
           @Override
           public void execute(X x) {
-            CapableAdapterDAO payloadDAO = (CapableAdapterDAO) x.get("capablePayloadDAO");
+            CapabilityJunctionPayload old = (CapabilityJunctionPayload) x.get("OLD");
+            CapabilityJunctionPayload payload = (CapabilityJunctionPayload) obj;
+            if ( old != null && old.getStatus() == payload.getStatus() ) return;
 
-            List<CapabilityJunctionPayload> payloads = ((ArraySink) payloadDAO.select(new ArraySink())).getArray();
+            var payloadDAO = (DAO) getX().get("capablePayloadDAO");
 
-            // Instead of querying the prerequisite DAO, take a shortcut of
-            // reputting all the payloads, since there will never be a large
-            // amount and it doesn't create journal writes.
-            for ( CapabilityJunctionPayload currentPayload : payloads ) {
-              payloadDAO.put(currentPayload);
-            }
+            var crunchService = (CrunchService) x.get("crunchService");
+            var depIds = crunchService.getDependentIds(XLocator.get(), payload.getCapability());
+
+            ((ArraySink) payloadDAO.select(new ArraySink())).getArray().stream()
+              .filter(cp -> Arrays.stream(depIds).anyMatch(((CapabilityJunctionPayload) cp).getCapability()::equals))
+              .forEach(cp -> {
+                payloadDAO.inX(x).put((CapabilityJunctionPayload) cp);
+              });
           }
         }, "Reput dependent payloads");
       `,
