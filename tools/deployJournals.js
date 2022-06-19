@@ -24,7 +24,7 @@ if ( ! fs_.existsSync(outPath) ) {
     fs_.mkdirSync(outPath, { recursive: true });
 }
 
-async function findJournals({ jrls, srcPath, jrlName }) {
+async function findJournals({ jrls, srcPath }) {
     const walker = foam.util.filesystem.FileWalker.create();
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
@@ -35,7 +35,6 @@ async function findJournals({ jrls, srcPath, jrlName }) {
             }
             const extName = path_.extname(fileInfo.name);
             if ( extName !== '.jrl' ) continue;
-            if ( jrlName && fileInfo.name != jrlName ) continue;
             const fullPath = fileInfo.fullPath;
             const baseName = path_.basename(fileInfo.name, extName);
             if ( ! jrls[baseName] ) jrls[baseName] = '';
@@ -54,6 +53,7 @@ async function findJournals({ jrls, srcPath, jrlName }) {
    if ( !!p.pom.journals ) {
      p.pom.journals.forEach(async (j) => {
      var jArr =j.split('/');
+     if ( ! jrls[jArr[jArr.length-1]] ) jrls[jArr[jArr.length-1]] = '';
       jrls[jArr[jArr.length-1]] += fs_.readFileSync(p.location+'/'+j+'.jrl').toString();
      })
    } else {
