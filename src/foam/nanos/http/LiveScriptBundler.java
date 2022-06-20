@@ -38,7 +38,7 @@ public class LiveScriptBundler
   protected boolean scheduled_;
 
   // Configuration
-  protected static final String JS_BUILD_PATH = "./foam3/tools/genjs.js";
+  protected static final String JS_BUILD_PATH = "./node_modules/foam3/tools/genjs.js";
   protected static final String GENJAVA_SRC_PATH = "build/src/java";
   protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
   protected static final String GENJAVA_OUTPUT_PATH = "tools/classes.js";
@@ -80,37 +80,7 @@ public class LiveScriptBundler
       // Create list of files.js locations
       var filesPaths = new HashSet<String>();
 
-      // Walk through the project directory to find files.js files
-      Files.walkFileTree(Paths.get(path_), new SimpleFileVisitor<Path>() {
-        @Override
-        public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-          path = Paths.get(path_).relativize(path);
-          Path sourcePath = null;
-
-          if ( ! attr.isRegularFile() ) {
-            return CONTINUE;
-          }
-
-          // Find any file named pom.js
-          String filename = path.getFileName().toString();
-          if ( filename.equals("pom.js") ) {
-            // Locate the closest `src` folder if one exists
-            for ( int i = path.getNameCount()-1; i >= 0; i-- ) {
-              String dirname = path.getName(i).getFileName().toString();
-              if ( dirname.equals("src") ) {
-                sourcePath = path.subpath(0, i+1);
-                break;
-              }
-            }
-
-            // Add this file if it was found inside a `src` folder
-            if ( sourcePath != null ) {
-              filesPaths.add(sourcePath.toString());
-            }
-          }
-          return CONTINUE;
-        }
-      });
+      filesPaths.add("");
 
       doRebuildJavascript();
 
@@ -120,6 +90,7 @@ public class LiveScriptBundler
           .path(Paths.get(path_, currentFilesPath))
           .listener(event -> {
             if ( event.path().getFileName().toString().endsWith(".js") ) {
+              if ( event.path().getFileName().toString().endsWith("-bin.js") ) return;
               if ( event.eventType() == MODIFY ) { modified_.add(event.path().toString()); }
               if ( event.eventType() == DELETE ) { removed_.add(event.path().toString()); }
               scheduleRebuild();
