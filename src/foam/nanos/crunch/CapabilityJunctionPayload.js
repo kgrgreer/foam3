@@ -55,6 +55,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasSafeStatus',
+      documentation: 'We get capable payloads sent to us, we want to confirm client calls with real status.',
       // TODO: Check where this should be used in UCJ rules
       transient: true
     },
