@@ -9,18 +9,26 @@ foam.INTERFACE({
   name: 'EmailWebhook',
   documentation: 'Interface for marking an object that contains the externalData map',
 
-  methods: [
+  properties: [
     {
-      name: 'getEmail',
-      type: 'String'
+      name: 'templateId',
+      class: 'String'
     },
     {
-      name: 'getFirstName',
-      type: 'String'
+      name: 'email',
+      class: 'String'
     },
     {
-      name: 'getLastName',
-      type: 'String'
+      name: 'firstName',
+      class: 'String'
+    },
+    {
+      name: 'lastName',
+      class: 'String'
+    },
+    {
+      name: 'data',
+      class: 'Map'
     }
   ]
 });
