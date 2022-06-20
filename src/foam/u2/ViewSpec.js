@@ -111,10 +111,20 @@ foam.CLASS({
         return value;
       }
     ],
-    ['view', { class: 'foam.u2.view.MapView' }],
-    [ 'adapt', function(_, spec, prop) {
-      return foam.String.isInstance(spec) ? { class: spec } : spec ;
-    } ],
+    {
+      name: 'view',
+      value: { class: 'foam.u2.view.MapView' }
+    },
+    {
+      name: 'adapt',
+      value: function(_, spec, prop) {
+        if ( foam.String.isInstance(spec) ) {
+          spec = spec.trim();
+          return spec.startsWith('{') ? JSON.parse(spec) : { class: spec };
+        }
+        return spec;
+      }
+    },
     [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
     [ 'displayWidth', 80 ]
     /*

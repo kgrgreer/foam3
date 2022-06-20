@@ -347,6 +347,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'sideNav_'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Language',
       name: 'defaultLanguage',
@@ -516,35 +520,7 @@ foam.CLASS({
           // Work around to ensure wrapCSS is exported into context before
           // calling AppStyles which needs theme replacement
           self.AppStyles.create();
-          this
-            .addClass(this.myClass())
-            .tag(this.NavigationController, {
-              topNav$: this.topNavigation_$,
-              mainView: {
-                class: 'foam.u2.stack.DesktopStackView',
-                data: this.stack,
-                showActions: false,
-                nodeName: 'main'
-              },
-              footer$: this.footerView_$,
-              sideNav: {
-                class: 'foam.u2.view.ResponsiveAltView',
-                views: [
-                  [
-                    {
-                      class: 'foam.nanos.u2.navigation.ApplicationSideNav'
-                    },
-                    ['XS']
-                  ],
-                  [
-                    {
-                      class: this.VerticalMenu
-                    },
-                    ['MD']
-                  ]
-                ]
-              }
-            });
+          self.addMacroLayout();
         });
       });
     },
@@ -850,6 +826,22 @@ foam.CLASS({
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },
 
+    function addMacroLayout() {
+      this
+        .addClass(this.myClass())
+        .tag(this.NavigationController, {
+          topNav$: this.topNavigation_$,
+          mainView: {
+            class: 'foam.u2.stack.DesktopStackView',
+            data: this.stack,
+            showActions: false,
+            nodeName: 'main'
+          },
+          footer$: this.footerView_$,
+          sideNav$: this.sideNav_$
+        });
+    },
+
     function subToNotifications() {
       this.__subContext__.myNotificationDAO
       .on.put.sub(this.displayToastMessage.bind(this));
@@ -901,6 +893,8 @@ foam.CLASS({
       if ( this.theme.footerView ) {
         this.footerView_ = this.theme.footerView;
       }
+      if ( this.theme.sideNav )
+        this.sideNav_ = this.theme.sideNav;
     },
     {
       name: 'updateDisplayWidth',
