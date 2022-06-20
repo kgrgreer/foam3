@@ -27,7 +27,6 @@ public class FScriptParser
 {
   PropertyInfo prop_;
   protected List expressions;
-  protected List declaredFields;
 
   public FScriptParser(PropertyInfo property) {
     prop_ = property;
@@ -35,7 +34,6 @@ public class FScriptParser
     List<PropertyInfo>         properties  = property.getClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     expressions = new ArrayList();
-    declaredFields = new ArrayList();
     Map props = new HashMap<String, PropertyInfo>();
 
     props.put("thisValue", property);
@@ -63,14 +61,13 @@ public class FScriptParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-//    declaredFields = new ArrayList();
     return getGrammar().parse(ps, x, "");
   }
 
   private Grammar getGrammar() {
 
     Grammar grammar = new Grammar();
-    grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions), new Alt(declaredFields)));
+    grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
 
     grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
 
@@ -345,8 +342,7 @@ public class FScriptParser
     grammar.addAction("LET", (val, x) -> {
       Object[] vals = (Object[]) val;
       if (vals.length < 2 ) return null;
-      declaredFields.add(new Literal((String) vals[0], ( vals[1] instanceof Expr ) ?
-        vals[1] : new foam.mlang.Constant (vals[1])));
+      x.set((String) vals[0], vals[1]);
       return val;
     });
 
@@ -403,6 +399,7 @@ public class FScriptParser
     grammar.addSymbol("VALUE", new Alt(
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
+      grammar.sym("VAR"),
       grammar.sym("STRING"),
       new Literal("true", true),
       new Literal("false", false),
@@ -568,6 +565,19 @@ public class FScriptParser
       var ret = compactToString(val);
       if (ret.equals("len")) return null;
       return ret;
+    });
+
+    grammar.addSymbol("VAR", new Repeat(
+      grammar.sym("CHAR"), 1
+    ));
+    grammar.addAction("VAR", (val, x) -> {
+      var ret = compactToString(val);
+      if (ret.equals("len")) return Action.NO_PARSE;
+      try {
+        return new foam.mlang.Constant (prop_.getClassInfo().getObjClass().getDeclaredField(ret).get(null));
+      } catch (Exception e) {
+      }
+      return x.get(ret) == null ? Action.NO_PARSE : x.get(ret);
     });
 
     grammar.addSymbol("CHAR", new Alt(

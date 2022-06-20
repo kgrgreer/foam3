@@ -82,6 +82,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"cssTokenOverrideService",
   "serve":true,
+  "lazyClient": false,
   "authenticate":false,
   "client":"{ \"class\": \"foam.nanos.theme.customisation.CSSTokenOverrideService\" }"
 })

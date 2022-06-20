@@ -50,16 +50,15 @@ foam.CLASS({
     {
       name: 'updateSummary',
       isFramed: true,
-      code: async function() {   
+      code: async function() {
         let newSummary;
-        
-        if ( this.data && this.data.toSummary ){
-          var toSummary = this.data.toSummary();
 
-          newSummary = toSummary instanceof Promise 
-            ? await toSummary
-            : toSummary;
+        if ( this.data && this.data.toSummary ) {
+          var summary = this.getSummary(this.data);
 
+          newSummary = summary instanceof Promise
+            ? await summary
+            : summary;
         } else {
           newSummary = undefined;
         }
@@ -77,6 +76,10 @@ foam.CLASS({
         .addClass(this.myClass('row'))
         .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
         .add(this.summary$);
+    },
+
+    function getSummary(data) {
+      return data.toSummary();
     }
   ]
 });

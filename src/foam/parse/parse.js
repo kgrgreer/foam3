@@ -736,6 +736,14 @@ foam.CLASS({
   name: 'ParserWithAction',
   extends: 'foam.parse.ParserDecorator',
 
+  constants: [
+    {
+      type: 'Object',
+      name: 'NO_PARSE',
+      factory: function() { return {}; }
+    }
+  ],
+
   properties: [
     'action'
   ],
@@ -743,9 +751,11 @@ foam.CLASS({
   methods: [
     function parse(ps, obj) {
       ps = ps.apply(this.p, obj);
-      return ps ?
-        ps.setValue(this.action(ps.value)) :
-        undefined;
+      if ( !!! ps ) return undefined;
+      var ret = this.action(ps.value);
+      return ret === foam.parse.ParserWithAction.NO_PARSE ?
+        undefined :
+        ps.setValue(ret);
     }
   ]
 });

@@ -294,15 +294,15 @@ foam.CLASS({
           return;
         }
         intercept.resend();
-      })
+      });
 
       p.catch(err => {
         console.error(err); // do not remove
-        if (err.data.id == "foam.core.ClientRuntimeException" && err.data.exception.cause_) {
-          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message)
+        if ( err && err.data && err.data.id == 'foam.core.ClientRuntimeException' && err.data.exception.cause_ ) {
+          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message);
         }
         intercept.reject(err.data);
-      })
+      });
 
       return p;
     },

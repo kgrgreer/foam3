@@ -204,12 +204,13 @@ foam.CLASS({
     sps.setString("address instanceof foam.nanos.auth.Address");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
 
-//TODO: under construction
-//    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
-//    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
-//
-//    sps.setString("let testVar2 = address.regionId.len; address.regionId.len==testVar2");
-//    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
+    sps.setString("SYSTEM_USER_ID==1");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "SYSTEM_USER_ID==1");
+    sps.setString("let testVar = 4+7; address.regionId.len<testVar");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
+
+    sps.setString("let newVar = address.regionId.len; address.regionId.len==newVar");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
 
 
     var sprtCnfg = new foam.nanos.app.SupportConfig();

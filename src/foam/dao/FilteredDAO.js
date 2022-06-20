@@ -28,7 +28,7 @@ foam.CLASS({
       code: function find_(x, key) {
         var predicate = this.predicate;
         return this.delegate.find_(x, key).then(function(o) {
-          return predicate.f(o) ? o : null;
+          return ( o && predicate.f(o) ) ? o : null;
         });
       },
       javaCode: `foam.core.FObject ret = super.find_(x, id);

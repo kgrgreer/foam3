@@ -1018,6 +1018,12 @@ foam.CLASS({
       name: 'label',
       expression: function(name) { return foam.String.labelize(name); }
     },
+    {
+      name: 'labelFormatter',
+      value: function(_, prop) {
+        this.add(prop.label$);
+      }
+    },
     { class: 'String', name: 'shortName' }
   ]
 });

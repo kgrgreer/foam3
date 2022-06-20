@@ -1,8 +1,8 @@
 p({
   "class":"foam.nanos.script.Script",
-  "id":"Test Email",
+  "id":"Send Email - Directly",
   "enabled":true,
-  "description":"",
+  "description":"Send Email explicitily with an SMTP Email Service",
   "server":true,
   "status":1,
   "code": """
@@ -23,8 +23,8 @@ p({
               .setStatus(Status.UNSENT)
               .build();
 
-    // NOTE: this relies on a valid SMTPConfig in the system.
-    emailService = new foam.nanos.notification.email.SMTPEmailService(x);
+    // NOTE: this relies on a valid smtpEmailService in the system.
+    emailService = (EmailService) x.get("smtpEmailService");
     try {
       message = emailService.sendEmail(x, message);
       print("sent, please check your email");
@@ -36,7 +36,8 @@ p({
 
 p({
   class:"foam.nanos.script.Script",
-  id:"Send Email with Attachment",
+  id:"Send Email with Attachment - Directly",
+  description:"Send Email with Attachment explicitily with the SMTP Email Service",
   code:"""
     // Generate Email with Attachment;
     import foam.nanos.auth.User;
@@ -71,8 +72,8 @@ p({
 
     message.setAttachments(new String[] { fileId });
 
-    // NOTE: this relies on a valid SMTPConfig in the system.
-    emailService = new foam.nanos.notification.email.SMTPEmailService(x);
+    // NOTE: this relies on a valid smtpEmailService in the system.
+    emailService = (EmailService) x.get("smtpEmailService");
     try {
       message = emailService.sendEmail(x, message);
       print("sent, please check your email");
@@ -86,7 +87,6 @@ p({
   id:"EmailFolderAgent",
   description:"EmailFolderAgent",
   code:"""
-    import foam.nanos.notification.email.EmailFolderAgent;
-    new EmailFolderAgent(x).execute(x);
+    new foam.nanos.notification.email.EmailFolderAgent(x).execute(x);
   """
 })

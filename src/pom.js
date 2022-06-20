@@ -970,6 +970,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/Loader",                             flags: "web" },
     { name: "foam/u2/wizard/data/Saver",                              flags: "web" },
     { name: "foam/u2/wizard/data/Canceler",                           flags: "web" },
+    { name: "foam/u2/wizard/data/DAOSaver",                           flags: "web" },
     { name: "foam/u2/wizard/data/PrerequisiteLoader",                 flags: "web" },
     { name: "foam/u2/wizard/wao/WAO",                                 flags: "web" },
     { name: "foam/u2/wizard/wao/SplitWAO",                            flags: "web" },

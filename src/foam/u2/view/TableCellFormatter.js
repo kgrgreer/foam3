@@ -271,6 +271,43 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'YesNoTableCellFormatter',
+  implements: ['foam.u2.view.Formatter'],
+  documentation: `Shows 'Y'/'N' for boolean props`,
+
+  methods: [
+    function format(e, value, obj, axiom) {
+      e.start()
+        .call(function() {
+          if ( value ) { e.style({color: 'green'}); }
+        })
+        .add(value ? ' Y' : '-')
+      .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'BooleanTableCellFormatterRefinement',
+  refines: 'foam.core.Boolean',
+
+  properties: [
+    {
+      class: 'foam.u2.view.TableCellFormatter',
+      name: 'tableCellFormatter',
+      value: function(value) {
+        this.tag({
+          class: 'foam.u2.CheckBox',
+          data: value
+        });
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2.view',

@@ -74,7 +74,8 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAwareDAO',
     'foam.nanos.crunch.box.CrunchClientBox',
     'foam.nanos.logger.Logger',
-    'foam.nanos.logger.LoggingDAO'
+    'foam.nanos.logger.LoggingDAO',
+    'foam.nanos.theme.SubdomainAwareDAO'
   ],
 
   imports: [ 'document', 'log' ],
@@ -217,6 +218,12 @@ foam.CLASS({
           }
         }
 
+        if ( getSubdomainAware() ) {
+          delegate = new foam.nanos.theme.SubdomainAwareDAO.Builder(getX())
+            .setDelegate(delegate)
+            .build();
+        }
+
         if ( getServiceProviderAware() ) {
           delegate = new foam.nanos.auth.ServiceProviderAwareDAO.Builder(getX())
             .setDelegate(delegate)
@@ -241,7 +248,7 @@ foam.CLASS({
         delegate = getOuterDAO(delegate);
 
         if ( getDecorator() != null ) {
-          if ( ! ( getDecorator() instanceof ProxyDAO ) ) {
+          if ( ! ( getDecorator() instanceof ProxyDAO) ) {
             logger.error(getName(), "delegateDAO", getDecorator(), "not instanceof ProxyDAO");
             System.exit(1);
           }
@@ -741,6 +748,10 @@ foam.CLASS({
       name: 'serviceProviderAware',
       class: 'Boolean',
       javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'subdomainAware',
+      class: 'Boolean'
     },
     {
       /* deprecated */
@@ -1276,16 +1287,17 @@ model from which to test ServiceProvider ID (spid)`,
       `
     },
     {
-      name: 'toString',
+      name: 'append',
+      args: 'StringBuilder sb',
       javaCode: `
-        var sb = new StringBuilder();
         sb.append("EasyDAO");
         if ( of_ != null ) {
           sb.append("(of: ")
             .append(of_.getId())
             .append(")");
+        } else {
+          sb.append("()");
         }
-        return sb.toString();
       `
     }
   ]
