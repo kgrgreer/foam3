@@ -119,6 +119,7 @@ foam.CLASS({
       name: 'adapt',
       value: function(_, spec, prop) {
         if ( foam.String.isInstance(spec) ) {
+          spec = spec.trim();
           return spec.startsWith('{') ? JSON.parse(spec) : { class: spec };
         }
         return spec;
