@@ -433,6 +433,7 @@ foam.POM({
     { name: "dig/bench/DIGBenchmark",                                                     flags: "js|java" },
     { name: "dig/bench/DistributedDIGBenchmarkRunner",                                    flags: "js|java" },
     { name: "dig/ExternalDataAware",                                                      flags: "js|java" },
+    { name: "dig/EmailWebhook",                                                           flags: "js|java" },
     { name: "dig/drivers/DigFormatDriver",                                                flags: "js|java" },
     { name: "dig/drivers/DigCsvDriver",                                                   flags: "js|java" },
     { name: "dig/drivers/DigHtmlDriver",                                                  flags: "js|java" },
