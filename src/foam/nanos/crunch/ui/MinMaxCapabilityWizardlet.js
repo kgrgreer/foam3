@@ -102,7 +102,7 @@ foam.CLASS({
           // to cascade hiding all descendent wizardlets
           // TODO: investigate why this is still needed,
           // setting data to empty array should have made isAvailable automatically evaluate to false
-          let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") | (x.name == "AlternateFlowAgent"));
+          let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") || (x.name == "AlternateFlowAgent"));
           this.choiceWizardlets.forEach(cw => {
             for ( let af of alternateFlow ) {
               if ( af.spec.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
