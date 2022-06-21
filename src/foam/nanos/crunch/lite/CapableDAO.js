@@ -101,7 +101,7 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          toPutCapablePayloadDAO.put(currentPayload);
+          toPutCapablePayloadDAO.inX(x).put(currentPayload);
         }
 
         if ( 

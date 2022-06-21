@@ -109,7 +109,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'MACROS', 
+      name: 'MACROS',
       value: [
         'customCSS',
         'logoBackgroundColour',
@@ -614,7 +614,7 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
 
@@ -634,7 +634,7 @@ foam.CLASS({
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
       return val ? css.replace(
@@ -682,13 +682,13 @@ foam.CLASS({
         this.buildingStack = false;
         return;
       }
-      /**  Used for data management menus that are constructed on the fly 
-       * required as those menus are not put in menuDAO and hence fail the 
+      /**  Used for data management menus that are constructed on the fly
+       * required as those menus are not put in menuDAO and hence fail the
        * find call in pushMenu_.
-       * This approach allows any generated menus to be permissioned/loaded as long as 
+       * This approach allows any generated menus to be permissioned/loaded as long as
        * they are a child of a real menuDAO menu
        * **/
-      if ( idCheck.includes('/') ) 
+      if ( idCheck.includes('/') )
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
@@ -717,7 +717,7 @@ foam.CLASS({
         return;
       }
       const preserveMem = this.buildingStack || (
-        typeof menu === 'string' ? 
+        typeof menu === 'string' ?
         foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
         foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
       );
@@ -735,7 +735,7 @@ foam.CLASS({
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
-        if ( menu ) break; 
+        if ( menu ) break;
       };
       return menu;
     },
@@ -812,6 +812,20 @@ foam.CLASS({
       this.subToNotifications();
 
       this.loginSuccess = true;
+      var capDAO = this.__subContext__.capabilityDAO;
+      var spid = await capDAO.find(this.user.spid);
+      if ( spid.generalCapability != '' ) {
+        var ucj = await this.__subContext__.userCapabilityJunctionDAO.find(
+          this.AND(
+            this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.user.id),
+            this.EQ(this.UserCapabilityJunction.TARGET_ID, spid.generalCapability)
+          )
+        );
+
+        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+        }
+      }
 
       this.fetchTheme();
       this.initLayout.resolve();
