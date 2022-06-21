@@ -16,8 +16,10 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'java.util.List',
     'static foam.mlang.MLang.*'
   ],
@@ -26,19 +28,23 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserUserDAO");
-        Sink sink = new ArraySink();
-        sink = userDAO
-          .where(OR(
+        DAO userDAO = ((DAO) x.get("localUserUserDAO")).where(
+          OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
-            EQ(User.USER_NAME, identifier)))
-          .limit(2).select(sink);
+            EQ(User.USER_NAME, identifier)));
 
-        List list = ((ArraySink) sink).getArray();
-        if ( list.size() != 1 ) {
-          return null;
-        }
-        return (User) list.get(0);
+        // try to find a user under the theme spid
+        List users = ((ArraySink) userDAO
+          .where(EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()))
+          .limit(2).select(new ArraySink())).getArray();
+        if ( users.size() > 1 ) return null;
+        if ( users.size() == 1 ) return (User) users.get(0);
+        
+        // try to find a user under the super spid
+        // since the localuseruserdao here should be filtered by spid == themeSpid || spid == superspid
+        users = ((ArraySink) userDAO.limit(2).select(new ArraySink())).getArray();
+        if ( users.size() != 1 ) return null;
+        return (User) users.get(0);
       `
     }
   ]
