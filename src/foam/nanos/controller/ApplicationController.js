@@ -109,7 +109,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'MACROS', 
+      name: 'MACROS',
       value: [
         'customCSS',
         'logoBackgroundColour',
@@ -347,6 +347,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'sideNav_'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Language',
       name: 'defaultLanguage',
@@ -516,35 +520,7 @@ foam.CLASS({
           // Work around to ensure wrapCSS is exported into context before
           // calling AppStyles which needs theme replacement
           self.AppStyles.create();
-          this
-            .addClass(this.myClass())
-            .tag(this.NavigationController, {
-              topNav$: this.topNavigation_$,
-              mainView: {
-                class: 'foam.u2.stack.DesktopStackView',
-                data: this.stack,
-                showActions: false,
-                nodeName: 'main'
-              },
-              footer$: this.footerView_$,
-              sideNav: {
-                class: 'foam.u2.view.ResponsiveAltView',
-                views: [
-                  [
-                    {
-                      class: 'foam.nanos.u2.navigation.ApplicationSideNav'
-                    },
-                    ['XS']
-                  ],
-                  [
-                    {
-                      class: this.VerticalMenu
-                    },
-                    ['MD']
-                  ]
-                ]
-              }
-            });
+          self.addMacroLayout();
         });
       });
     },
@@ -638,7 +614,7 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
 
@@ -658,7 +634,7 @@ foam.CLASS({
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
       return val ? css.replace(
@@ -706,13 +682,13 @@ foam.CLASS({
         this.buildingStack = false;
         return;
       }
-      /**  Used for data management menus that are constructed on the fly 
-       * required as those menus are not put in menuDAO and hence fail the 
+      /**  Used for data management menus that are constructed on the fly
+       * required as those menus are not put in menuDAO and hence fail the
        * find call in pushMenu_.
-       * This approach allows any generated menus to be permissioned/loaded as long as 
+       * This approach allows any generated menus to be permissioned/loaded as long as
        * they are a child of a real menuDAO menu
        * **/
-      if ( idCheck.includes('/') ) 
+      if ( idCheck.includes('/') )
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
@@ -741,7 +717,7 @@ foam.CLASS({
         return;
       }
       const preserveMem = this.buildingStack || (
-        typeof menu === 'string' ? 
+        typeof menu === 'string' ?
         foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
         foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
       );
@@ -759,7 +735,7 @@ foam.CLASS({
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
-        if ( menu ) break; 
+        if ( menu ) break;
       };
       return menu;
     },
@@ -836,6 +812,20 @@ foam.CLASS({
       this.subToNotifications();
 
       this.loginSuccess = true;
+      var capDAO = this.__subContext__.capabilityDAO;
+      var spid = await capDAO.find(this.user.spid);
+      if ( spid.generalCapability != '' ) {
+        var ucj = await this.__subContext__.userCapabilityJunctionDAO.find(
+          this.AND(
+            this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.user.id),
+            this.EQ(this.UserCapabilityJunction.TARGET_ID, spid.generalCapability)
+          )
+        );
+
+        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+        }
+      }
 
       this.fetchTheme();
       this.initLayout.resolve();
@@ -848,6 +838,22 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    function addMacroLayout() {
+      this
+        .addClass(this.myClass())
+        .tag(this.NavigationController, {
+          topNav$: this.topNavigation_$,
+          mainView: {
+            class: 'foam.u2.stack.DesktopStackView',
+            data: this.stack,
+            showActions: false,
+            nodeName: 'main'
+          },
+          footer$: this.footerView_$,
+          sideNav$: this.sideNav_$
+        });
     },
 
     function subToNotifications() {
@@ -901,6 +907,8 @@ foam.CLASS({
       if ( this.theme.footerView ) {
         this.footerView_ = this.theme.footerView;
       }
+      if ( this.theme.sideNav )
+        this.sideNav_ = this.theme.sideNav;
     },
     {
       name: 'updateDisplayWidth',

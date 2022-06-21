@@ -46,7 +46,6 @@ import foam.nanos.alarming.AlarmReason;
 import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.partner.intuit.EmailWebhook;
 
 public class HTTPDigestSink extends AbstractSink {
 
@@ -118,20 +117,23 @@ public class HTTPDigestSink extends AbstractSink {
       int code = conn.getResponseCode();
       if ( code != HttpServletResponse.SC_OK ) {
         if ( code == HttpServletResponse.SC_BAD_REQUEST ) { // error 400
-          EmailWebhook ewh = (EmailWebhook) fobj ;
-          DAO alarmDAO = (DAO) getX().get("alarmDAO");
-          String emailAddress = ewh.getEmail();
-          String name = "Unable to send request information email to : " + emailAddress;
-          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
-          if ( alarm != null && alarm.getIsActive() ) { return; }
-          alarm = new Alarm.Builder(getX())
-            .setName(ewh.getFirstName() + " "+ ewh.getLastName())
-            .setSeverity(LogLevel.ERROR)
-            .setIsActive(true)
-            .setReason(AlarmReason.UNSPECIFIED )
-            .setNote(emailAddress + " user did not receive the email")
-            .build();
-          alarmDAO.put(alarm);
+          if ( fobj instanceof EmailWebhook ) {
+            EmailWebhook ewh = (EmailWebhook) fobj ;
+            DAO alarmDAO = (DAO) getX().get("alarmDAO");
+            String emailAddress = ewh.getEmail();
+            String name = "Unable to send request information email to : " + emailAddress;
+            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+            if ( alarm != null && alarm.getIsActive() ) { return; }
+            alarm = new Alarm.Builder(getX())
+              .setName(ewh.getFirstName() + " "+ ewh.getLastName())
+              .setSeverity(LogLevel.ERROR)
+              .setIsActive(true)
+              .setReason(AlarmReason.UNSPECIFIED )
+              .setNote(emailAddress + " user did not receive the email")
+              .build();
+            alarmDAO.put(alarm);
+          } else
+            throw new RuntimeException("Http server did not return 400.");
         } else
         throw new RuntimeException("Http server did not return 200.");
       }

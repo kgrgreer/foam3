@@ -25,6 +25,12 @@ foam.CLASS({
       name: 'value',
       class: 'String'
     }
+  ],
+
+  methods: [
+    function toString () {
+      return this.value;
+    }
   ]
 });
 

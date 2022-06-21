@@ -196,6 +196,7 @@ foam.CLASS({
       }
 
       this
+        .startContext({ controllerMode: 'VIEW' })
         .addClass(this.data.myClass('td'))
         .style({ flex: this.slot(function(colWidth) {
             return colWidth ? `1 0 ${colWidth}px` : `1 0 ${this.data.MIN_COLUMN_WIDTH_FALLBACK}px`;
@@ -208,7 +209,8 @@ foam.CLASS({
             objReturned,
             prop
           );
-        });
+        })
+        .endContext();
     }
   ]
 });
