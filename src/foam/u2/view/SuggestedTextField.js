@@ -62,7 +62,7 @@
       name: 'autocompleter',
       factory: function() {
         if ( ! this.daoKey ) console.error('No daokey');
-        return this.Autocompleter.create({dao: this.__subContext__[this.daoKey]})
+        return this.Autocompleter.create({ dao: this.__subContext__[this.daoKey] })
       }
     },
     {
