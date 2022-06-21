@@ -58,7 +58,7 @@ foam.CLASS({
 
   methods: [
     async function save(data) {
-      const dataToPut = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
+      const dataToPut = this.path ? this.path.f(data) : data;
       return await this.dao.put(dataToPut);
     }
   ]

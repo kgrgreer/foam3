@@ -9,7 +9,10 @@ foam.CLASS({
   // Find a better name
   name: 'ApplicationSideNav',
   extends: 'foam.u2.View',
-  documentation: 'Combined VerticalMenu and account Navigation Components, to be used for mobile displays',
+  documentation: `
+    Combined AppLogo, VerticalMenu and account Navigation Components
+    Can be used as the only navigation component or in conjuction with a topbar 
+  `,
 
   imports: [
     'menuDAO'
@@ -31,10 +34,9 @@ foam.CLASS({
       justify-content: center;
       height: 100%
     }
-    ^bottom-container {
+    ^sticky-container {
       align-content: flex-start;
       background: /*%WHITE%*/ #ffffff;
-      bottom: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -42,6 +44,12 @@ foam.CLASS({
       position: sticky;
       width: 100%;
       z-index: 10;
+    }
+    ^bottom-container {
+      bottom: 0;
+    }
+    ^top-container {
+      top: 0;
     }
     ^divider {
       border-top: 2px solid /*%GREY4%*/;
@@ -53,25 +61,47 @@ foam.CLASS({
     ^menu-container {
       flex: 1;
     }
+    ^logo {
+      flex: 1;
+    }
     ^menu-container.foam-nanos-menu-VerticalMenu {
+      padding: 0px;
       border-right: none;
+    }
+    ^padding.foam-nanos-menu-VerticalMenu {
+      padding-top: 16px;
     }
   `,
   properties: [
     {
       class: 'Boolean',
       name: 'hasNotifictionMenuPermission'
+    },
+    {
+      name: 'showLogo',
+      class: 'Boolean'
     }
   ],
   methods: [
     function render() {
+      var self = this;
       this.checkNotificationAccess();
       this.addClass()
+        .add(this.slot(function(showLogo) {
+          return showLogo ? self.E().addClasses([this.myClass('sticky-container'), this.myClass('top-container')])
+          .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
+            .addClass(self.myClass('logo'))
+            .on('click', () => {
+              self.pushMenu('', true);
+            })
+          .end() : null;
+        }))
         .start(this.VerticalMenu)
           .addClass(this.myClass('menu-container'))
+          .enableClass(this.myClass('padding'), this.showLogo$.not())
         .end()
         .start()
-          .addClass(this.myClass('bottom-container'))
+          .addClasses([this.myClass('sticky-container'), this.myClass('bottom-container')])
           // TODO: make this enableClass based on scroll pos
           .addClass(this.myClass('divider'))
           .start(this.NotificationMenuItem, { showText: true })

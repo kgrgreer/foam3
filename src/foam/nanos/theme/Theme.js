@@ -322,7 +322,7 @@ foam.CLASS({
       class: 'String',
       name: 'topNavigation',
       documentation: 'A custom top nav view to use.',
-      value: 'foam.nanos.u2.navigation.TopNavigation',
+      value: 'foam.nanos.u2.navigation.ResponsiveTopNav',
       displayWidth: 45,
       section: 'navigation',
       writePermissionRequired: true
@@ -332,6 +332,21 @@ foam.CLASS({
       name: 'footerView',
       documentation: 'A custom footer view to use.',
       value: 'foam.nanos.u2.navigation.FooterView',
+      displayWidth: 45,
+      section: 'navigation',
+      writePermissionRequired: true
+    },
+    {
+      class: 'String',
+      name: 'sideNav',
+      documentation: 'A custom footer view to use.',
+      value: `{
+        "class": "foam.u2.view.ResponsiveAltView", 
+        "views": [
+          [{"class": "foam.nanos.u2.navigation.ApplicationSideNav"}, ["XS"]],
+          [{"class": "foam.nanos.menu.VerticalMenu" }, ["MD"] ]
+        ]
+      }`,
       displayWidth: 45,
       section: 'navigation',
       writePermissionRequired: true
