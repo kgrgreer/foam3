@@ -5,7 +5,7 @@
  */
 
  foam.ENUM({
-    package: 'foam.nanos.crunch',
+    package: 'foam.core',
     name: 'OptionalBoolean',
 
     values: [
