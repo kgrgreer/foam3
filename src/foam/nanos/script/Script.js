@@ -405,7 +405,7 @@ foam.CLASS({
 
         try {
           Thread.currentThread().setPriority(getPriority());
-
+          setLastRun(new Date());
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
@@ -427,7 +427,6 @@ foam.CLASS({
           logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
           throw thrown;
         } finally {
-          setLastRun(new Date());
           setLastDuration(pm.getTime());
           ps.flush();
           setOutput(baos.toString());
