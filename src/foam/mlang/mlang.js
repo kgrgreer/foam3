@@ -3164,31 +3164,33 @@ foam.CLASS({
     },
     {
       name: 'values',
-      factory: function() { return {}; }
+      class: 'Map',
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.HashMap();'
     }
   ],
 
   methods: [
-    function putInGroup_(key, obj) {
-      var group = this.groups.hasOwnProperty(key) && this.groups[key];
-      if ( ! group ) {
-        group = this.arg2.clone();
-        this.groups[key] = group;
-        this.groupKeys.push(key);
-      }
-      group.put(obj);
-    },
-
-    function put(obj, sub) {
-      var value = this.expr.f(obj);
-      if ( Array.isArray(value) ) {
-        throw 'Unique doesn\'t Array values.';
-      } else {
-        if ( ! this.values.hasOwnProperty(value) ) {
-          this.values[value] = obj;
-          this.delegate.put(obj);
+    {
+      name: 'put',
+      code: function put(obj, sub) {
+        var value = this.expr.f(obj);
+        if ( Array.isArray(value) ) {
+          throw 'Unique does not support Array values.';
+        } else {
+          if ( ! this.values.hasOwnProperty(value) ) {
+            this.values[value] = obj;
+            this.delegate.put(obj);
+          }
         }
+      },
+      javaCode: `
+      var value = getExpr().f(obj);
+      if ( getValues().get(value) == null ) {
+        getValues().put(value, obj);
+        getDelegate().put(obj, sub);
       }
+      `
     },
 
     function eof() { },
