@@ -10,13 +10,13 @@
 
     values: [
       {
-        name: 'TRUE',
-        label: 'True',
+        name: 'FALSE',
+        label: 'False',
         ordinal: 0
       },
       {
-        name: 'FALSE',
-        label: 'False',
+        name: 'TRUE',
+        label: 'True',
         ordinal: 1
       },
       {
