@@ -550,6 +550,7 @@ foam.POM({
     { name: "crunch/CrunchService",                                                       flags: "js|java" },
     { name: "crunch/ClientCrunchService",                                                 flags: "js" },
     { name: "crunch/ReputDependentUCJs",                                                  flags: "js|java" },
+    { name: "crunch/OptionalBoolean",                                                     flags: "js|java" },
     { name: "crunch/predicate/CapabilityIsStatus",                                        flags: "js|java" },
     { name: "crunch/predicate/CapabilityPrerequisitesGranted",                            flags: "js|java" },
     { name: "crunch/predicate/StatusChangedTo",                                           flags: "js|java" },
