@@ -815,12 +815,7 @@ foam.CLASS({
       var capDAO = this.__subContext__.capabilityDAO;
       var spid = await capDAO.find(this.user.spid);
       if ( spid.generalCapability != '' ) {
-        var ucj = await this.__subContext__.userCapabilityJunctionDAO.find(
-          this.AND(
-            this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.user.id),
-            this.EQ(this.UserCapabilityJunction.TARGET_ID, spid.generalCapability)
-          )
-        );
+        var ucj = await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
 
         if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
           await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();

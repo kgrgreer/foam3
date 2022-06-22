@@ -73,6 +73,7 @@ foam.POM({
     { name: "foam/core/Validator",                                    flags: "js|java" },
     { name: "foam/core/ValidationException",                          flags: "js|java" },
     { name: "foam/core/ClientRuntimeException",                       flags: "js|java" },
+    { name: "foam/core/OptionalBoolean",                              flags: "js|java" },
     { name: "foam/parse/ErrorReportingPStream",                       flags: "js" },
     { name: "foam/parse/TrapPStream",                                 flags: "js" },
     { name: "foam/parse/InvalidPStream",                              flags: "js" },

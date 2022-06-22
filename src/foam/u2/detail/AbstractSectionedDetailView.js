@@ -60,8 +60,8 @@ foam.CLASS({
         included in the detail view.
       `,
       factory: null,
-      adapt: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return newValue;
+      adapt: function(o, newValue, p) {
+        if ( Array.isArray(newValue) ) return foam.core.FObjectArray.ADAPT.value.call(this, o, newValue, p);
         if ( typeof newValue !== 'object' ) throw new Error('You must set propertyWhitelist to an array of properties or a map from names to overrides encoded as an object.');
         return Object.entries(newValue).reduce((acc, [propertyName, overrides]) => {
           var axiom = this.of.getAxiomByName(propertyName);
