@@ -3186,8 +3186,8 @@ foam.CLASS({
       },
       javaCode: `
       var value = getExpr().f(obj);
-      if ( getValues().get(value) == null ) {
-        getValues().put(value, obj);
+      if ( ! getValues().containsKey(value) ) {
+        getValues().put(value, null);
         getDelegate().put(obj, sub);
       }
       `
