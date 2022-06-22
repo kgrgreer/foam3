@@ -271,13 +271,10 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        if ( ! getAuthenticate() ) return;
-
-        String permission = "service." + getId();
-        AuthService auth = (AuthService) x.get("auth");
-  
-        if ( ! auth.check(x, permission) ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+        try {
+          checkAuthorization(x);
+        } catch ( AuthorizationException e ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied", "service." + getId());
           throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
         }
       `

@@ -31,8 +31,8 @@ foam.CLASS({
         if ( script.getStatus() == ScriptStatus.SCHEDULED ) {
           if ( script.canRun(x) ) {
             script.setStatus(ScriptStatus.RUNNING);
-            script = (Script) getDelegate().put_(x, script).fclone();
-            runScript(x, script);
+            script = (Script) getDelegate().put_(x, script);
+            runScript(x, (Script) script.fclone());
           } else {
             script.setStatus(ScriptStatus.UNSCHEDULED);
             script = (Script) getDelegate().put_(x, script);
