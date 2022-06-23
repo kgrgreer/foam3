@@ -41,6 +41,10 @@ foam.CLASS({
         UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x1000, 32);
         UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x10000, 32);
         UIDGeneratorTest_CheckGeneratedUIDsSimilarity(auidgen, 0x100000, 32);
+
+        // Set minLength tests
+        UIDGeneratorTest_SetMinLength(auidgen, 18);
+        UIDGeneratorTest_SetMinLength(nuidgen, 10);
       `
     },
     {
@@ -127,6 +131,15 @@ foam.CLASS({
         var id2 = uidgen.getNextString();
         var score = calcSimilarityScore(id1, id2);
         test(score <= threshold, "[startSeqNo: " + startSeqNo + "] Should not generated very similar unique ids [" + id1 + ", " + id2 + "].");
+      `
+    },
+    {
+      name: 'UIDGeneratorTest_SetMinLength',
+      args: 'UIDGenerator uidgen, Integer minLength',
+      javaCode: `
+        uidgen.setMinLength(minLength);
+        var id = String.valueOf(uidgen.getNext(null));
+        test(id.length() >= minLength, uidgen.getClass().getSimpleName() + " should generate id longer than minLength: " + minLength);
       `
     }
   ]

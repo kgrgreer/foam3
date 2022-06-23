@@ -81,7 +81,7 @@ foam.CLASS({
       javaCode: `
         // At least 2 bits sequence number
         initMaxSeqNo();
-        id.append(toHexString(seqNo_.incrementAndGet(), 2));
+        id.append(toHexString(seqNo_.incrementAndGet(), 2 + Math.max(0, getMinLength() - 7)));
       `
     },
     {
