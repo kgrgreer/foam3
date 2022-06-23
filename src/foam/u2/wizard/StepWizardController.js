@@ -286,8 +286,10 @@ foam.CLASS({
       // wizardlets that may exist in between this one and the next.
       // If it exists, load the next wizardlet
       // TODO: Just load next wizardlet instead of loading all in the beginning
+
+      // this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
       var start = this.wizardPosition.wizardletIndex;
-      const nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
+      let nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
       var end = nextScreen ?
         nextScreen.wizardletIndex : this.wizardlets.length;
       var p = Promise.resolve();
@@ -301,6 +303,11 @@ foam.CLASS({
           this.submitted = true;
           return true;
         }
+
+        if ( nextScreen == null ){
+          nextScreen = this.nextScreen;
+        }
+
         this.wizardPosition = nextScreen;
         return false;
       });

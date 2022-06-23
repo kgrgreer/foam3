@@ -34,8 +34,26 @@ foam.CLASS({
         return [];
       },
       javaFactory: 'return new String[0];',
+      adapt: function(_, n){
+        console.log("hit selectedData.adapt");
+
+        if ( typeof n === "string" ){
+          return [
+            n
+          ];
+        }
+
+        if ( typeof n === "number"){
+          return [
+            n.toString()
+          ];       
+        }
+
+        return n;
+      },
       postSet: function (o, n) {
         if ( ! foam.util.equals(o, n) ) {
+          this.selectedDataStable = null;
           this.selectedDataStable = n;
         }
       }
