@@ -30,7 +30,7 @@ foam.CLASS({
     {
       name: 'arg1',
       adapt: function(_, n) {
-        if ( typeof n === 'string' ) {
+        if ( foam.String.isInstance(n) ) {
           return this.Constant.create({ value: n });
         }
         return n;
@@ -39,7 +39,7 @@ foam.CLASS({
     {
       name: 'arg2',
       adapt: function(_, n) {
-        if ( typeof n === 'number' ) {
+        if ( foam.Number.isInstance(n) ) {
           return this.Constant.create({ value: n });
         }
         return n;
@@ -64,7 +64,7 @@ foam.CLASS({
     {
       name: 'baseColor',
       adapt: function(_, n) {
-        if ( typeof n === 'string' ) {
+        if ( foam.String.isInstance(n) ) {
           return this.Constant.create({ value: n });
         }
         return n;
@@ -73,7 +73,7 @@ foam.CLASS({
     {
       name: 'darkColor',
       adapt: function(_, n) {
-        if ( typeof n === 'string' ) {
+        if ( foam.String.isInstance(n) ) {
           return this.Constant.create({ value: n });
         }
         return n;
@@ -82,7 +82,7 @@ foam.CLASS({
     {
       name: 'lightColor',
       adapt: function(_, n) {
-        if ( typeof n === 'string' ) {
+        if ( foam.String.isInstance(n) ) {
           return this.Constant.create({ value: n });
         }
         return n;
@@ -104,9 +104,9 @@ foam.CLASS({
   package: 'foam.css',
   name: 'TokenUtilsBuilder',
   requires: [
+    'foam.css.FindForegroundExpr',
     'foam.css.LightenExpr',
-    'foam.css.TokenExpr',
-    'foam.css.FindForegroundExpr'
+    'foam.css.TokenExpr'
   ],
   methods: [
     function TOKEN(name) { return this.TokenExpr.create({ arg1: name }); },
