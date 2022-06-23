@@ -77,13 +77,10 @@ foam.CLASS({
       name: 'uIDGenerator',
       javaType: 'foam.util.UIDGenerator',
       javaFactory: `
-        var generator =
-          getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo
-            ? new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo())
-            : new AUIDGenerator(getX(), getSalt());
-
-        generator.setMinLength(getMinLength());
-        return generator;
+        if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
+          return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
+        }
+        return new AUIDGenerator.Builder(getX()).setSalt(getSalt()).setMinLength(getMinLength()).build();
       `,
       hidden: true,
     },
