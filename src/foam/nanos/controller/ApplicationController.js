@@ -167,6 +167,8 @@ foam.CLASS({
     { name: 'GROUP_NULL_ERR',          message: 'Group was null' },
     { name: 'LOOK_AND_FEEL_NOT_FOUND', message: 'Could not fetch look and feel object' },
     { name: 'LANGUAGE_FETCH_ERR',      message: 'Error fetching language' },
+    { name: 'GC_ERROR',                message: 'Please complete general requirements to login' },
+    { name: 'GC_ERROR_TITLE',          message: 'Missing Login Requirement'}
   ],
 
   css: `
@@ -796,15 +798,8 @@ foam.CLASS({
       this.subToNotifications();
 
       this.loginSuccess = true;
-      var capDAO = this.__subContext__.capabilityDAO;
-      var spid = await capDAO.find(this.user.spid);
-      if ( spid.generalCapability != '' ) {
-        var ucj = await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
-
-        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
-        }
-      }
+      let check = await this.checkGeneralCapability();
+      if ( ! check ) return;
 
       this.fetchTheme();
       this.initLayout.resolve();
@@ -817,6 +812,35 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    async function checkGeneralCapability() {
+      var capDAO = this.__subContext__.capabilityDAO;
+      var spid = await capDAO.find(this.user.spid);
+      if ( spid.generalCapability != '' ) {
+        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
+        var ucj = await ucjCheck();
+
+        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+          let postCheck = await ucjCheck();
+          if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
+            this.add(foam.u2.dialog.ConfirmationModal.create({
+              title: this.GC_ERROR_TITLE,
+              modalStyle: 'DESTRUCTIVE',
+              primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
+              closeable: false,
+              showCancel: false
+            }, this)
+              .start()
+              .style({ 'min-width': '25vw'})
+              .add(this.GC_ERROR)
+              .end());
+            return false;
+          }
+        }
+      }
+      return true;
     },
 
     function addMacroLayout() {
