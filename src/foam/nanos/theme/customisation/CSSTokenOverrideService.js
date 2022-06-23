@@ -69,6 +69,7 @@ foam.CLASS({
       return this.initLatch;
     },
     function getTokenValue(tokenString, cls, ctx) {
+      if ( ! tokenString.startsWith('$') ) return tokenString;
       var self = this;
       if ( this.cached_ ) {
         let themeID = ctx?.theme?.id || this.theme?.id || '';
@@ -79,7 +80,7 @@ foam.CLASS({
            * Wildcarding:
            * ThemeID = current theme
            * tokenName = tokenString with $ removed, eg. "token1"
-           * fullString = cls.id + tokenString eg. "foam.somePackage.someClass.token1"
+           * fullString = cls.id + tokenName eg. "foam.somePackage.someClass.token1"
            */
           [themeID, fullString],
           [themeID, tokenName],

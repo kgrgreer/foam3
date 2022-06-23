@@ -205,6 +205,7 @@ foam.POM({
     { name: "foam/u2/LoadingSpinner",                                 flags: "web" },
     { name: "foam/u2/ListCreateController",                           flags: "web" },
     { name: "foam/u2/CSSToken",                                       flags: "web|java" },
+    { name: "foam/u2/ColorToken",                                     flags: "web|java" },
     { name: "foam/u2/CSSTokens",                                      flags: "web" },
     { name: "foam/u2/view/SearchViewWrapper",                         flags: "web" },
     { name: "foam/u2/view/StringArrayRowView",                        flags: "web" },
