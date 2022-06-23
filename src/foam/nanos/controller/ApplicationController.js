@@ -806,7 +806,6 @@ foam.CLASS({
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */) {
-        this.stack.push({ class: 'foam.u2.View' });
         this.window.onpopstate();
       } else {
         this.pushMenu('');
