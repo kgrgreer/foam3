@@ -17,46 +17,31 @@ foam.CLASS({
   css: `
     ^test1 {
       background: $test1;
-      color: $foreground1;
+      color: $test1$foreground;
     }
     ^test2 {
-      background: $test2;
-      color: $foreground2;
+      background: $test1$hover;
+      color: $test1$hover$foreground;
     }
     ^myButton.foam-u2-ActionView {
       background: $test1;
-      color: $foreground1;
+      color: $test1$foreground;
     }
     ^myButton.foam-u2-ActionView:hover:not(:disabled) {
-      background: $test2;
-      color: $foreground2;
+      background: $test1$hover;
+      color: $test1$hover$foreground;
     }
     ^myButton.foam-u2-ActionView:focus {
-      background: $test3;
-      color: $foreground2;
+      background: $test1$active;
+      color: $test1$active$foreground;
       border-color: $test1;
     }
   `,
   cssTokens: [
     {
+      class: 'foam.u2.ColorToken',
       name: 'test1',
       value: 'red'
-    },
-    {
-      name: 'test2',
-      value: function(e) { return e.LIGHTEN(e.TOKEN('$test1'), -20); }
-    },
-    {
-      name: 'test3',
-      value: function(e) { return e.LIGHTEN(e.TOKEN('$test2'), -20); }
-    },
-    {
-      name: 'foreground1',
-      value: function(e) { return e.FOREGROUND(e.TOKEN('$test1'), 'black', 'white'); }
-    },
-    {
-      name: 'foreground2',
-      value: function(e) { return e.FOREGROUND(e.TOKEN('$test2'), 'black', 'white'); }
     }
   ],
 
@@ -80,6 +65,11 @@ foam.CLASS({
   ],
   methods: [
     function render() {
+      this.tokenService.sub('cacheUpdated', () => {
+        if ( this.ctrl ) return;
+        let a = foam.u2.CSS.create({ code: this.cls_.model_.css }, this);
+        this.__subContext__.installCSS(a.expandCSS(this.cls_, a.code, this.__subContext__));
+      });
       this
       .start()
         .addClass(this.myClass('test1'))
@@ -107,15 +97,7 @@ foam.CLASS({
     {
       name: 'save',
       code: function(X) {
-        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'test1', target: this.color }, this))
-          .then(() => {
-            if ( this.ctrl ) {
-              return;
-            }
-            // Trying to imitate ApplicationController's fancy CSS live update
-            let a = foam.u2.CSS.create({ code: this.cls_.model_.css }, this);
-            X.installCSS(a.expandCSS(this.cls_, a.code, X));
-          });
+        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'test1', target: this.color }, this));
       }
     }
   ]

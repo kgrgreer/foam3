@@ -1333,7 +1333,8 @@ foam.LIB({
         const expr = foam.css.TokenUtilsBuilder.create();
         // Fake an fobject to get token value in current ctx from mlang
         var ret = result.value(expr).f({cls_: cls, __subContext__: ctx});
-        ret = foam.CSS.returnTokenValue(ret, cls, ctx);
+        if ( ret ) 
+          ret = foam.CSS.returnTokenValue(ret, cls, ctx);
         return ret || result.fallback || `/* failed mlang token replacement ${tokenString}, ${cls}*/`
       }
       if ( result?.value?.startsWith('$') ) {
