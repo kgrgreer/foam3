@@ -194,7 +194,7 @@ foam.CLASS({
       };
     },
 
-    async function expandCSS(cls, text, ctx) {
+    function expandCSS(cls, text, ctx) {
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^ shorthand on the CSS. */
@@ -213,7 +213,7 @@ foam.CLASS({
 
         return base + next;
       });
-      return await foam.CSS.replaceTokens(text, cls, ctx);
+      return foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]
 });

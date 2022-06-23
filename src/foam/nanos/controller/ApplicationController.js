@@ -158,7 +158,7 @@ foam.CLASS({
     },
     {
       name: 'THEME_OVERRIDE_REGEXP',
-      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^;!]*/, 'g'); }
     }
   ],
 
@@ -425,6 +425,7 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.sub('cacheUpdated', this.reloadStyles));
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
           var menu = await self.__subContext__.menuDAO.find(self.route);
@@ -476,18 +477,7 @@ foam.CLASS({
       });
 
       // Reload styling on theme change
-      // TODO BEFORE MERGE: Refactor this to work with new theme system
-      this.onDetach(this.sub('themeChange', () => {
-        for ( const eid in this.styles ) {
-          const style = this.styles[eid];
-          // If cssTokens are still being installed then no need to reinstall
-          if ( ! foam.String.isInstance(style.text) ) continue;
-          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
-          Promise.resolve(text).then( t => {
-            this.replaceStyleTag(t, eid)
-          });
-        }
-      }));
+      this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
 
     function render() {
@@ -529,6 +519,8 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
+      // TODO: find a better way to resub on client reloads
+      this.onDetach(this.__subContext__.cssTokenOverrideService.sub('cacheUpdated', this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
@@ -647,19 +639,11 @@ foam.CLASS({
       if ( ! text ) return;
       var eid = 'style' + foam.next$UID();
       this.styles[eid] = { text: text, cls: id };
-      if ( foam.String.isInstance(text) ) {
-        for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          const m = this.MACROS[i];
-          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-        }
-        this.installCSS(text, id, eid);
-      } else {
-        // If css is a promise add the style tag but add the css only when returned from promise
-        this.installCSS('', id, eid);
-        Promise.resolve(text).then(t => {
-          this.replaceStyleTag(t, eid)
-        });
+      for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
+        const m = this.MACROS[i];
+        text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
       }
+      this.installCSS(text, id, eid);
     },
 
     function returnExpandedCSS(text) {
@@ -922,6 +906,18 @@ foam.CLASS({
       const el = this.getElementById(eid);
       if ( text !== el?.textContent ) {
         el.textContent = text;
+      }
+    },
+    {
+      name: 'reloadStyles',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() {
+        for ( const eid in this.styles ) {
+          const style = this.styles[eid];
+          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
+          this.replaceStyleTag(text, eid);
+        }
       }
     }
   ]
