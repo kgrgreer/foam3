@@ -9,8 +9,8 @@ foam.CLASS({
   name: 'ColorToken',
   extends: 'foam.u2.CSSToken',
   requires: ['foam.u2.CSSToken'],
-  documentation: '',
-  css: ``,
+  documentation: 'SubClass of CSS tokens that installs convenience tokens for different states',
+
   properties: [
     {
       class: 'Int',
