@@ -857,8 +857,7 @@ foam.CLASS({
     },
 
     function subToNotifications() {
-      this.__subContext__.myNotificationDAO
-      .on.put.sub(this.displayToastMessage.bind(this));
+      this.__subContext__.myNotificationDAO?.on.put.sub(this.displayToastMessage.bind(this));
     },
 
     function menuListener(m) {
