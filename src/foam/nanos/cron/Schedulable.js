@@ -43,6 +43,10 @@
       value: 'schedulableEventDAO'
     },
     {
+      name: 'scheduledTime',
+      storageTransient: false
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.cron.Schedule',
       name: 'schedule',
