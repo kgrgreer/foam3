@@ -425,7 +425,7 @@ foam.CLASS({
     'foam.doc.UMLDiagram'
   ],
 
-  imports: [ 'document' ],
+  imports: [ 'document', 'params' ],
 
   exports: [
     'as data',
@@ -463,15 +463,7 @@ foam.CLASS({
       name: 'path',
       width: 80,
       factory: function() {
-        var path = 'foam.core.Property';
-
-        // TODO: this should be made generic and added to Window
-        this.document.location.search.substring(1).split('&').forEach(function(s) {
-          s = s.split('=');
-          if ( s[0] === 'path' ) path = s[1];
-        });
-
-        return path;
+        return this.params.path || 'foam.core.Property';
       }
     },
     {
