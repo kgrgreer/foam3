@@ -13,14 +13,12 @@ In FOAM, a `view` needs to present a UI component by defining a method `initE(
 
 FOAM’s U2 syntax provides methods for adding and interacting with UI components, including:
 
-{% raw %}
 - `start()` creates an element and adds it as a child.
 - `end()` terminates a `start()`.
 - `add(args)` adds UI components to this element.
 - `addClass(cls)` specifies a CSS class to this element.
 - `tag(spec, args, slot)` creates a tag and adds it as a child.
 - `addEventListener(topic, listener)` adds a DOM listener.
-{% endraw %}
 
 
 ## **Tutorial Application**
