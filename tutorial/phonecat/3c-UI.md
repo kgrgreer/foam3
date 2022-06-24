@@ -7,7 +7,7 @@ tutorial: 3c
 
 A view is responsible for presenting specific data to the user. An example of this kind of data would be a single object or a collection.
 
-In FOAM, a `view` needs to present a UI component by defining a template method `initE()` in the U2 library. The U2 library provides a variety of views such as `DetailView`, `TableView`, `ImageView`, etc. These views extend `Element` which is a virtual-DOM element that serves as the root model for all U2 UI components.
+In FOAM, a `view` needs to present a UI component by defining a method `initE()` in the U2 library. The U2 library provides a variety of views such as `DetailView`, `TableView`, `ImageView`, etc. These views extend `Element` which is a virtual-DOM element that serves as the root model for all U2 UI components.
 
 ## **UI Library**
 
@@ -62,7 +62,7 @@ foam.CLASS({
 
 **STEP #2.** Reload your app and see that... it's a complete mess. That's because `PhoneCitationView` is putting in `<li>` tags but they're not in a `<ul>`, and the custom CSS for the app is not being loaded.  We'll get back to the CSS shortly.
 
-**STEP #3.** Add a second template for the top-level `ControllerView`.
+**STEP #3.** Add a second method for the top-level `ControllerView`.
 
 **STEP #4.** Add the followng code to `Controller.js`and expand your `ControllerView`:
 
