@@ -41,6 +41,7 @@ foam.CLASS({
   ]
 });
 
+
 /** Add toXML() method to FObject. **/
 foam.CLASS({
   package: 'foam.core',
