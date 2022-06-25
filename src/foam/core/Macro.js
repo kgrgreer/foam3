@@ -9,11 +9,6 @@ foam.CLASS({
     name: 'MacroModel',
     extends: 'foam.core.Model',
 
-    imports: [
-        // Import the methods exported by foam.APPLY_MACRO
-        'CLASS'
-    ],
-
     documentation: 'Metaprogramming construct to create FOAM models from data',
 
     properties: [
