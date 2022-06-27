@@ -14,7 +14,7 @@ foam.INTERFACE({
 
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'foam.core.Action',
       name: 'dynamicActions'
     }
