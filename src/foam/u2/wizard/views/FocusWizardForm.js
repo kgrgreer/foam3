@@ -25,12 +25,12 @@ foam.CLASS({
       margin-top: 0;
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^:not(^fullscreen) {
+      ^:not(^isFullscreen) {
         width: 45vw;
       }
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
-      ^:not(^fullscreen) {
+      ^:not(^isFullscreen) {
         width: 25vw;
       }
     }
