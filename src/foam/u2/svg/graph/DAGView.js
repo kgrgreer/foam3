@@ -62,6 +62,16 @@ foam.CLASS({
       `
     },
     {
+      class: 'Class',
+      name: 'nodeViewClass_',
+      expression: function (nodeView) {
+        if ( typeof nodeView?.create === 'function' ) return nodeView;
+        const cls = nodeView.class;
+        if ( typeof cls?.create === 'function' ) return cls;
+        return foam.lookup(cls);
+      }
+    },
+    {
       name: 'cellSize',
       class: 'Array',
       factory: () => [100, 100]
@@ -196,13 +206,13 @@ foam.CLASS({
             size: self.cellSize
           }
 
-          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
+          if ( self.selectedNodeId && self.nodeViewClass_.hasOwnAxiom("isSelected") ){ 
             args.isSelected$ = self.slot(function(selectedNodeId) {
               return selectedNodeId === node.data.id; 
             })
           }
 
-          if ( self.gridGap && self.nodeView.hasOwnAxiom("gridGap") ){
+          if ( self.gridGap && self.nodeViewClass_.hasOwnAxiom("gridGap") ){
             args.gridGap = self.gridGap
           }
           

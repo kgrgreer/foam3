@@ -219,6 +219,7 @@ foam.POM({
     { name: "foam/u2/borders/SpacingBorder",                          flags: "web" },
     { name: "foam/u2/borders/SplitScreenBorder",                      flags: "web" },
     { name: "foam/u2/borders/SplitScreenGridBorder",                  flags: "web" },
+    { name: "foam/u2/borders/SideViewBorder",                         flags: "web" },
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
     { name: "foam/u2/borders/Block",                                  flags: "web" },
     { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
