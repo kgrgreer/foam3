@@ -108,7 +108,8 @@ foam.CLASS({
           let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") || (x.name == "AlternateFlowAgent"));
           this.choiceWizardlets.forEach(cw => {
             for ( let af of alternateFlow ) {
-              if ( af.spec.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+              if ( af.args.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+                cw.isAvailable = true;
                 return;
               }
             }
