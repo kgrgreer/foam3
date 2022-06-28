@@ -85,7 +85,7 @@ foam.CLASS({
       of: 'foam.layout.Section',
       name: 'sections',
       factory: null,
-      expression: function(of) {
+      expression: function(of, useSections, propertyWhitelist) {
         if ( ! of ) return [];
 
         sections = of.getAxiomsByClass(this.SectionAxiom)
