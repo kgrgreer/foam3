@@ -13,6 +13,7 @@ foam.CLASS({
     ^ {
       position: relative;
     }
+
     ^side {
       position: absolute;
       overflow: hidden;
@@ -27,11 +28,13 @@ foam.CLASS({
       flex-direction: column;
       gap: 10px;
     }
+
     ^side^open {
       width: 50%;
       background-color: rgba(255,255,255,0.7);
       visibility: visible;
     }
+
     ^side ^container {
       flex-grow: 1;
       overflow-x: hidden;
