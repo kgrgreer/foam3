@@ -158,7 +158,7 @@ foam.CLASS({
     },
     {
       name: 'THEME_OVERRIDE_REGEXP',
-      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^;!]*/, 'g'); }
     }
   ],
 
@@ -167,6 +167,8 @@ foam.CLASS({
     { name: 'GROUP_NULL_ERR',          message: 'Group was null' },
     { name: 'LOOK_AND_FEEL_NOT_FOUND', message: 'Could not fetch look and feel object' },
     { name: 'LANGUAGE_FETCH_ERR',      message: 'Error fetching language' },
+    { name: 'GC_ERROR',                message: 'Please complete general requirements to login' },
+    { name: 'GC_ERROR_TITLE',          message: 'Missing Login Requirement'}
   ],
 
   css: `
@@ -425,6 +427,7 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.sub('cacheUpdated', this.reloadStyles));
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
           var menu = await self.__subContext__.menuDAO.find(self.route);
@@ -476,18 +479,7 @@ foam.CLASS({
       });
 
       // Reload styling on theme change
-      // TODO BEFORE MERGE: Refactor this to work with new theme system
-      this.onDetach(this.sub('themeChange', () => {
-        for ( const eid in this.styles ) {
-          const style = this.styles[eid];
-          // If cssTokens are still being installed then no need to reinstall
-          if ( ! foam.String.isInstance(style.text) ) continue;
-          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
-          Promise.resolve(text).then( t => {
-            this.replaceStyleTag(t, eid)
-          });
-        }
-      }));
+      this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
 
     function render() {
@@ -529,6 +521,8 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
+      // TODO: find a better way to resub on client reloads
+      this.onDetach(this.__subContext__.cssTokenOverrideService.sub('cacheUpdated', this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
@@ -647,19 +641,11 @@ foam.CLASS({
       if ( ! text ) return;
       var eid = 'style' + foam.next$UID();
       this.styles[eid] = { text: text, cls: id };
-      if ( foam.String.isInstance(text) ) {
-        for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          const m = this.MACROS[i];
-          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-        }
-        this.installCSS(text, id, eid);
-      } else {
-        // If css is a promise add the style tag but add the css only when returned from promise
-        this.installCSS('', id, eid);
-        Promise.resolve(text).then(t => {
-          this.replaceStyleTag(t, eid)
-        });
+      for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
+        const m = this.MACROS[i];
+        text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
       }
+      this.installCSS(text, id, eid);
     },
 
     function returnExpandedCSS(text) {
@@ -812,15 +798,8 @@ foam.CLASS({
       this.subToNotifications();
 
       this.loginSuccess = true;
-      var capDAO = this.__subContext__.capabilityDAO;
-      var spid = await capDAO.find(this.user.spid);
-      if ( spid.generalCapability != '' ) {
-        var ucj = await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
-
-        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
-        }
-      }
+      let check = await this.checkGeneralCapability();
+      if ( ! check ) return;
 
       this.fetchTheme();
       this.initLayout.resolve();
@@ -833,6 +812,35 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    async function checkGeneralCapability() {
+      var capDAO = this.__subContext__.capabilityDAO;
+      var spid = await capDAO.find(this.user.spid);
+      if ( spid.generalCapability != '' ) {
+        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
+        var ucj = await ucjCheck();
+
+        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+          let postCheck = await ucjCheck();
+          if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
+            this.add(foam.u2.dialog.ConfirmationModal.create({
+              title: this.GC_ERROR_TITLE,
+              modalStyle: 'DESTRUCTIVE',
+              primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
+              closeable: false,
+              showCancel: false
+            }, this)
+              .start()
+              .style({ 'min-width': '25vw'})
+              .add(this.GC_ERROR)
+              .end());
+            return false;
+          }
+        }
+      }
+      return true;
     },
 
     function addMacroLayout() {
@@ -922,6 +930,18 @@ foam.CLASS({
       const el = this.getElementById(eid);
       if ( text !== el?.textContent ) {
         el.textContent = text;
+      }
+    },
+    {
+      name: 'reloadStyles',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() {
+        for ( const eid in this.styles ) {
+          const style = this.styles[eid];
+          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
+          this.replaceStyleTag(text, eid);
+        }
       }
     }
   ]

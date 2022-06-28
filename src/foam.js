@@ -11,6 +11,7 @@
   var foam = globalThis.foam = Object.assign({
     isServer: false,
     defaultFlags: {
+      dev:   true,
       debug: true,
       java:  false,
       js:    true,
