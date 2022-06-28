@@ -26,7 +26,7 @@ foam.CLASS({
       text-align: center;
       display: inline-flex;
       overflow: hidden;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
     }
     ^ > img {
