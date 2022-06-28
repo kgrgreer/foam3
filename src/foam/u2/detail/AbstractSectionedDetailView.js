@@ -92,8 +92,8 @@ foam.CLASS({
         // Why not Section.AXIOM.ORDER on next line?
         .sort((a, b) => a.order - b.order)
         .reduce((map, a) => {
-          if ( this.useSections.length ) {
-            if ( this.useSections.includes(a.name) ) {
+          if ( useSections.length ) {
+            if ( useSections.includes(a.name) ) {
               map.push(this.Section.create().fromSectionAxiom(a, of));
             }
           } else {
@@ -110,7 +110,7 @@ foam.CLASS({
             return map;
           }, {});
 
-        if ( ! this.useSections.length ) {
+        if ( ! useSections.length ) {
           var unusedProperties = of.getAxiomsByClass(this.Property)
               .filter((p) => ! usedAxioms[p.name])
               .filter((p) => ! p.hidden);
@@ -125,11 +125,11 @@ foam.CLASS({
           }
         }
 
-        if ( this.propertyWhitelist ) {
+        if ( propertyWhitelist ) {
           sections = sections
             .map(s => {
               s.properties = s.properties.reduce((acc, sectionProp) => {
-                var prop = this.propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
+                var prop = propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
                 if ( prop ) acc.push(prop);
                 return acc;
               }, []);
