@@ -39,6 +39,10 @@ foam.CLASS({
     'userCapabilityJunctionDAO'
   ],
 
+  exports: [
+    'sequenceReferenceDAO'
+  ],
+
   requires: [
     'foam.dao.PromisedDAO',
     'foam.graph.GraphBuilder',
@@ -200,7 +204,21 @@ foam.CLASS({
     },
     { class: 'Boolean', name: 'sideVisible' },
     { class: 'foam.u2.ViewSpec', name: 'sideView' },
-    'currentMemento_'
+    'currentMemento_',
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'sequenceReferenceDAO',
+      factory: function () {
+        return this.createSequenceReferenceDAO_();
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'capabilityExperimentView',
+      value: {
+        class: 'foam.u2.crunch.lab.CapabilityExperimentView'
+      }
+    }
   ],
 
   methods: [
@@ -310,6 +328,28 @@ foam.CLASS({
               ;
           });
       });
+    },
+    function createSequenceReferenceDAO_() {
+      const dao = foam.dao.MDAO.create({
+        of: 'foam.u2.crunch.lab.SequenceReference'
+      });
+
+      const values = [
+        { class: 'foam.u2.crunch.lab.ServiceMethodSequenceReference',
+          label: 'Transient Wizard',
+          service: 'crunchController',
+          method: 'createTransientWizardSequence' },
+        { class: 'foam.u2.crunch.lab.ServiceMethodSequenceReference',
+          label: 'User-Capability Wizard',
+          service: 'crunchController',
+          method: 'createWizardSequence' }
+      ]
+      
+      values.
+        map(v => foam.json.parse(v, undefined, this.__subContext__)).
+        forEach(obj => dao.put(obj));
+
+      return dao;
     }
   ],
 
@@ -320,7 +360,7 @@ foam.CLASS({
     },
     function capabilityClicked(capability) {
       this.sideView = {
-        class: 'foam.u2.detail.TabbedDetailView',
+        ...this.capabilityExperimentView,
         data: capability
       }
       this.sideVisible = true;
