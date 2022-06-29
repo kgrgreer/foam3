@@ -44,10 +44,12 @@ foam.CLASS({
         self.EQ(self.Transaction.STATUS, self.TransactionStatus.COMPLETED)
       );
 
-      result = await self.__subContext__[self.daoKey].where(coTxnPredicate).select(self.GroupBy.create({
-        arg1: self.arg1,
-        arg2: self.arg2
-      }));
+      result = await self.__subContext__[self.daoKey].where(coTxnPredicate)
+        .select(self.GROUP_BY(
+          self.arg1,
+          self.arg2
+        )
+      );
       var a = [];
       for ( var i = 0; i < result.groupKeys.length; i ++ ) {
         var value = await self.format(result.groupKeys[i], result.groups[result.groupKeys[i]].value);
