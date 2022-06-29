@@ -96,15 +96,14 @@ foam.CLASS({
         available if at least one section is available. If false, wizardlet
         does not display even if some sections are available.
       `,
-      postSet: function(_,n){
-        console.log("hit minMax.isAvailable");
-        
+      postSet: function(_,n){        
         if ( !n ){
           this.data.selectedData = [];
 
           // to cascade hiding all descendent wizardlets
           // TODO: investigate why this is still needed,
           // setting data to empty array should have made isAvailable automatically evaluate to false
+          // TODO: we could be able to deprecate this
           let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") || (x.name == "AlternateFlowAgent"));
           this.choiceWizardlets.forEach(cw => {
             for ( let af of alternateFlow ) {
@@ -243,12 +242,7 @@ foam.CLASS({
         ...opt_meta
       };
 
-      console.log("hit addPrerequisite");
-      console.log(wizardlet.id);
-      console.log(this.choiceWizardlets);
-
       this.choiceWizardlets.push(wizardlet);
-      console.log('addPrerequisite', this.id, wizardlet.id, meta);
 
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
@@ -259,7 +253,6 @@ foam.CLASS({
       return this.consumePrerequisites;
     },
     function handleLifting(liftedWizardlets) {
-      console.log('handleLifting', this.id, liftedWizardlets.map(w => w.id));
       const updated = () => {
         // Hide choice selection if lifted choices reach maximum
         const countLifted = liftedWizardlets
