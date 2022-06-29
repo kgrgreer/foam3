@@ -163,7 +163,7 @@ foam.CLASS({
         return s;
       }
     },
-    function getChildAvailabilitySlot(){
+    function getPrerequisiteAvailabilitySlot(){
       return this.isAvailable$;
     }
   ]

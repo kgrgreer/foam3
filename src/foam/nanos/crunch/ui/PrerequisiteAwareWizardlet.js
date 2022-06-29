@@ -18,7 +18,7 @@ foam.INTERFACE({
       flags: ['web']
     },
     {
-      name: 'getChildAvailabilitySlot',
+      name: 'getPrerequisiteAvailabilitySlot',
       flags: ['web']
     }
   ]

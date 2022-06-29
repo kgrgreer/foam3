@@ -247,7 +247,7 @@ foam.CLASS({
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
       if ( ! meta.lifted ) {
-        wizardlet.isAvailable$ = this.getChildAvailabilitySlot(wizardlet);
+        wizardlet.isAvailable$ = this.getPrerequisiteAvailabilitySlot(wizardlet);
       }
 
       return this.consumePrerequisites;
@@ -273,19 +273,19 @@ foam.CLASS({
       this.ArraySlot.create({ slots }).sub(updated);
       this.isAvailable$.sub(updated);
     },
-    function getChildAvailabilitySlot(childWizardlet){
+    function getPrerequisiteAvailabilitySlot(prereqWizardlet){
       var slot = foam.core.SimpleSlot.create();
 
       this.data.selectedData$.sub(
-        ()=> slot.set(this.isChildSelected(childWizardlet))
+        ()=> slot.set(this.isPrereqSelected(prereqWizardlet))
       );
 
-      slot.set(this.isChildSelected(childWizardlet));
+      slot.set(this.isPrereqSelected(prereqWizardlet));
       
       return slot;
     },
 
-    function isChildSelected(childWizardlet){
+    function isPrereqSelected(prereqWizardlet){
       for ( var i = 0 ; i < this.data.selectedData.length ; i++ ) {
         var currentData = this.data.selectedData[i];
 
@@ -306,7 +306,7 @@ foam.CLASS({
         if (
           foam.util.equals(
             idToCompare,
-            childWizardlet.id
+            prereqWizardlet.id
           )
         ) return true;
       }
