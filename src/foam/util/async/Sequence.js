@@ -75,7 +75,7 @@ foam.CLASS({
       this.contextAgentSpecs = [
         ...firstHalf,
         this.Step.create({
-          name: spec.name,
+          name: spec.name || spec.class?.split('.').slice(-1)[0],
           spec: spec,
           args: args
         }),
