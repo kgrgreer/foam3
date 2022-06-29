@@ -10,7 +10,13 @@ foam.CLASS({
   extends: 'foam.dashboard.view.DAOTable',
 
   implements: [
-   'foam.mlang.Expressions'
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'net.nanopay.tx.cico.COTransaction',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
@@ -32,7 +38,13 @@ foam.CLASS({
     async function init() {
       this.SUPER();
       var self = this;
-      result = await self.__subContext__[self.daoKey].where(self.predicate).select(self.GroupBy.create({
+
+      var coTxnPredicate = self.AND(
+        self.INSTANCE_OF(self.COTransaction),
+        self.EQ(self.Transaction.STATUS, self.TransactionStatus.COMPLETED)
+      );
+
+      result = await self.__subContext__[self.daoKey].where(coTxnPredicate).select(self.GroupBy.create({
         arg1: self.arg1,
         arg2: self.arg2
       }));
