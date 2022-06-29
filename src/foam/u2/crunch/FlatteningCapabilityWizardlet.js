@@ -162,6 +162,9 @@ foam.CLASS({
         }
         return s;
       }
+    },
+    function getChildAvailabilitySlot(){
+      return this.isAvailable$;
     }
   ]
 });
