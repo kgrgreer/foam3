@@ -83,7 +83,7 @@ foam.CLASS({
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {
                 size: 'LARGE',
-                label: self.data.currentWizardlet.actionLabel ? self.data.currentWizardlet.actionLabel : action.label
+                label: self.data.currentWizardlet.actionLabel || action.label
               });
             });
         }))
