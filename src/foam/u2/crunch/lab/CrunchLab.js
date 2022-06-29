@@ -49,6 +49,7 @@ foam.CLASS({
     'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.crunch.lab.CapabilityGraphNodeView',
+    'foam.u2.borders.SideViewBorder',
     'foam.u2.PropertyBorder',
     'foam.u2.view.RichChoiceSummaryIdRowView',
     'foam.u2.svg.TreeGraph',
@@ -197,6 +198,8 @@ foam.CLASS({
       class: 'String',
       value: 'prerequisites'
     },
+    { class: 'Boolean', name: 'sideVisible' },
+    { class: 'foam.u2.ViewSpec', name: 'sideView' },
     'currentMemento_'
   ],
 
@@ -208,25 +211,30 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('h2').add(this.cls_.name).end()
-        .start(this.Tabs)
-          .start(this.Tab, {
-            label: this.ALL_TAB,
-            selected: true,
-          })
-            .tag(this.ROOT_CAPABILITY.__, { data: this })
-            .start().style({ display: 'block' }).add(this.getGraphSlot()).end()
-          .end()
-          .start(this.Tab, {
-            label: this.UCJ_TAB,
-          })
-            .startContext({ data: this })
-              .tag(this.ROOT_CAPABILITY.__)
-              .tag(this.CRUNCH_USER.__)
-              .tag(this.EFFECTIVE_USER.__)
-              .tag(this.SHOW_ALL_CAPABILITIES.__)
-            .endContext()
-            .start().style({ display: 'block' }).add(this.getGraphSlot(true)).end()
+        .start(this.SideViewBorder, {
+          sideVisible$: this.sideVisible$,
+          sideView$: this.sideView$
+        })
+          .start('h2').add(this.cls_.name).end()
+          .start(this.Tabs)
+            .start(this.Tab, {
+              label: this.ALL_TAB,
+              selected: true,
+            })
+              .tag(this.ROOT_CAPABILITY.__, { data: this })
+              .start().style({ display: 'block' }).add(this.getGraphSlot()).end()
+            .end()
+            .start(this.Tab, {
+              label: this.UCJ_TAB,
+            })
+              .startContext({ data: this })
+                .tag(this.ROOT_CAPABILITY.__)
+                .tag(this.CRUNCH_USER.__)
+                .tag(this.EFFECTIVE_USER.__)
+                .tag(this.SHOW_ALL_CAPABILITIES.__)
+              .endContext()
+              .start().style({ display: 'block' }).add(this.getGraphSlot(true)).end()
+            .end()
           .end()
         .end()
         ;
@@ -291,7 +299,11 @@ foam.CLASS({
               .tag(self.DAGView, {
                 gridPlacement: placementPlan,
                 graph: graph,
-                nodeView: this.CapabilityGraphNodeView,
+                nodeView: {
+                  class: this.CapabilityGraphNodeView.id,
+                  capabilityClickedListener: self.capabilityClicked,
+                  ucjClickedListener: self.ucjClicked
+                },
                 cellSize: [200, 200],
                 zoom: 0.7
               })
@@ -305,6 +317,20 @@ foam.CLASS({
     function mementoChange() {
       var m = this.currentMemento_;
       if ( m && this.rootCapability != m.head ) this.rootCapability = m.head;
+    },
+    function capabilityClicked(capability) {
+      this.sideView = {
+        class: 'foam.u2.detail.TabbedDetailView',
+        data: capability
+      }
+      this.sideVisible = true;
+    },
+    function ucjClicked(ucj) {
+      this.sideView = {
+        class: 'foam.u2.detail.TabbedDetailView',
+        data: ucj
+      }
+      this.sideVisible = true;
     }
   ]
 });
