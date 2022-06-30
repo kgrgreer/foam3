@@ -241,6 +241,11 @@ foam.CLASS({
       `
     },
     {
+      name: 'daoKey',
+      class: 'String',
+      documentation: 'Optionally set to allow different WAO settings for a capability structure'
+    },
+    {
       name: '__subSubContext__',
       documentation: 'Current subContext to use when creating view.',
       factory: function() { return this.__subContext__; }

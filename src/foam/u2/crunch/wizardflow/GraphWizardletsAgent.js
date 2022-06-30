@@ -165,7 +165,7 @@ foam.CLASS({
         // If there's already something at the end, don't replace it
         if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
         if ( ! wao.delegate ) {
-          wao.delegate = this.getWAO();
+          wao.delegate = this.getWAO(wizardlet);
           break;
         }
         wao = wao.delegate;

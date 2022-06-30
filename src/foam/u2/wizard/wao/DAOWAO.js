@@ -69,8 +69,8 @@ foam.CLASS({
       wizardlet.loading = true;
 
       let dataToPut = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
-
-      return await this.dao.put(dataToPut).then(savedData => {
+      if ( ! dataToPut ) dataToPut = wizardlet.of.create({}, this);
+      return this.dao.put(dataToPut).then(savedData => {
           this.setValue_(wizardlet, savedData);
           return savedData;
         })

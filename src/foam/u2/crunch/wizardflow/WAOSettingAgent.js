@@ -22,15 +22,17 @@
   ],
 
   requires: [
+    'foam.dao.NullDAO',
     'foam.nanos.crunch.ui.ApprovableUserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.UserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.CapableWAO',
+    'foam.u2.wizard.wao.DAOWAO'
   ],
 
   enums: [
     {
       name: 'WAOSetting',
-      values: ['UCJ', 'CAPABLE', 'APPROVAL']
+      values: ['UCJ', 'CAPABLE', 'APPROVAL', 'DAO', 'NULL']
     }
   ],
 
@@ -47,7 +49,7 @@
     function execute() {
       return Promise.resolve();
     },
-    function getWAO() {
+    function getWAO(wizardlet) {
       switch ( this.waoSetting ) {
         case this.WAOSetting.UCJ:
           return this.UserCapabilityJunctionWAO.create({ subject: this.wizardSubject }, this.__context__);
@@ -55,6 +57,14 @@
           return this.CapableWAO.create({}, this.__context__);
         case this.WAOSetting.APPROVAL:
           return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.wizardSubject });
+        case this.WAOSetting.DAO:
+            return this.DAOWAO.create({ subject: this.wizardSubject, of: wizardlet.of, daoKey: wizardlet.daoKey });
+        case this.WAOSetting.DAO:
+          return this.DAOWAO.create({
+            subject: this.wizardSubject,
+            of: wizardlet.of,
+            daoKey: this.NullDAO.create({ of: wizardlet.of })
+          });
         default:
           throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
       }
