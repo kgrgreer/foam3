@@ -8,16 +8,7 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomTableView',
   extends: 'foam.u2.view.UnstyledTableView',
-  properties: [
-    {
-      name: 'editColumnsEnabled',
-      value: false,
-    },
-    {
-      name: 'disableUserSelection',
-      value: true,
-    },
-  ],
+
   css: `
     ^ {
       border-collapse: collapse;
@@ -44,5 +35,16 @@ foam.CLASS({
     ^documentation {
       margin: 3px 10px 2px 0px;
     }
-  `
+  `,
+
+  properties: [
+    {
+      name: 'editColumnsEnabled',
+      value: false
+    },
+    {
+      name: 'disableUserSelection',
+      value: true
+    }
+  ]
 });
