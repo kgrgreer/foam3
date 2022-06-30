@@ -13,12 +13,6 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [
-    'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
-  ],
-
   properties: [
     {
       name: 'daoKey',
@@ -39,12 +33,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      var coTxnPredicate = self.AND(
-        self.INSTANCE_OF(self.COTransaction),
-        self.EQ(self.Transaction.STATUS, self.TransactionStatus.COMPLETED)
-      );
-
-      result = await self.__subContext__[self.daoKey].where(coTxnPredicate)
+      result = await self.__subContext__[self.daoKey].where(self.predicate)
         .select(self.GROUP_BY(
           self.arg1,
           self.arg2
