@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'SimpleClassView',
   extends: 'foam.u2.View',
-  
+
   implements: [
     'foam.mlang.Expressions',
   ],

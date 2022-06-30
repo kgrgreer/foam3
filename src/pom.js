@@ -73,6 +73,7 @@ foam.POM({
     { name: "foam/core/Validator",                                    flags: "js|java" },
     { name: "foam/core/ValidationException",                          flags: "js|java" },
     { name: "foam/core/ClientRuntimeException",                       flags: "js|java" },
+    { name: "foam/core/OptionalBoolean",                              flags: "js|java" },
     { name: "foam/parse/ErrorReportingPStream",                       flags: "js" },
     { name: "foam/parse/TrapPStream",                                 flags: "js" },
     { name: "foam/parse/InvalidPStream",                              flags: "js" },
@@ -158,7 +159,8 @@ foam.POM({
     { name: "foam/json2/Deserializer",                                flags: "swift" },
     { name: "foam/java/Util",                                         flags: "js|java" },
     { name: "foam/core/Fluent",                                       flags: "js" },
-    { name: "foam/util/FluentSpec",                                   flags: "js" },
+    { name: "foam/util/FObjectSpec",                                  flags: "js" },
+    { name: "foam/util/FluentSpec",                                   flags: "js|java" },
     { name: "foam/util/Timer",                                        flags: "js" },
     { name: "foam/util/AddressUtil",                                  flags: "js" },
     { name: "foam/util/EmailTest",                                    flags: "js|java" },
@@ -204,6 +206,7 @@ foam.POM({
     { name: "foam/u2/LoadingSpinner",                                 flags: "web" },
     { name: "foam/u2/ListCreateController",                           flags: "web" },
     { name: "foam/u2/CSSToken",                                       flags: "web|java" },
+    { name: "foam/u2/ColorToken",                                     flags: "web|java" },
     { name: "foam/u2/CSSTokens",                                      flags: "web" },
     { name: "foam/u2/view/SearchViewWrapper",                         flags: "web" },
     { name: "foam/u2/view/StringArrayRowView",                        flags: "web" },
@@ -217,6 +220,7 @@ foam.POM({
     { name: "foam/u2/borders/SpacingBorder",                          flags: "web" },
     { name: "foam/u2/borders/SplitScreenBorder",                      flags: "web" },
     { name: "foam/u2/borders/SplitScreenGridBorder",                  flags: "web" },
+    { name: "foam/u2/borders/SideViewBorder",                         flags: "web" },
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
     { name: "foam/u2/borders/Block",                                  flags: "web" },
     { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
@@ -704,6 +708,8 @@ foam.POM({
     { name: "foam/u2/crunch/FlatteningCapabilityWizardlet",           flags: "web" },
     { name: "foam/u2/crunch/lab/CapabilityGraphNodeView",             flags: "web" },
     { name: "foam/u2/crunch/lab/CrunchLab",                           flags: "web" },
+    { name: "foam/u2/crunch/lab/SequenceReference",                   flags: "web" },
+    { name: "foam/u2/crunch/lab/CapabilityExperimentView",            flags: "web" },
     { name: "foam/apploader/ModelRefines",                            flags: "js" },
     { name: "foam/classloader/OrDAO",                                 flags: "debug" },
     { name: "foam/apploader/WebModelFileFetcher",                     flags: "js" },
@@ -1171,6 +1177,7 @@ foam.POM({
     { name: "foam/u2/FUIDAutocompleter",                              flags: "web" },
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
     { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" },
-    { name: "foam/u2/view/ClassCompleterView",                        flags: "web" }
+    { name: "foam/u2/view/ClassCompleterView",                        flags: "web" },
+    { name: "foam/css/TokenUtils",                                    flags: "web" }
  ]
 });

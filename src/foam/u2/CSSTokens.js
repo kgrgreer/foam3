@@ -107,6 +107,7 @@ foam.CLASS({
     'Primary700': '$Blue700',
 
     'White': '#FFFFFF',
+    'Black': '#000000',
     'Error': '#E11721',
     'Info': '#FC7F27',
     'Warn': '#F5DB6B',

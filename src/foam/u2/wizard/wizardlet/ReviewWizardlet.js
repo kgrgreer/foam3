@@ -16,6 +16,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'actionLabel'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
