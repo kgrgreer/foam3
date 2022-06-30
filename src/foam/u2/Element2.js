@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -60,6 +60,7 @@ becomes:
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs? (probably not, wrong context)
   - could we get rid of subSubContext be updating subContext?
+  - Move CSS code out and share with U2
 */
 
 foam.ENUM({
