@@ -46,5 +46,17 @@ foam.CLASS({
       name: 'disableUserSelection',
       value: true
     }
+  ],
+
+  methods: [
+    function render() {
+      /** Temporary implementation while CSS is broken for UnstyledTableView. Remove when fixed. **/
+      this.start('table').
+        start('tr').start('td').attrs({width: '250px'}).add('Class').end().start('td').add('Name').end().end().
+        select(this.data, function(a) {
+          this.start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().end();
+        }).
+      end();
+    }
   ]
 });
