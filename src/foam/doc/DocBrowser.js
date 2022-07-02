@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// foam.doc.DocBrowser.create({}, ctrl.__subContext__).write(document);
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'DocBorder',
@@ -409,6 +411,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
