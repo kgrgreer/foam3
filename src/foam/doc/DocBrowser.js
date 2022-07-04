@@ -455,9 +455,10 @@ foam.CLASS({
     {
       name: 'MODEL_COMPARATOR',
       factory: function() {
-        return foam.compare.compound([foam.core.Model.PACKAGE, foam.core.Model.NAME]).compare;
-      },
-    },
+        var c = foam.compare.compound([foam.core.Model.PACKAGE, foam.core.Model.NAME]);
+        return c.compare.bind(c);
+      }
+    }
   ],
 
   properties: [
@@ -533,6 +534,8 @@ foam.CLASS({
     function render() {
       for ( var key in foam.UNUSED ) foam.lookup(key);
       this.SUPER();
+
+      var classListData =  Object.values(foam.USED).filter(e => { return e != undefined; }).sort(this.MODEL_COMPARATOR);
       this.
         addClass(this.myClass()).
         tag(this.PATH, {displayWidth: 80}).
@@ -563,7 +566,7 @@ foam.CLASS({
             end().
             start('td').
               style({'vertical-align': 'top'}).
-              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: Object.values(foam.USED).filter((e) => {e != undefined }).sort(this.MODEL_COMPARATOR)}).
+              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
             end().
             start('td').
               style({'vertical-align': 'top'}).
