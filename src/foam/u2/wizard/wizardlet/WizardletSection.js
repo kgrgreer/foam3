@@ -80,11 +80,7 @@ foam.CLASS({
         if ( ! data ) return false;
 
         if ( ! this.section ) {
-          let valid = data.validate();
-          if ( valid === undefined ) {
-            valid = ! data.errors_ || data.errors_.length < 1;
-          }
-          return valid;
+          return ! data.errors_ || data.errors_.length < 1;
         }
 
         let sectionErrors = [];
