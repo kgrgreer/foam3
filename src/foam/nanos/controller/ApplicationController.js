@@ -99,7 +99,8 @@ foam.CLASS({
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'buildingStack'
   ],
 
   topics: [
@@ -108,7 +109,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'MACROS', 
+      name: 'MACROS',
       value: [
         'customCSS',
         'logoBackgroundColour',
@@ -157,7 +158,7 @@ foam.CLASS({
     },
     {
       name: 'THEME_OVERRIDE_REGEXP',
-      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^);!]*/, 'g'); }
+      factory: function() { return new RegExp(/\/\*\$(.*)\*\/[^;!]*/, 'g'); }
     }
   ],
 
@@ -166,6 +167,8 @@ foam.CLASS({
     { name: 'GROUP_NULL_ERR',          message: 'Group was null' },
     { name: 'LOOK_AND_FEEL_NOT_FOUND', message: 'Could not fetch look and feel object' },
     { name: 'LANGUAGE_FETCH_ERR',      message: 'Error fetching language' },
+    { name: 'GC_ERROR',                message: 'Please complete general requirements to login' },
+    { name: 'GC_ERROR_TITLE',          message: 'Missing Login Requirement'}
   ],
 
   css: `
@@ -346,6 +349,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'sideNav_'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Language',
       name: 'defaultLanguage',
@@ -359,8 +366,16 @@ foam.CLASS({
       postSet: function(_, n) {
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
-        if ( this.initSubject && n && this.currentMenu?.id != n) this.pushMenu(n);
+        if ( this.initSubject && n ) {
+          if ( ! this.currentMenu?.id ) this.buildingStack = true;
+          this.pushMenu(n);
+        }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'buildingStack',
+      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -412,6 +427,7 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.sub('cacheUpdated', this.reloadStyles));
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
           var menu = await self.__subContext__.menuDAO.find(self.route);
@@ -426,6 +442,7 @@ foam.CLASS({
               // use the route instead of the menu so that the menu could be re-created under the updated context
               self.pushMenu(self.route);
               self.languageInstalled.resolve();
+              self.subToNotifications();
               return;
             }
           }
@@ -462,18 +479,7 @@ foam.CLASS({
       });
 
       // Reload styling on theme change
-      // TODO BEFORE MERGE: Refactor this to work with new theme system
-      this.onDetach(this.sub('themeChange', () => {
-        for ( const eid in this.styles ) {
-          const style = this.styles[eid];
-          // If cssTokens are still being installed then no need to reinstall
-          if ( ! foam.String.isInstance(style.text) ) continue;
-          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
-          Promise.resolve(text).then( t => {
-            this.replaceStyleTag(t, eid)
-          });
-        }
-      }));
+      this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
 
     function render() {
@@ -506,35 +512,7 @@ foam.CLASS({
           // Work around to ensure wrapCSS is exported into context before
           // calling AppStyles which needs theme replacement
           self.AppStyles.create();
-          this
-            .addClass(this.myClass())
-            .tag(this.NavigationController, {
-              topNav$: this.topNavigation_$,
-              mainView: {
-                class: 'foam.u2.stack.DesktopStackView',
-                data: this.stack,
-                showActions: false,
-                nodeName: 'main'
-              },
-              footer$: this.footerView_$,
-              sideNav: {
-                class: 'foam.u2.view.ResponsiveAltView',
-                views: [
-                  [
-                    {
-                      class: 'foam.nanos.u2.navigation.ApplicationSideNav'
-                    },
-                    ['XS']
-                  ],
-                  [
-                    {
-                      class: this.VerticalMenu
-                    },
-                    ['MD']
-                  ]
-                ]
-              }
-            });
+          self.addMacroLayout();
         });
       });
     },
@@ -543,6 +521,9 @@ foam.CLASS({
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
+      // TODO: find a better way to resub on client reloads
+      this.onDetach(this.__subContext__.cssTokenOverrideService.sub('cacheUpdated', this.reloadStyles));
+      this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
     function installLanguage() {
@@ -613,7 +594,6 @@ foam.CLASS({
         this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
-        this.subject = await this.client.auth.getCurrentSubject(null);
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
@@ -628,7 +608,7 @@ foam.CLASS({
 
     function expandShortFormMacro(css, m) {
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
 
@@ -648,7 +628,7 @@ foam.CLASS({
 
     function expandLongFormMacro(css, m) {
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
-      const M = m.toUpperCase(); 
+      const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
       var val = foam.util.path(this.theme, prop, false);
       return val ? css.replace(
@@ -661,19 +641,11 @@ foam.CLASS({
       if ( ! text ) return;
       var eid = 'style' + foam.next$UID();
       this.styles[eid] = { text: text, cls: id };
-      if ( foam.String.isInstance(text) ) {
-        for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          const m = this.MACROS[i];
-          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-        }
-        this.installCSS(text, id, eid);
-      } else {
-        // If css is a promise add the style tag but add the css only when returned from promise
-        this.installCSS('', id, eid);
-        Promise.resolve(text).then(t => {
-          this.replaceStyleTag(t, eid)
-        });
+      for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
+        const m = this.MACROS[i];
+        text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
       }
+      this.installCSS(text, id, eid);
     },
 
     function returnExpandedCSS(text) {
@@ -692,22 +664,30 @@ foam.CLASS({
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
-      if ( currentMenuCheck === idCheck && ! opt_forceReload ) return;
-      /** Used to load a specific menus. **/
-      if ( ( this.route !== idCheck || opt_forceReload ) && idCheck.includes('/')) 
+      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
+        this.buildingStack = false;
+        return;
+      }
+      /**  Used for data management menus that are constructed on the fly
+       * required as those menus are not put in menuDAO and hence fail the
+       * find call in pushMenu_.
+       * This approach allows any generated menus to be permissioned/loaded as long as
+       * they are a child of a real menuDAO menu
+       * **/
+      if ( idCheck.includes('/') )
         realMenu = idCheck.split('/')[0];
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu);
+        this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
         await this.clientPromise.then(async () => {
-          await this.pushMenu_(realMenu, menu);
+          await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
     },
 
-    async function pushMenu_(realMenu, menu) {
+    async function pushMenu_(realMenu, menu, opt_forceReload) {
       dao = this.client.menuDAO;
       let m = this.memento_.str;
       realMenu = await dao.find(realMenu);
@@ -719,14 +699,20 @@ foam.CLASS({
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
-        if ( this.route !== newId ) 
-          this.route = newId;
+        this.pushMenu(newId, opt_forceReload);
         return;
       }
+      const preserveMem = this.buildingStack || (
+        typeof menu === 'string' ?
+        foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
+        foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
+      );
+      if ( ! preserveMem )
+        this.memento_.removeMementoTail();
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
+      this.buildingStack = false;
       menu && menu.launch && menu.launch(this);
-      this.menuListener(realMenu);
     },
 
     async function findDefaultMenu(dao) {
@@ -735,7 +721,7 @@ foam.CLASS({
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
-        if ( menu ) break; 
+        if ( menu ) break;
       };
       return menu;
     },
@@ -809,10 +795,11 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      this.__subContext__.myNotificationDAO
-      .on.put.sub(this.displayToastMessage.bind(this));
+      this.subToNotifications();
 
       this.loginSuccess = true;
+      let check = await this.checkGeneralCapability();
+      if ( ! check ) return;
 
       this.fetchTheme();
       this.initLayout.resolve();
@@ -825,6 +812,55 @@ foam.CLASS({
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
+    },
+
+    async function checkGeneralCapability() {
+      var capDAO = this.__subContext__.capabilityDAO;
+      var spid = await capDAO.find(this.user.spid);
+      if ( spid.generalCapability != '' ) {
+        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
+        var ucj = await ucjCheck();
+
+        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+          let postCheck = await ucjCheck();
+          if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
+            this.add(foam.u2.dialog.ConfirmationModal.create({
+              title: this.GC_ERROR_TITLE,
+              modalStyle: 'DESTRUCTIVE',
+              primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
+              closeable: false,
+              showCancel: false
+            }, this)
+              .start()
+              .style({ 'min-width': '25vw'})
+              .add(this.GC_ERROR)
+              .end());
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+
+    function addMacroLayout() {
+      this
+        .addClass(this.myClass())
+        .tag(this.NavigationController, {
+          topNav$: this.topNavigation_$,
+          mainView: {
+            class: 'foam.u2.stack.DesktopStackView',
+            data: this.stack,
+            showActions: false,
+            nodeName: 'main'
+          },
+          footer$: this.footerView_$,
+          sideNav$: this.sideNav_$
+        });
+    },
+
+    function subToNotifications() {
+      this.__subContext__.myNotificationDAO?.on.put.sub(this.displayToastMessage.bind(this));
     },
 
     function menuListener(m) {
@@ -873,6 +909,8 @@ foam.CLASS({
       if ( this.theme.footerView ) {
         this.footerView_ = this.theme.footerView;
       }
+      if ( this.theme.sideNav )
+        this.sideNav_ = this.theme.sideNav;
     },
     {
       name: 'updateDisplayWidth',
@@ -891,6 +929,18 @@ foam.CLASS({
       const el = this.getElementById(eid);
       if ( text !== el?.textContent ) {
         el.textContent = text;
+      }
+    },
+    {
+      name: 'reloadStyles',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() {
+        for ( const eid in this.styles ) {
+          const style = this.styles[eid];
+          text = foam.CSS.replaceTokens(style.text, style.cls, this.__subContext__, this.THEME_OVERRIDE_REGEXP);
+          this.replaceStyleTag(text, eid);
+        }
       }
     }
   ]

@@ -38,6 +38,7 @@ foam.CLASS({
 
     ^inner {
       flex-direction: column;
+      overflow: hidden;
     }
 
     ^header {
@@ -62,6 +63,8 @@ foam.CLASS({
 
     ^body {
       flex-grow: 1;
+      max-height: 90vh;
+      overflow: auto;
     }
 
     ^logo img, ^logo svg {
@@ -103,18 +106,28 @@ foam.CLASS({
             .addClass(this.myClass('header'))
             .start()
               .addClass(this.myClass('header-left'))
-              .add(this.slot(function ( customActions ) {
+              .add(this.slot(function( customActions ) {
                 if ( ! customActions || customActions.length === 0 ) {
-                  return this.E().addClass(this.myClass('header-button-placeholder'));
+                  return this.E().enableClass(this.myClass('header-button-placeholder'), self.closeable$);
                 }
+                let slots = [];
+                customActions.forEach(a => {
+                  slots.push(a.action.createIsAvailable$(self.__subContext__, a.data));
+                });
+                let s = foam.core.ArraySlot.create({ slots: slots }, self);
+                let anyAvailable = this.slot(function(slots) {
+                  for ( let slot of slots ) {
+                    if ( slot ) return true;
+                  }
+                  return false;
+                }, s);
                 return this.E()
-                  .addClass(this.myClass('header-button-placeholder'))
-                  .forEach(customActions, function (ar) {
+                  .enableClass(this.myClass('header-button-placeholder'), anyAvailable)
+                  .forEach(customActions, function(ar) {
                     this
                       .start(ar.action, { label: '', buttonStyle: 'TERTIARY', data$: ar.data$ })
                         .addClass(self.myClass('header-action'))
-                      .end()
-                      ;
+                      .end();
                   });
               }))
             .end()

@@ -194,7 +194,7 @@ foam.CLASS({
       };
     },
 
-    async function expandCSS(cls, text, ctx) {
+    function expandCSS(cls, text, ctx) {
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^ shorthand on the CSS. */
@@ -213,7 +213,7 @@ foam.CLASS({
 
         return base + next;
       });
-      return await foam.CSS.replaceTokens(text, cls, ctx);
+      return foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]
 });
@@ -284,10 +284,6 @@ foam.CLASS({
   methods: [
     function validateNodeName(name) {
       return true;
-    },
-
-    function validateClass(cls) {
-      // TODO
     },
 
     function validateAttributeName(name) {
@@ -2558,6 +2554,22 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'EMailViewRefinement',
+  refines: 'foam.core.EMail',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'email' }
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2',
@@ -2647,16 +2659,16 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      expression: function(label, labelFormatter) {
+      expression: function(label, checkboxLabelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
           label: this.help,
-          labelFormatter: labelFormatter
+          labelFormatter: checkboxLabelFormatter
         };
       }
     },
     {
-      name: 'labelFormatter'
+      name: 'checkboxLabelFormatter'
     }
   ]
 });

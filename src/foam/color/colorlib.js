@@ -185,7 +185,7 @@ foam.LIB({
         foam.assert( str.length == 6 || str.length == 8 );
         components = str.match(/../g).map(v => parseInt(v, 16));
       } else if ( str.startsWith('rgb') ) {
-        components = str.splice(str.startsWith('rgba') ? 5 : 4, -1).split(',');
+        components = str.substring(str.startsWith('rgba') ? 5 : 4, str.length-1).split(',');
       }
 
       return {
@@ -196,10 +196,34 @@ foam.LIB({
       };
     },
     
-    function getBestForeground (str, black, white) {
+    function getBestForeground(str, black, white) {
       with ( foam.Color.parse(str) ) {
-        return red*0.3 + green*0.6 + blue*0.1 > 170 ? black : white;
+        return red*0.299 + green*0.587 + blue*0.114 > 186 ? black : white;
       }
-    }
+    },
+
+    function lighten(str, value) {
+      colorObj = foam.Color.parse(str);
+      var [r, g, b] = [colorObj.red, colorObj.green, colorObj.blue];
+      let l = foam.Color.rgbToGrey([r, g, b])*1000;
+      let scale = l + (l*(value/100));
+      var [r, g, b] = foam.Color.adjustRGBBrightness([r, g, b], scale/1000);
+      return `rgb(${r.toFixed(4)},${g.toFixed(4)},${b.toFixed(4)})`;
+    },
+    function rgbToGrey(rgb /*[0..255,0.255,0.255]*/) /* -> 0..1 */ {
+      var [r, g, b] = rgb;
+      return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255;
+    },
+
+    function adjustRGBBrightness(rgb /*[0..255,0.255,0.255]*/, desired/*0..1*/) {
+      var [r, g, b] = rgb;
+      var gr = foam.Color.rgbToGrey(rgb);
+      if ( desired >= gr ) {
+        var mix = (desired - gr) / ( 1 - gr);
+        return [ 255 * mix + (1-mix) * r, 255 * mix + (1-mix) * g, 255 * mix + (1-mix) * b];
+      }
+      var scale = desired/gr;
+      return [ scale * r, scale * g, scale * b ];
+    },
   ]
 });

@@ -8,14 +8,10 @@ foam.CLASS({
   
   properties: [
     {
-      name: 'phoneNumber',
+      name: 'testValidatedValue',
       class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      documentation: 'Example phone number.',
-      factory: function() {
-        return this.Phone.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' }
+      required: true,
+      of: 'foam.core.RequiredBooleanHolder'
     }
   ]
 

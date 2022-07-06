@@ -43,7 +43,8 @@ foam.CLASS({
   properties: [
     {
       name: 'dao_',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       class: 'String',
@@ -74,6 +75,13 @@ foam.CLASS({
       class: 'String',
       name: 'token_',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      visibility: 'HIDDEN',
+      value: true,
+      documentation: 'Optional boolean used to display this model without login action'
     }
   ],
 
@@ -112,9 +120,9 @@ foam.CLASS({
               view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
             }));
           } else {
-            if ( ! this.memento_ || this.memento_.str.length === 0 || this.currentMenu?.id == this.memento_.str )
-              this.pushMenu('');
             this.loginSuccess = !! this.subject;
+            // reload the client on loginsuccess in case login not called from controller
+            if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
       }
@@ -128,6 +136,7 @@ foam.CLASS({
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
+      isAvailable: function(showAction) { return showAction; },
       code: async function(X) {
         this.identifier = this.identifier.trim();
         if ( this.identifier.length > 0 ) {
@@ -140,38 +149,36 @@ foam.CLASS({
             return;
           }
 
-          this.auth.login(X, this.identifier, this.password).then(
-            logedInUser => {
-              if ( ! logedInUser ) return;
+          try {
+            var logedInUser = await this.auth.login(X, this.identifier, this.password);
+            if ( ! logedInUser ) return;
 
-              if ( this.token_ ) {
-                logedInUser.signUpToken = this.token_;
-                this.dao_.put(logedInUser)
-                  .then(updatedUser => {
-                    this.subject.user = updatedUser;
-                    this.subject.realUser = updatedUser;
-                    this.nextStep();
-                  }).catch(err => {
-                    this.ctrl.add(this.NotificationMessage.create({
-                      err: err.data,
-                      message: this.ERROR_MSG,
-                      type: this.LogLevel.ERROR
-                    }));
-                  });
-              } else {
-                this.subject.user = logedInUser;
-                this.subject.realUser = logedInUser;
-                this.nextStep();
+            if ( this.token_ ) {
+              logedInUser.signUpToken = this.token_;
+              try {
+                var updatedUser = await this.dao_.put(logedInUser);
+                this.subject.user = updatedUser;
+                this.subject.realUser = updatedUser;
+                await this.nextStep();
+              } catch ( err ) {
+                this.ctrl.add(this.NotificationMessage.create({
+                  err: err.data,
+                  message: this.ERROR_MSG,
+                  type: this.LogLevel.ERROR
+                }));
               }
+            } else {
+              this.subject.user = logedInUser;
+              this.subject.realUser = logedInUser;
+              await this.nextStep();
             }
-          ).catch(
-            err => {
+          } catch (err) {
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
                 message: this.ERROR_MSG,
                 type: this.LogLevel.ERROR
               }));
-          });
+          };
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG2,

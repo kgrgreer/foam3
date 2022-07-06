@@ -60,8 +60,8 @@ foam.CLASS({
         included in the detail view.
       `,
       factory: null,
-      adapt: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return newValue;
+      adapt: function(o, newValue, p) {
+        if ( Array.isArray(newValue) ) return foam.core.FObjectArray.ADAPT.value.call(this, o, newValue, p);
         if ( typeof newValue !== 'object' ) throw new Error('You must set propertyWhitelist to an array of properties or a map from names to overrides encoded as an object.');
         return Object.entries(newValue).reduce((acc, [propertyName, overrides]) => {
           var axiom = this.of.getAxiomByName(propertyName);
@@ -85,15 +85,15 @@ foam.CLASS({
       of: 'foam.layout.Section',
       name: 'sections',
       factory: null,
-      expression: function(of) {
+      expression: function(of, useSections, propertyWhitelist) {
         if ( ! of ) return [];
 
         sections = of.getAxiomsByClass(this.SectionAxiom)
         // Why not Section.AXIOM.ORDER on next line?
         .sort((a, b) => a.order - b.order)
         .reduce((map, a) => {
-          if ( this.useSections.length ) {
-            if ( this.useSections.includes(a.name) ) {
+          if ( useSections.length ) {
+            if ( useSections.includes(a.name) ) {
               map.push(this.Section.create().fromSectionAxiom(a, of));
             }
           } else {
@@ -110,7 +110,7 @@ foam.CLASS({
             return map;
           }, {});
 
-        if ( ! this.useSections.length ) {
+        if ( ! useSections.length ) {
           var unusedProperties = of.getAxiomsByClass(this.Property)
               .filter((p) => ! usedAxioms[p.name])
               .filter((p) => ! p.hidden);
@@ -125,11 +125,11 @@ foam.CLASS({
           }
         }
 
-        if ( this.propertyWhitelist ) {
+        if ( propertyWhitelist ) {
           sections = sections
             .map(s => {
               s.properties = s.properties.reduce((acc, sectionProp) => {
-                var prop = this.propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
+                var prop = propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
                 if ( prop ) acc.push(prop);
                 return acc;
               }, []);

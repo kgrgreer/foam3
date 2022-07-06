@@ -37,7 +37,7 @@
       javaCode: `
         Logger logger = Loggers.logger(x, this);
 
-        User user = (User) emailMessage.findUser(x);
+        User user = (User) emailMessage.findUser(getX());
         x = foam.util.Auth.sudo(x, user);
 
         if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
@@ -86,6 +86,12 @@
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+        templateArgs.put("termsAndCondLink", url + appConfig.getTermsAndCondLink());
+        templateArgs.put("termsAndCondLabel", appConfig.getTermsAndCondLabel());
+        templateArgs.put("copyright", appConfig.getCopyright());
+        templateArgs.put("privacyUrl", url + appConfig.getPrivacyUrl());
+        templateArgs.put("privacyLabel", appConfig.getPrivacy());
+
 
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());

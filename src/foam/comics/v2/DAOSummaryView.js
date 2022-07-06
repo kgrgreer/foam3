@@ -57,10 +57,11 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'config? as importedConfig',
     'currentMenu?',
-    'currentControllerMode',
-    'setControllerMode',
-    'stack',
+    'currentControllerMode?',
+    'setControllerMode?',
+    'stack?',
     'translationService'
   ],
 
@@ -86,7 +87,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
-      name: 'config'
+      name: 'config',
+      factory: function() {
+        return importedConfig || foam.comics.v2.DAOControllerConfig.create({}, this);
+      }
     },
     {
       name: 'controllerMode',
@@ -110,7 +114,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
-        return foam.u2.detail.TabbedDetailView;
+        return this.config?.detailView ?? foam.u2.detail.TabbedDetailView;
       }
     },
     {

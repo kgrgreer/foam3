@@ -80,7 +80,7 @@ foam.CLASS({
         if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
           return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
         }
-        return new AUIDGenerator(getX(), getSalt());
+        return new AUIDGenerator.Builder(getX()).setSalt(getSalt()).setMinLength(getMinLength()).build();
       `,
       hidden: true,
     },
@@ -89,6 +89,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       type: 'foam.nanos.boot.NSpec',
       hidden: true,
+    },
+    {
+      name: 'minLength',
+      class: 'Int'
     }
   ],
 

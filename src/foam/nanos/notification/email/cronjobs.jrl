@@ -11,7 +11,7 @@ p({
     "second": 30
   },
   "scheduledTime": "2019-09-09T16:56:30.000Z",
-  "id": "SMTP Email Service",
+  "id": "Email Service",
   "description": "Re-send UNSENT emails in emailMessageDAO",
   "code":
   """
@@ -34,7 +34,7 @@ p({
     second = 1000;
     tps = 14;
 
-    endtime = System.currentTimeMillis() + second;
+    endTime = System.currentTimeMillis() + second;
     count = 0;
     for ( EmailMessage emailMessage : emailMessages ) {
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
@@ -67,8 +67,6 @@ p({
   "description": "Retrieve Email Folder Messages",
   "code":
   """
-    import foam.nanos.notification.email.EmailFolderAgent;
-
-    new EmailFolderAgent(x).execute(x);
+    new foam.nanos.notification.email.EmailFolderAgent(x).execute(x);
   """
 })

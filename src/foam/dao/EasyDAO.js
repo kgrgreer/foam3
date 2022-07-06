@@ -21,8 +21,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   implements: [
-    'foam.mlang.Expressions',
-    'foam.nanos.boot.NSpecAware'
+    'foam.mlang.Expressions'
   ],
 
   documentation: `
@@ -75,7 +74,8 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAwareDAO',
     'foam.nanos.crunch.box.CrunchClientBox',
     'foam.nanos.logger.Logger',
-    'foam.nanos.logger.LoggingDAO'
+    'foam.nanos.logger.LoggingDAO',
+    'foam.nanos.theme.SubdomainAwareDAO'
   ],
 
   imports: [ 'document', 'log' ],
@@ -113,7 +113,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       factory: function() {
-        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
+        return this.of && this.of.id;
       },
       javaFactory: `
       NSpec nspec = getNSpec();
@@ -124,7 +124,7 @@ foam.CLASS({
         String name = id.substring(id.lastIndexOf('.') + 1);
         name += "DAO";
         return foam.util.StringUtil.daoize(name);
-      } 
+      }
       Loggers.logger(getX(), this).warning("Of not found");
       return "EasyDAO: DAO not found";
      `
@@ -208,14 +208,20 @@ foam.CLASS({
             delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
             .setNSpec(getNSpec())
             .setDelegate(delegate)
-            .build();   
+            .build();
           } else {
             logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
             delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
               .setNSpec(getNSpec())
               .setDelegate(delegate)
-              .build();   
+              .build();
           }
+        }
+
+        if ( getSubdomainAware() ) {
+          delegate = new foam.nanos.theme.SubdomainAwareDAO.Builder(getX())
+            .setDelegate(delegate)
+            .build();
         }
 
         if ( getServiceProviderAware() ) {
@@ -242,7 +248,7 @@ foam.CLASS({
         delegate = getOuterDAO(delegate);
 
         if ( getDecorator() != null ) {
-          if ( ! ( getDecorator() instanceof ProxyDAO ) ) {
+          if ( ! ( getDecorator() instanceof ProxyDAO) ) {
             logger.error(getName(), "delegateDAO", getDecorator(), "not instanceof ProxyDAO");
             System.exit(1);
           }
@@ -314,7 +320,11 @@ foam.CLASS({
           delegate = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(getX()).setDelegate(delegate).build();
 
         if ( getCapable() )
-          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX()).setDaoKey(getName()).setDelegate(delegate).build();
+          delegate = new foam.nanos.crunch.lite.CapableDAO.Builder(getX())
+            .setDaoKey(getName())
+            .setDelegate(delegate)
+            .setAllowActionRequiredPuts(getAllowActionRequiredPuts())
+            .build();
 
         if ( getContextualize() ) {
           delegate = new foam.dao.ContextualizingDAO.Builder(getX()).
@@ -740,6 +750,10 @@ foam.CLASS({
       javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getOf().getObjClass());'
     },
     {
+      name: 'subdomainAware',
+      class: 'Boolean'
+    },
+    {
       /* deprecated */
       documentation: `More documentation in ServiceProviderAwareDAO.
 A map of class and PropertyInfos used by the ServiceProviderAwareDAO
@@ -777,6 +791,14 @@ model from which to test ServiceProvider ID (spid)`,
       name: 'capable',
       class: 'Boolean',
       javaFactory: 'return getEnableInterfaceDecorators() && foam.nanos.crunch.lite.Capable.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      name: 'allowActionRequiredPuts',
+      class: 'Boolean',
+      documentation: `
+        For Capable objects, setting this to true disables CapabilityIntercepts
+        and instead allows putting objects with ACTION_REQUIRED payloads.
+      `
     },
     {
       name: 'fixedSize',
@@ -1265,16 +1287,17 @@ model from which to test ServiceProvider ID (spid)`,
       `
     },
     {
-      name: 'toString',
+      name: 'append',
+      args: 'StringBuilder sb',
       javaCode: `
-        var sb = new StringBuilder();
         sb.append("EasyDAO");
         if ( of_ != null ) {
           sb.append("(of: ")
             .append(of_.getId())
             .append(")");
+        } else {
+          sb.append("()");
         }
-        return sb.toString();
       `
     }
   ]

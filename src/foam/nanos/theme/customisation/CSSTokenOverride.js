@@ -36,6 +36,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'source',
+      view: { class: 'foam.u2.view.ClassCompleterView' },
       updateVisibility: 'RO'
     },
     {

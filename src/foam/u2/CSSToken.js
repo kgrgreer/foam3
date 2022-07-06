@@ -20,9 +20,9 @@ foam.CLASS({
     {
       name: 'value',
       preSet: function(o, d) {
-        var f = ! d || foam.util.isPrimitive(d);
+        var f = ! d || foam.util.isPrimitive(d) || foam.Function.isInstance(d);
         if ( ! f ) {
-          this.__context__.warn('Set Token value to non-primitive or Token:' + d);
+          this.__context__.warn('Trying to set invalid token value:' + d);
           return o;
         }
         return d;
@@ -39,12 +39,12 @@ foam.CLASS({
         return d;
       }
     },
-    'sourceCls_',
+    'sourceCls_'
   ],
 
   methods: [
     function toSummary() {
-      return `name: ${this.name}, value: ${this.value}, fallback: ${this.fallback}`
+      return `name: ${this.name}, value: ${this.value}, fallback: ${this.fallback}`;
     },
     function installInClass(cls) {
       var axiom = this;
@@ -53,7 +53,7 @@ foam.CLASS({
         cls,
         foam.String.constantize(this.name),
         {
-          get: function() { return axiom },
+          get: function() { return axiom; }
         }
       );
     },

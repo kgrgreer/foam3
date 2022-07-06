@@ -83,7 +83,7 @@ foam.CLASS({
         // 8 bits timestamp
         id.append(toHexString(curSec, 8));
         // At least 2 bits sequence
-        id.append(toHexString(seqNo, 2));
+        id.append(toHexString(seqNo, 2 + Math.max(0, getMinLength() - 15)));
       `
     }
   ]

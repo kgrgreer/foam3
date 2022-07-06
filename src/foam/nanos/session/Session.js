@@ -15,10 +15,9 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
     'foam.core.OrX',
+    'foam.core.X',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Subject',
@@ -36,7 +35,8 @@ foam.CLASS({
     'java.util.Random',
     'java.util.UUID',
     'javax.servlet.http.HttpServletRequest',
-    'org.eclipse.jetty.server.Request'
+    'org.eclipse.jetty.server.Request',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -368,14 +368,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         Subject subject = null;
-        if ( user != null ||
-             agent != null ) {
+        if ( user != null || agent != null ) {
           subject = new Subject();
           subject.setUser(agent);
           subject.setUser(user);
           rtn = rtn
             .put("subject", subject)
-            .put("spid", subject.getUser().getSpid());
+            .put("spid",    subject.getUser().getSpid());
         }
 
         // if the context was anonymous, do not reuse outdated entries
@@ -389,8 +388,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         Group group = auth.getCurrentGroup(rtn);
 
         if ( group != null ) {
-          rtn = rtn
-            .put("group", group);
+          rtn = rtn.put("group", group);
         }
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(rtn);
         rtn = rtn.put("theme", theme);
@@ -443,8 +441,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getAgentId() < 0 &&
-             getUserId() != getAgentId() ) {
+        if ( getAgentId() < 0 && getUserId() != getAgentId() ) {
           throw new IllegalStateException("Agent id is invalid.");
         }
       `

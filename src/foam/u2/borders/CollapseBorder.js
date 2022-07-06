@@ -18,6 +18,8 @@ foam.CLASS({
     ^ {
       position: relative;
       padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
     }
     ^.expanded {
     }

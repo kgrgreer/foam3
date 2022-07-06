@@ -13,22 +13,24 @@ foam.CLASS({
     'showTitle'
   ],
 
+  imports: ['popup?'],
+
   css: `
     ^ {
       display: flex;
       flex-direction: column;
-      margin: 40pt;
-      width: 45vw;
+      margin: auto;
+      width: 65vw;
       min-height: 65vh;
       margin-top: 0;
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^ {
+      ^:not(^isFullscreen) {
         width: 45vw;
       }
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
-      ^ {
+      ^:not(^isFullscreen) {
         width: 25vw;
       }
     }
@@ -59,6 +61,7 @@ foam.CLASS({
     function render() {
       const self = this;
       this.addClass()
+        .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
         .start(this.progressWizardView, { data: this })
           .addClass(this.myClass('progress'))
         .end()

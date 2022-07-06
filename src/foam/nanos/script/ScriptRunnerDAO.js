@@ -31,8 +31,8 @@ foam.CLASS({
         if ( script.getStatus() == ScriptStatus.SCHEDULED ) {
           if ( script.canRun(x) ) {
             script.setStatus(ScriptStatus.RUNNING);
-            script = (Script) getDelegate().put_(x, script).fclone();
-            runScript(x, script);
+            script = (Script) getDelegate().put_(x, script);
+            runScript(x, (Script) script.fclone());
           } else {
             script.setStatus(ScriptStatus.UNSCHEDULED);
             script = (Script) getDelegate().put_(x, script);
@@ -70,7 +70,7 @@ foam.CLASS({
                 script.setStatus(ScriptStatus.ERROR);
                 logger.error("agency", script.getId(), t);
               } finally {
-                getDelegate().put_(x, script);
+                ((DAO) x.get(script.getDaoKey())).put_(x, script);
               }
             }
           }, "Run script: " + script.getId());
