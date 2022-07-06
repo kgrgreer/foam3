@@ -151,7 +151,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.add(value);
       }
-    },
+    }
   ]
 });
 
@@ -663,11 +663,6 @@ foam.CLASS({
   name: 'UMLDiagram',
   extends: 'foam.u2.Element',
 
-  imports: [
-    'browserPath' ,
-    'conventionalUML'
-  ],
-
   requires: [
     'foam.doc.ClassLink',
     'foam.doc.DocBorder',
@@ -676,6 +671,11 @@ foam.CLASS({
     'foam.graphics.Label',
     'foam.graphics.Transform',
     'foam.u2.PopupView'
+  ],
+
+  imports: [
+    'browserPath' ,
+    'conventionalUML'
   ],
 
   exports: [ 'as data' ],
