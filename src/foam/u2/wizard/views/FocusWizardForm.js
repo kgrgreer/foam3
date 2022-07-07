@@ -9,11 +9,9 @@ foam.CLASS({
   name: 'FocusWizardForm',
   extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
 
-  exports: [
-    'showTitle'
-  ],
+  imports: [ 'popup?' ],
 
-  imports: ['popup?'],
+  exports: [ 'showTitle' ],
 
   css: `
     ^ {
