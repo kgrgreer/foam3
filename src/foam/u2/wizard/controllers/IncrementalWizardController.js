@@ -48,7 +48,7 @@ foam.CLASS({
         const currentWizardlet = this.currentWizardlet;
 
         let wizardletActions = [];
-        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) ) {
+        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) && currentWizardlet.dynamicActions?.length ) {
           wizardletActions = currentWizardlet.dynamicActions;
         } else {
           wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
