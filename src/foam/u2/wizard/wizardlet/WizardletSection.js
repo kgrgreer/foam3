@@ -66,7 +66,8 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `
         This section is visible only when this property is true.
-      `
+      `,
+      expression: function(customView) { return customView ?? false; }
     },
     {
       name: 'isValid',

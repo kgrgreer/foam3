@@ -80,12 +80,14 @@ foam.CLASS({
           }
           return this.E()
             .addClass(self.myClass('flexButtons'))
+            // Export the current wizardlet section view in context so that dynamicActions can use it
+            .startContext({ currentWizardletView: current$ })
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {
                 size: 'LARGE',
                 label: self.data.currentWizardlet.actionLabel || action.label
               });
-            });
+            }).endContext();
         }))
         ;
     },
