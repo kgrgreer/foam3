@@ -167,6 +167,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function fromProperty(prop) {
+      this.of = prop.of;
+    },
+
     function updateChoices() {
       if ( this.of == null || this.of.id == 'foam.core.FObject' ) {
         this.choices = [];
