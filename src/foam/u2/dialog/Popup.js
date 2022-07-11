@@ -30,7 +30,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'close as closeDialog'
+    'close as closeDialog',
+    'as popup'
   ],
 
   css: `

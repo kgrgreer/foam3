@@ -22,6 +22,8 @@
 
   css: `
     ^suggestions {
+      bottom: 0;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-radius: 4px;
@@ -32,7 +34,7 @@
       max-height: 14em;
       overflow: auto;
       padding: 6px;
-      position: absolute;
+      position: relative;
       width: 100%;
       z-index: 100;
     }
@@ -140,6 +142,8 @@
              // using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
              // otherwise when using click the blur gets fired first and the row listener is never called
                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
+               self.inputFocused = false;
+               
                e.preventDefault();
              })
           .end();
