@@ -67,6 +67,10 @@ foam.CLASS({
       overflow: auto;
     }
 
+    ^fullscreen ^body {
+      max-height: 100vh;
+    }
+
     ^logo img, ^logo svg {
       display: flex;
       height: 25px;

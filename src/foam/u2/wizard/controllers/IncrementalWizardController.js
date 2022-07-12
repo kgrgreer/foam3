@@ -60,7 +60,7 @@ foam.CLASS({
 
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
-            goNextAction = action;
+            goNextAction = this.GO_NEXT.clone().copyFrom(action);
             goNextAction.buttonStyle = 'PRIMARY';
             continue;
           }
