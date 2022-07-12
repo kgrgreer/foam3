@@ -82,7 +82,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isVisible',
-      expression: function (isAvailable, choices, hideChoiceView) {
+      expression: function (isAvailable, choices, hideChoiceView, data, data$selectedData) {
+        /* To-do : figure out why isValid expression not working */
+        if ( data && data$selectedData.length < 1 )
+          this.isValid = false;
+        else
+          this.isValid = true;
+
         return isAvailable && choices.length > 0 && ! hideChoiceView;
       }
     },
@@ -125,11 +131,6 @@ foam.CLASS({
       name: 'selectedData',
       postSet: function(_,n) {
         this.data.selectedData = n.map(capability => capability.id);
-
-        if ( n && n.length < 1 )
-          this.isValid = false;
-        else
-          this.isValid = true;
       }
     },
     {
