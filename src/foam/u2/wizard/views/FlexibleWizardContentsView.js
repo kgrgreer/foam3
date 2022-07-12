@@ -80,8 +80,11 @@ foam.CLASS({
           }
           return this.E()
             .addClass(self.myClass('flexButtons'))
+            // WARNING!!!
             // Export the current wizardlet section view in context so that dynamicActions can use it
-            .startContext({ currentWizardletView: current$ })
+            // this only works for incremental wizard, we will need a better solution for wizards that 
+            // render multiple sections at once
+            .startContext({ currentWizardletSectionView: current$ })
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {
                 size: 'LARGE',
