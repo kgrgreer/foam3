@@ -123,8 +123,13 @@ foam.CLASS({
     },
     {
       name: 'selectedData',
-      postSet: function(_,n){
+      postSet: function(_,n) {
         this.data.selectedData = n.map(capability => capability.id);
+
+        if ( n && n.length < 1 )
+          this.isValid = false;
+        else
+          this.isValid = true;
       }
     },
     {
