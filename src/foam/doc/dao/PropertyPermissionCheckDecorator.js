@@ -8,16 +8,20 @@ foam.CLASS({
   package: 'foam.doc.dao',
   name: 'PropertyPermissionCheckDecorator',
   extends: 'foam.dao.ProxyDAO',
+
   documentation: `
     DAO decorator to fill in the hasPermission property on foam.doc.Axioms put
     into a dao.
   `,
+
   requires: [
     'foam.doc.PropertyAxiom',
   ],
+
   imports: [
     'auth',
   ],
+
   methods: [
     function put_(x, o) {
       var self = this;
@@ -31,6 +35,6 @@ foam.CLASS({
         o.hasPermission = permitted;
         return self.delegate.put_(x, o);
       });
-    },
-  ],
+    }
+  ]
 });

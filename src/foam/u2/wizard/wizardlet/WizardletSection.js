@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'WizardletSection',
   flags: ['web'],
+
   documentation: `
     Describes a sub-section of a wizardlet.
   `,
@@ -134,5 +135,5 @@ foam.CLASS({
             ? { showTitle: this.showWizardletSectionTitles } : {})
       }, ctx);
     }
-  ],
+  ]
 });

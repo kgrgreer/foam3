@@ -174,5 +174,5 @@ foam.CLASS({
         this.DOT(this.ActionReference.ACTION, foam.core.Action.NAME),
         actionRef.action.name));
     }
-  ],
+  ]
 });

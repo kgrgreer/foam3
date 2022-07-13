@@ -9,11 +9,9 @@ foam.CLASS({
   name: 'FocusWizardForm',
   extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
 
-  exports: [
-    'showTitle'
-  ],
+  imports: [ 'popup?' ],
 
-  imports: ['popup?'],
+  exports: [ 'showTitle' ],
 
   css: `
     ^ {
@@ -24,6 +22,12 @@ foam.CLASS({
       min-height: 65vh;
       margin-top: 0;
     }
+
+    ^:not(^isFullscreen) {
+      margin: 40pt;
+      margin-top: 0;
+    }
+
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^isFullscreen) {
         width: 45vw;
