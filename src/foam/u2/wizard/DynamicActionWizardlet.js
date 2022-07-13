@@ -7,6 +7,7 @@
 foam.INTERFACE({
   package: 'foam.u2.wizard',
   name: 'DynamicActionWizardlet',
+
   documentation: `
     This wizardlet has a 'dynamicActions' property, which allows the wizardlet
     to specify wizard actions dynamically.
@@ -14,7 +15,7 @@ foam.INTERFACE({
 
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'foam.core.Action',
       name: 'dynamicActions'
     }

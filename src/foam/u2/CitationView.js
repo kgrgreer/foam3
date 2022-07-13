@@ -53,7 +53,7 @@ foam.CLASS({
       code: async function() {
         let newSummary;
 
-        if ( this.data && this.data.toSummary ) {
+        if ( this.data ) {
           var summary = this.getSummary(this.data);
 
           newSummary = summary instanceof Promise
@@ -79,7 +79,7 @@ foam.CLASS({
     },
 
     function getSummary(data) {
-      return data.toSummary();
+      return data.toSummary?.();
     }
   ]
 });
