@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'Axiom',
   ids: ['name', 'parentId'],
+  
   properties: [
     {
       name: 'axiom',
@@ -21,12 +22,12 @@ foam.CLASS({
       name: 'name',
       factory: function() {
         return this.axiom.name;
-      },
+      }
     },
     {
       class: 'Boolean',
       name: 'hasPermission',
       value: true,
-    },
-  ],
+    }
+  ]
 });
