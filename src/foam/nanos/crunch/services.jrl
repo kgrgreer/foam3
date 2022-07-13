@@ -132,8 +132,6 @@ p({
   "name":"bareUserCapabilityJunctionDAO",
   "lazy": false,
   "serviceScript":"""
-    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
-    decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setRuler(false)
@@ -142,7 +140,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setDecorator(decorator)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
