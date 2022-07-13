@@ -9,15 +9,18 @@
   name: 'DigDeleteView',
   extends: 'foam.u2.View',
   documentation: 'View used to show snippets of deletion API calls.',
+
   imports: [
     'appConfig',
     'user',
   ],
+
   requires: [
     'foam.doc.CodeTabs',
     'foam.nanos.dig.DIG',
     'foam.u2.Tab',
   ],
+
   properties: [
     {
       name: 'url',
@@ -29,6 +32,7 @@
       name: 'samplekey',
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -117,6 +121,6 @@ req.end();
               end()
           })
       }))
-    },
-  ],
+    }
+  ]
 });
