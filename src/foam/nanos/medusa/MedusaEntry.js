@@ -259,6 +259,6 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       name: 'toString',
       type: 'String',
       javaCode: `return toSummary();`
-   }
+    }
   ]
 });
