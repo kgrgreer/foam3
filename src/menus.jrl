@@ -272,7 +272,7 @@ p({
           "class":"foam.nanos.notification.NotificationRowView"
         },
         "groupExpr":{
-          "class":"foam.mlang.expr.DateTimeGroupingExpr",
+          "class":"foam.mlang.expr.CalendarDateGroupingExpr",
           "dateGroupType":0,
           "dateGroups":[
             {

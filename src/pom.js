@@ -259,6 +259,7 @@ foam.POM({
     { name: "foam/mlang/expr/DateTypes",                              flags: "js|java" },
     { name: "foam/mlang/expr/DateGrouping",                           flags: "js|java" },
     { name: "foam/mlang/expr/DateGroupingExpr",                       flags: "js|java" },
+    { name: "foam/mlang/expr/CalendarDateGroupingExpr",               flags: "js|java" },
     { name: "foam/mlang/expr/DateTimeGroupingExpr",                   flags: "js|java" },
     { name: "foam/mlang/expr/Ref",                                    flags: "js|java" },
     { name: "foam/mlang/expr/TimeOfDay",                              flags: "js|java" },
