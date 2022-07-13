@@ -223,8 +223,7 @@ foam.CLASS({
       this.window.cancelAnimationFrame(id);
     },
 
-    function installCSS(text,  /* optional */ owner, /* optional */ id) {
-      /* Create a new <style> tag containing the given CSS code. */
+    function installCSS(text, /* optional */ owner, /* optional */ id) {
       this.document && this.document.head && this.document.head.insertAdjacentHTML(
         'beforeend',
         '<style' +

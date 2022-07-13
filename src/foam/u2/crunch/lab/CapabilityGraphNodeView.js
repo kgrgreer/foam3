@@ -66,15 +66,16 @@ foam.CLASS({
       name: 'position',
       class: 'Array',
       factory: () => [0, 0]
-    }
+    },
+    'capabilityClickedListener',
+    'ucjClickedListener'
   ],
 
   methods: [
     function render() {
       var self = this;
       var dims = {
-        x: '' + (this.position[0] - 15),
-        y: '' + (this.position[1] - 15),
+        x: -15, y: -15,
         width:  '' + (this.size[0] + 30),
         height: '' + (this.size[1] + 30),
       };
@@ -110,9 +111,7 @@ foam.CLASS({
             .addClass(this.myClass('segment')).addClass('tiny')
             .add(capability.id)
             .on('click', function() {
-              var menu = 'admin.data';
-              var calculatedPreRecordViewMemento = self.calculateMemento.call(self, 'capabilityDAO');
-              self.memento.value = [menu, calculatedPreRecordViewMemento, capability.id].join(foam.nanos.controller.Memento.SEPARATOR);
+              self.capabilityClickedListener(capability);
             })
           .end()
           .callIf(ucj !== null, function () {
@@ -132,53 +131,13 @@ foam.CLASS({
                 })
                 .add(ucj.status.label)
                 .on('click', function() {
-                  var menu = 'admin.data';
-                  var calculatedPreRecordViewMemento = self.calculateMemento.call(self, 'userCapabilityJunctionDAO');
-                  self.memento.value = [menu, calculatedPreRecordViewMemento, ucj.id].join(foam.nanos.controller.Memento.SEPARATOR);
+                  self.ucjClickedListener(ucj);
                 })
               .end()
               ;
           })
         .end()
         ;
-    },
-    function calculateMemento(daoName) {
-      var dao = this.__context__[daoName];
-      var of = dao && dao.of;
-
-      var count = 5;//as there one memento for controller view, one for search, one for scroll record and one for table columns and the next memento is "free"
-
-      //number of filters calculation
-      if ( of ) {
-        var columns = of.getAxiomByName('searchColumns');
-        columns = columns && columns.columns;
-        if ( ! columns ) {
-          columns = of.getAxiomByName('tableColumns');
-          columns = columns && columns.columns;
-        }
-
-        if ( columns ) {
-          columns = columns.filter(function(c) {
-            var axiom = of.getAxiomByName(c);
-            return axiom && axiom.searchView;
-          });
-        } else {
-          columns =  of.getAxiomsByClass(foam.core.Property)
-          .filter((prop) => prop.searchView && ! prop.hidden)
-          .map(foam.core.Property.NAME.f);
-        }
-
-        count += columns.length;
-      }
-
-      var mementoValue = daoName;
-      while ( count > 0 ) {
-        mementoValue += foam.nanos.controller.Memento.SEPARATOR;
-        count--;
-      }
-      mementoValue += 'view';
-
-      return mementoValue;
     }
   ]
 });

@@ -22,6 +22,8 @@
 
   css: `
     ^suggestions {
+      bottom: 0;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-radius: 4px;
@@ -32,7 +34,7 @@
       max-height: 14em;
       overflow: auto;
       padding: 6px;
-      position: absolute;
+      position: relative;
       width: 100%;
       z-index: 100;
     }
@@ -62,7 +64,7 @@
       name: 'autocompleter',
       factory: function() {
         if ( ! this.daoKey ) console.error('No daokey');
-        return this.Autocompleter.create({dao: this.__subContext__[this.daoKey]})
+        return this.Autocompleter.create({ dao: this.__subContext__[this.daoKey] })
       }
     },
     {
@@ -93,8 +95,7 @@
       }
     },
     {
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
+      class: 'Array',
       name: 'filteredValues'
     },
     {
@@ -127,21 +128,26 @@
           this.inputFocused = false;
         })
       .end()
-      .add(this.slot(function(filteredValues, data, inputFocused) {
-        if ( ! data || ! inputFocused ) return this.E();
-        if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
-        return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
-          this
-           .start(self.rowView, { data: obj })
-             .addClass(self.myClass('row'))
-             .on('mousedown', function() {
-                //using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
-                //otherwise when using click the blur gets fired first and the row listener is never called
-                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
+      .add(this.slot(this.populate));
+    },
+    function populate(filteredValues, data, inputFocused) {
+      const self = this;
+      if ( ! data || ! inputFocused ) return this.E();
+      if ( ! filteredValues.length ) return this.E().addClass(this.myClass('suggestions')).add(this.emptyTitle);
+      return this.E().addClass(this.myClass('suggestions')).add(this.title).forEach(this.filteredValues, function(obj) {
+        this
+          .start(self.rowView, { data: obj })
+            .addClass(self.myClass('row'))
+            .on('mousedown', function(e) {
+             // using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
+             // otherwise when using click the blur gets fired first and the row listener is never called
+               self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
+               self.inputFocused = false;
+               
+               e.preventDefault();
              })
-           .end()
-        })
-      }))
+          .end();
+      });
     }
   ],
 

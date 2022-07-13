@@ -24,10 +24,15 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',
     'subject'
+  ],
+
+  exports: [
+    'as script'
   ],
 
   javaImports: [
@@ -379,7 +384,7 @@ foam.CLASS({
           this.output += Array.from(arguments).join('') + '\n';
         };
         try {
-          with ({ log: log, print: log, x: this.__context__ })
+          with ({ log: log, print: log, x: this.__subContext__ })
             return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
@@ -400,7 +405,7 @@ foam.CLASS({
 
         try {
           Thread.currentThread().setPriority(getPriority());
-
+          setLastRun(new Date());
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
@@ -422,7 +427,6 @@ foam.CLASS({
           logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
           throw thrown;
         } finally {
-          setLastRun(new Date());
           setLastDuration(pm.getTime());
           ps.flush();
           setOutput(baos.toString());

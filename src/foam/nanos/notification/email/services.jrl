@@ -35,7 +35,7 @@ p({
     import foam.nanos.notification.email.NullEmailService;
     import foam.nanos.notification.email.ProxyEmailService;;
     return new ProxyEmailService.Builder(x)
-      .setDelegate(new NullEmailService.Builder(x).build())
+      .setDelegate((ProxyEmailService) x.get("smtpEmailService"))
       .build();
   """
 })
@@ -50,6 +50,7 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessages")
+      .setSAF(true)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
         .setSize(100000)
@@ -68,6 +69,7 @@ p({
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageDAO"))
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
@@ -101,6 +103,15 @@ p({
   "name":"SMTPConfig",
   "lazy": false,
   "service":{"class":"foam.nanos.notification.email.SMTPConfig"}
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"smtpEmailService",
+  lazy: false,
+  service:{
+    class:"foam.nanos.notification.email.SMTPEmailService"
+  }
 })
 
 p({

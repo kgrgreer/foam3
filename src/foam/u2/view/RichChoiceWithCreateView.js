@@ -63,6 +63,10 @@ foam.CLASS({
       factory: function() {
         return this.sections[0]?.dao;
       }
+    },
+    {
+      class: 'String',
+      name: 'addPlaceholder'
     }
   ],
 
@@ -85,7 +89,7 @@ foam.CLASS({
       return this.E()
         .tag(this.DefaultActionView, {
           action: this.ADD_ROW, data: this,
-          label: this.of ? `Add ${this.of.model_.label.toLowerCase()}` : undefined
+          label: this.addPlaceholder || (this.of ? `Add ${this.of.model_.label.toLowerCase()}` : undefined)
         });
     }
   ],

@@ -9,8 +9,13 @@ foam.CLASS({
   name: 'ReviewWizardletView',
   extends: 'foam.u2.View',
 
-  messages: [
-    { name: 'TITLE', message: 'Review your Deposit ' }
+  requires: [
+    'foam.core.AnyHolder',
+    'foam.u2.ControllerMode'
+  ],
+
+  exports: [
+    'controllerMode'
   ],
 
   css: `
@@ -18,9 +23,21 @@ foam.CLASS({
       text-align: center;
       margin: 32px 0;
     }
+    ^generic-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
   `,
 
   properties: [
+    {
+      class: 'String',
+      name: 'title',
+      factory: function(){
+        return 'Review Your Request';
+      }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.u2.wizard.wizardlet.ReviewItem',
@@ -30,7 +47,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showTitle',
       value: true
-    }
+    },
+    {
+      name: 'controllerMode',
+      factory: function() {
+        return this.ControllerMode.VIEW;
+      }
+    },
   ],
 
   methods: [
@@ -39,18 +62,30 @@ foam.CLASS({
       this.SUPER();
       this.addClass(this.myClass())
         .start()
-          .start().addClass('h200').show(this.showTitle$).add(this.TITLE).end()
-          .start().addClass('generic-container')
+          .start().addClass('h200').show(this.showTitle$).add(this.title$).end()
+          .start().addClass(this.myClass('generic-container'))
             .forEach(this.items, function (item) {
-              if ( item.noData )  {
-                this.start(item.border).tag(item.view).end();
-                return;
-              }
-              // if there is no data
-              else if ( ! self.data.value[item.name] ) return;
+              // Skip ReviewItem if predicate is negative
+              // note: value is wrapped in AnyHolder so mlang
+              //   expressions can be used on the root data
+              if ( ! item.predicate.f(self.AnyHolder.create({
+                value: self.data.value[item.name]
+              })) ) return;
 
               // if there is data
-              this.start(item.border).tag(item.view, {data: self.data.value[item.name]}).end();
+              this
+                .start(item.border)
+                  .callIf(item.title, function() {
+                    this
+                      .start()
+                        .addClass('h600')
+                        .add(item.title)
+                      .end();
+                  })
+                  .start(item.headingBorder)
+                    .tag(item.view, {data: self.data.value[item.name]})
+                  .end()
+                .end();
             })
           .end()
         .end();

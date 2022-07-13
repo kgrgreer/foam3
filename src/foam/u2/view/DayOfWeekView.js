@@ -12,6 +12,12 @@ foam.CLASS({
     'foam.time.DayOfWeek'
   ],
 
+  css: `
+    ^flexer > div {
+      width: fit-content !important;
+    }
+  `,
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -20,7 +26,7 @@ foam.CLASS({
     },
     {
       name: 'maxSelected',
-      value: 5
+      value: 7
     },
     {
       name: 'showMinMaxHelper',
@@ -28,13 +34,13 @@ foam.CLASS({
     },
     {
       name: 'numberColumns',
-      value: 5
+      value: 7
     }
   ],
   methods: [
     function init() {
       this.SUPER();
-      this.choices = this.DayOfWeek.VALUES;
+      this.choices = this.DayOfWeek.VALUES.map(v => [v, v.shortName]);
     }
   ]
 });

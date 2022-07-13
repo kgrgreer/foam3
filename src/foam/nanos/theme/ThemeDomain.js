@@ -36,6 +36,18 @@ foam.CLASS({
             this.add(value);
           });
       },
+    },
+    {
+      class: 'String',
+      name: 'subdomain'
     }
   ]
+});
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'foam.nanos.theme.ThemeDomain',
+  targetModel: 'foam.nanos.crunch.Capability',
+  forwardName: 'capabilities',
+  inverseName: 'themeDomains'
 });

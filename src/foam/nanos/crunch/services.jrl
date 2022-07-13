@@ -132,15 +132,14 @@ p({
   "name":"bareUserCapabilityJunctionDAO",
   "lazy": false,
   "serviceScript":"""
-    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
-    decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
     dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setRuler(false)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setDecorator(decorator)
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
@@ -227,12 +226,17 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
       .setAuthorize(false)
       .setSeqNo(true)
       .setSeqPropertyName("seqNo")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctionHistory")
-      .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
+      .setSAF(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP))
+        .setSize(100000)
+        .build())
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP));
   """,
@@ -256,7 +260,7 @@ p({
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
+  "client":"{\"of\":\"foam.nanos.crunch.connection.CapabilityPayload\"}"
 })
 
 p({

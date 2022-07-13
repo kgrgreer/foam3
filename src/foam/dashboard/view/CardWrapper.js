@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'CardWrapper',
   extends: 'foam.u2.Element',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   imports: [
     'dashboardController'
@@ -22,6 +21,7 @@ foam.CLASS({
   css: `
   ^ .foam-dashboard-view-Card {
     border-radius: 22px;
+    overflow: hidden;
   }
   ^titled-container {
     display: grid;
@@ -47,7 +47,6 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.initMemento();
       this.addClass(this.myClass())
         .enableClass(this.myClass('titled-container'), this.title)
         .style({ 'aspect-ratio': this.aspectRatio })

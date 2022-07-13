@@ -701,6 +701,17 @@ foam.CLASS({
       documentation: `
         The name of the property of a model that contains the denomination String.
       `
+    },
+    {
+      name: 'unitPropValueToString',
+      value: async function(x, val, unitPropName) {
+        if ( unitPropName ) {
+          const unitProp = await x.currencyDAO.find(unitPropName);
+          if ( unitProp )
+            return unitProp.format(val);
+        }
+        return val;
+      }
     }
   ]
 });
@@ -1006,6 +1017,12 @@ foam.CLASS({
       class: 'I18NString',
       name: 'label',
       expression: function(name) { return foam.String.labelize(name); }
+    },
+    {
+      name: 'labelFormatter',
+      value: function(_, prop) {
+        this.add(prop.label$);
+      }
     },
     { class: 'String', name: 'shortName' }
   ]

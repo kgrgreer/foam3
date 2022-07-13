@@ -10,14 +10,30 @@ foam.CLASS({
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
+    'foam.u2.detail.TabularSectionView',
     'foam.u2.wizard.wizardlet.WizardletSection',
   ],
 
   properties: [
     {
+      class: 'String',
+      name: 'actionLabel'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.u2.wizard.wizardlet.ReviewItem',
       name: 'items'
+    },
+    {
+      class: 'String',
+      name: 'title',
+      factory: function(){
+        return 'Review Your Request';
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle'
     },
     {
       name: 'sections',
@@ -28,11 +44,20 @@ foam.CLASS({
             title: 'Review',
             customView: {
               class: 'foam.u2.wizard.wizardlet.ReviewWizardletView',
-              items$: this.items$
+              title$: this.title$,
+              items$: this.items$,
+              showTitle$: this.showTitle$
             }
           })
         ];
       }
+    }
+  ],
+
+  methods: [
+    function init() {
+      const x = this.__subContext__;
+      x.register(this.TabularSectionView, 'foam.u2.detail.SectionView');
     }
   ]
 });

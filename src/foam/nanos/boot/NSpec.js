@@ -76,74 +76,35 @@ foam.CLASS({
       class: 'Boolean',
       name: 'lazy',
       tableWidth: 65,
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'lazyClient',
+      tableWidth: 65,
+      value: true
     },
     {
       class: 'Boolean',
       name: 'serve',
       tableWidth: 72,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      },
       documentation: 'If true, this service is served over the network via boxes. If the service is a WebAgent, it will be served as a WebAgent only if this is false.'
     },
     {
       class: 'Boolean',
       name: 'authenticate',
       shortName: 'a',
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
     },
     {
       class: 'Boolean',
       name: 'parameters',
-      value: false,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: false
     },
     {
       class: 'Boolean',
       name: 'pm',
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
     },
     {
       documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, as to avoid the synchronization overhead associated with accessing the created singleton service.`,
@@ -310,13 +271,10 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        if ( ! getAuthenticate() ) return;
-
-        String permission = "service." + getId();
-        AuthService auth = (AuthService) x.get("auth");
-  
-        if ( ! auth.check(x, permission) ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+        try {
+          checkAuthorization(x);
+        } catch ( AuthorizationException e ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied", "service." + getId());
           throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
         }
       `

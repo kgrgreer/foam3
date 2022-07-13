@@ -43,7 +43,7 @@ foam.CLASS({
         httpPost.addHeader("Content-type", "application/json");
         
         // Add the slack message to the post
-        StringEntity params = new StringEntity("{\\"text\\" : \\"" + slackMessage + "\\"}", "UTF-8");
+        StringEntity params = new StringEntity("nanopay Alarm: "+slackMessage , "UTF-8");
         params.setContentType("application/json");
         httpPost.setEntity(params);
         

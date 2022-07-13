@@ -150,6 +150,13 @@ foam.CLASS({
     { name: 'fromCSVLabelMapping', factory: function() { return this.property.javaFromCSVLabelMapping; } },
     { name: 'formatJSON',          factory: function() { return this.property.javaFormatJSON; } },
     {
+      name: 'propClassName',
+      expression: function (propType) {
+        const i = propType.indexOf('<');
+        return i == -1 ? propType : propType.slice(0, i);
+      }
+    },
+    {
       class: 'Boolean',
       name: 'sheetsOutput',
       factory: function() { return this.property.sheetsOutput; },
@@ -251,7 +258,7 @@ foam.CLASS({
             name: 'getValueClass',
             visibility: 'public',
             type: 'Class',
-            body: `return ${this.propType}.class;`
+            body: `return ${this.propClassName}.class;`
           });
 
 //          m.push({

@@ -19,6 +19,7 @@ p({
     combinedSection: true,
     wao: {
       class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of: "foam.nanos.cron.Schedulable",
       prerequisiteCapabilityId: "schedulable-dao-put",
       delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
     }
@@ -37,8 +38,9 @@ p({
     saveOnAvailable: false,
     saveOnCurrent: true,
     wao:{
-      class: "foam.u2.wizard.wao.PrerequisiteWAO",
-      prerequisiteCapabilityId: "schedulable-review",
+      class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+      of: "foam.nanos.cron.Schedulable",
+      minMaxCapabilityId: 'schedulable-xorminmax',
       delegate: {
         class: "foam.u2.wizard.wao.DAOWAO",
         daoKey: "schedulableDAO",
@@ -51,23 +53,65 @@ p({
 p({
   id: 'schedulable-review',
   name: 'Schedulable Review',
-  of: 'foam.nanos.cron.Schedulable',
+  of: 'foam.core.MapHolder',
   wizardlet: {
-    class: 'foam.nanos.crunch.ui.CapabilityWizardlet',
-    of: 'foam.nanos.cron.Schedulable',
-    combinedSection: true,
+    class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
+    title: "Review Your Schedule",
+    actionLabel: 'Submit',
+    showTitle: false,
+    of: 'foam.core.MapHolder',
+    items: [
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'objectToSchedule',
+        border: {
+          class: 'foam.u2.borders.TopBorderCard',
+          color: '#406dea'
+        },
+        view: {
+          class: 'foam.u2.detail.VerticalDetailView',
+          showTitle: false
+        }
+      },
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'schedule',
+        border: {
+          class: 'foam.u2.borders.BackgroundCard',
+          backgroundColor: '#DADDE2'
+        },
+        view: {
+          class: 'foam.u2.detail.VerticalDetailView'
+        },
+        title: 'Schedule Details'
+      }
+    ],
     wao: {
-      class: "foam.u2.wizard.wao.XORMinMaxWAO",
-      minMaxCapabilityId: "schedulable-xorminxmax",
-      of: "foam.nanos.cron.Schedulable",
-      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
+      class: 'foam.u2.wizard.wao.CompositeWAO',
+      of: 'foam.core.MapHolder',
+      delegates: [
+        {
+          class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+          of: 'foam.core.MapHolder',
+          minMaxCapabilityId: 'schedulable-xorminmax',
+          loadFromPath: 'objectToSchedule',
+          loadIntoPath: 'value.objectToSchedule'
+        },
+        {
+          class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+          of: 'foam.core.MapHolder',
+          minMaxCapabilityId: 'schedulable-xorminmax',
+          loadFromPath: 'schedule',
+          loadIntoPath: 'value.schedule'
+        }
+      ]
     }
   }
 })
 
 p({
   class: 'foam.nanos.crunch.MinMaxCapability',
-  id: "schedulable-xorminxmax",
+  id: "schedulable-xorminmax",
   name: "Schedulable MinMax",
   min: 1,
   max: 1

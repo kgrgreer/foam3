@@ -94,6 +94,7 @@ foam.CLASS({
     {
       name: 'goPrev',
       label: 'Back',
+      icon: 'images/arrow-back-24px.svg',
       isEnabled: function (isLoading_) {
         return ! isLoading_;
       },
@@ -118,6 +119,9 @@ foam.CLASS({
         this.isLoading_ = true;
         this.data.next().then((isFinished) => {
           if ( isFinished ) {
+            for ( let w of this.data.wizardlets ) {
+              if ( w.submit ) w.submit();
+            }
             this.onClose({ completed: true })
           }
         }).catch(e => {

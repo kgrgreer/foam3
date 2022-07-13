@@ -1136,8 +1136,8 @@ for ( int i = 0 ; i < this.args_.length ; i++ ) {
   if ( newArg == foam.mlang.MLang.FALSE ) return foam.mlang.MLang.FALSE;
   if ( newArg instanceof And ) {
     if ( args == null ) args = new java.util.ArrayList<>();
-    for ( int j = 0 ; j < ( ( (And) newArg ).args_.length ) ; j++ ) {
-      args.add(( (And) newArg ).args_[j]);
+    for ( int j = 0 ; j < (((And) newArg).args_.length ) ; j++ ) {
+      args.add(((And) newArg).args_[j]);
     }
     update = true;
   } else {
@@ -2513,7 +2513,7 @@ public IsInstanceOf(foam.core.ClassInfo targetClass) {
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.mlang.Expr',
+      javaType: 'foam.mlang.Expr',
       name: 'propExpr'
     }
   ],
@@ -2526,7 +2526,7 @@ public IsInstanceOf(foam.core.ClassInfo targetClass) {
     },
     {
       name: 'f',
-      code: function f(obj) { return this.targetClass.isInstance(obj); },
+      code: function f(obj) { return this.propExpr == null || this.propExpr == undefined ? this.targetClass.isInstance(obj) : this.targetClass.isInstance(this.propExpr.f(obj)); },
       javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
     {
@@ -3164,31 +3164,33 @@ foam.CLASS({
     },
     {
       name: 'values',
-      factory: function() { return {}; }
+      class: 'Map',
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.HashMap();'
     }
   ],
 
   methods: [
-    function putInGroup_(key, obj) {
-      var group = this.groups.hasOwnProperty(key) && this.groups[key];
-      if ( ! group ) {
-        group = this.arg2.clone();
-        this.groups[key] = group;
-        this.groupKeys.push(key);
-      }
-      group.put(obj);
-    },
-
-    function put(obj, sub) {
-      var value = this.expr.f(obj);
-      if ( Array.isArray(value) ) {
-        throw 'Unique doesn\'t Array values.';
-      } else {
-        if ( ! this.values.hasOwnProperty(value) ) {
-          this.values[value] = obj;
-          this.delegate.put(obj);
+    {
+      name: 'put',
+      code: function put(obj, sub) {
+        var value = this.expr.f(obj);
+        if ( Array.isArray(value) ) {
+          throw 'Unique does not support Array values.';
+        } else {
+          if ( ! this.values.hasOwnProperty(value) ) {
+            this.values[value] = obj;
+            this.delegate.put(obj);
+          }
         }
+      },
+      javaCode: `
+      var value = getExpr().f(obj);
+      if ( ! getValues().containsKey(value) ) {
+        getValues().put(value, null);
+        getDelegate().put(obj, sub);
       }
+      `
     },
 
     function eof() { },
@@ -3812,7 +3814,7 @@ foam.CLASS({
     {
       name: 'f',
       code: function(obj) {
-        return this.targetClass.id == obj.cls_.id;
+        return obj && this.targetClass.id == obj.cls_.id;
       },
       javaCode: `
         return getTargetClass().getObjClass() == obj.getClass();
@@ -4651,6 +4653,7 @@ foam.CLASS({
           var result = list.stream().reduce(this::reduce).get();
 
           if ( Double.isFinite(result) ) {
+            result = getRounding() ? Math.round(result) : result;
             return new Constant(result);
           }
         }

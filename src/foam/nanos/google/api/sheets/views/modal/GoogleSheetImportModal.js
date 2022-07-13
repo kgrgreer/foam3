@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.google.api.sheets.views.modal',
   name: 'GoogleSheetImportModal',
-  extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
+  extends: 'foam.nanos.google.api.sheets.views.wizardModal.WizardModalSubView',
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',

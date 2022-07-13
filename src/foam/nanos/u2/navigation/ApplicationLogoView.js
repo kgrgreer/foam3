@@ -29,7 +29,8 @@ foam.CLASS({
     ^ img, ^ svg {
       height: 25px;
       max-height: 40px;
-      width: 100%;
+      /* remove and override any image styling to preserve aspect ratio */
+      width: unset;
     }
   `,
 

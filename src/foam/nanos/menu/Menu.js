@@ -22,7 +22,8 @@
   ],
 
   imports: [
-    'lastMenuLaunchedListener?'
+    'lastMenuLaunchedListener?',
+    'menuListener?'
   ],
 
   javaImports: [
@@ -146,7 +147,8 @@
         subX.register(X.lookup(r.className), r.targetName);
       }
 
-      this.lastMenuLaunchedListener && this.lastMenuLaunchedListener(this);
+      this.lastMenuLaunchedListener && this.lastMenuLaunchedListener(X.currentMenu);
+      this.menuListener && this.menuListener(this);
       this.handler && this.handler.launch(subX, this, e);
     },
     function toE(args, X) {

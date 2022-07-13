@@ -11,6 +11,7 @@
   var foam = globalThis.foam = Object.assign({
     isServer: false,
     defaultFlags: {
+      dev:   true,
       debug: true,
       java:  false,
       js:    true,
@@ -40,7 +41,7 @@
       path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
-      foam.cwd = '/'; // path
+      foam.cwd = path;
       foam.main();
     },
     main: function() {

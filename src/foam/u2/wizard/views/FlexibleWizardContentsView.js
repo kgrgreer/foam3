@@ -13,6 +13,14 @@ foam.CLASS({
     'Add loading spinner support to ^'
   ],
 
+  imports: [
+    'actionProvider?'
+  ],
+
+  requires: [
+    'foam.u2.ActionReference'
+  ],
+
   documentation: `
     This wizard view uses flex to center its contents.
   `,
@@ -21,7 +29,7 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       gap: 40pt;
     }
     ^flexButtons {
@@ -46,15 +54,37 @@ foam.CLASS({
     function render() {
       const self = this;
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
-        return data$currentSection.createView();
+        return data$currentSection?.createView() ?? this.E();
       })
+      let actionsDetachable = foam.core.FObject.create();
       this.addClass()
         .add(current$)
         .add(this.slot(function (data$actionBar, data$currentWizardlet) {
+          let actions = data$actionBar;
+          if ( self.actionProvider ) {
+            const prevIndex = actions.findIndex(a => a.name == 'goPrev');
+            if ( prevIndex != -1 ) {
+              actions = [...actions];
+              const actionRef = this.ActionReference.create({
+                action: actions[prevIndex],
+                data: this.data
+              });
+              actionsDetachable.detach();
+              actionsDetachable = foam.core.FObject.create();
+              self.actionProvider.addAction(actionRef);
+              actionsDetachable.onDetach(function () {
+                self.actionProvider.removeAction(actionRef);
+              });
+              actions.splice(prevIndex, 1);
+            }
+          }
           return this.E()
             .addClass(self.myClass('flexButtons'))
-            .forEach(data$actionBar.reverse(), function (action) {
-              this.tag(action, { size: 'LARGE' });
+            .forEach(actions.reverse(), function (action) {
+              this.tag(action, {
+                size: 'LARGE',
+                label: self.data.currentWizardlet.actionLabel || action.label
+              });
             });
         }))
         ;

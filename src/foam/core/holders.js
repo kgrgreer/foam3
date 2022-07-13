@@ -25,6 +25,12 @@ foam.CLASS({
       name: 'value',
       class: 'String'
     }
+  ],
+
+  methods: [
+    function toString () {
+      return this.value;
+    }
   ]
 });
 
@@ -73,5 +79,14 @@ foam.CLASS({
       name: 'value',
       class: 'Map'
     }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'AnyHolder',
+
+  properties: [
+    'value'
   ]
 });

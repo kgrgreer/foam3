@@ -7,6 +7,7 @@ foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'CapabilityWizardlet',
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
+  implements: ['foam.u2.wizard.DynamicActionWizardlet'],
 
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',

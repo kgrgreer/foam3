@@ -35,7 +35,7 @@ foam.CLASS({
 
   documentation: 'A Group of Users.',
 
-  tableColumns: [ 'id', 'description', 'defaultMenu.id', 'parent.id' ],
+  tableColumns: [ 'id', 'description', 'defaultMenu', 'parent.id' ],
 
   searchColumns: [ 'id', 'description' ],
 
@@ -76,11 +76,14 @@ foam.CLASS({
       menuKeys: ['admin.groups']
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu'
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
     },
     {
       class: 'Reference',

@@ -23,6 +23,11 @@ foam.CLASS({
     'wizardCloseSub?'
   ],
 
+  exports: [
+    'id as wizardletId',
+    'of as wizardletOf'
+  ],
+
   requires: [
     'foam.core.SimpleSlot',
     'foam.u2.borders.LoadingLevel',
@@ -317,7 +322,7 @@ foam.CLASS({
         if ( ! this.of ) return [];
 
         this.warn('initializing wizardlet data to initialize sections');
-        this.data = this.of.create();
+        this.data = this.of.create({}, this);
       }
 
       // Internal method used by SECTIONS.factory

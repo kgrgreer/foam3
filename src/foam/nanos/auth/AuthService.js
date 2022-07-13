@@ -279,6 +279,22 @@ foam.INTERFACE({
           type: 'Context'
         }
       ]
+    },
+    {
+      name: 'isUserAnonymous',
+      documentation: 'Is the current user anonymous user',
+      async: true,
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'userId',
+          type: 'Long'
+        }
+      ]
     }
   ]
 });

@@ -15,8 +15,13 @@ p({
   description: "Generate Numeric FOAM UIDs",
   clusterable: false,
   code:"""
+    // example NUID generator.
+    // you will need to point SMSMessage.ID at the ID property
+    // used by the model you're generating IDs for
     import foam.util.NUIDGenerator;
-    g = new NUIDGenerator(x, "benchmarkDAO");
+    daoName = "smsMessageDAO";
+    dao = (foam.dao.DAO)x.get(daoName);
+    g = new NUIDGenerator(x, daoName, dao, foam.nanos.notification.sms.SMSMessage.ID);
     print("id: "+g.getNextLong());
   """
 })

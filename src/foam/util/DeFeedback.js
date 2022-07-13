@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.util',
   name: 'DeFeedback',
 
-  description: 'Mixin to add defeedback functionality to a class',
+  description: 'Mixin to add de-feedback functionality to a class',
 
   properties: [
     {

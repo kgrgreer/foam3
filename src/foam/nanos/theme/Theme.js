@@ -166,12 +166,15 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'menuDAO',
+      class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
-      of: 'foam.nanos.menu.Menu',
       section: 'navigation',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'menuDAO',
+        allowDuplicates: false
+      },
       writePermissionRequired: true
     },
     {
@@ -319,7 +322,7 @@ foam.CLASS({
       class: 'String',
       name: 'topNavigation',
       documentation: 'A custom top nav view to use.',
-      value: 'foam.nanos.u2.navigation.TopNavigation',
+      value: 'foam.nanos.u2.navigation.ResponsiveTopNav',
       displayWidth: 45,
       section: 'navigation',
       writePermissionRequired: true
@@ -329,6 +332,21 @@ foam.CLASS({
       name: 'footerView',
       documentation: 'A custom footer view to use.',
       value: 'foam.nanos.u2.navigation.FooterView',
+      displayWidth: 45,
+      section: 'navigation',
+      writePermissionRequired: true
+    },
+    {
+      class: 'String',
+      name: 'sideNav',
+      documentation: 'A custom footer view to use.',
+      value: `{
+        "class": "foam.u2.view.ResponsiveAltView", 
+        "views": [
+          [{"class": "foam.nanos.u2.navigation.ApplicationSideNav"}, ["XS"]],
+          [{"class": "foam.nanos.menu.VerticalMenu" }, ["MD"] ]
+        ]
+      }`,
       displayWidth: 45,
       section: 'navigation',
       writePermissionRequired: true
@@ -832,13 +850,13 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].push(...t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-        else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (Object[]) prop.get(t1);
           var value2 = (Object[]) prop.get(t2);
 
@@ -862,14 +880,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           Object.assign(t1[name], t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var m1 = (Map) prop.get(t1);
           var m2 = (Map) prop.get(t2);
 
@@ -892,14 +910,14 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( ! foam.util.equals(t1[name], t2[name]) ) {
+        else if ( prop.compare(t1, t2) != 0 ) {
           t1[name].copyFrom(t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( ! SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) {
+        } else if ( prop.compare(t1, t2) != 0 ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 

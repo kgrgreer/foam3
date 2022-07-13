@@ -378,7 +378,7 @@ foam.CLASS({
     function toString() {
       var args = this.args;
       var strs = new Array(args.length);
-      for ( var i = 0; i < args.length; i++ ) {
+      for ( var i = 0 ; i < args.length ; i++ ) {
         strs[i] = args[i].toString();
       }
       return 'seq1(' + this.n + ', ' + strs.join(', ') + ')';
@@ -394,9 +394,13 @@ foam.CLASS({
 
   documentation: 'Refers to an optional parser property.',
 
+  properties: [
+    { name: 'default', value: null }
+  ],
+
   methods: [
     function parse(ps, obj) {
-      return ps.apply(this.p, obj) || ps.setValue(null);
+      return ps.apply(this.p, obj) || ps.setValue(this.default);
     },
 
     function toString() {
@@ -732,6 +736,14 @@ foam.CLASS({
   name: 'ParserWithAction',
   extends: 'foam.parse.ParserDecorator',
 
+  constants: [
+    {
+      type: 'Object',
+      name: 'NO_PARSE',
+      factory: function() { return {}; }
+    }
+  ],
+
   properties: [
     'action'
   ],
@@ -739,9 +751,11 @@ foam.CLASS({
   methods: [
     function parse(ps, obj) {
       ps = ps.apply(this.p, obj);
-      return ps ?
-        ps.setValue(this.action(ps.value)) :
-        undefined;
+      if ( !!! ps ) return undefined;
+      var ret = this.action(ps.value);
+      return ret === foam.parse.ParserWithAction.NO_PARSE ?
+        undefined :
+        ps.setValue(ret);
     }
   ]
 });
@@ -914,9 +928,10 @@ foam.CLASS({
       });
     },
 
-    function optional(p) {
+    function optional(p, opt_default) {
       return this.Optional.create({
-        p: p
+        p: p,
+        default: opt_default || null
       });
     },
 

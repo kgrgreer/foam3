@@ -41,7 +41,7 @@ foam.CLASS({
     flex-direction: column;
     height: 100%;
     overflow-x: hidden;
-    padding: 16px 0;
+    padding-top: 16px;
     overflow: auto;
     width: 100%;
   }
@@ -107,27 +107,27 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-          .startContext({ data: this })
-          .start()
-            .add(this.MENU_SEARCH)
-            .addClass(this.myClass('search'))
-          .end()
-          .endContext()
-          .start({
-            class: 'foam.u2.view.TreeView',
-            data$: self.dao_$,
-            relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
-            startExpanded: true,
-            query: self.menuSearch$,
-            onClickAddOn: function(data) { self.openMenu(data); },
-            selection$: self.currentMenu$.map(m => m),
-            formatter: function(data) {
-              this.translate(data.id + '.label', data.label);
-            },
-            defaultRoot: self.theme.navigationRootMenu
-          })
-            .addClass(this.myClass('menuList'))
-          .end();
+        .startContext({ data: this })
+        .start()
+          .add(this.MENU_SEARCH)
+          .addClass(this.myClass('search'))
+        .end()
+        .endContext()
+        .start({
+          class: 'foam.u2.view.TreeView',
+          data: self.dao_.where(self.EQ(self.Menu.ENABLED, true)),
+          relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
+          startExpanded: true,
+          query: self.menuSearch$,
+          onClickAddOn: function(data) { self.openMenu(data); },
+          selection$: self.currentMenu$.map(m => m),
+          formatter: function(data) {
+            this.translate(data.id + '.label', data.label);
+          },
+          defaultRoot: self.theme.navigationRootMenu
+        })
+          .addClass(this.myClass('menuList'))
+        .end();
     },
 
     function openMenu(menu) {
