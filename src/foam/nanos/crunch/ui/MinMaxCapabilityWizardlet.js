@@ -82,13 +82,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isVisible',
-      expression: function (isAvailable, choices, hideChoiceView, data, data$selectedData) {
-        /* To-do : figure out why isValid expression not working */
-        if ( data && data$selectedData.length < 1 )
-          this.isValid = false;
-        else
-          this.isValid = true;
-
+      expression: function (isAvailable, choices, hideChoiceView) {
         return isAvailable && choices.length > 0 && ! hideChoiceView;
       }
     },
@@ -189,7 +183,6 @@ foam.CLASS({
             customView: {
               ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
-              isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,
