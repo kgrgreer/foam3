@@ -161,6 +161,13 @@ foam.CLASS({
       }
       return buffer;
     }
+
+    protected ThreadLocal<JSONParser> parser_ = new ThreadLocal<JSONParser>() {
+      @Override
+      protected JSONParser initialValue() {
+        return getX().create(JSONParser.class);
+      }
+    };
   `,
 
   methods: [
@@ -203,7 +210,8 @@ NOTE: duplicated in SocketConnectionReplyBox
         omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-          // getLogger().debug("send", "replyBoxId", replyBoxId, message);
+          // getLogger().debug("send", "replyBoxId", replyBoxId, "pre-formating", msg);
+          // getLogger().debug("send", "replyBoxId", replyBoxId, "formatted", message);
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
           omLogger.log(this.getClass().getSimpleName(), getId(), "sent");
@@ -251,7 +259,7 @@ NOTE: duplicated in SocketConnectionReplyBox
             int length = in_.readInt();
             byte[] bytes = readBytes(in_, length);
             String data = new String(bytes, 0, length, StandardCharsets.UTF_8);
-            Message msg = (Message) x.create(JSONParser.class).parseString(data);
+            Message msg = (Message) parser_.get().parseString(data);
             if ( msg == null ) {
               throw new IllegalArgumentException("Failed to parse. message: "+data);
             }
