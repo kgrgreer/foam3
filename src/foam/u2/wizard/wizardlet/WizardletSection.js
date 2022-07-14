@@ -66,7 +66,8 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `
         This section is visible only when this property is true.
-      `
+      `,
+      expression: function(customView) { return customView ?? false; }
     },
     {
       name: 'isValid',
@@ -114,7 +115,7 @@ foam.CLASS({
   methods: [
     function createView(opt_spec) {
       if ( ! opt_spec ) opt_spec = {};
-      var ctx = this.wizardlet.__subSubContext__.createSubContext();
+      var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
       if ( this.customView ) {
         return this.ViewSpec.createView(

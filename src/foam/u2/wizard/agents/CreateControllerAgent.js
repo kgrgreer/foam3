@@ -54,6 +54,7 @@ foam.CLASS({
           wizardPosition: this.initialPosition
         } : {})
       })
+      this.wizardlets.forEach(v => { v.wizardController$ = this.wizardController$ })
     }
   ]
 });
