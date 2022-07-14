@@ -35,7 +35,7 @@ foam.CLASS({
       },
       javaFactory: 'return new String[0];',
       adapt: function(_, n){
-        if ( typeof n === "string" ){
+        if ( foam.core.String.isInstance(n) ){
           return [
             n
           ];
