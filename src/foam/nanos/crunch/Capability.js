@@ -488,7 +488,7 @@ foam.CLASS({
             var cap = (Capability) capabilityDAO.find(capId);
             if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
-            UserCapabilityJunction prereqUcj = crunchService.getJunction(x, capId);
+            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, ucj.getSubject(x));
 
             prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, (Subject)x.get("subject"));
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
