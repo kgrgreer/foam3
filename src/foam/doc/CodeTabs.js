@@ -8,7 +8,9 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'CodeTabs',
   extends: 'foam.u2.UnstyledTabs',
+
   documentation: 'Multiple code tabs.',
+
   css: `
     ^ {
       background: gray;
@@ -46,5 +48,5 @@ foam.CLASS({
       top: -13px;
       left: -4px;
     }
-  `,
+  `
 });
