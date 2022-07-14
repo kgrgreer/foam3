@@ -50,21 +50,22 @@ foam.CLASS({
     {
       name: 'body',
       transient: true,
-      javaGetter: `
-        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
-        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
+      javaCloneProperty: '//noop',
+    //   javaGetter: `
+    //     Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+    //     String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+    //     TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
-        DAO approvalRequestDAO = (DAO) foam.core.XLocator.get().get("approvalRequestDAO");
-        ApprovalRequest approvalReq = (ApprovalRequest) approvalRequestDAO.find(
-          EQ(ApprovalRequest.ID, getApprovalRequest())
-          );
+    //     DAO approvalRequestDAO = (DAO) foam.core.XLocator.get().get("approvalRequestDAO");
+    //     ApprovalRequest approvalReq = (ApprovalRequest) approvalRequestDAO.find(
+    //       EQ(ApprovalRequest.ID, getApprovalRequest())
+    //       );
 
-        var body1 = ts.getTranslation(locale, getClassInfo().getId() + ".MSG_BODY1", this.MSG_BODY1);
-        var body2 = ts.getTranslation(locale, getClassInfo().getId() + ".MSG_BODY2", this.MSG_BODY2);
+    //     var body1 = ts.getTranslation(locale, getClassInfo().getId() + ".MSG_BODY1", this.MSG_BODY1);
+    //     var body2 = ts.getTranslation(locale, getClassInfo().getId() + ".MSG_BODY2", this.MSG_BODY2);
 
-        return body1 + approvalReq.getStatus().getLabel() + body2 + approvalReq.getObjId();
-      `,
+    //     return body1 + approvalReq.getStatus().getLabel() + body2 + approvalReq.getObjId();
+    //   `,
       getter: async function() {
         let approvalReq = await this.approvalRequestDAO.find(this.approvalRequest);
 
