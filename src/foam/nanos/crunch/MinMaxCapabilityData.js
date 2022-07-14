@@ -41,7 +41,7 @@ foam.CLASS({
           ];
         }
 
-        if ( typeof n === "number"){
+        if ( foam.core.Int.isInstance(n) ){
           return [
             n.toString()
           ];       
