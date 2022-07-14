@@ -244,6 +244,10 @@ foam.CLASS({
       name: '__subSubContext__',
       documentation: 'Current subContext to use when creating view.',
       factory: function() { return this.__subContext__; }
+    },
+    {
+      name: 'wizardController',
+      documentation: 'Populated by ContextAgent to add the wizard controller to wizardlet context after wizardlet creation',
     }
   ],
 

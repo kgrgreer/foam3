@@ -47,6 +47,10 @@ foam.CLASS({
   ],
   methods: [
     {
+      name: 'toSummary',
+      code: function() { return this.toString(); }
+    },
+    {
       name: 'toString',
       code: function() {
         return this.variant === '' ? this.code : this.code + '-' + this.variant;
