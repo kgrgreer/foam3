@@ -9,15 +9,18 @@ foam.CLASS({
   name: 'DigSelectView',
   extends: 'foam.u2.View',
   documentation: 'View used to show snippets of select API calls.',
+
   imports: [
     'appConfig',
-    'user',
+    'user'
   ],
+
   requires: [
     'foam.doc.CodeTabs',
     'foam.nanos.dig.DIG',
-    'foam.u2.Tab',
+    'foam.u2.Tab'
   ],
+
   properties: [
     {
       name: 'url',
@@ -29,6 +32,7 @@ foam.CLASS({
       name: 'samplequery'
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -117,6 +121,6 @@ req.end();
               end()
           })
       }))
-    },
-  ],
+    }
+  ]
 });
