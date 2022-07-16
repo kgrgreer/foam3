@@ -59,7 +59,8 @@
             // We use toJSON here because some property values, such as those
             // of Class properties, are recursive and therefore invalid inside
             // FObjectSpec property values (of which spec is one)
-            spec[a.name] = a.toJSON(this[a.name]);
+            const v = a.toJSON(this[a.name]);
+            if ( v != null ) spec[a.name] = v;
           });
         return spec;
       }
