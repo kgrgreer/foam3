@@ -36,7 +36,7 @@ foam.CLASS({
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
       value: 'foam.doc.Axiom'
     },
     {
