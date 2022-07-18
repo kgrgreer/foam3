@@ -46,7 +46,30 @@ foam.CLASS({
         if ( obj.created ) {
           var dateCreated = new Date(obj.created);
           if ( this.dateGroupingType == foam.time.TimeUnit.DAY ) {
-            return dateCreated.toLocaleString([], { day: 'numeric', month: 'long',  year: 'numeric' });
+              var dateGroupsSorted = [
+                ...this.dateGroups
+              ];
+
+              dateGroupsSorted.sort((a, b) => a.low - b.high);
+
+              var today = new Date();
+              var objDate = new Date(obj.created.getTime());
+
+              var d1 = new Date(objDate.getFullYear(), objDate.getMonth(), objDate.getDate());
+              var d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+              var objDiffFromTodayDays = (d2 - d1) / (1000 * 3600 * 24);
+
+              var groupName = "Unknown Range";
+
+              dateGroupsSorted.forEach(group => {
+                if (
+                  objDiffFromTodayDays >= group.low &&
+                  objDiffFromTodayDays < group.high
+                ) groupName = group.name;
+              })
+
+              return groupName;
           }
           else if ( this.dateGroupingType == foam.time.TimeUnit.MONTH ) {
             return dateCreated.toLocaleString([], { month: 'long',  year: 'numeric' });

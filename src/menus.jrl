@@ -272,8 +272,8 @@ p({
           "class":"foam.nanos.notification.NotificationRowView"
         },
         "groupExpr":{
-          "class":"foam.mlang.expr.CalendarDateGroupingExpr",
-          "dateGroupType":0,
+          "class":"foam.mlang.expr.DateGroupingExpr",
+          "dateGroupingType":3,
           "dateGroups":[
             {
               "class":"foam.mlang.expr.DateGrouping",
