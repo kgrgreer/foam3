@@ -57,9 +57,9 @@ foam.CLASS({
       code: function() {
         var self = this;
         if ( ! this.dao ) return;
-        this.dao.limit(this.limit).select().then((objects) => {
+        this.dao.limit(this.limit).select().then(objects => {
           var fetchedValues = objects.array;
-          if ( JSON.stringify(self.currentValues.map((o) => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
+          if ( JSON.stringify(self.currentValues.map(o => o.id)) != JSON.stringify(fetchedValues.map((o) => o.id)) ) {
             self.currentValues = fetchedValues;
           }
         });
