@@ -8,35 +8,18 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomListView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.doc.Axiom',
     'foam.doc.AxiomLink',
     'foam.doc.dao.AxiomDAO',
     'foam.mlang.sink.Count',
   ],
+
   implements: [
     'foam.mlang.Expressions',
   ],
-  properties: [
-    {
-      class: 'String',
-      name: 'modelId',
-    },
-    {
-      class: 'Class',
-      name: 'of',
-      value: 'foam.doc.Axiom',
-    },
-    {
-      name: 'axiomDAO',
-      expression: function(modelId) {
-        return this.AxiomDAO.create({ modelIds: [modelId] })
-      },
-    },
-    {
-      name: 'titleFn',
-    },
-  ],
+
   css: `
     ^ .commaseparated span:after {
       content: ", ";
@@ -45,6 +28,28 @@ foam.CLASS({
       content: "";
     }
   `,
+
+  properties: [
+    {
+      class: 'String',
+      name: 'modelId'
+    },
+    {
+      class: 'Class',
+      name: 'of',
+      value: 'foam.doc.Axiom'
+    },
+    {
+      name: 'axiomDAO',
+      expression: function(modelId) {
+        return this.AxiomDAO.create({ modelIds: [modelId] })
+      }
+    },
+    {
+      name: 'titleFn'
+    }
+  ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -76,6 +81,6 @@ foam.CLASS({
               end()
           })
       }, this.daoSlot(dao, this.Count.create())))
-    },
-  ],
+    }
+  ]
 });
