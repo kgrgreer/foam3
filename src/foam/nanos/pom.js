@@ -525,6 +525,7 @@ foam.POM({
     { name: "crunch/crunchtest/TestCapable",                                              flags: "js|java" },
     { name: "crunch/CapabilityAvailabilityDAO",                                           flags: "js|java" },
     { name: "crunch/example/ExampleData",                                                 flags: "js|java" },
+    { name: "crunch/lite/predicate/ContainsGranted",                                      flags: "js|java" },
     { name: "crunch/lite/ruler/CapableStatusChangeAdjustApprovalsRuleAction",             flags: "js|java" },
     { name: "crunch/lite/ruler/CapablePayloadApprovableRuleAction",                       flags: "js|java" },
     { name: "crunch/lite/ruler/CapableCreateApprovalsRuleAction",                         flags: "js|java" },
