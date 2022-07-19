@@ -61,15 +61,6 @@ foam.CLASS({
     async function load({ old }) {
       let initialData = old || await this.SUPER();
 
-      const isDescendantCheck = this.capabilityToPrerequisite[`${this.wizardletId}:${this.prerequisiteCapabilityId}`];
-
-      if ( ! isDescendantCheck ) {
-        console.error(
-          `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} is not a prerequisite to ${this.wizardletId}`
-        );
-        return;
-      }
-
       const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
 
       if ( ! prereqWizardlet.isAvailable ){
