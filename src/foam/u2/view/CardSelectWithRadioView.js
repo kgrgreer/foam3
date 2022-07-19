@@ -43,10 +43,13 @@
             isSelected$: this.isSelected$,
             isDisabled$: this.isDisabled$
           }, this))
-          .start().add(this.label).end()
+          .call(this.addContent, [this])
         .end()
       .end()
       .on('click', this.onClick);
+    },
+    function addContent(self) {
+      this.add(self.label);
     }
   ]
 });
