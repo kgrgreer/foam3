@@ -292,24 +292,16 @@ foam.CLASS({
 
       // we want to save Facades since they could directly influence the availabities of other wizardlets
       // if it is currently the "last" wizardlet in the flow
-      var isCurrentAlreadySaved = false;
-      if (
-        foam.u2.wizard.wizardlet.FacadeCapabilityWizardlet.isInstance(currentWizardlet)
-      ){
-        await currentWizardlet.save();
-        isCurrentAlreadySaved = true;
-      }
+      await currentWizardlet.save();
 
       var start = this.wizardPosition.wizardletIndex;
       let nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
       var end = nextScreen ?
         nextScreen.wizardletIndex : this.wizardlets.length;
 
-      // if the current wizardlet is a facade wizardlet, then we need to save it first
-      // then we can recalculate end
       for ( let i = start ; i < end ; i++ ) {
         if ( ! this.wizardlets[i].isAvailable ) continue;
-        if ( this.wizardlets[i] == currentWizardlet && isCurrentAlreadySaved ) continue;
+        if ( this.wizardlets[i] == currentWizardlet ) continue;
 
 
         await this.wizardlets[i].save();
