@@ -41,7 +41,7 @@ foam.CLASS({
           ];
         }
 
-        if ( foam.core.Int.isInstance(n) ){
+        if ( foam.Function.isInstance(n.toString) ) {
           return [
             n.toString()
           ];       
