@@ -9,10 +9,19 @@ foam.CLASS({
   name: 'CreateLoader',
   implements: ['foam.u2.wizard.data.Loader'],
 
+  imports: [
+    'wizardletOf?'
+  ],
+
   properties: [
     {
       class: 'foam.util.FObjectSpec',
-      name: 'spec'
+      name: 'spec',
+      factory: function(){
+        return {
+          class: this.wizardletOf.id
+        }
+      }
     },
     {
       class: 'Class',
