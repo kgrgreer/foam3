@@ -123,7 +123,7 @@ foam.CLASS({
     },
     {
       name: 'selectedData',
-      postSet: function(_,n){
+      postSet: function(_,n) {
         this.data.selectedData = n.map(capability => capability.id);
       }
     },
@@ -183,7 +183,6 @@ foam.CLASS({
             customView: {
               ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
-              isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
               data$: this.selectedData$,
               minSelected$: this.min$,

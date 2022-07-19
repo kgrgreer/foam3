@@ -57,6 +57,7 @@ p({
   wizardlet: {
     class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
     title: "Review Your Schedule",
+    actionLabel: 'Submit',
     showTitle: false,
     of: 'foam.core.MapHolder',
     items: [

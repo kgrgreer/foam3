@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'WizardletSection',
   flags: ['web'],
+
   documentation: `
     Describes a sub-section of a wizardlet.
   `,
@@ -65,7 +66,8 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `
         This section is visible only when this property is true.
-      `
+      `,
+      expression: function(customView) { return customView ?? false; }
     },
     {
       name: 'isValid',
@@ -80,11 +82,7 @@ foam.CLASS({
         if ( ! data ) return false;
 
         if ( ! this.section ) {
-          let valid = data.validate();
-          if ( valid === undefined ) {
-            valid = ! data.errors_ || data.errors_.length < 1;
-          }
-          return valid;
+          return ! data.errors_ || data.errors_.length < 1;
         }
 
         let sectionErrors = [];
@@ -117,7 +115,7 @@ foam.CLASS({
   methods: [
     function createView(opt_spec) {
       if ( ! opt_spec ) opt_spec = {};
-      var ctx = this.wizardlet.__subSubContext__.createSubContext();
+      var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
       if ( this.customView ) {
         return this.ViewSpec.createView(
@@ -137,5 +135,5 @@ foam.CLASS({
             ? { showTitle: this.showWizardletSectionTitles } : {})
       }, ctx);
     }
-  ],
+  ]
 });

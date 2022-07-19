@@ -78,11 +78,31 @@ foam.CLASS({
               actions.splice(prevIndex, 1);
             }
           }
+          let slots = [];
+          actions.forEach(a => {
+            slots.push(a.createIsAvailable$(self.__subContext__, self.data));
+          });
+          let s = foam.core.ArraySlot.create({ slots: slots }, self);
+          let anyAvailable = this.slot(function(slots) {
+            for ( let slot of slots ) {
+              if ( slot ) return true;
+            }
+            return false;
+          }, s);
           return this.E()
             .addClass(self.myClass('flexButtons'))
+            .show(anyAvailable)
+            // WARNING!!!
+            // Export the current wizardlet section view in context so that dynamicActions can use it
+            // this only works for incremental wizard, we will need a better solution for wizards that 
+            // render multiple sections at once
+            .startContext({ currentWizardletSectionView: current$ })
             .forEach(actions.reverse(), function (action) {
-              this.tag(action, { size: 'LARGE' });
-            });
+              this.tag(action, {
+                size: 'LARGE',
+                label: self.data.currentWizardlet.actionLabel || action.label
+              });
+            }).endContext();
         }))
         ;
     },

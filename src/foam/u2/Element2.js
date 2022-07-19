@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -13,7 +13,7 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename render to render()
+  - rename initE() to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
@@ -58,8 +58,9 @@ becomes:
   - ??? replace E() with custom Element constructor
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
-  - you can use views directly instead of ViewSpecs
+  - you can use views directly instead of ViewSpecs? (probably not, wrong context)
   - could we get rid of subSubContext be updating subContext?
+  - Move CSS code out and share with U2
 */
 
 foam.ENUM({
@@ -477,10 +478,6 @@ foam.CLASS({
   methods: [
     function validateNodeName(name) {
       return true;
-    },
-
-    function validateClass(cls) {
-      // TODO
     },
 
     function validateAttributeName(name) {

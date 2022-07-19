@@ -43,6 +43,10 @@ foam.CLASS({
         }
         return machineId;
       `
+    },
+    {
+      name: 'minLength',
+      class: 'Int'
     }
   ],
 

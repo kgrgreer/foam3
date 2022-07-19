@@ -4,57 +4,10 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
-  package: 'foam.util',
-  name: 'FObjectSpec',
-  extends: 'foam.core.FObjectProperty',
-
-  documentation: `
-    A Property which stores knowledge of what FObject to create
-    rather than storing an instance of an FObject.
-  `,
-
-  properties: [
-    [
-      'fromJSON',
-      function fromJSON(value, ctx, prop, json) {
-        /** Prevents specs from instantiating when loaded from JSON. **/
-        return value;
-      }
-    ],
-    [ 'adapt', function(_, spec, prop) {
-      return foam.String.isInstance(spec) ? { class: spec } : spec ;
-    } ],
-    [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
-    [ 'displayWidth', 80 ],
-    [ 'view', 'foam.u2.view.MapView' ]
-  ]
-});
-
-foam.CLASS({
-  package: 'foam.util',
-  name: 'FObjectSpecArray',
-  extends: 'foam.core.FObjectArray',
-
-  properties: [
-    [
-      'fromJSON',
-      function fromJSON(value, ctx, prop, json) {
-        /** Prevents specs from instantiating when loaded from JSON. **/
-        return value;
-      }
-    ],
-    [ 'adapt', function(_, specArray, prop) {
-      return specArray.map(spec => foam.String.isInstance(spec) ? { class: spec } : spec );
-    } ],
-    [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
-    [ 'displayWidth', 80 ]
-  ]
-});
-
 foam.INTERFACE({
   package: 'foam.util',
   name: 'FluentSpec',
+  flags: ['web'],
 
   documentation: `
     Represents an operation to be performed on a Fluent object.
@@ -76,8 +29,28 @@ foam.INTERFACE({
 
 foam.CLASS({
   package: 'foam.util',
+  name: 'BaseFluentSpec',
+  implements: [
+    {
+      flags: ['web'],
+      path: 'foam.util.FluentSpec'
+    }
+  ],
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      factory: function () {
+        return this.$UID;
+      }
+    }
+  ]
+})
+
+foam.CLASS({
+  package: 'foam.util',
   name: 'AddFluentSpec',
-  implements: ['foam.util.FluentSpec'],
+  extends: 'foam.util.BaseFluentSpec',
 
   documentation: `
     Specifies a call to .add() on a Fluent
@@ -101,7 +74,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.util',
   name: 'RemoveFluentSpec',
-  implements: ['foam.util.FluentSpec'],
+  extends: 'foam.util.BaseFluentSpec',
 
   documentation: `
     Specifies a call to .remove() on a Fluent
@@ -124,7 +97,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.util',
   name: 'AddBeforeFluentSpec',
-  implements: ['foam.util.FluentSpec'],
+  extends: 'foam.util.BaseFluentSpec',
 
   documentation: `
     Specifies a call to .addBefore() on a Fluent

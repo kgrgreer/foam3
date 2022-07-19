@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomLink',
   extends: 'foam.u2.View',
+
   properties: [
     [ 'nodeName', 'a' ],
     {
@@ -18,6 +19,7 @@ foam.CLASS({
       name: 'axiomName'
     }
   ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -25,5 +27,5 @@ foam.CLASS({
         attr('href', `#${this.cls.id}-${this.axiomName}`).
         add(this.axiomName);
     }
-  ],
+  ]
 });
