@@ -12,17 +12,14 @@
   requires: [
     'foam.u2.wizard.wao.SplitWAO',
     'foam.u2.wizard.data.FacadeWizardletSaver',
-    'foam.u2.wizard.data.ProxyLoader',
+    'foam.u2.wizard.data.ProxyLoader'
   ],
 
   properties: [
     {
       class: 'FObjectArray',
       name: 'facadeWizardletSpecs',
-      of: 'foam.u2.wizard.wizardlet.FacadeWizardletSpec',
-      factory: function(){
-        return [];
-      }
+      of: 'foam.u2.wizard.wizardlet.FacadeWizardletSpec'
     },
     {
       name: 'wao',
