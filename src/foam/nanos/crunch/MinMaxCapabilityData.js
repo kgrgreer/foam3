@@ -30,9 +30,6 @@ foam.CLASS({
     {
       name: 'selectedData',
       class: 'StringArray',
-      factory: function(){
-        return [];
-      },
       javaFactory: 'return new String[0];',
       adapt: function(_, n){
         if ( foam.core.String.isInstance(n) ){
@@ -51,8 +48,8 @@ foam.CLASS({
       },
       postSet: function (o, n) {
         if ( ! foam.util.equals(o, n) ) {
-          this.selectedDataStable = null;
           this.selectedDataStable = n;
+          this.propertyChange.pub('selectedDataStable', this.selectedDataStable$);
         }
       }
     },
