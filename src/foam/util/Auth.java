@@ -28,16 +28,7 @@ public class Auth {
     @param user user to be applied(logged in) to context and session.
   */
   public static X sudo(X x, User user) {
-    if ( user == null ) throw new RuntimeException("Unknown user");
-    Subject requestedSubject = new Subject(user);
-    x = x.put("subject", requestedSubject);
-    x = x.put("group", user.findGroup(x));
-    Session session = new Session();
-    session.setUserId(user.getId());
-    X y = session.applyTo(x);
-    session.setContext(y);
-    y = y.put(Session.class, session);
-    return y;
+    return sudo(x, user, null, user.findGroup(x));
   }
 
   /**
@@ -66,17 +57,33 @@ public class Auth {
     @param realUser User that will be acting as the @param user. References realUser within context' subject.
    */
   public static X sudo(X x, User user, User realUser) {
-    Subject requestedSubject = new Subject(realUser);
+    return sudo(x, user, realUser, user.findGroup(x));
+  }
+
+  public static X sudo(X x, User user, Group group) {
+    return sudo(x, user, null, group);
+  }
+
+  public static X sudo(X x, User user, User realUser, Group group) {
+    if ( user == null ) throw new RuntimeException("Unknown user");
+    boolean hasAgent = realUser != null && user.getId() != realUser.getId();
+
+    Subject requestedSubject = new Subject();
+    if ( hasAgent ) requestedSubject.setUser(realUser); 
     requestedSubject.setUser(user);
+
     x = x.put("subject", requestedSubject);
-    x = x.put("group", user.findGroup(x));
-    Session session = new Session.Builder(x)
-      .setUserId(user.getId())
-      .setAgentId(realUser.getId())
-      .build();
-    session.setContext(session.applyTo(session.getContext()));
-    x = x.put(Session.class, session);
-    return x;
+    x = x.put("group", group);
+
+    Session session = new Session();
+    session.setUserId(user.getId());
+    if ( hasAgent ) session.setAgentId(realUser.getId());
+
+    X y = session.applyTo(x);
+    session.setContext(y);
+    y = y.put(Session.class, session);
+
+    return y;
   }
 
   /**
