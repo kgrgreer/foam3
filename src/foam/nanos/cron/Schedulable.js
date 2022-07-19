@@ -204,7 +204,7 @@ foam.CLASS({
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
-        .add('$', X.addCommas(formattedAmount.toFixed(2)));
+          .add('$', X.addCommas(formattedAmount.toFixed(2)));
       }
     },
     {
