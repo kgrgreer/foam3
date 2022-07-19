@@ -96,7 +96,7 @@ foam.CLASS({
         available if at least one section is available. If false, wizardlet
         does not display even if some sections are available.
       `,
-      postSet: function(_,n){        
+      postSet: function(_,n){ 
         if ( !n ){
           this.data.selectedData = [];
 
@@ -290,7 +290,7 @@ foam.CLASS({
         var currentData = this.data.selectedData[i];
 
         let idToCompare;
-        if ( typeof currentData === 'string' ){
+        if ( foam.String.isInstance(currentData) ){
           idToCompare = currentData;
         } else if ( foam.nanos.crunch.Capability.isInstance(currentData) ){
           idToCompare = currentData.id;
@@ -303,12 +303,7 @@ foam.CLASS({
           return;
         }
 
-        if (
-          foam.util.equals(
-            idToCompare,
-            prereqWizardlet.id
-          )
-        ) return true;
+        if ( foam.util.equals(idToCompare, prereqWizardlet.id) ) return true;
       }
       return false;
     },
