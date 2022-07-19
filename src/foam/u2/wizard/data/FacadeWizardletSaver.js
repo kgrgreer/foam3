@@ -17,10 +17,7 @@
     {
       class: 'FObjectArray',
       name: 'facadeWizardletSpecs',
-      of: 'foam.u2.wizard.wizardlet.FacadeWizardletSpec',
-      factory: function(){
-        return [];
-      }
+      of: 'foam.u2.wizard.wizardlet.FacadeWizardletSpec'
     }
   ],
   
@@ -43,7 +40,6 @@
         }
 
         wizardletToOverride.isVisible = facadeSpec.isOverridedWizardletVisible;
-
       })      
     },
 
