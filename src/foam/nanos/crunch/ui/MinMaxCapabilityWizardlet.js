@@ -180,7 +180,6 @@ foam.CLASS({
             customView: {
               ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
-              isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
               data$: this.data.selectedData$,
               minSelected$: this.min$,

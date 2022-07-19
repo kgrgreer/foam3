@@ -48,7 +48,7 @@ foam.CLASS({
         const currentWizardlet = this.currentWizardlet;
 
         let wizardletActions = [];
-        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) ) {
+        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) && currentWizardlet.dynamicActions?.length ) {
           wizardletActions = currentWizardlet.dynamicActions;
         } else {
           wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
@@ -60,7 +60,7 @@ foam.CLASS({
 
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
-            goNextAction = action;
+            goNextAction = this.GO_NEXT.clone().copyFrom(action);
             goNextAction.buttonStyle = 'PRIMARY';
             continue;
           }

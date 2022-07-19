@@ -439,8 +439,10 @@ configuration for contacting the primary node.`,
       name: 'getNodeQuorum',
       type: 'Integer',
       javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
       int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
-      getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      pm.log(getX());
       return quorum;
       `
     },

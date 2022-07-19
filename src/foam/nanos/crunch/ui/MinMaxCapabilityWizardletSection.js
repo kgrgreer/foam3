@@ -42,11 +42,12 @@ foam.CLASS({
           var vs = this.ViewSpec.createView(
             this.customView, this.customView, this, this.__subContext__
           );
-    
+
+          this.onDetach(this.wizardlet.isValid$.follow(vs.isValidNumberOfChoices$));
           this.choiceWizardlets.forEach((choiceWizardlet) => {
             vs.getSelectedSlot(choiceWizardlet.capability).linkFrom(choiceWizardlet.isAvailable$);
           })
-    
+
           return vs;
         }
         return null;
