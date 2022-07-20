@@ -52,7 +52,9 @@ foam.CLASS({
         // TODO: Add a check for overlap between dateGroups and other data validation
         groups.sort((a, b) => a.low - b.low);
 
-        var diff = Math.floor(new Date().getTime()/this.dateGroupingType.conversionFactorMs) - Math.floor(obj.created.getTime()/this.dateGroupingType.conversionFactorMs);
+        var offset = new Date().getTimezoneOffset() * 60000;
+        var diff   = Math.floor((new Date().getTime()-offset)/this.dateGroupingType.conversionFactorMs) -
+                     Math.floor((obj.created.getTime()-offset)/this.dateGroupingType.conversionFactorMs);
 
         for ( var i = 0 ; i < groups.length ; i++ ) {
           var group = groups[i];
