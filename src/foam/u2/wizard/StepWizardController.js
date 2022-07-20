@@ -15,6 +15,7 @@ foam.CLASS({
   requires: [
     'foam.core.FObject',
     'foam.u2.wizard.WizardPosition',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.StepWizardConfig',
     'foam.u2.wizard.debug.WizardInspector'
@@ -160,8 +161,19 @@ foam.CLASS({
       }
     },
     {
+      class: 'Enum',
+      name: 'status',
+      of: 'foam.u2.wizard.WizardStatus',
+      value: 'IN_PROGRESS'
+    },
+    {
       name: 'submitted',
-      class: 'Boolean'
+      class: 'Boolean',
+      deprecated: true,
+      documentation: 'true if this.status is COMPLETED',
+      expression: function (status) {
+        return status == this.WizardStatus.COMPLETED;
+      }
     },
     {
       name: 'allValid',
@@ -309,7 +321,7 @@ foam.CLASS({
       }
 
       if ( this.nextScreen == null ) {
-        this.submitted = true;
+        this.status = this.WizardStatus.COMPLETED;
         return true;
       }
 
@@ -355,6 +367,9 @@ foam.CLASS({
     },
     function skipTo(pos) {
       this.wizardPosition = pos;
+    },
+    function discard () {
+      this.status = this.WizardStatus.DISCARDED;
     }
   ],
 

@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.wizard.DynamicActionWizardlet',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
@@ -27,9 +28,9 @@ foam.CLASS({
         this.currentSection$ = v.currentSection$;
 
         // Listen for external actions completing the wizard
-        this.onDetach(v.submitted$.sub(() => {
-          if ( ! v.submitted ) return;
-          this.onClose({ completed: true });
+        this.onDetach(v.status$.sub(() => {
+          if ( v == this.WizardStatus.IN_PROGRESS ) return;
+          this.onClose({ completed: v.status == this.WizardStatus.COMPLETED });
         }))
 
       }
@@ -40,6 +41,10 @@ foam.CLASS({
       name: 'backDisabled',
       class: 'Boolean',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'discardAvailable'
     },
     {
       class: 'Boolean',
@@ -77,6 +82,10 @@ foam.CLASS({
           }
           actionBar.push(action);
         }
+        if ( this.discardAvailable ) {
+          // ???: could let wizardlets override this one too
+          actionBar.push(this.DISCARD);
+        }
         actionBar.push(goPrevAction, goNextAction);
         
 
@@ -96,6 +105,14 @@ foam.CLASS({
           console.error(e);
           x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
         });
+      }
+    },
+    {
+      name: 'discard',
+      icon: 'images/round-close-icon.svg',
+      isAvailable: function (discardAvailable) { return discardAvailable; },
+      code: function () {
+        this.data.discard();
       }
     },
     {

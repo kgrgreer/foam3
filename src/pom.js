@@ -960,6 +960,7 @@ foam.POM({
     { name: "foam/u2/wizard/axiom/WizardAction",                      flags: "web" },
     { name: "foam/u2/wizard/axiom/AlternateFlowAction",               flags: "web" },
     { name: "foam/u2/wizard/WizardPosition",                          flags: "js|java" },
+    { name: "foam/u2/wizard/WizardStatus",                            flags: "web" },
     { name: "foam/u2/wizard/WizardletIndicator",                      flags: "js|java" },
     { name: "foam/u2/wizard/DynamicActionWizardlet",                  flags: "js|java" },
     { name: "foam/u2/wizard/WizardletAware",                          flags: "js|java" },
