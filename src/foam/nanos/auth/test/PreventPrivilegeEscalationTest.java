@@ -285,6 +285,7 @@ public class PreventPrivilegeEscalationTest
       .setEmail("ppet+admin@example.com")
       .setUserName("ppet+admin")
       .setDesiredPassword("!@#$ppet1234")
+      .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
       .build();
 
     // Create a test user.
@@ -329,6 +330,7 @@ public class PreventPrivilegeEscalationTest
       .setFirstName("ppet")
       .setLastName("ppet")
       .setDesiredPassword("!@#$ppet1234")
+      .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
       .build();
 
     // Create a test user.
@@ -357,8 +359,8 @@ public class PreventPrivilegeEscalationTest
         print("Error message mismatch. Actual was: " + e.getMessage());
       }
     } finally {
-      userDAO.remove(u1);
-      userDAO.remove(u2);
+      bareUserDAO.remove(u1);
+      bareUserDAO.remove(u2);
       cleanUp(x);
     }
   }
