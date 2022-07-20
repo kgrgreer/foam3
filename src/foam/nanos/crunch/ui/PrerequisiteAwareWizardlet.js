@@ -16,6 +16,10 @@ foam.INTERFACE({
     {
       name: 'addPrerequisite',
       flags: ['web']
+    },
+    {
+      name: 'getPrerequisiteAvailabilitySlot',
+      flags: ['web']
     }
   ]
 });
