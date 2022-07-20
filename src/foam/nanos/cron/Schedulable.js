@@ -197,6 +197,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'amount',
+      createVisibility: 'HIDDEN',
       factory: function() {
         if ( ! this.objectToSchedule || ! this.objectToSchedule.sourceAmount ) return;
         return this.objectToSchedule.sourceAmount;
@@ -211,6 +212,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.time.TimeUnit',
       name: 'frequency',
+      createVisibility: 'HIDDEN',
       factory: function() {
         if ( ! this.schedule || ! this.schedule.frequency ) return;
         return this.schedule.frequency;
@@ -220,6 +222,7 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       label: 'Start On',
+      createVisibility: 'HIDDEN',
       factory: function() {
         if ( ! this.schedule || ! this.schedule.startDate ) return;
         return this.schedule.startDate;
