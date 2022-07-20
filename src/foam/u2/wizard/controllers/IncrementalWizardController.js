@@ -25,6 +25,13 @@ foam.CLASS({
       postSet: function (_, v) {
         this.currentWizardlet$ = v.currentWizardlet$;
         this.currentSection$ = v.currentSection$;
+
+        // Listen for external actions completing the wizard
+        this.onDetach(v.submitted$.sub(() => {
+          if ( ! v.submitted ) return;
+          this.onClose({ completed: true });
+        }))
+
       }
     },
     'currentWizardlet',
@@ -122,7 +129,6 @@ foam.CLASS({
             for ( let w of this.data.wizardlets ) {
               if ( w.submit ) w.submit();
             }
-            this.onClose({ completed: true })
           }
         }).catch(e => {
           console.error(e);
