@@ -29,8 +29,8 @@ public class PredicatedPCJDAOTest extends foam.nanos.test.Test {
     prerequisiteCapabilityJunctionDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
     userDAO = (DAO) x.get("localUserDAO");
 
-    user = new User.Builder(x).setId(101L).setSpid("mockSpid").setEmail("user@mock.spid").setUserName("mock_user").setGroup("anonymous").setFirstName("user").setLastName("mock").build();
-    admin = new User.Builder(x).setId(1234L).setSpid("mockSpid").setEmail("admin@mock.spid").setUserName("mock_admin").setGroup("admin").setFirstName("admin").setLastName("mock").build();
+    user = new User.Builder(x).setId(101L).setSpid("mockSpid").setEmail("user@mock.spid").setUserName("mock_user").setGroup("anonymous").setFirstName("user").setLastName("mock").setLifecycleState(LifecycleState.ACTIVE).build();
+    admin = new User.Builder(x).setId(1234L).setSpid("mockSpid").setEmail("admin@mock.spid").setUserName("mock_admin").setGroup("admin").setFirstName("admin").setLastName("mock").setLifecycleState(LifecycleState.ACTIVE).build();
     user = (User) userDAO.put(user);
     admin = (User) userDAO.put(admin);
     userX = x.put("subject", new Subject(user));

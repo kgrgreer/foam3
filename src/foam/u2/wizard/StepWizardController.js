@@ -281,29 +281,40 @@ foam.CLASS({
         this.visitedWizardlets.indexOf(wizardlet) == -1 ? p
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
-    function next() {
+    async function next() {
       // Save current wizardlet, and any save-able (isAvailable) but invisible
       // wizardlets that may exist in between this one and the next.
       // If it exists, load the next wizardlet
       // TODO: Just load next wizardlet instead of loading all in the beginning
+
+      // this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
+      var currentWizardlet = this.wizardlets[this.wizardPosition.wizardletIndex];
+
+      // we want to save Facades since they could directly influence the availabities of other wizardlets
+      // if it is currently the "last" wizardlet in the flow
+      await currentWizardlet.save();
+
       var start = this.wizardPosition.wizardletIndex;
-      const nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
+      let nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
       var end = nextScreen ?
         nextScreen.wizardletIndex : this.wizardlets.length;
-      var p = Promise.resolve();
+
       for ( let i = start ; i < end ; i++ ) {
         if ( ! this.wizardlets[i].isAvailable ) continue;
-        p = p.then(() => this.wizardlets[i].save());
-        if ( (i + 1) < end && this.wizardlets[i + 1] ) p = p.then(() => this.wizardlets[i + 1].load());
+        if ( this.wizardlets[i] == currentWizardlet ) continue;
+
+
+        await this.wizardlets[i].save();
+        if ( (i + 1) < end && this.wizardlets[i + 1] ) await this.wizardlets[i + 1].load();
       }
-      return p.then(() => {
-        if ( this.nextScreen == null ) {
-          this.submitted = true;
-          return true;
-        }
-        this.wizardPosition = nextScreen;
-        return false;
-      });
+
+      if ( this.nextScreen == null ) {
+        this.submitted = true;
+        return true;
+      }
+
+      this.wizardPosition = nextScreen;
+      return false;
     },
     function back() {
       let previousScreen = this.previousScreen;
