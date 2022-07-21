@@ -25,7 +25,7 @@ foam.CLASS({
       grid-column: span 12;
     }
     ^halfWidth {
-      grid-column: span 4;
+      grid-column: span 6;
     }
   `,
 
@@ -43,9 +43,9 @@ foam.CLASS({
             })
           }
         ).addClass(this.myClass('container'))
-        .start(data.START_DATE.__).addClass(this.myClass('halfWidth')).end()
-        .start(data.FREQUENCY.__).addClass(this.myClass('halfWidth')).end()
+        .start(data.START_DATE.__).addClass(this.myClass('fullWidth')).end()
         .start(data.REPEAT.__).addClass(this.myClass('halfWidth')).end()
+        .start(data.FREQUENCY.__).addClass(this.myClass('halfWidth')).end()
         .add(this.slot(function(data$frequency) {
           if ( data$frequency == 'WEEK' )
             return this.E().add(data.DAY_OF_WEEK.__).addClass(this.myClass('fullWidth'));
@@ -82,4 +82,3 @@ foam.CLASS({
     }
   ]
 });
-
