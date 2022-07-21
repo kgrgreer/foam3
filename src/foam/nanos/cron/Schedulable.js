@@ -23,19 +23,13 @@ foam.CLASS({
   javaImports: [
     'foam.core.Agency',
     'foam.core.ContextAgent',
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.Subject',
-
     'java.util.Date'
-  ],
-
-  imports: [
-    'addCommas'
   ],
 
   requires: [
@@ -100,10 +94,17 @@ foam.CLASS({
       name: 'schedule',
       label: '',
       section: 'scheduling',
-      factory: function(){
-        return foam.nanos.cron.SimpleIntervalSchedule.create();
+      postSet: function(_, v) {
+        this.frequency = v.frequency;
+        this.startDate = v.startDate;
+        this.endsOn = v.endsOn;
       },
-      view: function (_, X){
+      factory: function() {
+        var ret = foam.nanos.cron.SimpleIntervalSchedule.create();
+        this.SCHEDULE.postSet(null, ret);
+        return ret;
+      },
+      view: function (_, X) {
         return {
           class: 'foam.nanos.cron.SimpleIntervalScheduleView',
           data$: X.data.schedule$
@@ -117,7 +118,7 @@ foam.CLASS({
       label: 'Scheduled Event History',
       documentation: 'Show a table view of all historic scheduled events',
       factory: function() {
-        if ( ! this.eventDaoKey ) return;
+        if ( ! this.eventDaoKey ) return null;
 
         const E = foam.mlang.ExpressionsSingleton.create({});
         var idPredicate = E.EQ(this.ScriptEvent.OWNER, this.id);
@@ -150,7 +151,11 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'objectToSchedule',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      postSet: function (_,v) {
+        this.denomination = v.destinationCurrency;
+        this.amount = v.sourceAmount;
+      }
     },
     {
       class: 'String',
@@ -182,12 +187,13 @@ foam.CLASS({
       gridColumns: 4,
       order: 3,
       factory: function() {
-        if (
-          ! this.objectToSchedule ||
-          ! this.objectToSchedule.lifecycleState ||
-          ! this.objectToSchedule.lifecycleState.name
-        ) return;
-        return this.objectToSchedule.lifecycleState.name;
+        var nextScheduledDate_ = this.nextScheduledDate;
+        if ( ! nextScheduledDate_ && this.endsOn < new Date() ) {
+          return foam.nanos.auth.LifecycleState.DISABLED;
+        } else if ( ! nextScheduledDate_ ) {
+          return foam.nanos.auth.LifecycleState.PENDING;
+        }
+        return foam.nanos.auth.LifecycleState.ACTIVE;
       }
     },
     {
@@ -195,38 +201,33 @@ foam.CLASS({
       label: 'Last Occurrence'
     },
     {
+      class: 'Reference',
+      of: 'foam.core.Unit',
+      name: 'denomination',
+      visibility: 'HIDDEN'
+    },
+    {
       class: 'UnitValue',
       name: 'amount',
-      createVisibility: 'HIDDEN',
-      factory: function() {
-        if ( ! this.objectToSchedule || ! this.objectToSchedule.sourceAmount ) return;
-        return this.objectToSchedule.sourceAmount;
-      },
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .add('$', X.addCommas(formattedAmount.toFixed(2)));
-      }
+      unitPropName: 'denomination',
+      createVisibility: 'HIDDEN'
     },
     {
       class: 'Enum',
       of: 'foam.time.TimeUnit',
       name: 'frequency',
-      createVisibility: 'HIDDEN',
-      factory: function() {
-        if ( ! this.schedule || ! this.schedule.frequency ) return;
-        return this.schedule.frequency;
-      }
+      createVisibility: 'HIDDEN'
     },
     {
       class: 'Date',
       name: 'startDate',
       label: 'Start On',
-      createVisibility: 'HIDDEN',
-      factory: function() {
-        if ( ! this.schedule || ! this.schedule.startDate ) return;
-        return this.schedule.startDate;
-      }
+      createVisibility: 'HIDDEN'
+    },
+    {
+      class: 'Date',
+      name: 'endsOn',
+      visibility: 'HIDDEN'
     }
   ],
 
