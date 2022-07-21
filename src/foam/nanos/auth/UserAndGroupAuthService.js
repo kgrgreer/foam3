@@ -204,7 +204,7 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);
+        User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, username, password);
         if ( user == null ) {
           throw new UserNotFoundException();
         }

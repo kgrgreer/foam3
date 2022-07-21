@@ -69,7 +69,7 @@ foam.CLASS({
       PM pm = null;
       if ( getEnabled() ) pm = PM.create(x, this.getClass(), getNameFor("login"));
       try {
-        return super.login(x, identifier, password);
+        return super.login(x, identifier, username, password);
       } finally {
         if ( pm != null ) pm.log(x);
       }
