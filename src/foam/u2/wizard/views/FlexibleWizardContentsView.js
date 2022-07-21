@@ -53,31 +53,50 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
+      
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
         return data$currentSection?.createView() ?? this.E();
       })
       let actionsDetachable = foam.core.FObject.create();
+      
       this.addClass()
+        // Render current wizard section
         .add(current$)
+        // Render actions
         .add(this.slot(function (data$actionBar, data$currentWizardlet) {
           let actions = data$actionBar;
+
+          // avoid mutating the reported action bar
+          actions = [...actions];
+
+          // When the slot listener updates this object will be detached
+          actionsDetachable.detach();
+          actionsDetachable = foam.core.FObject.create();
+
           if ( self.actionProvider ) {
-            const prevIndex = actions.findIndex(a => a.name == 'goPrev');
-            if ( prevIndex != -1 ) {
-              actions = [...actions];
-              const actionRef = this.ActionReference.create({
-                action: actions[prevIndex],
+            // Control over rendering these actions will be given to the
+            // action provider - usually the popup header.
+            const actionsToGiveToHeader = ['goPrev', 'discard'];
+            
+            for ( const name of actionsToGiveToHeader ) {
+              const i = actions.findIndex(a => a.name == name);
+              if ( i == -1 ) continue;
+
+              const actionRef = self.ActionReference.create({
+                action: actions[i],
                 data: this.data
               });
-              actionsDetachable.detach();
-              actionsDetachable = foam.core.FObject.create();
               self.actionProvider.addAction(actionRef);
               actionsDetachable.onDetach(function () {
                 self.actionProvider.removeAction(actionRef);
               });
-              actions.splice(prevIndex, 1);
+              actions.splice(i, 1);
             }
           }
+
+          // Listen to availability of actions that FlexibleWizardContentsView
+          //   still has rendering control over to decide if the container
+          //   is visible
           let slots = [];
           actions.forEach(a => {
             slots.push(a.createIsAvailable$(self.__subContext__, self.data));
@@ -89,6 +108,8 @@ foam.CLASS({
             }
             return false;
           }, s);
+
+          // Render action buttons
           return this.E()
             .addClass(self.myClass('flexButtons'))
             .show(anyAvailable)
