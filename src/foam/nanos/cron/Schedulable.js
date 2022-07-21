@@ -95,6 +95,7 @@ foam.CLASS({
       label: '',
       section: 'scheduling',
       postSet: function(_, v) {
+        if ( ! v ) return;
         this.frequency = v.frequency;
         this.startDate = v.startDate;
         this.endsOn = v.endsOn;
@@ -153,6 +154,7 @@ foam.CLASS({
       name: 'objectToSchedule',
       createVisibility: 'HIDDEN',
       postSet: function (_,v) {
+        if ( ! v ) return;
         this.denomination = v.destinationCurrency;
         this.amount = v.sourceAmount;
       }
