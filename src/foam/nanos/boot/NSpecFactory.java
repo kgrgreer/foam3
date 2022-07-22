@@ -188,7 +188,7 @@ public class NSpecFactory
     } else {
       if ( ns_ == null ) {
         ns_ = ns;
-      } else if ( ns_ instanceof FObject && ns instanceof FObject ) {
+      } else if ( ns_ instanceof NanoService && ns instanceof FObject ) {
         // Many services may have cached the old service in instance variables,
         // so we can't actually switch to a new object in the context because
         // all of the cached versions will still be out there un-updated
