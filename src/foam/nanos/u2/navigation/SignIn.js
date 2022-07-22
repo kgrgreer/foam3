@@ -27,8 +27,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',
-    'foam.u2.stack.StackBlock',
-    'foam.nanos.auth.DuplicateEmailException',
+    'foam.u2.stack.StackBlock'
   ],
 
   messages: [
@@ -66,19 +65,6 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
-    },
-    {
-      class: 'String',
-      name: 'userName',
-      createVisibility: function(userNameVisible) {
-       return userNameVisible ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      section: 'emailPasswordSection',
-    },
-    {
-      class: 'Boolean',
-      name: 'userNameVisible',
-      hidden: true
     },
     {
       class: 'Boolean',
@@ -164,7 +150,7 @@ foam.CLASS({
           }
 
           try {
-            var logedInUser = await this.auth.login(X, this.identifier, this.username, this.password);
+            var logedInUser = await this.auth.login(X, this.identifier, this.password);
             if ( ! logedInUser ) return;
 
             if ( this.token_ ) {
@@ -187,9 +173,6 @@ foam.CLASS({
               await this.nextStep();
             }
           } catch (err) {
-              if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
-                this.userNameVisible = true;
-              }
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
                 message: this.ERROR_MSG,

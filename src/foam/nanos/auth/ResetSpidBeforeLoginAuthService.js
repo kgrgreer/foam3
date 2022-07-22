@@ -16,7 +16,7 @@ foam.CLASS({
   methods: [
     {
       name: 'login',
-      javaCode: 'return getDelegate().login(x.put("spid", null), identifier, username, password);'
+      javaCode: 'return getDelegate().login(x.put("spid", null), identifier, password);'
     }
   ]
 });

@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'static foam.mlang.MLang.*'
@@ -31,8 +30,7 @@ foam.CLASS({
         DAO userDAO = ((DAO) x.get("localUserUserDAO")).where(
           OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
-            EQ(User.USER_NAME, identifier)),
-            EQ(User.USER_NAME, username));
+            EQ(User.USER_NAME, identifier)));
 
         // Here, we check to see if there exists one and only one user under the given identifier
         // under the theme spid. If so, simply return the user.
@@ -40,7 +38,7 @@ foam.CLASS({
         String themeSpid = ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid();
         Predicate spidPredicate = EQ(User.SPID, themeSpid);
         long userCount = ((Count) userDAO.where(spidPredicate).select(new Count())).getValue();
-        if ( userCount > 1 )  throw new DuplicateEmailException();
+        if ( userCount > 1 ) return null;
         if ( userCount == 1 ) return (User) userDAO.find(spidPredicate);
         
         // Here, we check if there is a user under the given identifier under the superspid since the

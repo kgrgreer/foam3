@@ -104,7 +104,6 @@ public class AuthWebAgent
 
     // query parameters
     String              email        = req.getParameter("user");
-    String              username        = req.getParameter("username");
     String              password     = req.getParameter("password");
     String              actAs        = req.getParameter("actAs");
     String              authHeader   = req.getHeader("Authorization");
@@ -169,7 +168,6 @@ public class AuthWebAgent
             // Redimentary testing: curl --user username:password http://localhost:8080/service/dig
             //   visually inspect results, on failure you'll see the dig login page.
             //
-            // email:username:password ?
             try {
               String credentials = new String(Base64.decode(st.nextToken()), "UTF-8");
               int index = credentials.indexOf(":");
@@ -251,7 +249,7 @@ public class AuthWebAgent
 
         user = auth.login(session.getContext()
           .put(HttpServletRequest.class,  req)
-          .put(HttpServletResponse.class, resp), email, username, password);
+          .put(HttpServletResponse.class, resp), email, password);
 
         if ( user != null ) {
           // Make sure session has the correct context after login

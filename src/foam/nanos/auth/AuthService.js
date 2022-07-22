@@ -86,10 +86,6 @@ foam.INTERFACE({
           type: 'String'
         },
         {
-          name: 'username',
-          type: 'String'
-        },
-        {
           name: 'password',
           type: 'String'
         }
