@@ -116,7 +116,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'filteredEventDAO',
       section: 'history',
-      label: 'Scheduled Event History',
+      label: '',
       documentation: 'Show a table view of all historic scheduled events',
       factory: function() {
         if ( ! this.eventDaoKey ) return null;
