@@ -71,14 +71,7 @@ public class NSpecFactory
     try {
       logger.info("Creating Service", spec_.getName());
       var service = spec_.createService(nx.put(NSpec.class, spec_).put("logger", logger), null);
-      if ( service instanceof DAO ) {
-        if ( ns_ == null ) {
-          ns_ = new ProxyDAO();
-        }
-        ((ProxyDAO) ns_).setDelegate((DAO) service);
-      } else {
-        ns_ = service;
-      }
+      setNS(service);
       logger.info("Created Service", spec_.getName());
     } catch (Throwable t) {
       logger.error("Error Creating Service", spec_.getName(), t);
@@ -180,6 +173,26 @@ public class NSpecFactory
         if ( ! spec_.getLazy() ) {
           create(x_);
         }
+      }
+    }
+  }
+
+  void setNS(Object ns) {
+    if ( ns instanceof DAO ) {
+      if ( ns_ == null ) {
+        ns_ = new ProxyDAO();
+      }
+      if ( ns_ instanceof ProxyDAO ) {
+        ((ProxyDAO) ns_).setDelegate((DAO) ns);
+      }
+    } else {
+      if ( ns_ == null ) {
+        ns_ = ns;
+      } else if ( ns_ instanceof FObject && ns instanceof FObject ) {
+        // Many services may have cached the old service in instance variables,
+        // so we can't actually switch to a new object in the context because
+        // all of the cached versions will still be out there un-updated
+        ((FObject) ns_).copyFrom((FObject) ns);
       }
     }
   }
