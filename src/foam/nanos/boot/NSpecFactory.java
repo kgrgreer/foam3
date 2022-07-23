@@ -27,7 +27,7 @@ public class NSpecFactory
       long since = 0L;
       protected Object initialValue() {
         since = System.currentTimeMillis();
-        return maybeBuildService(null);
+        return maybeBuildService();
       }
 
       public Object get() {
@@ -44,7 +44,7 @@ public class NSpecFactory
     spec_ = spec;
   }
 
-  Object buildService(X x) {
+  void buildService(X x) {
     Logger logger = null;
     if ( ! "logger".equals(spec_.getName()) && ! "PM".equals(spec_.getName()) ) {
       logger = (Logger) x.get("logger");
@@ -56,7 +56,7 @@ public class NSpecFactory
     // Avoid infinite recursions when creating services
     if ( creatingThread_ == Thread.currentThread() ) {
       logger.warning("Recursive Service Factory", spec_.getName());
-      return null;
+      return;
     }
     creatingThread_ = Thread.currentThread();
 
@@ -68,16 +68,10 @@ public class NSpecFactory
       logger.info("NSpecFactory", spec_.getName(), "ns_ not null", ns_.getClass().getName());
     }
 
-    Object ns = null;
     try {
       logger.info("Creating Service", spec_.getName());
       var service = spec_.createService(nx.put(NSpec.class, spec_).put("logger", logger), null);
-      if ( service instanceof DAO ) {
-        ns = new ProxyDAO();
-        ((ProxyDAO) ns).setDelegate((DAO) service);
-      } else {
-        ns = service;
-      }
+      setNS(service);
       logger.info("Created Service", spec_.getName());
     } catch (Throwable t) {
       logger.error("Error Creating Service", spec_.getName(), t);
@@ -85,10 +79,9 @@ public class NSpecFactory
       pm.log(nx);
       creatingThread_ = null;
     }
-    return ns;
   }
 
-  void initService(X x, Object ns) {
+  void initService(X x) {
     Logger logger = null;
     if ( ! "logger".equals(spec_.getName()) && ! "PM".equals(spec_.getName()) ) {
       logger = (Logger) x.get("logger");
@@ -98,6 +91,7 @@ public class NSpecFactory
     }
 
     X  nx = x_ instanceof SubX ? x_ : x_.getX();
+    Object ns = ns_;
     try {
       while ( ns != null ) {
         if ( ns instanceof ContextAware && ! ( ns instanceof ProxyX ) ) {
@@ -120,7 +114,7 @@ public class NSpecFactory
           ns = null;
         }
       }
-      logger.info("Initialized Service", spec_.getName(), ns != null ? ns.getClass().getSimpleName() : "null");
+      logger.info("Initialized Service", spec_.getName(), ns_ != null ? ns_.getClass().getSimpleName() : "null");
     } catch (Throwable t) {
       logger.error("Error Initializing Service", spec_.getName(), t);
     }
@@ -131,7 +125,7 @@ public class NSpecFactory
     if ( spec_.getThreadLocalEnabled() ) {
       ns = tlService_.get();
     } else {
-      ns = maybeBuildService(ns_);
+      ns = maybeBuildService();
     }
 
     if ( ns instanceof XFactory ) return ((XFactory) ns).create(x);
@@ -139,13 +133,12 @@ public class NSpecFactory
     return ns;
   }
 
-  public synchronized Object maybeBuildService(Object ns) {
-    if ( ns == null || ns instanceof ProxyDAO && ((ProxyDAO) ns).getDelegate() == null ) {
-      ns = buildService(x_);
-      ns_ = ns;
-      initService(x_, ns);
+  public synchronized Object maybeBuildService() {
+    if ( ns_ == null || ns_ instanceof ProxyDAO && ((ProxyDAO) ns_).getDelegate() == null ) {
+      buildService(x_);
+      initService(x_);
     }
-    return ns;
+    return ns_;
   }
 
   public synchronized void invalidate(NSpec spec) {
@@ -160,10 +153,7 @@ public class NSpecFactory
     ) {
       if ( ns_ instanceof NanoService ) {
         spec_ = spec;
-        Object ns = buildService(x_);
-        if ( ns instanceof FObject ) {
-          ((FObject) ns_).copyFrom((FObject) ns);
-        }
+        buildService(x_);
         logger.warning("Reloading Service", spec_.getName());
         ((NanoService) ns_).reload();
       } else if ( ns_ instanceof DAO ) {
@@ -183,6 +173,26 @@ public class NSpecFactory
         if ( ! spec_.getLazy() ) {
           create(x_);
         }
+      }
+    }
+  }
+
+  void setNS(Object ns) {
+    if ( ns instanceof DAO ) {
+      if ( ns_ == null ) {
+        ns_ = new ProxyDAO();
+      }
+      if ( ns_ instanceof ProxyDAO ) {
+        ((ProxyDAO) ns_).setDelegate((DAO) ns);
+      }
+    } else {
+      if ( ns_ == null ) {
+        ns_ = ns;
+      } else if ( ns_ instanceof NanoService && ns instanceof FObject ) {
+        // Many services may have cached the old service in instance variables,
+        // so we can't actually switch to a new object in the context because
+        // all of the cached versions will still be out there un-updated
+        ((FObject) ns_).copyFrom((FObject) ns);
       }
     }
   }

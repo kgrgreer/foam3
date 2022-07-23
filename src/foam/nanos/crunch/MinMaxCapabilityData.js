@@ -32,6 +32,7 @@ foam.CLASS({
       class: 'StringArray',
       javaFactory: 'return new String[0];',
       adapt: function(_, n){
+        if ( foam.Array.isInstance(n) ) return n;
         if ( foam.core.String.isInstance(n) ){
           return [
             n
