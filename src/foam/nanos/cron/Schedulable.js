@@ -218,18 +218,21 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.time.TimeUnit',
       name: 'frequency',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      transient: true
     },
     {
       class: 'Date',
       name: 'startDate',
       label: 'Start On',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      transient: true
     },
     {
       class: 'Date',
       name: 'endsOn',
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true
     }
   ],
 
