@@ -1,12 +1,27 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'CreateLoader',
   implements: ['foam.u2.wizard.data.Loader'],
 
+  imports: [
+    'wizardletOf?'
+  ],
+
   properties: [
     {
       class: 'foam.util.FObjectSpec',
-      name: 'spec'
+      name: 'spec',
+      factory: function(){
+        return {
+          class: this.wizardletOf.id
+        }
+      }
     },
     {
       class: 'Class',

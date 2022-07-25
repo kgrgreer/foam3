@@ -20,6 +20,8 @@ foam.CLASS({
       margin: auto;
       width: 65vw;
       min-height: 65vh;
+      height: 100%;
+      padding: 3.2rem 0;
       margin-top: 0;
     }
 

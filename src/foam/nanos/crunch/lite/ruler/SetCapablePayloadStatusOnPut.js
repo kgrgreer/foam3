@@ -49,7 +49,7 @@ foam.CLASS({
 
           try {
             payload.validate(x);
-          } catch ( IllegalStateException e ) {
+          } catch ( Exception e ) {
             payload.setStatus(ACTION_REQUIRED);
             return;
           }

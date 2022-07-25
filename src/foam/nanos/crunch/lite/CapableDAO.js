@@ -89,6 +89,11 @@ foam.CLASS({
               DAO capabilityDAO = (DAO) x.get("capabilityDAO");
               Capability capability = (Capability) capabilityDAO.find(toPutCapablePayload.getCapability());
 
+              if ( capability == null ) {
+                throw new RuntimeException("capability not found: " +
+                  toPutCapablePayload.getCapability());
+              }
+
               CapabilityJunctionPayload storedCapablePayload = (CapabilityJunctionPayload) storedCapablePayloadDAO.find(capability.getId());
 
               if ( storedCapablePayload != null ){

@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.wizard.DynamicActionWizardlet',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
@@ -25,6 +26,13 @@ foam.CLASS({
       postSet: function (_, v) {
         this.currentWizardlet$ = v.currentWizardlet$;
         this.currentSection$ = v.currentSection$;
+
+        // Listen for external actions completing the wizard
+        this.onDetach(v.status$.sub(() => {
+          if ( v == this.WizardStatus.IN_PROGRESS ) return;
+          this.onClose({ completed: v.status == this.WizardStatus.COMPLETED });
+        }))
+
       }
     },
     'currentWizardlet',
@@ -33,6 +41,10 @@ foam.CLASS({
       name: 'backDisabled',
       class: 'Boolean',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'discardAvailable'
     },
     {
       class: 'Boolean',
@@ -48,7 +60,7 @@ foam.CLASS({
         const currentWizardlet = this.currentWizardlet;
 
         let wizardletActions = [];
-        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) ) {
+        if ( this.DynamicActionWizardlet.isInstance(currentWizardlet) && currentWizardlet.dynamicActions?.length ) {
           wizardletActions = currentWizardlet.dynamicActions;
         } else {
           wizardletActions = currentWizardlet.cls_.getAxiomsByClass(this.WizardAction);
@@ -60,7 +72,7 @@ foam.CLASS({
 
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
-            goNextAction = action;
+            goNextAction = this.GO_NEXT.clone().copyFrom(action);
             goNextAction.buttonStyle = 'PRIMARY';
             continue;
           }
@@ -69,6 +81,10 @@ foam.CLASS({
             continue;
           }
           actionBar.push(action);
+        }
+        if ( this.discardAvailable ) {
+          // ???: could let wizardlets override this one too
+          actionBar.push(this.DISCARD);
         }
         actionBar.push(goPrevAction, goNextAction);
         
@@ -89,6 +105,14 @@ foam.CLASS({
           console.error(e);
           x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
         });
+      }
+    },
+    {
+      name: 'discard',
+      icon: 'images/round-close-icon.svg',
+      isAvailable: function (discardAvailable) { return discardAvailable; },
+      code: function () {
+        this.data.discard();
       }
     },
     {
@@ -122,7 +146,6 @@ foam.CLASS({
             for ( let w of this.data.wizardlets ) {
               if ( w.submit ) w.submit();
             }
-            this.onClose({ completed: true })
           }
         }).catch(e => {
           console.error(e);

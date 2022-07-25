@@ -28,8 +28,9 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.crunch.MinMaxCapabilityData',
       name: 'data',
-      flags: ['web'],
       factory: function(){
         return foam.nanos.crunch.MinMaxCapabilityData.create();
       }
@@ -95,17 +96,19 @@ foam.CLASS({
         available if at least one section is available. If false, wizardlet
         does not display even if some sections are available.
       `,
-      postSet: function(_,n){
+      postSet: function(_,n){ 
         if ( !n ){
-          this.selectedData = [];
+          this.data.selectedData = [];
 
           // to cascade hiding all descendent wizardlets
           // TODO: investigate why this is still needed,
           // setting data to empty array should have made isAvailable automatically evaluate to false
+          // TODO: we could be able to deprecate this
           let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") || (x.name == "AlternateFlowAgent"));
           this.choiceWizardlets.forEach(cw => {
             for ( let af of alternateFlow ) {
-              if ( af.spec.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+              if ( af.args.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+                cw.isAvailable = true;
                 return;
               }
             }
@@ -119,12 +122,6 @@ foam.CLASS({
         } else {
           this.save();
         }
-      }
-    },
-    {
-      name: 'selectedData',
-      postSet: function(_,n){
-        this.data.selectedData = n.map(capability => capability.id);
       }
     },
     {
@@ -172,7 +169,7 @@ foam.CLASS({
           selectedData = finalData.concat(savedSelectedData);
         }
 
-        this.selectedData = selectedData;
+        this.data.selectedData = selectedData;
 
         var sections = [
           this.MinMaxCapabilityWizardletSection.create({
@@ -183,9 +180,8 @@ foam.CLASS({
             customView: {
               ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
-              isValidNumberOfChoices$: this.isValid$,
               showValidNumberOfChoicesHelper: false,
-              data$: this.selectedData$,
+              data$: this.data.selectedData$,
               minSelected$: this.min$,
               maxSelected$: this.max$,
               choiceView: {
@@ -244,17 +240,18 @@ foam.CLASS({
         lifted: false,
         ...opt_meta
       };
+
       this.choiceWizardlets.push(wizardlet);
-      console.log('addPrerequisite', this.id, wizardlet.id, meta);
 
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
-      if ( ! meta.lifted ) wizardlet.isAvailable = false;
+      if ( ! meta.lifted ) {
+        wizardlet.isAvailable$ = this.getPrerequisiteAvailabilitySlot(wizardlet);
+      }
 
       return this.consumePrerequisites;
     },
     function handleLifting(liftedWizardlets) {
-      console.log('handleLifting', this.id, liftedWizardlets.map(w => w.id));
       const updated = () => {
         // Hide choice selection if lifted choices reach maximum
         const countLifted = liftedWizardlets
@@ -264,16 +261,50 @@ foam.CLASS({
 
 
         // Update lifted choices based on their availability
-        let newSelectedData = [...this.selectedData];
+        let newSelectedData = [...this.data.selectedData];
         for ( const w of liftedWizardlets ) {
           if ( w.isAvailable ) newSelectedData.push(w.capability);
           else foam.Array.remove(newSelectedData, w.capability);
         }
-        this.selectedData = foam.Array.unique(newSelectedData);
+        this.data.selectedData = foam.Array.unique(newSelectedData);
       }
       const slots = liftedWizardlets.map(w => w.isAvailable$);
       this.ArraySlot.create({ slots }).sub(updated);
       this.isAvailable$.sub(updated);
-    }
+    },
+    function getPrerequisiteAvailabilitySlot(prereqWizardlet){
+      var slot = foam.core.SimpleSlot.create();
+
+      this.data.selectedData$.sub(
+        ()=> slot.set(this.isPrereqSelected(prereqWizardlet))
+      );
+
+      slot.set(this.isPrereqSelected(prereqWizardlet));
+      
+      return slot;
+    },
+
+    function isPrereqSelected(prereqWizardlet){
+      for ( var i = 0 ; i < this.data.selectedData.length ; i++ ) {
+        var currentData = this.data.selectedData[i];
+
+        let idToCompare;
+        if ( foam.String.isInstance(currentData) ){
+          idToCompare = currentData;
+        } else if ( foam.nanos.crunch.Capability.isInstance(currentData) ){
+          idToCompare = currentData.id;
+        } else {
+          idToCompare = null;
+        }
+
+        if ( idToCompare == null ){
+          console.warn("Unexpected data type to compare");
+          return;
+        }
+
+        if ( foam.util.equals(idToCompare, prereqWizardlet.id) ) return true;
+      }
+      return false;
+    },
   ]
 });

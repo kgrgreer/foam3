@@ -47,27 +47,22 @@ foam.CLASS({
     {
       name: 'f',
       code: function(obj) {
-        var dateGroupsSorted = [
-          ...this.dateGroups
-        ];
+        var groups = [ ...this.dateGroups ];
 
         // TODO: Add a check for overlap between dateGroups and other data validation
-        dateGroupsSorted.sort((a, b) => a.low - b.high);
+        groups.sort((a, b) => a.low - b.low);
 
-        var objDiffFromTodayMs =  Math.floor(new Date().getTime()) - Math.floor(obj.created.getTime());
+        var offset = new Date().getTimezoneOffset() * 60000;
+        var diff   = Math.floor((new Date().getTime()-offset)/this.dateGroupingType.conversionFactorMs) -
+                     Math.floor((obj.created.getTime()-offset)/this.dateGroupingType.conversionFactorMs);
 
-        var objDiffFromTodayConverted = objDiffFromTodayMs / this.dateGroupingType.conversionFactorMs;
+        for ( var i = 0 ; i < groups.length ; i++ ) {
+          var group = groups[i];
+          if ( diff >= group.low && diff < group.high )
+            return group.name;
+        }
 
-        var groupName = "Unknown Range";
-
-        dateGroupsSorted.forEach(group => {
-          if (
-            objDiffFromTodayConverted >= group.low &&
-            objDiffFromTodayConverted < group.high
-          ) groupName = group.name;
-        })
-
-        return groupName;
+        return 'Unknown Range';
       },
       javaCode: `
         DateGrouping[] dateGroupsSorted = getDateGroups().clone();
@@ -84,17 +79,13 @@ foam.CLASS({
 
         Double objDiffFromTodayMs = Math.floor(today.getTime()) - Math.floor(createdAwareObj.getCreated().getTime());
 
-        Double objDiffFromTodayConverted = objDiffFromTodayMs / getDateGroupingType().getConversionFactorMs();
+        Double diff = objDiffFromTodayMs / getDateGroupingType().getConversionFactorMs();
 
         for ( int i = 0; i < dateGroupsSorted.length; i++ ){
           DateGrouping group = dateGroupsSorted[i];
 
-          if (
-            objDiffFromTodayConverted >= group.getLow() &&
-            objDiffFromTodayConverted < group.getHigh()
-          ) {
+          if ( diff >= group.getLow() && diff < group.getHigh() )
             return group.getName();
-          }
         }
 
         return "Unknown Range";
