@@ -206,13 +206,15 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       class: 'UnitValue',
       name: 'amount',
       unitPropName: 'denomination',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      transient: true
     },
     {
       class: 'Enum',
