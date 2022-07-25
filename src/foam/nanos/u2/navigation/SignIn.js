@@ -27,7 +27,8 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',
-    'foam.u2.stack.StackBlock'
+    'foam.u2.stack.StackBlock',
+    'foam.nanos.auth.DuplicateEmailException'
   ],
 
   messages: [
@@ -45,6 +46,18 @@ foam.CLASS({
       name: 'dao_',
       hidden: true,
       transient: true
+    },
+    {
+      class: 'String',
+      name: 'username',
+      createVisibility: function(usernameVisible) {
+        return usernameVisible ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+    },
+    {
+      class: 'Boolean',
+      name: 'usernameVisible',
+      hidden: true
     },
     {
       class: 'String',
@@ -150,7 +163,7 @@ foam.CLASS({
           }
 
           try {
-            var logedInUser = await this.auth.login(X, this.identifier, this.password);
+            var logedInUser = await this.auth.login(X, this.usernameVisible ? this.username : this.identifier, this.password);
             if ( ! logedInUser ) return;
 
             if ( this.token_ ) {
@@ -173,6 +186,9 @@ foam.CLASS({
               await this.nextStep();
             }
           } catch (err) {
+              if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
+                this.usernameVisible = true;
+              }
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
                 message: this.ERROR_MSG,
