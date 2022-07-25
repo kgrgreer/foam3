@@ -145,12 +145,12 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        var decorateSink = decorateSink(x, sink, skip, limit, order, predicate);
+        var decoratedSink = decorateSink(x, sink, skip, limit, order, predicate);
         var sub = new Subscription();
 
         for ( var payload : getCapable().getCapablePayloads() ) {
           if ( sub.getDetached() ) break;
-          decorateSink.put(payload, sub);
+          decoratedSink.put(payload, sub);
         }
 
         return sink;
