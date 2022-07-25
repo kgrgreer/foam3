@@ -69,6 +69,7 @@ foam.POM({
     { name: "foam/lib/csv/CSVOutputterImpl",                          flags: "js|java" },
     { name: "foam/lib/csv/PrefixedCSVOutputter",                      flags: "js|java" },
     { name: "foam/lib/csv/DynamicHeaderCSVParser",                    flags: "js" },
+    { name: "foam/lib/http/QueryStringOutputter",                     flags: "js" },
     { name: "foam/parse/StringPStream",                               flags: "js" },
     { name: "foam/core/Validator",                                    flags: "js|java" },
     { name: "foam/core/ValidationException",                          flags: "js|java" },
