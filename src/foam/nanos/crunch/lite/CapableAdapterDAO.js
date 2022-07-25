@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.MDAO',
+    'foam.dao.Subscription',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.List',
@@ -144,11 +145,15 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        ArraySink capablePayloadsToArraySink = new ArraySink.Builder(x)
-          .setArray(Arrays.asList(getCapable().getCapablePayloads()))
-          .build();
+        var decorateSink = decorateSink(x, sink, skip, limit, order, predicate);
+        var sub = new Subscription();
 
-        return capablePayloadsToArraySink;
+        for ( var payload : getCapable().getCapablePayloads() ) {
+          if ( sub.getDetached() ) break;
+          decorateSink.put(payload, sub);
+        }
+
+        return sink;
       `
     },
     {
