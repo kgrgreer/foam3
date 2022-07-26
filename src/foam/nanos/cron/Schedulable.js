@@ -37,15 +37,6 @@ foam.CLASS({
     'foam.nanos.script.ScriptEvent'
   ],
 
-  tableColumns: [
-    'name',
-    'amount',
-    'frequency',
-    'startDate',
-    'lastRun',
-    'lifeCycleState'
-  ],
-
   sections: [
     {
       name: '_defaultSection',
@@ -151,13 +142,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'objectToSchedule',
-      createVisibility: 'HIDDEN',
-      postSet: function (_,v) {
-        if ( ! v ) return;
-        this.denomination = v.destinationCurrency;
-        this.amount = v.sourceAmount;
-      }
+      name: 'objectToSchedule'
     },
     {
       class: 'String',
@@ -201,20 +186,6 @@ foam.CLASS({
     {
       name: 'lastRun',
       label: 'Last Occurrence'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.core.Unit',
-      name: 'denomination',
-      visibility: 'HIDDEN',
-      transient: true
-    },
-    {
-      class: 'UnitValue',
-      name: 'amount',
-      unitPropName: 'denomination',
-      createVisibility: 'HIDDEN',
-      transient: true
     },
     {
       class: 'Enum',
