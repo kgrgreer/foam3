@@ -118,7 +118,7 @@ foam.CLASS({
           data: self.dao_.where(self.EQ(self.Menu.ENABLED, true)),
           relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
           startExpanded: true,
-          query: self.menuSearch$,
+          query: self.theme.showNavBar ? self.menuSearch$ : null,
           onClickAddOn: function(data) { self.openMenu(data); },
           selection$: self.currentMenu$.map(m => m),
           formatter: function(data) {
