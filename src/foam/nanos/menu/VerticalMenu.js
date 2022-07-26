@@ -107,18 +107,21 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-        .startContext({ data: this })
-        .start()
-          .add(this.MENU_SEARCH)
-          .addClass(this.myClass('search'))
-        .end()
-        .endContext()
+        .callIf(this.theme.showNavBar, function(){
+          this
+          .startContext({ data: this })
+            .start()
+            .add(this.MENU_SEARCH)
+              .addClass(this.myClass('search'))
+            .end()
+            .endContext()
+        })
         .start({
           class: 'foam.u2.view.TreeView',
           data: self.dao_.where(self.EQ(self.Menu.ENABLED, true)),
           relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
           startExpanded: true,
-          query: self.theme.showNavBar ? self.menuSearch$ : null,
+          query: self.menuSearch$,
           onClickAddOn: function(data) { self.openMenu(data); },
           selection$: self.currentMenu$.map(m => m),
           formatter: function(data) {
