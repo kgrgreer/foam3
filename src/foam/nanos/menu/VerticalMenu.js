@@ -107,7 +107,7 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-        .callIf(this.theme.showNavBar, function(){
+        .callIf(this.theme.showNavSearch, function(){
           this
           .startContext({ data: this })
             .start()

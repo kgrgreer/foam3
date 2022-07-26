@@ -745,7 +745,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showNavBar',
+      name: 'showNavSearch',
       value: true
     }
   ],
