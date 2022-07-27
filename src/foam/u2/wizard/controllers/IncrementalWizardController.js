@@ -72,8 +72,22 @@ foam.CLASS({
 
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
-            goNextAction = this.GO_NEXT.clone().copyFrom(action);
+
+            // If the class matches we can copy the original NEXT action
+            if ( action.cls_ == foam.core.Action ) {
+              goNextAction = this.GO_NEXT.clone().copyFrom(action);
+              goNextAction.buttonStyle = 'PRIMARY';
+              continue;
+            }
+
+            goNextAction = action;
             goNextAction.buttonStyle = 'PRIMARY';
+
+            // Copy defaults from original NEXT action
+            const copyProperties = ['isAvailable', 'isEnabled'];
+            for ( const k of copyProperties ) {
+              if ( ! goNextAction[k] ) goNextAction[k] = this.GO_NEXT[k];
+            }
             continue;
           }
           if ( action.name === 'goPrev' ) {
