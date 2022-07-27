@@ -981,6 +981,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/DAOSaver",                           flags: "web" },
     { name: "foam/u2/wizard/data/WrapSaver",                          flags: "web" },
     { name: "foam/u2/wizard/data/PrerequisiteLoader",                 flags: "web" },
+    { name: "foam/u2/wizard/data/EasyLoader",                         flags: "web" },
     { name: "foam/u2/wizard/data/CreateLoader",                       flags: "web" },
     { name: "foam/u2/wizard/data/FacadeWizardletSaver",               flags: "web" },
     { name: "foam/u2/wizard/wao/WAO",                                 flags: "web" },
