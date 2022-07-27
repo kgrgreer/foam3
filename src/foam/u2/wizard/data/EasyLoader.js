@@ -16,7 +16,6 @@ foam.CLASS({
       name: 'loaders',
       postSet: function (_, n) {
         if ( n.length < 2 ) return;
-        debugger;
         for ( let i = 1 ; i < n.length ; i++ ) {
           n[i].delegate = n[i-1];
         }
