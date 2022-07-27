@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.alarming.AlarmReason'
   ],
 
   properties: [
@@ -56,6 +56,9 @@ foam.CLASS({
               var payload = new CapabilityJunctionPayload();
               payload.setCapability(id);
               capablePayloadDAO.put(payload);
+
+              // Indicate that this payload is required
+              capable.addRequirement(id);
             }
 
             // See 'documentation' Property property for 'available'
@@ -64,9 +67,6 @@ foam.CLASS({
               payload.setCapability(id);
               capablePayloadDAO.put(payload);
             }
-
-            // Indicate that the payloads added are required
-            capable.setCapabilityIds(getRequirements());
           }
         }, "");
       `
