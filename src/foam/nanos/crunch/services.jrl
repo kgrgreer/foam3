@@ -28,6 +28,7 @@ p({
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
       .setPm(true)
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.PERMISSIONS_INTERCEPTED })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
 
   """
