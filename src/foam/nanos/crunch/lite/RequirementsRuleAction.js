@@ -58,12 +58,14 @@ foam.CLASS({
               capablePayloadDAO.put(payload);
             }
 
+            // See 'documentation' Property property for 'available'
             for ( String id : getAvailable() ) {
               var payload = new CapabilityJunctionPayload();
               payload.setCapability(id);
               capablePayloadDAO.put(payload);
             }
 
+            // Indicate that the payloads added are required
             capable.setCapabilityIds(getRequirements());
           }
         }, "");
