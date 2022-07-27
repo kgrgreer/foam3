@@ -58,7 +58,7 @@ foam.CLASS({
               capablePayloadDAO.put(payload);
 
               // Indicate that this payload is required
-              capable.addRequirement(id);
+              capable.addRequirement(x, id);
             }
 
             // See 'documentation' Property property for 'available'
