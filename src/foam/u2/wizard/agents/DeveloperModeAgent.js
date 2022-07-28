@@ -26,8 +26,10 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      const usersJunctions = (await this.userCapabilityJunctionDAO.select()).array;
-      const developerCapability = usersJunctions.find(j => j.targetId === 'developer');
+      const e = foam.mlang.Expressions.create();
+      const developerCapability = await this.userCapabilityJunctionDAO.find(
+        e.EQ(foam.nanos.crunch.UserCapabilityJunction.TARGET_ID, 'developer'));
+
       this.developerMode = developerCapability !== undefined;
     }
   ]
