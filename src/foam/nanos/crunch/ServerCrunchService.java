@@ -258,68 +258,6 @@ public class ServerCrunchService
     return cache;
   }
 
-  // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
-  // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x, boolean cache) {
-
-    if ( cache ) {
-      Sink purgeSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void remove(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
-
-      Sink purgeUSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          var ucj = (UserCapabilityJunction) obj;
-          if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED
-            || ucj.getStatus() == CapabilityJunctionStatus.EXPIRED ) 
-            purgeCache(x);
-        }
-        public void remove(Object obj, Detachable sub) {
-          purgeCache(x);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("userCapabilityJunctionDAO")).listen(purgeUSink, TRUE);
-    }
-
-    Map map = new ConcurrentHashMap<String, List<String>>();
-    var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
-    var sink = (GroupBy) dao.
-      select(
-        GROUP_BY(
-          CapabilityCapabilityJunction.SOURCE_ID,
-          MAP(
-            CapabilityCapabilityJunction.TARGET_ID,
-            new ArraySink()
-          )
-        )
-      );
-    for (var key : sink.getGroupKeys()) {
-      map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
-        sink.getGroups().get(key)).getDelegate()).getArray());
-    }
-
-    Session session = x.get(Session.class);
-    if ( cache && session != null && session.getApplyContext() != null ) {
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, map));
-    }
-
-    return map;
-  }
-
   // returns a getPrereqs result directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs_(X x, String capId) {
     return ((ArraySink) ((foam.mlang.sink.Map) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
@@ -359,31 +297,6 @@ public class ServerCrunchService
     }
   }
 
-
-  // get pcj cache from session context. If the current context subject users match the user/agent
-  // of session, return the cache. Or, if cache is empty, initialize the cache
-  // otherwise, return the result of directly looking up prerequisitecapabilityjunctiondao since
-  // the cache is not valid
-  protected Map<String, List<String>> getPrereqsCache(X x) {
-    Session session = x.get(Session.class);
-    User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null ) {
-      return initCache(x, false);
-    }
-    Long userId = user.getId();
-    Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
-
-    boolean cacheValid = session.getAgentId() > 0 ?
-      session.getAgentId() == agentId && session.getUserId() == userId :
-      session.getUserId() == agentId && session.getUserId() == userId;
-
-    // the cache belongs to the real user in the session, so if the current context user
-    // is anything but, do not use it
-    if ( ! cacheValid ) return null;
-
-    Map<String, List<String>> map = (Map) session.getContext().get(CACHE_KEY);
-    return map == null ? initCache(x, true) : map;
-  }
 
   //TODO: Needs to be refactored once Subject is serializable
   public UserCapabilityJunction getJunctionFor(X x, String capabilityId, User effectiveUser, User user) {
