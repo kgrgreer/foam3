@@ -16,36 +16,28 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.ArrayList',
     'java.util.Arrays',
-    'java.util.Map',
+    'java.util.HashMap',
     'java.util.List',
-    'java.util.concurrent.ConcurrentHashMap',
+    'java.util.Map',
     'static foam.mlang.MLang.*'
   ],
 
   properties: [
     {
-      class: 'Object',
-      javaType: 'Map<String, Integer>',
-      name: 'prerequisitesSeqId',
-      javaFactory: 'return new ConcurrentHashMap<String, Integer>();'
-    },
-    {
-      class: 'Object',
-      javaType: 'Map<String, Integer>',
-      name: 'dependentsSeqId',
-      javaFactory: 'return new ConcurrentHashMap<String, Integer>();'
+      class: 'Int',
+      name: 'sequenceId'
     },
     {
       class: 'Object',
       javaType: 'Map<String, List<String>>',
-      name: 'prerequisites',
-      javaFactory: 'return new ConcurrentHashMap<String, List<String>>();'
+      name: 'prerequisitesCache',
+      javaFactory: 'return new HashMap<String, List<String>>();'
     },
     {
       class: 'Object',
       javaType: 'Map<String, List<String>>',
-      name: 'dependents',
-      javaFactory: 'return new ConcurrentHashMap<String, List<String>>();'
+      name: 'dependentsCache',
+      javaFactory: 'return new HashMap<String, List<String>>();'
     }
   ],
 
@@ -53,6 +45,7 @@ foam.CLASS({
     // ???: Add getPrereqs and getDependents methods in here?
     {
       name: 'getPrerequisites',
+      synchronized: true,
       type: 'List<String>',
       args: [
         { type: 'Context', name: 'x' },
@@ -60,14 +53,13 @@ foam.CLASS({
         { type: 'String',  name: 'capabilityId' }
       ],
       javaCode: `
-        var seqId = getPrerequisitesSeqId().get(capabilityId);
+        maybeInvalidate(sequenceId);
         
-        // Cache hit condition
-        if ( seqId != null && seqId == sequenceId ) {
-          return getPrerequisites().get(capabilityId);
-        }
-        // Everything following handles a cache miss
+        // Cache hit
+        var cacheResults = getPrerequisitesCache().get(capabilityId);
+        if ( cacheResults != null ) return cacheResults;
 
+        // Cache miss...
         var results = new ArrayList<String>();
 
         var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
@@ -80,14 +72,14 @@ foam.CLASS({
             }
           });
 
-        getPrerequisites().put(capabilityId, results);
-        getPrerequisitesSeqId().put(capabilityId, sequenceId);
+        getPrerequisitesCache().put(capabilityId, results);
 
         return results;
       `
     },
     {
       name: 'getDependents',
+      synchronized: true,
       type: 'List<String>',
       args: [
         { type: 'Context', name: 'x' },
@@ -95,14 +87,13 @@ foam.CLASS({
         { type: 'String',  name: 'capabilityId' }
       ],
       javaCode: `
-        var seqId = getDependentsSeqId().get(capabilityId);
+        maybeInvalidate(sequenceId);
         
-        // Cache hit condition
-        if ( seqId != null && seqId == sequenceId ) {
-          return getDependents().get(capabilityId);
-        }
-        // Everything following handles a cache miss
+        // Cache hit
+        var cacheResults = getDependentsCache().get(capabilityId);
+        if ( cacheResults != null ) return cacheResults;
 
+        // Cache miss...
         var results = new ArrayList<String>();
 
         var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
@@ -115,10 +106,23 @@ foam.CLASS({
             }
           });
 
-        getPrerequisites().put(capabilityId, results);
-        getPrerequisitesSeqId().put(capabilityId, sequenceId);
+        getDependentsCache().put(capabilityId, results);
 
         return results;
+      `
+    },
+    {
+      name: 'maybeInvalidate',
+      synchronized: true,
+      args: [
+        { javaType: 'int', name: 'sequenceId' }
+      ],
+      javaCode: `
+        if ( sequenceId == getSequenceId() ) return;
+
+        getPrerequisitesCache().clear();
+        getDependentsCache().clear();
+        setSequenceId(sequenceId);
       `
     }
   ]
