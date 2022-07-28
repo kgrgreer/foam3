@@ -46,8 +46,31 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
+  protected int cacheSequenceId_ = 0;
+  protected SessionCrunchCache anonymousCache_;
+
   @Override
-  public void start() { }
+  public void start() {
+    anonymousCache_ = new SessionCrunchCache();
+
+    var prerequisiteCapabilityJunctionDAO =
+      ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
+    
+    prerequisiteCapabilityJunctionDAO.listen(new Sink() {
+      public void put(Object obj, Detachable sub) {
+        // ???: could have a sequence id per capability to mimimize how
+        //      much cache is invalidated
+        cacheSequenceId_++;
+      }
+      public void remove(Object obj, Detachable sub) {
+        cacheSequenceId_++;
+      }
+      public void reset(Detachable sub) {
+        cacheSequenceId_++;
+      }
+      public void eof() {};
+    }, TRUE);
+  }
 
   public List getGrantPath(X x, String rootId) {
     return getCapabilityPath(x, rootId, true, true);
@@ -210,6 +233,29 @@ public class ServerCrunchService
     if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
     return getPrereqs_(x, capId);
+  }
+
+  public SessionCrunchCache getSessionCache(X x) {
+    Session session = x.get(Session.class);
+    User user = ((Subject) x.get("subject")).getUser();
+    if ( user == null || session == null ) return anonymousCache_;
+
+    Long userId = user.getId();
+    Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
+
+    boolean cacheValid = session.getAgentId() > 0 ?
+      session.getAgentId() == agentId && session.getUserId() == userId :
+      session.getUserId() == agentId && session.getUserId() == userId;
+
+    if ( ! cacheValid ) return anonymousCache_;
+
+    SessionCrunchCache cache = (SessionCrunchCache) session.getApplyContext().get(CACHE_KEY);
+    if ( cache == null ) {
+      cache = new SessionCrunchCache();
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
+    }
+
+    return cache;
   }
 
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs

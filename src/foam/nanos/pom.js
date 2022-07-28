@@ -552,6 +552,7 @@ foam.POM({
     { name: "crunch/RemoveJunctionsOnUserRemoval",                                        flags: "js|java" },
     { name: "crunch/CrunchService",                                                       flags: "js|java" },
     { name: "crunch/ClientCrunchService",                                                 flags: "js" },
+    { name: "crunch/SessionCrunchCache",                                                  flags: "js|java" },
     { name: "crunch/ReputDependentUCJs",                                                  flags: "js|java" },
     { name: "crunch/predicate/CapabilityIsStatus",                                        flags: "js|java" },
     { name: "crunch/predicate/CapabilityPrerequisitesGranted",                            flags: "js|java" },
