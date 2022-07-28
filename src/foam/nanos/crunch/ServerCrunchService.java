@@ -213,30 +213,27 @@ public class ServerCrunchService
     return grantPath;
   }
 
+  // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
-    return Arrays.stream(((CapabilityCapabilityJunction[]) ((ArraySink) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
-      .inX(x)
-      .where(EQ(CapabilityCapabilityJunction.TARGET_ID, capabilityId))
-      .select(new ArraySink())).getArray()
-      .toArray(new CapabilityCapabilityJunction[0])))
-      .map(CapabilityCapabilityJunction::getSourceId).toArray(String[]::new);
+    return getSessionCache(x).getDependents(x, cacheSequenceId_, capabilityId)
+      .toArray(new String[0]);
   }
 
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
-    if ( ucj != null ) {
+    var auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") && ucj != null ) {
       Subject s = ucj.getSubject(x);
       x = Auth.sudo(x, s.getUser(), s.getRealUser());
     }
-    Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
-    if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
-    return getPrereqs_(x, capId);
+    var cache = getSessionCache(x);
+    return cache.getPrerequisites(x, cacheSequenceId_, capId);
   }
 
   public SessionCrunchCache getSessionCache(X x) {
-    Session session = x.get(Session.class);
+    var session = (Session) x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
     if ( user == null || session == null ) return anonymousCache_;
 
@@ -249,10 +246,13 @@ public class ServerCrunchService
 
     if ( ! cacheValid ) return anonymousCache_;
 
-    SessionCrunchCache cache = (SessionCrunchCache) session.getApplyContext().get(CACHE_KEY);
-    if ( cache == null ) {
+    var cache = (SessionCrunchCache) session.getContext().get(CACHE_KEY);
+    if ( cache == null && session.getApplyContext() != null ) {
       cache = new SessionCrunchCache();
       session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
+    } else if ( cache == null ) {
+      // Unsaved cache means no caching!
+      cache = new SessionCrunchCache();
     }
 
     return cache;
