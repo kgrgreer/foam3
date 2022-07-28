@@ -107,11 +107,11 @@ foam.CLASS({
 
         var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
         dao
-          .where(EQ(CapabilityCapabilityJunction.SOURCE_ID, capabilityId))
+          .where(EQ(CapabilityCapabilityJunction.TARGET_ID, capabilityId))
           .select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
-              results.add(((CapabilityCapabilityJunction) obj).getTargetId());
+              results.add(((CapabilityCapabilityJunction) obj).getSourceId());
             }
           });
 
