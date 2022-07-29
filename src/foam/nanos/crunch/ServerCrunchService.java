@@ -216,8 +216,7 @@ public class ServerCrunchService
 
   // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
-    return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId)
-      .toArray(new String[0]);
+    return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId);
   }
 
   // gets prereq list of a cap from the prereqsCache_
