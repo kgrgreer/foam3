@@ -30,8 +30,14 @@ foam.CLASS({
     {
       class: 'Object',
       javaType: 'Map<String, List<String>>',
-      name: 'prerequisitesCache',
+      name: 'prerequisiteStringsCache',
       javaFactory: 'return new HashMap<String, List<String>>();'
+    },
+    {
+      class: 'Object',
+      javaType: 'Map<String, List<Capability>>',
+      name: 'prerequisiteObjectsCache',
+      javaFactory: 'return new HashMap<String, List<Capability>>();'
     },
     {
       class: 'Object',
@@ -44,9 +50,8 @@ foam.CLASS({
   methods: [
     // ???: Add getPrereqs and getDependents methods in here?
     {
-      name: 'getPrerequisites',
+      name: 'maybeCachePrerequisites',
       synchronized: true,
-      type: 'List<String>',
       args: [
         { type: 'Context', name: 'x' },
         { javaType: 'long',  name: 'sequenceId' },
@@ -56,11 +61,12 @@ foam.CLASS({
         maybeInvalidate(sequenceId);
         
         // Cache hit
-        var cacheResults = getPrerequisitesCache().get(capabilityId);
-        if ( cacheResults != null ) return cacheResults;
+        var cacheResults = getPrerequisiteStringsCache().get(capabilityId);
+        if ( cacheResults != null ) return;
 
         // Cache miss...
-        var results = new ArrayList<String>();
+        var stringResults = new ArrayList<String>();
+        var objectResults = new ArrayList<Capability>();
 
         var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
         dao
@@ -68,13 +74,45 @@ foam.CLASS({
           .select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
-              results.add(((CapabilityCapabilityJunction) obj).getTargetId());
+              var capabilityDAO = (DAO) x.get("capabilityDAO");
+              var id = ((CapabilityCapabilityJunction) obj).getTargetId();
+              stringResults.add(id);
+              objectResults.add((Capability) capabilityDAO.find(id));
             }
           });
 
-        getPrerequisitesCache().put(capabilityId, results);
+        getPrerequisiteStringsCache().put(capabilityId, stringResults);
+        getPrerequisiteObjectsCache().put(capabilityId, objectResults);
 
-        return results;
+        return;
+      `
+    },
+    {
+      name: 'getPrerequisites',
+      synchronized: true,
+      type: 'List<String>',
+      args: [
+        { type: 'Context', name: 'x' },
+        { javaType: 'long',  name: 'sequenceId' },
+        { type: 'String',  name: 'capabilityId' }
+      ],
+      javaCode: `
+        maybeCachePrerequisites(x, sequenceId, capabilityId);
+        return getPrerequisiteStringsCache().get(capabilityId);
+      `
+    },
+    {
+      name: 'getPrerequisiteObjects',
+      synchronized: true,
+      type: 'List<Capability>',
+      args: [
+        { type: 'Context', name: 'x' },
+        { javaType: 'long',  name: 'sequenceId' },
+        { type: 'String',  name: 'capabilityId' }
+      ],
+      javaCode: `
+        maybeCachePrerequisites(x, sequenceId, capabilityId);
+        return getPrerequisiteObjectsCache().get(capabilityId);
       `
     },
     {
@@ -122,7 +160,8 @@ foam.CLASS({
       javaCode: `
         if ( sequenceId == getSequenceId() ) return;
 
-        getPrerequisitesCache().clear();
+        getPrerequisiteStringsCache().clear();
+        getPrerequisiteObjectsCache().clear();
         getDependentsCache().clear();
         setSequenceId(sequenceId);
       `
