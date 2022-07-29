@@ -22,7 +22,7 @@ foam.CLASS({
       name: 'timestamp',
     },
     {
-      class: 'Int',
+      class: 'Duration',
       name: 'duration',
       units: 's'
     },
