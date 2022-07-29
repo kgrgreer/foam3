@@ -36,6 +36,7 @@ import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
@@ -46,8 +47,31 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
+  protected AtomicLong cacheSequenceId_ = new AtomicLong(0);
+  protected SessionCrunchCache anonymousCache_;
+
   @Override
-  public void start() { }
+  public void start() {
+    anonymousCache_ = new SessionCrunchCache();
+
+    var prerequisiteCapabilityJunctionDAO =
+      ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
+    
+    prerequisiteCapabilityJunctionDAO.listen(new Sink() {
+      public void put(Object obj, Detachable sub) {
+        // ???: could have a sequence id per capability to mimimize how
+        //      much cache is invalidated
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void remove(Object obj, Detachable sub) {
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void reset(Detachable sub) {
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void eof() {};
+    }, TRUE);
+  }
 
   public List getGrantPath(X x, String rootId) {
     return getCapabilityPath(x, rootId, true, true);
@@ -190,88 +214,49 @@ public class ServerCrunchService
     return grantPath;
   }
 
+  // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
-    return Arrays.stream(((CapabilityCapabilityJunction[]) ((ArraySink) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
-      .inX(x)
-      .where(EQ(CapabilityCapabilityJunction.TARGET_ID, capabilityId))
-      .select(new ArraySink())).getArray()
-      .toArray(new CapabilityCapabilityJunction[0])))
-      .map(CapabilityCapabilityJunction::getSourceId).toArray(String[]::new);
+    return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId)
+      .toArray(new String[0]);
   }
 
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
-    if ( ucj != null ) {
+    var auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") && ucj != null ) {
       Subject s = ucj.getSubject(x);
       x = Auth.sudo(x, s.getUser(), s.getRealUser());
     }
-    Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
-    if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
-    return getPrereqs_(x, capId);
+    var cache = getSessionCache(x);
+    return cache.getPrerequisites(x, cacheSequenceId_.get(), capId);
   }
 
-  // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
-  // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x, boolean cache) {
+  public SessionCrunchCache getSessionCache(X x) {
+    var session = (Session) x.get(Session.class);
+    User user = ((Subject) x.get("subject")).getUser();
+    if ( user == null || session == null ) return anonymousCache_;
 
-    if ( cache ) {
-      Sink purgeSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void remove(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
+    Long userId = user.getId();
+    Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
 
-      Sink purgeUSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          var ucj = (UserCapabilityJunction) obj;
-          if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED
-            || ucj.getStatus() == CapabilityJunctionStatus.EXPIRED ) 
-            purgeCache(x);
-        }
-        public void remove(Object obj, Detachable sub) {
-          purgeCache(x);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("userCapabilityJunctionDAO")).listen(purgeUSink, TRUE);
+    boolean cacheValid = session.getAgentId() > 0 ?
+      session.getAgentId() == agentId && session.getUserId() == userId :
+      session.getUserId() == agentId && session.getUserId() == userId;
+
+    if ( ! cacheValid ) return anonymousCache_;
+
+    var cache = (SessionCrunchCache) session.getContext().get(CACHE_KEY);
+    if ( cache == null && session.getApplyContext() != null ) {
+      cache = new SessionCrunchCache();
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
+    } else if ( cache == null ) {
+      // Unsaved cache means no caching!
+      cache = new SessionCrunchCache();
     }
 
-    Map map = new ConcurrentHashMap<String, List<String>>();
-    var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
-    var sink = (GroupBy) dao.
-      select(
-        GROUP_BY(
-          CapabilityCapabilityJunction.SOURCE_ID,
-          MAP(
-            CapabilityCapabilityJunction.TARGET_ID,
-            new ArraySink()
-          )
-        )
-      );
-    for (var key : sink.getGroupKeys()) {
-      map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
-        sink.getGroups().get(key)).getDelegate()).getArray());
-    }
-
-    Session session = x.get(Session.class);
-    if ( cache && session != null && session.getApplyContext() != null ) {
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, map));
-    }
-
-    return map;
+    return cache;
   }
 
   // returns a getPrereqs result directly from prerequisitecapabilityjunctiondao
@@ -313,31 +298,6 @@ public class ServerCrunchService
     }
   }
 
-
-  // get pcj cache from session context. If the current context subject users match the user/agent
-  // of session, return the cache. Or, if cache is empty, initialize the cache
-  // otherwise, return the result of directly looking up prerequisitecapabilityjunctiondao since
-  // the cache is not valid
-  protected Map<String, List<String>> getPrereqsCache(X x) {
-    Session session = x.get(Session.class);
-    User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null ) {
-      return initCache(x, false);
-    }
-    Long userId = user.getId();
-    Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
-
-    boolean cacheValid = session.getAgentId() > 0 ?
-      session.getAgentId() == agentId && session.getUserId() == userId :
-      session.getUserId() == agentId && session.getUserId() == userId;
-
-    // the cache belongs to the real user in the session, so if the current context user
-    // is anything but, do not use it
-    if ( ! cacheValid ) return null;
-
-    Map<String, List<String>> map = (Map) session.getContext().get(CACHE_KEY);
-    return map == null ? initCache(x, true) : map;
-  }
 
   //TODO: Needs to be refactored once Subject is serializable
   public UserCapabilityJunction getJunctionFor(X x, String capabilityId, User effectiveUser, User user) {
