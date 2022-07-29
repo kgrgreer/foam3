@@ -167,7 +167,7 @@ foam.CLASS({
       of: 'foam.u2.wizard.WizardStatus',
       value: 'IN_PROGRESS',
       postSet: function (o, n) {
-        if ( o != n) this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + n });
+        if ( o != n ) this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + n });
       }
     },
     {
