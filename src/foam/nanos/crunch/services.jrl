@@ -167,13 +167,15 @@ p({
   "name":"deprecatedCapabilityJunctionDAO",
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("deprecatedCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("deprecatedCapabilityJunctions")
       .setOf(foam.nanos.crunch.CapabilityCapabilityJunction.getOwnClassInfo())
       .setPm(true)
       .build();
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.TARGET_ID });
+    return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
