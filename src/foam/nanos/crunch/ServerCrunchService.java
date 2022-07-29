@@ -47,7 +47,7 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
-  protected AtomicLong cacheSequenceId_ = 0;
+  protected AtomicLong cacheSequenceId_ = new AtomicLong(0);
   protected SessionCrunchCache anonymousCache_;
 
   @Override
