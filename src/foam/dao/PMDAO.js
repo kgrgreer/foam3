@@ -19,7 +19,9 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.contra.Frame',
     'foam.nanos.pm.PM'
   ],
 
@@ -158,7 +160,8 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-    PM pm = createPM(x, getSelectName());
+    x = Frame.create(x, getSelectName());
+    PM pm = createPM(x, Frame.get(x).getPathString());
     try {
       return super.select_(x, sink, skip, limit, order, predicate);
     } finally {
