@@ -425,7 +425,7 @@ foam.CLASS({
           for ( Capability capability : prereqs ) {
             // getCapabilityPath will include the top-level capability in its return list
             if ( getId().equals(capability.getId()) ) continue;
-            if ( capability != null && capability.grantsPermission(permission) ) return true;
+            if ( capability != null && capability.implies(x, permission) ) return true;
           }
         }
         return false;
