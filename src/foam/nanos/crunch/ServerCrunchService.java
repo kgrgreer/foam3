@@ -232,6 +232,11 @@ public class ServerCrunchService
     return cache.getPrerequisites(x, cacheSequenceId_.get(), capId);
   }
 
+  public List<Capability> getPrereqObjects(X x, String capId) {
+    var cache = getSessionCache(x);
+    return cache.getPrerequisiteObjects(x, cacheSequenceId_.get(), capId);
+  }
+
   public SessionCrunchCache getSessionCache(X x) {
     var session = (Session) x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
