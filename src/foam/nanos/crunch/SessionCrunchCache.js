@@ -74,9 +74,10 @@ foam.CLASS({
           .select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
-              var capabilityDAO = (DAO) x.get("capabilityDAO");
               var id = ((CapabilityCapabilityJunction) obj).getTargetId();
+              var cap = (Capability) ((DAO) x.get("capabilityDAO")).find(id);
               stringResults.add(id);
+              if ( cap == null ) return;
               objectResults.add((Capability) capabilityDAO.find(id));
             }
           });
