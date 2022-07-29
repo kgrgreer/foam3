@@ -36,6 +36,7 @@ import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
@@ -46,7 +47,7 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
-  protected int cacheSequenceId_ = 0;
+  protected AtomicLong cacheSequenceId_ = 0;
   protected SessionCrunchCache anonymousCache_;
 
   @Override
@@ -60,13 +61,13 @@ public class ServerCrunchService
       public void put(Object obj, Detachable sub) {
         // ???: could have a sequence id per capability to mimimize how
         //      much cache is invalidated
-        cacheSequenceId_++;
+        cacheSequenceId_.getAndIncrement();
       }
       public void remove(Object obj, Detachable sub) {
-        cacheSequenceId_++;
+        cacheSequenceId_.getAndIncrement();
       }
       public void reset(Detachable sub) {
-        cacheSequenceId_++;
+        cacheSequenceId_.getAndIncrement();
       }
       public void eof() {};
     }, TRUE);
@@ -215,7 +216,7 @@ public class ServerCrunchService
 
   // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
-    return getSessionCache(x).getDependents(x, cacheSequenceId_, capabilityId)
+    return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId)
       .toArray(new String[0]);
   }
 
@@ -229,7 +230,7 @@ public class ServerCrunchService
     }
 
     var cache = getSessionCache(x);
-    return cache.getPrerequisites(x, cacheSequenceId_, capId);
+    return cache.getPrerequisites(x, cacheSequenceId_.get(), capId);
   }
 
   public SessionCrunchCache getSessionCache(X x) {

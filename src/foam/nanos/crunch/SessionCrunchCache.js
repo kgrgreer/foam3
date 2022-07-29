@@ -24,7 +24,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'sequenceId'
     },
     {
@@ -49,7 +49,7 @@ foam.CLASS({
       type: 'List<String>',
       args: [
         { type: 'Context', name: 'x' },
-        { javaType: 'int',  name: 'sequenceId' },
+        { javaType: 'long',  name: 'sequenceId' },
         { type: 'String',  name: 'capabilityId' }
       ],
       javaCode: `
@@ -83,7 +83,7 @@ foam.CLASS({
       type: 'List<String>',
       args: [
         { type: 'Context', name: 'x' },
-        { javaType: 'int',  name: 'sequenceId' },
+        { javaType: 'long',  name: 'sequenceId' },
         { type: 'String',  name: 'capabilityId' }
       ],
       javaCode: `
@@ -115,7 +115,7 @@ foam.CLASS({
       name: 'maybeInvalidate',
       synchronized: true,
       args: [
-        { javaType: 'int', name: 'sequenceId' }
+        { javaType: 'long', name: 'sequenceId' }
       ],
       javaCode: `
         if ( sequenceId == getSequenceId() ) return;
