@@ -85,7 +85,7 @@ foam.CLASS({
           frame = frame.getParent();
         } while ( frame != null );
         var arr = lis.toArray(String[]::new);
-        return String.join("->", arr);
+        return String.join("<-", arr);
       `
     }
   ]
