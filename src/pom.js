@@ -939,6 +939,7 @@ foam.POM({
     { name: "foam/u2/wizard/agents/DetachAgent",                      flags: "web" },
     { name: "foam/u2/wizard/agents/WizardletsAgent",                  flags: "web" },
     { name: "foam/u2/wizard/agents/AlternateFlowAgent",               flags: "web" },
+    { name: "foam/u2/wizard/agents/AnalyticEventsAgent",               flags: "web" },
     { name: "foam/u2/wizard/internal/PropertyUpdate",                 flags: "web" },
     { name: "foam/u2/wizard/internal/FObjectRecursionSlot",           flags: "web" },
     { name: "foam/u2/wizard/internal/WizardletAutoSaveSlot",          flags: "web" },
