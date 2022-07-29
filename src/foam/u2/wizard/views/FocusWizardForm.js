@@ -72,7 +72,7 @@ foam.CLASS({
           .addClass(this.myClass('progress'))
         .end()
         .add(this.slot(function (showTitle, data$currentWizardlet) {
-          return showTitle ?
+          return showTitle && data$currentWizardlet.showTitle ?
             this.E().start('h1')
               .addClass(self.myClass('wizardletTitle'))
               .add(data$currentWizardlet.title)
