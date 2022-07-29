@@ -35,9 +35,9 @@ foam.CLASS({
     },
     {
       class: 'Object',
-      javaType: 'Map<String, List<String>>',
+      javaType: 'Map<String, String[]>',
       name: 'dependentsCache',
-      javaFactory: 'return new HashMap<String, List<String>>();'
+      javaFactory: 'return new HashMap<String, String[]>();'
     }
   ],
 
@@ -80,7 +80,7 @@ foam.CLASS({
     {
       name: 'getDependents',
       synchronized: true,
-      type: 'List<String>',
+      type: 'String[]',
       args: [
         { type: 'Context', name: 'x' },
         { javaType: 'long',  name: 'sequenceId' },
@@ -105,10 +105,12 @@ foam.CLASS({
               results.add(((CapabilityCapabilityJunction) obj).getSourceId());
             }
           });
+        
+        var asArray = results.toArray(new String[0]);
 
-        getDependentsCache().put(capabilityId, results);
+        getDependentsCache().put(capabilityId, asArray);
 
-        return results;
+        return asArray;
       `
     },
     {
