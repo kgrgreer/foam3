@@ -75,7 +75,8 @@ foam.CLASS({
             @Override
             public void put(Object obj, Detachable sub) {
               var id = ((CapabilityCapabilityJunction) obj).getTargetId();
-              var cap = (Capability) ((DAO) x.get("capabilityDAO")).find(id);
+              var capabilityDAO = (DAO) x.get("capabilityDAO");
+              var cap = (Capability) capabilityDAO.find(id);
               stringResults.add(id);
               if ( cap == null ) return;
               objectResults.add((Capability) capabilityDAO.find(id));
