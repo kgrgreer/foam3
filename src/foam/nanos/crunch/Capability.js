@@ -420,13 +420,12 @@ foam.CLASS({
         if ( PredicatedPrerequisiteCapabilityJunctionDAO.PERMISSION.equals(permission) ) return false;
 
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List<String> prereqs = crunchService.getPrereqs(x, getId(), null);
+        List<Capability> prereqs = crunchService.getPrereqObjects(x, getId());
         if ( prereqs != null && prereqs.size() > 0 ) {
-          for ( String capabilityId : prereqs ) {
+          for ( Capability capability : prereqs ) {
             // getCapabilityPath will include the top-level capability in its return list
-            if ( getId().equals(capabilityId) ) continue;
-            var capability = (Capability) ((DAO) x.get("capabilityDAO")).find(capabilityId);
-            if ( capability != null && capability.grantsPermission(permission) ) return true;
+            if ( getId().equals(capability.getId()) ) continue;
+            if ( capability != null && capability.implies(x, permission) ) return true;
           }
         }
         return false;

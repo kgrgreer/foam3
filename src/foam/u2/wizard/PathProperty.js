@@ -58,7 +58,7 @@ foam.CLASS({
         configurable: true,
         get: function pathGetter() {
           return function (target) {
-            return this[prop.name].f(target);
+            return this[prop.name]?.f(target);
           }
         }
       });

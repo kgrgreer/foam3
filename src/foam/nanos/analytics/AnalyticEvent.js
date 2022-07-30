@@ -17,9 +17,9 @@ foam.CLASS({
       class: 'String',
       name: 'name'
     },
-    { 
-      class: 'DateTime',     
-      name: 'timestamp',
+    {
+      class: 'DateTime',
+      name: 'timestamp'
     },
     {
       class: 'Duration',

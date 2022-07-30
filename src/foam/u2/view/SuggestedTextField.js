@@ -21,8 +21,10 @@
   ],
 
   css: `
+    ^ {
+      position: relative;
+    }
     ^suggestions {
-      bottom: 0;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
@@ -34,7 +36,7 @@
       max-height: 14em;
       overflow: auto;
       padding: 6px;
-      position: relative;
+      position: absolute;
       width: 100%;
       z-index: 100;
     }
@@ -115,6 +117,7 @@
 
       this.onDetach(this.onload.sub(this.loaded));
       this
+      .addClass()
       .start(this.TextField, {
         data$: this.data$,
         onKey: true,
