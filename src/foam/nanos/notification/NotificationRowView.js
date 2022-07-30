@@ -74,11 +74,11 @@
     ],
 
     messages: [
-      { name: 'MARK_AS_READ_MSG', message: 'Successfully marked as read' },
-      { name: 'FAILED_MARK_AS_READ_MSG', message: 'Failed to mark as read' },
-      { name: 'MARK_AS_UNREAD_MSG', message: 'Successfully marked as unread' },
+      { name: 'MARK_AS_READ_MSG',          message: 'Successfully marked as read' },
+      { name: 'FAILED_MARK_AS_READ_MSG',   message: 'Failed to mark as read' },
+      { name: 'MARK_AS_UNREAD_MSG',        message: 'Successfully marked as unread' },
       { name: 'FAILED_MARK_AS_UNREAD_MSG', message: 'Failed to mark as unread' },
-      { name: 'NOTIFICATION_MSG', message: 'Notification' },
+      { name: 'NOTIFICATION_MSG',          message: 'Notification' }
     ],
 
     methods: [
@@ -91,7 +91,7 @@
               this.openModal();
             })
             .start(this.NotificationCitationView, {
-              of: this.of,
+              of:   this.of,
               data: this.data
             })
               .addClasses(['p', this.myClass('msg')])
