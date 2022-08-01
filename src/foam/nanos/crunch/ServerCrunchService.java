@@ -61,13 +61,13 @@ public class ServerCrunchService
       public void put(Object obj, Detachable sub) {
         // ???: could have a sequence id per capability to mimimize how
         //      much cache is invalidated
-        cacheSequenceId_.getAndIncrement();
+ //       cacheSequenceId_.getAndIncrement();
       }
       public void remove(Object obj, Detachable sub) {
-        cacheSequenceId_.getAndIncrement();
+//        cacheSequenceId_.getAndIncrement();
       }
       public void reset(Detachable sub) {
-        cacheSequenceId_.getAndIncrement();
+//        cacheSequenceId_.getAndIncrement();
       }
       public void eof() {};
     }, TRUE);
