@@ -439,6 +439,8 @@ foam.CLASS({
       ],
       documentation: 'check if a given capability is deprecated',
       javaCode: `
+      // TODO: This is currently broken and needs to be reworked
+/*
       Sink count = new Count();
       count = this.getDeprecating(x).getJunctionDAO()
         .where(
@@ -446,7 +448,8 @@ foam.CLASS({
         ).select(count);
 
       return ((Count) count).getValue() > 0;
-      `
+*/
+      return false;`
     },
     {
       name: 'isExpired',
