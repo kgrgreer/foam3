@@ -4,11 +4,15 @@ p({
   "lazy":true,
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityCategories")
       .setOf(foam.nanos.crunch.CapabilityCategory.getOwnClassInfo())
+      .setPm(true)
       .build();
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.SOURCE_ID, foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
+    return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCategory\"}"
 })
@@ -25,7 +29,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilities")
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
+      .setPm(true)
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.PERMISSIONS_INTERCEPTED })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
 
   """
@@ -43,6 +49,7 @@ p({
       .setInnerDAO(x.get("localCapabilityDAO"))
       .setDecorator(dec)
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
+      .setPm(true)
       .build();
   """,
   "client":"""
@@ -65,6 +72,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityCategoryCapabilityJunction")
       .setOf(foam.nanos.crunch.CapabilityCategoryCapabilityJunction.getOwnClassInfo())
+      .setPm(true)
       .build();
   """,
   "client": "{\"of\":\"foam.nanos.crunch.CapabilityCategoryCapabilityJunction\", \"remoteListenerSupport\": false}"
@@ -80,6 +88,7 @@ p({
       .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
+      .setPm(true)
       .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
         .build())
@@ -118,6 +127,7 @@ p({
       .setDecorator(dec)
       .setInnerDAO(x.get("approvableDAO"))
       .setOf(foam.nanos.approval.Approvable.getOwnClassInfo())
+      .setPm(true)
       .build();
   `,
   client: `
@@ -160,12 +170,15 @@ p({
   "name":"deprecatedCapabilityJunctionDAO",
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("deprecatedCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("deprecatedCapabilityJunctions")
       .setOf(foam.nanos.crunch.CapabilityCapabilityJunction.getOwnClassInfo())
+      .setPm(true)
       .build();
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.TARGET_ID });
+    return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
@@ -185,7 +198,7 @@ p({
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.crunch.CapabilityCapabilityJunction.PRIORITY})
       .setDecorator(decorator)
       .build();
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.SOURCE_ID });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.TARGET_ID });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.PRIORITY });
 
     return dao;
@@ -233,6 +246,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctionHistory")
       .setSAF(true)
+      .setPm(true)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP))
         .setSize(100000)
@@ -258,6 +272,7 @@ p({
       .setNullify(true)
       .setDecorator(new foam.nanos.crunch.connection.CapabilityPayloadDAO(x, new foam.dao.NullDAO(x, foam.nanos.crunch.connection.CapabilityPayload.getOwnClassInfo())))
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
+      .setPm(true)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.connection.CapabilityPayload\"}"
@@ -275,6 +290,7 @@ p({
       .setOf(foam.nanos.crunch.connection.CapabilityPayloadRecord.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityPayloadRecords")
+      .setPm(true)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.crunch.connection.CapabilityPayloadRecord.CREATED) )
         .setSize(10000)
@@ -295,6 +311,7 @@ p({
       .setOf(foam.nanos.crunch.ui.WizardState.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("wizardStates")
+      .setPm(true)
       .build();
   `,
   client: "{\"of\":\"foam.nanos.crunch.ui.WizardState\"}"

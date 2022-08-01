@@ -59,7 +59,7 @@ foam.CLASS({
   
   methods: [
     async function load({ old }) {
-      let initialData = old || await this.SUPER();
+      let initialData = this.delegate ? await this.delegate.load({ old }) : old;
 
       const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
 

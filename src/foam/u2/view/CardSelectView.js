@@ -36,12 +36,13 @@ foam.CLASS({
       transition: all 0.2s linear;
       display: flex;
       align-items: center;
+      justify-content: center;
     }
     ^ .foam-u2-borders-CardBorder {
       min-height: auto;
     }
     .foam-u2-borders-CardBorder^large-card {
-      min-height: 10vh;
+      min-height: 2.5vh;
     }
     ^ .foam-u2-borders-CardBorder^selected {
       border-color: /*%PRIMARY3%*/ #406dea;
@@ -56,6 +57,10 @@ foam.CLASS({
       border-color: /*%PRIMARY5%*/ #b2c4f6;
       background-color: /*%GREY5%*/ #f5f7fa;
       color: /*%GREY2%*/ #9ba1a6;
+    }
+    .foam-u2-view-MultiChoiceView-flexer .foam-u2-layout-Cols {
+      column-gap: 17px;
+      flex-flow: nowrap;
     }
   `,
 

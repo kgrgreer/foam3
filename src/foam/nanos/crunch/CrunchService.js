@@ -39,6 +39,16 @@ foam.INTERFACE({
       flags: ['java']
     },
     {
+      name: 'getPrereqObjects',
+      type: 'java.util.List<Capability>',
+      async: true,
+      args: [
+        { name: 'x',     type: 'Context' },
+        { name: 'capId', type: 'String' }
+      ],
+      flags: ['java']
+    },
+    {
       name: 'getGrantPath',
       documentation: `
         getGrantPath provides an array of capability objects representing

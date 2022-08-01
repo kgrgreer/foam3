@@ -107,12 +107,15 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-        .startContext({ data: this })
-        .start()
-          .add(this.MENU_SEARCH)
-          .addClass(this.myClass('search'))
-        .end()
-        .endContext()
+        .callIf(this.theme.showNavSearch, function(){
+          this
+          .startContext({ data: this })
+            .start()
+            .add(this.MENU_SEARCH)
+              .addClass(this.myClass('search'))
+            .end()
+            .endContext()
+        })
         .start({
           class: 'foam.u2.view.TreeView',
           data: self.dao_.where(self.EQ(self.Menu.ENABLED, true)),

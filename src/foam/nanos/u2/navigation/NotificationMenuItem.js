@@ -84,7 +84,7 @@ foam.CLASS({
 
   constants: [
     { name: 'BELL_IMAGE', value: 'images/bell.png' },
-    { name: 'MENU_ID', value: 'notifications' }
+    { name: 'MENU_ID',    value: 'notifications' }
   ],
 
   messages: [
