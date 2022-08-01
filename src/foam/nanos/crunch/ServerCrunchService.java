@@ -56,18 +56,18 @@ public class ServerCrunchService
 
     var prerequisiteCapabilityJunctionDAO =
       ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
-    
+
     prerequisiteCapabilityJunctionDAO.listen(new Sink() {
       public void put(Object obj, Detachable sub) {
         // ???: could have a sequence id per capability to mimimize how
         //      much cache is invalidated
-        cacheSequenceId_.getAndIncrement();
+ //       cacheSequenceId_.getAndIncrement();
       }
       public void remove(Object obj, Detachable sub) {
-        cacheSequenceId_.getAndIncrement();
+//        cacheSequenceId_.getAndIncrement();
       }
       public void reset(Detachable sub) {
-        cacheSequenceId_.getAndIncrement();
+//        cacheSequenceId_.getAndIncrement();
       }
       public void eof() {};
     }, TRUE);
@@ -265,11 +265,10 @@ public class ServerCrunchService
 
   // sets the prerequisite cache to null, is used when session info changes
   public static void purgeCache(X x) {
-    Session session = x.get(Session.class);
-    if ( session != null && session.getApplyContext() != null ) {
-      var cache = new SessionCrunchCache();
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
-    }
+//    Session session = x.get(Session.class);
+//    if ( session != null && session.getApplyContext() != null ) {
+//      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, null));
+//    }
   }
 
 
