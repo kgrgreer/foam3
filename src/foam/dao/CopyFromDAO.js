@@ -259,11 +259,6 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-            var innerSink = sink;
-            while ( innerSink instanceof ProxySink ) {
-              innerSink = ((ProxySink) innerSink).getDelegate();
-            }
-
             Sink decoratedSink = new AdapterSink.Builder(x)
               .setDelegate(sink != null ? sink : new ArraySink())
               .setOf(this.getOf())
