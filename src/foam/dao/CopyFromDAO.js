@@ -268,9 +268,10 @@ foam.CLASS({
               .setDelegate(sink != null ? sink : new ArraySink())
               .setOf(this.getOf())
               .build();
-            getDelegate().select_(x,
-              innerSink instanceof Count ? sink : decoratedSink,
-              skip, limit, adaptOrder(order), adaptPredicate(predicate));
+
+            // There is a case when we need the decorated sink even when the inner most sink is count
+            // e.g, when we need to apply predicate after the adapt: AdapterSink -> PredicatedSink -> CountSink
+            getDelegate().select_(x, decoratedSink, skip, limit, adaptOrder(order), adaptPredicate(predicate));
             return sink;
         `
     },
