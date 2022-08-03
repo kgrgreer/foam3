@@ -17,8 +17,8 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.dao.ArrayDAO',
     'foam.classloader.OrDAO',
+    'foam.dao.ArrayDAO'
   ],
 
   properties: [
