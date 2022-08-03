@@ -506,6 +506,7 @@ foam.POM({
     { name: "test/SerializationTestEchoService",                                          flags: "js|java" },
     { name: "analytics/Foldable",                                                         flags: "js|java" },
     { name: "analytics/Candlestick",                                                      flags: "js|java" },
+    { name: "analytics/AnalyticEvent",                                                    flags: "js|java" },
     { name: "test/ClientEchoService",                                                     flags: "js" },
     { name: "crunch/crunchtest/FakeTestObject",                                           flags: "js|java" },
     { name: "crunch/Renewable",                                                           flags: "js|java" },
