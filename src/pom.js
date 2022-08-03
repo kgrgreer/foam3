@@ -662,6 +662,7 @@ foam.POM({
     { name: "foam/u2/search/CurrencySearchView",                      flags: "web" },
     { name: "foam/u2/search/DateSearchView",                          flags: "web" },
     { name: "foam/u2/search/Toolbar",                                 flags: "web" },
+    { name: "foam/u2/search/SearchBar",                               flags: "web" },
     { name: "foam/u2/stack/Stack",                                    flags: "web" },
     { name: "foam/u2/stack/StackView",                                flags: "web" },
     { name: "foam/u2/stack/DesktopStackView",                         flags: "web" },
