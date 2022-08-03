@@ -268,9 +268,7 @@ foam.CLASS({
               .setDelegate(sink != null ? sink : new ArraySink())
               .setOf(this.getOf())
               .build();
-            getDelegate().select_(x,
-              innerSink instanceof Count ? sink : decoratedSink,
-              skip, limit, adaptOrder(order), adaptPredicate(predicate));
+            getDelegate().select_(x, decoratedSink, skip, limit, adaptOrder(order), adaptPredicate(predicate));
             return sink;
         `
     },
