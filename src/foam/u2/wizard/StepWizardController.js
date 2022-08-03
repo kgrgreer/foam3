@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'StepWizardController',
 
   imports: [
-    'developerMode'
+    'developerMode',
+    'analyticsAgent?'
   ],
 
   requires: [
@@ -164,7 +165,10 @@ foam.CLASS({
       class: 'Enum',
       name: 'status',
       of: 'foam.u2.wizard.WizardStatus',
-      value: 'IN_PROGRESS'
+      value: 'IN_PROGRESS',
+      postSet: function (o, n) {
+        if ( o != n ) this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + n });
+      }
     },
     {
       name: 'submitted',
@@ -186,6 +190,9 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + this.status });
+    },
     function setupWizardletListeners(wizardlets) {
       console.debug('step wizard', this);
 
@@ -325,6 +332,16 @@ foam.CLASS({
 
 
         await this.wizardlets[i].save();
+
+        // Add a record of wizardlet completion to analytics
+        // TODO: Maybe add config to wizardlet for this later
+        this.analyticsAgent?.pub('event', {
+          name: foam.String.constantize(
+              this.wizardlets[i].title || this.wizardlets[i].id ||
+              (this.wizardlets[i].of?.name ?? 'UNKNOWN')
+            ) + '_COMPLETE', 
+          tags: ['wizard'] 
+        })
         if ( (i + 1) < end && this.wizardlets[i + 1] ) await this.wizardlets[i + 1].load();
       }
 

@@ -27,7 +27,8 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',
-    'foam.u2.stack.StackBlock'
+    'foam.u2.stack.StackBlock',
+    'foam.nanos.auth.DuplicateEmailException'
   ],
 
   messages: [
@@ -48,6 +49,22 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'username',
+      visibility: function(usernameRequired) {
+        return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      postSet: function(_, n) {
+        this.identifier = n;
+        return n;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'usernameRequired',
+      hidden: true
+    },
+    {
+      class: 'String',
       name: 'identifier',
       required: true,
       label: 'Email or Username',
@@ -55,9 +72,9 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         focused: true
       },
-      visibilityExpression: function(disableIdentifier_) {
-        return disableIdentifier_ ?
-          foam.u2.Visibility.DISABLED : foam.u2.Visibility.RW;
+      visibility: function(disableIdentifier_, usernameRequired) {
+        return disableIdentifier_ || usernameRequired ?
+          foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationTextVisible: false
     },
@@ -173,6 +190,9 @@ foam.CLASS({
               await this.nextStep();
             }
           } catch (err) {
+              if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
+                this.usernameRequired = true;
+              }
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
                 message: this.ERROR_MSG,

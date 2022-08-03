@@ -824,4 +824,26 @@ tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
 this.startContext({data: timer}).add(timer.I);
 
 ##   StackView
+##   FObject View
+FObject View.
+--
+foam.CLASS({
+  name: 'FObjectViewExample',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    { class: 'FObjectProperty', name: 'obj1', factory: function() { return foam.util.Timer.create(); } },
+    { class: 'FObjectProperty', name: 'obj2', view: { class: 'foam.u2.view.FObjectView' }, factory: function() { return foam.util.Timer.create(); } },
+  ],
+
+  methods: [
+    function render() {
+      this.add('OBJ1:',this.OBJ1, 'OBJ2:', this.OBJ2);
+    }
+  ]
+});
+
+tag({class: 'FObjectViewExample'});
+
+
 ##   More
