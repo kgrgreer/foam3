@@ -263,6 +263,14 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+        if (
+          ! ( ( user != null && SafetyUtil.equals(this.getOwner(), user.getId()) ) ||
+              auth.check(x, "file.read." + this.getId()) )
+         ) {
+          throw new AuthorizationException();
+        }
       `
     },
     {
