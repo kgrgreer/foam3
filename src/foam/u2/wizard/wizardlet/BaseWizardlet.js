@@ -53,6 +53,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'reloadOnAutoSave'
+    },
+    {
       name: 'id',
       class: 'String',
       factory: function () {

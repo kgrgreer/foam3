@@ -998,6 +998,7 @@ foam.POM({
     { name: "foam/u2/wizard/wao/ArrayFromPrerequisiteWAO",            flags: "web" },
     { name: "foam/u2/wizard/wizardlet/Wizardlet",                     flags: "js|java" },
     { name: "foam/u2/wizard/wizardlet/BaseWizardlet",                 flags: "js|java" },
+    { name: "foam/u2/wizard/wizardlet/ValidationFeedbackWizardlet",                 flags: "js|java" },
     { name: "foam/u2/wizard/wizardlet/WizardletSection",              flags: "web" },
     { name: "foam/u2/wizard/wizardlet/SuccessWizardlet",              flags: "web" },
     { name: "foam/u2/wizard/wizardlet/SuccessWizardletView",          flags: "web" },
