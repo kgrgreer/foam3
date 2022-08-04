@@ -17,12 +17,10 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      margin: auto;
       width: 65vw;
       min-height: 65vh;
       height: 100%;
-      padding: 3.2rem 0;
-      margin-top: 0;
+      margin: 3.2rem auto;
     }
 
     ^:not(^isFullscreen) {
