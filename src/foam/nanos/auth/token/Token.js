@@ -15,6 +15,10 @@ foam.CLASS({
     'java.util.UUID'
   ],
 
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+  ],
+
   properties: [
     {
       class: 'String',
