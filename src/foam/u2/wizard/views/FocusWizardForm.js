@@ -47,7 +47,7 @@ foam.CLASS({
     }
     ^wizardletTitle {
       text-align: center;
-      margin-bottom: 1.6 rem;
+      margin-bottom: 1.6rem;
     }
     ^wizardletSub {
       font-size: 1.6rem;
