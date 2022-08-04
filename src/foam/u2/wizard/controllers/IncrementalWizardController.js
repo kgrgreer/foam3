@@ -109,7 +109,7 @@ foam.CLASS({
     },
     {
       name: 'discard',
-      icon: 'images/round-close-icon.svg',
+      icon: 'images/ic-cancelblack.svg',
       isAvailable: function (discardAvailable) { return discardAvailable; },
       code: function () {
         this.data.discard();
