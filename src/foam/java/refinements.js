@@ -1430,7 +1430,10 @@ ${this.VALUES.map(v => `\tcase ${v.ordinal}: return ${cls.name}.${v.name};`).joi
             body: `
 switch (label) {
 ${this.VALUES.map(v => `\tcase "${v.label}": return ${cls.name}.${v.name};`).join('\n')}
-  default: return null;
+  default: switch (label) {
+    ${this.VALUES.map(v => `\tcase "${v.name}": return ${cls.name}.${v.name};`).join('\n')}
+  }
+  return null;
 }`
           });
 

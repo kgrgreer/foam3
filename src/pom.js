@@ -932,6 +932,7 @@ foam.POM({
     { name: "foam/u2/wizard/agents/ConfigureFlowAgent",               flags: "web" },
     { name: "foam/u2/wizard/agents/DeveloperModeAgent",               flags: "web" },
     { name: "foam/u2/wizard/agents/RootCapabilityAgent",              flags: "web" },
+    { name: "foam/u2/wizard/agents/LoadScenarioAgent",                flags: "web" },
     { name: "foam/u2/wizard/agents/StepWizardAgent",                  flags: "web" },
     { name: "foam/u2/wizard/agents/ElementStepWizardAgent",           flags: "web" },
     { name: "foam/u2/wizard/agents/CreateControllerAgent",            flags: "web" },
