@@ -6,7 +6,6 @@
 
 // TODO:
 //   Create CopyAdapter
-//   Let MDAO AddIndexCommand take Indices directly
 
 foam.CLASS({
   package: 'foam.dao',
@@ -14,6 +13,7 @@ foam.CLASS({
   extends: 'foam.dao.ReadOnlyDAO',
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.True'
@@ -26,23 +26,24 @@ foam.CLASS({
       class: 'Object',
       javaType: 'foam.mlang.predicate.Predicate',
       generateJava: true,
-//      class: 'foam.mlang.ExprProperty',
       name: 'predicate',
       javaValue: 'foam.mlang.MLang.TRUE'
     },
     {
-      class: 'foam.mlang.ExprProperty',
+      class: 'foam.mlang.FObjectProperty',
       name: 'adapter',
-      java:true,
-      // TODO: default to a CopyAdapter
+      of: 'foam.mlang.F',
+      javaFactory: 'return new CopyAdapter(getOf());'
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'sourceDAO'
+      name: 'sourceDAO',
+      required: true
     },
     {
       name: 'of',
-      javaFactory: 'return getSourceDAO().getOf();'
+      required: true
+//      javaFactory: 'return getSourceDAO().getOf();'
     },
     {
       name: 'delegate',
@@ -62,16 +63,22 @@ foam.CLASS({
       `
     },
 
+    {
+      name: 'adapt',
+      args: 'FObject value',
+      type: 'FObject',
+      documentation: 'Template method for adapting from source to target model.',
+      javaCode: 'return (FObject) getAdapter().f(value);'
+    },
+
     // Implement Index
     {
       name: 'indexPut',
       type: 'Object',
       args: 'Object state, FObject value',
-      synchronized: true,
       javaCode: `
-        if ( getPredicate().f(value) ) {
-          getDelegate().put((foam.core.FObject)(getAdapter().f(value)));
-        }
+        if ( getPredicate().f(value) )
+          getDelegate().put(adapt(value));
         return this;
       `
     },
@@ -80,9 +87,8 @@ foam.CLASS({
       name: 'indexRemove',
       type: 'Object',
       args: 'Object state, FObject value',
-      synchronized: true,
       javaCode: `
-        getDelegate().remove((foam.core.FObject)(getAdapter().f(value)));
+        getDelegate().remove(adapt(value));
         return this;
       `
     },
@@ -90,12 +96,11 @@ foam.CLASS({
     {
       name: 'indexRemoveAll',
       type: 'Object',
-      synchronized: true,
       javaCode: `
         getDelegate().removeAll();
         return this;
       `
-    },
+    }
 
   ]
 });
