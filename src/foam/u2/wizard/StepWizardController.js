@@ -78,7 +78,8 @@ foam.CLASS({
         });
       },
       preSet: function(_, n){
-        this.wizardlets[n.wizardletIndex].load()
+        // REVIEW: hotfix for preventing top level wizardlet data reset
+        // this.wizardlets[n.wizardletIndex].load()
         return n;
       },
       postSet: function (o, n) {
