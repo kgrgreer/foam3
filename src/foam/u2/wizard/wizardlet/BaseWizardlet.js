@@ -248,6 +248,11 @@ foam.CLASS({
     {
       name: 'wizardController',
       documentation: 'Populated by ContextAgent to add the wizard controller to wizardlet context after wizardlet creation',
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle',
+      value: true
     }
   ],
 
