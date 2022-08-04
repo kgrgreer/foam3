@@ -25,18 +25,24 @@ import java.util.regex.Pattern;
 
 public class FScriptParser
 {
-  PropertyInfo prop_;
+  ClassInfo classInfo_;
   protected List expressions;
 
   public FScriptParser(PropertyInfo property) {
-    prop_ = property;
-
-    List<PropertyInfo>         properties  = property.getClassInfo().getAxiomsByClass(PropertyInfo.class);
-
-    expressions = new ArrayList();
-    Map props = new HashMap<String, PropertyInfo>();
-
+    Map<String, PropertyInfo> props = new HashMap<String, PropertyInfo>();
     props.put("thisValue", property);
+    setup(property.getClassInfo(), props);
+  }
+
+  public FScriptParser(ClassInfo classInfo) {
+    Map props = new HashMap<String, PropertyInfo>();
+    setup(classInfo, props);
+  }
+
+  public void setup(ClassInfo classInfo, Map<String, PropertyInfo> props) {
+    classInfo_ = classInfo;
+    expressions = new ArrayList();
+    List<PropertyInfo> properties = classInfo_.getAxiomsByClass(PropertyInfo.class);
 
     for ( PropertyInfo prop : properties ) {
       props.put(prop.getName(), prop);
@@ -102,13 +108,13 @@ public class FScriptParser
       return and;
     });
 
-    grammar.addSymbol("EXPR", new Alt(
+    grammar.addSymbol("EXPR", new Seq1(1, Whitespace.instance(), new Alt(
       grammar.sym("PAREN"),
       grammar.sym("NEGATE"),
       grammar.sym("INSTANCE_OF"),
       grammar.sym("UNARY"),
       grammar.sym("COMPARISON")
-    ));
+    )));
 
     grammar.addSymbol("PAREN", new Seq1(1,
       Literal.create("("),
@@ -500,7 +506,7 @@ public class FScriptParser
       Object[] pckArr = (Object[]) values[1];
       if ( pckArr.length == 0 ) {
         try {
-          var field = this.prop_.getClassInfo().getObjClass().getDeclaredField((String) values[0]).get(null);
+          var field = this.classInfo_.getObjClass().getDeclaredField((String) values[0]).get(null);
           if ( field != null ) return field;
         } catch (Exception e) {
           return Action.NO_PARSE;
@@ -540,7 +546,7 @@ public class FScriptParser
       Object[] pckArr = (Object[]) values[1];
       if ( pckArr.length == 0 ) {
         try {
-          var field = this.prop_.getClassInfo().getObjClass().getDeclaredField((String) values[0]).get(null);
+          var field = this.classInfo_.getObjClass().getDeclaredField((String) values[0]).get(null);
           if ( field != null ) return field;
         } catch (Exception e) {
           return null;
@@ -574,7 +580,7 @@ public class FScriptParser
       var ret = compactToString(val);
       if (ret.equals("len")) return Action.NO_PARSE;
       try {
-        return new foam.mlang.Constant (prop_.getClassInfo().getObjClass().getDeclaredField(ret).get(null));
+        return new foam.mlang.Constant (classInfo_.getObjClass().getDeclaredField(ret).get(null));
       } catch (Exception e) {
       }
       return x.get(ret) == null ? Action.NO_PARSE : x.get(ret);
