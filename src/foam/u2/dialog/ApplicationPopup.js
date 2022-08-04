@@ -51,12 +51,24 @@ foam.CLASS({
       display: flex;
       align-items: center;
       justify-content: center;
+      position: absolute;
+      left: 12px;
+    }
+
+    ^header-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 12px;
     }
 
     ^header-center {
       display: flex;
       text-align: center;
       align-items: center;
+      justify-content: center;
+      flex: 1;
     }
 
     ^body {
