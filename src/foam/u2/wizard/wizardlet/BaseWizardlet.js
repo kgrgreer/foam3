@@ -76,6 +76,11 @@ foam.CLASS({
       class: 'String'
     },
     {
+      name: 'subTitle',
+      class: 'String',
+      documentation: 'Description of current wizardlet, may be used to provide help for the wizardlet.',
+    },
+    {
       name: 'isValid',
       class: 'Boolean',
       expression: function (of, data, data$errors_) {
