@@ -4183,7 +4183,9 @@ foam.CLASS({
         return pred ? pred.partialEval().f(o) : false;
       },
       javaCode: `
-      FScriptParser parser = new FScriptParser(getProp());
+      FScriptParser parser;
+      if ( getProp() != null ) parser = new FScriptParser(getProp());
+      else parser = new FScriptParser(((foam.core.FObject) obj).getClassInfo());
       StringPStream sps = new StringPStream();
       sps.setString(getQuery());
       PStream ps = sps;
