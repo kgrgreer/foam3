@@ -9,15 +9,18 @@ foam.CLASS({
   name: 'DigPutView',
   extends: 'foam.u2.View',
   documentation: 'View used to show snippets of put API calls for create and update.',
+
   imports: [
     'appConfig',
     'user',
   ],
+
   requires: [
     'foam.doc.CodeTabs',
     'foam.nanos.dig.DIG',
     'foam.u2.Tab',
   ],
+
   properties: [
     {
       name: 'url',
@@ -27,8 +30,9 @@ foam.CLASS({
     },
     {
       name: 'samplepayload'
-    },
+    }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -101,6 +105,6 @@ req.end();
               end()
           })
       }))
-    },
-  ],
+    }
+  ]
 });

@@ -126,7 +126,7 @@ public class TestUtils {
     adminUser.setId(1);
     adminUser = (User) userDAO.put(adminUser);
 
-    return Auth.sudo(x, adminUser, admin_group);
+    return Auth.sudo(x, adminUser);
   }
 
   /**

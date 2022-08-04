@@ -30,10 +30,13 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
+import foam.util.Auth;
+
 import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
@@ -44,8 +47,31 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
+  protected AtomicLong cacheSequenceId_ = new AtomicLong(0);
+  protected SessionCrunchCache anonymousCache_;
+
   @Override
-  public void start() { }
+  public void start() {
+    anonymousCache_ = new SessionCrunchCache();
+
+    var prerequisiteCapabilityJunctionDAO =
+      ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
+
+    prerequisiteCapabilityJunctionDAO.listen(new Sink() {
+      public void put(Object obj, Detachable sub) {
+        // ???: could have a sequence id per capability to mimimize how
+        //      much cache is invalidated
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void remove(Object obj, Detachable sub) {
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void reset(Detachable sub) {
+        cacheSequenceId_.getAndIncrement();
+      }
+      public void eof() {};
+    }, TRUE);
+  }
 
   public List getGrantPath(X x, String rootId) {
     return getCapabilityPath(x, rootId, true, true);
@@ -53,12 +79,9 @@ public class ServerCrunchService
 
   //TODO: Needs to be refactored once Subject is serializable
   public List getCapabilityPathFor(X x, String rootId, boolean filterGrantedUCJ, User effectiveUser, User user) {
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.getCapabilityPathFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      x = x.put("subject", requestedSubject);
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, effectiveUser, user);
     }
     return this.getCapabilityPath(x, rootId, filterGrantedUCJ, true);
   }
@@ -191,137 +214,34 @@ public class ServerCrunchService
     return grantPath;
   }
 
+  // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
-    return Arrays.stream(((CapabilityCapabilityJunction[]) ((ArraySink) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
-      .inX(x)
-      .where(EQ(CapabilityCapabilityJunction.TARGET_ID, capabilityId))
-      .select(new ArraySink())).getArray()
-      .toArray(new CapabilityCapabilityJunction[0])))
-      .map(CapabilityCapabilityJunction::getSourceId).toArray(String[]::new);
+    return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId);
   }
 
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
-    if ( ucj != null ) x = x.put("subject", ucj.getSubject(x));
-    Map<String, List<String>> prereqsCache_ = getPrereqsCache(x);
-    if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
-
-    return getPrereqs_(x, capId);
-  }
-
-  // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
-  // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x, boolean cache) {
-
-    if ( cache ) {
-      Sink purgeSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void remove(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
-
-      Sink purgeUSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          var ucj = (UserCapabilityJunction) obj;
-          if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED
-            || ucj.getStatus() == CapabilityJunctionStatus.EXPIRED ) 
-            purgeCache(x);
-        }
-        public void remove(Object obj, Detachable sub) {
-          purgeCache(x);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-      ((DAO) x.get("userCapabilityJunctionDAO")).listen(purgeUSink, TRUE);
+    var auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") && ucj != null ) {
+      Subject s = ucj.getSubject(x);
+      x = Auth.sudo(x, s.getUser(), s.getRealUser());
     }
 
-    Map map = new ConcurrentHashMap<String, List<String>>();
-    var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
-    var sink = (GroupBy) dao.
-      select(
-        GROUP_BY(
-          CapabilityCapabilityJunction.SOURCE_ID,
-          MAP(
-            CapabilityCapabilityJunction.TARGET_ID,
-            new ArraySink()
-          )
-        )
-      );
-    for (var key : sink.getGroupKeys()) {
-      map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
-        sink.getGroups().get(key)).getDelegate()).getArray());
-    }
-
-    Session session = x.get(Session.class);
-    if ( cache && session != null && session.getApplyContext() != null ) {
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, map));
-    }
-
-    return map;
+    var cache = getSessionCache(x);
+    return cache.getPrerequisites(x, cacheSequenceId_.get(), capId);
   }
 
-  // returns a getPrereqs result directly from prerequisitecapabilityjunctiondao
-  public List<String> getPrereqs_(X x, String capId) {
-    return ((ArraySink) ((foam.mlang.sink.Map) ((DAO) x.get("prerequisiteCapabilityJunctionDAO"))
-      .inX(x)
-      .where(EQ(CapabilityCapabilityJunction.SOURCE_ID, capId))
-      .orderBy(CapabilityCapabilityJunction.PRIORITY)
-      .select(MAP(CapabilityCapabilityJunction.TARGET_ID, new ArraySink()))).getDelegate())
-      .getArray();
+  public List<Capability> getPrereqObjects(X x, String capId) {
+    var cache = getSessionCache(x);
+    return cache.getPrerequisiteObjects(x, cacheSequenceId_.get(), capId);
   }
 
-  // when an entry of ccj is added, updated, or removed from pcjdao, update corresponding entry in the cache
-  public void updateEntry(X x, CapabilityCapabilityJunction ccj) {
-    Session session = x.get(Session.class);
-    if ( session == null ) return;
-    // use the context of the session user/agent to recalculate the prereqs list for corresponding
-    // entry in map
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    User sessionUser = (User) userDAO.find(session.getUserId());
-    User sessionAgent = session.getAgentId() > 0 ? (User) userDAO.find(session.getAgentId()) : null;
-
-    Subject subject = sessionAgent == null ? new Subject(sessionUser) : new Subject(sessionAgent);
-    if ( sessionAgent != null ) subject.setUser(sessionUser);
-
-    Map<String, List<String>> cache = (Map) session.getContext().get(CACHE_KEY);
-    cache.put(ccj.getSourceId(), getPrereqs_(x.put("subject", subject), ccj.getSourceId()));
-
-    if ( session != null && session.getApplyContext() != null ) {
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
-    }
-  }
-
-  // sets the prerequisite cache to null, is used when session info changes
-  public static void purgeCache(X x) {
-    Session session = x.get(Session.class);
-    if ( session != null && session.getApplyContext() != null ) {
-      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, null));
-    }
-  }
-
-
-  // get pcj cache from session context. If the current context subject users match the user/agent
-  // of session, return the cache. Or, if cache is empty, initialize the cache
-  // otherwise, return the result of directly looking up prerequisitecapabilityjunctiondao since
-  // the cache is not valid
-  protected Map<String, List<String>> getPrereqsCache(X x) {
-    Session session = x.get(Session.class);
+  public SessionCrunchCache getSessionCache(X x) {
+    var session = (Session) x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null ) {
-      return initCache(x, false);
-    }
+    if ( user == null || session == null ) return anonymousCache_;
+
     Long userId = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
 
@@ -329,25 +249,35 @@ public class ServerCrunchService
       session.getAgentId() == agentId && session.getUserId() == userId :
       session.getUserId() == agentId && session.getUserId() == userId;
 
-    // the cache belongs to the real user in the session, so if the current context user
-    // is anything but, do not use it
-    if ( ! cacheValid ) return null;
+    if ( ! cacheValid ) return anonymousCache_;
 
-    Map<String, List<String>> map = (Map) session.getContext().get(CACHE_KEY);
-    return map == null ? initCache(x, true) : map;
+    var cache = (SessionCrunchCache) session.getContext().get(CACHE_KEY);
+    if ( cache == null && session.getApplyContext() != null ) {
+      cache = new SessionCrunchCache();
+      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, cache));
+    } else if ( cache == null ) {
+      // Unsaved cache means no caching!
+      cache = new SessionCrunchCache();
+    }
+
+    return cache;
   }
+
+  // sets the prerequisite cache to null, is used when session info changes
+  public static void purgeCache(X x) {
+//    Session session = x.get(Session.class);
+//    if ( session != null && session.getApplyContext() != null ) {
+//      session.setApplyContext(session.getApplyContext().put(CACHE_KEY, null));
+//    }
+  }
+
 
   //TODO: Needs to be refactored once Subject is serializable
   public UserCapabilityJunction getJunctionFor(X x, String capabilityId, User effectiveUser, User user) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.getJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.getJunctionForSubject(x, capabilityId, requestedSubject);
-    }
-    return this.getJunctionForSubject(x, capabilityId, subject);
+    Subject s = new Subject(user);
+    s.setUser(effectiveUser);
+    // note the next function call does an auth check too see if the subject really should change
+    return this.getJunctionForSubject(x, capabilityId, s);
   }
 
   public UserCapabilityJunction getJunction(X x, String capabilityId) {
@@ -436,20 +366,23 @@ public class ServerCrunchService
   }
 
   public UserCapabilityJunction getJunctionForSubject(
-    X x, String capabilityId,  Subject subject
+    X x, String capabilityId, Subject subject
   ) {
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+    }
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-      x = x.put("subject", subject);
       Predicate associationPredicate = getAssociationPredicate_(x, capabilityId);
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
         userCapabilityJunctionDAO.find(AND(associationPredicate,targetPredicate));
       if ( ucj == null ) {
-        ucj = buildAssociatedUCJ(x, capabilityId, subject);
+        ucj = buildAssociatedUCJ(x, capabilityId, (Subject) x.get("subject"));
       } else {
         ucj = (UserCapabilityJunction) ucj.fclone();
       }
@@ -460,7 +393,7 @@ public class ServerCrunchService
       logger.error("getJunction", capabilityId, e);
 
       // On failure, report that the capability is available
-      var ucj = buildAssociatedUCJ(x, capabilityId, subject);
+      var ucj = buildAssociatedUCJ(x, capabilityId, (Subject) x.get("subject"));
       return ucj;
     }
   }
@@ -508,16 +441,6 @@ public class ServerCrunchService
       ucj.setStatus(status);
     }
 
-    AuthService auth = (AuthService) x.get("auth");
-    if (
-      auth.check(x, "usercapabilityjunction.warn.update")
-      && subject.getRealUser() != subject.getUser()
-    ) {
-      var logger = (Logger) x.get("logger");
-      // This may be correct when testing features as an admin user
-      logger.warning(
-        subject.getUser().toSummary() + " user is lastUpdatedRealUser on an agent-associated UCJ");
-    }
     ucj.setLastUpdatedRealUser(subject.getRealUser().getId());
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
@@ -528,15 +451,11 @@ public class ServerCrunchService
     X x, String capabilityId, FObject data,
     CapabilityJunctionStatus status, User effectiveUser, User user
   ) {
-    Subject subject = (Subject) x.get("subject");
-    foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.updateJunctionFor") ) {
-      var requestedSubject = new Subject();
-      requestedSubject.setUser(user);
-      requestedSubject.setUser(effectiveUser);
-      return this.updateUserJunction(x, requestedSubject, capabilityId, data, status);
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, effectiveUser, user);
     }
-    return this.updateUserJunction(x, subject, capabilityId, data, status);
+    return this.updateUserJunction(x, (Subject) x.get("subject"), capabilityId, data, status);
   }
 
   public UserCapabilityJunction updateUserJunction(
@@ -552,10 +471,12 @@ public class ServerCrunchService
     if ( status != null ) {
       ucj.setStatus(status);
     }
-
+    AuthService auth = (AuthService) x.get("auth");
+    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+    }
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-    var subjectX = x.put("subject", subject);
-    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(subjectX).put(ucj);
+    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
   }
 
   public UserCapabilityJunction buildAssociatedUCJ(

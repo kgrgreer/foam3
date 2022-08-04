@@ -22,7 +22,6 @@ foam.CLASS({
       class: 'String',
       name: 'label'
     },
-
     {
       class: 'StringArray',
       name: 'available'

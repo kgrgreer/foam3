@@ -350,20 +350,20 @@ foam.CLASS({
 
     function put(newValue) {
       this.root = this.root.putKeyValue(
-          this.index.prop.f(newValue),
-          newValue,
-          this.index.compare,
-          this.index.dedup,
-          this.selectCount > 0);
+        this.index.prop.f(newValue),
+        newValue,
+        this.index.compare,
+        this.index.dedup,
+        this.selectCount > 0);
     },
 
     function remove(value) {
       this.root = this.root.removeKeyValue(
-          this.index.prop.f(value),
-          value,
-          this.index.compare,
-          this.selectCount > 0,
-          this.index.nullNode);
+        this.index.prop.f(value),
+        value,
+        this.index.compare,
+        this.selectCount > 0,
+        this.index.nullNode);
     },
 
     function get(key) {

@@ -8,10 +8,13 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'MethodAxiom',
   extends: 'foam.doc.Axiom',
+
   requires: [
     'foam.doc.AxiomLink',
   ],
+
   tableColumns: ['type', 'name'],
+
   properties: [
     {
       name: 'name',
@@ -36,7 +39,7 @@ foam.CLASS({
             addClass('foam-doc-AxiomTableView-documentation').
             add(o.axiom.documentation).
           end()
-      },
+      }
     },
     {
       class: 'String',
@@ -46,7 +49,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(v) {
         this.start('code').add(v).end();
-      },
-    },
-  ],
-})
+      }
+    }
+  ]
+});

@@ -27,3 +27,18 @@ foam.CLASS({
     function save() {}
   ]
 });
+
+foam.CLASS({
+  package: 'foam.u2.wizard.data',
+  name: 'DebugSaver',
+  extends: 'foam.u2.wizard.data.ProxySaver',
+  properties: ['breakpoint', 'name'],
+
+  methods: [
+    function save (...a) {
+      console.log(`DebugSaver(${this.name}).save`, ...a);
+      if ( this.breakpoint ) debugger;
+      return this.delegate.save(...a);
+    }
+  ]
+})
