@@ -28,12 +28,14 @@ foam.CLASS({
         JSONFObjectFormatter formatter = new JSONFObjectFormatter();
         formatter.setOutputShortNames(true);
         formatter.setOutputDefaultClassNames(false);
+        formatter.setCalculateDeltaForNestedFObjects(true);
         formatter.setPropertyPredicate(
           new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
+            // ignore 'transient', 'storageTransient', ...
             new foam.lib.StoragePropertyPredicate(),
+            new foam.lib.NetworkPropertyPredicate(),
             new foam.lib.ClusterPropertyPredicate()
           }));
-        formatter.setCalculateDeltaForNestedFObjects(true);
         return formatter;
       }
 
@@ -52,6 +54,12 @@ foam.CLASS({
         formatter.setOutputShortNames(true);
         formatter.setOutputDefaultClassNames(false);
         formatter.setCalculateDeltaForNestedFObjects(true);
+        formatter.setPropertyPredicate(
+          new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
+            // ignore 'transient' but not 'storageTransient'
+            new foam.lib.NetworkPropertyPredicate(),
+            new foam.lib.ClusterPropertyPredicate()
+          }));
         return formatter;
       }
 
