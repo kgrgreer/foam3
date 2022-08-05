@@ -71,7 +71,7 @@ foam.CLASS({
             wizardlet.status === this.CapabilityJunctionStatus.GRANTED ||
             wizardlet.status === this.CapabilityJunctionStatus.PENDING;
 
-          return [wizardlet.capability, self.translationService.getTranslation(foam.locale, `${wizardlet.capability.id}.name`,wizardlet.title), isFinal]
+          return [wizardlet.capability.id, self.translationService.getTranslation(foam.locale, `${wizardlet.capability.id}.name`,wizardlet.title), isFinal]
         })
       }
     },
@@ -186,7 +186,7 @@ foam.CLASS({
               maxSelected$: this.max$,
               choiceView: {
                 ...this.choiceView,
-                of: this.choices[0][0].cls_.id,
+                of: 'foam.nanos.crunch.Capability',
                 largeCard: true
              }
             }
