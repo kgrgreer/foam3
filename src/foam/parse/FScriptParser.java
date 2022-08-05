@@ -413,8 +413,8 @@ public class FScriptParser
       grammar.sym("FORMULA"),
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
-      grammar.sym("FIELD"),
-      grammar.sym("ENUM")
+      grammar.sym("ENUM"),
+      grammar.sym("FIELD")
     ));
 
     grammar.addSymbol("REGEX", new Seq1(
