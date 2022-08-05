@@ -10,7 +10,16 @@ foam.CLASS({
   extends: 'foam.dashboard.view.DAOTable',
 
   requires: [
-    'foam.dashboard.model.VisualizationSize'
+    'foam.dashboard.model.VisualizationSize',
+    'foam.u2.stack.StackBlock'
+  ],
+
+  imports: [
+    'stack'
+  ],
+
+  exports: [
+    'onClick'
   ],
 
   css: `
@@ -40,6 +49,7 @@ foam.CLASS({
   properties: [
     'title',
     'actionView',
+    'data',
     ['limit', 3],
     {
       class: 'FObjectProperty',
@@ -74,18 +84,31 @@ foam.CLASS({
                 label: self.viewMoreLabel
               })
             .endContext()
-          .end() 
+          .end()
         .end()
         .add(this.slot(function(currentValues) {
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
-            .forEach(currentValues, function(obj) {
-              e.tag(self.citationView, { obj: obj });
+            .forEach(currentValues, function(data) {
+              self.data = data;
+              e.tag(self.citationView, { data : data });
             })
             .callIf(self.actionView, function() {
               e.tag(self.actionView);
             });
         }));
+    }
+  ],
+
+  listeners: [
+    function onClick() {
+      this.stack.push(this.StackBlock.create({
+        view: {
+          class: foam.comics.v2.DAOSummaryView,
+          config: foam.comics.v2.DAOControllerConfig.create({ daoKey: 'cardAccountDAO' }, this),
+          data: this.data
+        }, parent: this.__subContext__.createSubContext({ currentControllerMode: 'view' })
+      }));
     }
   ]
 });
