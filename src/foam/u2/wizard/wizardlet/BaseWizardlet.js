@@ -80,6 +80,11 @@ foam.CLASS({
       class: 'String'
     },
     {
+      name: 'subTitle',
+      class: 'String',
+      documentation: 'Description of current wizardlet, may be used to provide help for the wizardlet.',
+    },
+    {
       name: 'isValid',
       class: 'Boolean',
       expression: function (of, data, data$errors_) {
@@ -252,6 +257,11 @@ foam.CLASS({
     {
       name: 'wizardController',
       documentation: 'Populated by ContextAgent to add the wizard controller to wizardlet context after wizardlet creation',
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle',
+      value: true
     }
   ],
 
