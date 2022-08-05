@@ -87,18 +87,6 @@ foam.CLASS({
     },
     function save_(wizardlet, options) {
       var wData = wizardlet.data ? wizardlet.data : null;
-
-      // REVIEW: hotfix for minmax capability wizardlet data not being saved causing prereqs wizardlet cancelSave_ instead of save_
-      if ( foam.nanos.crunch.MinMaxCapabilityData.isInstance(wData) ) {
-        wData = wData.clone();
-        ['selectedData', 'selectedDataStable'].forEach(k => {
-          wData[k] = wData[k].map(v => {
-            if ( typeof v === 'string' ) return v;
-            return v?.id;
-          })
-        })
-      }
-
       wizardlet.loading = true;
       if ( wizardlet.reloadAfterSave && options.reloadData ) {
         wizardlet.loadingLevel = this.LoadingLevel.LOADING;
