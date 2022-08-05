@@ -30,7 +30,7 @@ foam.CLASS({
       javaValue: 'foam.mlang.MLang.TRUE'
     },
     {
-      class: 'foam.mlang.FObjectProperty',
+      class: 'FObjectProperty',
       name: 'adapter',
       of: 'foam.mlang.F',
       javaFactory: 'return new CopyAdapter(getOf());'
