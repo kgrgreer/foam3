@@ -56,6 +56,7 @@
   ],
 
   properties: [
+    'prop',
     {
       class: 'String',
       name: 'daoKey'
@@ -102,7 +103,7 @@
     },
     {
       class: 'String',
-      name:'placeholder'
+      name: 'placeholder'
     },
     'inputFocused'
   ],
@@ -110,8 +111,10 @@
   methods: [
     function render() {
       var self = this;
-      var id;
       this.SUPER();
+      var callFromProperty = function() {
+        self.prop && this.fromProperty && this.fromProperty(self.prop);
+      };
       if ( this.autocompleter )
         this.autocompleter.partial$ = this.data$;
 
@@ -124,6 +127,7 @@
         placeholder$: this.placeholder$,
         autocomplete: false
       })
+        .call(callFromProperty)
         .on('focus', () => {
           this.inputFocused = true;
         })
@@ -151,6 +155,9 @@
              })
           .end();
       });
+    },
+    function fromProperty(prop) {
+      this.prop = prop;
     }
   ],
 
