@@ -176,11 +176,6 @@ foam.CLASS({
                     .end()
                   .endContext();
               }))
-              .callIfElse(this.closeAction, function() {
-               
-              }, function() {
-                
-              })
             .end()
           .end()
           .start()
