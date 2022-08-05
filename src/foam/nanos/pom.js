@@ -500,7 +500,6 @@ foam.POM({
     { name: "ruler/predicate/PropertyIsClass",                                            flags: "js|java" },
     { name: "ruler/predicate/ContextContainsPredicate",                                   flags: "js|java" },
     { name: "ruler/predicate/PropertyIsSetPredicate",                                     flags: "js|java" },
-    { name: "ruler/predicate/NewFScript",                                                 flags: "js|java" },
     { name: "ruler/action/AbstractCheckDAOforMatching",                                   flags: "js|java" },
     { name: "ruler/action/ChangePropertyAction",                                          flags: "js|java" },
     { name: "test/EchoService",                                                           flags: "js|java" },
