@@ -62,7 +62,8 @@ foam.CLASS({
       view.onClose = this.resolveAgent;
 
       this.wizardStackBlock = this.StackBlock.create({
-        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {})
+        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
+        parent: this
       });
 
       await new Promise(resolve => {
