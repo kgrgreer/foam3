@@ -75,6 +75,10 @@ foam.CLASS({
       flex-grow: 1;
       max-height: 90vh;
       overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     ^fullscreen ^body {
