@@ -36,6 +36,8 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       gap: 20pt;
+      padding-bottom: 3.2rem;
+    }
     }
     ^flexButtons > * {
       flex-grow: 1;
