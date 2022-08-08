@@ -6,7 +6,7 @@
 
  foam.CLASS({
   package: 'foam.nanos.crunch.test',
-  name: 'ACJTest',
+  name: 'AgentCapabilityJunctionTest',
   extends: 'foam.nanos.test.Test',
   documentation: `
   Test cases for AgentCapabilityJunctions.
