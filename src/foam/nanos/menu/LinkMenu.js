@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'LinkMenu',
   extends: 'foam.nanos.menu.AbstractMenu',
 
-  imports: [ 'window', 'buildingStack?' ],
+  imports: [ 'window', 'buildingStack?', 'postToWindow?' ],
 
   documentation: 'A menu item which links to an external URL.',
 
@@ -31,6 +31,9 @@ foam.CLASS({
       } else {
         if ( this.buildingStack$ ) this.buildingStack = true;
         this.window.location = this.link;
+      }
+      if ( menu.analyticsMessage ) {
+        X.postToWindow?.post({ step: menu.analyticsMessage });
       }
     }
   ]
