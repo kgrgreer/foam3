@@ -19,8 +19,8 @@ foam.CLASS({
       flex-direction: column;
       width: 65vw;
       min-height: 65vh;
-      height: 100%;
-      margin: 3.2rem auto;
+      padding: 3.2rem 0;
+      flex-grow: 1;
       /**
        * Make this work with conditional titles 
        * gap: 1.6rem; 
@@ -43,7 +43,8 @@ foam.CLASS({
       }
     }
     ^contents {
-      flex-grow: 1;
+      flex: 1;
+      min-height: 0;
     }
     ^wizardletTitle {
       text-align: center;
