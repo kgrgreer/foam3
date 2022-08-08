@@ -595,6 +595,7 @@ foam.POM({
     { name: "crunch/extra/ReviewWizard",                                                  flags: "js|java" },
     { name: "crunch/extra/ImplyReviewedAction",                                           flags: "js|java" },
     { name: "crunch/test/CrunchTestSupport",                                              flags: "js" },
+    { name: "crunch/test/ACJTest",                                                        flags: "js|java" },
     { name: "crunch/sandbox/CapabilityEditIntention",                                     flags: "js|java" },
     { name: "approval/ApprovalDAO",                                                       flags: "js|java" },
     { name: "approval/ApprovalStatus",                                                    flags: "js|java" },
