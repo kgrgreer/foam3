@@ -14,7 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'actionProvider?'
+    'actionProvider?',
+    'developerMode?'
   ],
 
   requires: [
@@ -53,6 +54,7 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
+      console.log('FlexibleWizaard', self)
       
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
         return data$currentSection?.createView() ?? this.E();
@@ -124,6 +126,12 @@ foam.CLASS({
             // Export the current wizardlet section view in context so that dynamicActions can use it
             // this only works for incremental wizard, we will need a better solution for wizards that 
             // render multiple sections at once
+            .callIf(self.developerMode, function () {
+              this
+                .startContext({ data: self.data.data })
+                  .tag(self.data.data.OPEN_WIZARD_INSPECTOR)
+                .endContext();
+            })
             .startContext({ currentWizardletSectionView: current$ })
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {
