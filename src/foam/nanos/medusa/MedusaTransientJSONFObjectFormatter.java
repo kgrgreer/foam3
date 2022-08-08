@@ -84,8 +84,19 @@ public class MedusaTransientJSONFObjectFormatter
    * Called from maybeOutputDelta - update flow
    */
   public int compare(PropertyInfo prop, FObject oldFObject, FObject newFObject) {
-    if ( isTransient(newFObject, prop) ) return 1;
-    return super.compare(prop, oldFObject, newFObject);
+    if ( ! storageTransientDetectionEnabled_ )
+      return super.compare(prop, oldFObject, newFObject);
+
+    boolean isTransient = isTransient(newFObject, prop);
+
+    if ( oldFObject == null && isTransient)
+      return 1;
+
+    if ( oldFObject != null && isTransient) {
+      return super.compare(prop, oldFObject, newFObject);
+    }
+
+    return 0;
   }
 
   protected boolean isTransient(FObject fo, PropertyInfo prop) {

@@ -53,23 +53,22 @@ foam.CLASS({
       javaCode: `
       MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
 
-      String oldValue = "old";
-      String nuValue = "nu";
+      String value = "nu";
 
       MedusaTestObject nuMto = new MedusaTestObject();
-      nuMto.setId(nuValue);
-      nuMto.setData(nuValue);
-      nuMto.setClusterTransientData(nuValue);
-      nuMto.setNetworkTransientData(nuValue);
-      nuMto.setStorageTransientData(nuValue);
-      nuMto.setTransientData(nuValue);
+      nuMto.setId(value);
+      nuMto.setData(value);
+      nuMto.setClusterTransientData(value);
+      nuMto.setNetworkTransientData(value);
+      nuMto.setStorageTransientData(value);
+      nuMto.setTransientData(value);
 
       MedusaTestObjectNested nuNested = new MedusaTestObjectNested();
-      nuNested.setData(nuValue);
-      nuNested.setClusterTransientData(nuValue);
-      nuNested.setNetworkTransientData(nuValue);
-      nuNested.setStorageTransientData(nuValue);
-      nuNested.setTransientData(nuValue);
+      nuNested.setData(value);
+      nuNested.setClusterTransientData(value);
+      nuNested.setNetworkTransientData(value);
+      nuNested.setStorageTransientData(value);
+      nuNested.setTransientData(value);
 
       nuMto.setClusterTransientFObject(nuNested);
       nuMto.setNestedFObject(nuNested);
@@ -92,38 +91,126 @@ foam.CLASS({
       MedusaEntry me = (MedusaEntry) parser_.get().parseString(message);
 
       test ( me != null, "MedusaEntry deserialized");
+      MedusaTestObject oldMto = (MedusaTestObject) validate(me, false);
 
-      MedusaTestObject dataMto = (MedusaTestObject) parser_.get().parseString(me.getData());
-      test ( dataMto != null, "D MedusaTestObject deserialized");
-      test ( ! SafetyUtil.isEmpty(dataMto.getData()), "D data != null");
-      test ( SafetyUtil.isEmpty(dataMto.getClusterTransientData()), "D clusteredTransientData == null");
-      test ( ! SafetyUtil.isEmpty(dataMto.getNetworkTransientData()), "D networkTransientData != null");
-      test ( SafetyUtil.isEmpty(dataMto.getStorageTransientData()), "D storageTransientData == null");
-      test ( SafetyUtil.isEmpty(dataMto.getTransientData()), "D transientData == null");
-      test ( dataMto.getClusterTransientFObject() == null, "D clusterTransientFObject == null");
-      test ( dataMto.getNestedFObject() != null, "D nestedFObject != null");
-      test ( dataMto.getNetworkTransientFObject() != null, "D networkTransientFObject != null");
-      test ( dataMto.getStorageTransientFObject() == null, "D storageTransientFObject ==null");
-      test ( dataMto.getTransientFObject() == null, "D transientFObject == null");
+      // Update
+      value = "updated";
+      MedusaTestObject mto = (MedusaTestObject) oldMto.fclone();
+      mto.setData(value);
+      mto.setClusterTransientData(value);
+      mto.setNetworkTransientData(value);
+      mto.setStorageTransientData(value);
+      mto.setTransientData(value);
+      MedusaTestObjectNested nested = mto.getClusterTransientFObject();
+      if ( nested == null ) {
+        nested = new MedusaTestObjectNested();
+      }
+      nested.setData(value);
+      mto.setClusterTransientFObject(nested);
 
-      MedusaTestObject transientMto = (MedusaTestObject) parser_.get().parseString(me.getTransientData());
-      test ( transientMto != null, "T MedusaTestObject deserialized");
-      test ( SafetyUtil.isEmpty(transientMto.getData()), "T data == null");
-      test ( SafetyUtil.isEmpty(transientMto.getClusterTransientData()), "T clusteredTransientData == null");
-      test ( SafetyUtil.isEmpty(transientMto.getNetworkTransientData()), "T networkTransientData == null");
-      test ( ! SafetyUtil.isEmpty(transientMto.getStorageTransientData()), "T storageTransientData != null");
-      test ( SafetyUtil.isEmpty(transientMto.getTransientData()), "T transientData == null");
-      test ( transientMto.getClusterTransientFObject() == null, "T clusterTransientFObject == null");
-      test ( transientMto.getNestedFObject() == null, "T nestedFObject == null");
-      test ( transientMto.getNetworkTransientFObject() == null, "T networkTransientFObject == null");
-      test ( transientMto.getStorageTransientFObject() != null, "T storageTransientFObject != null");
-      test ( transientMto.getTransientFObject() == null, "T transientFObject == null");
+      nested = mto.getNestedFObject();
+      if ( nested == null ) {
+        nested = new MedusaTestObjectNested();
+      }
+      nested.setData(value);
+      mto.setNestedFObject(nested);
+
+      nested = mto.getNetworkTransientFObject();
+      if ( nested == null ) {
+        nested = new MedusaTestObjectNested();
+      }
+      nested.setData(value);
+      mto.setNetworkTransientFObject(nested);
+
+      nested = mto.getStorageTransientFObject();
+      if ( nested == null ) {
+        nested = new MedusaTestObjectNested();
+      }
+      nested.setData(value);
+      nested.setClusterTransientData(value);
+      nested.setNetworkTransientData(value);
+      nested.setStorageTransientData(value);
+      nested.setTransientData(value);
+      mto.setStorageTransientFObject(nested);
+
+      if ( oldMto != null ) {
+        MedusaTestObjectNested t = oldMto.getStorageTransientFObject();
+        test ( nested.compareTo(t) != 0, "clone nested different");
+      }
+
+      nested = mto.getTransientFObject();
+      if ( nested == null ) {
+        nested = new MedusaTestObjectNested();
+      }
+      nested.setData(value);
+      mto.setTransientFObject(nested);
+
+      MedusaEntry entry = new MedusaEntry();
+      entry.setId(2L);
+      entry.setData(entrySupport.data(x, mto, oldMto, DOP.PUT));
+      entry.setTransientData(entrySupport.transientData(x, mto, oldMto, DOP.PUT));
+
+      formatter = formatter_.get();
+      formatter.setX(getX());
+      formatter.output(entry);
+      message = formatter.builder().toString();
+      test ( ! SafetyUtil.isEmpty(message), "MedusaEntry (update) serialized");
+
+      entry = (MedusaEntry) parser_.get().parseString(message);
+
+      test ( entry != null, "MedusaEntry (update) deserialized");
+
+      validate(entry, true);
+      `
+    },
+    {
+      name: 'validate',
+      args: 'MedusaEntry entry, boolean update',
+      type: 'foam.core.FObject',
+      javaCode: `
+      String DT = "D ";
+      if ( update ) DT = "DU ";
+
+      MedusaTestObject dataMto = (MedusaTestObject) parser_.get().parseString(entry.getData());
+      test ( dataMto != null, DT+"MedusaTestObject deserialized");
+      test ( ! SafetyUtil.isEmpty(dataMto.getData()), DT+"data != null");
+      test ( SafetyUtil.isEmpty(dataMto.getClusterTransientData()), DT+"clusteredTransientData == null");
+      test ( ! SafetyUtil.isEmpty(dataMto.getNetworkTransientData()), DT+"networkTransientData != null");
+      test ( SafetyUtil.isEmpty(dataMto.getStorageTransientData()), DT+"storageTransientData == null");
+      test ( SafetyUtil.isEmpty(dataMto.getTransientData()), DT+"transientData == null");
+      test ( dataMto.getClusterTransientFObject() == null, DT+"clusterTransientFObject == null");
+      test ( dataMto.getNestedFObject() != null, DT+"nestedFObject != null");
+      test ( dataMto.getNetworkTransientFObject() != null, DT+"networkTransientFObject != null");
+      test ( dataMto.getStorageTransientFObject() == null, DT+"storageTransientFObject ==null");
+      test ( dataMto.getTransientFObject() == null, DT+"transientFObject == null");
+
+      DT = "T ";
+      if ( update ) DT = "TU ";
+
+      MedusaTestObject transientMto = (MedusaTestObject) parser_.get().parseString(entry.getTransientData());
+      test ( transientMto != null, DT+"MedusaTestObject deserialized");
+      test ( SafetyUtil.isEmpty(transientMto.getData()), DT+"data == null");
+      test ( SafetyUtil.isEmpty(transientMto.getClusterTransientData()), DT+"clusteredTransientData == null");
+      test ( SafetyUtil.isEmpty(transientMto.getNetworkTransientData()), DT+"networkTransientData == null");
+      test ( ! SafetyUtil.isEmpty(transientMto.getStorageTransientData()), DT+"storageTransientData != null");
+      test ( SafetyUtil.isEmpty(transientMto.getTransientData()), DT+"transientData == null");
+      test ( transientMto.getClusterTransientFObject() == null, DT+"clusterTransientFObject == null");
+      test ( transientMto.getNestedFObject() == null, DT+"nestedFObject == null");
+      test ( transientMto.getNetworkTransientFObject() == null, DT+"networkTransientFObject == null");
+      test ( transientMto.getStorageTransientFObject() != null, DT+"storageTransientFObject != null");
+      test ( transientMto.getTransientFObject() == null, DT+"transientFObject == null");
+
       MedusaTestObjectNested n = (MedusaTestObjectNested) (transientMto.getStorageTransientFObject());
-      test ( ! SafetyUtil.isEmpty(n.getData()), "T storageTransient nested data != null");
-      test ( SafetyUtil.isEmpty(n.getClusterTransientData()), "T storageTransient nested clusterTransientData == null");
-      test ( ! SafetyUtil.isEmpty(n.getNetworkTransientData()), "T storageTransient nested networkTransientData != null");
-      test ( ! SafetyUtil.isEmpty(n.getStorageTransientData()), "T storageTransient nested storageTransientData != null");
-      test ( SafetyUtil.isEmpty(n.getTransientData()), "T storageTransient nested transientData == null");
+      test ( ! SafetyUtil.isEmpty(n.getData()), DT+"storageTransient nested data != null");
+      test ( SafetyUtil.isEmpty(n.getClusterTransientData()), DT+"storageTransient nested clusterTransientData == null");
+      test ( ! SafetyUtil.isEmpty(n.getNetworkTransientData()), DT+"storageTransient nested networkTransientData != null");
+      test ( ! SafetyUtil.isEmpty(n.getStorageTransientData()), DT+"storageTransient nested storageTransientData != null");
+      test ( SafetyUtil.isEmpty(n.getTransientData()), DT+"storageTransient nested transientData == null");
+
+      n = (MedusaTestObjectNested) (transientMto.getNetworkTransientFObject());
+      test ( n == null, DT+"networkTransientFObject null");
+
+      return (MedusaTestObject) dataMto.overlay(transientMto);
       `
     }
   ]

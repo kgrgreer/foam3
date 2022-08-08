@@ -61,6 +61,7 @@ foam.CLASS({
         formatter.reset();
         formatter.storageTransientDetectionEnabled_ = false;
         formatter.storageTransientDetected_ = false;
+        formatter.storageTransientDetectedAt_ = null;
         return formatter;
       }
     };
