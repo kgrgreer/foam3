@@ -187,7 +187,7 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('header-right'))
               .add(this.slot(function(help_) {
-                return this.E().tag(help_, { label: '', buttonStyle: 'TERTIARY' });
+                return help_ ? this.E().tag(help_, { label: '', buttonStyle: 'TERTIARY' }) : null;
               }))
               .add(this.slot(function(closeAction) {
                 return closeAction ?
