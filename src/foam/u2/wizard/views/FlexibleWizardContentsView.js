@@ -92,11 +92,13 @@ foam.CLASS({
               actions.splice(prevIndex, 1);
             }
             const discardIndex = actions.findIndex(a => a.name == 'discard');
-            self.actionProvider.closeAction = this.ActionReference.create({
-              action: actions[discardIndex],
-              data: this.data
-            });
-            actions.splice(discardIndex, 1);
+            if ( discardIndex != -1 ) {
+              self.actionProvider.closeAction = this.ActionReference.create({
+                action: actions[discardIndex],
+                data: this.data
+              });
+              actions.splice(discardIndex, 1);
+            }
           }
 
           // Listen to availability of actions that FlexibleWizardContentsView
