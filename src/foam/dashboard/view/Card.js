@@ -59,6 +59,10 @@ foam.CLASS({
         // 70 is height of header as dictated by the ^header CSS class
         return height - 60;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'cardData'
     }
   ],
   css: `
@@ -115,7 +119,7 @@ foam.CLASS({
         start('div').
         addClass(this.myClass('content')).
         tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, {obj: this.data.obj}, this, this.__subSubContext__);
+          return foam.u2.ViewSpec.createView(data$currentView, { data: this.cardData }, this, this.__subSubContext__);
         })).
         end('div');
     }
