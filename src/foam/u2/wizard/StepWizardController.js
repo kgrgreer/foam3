@@ -345,9 +345,8 @@ foam.CLASS({
       if ( this.allowSkipping ) return true;
 
       // Iterate over each section along the way to make sure it's valid
-      var iter = this.positionAfter.bind(this);
       var lastWizardletIndex = start.wizardletIndex;
-      for ( let p = start ; p != null ; p = iter(p) ) {
+      for ( let p = start ; p != null ; p = p.getNext(this.wizardlets) ) {
         // Also check isValid on the wizardlet itself
         if ( p.wizardletIndex != lastWizardletIndex ) {
           if ( ! this.wizardlets[lastWizardletIndex].isValid ) {
