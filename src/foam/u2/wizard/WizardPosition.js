@@ -59,12 +59,13 @@ foam.CLASS({
 
       // Move to next wizardlet if one exists,
       //   but skip wizardlets with no sections
-      wi = wi + 1;
+      wi++;
       while ( wi < wizardlets.length ) {
         if ( wizardlets[wi].sections.length > 0 ) return this.cls_.create({
           wizardletIndex: wi,
           sectionIndex: 0
-        }, this.__context__)
+        }, this.__context__);
+        wi++;
       }
 
       return null;
@@ -81,12 +82,13 @@ foam.CLASS({
       }
 
       // Move to previous wizardlet if one exists
-      wi = wi - 1;
+      wi--;
       while ( wi >= 0 ) {
         if ( wizardlets[wi].sections.length > 0 ) return this.cls_.create({
           wizardletIndex: wi,
           sectionIndex: 0
-        }, this.__context__)
+        }, this.__context__);
+        wi--;
       }
 
       return null;
