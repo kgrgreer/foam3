@@ -176,7 +176,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      boolean   wasCorrectExceptionType = false;
       boolean   threw                   = false;
       String    returnedMessage         = "";
       Throwable throwable               = null;
@@ -198,7 +197,7 @@ foam.CLASS({
         return;
       }
 
-      if ( ! wasCorrectExceptionType ) {
+      if ( ! expectedExceptionType.isInstance(throwable) ) {
         // makes sense to log this information twice
         // one for the test results, one for the log
         // and we do this below as well.
