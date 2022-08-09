@@ -31,15 +31,14 @@ import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
 import foam.util.Auth;
-
 import java.lang.Exception;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
-
 import static foam.mlang.MLang.*;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
+
 
 public class ServerCrunchService
   extends    ContextAwareSupport
@@ -47,17 +46,16 @@ public class ServerCrunchService
 {
   public static String CACHE_KEY = "CrunchService.PrerequisiteCache";
 
-  protected AtomicLong cacheSequenceId_ = new AtomicLong(0);
+  protected AtomicLong         cacheSequenceId_ = new AtomicLong(0);
   protected SessionCrunchCache anonymousCache_;
 
   @Override
   public void start() {
     anonymousCache_ = new SessionCrunchCache();
 
-    var prerequisiteCapabilityJunctionDAO =
-      ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
-
-    prerequisiteCapabilityJunctionDAO.listen(new Sink() {
+    var prerequisiteCapabilityJunctionDAO = ((DAO) getX().get("prerequisiteCapabilityJunctionDAO"));
+    var userCapabilityJunctionDAO         = ((DAO) getX().get("userCapabilityJunctionDAO"));
+    var sink                              = new Sink() {
       public void put(Object obj, Detachable sub) {
         // ???: could have a sequence id per capability to mimimize how
         //      much cache is invalidated
@@ -70,7 +68,10 @@ public class ServerCrunchService
         cacheSequenceId_.getAndIncrement();
       }
       public void eof() {};
-    }, TRUE);
+    };
+
+    prerequisiteCapabilityJunctionDAO.listen(sink, TRUE);
+    userCapabilityJunctionDAO.listen(sink, TRUE);
   }
 
   public List getGrantPath(X x, String rootId) {
@@ -238,16 +239,17 @@ public class ServerCrunchService
   }
 
   public SessionCrunchCache getSessionCache(X x) {
-    var session = (Session) x.get(Session.class);
-    User user = ((Subject) x.get("subject")).getUser();
+    var  session = (Session) x.get(Session.class);
+    User user    = ((Subject) x.get("subject")).getUser();
+
     if ( user == null || session == null ) return anonymousCache_;
 
-    Long userId = user.getId();
+    Long userId  = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
 
     boolean cacheValid = session.getAgentId() > 0 ?
       session.getAgentId() == agentId && session.getUserId() == userId :
-      session.getUserId() == agentId && session.getUserId() == userId;
+      session.getUserId()  == agentId && session.getUserId() == userId;
 
     if ( ! cacheValid ) return anonymousCache_;
 
@@ -738,7 +740,7 @@ public class ServerCrunchService
   private Predicate getAssociationPredicate_(X x, String capabilityId) {
     Subject subject = (Subject) x.get("subject");
 
-    User user = subject.getUser();
+    User user     = subject.getUser();
     User realUser = subject.getRealUser();
 
     Predicate acjPredicate = INSTANCE_OF(AgentCapabilityJunction.class);
