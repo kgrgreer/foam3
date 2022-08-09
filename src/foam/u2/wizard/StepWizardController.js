@@ -309,7 +309,7 @@ foam.CLASS({
 
         // Add a record of wizardlet completion to analytics
         // TODO: Maybe add config to wizardlet for this later
-        this.analyticsAgent?.pub('event', {
+        this.wizardlets[i].pubAnalyticEvt && this.analyticsAgent?.pub('event', {
           name: foam.String.constantize(
               this.wizardlets[i].title || this.wizardlets[i].id ||
               (this.wizardlets[i].of?.name ?? 'UNKNOWN')
