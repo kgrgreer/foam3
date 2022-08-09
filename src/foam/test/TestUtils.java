@@ -34,7 +34,7 @@ public class TestUtils {
   public static X mockDAO(X x, String daoName) {
     DAO       dao = (DAO) x.get(daoName);
     ClassInfo of  = dao.getOf();
-    
+
     return x.put(daoName, new MDAO(of));
   }
 
@@ -176,8 +176,8 @@ public class TestUtils {
 
       if ( ! wasCorrectExceptionType ) {
         System.out.println("Exception type mismatch.");
-        System.out.println("EXPECTED: \""+exceptionType.getName()+"\"");
-        System.out.println("ACTUAL  : \""+t.getClass().getName()+"\"");
+        System.out.println("EXPECTED: \"" + exceptionType.getName() + "\"");
+        System.out.println("ACTUAL  : \"" + t.getClass().getName() + "\"");
         t.printStackTrace();
         throw t;
       }
