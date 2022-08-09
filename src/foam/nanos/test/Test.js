@@ -116,6 +116,7 @@ foam.CLASS({
           name: 'message', type: 'String'
         }
       ],
+      // javascript code defined in runScript()
       javaCode: `
         if ( exp ) {
           setPassed(getPassed()+1);
@@ -123,6 +124,30 @@ foam.CLASS({
           setFailed(getFailed()+1);
         }
         print((exp ? "SUCCESS: " : "FAILURE: ") + message);
+      `
+    },
+    {
+      name: 'expect',
+      type: 'Void',
+      args: [
+        {
+          name: 'value', type: 'Object'
+        },
+        {
+          name: 'expectedValue', type: 'Object'
+        },
+        {
+          name: 'message', type: 'String'
+        }
+      ],
+      javaCode: `
+        if ( foam.util.SafetyUtil.equals(value, expectedValue) ) {
+          setPassed(getPassed()+1);
+          print("SUCCESS: expected " + value + " for " + message);
+        } else {
+          setFailed(getFailed()+1);
+          print("FAILURE: expected " + expectedValue + " but received " + value + " for " + message);
+        }
       `
     },
     {
@@ -159,15 +184,18 @@ foam.CLASS({
               this.output += ( condition ? 'SUCCESS: ' : 'FAILURE: ' ) +
                 message + '\n';
             };
+            var expect = (value, expectedValue, message) => {
+              // TODO: @pete
+            };
 
             var updateStats = () => {
-              var endTime = Date.now();
+              var endTime  = Date.now();
               var duration = endTime - startTime; // Unit: milliseconds
               this.lastRun = new Date();
               this.lastDuration = duration;
             };
 
-            with ( { log: log, print: log, x: this.__context__, test: test } ) {
+            with ( { log: log, print: log, x: this.__context__, expect: expect, test: test } ) {
               Promise.resolve(eval('(async () => {' + this.code + '})()')).then(() => {
                 updateStats();
                 resolve();
