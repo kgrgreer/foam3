@@ -175,6 +175,12 @@ foam.CLASS({
           name: 'message', type: 'String'
         }
       ],
+      documentation: `
+      Executes the given runnable in a try/catch block and checks if an exception was thrown.
+      This test will pass if 1) the exception was thrown, 2) the exception matched the
+      expectedExceptionType, and 3) the exception message matches the expectedExceptionMessage.
+      Otherwise, a failure will be noted, and test execution will continue.
+      `,
       javaCode: `
       boolean   threw                   = false;
       String    returnedMessage         = "";
