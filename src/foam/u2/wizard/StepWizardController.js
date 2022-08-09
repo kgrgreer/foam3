@@ -92,13 +92,13 @@ foam.CLASS({
     {
       name: 'nextScreen',
       expression: function(wizardPosition) {
-        return this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
+        return this.nextAvailable(wizardPosition);
       }
     },
     {
       name: 'previousScreen',
       expression: function(wizardPosition) {
-        return this.nextAvailable(wizardPosition, this.positionBefore.bind(this));
+        return this.nextAvailable(wizardPosition, true);
       }
     },
     {
@@ -186,6 +186,11 @@ foam.CLASS({
     {
       name: 'someFailures',
       class: 'Boolean'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoPositionUpdates',
+      value: true
     }
   ],
 
@@ -248,42 +253,11 @@ foam.CLASS({
       this.wsub.detach();
       this.SUPER();
     },
-    function positionAfter(pos) {
-      let subWi = pos.wizardletIndex
-      let subSi = pos.sectionIndex;
-      if ( subSi >= this.wizardlets[subWi].sections.length - 1 ) {
-        if ( subWi >= this.wizardlets.length - 1 ) return null;
-        subSi = 0;
-        subWi++;
-      } else {
-        subSi++;
-      }
-      return this.WizardPosition.create({
-        wizardletIndex: subWi,
-        sectionIndex: subSi,
-      });
-    },
-    function positionBefore(pos) {
-      let subWi = pos.wizardletIndex;
-      let subSi = pos.sectionIndex;
-      if ( subSi == 0 ) {
-        if ( subWi == 0 ) return null;
-        subWi--;
-        // Skip past steps with no sections
-        while ( this.wizardlets[subWi].sections.length < 1 ) subWi--;
-        if ( subWi < 0 ) return null;
-        subSi = this.wizardlets[subWi].sections.length - 1;
-      } else {
-        subSi--;
-      }
-      return this.WizardPosition.create({
-        wizardletIndex: subWi,
-        sectionIndex: subSi,
-      });
-    },
-    function nextAvailable(pos, iter) {
-      if ( ! pos || ! iter ) return null;
-      for ( let p = iter(pos) ; p != null ; p = iter(p) ) {
+    function nextAvailable(pos, goBackwards) {
+      if ( ! pos ) return null;
+
+      const iterator = pos.iterate(this.wizardlets, goBackwards);
+      for ( const p of iterator ) {
         let wizardlet = this.wizardlets[p.wizardletIndex]
         if ( ! wizardlet.isVisible ) continue;
 
@@ -320,7 +294,7 @@ foam.CLASS({
       }
 
       var start = this.wizardPosition.wizardletIndex;
-      let nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
+      let nextScreen = this.nextAvailable(this.wizardPosition);
       var end = nextScreen ?
         nextScreen.wizardletIndex : this.wizardlets.length;
 
@@ -376,9 +350,8 @@ foam.CLASS({
       if ( this.allowSkipping ) return true;
 
       // Iterate over each section along the way to make sure it's valid
-      var iter = this.positionAfter.bind(this);
       var lastWizardletIndex = start.wizardletIndex;
-      for ( let p = start ; p != null ; p = iter(p) ) {
+      for ( let p = start ; p != null ; p = p.getNext(this.wizardlets) ) {
         // Also check isValid on the wizardlet itself
         if ( p.wizardletIndex != lastWizardletIndex ) {
           if ( ! this.wizardlets[lastWizardletIndex].isValid ) {
@@ -415,6 +388,7 @@ foam.CLASS({
       name: 'onWizardletAvailability',
       framed: true,
       code: function onWizardletAvailability(wizardletIndex, value) {
+        if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
       },
@@ -431,6 +405,7 @@ foam.CLASS({
         w => w.indicator == this.WizardletIndicator.NETWORK_FAILURE).length;
     },
     function onSectionAvailability(sectionPosition, value) {
+      if ( ! this.autoPositionUpdates ) return;
       // If a previous position became available, move the wizard back
       if ( value && sectionPosition.compareTo(this.wizardPosition) < 0 ) {
         this.wizardPosition = sectionPosition;

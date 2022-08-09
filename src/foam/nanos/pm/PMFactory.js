@@ -54,7 +54,9 @@ foam.CLASS({
 
           return NULLPM__;
         }
-        return new PM();
+        PM pm = new PM();
+        pm.setEnableLogging(getEnableLogging());
+        return pm;
       `
     }
   ],

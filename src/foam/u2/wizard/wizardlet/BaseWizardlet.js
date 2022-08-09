@@ -53,6 +53,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'reloadOnAutoSave'
+    },
+    {
       name: 'id',
       class: 'String',
       factory: function () {
@@ -74,6 +78,11 @@ foam.CLASS({
     {
       name: 'title',
       class: 'String'
+    },
+    {
+      name: 'subTitle',
+      class: 'String',
+      documentation: 'Description of current wizardlet, may be used to provide help for the wizardlet.',
     },
     {
       name: 'isValid',

@@ -28,6 +28,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.Popup',
     'foam.u2.stack.StackBlock',
+    'foam.u2.wizard.ScrollingStepWizardView',
     'foam.u2.wizard.StepWizardConfig'
   ],
 
@@ -61,8 +62,13 @@ foam.CLASS({
       view.data = this.wizardController;
       view.onClose = this.resolveAgent;
 
+      if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
+        this.wizardController.autoPositionUpdates = false;
+      }
+
       this.wizardStackBlock = this.StackBlock.create({
-        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {})
+        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
+        parent: this
       });
 
       await new Promise(resolve => {

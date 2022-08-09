@@ -17,12 +17,14 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      margin: auto;
       width: 65vw;
       min-height: 65vh;
-      height: 100%;
       padding: 3.2rem 0;
-      margin-top: 0;
+      flex-grow: 1;
+      /**
+       * Make this work with conditional titles 
+       * gap: 1.6rem; 
+      */
     }
 
     ^:not(^isFullscreen) {
@@ -41,10 +43,15 @@ foam.CLASS({
       }
     }
     ^contents {
-      flex-grow: 1;
+      flex: 1;
+      min-height: 0;
     }
     ^wizardletTitle {
       text-align: center;
+      margin-bottom: 1.6rem;
+    }
+    ^wizardletSub {
+      font-size: 1.6rem;
     }
   `,
 
@@ -73,10 +80,17 @@ foam.CLASS({
         .end()
         .add(this.slot(function (showTitle, data$currentWizardlet) {
           return showTitle && data$currentWizardlet.showTitle ?
-            this.E().start('h1')
-              .addClass(self.myClass('wizardletTitle'))
+            this.E().start()
+              .addClasses(['h300', self.myClass('wizardletTitle')])
               .add(data$currentWizardlet.title)
-            .end('h2') : this.E()
+            .end() : null
+        }))
+        .add(this.slot(function (data$currentWizardlet) {
+          return data$currentWizardlet.subTitle ?
+            this.E().start()
+              .addClasses([self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub')])
+              .add(data$currentWizardlet.subTitle)
+            .end() : null
         }))
         .start(this.view, { data: this })
           .addClass(this.myClass('contents'))

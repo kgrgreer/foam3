@@ -29,7 +29,7 @@ foam.CLASS({
     { name: 'INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
     { name: 'INSTRUC', message: 'Please check your inbox to continue' },
     { name: 'REDIRECTION_TO', message: 'Back to Sign in' },
-    { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires both email and username' },
+    { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires username' },
     { name: 'ERROR_MSG', message: 'Issue resetting your password. Please try again' },
   ],
 
@@ -48,19 +48,22 @@ foam.CLASS({
       class: 'EMail',
       name: 'email',
       section: 'emailPasswordSection',
-      required: true
+      required: true,
+      createVisibility: function(usernameRequired) {
+       return usernameRequired ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       class: 'String',
-      name: 'userName',
-      createVisibility: function(userNameVisible) {
-       return userNameVisible ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      name: 'username',
+      createVisibility: function(usernameRequired) {
+       return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       section: 'emailPasswordSection',
     },
     {
       class: 'Boolean',
-      name: 'userNameVisible',
+      name: 'usernameRequired',
       hidden: true
     },
     {
@@ -83,7 +86,7 @@ foam.CLASS({
         return ! errors_;
       },
       code: function(X) {
-        const user = this.User.create({ email: this.email, userName: this.userName });
+        const user = this.User.create({ email: this.email, userName: this.username });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
             message: `${this.INSTRUC_TITLE}`,
@@ -103,7 +106,7 @@ foam.CLASS({
           }
           var msg = this.ERROR_MSG;
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
-            this.userNameVisible = true;
+            this.usernameRequired = true;
             msg = this.DUPLICATE_ERROR_MSG;
           }
           this.ctrl.add(this.NotificationMessage.create({

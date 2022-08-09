@@ -37,7 +37,7 @@ foam.CLASS({
              nu.getIsPrimary() != config.getIsPrimary() ) ) { 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         Agency agency = (Agency) x.get(support.getThreadPoolName());
-        Loggers.logger(x, this).info("agency", "ClusterConfigMonitorAgent", nu.getId());
+        // Loggers.logger(x, this).debug("agency", "ClusterConfigMonitorAgent", nu.getId());
         agency.submit(x, new ClusterConfigMonitorAgent(x, nu.getId()), this.getClass().getSimpleName());
       }
       return nu;

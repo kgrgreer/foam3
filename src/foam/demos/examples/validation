@@ -128,15 +128,19 @@ validateFlight();
 
 f.passengerName = 'John Doe';
 f.email = 'john@doe.com';
+print('Validation 1');
 validateFlight();
 
 f.returnFlight = true;
+print('Validation 2');
 validateFlight();
 
 f.returnDate = new Date('2021/04/13');
+print('Validation 3');
 validateFlight();
 
 f.returnDate = new Date('2021/04/15');
+print('Validation 4');
 validateFlight();
 
 ##  Validation Errors in GUI
