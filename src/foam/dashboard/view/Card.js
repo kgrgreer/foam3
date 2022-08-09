@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'Card',
+//  extends: 'foam.u2.Element',
   extends: 'foam.u2.View',
   requires: [
     'foam.u2.view.SimpleAltView'
@@ -118,9 +119,9 @@ foam.CLASS({
         end('div').
         start('div').
         addClass(this.myClass('content')).
-        tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, { data: this.cardData }, this, this.__subSubContext__);
-        })).
+//        tag(this.slot(function(data$currentView) {
+//          return foam.u2.ViewSpec.createView(data$currentView, { data: this.cardData }, this, this.__subSubContext__);
+//        })).
         end('div');
     }
   ]

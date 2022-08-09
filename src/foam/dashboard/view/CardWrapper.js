@@ -55,10 +55,12 @@ foam.CLASS({
           this.start().addClasses([this.myClass('title'), 'h500']).translate(this.title, this.title).end()
         })
         .tag(this.Card, {
-          data: this,
-          obj: this.obj,
-          cardData: this.data
-        });
+          data: this
+        })
+       .tag(this.slot(function(currentView) {
+          return foam.u2.ViewSpec.createView(currentView, { data: this.data }, this, this.__subSubContext__);
+        }));
+//        .tag(this.currentView, {data: this.data});
     }
   ],
   listeners: [
