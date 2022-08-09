@@ -39,7 +39,7 @@ foam.CLASS({
 
         // send email verification if new user
         User result = (User) super.put_(x, obj);
-        if ( result != null && newUser && ! result.getEmailVerified() ) {
+        if ( result != null && newUser && ! result.getEmailVerified() && ! result.getSkipEmailVerification() ) {
           getEmailToken().generateToken(x, result);
         }
 

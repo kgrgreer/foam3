@@ -692,6 +692,12 @@ foam.CLASS({
       externalTransient: true,
       columnPermissionRequired: true
     },
+    {
+      class: 'Boolean',
+      name: 'skipEmailVerification',
+      hidden: true,
+      documentation: 'If true, skip email verification, auto set emailVerified to true',
+    }
   ],
 
   methods: [

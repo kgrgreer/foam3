@@ -161,6 +161,11 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoEmailVerified',
+      hidden: true
     }
   ],
 
@@ -230,13 +235,15 @@ foam.CLASS({
             email: this.email,
             desiredPassword: this.desiredPassword,
             signUpToken: this.token_,
-            language: this.defaultUserLanguage()
+            language: this.defaultUserLanguage(),
+            skipEmailVerification : this.autoEmailVerified
           }))
           .then(async (user) => {
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.nextStep(x);
+            if ( ! this.autoEmailVerified )
+              await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,

@@ -82,6 +82,12 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoEmailVerified',
+      value: false,
+      hidden: true
     }
   ],
 
