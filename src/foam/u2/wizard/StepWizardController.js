@@ -78,8 +78,7 @@ foam.CLASS({
         });
       },
       preSet: function(_, n){
-        // REVIEW: hotfix for preventing top level wizardlet data reset
-        // this.wizardlets[n.wizardletIndex].load()
+        this.wizardlets[n.wizardletIndex].load()
         return n;
       },
       postSet: function (o, n) {
@@ -187,6 +186,11 @@ foam.CLASS({
     {
       name: 'someFailures',
       class: 'Boolean'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoPositionUpdates',
+      value: true
     }
   ],
 
@@ -346,9 +350,8 @@ foam.CLASS({
       if ( this.allowSkipping ) return true;
 
       // Iterate over each section along the way to make sure it's valid
-      var iter = this.positionAfter.bind(this);
       var lastWizardletIndex = start.wizardletIndex;
-      for ( let p = start ; p != null ; p = iter(p) ) {
+      for ( let p = start ; p != null ; p = p.getNext(this.wizardlets) ) {
         // Also check isValid on the wizardlet itself
         if ( p.wizardletIndex != lastWizardletIndex ) {
           if ( ! this.wizardlets[lastWizardletIndex].isValid ) {
@@ -385,6 +388,7 @@ foam.CLASS({
       name: 'onWizardletAvailability',
       framed: true,
       code: function onWizardletAvailability(wizardletIndex, value) {
+        if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
       },
@@ -401,6 +405,7 @@ foam.CLASS({
         w => w.indicator == this.WizardletIndicator.NETWORK_FAILURE).length;
     },
     function onSectionAvailability(sectionPosition, value) {
+      if ( ! this.autoPositionUpdates ) return;
       // If a previous position became available, move the wizard back
       if ( value && sectionPosition.compareTo(this.wizardPosition) < 0 ) {
         this.wizardPosition = sectionPosition;

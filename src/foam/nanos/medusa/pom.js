@@ -92,7 +92,9 @@ foam.POM({
     { name: "sf/SFBroadcastDAO",                                                          flags: "js|java" },
     { name: "sf/SFBroadcastReceiverDAO",                                                  flags: "js|java" },
     { name: "sf/SFMedusaClientDAO",                                                       flags: "js|java" },
+    { name: "test/MedusaEntryParseFormatTest",                                           flags: "js|java" },
     { name: "test/MedusaTestObject",                                                      flags: "js|java" },
+    { name: "test/MedusaTestObjectNested",                                                 flags: "js|java" },
     { name: "test/MedusaTestObjectDIGBenchmark",                                          flags: "js|java" },
     { name: "test/MedusaTestObjectDistributedDIGBenchmarkRunner",                         flags: "js|java" }
   ]

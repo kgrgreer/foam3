@@ -75,6 +75,10 @@ foam.CLASS({
       flex-grow: 1;
       max-height: 90vh;
       overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     ^fullscreen ^body {
@@ -91,6 +95,13 @@ foam.CLASS({
     ^header-button-placeholder {
       min-width: 56px;
     }
+
+    ^footer {
+      padding: 1em;
+      text-align: center;
+      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      flex-shrink: 0;
+    }
   `,
 
   properties: [
@@ -101,14 +112,27 @@ foam.CLASS({
     },
     {
       name: 'closeAction'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'menuDAO',
+      of: 'foam.nanos.menu.Menu',
+      name: 'helpMenu'
+    },
+    'help_',
+    {
+      class: 'String',
+      name: 'footerString'
     }
   ],
 
   methods: [
     function init() {
       var content;
-
       const self = this;
+      this.helpMenu$find.then( menu => {
+        self.help_ = menu;
+      });
 
       this.addClass()
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
@@ -162,6 +186,9 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('header-right'))
+              .add(this.slot(function(help_) {
+                return help_ ? this.E().tag(help_, { label: '', buttonStyle: 'TERTIARY' }) : null;
+              }))
               .add(this.slot(function(closeAction) {
                 return closeAction ?
                 this.E()
@@ -181,6 +208,10 @@ foam.CLASS({
           .start()
             .addClass(this.myClass('body'))
             .call(function() { content = this; })
+          .end()
+          .start()
+            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .add(this.footerString$)
           .end()
         .end();
 
