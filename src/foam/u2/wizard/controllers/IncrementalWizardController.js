@@ -74,6 +74,8 @@ foam.CLASS({
           if ( action.name === 'goNext' ) {
 
             // If the class matches we can copy the original NEXT action
+            // Using "Action.isInstance" is not appropriate here because
+            // this approach doesn't work for subclasses.
             if ( action.cls_ == foam.core.Action ) {
               goNextAction = this.GO_NEXT.clone().copyFrom(action);
               goNextAction.buttonStyle = 'PRIMARY';
