@@ -297,10 +297,11 @@ foam.CLASS({
         self.totalNumCards = arr.length;
         self.featureCardArray = [];
         for ( let i = 0 ; i < self.totalNumCards ; i++ ) { // build featured cards as elements
+          const capabilityData = arr[i].copyFrom(self.theme.capabilityConfig[arr[i].id]);
           self.featureCardArray.push(
             () => self.Element.create().start()
               .addClass(self.myClass('perFeature'))
-              .start(self.CapabilityFeatureView, { data: arr[i] })
+              .start(self.CapabilityFeatureView, { data: capabilityData })
                 .addClass(self.myClass('featureSection'))
               .end()
               .on('click', () => {
