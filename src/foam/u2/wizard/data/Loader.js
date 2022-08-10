@@ -23,8 +23,8 @@ foam.CLASS({
   implements: [ 'foam.u2.wizard.data.Loader' ],
 
   methods: [
-    function load() {
-      return null;
+    function load({ old }) {
+      return old || null;
     }
   ]
 });
