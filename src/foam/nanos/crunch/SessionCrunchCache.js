@@ -53,13 +53,13 @@ foam.CLASS({
       name: 'maybeCachePrerequisites',
       synchronized: true,
       args: [
-        { type: 'Context', name: 'x' },
-        { javaType: 'long',  name: 'sequenceId' },
-        { type: 'String',  name: 'capabilityId' }
+        { type: 'Context',  name: 'x' },
+        { javaType: 'long', name: 'sequenceId' },
+        { type: 'String',   name: 'capabilityId' }
       ],
       javaCode: `
         maybeInvalidate(sequenceId);
-        
+
         // Cache hit
         var cacheResults = getPrerequisiteStringsCache().get(capabilityId);
         if ( cacheResults != null ) return;
@@ -108,9 +108,9 @@ foam.CLASS({
       synchronized: true,
       type: 'List<Capability>',
       args: [
-        { type: 'Context', name: 'x' },
-        { javaType: 'long',  name: 'sequenceId' },
-        { type: 'String',  name: 'capabilityId' }
+        { type: 'Context',  name: 'x' },
+        { javaType: 'long', name: 'sequenceId' },
+        { type: 'String',   name: 'capabilityId' }
       ],
       javaCode: `
         maybeCachePrerequisites(x, sequenceId, capabilityId);
@@ -122,13 +122,13 @@ foam.CLASS({
       synchronized: true,
       type: 'String[]',
       args: [
-        { type: 'Context', name: 'x' },
-        { javaType: 'long',  name: 'sequenceId' },
-        { type: 'String',  name: 'capabilityId' }
+        { type: 'Context',  name: 'x' },
+        { javaType: 'long', name: 'sequenceId' },
+        { type: 'String',   name: 'capabilityId' }
       ],
       javaCode: `
         maybeInvalidate(sequenceId);
-        
+
         // Cache hit
         var cacheResults = getDependentsCache().get(capabilityId);
         if ( cacheResults != null ) return cacheResults;
@@ -145,7 +145,7 @@ foam.CLASS({
               results.add(((CapabilityCapabilityJunction) obj).getSourceId());
             }
           });
-        
+
         var asArray = results.toArray(new String[0]);
 
         getDependentsCache().put(capabilityId, asArray);

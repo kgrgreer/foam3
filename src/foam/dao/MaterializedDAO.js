@@ -4,9 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO:
-//   Create CopyAdapter
-
 foam.CLASS({
   package: 'foam.dao',
   name: 'MaterializedDAO',
