@@ -41,7 +41,7 @@
 
       testOneUserMultipleRepresentatives(ucjDAO);
       testMultipleUsersSameRepresentative(ucjDAO);
-      // testOneUserOneRepresentative(ucjDAO);
+      testOneUserOneRepresentative(ucjDAO);
       `
     },
     {
@@ -74,7 +74,7 @@
           // conditions to pass:
           // size must be 2
           // both acjA / acjB must be found in the list
-          test( acjsReadBack.size() == 2, "testOneUserMultipleRepresentatives: two ACJs were read back");
+          expect( acjsReadBack.size(), 2, "testOneUserMultipleRepresentatives: two ACJs were read back");
           test( acjsReadBack.contains(uAcjA), "testOneUserMultipleRepresentatives: first ACJ (sourceid=9100/targetId=test) was present");
           test( acjsReadBack.contains(uAcjB), "testOneUserMultipleRepresentatives: second ACJ (sourceid=9100/targetId=test) was present");
         });
@@ -112,7 +112,7 @@
           ).select(sink);
           var acjsReadBack = sink.getArray();
 
-          test( acjsReadBack.size() == 2, "testOneUserMultipleRepresentatives: two ACJs were read back (actual result: "+acjsReadBack.size()+")");
+          expect( acjsReadBack.size(), 2, "testOneUserMultipleRepresentatives: two ACJs were read back");
           test( acjsReadBack.contains(uAcjA), "testOneUserMultipleRepresentatives: first ACJ (sourceid=9100/targetId=test) was present");
           test( acjsReadBack.contains(uAcjB), "testOneUserMultipleRepresentatives: second ACJ (sourceid=9100/targetId=test) was present");
         });
@@ -123,8 +123,45 @@
       name: 'testOneUserOneRepresentative',
       args: 'DAO ucjDao',
       javaCode: `
-      // should be that ucjA / ucjB are entirely different and
-      // selects do not return both of them.
+      AgentCapabilityJunction acjA = new AgentCapabilityJunction();
+      acjA.setSourceId(9100);
+      acjA.setTargetId("test");
+      acjA.setLifecycleState(LifecycleState.ACTIVE);
+      acjA.setEffectiveUser(1);
+
+      putAndCleanUpAfterwards( ucjDao, acjA, uAcjA -> {
+        ArraySink sink = new ArraySink();
+        ucjDao.where(
+          AND(
+            EQ(AgentCapabilityJunction.SOURCE_ID,9100),
+            EQ(AgentCapabilityJunction.TARGET_ID,"test"),
+            EQ(AgentCapabilityJunction.LIFECYCLE_STATE,LifecycleState.ACTIVE) 
+          )
+        ).select(sink);
+        var acjsReadBack = sink.getArray();
+        expect( acjsReadBack.size(), 1, "testOneUserMultipleRepresentatives: acjA search returned one result");
+        test( acjsReadBack.contains(uAcjA), "testOneUserMultipleRepresentatives: acjA search returned acjA");
+      });
+
+      AgentCapabilityJunction acjB = new AgentCapabilityJunction();
+      acjB.setSourceId(9101);
+      acjB.setTargetId("test");
+      acjB.setLifecycleState(LifecycleState.ACTIVE);
+      acjB.setEffectiveUser(2);
+
+      putAndCleanUpAfterwards( ucjDao, acjB, uAcjB -> {
+        ArraySink sink = new ArraySink();
+        ucjDao.where(
+          AND(
+            EQ(AgentCapabilityJunction.SOURCE_ID,9101),
+            EQ(AgentCapabilityJunction.TARGET_ID,"test"),
+            EQ(AgentCapabilityJunction.LIFECYCLE_STATE,LifecycleState.ACTIVE)
+          )
+        ).select(sink);
+        var acjsReadBack = sink.getArray();
+        expect( acjsReadBack.size(), 1, "testOneUserMultipleRepresentatives: acjB search returned one result");
+        test( acjsReadBack.contains(uAcjB), "testOneUserMultipleRepresentatives: acjB search returned acjA");
+      });
       `
     },
     {
