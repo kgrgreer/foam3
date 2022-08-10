@@ -353,10 +353,14 @@ foam.CLASS({
       if ( predicate === this.TRUE ) return;
 
       var selections = Array.isArray(predicate.arg2.value) ? predicate.arg2.value : [predicate.arg2.value];
-      var options = [];
-      selections.forEach((selection) => {
-        options.push(selection);
-      });
+      // wait for idToStringDisplayMap to populate
+      this.idToStringDisplayMap$.sub(() => {
+        var options = [];
+        selections.forEach((selection) => {
+          options.push(selection);
+        });
+        this.selectedOptions = options;
+      })
     },
 
     /**
