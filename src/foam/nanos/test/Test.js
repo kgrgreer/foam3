@@ -127,6 +127,120 @@ foam.CLASS({
       `
     },
     {
+      name: 'fail',
+      type: 'Void',
+      args: [
+        {
+          name: 'message', type: 'String'
+        }
+      ],
+      documentation: `
+      Logs a test failure with the given message.
+      Equivalent to test(false, message).
+      `,
+      javaCode: `
+      test(false, message);
+      `
+    },
+    {
+      name: 'pass',
+      type: 'Void',
+      args: [
+        {
+          name: 'message', type: 'String'
+        }
+      ],
+      documentation: `
+      Logs a test success with the given message.
+      Equivalent to test(true, message).
+      `,
+      javaCode: `
+      test(true, message);
+      `
+    },
+    {
+      name: 'testThrows',
+      type: 'Void',
+      args: [
+        {
+          name: 'fn', type: 'Runnable'
+        },
+        {
+          name: 'expectedExceptionMessage', type: 'String'
+        },
+        {
+          name: 'expectedExceptionType', type: 'java.lang.Class'
+        },
+        {
+          name: 'message', type: 'String'
+        }
+      ],
+      documentation: `
+      Executes the given runnable in a try/catch block and checks if an exception was thrown.
+      This test will pass if 1) the exception was thrown, 2) the exception matched the
+      expectedExceptionType, and 3) the exception message matches the expectedExceptionMessage.
+      Otherwise, a failure will be noted, and test execution will continue.
+      `,
+      javaCode: `
+      boolean   threw                   = false;
+      String    returnedMessage         = "";
+      Throwable throwable               = null;
+  
+      try {
+        fn.run();
+      } catch (Throwable t) {
+        // only grab information necessary in the catch block
+        threw = true;
+        throwable = t;
+        returnedMessage = t.getMessage();
+        if ( foam.core.FOAMException.class.isInstance(t) ) {
+          returnedMessage = ((foam.core.FOAMException) t).getTranslation();
+        }
+      }
+      
+      if ( ! threw ) {
+        fail(message+" (expected exception to be thrown, but exception never was thrown)");
+        return;
+      }
+
+      if ( ! expectedExceptionType.isInstance(throwable) ) {
+        // makes sense to log this information twice
+        // one for the test results, one for the log
+        // and we do this below as well.
+        System.out.println("Exception type mismatch.");
+        System.out.println("EXPECTED: '" + expectedExceptionType.getName() + "'");
+        System.out.println("ACTUAL  : '" + throwable.getClass().getName() + "'");
+        throwable.printStackTrace();
+
+        fail(message+
+             " (exception type mismatch, expected "+
+             expectedExceptionType.getName()+
+             ", actual was: "+
+             throwable.getClass().getName()+
+             ")");
+        return;
+      }
+  
+      if ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
+           ! returnedMessage.equals(expectedExceptionMessage) ) {
+        System.out.println("Error message was not correct.");
+        System.out.println("EXPECTED: '" + expectedExceptionMessage + "'");
+        System.out.println("ACTUAL  : '" + returnedMessage + "''");
+
+        fail(message+
+          " (exception message mismatch, expected '"+
+          expectedExceptionMessage+
+          "', actual was: "+
+          returnedMessage +
+          ")");
+        return;
+      }
+  
+      // assume a pass at this point
+      pass(message);
+      `
+    },
+    {
       name: 'expect',
       type: 'Void',
       args: [
@@ -143,10 +257,10 @@ foam.CLASS({
       javaCode: `
         if ( foam.util.SafetyUtil.equals(value, expectedValue) ) {
           setPassed(getPassed()+1);
-          print("SUCCESS: expected " + value + " for " + message);
+          print("SUCCESS: "+message);
         } else {
           setFailed(getFailed()+1);
-          print("FAILURE: expected " + expectedValue + " but received " + value + " for " + message);
+          print("FAILURE: "+message+" (expected '"+expectedValue+"', actual result: '"+value+"')");
         }
       `
     },
@@ -185,7 +299,13 @@ foam.CLASS({
                 message + '\n';
             };
             var expect = (value, expectedValue, message) => {
-              // TODO: @pete
+              if ( foam.util.equals(value, expectedValue) ) {
+                this.passed += 1;
+                this.output += 'SUCCESS: '+message+'\n';
+              } else {
+                this.failed += 1;
+                this.output += 'FAILURE: '+message+' (expected "'+expectedValue+'", actual result: "'+value+'")\n';
+              }
             };
 
             var updateStats = () => {
