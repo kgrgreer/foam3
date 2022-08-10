@@ -403,7 +403,7 @@ public class ServerCrunchService
   ) {
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateUserContext") ) {
-      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+      x = x.put("subject",subject);
     }
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
