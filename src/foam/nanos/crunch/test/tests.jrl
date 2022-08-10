@@ -1,1 +1,6 @@
 p({"class":"foam.nanos.crunch.test.AgentCapabilityJunctionTest","id":"AgentCapabilityJunctionTest","description":"Tests AgentCapabilityJunction behaviors on UCJ DAO"})
+
+// p({"class":"foam.nanos.crunch.test.CapabilityTest","id":"CapabilityTest","description":"test capability and junctions related"})
+//p({"class":"foam.nanos.crunch.test.CapableTest","id":"CapableTest","description":"test CRUNCH lite behaviour"})
+p({"class":"foam.nanos.crunch.test.CapabilityReopenTest","id":"CapabilityReopenTest","description":"test Capability/MinmaxCapability maybeReopen behaviour"})
+p({"class":"foam.nanos.crunch.test.PredicatedPCJDAOTest","id":"PredicatedPCJDAOTest","description":"test adding predicate to prerequisiteCapabilityJunctions"})

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.crunch.crunchtest',
+  package: 'foam.nanos.crunch.test',
   name: 'TestCapable',
   implements: [ 'foam.nanos.crunch.lite.Capable' ],
   documentation: `

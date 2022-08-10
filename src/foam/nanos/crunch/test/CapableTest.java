@@ -1,4 +1,4 @@
-package foam.nanos.crunch.crunchtest;
+package foam.nanos.crunch.test;
 
 import foam.core.X;
 import foam.dao.ArraySink;

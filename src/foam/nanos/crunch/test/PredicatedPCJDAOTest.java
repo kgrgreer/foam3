@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.crunch.crunchtest;
+package foam.nanos.crunch.test;
 
 import foam.core.*;
 import foam.dao.*;
