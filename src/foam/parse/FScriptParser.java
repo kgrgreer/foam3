@@ -7,6 +7,7 @@
 package foam.parse;
 
 import foam.core.*;
+import foam.dao.DAO;
 import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
 import foam.lib.parse.Action;
@@ -15,6 +16,8 @@ import foam.mlang.*;
 import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.Loggers;
 import foam.util.SafetyUtil;
 import foam.parse.NewlineParser;
 
@@ -404,6 +407,7 @@ public class FScriptParser
 
     grammar.addSymbol("VALUE", new Alt(
       grammar.sym("REGEX"),
+      grammar.sym("FIND"),
       grammar.sym("DATE"),
       grammar.sym("VAR"),
       grammar.sym("STRING"),
@@ -422,7 +426,31 @@ public class FScriptParser
       new Repeat(new Alt(Literal.create("\\/"), new NotChars("/"))),
       Literal.create("/")
     ));
+
     grammar.addAction("REGEX", (val, x) -> Pattern.compile(compactToString(val)));
+
+    grammar.addSymbol("FIND", new Seq2(
+      3,6, Literal.create("find("), Whitespace.instance(),
+      grammar.sym("STRING"), Whitespace.instance(), Literal.create(","),
+      grammar.sym("VALUE"),Whitespace.instance(), Literal.create(")")
+    ));
+    grammar.addAction("FIND", (val, x) -> {
+      Object[] valArr = (Object[]) val;
+      String daoStr = (String) valArr[0];
+      Object key = valArr[1];
+      X x_ = (X) x.get("X");
+      DAO dao;
+      if ( x_ == null || (dao = (DAO) x_.get(daoStr)) == null ) {
+        // logger
+        return Action.NO_PARSE;
+      }
+      var ret = dao.find(key);
+      if ( ret == null || ! (ret instanceof Expr) ) {
+        //logger
+        return Action.NO_PARSE;
+      }
+      return ret;
+    });
 
     grammar.addSymbol("DATE", new Alt(
       new Seq(
