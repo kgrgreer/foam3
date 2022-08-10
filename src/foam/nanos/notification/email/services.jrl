@@ -32,10 +32,10 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"email",
   "serviceScript":"""
-    import foam.nanos.notification.email.NullEmailService;
+    import foam.nanos.notification.email.EmailService;
     import foam.nanos.notification.email.ProxyEmailService;;
     return new ProxyEmailService.Builder(x)
-      .setDelegate((ProxyEmailService) x.get("smtpEmailService"))
+      .setDelegate((EmailService) x.get("smtpEmailService"))
       .build();
   """
 })
