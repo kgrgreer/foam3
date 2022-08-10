@@ -40,6 +40,7 @@ foam.CLASS({
         return this.VisualizationSize.MEDIUM
       }
     },
+    'data',
     'obj',
     'mode',
     ['aspectRatio', 'auto']
@@ -55,7 +56,8 @@ foam.CLASS({
         })
         .tag(this.Card, {
           data: this,
-          obj: this.obj
+          obj: this.obj,
+          cardData: this.data
         });
     }
   ],

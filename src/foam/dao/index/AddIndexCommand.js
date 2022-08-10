@@ -17,11 +17,11 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.core.PropertyInfo',
       name: 'props'
-    // },
-    // {
-    //   class: 'FObjectProperty',
-    //   of: 'foam.dao.index.Index',
-    //   name: 'index'
+    },
+    {
+       class: 'Object',
+//       of: 'foam.dao.index.Index',
+       name: 'index'
     }
   ]
 });

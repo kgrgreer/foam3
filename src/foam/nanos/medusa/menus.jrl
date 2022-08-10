@@ -77,7 +77,8 @@ p({
     "view": {
       "class": "foam.nanos.medusa.ClusterTopologyView"
     }
-  }
+  },
+  "parent":"medusa"
 })
 
 p({

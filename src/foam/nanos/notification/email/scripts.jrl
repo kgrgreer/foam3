@@ -11,7 +11,7 @@ p({
     import foam.nanos.auth.Subject;
     import foam.nanos.notification.email.Status;
     import foam.nanos.notification.email.EmailMessage;
-    import foam.nanos.notification.email.SMTPEmailService;
+    import foam.nanos.notification.email.EmailService;
     import java.util.HashMap;
 
     String[] emails = new String[] { "joel@nanopay.net" };

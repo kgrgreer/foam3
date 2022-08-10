@@ -40,6 +40,7 @@ foam.CLASS({
   properties: [
     'title',
     'actionView',
+    'data',
     ['limit', 3],
     {
       class: 'FObjectProperty',
@@ -74,13 +75,13 @@ foam.CLASS({
                 label: self.viewMoreLabel
               })
             .endContext()
-          .end() 
+          .end()
         .end()
         .add(this.slot(function(currentValues) {
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
-            .forEach(currentValues, function(obj) {
-              e.tag(self.citationView, { obj: obj });
+            .forEach(currentValues, function(data) {
+              e.tag(self.citationView, { data : data });
             })
             .callIf(self.actionView, function() {
               e.tag(self.actionView);

@@ -31,21 +31,9 @@ foam.CLASS({
       name: 'selectedData',
       class: 'StringArray',
       javaFactory: 'return new String[0];',
-      adapt: function(_, n){
-        if ( foam.Array.isInstance(n) ) return n;
-        if ( foam.core.String.isInstance(n) ){
-          return [
-            n
-          ];
-        }
-
-        if ( foam.Function.isInstance(n.toString) ) {
-          return [
-            n.toString()
-          ];       
-        }
-
-        return n;
+      adaptArrayElement: function(o, prop) {
+        if ( foam.nanos.crunch.Capability.isInstance(o) ) return o.id;
+        return o;
       },
       postSet: function (o, n) {
         if ( ! foam.util.equals(o, n) ) {

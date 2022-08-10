@@ -29,11 +29,9 @@ foam.CLASS({
 
   css: `
     ^header-action {
-      margin: 12px;
       z-index: 1000;
       cursor: pointer;
       transition: all ease-in 0.1s;
-      padding: 0;
     }
 
     ^inner {
@@ -44,7 +42,7 @@ foam.CLASS({
     ^header {
       display: flex;
       justify-content: space-between;
-      flex-basis: 15px;
+      flex-basis: 64px;
       border-bottom: 1px solid /*%GREY4%*/ #777777;
       padding: 12px;
     }
@@ -53,18 +51,34 @@ foam.CLASS({
       display: flex;
       align-items: center;
       justify-content: center;
+      position: absolute;
+      left: 12px;
+    }
+
+    ^header-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 12px;
     }
 
     ^header-center {
       display: flex;
       text-align: center;
       align-items: center;
+      justify-content: center;
+      flex: 1;
     }
 
     ^body {
       flex-grow: 1;
       max-height: 90vh;
       overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     ^fullscreen ^body {
@@ -73,12 +87,20 @@ foam.CLASS({
 
     ^logo img, ^logo svg {
       display: flex;
-      height: 25px;
       max-height: 40px;
+      /* remove and override any image styling to preserve aspect ratio */
+      width: unset;
     }
 
     ^header-button-placeholder {
       min-width: 56px;
+    }
+
+    ^footer {
+      padding: 1em;
+      text-align: center;
+      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      flex-shrink: 0;
     }
   `,
 
@@ -87,14 +109,30 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.u2.ActionReference',
       name: 'customActions'
+    },
+    {
+      name: 'closeAction'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'menuDAO',
+      of: 'foam.nanos.menu.Menu',
+      name: 'helpMenu'
+    },
+    'help_',
+    {
+      class: 'String',
+      name: 'footerString'
     }
   ],
 
   methods: [
     function init() {
       var content;
-
       const self = this;
+      this.helpMenu$find.then( menu => {
+        self.help_ = menu;
+      });
 
       this.addClass()
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
@@ -148,17 +186,32 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('header-right'))
-              .startContext({ data: this })
-                .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
-                  .show(this.closeable$.and(this.showActions$))
-                  .addClass(this.myClass('header-action'))
-                .end()
-              .endContext()
+              .add(this.slot(function(help_) {
+                return help_ ? this.E().tag(help_, { label: '', buttonStyle: 'TERTIARY' }) : null;
+              }))
+              .add(this.slot(function(closeAction) {
+                return closeAction ?
+                this.E()
+                  .start(closeAction.action, { label: '', buttonStyle: 'TERTIARY', data$: closeAction.data$ })
+                    .show(self.closeable$.and(self.showActions$))
+                    .addClass(self.myClass('header-action'))
+                  .end() :
+                this.E().startContext({ data: self })
+                    .start(self.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
+                      .show(self.closeable$.and(self.showActions$))
+                      .addClass(self.myClass('header-action'))
+                    .end()
+                  .endContext();
+              }))
             .end()
           .end()
           .start()
             .addClass(this.myClass('body'))
             .call(function() { content = this; })
+          .end()
+          .start()
+            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .add(this.footerString$)
           .end()
         .end();
 

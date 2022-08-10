@@ -21,8 +21,10 @@
   ],
 
   css: `
+    ^ {
+      position: relative;
+    }
     ^suggestions {
-      bottom: 0;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
@@ -34,7 +36,7 @@
       max-height: 14em;
       overflow: auto;
       padding: 6px;
-      position: relative;
+      position: absolute;
       width: 100%;
       z-index: 100;
     }
@@ -54,6 +56,7 @@
   ],
 
   properties: [
+    'prop',
     {
       class: 'String',
       name: 'daoKey'
@@ -100,7 +103,7 @@
     },
     {
       class: 'String',
-      name:'placeholder'
+      name: 'placeholder'
     },
     'inputFocused'
   ],
@@ -108,19 +111,23 @@
   methods: [
     function render() {
       var self = this;
-      var id;
       this.SUPER();
+      var callFromProperty = function() {
+        self.prop && this.fromProperty && this.fromProperty(self.prop);
+      };
       if ( this.autocompleter )
         this.autocompleter.partial$ = this.data$;
 
       this.onDetach(this.onload.sub(this.loaded));
       this
+      .addClass()
       .start(this.TextField, {
         data$: this.data$,
         onKey: true,
         placeholder$: this.placeholder$,
         autocomplete: false
       })
+        .call(callFromProperty)
         .on('focus', () => {
           this.inputFocused = true;
         })
@@ -148,6 +155,9 @@
              })
           .end();
       });
+    },
+    function fromProperty(prop) {
+      this.prop = prop;
     }
   ],
 

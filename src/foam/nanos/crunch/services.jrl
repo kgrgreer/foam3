@@ -4,12 +4,15 @@ p({
   "lazy":true,
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityCategories")
       .setOf(foam.nanos.crunch.CapabilityCategory.getOwnClassInfo())
       .setPm(true)
       .build();
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.SOURCE_ID, foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
+      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
+    return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCategory\"}"
 })
@@ -28,6 +31,7 @@ p({
       .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
       .setPm(true)
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.PERMISSIONS_INTERCEPTED })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
 
   """
@@ -166,13 +170,17 @@ p({
   "name":"deprecatedCapabilityJunctionDAO",
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("deprecatedCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("deprecatedCapabilityJunctions")
       .setOf(foam.nanos.crunch.CapabilityCapabilityJunction.getOwnClassInfo())
       .setPm(true)
       .build();
+    // TODO: Remove SOURCE_ID index when id index issue resolved
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.SOURCE_ID });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.TARGET_ID });
+    return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
@@ -192,6 +200,8 @@ p({
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.crunch.CapabilityCapabilityJunction.PRIORITY})
       .setDecorator(decorator)
       .build();
+    // TODO: Remove SOURCE_ID index when id index issue resolved
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.SOURCE_ID });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.TARGET_ID });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCapabilityJunction.PRIORITY });
 

@@ -33,7 +33,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showTitle'
+      name: 'showTitles'
     },
     {
       name: 'sections',
@@ -46,7 +46,7 @@ foam.CLASS({
               class: 'foam.u2.wizard.wizardlet.ReviewWizardletView',
               title$: this.title$,
               items$: this.items$,
-              showTitle$: this.showTitle$
+              showTitle$: this.showTitles$
             }
           })
         ];
