@@ -28,12 +28,12 @@ foam.CLASS({
         JSONFObjectFormatter formatter = new JSONFObjectFormatter();
         formatter.setOutputShortNames(true);
         formatter.setOutputDefaultClassNames(false);
+        formatter.setCalculateDeltaForNestedFObjects(true);
         formatter.setPropertyPredicate(
           new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
             new foam.lib.StoragePropertyPredicate(),
             new foam.lib.ClusterPropertyPredicate()
           }));
-        formatter.setCalculateDeltaForNestedFObjects(true);
         return formatter;
       }
 
@@ -61,6 +61,7 @@ foam.CLASS({
         formatter.reset();
         formatter.storageTransientDetectionEnabled_ = false;
         formatter.storageTransientDetected_ = false;
+        formatter.storageTransientDetectedAt_ = null;
         return formatter;
       }
     };

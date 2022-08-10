@@ -127,16 +127,23 @@ f.departureDate = new Date('2021/04/14');
 validateFlight();
 
 f.passengerName = 'John Doe';
+log('Validation 1');
+validateFlight();
+
 f.email = 'john@doe.com';
+log('Validation 2');
 validateFlight();
 
 f.returnFlight = true;
+log('Validation 3');
 validateFlight();
 
 f.returnDate = new Date('2021/04/13');
+log('Validation 4');
 validateFlight();
 
 f.returnDate = new Date('2021/04/15');
+log('Validation 5');
 validateFlight();
 
 ##  Validation Errors in GUI

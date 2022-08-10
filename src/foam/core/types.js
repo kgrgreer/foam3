@@ -528,11 +528,17 @@ foam.CLASS({
         for ( var i = 0 ; i < v.length ; i++ ) {
           if ( typeof v[i] !== 'string' ) {
             if ( ! copy ) copy = v.slice();
-            copy[i] = '' + v[i];
+            copy[i] = prop.adaptArrayElement.call(this, v[i], prop);
           }
         }
 
         return copy || v;
+      }
+    ],
+    [
+      'adaptArrayElement',
+      function(o, prop) {
+        return String(o);
       }
     ],
     [
