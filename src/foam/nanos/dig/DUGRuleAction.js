@@ -30,8 +30,7 @@
     'foam.nanos.dig.HTTPDigestSink',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
-    'foam.util.SafetyUtil',
-    'net.nanopay.tx.SummaryTransaction'
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -134,18 +133,13 @@
             getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but ", dugRule.getSecureDaoKey(), " wasn't in context");
             return;
           }
-          // TODO: Fix this temporary fix, SummaryTransactionDUGRuleAction fires before InvalidateChainSummaryRuleAction and therefore ChainSummary has not been updated yet
-          var check = objDAO.inX(actingX).find(obj.getProperty("id"));
-          if ( obj instanceof SummaryTransaction ) {
-            ((SummaryTransaction) check).setChainSummary( ((SummaryTransaction) obj).getChainSummary());
-          }
-          obj = check;
+          obj = objDAO.inX(actingX).find(obj.getProperty("id"));
         }
         if ( obj == null )
           return;
       }
       getLogger(x).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
-
+      
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
         PM pm = PM.create(x, true, getClass().getSimpleName(), rule.getDaoKey(), rule.getName());
