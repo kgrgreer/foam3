@@ -418,7 +418,8 @@ public class FScriptParser
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("ENUM"),
-      grammar.sym("FIELD")
+      grammar.sym("FIELD"),
+      grammar.sym("FEE")
     ));
 
     grammar.addSymbol("REGEX", new Seq1(
@@ -659,6 +660,23 @@ public class FScriptParser
       }
       return expr;
 
+    });
+
+    grammar.addSymbol("FEE", new Seq1(4,
+      Literal.create("fee"),
+      Whitespace.instance(),
+      grammar.sym("("),
+      Whitespace.instance(),
+      grammar.sym("WORD"),
+      grammar.sym(")"),
+      Whitespace.instance()
+    ));
+
+    grammar.addAction("FEE", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      if (vals.length < 1 ) return null;
+      var feeName = vals[0];
+      return new net.nanopay.tx.fee.FeeExpr(feeName.toString());
     });
 
     return grammar;
