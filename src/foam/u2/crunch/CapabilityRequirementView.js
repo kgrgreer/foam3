@@ -10,8 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'ctrl',
-    'theme'
+    'ctrl'
   ],
 
   requires: [
@@ -95,9 +94,6 @@ foam.CLASS({
             capability.id == this.capabilityId
         ) :
         undefined;
-      if ( mainCapability.length !== 0 ) {
-        mainCapability[0].copyFrom(this.theme.capabilityConfig[this.capabilityId]);
-      }
       this.addClass().addClass('start')
         // center icon image
         .start().callIf(mainCapability, function() {
