@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'Card',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
   requires: [
     'foam.u2.view.SimpleAltView'
   ],
@@ -35,6 +35,7 @@ foam.CLASS({
     }
   ],
   properties: [
+    'data',
     {
       name: 'width',
       expression: function(data$size) {
@@ -86,7 +87,7 @@ foam.CLASS({
     }
   `,
   methods: [
-    function render() {
+    function init() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
         this.data.update();
       }.bind(this)));
@@ -118,9 +119,7 @@ foam.CLASS({
         end('div').
         start('div').
         addClass(this.myClass('content')).
-        tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, { data: this.cardData }, this, this.__subSubContext__);
-        })).
+          tag('div', null, this.content$).
         end('div');
     }
   ]
