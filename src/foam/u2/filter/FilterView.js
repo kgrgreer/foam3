@@ -268,9 +268,9 @@ foam.CLASS({
     },
     async function render() {
       var self = this;
-      this.data$.sub(this.updateMementoString);
       this.mementoString$.sub(this.getData);
       this.getData();
+      this.data$.sub(this.updateMementoString);
 
       await this.updateFilters();
 
@@ -416,18 +416,42 @@ foam.CLASS({
     },
     function assignPredicate(property) {
       var predicate = this.filterController.finalPredicate;
+      var retPred = null;
       if ( predicate ) {
         if ( foam.mlang.predicate.And.isInstance(predicate) ) {
           var subPredicates = predicate.args;
           for ( subPredicate of subPredicates ) {
-            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
+            let ret = this.unwrapPredicate(subPredicate, property);
+            if ( ! ret ) continue;
+            if ( retPred != null ) {
+              retPred = this.AND(retPred, ret);
+            } else {
+              retPred = ret;
+            }
           }
         }
-        else {
-          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
-        }
+      } else {
+        if ( predicate.arg1 && predicate.arg1.name == prop.name ) retPred = predicate;
       }
-      return null;
+      return retPred;
+    },
+    function unwrapPredicate(pred, prop) {
+      if ( foam.mlang.predicate.Or.isInstance(pred) ) {
+        var subPredicates = pred.args;
+        for ( subPredicate of subPredicates ) {
+          if ( subPredicate.arg1 && subPredicate.arg1.name == prop.name ) {
+            // Replace OR with IN since the PropFilterViews expect IN
+            let p = this.IN(subPredicate.arg1, subPredicates.map(s => {
+              if ( s.arg1 && s.arg1.name == prop.name ) {
+                return s.arg2.value;
+              }
+            }));
+            return p;
+          }
+        }
+      } else {
+        if ( pred.arg1 && pred.arg1.name == prop.name ) return pred;
+      }
     }
   ],
 
@@ -437,8 +461,11 @@ foam.CLASS({
       code: function() {
         this.deFeedback(() => {
           var mem = this.data.toMQL();
-          if ( ! mem || this.mementoString == mem ) return;
-          this.mementoString = '{' + mem + '}';
+          if ( mem ) {
+            this.mementoString = '{' + mem + '}';
+          } else {
+            this.mementoString = undefined;
+          }
         });
       }
     },
@@ -544,6 +571,7 @@ foam.CLASS({
         if ( this.filterController.isAdvanced ) return;
         this.filterController.clearAll();
         this.generalSearchField.view.data = '';
+        this.mementoString = '';
       }
     },
     {
