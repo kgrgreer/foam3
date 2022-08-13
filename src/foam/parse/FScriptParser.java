@@ -239,6 +239,7 @@ public class FScriptParser
     grammar.addSymbol("FORM_EXPR", new Seq(
       new Alt(
         grammar.sym("NUMBER"),
+        grammar.sym("FEE"),
         grammar.sym("FIELD_LEN"),
         grammar.sym("FIELD")
       ),
@@ -262,6 +263,7 @@ public class FScriptParser
             new Alt(
               grammar.sym("NUMBER"),
               grammar.sym("FIELD_LEN"),
+              grammar.sym("FEE"),
               grammar.sym("FIELD")
             )
           )
@@ -407,6 +409,7 @@ public class FScriptParser
 
     grammar.addSymbol("VALUE", new Alt(
       grammar.sym("REGEX"),
+      grammar.sym("FEE"),
       grammar.sym("FIND"),
       grammar.sym("DATE"),
       grammar.sym("VAR"),
@@ -418,8 +421,7 @@ public class FScriptParser
       grammar.sym("NUMBER"),
       grammar.sym("FIELD_LEN"),
       grammar.sym("ENUM"),
-      grammar.sym("FIELD"),
-      grammar.sym("FEE")
+      grammar.sym("FIELD")
     ));
 
     grammar.addSymbol("REGEX", new Seq1(
@@ -430,10 +432,15 @@ public class FScriptParser
 
     grammar.addAction("REGEX", (val, x) -> Pattern.compile(compactToString(val)));
 
-    grammar.addSymbol("FIND", new Seq2(
-      3,6, Literal.create("find("), Whitespace.instance(),
-      grammar.sym("STRING"), Whitespace.instance(), Literal.create(","),
-      grammar.sym("VALUE"),Whitespace.instance(), Literal.create(")")
+    grammar.addSymbol("FIND", new Seq2(3,6,
+      Literal.create("find("),
+      Whitespace.instance(),
+      grammar.sym("STRING"),
+      Whitespace.instance(),
+      Literal.create(","),
+      grammar.sym("VALUE"),
+      Whitespace.instance(),
+      Literal.create(")")
     ));
     grammar.addAction("FIND", (val, x) -> {
       Object[] valArr = (Object[]) val;
@@ -451,6 +458,24 @@ public class FScriptParser
         return Action.NO_PARSE;
       }
       return ret;
+    });
+
+    grammar.addSymbol("FEE", new Seq1(2,
+      Literal.create("fee("),
+      Whitespace.instance(),
+      grammar.sym("STRING"),
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+
+    grammar.addAction("FEE", (val, x) -> {
+      String feeName = (String) val;
+      X x_ = (X) x.get("X");
+      if ( x_ == null || x_.get("feeDAO") == null ) {
+        // logger
+        return Action.NO_PARSE;
+      }
+      return new net.nanopay.tx.fee.FeeExpr(x_, feeName);
     });
 
     grammar.addSymbol("DATE", new Alt(
@@ -596,8 +621,8 @@ public class FScriptParser
     grammar.addSymbol("WORD", new Repeat(
       grammar.sym("CHAR"), 1
     ));
-    grammar.addAction("WORD", (val, x) -> {
-      var ret = compactToString(val);
+    grammar.addAction("WORD", (val, x) ->   {
+        var ret = compactToString(val);
       if (ret.equals("len")) return null;
       return ret;
     });
@@ -660,23 +685,6 @@ public class FScriptParser
       }
       return expr;
 
-    });
-
-    grammar.addSymbol("FEE", new Seq1(4,
-      Literal.create("fee"),
-      Whitespace.instance(),
-      grammar.sym("("),
-      Whitespace.instance(),
-      grammar.sym("WORD"),
-      grammar.sym(")"),
-      Whitespace.instance()
-    ));
-
-    grammar.addAction("FEE", (val, x) -> {
-      Object[] vals = (Object[]) val;
-      if (vals.length < 1 ) return null;
-      var feeName = vals[0];
-      return new net.nanopay.tx.fee.FeeExpr(feeName.toString());
     });
 
     return grammar;

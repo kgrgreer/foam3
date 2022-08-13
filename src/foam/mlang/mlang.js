@@ -4190,11 +4190,64 @@ foam.CLASS({
       sps.setString(getQuery());
       PStream ps = sps;
       ParserContext x = new ParserContextImpl();
+      x.set("X", getX());
       ps = parser.parse(ps, x);
       if (ps == null)
         return null;
 
       return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
+      `
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'FScriptExpr',
+  extends: 'foam.mlang.AbstractExpr',
+
+  javaImports: [
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContext',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.parse.FScriptParser',
+    'foam.core.PropertyInfo'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'query'
+    },
+    {
+      class: 'Object',
+      name: 'prop',
+      javaType: 'PropertyInfo'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        var pred = foam.parse.FScriptParser.create({of: o.cls_, thisValue: this.prop}).parseString(this.query);
+        return pred ? pred.partialEval().f(o) : false;
+      },
+      javaCode: `
+      FScriptParser parser;
+      if ( getProp() != null ) parser = new FScriptParser(getProp());
+      else parser = new FScriptParser(((foam.core.FObject) obj).getClassInfo());
+      StringPStream sps = new StringPStream();
+      sps.setString(getQuery());
+      PStream ps = sps;
+      ParserContext x = new ParserContextImpl();
+      x.set("X", getX());
+      ps = parser.parse(ps, x);
+      if (ps == null)
+        return null;
+
+      return ((foam.mlang.Expr) ps.value()).f(obj);
       `
     }
   ]
