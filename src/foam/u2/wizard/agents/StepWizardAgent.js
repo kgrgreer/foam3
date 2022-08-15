@@ -50,6 +50,8 @@ foam.CLASS({
         console.warn('Missing controller or config');
       const usingFormController = this.config && this.config.controller;
 
+      window.lastWizardController = this.wizardController;
+
       const view = usingFormController ? {
         // new approach
         ...this.config.controller,
