@@ -713,6 +713,7 @@ foam.POM({
     { name: "foam/u2/crunch/lab/SequenceReference",                   flags: "web" },
     { name: "foam/u2/crunch/lab/CapabilityExperimentView",            flags: "web" },
     { name: "foam/u2/ruler/RulerLab",                                 flags: "web" },
+    { name: "foam/u2/ruler/RulerLabGroupView",                        flags: "web" },
     { name: "foam/u2/ruler/ExprView",                                 flags: "web" },
     { name: "foam/u2/ruler/RuleView",                                 flags: "web" },
     { name: "foam/apploader/ModelRefines",                            flags: "js" },

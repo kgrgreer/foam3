@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'RuleView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'openInSideView?'
+  ],
+
   requires: [
     'foam.u2.ruler.ExprView'
   ],
@@ -11,7 +15,6 @@ foam.CLASS({
     ^ {
       border: solid 0.1rem;
       border-color: #CCC;
-      margin-bottom: 2rem;
     }
     ^name {
       line-height: 2.5rem;
@@ -25,6 +28,10 @@ foam.CLASS({
     function render () {
       console.log('predicate', this.data.predicate.toString(), this.data.predicate)
       this
+        .on('click', () => {
+          if ( ! this.openInSideView ) return;
+          this.openInSideView(this.data);
+        })
         .addClass()
         .start()
           .addClass(this.myClass('name'))
