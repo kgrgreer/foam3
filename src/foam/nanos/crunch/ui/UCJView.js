@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'UCJView',
   extends: 'foam.u2.View',
@@ -78,8 +78,7 @@ foam.CLASS({
 
   messages: [
     { name: 'BACK_LABEL',      message: 'Back' },
-    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated' },
-    { name: 'SUCCESS_REMOVED', message: 'Data successfuly removed' }
+    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated' }
   ],
 
   properties: [
@@ -183,28 +182,35 @@ foam.CLASS({
     },
 
     async function onSave(isValid, ucj) {
-      if ( isValid && ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
-        this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
-        this.stack.back();
-      } else {
-        let { rejectOnInvalidatedSave, approval } = this.config;
-        if ( rejectOnInvalidatedSave && approval ) {
-          let rejectedApproval = approval.clone();
-          rejectedApproval.status = this.ApprovalStatus.REJECTED;
-          rejectedApproval.memo = 'Outdated Approval.';
-          this.approvalRequestDAO.put(rejectedApproval).then(o => {
+      if ( this.config.rejectOnInvalidatedSave ) {
+        onSaveRejectOnInvalidated_(isValid, ucj);
+        return;
+      }
+
+      this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
+      this.stack.back();
+    },
+
+    async function onSaveRejectOnInvalidated_(isValid, ucj) {
+      if ( ! isValid || ucj.status === this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+        if ( this.config.approval ) {
+          try {
+            const rejectedApproval = approval.clone();
+            rejectedApproval.status = this.ApprovalStatus.REJECTED;
+            rejectedApproval.memo = 'Outdated Approval.';
+            await this.approvalRequestDAO.put(rejectedApproval);
             this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
             this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-
-            this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
+  
+            this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
-          }, e => {
+          } catch (e) {
             this.notify(e.message, '', this.LogLevel.ERROR, true);
-          });
+          }
         } else {
-          this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
           this.stack.back();
         }
       }
