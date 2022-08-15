@@ -183,7 +183,7 @@ foam.CLASS({
 
     async function onSave(isValid, ucj) {
       if ( this.config.rejectOnInvalidatedSave ) {
-        onSaveRejectOnInvalidated_(isValid, ucj);
+        this.onSaveRejectOnInvalidated_(isValid, ucj);
         return;
       }
 
