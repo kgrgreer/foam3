@@ -71,7 +71,7 @@ foam.CLASS({
       postSet: function(_, r) {
         if ( r.headers.entries ) {
           this.copyHeaders_(r);
-        } else P
+        } else {
           this.copyHeadersEdge_(r);
         }
         this.status = r.status;
