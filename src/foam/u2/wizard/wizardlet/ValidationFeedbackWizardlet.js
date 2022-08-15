@@ -12,9 +12,9 @@ foam.CLASS({
       name: 'dynamicActions',
       factory: function() {
       /* ignoreWarning */
-        return [this.WizardAction.create({name: 'goNext', code: async function(slot) {
+        return [this.WizardAction.create({name: 'goNext', label: 'Next', code: async function(slot) {
             const wizardController = slot.data$.get();
-            await wizardController.currentWizardlet.save();
+              await wizardController.currentWizardlet.save();
             if ( ! wizardController.currentWizardlet.isValid ) return;
             wizardController.goNext();
           }})];
