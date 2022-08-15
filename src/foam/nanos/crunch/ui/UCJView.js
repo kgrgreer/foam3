@@ -182,7 +182,7 @@ foam.CLASS({
     },
 
     async function onSave(isValid, ucj) {
-      if ( this.config.rejectOnInvalidatedSave ) {
+      if ( ucj && this.config.rejectOnInvalidatedSave && this.config.approval ) {
         this.onSaveRejectOnInvalidated_(isValid, ucj);
         return;
       }
@@ -192,27 +192,26 @@ foam.CLASS({
     },
 
     async function onSaveRejectOnInvalidated_(isValid, ucj) {
-      if ( ! isValid || ucj.status === this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
-        if ( this.config.approval ) {
-          try {
-            const rejectedApproval = approval.clone();
-            rejectedApproval.status = this.ApprovalStatus.REJECTED;
-            rejectedApproval.memo = 'Outdated Approval.';
-            await this.approvalRequestDAO.put(rejectedApproval);
-            this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
-            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
-            this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+      if ( isValid && ucj.status !== this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+        this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
+        this.stack.back();
+        return;
+      }
 
-            this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
-            this.pushMenu('approvals', true);
-          } catch (e) {
-            this.notify(e.message, '', this.LogLevel.ERROR, true);
-          }
-        } else {
-          this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
-          this.stack.back();
-        }
+      try {
+        const rejectedApproval = this.config.approval.clone();
+        rejectedApproval.status = this.ApprovalStatus.REJECTED;
+        rejectedApproval.memo = 'Outdated Approval.';
+        await this.approvalRequestDAO.put(rejectedApproval);
+        this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+        this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+        this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+        this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+
+        this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
+        this.pushMenu('approvals', true);
+      } catch (e) {
+        this.notify(e.message, '', this.LogLevel.ERROR, true);
       }
     }
   ],
