@@ -30,6 +30,13 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'border',
+      factory: function () {
+        return this.Card;
+      }
+    },
     'title',
     'currentView',
     ['viewTitle', 'Dashboard'],
@@ -54,11 +61,11 @@ foam.CLASS({
         .callIf(!!this.title, function () {
           this.start().addClasses([this.myClass('title'), 'h500']).translate(this.title, this.title).end()
         })
-        .tag(this.Card, {
-          data: this,
-          obj: this.obj,
-          cardData: this.data
-        });
+        .start(this.border, { data: this })
+        .tag(this.slot(function(currentView) {
+          return foam.u2.ViewSpec.createView(currentView, {
+            data$: this.data$ }, this, this.__subSubContext__);
+        })).end();
     }
   ],
   listeners: [
