@@ -203,7 +203,7 @@
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
             this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
             this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-  
+
             this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
             this.pushMenu('approvals', true);
           } catch (e) {
