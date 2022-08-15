@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'Card',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
   requires: [
     'foam.u2.view.SimpleAltView'
   ],
@@ -35,7 +35,6 @@ foam.CLASS({
     }
   ],
   properties: [
-    'data',
     {
       name: 'width',
       expression: function(data$size) {
