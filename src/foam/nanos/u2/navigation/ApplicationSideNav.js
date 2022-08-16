@@ -25,6 +25,14 @@ foam.CLASS({
     'foam.nanos.u2.navigation.UserInfoNavigationView'
   ],
 
+  cssTokens: [
+    {
+      name: 'bottomContainerColor',
+      value: '$foam.nanos.menu.VerticalMenu.menuBackground',
+      fallback: '#FFFFFF'
+    }
+  ],
+
   css: `
     ^ {
       align-items: flex-start;
@@ -36,7 +44,7 @@ foam.CLASS({
     }
     ^sticky-container {
       align-content: flex-start;
-      background: /*%WHITE%*/ #ffffff;
+      background: $bottomContainerColor;
       display: flex;
       flex-direction: column;
       justify-content: center;
