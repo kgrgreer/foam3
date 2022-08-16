@@ -236,7 +236,8 @@ foam.CLASS({
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.nextStep(x);
+            if ( ! user.emailVerified )
+              await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,
