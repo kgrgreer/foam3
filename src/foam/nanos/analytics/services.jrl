@@ -1,0 +1,31 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "analyticEventDAO",
+  "serve": true,
+  "authenticate": false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())
+      .setPm(true)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("analyticEvents")
+      .setAuthorize(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.analytics.AnalyticEvent"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"postToWindow",
+  "serve":true,
+  "lazyClient": false,
+  "authenticate":false,
+  "client":"{ \"class\": \"foam.nanos.analytics.PostToWindow\" }"
+})

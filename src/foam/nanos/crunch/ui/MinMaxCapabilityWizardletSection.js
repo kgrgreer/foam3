@@ -45,7 +45,7 @@ foam.CLASS({
 
           this.onDetach(this.wizardlet.isValid$.follow(vs.isValidNumberOfChoices$));
           this.choiceWizardlets.forEach((choiceWizardlet) => {
-            vs.getSelectedSlot(choiceWizardlet.capability).linkFrom(choiceWizardlet.isAvailable$);
+            vs.getSelectedSlot(choiceWizardlet.capability.id).linkFrom(choiceWizardlet.isAvailable$);
           })
 
           return vs;

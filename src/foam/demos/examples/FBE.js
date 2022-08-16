@@ -197,7 +197,7 @@ foam.CLASS({
               self.dom.br();
             },
             print: function() {
-              console.log('deprecated use of print(). Use log() isntead.');
+              console.log('deprecated use of print(). Use log() instead.');
               self.dom.add.apply(self.dom, arguments);
               self.dom.br();
             },
@@ -349,11 +349,11 @@ foam.CLASS({
       async function load(section) {
         self.testData += await fetch(section).then(response => response.text())
       }
-      await load('u2');
-      await load('faq');
+//      await load('u2');
+//      await load('faq');
       await load('validation');
-      await load('examples');
-      await load('dao');
+//      await load('examples');
+//      await load('dao');
 
       this.
         addClass(this.myClass()).

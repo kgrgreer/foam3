@@ -14,7 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'actionProvider?'
+    'actionProvider?',
+    'developerMode?'
   ],
 
   requires: [
@@ -36,6 +37,8 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       gap: 20pt;
+      padding-bottom: 3.2rem;
+    }
     }
     ^flexButtons > * {
       flex-grow: 1;
@@ -53,6 +56,7 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
+      console.log('FlexibleWizaard', self)
       
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
         return data$currentSection?.createView() ?? this.E();
@@ -63,6 +67,7 @@ foam.CLASS({
         // Render current wizard section
         .add(current$)
         // Render actions
+        // Why dont we do this in FocusWizardForm?
         .add(this.slot(function (data$actionBar, data$currentWizardlet) {
           let actions = data$actionBar;
 
@@ -76,21 +81,27 @@ foam.CLASS({
           if ( self.actionProvider ) {
             // Control over rendering these actions will be given to the
             // action provider - usually the popup header.
-            const actionsToGiveToHeader = ['goPrev', 'discard'];
-            
-            for ( const name of actionsToGiveToHeader ) {
-              const i = actions.findIndex(a => a.name == name);
-              if ( i == -1 ) continue;
-
-              const actionRef = self.ActionReference.create({
-                action: actions[i],
+            const prevIndex = actions.findIndex(a => a.name == 'goPrev');
+            if ( prevIndex != -1 ) {
+              actions = [...actions];
+              const actionRef = this.ActionReference.create({
+                action: actions[prevIndex],
                 data: this.data
               });
+
               self.actionProvider.addAction(actionRef);
               actionsDetachable.onDetach(function () {
                 self.actionProvider.removeAction(actionRef);
               });
-              actions.splice(i, 1);
+              actions.splice(prevIndex, 1);
+            }
+            const discardIndex = actions.findIndex(a => a.name == 'discard');
+            if ( discardIndex != -1 ) {
+              self.actionProvider.closeAction = this.ActionReference.create({
+                action: actions[discardIndex],
+                data: this.data
+              });
+              actions.splice(discardIndex, 1);
             }
           }
 
@@ -117,6 +128,12 @@ foam.CLASS({
             // Export the current wizardlet section view in context so that dynamicActions can use it
             // this only works for incremental wizard, we will need a better solution for wizards that 
             // render multiple sections at once
+            .callIf(self.developerMode, function () {
+              this
+                .startContext({ data: self.data.data })
+                  .tag(self.data.data.OPEN_WIZARD_INSPECTOR)
+                .endContext();
+            })
             .startContext({ currentWizardletSectionView: current$ })
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {

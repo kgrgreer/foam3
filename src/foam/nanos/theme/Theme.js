@@ -341,7 +341,7 @@ foam.CLASS({
       name: 'sideNav',
       documentation: 'A custom footer view to use.',
       value: `{
-        "class": "foam.u2.view.ResponsiveAltView", 
+        "class": "foam.u2.view.ResponsiveAltView",
         "views": [
           [{"class": "foam.nanos.u2.navigation.ApplicationSideNav"}, ["XS"]],
           [{"class": "foam.nanos.menu.VerticalMenu" }, ["MD"] ]
@@ -742,6 +742,11 @@ foam.CLASS({
         return new HashSet<>();
       `,
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNavSearch',
+      value: true
     }
   ],
 

@@ -48,6 +48,7 @@ public class MedusaTransientJSONFObjectFormatter
 
   public boolean storageTransientDetectionEnabled_ = false;
   public boolean storageTransientDetected_ = false;
+  public FObject storageTransientDetectedAt_ = null;
 
   public boolean isStorageTransientDetected() {
     return storageTransientDetected_;
@@ -57,13 +58,10 @@ public class MedusaTransientJSONFObjectFormatter
    * Called from output - new/create flow
    */
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
-    boolean maybe = super.maybeOutputProperty(fo, prop, includeComma);
-    if ( maybe &&
-         storageTransientDetectionEnabled_ &&
-         prop.getStorageTransient() ) {
-      storageTransientDetected_ = true;
+    if ( isTransient(fo, prop) ) {
+      return super.maybeOutputProperty(fo, prop, includeComma);
     }
-    return maybe;
+    return false;
   }
 
   /**
@@ -86,12 +84,49 @@ public class MedusaTransientJSONFObjectFormatter
    * Called from maybeOutputDelta - update flow
    */
   public int compare(PropertyInfo prop, FObject oldFObject, FObject newFObject) {
-    int result = prop.compare(oldFObject, newFObject);
-    if ( result != 0 &&
-         storageTransientDetectionEnabled_ &&
-         prop.getStorageTransient() ) {
-      storageTransientDetected_ = true;
+    if ( ! storageTransientDetectionEnabled_ )
+      return super.compare(prop, oldFObject, newFObject);
+
+    boolean isTransient = isTransient(newFObject, prop);
+
+    if ( oldFObject == null && isTransient)
+      return 1;
+
+    if ( oldFObject != null && isTransient) {
+      return super.compare(prop, oldFObject, newFObject);
     }
-    return result;
+
+    return 0;
+  }
+
+  protected boolean isTransient(FObject fo, PropertyInfo prop) {
+    if ( storageTransientDetectionEnabled_ ) {
+      if ( prop.getClusterTransient() ) return false;
+
+      // transient: true
+      if ( prop.getStorageTransient() &&
+           prop.getNetworkTransient() ) return false;
+
+      // storageTransient: true (only)
+      if ( prop.getStorageTransient() &&
+           ! prop.getNetworkTransient() ) {
+        if ( ! storageTransientDetected_ ) {
+          storageTransientDetected_ = true;
+          storageTransientDetectedAt_ = fo;
+        }
+        return true;
+      }
+
+      // other and nested properties
+      if ( storageTransientDetected_ ) {
+        // Suppress non-storageTransient at same model level
+        if ( ! prop.getStorageTransient() &&
+             storageTransientDetectedAt_.getClass().equals(fo.getClass()) ) {
+          return false;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 }

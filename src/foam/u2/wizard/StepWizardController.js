@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'StepWizardController',
 
   imports: [
-    'developerMode'
+    'developerMode',
+    'analyticsAgent?'
   ],
 
   requires: [
@@ -91,13 +92,13 @@ foam.CLASS({
     {
       name: 'nextScreen',
       expression: function(wizardPosition) {
-        return this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
+        return this.nextAvailable(wizardPosition);
       }
     },
     {
       name: 'previousScreen',
       expression: function(wizardPosition) {
-        return this.nextAvailable(wizardPosition, this.positionBefore.bind(this));
+        return this.nextAvailable(wizardPosition, true);
       }
     },
     {
@@ -164,7 +165,10 @@ foam.CLASS({
       class: 'Enum',
       name: 'status',
       of: 'foam.u2.wizard.WizardStatus',
-      value: 'IN_PROGRESS'
+      value: 'IN_PROGRESS',
+      postSet: function (o, n) {
+        if ( o != n ) this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + n });
+      }
     },
     {
       name: 'submitted',
@@ -182,10 +186,18 @@ foam.CLASS({
     {
       name: 'someFailures',
       class: 'Boolean'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoPositionUpdates',
+      value: true
     }
   ],
 
   methods: [
+    function init() {
+      this.analyticsAgent?.pub('event', { name: 'WIZARD_STATUS_' + this.status });
+    },
     function setupWizardletListeners(wizardlets) {
       console.debug('step wizard', this);
 
@@ -241,42 +253,11 @@ foam.CLASS({
       this.wsub.detach();
       this.SUPER();
     },
-    function positionAfter(pos) {
-      let subWi = pos.wizardletIndex
-      let subSi = pos.sectionIndex;
-      if ( subSi >= this.wizardlets[subWi].sections.length - 1 ) {
-        if ( subWi >= this.wizardlets.length - 1 ) return null;
-        subSi = 0;
-        subWi++;
-      } else {
-        subSi++;
-      }
-      return this.WizardPosition.create({
-        wizardletIndex: subWi,
-        sectionIndex: subSi,
-      });
-    },
-    function positionBefore(pos) {
-      let subWi = pos.wizardletIndex;
-      let subSi = pos.sectionIndex;
-      if ( subSi == 0 ) {
-        if ( subWi == 0 ) return null;
-        subWi--;
-        // Skip past steps with no sections
-        while ( this.wizardlets[subWi].sections.length < 1 ) subWi--;
-        if ( subWi < 0 ) return null;
-        subSi = this.wizardlets[subWi].sections.length - 1;
-      } else {
-        subSi--;
-      }
-      return this.WizardPosition.create({
-        wizardletIndex: subWi,
-        sectionIndex: subSi,
-      });
-    },
-    function nextAvailable(pos, iter) {
-      if ( ! pos || ! iter ) return null;
-      for ( let p = iter(pos) ; p != null ; p = iter(p) ) {
+    function nextAvailable(pos, goBackwards) {
+      if ( ! pos ) return null;
+
+      const iterator = pos.iterate(this.wizardlets, goBackwards);
+      for ( const p of iterator ) {
         let wizardlet = this.wizardlets[p.wizardletIndex]
         if ( ! wizardlet.isVisible ) continue;
 
@@ -294,47 +275,35 @@ foam.CLASS({
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
     async function next() {
-      // Save current wizardlet, and any save-able (isAvailable) but invisible
-      // wizardlets that may exist in between this one and the next.
-      // If it exists, load the next wizardlet
-      // TODO: Just load next wizardlet instead of loading all in the beginning
-
-      // this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
-      var currentWizardlet = this.wizardlets[this.wizardPosition.wizardletIndex];
-
-      // we want to save Facades since they could directly influence the availabities of other wizardlets
-      // if it is currently the "last" wizardlet in the flow
-      var isCurrentAlreadySaved = false;
-      if (
-        foam.u2.wizard.wizardlet.FacadeCapabilityWizardlet.isInstance(currentWizardlet)
-      ){
-        await currentWizardlet.save();
-        isCurrentAlreadySaved = true;
-      }
-
-      var start = this.wizardPosition.wizardletIndex;
-      let nextScreen = this.nextAvailable(this.wizardPosition, this.positionAfter.bind(this));
-      var end = nextScreen ?
-        nextScreen.wizardletIndex : this.wizardlets.length;
-
-      // if the current wizardlet is a facade wizardlet, then we need to save it first
-      // then we can recalculate end
-      for ( let i = start ; i < end ; i++ ) {
-        if ( ! this.wizardlets[i].isAvailable ) continue;
-        if ( this.wizardlets[i] == currentWizardlet && isCurrentAlreadySaved ) continue;
-
-
-        await this.wizardlets[i].save();
-        if ( (i + 1) < end && this.wizardlets[i + 1] ) await this.wizardlets[i + 1].load();
-      }
-
-      if ( this.nextScreen == null ) {
-        this.status = this.WizardStatus.COMPLETED;
+      const canLandOn_ = pos => {
+        const wizardlet = this.wizardlets[pos.wizardletIndex];
+        if ( ! wizardlet.isVisible ) return false;
+        if ( wizardlet.sections.length < 1 ) return false;
+        const section = wizardlet.sections[pos.sectionIndex];
+        if ( ! section.isAvailable ) return false;
         return true;
       }
 
-      this.wizardPosition = nextScreen;
-      return false;
+      let wizardlet = this.currentWizardlet;
+      const iterator = this.wizardPosition.iterate(this.wizardlets);
+      for ( const pos of iterator ) {
+        nextPositionWizardlet = this.wizardlets[pos.wizardletIndex];
+        if ( ! nextPositionWizardlet.isAvailable ) continue;
+        if ( nextPositionWizardlet != wizardlet ) {
+          await wizardlet.save();
+          this.onWizardletCompleted(wizardlet);
+          wizardlet = nextPositionWizardlet;
+          await wizardlet.load();
+        }
+        if ( canLandOn_(pos) ) {
+          this.wizardPosition = pos;
+          return false;
+        }
+      }
+
+      await wizardlet.save();
+      this.status = this.WizardStatus.COMPLETED;
+      return true;
     },
     function back() {
       let previousScreen = this.previousScreen;
@@ -359,9 +328,8 @@ foam.CLASS({
       if ( this.allowSkipping ) return true;
 
       // Iterate over each section along the way to make sure it's valid
-      var iter = this.positionAfter.bind(this);
       var lastWizardletIndex = start.wizardletIndex;
-      for ( let p = start ; p != null ; p = iter(p) ) {
+      for ( let p = start ; p != null ; p = p.getNext(this.wizardlets) ) {
         // Also check isValid on the wizardlet itself
         if ( p.wizardletIndex != lastWizardletIndex ) {
           if ( ! this.wizardlets[lastWizardletIndex].isValid ) {
@@ -398,6 +366,7 @@ foam.CLASS({
       name: 'onWizardletAvailability',
       framed: true,
       code: function onWizardletAvailability(wizardletIndex, value) {
+        if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
       },
@@ -414,6 +383,7 @@ foam.CLASS({
         w => w.indicator == this.WizardletIndicator.NETWORK_FAILURE).length;
     },
     function onSectionAvailability(sectionPosition, value) {
+      if ( ! this.autoPositionUpdates ) return;
       // If a previous position became available, move the wizard back
       if ( value && sectionPosition.compareTo(this.wizardPosition) < 0 ) {
         this.wizardPosition = sectionPosition;
@@ -428,6 +398,15 @@ foam.CLASS({
 
       // Force position update anyway so views recalculate state
       this.wizardPosition = this.wizardPosition.clone();
+    },
+    function onWizardletCompleted(wizardlet) {
+      this.analyticsAgent?.pub('event', {
+        name: foam.String.constantize(
+            wizardlet.title || wizardlet.id ||
+            (wizardlet.of?.name ?? 'UNKNOWN')
+          ) + '_COMPLETE', 
+        tags: ['wizard'] 
+      })
     }
   ]
 });
