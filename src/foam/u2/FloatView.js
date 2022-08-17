@@ -114,10 +114,13 @@ foam.CLASS({
       var view = this.attrSlot(null, this.onKey ? 'input' : null);
       if ( this.preventFeedback ) return;
       this.preventFeedback = true;
-      let pos = this.el_().selectionStart;
+      const el = this.el_();
+      let pos = el.selectionStart;
+      let selectNewText = pos == el.value.length;
       // check bounds on data update and set to boundary values if out of bounds
       data.set(this.textToData(foam.Number.clamp(this.min, view.get(), this.max)));
-      this.el_().selectionStart = Math.min(pos, this.el_().value.length);
+      el.selectionStart = Math.min(pos, el.value.length);
+      if ( ! selectNewText ) el.selectionEnd = el.selectionStart;
       this.preventFeedback = false;
     }
   ],
