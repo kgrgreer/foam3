@@ -23,10 +23,6 @@ foam.CLASS({
 
   documentation: 'View for editing Float Properties.',
 
-  requires: [
-    'foam.util.DeFeedback'
-  ],
-
   properties: [
     ['type', 'text'],
     { class: 'Float', name: 'data' },
