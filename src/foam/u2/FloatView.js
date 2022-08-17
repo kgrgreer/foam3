@@ -115,12 +115,18 @@ foam.CLASS({
       if ( this.preventFeedback ) return;
       this.preventFeedback = true;
       const el = this.el_();
+
       let pos = el.selectionStart;
+      // new text will be selected if it immediately follows the caret
       let selectNewText = pos == el.value.length;
+
       // check bounds on data update and set to boundary values if out of bounds
       data.set(this.textToData(foam.Number.clamp(this.min, view.get(), this.max)));
+
+      // preserve caret location, maybe selecting new text
       el.selectionStart = Math.min(pos, el.value.length);
       if ( ! selectNewText ) el.selectionEnd = el.selectionStart;
+
       this.preventFeedback = false;
     }
   ],
