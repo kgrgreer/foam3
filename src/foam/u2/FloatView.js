@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'View for editing Float Properties.',
 
   properties: [
-    ['type', 'number'],
+    ['type', 'text'],
     { class: 'Float', name: 'data' },
     { class: 'Boolean', name: 'trimZeros', value: true },
     'precision',
@@ -114,8 +114,10 @@ foam.CLASS({
       var view = this.attrSlot(null, this.onKey ? 'input' : null);
       if ( this.preventFeedback ) return;
       this.preventFeedback = true;
+      let pos = this.el_().selectionStart;
       // check bounds on data update and set to boundary values if out of bounds
       data.set(this.textToData(foam.Number.clamp(this.min, view.get(), this.max)));
+      this.el_().selectionStart = Math.min(pos, this.el_().value.length);
       this.preventFeedback = false;
     }
   ],
