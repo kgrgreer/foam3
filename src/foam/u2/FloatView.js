@@ -19,8 +19,13 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'FloatView',
   extends: 'foam.u2.TextField',
+  mixins: ['foam.util.DeFeedback'],
 
   documentation: 'View for editing Float Properties.',
+
+  requires: [
+    'foam.util.DeFeedback'
+  ],
 
   properties: [
     ['type', 'text'],
@@ -69,20 +74,16 @@ foam.CLASS({
       // to ensure it's formatted properly.
       this.on('blur', function () {
         var value = self.dataToText(data.get());
-        this.preventFeedback = true;
+        self.feedback_ = true;
         view.set('0');
         view.set(value);
-        this.preventFeedback = false;
+        self.feedback_ = false;
       });
 
-      this.preventFeedback = false;
       view.sub(self.isMerged ? self.mergedViewListener : self.viewListener);
 
       data.sub(function() {
-        if ( this.preventFeedback ) return;
-        this.preventFeedback = true;
         view.set(self.dataToText(data.get()));
-        this.preventFeedback = false;
       });
     },
 
@@ -113,12 +114,12 @@ foam.CLASS({
       var data = this.data$;
       var view = this.attrSlot(null, this.onKey ? 'input' : null);
 
-      this.protectFromFeedback(() => {
+      this.deFeedback(() => {
         const el = this.el_();
 
         let pos = el.selectionStart;
         // new text will be selected if it immediately follows the caret
-        let selectNewText = pos == el.value.length;
+        let selectNewText = el.selectionEnd == el.value.length;
 
         // check bounds on data update and set to boundary values if out of bounds
         data.set(this.textToData(
@@ -128,15 +129,6 @@ foam.CLASS({
         el.selectionStart = Math.min(pos, el.value.length);
         if ( ! selectNewText ) el.selectionEnd = el.selectionStart;
       });
-    },
-
-    function protectFromFeedback (fn) {
-      if ( this.preventFeedback ) return;
-      this.preventFeedback = true;
-
-      fn.call(this);
-
-      this.preventFeedback = false;
     }
   ],
 
