@@ -114,7 +114,7 @@ foam.CLASS({
         const el = this.el_();
 
         let pos = el.selectionStart;
-        // new text will be selected if it immediately follows the caret
+        // new text will be selected if it immediately follows the caret/selection
         let selectNewText = el.selectionEnd == el.value.length;
 
         // check bounds on data update and set to boundary values if out of bounds
