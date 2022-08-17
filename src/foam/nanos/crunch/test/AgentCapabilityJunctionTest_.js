@@ -40,14 +40,17 @@
       DAO ucjDAO = (DAO)x.get("userCapabilityJunctionDAO");
 
       testOneUserMultipleRepresentatives(ucjDAO);
-      testMultipleUsersSameRepresentative(ucjDAO);
-      testOneUserOneRepresentative(ucjDAO);
+      // testMultipleUsersSameRepresentative(ucjDAO);
+      // testOneUserOneRepresentative(ucjDAO);
       `
     },
     {
       name: 'testOneUserMultipleRepresentatives',
       args: 'DAO ucjDao',
       javaCode: `
+      CrunchService crunchService = (CrunchService)x.get("crunchService");
+
+      // crunch.onboarding.signing-officer-information
       AgentCapabilityJunction acjA = new AgentCapabilityJunction();
       acjA.setSourceId(9100);
       acjA.setTargetId("test");
@@ -61,6 +64,7 @@
         acjB.setLifecycleState(LifecycleState.ACTIVE);
         acjB.setEffectiveUser(5);
         putAndCleanUpAfterwards( ucjDao, acjB, uAcjB -> {
+          // --- make sure that the ACJs have been stored ---
           ArraySink sink = new ArraySink();
           ucjDao.where(
             AND(
@@ -77,6 +81,15 @@
           expect( acjsReadBack.size(), 2, "testOneUserMultipleRepresentatives: two ACJs were read back");
           test( acjsReadBack.contains(uAcjA), "testOneUserMultipleRepresentatives: first ACJ (sourceid=9100/targetId=test) was present");
           test( acjsReadBack.contains(uAcjB), "testOneUserMultipleRepresentatives: second ACJ (sourceid=9100/targetId=test) was present");
+
+          // --- check how getJunctionForSubject() behaves --
+          // capability to check is: crunch.onboarding.signing-officer-information
+
+
+
+          // public UserCapabilityJunction getJunctionForSubject(
+          // X x, String capabilityId, Subject subject
+
         });
       });
       `
@@ -166,7 +179,7 @@
     },
     {
       name: 'putAndCleanUpAfterwards',
-      args: 'DAO ucjDao, AgentCapabilityJunction acj, Consumer<AgentCapabilityJunction> andThen',
+      args: 'DAO dao, AgentCapabilityJunction acj, Consumer<AgentCapabilityJunction> andThen',
       javaCode: `
       AgentCapabilityJunction updatedAcj = (AgentCapabilityJunction)ucjDao.put(acj);
       try {
