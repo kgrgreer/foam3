@@ -139,7 +139,17 @@ foam.CLASS({
       name: 'canGoBack',
       class: 'Boolean',
       expression: function(previousScreen) {
-        return previousScreen != null;
+        if ( previousScreen == null ) return false;
+
+        // check for irreversible wizardlets between here and previous screen
+        const { wizardPosition, wizardlets } = this;
+        for ( let pos of wizardPosition.iterate(wizardlets, true) ) {
+          if ( pos.wizardletIndex == wizardPosition.wizardletIndex ) continue;
+          if ( pos.compareTo(previousScreen) < 0 ) break;
+          if ( wizardlets[pos.wizardletIndex].irreversible ) return false;
+        }
+
+        return true;
       }
     },
     {

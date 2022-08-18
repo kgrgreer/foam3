@@ -131,6 +131,10 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Boolean',
+      name: 'irreversible'
+    },
+    {
       name: 'isCurrent',
       class: 'Boolean',
       documentation: `
