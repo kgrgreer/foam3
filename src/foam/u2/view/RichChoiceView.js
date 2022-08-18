@@ -245,7 +245,6 @@ foam.CLASS({
     ^ .search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
-      padding: 8px 16px;
     }
 
     ^ .disabled {
@@ -439,6 +438,11 @@ foam.CLASS({
       factory: function() {
         return this.RichChoiceViewI18NComparator.create();
       }
+    },
+    {
+      class: 'String',
+      name: 'padding',
+      value: '8px 16px'
     }
   ],
 
@@ -550,7 +554,7 @@ foam.CLASS({
                           .attrs({ src: 'images/ic-search.svg' })
                         .end()
                         .startContext({ data: self })
-                          .addClass('search')
+                          .addClass('search').style({ 'padding': this.padding })
                           .add(self.FILTER_.clone().copyFrom({ view: {
                             class: 'foam.u2.view.TextField',
                             placeholder: this.searchPlaceholder,

@@ -38,6 +38,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'summary'
+    },
+    {
+      class: 'String',
+      name: 'margin',
+      value: '0px'
     }
   ],
 
@@ -73,7 +78,7 @@ foam.CLASS({
       this.SUPER();
       this.updateSummary();
       this
-        .addClass(this.myClass('row'))
+        .addClass(this.myClass('row')).style({ 'margin': this.margin })
         .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
         .add(this.summary$);
     },

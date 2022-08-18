@@ -123,6 +123,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'footerString'
+    },
+    {
+      class: 'Boolean',
+      name: 'displayFooter',
+      value: true
     }
   ],
 
@@ -210,7 +215,7 @@ foam.CLASS({
             .call(function() { content = this; })
           .end()
           .start()
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .addClasses([this.myClass('footer'), 'p-legal-light']).show(this.displayFooter)
             .add(this.footerString$)
           .end()
         .end();

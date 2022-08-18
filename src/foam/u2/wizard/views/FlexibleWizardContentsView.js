@@ -36,9 +36,8 @@ foam.CLASS({
     ^flexButtons {
       display: flex;
       flex-direction: column;
-      gap: 20pt;
+      gap: 0.5rem;
       padding-bottom: 3.2rem;
-    }
     }
     ^flexButtons > * {
       flex-grow: 1;
@@ -57,12 +56,12 @@ foam.CLASS({
     function render() {
       const self = this;
       console.log('FlexibleWizaard', self)
-      
+
       const current$ = this.slot(function (data, data$currentWizardlet, data$currentSection) {
         return data$currentSection?.createView() ?? this.E();
       })
       let actionsDetachable = foam.core.FObject.create();
-      
+
       this.addClass()
         // Render current wizard section
         .add(current$)
@@ -126,7 +125,7 @@ foam.CLASS({
             .show(anyAvailable)
             // WARNING!!!
             // Export the current wizardlet section view in context so that dynamicActions can use it
-            // this only works for incremental wizard, we will need a better solution for wizards that 
+            // this only works for incremental wizard, we will need a better solution for wizards that
             // render multiple sections at once
             .callIf(self.developerMode, function () {
               this

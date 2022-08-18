@@ -27,7 +27,10 @@ foam.CLASS({
       name: 'dynamicActions',
       expression: function (choices) {
         return choices.map(alternateFlow =>
-          this.AlternateFlowAction.create({ alternateFlow }));
+          this.AlternateFlowAction.create({
+            alternateFlow,
+            buttonStyle: alternateFlow.buttonStyle
+          }));
       }
     }
   ]
