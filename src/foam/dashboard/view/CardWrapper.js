@@ -68,10 +68,10 @@ foam.CLASS({
         })).end();
     }
   ],
+
   listeners: [
     {
       name: 'update',
-      isFramed: true,
       code: function() {
         // no-op
       }
