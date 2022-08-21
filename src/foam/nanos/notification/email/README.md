@@ -8,8 +8,8 @@ Updated : August 17, 2022
 
 #### EmailTemplates
 
-You can describe a different name, group, locale, spid on each emailTemplate.
-And these properties are no need to be explicitly set at once on each emailTemplate but should be set if needed.
+You can describe a different name, group, locale, and spid on each emailTemplate.
+But, these properties do no need to be explicitly set on each emailTemplate but should be set if needed.
 If not, they will just be the default values. (Check EmailTemplate.js)
 
 
@@ -41,7 +41,7 @@ NOTE: EmailTemlateSupport searches on name, not id
 For example, there can be several emailTemplates under the same name as well.
 According to the given values of name, group, locale, spid, It will try to find a proper emailTemplate.
 
-If no emailTemplate is found with given info,
+If no emailTemplate is found with the given info,
 in the end it will try to search an emailTemplate with only a name which is not a totally desired one.
 So make sure there is a proper emailTemplate that is well described for the purpose.
 
@@ -52,7 +52,7 @@ So make sure there is a proper emailTemplate that is well described for the purp
 
 #### Adding functionality to Send Email Notification
 
-Call one of the belows :
+Call one of the below:
 
      1. Use new EmailMessage() and its put()
      2. user.doNotify()  –  by using a notification
@@ -125,7 +125,3 @@ This determines whether to send out email. This is handled in “EmailTemplateAp
 If this is false, it means that emailTemplate is disabled so skipping sending email.
 
 A system administrator can manage this value to enable/disable emailTemplate.
-
-
-
-
