@@ -50,7 +50,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'init',
+      name: 'init_',
       javaCode: `
         AddIndexCommand cmd = new AddIndexCommand();
 
