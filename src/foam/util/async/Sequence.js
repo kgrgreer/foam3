@@ -44,6 +44,10 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
+      name: 'paused_',
+      class: 'Boolean'
+    },
+    {
       class: 'Duration',
       name: 'timeout',
       documentation: `amount of time before a warning is displayed for an unresolved promise`,
@@ -209,7 +213,7 @@ foam.CLASS({
       if ( ! this.paused_ ) return Promise.resolve();
       return new Promise((resolve, reject) => {
         const detachable = foam.core.FObject.create();
-        detachable.onDetach(this.paused_.sub(() => {
+        detachable.onDetach(this.paused_$.sub(() => {
           if ( ! this.paused_ ) {
             detachable.detach();
             resolve();
