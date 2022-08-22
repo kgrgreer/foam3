@@ -98,10 +98,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Map',
-      name: 'capabilityConfig'
-    },
-    {
       class: 'String',
       name: 'id',
       includeInDigest: true,

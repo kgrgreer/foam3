@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'theme',
     'localeDAO'
   ],
 
@@ -56,6 +57,7 @@ foam.CLASS({
     function init() {
       // TODO: this should be moved to the server's getTranslations() method
       this.loadLanguageLocales().then(() => {
+        this.loadTheme();
         if ( this.hasVariant() ) {
           this.loadVariantLocales().then(() => this.initLatch.resolve());
         } else {
@@ -116,6 +118,12 @@ foam.CLASS({
         this.translation.pub(locale, source, txt, defaultText);
         return txt || defaultText;
       }
+    },
+    function loadTheme() {
+      return this.localeDAO.where(
+        this.AND(
+          this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.themeID, this.theme.name))).select(this.addLocale.bind(this));
     }
   ]
 });

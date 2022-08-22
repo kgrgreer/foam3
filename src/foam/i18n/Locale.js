@@ -89,6 +89,11 @@ foam.CLASS({
           }
         }.bind(this));
       }
+    },
+    {
+      class: 'String',
+      name: 'themeID',
+      documentation: 'Making locales themeAware'
     }
   ]
 });
