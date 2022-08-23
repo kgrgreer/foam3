@@ -123,7 +123,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
-          this.EQ(this.Locale.THEME_ID, this.theme.name))).select(this.addLocale.bind(this));
+          this.EQ(this.Locale.THEME_ID, this.theme.id))).select(this.addLocale.bind(this));
     }
   ]
 });
