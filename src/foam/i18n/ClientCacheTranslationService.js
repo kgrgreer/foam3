@@ -57,13 +57,13 @@ foam.CLASS({
     function init() {
       // TODO: this should be moved to the server's getTranslations() method
       this.loadLanguageLocales().then(() => {
-        this.loadTheme();
         if ( this.hasVariant() ) {
           this.loadVariantLocales().then(() => this.initLatch.resolve());
         } else {
           this.initLatch.resolve();
         }
       });
+      this.loadTheme();
     },
 
     function maybeReload() {
@@ -123,7 +123,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
-          this.EQ(this.Locale.themeID, this.theme.name))).select(this.addLocale.bind(this));
+          this.EQ(this.Locale.THEME_ID, this.theme.name))).select(this.addLocale.bind(this));
     }
   ]
 });
