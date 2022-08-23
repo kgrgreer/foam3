@@ -19,8 +19,11 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.util.SafetyUtil',
-
+    'foam.nanos.crunch.Capability',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.util.SafetyUtil'
   ],
 
   methods: [
@@ -30,6 +33,7 @@ foam.CLASS({
       X x = (X) obj;
 
       DAO themeDomainDAO = (DAO)x.get("themeDomainDAO");
+      CrunchService crunchService = (CrunchService)x.get("crunchService");
       
       // grab theme from X
       Theme theme = (Theme) x.get("theme");
@@ -57,12 +61,20 @@ foam.CLASS({
 
         // otherwise we need to find that ALL capabilities
         // have been granted to evaluate this to true
-
-        // WRONG! CHANGE LATER!
-        return true;
+        return capabilities.stream()
+                           .allMatch(o->isCapabilityGranted(x, crunchService, (Capability)o));
       }
 
       throw new RuntimeException("Can't determine themeDomain!!");
+      `
+    },
+    {
+      name: 'isCapabilityGranted',
+      type: 'Boolean',
+      args: 'foam.core.X x, CrunchService crunchService, Capability capability',
+      javaCode: `
+      UserCapabilityJunction ucj = crunchService.getJunction(x, capability.getId());
+      return ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED;
       `
     }
   ]
