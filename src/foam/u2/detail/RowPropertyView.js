@@ -18,6 +18,7 @@ foam.CLASS({
     ^ {
       display: flex;
       justify-content: space-between;
+      margin: 5px;
     }
   `,
 
