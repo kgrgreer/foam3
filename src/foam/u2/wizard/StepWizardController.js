@@ -201,6 +201,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'autoPositionUpdates',
       value: true
+    },
+    {
+      name: 'lastException',
+      documentation: `
+        As most wizard exceptions will originate from DOM events (i.e. button
+        clicks), this property will be updated to propagate errors back to
+        StepWizardAgent, and also allow views to react.
+      `
     }
   ],
 
@@ -216,7 +224,6 @@ foam.CLASS({
 
       this.onWizardletValidity();
 
-      var wi = 0, si = 0;
       wizardlets.forEach((w, wizardletIndex) => {
 
         // Bind availability listener for wizardlet availability
@@ -296,22 +303,42 @@ foam.CLASS({
 
       let wizardlet = this.currentWizardlet;
       const iterator = this.wizardPosition.iterate(this.wizardlets);
+
       for ( const pos of iterator ) {
         nextPositionWizardlet = this.wizardlets[pos.wizardletIndex];
         if ( ! nextPositionWizardlet.isAvailable ) continue;
+
         if ( nextPositionWizardlet != wizardlet ) {
-          await wizardlet.save();
+          try {
+            await wizardlet.save();
+          } catch (e) {
+            this.lastException = e;
+            throw e;
+          }
+
           this.onWizardletCompleted(wizardlet);
           wizardlet = nextPositionWizardlet;
-          await wizardlet.load();
+
+          try {
+            await wizardlet.load();
+          } catch (e) {
+            this.lastException = e;
+            throw e;
+          }
         }
+
         if ( canLandOn_(pos) ) {
           this.wizardPosition = pos;
           return false;
         }
       }
 
-      await wizardlet.save();
+      try {
+        await wizardlet.save();
+      } catch (e) {
+        this.lastException = e;
+        throw e;
+      }
       this.status = this.WizardStatus.COMPLETED;
       return true;
     },
@@ -409,14 +436,19 @@ foam.CLASS({
       // Force position update anyway so views recalculate state
       this.wizardPosition = this.wizardPosition.clone();
     },
-    function onWizardletCompleted(wizardlet) {
-      this.analyticsAgent?.pub('event', {
-        name: foam.String.constantize(
-            wizardlet.title || wizardlet.id ||
-            (wizardlet.of?.name ?? 'UNKNOWN')
-          ) + '_COMPLETE', 
-        tags: ['wizard'] 
-      })
+    function onWizardletCompleted(wizardletlog) {
+      try {
+        this.analyticsAgent?.pub('event', {
+          name: foam.String.constantize(
+              wizardlet.title || wizardlet.id ||
+              (wizardlet.of?.name ?? 'UNKNOWN')
+            ) + '_COMPLETE', 
+          tags: ['wizard'] 
+        })
+      } catch (e) {
+        // report analytics error without interrupting flow
+        console.error('analyticsAgent.put failed', e);
+      }
     }
   ]
 });
