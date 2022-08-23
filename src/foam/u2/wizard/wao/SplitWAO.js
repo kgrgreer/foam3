@@ -43,12 +43,12 @@ foam.CLASS({
   methods: [
     async function cancel (wizardlet) {
       const canceler = foam.json.parse(this.canceler, undefined, wizardlet.__subContext__);
-      this.ensure_terminal(canceler, this.ProxyCanceler, this.NullCanceler);
+      foam.u2.wizard.data.ensureTerminal(canceler, this.ProxyCanceler, this.NullCanceler);
       await canceler.cancel();
     },
     async function load (wizardlet) {
       const loader = foam.json.parse(this.loader, undefined, wizardlet.__subContext__);
-      this.ensure_terminal(loader, this.ProxyLoader, this.NullLoader);
+      foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
       if ( wizardlet.loading ) return;
       wizardlet.loading = true;
       wizardlet.data = await loader.load({ old: wizardlet.data });
@@ -56,7 +56,7 @@ foam.CLASS({
     },
     async function save (wizardlet) {
       const saver = foam.json.parse(this.saver, undefined, wizardlet.__subContext__);
-      this.ensure_terminal(saver, this.ProxySaver, this.NullSaver);
+      foam.u2.wizard.data.ensureTerminal(saver, this.ProxySaver, this.NullSaver);
       // temp workaround until daosaver is implemented
       if ( this.NullSaver.isInstance(saver) && this.delegate ) {
         await this.delegate.save(wizardlet);
@@ -67,15 +67,6 @@ foam.CLASS({
         await saver.save(wizardlet.data);
       }
       wizardlet.loading = false;
-    },
-    // ensure that the last delegate is the null implementation
-    function ensure_terminal (obj, proxyCls, nullCls) {
-      while ( proxyCls.isInstance(obj) ) {
-        if ( ! obj.delegate ) {
-          obj.delegate = nullCls.create();
-        }
-        obj = obj.delegate;
-      }
     }
   ]
 });
