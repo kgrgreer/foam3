@@ -74,7 +74,6 @@ foam.CLASS({
 
     function exportAs(obj) {
       var m = obj[this.name];
-      debugger;
       /** Bind the method to 'this' when exported so that it still works. **/
       var f = function exportedMethod() { return m.apply(obj, arguments); };
       f.toString = () => { return 'exportedMultiMethod ' + this.name + ' ' + m; };

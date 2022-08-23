@@ -39,7 +39,6 @@
         const saver = foam.json.parse(facadeSpec.saver, undefined, this.__subContext__);
         const result = foam.u2.wizard.data.ensureTerminal(saver, this.ProxySaver, this.NullSaver);
         saver.save(dataToSave);
-        debugger;
         dataToSave = result.data;
         
         let dataToOverride = wizardletToOverride.data;
