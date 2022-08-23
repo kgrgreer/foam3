@@ -62,8 +62,8 @@ foam.CLASS({
         } else {
           this.initLatch.resolve();
         }
+        this.loadTheme();
       });
-      this.loadTheme();
     },
 
     function maybeReload() {

@@ -91,7 +91,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.theme.Theme',
       name: 'themeId',
       documentation: 'Making locales themeAware'
     }
