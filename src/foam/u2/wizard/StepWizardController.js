@@ -436,9 +436,9 @@ foam.CLASS({
       // Force position update anyway so views recalculate state
       this.wizardPosition = this.wizardPosition.clone();
     },
-    function onWizardletCompleted(wizardletlog) {
+    function onWizardletCompleted(wizardlet) {
       try {
-        this.analyticsAgent?.pub('event', {
+        wizardlet.pubAnalyticEvt && this.analyticsAgent?.pub('event', {
           name: foam.String.constantize(
               wizardlet.title || wizardlet.id ||
               (wizardlet.of?.name ?? 'UNKNOWN')
