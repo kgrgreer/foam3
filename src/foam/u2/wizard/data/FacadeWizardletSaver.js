@@ -9,6 +9,11 @@
   name: 'FacadeWizardletSaver',
   extends: 'foam.u2.wizard.data.ProxySaver',
 
+  requires: [
+    'foam.u2.wizard.data.NullSaver',
+    'foam.u2.wizard.data.ProxySaver'
+  ],
+
   imports: [
     'wizardlets'
   ],
@@ -29,6 +34,13 @@
         let dataToSave = facadeSpec.loadFromFacadePath 
           ? facadeSpec.loadFromFacadePath.f(data)
           : data;
+        
+        // Apply saver decorators
+        const saver = foam.json.parse(facadeSpec.saver, undefined, this.__subContext__);
+        const result = foam.u2.wizard.data.ensureTerminal(saver, this.ProxySaver, this.NullSaver);
+        saver.save(dataToSave);
+        debugger;
+        dataToSave = result.data;
         
         let dataToOverride = wizardletToOverride.data;
 

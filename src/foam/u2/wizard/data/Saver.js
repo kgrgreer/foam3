@@ -8,7 +8,6 @@ foam.INTERFACE({
   package: 'foam.u2.wizard.data',
   name: 'Saver',
   proxy: true,
-  nullStrategy: true,
 
   methods: [
     {
@@ -23,8 +22,14 @@ foam.CLASS({
   name: 'NullSaver',
   implements: [ 'foam.u2.wizard.data.Saver' ],
 
+  properties: [
+    'data'
+  ],
+
   methods: [
-    function save() {}
+    function save(data) {
+      this.data = data;
+    }
   ]
 });
 
