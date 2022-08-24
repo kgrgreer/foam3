@@ -119,7 +119,7 @@ public class AltIndex
     SelectPlan bestPlan  = NoPlan.instance();
     Object     bestState = null;
 
-    for ( int i = 0 ; i < delegates_.size() ; i++ ) {
+    for ( int i = 0 ; i < delegates_.size() && i < s.length ; i++ ) {
       SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, predicate);
 
       if ( plan.cost() < bestPlan.cost() ) {

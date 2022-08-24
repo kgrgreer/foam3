@@ -15,7 +15,8 @@ foam.CLASS({
 
   properties: [
     ['precision', 2],
-    ['trimZeros', false]
+    ['trimZeros', false],
+    ['isMerged',  true]
   ],
 
   methods: [
