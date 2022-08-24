@@ -27,6 +27,17 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  properties: [
+    {
+      name: 'returnFalseIfNoCapabilitiesFound',
+      class: 'Boolean',
+      documentation: `
+      If set, this predicate will return false if there are no ThemeDomainCapabilityJunctions
+      associated with the current ThemeDomain. (The default behavior is to return true.)
+      `
+    }
+  ],
+
   methods: [
     {
       name: 'f',
@@ -50,8 +61,10 @@ foam.CLASS({
 
         // if no capabilities have been assigned,
         // we behave as if all of them have been granted
+        // (same result as if we called .stream().allMatch(),
+        // which returns true for an empty list.)
         if ( capabilities.isEmpty() ) {
-          return true;
+          return ! getReturnFalseIfNoCapabilitiesFound();
         }
 
         // otherwise we need to find that ALL capabilities
