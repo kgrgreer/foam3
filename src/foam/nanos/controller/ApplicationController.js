@@ -837,6 +837,9 @@ foam.CLASS({
               .add(this.GC_ERROR)
               .end());
             return false;
+          } else {
+            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
           }
         }
       }

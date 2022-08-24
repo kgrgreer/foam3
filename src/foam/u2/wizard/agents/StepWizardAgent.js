@@ -73,7 +73,12 @@ foam.CLASS({
         parent: this
       });
 
-      await new Promise(resolve => {
+      await new Promise((resolve, onError) => {
+        this.onDetach(this.wizardController.lastException$.sub(() => {
+          let e = this.wizardController.lastException;
+          if ( ! e ) return;
+          onError(e);
+        }));
         this.wizardStackBlock.removed.sub(() => {
           resolve();
         })

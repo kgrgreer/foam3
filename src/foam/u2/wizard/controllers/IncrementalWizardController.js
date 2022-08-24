@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.controllers.WizardController',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.wizard.DynamicActionWizardlet',
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.axiom.WizardAction'
@@ -17,6 +18,10 @@ foam.CLASS({
 
   issues: [
     'should not depend on legacy controller'
+  ],
+
+  messages: [
+    { name: 'ERROR_MSG', message: 'Information was not successfully submitted, please try again later' },
   ],
 
   properties: [
@@ -119,7 +124,11 @@ foam.CLASS({
           this.onClose({});
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         });
       }
     },
@@ -165,7 +174,11 @@ foam.CLASS({
           }
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         }).finally(() => {
           this.isLoading_ = false;
         });
