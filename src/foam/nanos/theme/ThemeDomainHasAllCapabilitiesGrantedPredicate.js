@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil'
   ],
 
@@ -34,12 +35,6 @@ foam.CLASS({
 
       DAO themeDomainDAO = (DAO)x.get("themeDomainDAO");
       CrunchService crunchService = (CrunchService)x.get("crunchService");
-      
-      // grab theme from X
-      Theme theme = (Theme) x.get("theme");
-      if ( theme == null ) {
-        theme = ((Themes) x.get("themes")).findTheme(x);
-      }
 
       // grab themedomain associated with this theme, if possible.
       HttpServletRequest request = x.get(HttpServletRequest.class);
@@ -65,7 +60,8 @@ foam.CLASS({
                            .allMatch(o->isCapabilityGranted(x, crunchService, (Capability)o));
       }
 
-      throw new RuntimeException("Can't determine themeDomain!!");
+      Loggers.logger(x, this).warning("Could not get ThemeDomain from X, returning false.");
+      return false;
       `
     },
     {
