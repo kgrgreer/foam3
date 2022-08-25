@@ -36,7 +36,15 @@ foam.CLASS({
       of: 'FObject'
     },
     {
+      class: 'FObjectProperty',
+      name: 'errorAgent'
+    },
+    {
       name: 'halted_',
+      class: 'Boolean'
+    },
+    {
+      name: 'paused_',
       class: 'Boolean'
     },
     {
@@ -145,11 +153,12 @@ foam.CLASS({
 
     // Launching a sequence
 
-    function execute() {
+    async function execute() {
       let i = 0;
-      let nextStep = x => {
-        if ( i >= this.contextAgentSpecs.length ) return Promise.resolve(x);
-        if ( this.halted_ ) return Promise.resolve(x);
+      let nextStep = async x => {
+        if ( i >= this.contextAgentSpecs.length ) return await Promise.resolve(x);
+        await this.waitForUnpause();
+        if ( this.halted_ ) return await Promise.resolve(x);
         let seqspec = this.contextAgentSpecs[i++];
         let contextAgent;
         var spec = seqspec.spec;
@@ -175,20 +184,43 @@ foam.CLASS({
         }, this.timeout)
 
         // Call the context agent and pass its exports to the next one
-        return contextAgent.execute().then(
-          newX => {
-            clearTimeout(stepResolvedTimeout);
-            return nextStep(newX || contextAgent.__subContext__);
-          });
+        let newX;
+        try {
+          newX = await contextAgent.execute();
+        } catch (e) {
+          console.error(`sequence:`, seqspec, e);
+          this.paused_ = true;
+          if ( this.errorAgent ) {
+            newX = await this.errorAgent.execute(x.createSubContext({
+              exception: e
+            }));
+          }
+        }
+        clearTimeout(stepResolvedTimeout);
+        return await nextStep(newX || contextAgent.__subContext__);
       };
-      return nextStep(this.__subContext__)
+      return await nextStep(this.__subContext__)
     },
 
     // Sequence runtime commands
 
     function endSequence() {
       this.halted_ = true;
+      this.paused_ = false;
     },
+
+    function waitForUnpause() {
+      if ( ! this.paused_ ) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const detachable = foam.core.FObject.create();
+        detachable.onDetach(this.paused_$.sub(() => {
+          if ( ! this.paused_ ) {
+            detachable.detach();
+            resolve();
+          }
+        }));
+      });
+    }
   ],
 
   classes: [

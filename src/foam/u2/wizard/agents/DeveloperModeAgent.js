@@ -30,7 +30,7 @@ foam.CLASS({
       const developerCapability = await this.userCapabilityJunctionDAO.find(
         e.EQ(foam.nanos.crunch.UserCapabilityJunction.TARGET_ID, 'developer'));
 
-      this.developerMode = developerCapability !== undefined;
+      this.developerMode = developerCapability != null;
     }
   ]
 });
