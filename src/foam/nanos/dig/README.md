@@ -47,6 +47,56 @@ DIG will provide a URL that specifies your choices from steps 1-3. Use this URL 
 
 
 
+# Guidance of each data format
+
+Tip: Before put in the data, It is recommended to perform select first to get the accurate format.
+
+Each format structured for DAO format. Ex.:
+
+JSON
+* Text value must be included double quotes(“”).
+  {"property1":"text","property2":number}
+
+For more than a row, It should be below
+[ { DAO }, { DAO } ...]
+
+
+CSV
+property1,property1
+value1,value2
+
+For more than a row, It should be below
+property1,property1
+{ DAO }
+{ DAO }
+
+
+XML
+
+<objects>
+<object>
+<property1>value1</property1>
+<property2>value2</property2>
+</object>
+</objects>
+
+For more than a row, It should be below
+
+<objects>
+<object>
+{ DAO }
+</object>
+<object>
+{ DAO }
+</object>
+</objects>
+
+
+
+
+
+
+
 #### SUGAR: Service Unified GAteway Relay
 
 
