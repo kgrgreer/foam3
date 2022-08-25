@@ -7,6 +7,6 @@
 foam.POM({
   name: 'foam-util-development',
   files: [
-    { name: 'PseudoReplayDAO', flags: 'js' }
+    { name: 'ClientTestingReplayDAO', flags: 'js' }
   ]
 });
