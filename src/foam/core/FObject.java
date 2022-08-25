@@ -308,7 +308,7 @@ public interface FObject
           }
         }
       } catch (ClassCastException ignore) {
-        System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
+        System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage()+", "+ignore);
       }
     }
     return this;
