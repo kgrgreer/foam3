@@ -1,1 +1,72 @@
-DIG: Data Interchange Gateway
+#### DIG: Data Interchange Gateway
+
+
+
+DIG provides a simple unified method for users and systems to interact with Nanos Data Access Objects (DAOs).
+A DAO is similar to a database table,
+but with additional access control, performance monitoring, auditing, replication, validation, and business logic.
+
+Commands(operations) that can be performed on a DAO include:
+put, select, remove, and help. DIG supports multiple data formats,
+including: XML, JSON, CSV, HTML, and JSON/J. DIG is intended as an end-point for programmatic integration,
+but also includes a simple user interface to aid developers with the creation of their query parameters.
+
+
+
+# User Guide
+
+STEP 1. Pick a DAO.
+
+STEP 2. Pick a Format.
+Five formats include: XML, JSON, CSV, HTML, JSON/J
+
+STEP 3. Pick a Command :
+
+* PUT :
+
+To add new records to a DAO.
+Users can put one or more rows in the Data section. The format of data which is supposed to be put should match the format user selected in STEP 2.
+Only followed format -  CSV, JSON, XML can be parsed on DIG when put.
+
+* SELECT :
+
+To select data from a DAO.
+The result format is specified in STEP 2. If users pick the command SELECT, the Email and Subject fields are shown. If those are filled in, the results will be emailed rather than downloaded.
+
+* REMOVE :
+
+Removes a row from the DAO selected in STEP 1.
+The ID field is shown to specify the id of the row to be deleted.
+
+
+
+STEP 4. Software Integration
+DIG will provide a URL that specifies your choices from steps 1-3. Use this URL when generating AJAX requests from your software.
+
+
+
+
+
+#### SUGAR: Service Unified GAteway Relay
+
+
+
+The Service Unified GAteway Relay (SUGAR) is an end-point which allows to access and invoke on NANOPAY services.
+It generally interacts with non Data Access Objects (non DAOs).
+With an HTTP post submitted to the web-callback URL, It is queried and returned values from services.
+
+A SUGAR could be used, for example, to query verify an account or send Emails
+At phase1, the javaType of the argument Info only supports String, double, long, int.
+At phase 2, Objects parameters can be handled too including Enum type.
+
+
+# User Guide
+
+STEP 1. Select a Service.
+
+STEP 2. Select one of the mapped methods.
+Then the argument Info will be shown.
+
+STEP 3. Input arguments’ in values or Object (if it is shown) in Value field
+(It is automatically cast to each javaType when the method is performed)
+
