@@ -8,7 +8,12 @@ foam.CLASS({
   package: 'foam.nanos.theme',
   name: 'ThemeDomainHasAllCapabilitiesGrantedPredicate',
 
-  documentation: 'Predicate that returns true if a ThemeDomain for the active theme on X has all top-level capabilities granted',
+  documentation: `
+  Predicate that returns true if a ThemeDomain for the active theme on X
+  has all top-level capabilities granted.
+
+  Intended to be used on Menus.
+  `,
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -59,10 +64,11 @@ foam.CLASS({
         DAO dao = themeDomain.getCapabilities(x).getDAO();
         List capabilities = ((ArraySink)dao.select(new ArraySink())).getArray();
 
-        // if no capabilities have been assigned,
-        // we behave as if all of them have been granted
-        // (same result as if we called .stream().allMatch(),
-        // which returns true for an empty list.)
+        // if no capabilities have been assigned:
+        // default behavior is to return true
+        // (same behavior as stream allMatch() on an empty list)
+        // but this can be changed to false so that predicates don't
+        // need to rely on ThemeDomainCapabilityJunctions being set
         if ( capabilities.isEmpty() ) {
           return ! getReturnFalseIfNoCapabilitiesFound();
         }
