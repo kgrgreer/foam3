@@ -90,6 +90,7 @@ foam.CLASS({
       javaCode: `
         if ( getPredicate().f(value) ) {
           getDelegate().remove(adapt(value));
+        }
         return this;
       `
     },
