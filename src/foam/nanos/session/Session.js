@@ -455,12 +455,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
-        if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
-          Loggers.logger(x, this).warning("User not active", user.getId());
+        if ( user instanceof LifecycleAware &&
+            ((LifecycleAware)user).getLifecycleState() == LifecycleState.DELETED ) {
+          Loggers.logger(x, this).warning("User deleted", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
         if ( ! user.getEnabled() ) {
+          Loggers.logger(x, this).warning("User disabled", user.getId());
           throw new foam.nanos.auth.AccountDisabledException();
         }
       `
