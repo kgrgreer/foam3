@@ -461,7 +461,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
-        if ( ! user.getEnabled() ) {
+        // Testing 'id' allows internal session setup, used for capability checks,
+        // for users in any state.
+        if ( ! user.getEnabled() &&
+             ! SafetyUtil.isEmpty(getId()) ) {
           Loggers.logger(x, this).warning("User disabled", user.getId());
           throw new foam.nanos.auth.AccountDisabledException();
         }
