@@ -266,6 +266,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showTitle',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'pubAnalyticEvt',
+      value: true
     }
   ],
 
