@@ -245,6 +245,7 @@ foam.CLASS({
     ^ .search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
+      padding: 0rem 1.6rem;
     }
 
     ^ .disabled {
@@ -438,11 +439,6 @@ foam.CLASS({
       factory: function() {
         return this.RichChoiceViewI18NComparator.create();
       }
-    },
-    {
-      class: 'String',
-      name: 'padding',
-      value: '8px 16px'
     }
   ],
 

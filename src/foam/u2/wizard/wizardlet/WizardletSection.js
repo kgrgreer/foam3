@@ -18,9 +18,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.detail.SectionView',
     'foam.u2.detail.VerticalDetailView',
-    'foam.u2.ViewSpec',
+    'foam.u2.ViewSpec'
   ],
 
   properties: [
@@ -28,10 +29,20 @@ foam.CLASS({
       name: 'section',
       class: 'FObjectProperty',
       of: 'foam.layout.Section',
+      expression: function (wizardlet$of, modelSectionName) {
+        var sections = this.AbstractSectionedDetailView.create({
+          of: wizardlet$of,
+        }, this).sections;
+        return sections.find(s => s.name == modelSectionName) || null;
+      },
       documentation: `
         An optional property for the original model section. This property must
         be set if customView is null.
       `
+    },
+    {
+      class: 'String',
+      name: 'modelSectionName'
     },
     {
       name: 'title',
@@ -110,6 +121,11 @@ foam.CLASS({
         return section && section.navTitle;
       }
     },
+    {
+      class: 'Boolean',
+      name: 'showTitle',
+      value: null
+    }
   ],
 
   methods: [
@@ -127,12 +143,20 @@ foam.CLASS({
         this.VerticalDetailView,
         'foam.u2.detail.SectionedDetailView'
       );
+
+      // try local setting and wizard-global setting
+      // otherwise, we use default from the SectionView
+      var showTitle = null;
+      if ( this.showTitle != null ) showTitle = this.showTitle;
+      else if ( this.showWizardletSectionTitles != null ) showTitle = this.showWizardletSectionTitles;
+
       return this.SectionView.create({
         section: this.section,
         data$: this.wizardlet.data$,
         ...opt_spec,
-        ...(this.showWizardletSectionTitles !== undefined
-            ? { showTitle: this.showWizardletSectionTitles } : {})
+        // ...(showTitle != null ? { showTitle: showTitle } : {})
+        // this line is equivalent to commented code above
+        ...(showTitle != null ? { showTitle } : {})
       }, ctx);
     }
   ]

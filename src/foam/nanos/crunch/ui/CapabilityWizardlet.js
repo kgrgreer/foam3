@@ -112,10 +112,6 @@ foam.CLASS({
       documentation: `
         True if CapabilityJunctionData is loaded - currently used only in Capable
       `
-    },
-    {
-      class: 'String',
-      name: 'actionLabel'
     }
   ]
 });

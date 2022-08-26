@@ -38,11 +38,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'summary'
-    },
-    {
-      class: 'String',
-      name: 'margin',
-      value: '0px'
     }
   ],
 
