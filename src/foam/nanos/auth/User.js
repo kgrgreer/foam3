@@ -327,7 +327,6 @@ foam.CLASS({
       name: 'emailVerified',
       includeInDigest: false,
       documentation: 'Determines whether the email address of the User is valid.',
-      writePermissionRequired: true,
       section: 'userInformation',
       order: 160,
       gridColumns: 6,
