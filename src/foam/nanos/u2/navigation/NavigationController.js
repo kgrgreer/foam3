@@ -31,7 +31,7 @@ foam.CLASS({
 
     ^ {
       display: grid;
-      height: 100vh;
+      height: 100%;
       grid-template: auto 1fr / auto 1fr;
     }
 
