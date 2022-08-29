@@ -88,7 +88,9 @@ foam.CLASS({
       type: 'Object',
       args: 'Object state, FObject value',
       javaCode: `
-        getDelegate().remove(adapt(value));
+        if ( getPredicate().f(value) ) {
+          getDelegate().remove(adapt(value));
+        }
         return this;
       `
     },

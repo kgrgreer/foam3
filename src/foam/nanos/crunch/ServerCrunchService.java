@@ -372,9 +372,7 @@ public class ServerCrunchService
   ) {
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateUserContext") ) {
-      // NOTE: setup subject directly to allow access to disabled users. Auth.sudo will 
-      // restrict to enabled active users. 
-      x = x.put("subject",subject);
+      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
     }
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
