@@ -28,7 +28,7 @@ public class Auth {
     @param user user to be applied(logged in) to context and session.
   */
   public static X sudo(X x, User user) {
-    return sudo(x, user, null, user.findGroup(x));
+    return sudo(x, user, null);
   }
 
   /**
@@ -57,23 +57,8 @@ public class Auth {
     @param realUser User that will be acting as the @param user. References realUser within context' subject.
    */
   public static X sudo(X x, User user, User realUser) {
-    return sudo(x, user, realUser, user.findGroup(x));
-  }
-
-  public static X sudo(X x, User user, Group group) {
-    return sudo(x, user, null, group);
-  }
-
-  public static X sudo(X x, User user, User realUser, Group group) {
     if ( user == null ) throw new RuntimeException("Unknown user");
     boolean hasAgent = realUser != null && user.getId() != realUser.getId();
-
-    Subject requestedSubject = new Subject();
-    if ( hasAgent ) requestedSubject.setUser(realUser); 
-    requestedSubject.setUser(user);
-
-    x = x.put("subject", requestedSubject);
-    x = x.put("group", group);
 
     Session session = new Session();
     session.setUserId(user.getId());

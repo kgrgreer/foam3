@@ -155,11 +155,13 @@ foam.CLASS({
     function click(e) {
       try {
         if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
-          this.ctrl.add(this.ConfirmationModal.create({
-            primaryAction: this.action,
-            data: this.data,
-            title: this.action.confirmationView().title || this.action.label + ' ' + this.data.toSummary() + '?'
-          }).add(this.action.confirmationView().body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + this.data.toSummary() + '?'));
+          (async () => {
+            this.ctrl.add(this.ConfirmationModal.create({
+              primaryAction: this.action,
+              data: this.data,
+              title: this.action.confirmationView().title || this.action.label + ' ' + await this.data.toSummary() + '?'
+            }).add(this.action.confirmationView().body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + await this.data.toSummary() + '?'));
+          })();
         } else if ( this.buttonState == this.ButtonState.NO_CONFIRM ) {
           this.action && this.action.maybeCall(this.__subContext__, this.data);
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {
