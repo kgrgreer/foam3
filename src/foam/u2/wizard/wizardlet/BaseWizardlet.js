@@ -275,6 +275,13 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      if ( this.instance_.sections ) {
+        for ( const section of this.sections ) {
+          section.wizardlet = this;
+        }
+      }
+    },
     function validate() {
       return this.isValid;
     },

@@ -245,7 +245,7 @@ foam.CLASS({
     ^ .search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
-      padding: 8px 16px;
+      padding: 0rem 1.6rem;
     }
 
     ^ .disabled {

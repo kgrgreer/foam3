@@ -34,6 +34,12 @@ foam.CLASS({
         action.alternateFlow.execute(wizardController.data.__subContext__);
         wizardController.goNext();
       }
+    },
+    {
+      name: 'buttonStyle',
+      expression: function (alternateFlow) {
+        return alternateFlow.buttonStyle;
+      }
     }
   ]
 })

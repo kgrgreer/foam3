@@ -41,6 +41,7 @@ foam.CLASS({
       width: 100%;
       border: none;
       background: none;
+      padding: 0;
     }
     ^.expanded > ^toolbar {
       padding-bottom: 0.8rem;

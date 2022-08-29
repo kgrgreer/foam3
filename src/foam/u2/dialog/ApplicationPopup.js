@@ -210,7 +210,7 @@ foam.CLASS({
             .call(function() { content = this; })
           .end()
           .start()
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .addClasses([this.myClass('footer'), 'p-legal-light']).show(this.footerString$)
             .add(this.footerString$)
           .end()
         .end();
