@@ -345,7 +345,7 @@ foam.CLASS({
       label: '',
       code: function () {
         if ( this.onClickAddOn )
-          this.onClickAddOn(this.data);
+          this.onClickAddOn(this.data, this.hasChildren);
         this.toggleExpanded();
       }
     },
