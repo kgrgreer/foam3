@@ -550,7 +550,7 @@ foam.CLASS({
                           .attrs({ src: 'images/ic-search.svg' })
                         .end()
                         .startContext({ data: self })
-                          .addClass('search').style({ 'padding': this.padding$ })
+                          .addClass('search')
                           .add(self.FILTER_.clone().copyFrom({ view: {
                             class: 'foam.u2.view.TextField',
                             placeholder: this.searchPlaceholder,

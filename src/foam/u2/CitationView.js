@@ -73,7 +73,7 @@ foam.CLASS({
       this.SUPER();
       this.updateSummary();
       this
-        .addClass(this.myClass('row')).style({ 'margin': this.margin })
+        .addClass(this.myClass('row'))
         .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
         .add(this.summary$);
     },
