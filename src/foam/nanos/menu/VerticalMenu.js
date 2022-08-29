@@ -19,7 +19,9 @@ foam.CLASS({
     'loginSuccess',
     'menuDAO',
     'pushMenu',
-    'theme'
+    'theme',
+    'isMenuOpen?',
+    'displayWidth?'
   ],
 
   requires: [
@@ -122,7 +124,7 @@ foam.CLASS({
           relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
           startExpanded: true,
           query: self.menuSearch$,
-          onClickAddOn: function(data) { self.openMenu(data); },
+          onClickAddOn: function(data, hasChildren) { self.openMenu(data, hasChildren); },
           selection$: self.currentMenu$.map(m => m),
           formatter: function(data) {
             this.translate(data.id + '.label', data.label);
@@ -133,8 +135,10 @@ foam.CLASS({
         .end();
     },
 
-    function openMenu(menu) {
+    function openMenu(menu, hasChildren) {
       if ( menu.handler ) {
+        if ( ! hasChildren && this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal )
+          this.isMenuOpen = false;
         this.pushMenu(menu, true);
       }
     }
