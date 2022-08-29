@@ -82,7 +82,7 @@ foam.CLASS({
     }
 
     ^fullscreen ^body {
-      max-height: 100vh;
+      max-height: var(--max-height, 100vh);
     }
 
     ^logo img, ^logo svg {

@@ -14,6 +14,7 @@ foam.CLASS({
   css: `
     :root{
       font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
+      --max-height: calc(100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0))
     }
 
     body {
@@ -23,6 +24,10 @@ foam.CLASS({
       font-size: 1.4rem;
       letter-spacing: 0.014em;
       margin: 0;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-right: env(safe-area-inset-right, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      padding-left: env(safe-area-inset-left, 0);
       overscroll-behavior: none;
     }
 
@@ -231,7 +236,8 @@ foam.CLASS({
 
   /* Set core body defaults */
   body {
-    min-height: 100vh;
+    min-height: var(--max-height, 100vh);
+    min-height: -webkit-fill-available;
     line-height: 1.5;
   }
 
