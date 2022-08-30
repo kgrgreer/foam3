@@ -188,6 +188,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'javaAdapt'
+    },
+    {
+      class: 'String',
       name: 'javaPreSet'
     },
     {
@@ -327,6 +331,11 @@ if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) 
 
       var capitalized = foam.String.capitalize(this.name);
       var setter = `assertNotFrozen();\n`;
+
+      // add pre-set function
+      if ( this.javaAdapt ) {
+        setter += this.javaAdapt;
+      }
 
       // add value assertion
       if ( this.javaAssertValue ) {
@@ -1582,7 +1591,7 @@ foam.CLASS({
   properties: [
     ['javaInfoType',    'foam.core.AbstractStringPropertyInfo'],
     {
-      name: 'javaPreSet',
+      name: 'javaAdapt',
       expression: function(trim) {
         return trim ? `val = foam.util.SafetyUtil.trim(val);\n` : '';
       }
