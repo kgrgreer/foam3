@@ -38,13 +38,13 @@ foam.CLASS({
   css: `
     ^ {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       position: fixed;
       /* TODO: reduce max width when notification messages are updated */
-      max-width: max(30vw, 480px);
-      min-width: max(16vw, 300px);
-      right: 32px;
-      top: 24px;
+      max-width: calc(min(100vw, 48rem) - 3.2rem);
+      min-width: calc(max(30vw, 30rem) - 3.2rem);
+      right: 1.6rem;
+      top: 2.4rem;
       z-index: 15000;
     }
     ^inner {
@@ -61,7 +61,7 @@ foam.CLASS({
       margin: auto;
       min-height: 64px;
       padding: 12px 16px;
-      width: -webkit-fill-available;
+      width: 100%;
     }
     @keyframes fade {
       0% { opacity: 0; transform: translateX(300px);}
@@ -73,32 +73,38 @@ foam.CLASS({
       align-items: center;
       display: flex;
       margin-right: 1em;
-      width: -webkit-fill-available;
+      width: 100%;
+      gap: 1.2rem;
     }
     ^status-icon {
       align-items: center;
       height: 32px;
       justify-content: center;
-      margin-right: 1em; 
-      max-width: max(10%, 32px);
-      width: 32px;
+      flex: 0 0 3.2rem;
     }
     ^content {
-      max-width: 90%;
-      vertical-align: middle;
-      white-space: nowrap;
-      word-wrap: break-word;
+      display: flex;
+      overflow: hidden;
+      flex-direction: column;
     }
     ^title{
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: -webkit-fill-available;
+      word-break: break-word;
+      white-space: normal;
     }
     ^description {
       color: /*%GREY2%*/ #6B778C;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: -webkit-fill-available;
+      word-break: break-word;
+      white-space: normal;
     }
     ^close-icon {
       position: absolute;
@@ -106,9 +112,16 @@ foam.CLASS({
       top: 0.5em;
     }
     ^close-icon > *{
-      width: 20px;
-      height: 20px;
+      width: 2rem;
+      height: 2rem;
       padding: 0;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^ {
+        max-width: calc(min(100vw, 48rem) - 6.4rem);
+        min-width: calc(max(100vw, 30rem) - 6.4rem);
+        right: 3.2rem;
+      }
     }
   `,
 
