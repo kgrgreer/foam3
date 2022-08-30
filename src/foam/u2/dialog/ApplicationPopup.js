@@ -40,9 +40,9 @@ foam.CLASS({
     }
 
     ^header {
-      display: flex;
-      justify-content: space-between;
-      flex-basis: 64px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
       border-bottom: 1px solid /*%GREY4%*/ #777777;
       padding: 12px;
     }
@@ -50,17 +50,13 @@ foam.CLASS({
     ^header-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 12px;
+      justify-content: flex-start;
     }
 
     ^header-right {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      right: 12px;
+      justify-content: flex-end;
     }
 
     ^header-center {
@@ -68,7 +64,6 @@ foam.CLASS({
       text-align: center;
       align-items: center;
       justify-content: center;
-      flex: 1;
     }
 
     ^body {
