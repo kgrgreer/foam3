@@ -119,7 +119,7 @@ foam.CLASS({
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^ {
         max-width: calc(min(100vw, 48rem) - 6.4rem);
-        min-width: calc(max(100vw, 30rem) - 6.4rem);
+        min-width: calc(max(48vw, 30rem) - 6.4rem);
         right: 3.2rem;
       }
     }
