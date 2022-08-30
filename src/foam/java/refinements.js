@@ -1582,6 +1582,12 @@ foam.CLASS({
   properties: [
     ['javaInfoType',    'foam.core.AbstractStringPropertyInfo'],
     {
+      name: 'javaPreSet',
+      expression: function(trim) {
+        return trim ? `val = foam.util.SafetyUtil.trim(val);\n` : '';
+      }
+    },
+    {
       name: 'sqlType',
       expression: function(width) {
         return 'VARCHAR(' + width + ')';
