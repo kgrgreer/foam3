@@ -131,8 +131,8 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^classification {
-      background-color: /*%GREY5%*/ #e7eaec;
-      color: /*%GREY1%*/ #5e6061;
+      background-color: $grey50;
+      color: $grey700;
       display: inline-block;
       min-width: 8.4rem;
       line-height: 2.1;

@@ -27,7 +27,7 @@
     ^suggestions {
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
       background-color: /*%WHITE%*/ #ffffff;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border: 1px solid $grey400;
       border-radius: 4px;
       display: flex;
       flex-direction: column;
@@ -44,7 +44,7 @@
       margin-top: 4px;
     }
     ^row {
-      color: /*%GREY1%*/ #5e6061;
+      color: $grey700;
       cursor: pointer;
       padding: 4px 8px;
     }

@@ -32,8 +32,8 @@ foam.CLASS({
       cursor: pointer;
       background:/*%WHITE%*/ #ffffff;
       color: black;
-      border-left: solid 1px /*%GREY5%*/ #f5f7fa;
-      border-right: solid 1px /*%GREY5%*/ #f5f7fa;
+      border-left: solid 1px $grey50;
+      border-right: solid 1px $grey50;
     }
     ^inner div:last-child {
       border-bottom-left-radius: 5px;

@@ -42,7 +42,7 @@
     }
 
     ^tbody ^tr:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -54,7 +54,7 @@
     }
 
     ^thead > ^tr {
-      border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 2px solid $grey300;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
       width: 100%;
@@ -110,7 +110,7 @@
     }
 
     ^row-group{
-      background: /*%GREY5%*/ #F5F7FA;
+      background: $grey50;
     }
 
     ^resizeButton {
@@ -133,7 +133,7 @@
       align-items: center;
       background: /*%WHITE%*/ white;
       border-radius: 0 0 4px 4px;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       box-sizing: border-box;
       gap: 8px;
       justify-content: flex-end;

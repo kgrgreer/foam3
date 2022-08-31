@@ -31,18 +31,18 @@ foam.CLASS({
           border-radius: 3px;
           color: /*%BLACK%*/ #1e1f21;
           background-color:/*%WHITE%*/ #ffffff;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          border-color: $grey400;
           width: 100%;
         }
 
         ^:hover {
-          border-color: /*%GREY2%*/ #9ba1a6;
+          border-color: $grey500;
         }
 
         ^:hover::placeholder,
         ^:hover:-ms-input-placeholder,
         ^:hover::-ms-input-placeholder {
-          color: /*%GREY2%*/ #9ba1a6;
+          color: $grey500;
         }
 
         ^:focus {
@@ -51,9 +51,9 @@ foam.CLASS({
         }
 
         ^:disabled {
-          color: /*%GREY1%*/ #5e6061;
-          background-color: /*%GREY5%*/ #f5f7fa;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          color: $grey700;
+          background-color: $grey50;
+          border-color: $grey400;
         }
 
         ^.error {

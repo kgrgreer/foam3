@@ -57,7 +57,7 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
     ^dropdown svg {
-      fill:  /*%GREY2%*/ #6B778C;
+      fill:  $grey500;
     }
   `,
 

@@ -161,7 +161,7 @@ foam.CLASS({
       left: 0;
       transform: translateY(100%);
       background: /*%WHITE%*/ #ffffff;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border: 1px solid $grey400;
       max-height: 378px;
       overflow-y: auto;
       box-sizing: border-box;
@@ -191,7 +191,7 @@ foam.CLASS({
       height: /*%INPUTHEIGHT%*/ 34px;
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border: 1px solid $grey400;
       color: /*%BLACK%*/ #1e1f21;
       background-color: /*%WHITE%*/ white;
       min-width: 94px;
@@ -205,7 +205,7 @@ foam.CLASS({
 
     ^selection-view:hover,
     ^selection-view:hover ^clear-btn {
-      border-color: /*%GREY2%*/ #9ba1a6;
+      border-color: $grey500;
     }
 
     ^:focus {
@@ -264,7 +264,7 @@ foam.CLASS({
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       height: /*%INPUTHEIGHT%*/ 34px;
       border-left: 1px solid;
-      border-color: /*%GREY3%*/ #cbcfd4;
+      border-color: $grey400;
       margin-left: 12px;
       padding-left: 16px;
     }

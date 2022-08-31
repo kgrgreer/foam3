@@ -64,7 +64,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      border: 1px solid /*%GREY4%*/ #DADDE2;
+      border: 1px solid $grey300;
       border-radius: 4px;
       box-sizing: border-box;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);

@@ -25,7 +25,7 @@
     ^container{
       background:/*%WHITE%*/ white; 
       border-radius: 4px;
-      border: 1px solid /*%GREY3%*/ #B2B6BD;
+      border: 1px solid $grey400;
       padding: 24px;
     }
     ^ h6{

@@ -49,14 +49,14 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder^disabled {
-      background-color: /*%GREY5%*/ #f5f7fa;
-      color: /*%GREY2%*/ #9ba1a6;
+      background-color: $grey50;
+      color: $grey500;
     }
 
     ^ .foam-u2-borders-CardBorder^selected-disabled {
       border-color: $primary50;
-      background-color: /*%GREY5%*/ #f5f7fa;
-      color: /*%GREY2%*/ #9ba1a6;
+      background-color: $grey50;
+      color: $grey500;
     }
     .foam-u2-view-MultiChoiceView-flexer .foam-u2-layout-Cols {
       column-gap: 17px;

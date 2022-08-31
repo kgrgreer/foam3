@@ -34,7 +34,7 @@ foam.CLASS({
     ^ {
       align-items: center;
       box-sizing: border-box;
-      border: 2px dashed /*%GREY3%*/ #B2B6BD;
+      border: 2px dashed $grey400;
       border-radius: 4px;
       display: flex;
       flex-direction: column;

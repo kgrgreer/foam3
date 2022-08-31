@@ -132,7 +132,7 @@ foam.CLASS({
       width: 220px;
     }
     ^dao {
-      color: /*%GREY2%*/;
+      color: $grey500;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -144,7 +144,7 @@ foam.CLASS({
       vertical-align: baseline;
     }
     ^header {
-      background: /*%GREY1%*/ #1e1f21;
+      background: $grey700;
       color:/*%WHITE%*/ #ffffff;
       font-weight: 800;
     }

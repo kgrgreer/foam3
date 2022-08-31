@@ -46,7 +46,7 @@ foam.CLASS({
       color: $primary400;
     }
     ^resetButton:disabled {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
     }
     ^colContainer {
       overflow-x: hidden;

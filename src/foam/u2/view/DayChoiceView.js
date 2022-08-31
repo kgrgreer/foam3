@@ -11,7 +11,7 @@ foam.CLASS({
   css: `
   ^ {
     background-color: /*%WHITE%*/ #ffffff;
-    border: 1px solid /*%GREY3%*/ #b2b6bd;
+    border: 1px solid $grey400;
     border-radius: 4px;
     padding: 8px 16px;
     transition: all 0.2s ease;

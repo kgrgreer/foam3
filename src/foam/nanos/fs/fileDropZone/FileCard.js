@@ -33,7 +33,7 @@ foam.CLASS({
   css: `
     ^ {
       background: /*%WHITE%*/ #FFFFFF;
-      border: 1px solid /*%GREY5%*/ #F5F7FA;
+      border: 1px solid $grey50;
       border-radius: 4px;
       box-sizing: border-box;
       height: 40px;
@@ -85,7 +85,7 @@ foam.CLASS({
     }
 
     ^size {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       white-space: nowrap;
     }
 

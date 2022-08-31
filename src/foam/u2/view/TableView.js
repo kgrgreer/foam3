@@ -27,7 +27,7 @@ foam.CLASS({
     }
 
     ^tbody > ^tr:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -40,7 +40,7 @@ foam.CLASS({
     }
 
     ^thead > ^tr {
-      border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 2px solid $grey300;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
     }

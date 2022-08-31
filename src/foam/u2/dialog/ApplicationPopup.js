@@ -43,7 +43,7 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      border-bottom: 1px solid /*%GREY4%*/ #777777;
+      border-bottom: 1px solid $grey300;
       padding: 12px;
     }
 
@@ -94,7 +94,7 @@ foam.CLASS({
     ^footer {
       padding: 1em;
       text-align: center;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       flex-shrink: 0;
     }
   `,

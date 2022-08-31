@@ -25,7 +25,7 @@ foam.CLASS({
     }
 
     ^rw:hover {
-      background: /*%GREY5%*/ #f4f4f9;
+      background: $grey50;
       cursor: pointer;
     }
   `,

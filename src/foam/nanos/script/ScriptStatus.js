@@ -19,8 +19,8 @@ foam.ENUM({
       name: 'UNSCHEDULED',
       label: 'Unscheduled',
       ordinal: 1,
-      color: '/*%GREY1%*/ #5e6061',
-      background: '/*%GREY4%*/ #e7eaec',
+      color: '$grey700',
+      background: '$grey300',
     },
     {
       name: 'RUNNING',

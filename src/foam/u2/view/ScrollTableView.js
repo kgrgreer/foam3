@@ -63,13 +63,13 @@
       overflow: visible;
     }
     ^scrolled .foam-u2-view-TableView-thead {
-      box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
+      box-shadow: 0 1.5px 4px $grey300;
     }
     ^nav{
       align-items: center;
       background: /*%WHITE%*/ white;
       border-radius: 0 0 4px 4px;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       box-sizing: border-box;
       gap: 8px;
       justify-content: flex-end;

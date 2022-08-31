@@ -88,7 +88,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ .box-for-drag-drop {
-      border: dashed 4px /*%GREY5%*/ #f5f7fa;
+      border: dashed 4px $grey50;
       background:white;
       height: 100px;
       padding: 10px 10px;
