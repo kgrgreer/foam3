@@ -23,7 +23,7 @@ foam.CLASS({
   cssTokens: [
     {
       name: 'topNavBackground',
-      value: '$white'
+      value: '$foam.nanos.menu.VerticalMenu.menuBackground'
     }
   ],
 

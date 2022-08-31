@@ -26,54 +26,44 @@ foam.CLASS({
   documentation: 'Mixin with tokens requred for navigation buttons',
   cssTokens: [
     {
-      name: 'selectedBackgroundColor',
-      value: '$primary50'
-    },
-    {
-      name: 'hoverBackgroundColor',
-      value: '$grey50'
+      name: 'backgroundColor',
+      class: 'foam.u2.ColorToken',
+      value: '$foam.nanos.menu.VerticalMenu.menuBackground',
+      onLight: '$grey700',
+      disabledModifier: -10,
+      hoverModifier: -10,
+      activeModifier: -15
     },
     {
       name: 'selectedIconColor',
-      value: '$primary500'
+      value: function(e) { return e.LIGHTEN(e.TOKEN('$selectedLabelColor'), 10) }
     },
     {
-      name: 'defaultIconColor',
-      value: '$grey400'
-    },
-    {
-      name: 'hoverLabelColor',
-      value: '$primary700'
-    },
-    {
-      name: 'defaultLabelColor',
-      value: '$grey600'
-    },
-    {
+      class: 'foam.u2.ColorToken',
       name: 'selectedLabelColor',
-      value: '$primary700'
-    },
+      value: '$primary600'
+    }
   ],
   css: `
-    ^:hover:not(:disabled) {
-      background-color: $hoverBackgroundColor;
-      color:  $hoverLabelColor;
+    ^:hover:not(:disabled):not(:active):not(.selected) {
+      background-color: $backgroundColor$hover;
+      color: $backgroundColor$hover$foreground;
     }
-    ^:hover:not(:disabled) svg {
-      fill:  $hoverLabelColor;
+    ^:hover:not(:disabled):not(:active):not(.selected) svg {
+      fill: $backgroundColor$hover$foreground;
     }
-    ^:active {
-      background-color: $selectedBackgroundColor;
+    ^:active, ^.selected {
+      background-color: $backgroundColor$hover;
       color:  $selectedLabelColor;
     }
-    ^:active svg {
+    ^:active svg,^.selected svg {
       fill: $selectedIconColor;
     }
     ^{
-      color: $defaultLabelColor;
+      color: $backgroundColor$foreground;
     }
     ^ svg {
-      fill: $defaultIconColor;
+      fill: $backgroundColor$foreground;
     }
   `
 });

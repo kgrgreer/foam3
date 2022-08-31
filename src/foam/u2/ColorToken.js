@@ -56,7 +56,7 @@ foam.CLASS({
           }
         );
       });
-      ['', 'hover', 'active', 'disbaled'].forEach(a => {
+      ['', 'hover', 'active', 'disabled'].forEach(a => {
         let n = a ? `${ax.name}$${a}$foreground` : ax.name + '$foreground';
         Object.defineProperty(cls, foam.String.constantize(n),
           {
@@ -69,53 +69,6 @@ foam.CLASS({
           }
         );
       });
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'ColorTokenView',
-  extends: 'foam.u2.View',
-  documentation: '',
-  cssTokens: [
-    {
-      class: 'foam.u2.ColorToken',
-      name: 'test',
-      value: 'red'
-    }
-  ],
-  css: `
-    ^box {
-      height: 100px;
-      width: 100px;
-    }
-  `,
-  properties: [
-    ...foam.u2.ColorToken.getAxiomsByClass(foam.core.Property),
-    {
-      name: 'data',
-      class: 'String',
-      label: 'Token Value',
-      value: 'red'
-    }
-  ],
-  methods: [
-    function render() {
-      const e = foam.css.TokenUtilsBuilder.create({}, this);
-      var self = this;
-      this
-        .startContext({ data: this, controllerMode: 'CREATE' })
-          .tag(this.DATA.__)
-          .tag(this.HOVER_MODIFIER.__)
-          .tag(this.ACTIVE_MODIFIER.__)
-          .tag(this.DISABLED_MODIFIER.__)
-        .endContext()
-            .start({ class: 'foam.u2.tag.Button', label: 'Test' }).addClasses([this.myClass('box')]).style({ 'background-color': this.data$.map(d => e.TOKEN(d).f({ cls_: self.cls_, __subContext__: self.__subContext__ }) )}).end().add(this.data$.map(d => e.TOKEN(d).f({ cls_: self.cls_, __subContext__: self.__subContext__ }) )).br()
-            .start({ class: 'foam.u2.tag.Button', label: 'Test' }).addClasses([this.myClass('box')]).style({ 'background-color': this.slot(function(data, hoverModifier) { return e.LIGHTEN(e.TOKEN(data), hoverModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } ) }).end().add(this.slot(function(data, hoverModifier) { return e.LIGHTEN(e.TOKEN(data), hoverModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } )).br()
-            .start({ class: 'foam.u2.tag.Button', label: 'Test' }).addClasses([this.myClass('box')]).style({ 'background-color': this.slot(function(data, activeModifier) { return e.LIGHTEN(e.TOKEN(data), activeModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } ) }).end().add(this.slot(function(data, activeModifier) { return e.LIGHTEN(e.TOKEN(data), activeModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } )).br()
-            .start({ class: 'foam.u2.tag.Button', label: 'Test' }).addClasses([this.myClass('box')]).style({ 'background-color': this.slot(function(data, disabledModifier) { return e.LIGHTEN(e.TOKEN(data), disabledModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } ) }).end().add(this.slot(function(data, disabledModifier) { return e.LIGHTEN(e.TOKEN(data), disabledModifier).f({ cls_: self.cls_, __subContext__: self.__subContext__ }); } )).br();
     }
   ]
 });

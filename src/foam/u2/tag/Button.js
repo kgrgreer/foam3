@@ -123,6 +123,7 @@ foam.CLASS({
 
     ^primary:disabled {
       background-color: $buttonPrimaryColor$disabled;
+      color: $buttonPrimaryColor$disabled$foreground;
     }
 
     /* Primary destructive */

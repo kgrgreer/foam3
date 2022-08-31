@@ -104,7 +104,7 @@ foam.CLASS({
         .start(this.NOTIFICATIONS, {
           themeIcon: 'bell',
           label$: this.showText ? this.formattedCount$.map(v => `${self.NOTIF} (${v})`) : foam.core.ConstantSlot.create({ value: '' }),
-          buttonStyle: 'TERTIARY',
+          buttonStyle: 'UNSTYLED',
           size: this.showText ? 'SMALL' : 'MEDIUM'
         })
           .addClass(this.myClass('bell'))

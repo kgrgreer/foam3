@@ -91,7 +91,7 @@ foam.CLASS({
           label:       label,
           data:        actionArray,
           obj:         self,
-          buttonStyle: 'TERTIARY'
+          buttonStyle: 'UNSTYLED'
         })
           .addClass(this.myClass('dropdown'))
         .end()

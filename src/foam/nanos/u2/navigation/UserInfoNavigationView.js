@@ -115,7 +115,7 @@ foam.CLASS({
         label: mainLabel,
         data: menuArray,
         obj: self,
-        buttonStyle: 'TERTIARY'
+        buttonStyle: 'UNSTYLED'
       })
         .addClass(this.myClass('dropdown'))
       .end();

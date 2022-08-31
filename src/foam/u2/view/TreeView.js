@@ -27,47 +27,11 @@ foam.CLASS({
     'translationService?'
   ],
 
-  cssTokens: [
-    {
-      name: 'selectedBackgroundColor',
-      value: '$primary50'
-    },
-    {
-      name: 'hoverBackgroundColor',
-      value: '$grey50'
-    },
-    {
-      name: 'selectedIconColor',
-      value: '$primary500'
-    },
-    {
-      name: 'defaultIconColor',
-      value: '$grey400'
-    },
-    {
-      name: 'hoverLabelColor',
-      value: '$primary700'
-    },
-    {
-      name: 'defaultLabelColor',
-      value: '$grey600'
-    },
-    {
-      name: 'selectedLabelColor',
-      value: '$primary700'
-    },
-  ],
-
   css: `
     ^ {
       white-space: nowrap;
       inset: none;
       cursor: pointer;
-    }
-
-    ^button:hover {
-      background-color: $hoverBackgroundColor;
-      color:  $hoverLabelColor;
     }
 
     ^label-container {
@@ -102,13 +66,6 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
 
-    ^selected > ^heading > ^button {
-      background-color: $selectedBackgroundColor;
-      color:  $selectedLabelColor;
-    }
-    ^selected > ^heading > ^button svg {
-      fill: $selectedIconColor;
-    } 
     ^toggle-icon {
       align-self: center;
       transition: 0.2s linear;
@@ -287,6 +244,7 @@ foam.CLASS({
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
+              enableClass('selected', this.selected_$).
               // make not be a button so that other buttons can be nested              setNodeName('span').
               addClass(this.myClass('button')).
               style({
