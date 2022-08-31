@@ -61,12 +61,14 @@ foam.CLASS({
           this.loadVariantLocales().then(() => {
             if ( this.theme ) {
               this.loadTheme();
+              this.loadVariantTheme();
             }
             this.initLatch.resolve()
           });
         } else {
           if ( this.theme ) {
             this.loadTheme();
+            this.loadVariantTheme();
           }
           this.initLatch.resolve();
         }
@@ -127,6 +129,12 @@ foam.CLASS({
       }
     },
     function loadTheme() {
+      return this.localeDAO.where(
+        this.AND(
+          this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, this.theme.id))).select(this.addLocale.bind(this));
+    },
+    function loadVariantTheme() {
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
