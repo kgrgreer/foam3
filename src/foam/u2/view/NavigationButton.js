@@ -26,7 +26,7 @@ foam.CLASS({
   documentation: 'Mixin with tokens requred for navigation buttons',
   cssTokens: [
     {
-      name: 'backgroundColor',
+      name: 'NavButtonBackgroundColor',
       class: 'foam.u2.ColorToken',
       value: '$foam.nanos.menu.VerticalMenu.menuBackground',
       onLight: '$grey700',
@@ -35,12 +35,12 @@ foam.CLASS({
       activeModifier: -15
     },
     {
-      name: 'selectedIconColor',
+      name: 'NavSelectedIconColor',
       value: function(e) { return e.LIGHTEN(e.TOKEN('$selectedLabelColor'), 10) }
     },
     {
       class: 'foam.u2.ColorToken',
-      name: 'selectedLabelColor',
+      name: 'NavButtonSelectedLabelColor',
       value: '$primary600'
     }
   ],
