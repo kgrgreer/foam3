@@ -19,7 +19,7 @@ foam.ENUM({
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00'
+      color: '$warn400'
     }
   ]
 });

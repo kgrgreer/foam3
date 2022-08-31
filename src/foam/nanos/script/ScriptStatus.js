@@ -12,8 +12,8 @@ foam.ENUM({
       name: 'SCHEDULED',
       label: 'Scheduled',
       ordinal: 0,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f'
+      color: '$warn700',
+      background: '$warn500'
     },
     {
       name: 'UNSCHEDULED',
@@ -26,8 +26,8 @@ foam.ENUM({
       name: 'RUNNING',
       label: 'Running',
       ordinal: 2,
-      color: '/*%APPROVAL2%*/ #117a41',
-      background: '/*%APPROVAL5%*/ #e2f2dd',
+      color: '$success500',
+      background: '$success50',
     },
     {
       name: 'ERROR',

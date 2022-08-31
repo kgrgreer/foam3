@@ -33,12 +33,12 @@
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00',
+      color: '$warn400',
       glyph: 'exclamation'
     },
     {
       name: 'SUCCESS',
-      color: ' /*%APPROVAL3%*/ #117A41',
+      color: ' $success400',
       glyph: 'checkmark'
     },
     {

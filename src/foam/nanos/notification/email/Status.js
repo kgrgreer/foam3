@@ -35,8 +35,8 @@ foam.ENUM({
     {
       name: 'SENT',
       label: 'Sent',
-      color: '/*%APPROVAL1%*/ #04612E',
-      background: '/*%APPROVAL5%*/ #EEF7ED',
+      color: '$success700',
+      background: '$success50',
     },
     {
       name: 'FAILED',
@@ -47,14 +47,14 @@ foam.ENUM({
     {
       name: 'BOUNCED',
       label: 'Bounced',
-      color: '/*%WARNING2%*/ #D57D11',
-      background: '/*%WARNING5%*/ #FFF4DE',
+      color: '$warn500',
+      background: '$warn700',
     },
     {
       name: 'RECEIVED',
       label: 'Received',
-      color: '/*%APPROVAL1%*/ #04612E',
-      background: '/*%APPROVAL5%*/ #EEF7ED',
+      color: '$success700',
+      background: '$success50',
     }
   ]
 });
