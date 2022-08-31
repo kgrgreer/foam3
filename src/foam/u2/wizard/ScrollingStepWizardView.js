@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.u2.borders.LoadingBorder',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.wizard.WizardPosition',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.WizardletSearchController'
   ],
@@ -359,6 +360,7 @@ foam.CLASS({
         }
 
         this.data.submitted = true;
+        this.data.status = this.WizardStatus.COMPLETED;
         this.onClose(x, true);
       }
     }
