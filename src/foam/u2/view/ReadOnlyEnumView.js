@@ -85,9 +85,7 @@ foam.CLASS({
     function resolveColor(token) {
       if ( token.startsWith('$') )
         return foam.CSS.returnTokenValue(token, this.cls_, this.__context__);
-      else {
-        return this.returnExpandedCSS(token);
-      }
+      return this.returnExpandedCSS(token);
     }
   ]
 });
