@@ -36,7 +36,7 @@ foam.CLASS({
     },
     {
       name: 'NavSelectedIconColor',
-      value: function(e) { return e.LIGHTEN(e.TOKEN('$selectedLabelColor'), 10) }
+      value: function(e) { return e.LIGHTEN(e.TOKEN('$NavButtonSelectedLabelColor'), 10) }
     },
     {
       class: 'foam.u2.ColorToken',
