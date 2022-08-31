@@ -20,7 +20,7 @@ foam.CLASS({
     }
 
     ^tr {
-      background: /*%WHITE%*/ white;
+      background: $white;
       display: flex;
       height: 48px;
       justify-content: space-between;
@@ -49,7 +49,7 @@ foam.CLASS({
     ^th {
       align-self: center;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       display: block;
       font-size: 1.4rem;
       line-height: 1.5;

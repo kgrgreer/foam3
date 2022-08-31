@@ -29,7 +29,7 @@ foam.CLASS({
 
     ^base {
       box-sizing: content-box;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border-radius: 5px;
       position: relative;
       padding: 16px;

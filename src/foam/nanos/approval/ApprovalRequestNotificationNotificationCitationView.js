@@ -128,7 +128,7 @@ foam.CLASS({
       align-items: center;
     }
     ^userSummary {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^classification {
       background-color: $grey50;

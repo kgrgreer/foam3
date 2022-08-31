@@ -19,7 +19,7 @@ foam.CLASS({
       color: $grey500;
     }
     ^description {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       width: 100%;
     }
   `,

@@ -19,7 +19,7 @@ foam.CLASS({
     }
 
     ^rw {
-      background: /*%WHITE%*/ white;
+      background: $white;
       padding: 8px 16px;
       color: /*%BALCK%*/ #424242;
     }

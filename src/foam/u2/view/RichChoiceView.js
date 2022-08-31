@@ -160,7 +160,7 @@ foam.CLASS({
       bottom: -4px;
       left: 0;
       transform: translateY(100%);
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       border: 1px solid $grey400;
       max-height: 378px;
       overflow-y: auto;
@@ -192,8 +192,8 @@ foam.CLASS({
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       border: 1px solid $grey400;
-      color: /*%BLACK%*/ #1e1f21;
-      background-color: /*%WHITE%*/ white;
+      color: $black;
+      background-color: $white;
       min-width: 94px;
 
       width: 100%;

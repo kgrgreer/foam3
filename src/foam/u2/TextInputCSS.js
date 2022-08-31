@@ -29,8 +29,8 @@ foam.CLASS({
           padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
           border: 1px solid;
           border-radius: 3px;
-          color: /*%BLACK%*/ #1e1f21;
-          background-color:/*%WHITE%*/ #ffffff;
+          color: $black;
+          background-color:$white;
           border-color: $grey400;
           width: 100%;
         }

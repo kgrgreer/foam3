@@ -32,7 +32,7 @@ foam.CLASS({
     top: 0;
     left: 0;
     overflow-x: hidden;
-    background: /*%BLACK%*/ #1e1f21;
+    background: $black;
     display: inline-block;
   }
   ^side-nav div a {

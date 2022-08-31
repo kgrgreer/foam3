@@ -23,7 +23,7 @@
       max-height: 500px;
     }
     ^container{
-      background:/*%WHITE%*/ white; 
+      background:$white; 
       border-radius: 4px;
       border: 1px solid $grey400;
       padding: 24px;

@@ -48,7 +48,7 @@ foam.CLASS({
       min-width: 700px;
       max-width: 275px;
       height: 40px;
-      background-color:/*%WHITE%*/ #ffffff;
+      background-color:$white;
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 5px;

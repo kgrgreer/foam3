@@ -32,7 +32,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: /*%WHITE%*/ #FFFFFF;
+      background: $white;
       border: 1px solid $grey50;
       border-radius: 4px;
       box-sizing: border-box;

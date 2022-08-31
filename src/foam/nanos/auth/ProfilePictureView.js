@@ -85,7 +85,7 @@ foam.CLASS({
       font-size: 1rem;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .box-for-drag-drop {
       border: dashed 4px $grey50;

@@ -10,7 +10,7 @@ foam.CLASS({
 
   css: `
   ^ {
-    background-color: /*%WHITE%*/ #ffffff;
+    background-color: $white;
     border: 1px solid $grey400;
     border-radius: 4px;
     padding: 8px 16px;
@@ -23,7 +23,7 @@ foam.CLASS({
   ^selected {
     background-color: $primary400;
     border-color: $primary400;
-    color: /*%WHITE%*/ #ffffff;
+    color: $white;
     line-height: 1.5;
   }
   `,

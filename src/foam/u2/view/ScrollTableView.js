@@ -67,7 +67,7 @@
     }
     ^nav{
       align-items: center;
-      background: /*%WHITE%*/ white;
+      background: $white;
       border-radius: 0 0 4px 4px;
       border-top: 1px solid $grey300;
       box-sizing: border-box;

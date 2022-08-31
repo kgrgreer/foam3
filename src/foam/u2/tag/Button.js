@@ -130,8 +130,8 @@ foam.CLASS({
 
     ^primary-destructive,^primary-destructive svg {
       background-color: $destructive400;
-      color: /*%WHITE%*/ white;
-      fill: /*%WHITE%*/ white;
+      color: $white;
+      fill: $white;
     }
 
     ^primary-destructive:hover:not(:disabled) {
@@ -185,7 +185,7 @@ foam.CLASS({
     /* Secondary destructive */
 
     ^secondary-destructive{
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border: 1px solid $grey400;
       color: $destructive500;
     }

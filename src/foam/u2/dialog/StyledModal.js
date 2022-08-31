@@ -11,7 +11,7 @@ foam.ENUM({
   values: [
     {
       name: 'DEFAULT',
-      color: '/*%WHITE%*/ #FFFFFF'
+      color: '$white'
     },
     {
       name: 'DESTRUCTIVE',
@@ -51,7 +51,7 @@ foam.CLASS({
       z-index: 4;
     }
     ^inner {
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       border: 1px solid $grey300;
       border-radius: 0 0 3px 3px;
       border-top: none;

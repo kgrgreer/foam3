@@ -43,7 +43,7 @@
     },
     {
       name: 'UNSTYLED',
-      color: ' /*%WHITE%*/ #FFFFFF'
+      color: ' $white'
     }
   ]
 });

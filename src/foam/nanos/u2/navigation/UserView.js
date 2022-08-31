@@ -69,7 +69,7 @@ foam.CLASS({
       float: right;
       z-index: 10001;
       width: 215px;
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
       top: 65px;
       right: 0px;
@@ -79,7 +79,7 @@ foam.CLASS({
       padding-left: 50px;
       font-size: 1.4rem;
       font-weight: 300;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       line-height: 25px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {

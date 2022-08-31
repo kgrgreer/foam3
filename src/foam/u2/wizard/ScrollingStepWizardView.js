@@ -81,7 +81,7 @@ foam.CLASS({
       backdrop-filter: blur(10px);
       background-color: $destructive500;
       border-radius: 8px;
-      color: /*%WHITE%*/ white;
+      color: $white;
       margin-bottom: 16px;
       padding: 8px;
       position: sticky;

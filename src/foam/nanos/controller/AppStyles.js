@@ -19,7 +19,7 @@ foam.CLASS({
 
     body {
       background: $grey50;
-      color: /*%BLACK%*/ #1E1F21;
+      color: $black;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.4rem;
       letter-spacing: 0.014em;
@@ -167,7 +167,7 @@ foam.CLASS({
       width: 60px;
       height: 20px;
       border-radius: 100px;
-      background-color: /*%BLACK%*/ #1e1f21;
+      background-color: $black;
     }
     .Open {
       width: 49px;

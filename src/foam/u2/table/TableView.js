@@ -35,7 +35,7 @@
     }
 
     ^tr {
-      background: /*%WHITE%*/ white;
+      background: $white;
       display: flex;
       height: 48px;
       justify-content: space-between;
@@ -65,7 +65,7 @@
     ^th {
       align-self: center;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       display: block;
       font-size: 1.4rem;
       line-height: 1.5;
@@ -131,7 +131,7 @@
     /* PAGINATION */
     ^nav{
       align-items: center;
-      background: /*%WHITE%*/ white;
+      background: $white;
       border-radius: 0 0 4px 4px;
       border-top: 1px solid $grey300;
       box-sizing: border-box;

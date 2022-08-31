@@ -46,7 +46,7 @@ foam.CLASS({
       align-items: center;
       background: $destructive400;
       border-radius: 50%;
-      color: /*%WHITE%*/ #FFFFFF;
+      color: $white;
       display: flex;
       font-size: 0.8rem;
       height: 15px;
