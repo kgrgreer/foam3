@@ -48,6 +48,12 @@ foam.CLASS({
       expression: function (of) {
         return this.ArrayDAO.create({ of });
       }
+    },
+    {
+      name: 'loadedDAO',
+      expression: function (of) {
+        return this.ArrayDAO.create({ of });
+      }
     }
   ],
 
@@ -55,11 +61,13 @@ foam.CLASS({
     async function find_(...a) {
       var SUPER = this.SUPER;
       if ( ! this.initialized ) await this.initialize();
+      this.primary.array = this.loadedDAO.array.map(o => o.clone());
       return await SUPER.bind(this)(...a);
     },
     async function select_(...a) {
       var SUPER = this.SUPER;
       if ( ! this.initialized ) await this.initialize();
+      this.primary.array = this.loadedDAO.array.map(o => o.clone());
       return await SUPER.bind(this)(...a);
     },
     async function initialize () {
@@ -69,15 +77,14 @@ foam.CLASS({
         p: spec => {
           const o = foam.json.parse(spec, this.of, this.__subContext__);
           // TODO: Queue put instead of putting it into the array immediately
-          promises.push(this.primary.put(o));
+          promises.push(this.loadedDAO.put(o));
         },
         r: spec => {
           const o = foam.json.parse(spec, this.of, this.__subContext__);
-          promises.push(this.primary.remove(o));
+          promises.push(this.loadedDAO.remove(o));
         }
       }) eval(await (await fetch(path)).text());
       await Promise.all(promises);
-      this.initialized = true;
     }
   ]
 });
