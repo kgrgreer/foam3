@@ -270,7 +270,7 @@ foam.CLASS({
     }
 
     ^clear-btn:hover {
-      color: /*%DESTRUCTIVE3%*/ #d9170e;
+      color: $destructive400;
       cursor: pointer;
     }
   `,

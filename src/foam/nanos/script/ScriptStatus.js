@@ -33,8 +33,8 @@ foam.ENUM({
       name: 'ERROR',
       label: 'Error',
       ordinal: 3,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec'
+      color: '$destructive500',
+      background: '$destructive50'
     }
   ]
 });

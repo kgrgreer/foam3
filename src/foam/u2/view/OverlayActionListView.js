@@ -117,25 +117,25 @@ foam.CLASS({
     /* destructive */
 
     ^button-container .destructive{
-      color: /*%DESTRUCTIVE2%*/ #a61414;
+      color: $destructive500;
     }
 
-    ^button-container .destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
+    ^button-container .destructive svg { fill: $destructive500; }
 
     ^button-container .destructive:hover:not(:disabled) {
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      background-color: $destructive50;
     }
 
     ^button-container .destructive:focus {
-      border-color: /*%DESTRUCTIVE2%*/ #a61414;
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      border-color: $destructive500;
+      background-color: $destructive50;
     }
 
     ^button-container .destructive:disabled {
-      color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      color: $destructive50;
     }
 
-    ^button-container .destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
+    ^button-container .destructive:disabled svg { fill: $destructive50; }
 
     ^iconOnly{
       padding: 0px;

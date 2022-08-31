@@ -30,8 +30,8 @@
       label: { en: 'Rejected', pt: 'Rejeitado'},
       ordinal: 2,
       documentation: 'Request was rejected.',
-      color: '/*%DESTRUCTIVE2%*/ #A61414',
-      background: '/*%DESTRUCTIVE5%*/ #FFE9E7',
+      color: '$destructive500',
+      background: '$destructive50',
     },
     {
       name: 'CANCELLED',

@@ -44,7 +44,7 @@ foam.CLASS({
     }
     ^ .dot {
       align-items: center;
-      background: /*%DESTRUCTIVE3%*/ red;
+      background: $destructive400;
       border-radius: 50%;
       color: /*%WHITE%*/ #FFFFFF;
       display: flex;

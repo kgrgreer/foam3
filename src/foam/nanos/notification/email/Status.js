@@ -41,8 +41,8 @@ foam.ENUM({
     {
       name: 'FAILED',
       label: 'Failed',
-      color: '/*%DESTRUCTIVE2%*/ #A61414',
-      background: '/*%DESTRUCTIVE5%*/ #FFE9E7',
+      color: '$destructive500',
+      background: '$destructive50',
     },
     {
       name: 'BOUNCED',

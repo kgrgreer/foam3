@@ -57,9 +57,9 @@ foam.CLASS({
         }
 
         ^.error {
-          color: /*%DESTRUCTIVE3%*/ #d9170e;
-          background-color: /*%DESTRUCTIVE5%*/ #fbedec;
-          border-color: /*%DESTRUCTIVE3%*/ #d9170e;
+          color: $destructive400;
+          background-color: $destructive50;
+          border-color: $destructive400;
         }
       `,
     },

@@ -15,7 +15,7 @@ foam.ENUM({
     },
     {
       name: 'DESTRUCTIVE',
-      color: '/*%DESTRUCTIVE3%*/ #D9170E'
+      color: '$destructive400'
     },
     {
       name: 'WARN',

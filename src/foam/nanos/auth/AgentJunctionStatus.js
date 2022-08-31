@@ -19,8 +19,8 @@ foam.ENUM({
     {
       name: 'DISABLED',
       label: 'Disabled',
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #FFE9E7',
+      color: '$destructive500',
+      background: '$destructive50',
       documentation: 'Junction is unsatisfied disabling agent from acting as entity.'
     },
     {

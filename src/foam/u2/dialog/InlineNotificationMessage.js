@@ -28,7 +28,7 @@
     },
     {
       name: 'ERROR',
-      color: '/*%DESTRUCTIVE3%*/ #A61414',
+      color: '$destructive400',
       glyph: 'exclamation'
     },
     {

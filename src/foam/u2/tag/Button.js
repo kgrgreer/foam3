@@ -129,13 +129,13 @@ foam.CLASS({
     /* Primary destructive */
 
     ^primary-destructive,^primary-destructive svg {
-      background-color: /*%DESTRUCTIVE3%*/ #d9170e;
+      background-color: $destructive400;
       color: /*%WHITE%*/ white;
       fill: /*%WHITE%*/ white;
     }
 
     ^primary-destructive:hover:not(:disabled) {
-      background-color: /*%DESTRUCTIVE2%*/ #a61414;
+      background-color: $destructive500;
     }
 
     ^primary-destructive:active:not(:disabled) {
@@ -145,7 +145,7 @@ foam.CLASS({
     }
 
     ^primary-destructive:disabled {
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      background-color: $destructive50;
     }
 
 
@@ -187,10 +187,10 @@ foam.CLASS({
     ^secondary-destructive{
       background-color: /*%WHITE%*/ #ffffff;
       border: 1px solid $grey400;
-      color: /*%DESTRUCTIVE2%*/ #a61414;
+      color: $destructive500;
     }
 
-    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
+    ^secondary-destructive svg { fill: $destructive500; }
 
     ^secondary-destructive:hover:not(:disabled) {
       background-color: $buttonSecondaryColor$hover;
@@ -207,7 +207,7 @@ foam.CLASS({
       color: $red700;
     }
 
-    ^secondary-destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
+    ^secondary-destructive:disabled svg { fill: $destructive50; }
 
     /* Tertiary */
 
@@ -245,10 +245,10 @@ foam.CLASS({
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE3%*/ #D9170E;
+      color: $destructive400;
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
+    ^tertiary-destructive svg { fill: $destructive400; }
 
     ^tertiary-destructive:hover:not(:disabled):not(:active) {
       background-color: $buttonSecondaryColor$hover;

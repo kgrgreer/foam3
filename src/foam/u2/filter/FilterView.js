@@ -136,13 +136,13 @@ foam.CLASS({
 
     ^link-mode.clear {
       align-self: center;
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
       flex-shrink: 0;
       margin-right: 0;
     }
 
     ^link-mode.clear:hover {
-      color: /*%DESTRUCTIVE1%*/ darkred;
+      color: $destructive700;
     }
 
     ^message-advanced {
