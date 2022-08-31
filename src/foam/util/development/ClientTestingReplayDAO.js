@@ -53,25 +53,31 @@ foam.CLASS({
 
   methods: [
     async function find_(...a) {
-      if ( ! this.initialized ) this.initialize();
-      return await this.SUPER(...a);
+      var SUPER = this.SUPER;
+      if ( ! this.initialized ) await this.initialize();
+      return await SUPER.bind(this)(...a);
     },
-    async function select(...a) {
-      if ( ! this.initialized ) this.initialize();
-      return await this.SUPER(...a);
+    async function select_(...a) {
+      var SUPER = this.SUPER;
+      if ( ! this.initialized ) await this.initialize();
+      return await SUPER.bind(this)(...a);
     },
     async function initialize () {
+      var promises = [];
       // syntax highlighter may say 'path' is unused; this is inaccurate.
       for ( const path of this.journals ) with ({
         p: spec => {
           const o = foam.json.parse(spec, this.of, this.__subContext__);
-          this.primary.put(o);
+          // TODO: Queue put instead of putting it into the array immediately
+          promises.push(this.primary.put(o));
         },
         r: spec => {
           const o = foam.json.parse(spec, this.of, this.__subContext__);
-          this.primary.remove(o);
+          promises.push(this.primary.remove(o));
         }
       }) eval(await (await fetch(path)).text());
+      await Promise.all(promises);
+      this.initialized = true;
     }
   ]
 });
