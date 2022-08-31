@@ -68,7 +68,6 @@ foam.CLASS({
         } else {
           if ( this.theme ) {
             this.loadTheme();
-            this.loadVariantTheme();
           }
           this.initLatch.resolve();
         }
