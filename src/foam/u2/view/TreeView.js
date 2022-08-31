@@ -34,11 +34,6 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^button:hover {
-      background-color: /*%GREY5%*/ #e7eaec;
-      color:  /*%PRIMARY1%*/ #406dea;
-    }
-
     ^label-container {
       display: flex;
       align-items: center;
@@ -51,7 +46,7 @@ foam.CLASS({
       padding: 0 8px;
     }
 
-    ^button.foam-u2-ActionView{
+    button^button{
       padding: 8px;
       width: 100%;
     }
@@ -71,10 +66,6 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
 
-    ^selected > ^heading > ^button {
-      background-color: /*%PRIMARY5%*/ #e5f1fc !important;
-      color:  /*%PRIMARY1%*/ #406dea;
-    }
     ^toggle-icon {
       align-self: center;
       transition: 0.2s linear;
@@ -253,6 +244,7 @@ foam.CLASS({
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
+              enableClass('selected', this.selected_$).
               // make not be a button so that other buttons can be nested              setNodeName('span').
               addClass(this.myClass('button')).
               style({

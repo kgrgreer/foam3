@@ -29,12 +29,10 @@ foam.CLASS({
       align-items: center;
     }
     ^userName {
-      color: /*%GREY2%*/ #6B778C;
       font-weight: 600;
       font-size: 1.2rem;
     }
     ^agentName{
-      color: /*%GREY2%*/ #6B778C;
       font-weight: 400;
       font-size: 1.1rem;
     }
@@ -117,7 +115,7 @@ foam.CLASS({
         label: mainLabel,
         data: menuArray,
         obj: self,
-        buttonStyle: 'TERTIARY'
+        buttonStyle: 'UNSTYLED'
       })
         .addClass(this.myClass('dropdown'))
       .end();

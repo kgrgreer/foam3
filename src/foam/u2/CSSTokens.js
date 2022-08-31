@@ -11,8 +11,6 @@ foam.CLASS({
 
   /**
    * TODO:
-   * Find a better way to define these palettes
-   * Find a way to alias
    * Use the color generator to create these
   */
   cssTokens: {
