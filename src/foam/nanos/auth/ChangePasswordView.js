@@ -54,7 +54,7 @@ foam.CLASS({
       color: /*%GREY2%*/ #9ba1a6;
     }
     ^link {
-      color: /*%PRIMARY3%*/ #604aff;
+      color: $primary400;
       cursor: pointer;
       text-align: center;
       padding-top: 1.5vh;

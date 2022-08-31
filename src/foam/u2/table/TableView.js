@@ -89,7 +89,7 @@
      * OTHER
      */
     ^selected {
-      background: /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50;
     }
 
     ^noselect {
@@ -150,7 +150,7 @@
       border-radius: 0px;
       padding: 0px;
       height: auto;
-      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+      border-bottom: 2px solid $primary400;
     }
   `,
 

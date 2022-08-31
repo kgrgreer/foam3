@@ -48,7 +48,7 @@ foam.CLASS({
     ^ input:not([type="checkbox"]):focus,
     ^ select:focus {
       outline: none;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
+      border: 1px solid $primary400;
     }
 
     ^ .general-query {

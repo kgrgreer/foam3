@@ -62,7 +62,7 @@ foam.CLASS({
     }
 
     ^name {
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
       cursor: pointer;
       overflow: hidden;
       text-align: left;
@@ -71,7 +71,7 @@ foam.CLASS({
     }
 
     ^name:hover {
-      color: /*%PRIMARY1%*/ #604AFF;
+      color: $primary700;
     }
 
     ^ .foam-u2-ActionView {
@@ -115,7 +115,7 @@ foam.CLASS({
       var self = this;
       if ( this.selected == this.index ) {
         this.style({
-          'border-color': '/*%PRIMARY1%*/ #604aff'
+          'border-color': '$primary700'
         });
       }
       var indicator = this.theme && this.theme.glyphs.file.expandSVG({ fill: this.theme.grey1 });

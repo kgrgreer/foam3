@@ -40,9 +40,9 @@ foam.CLASS({
       border-bottom-right-radius: 5px;
     }
     ^inner div:hover {
-      background: /*%PRIMARY5%*/ #e5f1fc !important;
-      border-left: solid 1px /*%PRIMARY5%*/ #e5f1fc;
-      border-right: solid 1px /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50 !important;
+      border-left: solid 1px $primary50;
+      border-right: solid 1px $primary50;
     }
   `,
 

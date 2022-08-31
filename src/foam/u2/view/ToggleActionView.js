@@ -14,9 +14,9 @@ foam.CLASS({
   css: `
     ^active, ^active svg {
       background-color: /*%GREY5%*/ #F5F7FA;
-      color: /*%PRIMARY3%*/ #494F59;
-      fill: /*%PRIMARY3%*/ #494F59;
-      border-color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
+      fill: $primary400;
+      border-color: $primary400;
     }
   `,
   properties: [

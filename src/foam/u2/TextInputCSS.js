@@ -47,7 +47,7 @@ foam.CLASS({
 
         ^:focus {
           outline: none;
-          border-color: /*%PRIMARY3%*/ #406dea;
+          border-color: $primary400;
         }
 
         ^:disabled {

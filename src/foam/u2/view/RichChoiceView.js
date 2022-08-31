@@ -214,7 +214,7 @@ foam.CLASS({
 
     ^:focus ^selection-view,
     ^:focus ^selection-view ^clear-btn {
-      border-color: /*%PRIMARY3%*/ #406dea;
+      border-color: $primary400;
     }
 
     ^custom-selection-view {
@@ -742,7 +742,7 @@ foam.CLASS({
         ^ {
           border: 0;
           border-top: 1px solid #f4f4f9;
-          color: /*%PRIMARY3%*/ #406dea;
+          color: $primary400;
           display: flex;
           font-size: 1.2rem;
           justify-content: flex-start;
@@ -751,7 +751,7 @@ foam.CLASS({
         }
 
         ^:hover {
-          color: /*%PRIMARY2%*/ #144794;
+          color: $primary500;
           cursor: pointer;
         }
 

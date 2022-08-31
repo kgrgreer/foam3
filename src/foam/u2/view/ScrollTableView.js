@@ -86,7 +86,7 @@
       border-radius: 0px;
       padding: 0px;
       height: auto;
-      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+      border-bottom: 2px solid $primary400;
     }
     ^counters:hover {
       cursor: pointer;

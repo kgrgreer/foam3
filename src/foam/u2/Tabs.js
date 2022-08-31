@@ -51,7 +51,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^tab.selected {
-      border-bottom: 3px solid /*%PRIMARY3%*/ #406dea;
+      border-bottom: 3px solid $primary400;
     }
   `
 });

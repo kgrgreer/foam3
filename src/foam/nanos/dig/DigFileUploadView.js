@@ -79,7 +79,7 @@ foam.CLASS({
       font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
     ^ .boxless-for-drag-drop {
       border: dashed 4px #a4b3b8;

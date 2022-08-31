@@ -45,7 +45,7 @@ foam.CLASS({
       min-height: 2.5vh;
     }
     ^ .foam-u2-borders-CardBorder^selected {
-      border-color: /*%PRIMARY3%*/ #406dea;
+      border-color: $primary400;
     }
 
     ^ .foam-u2-borders-CardBorder^disabled {
@@ -54,7 +54,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder^selected-disabled {
-      border-color: /*%PRIMARY5%*/ #b2c4f6;
+      border-color: $primary50;
       background-color: /*%GREY5%*/ #f5f7fa;
       color: /*%GREY2%*/ #9ba1a6;
     }

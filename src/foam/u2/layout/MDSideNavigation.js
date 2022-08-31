@@ -174,7 +174,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-TreeViewRow-selected > .foam-u2-view-TreeViewRow-heading {
-        border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
+        border-left: 1rem solid $primary400;
     }
 
     ^ .foam-u2-view-TreeViewRow-heading {

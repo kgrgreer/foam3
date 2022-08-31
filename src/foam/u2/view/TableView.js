@@ -73,7 +73,7 @@ foam.CLASS({
      * OTHER
      */
     ^selected {
-      background: /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50;
     }
 
     ^noselect {

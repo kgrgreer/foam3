@@ -72,14 +72,14 @@ foam.CLASS({
       text-align: center;
       color: #ffffff;
       cursor: pointer;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
-      background-color: /*%PRIMARY3%*/ #406dea;
+      border: 1px solid $primary400;
+      background-color: $primary400;
       margin-left: 20px;
       margin-top: 19px;
     }
     ^ .update-BTN:hover {
       opacity: 0.9;
-      border: 1px solid /*%PRIMARY3%*/ #406dea;
+      border: 1px solid $primary400;
     }
     ^ .check-Box{
       border: solid 1px rgba(164, 179, 184, 0.5);
