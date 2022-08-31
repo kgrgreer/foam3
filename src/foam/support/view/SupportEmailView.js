@@ -56,7 +56,7 @@ foam.CLASS({
     ^ .Rectangle-11-Copy {
       width: 1027px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       margin: auto;
     }
     ^ .title {
@@ -70,7 +70,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 30px;
@@ -88,7 +88,7 @@ foam.CLASS({
       width: 960px;
       height: 35px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^ .No-support-email-con {
       width: 183px;
@@ -100,7 +100,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin-left: 389px;
       margin-right: 388px
     }

@@ -1376,7 +1376,6 @@ foam.LIB({
         foundTokens[tokensToFind[i]] = { sanitizedToken: sanitizedToken, value: replacement}
       }
       return text.replace(tokenPattern, function(match) {
-        if ( ! foundTokens[match].value ) console.log(foundTokens[match].value, foundTokens[match].sanitizedToken)
         return foundTokens[match] ? `/*${foundTokens[match].sanitizedToken}*/ ${foundTokens[match].value}` : '/* Token not found */';
       });
     }

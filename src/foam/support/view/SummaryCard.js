@@ -15,7 +15,7 @@ foam.CLASS({
     ^ {
       display: inline-block;
       width: 145px;
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       height: 100px;
       vertical-align: top;
       margin-left: 6px;

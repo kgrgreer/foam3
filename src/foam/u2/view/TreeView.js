@@ -247,14 +247,6 @@ foam.CLASS({
               enableClass('selected', this.selected_$).
               // make not be a button so that other buttons can be nested              setNodeName('span').
               addClass(this.myClass('button')).
-              style({
-                'fill': this.slot(function(selected, id) {
-                  if ( selected && foam.util.equals(selected.id, id) ) {
-                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
-                  }
-                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
-                }, this.selection$, this.data$.dot('id'))
-              }).
             end().
           endContext().
         end().

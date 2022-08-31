@@ -31,7 +31,7 @@ foam.CLASS({
     }
 
     ^subTitle {
-      color: /*%GREY1%*/ #494F59;
+      color: $grey700;
       width: 85%;
       display: inline-block;
       padding-bottom: 1em;

@@ -46,24 +46,24 @@ foam.CLASS({
   ],
   css: `
     ^:hover:not(:disabled):not(:active):not(.selected) {
-      background-color: $backgroundColor$hover;
-      color: $backgroundColor$hover$foreground;
+      background-color: $NavButtonBackgroundColor$hover;
+      color: $NavButtonBackgroundColor$hover$foreground;
     }
     ^:hover:not(:disabled):not(:active):not(.selected) svg {
-      fill: $backgroundColor$hover$foreground;
+      fill: $NavButtonBackgroundColor$hover$foreground;
     }
     ^:active, ^.selected {
-      background-color: $backgroundColor$hover;
-      color:  $selectedLabelColor;
+      background-color: $NavButtonBackgroundColor$hover;
+      color:  $NavButtonSelectedLabelColor;
     }
     ^:active svg,^.selected svg {
-      fill: $selectedIconColor;
+      fill: $NavSelectedIconColor;
     }
     ^{
-      color: $backgroundColor$foreground;
+      color: $NavButtonBackgroundColor$foreground;
     }
     ^ svg {
-      fill: $backgroundColor$foreground;
+      fill: $NavButtonBackgroundColor$foreground;
     }
   `
 });
