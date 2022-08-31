@@ -967,6 +967,7 @@ foam.POM({
     { name: "foam/u2/wizard/debug/WizardInspector",                   flags: "web" },
     { name: "foam/u2/wizard/AlternateFlow",                           flags: "web" },
     { name: "foam/u2/wizard/axiom/WizardAction",                      flags: "web" },
+    { name: "foam/u2/wizard/axiom/NullWizardAction",                  flags: "web" },
     { name: "foam/u2/wizard/axiom/AlternateFlowAction",               flags: "web" },
     { name: "foam/u2/wizard/WizardPosition",                          flags: "js|java" },
     { name: "foam/u2/wizard/WizardStatus",                            flags: "web" },
