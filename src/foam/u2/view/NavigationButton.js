@@ -57,7 +57,7 @@ foam.CLASS({
       color:  $NavButtonSelectedLabelColor;
     }
     ^:active svg,^.selected svg {
-      fill: $selecteNavSelectedIconColordIconColor;
+      fill: $NavSelectedIconColor;
     }
     ^{
       color: $NavButtonBackgroundColor$foreground;
