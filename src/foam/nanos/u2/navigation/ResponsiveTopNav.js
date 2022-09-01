@@ -108,7 +108,7 @@ foam.CLASS({
         .end()
         // TODO: Make Responsive
         .add(this.slot(function(displayWidth) {
-          if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.LG.ordinal ) {
+          if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
             return this.E().addClass(this.myClass('components-container'))
             .start({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .show(self.hasNotifictionMenuPermission$)

@@ -180,8 +180,10 @@ foam.CLASS({
 
   listeners: [
     function maybeCloseNav() {
-      if ( this.displayWidth.ordinal < this.DisplayWidth.LG.ordinal ) {
+      if ( this.displayWidth.ordinal < this.DisplayWidth.MD.ordinal ) {
         this.isMenuOpen = false;
+      } else {
+        this.isMenuOpen = true;
       }
     },
     function adjustTopBarHeight() {
