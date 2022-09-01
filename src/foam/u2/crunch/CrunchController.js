@@ -359,7 +359,6 @@ foam.CLASS({
           wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
         }
       }
-      return;
     },
 
     function maybeLaunchInterceptView(intercept) {
