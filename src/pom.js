@@ -1000,6 +1000,7 @@ foam.POM({
     { name: "foam/u2/wizard/wao/SplitWAO",                            flags: "web" },
     { name: "foam/u2/wizard/wao/DAOWAO",                              flags: "web" },
     { name: "foam/u2/wizard/wao/ProxyWAO",                            flags: "web" },
+    { name: "foam/u2/wizard/wao/TopicWAO",                            flags: "web" },
     { name: "foam/u2/wizard/wao/NullWAO",                             flags: "web" },
     { name: "foam/u2/wizard/wao/XORMinMaxWAO",                        flags: "web" },
     { name: "foam/u2/wizard/wao/PrerequisiteWAO",                     flags: "web" },
