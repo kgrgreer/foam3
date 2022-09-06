@@ -11,11 +11,13 @@ foam.CLASS({
   documentation: `
     A customizable model to configure any DAOController
   `,
+  implements: [ 'foam.mlang.Expressions' ],
 
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.CannedQuery',
-    'foam.comics.v2.namedViews.NamedViewCollection'
+    'foam.comics.v2.namedViews.NamedViewCollection',
+    'foam.mlang.order.Desc'
   ],
 
   messages: [
@@ -24,6 +26,15 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'StringArray',
+      name: 'order',
+      factory: function() { return []; }
+    },
+    {
+      class: 'Boolean',
+      name: 'orderDesc'
+    },
     {
       name: 'click',
       documentation: 'Used to override the default click listener exported by DAOController',
@@ -64,6 +75,8 @@ foam.CLASS({
         if ( predicate ) {
           dao = dao.where(predicate);
         }
+        dao = this.orderDesc ? dao.orderBy.apply(dao, this.order.map(p => this.DESC(this.of.getAxiomByName(p)))) :
+          dao.orderBy.apply(dao, this.order.map(p => this.of.getAxiomByName(p)));
         return dao;
       }
     },
