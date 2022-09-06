@@ -107,7 +107,7 @@ foam.CLASS({
     {
       name: 'marketingHeader',
       class: 'String',
-      documentation: `This is the header that can be customized for each product experience`,
+      documentation: 'This is the header that can be customized for each product experience',
       displayWidth: 70,
       section: 'basicInfo',
       includeInDigest: false,
