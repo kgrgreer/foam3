@@ -19,7 +19,9 @@ foam.CLASS({
     'loginSuccess',
     'menuDAO',
     'pushMenu',
-    'theme'
+    'theme',
+    'isMenuOpen?',
+    'displayWidth?'
   ],
 
   requires: [
@@ -28,15 +30,22 @@ foam.CLASS({
     'foam.dao.ArraySink'
   ],
 
+  cssTokens: [
+    {
+      name: 'menuBackground',
+      value: '$white'
+    }
+  ],
+
   css: `
   ^ input[type="search"] {
     width: 100%;
   }
 
   ^ {
-    background: /*%WHITE%*/ #FFFFFF;
-    border-right: 1px solid /*%GREY4%*/ #e7eaec;
-    color: /*%GREY2%*/ #9ba1a6;
+    background: $menuBackground;
+    border-right: 1px solid $grey200;
+    color: $grey500;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -46,10 +55,10 @@ foam.CLASS({
     width: 100%;
   }
 
-    ^ .side-nav-view,
-    ^ .side-nav-view .foam-u2-view-TreeViewRow  {
-      width: 100%;
-    }
+  ^ .side-nav-view,
+  ^ .side-nav-view .foam-u2-view-TreeViewRow  {
+    width: 100%;
+  }
 
   ^search {
     box-sizing: border-box;
@@ -122,7 +131,7 @@ foam.CLASS({
           relationship: foam.nanos.menu.MenuMenuChildrenRelationship,
           startExpanded: true,
           query: self.menuSearch$,
-          onClickAddOn: function(data) { self.openMenu(data); },
+          onClickAddOn: function(data, hasChildren) { self.openMenu(data, hasChildren); },
           selection$: self.currentMenu$.map(m => m),
           formatter: function(data) {
             this.translate(data.id + '.label', data.label);
@@ -133,8 +142,10 @@ foam.CLASS({
         .end();
     },
 
-    function openMenu(menu) {
+    function openMenu(menu, hasChildren) {
       if ( menu.handler ) {
+        if ( ! hasChildren && this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal )
+          this.isMenuOpen = false;
         this.pushMenu(menu, true);
       }
     }

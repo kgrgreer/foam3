@@ -331,6 +331,7 @@ foam.CLASS({
       name: 'theme',
       postSet: function(o, n) {
         if ( o && n && o.equals(n)) return;
+        this.__subContext__.cssTokenOverrideService.maybeReload();
         this.pub('themeChange');
       }
     },

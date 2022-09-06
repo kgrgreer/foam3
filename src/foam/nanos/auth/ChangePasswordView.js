@@ -51,10 +51,10 @@ foam.CLASS({
     /* subtitle */
     /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
     ^ ^section .subtitle {
-      color: /*%GREY2%*/ #9ba1a6;
+      color: $grey500;
     }
     ^link {
-      color: /*%PRIMARY3%*/ #604aff;
+      color: $primary400;
       cursor: pointer;
       text-align: center;
       padding-top: 1.5vh;

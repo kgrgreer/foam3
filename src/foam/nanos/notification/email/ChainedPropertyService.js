@@ -39,14 +39,8 @@ foam.CLASS({
       javaCode:
       `
       User user = (User) emailMessage.findUser(getX());
-      Session session = new Session();
-      session.setUserId(user.getId());
-      X userX = session.applyTo(getX());
-      session.setContext(userX);
-      userX = userX.put(Session.class, session);
-      if ( group == null ) {
-        group = ((Group) userX.get("group")).getId();
-      }
+      X userX = foam.util.Auth.sudo(getX(), user);
+      group = ((Group) userX.get("group")).getId();
 
       Map args = templateArgs;
       if ( args == null ||

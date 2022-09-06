@@ -17,6 +17,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'crunchController?',
     'ctrl',
     'config? as importedConfig',
     'popupMode',
@@ -29,7 +30,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.stack.StackBlock',
     'foam.u2.wizard.ScrollingStepWizardView',
-    'foam.u2.wizard.StepWizardConfig'
+    'foam.u2.wizard.StepWizardConfig',
+    'foam.u2.wizard.WizardStatus'
   ],
 
   properties: [
@@ -79,12 +81,22 @@ foam.CLASS({
           if ( ! e ) return;
           onError(e);
         }));
+        
         this.wizardStackBlock.removed.sub(() => {
+          if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
+            this.wizardController.status = this.WizardStatus.DISCARDED;
+          }
           resolve();
         })
+        
+        // If this is published to, wizard status will stay IN_PROGRESS
         this.flowAgent?.sub(this.cls_.name,() => {
           resolve();
         })
+
+        if ( this.crunchController ) {
+          this.crunchController.lastActiveWizard = this.wizardController;
+        }
         this.stack.push(this.wizardStackBlock);
       });
     }

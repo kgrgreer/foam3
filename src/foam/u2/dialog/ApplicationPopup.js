@@ -40,27 +40,23 @@ foam.CLASS({
     }
 
     ^header {
-      display: flex;
-      justify-content: space-between;
-      flex-basis: 64px;
-      border-bottom: 1px solid /*%GREY4%*/ #777777;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      border-bottom: 1px solid $grey300;
       padding: 12px;
     }
 
     ^header-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 12px;
+      justify-content: flex-start;
     }
 
     ^header-right {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      right: 12px;
+      justify-content: flex-end;
     }
 
     ^header-center {
@@ -68,7 +64,6 @@ foam.CLASS({
       text-align: center;
       align-items: center;
       justify-content: center;
-      flex: 1;
     }
 
     ^body {
@@ -82,7 +77,7 @@ foam.CLASS({
     }
 
     ^fullscreen ^body {
-      max-height: 100vh;
+      max-height: var(--max-height, 100vh);
     }
 
     ^logo img, ^logo svg {
@@ -99,7 +94,7 @@ foam.CLASS({
     ^footer {
       padding: 1em;
       text-align: center;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       flex-shrink: 0;
     }
   `,
@@ -210,7 +205,7 @@ foam.CLASS({
             .call(function() { content = this; })
           .end()
           .start()
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .addClasses([this.myClass('footer'), 'p-legal-light']).show(this.footerString$)
             .add(this.footerString$)
           .end()
         .end();

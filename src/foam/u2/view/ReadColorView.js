@@ -22,7 +22,7 @@ foam.CLASS({
     }
 
     ^black {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
 
     ^white {

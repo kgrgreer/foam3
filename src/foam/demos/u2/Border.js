@@ -53,13 +53,13 @@ foam.CLASS({
       padding: 8px;
     }
     ^tab.selected {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       border-bottom: 1px solid white;
       position: relative;
       z-index: 1;
     }
     ^bottomEdge {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       height: 2.5px;
       left: 0;
       position: absolute;
@@ -67,7 +67,7 @@ foam.CLASS({
       width: 100%;
     }
     ^content {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       border: 1px solid black;
       left: -4px;
       margin: 4px;
@@ -150,14 +150,14 @@ foam.CLASS({
 
   css: `
     ^ {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background:/*%WHITE%*/ #ffffff; }
+    ^content { padding: 6px; width: 300px; height: 200px; background:$white; }
   `,
 
   methods: [
@@ -181,8 +181,8 @@ foam.CLASS({
   css: `
     ^ { background: gray; padding: 10px; display: inline-block; }
     ^title { padding: 6px; align-content: center; background: aliceblue; }
-    ^footer { padding: 6px; align-content: left; background:/*%WHITE%*/ #ffffff; }
-    ^content { padding: 6px; width: 300px; height: 200px; background:/*%WHITE%*/ #ffffff; }
+    ^footer { padding: 6px; align-content: left; background:$white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background:$white; }
   `,
 
   properties: [
@@ -221,7 +221,7 @@ foam.CLASS({
       padding: 10px 4px;
     }
     ^title {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       color: #666;
       display: inline;
       font-size: larger;
@@ -263,7 +263,7 @@ foam.CLASS({
       padding: 10px;
     }
     ^title {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       color: #666;
       display: inline;
       padding: 3px;
@@ -271,7 +271,7 @@ foam.CLASS({
       width: 33%;
     }
     ^content {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       display: inline-block;
       height: 200px;
       width: 66%;
@@ -313,7 +313,7 @@ foam.CLASS({
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
     }
     ^control {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       display: inline;
       float: right;
       height: 30px;
@@ -331,13 +331,13 @@ foam.CLASS({
       width: 100%;
     }
     ^title {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       padding: 3px;
       position: relative;
       top: -3px;
     }
     ^content {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       display: initial;
      //  height: 200px;
       position: relative;
@@ -417,7 +417,7 @@ foam.CLASS({
     ^.expanded {
     }
     ^control {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       display: inline;
       float: right;
       height: 30px;
@@ -435,13 +435,13 @@ foam.CLASS({
       width: 100%;
     }
     ^title {
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       padding: 3px;
       position: relative;
       top: -3px;
     }
     ^content {
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       height: 200px;
       width: 300px;
     }
@@ -509,7 +509,7 @@ foam.CLASS({
 
   css: `
     ^ { background: gray; padding: 10px; display: inline-flex; }
-    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: /*%WHITE%*/ #ffffff; }
+    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: $white; }
   `,
 
   properties: [
