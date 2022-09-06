@@ -169,8 +169,7 @@ foam.CLASS({
       ],
       order: 20,
       gridColumns: 6,
-      columnPermissionRequired: true,
-      trim:true
+      columnPermissionRequired: true
     },
     {
       class: 'Boolean',
@@ -226,8 +225,7 @@ foam.CLASS({
       order: 70,
       gridColumns: 6,
       includeInDigest: true,
-      containsPII: true,
-      trim:true
+      containsPII: true
    },
     {
       class: 'String',
@@ -238,8 +236,7 @@ foam.CLASS({
       gridColumns: 6,
       includeInDigest: true,
       containsPII: true,
-      columnPermissionRequired: true,
-      trim:true
+      columnPermissionRequired: true
     },
     {
       class: 'String',
@@ -250,8 +247,7 @@ foam.CLASS({
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      containsPII: true,
-      trim:true
+      containsPII: true
     },
     {
       class: 'String',
@@ -263,8 +259,7 @@ foam.CLASS({
       gridColumns: 6,
       includeInDigest: false,
       containsPII: true,
-      columnPermissionRequired: true,
-      trim:true
+      columnPermissionRequired: true
     },
     {
       class: 'Date',
