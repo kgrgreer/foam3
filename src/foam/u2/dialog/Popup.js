@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.u2.dialog',
   name: 'Popup',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.borders.ControlBorder',
 
   documentation: `This is a container for a whole-screen, modal overlay. It
     fills the viewport with a transparent grey background, and then
@@ -70,7 +70,7 @@ foam.CLASS({
       top: 0;
     }
     ^inner {
-      height: auto;
+      height: 85vh;
       width: auto;
       display: flex;
       justify-content: center;
