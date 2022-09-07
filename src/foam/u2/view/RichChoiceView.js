@@ -270,14 +270,6 @@ foam.CLASS({
       color: /*%DESTRUCTIVE3%*/ #d9170e;
       cursor: pointer;
     }
-
-    .net-nanopay-account-ui-AccountSelectionView img {
-      margin-right: 0px !important;
-    }
-
-    .net-nanopay-ui-CurrencyChoiceSelectionView {
-      gap: 0.5rem !important;
-    }
   `,
 
   properties: [
