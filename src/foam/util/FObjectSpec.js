@@ -31,6 +31,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.util',
   name: 'FObjectSpecArray',
@@ -51,4 +52,3 @@ foam.CLASS({
     [ 'displayWidth', 80 ]
   ]
 });
-
