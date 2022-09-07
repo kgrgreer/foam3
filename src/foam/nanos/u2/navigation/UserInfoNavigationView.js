@@ -13,13 +13,15 @@ foam.CLASS({
   requires: [
     'foam.nanos.menu.Menu',
     'foam.core.Action',
-    'foam.u2.view.OverlayActionListView'
+    'foam.u2.view.OverlayActionListView',
+    'foam.dao.FnSink'
   ],
 
   imports: [
     'theme',
     'subject',
-    'translationService'
+    'translationService',
+    'menuDAO'
   ],
 
   css: `
@@ -65,10 +67,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'horizontal'
+    },
+    {
+      name: 'menuItems',
+      class: 'Array'
     }
   ],
 
   methods: [
+    function init() {
+      this.onDetach(this.menuDAO.listen(this.FnSink.create({ fn: this.onMenuDAOUpdated })));
+    },
     async function render() {
       var self = this;
       var X    = this.__subContext__;
@@ -95,30 +104,51 @@ foam.CLASS({
               .end();
         }));
 
-      // We need to add menus from settings (and then add menus from theme.settingsRootMenu)
-      // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
-      // Doing this prevents us from creating the same menu for each setting.
-      let menu = this.Menu.create({ id: 'settings' });
-      let menuArray = (await menu.children.select()).array;
-      
-      // add theme.settingsRootMenu menus
-      if ( this.theme.settingsRootMenu !== 'settings' ) {
-        menu = this.Menu.create({ id: this.theme.settingsRootMenu });
-        menuArray = menuArray.concat((await menu.children.select()).array);
-      }
-
-      menuArray.sort((a, b) => a.order - b.order);
-
       this
       .addClass(this.myClass())
       .start(this.OverlayActionListView, {
         label: mainLabel,
-        data: menuArray,
+        data$: this.menuItems$,
         obj: self,
         buttonStyle: 'UNSTYLED'
       })
         .addClass(this.myClass('dropdown'))
       .end();
+    },
+    function refreshEntries() {
+      // We need to add menus from settings (and then add menus from theme.settingsRootMenu)
+      // because some menus are used in both settings and theme.settingsRootMenu (e.g., sign-out).
+      // Doing this prevents us from creating the same menu for each setting.
+      let menu = this.Menu.create({ id: 'settings' });
+      var self = this;
+      menu.children.select().then(settingsMenuResult => {
+        var settingsMenuResultArray = settingsMenuResult.array;
+        let settingsMenuName = self.theme.settingsRootMenu;
+        if ( settingsMenuName !== 'settings' ) {
+          let customMenu = self.Menu.create({ id: settingsMenuName });
+          customMenu.children.select().then( customSettingsMenuResult => {
+            let customSettingsMenuResultArray = customSettingsMenuResult.array;
+            settingsMenuResultArray.concat(customSettingsMenuResultArray);
+            settingsMenuResultArray.sort((a, b) => a.order - b.order);
+            self.menuItems = settingsMenuResultArray;
+            console.log('self.menuItems set (custom menu present)', self.menuItems);
+          });
+        } else {
+          settingsMenuResultArray.sort((a, b) => a.order - b.order);
+          self.menuItems = settingsMenuResultArray;
+          console.log('self.menuItems set', self.menuItems);
+        }
+      });
     }
+  ],
+  listeners: [
+    {
+      name: 'onMenuDAOUpdated',
+      code: function() {
+        console.log('onMenuDAOUpdated(): called!');
+        this.refreshEntries();
+      }
+    },
+
   ]
 });
