@@ -140,12 +140,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^chevron::before {
-      color: #8D9090;
-      content: '▾';
-      padding-left: 4px;
-    }
-
     ^ {
       display: flex;
       position: relative;
@@ -201,6 +195,9 @@ foam.CLASS({
       -webkit-appearance: none;
       cursor: pointer;
       font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
@@ -272,6 +269,18 @@ foam.CLASS({
     ^clear-btn:hover {
       color: /*%DESTRUCTIVE3%*/ #d9170e;
       cursor: pointer;
+    }
+
+    .net-nanopay-account-ui-AccountSelectionView img {
+      margin-right: 0px !important;
+    }
+
+    .net-nanopay-account-ui-AccountSelectionView {
+      gap: 0.5rem;
+    }
+
+    .net-nanopay-ui-CurrencyChoiceSelectionView {
+      gap: 0.5rem !important;
     }
   `,
 
@@ -524,9 +533,6 @@ foam.CLASS({
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
                   }))
-                .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;

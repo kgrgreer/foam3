@@ -11,7 +11,14 @@ foam.CLASS({
 
   documentation: 'View for formatting cents into dollars.',
 
-  css: '^:read-only { border: none; background: rgba(0,0,0,0); }',
+  css: `
+    ^:read-only {
+      border: none; background: rgba(0,0,0,0);
+    }
+    .net-nanopay-ui-CurrencyAmountView input {
+      padding-left: 0px !important;
+    }
+  `,
 
   properties: [
     ['precision', 2],
