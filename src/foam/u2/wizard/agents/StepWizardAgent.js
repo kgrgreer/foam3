@@ -54,26 +54,24 @@ foam.CLASS({
 
       window.lastWizardController = this.wizardController;
 
-      const controller = this.config.controller$create();
+      const controller = usingFormController ?
+        this.config.controller$create() : this.wizardController;
 
       const view = usingFormController ? {
         // new approach
         ...controller.defaultView,
         data: controller
-        // ...this.config.controller,
-        // view: this.config.wizardView 
       } : {
         // deprecated
         ...this.config.wizardView
       };
 
-      // Temporary; NP-7869 should simplify this
+      // Temporary; NP-7869 should remove this
       if ( usingFormController ) {
         controller.data = this.wizardController;
-        view.data = controller;
-      } else {
-        view.data = this.wizardController;
       }
+
+      view.data = controller;
 
       view.onClose = this.resolveAgent;
 

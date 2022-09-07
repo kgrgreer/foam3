@@ -65,9 +65,6 @@ foam.CLASS({
         }
 
         return { class: 'foam.u2.wizard.ScrollingStepWizardView' };
-        return controller
-          ? { class: 'foam.u2.wizard.views.FlexibleWizardContentsView' }
-          : { class: 'foam.u2.wizard.ScrollingStepWizardView' };
       }
     },
     {
