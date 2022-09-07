@@ -28,11 +28,8 @@ foam.CLASS({
   properties: [
     {
       class: 'StringArray',
-      name: 'order'
-    },
-    {
-      class: 'Boolean',
-      name: 'orderDesc'
+      name: 'order',
+      factory: function() { return []; }
     },
     {
       name: 'click',
@@ -74,8 +71,8 @@ foam.CLASS({
         if ( predicate ) {
           dao = dao.where(predicate);
         }
-        dao = this.orderDesc ? dao.orderBy.apply(dao, this.order.map(p => this.DESC(this.of.getAxiomByName(p)))) :
-          dao.orderBy.apply(dao, this.order.map(p => this.of.getAxiomByName(p)));
+        dao = dao.orderBy.apply(dao, this.order.map(p => p.split('-').length > 1 ?
+          this.DESC(this.of.getAxiomByName(p.split('-')[1])) : this.of.getAxiomByName(p.split('-')[0])));
         return dao;
       }
     },
@@ -410,3 +407,4 @@ foam.CLASS({
     }
   ]
 });
+
