@@ -54,16 +54,27 @@ foam.CLASS({
 
       window.lastWizardController = this.wizardController;
 
+      const controller = this.config.controller$create();
+
       const view = usingFormController ? {
         // new approach
-        ...this.config.controller,
-        view: this.config.wizardView 
+        ...controller.defaultView,
+        data: controller
+        // ...this.config.controller,
+        // view: this.config.wizardView 
       } : {
         // deprecated
         ...this.config.wizardView
       };
 
-      view.data = this.wizardController;
+      // Temporary; NP-7869 should simplify this
+      if ( usingFormController ) {
+        controller.data = this.wizardController;
+        view.data = controller;
+      } else {
+        view.data = this.wizardController;
+      }
+
       view.onClose = this.resolveAgent;
 
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {

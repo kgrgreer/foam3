@@ -45,7 +45,7 @@ foam.CLASS({
       value: false
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'foam.util.FObjectSpec',
       name: 'controller'
     },
     {
@@ -60,6 +60,11 @@ foam.CLASS({
       `,
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       expression: function (controller) {
+        if ( controller ) {
+          return controller.defaultView;
+        }
+
+        return { class: 'foam.u2.wizard.ScrollingStepWizardView' };
         return controller
           ? { class: 'foam.u2.wizard.views.FlexibleWizardContentsView' }
           : { class: 'foam.u2.wizard.ScrollingStepWizardView' };

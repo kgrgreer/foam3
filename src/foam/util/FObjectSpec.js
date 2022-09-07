@@ -28,6 +28,26 @@ foam.CLASS({
     [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
     [ 'displayWidth', 80 ],
     [ 'view', 'foam.u2.view.MapView' ]
+  ],
+
+  methods: [
+    function installInProto(proto) {
+      this.SUPER(proto);
+      const self = this;
+      Object.defineProperty(proto, self.name + '$create', {
+        get: function getCreateFromFObjectSpec () {
+          return () => {
+            const spec = this[self.name];
+            const cls = this.__context__.lookup(spec.class);
+            if ( ! cls ) {
+              foam.assert(false, 'FObjectSpec specifies unknown class: ', spec.class)
+              return cls;
+            }
+            return cls.create(spec);
+          }
+        }
+      })
+    }
   ]
 });
 
