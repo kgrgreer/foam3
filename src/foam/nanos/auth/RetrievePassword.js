@@ -14,6 +14,7 @@ foam.CLASS({
     'ctrl',
     'resetPasswordToken',
     'stack',
+    'theme',
     'translationService',
   ],
 
@@ -94,7 +95,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
+          this.stack.push({ ...this.theme.loginView, mode_: 'SignIn' }, this);
         }).catch((err) => {
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
               this.ctrl.add(this.NotificationMessage.create({

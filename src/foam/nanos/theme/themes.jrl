@@ -8,6 +8,7 @@ p({
   "topNavigation":"foam.nanos.u2.navigation.ResponsiveTopNav",
   "defaultMenu": ["admin.data"],
   "logo":"images/foam_red.png",
+  "loginView":{"class":"foam.u2.view.LoginView"},
   "font1":"Arial",
   "primaryColor":"#1e1f21",
   "secondaryColor":"#406dea",
