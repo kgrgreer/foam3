@@ -275,10 +275,6 @@ foam.CLASS({
       margin-right: 0px !important;
     }
 
-    .net-nanopay-account-ui-AccountSelectionView {
-      gap: 0.5rem;
-    }
-
     .net-nanopay-ui-CurrencyChoiceSelectionView {
       gap: 0.5rem !important;
     }
