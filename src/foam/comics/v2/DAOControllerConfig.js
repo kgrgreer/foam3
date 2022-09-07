@@ -28,8 +28,7 @@ foam.CLASS({
   properties: [
     {
       class: 'StringArray',
-      name: 'order',
-      factory: function() { return []; }
+      name: 'order'
     },
     {
       name: 'click',
