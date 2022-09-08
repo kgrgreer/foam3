@@ -38,6 +38,7 @@ foam.CLASS({
     }
 
     ^inner {
+      height: 85vh;
       flex-direction: column;
       overflow: hidden;
     }
@@ -104,19 +105,13 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       justify-contents: center;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2.4rem;
       padding: 2.4rem 0;
       text-align: center;
       transition: all 150ms;
     }
 
     ^inner-title-small {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 1.6rem;
-      padding: 1.2rem 40pt;
+      padding: 1.2rem 0;
     }
   `,
 
@@ -250,7 +245,9 @@ foam.CLASS({
             if ( ! title ) return this.E();
             return this.E()
               .addClass(self.myClass('inner-title'))
+              .addClass('h300')
               .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
+              .enableClass('h500', this.isScrolled$)
               .add(title);
           }))
           .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
