@@ -49,10 +49,6 @@ foam.CLASS({
     ^botShadow::after {
       opacity: 1;
     }
-    ^::-webkit-scrollbar {
-      width: 0;  /* Remove scrollbar space */
-      background: transparent;  /* Optional: just make scrollbar invisible */
-    }
   `,
 
   properties: [
@@ -73,10 +69,22 @@ foam.CLASS({
         .addClass()
         .enableClass(this.myClass('topShadow'), this.topShadow$)
         .enableClass(this.myClass('botShadow'), this.botShadow$)
-        .start('', {}, this.topEdge_$).attr('data-pos', 'topShadow').addClass('edge').end()
+        .start('', {}, this.topEdge_$)
+          .attrs({
+            'data-pos': 'topShadow',
+            'aria-hidden': true
+          })
+          .addClass('edge')
+        .end()
         .start()
           .addClass(this.myClass('reverse'))
-          .start('', {}, this.botEdge_$).attr('data-pos', 'botShadow').addClass('edge').end()
+          .start('', {}, this.botEdge_$)
+          .attrs({
+            'data-pos': 'botShadow',
+            'aria-hidden': true
+          })
+            .addClass('edge')
+          .end()
           .tag('div', null, this.content$)
         .end()
         ;
