@@ -166,19 +166,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        return;
-      }
-    },
-    {
       name: 'nextStep',
       code: async function(x) {
         await this.finalRedirectionCall(x);
@@ -255,6 +242,20 @@ foam.CLASS({
             this.isLoading_ = false;
           });
       }
+    },
+    {
+      name: 'footer',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        window.history.replaceState(null, null, window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      isAvailable: false,
+      isEnabled: false,
+      code: () => {}
     }
   ]
 });

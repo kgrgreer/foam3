@@ -74,7 +74,7 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.menu.Menu","id":"admin.permissionMatrix","label":"Permission Matrix","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.PermissionTableView"}},"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","authenticate":false,"id":"admin.permissionMatrix","label":"Permission Matrix","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.PermissionTableView"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.permissions","label":"Permissions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"permissionDAO"}},"parent":"admin"})
 p({
   "class":"foam.nanos.menu.Menu",

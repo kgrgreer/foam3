@@ -209,7 +209,12 @@ foam.CLASS({
       },
       hidden: true
     },
-    { class: 'Boolean', name: 'shouldResize' }
+    { class: 'Boolean', name: 'shouldResize' },
+    {
+      class: 'String',
+      name: 'modelCls',
+      documentation: 'if modelCls is provided, the model is created directly from this instead of mode'
+    }
   ],
 
   messages: [
@@ -220,7 +225,17 @@ foam.CLASS({
   methods: [
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
-      this.param.dao_ = !! this.param.dao_ ? this.param.dao_ : this.loginVariables.dao_;
+      this.param = Object.assign(this.loginVariables, this.param)
+
+      if ( this.modelCls ) {
+        try {
+          this.model = (foam.lookup(this.modelCls))?.create(this.param, this);
+          return;
+        } catch (err) {
+          console.warn('Error occurred when looking up modelCls', this.modelCls, err);
+        }
+      }      
+
       // Instantiating model based on mode_
       if ( this.mode_ === this.MODE1 ) {
         this.model = this.SignUp.create(this.param, this);
@@ -242,7 +257,7 @@ foam.CLASS({
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
-        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
+        .start().show(this.imgPath$).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')
@@ -255,28 +270,38 @@ foam.CLASS({
         .enableClass(self.myClass('fullWidth'), self.shouldResize$)
         .startContext({ data: this }).tag(this.MODEL).endContext()
         .br()
-      // first footer
       .br()
       .start().addClass(this.myClass('center-footer'))
-        .start().addClass(this.myClass('signupLink'))
-          .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.FOOTER_LINK)
-            .on('click', () => {
-              this.model.footerLink(this.topBarShow_, this.param);
-            })
+        .startContext({ data: this.model, topBarShow_: this.topBarShow_, param: this.param })
+          // first footer
+          .start().addClass(this.myClass('signupLink'))
+            .start('span').addClass('bold-text-with-pad').add(this.model.footerTxt).end()
+            .start('span').add(this.model.FOOTER).end()
           .end()
-        .end()
-      // second footer
-        .start()
-          .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.SUB_FOOTER_LINK)
-            .on('click', () => {
-              this.model.subfooterLink();
-            })
+          // second footer
+          .start()
+            .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
+            .start('span').add(this.model.SUB_FOOTER).end()
           .end()
-        .end()
+        .endContext()
+        // .start().addClass(this.myClass('signupLink'))
+        //   .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
+        //   .start('span').addClass('link')
+        //     .add(this.model.FOOTER_LINK)
+        //     .on('click', async () => {
+        //       await this.model.footerLink(this.topBarShow_, this.param);
+        //     })
+        //   .end()
+        // .end()
+        // .start()
+        //   .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
+        //   .start('span').addClass('link')
+        //     .add(this.model.SUB_FOOTER_LINK)
+        //     .on('click', async () => {
+        //       await this.model.subfooterLink();
+        //     })
+        //   .end()
+        // .end()
       .end();
 
       // CREATE SPLIT VIEW

@@ -55,9 +55,9 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         focused: true
       },
-      visibilityExpression: function(disableIdentifier_) {
+      visibility: function(disableIdentifier_) {
         return disableIdentifier_ ?
-          foam.u2.Visibility.DISABLED : foam.u2.Visibility.RW;
+          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
       validationTextVisible: false
     },
@@ -86,24 +86,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.RetrievePassword'
-          }
-        }));
-      }
-    },
     {
       name: 'nextStep',
       code: async function(X) {
@@ -185,6 +167,28 @@ foam.CLASS({
             type: this.LogLevel.ERROR
           }));
         }
+      }
+    },
+    {
+      name: 'footer',
+      label: function() { debugger; return this.FOOTER_LINK; },
+      buttonStyle: 'LINK',
+      code: function(X) {
+        window.history.replaceState(null, null, window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      // label: function() { return this.SUB_FOOTER_LINK},
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.stack.push(X.data.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }));
       }
     }
   ]
