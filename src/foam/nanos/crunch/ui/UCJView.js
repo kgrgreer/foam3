@@ -118,8 +118,8 @@ foam.CLASS({
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
+        wizardSubject: subject,
         stack: stack,
-        subject: subject,
         controllerMode:
           this.mode == this.DisplayMode.RW
             ? this.ControllerMode.EDIT
