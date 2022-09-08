@@ -82,6 +82,9 @@ foam.CLASS({
         ;
       this.addObserver();
     },
+    // Starts an IntersectionObserver which invokes the onScrollUpdate listener
+    // whenever the number of edges (top and bottom) visible in the scrollable
+    // area changes.
     async function addObserver () {
       const root = await this.el();
       const options = {
