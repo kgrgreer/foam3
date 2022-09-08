@@ -117,8 +117,8 @@ foam.CLASS({
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
+        wizardSubject: subject,
         stack: stack,
-        subject: subject,
         controllerMode:
           this.mode == this.DisplayMode.RW
             ? this.ControllerMode.EDIT
@@ -198,7 +198,7 @@ foam.CLASS({
           this.stack.back();
           return;
         }
-  
+
         const rejectedApproval = this.config.approval.clone();
         rejectedApproval.status = this.ApprovalStatus.REJECTED;
         rejectedApproval.memo = 'Outdated Approval.';
@@ -207,7 +207,7 @@ foam.CLASS({
         this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
         this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
         this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-  
+
         this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
         this.pushMenu('approvals', true);
       } catch (e) {
