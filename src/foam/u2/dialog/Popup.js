@@ -70,7 +70,7 @@ foam.CLASS({
       top: 0;
     }
     ^inner {
-      height: 85vh;
+      height: auto;
       width: auto;
       display: flex;
       justify-content: center;
