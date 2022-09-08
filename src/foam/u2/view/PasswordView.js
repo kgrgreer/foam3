@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'stack',
     'theme?'
   ],
 
@@ -44,6 +45,11 @@ foam.CLASS({
     }
     .full-width-input-password:focus + ^input-image {
       opacity: 1;
+    }
+    ^link-text {
+      text-security:none;
+      -webkit-text-security:none;
+      -mox-text-security:none;
     }
   `,
 
@@ -118,6 +124,11 @@ foam.CLASS({
           .attr('src', this.visibilityIcon$)
           .on('mousedown', (e) => e.preventDefault())
           .on('click', () => this.visible())
+        .end()
+        
+        .start()
+          .addClass(this.myClass('link-text'))
+          .add(this.FORGOT_PASSWORD)
         .end();
     },
 
@@ -126,6 +137,23 @@ foam.CLASS({
       this.type = type;
       this.passwordInvisible = ! this.passwordInvisible;
       this.enableClass('property-password', this.passwordInvisible);
+    }
+  ],
+
+  actions: [
+    {
+      name: 'forgotPassword',
+      label: 'Forgot Password',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        debugger
+        X.stack.push(foam.u2.stack.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }, X));
+      }
     }
   ],
 

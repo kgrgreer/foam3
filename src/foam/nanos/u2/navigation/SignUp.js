@@ -33,7 +33,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Create an account' },
+    { name: 'TITLE_TXT', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
     { name: 'FOOTER_LINK', message: 'Sign in' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
@@ -161,6 +161,14 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'String',
+      name: 'title',
+      factory: function() {
+        return this.TITLE_TXT;
+      },
+      visibility: 'HIDDEN'
     }
   ],
 

@@ -55,9 +55,9 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         focused: true
       },
-      visibilityExpression: function(disableIdentifier_) {
+      visibility: function(disableIdentifier_) {
         return disableIdentifier_ ?
-          foam.u2.Visibility.DISABLED : foam.u2.Visibility.RW;
+          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
       validationTextVisible: false
     },

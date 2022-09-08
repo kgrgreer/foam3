@@ -209,7 +209,12 @@ foam.CLASS({
       },
       hidden: true
     },
-    { class: 'Boolean', name: 'shouldResize' }
+    { class: 'Boolean', name: 'shouldResize' },
+    {
+      class: 'String',
+      name: 'modelCls',
+      hidden: true
+    }
   ],
 
   messages: [
@@ -220,7 +225,11 @@ foam.CLASS({
   methods: [
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
-      this.param.dao_ = !! this.param.dao_ ? this.param.dao_ : this.loginVariables.dao_;
+      this.param = Object.assign(this.param, this.loginVariables);
+      if ( this.modelCls ) {
+        this.model = (foam.lookup(this.modelCls)).create(this.param, this);
+        return;
+      }
       // Instantiating model based on mode_
       if ( this.mode_ === this.MODE1 ) {
         this.model = this.SignUp.create(this.param, this);
@@ -242,7 +251,7 @@ foam.CLASS({
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
-        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
+        .start().show(this.imgPath$).addClass('topBar-logo-Back')
           .start('img')
             .attr('src', logo)
             .addClass('top-bar-img')
@@ -256,10 +265,10 @@ foam.CLASS({
         .startContext({ data: this }).tag(this.MODEL).endContext()
         .br()
       // first footer
-      .br()
+      // .br()
       .start().addClass(this.myClass('center-footer'))
         .start().addClass(this.myClass('signupLink'))
-          .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
+          // .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
           .start('span').addClass('link')
             .add(this.model.FOOTER_LINK)
             .on('click', () => {
