@@ -6,8 +6,8 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.views',
-  name: 'FocusWizardForm',
-  extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
+  name: 'FocusWizardView',
+  extends: 'foam.u2.View',
 
   imports: [ 'popup?' ],
 
@@ -65,6 +65,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'contentsView',
+      value: {
+        class: 'foam.u2.wizard.views.FlexibleWizardContentsView'
+      }
+    },
+    {
       class: 'Boolean',
       name: 'showTitle'
     }
@@ -75,7 +82,7 @@ foam.CLASS({
       const self = this;
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .start(this.progressWizardView, { data: this })
+        .start(this.progressWizardView, { data: this.data })
           .addClass(this.myClass('progress'))
         .end()
         .add(this.slot(function (showTitle, data$currentWizardlet) {
@@ -92,7 +99,7 @@ foam.CLASS({
               .add(data$currentWizardlet.subTitle)
             .end() : null
         }))
-        .start(this.view, { data: this })
+        .start(this.contentsView, { data: this.data })
           .addClass(this.myClass('contents'))
         .end()
         ;

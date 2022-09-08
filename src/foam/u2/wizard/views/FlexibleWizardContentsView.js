@@ -36,6 +36,14 @@ foam.CLASS({
     ^flexButtons {
       display: flex;
       flex-direction: column;
+
+      position: sticky;
+      bottom: 0;
+      margin-top: 3.2rem;
+      padding-top: 3.2rem;
+      border-top: 1px solid /*%GREY4%*/ #777777;
+      background-color: /*%WHITE%*/ #FFFFFF;
+
       gap: 0.5rem;
       padding-bottom: 3.2rem;
     }

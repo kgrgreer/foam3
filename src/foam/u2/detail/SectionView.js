@@ -30,7 +30,7 @@ foam.CLASS({
     }
 
     .subtitle {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       margin-bottom: 16px;
     }
   `,

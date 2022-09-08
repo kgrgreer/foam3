@@ -85,8 +85,7 @@ foam.CLASS({
     }
 
     ^general-field input {
-      border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 5px;
+      border: 1px solid $grey200;
       height: 34px;
       width: 100%;
     }
@@ -111,12 +110,12 @@ foam.CLASS({
     }
 
     ^filter-button-active{
-      color: /*%PRIMARY3%*/ #406DEA;
-      background: /*%GREY5%*/ #F5F7FA;
+      color: $primary400;
+      background: $grey100;
     }
 
     ^filter-button-active svg {
-      fill: /*%PRIMARY3%*/ #406DEA;
+      fill: $primary400;
       transform: rotate(180deg);
     }
 
@@ -137,13 +136,13 @@ foam.CLASS({
 
     ^link-mode.clear {
       align-self: center;
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
       flex-shrink: 0;
       margin-right: 0;
     }
 
     ^link-mode.clear:hover {
-      color: /*%DESTRUCTIVE1%*/ darkred;
+      color: $destructive700;
     }
 
     ^message-advanced {

@@ -36,9 +36,10 @@ foam.CLASS({
 
   css: `
     ^ {
+      display: flex;
+      flex-direction: column;
       align-items: center;
       bottom: 0;
-      display: flex;
       height: 100%;
       justify-content: space-around;
       left: 0;

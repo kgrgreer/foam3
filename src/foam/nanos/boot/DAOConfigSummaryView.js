@@ -132,7 +132,7 @@ foam.CLASS({
       width: 220px;
     }
     ^dao {
-      color: /*%GREY2%*/;
+      color: $grey500;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -144,8 +144,8 @@ foam.CLASS({
       vertical-align: baseline;
     }
     ^header {
-      background: /*%GREY1%*/ #1e1f21;
-      color:/*%WHITE%*/ #ffffff;
+      background: $grey700;
+      color:$white;
       font-weight: 800;
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */

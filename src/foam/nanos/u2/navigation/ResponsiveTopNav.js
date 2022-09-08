@@ -20,10 +20,17 @@ foam.CLASS({
     'theme'
   ],
 
+  cssTokens: [
+    {
+      name: 'topNavBackground',
+      value: '$foam.nanos.menu.VerticalMenu.menuBackground'
+    }
+  ],
+
   css: `
     ^ {
       align-items: center;
-      background-color: /*%WHITE%*/ #FFFFFF;
+      background-color: $topNavBackground;
       border-bottom: 2px solid rgba(0, 0, 0, 0.06);
       display: flex;
       min-height: 64px;
@@ -101,7 +108,7 @@ foam.CLASS({
         .end()
         // TODO: Make Responsive
         .add(this.slot(function(displayWidth) {
-          if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.LG.ordinal ) {
+          if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
             return this.E().addClass(this.myClass('components-container'))
             .start({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .show(self.hasNotifictionMenuPermission$)

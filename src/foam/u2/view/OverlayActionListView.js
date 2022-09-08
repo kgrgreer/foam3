@@ -30,6 +30,14 @@ foam.CLASS({
     'overlay_ as dropdown'
   ],
 
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'overlayButtonHighlight',
+      value: '$primary50'
+    }
+  ],
+
   properties: [
     {
       class: 'FObjectArray',
@@ -74,12 +82,12 @@ foam.CLASS({
 
   css: `
     ^disabled button {
-      color: /*%GREY4%*/ grey;
+      color: $buttonSecondaryColor$disabled$foreground;
     }
 
     ^button-container button {
       border: 1px solid transparent;
-      background-color: /*%WHITE%*/ #FFFFFF;
+      background-color: $white;
       justify-content: space-between;
       text-align: left;
       white-space: nowrap;
@@ -92,12 +100,14 @@ foam.CLASS({
     }
 
     ^button-container button:hover:not(:disabled) {
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+      background-color: $overlayButtonHighlight;
+      color: $overlayButtonHighlight$foreground;
     }
 
     ^button-container button:focus {
-      border-color: /*%PRIMARY4%*/ #C6D2FF;
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+      border-color: $overlayButtonHighlight$hover;
+      background-color: $overlayButtonHighlight;
+      color: $overlayButtonHighlight$foreground;
     }
 
     ^button-container button:focus:not(:focus-visible){
@@ -107,25 +117,25 @@ foam.CLASS({
     /* destructive */
 
     ^button-container .destructive{
-      color: /*%DESTRUCTIVE2%*/ #a61414;
+      color: $destructive500;
     }
 
-    ^button-container .destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
+    ^button-container .destructive svg { fill: $destructive500; }
 
     ^button-container .destructive:hover:not(:disabled) {
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      background-color: $destructive50;
     }
 
     ^button-container .destructive:focus {
-      border-color: /*%DESTRUCTIVE2%*/ #a61414;
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      border-color: $destructive500;
+      background-color: $destructive50;
     }
 
     ^button-container .destructive:disabled {
-      color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      color: $destructive50;
     }
 
-    ^button-container .destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
+    ^button-container .destructive:disabled svg { fill: $destructive50; }
 
     ^iconOnly{
       padding: 0px;
