@@ -284,24 +284,6 @@ foam.CLASS({
             .start('span').add(this.model.SUB_FOOTER).end()
           .end()
         .endContext()
-        // .start().addClass(this.myClass('signupLink'))
-        //   .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
-        //   .start('span').addClass('link')
-        //     .add(this.model.FOOTER_LINK)
-        //     .on('click', async () => {
-        //       await this.model.footerLink(this.topBarShow_, this.param);
-        //     })
-        //   .end()
-        // .end()
-        // .start()
-        //   .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
-        //   .start('span').addClass('link')
-        //     .add(this.model.SUB_FOOTER_LINK)
-        //     .on('click', async () => {
-        //       await this.model.subfooterLink();
-        //     })
-        //   .end()
-        // .end()
       .end();
 
       // CREATE SPLIT VIEW
