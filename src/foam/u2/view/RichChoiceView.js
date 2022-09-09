@@ -140,12 +140,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^chevron::before {
-      color: #8D9090;
-      content: '▾';
-      padding-left: 4px;
-    }
-
     ^ {
       display: flex;
       position: relative;
@@ -201,6 +195,9 @@ foam.CLASS({
       -webkit-appearance: none;
       cursor: pointer;
       font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
@@ -524,9 +521,6 @@ foam.CLASS({
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
                   }))
-                .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
