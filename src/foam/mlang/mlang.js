@@ -2677,7 +2677,7 @@ while ( i.hasNext() ) {
       s = ((String) prop.f(obj));
     }
 
-    if ( s.toUpperCase().contains(arg1) ) return true;
+    if ( s != null && s.toUpperCase().contains(arg1) ) return true;
   } catch (Throwable t) {}
 }
 

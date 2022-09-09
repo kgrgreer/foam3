@@ -18,7 +18,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 65vw;
-      min-height: 65vh;
       padding: 3.2rem 0;
       flex-grow: 1;
       /**
@@ -28,8 +27,7 @@ foam.CLASS({
     }
 
     ^:not(^isFullscreen) {
-      margin: 40pt;
-      margin-top: 0;
+      margin: 0 40pt;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -60,8 +58,8 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'progressWizardView',
       value: {
-        // class: 'foam.u2.borders.NullBorder'
-        class: 'foam.u2.wizard.views.ProgressBarWizardView',
+        class: 'foam.u2.borders.NullBorder'
+        // class: 'foam.u2.wizard.views.ProgressBarWizardView',
       }
     },
     {
@@ -74,6 +72,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showTitle'
+    },
+    {
+      class: 'String',
+      name: 'viewTitle',
+      expression: function (data$currentWizardlet) {
+        return data$currentWizardlet.title;
+      }
     }
   ],
 
