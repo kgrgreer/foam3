@@ -106,13 +106,16 @@ foam.CLASS({
 
       this
       .addClass(this.myClass())
-      .start(this.OverlayActionListView, {
-        label: mainLabel,
-        data$: this.menuItems$,
-        obj: self,
-        buttonStyle: 'UNSTYLED'
-      })
-        .addClass(this.myClass('dropdown'))
+      // OverlayActionListView does not support slots;
+      // this will rerender it when the menuItems slot updates.
+      .add(this.menuItems$.map(finalArray => {
+          return this.E().start(this.OverlayActionListView, {
+                        label: mainLabel,
+                        data: finalArray,
+                        obj: self,
+                        buttonStyle: 'UNSTYLED'
+                      }).addClass(this.myClass('dropdown'));
+                    }))
       .end();
     },
     function refreshEntries() {
@@ -131,12 +134,10 @@ foam.CLASS({
             settingsMenuResultArray.concat(customSettingsMenuResultArray);
             settingsMenuResultArray.sort((a, b) => a.order - b.order);
             self.menuItems = settingsMenuResultArray;
-            console.log('self.menuItems set (custom menu present)', self.menuItems);
           });
         } else {
           settingsMenuResultArray.sort((a, b) => a.order - b.order);
           self.menuItems = settingsMenuResultArray;
-          console.log('self.menuItems set', self.menuItems);
         }
       });
     }
