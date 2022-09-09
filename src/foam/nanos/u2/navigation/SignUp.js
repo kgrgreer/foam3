@@ -35,7 +35,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
-    { name: 'FOOTER_LINK', message: 'Sign in' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
     { name: 'EMAIL_ERR', message: 'Valid email required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
@@ -47,6 +46,14 @@ foam.CLASS({
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
   ],
+  
+  sections: [
+    {
+      name: 'footerSection',
+      permissionRequired: true
+    }
+  ],
+
 
   properties: [
     {
@@ -245,6 +252,8 @@ foam.CLASS({
     },
     {
       name: 'footer',
+      section: 'footerSection',
+      label: 'Sign in',
       buttonStyle: 'LINK',
       code: function(X) {
         window.history.replaceState(null, null, window.location.origin);
@@ -253,8 +262,8 @@ foam.CLASS({
     },
     {
       name: 'subFooter',
-      isAvailable: false,
-      isEnabled: false,
+      section: 'footerSection',
+      isAvailable: () => false,
       code: () => {}
     }
   ]

@@ -33,11 +33,16 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Welcome!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
-    { name: 'FOOTER_LINK', message: 'Create an account' },
-    { name: 'SUB_FOOTER_LINK', message: 'Forgot password?' },
     { name: 'ERROR_MSG', message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
+  ],
+  
+  sections: [
+    {
+      name: 'footerSection',
+      permissionRequired: true
+    }
   ],
 
   properties: [
@@ -171,7 +176,8 @@ foam.CLASS({
     },
     {
       name: 'footer',
-      label: function() { debugger; return this.FOOTER_LINK; },
+      label: 'Create an account',
+      section: 'footerSection',
       buttonStyle: 'LINK',
       code: function(X) {
         window.history.replaceState(null, null, window.location.origin);
@@ -180,7 +186,8 @@ foam.CLASS({
     },
     {
       name: 'subFooter',
-      // label: function() { return this.SUB_FOOTER_LINK},
+      label: 'Forgot password?',
+      section: 'footerSection',
       buttonStyle: 'LINK',
       code: function(X) {
         X.stack.push(X.data.StackBlock.create({

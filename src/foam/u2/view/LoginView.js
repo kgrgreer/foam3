@@ -275,7 +275,7 @@ foam.CLASS({
         .startContext({ data: this.model, topBarShow_: this.topBarShow_, param: this.param })
           // first footer
           .start().addClass(this.myClass('signupLink'))
-            .start('span').addClass('bold-text-with-pad').add(this.model.footerTxt).end()
+            .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
             .start('span').add(this.model.FOOTER).end()
           .end()
           // second footer
