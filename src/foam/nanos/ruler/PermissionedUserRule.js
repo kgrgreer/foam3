@@ -25,13 +25,13 @@
   `,
 
   javaImports: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.Subject'
   ],
 
   methods: [
     {
       name: 'getUser',
-      javaCode: 'return (User) obj;'
+      javaCode: 'return ((Subject)x.get("subject")).getUser();'
     }
   ]
 });
