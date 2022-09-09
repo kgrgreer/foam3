@@ -146,7 +146,6 @@ foam.CLASS({
     {
       name: 'onMenuDAOUpdated',
       code: function() {
-        console.log('onMenuDAOUpdated(): called!');
         this.refreshEntries();
       }
     },
