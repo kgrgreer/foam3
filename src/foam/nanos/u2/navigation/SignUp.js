@@ -161,6 +161,11 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'pureLoginFunction', // autoEmailVerified
+      hidden: true
     }
   ],
 
@@ -209,14 +214,8 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'autoEmailVerified',
-      hidden: true
     }
   ],
-
   actions: [
     {
       name: 'login',
@@ -226,23 +225,23 @@ foam.CLASS({
         return ! errors_ && ! isLoading_;
       },
       isAvailable: function(showAction) { return showAction; },
-      code: function(x, updateUser) {
+      code: function(x) {
         this.isLoading_ = true;
-
+        let createdUser = this.User.create({
+          userName: this.userName,
+          email: this.email,
+          desiredPassword: this.desiredPassword,
+          signUpToken: this.token_,
+          language: this.defaultUserLanguage()
+        });
+        if ( this.pureLoginFunction ) createdUser.emailVerified = true;
         this.dao_
-          .put(this.User.create({
-            userName: this.userName,
-            email: this.email,
-            desiredPassword: this.desiredPassword,
-            signUpToken: this.token_,
-            language: this.defaultUserLanguage(),
-            emailVerified: this.autoEmailVerified
-          }))
-          .then(async (user) => {
+          .put(createdUser)
+          .then(async user => {
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.nextStep(x);
+            if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,
@@ -250,43 +249,7 @@ foam.CLASS({
               type: this.LogLevel.INFO,
               transient: true
             }));
-          }).catch((err) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              err: err.data,
-              message: this.ERROR_MSG,
-              type: this.LogLevel.ERROR
-            }));
-          })
-          .finally(() => {
-            this.isLoading_ = false;
-          });
-      }
-    },
-    {
-      name: 'anonymousLogin',
-      code: function(x, updateUser) {
-        this.isLoading_ = true;
-
-        this.dao_
-          .put(this.User.create({
-            userName: this.userName,
-            email: this.email,
-            desiredPassword: this.desiredPassword,
-            signUpToken: this.token_,
-            language: this.defaultUserLanguage(),
-            emailVerified: this.autoEmailVerified
-          }))
-          .then(async (user) => {
-            this.subject.realUser = user;
-            this.subject.user = user;
-
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.SUCCESS_MSG_TITLE,
-              description: this.SUCCESS_MSG,
-              type: this.LogLevel.INFO,
-              transient: true
-            }));
-          }).catch((err) => {
+          }).catch(err => {
             this.ctrl.add(this.NotificationMessage.create({
               err: err.data,
               message: this.ERROR_MSG,

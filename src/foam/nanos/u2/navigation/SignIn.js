@@ -68,6 +68,9 @@ foam.CLASS({
       name: 'identifier',
       required: true,
       label: 'Email or Username',
+      preSet: function(_, n) {
+        return n.trim();
+      },
       view: {
         class: 'foam.u2.TextField',
         focused: true
@@ -99,6 +102,11 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'pureLoginFunction', // autoEmailVerified
+      hidden: true
     }
   ],
 
@@ -143,6 +151,16 @@ foam.CLASS({
           }
         }
       }
+    },
+    {
+      name: 'notifyUser',
+      code: function(err, msg, type) {
+        this.ctrl.add(this.NotificationMessage.create({
+          err: err,
+          message: msg,
+          type: type
+        }));
+      }
     }
   ],
 
@@ -154,56 +172,39 @@ foam.CLASS({
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       isAvailable: function(showAction) { return showAction; },
-      code: async function(X) {
-        this.identifier = this.identifier.trim();
+      code: async function(x) {
         if ( this.identifier.length > 0 ) {
           if ( ! this.password ) {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.ERROR_MSG3,
-              type: this.LogLevel.ERROR
-            }));
-
+            this.notifyUser(undefined, this.ERROR_MSG3, this.LogLevel.ERROR);
             return;
           }
-
           try {
-            var logedInUser = await this.auth.login(X, this.identifier, this.password);
+            let logedInUser = await this.auth.login(x, this.identifier, this.password);
             if ( ! logedInUser ) return;
-
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
-                var updatedUser = await this.dao_.put(logedInUser);
+                let updatedUser = await this.dao_.put(logedInUser);
                 this.subject.user = updatedUser;
                 this.subject.realUser = updatedUser;
-                await this.nextStep();
+                if ( ! this.pureLoginFunction ) await this.nextStep();
               } catch ( err ) {
-                this.ctrl.add(this.NotificationMessage.create({
-                  err: err.data,
-                  message: this.ERROR_MSG,
-                  type: this.LogLevel.ERROR
-                }));
+                this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
               }
             } else {
               this.subject.user = logedInUser;
               this.subject.realUser = logedInUser;
-              await this.nextStep();
+              if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
-              if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
+              let e = err && err.data ? err.data.exception : err;
+              if ( this.DuplicateEmailException.isInstance(e) ) {
                 this.usernameRequired = true;
               }
-              this.ctrl.add(this.NotificationMessage.create({
-                err: err.data,
-                message: this.ERROR_MSG,
-                type: this.LogLevel.ERROR
-              }));
-          };
+              this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
+          }
         } else {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.ERROR_MSG2,
-            type: this.LogLevel.ERROR
-          }));
+          this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
       }
     }
