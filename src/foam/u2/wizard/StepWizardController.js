@@ -168,7 +168,7 @@ foam.CLASS({
         ) {
           if ( ! currentWizardlet$isValid ) return false;
         }
-        return currentSection$isValid;
+        return currentSection$isValid || false;
       }
     },
     {
@@ -442,8 +442,8 @@ foam.CLASS({
           name: foam.String.constantize(
               wizardlet.title || wizardlet.id ||
               (wizardlet.of?.name ?? 'UNKNOWN')
-            ) + '_COMPLETE', 
-          tags: ['wizard'] 
+            ) + '_COMPLETE',
+          tags: ['wizard']
         })
       } catch (e) {
         // report analytics error without interrupting flow

@@ -32,7 +32,7 @@ foam.CLASS({
       padding: 32px 24px;
     }
     ^group-title {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin-bottom: 24px;
     }
     ^row + ^row{

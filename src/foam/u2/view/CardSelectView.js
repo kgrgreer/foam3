@@ -29,7 +29,7 @@ foam.CLASS({
 
     ^base {
       box-sizing: content-box;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       border-radius: 5px;
       position: relative;
       padding: 16px;
@@ -45,18 +45,18 @@ foam.CLASS({
       min-height: 2.5vh;
     }
     ^ .foam-u2-borders-CardBorder^selected {
-      border-color: /*%PRIMARY3%*/ #406dea;
+      border-color: $primary400;
     }
 
     ^ .foam-u2-borders-CardBorder^disabled {
-      background-color: /*%GREY5%*/ #f5f7fa;
-      color: /*%GREY2%*/ #9ba1a6;
+      background-color: $grey50;
+      color: $grey500;
     }
 
     ^ .foam-u2-borders-CardBorder^selected-disabled {
-      border-color: /*%PRIMARY5%*/ #b2c4f6;
-      background-color: /*%GREY5%*/ #f5f7fa;
-      color: /*%GREY2%*/ #9ba1a6;
+      border-color: $primary50;
+      background-color: $grey50;
+      color: $grey500;
     }
     .foam-u2-view-MultiChoiceView-flexer .foam-u2-layout-Cols {
       column-gap: 17px;

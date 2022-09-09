@@ -56,7 +56,7 @@ foam.CLASS({
       width: 448px;
       height: 231px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^ .Rectangle-7 {
       float: left;

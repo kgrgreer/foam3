@@ -33,7 +33,7 @@ foam.CLASS({
       flex-direction: column;
     }
     ^ .table-row:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       cursor: pointer;
     }
     ^ .table-row {
@@ -49,7 +49,7 @@ foam.CLASS({
       max-height: max-content;
     }
     ^ .view-more button:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       cursor: pointer;
       border-bottom-left-radius: 22px;
       border-bottom-right-radius: 22px;

@@ -52,7 +52,7 @@ foam.CLASS({
       outline: none;
     }
     ^toggle-button:focus {
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^control {
       transition: transform 0.3s;
@@ -62,7 +62,7 @@ foam.CLASS({
     }
     ^control svg {
       max-height: 1em;
-      fill: /*%BLACK%*/ #000;
+      fill: $black;
     }
   `,
 

@@ -140,12 +140,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^chevron::before {
-      color: #8D9090;
-      content: '▾';
-      padding-left: 4px;
-    }
-
     ^ {
       display: flex;
       position: relative;
@@ -160,8 +154,8 @@ foam.CLASS({
       bottom: -4px;
       left: 0;
       transform: translateY(100%);
-      background: /*%WHITE%*/ #ffffff;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      background: $white;
+      border: 1px solid $grey400;
       max-height: 378px;
       overflow-y: auto;
       box-sizing: border-box;
@@ -191,9 +185,9 @@ foam.CLASS({
       height: /*%INPUTHEIGHT%*/ 34px;
       padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
-      color: /*%BLACK%*/ #1e1f21;
-      background-color: /*%WHITE%*/ white;
+      border: 1px solid $grey400;
+      color: $black;
+      background-color: $white;
       min-width: 94px;
 
       width: 100%;
@@ -201,11 +195,14 @@ foam.CLASS({
       -webkit-appearance: none;
       cursor: pointer;
       font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
     ^selection-view:hover ^clear-btn {
-      border-color: /*%GREY2%*/ #9ba1a6;
+      border-color: $grey500;
     }
 
     ^:focus {
@@ -214,7 +211,7 @@ foam.CLASS({
 
     ^:focus ^selection-view,
     ^:focus ^selection-view ^clear-btn {
-      border-color: /*%PRIMARY3%*/ #406dea;
+      border-color: $primary400;
     }
 
     ^custom-selection-view {
@@ -264,13 +261,13 @@ foam.CLASS({
       padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
       height: /*%INPUTHEIGHT%*/ 34px;
       border-left: 1px solid;
-      border-color: /*%GREY3%*/ #cbcfd4;
+      border-color: $grey400;
       margin-left: 12px;
       padding-left: 16px;
     }
 
     ^clear-btn:hover {
-      color: /*%DESTRUCTIVE3%*/ #d9170e;
+      color: $destructive400;
       cursor: pointer;
     }
   `,
@@ -525,9 +522,6 @@ foam.CLASS({
                     });
                   }))
                 .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
-                .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
                   return this.E()
@@ -742,7 +736,7 @@ foam.CLASS({
         ^ {
           border: 0;
           border-top: 1px solid #f4f4f9;
-          color: /*%PRIMARY3%*/ #406dea;
+          color: $primary400;
           display: flex;
           font-size: 1.2rem;
           justify-content: flex-start;
@@ -751,7 +745,7 @@ foam.CLASS({
         }
 
         ^:hover {
-          color: /*%PRIMARY2%*/ #144794;
+          color: $primary500;
           cursor: pointer;
         }
 

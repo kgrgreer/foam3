@@ -118,7 +118,7 @@ foam.CLASS({
       display: block;
       margin: auto;
       width: 100%;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
 
     ^toolbar {

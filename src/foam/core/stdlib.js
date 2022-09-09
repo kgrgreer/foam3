@@ -1339,7 +1339,7 @@ foam.LIB({
       }
       if ( result?.value?.startsWith('$') ) {
         // Using await as this method may be overriden with one that returns a promise
-        var ret = this.getTokenValue(result.value, cls, ctx);
+        var ret = foam.CSS.returnTokenValue(result.value, cls, ctx);
         return ret || result.fallback || `/* failed token replacement ${tokenString}, ${cls}*/`;
       }
       return result?.value ||

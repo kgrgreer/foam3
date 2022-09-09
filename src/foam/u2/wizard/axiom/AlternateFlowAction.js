@@ -40,6 +40,12 @@ foam.CLASS({
       expression: function (alternateFlow) {
         return alternateFlow.buttonStyle;
       }
+    },
+    {
+      name: 'isEnabled',
+      value: function (data$canGoNext, isLoading_) {
+        return data$canGoNext && ! isLoading_;
+      }
     }
   ]
 })
