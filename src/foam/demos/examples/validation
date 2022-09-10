@@ -186,3 +186,16 @@ add(foam.u2.detail.SectionedDetailView.create({data: f}));
 
 ## ValidationPredicates
 --
+foam.CLASS({
+  name: 'ValidationPredicatesTest',
+  properties: [
+    {
+      class: 'Int',
+      name: 'age',
+      validationPredicates: [
+        args: [ 'age' ],
+        query: 'age>18&&age<25'
+      ]
+    }
+  ]
+});
