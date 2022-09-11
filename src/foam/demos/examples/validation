@@ -188,13 +188,21 @@ add(foam.u2.detail.SectionedDetailView.create({data: f}));
 --
 foam.CLASS({
   name: 'ValidationPredicatesTest',
+  messages: [
+    { name: 'FIRST_NAME_REQUIRED', message: 'First name required' },
+    { name: 'LAST_NAME_REQUIRED', message: 'Last name required' },
+    { name: 'PHONE_NUMBER_REQUIRED', message: 'Phone number required' },
+    { name: 'ADDRESS_REQUIRED', message: 'Address required' }
+  ],
   properties: [
     {
       class: 'Int',
       name: 'age',
       validationPredicates: [
         args: [ 'age' ],
-        query: 'age>18&&age<25'
+        query: 'age>=18&&age<=25',
+        errorString: 'Age must be between 18 and 25'
+        // errorMessage:
       ]
     }
   ]
