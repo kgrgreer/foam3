@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'adapter',
-      of: 'foam.mlang.F',
+      javaType: 'foam.dao.MaterializedAdapter',
       javaFactory: 'return new CopyAdapter(getOf());'
     },
     {
@@ -65,7 +65,7 @@ foam.CLASS({
       args: 'FObject value',
       type: 'FObject',
       documentation: 'Template method for adapting from source to target model.',
-      javaCode: 'return (FObject) getAdapter().f(value);'
+      javaCode: 'return getAdapter().adapt(value);'
     },
 
     // Implement Index
@@ -88,7 +88,9 @@ foam.CLASS({
       type: 'Object',
       args: 'Object state, FObject value',
       javaCode: `
-        getDelegate().remove(adapt(value));
+        if ( getPredicate().f(value) ) {
+          getDelegate().remove(getAdapter().fastAdapt(value));
+        }
         return this;
       `
     },
