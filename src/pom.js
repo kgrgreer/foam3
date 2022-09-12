@@ -226,6 +226,7 @@ foam.POM({
     { name: "foam/u2/borders/LoadingBorder",                          flags: "web|java" },
     { name: "foam/u2/borders/Block",                                  flags: "web" },
     { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
+    { name: "foam/u2/borders/ControlBorder",                          flags: "web" },
     { name: "foam/nanos/u2/navigation/IFrameTopNavigation",           flags: "web" },
     { name: "foam/version/VersionTrait",                              flags: "js" },
     { name: "foam/version/VersionedClass",                            flags: "js" },
