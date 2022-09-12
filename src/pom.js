@@ -482,6 +482,7 @@ foam.POM({
     { name: "foam/u2/ButtonSize",                                     flags: "web" },
     { name: "foam/u2/ButtonStyle",                                    flags: "web" },
     { name: "foam/u2/ActionView",                                     flags: "web" },
+    { name: "foam/u2/ActionButtonStyleRefinement",                    flags: "web" },
     { name: "foam/u2/view/MenuView",                                  flags: "web" },
     { name: "foam/u2/DetailPropertyView",                             flags: "web" },
     { name: "foam/u2/DetailView",                                     flags: "web" },
