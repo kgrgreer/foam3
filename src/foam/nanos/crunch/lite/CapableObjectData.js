@@ -75,11 +75,14 @@ foam.CLASS({
         });
       }
     }
-  ],
+  ], 
 
   actions: [
     {
       name: 'openCapableWizard',
+      isAvailable: auth => {
+        return auth.check(null, 'developer.capableObjectData.openCapableWizard');
+      },
       code: async function () {
         if ( ! this.crunchController ) return;
         for ( const capabilityId of this.capabilityIds ) {
