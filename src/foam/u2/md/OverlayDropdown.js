@@ -39,6 +39,7 @@ foam.CLASS({
       position: absolute;
       padding: 8px;
       z-index: 1010;
+      max-width: 90%;
     }
 
     ^open {
