@@ -46,6 +46,11 @@ foam.CLASS({
 
   methods: [
     async function execute() {
+      debugger
+      window.activeWizard = this.wizardController
+
+      // activeWizard.openWizardInspector(activeWizard.__subContext__)
+
       if ( ! this.wizardController || ! this.config ) 
         console.warn('Missing controller or config');
       const usingFormController = this.config && this.config.controller;

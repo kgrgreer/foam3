@@ -40,8 +40,12 @@ foam.CLASS({
   
   sections: [
     {
+      name: '_defaultSection',
+      title: ''
+    },
+    {
       name: 'footerSection',
-      permissionRequired: true
+      title: ''
     }
   ],
 

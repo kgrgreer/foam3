@@ -48,7 +48,7 @@ foam.CLASS({
       class: 'EMail',
       name: 'email',
       section: 'emailPasswordSection',
-      required: true
+      required: true,
     },
     {
       class: 'String',

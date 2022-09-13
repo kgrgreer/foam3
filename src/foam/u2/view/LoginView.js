@@ -269,22 +269,7 @@ foam.CLASS({
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .enableClass(self.myClass('fullWidth'), self.shouldResize$)
         .startContext({ data: this }).tag(this.MODEL).endContext()
-        .br()
-      .br()
-      .start().addClass(this.myClass('center-footer'))
-        .startContext({ data: this.model, topBarShow_: this.topBarShow_, param: this.param })
-          // first footer
-          .start().addClass(this.myClass('signupLink'))
-            .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
-            .start('span').add(this.model.FOOTER).end()
-          .end()
-          // second footer
-          .start()
-            .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
-            .start('span').add(this.model.SUB_FOOTER).end()
-          .end()
-        .endContext()
-      .end();
+        
 
       // CREATE SPLIT VIEW
       if ( this.imgPath ) {
