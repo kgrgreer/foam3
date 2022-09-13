@@ -126,7 +126,7 @@ foam.CLASS({
         this.left = 'auto';
         this.right = screenWidth - x + 10;
       } else {
-        this.left = x + 10;
+        this.left = x - 75;
         this.right = 'auto';
       }
       this.opened = true;
