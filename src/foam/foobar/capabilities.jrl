@@ -60,7 +60,7 @@ p({
     id: 'foam.foobar.tasks.DeployJournals',
     of: 'foam.foobar.Exec',
     args: {
-        path: '{foobar.toolsDir}/deploy_journals.js',
+        path: '{foobar.toolsDir}/deployJournals.js',
         passParentArgs: true,
         args: [
             '-outdir={target.jrlDir}',
