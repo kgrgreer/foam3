@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.templates.TemplateUtil',
 
   properties: [
+    // grammar copied from foam/core/templates.js
     {
       name: 'jsGrammar',
       factory: function() {
@@ -54,7 +55,7 @@ foam.CLASS({
         });
         return g;
       }
-    },
+    }
   ],
 
   methods: [

@@ -75,8 +75,11 @@ foam.CLASS({
       return await new Promise((rslv, rjct) => {
         child.on('close', code => {
           this.console.log(`┗┫EXIT ${code}┃\n`)
-          if ( code === 0 ) rslv(code);
-          else rjct(code);
+          if ( code === 0 ) {
+            rslv(code);
+          } else {
+            rjct(code);
+          }
         })
         child.stdout.on('data', data => {
           this.console.log(this.formatOutput(data.toString()));

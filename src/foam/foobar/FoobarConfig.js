@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'FoobarConfig',
 
   nodeRequires: [
-    'path as path_',
+    'path as path_'
   ],
 
   properties: [
@@ -86,6 +86,6 @@ foam.CLASS({
         }
         target[key] = source[key];
       }
-    },
+    }
   ]
 })
