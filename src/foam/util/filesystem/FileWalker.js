@@ -107,8 +107,8 @@ foam.CLASS({
             self.files.pub(filesMessage);
             // 'pub' is known to occur synchronously, so skipNext must
             // have been set by a listener within the call above
-            if ( this.skipNext ) {
-              this.skipNext = false;
+            if ( self.skipNext ) {
+              self.skipNext = false;
               break;
             }
             Promise.all(directoriesToWalk.map(
