@@ -81,20 +81,9 @@ public class ResourceImageServlet
                 .setSpid("nanopay")
                 .build();
               fileDAO.put(file);
-              file = (File) fileDAO.find(file.getId());
-              blob = file.getData();
-              if ( blob != null ) {
-                is = ((InputStreamBlob)blob).getInputStream();
-              } else if ( blob == null ) {
-                BlobService blobStore = (BlobService) x.get("blobStore");
-                blob = blobStore.find(file.getId());
-                if ( blob != null ) {
-                  is = new FileInputStream(((FileBlob) blob).getFile());
-                } else {
-                  logger.warning("blob not found", req.getRequestURI(), file.getId());
-                }
-              }
               // logger.info("png created");
+              file = (File) fileDAO.find(file.getId());
+              is = file.inputStream(x);
             } catch ( Exception e ) {
               logger.error(e);
             }
@@ -107,18 +96,7 @@ public class ResourceImageServlet
           // which strips data and dataString for File tableViews (select).
           // The above EQ results in select limit 1.
           file = (File) fileDAO.find(file.getId());
-          Blob blob = file.getData();
-          if ( blob != null ) {
-            is = ((InputStreamBlob)blob).getInputStream();
-          } else if ( blob == null ) {
-            BlobService blobStore = (BlobService) x.get("blobStore");
-            blob = blobStore.find(file.getId());
-            if ( blob != null ) {
-              is = new FileInputStream(((FileBlob) blob).getFile());
-            } else {
-              logger.warning("blob not found", req.getRequestURI(), file.getId());
-            }
-          }
+          is = file.inputStream(x);
         }
       }
       if ( is != null ) {
