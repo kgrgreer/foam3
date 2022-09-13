@@ -490,7 +490,7 @@ foam.CLASS({
             if ( this.order ) proxy = proxy.orderBy(this.order);
 
 
-            var canObjBeBuildFromProjection = false;
+            var canObjBeBuildFromProjection = true;
 
             for ( var p of view.props ) {
               if ( p.property.tableCellFormatter && ! p.property.cls_.hasOwnProperty('tableCellFormatter') ) {
