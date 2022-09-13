@@ -7,6 +7,7 @@ package foam.nanos.servlet;
 
 import foam.blob.Blob;
 import foam.blob.BlobService;
+import foam.blob.FileBlob;
 import foam.blob.IdentifiedBlob;
 import foam.blob.InputStreamBlob;
 import foam.core.X;
@@ -79,8 +80,20 @@ public class ResourceImageServlet
                 .setData(blob)
                 .setSpid("nanopay")
                 .build();
-              file = (File) fileDAO.put(file);
-              is = ((InputStreamBlob)file.getData()).getInputStream();
+              fileDAO.put(file);
+              file = (File) fileDAO.find(file.getId());
+              blob = file.getData();
+              if ( blob != null ) {
+                is = ((InputStreamBlob)blob).getInputStream();
+              } else if ( blob == null ) {
+                BlobService blobStore = (BlobService) x.get("blobStore");
+                blob = blobStore.find(file.getId());
+                if ( blob != null ) {
+                  is = new FileInputStream(((FileBlob) blob).getFile());
+                } else {
+                  logger.warning("blob not found", req.getRequestURI(), file.getId());
+                }
+              }
               // logger.info("png created");
             } catch ( Exception e ) {
               logger.error(e);
@@ -94,7 +107,18 @@ public class ResourceImageServlet
           // which strips data and dataString for File tableViews (select).
           // The above EQ results in select limit 1.
           file = (File) fileDAO.find(file.getId());
-          is = ((InputStreamBlob)file.getData()).getInputStream();
+          Blob blob = file.getData();
+          if ( blob != null ) {
+            is = ((InputStreamBlob)blob).getInputStream();
+          } else if ( blob == null ) {
+            BlobService blobStore = (BlobService) x.get("blobStore");
+            blob = blobStore.find(file.getId());
+            if ( blob != null ) {
+              is = new FileInputStream(((FileBlob) blob).getFile());
+            } else {
+              logger.warning("blob not found", req.getRequestURI(), file.getId());
+            }
+          }
         }
       }
       if ( is != null ) {
