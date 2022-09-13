@@ -460,7 +460,7 @@ foam.CLASS({
       code: function() {
         this.deFeedback(() => {
           var mem = this.data.toMQL();
-          console.log(this.data);
+
           if ( mem ) {
             this.mementoString = '{' + mem + '}';
           } else {
