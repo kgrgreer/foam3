@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'CapableObjectData',
 
   imports: [
+    'auth',
     'crunchController?'
   ],
 
