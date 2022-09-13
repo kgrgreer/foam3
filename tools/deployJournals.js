@@ -25,6 +25,7 @@ if ( ! fs_.existsSync(outPath) ) {
 }
 
 async function findJournals({ jrls, srcPath }) {
+    console.log('finding in ' + srcPath)
     const walker = foam.util.filesystem.FileWalker.create();
     walker.files.sub((_1, _2, info) => {
         for ( const fileInfo of info.files ) {
@@ -39,36 +40,38 @@ async function findJournals({ jrls, srcPath }) {
             const fullPath = fileInfo.fullPath;
             const baseName = path_.basename(fileInfo.name, extName);
             if ( ! jrls[baseName] ) jrls[baseName] = '';
-            jrls[baseName] += fs_.readFileSync(fullPath).toString();
+            jrls[baseName] += '\n' + fs_.readFileSync(fullPath).toString();
         }
     })
     await walker.walk(srcPath);
 }
 
 
- const main = async function() {
+const main = async function() {
 
- foam.require(X.pom, false, true);
- const jrls = {};
- await asyncForEach(foam.poms, async(p) => {
-   if ( !!p.pom.journals ) {
-     p.pom.journals.forEach(async (j) => {
-       if ( ! jrls[path_.basename(j)] ) jrls[path_.basename(j)] = '';
-       jrls[path_.basename(j)] += fs_.readFileSync(path_.join(p.location, j+'.jrl')).toString();
-     })
-   } else {
-   if ( p.pom.projects ) return;
-     await findJournals({jrls, srcPath: p.location});
-   }
+  foam.require(X.pom, false, true);
+  const jrls = {};
+  await asyncForEach(foam.poms, async(p) => {
+    if ( p.pom.journals ) {
+      p.pom.journals.forEach(async (j) => {
+        if ( ! jrls[path_.basename(j)] ) jrls[path_.basename(j)] = '';
+        jrls[path_.basename(j)] += fs_.readFileSync(path_.join(p.location, j+'.jrl')).toString();
+      })
+    } else {
+      // if ( p.pom.projects ) return;
+      await findJournals({jrls, srcPath: p.location});
+    }
   });
   for ( const key in jrls ) {
-      fs_.writeFileSync(path_.join(outPath, key + '.0'), jrls[key]);
+    // console.log('writing...', path_.join(outPath, key  + '.0'))
+    fs_.writeFileSync(path_.join(outPath, key + '.0'), jrls[key]);
   }
- }
+}
 
- async function asyncForEach(array, callback) {
-   for (let index = 0; index < array.length; index++) {
-     await callback(array[index], index, array);
-   }
- }
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 main();

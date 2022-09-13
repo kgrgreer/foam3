@@ -6,7 +6,7 @@
 
  var path_ = require('path');
 
-var foam = globalThis.foam = {
+globalThis.foam = {
   isServer: true,
   defaultFlags: {
     node:  false,
@@ -34,7 +34,7 @@ var foam = globalThis.foam = {
     return true;
   },
   */
-  require: function (fn, batch, isProject) {
+  require: function (fn, batch, isProject, webFoam) {
     if ( ! fn ) return;
 
     // ???: foam.resolve()?
@@ -43,6 +43,7 @@ var foam = globalThis.foam = {
       var path = path_.resolve(foam.cwd, fn) + '.js';
       if ( ! isProject && globalThis.foam.seen(path) ) return;
       foam.cwd = path_.dirname(path);
+      foam.sourceFile = path;
       require(path);
     } finally {
       foam.cwd = cwd;

@@ -110,6 +110,7 @@ foam.CLASS({
             // have been set by a listener within the call above
             if ( self.skipNext ) {
               self.skipNext = false;
+              resolve();
               break;
             }
             Promise.all(directoriesToWalk.map(

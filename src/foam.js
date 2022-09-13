@@ -6,14 +6,7 @@
 
 (function() {
   var scripts = '';
-  function assign(target, source) {
-    // Copy source values into target if missing from target
-    for ( var key in source )
-      if ( ! target.hasOwnProperty(key) )
-        target[key] = source[key];
-    return target;
-  }
-  var foam = globalThis.foam = assign(globalThis.foam || {}, {
+  var foam = globalThis.foam = Object.assign({
     isServer: false,
     defaultFlags: {
       dev:   true,
@@ -157,7 +150,11 @@
         var i = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
       }
-      foam.poms.push({location: foam.cwd, pom: pom});
+      foam.poms.push({
+        path: foam.sourceFile,
+        location: foam.cwd,
+        pom: pom
+      });
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
           var name = f.name;
@@ -181,7 +178,7 @@
       foam.loadJSLibs(pom.JSLibs);
     },
     assert: console.assert.bind(console)
-  });
+  }, globalThis.foam || {});
 
   foam.setup();
 })();
