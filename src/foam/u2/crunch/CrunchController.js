@@ -68,6 +68,8 @@ foam.CLASS({
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.NullEventHandlerAgent',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
     'foam.u2.borders.SpacingBorder',
@@ -124,6 +126,7 @@ foam.CLASS({
           rootCapability: capabilityOrId
         }))
           .add(this.DeveloperModeAgent)
+          .add(this.NullEventHandlerAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
