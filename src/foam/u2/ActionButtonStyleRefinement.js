@@ -10,11 +10,12 @@ foam.CLASS({
   refines: 'foam.core.Action',
 
   properties: [
+    // TODO: this breaks Java gen
     // Upgrade buttonStyle property to enum
-    {
-      class: 'Enum',
-      of: 'foam.u2.ButtonStyle',
-      name: 'buttonStyle'
-    }
+    // {
+    //   class: 'Enum',
+    //   of: 'foam.u2.ButtonStyle',
+    //   name: 'buttonStyle'
+    // }
   ]
 });

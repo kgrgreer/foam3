@@ -39,10 +39,20 @@ foam.CLASS({
           if ( ! data || data.length === 0 ) return this.E();
 
           // Ensure actions are sorted by button type
-          data.sort((a, b) =>
-            a.action.buttonStyle.ordinal -
-            b.action.buttonStyle.ordinal
-          );
+          data.sort((a, b) => {
+            let buttonStyleA = a.action.buttonStyle;
+            let buttomStyleB = b.action.buttonStyle;
+
+            // Adapt strings to enum values
+            if ( typeof buttonStyleA === 'string' ) {
+              buttonStyleA = foam.u2.ButtonStyle[buttonStyleA];
+            }
+            if ( typeof buttonStyleB === 'string' ) {
+              buttonStyleB = foam.u2.ButtonStyle[buttonStyleB];
+            }
+
+            return buttonStyleA.ordinal - buttomStyleB.ordinal;
+          });
           
           return this.E()
             .addClass(self.myClass('actions'))
