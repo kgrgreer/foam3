@@ -106,8 +106,7 @@ foam.CLASS({
             sym('dot'),
             sym('equals'),
             sym('before'),
-            sym('after'),
-            sym('id')
+            sym('after')
           ),
 
           paren: seq1(1, '(', sym('query'), ')'),
