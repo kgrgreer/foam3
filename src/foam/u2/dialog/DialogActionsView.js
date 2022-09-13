@@ -37,6 +37,13 @@ foam.CLASS({
       this
         .add(this.slot(function ( data ) {
           if ( ! data || data.length === 0 ) return this.E();
+
+          // Ensure actions are sorted by button type
+          data.sort((a, b) =>
+            a.action.buttonStyle.ordinal -
+            b.action.buttonStyle.ordinal
+          );
+          
           return this.E()
             .addClass(self.myClass('actions'))
             .forEach(data, function ( actionRef ) {
