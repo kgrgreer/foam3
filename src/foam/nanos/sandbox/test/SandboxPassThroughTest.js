@@ -62,7 +62,7 @@ foam.CLASS({
         test(hopefullyTestCapabilityDAO != x.get("capabilityDAO") , "dao replaced");
 
         var obj = hopefullyTestCapabilityDAO.find("testCapability");
-        test(obj != null, "finished without exceptions");
+        test(obj != null, "testCapability found");
       `
 
     }

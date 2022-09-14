@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.ProxyX',
     'foam.core.X',
-    'foam.dao.AbstractSink',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.boot.NSpec',
     'java.util.HashSet'
@@ -36,20 +36,21 @@ foam.CLASS({
       name: 'sandboxRootX',
       javaFactory: `
         var host_ = getX();
-        var root_ = new ProxyX();
+        var root_ = (X) new ProxyX();
         var serviceDAO_ = (DAO) host_.get("nSpecDAO");
 
-        serviceDAO_.select(new AbstractSink() {
-          @Override
-          public void put (Object obj, Detachable sub) {
-            for ( var option : getFactoryOptions() ) {
-              var nSpec = (NSpec) obj;
-              var factory = option.maybeGetFactory(host_, nSpec);
-              if ( factory == null ) continue;
-              root_.putFactory(nSpec.getName(), factory);
-            }
+        var services =
+          ((ArraySink) serviceDAO_.select(new ArraySink())).getArray();
+
+        for ( Object obj : services ) {
+          var nSpec = (NSpec) obj;
+          for ( var option : getFactoryOptions() ) {
+            var factory = option.maybeGetFactory(host_, nSpec);
+            if ( factory == null ) continue;
+            root_ = root_.putFactory(nSpec.getName(), factory);
+            break;
           }
-        });
+        }
 
         return root_;
       `
