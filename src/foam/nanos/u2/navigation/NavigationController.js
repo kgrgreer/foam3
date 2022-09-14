@@ -127,7 +127,7 @@ foam.CLASS({
       // on initlayout reset context so that navigation views will be created
       // under the correct context
       this.initLayout.then(() => {
-        self.setPrivate_('__subContext__', ctrl.__subContext__);
+        this.__subSubContext__ = ctrl.__subContext__;
         self.setNavCtx_();
       });
       this.maybeCloseNav();
@@ -174,7 +174,7 @@ foam.CLASS({
   listeners: [
     function setNavCtx_() {
       // Workaround to register these classes without propogating to the rest of the app
-      var a = this.__subContext__.createSubContext();
+      var a = this.__subSubContext__.createSubContext();
       a.register(foam.u2.view.NavigationButton, 'foam.u2.ActionView');
       a.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
       this.navCtx_ = a;
