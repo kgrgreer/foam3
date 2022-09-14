@@ -55,6 +55,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setPm(true)
       .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.fs.File.FILENAME });
   """,
   "client":"""
     {
