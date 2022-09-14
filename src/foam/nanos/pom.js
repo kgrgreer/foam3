@@ -8,7 +8,8 @@ foam.POM({
   name: "nanos",
   version: 3,
   projects: [
-    { name: "medusa/pom"}
+    { name: "medusa/pom"},
+    { name: "sandbox/pom"}
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
@@ -641,11 +642,6 @@ foam.POM({
     { name: "ndiff/NDiff",                                                                flags: "js|java" },
     { name: "ndiff/NDiffDAO",                                                             flags: "js|java" },
     { name: "ndiff/NDiffJournal",                                                         flags: "js|java" },
-    { name: "ndiff/NDiffRuntimeDAO",                                                      flags: "js|java" },
-    { name: "sandbox/AbstractNSpecFactory",                                               flags: "js|java" },
-    { name: "sandbox/PassNSpecFactory",                                                   flags: "js|java" },
-    { name: "sandbox/NSpecFactoryOption",                                                 flags: "js|java" },
-    { name: "sandbox/Sandbox",                                                            flags: "js|java" },
-    { name: "sandbox/test/SandboxPassThroughTest",                                        flags: "js|java" }
+    { name: "ndiff/NDiffRuntimeDAO",                                                      flags: "js|java" }
   ]
 });

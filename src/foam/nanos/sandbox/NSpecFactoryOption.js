@@ -10,7 +10,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.XFactory',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'java.util.HashMap',
+    'java.util.Map'
   ],
 
   properties: [
@@ -25,6 +27,14 @@ foam.CLASS({
     {
       class: 'Class',
       name: 'nSpecFactory'
+    },
+    {
+      class: 'Map',
+      javaType: 'Map<String, Object>',
+      name: 'args',
+      javaFactory: `
+        return new HashMap<String, Object>();
+      `
     }
   ],
 
@@ -48,6 +58,9 @@ foam.CLASS({
           var fact = (AbstractNSpecFactory) getNSpecFactory().newInstance();
           fact.setHostX(hostX);
           fact.setNSpec(nSpec);
+          for ( String key : getArgs().keySet() ) {
+            fact.setProperty(key, getArgs().get(key));
+          }
           return fact;
         } catch (Exception e) {
           ((Logger) hostX.get("logger")).error(e);
