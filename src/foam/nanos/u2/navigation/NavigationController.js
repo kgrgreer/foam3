@@ -127,19 +127,18 @@ foam.CLASS({
       // on initlayout reset context so that navigation views will be created
       // under the correct context
       this.initLayout.then(() => {
-        this.__subSubContext__ = ctrl.__subContext__;
-        this.setNavCtx_();
+        self.setPrivate_('__subContext__', ctrl.__subContext__);
+        self.setNavCtx_();
       });
       this.maybeCloseNav();
 
       this.setNavCtx_();
 
       this.addClass()
-        .add(this.slot( async function(loginSuccess, topNav, navCtx_) {
+        .add(this.slot( async function(loginSuccess, topNav) {
           if ( ! loginSuccess || ! topNav ) return null;
           await this.initLayout;
-
-          var topView = foam.u2.ViewSpec.createView(topNav, {}, this, this.navCtx_);
+          var topView = foam.u2.ViewSpec.createView(topNav, {}, self, self.navCtx_);
           this.headerSlot_$.set(topView);
           var resize = new ResizeObserver (this.adjustTopBarHeight);
           this.headerSlot_?.el().then(el => {
@@ -153,10 +152,10 @@ foam.CLASS({
             .add(topView)
             .show(this.showNav$);
         }))
-        .add(this.slot( async function(loginSuccess, sideNav, navCtx_) {
+        .add(this.slot( async function(loginSuccess, sideNav) {
           if ( ! loginSuccess || ! sideNav ) return null;
           await this.initLayout;
-          var sideView = foam.u2.ViewSpec.createView(sideNav, {}, this, this.navCtx_);
+          var sideView = foam.u2.ViewSpec.createView(sideNav, {}, self, self.navCtx_);
           return this.E()
             // .tag(sideNav)
             .add(sideView)
@@ -169,16 +168,17 @@ foam.CLASS({
           .addClass(this.myClass('stack-view'))
         .end();
       // TODO: Maybe add footer support if needed
-    },
-    function setNavCtx_() {
-      // Workaround to register these classes without propogating to the rest of the app
-      this.navCtx_ = this.__subContext__.createSubContext();
-      this.navCtx_.register(foam.u2.view.NavigationButton, 'foam.u2.ActionView');
-      this.navCtx_.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
     }
   ],
 
   listeners: [
+    function setNavCtx_() {
+      // Workaround to register these classes without propogating to the rest of the app
+      var a = this.__subContext__.createSubContext();
+      a.register(foam.u2.view.NavigationButton, 'foam.u2.ActionView');
+      a.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
+      this.navCtx_ = a;
+    },
     function maybeCloseNav() {
       if ( this.displayWidth.ordinal < this.DisplayWidth.MD.ordinal ) {
         this.isMenuOpen = false;
