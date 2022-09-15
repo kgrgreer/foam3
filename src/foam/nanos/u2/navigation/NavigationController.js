@@ -174,7 +174,7 @@ foam.CLASS({
   listeners: [
     function setNavCtx_() {
       // Workaround to register these classes without propogating to the rest of the app
-      var a = this.__subSubContext__.createSubContext();
+      var a = this.__subSubContext__.createSubContext({});
       a.register(foam.u2.view.NavigationButton, 'foam.u2.ActionView');
       a.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
       this.navCtx_ = a;
