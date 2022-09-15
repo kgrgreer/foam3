@@ -246,7 +246,7 @@ foam.LIB({
       let hue = bounds?.h ?? [0, 360];
       let sat = bounds?.s ?? [0, 100];
       let lig = bounds?.l ?? [0, 100];
-      return "hsl(" + (hue[0] +(hue[1] - hue[0]) * Math.random()) + ',' +
+      return 'hsl(' + (hue[0] +(hue[1] - hue[0]) * Math.random()) + ',' +
              (sat[0] + (sat[1] - sat[0]) * Math.random()) + '%,' + 
              (lig[0] + (lig[1] - lig[0]) * Math.random()) + '%)';
     }
