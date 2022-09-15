@@ -76,7 +76,7 @@ foam.CLASS({
         });
       }
     }
-  ], 
+  ],
 
   actions: [
     {
