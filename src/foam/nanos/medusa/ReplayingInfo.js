@@ -14,7 +14,8 @@ foam.CLASS({
 
   javaImports: [
     'java.util.concurrent.ConcurrentHashMap',
-    'java.util.Map'
+    'java.util.Map',
+    'java.util.Date'
   ],
 
   properties: [
@@ -167,6 +168,14 @@ foam.CLASS({
       class: 'Map',
       javaFactory: 'return new ConcurrentHashMap();',
       visibility: 'RO'
+    },
+    {
+      class: 'StringArray',
+      name: 'replayProgressTimeElapsed',
+      documentation: 'time elapse when replay hit 25%, 50%, 75%, and 100%',
+      javaFactory: `
+        return new String[]{"25%: ","50%: ","75%: ","100%: "};
+      `
     }
   ],
 
@@ -187,7 +196,26 @@ foam.CLASS({
       javaCode: `
       if ( index > getIndex() ) {
         setIndex(index);
+        recordReplayProgressTimeElapsed(index);
       }
+      `
+    },
+    {
+      name: 'recordReplayProgressTimeElapsed',
+      args: 'long index',
+      javaCode:`
+        // Do not record when the Replay finish.
+        if ( ! getReplaying() ) return;
+
+        var progressTimeElapsed = getReplayProgressTimeElapsed();
+        if ( (long)(getReplayIndex() * 0.25) == index ) 
+          progressTimeElapsed[0] += (new Date().getTime() - getStartTime().getTime())/1000 + "s";
+        else  if ( (long)(getReplayIndex() * 0.5) == index ) 
+          progressTimeElapsed[1] += (new Date().getTime() - getStartTime().getTime())/1000 + "s";
+        else  if ( (long)(getReplayIndex() * 0.75) == index ) 
+          progressTimeElapsed[2] += (new Date().getTime() - getStartTime().getTime())/1000 + "s";
+        else  if ( getReplayIndex() == index ) 
+          progressTimeElapsed[3] += (new Date().getTime() - getStartTime().getTime())/1000 + "s";
       `
     }
   ]
