@@ -10,12 +10,14 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.GUIDDAO',
     'foam.dao.MDAO',
     'foam.mlang.ContextObject',
     'foam.nanos.auth.User',
     'foam.nanos.ruler.FindRuledCommand',
+    'foam.nanos.ruler.SelectRuledCommand',
     'foam.nanos.ruler.RuledDAO',
     'static foam.mlang.MLang.*'
   ],
@@ -30,6 +32,7 @@ foam.CLASS({
         RuledDAOTest_find_ruled_obj_with_falsely_predicate(x);
         RuledDAOTest_find_ruled_obj_predicating_on_OBJ_in_context(x);
         RuledDAOTest_find_ruled_obj_with_self_object_predicate(x);
+        RuledDAOTest_SelectRuledCommand(x);
       `
     },
     {
@@ -126,6 +129,23 @@ foam.CLASS({
 
         var found = dao.cmd(new FindRuledCommand("test"));
         test(found != null && obj.equals(found), "Find ruled obj with self object predicate");
+      `
+    },
+    {
+      name: 'RuledDAOTest_SelectRuledCommand',
+      args: [
+        { type: 'Context', name: 'x' }
+      ],
+      javaCode: `
+        var dao = setUpDAO(x, RuledDummy.getOwnClassInfo());
+        var obj1 = dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setId("1").setPriority(1).build());
+        var obj2 = dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setId("2").setPriority(2).build());
+        dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setId("3").setPredicate(FALSE).build());
+        dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setId("4").setEnabled(false).build());
+
+        var sink = (ArraySink) dao.cmd(new SelectRuledCommand("test"));
+        test(sink.getArray().size() == 2, "RuledDAO SelectRuledCommand should returns array sink");
+        test(obj2.equals(sink.getArray().get(0)) && obj1.equals(sink.getArray().get(1)), "- Result array sink should include the matched objects");
       `
     }
   ]
