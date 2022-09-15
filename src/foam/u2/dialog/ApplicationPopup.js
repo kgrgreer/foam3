@@ -161,7 +161,7 @@ foam.CLASS({
 
         // These methods come from ControlBorder
         .setActionList(this.EQ(this.Action.NAME, "goPrev"), 'leadingActions')
-        .setActionProp(this.EQ(this.Action.NAME, "discard"), 'primaryActions')
+        .setActionProp(this.EQ(this.Action.NAME, "discard"), 'closeAction')
         .setActionList(this.TRUE, 'primaryActions')
 
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
