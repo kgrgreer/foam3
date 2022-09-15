@@ -106,13 +106,15 @@ foam.CLASS({
     function render() {
       this
         .addClass(this.myClass())
-        .tag(this.viewSpec, {
+        .start(this.viewSpec, {
           alwaysFloatLabel: true,
           label$: this.label$,
           ariaLabel$: this.label$,
           onKey: this.onKey,
           mode$: this.mode$
-        }, this.view$);
+        }, this.view$)
+          .attrs({ name: this.name$ })
+        .end();
       this.view.data$.sub(this.updateValue);
 
       if ( this.searchData ) {

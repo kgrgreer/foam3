@@ -283,6 +283,7 @@ foam.CLASS({
             richSearch: true,
             of: self.dao.of.id,
             onKey: true,
+            name: 'fiterSearch',
             searchData$: self.searchData$
           }, this, self.__subContext__);
 
