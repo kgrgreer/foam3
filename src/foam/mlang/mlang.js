@@ -797,6 +797,32 @@ getArg2().prepareStatement(stmt);`
     },
     function arg2ToMQL() {
       return this.arg2 && this.arg2.toMQL ? this.arg2.toMQL() : this.arg2;
+    },
+    {
+      name: 'partialEval',
+      code: function partialEval() {
+        var newArg1 = this.arg1.partialEval();
+        var newArg2 = this.arg2.partialEval();
+
+        if ( this.arg1 === newArg1 && this.arg2 === newArg2 ) return this;
+        return this.cls_.create({arg1: newArg1, arg2: newArg2});
+      },
+      javaCode: `
+        var newArg1 = getArg1().partialEval();
+        var newArg2 = getArg2().partialEval();
+
+        if ( getArg1() == newArg1 && getArg2() == newArg2 )
+          return this;
+
+        try {
+          var nu = (Binary) getClass().getDeclaredConstructor().newInstance();
+          nu.setArg1(newArg1);
+          nu.setArg2(newArg2);
+          return nu;
+        } catch ( Throwable e ) {
+          return this;
+        }
+      `
     }
   ]
 });
