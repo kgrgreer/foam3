@@ -4638,6 +4638,7 @@ foam.CLASS({
   documentation: 'Formula base-class',
 
   javaImports: [
+    'foam.mlang.Expr',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -4715,24 +4716,39 @@ foam.CLASS({
       name: 'partialEval',
       type: 'foam.mlang.Expr',
       javaCode: `
-        List<Double> list = new ArrayList<>();
+        if ( getArgs().length == 0 ) return this;
+        if ( getArgs().length == 1 ) return getArgs()[0].partialEval();
+
+        List<Double> valList = new ArrayList<>();
+        List<Expr>   argList = new ArrayList<>();
         for ( var arg : getArgs() ) {
           arg = arg.partialEval();
           if ( arg instanceof Constant ) {
             var value = ((Number) arg.f(this)).doubleValue();
-            list.add(value);
+            valList.add(value);
+          } else {
+            argList.add(arg);
           }
         }
 
-        if ( list.size() == getArgs().length ) {
-          var result = list.stream().reduce(this::reduce).get();
+        var result = valList.stream().reduce(this::reduce);
+        if ( result.isPresent() ) {
+          var value = result.get();
+          if ( ! Double.isFinite(value) ) return new Constant(value);
+          else if ( argList.isEmpty()   ) return new Constant(getRounding() ? Math.round(value) : value);
 
-          if ( Double.isFinite(result) ) {
-            result = getRounding() ? Math.round(result) : result;
-            return new Constant(result);
-          }
+          argList.add(new Constant(value));
         }
-        return this;
+
+        // Construct new formula with partially evaled arg list
+        try {
+          var nu = (Formula) getClass().getDeclaredConstructor().newInstance();
+          nu.setRounding(getRounding());
+          nu.setArgs(argList.toArray(new Expr[argList.size()]));
+          return nu;
+        } catch (Throwable e) {
+          return this;
+        }
       `
     },
     {
