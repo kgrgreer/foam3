@@ -801,6 +801,8 @@ getArg2().prepareStatement(stmt);`
     {
       name: 'partialEval',
       code: function partialEval() {
+        if ( ! this.arg1?.partialEval || ! this.arg2?.partialEval ) return this;
+
         var newArg1 = this.arg1.partialEval();
         var newArg2 = this.arg2.partialEval();
 
