@@ -665,7 +665,11 @@ protected void onPut(foam.core.FObject obj) {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.put(obj);
+    try {
+      s.put(obj);
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onPut", t);
+    }
   }
 }
 
@@ -674,7 +678,11 @@ protected void onRemove(foam.core.FObject obj) {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.remove(obj);
+    try {
+      s.remove(obj);
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onRemove", t);
+    }
   }
 }
 
@@ -683,7 +691,11 @@ protected void onReset() {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.reset();
+    try {
+      s.reset();
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onReset", t);
+    }
   }
 }
 
