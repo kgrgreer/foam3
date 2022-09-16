@@ -4734,9 +4734,17 @@ foam.CLASS({
         var result = valList.stream().reduce(this::reduce);
         if ( result.isPresent() ) {
           var value = result.get();
-          if ( ! Double.isFinite(value) ) return new Constant(value);
-          else if ( argList.isEmpty()   ) return new Constant(getRounding() ? Math.round(value) : value);
 
+          // Early return if the reduce result is Infinity or NaN since continue
+          // performing arithmetic operations on Infinity or NaN will still
+          // yield Infinity or NaN.
+          if ( ! Double.isFinite(value) ) return new Constant(value);
+
+          // Return reduce result as a constant if no un-resolvable args
+          if ( argList.isEmpty() ) return new Constant(getRounding() ? Math.round(value) : value);
+
+          // There are un-resolvable args so adding reduce result as constant.
+          // Eg. Add(1,2,3, prop1, 4,5) will become Add(prop1, 15).
           argList.add(new Constant(value));
         }
 
