@@ -25,19 +25,6 @@ p({
 })
 p({
   class: "foam.nanos.menu.Menu",
-  id: "candlestick.chart.controller",
-  label: "Candlestick Charting - Controller",
-  keywords: ["analytics","om","pm","chart","performance"],
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "foam.nanos.analytics.CandlestickChartController"
-    }
-  },
-  "parent":"analytics"
-})
-p({
-  class: "foam.nanos.menu.Menu",
   id: "demo.chart",
   label: "Demo Charting",
   keywords: ["analytics","om","pm","chart","performance"],
