@@ -811,7 +811,7 @@ getArg2().prepareStatement(stmt);`
         var newArg1 = getArg1().partialEval();
         var newArg2 = getArg2().partialEval();
 
-        if ( getArg1().equals(newArg1) && getArg2().equals(newArg2) )
+        if ( getArg1() == newArg1 && getArg2() == newArg2 )
           return this;
 
         try {
