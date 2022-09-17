@@ -12,12 +12,39 @@ foam.CLASS({
   implements: [ 'foam.mlang.Expressions' ],
 
   requires: [
+    'foam.dao.ArrayDAO',
+    'foam.dao.SinkDAO',
+    'foam.dao.ProxySink',
     'foam.graphics.Box',
     'foam.graphics.Label',
     'foam.mlang.sink.Unique',
     'foam.mlang.sink.NullSink',
     'foam.nanos.analytics.Candlestick',
     'org.chartjs.Line2'
+  ],
+
+  classes: [
+    {
+      name: 'UniqueSink',
+      extends: 'foam.dao.ProxySink',
+
+      properties: [
+        {
+          class: 'Object',
+          name: 'results',
+          factory: function() { return {}; }
+        }
+      ],
+
+      methods: [
+        function put(obj, sub) {
+          if ( ! this.results[obj.key] ) {
+            this.results[obj.key] = true;
+            this.delegate.put(obj, sub);
+          }
+        }
+      ]
+    }
   ],
 
   messages: [
@@ -74,39 +101,26 @@ foam.CLASS({
         this.refresh();
       }
     },
-
-    // failes with Mutations not allowed in OUTPUT state
     {
-      name: 'choices',
-      class: 'String',
-      value: [],
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'candlestickKey3',
+      name: 'candlestickKey1',
       view: function(_, X) {
-        // var choices = [];
-        var choicesChanged = X.data.slot(function(candlestickDAOKey) {
+        var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
-            var unique = this.Unique.create(this.Candlestick.KEY, this.NullSink.create({}));
-            ctrl.__subContext__[candlestickDAOKey].
-              orderBy(this.Candlestick.KEY).
-              select(unique).then(function(sink) {
-                var kv = [];
-                unique.values.forEach(function(v, k) {
-                  kv.put([k, v]);
-                });
-                kv.sort(function(a, b) {
-                  return a.localeCompare(b);
-                });
-                // return kv;
-                this.choices = kv;
-              }).bind(this);
+            var self = this;
+            var results = {};
+            return this.SinkDAO.create({
+              delegate: ctrl.__subContext__[candlestickDAOKey].
+                orderBy(self.Candlestick.KEY),
+              sink: this.UniqueSink.create()
+            });
           }
-          // return this.choices;
+          return this.ArrayDAO.create();
         });
         return foam.u2.view.ChoiceView.create({
-          choices$: this.choices,
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: dao,
           placeholder: '--'
         });
       },
@@ -115,46 +129,29 @@ foam.CLASS({
       }
     },
     {
-      name: 'candlestickKey1',
-      view: function(_, X) {
-        var self = this;
-        var choices = X.data.slot(function(candlestickDAOKey) {
-          if ( candlestickDAOKey ) {
-            return ctrl.__subContext__[candlestickDAOKey];
-          }
-          return foam.dao.ArrayDAO.create({});
-        });
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(candlestick) {
-            return [candlestick.key, candlestick.key];
-          },
-          dao$: choices,
-          placeholder: '--'
-        });
-      },
-      postSet: function(oldValue, newValue) {
-        this.refresh();
-      }
-    },
-    {
       name: 'candlestickKey2',
       view: function(_, X) {
-        var self = this;
-        var choices = X.data.slot(function(candlestickDAOKey) {
+        var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
-            return ctrl.__subContext__[candlestickDAOKey];
+            var self = this;
+            var results = {};
+            return this.SinkDAO.create({
+              delegate: ctrl.__subContext__[candlestickDAOKey].
+                orderBy(self.Candlestick.KEY),
+              sink: this.UniqueSink.create()
+            });
           }
-          return foam.dao.ArrayDAO.create({});
+          return this.ArrayDAO.create();
         });
         return foam.u2.view.ChoiceView.create({
           objToChoice: function(candlestick) {
             return [candlestick.key, candlestick.key];
           },
-          dao$: choices,
+          dao$: dao,
           placeholder: '--'
         });
       },
-      postSet: function(oldValue, newValue) {
+       postSet: function(oldValue, newValue) {
         this.refresh();
       }
     },
@@ -201,8 +198,7 @@ foam.CLASS({
         .start().addClass(this.myClass('selector'))
         .add(this.CANDLESTICK_DAOKEY.__)
         .add(this.CANDLESTICK_KEY1.__)
-        // .add(this.CANDLESTICK_KEY2.__)
-        // .add(this.CANDLESTICK_KEY3.__)
+        .add(this.CANDLESTICK_KEY2.__)
         .end()
         .end()
         .end();
