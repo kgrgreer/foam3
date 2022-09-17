@@ -200,7 +200,7 @@ foam.CLASS({
       name: 'link',
       javaCode: `
       DaggerLinks links = getNextLinks(x);
-      ((OMLogger) x.get("OMLogger")).log("Medusa.index");
+      ((OMLogger) x.get("OMLogger")).log("Medusa.Dagger.link");
       entry.setIndex(links.getGlobalIndex());
       entry.setIndex1(links.getLink1().getIndex());
       entry.setHash1(links.getLink1().getHash());
@@ -334,6 +334,7 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
       if ( index > getIndex() ) {
+        ((OMLogger) x.get("OMLogger")).log("Medusa.Dagger.globalIndex.increment");
         setIndex(index);
       }
       return getIndex();
