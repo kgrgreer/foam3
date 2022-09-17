@@ -159,8 +159,8 @@ foam.CLASS({
       name: 'canvas',
       factory: function() {
         return this.Box.create({
-          width: 1400,
-          height: 700
+          width: 1200,
+          height: 600
         });
       },
       visibility: 'RO'
@@ -179,7 +179,21 @@ foam.CLASS({
       
       this.buildChartData().then(function(data) {
         this.chart = this.Line2.create({
-          data: data
+          data: data,
+          options: {
+            legend: {
+              display: false,
+            },
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  var dataset = data.datasets[tooltipItem.datasetIndex];
+                  var index = tooltipItem.index;
+                  return dataset.labels[index] + ': ' + dataset.data[index];
+                }
+              }
+            }
+          }
         });
         this.canvas.add(this.chart);
       }.bind(this));
@@ -209,6 +223,10 @@ foam.CLASS({
         end();
     },
 
+    /**
+       Multi-line with seperate labels setup
+       see: https://github.com/chartjs/Chart.js/issues/3953
+     */
     async function buildChartData() {
       // TODO: review if labels actually match dataset data
       var labels = new Map();
@@ -228,12 +246,15 @@ foam.CLASS({
         let arr = sink.array;
         for ( let i = 0; i < arr.length; i++ ) {
           let c = arr[i];
-          labels.set(c.closeValueTime.getTime(), c.closeValueTime);
+          if ( i == 0 ) {
+            labels.set(c.closeValueTime.getTime(), c.closeValueTime);
+          }
           var dataset = datasets.get(c.key);
           if ( ! dataset ) {
             dataset = {
               label: c.key,
               data: [],
+              labels: [],
               fill: false,
               borderColor: 'hsl('+(300/(i+1))+',100%,50%)',
               tension: 0.1
@@ -242,6 +263,8 @@ foam.CLASS({
           }
           var data = dataset['data'];
           data.push(c.total);
+          var labels = dataset['labels'];
+          labels.push(c.closeValueTime);
         }
       }
 
