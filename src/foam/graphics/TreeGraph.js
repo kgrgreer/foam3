@@ -24,8 +24,8 @@
    ],
 
    properties: [
-     [ 'canvasMinWidth',    1374],
-     [ 'canvasMinHeight',    750],
+     [ 'canvasMinWidth',     1374],
+     [ 'canvasMinHeight',     750],
      [ 'nodeWidth',          155 ],
      [ 'nodeHeight',          60 ],
      [ 'nodeCornerRadius',     0 ],
