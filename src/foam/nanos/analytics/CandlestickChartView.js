@@ -14,16 +14,11 @@ foam.CLASS({
   requires: [
     'foam.graphics.Box',
     'foam.graphics.Label',
+    'foam.mlang.sink.Unique',
+    'foam.mlang.sink.NullSink',
     'foam.nanos.analytics.Candlestick',
     'org.chartjs.Line2'
   ],
-
-  // imports: [
-  //   'om1MinuteDAO',
-  //   'om5MinuteDAO',
-  //   'omHourlyDAO',
-  //   'omDailyDAO'
-  // ],
 
   messages: [
     {
@@ -47,13 +42,11 @@ foam.CLASS({
       label: 'Candlestick DAO',
       name: 'candlestickDAOKey',
       documentation: `The Candlestick DAO to graph.`,
-//      value: 'omDailyDAO',
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
-          data$: X.data.candlestickDAOKeyChoice$,
           search: true,
           sections: [
             {
@@ -61,7 +54,7 @@ foam.CLASS({
               dao: X.AuthenticatedNSpecDAO
                 .where(E.AND(
                   E.EQ(foam.nanos.boot.NSpec.SERVE, true),
-                  E.ENDS_WITH(foam.nanos.boot.NSpec.NAME, 'DAO'),
+//                  E.ENDS_WITH(foam.nanos.boot.NSpec.NAME, 'DAO'),
                   E.OR(
                     E.CONTAINS_IC(foam.nanos.boot.NSpec.NAME, "candlestick"),
                     E.IN(foam.nanos.boot.NSpec.NAME, [
@@ -76,53 +69,95 @@ foam.CLASS({
             }
           ]
         };
+      },
+      postSet: function(oldValue, newValue) {
+        this.refresh();
+      }
+    },
+
+    // failes with Mutations not allowed in OUTPUT state
+    {
+      name: 'choices',
+      class: 'String',
+      value: [],
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'candlestickKey3',
+      view: function(_, X) {
+        // var choices = [];
+        var choicesChanged = X.data.slot(function(candlestickDAOKey) {
+          if ( candlestickDAOKey ) {
+            var unique = this.Unique.create(this.Candlestick.KEY, this.NullSink.create({}));
+            ctrl.__subContext__[candlestickDAOKey].
+              orderBy(this.Candlestick.KEY).
+              select(unique).then(function(sink) {
+                var kv = [];
+                unique.values.forEach(function(v, k) {
+                  kv.put([k, v]);
+                });
+                kv.sort(function(a, b) {
+                  return a.localeCompare(b);
+                });
+                // return kv;
+                this.choices = kv;
+              }).bind(this);
+          }
+          // return this.choices;
+        });
+        return foam.u2.view.ChoiceView.create({
+          choices$: this.choices,
+          placeholder: '--'
+        });
+      },
+       postSet: function(oldValue, newValue) {
+        this.refresh();
       }
     },
     {
-      name: 'candlestickDAOKeyChoice',
-      class: 'String',
-      visibility: 'RO',
-      transient: true
-    },
-    {
-      name: 'candlestickDAOKeyChoices',
-      expression: function(candlestickDAOKeyChoice) {
-        this.buildChart();
-      },
-      visibility: 'RO',
-      transient: true
-    },
-    {
-    // allow multiple selection of keys from selected dao.
       name: 'candlestickKey1',
-      class: 'String',
-      // value: 'Medusa.Dagger.globalIndex.increment'
-      value: 'LRULinkedHashMap.UserPermissionCache.CacheHIT'
+      view: function(_, X) {
+        var self = this;
+        var choices = X.data.slot(function(candlestickDAOKey) {
+          if ( candlestickDAOKey ) {
+            return ctrl.__subContext__[candlestickDAOKey];
+          }
+          return foam.dao.ArrayDAO.create({});
+        });
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: choices,
+          placeholder: '--'
+        });
+      },
+      postSet: function(oldValue, newValue) {
+        this.refresh();
+      }
     },
     {
-    // allow multiple selection of keys from selected dao.
       name: 'candlestickKey2',
-      class: 'String',
-      // value: 'ReplayingInfo.index.increment'
-      value: 'LRULinkedHashMap.UserPermissionCache.CacheMISS'
+      view: function(_, X) {
+        var self = this;
+        var choices = X.data.slot(function(candlestickDAOKey) {
+          if ( candlestickDAOKey ) {
+            return ctrl.__subContext__[candlestickDAOKey];
+          }
+          return foam.dao.ArrayDAO.create({});
+        });
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: choices,
+          placeholder: '--'
+        });
+      },
+      postSet: function(oldValue, newValue) {
+        this.refresh();
+      }
     },
-//     {
-//       class: 'String',
-//       name: 'candlestickKey',
-//       view: function(_, X) {
-//         var E = foam.mlang.Expressions.create();
-//         return {
-//           class: 'foam.u2.view.RichChoiceView',
-//           search: true,
-//           sections: [
-//             {
-// //              heading: 'DAO',d
-//               dao: X.data[X.data.candlestickDAOKeyChoice]
-//             }
-//           ]
-//         };
-//       }
-//     },
     {
       name: 'canvas',
       factory: function() {
@@ -133,44 +168,24 @@ foam.CLASS({
       },
       visibility: 'RO'
     },
-    'chart',
-    // {
-    //   class: 'Int',
-    //   name: 'seconds',
-    //   postSet: function() {
-    //     this.refresh();
-    //   },
-    //   visibility: 'HIDDEN',
-    //   transient: true
-    // },
-    // {
-    //   documentation: 'seconds between refreshes.',
-    //   name: 'refreshRate',
-    //   value: 10,
-    //   visibility: 'HIDDEN',
-    //   transient: true
-    // },
-    // {
-    //   class: 'FObjectProperty',
-    //   of: 'foam.util.Timer',
-    //   name: 'timer',
-    //   factory: function() {
-    //     var t = this.Timer.create();
-    //     this.seconds$ = t.second$.map(function(s) {
-    //       return Math.floor(s / this.refreshRate);
-    //     }.bind(this));
-    //     return t;
-    //   },
-    //   visibility: 'HIDDEN',
-    //   transient: true
-    // }
+    {
+      name: 'chart',
+      class: 'FObjectProperty',
+      of: 'foam.graphics.CView',
+      visibility: 'HIDDEN'
+    }
   ],
 
   methods: [
     async function render() {
       this.SUPER();
-       this.canvas.add(this.chart$);
-//       this.canvas.invalidate();
+      
+      this.buildChartData().then(function(data) {
+        this.chart = this.Line2.create({
+          data: data
+        });
+        this.canvas.add(this.chart);
+      }.bind(this));
 
       this.addClass(this.myClass());
       this
@@ -180,18 +195,14 @@ foam.CLASS({
         .end()
         .end();
 
-      // Questions
-      // 2. How to refresh the canvas on selection change?
       this
         .start(this.Cols).addClass(this.myClass('container-selectors'))
         .startContext({data: this})
         .start().addClass(this.myClass('selector'))
         .add(this.CANDLESTICK_DAOKEY.__)
         .add(this.CANDLESTICK_KEY1.__)
-        .add(this.CANDLESTICK_KEY2.__)
-        .add(this.CANDLESTICK_DAOKEY_CHOICE.__)
-        .add(this.CANDLESTICK_DAOKEY_CHOICES.__)
-//        .add(this.CANDLESTICK_KEY.__)
+        // .add(this.CANDLESTICK_KEY2.__)
+        // .add(this.CANDLESTICK_KEY3.__)
         .end()
         .end()
         .end();
@@ -201,38 +212,34 @@ foam.CLASS({
         add(this.canvas).
         end();
     },
-    
-    async function buildChart() {
 
-      var self = this;
+    async function buildChartData() {
+      // TODO: review if labels actually match dataset data
       var labels = new Map();
       var datasets = new Map();
 
       if ( this.candlestickDAOKey &&
            ( this.candlestickKey1 ||
              this.candlestickKey2 ) ) {
-        let sink = await this[this.candlestickDAOKey]
-            .where(this.OR(
-              this.EQ(this.Candlestick.KEY, this.candlestickKey1),
-              this.EQ(this.Candlestick.KEY, this.candlestickKey2)
-            ))
-            .orderBy(this.Candlestick.CLOSE_VALUE_TIME)
-            .select();
+        var dao = ctrl.__subContext__[this.candlestickDAOKey];
+        dao = dao.where(this.OR(
+          this.EQ(this.Candlestick.KEY, this.candlestickKey1 || ''),
+          this.EQ(this.Candlestick.KEY, this.candlestickKey2 || '')
+        ));
+        dao = dao.orderBy(this.Candlestick.CLOSE_VALUE_TIME);
 
+        let sink = await dao.select();
         let arr = sink.array;
         for ( let i = 0; i < arr.length; i++ ) {
           let c = arr[i];
           labels.set(c.closeValueTime.getTime(), c.closeValueTime);
           var dataset = datasets.get(c.key);
           if ( ! dataset ) {
-            let h = i+100;
-            let s = i+100;
-            let l = i+100;
             dataset = {
               label: c.key,
               data: [],
               fill: false,
-              borderColor: 'hsl('+h+','+s+','+l+')',
+              borderColor: 'hsl('+(300/(i+1))+',100%,50%)',
               tension: 0.1
             }
             datasets.set(c.key, dataset);
@@ -247,10 +254,12 @@ foam.CLASS({
         datasets: [...datasets.values()]
       };
 
-      this.chart = this.Line2.create({
-        data: config
-      });
-
+      return config;
+    },
+    async function refresh() {
+      this.buildChartData().then(function(data) {
+        this.chart.data = data;
+      }.bind(this));
     }
   ]
 });
