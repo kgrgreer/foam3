@@ -4,7 +4,7 @@ p({
   label: "Analytics",
   icon: "images/icons8-charts-64.png",
   themeIcon: "icons8-charts-64",
-  keywords: ["analytics","om","pm","chart","performance"],
+  keywords: ["analytics","candlestick","chart","performance"],
   handler: {
     class:"foam.nanos.menu.SubMenu"
   },
@@ -14,7 +14,7 @@ p({
   class: "foam.nanos.menu.Menu",
   id: "candlestick.chart",
   label: "Candlestick Charting",
-  keywords: ["analytics","om","pm","chart","performance"],
+  keywords: ["analytics","candlestick","chart","performance"],
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
@@ -23,16 +23,16 @@ p({
   },
   "parent":"analytics"
 })
-p({
-  class: "foam.nanos.menu.Menu",
-  id: "demo.chart",
-  label: "Demo Charting",
-  keywords: ["analytics","om","pm","chart","performance"],
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "foam.nanos.analytics.DemoChartView"
-    }
-  },
-  "parent":"analytics"
-})
+// p({
+//   class: "foam.nanos.menu.Menu",
+//   id: "demo.chart",
+//   label: "Demo Charting",
+//   keywords: ["analytics","candlestick","chart","performance"],
+//   "handler": {
+//     "class": "foam.nanos.menu.ViewMenu",
+//     "view": {
+//       "class": "foam.nanos.analytics.DemoChartView"
+//     }
+//   },
+//   "parent":"analytics"
+// })

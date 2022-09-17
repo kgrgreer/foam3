@@ -53,27 +53,6 @@ p({
   },
   "parent":"admin"
 })
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"admin.p",
-  "label":"Performance",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "browseTitle":"Performance",
-      "searchMode":2,
-      "summaryView":{"class":"foam.nanos.pm.PMTableView"},
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "daoKey":"pmInfoDAO",
-      "summaryView":{
-        "class":"foam.nanos.pm.PMTableView"
-      },
-      "browseActions": [ "foam.nanos.pm.PMTableView.CLEAR_ALL" ]
-    }
-  },
-  "parent":"admin"
-})
 p({"class":"foam.nanos.menu.Menu","id":"admin.permissionMatrix","label":"Permission Matrix","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.PermissionTableView"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.permissions","label":"Permissions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"permissionDAO"}},"parent":"admin"})
 p({
