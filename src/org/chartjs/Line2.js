@@ -25,26 +25,41 @@ foam.CLASS({
       }
     },
     {
-      name: 'xAxis',
-      postSet: function(_, v) {
-        if ( this.chart ) {
-          this.chart.options.scales.xAxes = [v];
+      name: 'options',
+      factory: function() {
+        return {
+          responsive: false,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          stacked: false,
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+            }
+          }
         }
       }
     },
+    // {
+    //   name: 'xAxis',
+    //   postSet: function(_, v) {
+    //     if ( this.chart ) {
+    //       this.chart.options.scales.xAxes = [v];
+    //     }
+    //   }
+    // },
     {
       name: 'config',
       factory: function() {
         return {
           type: 'line',
           data: this.data,
-          options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-              xAxes: this.xAxis ? [ this.xAxis ] : []
-            }
-          }
+          options: this.options
         };
       }
     }
