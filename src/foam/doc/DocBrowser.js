@@ -33,7 +33,7 @@ foam.CLASS({
     }
     ^title { padding: 6px; align-content: center; background: #c8e2f9; }
     ^info { float: right; font-size: smaller; }
-    ^content { padding: 6px; min-width: 220px; height: 100%; background:/*%WHITE%*/ #ffffff; }
+    ^content { padding: 6px; min-width: 220px; height: 100%; background:$white; }
   `,
 
   properties: [

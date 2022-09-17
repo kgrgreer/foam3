@@ -85,8 +85,7 @@ foam.CLASS({
     }
 
     ^general-field input {
-      border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 5px;
+      border: 1px solid $grey200;
       height: 34px;
       width: 100%;
     }
@@ -111,12 +110,12 @@ foam.CLASS({
     }
 
     ^filter-button-active{
-      color: /*%PRIMARY3%*/ #406DEA;
-      background: /*%GREY5%*/ #F5F7FA;
+      color: $primary400;
+      background: $grey100;
     }
 
     ^filter-button-active svg {
-      fill: /*%PRIMARY3%*/ #406DEA;
+      fill: $primary400;
       transform: rotate(180deg);
     }
 
@@ -137,13 +136,13 @@ foam.CLASS({
 
     ^link-mode.clear {
       align-self: center;
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
       flex-shrink: 0;
       margin-right: 0;
     }
 
     ^link-mode.clear:hover {
-      color: /*%DESTRUCTIVE1%*/ darkred;
+      color: $destructive700;
     }
 
     ^message-advanced {
@@ -268,9 +267,9 @@ foam.CLASS({
     },
     async function render() {
       var self = this;
-      this.data$.sub(this.updateMementoString);
       this.mementoString$.sub(this.getData);
       this.getData();
+      this.data$.sub(this.updateMementoString);
 
       await this.updateFilters();
 
@@ -283,6 +282,7 @@ foam.CLASS({
             richSearch: true,
             of: self.dao.of.id,
             onKey: true,
+            name: 'fiterSearch',
             searchData$: self.searchData$
           }, this, self.__subContext__);
 
@@ -416,18 +416,42 @@ foam.CLASS({
     },
     function assignPredicate(property) {
       var predicate = this.filterController.finalPredicate;
+      var retPred = null;
       if ( predicate ) {
         if ( foam.mlang.predicate.And.isInstance(predicate) ) {
           var subPredicates = predicate.args;
           for ( subPredicate of subPredicates ) {
-            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
+            let ret = this.unwrapPredicate(subPredicate, property);
+            if ( ! ret ) continue;
+            if ( retPred != null ) {
+              retPred = this.AND(retPred, ret);
+            } else {
+              retPred = ret;
+            }
           }
         }
-        else {
-          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
-        }
+      } else {
+        if ( predicate.arg1 && predicate.arg1.name == prop.name ) retPred = predicate;
       }
-      return null;
+      return retPred;
+    },
+    function unwrapPredicate(pred, prop) {
+      if ( foam.mlang.predicate.Or.isInstance(pred) ) {
+        var subPredicates = pred.args;
+        for ( subPredicate of subPredicates ) {
+          if ( subPredicate.arg1 && subPredicate.arg1.name == prop.name ) {
+            // Replace OR with IN since the PropFilterViews expect IN
+            let p = this.IN(subPredicate.arg1, subPredicates.map(s => {
+              if ( s.arg1 && s.arg1.name == prop.name ) {
+                return s.arg2.value;
+              }
+            }));
+            return p;
+          }
+        }
+      } else {
+        if ( pred.arg1 && pred.arg1.name == prop.name ) return pred;
+      }
     }
   ],
 
@@ -437,8 +461,11 @@ foam.CLASS({
       code: function() {
         this.deFeedback(() => {
           var mem = this.data.toMQL();
-          if ( ! mem || this.mementoString == mem ) return;
-          this.mementoString = '{' + mem + '}';
+          if ( mem ) {
+            this.mementoString = '{' + mem + '}';
+          } else {
+            this.mementoString = undefined;
+          }
         });
       }
     },
@@ -544,6 +571,7 @@ foam.CLASS({
         if ( this.filterController.isAdvanced ) return;
         this.filterController.clearAll();
         this.generalSearchField.view.data = '';
+        this.mementoString = '';
       }
     },
     {

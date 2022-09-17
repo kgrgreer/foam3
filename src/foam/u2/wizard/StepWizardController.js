@@ -10,7 +10,7 @@ foam.CLASS({
 
   imports: [
     'developerMode',
-    'analyticsAgent?'
+    'handleEvent?'
   ],
 
   requires: [
@@ -19,7 +19,9 @@ foam.CLASS({
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.StepWizardConfig',
-    'foam.u2.wizard.debug.WizardInspector'
+    'foam.u2.wizard.debug.WizardInspector',
+    'foam.u2.wizard.event.WizardEvent',
+    'foam.u2.wizard.event.WizardEventType'
   ],
 
   properties: [
@@ -139,7 +141,17 @@ foam.CLASS({
       name: 'canGoBack',
       class: 'Boolean',
       expression: function(previousScreen) {
-        return previousScreen != null;
+        if ( previousScreen == null ) return false;
+
+        // check for irreversible wizardlets between here and previous screen
+        const { wizardPosition, wizardlets } = this;
+        for ( let pos of wizardPosition.iterate(wizardlets, true) ) {
+          if ( pos.wizardletIndex == wizardPosition.wizardletIndex ) continue;
+          if ( pos.compareTo(previousScreen) < 0 ) break;
+          if ( wizardlets[pos.wizardletIndex].irreversible ) return false;
+        }
+
+        return true;
       }
     },
     {
@@ -158,7 +170,7 @@ foam.CLASS({
         ) {
           if ( ! currentWizardlet$isValid ) return false;
         }
-        return currentSection$isValid;
+        return currentSection$isValid || false;
       }
     },
     {
@@ -191,6 +203,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'autoPositionUpdates',
       value: true
+    },
+    {
+      name: 'lastException',
+      documentation: `
+        As most wizard exceptions will originate from DOM events (i.e. button
+        clicks), this property will be updated to propagate errors back to
+        StepWizardAgent, and also allow views to react.
+      `
     }
   ],
 
@@ -206,7 +226,6 @@ foam.CLASS({
 
       this.onWizardletValidity();
 
-      var wi = 0, si = 0;
       wizardlets.forEach((w, wizardletIndex) => {
 
         // Bind availability listener for wizardlet availability
@@ -275,57 +294,55 @@ foam.CLASS({
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
     async function next() {
-      // Save current wizardlet, and any save-able (isAvailable) but invisible
-      // wizardlets that may exist in between this one and the next.
-      // If it exists, load the next wizardlet
-      // TODO: Just load next wizardlet instead of loading all in the beginning
-
-      // this.nextAvailable(wizardPosition, this.positionAfter.bind(this));
-      var currentWizardlet = this.wizardlets[this.wizardPosition.wizardletIndex];
-
-      // we want to save Facades since they could directly influence the availabities of other wizardlets
-      // if it is currently the "last" wizardlet in the flow
-      var isCurrentAlreadySaved = false;
-      if (
-        foam.u2.wizard.wizardlet.FacadeCapabilityWizardlet.isInstance(currentWizardlet)
-      ){
-        await currentWizardlet.save();
-        isCurrentAlreadySaved = true;
-      }
-
-      var start = this.wizardPosition.wizardletIndex;
-      let nextScreen = this.nextAvailable(this.wizardPosition);
-      var end = nextScreen ?
-        nextScreen.wizardletIndex : this.wizardlets.length;
-
-      // if the current wizardlet is a facade wizardlet, then we need to save it first
-      // then we can recalculate end
-      for ( let i = start ; i < end ; i++ ) {
-        if ( ! this.wizardlets[i].isAvailable ) continue;
-        if ( this.wizardlets[i] == currentWizardlet && isCurrentAlreadySaved ) continue;
-
-
-        await this.wizardlets[i].save();
-
-        // Add a record of wizardlet completion to analytics
-        // TODO: Maybe add config to wizardlet for this later
-        this.analyticsAgent?.pub('event', {
-          name: foam.String.constantize(
-              this.wizardlets[i].title || this.wizardlets[i].id ||
-              (this.wizardlets[i].of?.name ?? 'UNKNOWN')
-            ) + '_COMPLETE', 
-          tags: ['wizard'] 
-        })
-        if ( (i + 1) < end && this.wizardlets[i + 1] ) await this.wizardlets[i + 1].load();
-      }
-
-      if ( this.nextScreen == null ) {
-        this.status = this.WizardStatus.COMPLETED;
+      const canLandOn_ = pos => {
+        const wizardlet = this.wizardlets[pos.wizardletIndex];
+        if ( ! wizardlet.isVisible ) return false;
+        if ( wizardlet.sections.length < 1 ) return false;
+        const section = wizardlet.sections[pos.sectionIndex];
+        if ( ! section.isAvailable ) return false;
         return true;
       }
 
-      this.wizardPosition = nextScreen;
-      return false;
+      let wizardlet = this.currentWizardlet;
+      const iterator = this.wizardPosition.iterate(this.wizardlets);
+
+      for ( const pos of iterator ) {
+        nextPositionWizardlet = this.wizardlets[pos.wizardletIndex];
+        if ( ! nextPositionWizardlet.isAvailable ) continue;
+
+        if ( nextPositionWizardlet != wizardlet ) {
+          try {
+            await wizardlet.save();
+          } catch (e) {
+            this.lastException = e;
+            throw e;
+          }
+
+          this.onWizardletCompleted(wizardlet);
+          wizardlet = nextPositionWizardlet;
+
+          try {
+            await wizardlet.load();
+          } catch (e) {
+            this.lastException = e;
+            throw e;
+          }
+        }
+
+        if ( canLandOn_(pos) ) {
+          this.wizardPosition = pos;
+          return false;
+        }
+      }
+
+      try {
+        await wizardlet.save();
+      } catch (e) {
+        this.lastException = e;
+        throw e;
+      }
+      this.status = this.WizardStatus.COMPLETED;
+      return true;
     },
     function back() {
       let previousScreen = this.previousScreen;
@@ -420,6 +437,18 @@ foam.CLASS({
 
       // Force position update anyway so views recalculate state
       this.wizardPosition = this.wizardPosition.clone();
+    },
+    function onWizardletCompleted(wizardlet) {
+      try {
+        if ( ! this.handleEvent ) return;
+        this.handleEvent(this.WizardEvent.create({
+          wizardlet,
+          eventType: this.WizardEventType.WIZARDLET_SAVE
+        }));
+      } catch (e) {
+        // report analytics error without interrupting flow
+        console.error('analyticsAgent.put failed', e);
+      }
     }
   ]
 });

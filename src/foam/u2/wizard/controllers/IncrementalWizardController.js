@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.controllers.WizardController',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.wizard.DynamicActionWizardlet',
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.axiom.WizardAction'
@@ -17,6 +18,10 @@ foam.CLASS({
 
   issues: [
     'should not depend on legacy controller'
+  ],
+
+  messages: [
+    { name: 'ERROR_MSG', message: 'Information was not successfully submitted, please try again later' },
   ],
 
   properties: [
@@ -33,6 +38,13 @@ foam.CLASS({
           this.onClose({ completed: v.status == this.WizardStatus.COMPLETED });
         }))
 
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'defaultView',
+      value: {
+        class: 'foam.u2.wizard.views.FocusWizardView'
       }
     },
     'currentWizardlet',
@@ -72,8 +84,24 @@ foam.CLASS({
 
         for ( let action of wizardletActions ) {
           if ( action.name === 'goNext' ) {
-            goNextAction = this.GO_NEXT.clone().copyFrom(action);
+
+            // If the class matches we can copy the original NEXT action
+            // Using "Action.isInstance" is not appropriate here because
+            // this approach doesn't work for subclasses.
+            if ( action.cls_ == foam.core.Action ) {
+              goNextAction = this.GO_NEXT.clone().copyFrom(action);
+              goNextAction.buttonStyle = 'PRIMARY';
+              continue;
+            }
+
+            goNextAction = action;
             goNextAction.buttonStyle = 'PRIMARY';
+
+            // Copy defaults from original NEXT action
+            const copyProperties = ['isAvailable', 'isEnabled'];
+            for ( const k of copyProperties ) {
+              if ( ! goNextAction[k] ) goNextAction[k] = this.GO_NEXT[k];
+            }
             continue;
           }
           if ( action.name === 'goPrev' ) {
@@ -103,7 +131,11 @@ foam.CLASS({
           this.onClose({});
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         });
       }
     },
@@ -149,7 +181,11 @@ foam.CLASS({
           }
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         }).finally(() => {
           this.isLoading_ = false;
         });

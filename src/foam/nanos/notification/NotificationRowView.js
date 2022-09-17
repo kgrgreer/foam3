@@ -38,7 +38,7 @@
 
     css: `
       ^ {
-        background:/*%WHITE%*/ #ffffff;
+        background:$white;
         border: solid 1px #e7eaec;
         border-radius: 3px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
@@ -48,7 +48,7 @@
       }
       ^msg {
         display: -webkit-box;
-        color: /*%BLACK%*/ #1e1f21;
+        color: $black;
         overflow: hidden;
         text-overflow: ellipsis;
         word-wrap: break-word;

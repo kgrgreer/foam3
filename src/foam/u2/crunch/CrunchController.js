@@ -36,7 +36,9 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.CheckPendingAgent',
     'foam.u2.crunch.wizardflow.CheckNoDataAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.LoadCapabilityGraphAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.GraphWizardletsAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
@@ -58,6 +60,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
@@ -65,6 +68,9 @@ foam.CLASS({
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.NullEventHandlerAgent',
+    'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
     'foam.u2.borders.SpacingBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -102,7 +108,8 @@ foam.CLASS({
         // return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
         return false;
       }
-    }
+    },
+    'lastActiveWizard'
   ],
 
   methods: [
@@ -119,6 +126,7 @@ foam.CLASS({
           rootCapability: capabilityOrId
         }))
           .add(this.DeveloperModeAgent)
+          .add(this.NullEventHandlerAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
@@ -246,67 +254,114 @@ foam.CLASS({
         ;
     },
 
-    function handleIntercept(intercept) {
+    async function handleIntercept(intercept) {
       var self = this;
 
+      // TODO: determine why this is here
       intercept.capabilities.forEach((c) => {
         self.capabilityCache.set(c, false);
       });
 
-      // Allow zero or more promises to block this method
-      let p = Promise.resolve();
+      // Create context including the intercept object
+      let x = this.__subContext__.createSubContext({ intercept });
 
-      // Intercept view for regular user capability options
-      if ( intercept.capabilities.length > 1 ) {
-        p = p.then(() => {
-          return self.maybeLaunchInterceptView(intercept);
-        });
+      // Try inline intercept
+      if ( await this.maybeInlineIntercept(intercept) ) return;
+
+      if ( intercept.interceptType == intercept.InterceptType.COMPOSITE ) {
+        // TODO: (NP-7813) verify that intercept view still works
+        x = await self.maybeLaunchInterceptView(intercept);
+      } else if ( intercept.interceptType == intercept.InterceptType.UCJ ) {
+        const rootCapability = intercept.capabilities[0];
+        x = await self.createWizardSequence(rootCapability, x).execute();
+      } else if ( intercept.interceptType == intercept.InterceptType.CAPABLE ) {
+        x = await self.launchCapableWizard(intercept, x);
       }
-      else if ( intercept.capabilities.length > 0 ) {
-        p = p.then(() => {
-          return self.createWizardSequence(intercept.capabilities[0])
+      
+      const wizardController = x.wizardController;
+
+      if ( wizardController.status == this.WizardStatus.COMPLETED ) {
+        const returnObject = intercept.returnCapable || intercept.capables[0];
+        intercept.resolve(returnObject);
+        return;
+      }
+
+      if ( wizardController.status == this.WizardStatus.DISCARDED ) {
+        intercept.reject('cancelled by user');
+        return;
+      }
+
+      intercept.resend();
+    },
+
+    async function maybeInlineIntercept(intercept, wizardController) {
+      if ( ! wizardController ) wizardController = this.lastActiveWizard;
+      if ( ! this.canInlineIntercept(intercept, wizardController) ) {
+        return false;
+      }
+      await this.doInlineIntercept(intercept, wizardController);
+      return true;
+    },
+
+    function canInlineIntercept(intercept, wizardController) {
+      // This must be an intercept for Capable objects
+      if ( intercept.interceptType != intercept.InterceptType.CAPABLE ) {
+        return false;
+      }
+
+      // There must be a wizard
+      if ( ! wizardController ) wizardController = this.lastActiveWizard;
+      if ( ! wizardController ) return false;
+
+      // The wizard must be in progress
+      if ( wizardController.status !== this.WizardStatus.IN_PROGRESS ) {
+        return false;
+      }
+    
+      return true;
+    },
+
+    async function doInlineIntercept(intercept, wizardController) {
+      const capabilityIds = [];
+      for ( const capable of intercept.capables ) {
+        capabilityIds.push(...capable.capabilityIds);
+        for ( const capabilityId of capable.capabilityIds ) {
+          let x = wizardController.__subContext__.createSubContext({
+            capable, intercept,
+            rootCapability: capabilityId,
+            wizardlets: []
+          });
+          x = await this.Sequence.create(null, x)
+            .add(this.CapabilityAdaptAgent)
+            .add(this.LoadCapabilitiesAgent)
+            .add(this.LoadCapabilityGraphAgent)
+            .add(this.WAOSettingAgent, {
+              waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
+            })
+            .add(this.GraphWizardletsAgent)
             .execute();
-        });
-      }
 
-      let isCapable = intercept.capables.length > 0;
+          const lastWizardlet = x.wizardlets[x.wizardlets.length - 1];
+          lastWizardlet.wao = this.TopicWAO.create({
+            delegate: lastWizardlet.wao
+          });
 
-      // Wizard for Capable objects and required user capabilities
-      // (note: no intercept view; this case immediately invokes a wizard)
-      if ( isCapable ) {
-        p = p.then(x => {
-          if ( ! x || x.submitted ) {
-            return self.launchCapableWizard(intercept);
-          }
-          return x;
-        });
-      }
+          // When the last wizardlet of the intercept (entry capability) is
+          // saved the Capable will be put in its respective DAO. This also
+          // means the intercept invoker WILL NOT get the return object.
+          lastWizardlet.wao.saved.sub(async () => {
+            const targetDAO = x[intercept.daoKey];
+            await targetDAO.put(capable);
+          });
 
-      p = p.then(x => {
-        var isCompleted = x.submitted || x.cancelled;
+          // Resolve to current object - inline intercepts cannot provide
+          // the return object as the wizard must continue.
+          intercept.resolve(capable);
 
-        if ( isCapable ) {
-          intercept.capables[0].isWizardIncomplete = ! isCompleted;
-          if ( ! isCompleted ) {
-            intercept.resolve(intercept.capables[0]);
-            return;
-          }
-          intercept.returnCapable.isWizardIncomplete = ! isCompleted;
-          intercept.resolve(intercept.returnCapable);
-          return;
+          const wi = wizardController.wizardPosition.wizardletIndex;
+          wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
         }
-        intercept.resend();
-      });
-
-      p.catch(err => {
-        console.error(err); // do not remove
-        if ( err && err.data && err.data.id == 'foam.core.ClientRuntimeException' && err.data.exception.cause_ ) {
-          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message);
-        }
-        intercept.reject(err.data);
-      });
-
-      return p;
+      }
     },
 
     function maybeLaunchInterceptView(intercept) {
@@ -358,12 +413,12 @@ foam.CLASS({
     },
 
     // CRUNCH Lite Methods
-    function launchCapableWizard(intercept) {
+    function launchCapableWizard(intercept, x) {
       var p = Promise.resolve(true);
 
       intercept.capables.forEach(capable => {
         capable.capabilityIds.forEach((c) => {
-          var seq = this.createCapableWizardSequence(intercept, capable, c);
+          var seq = this.createCapableWizardSequence(intercept, capable, c, x);
           p = p.then(() => {
             return seq.execute().then(x => x);
           });

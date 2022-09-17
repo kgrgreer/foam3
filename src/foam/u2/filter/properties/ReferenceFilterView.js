@@ -38,7 +38,7 @@ foam.CLASS({
       font-size: 1.4rem;
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       background-image: url(images/ic-search.svg);
       background-repeat: no-repeat;
       background-position: 8px;
@@ -353,10 +353,14 @@ foam.CLASS({
       if ( predicate === this.TRUE ) return;
 
       var selections = Array.isArray(predicate.arg2.value) ? predicate.arg2.value : [predicate.arg2.value];
-      var options = [];
-      selections.forEach((selection) => {
-        options.push(selection);
-      });
+      // wait for idToStringDisplayMap to populate
+      this.idToStringDisplayMap$.sub(() => {
+        var options = [];
+        selections.forEach((selection) => {
+          options.push(selection);
+        });
+        this.selectedOptions = options;
+      })
     },
 
     /**

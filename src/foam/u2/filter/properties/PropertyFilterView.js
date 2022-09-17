@@ -74,7 +74,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: solid 1px #cbcfd4;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
   `,
 
@@ -173,21 +173,13 @@ foam.CLASS({
 
     function checkPresetPredicate() {
       if ( this.preSetPredicate != null ) {
-        this.switchActive();
+        this.initView();
       }
     }
   ],
 
   listeners: [
-    function switchActive() {
-      this.active = ! this.active;
-      this.iconPath = this.active ? 'images/expand-less.svg' : 'images/expand-more.svg';
-
-      // View is not active. Does not require creation
-      if ( ! this.active ) return;
-      // View has been instantiated before. Does not require creation
-      if ( ! this.firstTime_ ) return;
-
+    function initView() {
       this.container_.tag(this.searchView, {
         property: this.property,
         dao$: this.dao$
@@ -215,6 +207,16 @@ foam.CLASS({
       if ( this.preSetPredicate != null ) this.isFiltering();
 
       this.onDetach(this.view_$.dot('predicate').sub(this.isFiltering));
+    },
+    function switchActive() {
+      this.active = ! this.active;
+      this.iconPath = this.active ? 'images/expand-less.svg' : 'images/expand-more.svg';
+
+      // View is not active. Does not require creation
+      if ( ! this.active ) return;
+      // View has been instantiated before. Does not require creation
+      if ( ! this.firstTime_ ) return;
+      this.initView();
     },
 
     function isFiltering() {

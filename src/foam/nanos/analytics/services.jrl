@@ -20,3 +20,12 @@ p({
   }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"postToWindow",
+  "serve":true,
+  "lazyClient": false,
+  "authenticate":false,
+  "client":"{ \"class\": \"foam.nanos.analytics.PostToWindow\" }"
+})

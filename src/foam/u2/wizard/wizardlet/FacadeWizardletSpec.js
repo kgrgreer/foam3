@@ -10,6 +10,12 @@
 
   properties: [
     {
+      class: 'foam.util.FObjectSpec',
+      of: 'foam.u2.wizard.data.Saver',
+      name: 'saver',
+      factory: () => ({ class: 'foam.u2.wizard.data.NullSaver' })
+    },
+    {
       class: 'String',
       name: 'wizardletId'
     },

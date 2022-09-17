@@ -147,6 +147,10 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      name: 'location',
+      class: 'String'
+    },
+    {
       documentation: 'Creation date.',
       name: 'created',
       class: 'DateTime',

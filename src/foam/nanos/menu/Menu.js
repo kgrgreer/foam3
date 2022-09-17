@@ -135,6 +135,10 @@
       class: 'foam.u2.ViewSpec',
       name: 'view',
       factory: function() { return 'foam.u2.view.MenuView' }
+    },
+    {
+      class: 'String',
+      name: 'analyticsMessage'
     }
   ],
 

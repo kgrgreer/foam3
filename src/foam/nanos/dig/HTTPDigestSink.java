@@ -135,7 +135,7 @@ public class HTTPDigestSink extends AbstractSink {
           } else
             throw new RuntimeException("Http server did not return 400.");
         } else
-        throw new RuntimeException("Http server did not return 200.");
+        throw new RuntimeException("Http server did not return 200. The error code is " + code);
       }
     } catch (Throwable t) {
       throw new RuntimeException(t);

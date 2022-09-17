@@ -131,6 +131,10 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Boolean',
+      name: 'irreversible'
+    },
+    {
       name: 'isCurrent',
       class: 'Boolean',
       documentation: `
@@ -262,10 +266,22 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showTitle',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'pubAnalyticEvt',
+      value: true
     }
   ],
 
   methods: [
+    function init() {
+      if ( this.instance_.sections ) {
+        for ( const section of this.sections ) {
+          section.wizardlet = this;
+        }
+      }
+    },
     function validate() {
       return this.isValid;
     },

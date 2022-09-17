@@ -141,13 +141,19 @@ foam.CLASS({
       max-width: 100%;
     }
     ^addButton.foam-u2-ActionView {
-      border: 1.5px dashed /*%GREY4%*/ #DADDE2;
+      border: 1.5px dashed $grey300;
       justify-content: flex-start;
       text-align: left;
       width: 100%;
     }
     ^value-view-container {
       gap: 4px;
+    }
+    .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
+      margin: 5px 0px;
+    }
+    .foam-u2-CitationView-row {
+      font-size: 1.4rem;
     }
   `,
 
