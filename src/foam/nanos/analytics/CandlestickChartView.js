@@ -92,7 +92,8 @@ foam.CLASS({
                       'omHouryDAO',
                       'omDailyDAO'
                     ])
-                  )
+                  ),
+                  E.NOT(E.EQ(foam.nanos.boot.NSpec.NAME, "candlestickAlarmDAO"))
                 ))
                 .orderBy(foam.nanos.boot.NSpec.NAME)
             }
