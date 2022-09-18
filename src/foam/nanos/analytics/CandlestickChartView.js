@@ -13,6 +13,7 @@ foam.CLASS({
 
   requires: [
     'foam.dao.ArrayDAO',
+    'foam.dao.DedupSink',
     'foam.dao.SinkDAO',
     'foam.dao.ProxySink',
     'foam.graphics.Box',
@@ -85,6 +86,7 @@ foam.CLASS({
                   E.OR(
                     E.CONTAINS_IC(foam.nanos.boot.NSpec.NAME, "candlestick"),
                     E.IN(foam.nanos.boot.NSpec.NAME, [
+                      'pmInfoDAO',
                       'om1MinuteDAO',
                       'om5MinuteDAO',
                       'omHouryDAO',
@@ -185,6 +187,7 @@ foam.CLASS({
               display: false,
             },
             tooltips: {
+              // see: https://github.com/chartjs/Chart.js/issues/3953
               callbacks: {
                 label: function(tooltipItem, data) {
                   var dataset = data.datasets[tooltipItem.datasetIndex];

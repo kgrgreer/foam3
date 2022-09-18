@@ -2,8 +2,6 @@ p({
   class:"foam.nanos.menu.Menu",
   id:"analytics",
   label: "Analytics",
-  icon: "images/icons8-charts-64.png",
-  themeIcon: "icons8-charts-64",
   keywords: ["analytics","candlestick","chart","performance"],
   handler: {
     class:"foam.nanos.menu.SubMenu"
