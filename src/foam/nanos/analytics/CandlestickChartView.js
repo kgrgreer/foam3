@@ -82,11 +82,10 @@ foam.CLASS({
               dao: X.AuthenticatedNSpecDAO
                 .where(E.AND(
                   E.EQ(foam.nanos.boot.NSpec.SERVE, true),
-//                  E.ENDS_WITH(foam.nanos.boot.NSpec.NAME, 'DAO'),
                   E.OR(
                     E.CONTAINS_IC(foam.nanos.boot.NSpec.NAME, "candlestick"),
                     E.IN(foam.nanos.boot.NSpec.NAME, [
-                      'pmInfoDAO',
+                      'pmDAO',
                       'om1MinuteDAO',
                       'om5MinuteDAO',
                       'omHouryDAO',
