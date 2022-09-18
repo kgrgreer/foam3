@@ -25,7 +25,7 @@ foam.CLASS({
   methods: [
     {
       name: 'select_',
-      code: async function select_(x, sink, skip, limit, order, predicate) {
+      code: function select_(x, sink, skip, limit, order, predicate) {
         sink = sink || this.ArraySink.create();
         var s = sink;
         if ( this.sink ) {
