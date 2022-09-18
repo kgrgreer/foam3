@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'A chart which shows candlestick dao data as line graph.  Supports showing two candlesticks. It is expected they share a common close value times.',
   
   implements: [ 'foam.mlang.Expressions' ],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   requires: [
     'foam.dao.ArrayDAO',
@@ -70,11 +71,12 @@ foam.CLASS({
 
   properties: [
     {
+      documentation: `The Candlestick DAO to graph.`,
       class: 'Reference',
       of: 'foam.nanos.boot.NSpec',
       label: 'Candlestick DAO',
       name: 'candlestickDAOKey',
-      documentation: `The Candlestick DAO to graph.`,
+      memorable: true,
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
@@ -111,6 +113,8 @@ foam.CLASS({
     {
       documentation: 'Key for first Line dataset.',
       name: 'candlestickKey1',
+      class: 'String',
+      memorable: true,
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
@@ -139,6 +143,8 @@ foam.CLASS({
     {
       documentation: 'Key for second Line dataset.',
       name: 'candlestickKey2',
+      class: 'String',
+      memorable: true,
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
@@ -172,7 +178,8 @@ foam.CLASS({
           height: 600
         });
       },
-      visibility: 'RO'
+      visibility: 'RO',
+      memorable: false
     },
     {
       name: 'chart',
@@ -294,7 +301,7 @@ foam.CLASS({
 
     function rebuild() {
       this.buildChartData().then(function(data) {
-        this.chart.data = data;
+        if ( this.chart ) this.chart.data = data;
       }.bind(this));
     }
   ],
