@@ -18,12 +18,17 @@ foam.CLASS({
     'foam.dao.ProxySink',
     'foam.graphics.Box',
     'foam.graphics.Label',
+    'foam.log.LogLevel',
     'foam.mlang.sink.Unique',
     'foam.mlang.sink.NullSink',
     'foam.nanos.analytics.Candlestick',
     'org.chartjs.Line2'
   ],
 
+  imports: [
+    'notify'
+  ],
+  
   classes: [
     {
       name: 'UniqueSink',
@@ -51,15 +56,11 @@ foam.CLASS({
   messages: [
     {
       name: 'VIEW_HEADER',
-      message: 'Candlestick Charting',
+      message: 'Candlestick Charting'
     },
     {
-      name: 'MESSAGE_SELECT_DAO',
-      message: 'Please select a Candlestick DAO'
-    },
-    {
-      name: 'MESSAGE_SELECT_KEY',
-      message: 'Please select a Candlestick key'
+      name: 'REFRESH_REQUESTED',
+      message: 'Refresh requested'
     }
   ],
 
@@ -99,7 +100,7 @@ foam.CLASS({
         };
       },
       postSet: function(oldValue, newValue) {
-        this.refresh();
+        this.rebuild();
       }
     },
     {
@@ -126,7 +127,7 @@ foam.CLASS({
         });
       },
        postSet: function(oldValue, newValue) {
-        this.refresh();
+        this.rebuild();
       }
     },
     {
@@ -153,7 +154,7 @@ foam.CLASS({
         });
       },
        postSet: function(oldValue, newValue) {
-        this.refresh();
+        this.rebuild();
       }
     },
     {
@@ -203,9 +204,16 @@ foam.CLASS({
       this.addClass(this.myClass());
       this
         .start(this.Cols).addClass(this.myClass('header'))
+        .startContext({data: this})
         .start().addClass(this.myClass('title'))
         .add(this.VIEW_HEADER)
+        .tag(this.REFRESH, {
+          buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+          icon: 'images/refresh-icon-black.svg',
+          label: '',
+        })
         .end()
+        .endContext()
         .end();
 
       this
@@ -216,7 +224,7 @@ foam.CLASS({
         .add(this.CANDLESTICK_KEY1.__)
         .add(this.CANDLESTICK_KEY2.__)
         .end()
-        .end()
+        .endContext()
         .end();
 
       this.
@@ -277,10 +285,27 @@ foam.CLASS({
 
       return config;
     },
-    async function refresh() {
+
+    function rebuild() {
       this.buildChartData().then(function(data) {
         this.chart.data = data;
       }.bind(this));
+    }
+  ],
+
+  actions: [
+    {
+      name: 'refresh',
+      toolTip: 'Refresh',
+      icon: 'images/refresh-icon-black.svg',
+      isAvailable: function(candlestickDAOKey) {
+        if ( candlestickDAOKey ) return true;
+        return false;
+      },
+      code: function(X) {
+        X.notify(X.data.REFRESH_REQUESTED, '', X.data.LogLevel.INFO);
+        X.data.rebuild();
+      }
     }
   ]
 });
