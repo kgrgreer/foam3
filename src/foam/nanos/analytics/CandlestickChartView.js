@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'CandlestickChartView',
   extends: 'foam.u2.Element',
 
+  documentation: 'A chart which shows candlestick dao data as line graph.  Supports showing two candlesticks. It is expected they share a common close value times.',
+  
   implements: [ 'foam.mlang.Expressions' ],
 
   requires: [
@@ -34,6 +36,8 @@ foam.CLASS({
       name: 'UniqueSink',
       extends: 'foam.dao.ProxySink',
 
+      documentation: 'Sink, similar to Dedup sink, which filters candlesticks by unique key, rather than id which is a multipart key of closetime and key.  If DedupSink provided for an identity function, then this class would not be needed.',
+      
       properties: [
         {
           class: 'Object',
@@ -105,6 +109,7 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Key for first Line dataset.',
       name: 'candlestickKey1',
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
@@ -132,6 +137,7 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Key for second Line dataset.',
       name: 'candlestickKey2',
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
@@ -239,7 +245,6 @@ foam.CLASS({
        see: https://github.com/chartjs/Chart.js/issues/3953
      */
     async function buildChartData() {
-      // TODO: review if labels actually match dataset data
       var labels = new Map();
       var datasets = new Map();
 
