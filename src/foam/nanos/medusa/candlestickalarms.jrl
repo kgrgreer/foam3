@@ -1,6 +1,6 @@
 p({
   class:"foam.nanos.alarming.CandlestickAlarm",
-  id:"medusa.DaggerService.globalIndex.increment",
-  key:"medusa.DaggerService.globalIndex.increment",
+  id:"Medusa.index",
+  key:"Medusa.index",
   propertyName:"total"
 })
