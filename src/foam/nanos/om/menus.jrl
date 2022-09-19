@@ -1,8 +1,8 @@
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"o1m",
-  "label":"Operation Measures - 1 Minute",
-  keywords: ["analytic", "om"],
+  "id":"om1m",
+  "label":"OM - 1 Minute",,
+  keywords: ["analytic", "om", "operation", "measure", "minute"],
   "handler":{
   "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -14,9 +14,9 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"o5m",
-  "label":"Operation Measures - 5 Minute",
-  keywords: ["analytic", "om"],
+  "id":"om5m",
+  "label":"OM - 5 Minute",
+  keywords: ["analytic", "om", "operation", "measure", "minute"],
   "handler":{
   "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -28,9 +28,9 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"o1h",
-  "label":"Operation Measures - Hour",
-  keywords: ["analytic", "om"],
+  "id":"omh",
+  "label":"OM - Hour",
+  keywords: ["analytic", "om", "operation", "measure", "hour"],
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -42,9 +42,9 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"o1d",
-  "label":"Operation Measures - Day",
-  keywords: ["analytic", "om"],
+  "id":"omd",
+  "label":"OM - Day",
+  keywords: ["analytic", "om", "operation", "measure", "daily"],
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
