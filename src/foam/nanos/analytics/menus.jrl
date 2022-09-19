@@ -2,24 +2,25 @@ p({
   class:"foam.nanos.menu.Menu",
   id:"analytics",
   label: "Analytics",
+  icon: "images/icons8-combo-chart-50.png",
   keywords: ["analytics","candlestick","chart","performance"],
   handler: {
     class:"foam.nanos.menu.SubMenu"
   },
-  parent:"admin"
+  parent:""
 })
 p({
   class: "foam.nanos.menu.Menu",
   id: "candlestick.chart",
   label: "Candlestick Charting",
   keywords: ["analytics","candlestick","chart","performance"],
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "foam.nanos.analytics.CandlestickChartView"
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.nanos.analytics.CandlestickChartView"
     }
   },
-  "parent":"analytics"
+  parent:"analytics"
 })
 // p({
 //   class: "foam.nanos.menu.Menu",
