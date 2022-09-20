@@ -72,7 +72,7 @@ foam.CLASS({
       }
 
       view.data = controller;
-      controller.onClose= this.resolveAgent;
+      controller.onClose = this.resolveAgent;
       view.onClose = this.resolveAgent;
 
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
