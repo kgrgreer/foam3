@@ -797,6 +797,34 @@ getArg2().prepareStatement(stmt);`
     },
     function arg2ToMQL() {
       return this.arg2 && this.arg2.toMQL ? this.arg2.toMQL() : this.arg2;
+    },
+    {
+      name: 'partialEval',
+      code: function partialEval() {
+        if ( ! this.arg1?.partialEval || ! this.arg2?.partialEval ) return this;
+
+        var newArg1 = this.arg1.partialEval();
+        var newArg2 = this.arg2.partialEval();
+
+        if ( this.arg1 === newArg1 && this.arg2 === newArg2 ) return this;
+        return this.cls_.create({arg1: newArg1, arg2: newArg2});
+      },
+      javaCode: `
+        var newArg1 = getArg1().partialEval();
+        var newArg2 = getArg2().partialEval();
+
+        if ( getArg1() == newArg1 && getArg2() == newArg2 )
+          return this;
+
+        try {
+          var nu = (Binary) getClass().getDeclaredConstructor().newInstance();
+          nu.setArg1(newArg1);
+          nu.setArg2(newArg2);
+          return nu;
+        } catch ( Throwable e ) {
+          return this;
+        }
+      `
     }
   ]
 });
@@ -4612,6 +4640,7 @@ foam.CLASS({
   documentation: 'Formula base-class',
 
   javaImports: [
+    'foam.mlang.Expr',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -4689,24 +4718,47 @@ foam.CLASS({
       name: 'partialEval',
       type: 'foam.mlang.Expr',
       javaCode: `
-        List<Double> list = new ArrayList<>();
+        if ( getArgs().length == 0 ) return this;
+        if ( getArgs().length == 1 ) return getArgs()[0].partialEval();
+
+        List<Double> valList = new ArrayList<>();
+        List<Expr>   argList = new ArrayList<>();
         for ( var arg : getArgs() ) {
           arg = arg.partialEval();
           if ( arg instanceof Constant ) {
             var value = ((Number) arg.f(this)).doubleValue();
-            list.add(value);
+            valList.add(value);
+          } else {
+            argList.add(arg);
           }
         }
 
-        if ( list.size() == getArgs().length ) {
-          var result = list.stream().reduce(this::reduce).get();
+        var result = valList.stream().reduce(this::reduce);
+        if ( result.isPresent() ) {
+          var value = result.get();
 
-          if ( Double.isFinite(result) ) {
-            result = getRounding() ? Math.round(result) : result;
-            return new Constant(result);
-          }
+          // Early return if the reduce result is Infinity or NaN since continue
+          // performing arithmetic operations on Infinity or NaN will still
+          // yield Infinity or NaN.
+          if ( ! Double.isFinite(value) ) return new Constant(value);
+
+          // Return reduce result as a constant if no un-resolvable args
+          if ( argList.isEmpty() ) return new Constant(getRounding() ? Math.round(value) : value);
+
+          // There are un-resolvable args so adding reduce result as constant.
+          // Eg. Add(1,2,3, prop1, 4,5) will become Add(prop1, 15).
+          argList.add(new Constant(value));
         }
-        return this;
+
+        // Construct new formula with partially evaled arg list
+        try {
+          var nu = (Formula) getClass().getDeclaredConstructor().newInstance();
+          nu.setRounding(getRounding());
+          nu.setArgs(argList.toArray(new Expr[argList.size()]));
+          return nu;
+        } catch (Throwable e) {
+          return this;
+        }
       `
     },
     {

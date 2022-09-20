@@ -71,22 +71,13 @@ foam.INTERFACE({
             { name: 'capabilityId', type: 'String' }
           ],
           body: `
-          var oldCapabilityIds = getCapabilityIds();
-
-          List<String> oldCapabilityIdsList = new ArrayList<>();
-
-          for ( int i = 0; i < oldCapabilityIds.length; i++ ){
-            oldCapabilityIdsList.add(oldCapabilityIds[i]);
-          }
-
-          if ( ! oldCapabilityIdsList.contains(capabilityId) ){
-            oldCapabilityIdsList.add(capabilityId);
-          }
-
           if ( ! hasRequirement(x, capabilityId) ) {
-            setCapabilityIds(
-              oldCapabilityIdsList.toArray(new String[0])
-            );
+            var size = getCapabilityIds().length;
+            var capabilityIds = new String[size + 1];
+            System.arraycopy(getCapabilityIds(), 0, capabilityIds, 0, size);
+            capabilityIds[size] = capabilityId;
+
+            setCapabilityIds(capabilityIds);
           }
           `
         }));
