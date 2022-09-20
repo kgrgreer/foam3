@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.contra.Frame',
     'foam.nanos.crunch.Capability',
     'java.util.ArrayList',
     'java.util.List',
@@ -44,6 +45,7 @@ foam.CLASS({
             X effectiveX = x;
             Subject junctionSubject = ucj.getSubject(x);
             effectiveX = x.put("subject", junctionSubject);
+            effectiveX = Frame.create(effectiveX, "ReputDependentUCJs");
 
             Long effectiveUserId = ( ucj instanceof AgentCapabilityJunction ) ? ((AgentCapabilityJunction) ucj).getEffectiveUser() : null;
             DAO filteredUserCapabilityJunctionDAO = (DAO) userCapabilityJunctionDAO

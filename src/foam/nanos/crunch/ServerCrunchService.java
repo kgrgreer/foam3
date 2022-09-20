@@ -22,6 +22,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
+import foam.nanos.contra.Frame;
 import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
@@ -92,6 +93,7 @@ public class ServerCrunchService
   }
 
   public List retrieveCapabilityPath(X x, String rootId, boolean filterGrantedUCJ, boolean groupPrereqAwares, List collectLeafNodesList) {
+    x = Frame.create(x, "retrieveCapabilityPath");
     Logger logger = (Logger) x.get("logger");
     PM pm = PM.create(x, this.getClass().getSimpleName(), "getCapabilityPath");
 
@@ -217,12 +219,14 @@ public class ServerCrunchService
 
   // ???: Why does this return an array while getPrereqs returns a list?
   public String[] getDependentIds(X x, String capabilityId) {
+    x = Frame.create(x, "getDependentIds");
     return getSessionCache(x).getDependents(x, cacheSequenceId_.get(), capabilityId);
   }
 
   // gets prereq list of a cap from the prereqsCache_
   // if cache returned is null, try to find prereqs directly from prerequisitecapabilityjunctiondao
   public List<String> getPrereqs(X x, String capId, UserCapabilityJunction ucj) {
+    x = Frame.create(x, "getPrereqs");
     var auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateUserContext") && ucj != null ) {
       Subject s = ucj.getSubject(x);
@@ -316,6 +320,8 @@ public class ServerCrunchService
     var capabilityDAO = ((DAO) sessionX.get("capabilityDAO")).inX(sessionX);
     Capability cap = (Capability) capabilityDAO.find(capabilityId);
     if ( cap == null ||  cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
+
+    sessionX = Frame.create(sessionX, "hasPreconditionsMet");
 
     // TODO: use MapSink to simplify/optimize this code
     var preconditions = Arrays.stream(((CapabilityCapabilityJunction[]) ((ArraySink) ((DAO) sessionX.get("prerequisiteCapabilityJunctionDAO"))
