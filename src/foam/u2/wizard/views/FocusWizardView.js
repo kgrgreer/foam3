@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'FocusWizardView',
   extends: 'foam.u2.View',
 
-  imports: [ 'popup?' ],
+  imports: [ 'popup?', 'controlBorder?' ],
 
   exports: [ 'showTitle' ],
 
@@ -58,8 +58,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'progressWizardView',
       value: {
-        class: 'foam.u2.borders.NullBorder'
-        // class: 'foam.u2.wizard.views.ProgressBarWizardView',
+        class: 'foam.u2.wizard.views.ProgressBarWizardView'
       }
     },
     {
@@ -85,11 +84,14 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
+      // Pass off the progress indication to controlBorder
+      if ( this.controlBorder )
+        this.controlBorder.progressView$ = this.slot(function(data) { return { ...self.progressWizardView, data$: self.data$ } });
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .start(this.progressWizardView, { data: this.data })
-          .addClass(this.myClass('progress'))
-        .end()
+        .callIf(! this.controlBorder, function(){
+          this.tag(this.progressWizardView, { data: this.data });
+        })
         .add(this.slot(function (showTitle, data$currentWizardlet) {
           return showTitle && data$currentWizardlet.showTitle ?
             this.E().start()

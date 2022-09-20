@@ -47,8 +47,10 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      border-bottom: 1px solid $grey300;
       padding: 12px;
+    }
+    ^header.showBorder {
+      border-bottom: 1px solid $grey300;
     }
 
     ^header-left {
@@ -146,6 +148,14 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'primaryActions'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'progressView'
+    },
+    {
+      class: 'Boolean',
+      name: 'hasProgress_'
     }
   ],
 
@@ -174,6 +184,7 @@ foam.CLASS({
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .start()
             .show(this.showActions$)
+            .enableClass('showBorder', this.hasProgress_$.not())
             .addClass(this.myClass('header'))
             .start()
               .addClass(this.myClass('header-left'))
@@ -234,7 +245,11 @@ foam.CLASS({
               }))
             .end()
           .end()
-          .add(this.slot(function (content$childNodes) {
+          .add(this.slot(function(progressView) {
+            self.hasProgress_ = progressView != '' ? true : false;
+            return this.E().tag(progressView);
+          }))
+          .add(this.slot(function(content$childNodes) {
             if ( ! content$childNodes ) return;
             let title = '';
             for ( const child of content$childNodes ) {
