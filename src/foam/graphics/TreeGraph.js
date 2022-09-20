@@ -138,7 +138,7 @@
      {
        name: 'updateCSize',
        isFramed: true,
-       code: async function() {
+       code: function() {
          const maxes  = {
            maxLeft:  Number.MAX_SAFE_INTEGER,
            maxRight: Number.MIN_SAFE_INTEGER
