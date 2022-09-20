@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.u2.wizard.StepWizardConfig',
     'foam.u2.wizard.debug.WizardInspector',
     'foam.u2.wizard.event.WizardEvent',
+    'foam.u2.wizard.event.WizardErrorHint',
     'foam.u2.wizard.event.WizardEventType'
   ],
 
@@ -314,8 +315,18 @@ foam.CLASS({
           try {
             await wizardlet.save();
           } catch (e) {
-            this.lastException = e;
-            throw e;
+            let { exception, hint } = await wizardlet.handleException(
+              this.WizardEventType.WIZARDLET_SAVE, e
+            );
+
+            if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
+              if ( canLandOn_(this.wizardPosition) ) return false;
+              hint = this.WizardErrorHint.ABORT_FLOW;
+            }
+
+            if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
+              throw this.lastException = exception || e;
+            }
           }
 
           this.onWizardletCompleted(wizardlet);
@@ -324,8 +335,13 @@ foam.CLASS({
           try {
             await wizardlet.load();
           } catch (e) {
-            this.lastException = e;
-            throw e;
+            let { exception, hint } = await wizardlet.handleException(
+              this.WizardEventType.WIZARDLET_LOAD, e
+            );
+            
+            if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+              throw this.lastException = exception || e;
+            }
           }
         }
 
