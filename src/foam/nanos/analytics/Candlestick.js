@@ -99,6 +99,7 @@ foam.CLASS({
       }
     // },
     // {
+    // Disabled - Unable to have choiceview selection other than id when enabled.
     //   class: 'String',
     //   name: '_choiceText_',
     //   transient: true,
