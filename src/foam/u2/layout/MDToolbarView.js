@@ -43,9 +43,9 @@ foam.CLASS({
       align-items: center;
       height: 100%;
       justify-content: space-between;
-      background-color: /*%PRIMARY1%*/ #2e2379;
-      box-shadow: 0px 0px 50px 0px /*%PRIMARY1%*/ #2e2379;
-      color: /*%GREY4%*/ #e7eaec;
+      background-color: $primary700;
+      box-shadow: 0px 0px 50px 0px $primary700;
+      color: $grey300;
     }
   `,
 });

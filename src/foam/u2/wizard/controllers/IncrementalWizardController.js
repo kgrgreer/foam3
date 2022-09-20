@@ -40,6 +40,13 @@ foam.CLASS({
 
       }
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'defaultView',
+      value: {
+        class: 'foam.u2.wizard.views.FocusWizardView'
+      }
+    },
     'currentWizardlet',
     'currentSection',
     {

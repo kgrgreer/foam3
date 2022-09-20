@@ -58,7 +58,7 @@ foam.ENUM({
       label: { en: 'pending review', pt: 'revisão pendente' },
       documentation: 'The information you provided is pending review',
       background: '#FFFFFF',
-      color: '/*%WARNING1%*/ #865300'
+      color: '$warn700'
     },
     {
       name: 'REJECTED',
@@ -67,7 +67,7 @@ foam.ENUM({
       expected to go to EXPIRED and have the user fill out more info. Used in the 
       Capable object junctions.`,
       background: '#FFFFFF',
-      color: '/*%DESTRUCTIVE2%*/ #A61414',
+      color: '$destructive500',
       glyph: 'exclamation'
     },
   ]

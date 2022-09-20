@@ -33,12 +33,14 @@ foam.CLASS({
   javaImports: [
     'foam.blob.BlobService',
     'foam.blob.Blob',
+    'foam.blob.FileBlob',
     'foam.blob.InputStreamBlob',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
     'java.io.*',
     'java.util.Base64'
@@ -313,6 +315,29 @@ foam.CLASS({
           return decodedString;
         }
         return "";
+      `
+    },
+    {
+      name: 'inputStream',
+      args: 'Context x',
+      javaType: 'java.io.InputStream',
+      javaCode: `
+      Blob blob = getData();
+      if ( blob != null ) {
+        return ((InputStreamBlob)blob).getInputStream();
+      } else {
+        BlobService blobStore = (BlobService) x.get("blobStore");
+        blob = blobStore.find(getId());
+        if ( blob != null ) {
+          try {
+            return new java.io.FileInputStream(((FileBlob) blob).getFile());
+          } catch (java.io.FileNotFoundException e) {
+            // nop
+          }
+        }
+      }
+      Loggers.logger(x, this).warning("data not found", getFilename(), getId());
+      return null;
       `
     }
   ],

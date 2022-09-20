@@ -29,7 +29,7 @@ foam.CLASS({
       imports: [ 'selected' ],
       css: `
         ^selected {
-          background: /*%PRIMARY5%*/ #e5f1fc!important;
+          background: $primary50 !important;
         }
         ^ {
           background: #ccc;

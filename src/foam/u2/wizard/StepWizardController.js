@@ -10,7 +10,7 @@ foam.CLASS({
 
   imports: [
     'developerMode',
-    'analyticsAgent?'
+    'handleEvent?'
   ],
 
   requires: [
@@ -19,7 +19,9 @@ foam.CLASS({
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.StepWizardConfig',
-    'foam.u2.wizard.debug.WizardInspector'
+    'foam.u2.wizard.debug.WizardInspector',
+    'foam.u2.wizard.event.WizardEvent',
+    'foam.u2.wizard.event.WizardEventType'
   ],
 
   properties: [
@@ -168,7 +170,7 @@ foam.CLASS({
         ) {
           if ( ! currentWizardlet$isValid ) return false;
         }
-        return currentSection$isValid;
+        return currentSection$isValid || false;
       }
     },
     {
@@ -438,13 +440,11 @@ foam.CLASS({
     },
     function onWizardletCompleted(wizardlet) {
       try {
-        wizardlet.pubAnalyticEvt && this.analyticsAgent?.pub('event', {
-          name: foam.String.constantize(
-              wizardlet.title || wizardlet.id ||
-              (wizardlet.of?.name ?? 'UNKNOWN')
-            ) + '_COMPLETE', 
-          tags: ['wizard'] 
-        })
+        if ( ! this.handleEvent ) return;
+        this.handleEvent(this.WizardEvent.create({
+          wizardlet,
+          eventType: this.WizardEventType.WIZARDLET_SAVE
+        }));
       } catch (e) {
         // report analytics error without interrupting flow
         console.error('analyticsAgent.put failed', e);

@@ -44,10 +44,10 @@
       width: 100%;
     }
     ^ .error input, ^ .error input:focus {
-      border-color: /*%DESTRUCTIVE3%*/ red !important;
+      border-color: $destructive400!important;
     }
     ^colorText {
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
     }
     ^label {
       line-height: 1;

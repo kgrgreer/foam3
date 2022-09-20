@@ -34,7 +34,7 @@ foam.CLASS({
     ^ {
       align-items: center;
       box-sizing: border-box;
-      border: 2px dashed /*%GREY3%*/ #B2B6BD;
+      border: 2px dashed $grey400;
       border-radius: 4px;
       display: flex;
       flex-direction: column;
@@ -45,8 +45,8 @@ foam.CLASS({
       width: 100%;
     }
     ^:focus {
-      background: /*%PRIMARY5%*/ #E5F1FC;
-      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+      background: $primary50;
+      border: 2px dashed $primary400;
     }
     ^instruction-container.selection {
       margin-bottom: 16px;
@@ -59,11 +59,11 @@ foam.CLASS({
       z-index: -1;
     }
     ^link, ^link:hover {
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
     ^input:focus + ^instruction-container > ^browse-container > ^link{
       border: 1px solid;
-      border-color: /*%PRIMARY1%*/ #406dea;
+      border-color: $primary700;
     }
     ^caption-container {
       display: flex;
@@ -88,8 +88,8 @@ foam.CLASS({
       gap: 8px;
     }
     ^dragged{
-      background: /*%PRIMARY5%*/ #E5F1FC;
-      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+      background: $primary50;
+      border: 2px dashed $primary400;
     }
   `,
 
