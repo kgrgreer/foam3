@@ -97,13 +97,13 @@ foam.CLASS({
       expression: function(total, count) {
         return count ? total / count : 0;
       }
-    },
-    {
-      class: 'String',
-      name: '_choiceText_',
-      transient: true,
-      javaGetter: 'return getKey().toString();',
-      getter: function() { return this.key; }
+    // },
+    // {
+    //   class: 'String',
+    //   name: '_choiceText_',
+    //   transient: true,
+    //   javaGetter: 'return getKey().toString();',
+    //   getter: function() { return this.key; }
     }
   ],
   methods: [
