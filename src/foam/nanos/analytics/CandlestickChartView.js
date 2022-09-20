@@ -16,15 +16,12 @@ foam.CLASS({
 
   requires: [
     'foam.dao.ArrayDAO',
-    'foam.dao.DedupSink',
-    'foam.dao.SinkDAO',
-    'foam.dao.ProxySink',
+    'foam.dao.FilteredDAO',
     'foam.graphics.Box',
     'foam.graphics.Label',
     'foam.log.LogLevel',
-    'foam.mlang.sink.Unique',
-    'foam.mlang.sink.NullSink',
     'foam.nanos.analytics.Candlestick',
+    'foam.nanos.analytics.CandlestickUniqueKeyPredicate',
     'org.chartjs.Line2'
   ],
 
@@ -32,32 +29,6 @@ foam.CLASS({
     'notify'
   ],
   
-  classes: [
-    {
-      name: 'UniqueSink',
-      extends: 'foam.dao.ProxySink',
-
-      documentation: 'Sink, similar to Dedup sink, which filters candlesticks by unique key, rather than id which is a multipart key of closetime and key.  If DedupSink provided for an identity function, then this class would not be needed.',
-      
-      properties: [
-        {
-          class: 'Object',
-          name: 'results',
-          factory: function() { return {}; }
-        }
-      ],
-
-      methods: [
-        function put(obj, sub) {
-          if ( ! this.results[obj.key] ) {
-            this.results[obj.key] = true;
-            this.delegate.put(obj, sub);
-          }
-        }
-      ]
-    }
-  ],
-
   messages: [
     {
       name: 'VIEW_HEADER',
@@ -118,12 +89,10 @@ foam.CLASS({
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
-            var self = this;
-            var results = {};
-            return this.SinkDAO.create({
+            return this.FilteredDAO.create({
               delegate: ctrl.__subContext__[candlestickDAOKey].
-                orderBy(self.Candlestick.KEY),
-              sink: this.UniqueSink.create()
+                orderBy(this.Candlestick.KEY),
+              predicate: this.CandlestickUniqueKeyPredicate.create()
             });
           }
           return this.ArrayDAO.create();
@@ -148,12 +117,10 @@ foam.CLASS({
       view: function(_, X) {
         var dao = X.data.slot(function(candlestickDAOKey) {
           if ( candlestickDAOKey ) {
-            var self = this;
-            var results = {};
-            return this.SinkDAO.create({
+            return this.FilteredDAO.create({
               delegate: ctrl.__subContext__[candlestickDAOKey].
-                orderBy(self.Candlestick.KEY),
-              sink: this.UniqueSink.create()
+                orderBy(this.Candlestick.KEY),
+              predicate: this.CandlestickUniqueKeyPredicate.create()
             });
           }
           return this.ArrayDAO.create();
@@ -312,8 +279,7 @@ foam.CLASS({
       toolTip: 'Refresh',
       icon: 'images/refresh-icon-black.svg',
       isAvailable: function(candlestickDAOKey) {
-        if ( candlestickDAOKey ) return true;
-        return false;
+        return !! candlestickDAOKey;
       },
       code: function(X) {
         X.notify(X.data.REFRESH_REQUESTED, '', X.data.LogLevel.INFO);

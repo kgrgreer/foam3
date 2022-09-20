@@ -234,7 +234,6 @@ foam.POM({
     { name: "foam/dao/NullJournal",                                   flags: "js|java" },
     { name: "foam/dao/Sink",                                          flags: "js|java" },
     { name: "foam/dao/DAO",                                           flags: "js|java" },
-    { name: "foam/dao/SinkDAO",                                       flags: "js" },
     { name: "foam/dao/DOP",                                           flags: "js|java" },
     { name: "foam/dao/PredicatedDualDelegateDAO",                     flags: "js|java" },
     { name: "foam/dao/daoUtils",                                      flags: "js|java" },

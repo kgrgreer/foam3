@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"om1m",
-  "label":"OM - 1 Minute",,
+  "label":"OM - 1 Minute",
   keywords: ["analytic", "om", "operation", "measure", "minute"],
   "handler":{
   "class":"foam.nanos.menu.DAOMenu2",
