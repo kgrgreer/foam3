@@ -155,9 +155,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'progressView',
-      value: {
-        class: 'foam.u2.wizard.views.ProgressBarView'
-      }
+      value: 'foam.u2.ProgressView'
     }
   ],
 
@@ -186,7 +184,7 @@ foam.CLASS({
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .start()
             .show(this.showActions$)
-            .enableClass('showBorder', this.progressMax$.not())
+            .enableClass('showBorder', this.progressMax$, true)
             .addClass(this.myClass('header'))
             .start()
               .addClass(this.myClass('header-left'))
@@ -250,8 +248,8 @@ foam.CLASS({
           .add(this.slot(function(progressView) {
             return this.E()
               .tag(progressView, {
-                progressMax$: self.progressMax$,
-                progressValue$: self.progressValue$
+                max$: self.progressMax$,
+                data$: self.progressValue$
               });
           }))
           .add(this.slot(function(content$childNodes) {

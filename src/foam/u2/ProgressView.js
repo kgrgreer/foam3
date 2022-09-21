@@ -22,20 +22,37 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 183px;
+      width: 100%;
+      -webkit-appearance: none;
+      height: 2px;
+    }
+    ::-webkit-progress-bar {
+      background-color: $grey100;
+      border-radius: 25px;
+    }
+    ::-webkit-progress-value {
+      background-color: $primary400;
+      transition: all 0.2s ease;
     }
   `,
 
   properties: [
-    [ 'nodeName', 'progress' ]
+    [ 'nodeName', 'progress' ],
+    {
+      name: 'max',
+      value: 100
+    },
+    {
+      name: 'data'
+    },
   ],
 
   methods: [
     function render() {
-      this.
-        addClass(this.myClass()).
-        attrs({max: 100}).
-        attrSlot().follow(this.data$);
+      this
+        .addClass()
+        .attr('max', this.max$)
+        .attr('value', this.data$);
     }
   ]
 });
