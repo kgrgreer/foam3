@@ -75,6 +75,12 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      if ( this.controlBorder && foam.u2.Progressable.isInstance(this.data) ) {
+        this.controlBorder.progressMax$ = this.data$.dot('progressMax');
+        this.controlBorder.progressValue$ = this.data$.dot('progressValue');
+      }
+    },
     function render() {
       const self = this;
       this.addClass()

@@ -258,10 +258,6 @@ foam.CLASS({
             if ( ! content$childNodes ) return;
             let title = '';
             for ( const child of content$childNodes ) {
-              if ( foam.u2.Progressable.isInstance(child.data) ) {
-                self.progressMax$ = child.data.progressMax$;
-                self.progressValue$ = child.data.progressValue$;
-              }
               if ( ! child.viewTitle ) continue;
               title = child.viewTitle$;
               break;
