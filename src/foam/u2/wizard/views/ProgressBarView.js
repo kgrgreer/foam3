@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.views',
-  name: 'ProgressBarWizardView',
+  name: 'ProgressBarView',
   extends: 'foam.u2.View',
 
   css: `
@@ -26,16 +26,23 @@ foam.CLASS({
   `,
 
   properties: [
-    [ 'nodeName', 'progress' ]
+    [ 'nodeName', 'progress' ],
+    {
+      class: 'Int',
+      name: 'progressMax'
+    },
+    {
+      class: 'Int',
+      name: 'progressValue'
+    },
   ],
 
   methods: [
     function render() {
       this
         .addClass()
-        .attr('max', this.data$.dot('data').dot('wizardlets').map(w => w ? w.length : 0))
-        .attr('value', this.data$.dot('data').dot('wizardPosition').dot('wizardletIndex'))
-        ;
+        .attr('max', this.progressMax$)
+        .attr('value', this.progressValue$);
     }
   ]
 });

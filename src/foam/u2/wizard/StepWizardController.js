@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'StepWizardController',
 
+  implements: ['foam.u2.Progressable'],
+
   imports: [
     'developerMode',
     'handleEvent?'
@@ -61,6 +63,7 @@ foam.CLASS({
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
+        this.progressMax = n?.length;
       }
     },
     {
@@ -88,6 +91,7 @@ foam.CLASS({
           this.wizardlets[o.wizardletIndex].isCurrent = false;
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
+        this.progressValue = n?.wizardletIndex;
       }
     },
 

@@ -12,7 +12,10 @@ foam.CLASS({
     A full-featured popup with the application's branding on it.
   `,
 
-  implements: ['foam.mlang.Expressions'],
+  implements: [
+    'foam.mlang.Expressions',
+    'foam.u2.Progressable'
+  ],
 
   imports: [
     'theme'
@@ -151,11 +154,10 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'progressView'
-    },
-    {
-      class: 'Boolean',
-      name: 'hasProgress_'
+      name: 'progressView',
+      value: {
+        class: 'foam.u2.wizard.views.ProgressBarView'
+      }
     }
   ],
 
@@ -184,7 +186,7 @@ foam.CLASS({
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .start()
             .show(this.showActions$)
-            .enableClass('showBorder', this.hasProgress_$.not())
+            .enableClass('showBorder', this.progressMax$.not())
             .addClass(this.myClass('header'))
             .start()
               .addClass(this.myClass('header-left'))
@@ -246,13 +248,20 @@ foam.CLASS({
             .end()
           .end()
           .add(this.slot(function(progressView) {
-            self.hasProgress_ = progressView != '' ? true : false;
-            return this.E().tag(progressView);
+            return this.E()
+              .tag(progressView, {
+                progressMax$: self.progressMax$,
+                progressValue$: self.progressValue$
+              });
           }))
           .add(this.slot(function(content$childNodes) {
             if ( ! content$childNodes ) return;
             let title = '';
             for ( const child of content$childNodes ) {
+              if ( foam.u2.Progressable.isInstance(child.data) ) {
+                self.progressMax$ = child.data.progressMax$;
+                self.progressValue$ = child.data.progressValue$;
+              }
               if ( ! child.viewTitle ) continue;
               title = child.viewTitle$;
               break;
