@@ -109,6 +109,8 @@ foam.CLASS({
         return max;
       }
 
+      obj = getJournal().cmd(x, obj);
+
       return getDelegate().cmd_(x, obj);
       `
     }

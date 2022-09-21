@@ -27,14 +27,19 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
+    'java.io.File',
+    'java.io.IOException',
     'java.io.InputStream',
     'java.io.InputStreamReader',
     'java.io.OutputStream',
     'java.io.OutputStreamWriter',
+    'java.time.format.DateTimeFormatter',
+    'java.time.LocalDateTime',
     'java.util.Calendar',
     'java.util.Iterator',
     'java.util.List',
@@ -461,6 +466,62 @@ try {
         System.err.println(msg);
         throw e;
       }
+      `
+    },
+    {
+      documentation: 'Backup/rename existing file. New writes to new empty file.  NOTE: relies on upstream logic to block/pause io to journal',
+      name: 'roll',
+      args: 'X x',
+      type: 'String',
+      javaCode: `
+      Logger logger = Loggers.logger(x, this);
+      String filename = getFilename();
+      logger.info("roll", filename);
+      try {
+        // set filename to something that will fail file reading/writing.
+        getWriter().flush();
+        getWriter().close();
+
+        setFilename(null);
+
+        AbstractF3FileJournal.WRITER.clear(this);
+
+        // rename existing file
+        File existing = x.get(foam.nanos.fs.Storage.class).get(filename);
+        String backup = filename + "-" + DateTimeFormatter.ofPattern("YYYYMMddHHmmss").format(LocalDateTime.now());
+        File nu = x.get(foam.nanos.fs.Storage.class).get(backup);
+        boolean renamed = existing.renameTo(nu);
+        if ( ! renamed ) {
+          throw new RuntimeException("Failed to rename. "+filename);
+        } else {
+          logger.info("roll", "success", filename, backup);
+        }
+
+        setFilename(filename);
+
+        // test output stream
+        if ( getWriter() == null ) {
+          throw new RuntimeException("Failed to open writer. "+filename);
+        }
+        return backup;
+      } catch (IOException e) {
+        logger.error("roll", filename, e);
+        throw new RuntimeException(e.getMessage());
+      }
+      `
+    },
+    {
+      name: 'cmd',
+      args: 'X x, Object obj',
+      type: 'Object',
+      javaCode: `
+      if ( obj != null &&
+           obj instanceof FileRollCmd ) {
+        FileRollCmd cmd = (FileRollCmd) obj;
+        cmd.setRolledFilename(roll(x));
+        return cmd;
+      }
+      return obj;
       `
     }
   ]

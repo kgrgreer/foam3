@@ -1,19 +1,19 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
   package: 'foam.nanos.medusa',
-  name: 'PromotedPurgeAgent',
+  name: 'PromotedClearAgent',
 
   implements: [
     'foam.core.ContextAgent',
     'foam.nanos.NanoService'
   ],
 
-  documentation: 'Remove promoted entries which will never be referenced again',
+  documentation: 'Clear data from promoted entries which will never be referenced again',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -46,11 +46,6 @@ foam.CLASS({
       name: 'minIndex',
       class: 'Long',
       value: 2
-    },
-    {
-      documentation: 'do not purge above this index (inclusive)',
-      name: 'maxIndex',
-      class: 'Long'
     },
     {
       documentation: 'Number of entries to retain for potential consensus matching.',
@@ -100,10 +95,7 @@ foam.CLASS({
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-      long maxIndex = getMaxIndex();
-      if ( maxIndex == 0 ) {
-        maxIndex = replaying.getIndex() - getRetain();
-      }
+      long maxIndex = replaying.getIndex() - getRetain();
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
@@ -113,10 +105,11 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
-        PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
-        dao.select(purgeSink);
-        if ( purgeSink.getCount() > 0 ) {
-          logger.debug("purged", purgeSink.getCount());
+        ClearSink sink = new ClearSink(x, dao);
+        dao.select(sink);
+        if ( sink.getCount() > 0 ) {
+          logger.debug("cleared", sink.getCount());
+          setMinIndex(sink.getMaxIndex());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);

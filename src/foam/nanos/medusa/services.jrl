@@ -226,6 +226,24 @@ p({
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "daggerBootstrapDAO",
+  "serve": false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("daggerbootstrap")
+      .setCluster(false)
+      .setRuler(false)
+      .setSeqNo(true)
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.DaggerBootstrap.ID));
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.DaggerBootstrap\"}"
+})
+
 // See deployment/mm and mn for type specific setup
 
 // p({

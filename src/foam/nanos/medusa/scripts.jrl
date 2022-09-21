@@ -1,0 +1,15 @@
+{
+  class:"foam.nanos.script.Script",
+  id:"MedusaCompaction",
+  description:"Initiate MedusaEntryDAO Compaction",
+  code:"""
+import foam.nanos.medusa.CompactionDAO;
+d = x.get('medusaEntryMediatorDAO');
+try {
+  d.cmd(CompactionDAO.COMPACTION_CMD);
+  print('done');
+} catch (Throwable t) {
+  print(t.getMessage());
+}
+  """
+}

@@ -20,6 +20,7 @@ foam.CLASS({
   documentation: `Manage global indexes and hashes`,
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -53,6 +54,16 @@ foam.CLASS({
 
   constants: [
     {
+      name: 'BOOTSTRAP_ID',
+      type: 'String',
+      value: 'BOOTSTRAP_ID'
+    },
+    {
+      name: 'BOOTSTRAP_ID_DEFAULT',
+      type: 'String',
+      value: "1"
+    },
+    {
       name: 'BOOTSTRAP_HASH',
       type: 'String',
       value: 'BOOTSTRAP_HASH'
@@ -61,6 +72,16 @@ foam.CLASS({
       name: 'BOOTSTRAP_HASH_DEFAULT',
       type: 'String',
       value: '466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534'
+    },
+    {
+      name: 'BOOTSTRAP_HASHES',
+      type: 'String',
+      value: 'BOOTSTRAP_HASHES'
+    },
+    {
+      name: 'BOOTSTRAP_HASHES_DEFAULT',
+      type: 'String',
+      value: '466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534,466c58623cd600209e95a981bad03e5d899ea6d6905cebee5ea0746bf16e1534'
     }
   ],
 
@@ -68,13 +89,13 @@ foam.CLASS({
     {
       documentation: 'Starting index.',
       name: 'bootstrapIndex',
-      class: 'Long',
+      class: 'Int',
       value: 0
     },
     {
       documentation: 'Number of manually created entries to prime the system.',
-      name: 'numBootstrapEntries',
-      class: 'Long',
+      name: 'bootstrapEntries',
+      class: 'Int',
       value: 2
     },
     {
@@ -141,12 +162,35 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-      Logger logger = Loggers.logger(getX(), this);
+      X x = getX();
+      Logger logger = Loggers.logger(x, this);
       logger.info("start");
-      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
-      setHashingEnabled(support.getHashingEnabled());
+      DAO dao = (DAO) x.get("daggerBootstrapDAO");
+      ArrayList list = (ArrayList) ((ArraySink) dao.orderBy(new foam.mlang.order.Desc(DaggerBootstrap.ID)).limit(1).select(new ArraySink())).getArray();
+      DaggerBootstrap bootstrap = null;
+      if ( list.size() > 0 ) {
+        bootstrap = (DaggerBootstrap) list.get(0);
+      }
+      if ( bootstrap == null ) {
+        Long id = Long.parseLong(System.getProperty(BOOTSTRAP_ID, BOOTSTRAP_ID_DEFAULT));
+        bootstrap = (DaggerBootstrap) dao.find(id);
+      }
+      reconfigure(x, bootstrap);
+      `
+    },
+    {
+      name: 'reconfigure',
+      args: 'X x, foam.nanos.medusa.DaggerBootstrap bootstrap',
+      javaCode: `
+      Logger logger = Loggers.logger(x, this);
+      logger.info("reconfigure");
 
-      ClusterConfig config = support.getConfig(getX(), support.getConfigId());
+      if ( bootstrap != null ) {
+        this.copyFrom(bootstrap);
+      }
+
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      ClusterConfig config = support.getConfig(x, support.getConfigId());
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
            config.getZone() > 0L ) {
@@ -155,40 +199,79 @@ foam.CLASS({
       }
 
       for ( int i = 0; i < getLinks().length; i++ ) {
-        getLinks()[i] = new MedusaEntry.Builder(getX()).setIndex(getBootstrapIndex()).setHash(getBootstrapHash(getX())).build();
+        String hash = getBootstrapHash(x, i);
+
+        // legacy data - first two entries must use index 0
+        int index = i;
+        if ( hash.equals(BOOTSTRAP_HASH_DEFAULT) ) index = 0;
+
+        getLinks()[i] = new MedusaEntry.Builder(x).setIndex(index).setHash(hash).build();
       }
 
       DAO dao = getDao();
 
-      for ( int i = 0; i < getNumBootstrapEntries(); i++ ) {
+      for ( int i = 0; i < getBootstrapEntries(); i++ ) {
         MedusaEntry entry = new MedusaEntry();
-        entry = link(getX(), entry);
-        entry = hash(getX(), entry);
+        entry = link(x, entry);
+        try {
+          entry = hash(x, entry);
+        } catch ( java.security.NoSuchAlgorithmException e ) {
+          throw new DaggerException(e.getMessage(), e);
+        }
         entry.setNSpecName("daggerService");
         entry.setNode(support.getConfigId());
         entry.setPromoted(true);
-        entry = (MedusaEntry) dao.put_(getX(), entry);
-        updateLinks(getX(), entry);
+        entry = (MedusaEntry) dao.put_(x, entry);
+        updateLinks(x, entry);
       }
      `
     },
     {
       documentation: `Initial hash to prime the system. Provide via:
-    - JAVA_OPTS property:  -DBOOTSTRAP_HASH=
+    - JAVA_OPTS property:  -DBOOTSTRAP_HASHES=
     - Explicitly set in DaggerService NSpec
     - // TODO: HSM`,
       name: 'getBootstrapHash',
-      args: 'Context x',
+      args: 'Context x, int index',
       type: 'String',
       javaCode: `
-      String alias = BOOTSTRAP_HASH.toLowerCase();
+      String alias = BOOTSTRAP_HASHES.toLowerCase();
       try {
+        KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
+        String entry = manager.getSecret(x, alias, "PBEWithHmacSHA256AndAES_128");
+        String[] hashes = null;
+        if ( entry != null ) {
+          hashes = entry.split(",");
+        } else {
+          getLogger().warning("Keystore alias not found", alias, "trying System");
+          entry = System.getProperty(
+                BOOTSTRAP_HASHES,
+                BOOTSTRAP_HASHES_DEFAULT
+             );
+          if ( entry != null ) {
+            hashes = entry.split(",");
+          }
+        }
+
+        index += getBootstrapIndex(); // add offset
+        try {
+          return hashes[index];
+        } catch (ArrayIndexOutOfBoundsException e) {
+          getLogger().warning("Keystore error", alias, "expected", index, "found", hashes.length);
+        }
+      } catch (java.security.GeneralSecurityException | java.io.IOException e) {
+        getLogger().warning("Keystore error", alias, e.getMessage());
+      } catch (IllegalArgumentException e) {
+        getLogger().warning("Keystore alias not found", alias, e.getMessage());
+      }
+      try {
+        alias = BOOTSTRAP_HASH.toLowerCase();
         KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
         return manager.getSecret(x, alias, "PBEWithHmacSHA256AndAES_128");
       } catch (java.security.GeneralSecurityException | java.io.IOException e) {
         getLogger().warning("Keystore error", alias, e.getMessage());
       } catch (IllegalArgumentException e) {
-        getLogger().warning("Keystore alias not found", alias);
+        getLogger().warning("Keystore alias not found", alias, e.getMessage());
       }
       return System.getProperty(
                 BOOTSTRAP_HASH,
