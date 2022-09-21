@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'FocusWizardView',
   extends: 'foam.u2.View',
 
-  imports: [ 'popup?', 'controlBorder?' ],
+  imports: [
+    'controlBorder?',
+    'popup?'
+  ],
 
   exports: [ 'showTitle' ],
 

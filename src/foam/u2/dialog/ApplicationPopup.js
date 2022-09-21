@@ -155,7 +155,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'progressView',
-      value: 'foam.u2.ProgressView'
+      value: { class: 'foam.u2.ProgressView' }
     }
   ],
 
