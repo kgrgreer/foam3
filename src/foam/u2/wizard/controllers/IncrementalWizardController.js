@@ -178,7 +178,6 @@ foam.CLASS({
             for ( let w of this.data.wizardlets ) {
               if ( w.submit ) w.submit();
             }
-            this.onClose(x, true);
           }
         }).catch(e => {
           console.error(e);
