@@ -77,7 +77,6 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
-      // Pass off the progress indication to controlBorder
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
         .add(this.slot(function (showTitle, data$currentWizardlet) {
