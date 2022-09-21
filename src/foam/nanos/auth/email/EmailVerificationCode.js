@@ -18,6 +18,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.FragmentedTextField',
     'foam.u2.FragmentedTextFieldFragment'
@@ -69,17 +70,13 @@ foam.CLASS({
     {
       name: 'submit',
       code: async function(X) {
-        var data = X.data.data;
-        var success;
+        var data = X.data;
+        var success, err;
         try {
           success = await X.emailVerificationService.verifyCode(X, data.email, data.verificationCode);
-        } catch ( err ) {
-          X.data.ctrl.add(data.NotificationMessage.create({
-            message: data.ERROR_MSG,
-            type: data.LogLevel.ERROR,
-            err: err.data
-          }));
-        }          
+        } catch ( error ) {
+          err = error;
+        }
         if ( success ) {
           X.data.ctrl.add(data.NotificationMessage.create({
             message: data.SUCCESS_MSG,
@@ -89,8 +86,31 @@ foam.CLASS({
         } else {
           X.data.ctrl.add(data.NotificationMessage.create({
             message: data.ERROR_MSG,
-            type: data.LogLevel.ERROR
+            type: data.LogLevel.ERROR,
+            err: err?.data
           }));
+        }
+      }
+    },
+    {
+      name: 'resendCode',
+      buttonStyle: 'LINK',
+      code: async function(X) {
+        try {
+          await X.emailVerificationService.verifyByCode(null, this.email);
+          self.ctrl.add(self.NotificationMessage.create({
+            message: self.VERIFICATION_EMAIL_TITLE,
+            description: self.VERIFICATION_EMAIL+ ' ' + this.email,
+            type: self.LogLevel.INFO
+          }));
+          return true;
+        } catch ( err ) {
+          self.ctrl.add(self.NotificationMessage.create({
+            err: err.data,
+            message: self.ERROR_MSG_EMAIL,
+            type: self.LogLevel.ERROR
+          }));
+          return false;
         }
       }
     }

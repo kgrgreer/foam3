@@ -23,7 +23,7 @@
   ],
 
   constants: [
-    { name: 'TIMEOUT', type: 'Integer', value: 1 }
+    { name: 'TIMEOUT', type: 'Integer', value: 30 }
   ],
 
   messages: [
@@ -33,6 +33,20 @@
   methods: [
     {
       name: 'verifyByCode',
+      type: 'Void',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'email', type: 'String' }
+      ],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User user = (User) userDAO.find(EQ(User.EMAIL, email));
+        if ( user ==  null ) throw new UserNotFoundException();
+        sendCode(x, user);
+      `
+    },
+    {
+      name: 'sendCode',
       type: 'Void',
       args: [
         { name: 'x', type: 'Context' },
@@ -89,7 +103,7 @@
           user.setEmailVerified(true);
           userDAO.put(user);
         } else {
-          verifyByCode(x, user);
+          sendCode(x, user);
           throw new AuthenticationException(this.RESEND_MESSAGE);
         }
         return code != null;

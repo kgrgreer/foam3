@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.u2.wizard.data.NullCanceler',
     'foam.u2.wizard.data.NullLoader',
     'foam.u2.wizard.data.NullSaver',
-    'foam.u2.wizard.data.ProxyCanceler',
+    // 'foam.u2.wizard.data.ProxyCanceler',
     'foam.u2.wizard.data.ProxyLoader',
     'foam.u2.wizard.data.ProxySaver'
   ],
@@ -43,7 +43,7 @@ foam.CLASS({
   methods: [
     async function cancel (wizardlet) {
       const canceler = foam.json.parse(this.canceler, undefined, wizardlet.__subContext__);
-      this.ensure_terminal(canceler, this.ProxyCanceler, this.NullCanceler);
+      // this.ensure_terminal(canceler, this.ProxyCanceler, this.NullCanceler);
       await canceler.cancel();
     },
     async function load (wizardlet) {

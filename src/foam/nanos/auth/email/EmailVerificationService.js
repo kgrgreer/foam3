@@ -19,7 +19,7 @@
       async: true,
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'user', type: 'foam.nanos.auth.User' }
+        { name: 'email', type: 'String' }
       ]
     },
     {

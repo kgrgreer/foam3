@@ -106,16 +106,28 @@ foam.CLASS({
           }));
         } else {
           if ( ! this.subject.realUser.emailVerified ) {
-            await this.auth.logout();
-            this.stack.push(this.StackBlock.create({
-              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
-            }));
+            this.verifyEmail();
           } else {
             this.loginSuccess = !! this.subject;
             // reload the client on loginsuccess in case login not called from controller
             if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
+      }
+    },
+    {
+      name: 'verifyEmail',
+      code: async function() {
+        var emailVerificationData = foam.nanos.auth.email.EmailVerificationCode.create({
+          email: this.subject.realUser.email
+        }, this.__subContext__);
+        await this.auth.logout();
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.email.VerificationCodeView',
+            data: emailVerificationData
+          }
+        }));
       }
     }
   ],

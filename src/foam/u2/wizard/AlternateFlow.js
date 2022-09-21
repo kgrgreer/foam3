@@ -49,7 +49,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function execute(x) {
+    function execute(x, goToFlow) {
       [
         ['unavailable', 'isAvailable', false],
         ['available', 'isAvailable', true],
