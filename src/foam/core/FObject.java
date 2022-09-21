@@ -9,6 +9,7 @@ package foam.core;
 import foam.crypto.hash.Hashable;
 import foam.crypto.sign.Signable;
 import foam.lib.json.Outputter;
+import foam.nanos.logger.StdoutLogger;
 import foam.util.SecurityUtil;
 import java.security.*;
 import java.util.ArrayList;
@@ -308,7 +309,7 @@ public interface FObject
           }
         }
       } catch (ClassCastException ignore) {
-        System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
+        StdoutLogger.instance().warning("FObject.copyFrom", p.getName(), ignore.getMessage(), ignore);
       }
     }
     return this;

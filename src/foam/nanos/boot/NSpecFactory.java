@@ -153,9 +153,13 @@ public class NSpecFactory
     ) {
       if ( ns_ instanceof NanoService ) {
         spec_ = spec;
-        buildService(x_);
         logger.warning("Reloading Service", spec_.getName());
-        ((NanoService) ns_).reload();
+        try {
+          ((NanoService) ns_).reload();
+          logger.info("Reloaded Service", spec_.getName());
+        } catch (Throwable t) {
+          logger.error("Reloading Service", spec_.getName(), t.getMessage(), t);
+        }
       } else if ( ns_ instanceof DAO ) {
         boolean cluster = "true".equals(System.getProperty("CLUSTER", "false"));
         if ( ! cluster ||

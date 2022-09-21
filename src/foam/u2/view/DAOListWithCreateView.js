@@ -7,7 +7,7 @@
 /**
  * TODO:
  * - Add using RichChoiceView does not work, why??
- * - Improve UX when adding objects to larger 1:* relationships/larger screens using a full table view 
+ * - Improve UX when adding objects to larger 1:* relationships/larger screens using a full table view
  * - How to handle broken relationships (destroy, rebound/reassign, orphan)
  */
 
@@ -15,7 +15,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'DAOListWithCreateView',
   extends: 'foam.u2.view.FObjectArrayView',
-  documentation: `DAOList with inline add and remove support. Mainly for use in wizards and 
+  documentation: `DAOList with inline add and remove support. Mainly for use in wizards and
   smaller screens where showing a full DAOController may not be possible/desirable`,
 
   requires: [
@@ -43,7 +43,7 @@ foam.CLASS({
   css: `
     ^createWrapper {
       padding: 8px 16px;
-      background: /*%GREY5%*/ #F5F7FA;
+      background: $grey50;
       display: flex;
       gap: 8px;
       flex-direction: column;
@@ -55,6 +55,9 @@ foam.CLASS({
     }
     ^actionBar > .foam-u2-ActionView + .foam-u2-ActionView {
       margin-left: 0px;
+    }
+    .foam-u2-view-DAOListWithCreateView-value-view.foam-u2-CitationView-row.foam-u2-CitationView-rw {
+      font-size: 1.4rem;
     }
   `,
 
@@ -100,7 +103,7 @@ foam.CLASS({
               this.value[this.dao.targetProperty.name] = null;
               this.__subContext__[this.dao.targetDAOKey].put(this.value);
             } else {
-              // DAO 
+              // DAO
               this.dao.remove(this.value);
               this.updateData();
             }
@@ -132,9 +135,9 @@ foam.CLASS({
         };
       },
       documentation: `
-        ViewSpec used to create the add Object view. 
-        Defaults to adding a new object but can be speced to support 
-        adding exisitng objects from any dao using something like 
+        ViewSpec used to create the add Object view.
+        Defaults to adding a new object but can be speced to support
+        adding exisitng objects from any dao using something like
         RichChoiceView(temoprarily broken). Eg:
         addView: {
             class: 'foam.u2.view.RichChoiceView',
@@ -170,7 +173,7 @@ foam.CLASS({
       if ( this.dao.of ) this.of = this.dao.of;
     },
     function addAction(showCreate, addView) {
-      if ( showCreate ) 
+      if ( showCreate )
         return this.E()
           .addClass(this.myClass('createWrapper'))
           .start(this.DraftDetailView, {

@@ -25,7 +25,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'disabledModifier',
-      value: 40
+      value: 60
     },
     {
       class: 'String',
@@ -56,7 +56,7 @@ foam.CLASS({
           }
         );
       });
-      ['', 'hover', 'active', 'disbaled'].forEach(a => {
+      ['', 'hover', 'active', 'disabled'].forEach(a => {
         let n = a ? `${ax.name}$${a}$foreground` : ax.name + '$foreground';
         Object.defineProperty(cls, foam.String.constantize(n),
           {

@@ -24,7 +24,7 @@
       flex-direction: column;
       justify-content: center;
       padding: 0 4vw;
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       height: 100%;
     }
 

@@ -26,7 +26,7 @@ foam.CLASS({
       background-color: #f6f9f9;
     }
     ^ tbody > tr:nth-child(even) {
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^ td {
       vertical-align: top;

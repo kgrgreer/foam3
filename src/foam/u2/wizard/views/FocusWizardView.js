@@ -6,8 +6,8 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.views',
-  name: 'FocusWizardForm',
-  extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
+  name: 'FocusWizardView',
+  extends: 'foam.u2.View',
 
   imports: [ 'popup?' ],
 
@@ -18,18 +18,16 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 65vw;
-      min-height: 65vh;
       padding: 3.2rem 0;
       flex-grow: 1;
       /**
-       * Make this work with conditional titles 
-       * gap: 1.6rem; 
+       * Make this work with conditional titles
+       * gap: 1.6rem;
       */
     }
 
     ^:not(^isFullscreen) {
-      margin: 40pt;
-      margin-top: 0;
+      margin: 0 40pt;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -48,7 +46,7 @@ foam.CLASS({
     }
     ^wizardletTitle {
       text-align: center;
-      margin-bottom: 1.6rem;
+      margin-bottom: 2.4rem;
     }
     ^wizardletSub {
       font-size: 1.6rem;
@@ -60,13 +58,27 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'progressWizardView',
       value: {
-        // class: 'foam.u2.borders.NullBorder'
-        class: 'foam.u2.wizard.views.ProgressBarWizardView',
+        class: 'foam.u2.borders.NullBorder'
+        // class: 'foam.u2.wizard.views.ProgressBarWizardView',
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'contentsView',
+      value: {
+        class: 'foam.u2.wizard.views.FlexibleWizardContentsView'
       }
     },
     {
       class: 'Boolean',
       name: 'showTitle'
+    },
+    {
+      class: 'String',
+      name: 'viewTitle',
+      expression: function (data$currentWizardlet) {
+        return data$currentWizardlet.title;
+      }
     }
   ],
 
@@ -75,7 +87,7 @@ foam.CLASS({
       const self = this;
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .start(this.progressWizardView, { data: this })
+        .start(this.progressWizardView, { data: this.data })
           .addClass(this.myClass('progress'))
         .end()
         .add(this.slot(function (showTitle, data$currentWizardlet) {
@@ -92,7 +104,7 @@ foam.CLASS({
               .add(data$currentWizardlet.subTitle)
             .end() : null
         }))
-        .start(this.view, { data: this })
+        .start(this.contentsView, { data: this.data })
           .addClass(this.myClass('contents'))
         .end()
         ;

@@ -23,19 +23,6 @@ foam.CLASS({
       background: $test1$hover;
       color: $test1$hover$foreground;
     }
-    ^myButton.foam-u2-ActionView {
-      background: $test1;
-      color: $test1$foreground;
-    }
-    ^myButton.foam-u2-ActionView:hover:not(:disabled) {
-      background: $test1$hover;
-      color: $test1$hover$foreground;
-    }
-    ^myButton.foam-u2-ActionView:focus {
-      background: $test1$active;
-      color: $test1$active$foreground;
-      border-color: $test1;
-    }
   `,
   cssTokens: [
     {
@@ -46,7 +33,16 @@ foam.CLASS({
   ],
 
   properties: [
-    'color',
+    'color', 'color2',
+    {
+      name: 'disabled',
+      class: 'Boolean',
+    },
+    {
+      class: 'Enum',
+      of: 'foam.u2.ButtonStyle',
+      name: 'style'
+    },
     {
       name: 'tokenDAO',
       factory: function() {
@@ -67,8 +63,10 @@ foam.CLASS({
     function render() {
       this.tokenService.sub('cacheUpdated', () => {
         if ( this.ctrl ) return;
-        let a = foam.u2.CSS.create({ code: this.cls_.model_.css }, this);
+        let a = foam.u2.CSS.create({ code: this.cls_.model_.css  }, this);
+        let b = foam.u2.CSS.create({ code: foam.u2.tag.Button.model_.css  }, this);
         this.__subContext__.installCSS(a.expandCSS(this.cls_, a.code, this.__subContext__));
+        this.__subContext__.installCSS(a.expandCSS(foam.u2.ActionView, b.code, this.__subContext__));
       });
       this
       .start()
@@ -81,23 +79,31 @@ foam.CLASS({
       .end()
       .br().br()
       .startContext({ data: this })
-      .tag(this.COLOR.__, { config: { label: 'Color for test1 token' } })
+      .tag(this.COLOR.__, { config: { label: 'Color for buttonPrimaryColor token' } })
+      .tag(this.COLOR2.__, { config: { label: 'Color for buttonSecondaryColor token' } })
+      .add(this.DISABLED.__)
+      .add(this.STYLE.__)
       .tag(this.SAVE)
-      .endContext()
       .br().br()
       .start()
-        .add('Interact with this action to see auto generated hover and clicked states')
-        .br()
-        .start(this.TEST_ACTION, { buttonStyle: 'PRIMARY' }).addClass(this.myClass('myButton')).end()
-      .end();
+      .add('Interact with this action to see auto generated hover and clicked states')
+      .br()
+      .start(this.TEST_ACTION, { buttonStyle$: this.style$ }).addClass(this.myClass('myButton')).end()
+      .end()
+      .endContext();
     }
   ],
   actions: [
-    { name: 'testAction', code: () => {} },
+    {
+      name: 'testAction',
+      isEnabled: function(disabled) { return ! disabled; },
+      code: () => {}
+    },
     {
       name: 'save',
       code: function(X) {
-        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'test1', target: this.color }, this));
+        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'buttonPrimaryColor', target: this.color }, this));
+        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'buttonSecondaryColor', target: this.color2 }, this));
       }
     }
   ]

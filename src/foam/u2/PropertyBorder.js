@@ -44,10 +44,10 @@
       width: 100%;
     }
     ^ .error input, ^ .error input:focus {
-      border-color: /*%DESTRUCTIVE3%*/ red !important;
+      border-color: $destructive400!important;
     }
     ^colorText {
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
     }
     ^label {
       line-height: 1;
@@ -127,9 +127,15 @@
 
       // TODO: Add simplified "required: true" UI
       // TODO: Required checks on props are ignored if validateObj returns undefined. Bug? - Sarthak
-      var errorSlot = prop.validateObj && prop.validationTextVisible ?
-        data.slot(prop.validateObj) :
+      /* Future Version:
+      var errorSlot = prop.validators && prop.validationTextVisible ?
+        foam.core.Validation.orValidators(data, prop.validators) :
         this.ConstantSlot.create({ value: null });
+        */
+
+        var errorSlot = prop.validateObj && prop.validationTextVisible ?
+          data.slot(prop.validateObj) :
+          this.ConstantSlot.create({ value: null });
 
       var modeSlot = this.prop.createVisibilityFor(
         this.__context__.data$,

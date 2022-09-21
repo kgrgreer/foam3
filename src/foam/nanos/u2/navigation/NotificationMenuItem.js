@@ -36,17 +36,17 @@ foam.CLASS({
       position: relative;
     }
     ^bell.foam-u2-ActionView {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       justify-content: flex-start;
     }
     ^bell.foam-u2-ActionView svg {
-      fill: /*%GREY2%*/ #6B778C;
+      fill: $grey500;
     }
     ^ .dot {
       align-items: center;
-      background: /*%DESTRUCTIVE3%*/ red;
+      background: $destructive400;
       border-radius: 50%;
-      color: /*%WHITE%*/ #FFFFFF;
+      color: $white;
       display: flex;
       font-size: 0.8rem;
       height: 15px;
@@ -104,7 +104,7 @@ foam.CLASS({
         .start(this.NOTIFICATIONS, {
           themeIcon: 'bell',
           label$: this.showText ? this.formattedCount$.map(v => `${self.NOTIF} (${v})`) : foam.core.ConstantSlot.create({ value: '' }),
-          buttonStyle: 'TERTIARY',
+          buttonStyle: 'UNSTYLED',
           size: this.showText ? 'SMALL' : 'MEDIUM'
         })
           .addClass(this.myClass('bell'))

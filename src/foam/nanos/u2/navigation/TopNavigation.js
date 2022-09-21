@@ -37,7 +37,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: /*%PRIMARY1%*/ #202341;
+      background: $primary700;
       width: 100%;
       min-width: 992px;
       height: 60px;
@@ -85,7 +85,7 @@ foam.CLASS({
       border-bottom: 1px solid white;
     }
     ^ .selected {
-      border-bottom: 4px solid /*%PRIMARY5%*/ #e5f1fc !important;
+      border-bottom: 4px solid $primary50!important;
       padding-bottom: 5px;
       text-shadow: 0 0 0px white, 0 0 0px white;
     }

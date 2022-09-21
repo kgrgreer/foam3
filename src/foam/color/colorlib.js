@@ -195,6 +195,17 @@ foam.LIB({
         alpha: components[3]
       };
     },
+
+    function rgbToHex(str) {
+      colorObj = foam.Color.parse(str);
+      var [r, g, b] = [colorObj.red, colorObj.green, colorObj.blue].map(v => Math.floor(v));
+      function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+      }
+
+      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    },
     
     function getBestForeground(str, black, white) {
       with ( foam.Color.parse(str) ) {
@@ -206,10 +217,16 @@ foam.LIB({
       colorObj = foam.Color.parse(str);
       var [r, g, b] = [colorObj.red, colorObj.green, colorObj.blue];
       let l = foam.Color.rgbToGrey([r, g, b])*1000;
-      let scale = l + (l*(value/100));
+      let scale;
+      if ( l > 186 ) {
+       scale = l + (l*(value/100));
+      } else {
+        scale = l - (l*(value/100));
+      }
       var [r, g, b] = foam.Color.adjustRGBBrightness([r, g, b], scale/1000);
       return `rgb(${r.toFixed(4)},${g.toFixed(4)},${b.toFixed(4)})`;
     },
+
     function rgbToGrey(rgb /*[0..255,0.255,0.255]*/) /* -> 0..1 */ {
       var [r, g, b] = rgb;
       return 0.299 * r/255 + 0.587 * g/255 + 0.114 * b/255;
@@ -225,5 +242,13 @@ foam.LIB({
       var scale = desired/gr;
       return [ scale * r, scale * g, scale * b ];
     },
+    function randomColor( bounds /* { h/s/l: [min, max] } */ ) {
+      let hue = bounds?.h ?? [0, 360];
+      let sat = bounds?.s ?? [0, 100];
+      let lig = bounds?.l ?? [0, 100];
+      return 'hsl(' + (hue[0] +(hue[1] - hue[0]) * Math.random()) + ',' +
+             (sat[0] + (sat[1] - sat[0]) * Math.random()) + '%,' + 
+             (lig[0] + (lig[1] - lig[0]) * Math.random()) + '%)';
+    }
   ]
 });

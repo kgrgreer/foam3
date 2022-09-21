@@ -170,11 +170,11 @@ foam.CLASS({
       display: inline-flex;
       justify-content: space-between;
       align-items: center;
-      color: /*%GREY1%*/ #5e6061;
+      color: $grey700;
     }
 
     ^ .foam-u2-view-TreeViewRow-selected > .foam-u2-view-TreeViewRow-heading {
-        border-left: 1rem solid /*%PRIMARY3%*/ #406dea;
+        border-left: 1rem solid $primary400;
     }
 
     ^ .foam-u2-view-TreeViewRow-heading {

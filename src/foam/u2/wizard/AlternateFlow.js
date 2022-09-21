@@ -45,6 +45,11 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'select'
+    },
+    {
+      class: 'Enum',
+      of: 'foam.u2.ButtonStyle',
+      name: 'buttonStyle'
     }
   ],
 

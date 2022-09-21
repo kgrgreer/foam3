@@ -39,7 +39,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: center;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding-left: 40px;
       margin-bottom: 100px;
 
@@ -48,7 +48,7 @@ foam.CLASS({
       width: 448px;
       height: 1000px;
       border-radius: 2px;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
     ^ .Rectangle-7 {
       float: left;
