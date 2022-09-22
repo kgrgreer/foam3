@@ -8,10 +8,9 @@ package foam.dao;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
-import foam.mlang.F;
 
 public class CopyAdapter
-  implements foam.mlang.F
+  implements foam.dao.MaterializedAdapter
 {
   protected final ClassInfo of_;
 
@@ -19,10 +18,9 @@ public class CopyAdapter
     of_ = of;
   }
 
-  public Object f(Object source) {
-    FObject s = (FObject) source;
+  public FObject adapt(FObject source) {
     try {
-      return ((FObject) of_.newInstance()).copyFrom(s);
+      return ((FObject) of_.newInstance()).copyFrom(source);
     } catch (Throwable ex) {
       throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
     }

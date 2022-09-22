@@ -429,7 +429,7 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
-        self.onDetach(self.__subContext__.cssTokenOverrideService?.sub('cacheUpdated', this.reloadStyles));
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
           var menu = await self.__subContext__.menuDAO.find(self.route);
@@ -524,7 +524,7 @@ foam.CLASS({
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
       // TODO: find a better way to resub on client reloads
-      this.onDetach(this.__subContext__.cssTokenOverrideService.sub('cacheUpdated', this.reloadStyles));
+      this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
 

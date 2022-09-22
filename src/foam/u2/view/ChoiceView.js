@@ -317,7 +317,7 @@ foam.CLASS({
           return;
         }
 
-        this.warn('Inefficient ChoiceView. Consider creating transient _choiceText_ property on ' + of.id + ' DAO, prop: ' + this.prop_);
+        this.warn('Inefficient ChoiceView. Consider creating storage transient _choiceText_ property on ' + of.id + ' DAO, prop: ' + this.prop_);
         /* Ex.:
         {
           class: 'String',

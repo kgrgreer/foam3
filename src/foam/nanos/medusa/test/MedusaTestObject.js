@@ -22,11 +22,15 @@
      },
      {
        class: 'String',
-       name: 'description'
+       name: 'description',
+       includeInDigest: true,
+       trim: true
      },
      {
        class: 'String',
-       name: 'data'
+       name: 'data',
+       includeInDigest: true,
+       trim: true
      },
      {
        class: 'String',

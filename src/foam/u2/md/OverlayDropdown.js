@@ -39,6 +39,7 @@ foam.CLASS({
       position: absolute;
       padding: 8px;
       z-index: 1010;
+      max-width: 90%;
     }
 
     ^open {
@@ -125,8 +126,11 @@ foam.CLASS({
       if ( domRect.left > 3 * (screenWidth / 4) ) {
         this.left = 'auto';
         this.right = screenWidth - x + 10;
-      } else {
+      } else if (domRect.left < 75) {
         this.left = x + 10;
+        this.right = 'auto';
+      } else {
+        this.left = x - 75;
         this.right = 'auto';
       }
       this.opened = true;

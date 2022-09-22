@@ -18,10 +18,7 @@ import foam.mlang.sink.GroupBy;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.CompositeApprovable;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.LifecycleState;
-import foam.nanos.auth.Subject;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
@@ -373,7 +370,7 @@ public class ServerCrunchService
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateUserContext") ) {
       x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
-    }
+    } else throw new AuthorizationException("You don't have permission to check for UCJs");
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
