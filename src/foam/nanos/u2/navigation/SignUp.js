@@ -19,6 +19,7 @@ foam.CLASS({
     'appConfig',
     'auth',
     'ctrl',
+    'loginVariables',
     'stack',
     'translationService',
     'theme',
@@ -169,7 +170,7 @@ foam.CLASS({
       name: 'footerLink',
       code: function(topBarShow_, param) {
         window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { ...this.theme.loginView, mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
+        this.stack.push(this.StackBlock.create({ view: { ...(this.loginVariables?.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
       }
     },
     {

@@ -202,7 +202,8 @@ foam.CLASS({
       expression: function(client$userDAO) {
         return {
           dao_: client$userDAO || null,
-          imgPath: ''
+          imgPath: '',
+          loginView: foam.u2.ViewSpec.ADAPT.value.call(this, null, theme$loginView)
         };
       }
     },
@@ -752,7 +753,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...self.theme.loginView, mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginVariables?.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },

@@ -199,8 +199,9 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'String',
       name: 'loginView',
+      value: 'foam.u2.view.LoginView'
     },
     {
       class: 'Image',
