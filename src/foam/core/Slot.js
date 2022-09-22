@@ -544,19 +544,29 @@ foam.CLASS({
     function set() { /* nop */ },
     function subToArgs_(args) {
       this.cleanup();
+      const subs = args.map(a => a.sub(this.invalidate));
 
-      var cleanup = foam.core.FObject.create();
-
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        cleanup.onDetach(args[i].sub(this.invalidate));
-      }
-
-      this.cleanup_ = cleanup;
+      this.cleanup_ = {
+        detach: function() {
+          for ( var i = 0 ; i < subs.length ; i++ ) {
+            subs[i].detach();
+          }
+        }
+      };
+    },
+    function detach() {
+      this.cleanup();
+      this.SUPER();
     }
   ],
 
   listeners: [
-    function cleanup() { this.cleanup_ && this.cleanup_.detach(); },
+    function cleanup() {
+      if ( this.cleanup_ ) {
+        this.cleanup_.detach();
+        this.cleanup_ = null;
+      }
+    },
     function invalidate() { this.clearProperty('value'); }
   ]
 });
