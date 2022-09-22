@@ -164,8 +164,10 @@ foam.CLASS({
         .end();
 
       this.isInit = true;
-
-
+      // Load filters on render instead of open
+      // Temp fix till filterController can be refactored to not depend on Search
+      if ( this.firstTime_ )
+        this.initView();
       this.isFiltering();
       this.isInit = false;
       this.checkPresetPredicate();
