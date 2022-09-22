@@ -51,8 +51,10 @@ foam.CLASS({
     function render() {
       this
         .addClass()
-        .attr('max', this.max$)
-        .attr('value', this.data$);
+        .call(function() {
+          this.attrSlot('max').follow(this.max$);
+          this.attrSlot().follow(this.data$);
+        });
     }
   ]
 });
