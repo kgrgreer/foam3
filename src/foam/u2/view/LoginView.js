@@ -200,6 +200,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'leftView',
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+    },
+    {
       class: 'String',
       name: 'backLinkTxt_',
       factory: function() {
@@ -248,7 +253,7 @@ foam.CLASS({
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
-      let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+      let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
 
       // CREATE MODEL VIEW
       var right = this.E()
@@ -295,7 +300,7 @@ foam.CLASS({
       .end();
 
       // CREATE SPLIT VIEW
-      if ( this.imgPath ) {
+      if ( this.imgPath || this.leftView ) {
         var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
@@ -322,20 +327,24 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and model or just centered model
-        .callIfElse( !! this.imgPath && !! split, () => {
-          split.leftPanel
-            .addClass('cover-img-block1')
-            .start('img')
-              .addClass(self.myClass('image-one'))
-              .attr('src', this.imgPath$)
-            .end()
-            .callIf( !! this.model.disclaimer , () => {
-              // add a disclaimer under img
-              split.leftPanel.start('p')
-                .addClass('disclaimer-login').addClass('disclaimer-login-img')
-                .add(this.model.DISCLAIMER)
-              .end();
-            });
+        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+          if ( ! this.leftView ) {
+            split.leftPanel
+              .addClass('cover-img-block1')
+              .start('img')
+                .addClass(self.myClass('image-one'))
+                .attr('src', this.imgPath$)
+              .end()
+              .callIf( !! this.model.disclaimer , () => {
+                // add a disclaimer under img
+                split.leftPanel.start('p')
+                  .addClass('disclaimer-login').addClass('disclaimer-login-img')
+                  .add(this.model.DISCLAIMER)
+                .end();
+              });
+          } else {
+            split.leftPanel.tag(this.leftView);
+          }
           this.add(split);
         }, function() {
           this.add(right);
