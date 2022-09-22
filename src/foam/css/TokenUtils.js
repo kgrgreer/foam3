@@ -103,11 +103,15 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.css',
   name: 'TokenUtilsBuilder',
+
+  axioms: [ foam.pattern.Singleton.create() ],
+
   requires: [
     'foam.css.FindForegroundExpr',
     'foam.css.LightenExpr',
     'foam.css.TokenExpr'
   ],
+
   methods: [
     function TOKEN(name) { return this.TokenExpr.create({ arg1: name }); },
     function LIGHTEN(a, b) { return this.LightenExpr.create({ arg1: a, arg2: b }); },
