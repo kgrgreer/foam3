@@ -54,8 +54,7 @@ foam.CLASS({
       name: 'mementoPredicate',
       factory: function() {
         return this.TRUE;
-      },
-      postSet: function(_, n) { console.log(n)}
+      }
     },
     {
       name: 'previewPredicate',
