@@ -281,7 +281,7 @@ public class ServerCrunchService
 
   public UserCapabilityJunction getJunction(X x, String capabilityId) {
     Subject subject = (Subject) x.get("subject");
-    return this.getJunctionForSubject(x, capabilityId, subject);
+    return this.getJunctionForSubject_(x, capabilityId, subject, false);
   }
 
   public boolean atLeastOneInCategory(X x, String category) {
@@ -367,10 +367,18 @@ public class ServerCrunchService
   public UserCapabilityJunction getJunctionForSubject(
     X x, String capabilityId, Subject subject
   ) {
+    return getJunctionForSubject_(x, capabilityId, subject, true);
+  }
+
+  protected UserCapabilityJunction getJunctionForSubject_(X x, String capabilityId, Subject subject, boolean actingAsSubject) {
     AuthService auth = (AuthService) x.get("auth");
-    if ( auth.check(x, "service.crunchService.updateUserContext") ) {
-      x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+
+    if ( actingAsSubject ) {
+      if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+        x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
+      } else throw new AuthorizationException("You don't have permission to check for UCJs");
     }
+
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
