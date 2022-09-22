@@ -370,7 +370,7 @@ public class ServerCrunchService
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, "service.crunchService.updateUserContext") ) {
       x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
-    } else throw new AuthorizationException("You don't have permission to check for UCJs");
+    }
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
