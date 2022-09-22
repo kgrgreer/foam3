@@ -203,7 +203,7 @@ foam.CLASS({
     {
       name: 'generalSearchField',
       postSet: function(o, n) {
-        this.filterController.add(n, n.name, 0);
+        this.filterController.add(n, n.name, 0, false);
       }
     },
     {
@@ -270,7 +270,7 @@ foam.CLASS({
       var self = this;
       this.mementoString$.sub(this.getData);
       this.getData();
-      this.data$.sub(this.updateMementoString);
+      this.filterController.mementoPredicate$.sub(this.updateMementoString);
 
       await this.updateFilters();
 
@@ -283,7 +283,7 @@ foam.CLASS({
             richSearch: true,
             of: self.dao.of.id,
             onKey: true,
-            name: 'fiterSearch',
+            name: 'filterSearch',
             searchData$: self.searchData$
           }, this, self.__subContext__);
 
@@ -461,7 +461,7 @@ foam.CLASS({
       name: 'updateMementoString',
       code: function() {
         this.deFeedback(() => {
-          var mem = this.data.toMQL();
+          var mem = this.filterController.mementoPredicate.toMQL();
           if ( mem ) {
             this.mementoString = '{' + mem + '}';
           } else {
