@@ -36,7 +36,7 @@ foam.CLASS({
       const self = this;
       Object.defineProperty(proto, self.name + '$create', {
         get: function getCreateFromFObjectSpec () {
-          return () => {
+          return (args, x) => {
             const spec = this[self.name];
             if ( ! spec ) {
               foam.assert(false, 'Called $create on empty FObjectSpec');
@@ -47,7 +47,7 @@ foam.CLASS({
               foam.assert(false, 'FObjectSpec specifies unknown class: ', spec.class);
               return cls;
             }
-            return cls.create(spec);
+            return cls.create({ ...spec, ...(args || {}) }, x);
           }
         }
       })
