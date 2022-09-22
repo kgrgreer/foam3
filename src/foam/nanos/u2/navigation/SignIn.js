@@ -21,7 +21,6 @@ foam.CLASS({
     'memento_',
     'pushMenu',
     'stack',
-    'theme',
     'translationService',
     'subject'
   ],

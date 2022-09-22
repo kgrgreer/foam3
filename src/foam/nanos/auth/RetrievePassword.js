@@ -15,7 +15,6 @@ foam.CLASS({
     'loginVariables',
     'resetPasswordToken',
     'stack',
-    'theme',
     'translationService',
   ],
 

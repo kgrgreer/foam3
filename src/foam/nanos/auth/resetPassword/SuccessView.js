@@ -14,8 +14,7 @@ foam.CLASS({
   imports: [
     'loginVariables',
     'notify',
-    'stack',
-    'theme'
+    'stack'
   ],
 
   requires: [

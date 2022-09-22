@@ -22,7 +22,6 @@ foam.CLASS({
     'loginVariables',
     'stack',
     'translationService',
-    'theme',
     'subject'
   ],
 
