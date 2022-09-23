@@ -100,6 +100,7 @@ foam.CLASS({
       return foam.CSS.getTokenValue.call(this, tokenString, cls, ctx);
     },
     function tokenValueHelper(theme, name) {
+      if ( ! this.tokenCache.length ) return;
       var pred = this.AND(
         this.EQ(this.CSSTokenOverride.THEME, theme),
         this.EQ(this.CSSTokenOverride.SOURCE, name)
