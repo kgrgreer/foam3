@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
-  name: 'FallbackWizardlet',
+  name: 'FallbackFlowWizardlet',
   extends: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
 
   imports: [
