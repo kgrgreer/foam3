@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.core.Latch'
   ],
 
-  topics: ['cacheUpdated'], 
+  topics: ['cacheUpdated'],
 
   properties: [
     {
@@ -32,8 +32,8 @@ foam.CLASS({
     {
       name: 'initLatch',
       documentation: 'Latch to denote cache has been loaded and service is ready',
-      factory: function() { 
-        return this.Latch.create(); 
+      factory: function() {
+        return this.Latch.create();
       }
     },
     {
@@ -54,7 +54,7 @@ foam.CLASS({
         this.cached_ = true;
         this.cacheUpdated.pub();
       })
-      return this.tokenOverrideDAO.select(token => {
+      return this.tokenOverrideDAO.where(this.EQ(this.CSSTokenOverride.ENABLED, true)).select(token => {
         this.tokenCache.push(token);
       }).then(() => { this.initLatch.resolve(); });
     }
@@ -101,7 +101,6 @@ foam.CLASS({
     },
     function tokenValueHelper(theme, name) {
       var pred = this.AND(
-        this.EQ(this.CSSTokenOverride.ENABLED, true),
         this.EQ(this.CSSTokenOverride.THEME, theme),
         this.EQ(this.CSSTokenOverride.SOURCE, name)
       );
