@@ -281,7 +281,7 @@ public class ServerCrunchService
 
   public UserCapabilityJunction getJunction(X x, String capabilityId) {
     Subject subject = (Subject) x.get("subject");
-    return this.getJunctionForSubject_(x, capabilityId, subject, false);
+    return this.getJunctionForSubject(x, capabilityId, subject);
   }
 
   public boolean atLeastOneInCategory(X x, String category) {
@@ -367,7 +367,8 @@ public class ServerCrunchService
   public UserCapabilityJunction getJunctionForSubject(
     X x, String capabilityId, Subject subject
   ) {
-    return getJunctionForSubject_(x, capabilityId, subject, true);
+    var isSameUserInSubject = ((Subject) x.get("subject")).isUserInSubject(subject.getUser().getId());
+    return getJunctionForSubject_(x, capabilityId, subject, ! isSameUserInSubject);
   }
 
   protected UserCapabilityJunction getJunctionForSubject_(X x, String capabilityId, Subject subject, boolean actingAsSubject) {
