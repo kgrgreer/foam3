@@ -32,7 +32,7 @@ foam.CLASS({
       value: function (slot, action) {
         const wizardController = slot.data$.get();
         action.alternateFlow.execute(wizardController.data.__subContext__);
-        wizardController.goNext();
+        action.alternateFlow.handleNext(wizardController);
       }
     },
     {
