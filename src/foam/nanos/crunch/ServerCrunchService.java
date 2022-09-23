@@ -367,14 +367,12 @@ public class ServerCrunchService
   public UserCapabilityJunction getJunctionForSubject(
     X x, String capabilityId, Subject subject
   ) {
-    var isSameUserInSubject = ((Subject) x.get("subject")).isUserInSubject(subject.getUser().getId());
-    return getJunctionForSubject_(x, capabilityId, subject, ! isSameUserInSubject);
-  }
-
-  protected UserCapabilityJunction getJunctionForSubject_(X x, String capabilityId, Subject subject, boolean actingAsSubject) {
-    AuthService auth = (AuthService) x.get("auth");
-
-    if ( actingAsSubject ) {
+    // Sudo as the given subject when the user in the current subject and the
+    // given subject are different. Throws exception if the user doesn't have
+    // permission update user context for sudo-ing.
+    var currentSubject = (Subject) x.get("subject");
+    if ( ! currentSubject.isUserInSubject(subject.getUser().getId()) ) {
+      AuthService auth = (AuthService) x.get("auth");
       if ( auth.check(x, "service.crunchService.updateUserContext") ) {
         x = Auth.sudo(x, subject.getUser(), subject.getRealUser());
       } else throw new AuthorizationException("You don't have permission to check for UCJs");
