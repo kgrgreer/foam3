@@ -145,6 +145,6 @@ foam.CLASS({
     'inputVerticalPadding': '8px',
 
     // FONT
-    'font1': '-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
+    'font1': `'IBM Plex Sans', sans-serif`
   }
 });

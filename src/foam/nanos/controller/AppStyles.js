@@ -11,6 +11,13 @@ foam.CLASS({
 
   documentation: 'Generic CSS that can be included into the top level controller of foam app. Implement to foam class to use.',
 
+  cssTokens: [
+    {
+      name: 'fontFamily',
+      value: '$font1',
+      fallback: ' -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
+    }
+  ],
   css: `
     :root{
       font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
@@ -20,7 +27,7 @@ foam.CLASS({
     body {
       background: $grey50;
       color: $black;
-      font-family: $font1;
+      font-family: $fontFamily;
       font-size: 1.4rem;
       letter-spacing: 0.014em;
       margin: 0;
