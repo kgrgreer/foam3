@@ -12,6 +12,8 @@ foam.CLASS({
     Expr for getting the value of the token from current context
   `,
 
+  axioms: [foam.pattern.Multiton.create({ property: 'arg1' })],
+
   properties: [
     { name: 'arg1' }
   ],
