@@ -14,6 +14,7 @@ foam.CLASS({
    * Use the color generator to create these
   */
   cssTokens: {
+    // COLOUR
     'blue50': '#D7E4FF',
     'blue100': '#96B8F9',
     'blue200': '#6795EE',
@@ -136,6 +137,14 @@ foam.CLASS({
     'destructive': '#E11721',
     'info': '#FC7F27',
     'warn': '#F5DB6B',
-    'success': '#34CF56'
+    'success': '#34CF56',
+
+    // GENERAL STYLE TOKENS
+    'inputHeight': '34px',
+    'inputHorizontalPadding': '8px',
+    'inputVerticalPadding': '8px',
+
+    // FONT
+    'font1': '-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
   }
 });

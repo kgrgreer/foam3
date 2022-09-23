@@ -34,7 +34,7 @@ foam.CLASS({
       width: 100%;
     }
     ^input-image {
-      --fieldSize: /*%INPUTHEIGHT%*/ 34px;
+      --fieldSize: $inputHeight;
       position: absolute;
       width: 16px;
       height: calc( var(--fieldSize) / 1.2);

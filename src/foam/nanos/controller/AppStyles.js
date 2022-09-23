@@ -20,7 +20,7 @@ foam.CLASS({
     body {
       background: $grey50;
       color: $black;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: $font1;
       font-size: 1.4rem;
       letter-spacing: 0.014em;
       margin: 0;
