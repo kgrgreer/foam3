@@ -22,7 +22,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      height: /*%INPUTHEIGHT%*/ 34px;
+      height: $inputHeight;
       padding: 0;
     }
   `,
