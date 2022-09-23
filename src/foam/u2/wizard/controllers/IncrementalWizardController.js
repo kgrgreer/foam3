@@ -16,6 +16,8 @@ foam.CLASS({
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
+  implements: ['foam.u2.Progressable'],
+
   issues: [
     'should not depend on legacy controller'
   ],
@@ -31,6 +33,11 @@ foam.CLASS({
       postSet: function (_, v) {
         this.currentWizardlet$ = v.currentWizardlet$;
         this.currentSection$ = v.currentSection$;
+        // Remove when legacy controller is removed
+        if ( foam.u2.Progressable.isInstance(v) ) {
+          this.progressMax$ = v.progressMax$;
+          this.progressValue$ = v.progressValue$;
+        }
 
         // Listen for external actions completing the wizard
         this.onDetach(v.status$.sub(() => {
