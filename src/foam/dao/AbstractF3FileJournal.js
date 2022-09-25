@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
@@ -43,8 +44,11 @@ foam.CLASS({
     'java.util.Calendar',
     'java.util.Iterator',
     'java.util.List',
+    'java.util.Set',
     'java.util.regex.Pattern',
-    'java.util.TimeZone'
+    'java.util.TimeZone',
+    'java.util.stream.Collectors',
+    'java.util.stream.Stream'
   ],
 
   javaCode: `
@@ -155,7 +159,7 @@ foam.CLASS({
       javaType: 'java.io.BufferedReader',
       javaGetter: `
 try {
-  InputStream is = getX().get(foam.nanos.fs.Storage.class).getInputStream(getFilename());
+  InputStream is = getX().get(Storage.class).getInputStream(getFilename());
   if ( is == null ) {
     getLogger().warning("File not found", "for reading", getFilename());
     return null;
@@ -174,7 +178,7 @@ try {
       javaType: 'java.io.BufferedWriter',
       javaFactory: `
 try {
-  OutputStream os = getX().get(foam.nanos.fs.Storage.class).getOutputStream(getFilename());
+  OutputStream os = getX().get(Storage.class).getOutputStream(getFilename());
   if ( os == null ) {
     getLogger().warning("File not found", "for writing", getFilename());
     return null;
@@ -469,7 +473,7 @@ try {
       `
     },
     {
-      documentation: 'Backup/rename existing file. New writes to new empty file.  NOTE: relies on upstream logic to block/pause io to journal',
+      documentation: 'Backup/rename existing file with the next sequence number. New writes to new empty file.  NOTE: relies on upstream logic to block/pause io to journal',
       name: 'roll',
       args: 'X x',
       type: 'String',
@@ -487,9 +491,9 @@ try {
         AbstractF3FileJournal.WRITER.clear(this);
 
         // rename existing file
-        File existing = x.get(foam.nanos.fs.Storage.class).get(filename);
-        String backup = filename + "-" + DateTimeFormatter.ofPattern("YYYYMMddHHmmss").format(LocalDateTime.now());
-        File nu = x.get(foam.nanos.fs.Storage.class).get(backup);
+        File existing = x.get(Storage.class).get(filename);
+        String backup = filename + "." + nextSuffix(x, filename);
+        File nu = x.get(Storage.class).get(backup);
         boolean renamed = existing.renameTo(nu);
         if ( ! renamed ) {
           throw new RuntimeException("Failed to rename. "+filename);
@@ -511,6 +515,36 @@ try {
       `
     },
     {
+      name: 'nextSuffix',
+      args: 'X x, String filename',
+      type: 'Long',
+      javaThrows: ['java.io.IOException'],
+      javaCode: `
+        long suffix = 0;
+        Set<String> names = Stream.of(x.get(Storage.class).get(filename).getParentFile().listFiles())
+          .filter(file -> !file.isDirectory())
+          .filter(file -> file.getName().startsWith(filename))
+          .map(File::getName)
+          .sorted()
+          .collect(Collectors.toSet());
+        for ( String name : names ) {
+          int p = name.lastIndexOf(".");
+          if ( p == filename.length() ) {
+            try {
+              long s = Long.parseLong(name.substring(p+1));
+              if ( s > suffix ) {
+                suffix = s;
+              }
+            } catch (NumberFormatException e) {
+              Loggers.logger(x, this).debug("nextSuffix", name, e.getMessage());
+            }
+          }
+        }
+        suffix += 1;
+        return suffix;
+      `
+    },
+    {
       name: 'cmd',
       args: 'X x, Object obj',
       type: 'Object',
@@ -518,7 +552,11 @@ try {
       if ( obj != null &&
            obj instanceof FileRollCmd ) {
         FileRollCmd cmd = (FileRollCmd) obj;
-        cmd.setRolledFilename(roll(x));
+        try {
+          cmd.setRolledFilename(roll(x));
+        } catch (Throwable t) {
+          cmd.setError(t.getMessage());
+        }
         return cmd;
       }
       return obj;
