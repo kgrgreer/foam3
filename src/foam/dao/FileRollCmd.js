@@ -19,6 +19,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'rolledFilename'
+    },
+    {
+      class: 'String',
+      name: 'error'
     }
   ]
 });
