@@ -28,8 +28,8 @@ foam.CLASS({
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
     'foam.mlang.sink.Count',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.Timer'
   ],
@@ -94,9 +94,7 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
-      Logger logger = new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
+      Logger logger = Loggers.logger(x, this, "execute");
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -104,6 +102,7 @@ foam.CLASS({
       if ( maxIndex == 0 ) {
         maxIndex = replaying.getIndex() - getRetain();
       }
+      logger.debug("purging", "min", getMinIndex(), "max", maxIndex);
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
