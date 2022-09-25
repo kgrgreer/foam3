@@ -45,6 +45,7 @@ foam.CLASS({
       value: ''
     }
   ],
+
   methods: [
     {
       name: 'toSummary',
@@ -58,6 +59,6 @@ foam.CLASS({
       javaCode: `
         return "".equals(getVariant()) ? getCode() : getCode() + "-" + getVariant();
       `
-    },
+    }
   ]
 });
