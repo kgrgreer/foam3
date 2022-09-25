@@ -11,6 +11,11 @@ foam.CLASS({
 
   documentation: `Skip writing to underlying JDAO if only transientDate.`,
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.FileRollCmd'
+  ],
+
   properties: [
     {
       name: 'mdao',
@@ -37,6 +42,19 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
       return getMdao().put_(x, obj);
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      Object cmd = getDelegate().cmd_(x, obj);
+      if ( obj instanceof FileRollCmd ) {
+        ((DAO) x.get("medusaNodeDAO")).cmd_(x, DAO.PURGE_CMD);
+      } else if ( DAO.PURGE_CMD.equals(obj) ) {
+        // foam.nanos.logger.Loggers.logger(x, this, "cmd").debug("purge");
+        getMdao().cmd_(x, obj);
+      }
+      return obj;
       `
     }
   ]
