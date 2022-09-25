@@ -11,6 +11,7 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.customise-theme","
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.groups","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.regions","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.admin.tickets","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.doc","description":"Documentation menu"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.integration","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.integration.api-dig","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.integration.api-dug","description":""})
