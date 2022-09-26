@@ -182,9 +182,9 @@ foam.CLASS({
       justify-content: space-between;
       width: 100%;
 
-      height: /*%INPUTHEIGHT%*/ 34px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
+      height: $inputHeight;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
       border: 1px solid $grey400;
       color: $black;
       background-color: $white;
@@ -228,9 +228,9 @@ foam.CLASS({
 
       width: 100%;
       border: none;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
     }
 
     ^ .search img {
@@ -257,9 +257,9 @@ foam.CLASS({
       display: flex;
       align-items: center;
       border-left: 1px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
       border-left: 1px solid;
       border-color: $grey400;
       margin-left: 12px;

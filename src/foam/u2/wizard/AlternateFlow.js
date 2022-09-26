@@ -50,6 +50,11 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle'
+    },
+    {
+      class: 'String',
+      name: 'wizardletId',
+      documentation: 'set this to jump to a specific wizardlet by id'
     }
   ],
 
@@ -77,6 +82,21 @@ foam.CLASS({
           w.data.selectedData = choices;
         }
       }
+    },
+    function handleNext(wizardController) {
+      if ( ! this.wizardletId ) {
+        wizardController.goNext();
+      }
+
+      const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
+      if ( wi < 0 ) {
+        throw new Error('wizardlet not found with id: ' + this.wizardletId);
+      }
+      const pos = this.WizardPosition.create({
+        wizardletIndex: wi,
+        sectionIndex: 0
+      })
+      wizardController.wizardPosition = pos;
     }
   ]
 })
