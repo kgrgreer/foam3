@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.theme.customisation',
   name: 'CSSTokenOverrideService',
+
   mixins: ['foam.util.DeFeedback'],
 
   imports: [
@@ -21,20 +22,18 @@ foam.CLASS({
     'foam.core.Latch'
   ],
 
-  topics: ['cacheUpdated'],
+  topics: [ 'cacheUpdated' ],
 
   properties: [
     {
+      class: 'Map',
       name: 'tokenCache',
-      // class: 'Map'
-      class: 'Array'
+      documentation: "A map of theme id's to maps of source id's to targets."
     },
     {
       name: 'initLatch',
       documentation: 'Latch to denote cache has been loaded and service is ready',
-      factory: function() {
-        return this.Latch.create();
-      }
+      factory: function() { return this.Latch.create(); }
     },
     {
       name: 'cached_',
@@ -49,14 +48,19 @@ foam.CLASS({
         this.onDetach(this.tokenOverrideDAO.on.sub(this.maybeReload));
       });
     },
+
     function loadTokenCache() {
       this.initLatch.then(() => {
         this.cached_ = true;
         this.cacheUpdated.pub();
       })
       return this.tokenOverrideDAO.where(this.EQ(this.CSSTokenOverride.ENABLED, true)).select(token => {
-        this.tokenCache.push(token);
-      }).then(() => { this.initLatch.resolve(); });
+        var themeMap = this.themeMap(token.theme)[token.source] = token.target;
+      }).then(() => this.initLatch.resolve());
+    },
+
+    function themeMap(theme) {
+      return this.tokenCache[theme] || ( this.tokenCache[theme] = {} );
     }
   ],
 
@@ -68,12 +72,13 @@ foam.CLASS({
       this.loadTokenCache();
       return this.initLatch;
     },
+
     function getTokenValue(tokenString, cls, ctx) {
       if ( ! tokenString.startsWith('$') ) return tokenString;
       var self = this;
       if ( this.cached_ ) {
         let themeID = ctx?.theme?.id || this.theme?.id || '';
-        let result = null;
+        let result  = null;
         var [ tokenName, cls, fullString ] = foam.CSS.returnTokenAndClass(tokenString, cls);
         var args = [
           /**
@@ -84,9 +89,10 @@ foam.CLASS({
            */
           [themeID, fullString],
           [themeID, tokenName],
-          ['',fullString],
-          ['',tokenName]
+          ['', fullString],
+          ['', tokenName]
         ];
+
         for ( var i = 0 ; i < args.length && ! result ; i ++) {
           result = this.tokenValueHelper.apply(self, args[i]);
           if ( result ) {
@@ -96,17 +102,15 @@ foam.CLASS({
           }
         }
       }
+
       //TODO: Put to default theme in override dao
       return foam.CSS.getTokenValue.call(this, tokenString, cls, ctx);
     },
+
     function tokenValueHelper(theme, name) {
-      if ( ! this.tokenCache.length ) return;
-      var pred = this.AND(
-        this.EQ(this.CSSTokenOverride.THEME, theme),
-        this.EQ(this.CSSTokenOverride.SOURCE, name)
-      );
-      r = this.tokenCache.filter(obj => pred.f(obj))
-      return r.length ? r[0]?.target : undefined;
+      var themeMap = this.tokenCache[theme];
+      if ( ! themeMap ) return;
+      return themeMap[name];
     }
   ]
 });
