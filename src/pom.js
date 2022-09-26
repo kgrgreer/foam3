@@ -1030,6 +1030,7 @@ foam.POM({
     { name: "foam/u2/wizard/wizardlet/ReviewItem",                    flags: "web" },
     { name: "foam/u2/wizard/wizardlet/ReviewWizardlet",               flags: "web" },
     { name: "foam/u2/wizard/wizardlet/AlternateFlowWizardlet",        flags: "web" },
+    { name: "foam/u2/wizard/wizardlet/FallbackFlowWizardlet",         flags: "web" },
     { name: "foam/u2/wizard/wizardlet/SubmitWizardlet",               flags: "web" },
     { name: "foam/u2/wizard/wizardlet/FlowAgentWizardlet",            flags: "web" },
     { name: "foam/u2/wizard/wizardlet/DAOWizardlet",                  flags: "web" },
