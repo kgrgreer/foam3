@@ -45,11 +45,6 @@ foam.CLASS({
     .full-width-input-password:focus + ^input-image {
       opacity: 1;
     }
-    ^link-text {
-      text-security:none;
-      -webkit-text-security:none;
-      -mox-text-security:none;
-    }
   `,
 
   constants: [
@@ -91,12 +86,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isAvailable',
       value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'showAction',
-      visibility: 'HIDDEN',
-      documentation: 'show forgotPassword action under textfield'
     }
   ],
 
@@ -129,12 +118,6 @@ foam.CLASS({
           .attr('src', this.visibilityIcon$)
           .on('mousedown', (e) => e.preventDefault())
           .on('click', () => this.visible())
-        .end()
-        .start()
-          .startContext({ data: this })
-            .addClass(this.myClass('link-text'))
-            .add(this.FORGOT_PASSWORD)
-          .endContext()
         .end();
     },
 
@@ -161,26 +144,6 @@ foam.CLASS({
         .then((pw) => {
           this.isAvailable = !pw;
         });
-    }
-  ],
-
-  actions: [
-    {
-      name: 'forgotPassword',
-      buttonStyle: 'LINK',
-      isAvailable: function(showAction) { return showAction; },
-      code: function(X) {
-        debugger
-        // var a = foam.u2.stack.StackBlock.create({
-        //   view: {
-        //     class: 'foam.nanos.auth.ChangePasswordView',
-        //     modelOf: 'foam.nanos.auth.ResetPassword'
-        //   },
-        //   parent: X.createSubContext({ stack: X.stack })
-        // });
-        // X.stack.push(a);
-        X.pushMenu('reset')
-      }
     }
   ]
 });

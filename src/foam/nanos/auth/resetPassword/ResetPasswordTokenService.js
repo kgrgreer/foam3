@@ -168,6 +168,7 @@ foam.CLASS({
         ((DAO) x.get("emailMessageDAO")).put(message);
         return true;
       `
-    }
+    },
+    
   ]
 });

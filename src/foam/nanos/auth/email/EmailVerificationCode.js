@@ -66,6 +66,34 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    {
+      name: 'executeAltFlow',
+      code: async function(X, capId, data) {
+        var altFlow =  foam.u2.wizard.AlternateFlow.create({
+          invisible: [ 'net.nanopay.gateway.SignInChoice' ],
+          visible: [ capId ],
+          select: [
+            [ 'net.nanopay.gateway.SignInChoice', [ capId ] ]
+          ]
+        }, X);
+
+        altFlow.execute(X);
+        // await X.wizardController.next()
+        
+        var newIndex = X.wizardlets.findIndex(w => w.id === capId)
+        var wizardlet = X.wizardlets[newIndex];
+        if ( data )
+          wizardlet.data = ( wizardlet.data || wizardlet.of?.create({}, X))?.copyFrom(data);
+
+        X.wizardController.wizardPosition = foam.u2.wizard.WizardPosition.create({
+          wizardletIndex: newIndex,
+          sectionIndex: 0,
+        });
+      }
+    }
+  ],
+
   actions: [
     {
       name: 'submit',
@@ -78,13 +106,15 @@ foam.CLASS({
           err = error;
         }
         if ( success ) {
-          X.data.ctrl.add(data.NotificationMessage.create({
+          X.ctrl.add(data.NotificationMessage.create({
             message: data.SUCCESS_MSG,
             type: data.LogLevel.INFO
           }));
+
+          // this.executeAltFlow(this.__subContext__, 'net.nanopay.gateway.SignIn', { email: this.email });
           window.location.reload();
         } else {
-          X.data.ctrl.add(data.NotificationMessage.create({
+          X.ctrl.add(data.NotificationMessage.create({
             message: data.ERROR_MSG,
             type: data.LogLevel.ERROR,
             err: err?.data

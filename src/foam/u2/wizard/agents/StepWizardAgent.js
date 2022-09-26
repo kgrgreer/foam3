@@ -46,7 +46,6 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      debugger
       window.activeWizard = this.wizardController
 
       // activeWizard.openWizardInspector(activeWizard.__subContext__)
