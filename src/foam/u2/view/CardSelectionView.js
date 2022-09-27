@@ -88,7 +88,7 @@
                   .style({
                     'width': self.isVertical ? '100%' : `${100 / self.numCols}%`
                   })
-                  .start({ ...this.choiceView, ...cardSelectViewConfig })
+                  .start(this.choiceView, cardSelectViewConfig)
                     .call(function () {
                       self.E().onDetach(
                         this.clicked.sub(() => {
