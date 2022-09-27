@@ -28,6 +28,9 @@ foam.CLASS({
       flex-direction: column;
       gap: 24px;
     }
+    ^ .h600 {
+      margin-bottom: 1.5rem;
+    }
   `,
 
   properties: [
@@ -53,7 +56,7 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
-    },
+    }
   ],
 
   methods: [
@@ -69,7 +72,7 @@ foam.CLASS({
               // note: value is wrapped in AnyHolder so mlang
               //   expressions can be used on the root data
               if ( ! item.predicate.f(self.AnyHolder.create({
-                value: self.data.value[item.name]
+               value: self.data?.value?.[item?.name]
               })) ) return;
 
               // if there is data
@@ -84,6 +87,7 @@ foam.CLASS({
                   })
                   .start(item.headingBorder)
                     .tag(item.view, {data: self.data.value[item.name]})
+                    .startContext({ data: self.data?.value?.[item?.name] }).tag(item.view).endContext()
                   .end()
                 .end();
             })
