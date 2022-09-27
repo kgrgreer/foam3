@@ -51,10 +51,17 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
+      columnLabel: 'Start on',
+      gridColumns: 12,
       validateObj: function(startDate) {
+
         if ( ! startDate ) return this.INVALID_DATE_ERROR;
         // check against current date
         if ( startDate <= new Date() ) return this.START_DATE_ERROR;
+      },
+      tableCellFormatter: function(value, obj) {
+        if ( ! value || ! obj  ) return;
+        this.style({ 'font-weight': '600' }).add(obj.formatDate(value));
       }
     },
     {
@@ -80,7 +87,12 @@ foam.CLASS({
           query: 'repeat>=1',
           errorMessage: 'INVALID_REPEAT_1'
         }
-      ]
+      ],
+      tableCellFormatter: function(value, obj) {
+        if ( ! value || ! obj ) return;
+        let ret = value + ' ' + obj.frequency.label;
+        this.style({ 'font-weight': '600' }).add(value > 1 ? ret + 's' : ret );
+      }
     },
     {
       class: 'Enum',
@@ -104,6 +116,11 @@ foam.CLASS({
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.DISABLED};
         return foam.u2.DisplayMode.RW;
+      },
+      tableCellFormatter: function(value) {
+        if ( ! value ) return;
+        this.style({ 'font-weight': '600' })
+          .add(value == foam.time.TimeUnit.DAY ? 'Daily' : value.label + 'ly');
       }
     },
     {
@@ -129,6 +146,11 @@ foam.CLASS({
         if ( frequency != this.TimeUnit.WEEK )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      tableCellFormatter: function(value) {
+        if ( ! value ) return;
+        value.sort((a, b) => a.ordinal - b.ordinal);
+        this.style({ 'font-weight': '600' }).add(value.map(d => d.label).join(', '));
       }
     },
     {
@@ -146,13 +168,15 @@ foam.CLASS({
         if ( frequency != this.TimeUnit.MONTH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
-      }
+      },
+      hidden: true
     },
     {
       class: 'Array',
       of: 'Int',
       name: 'dayOfMonth',
       label: '',
+      columnLabel: 'Repeat each',
       view: {
         class: 'foam.u2.view.DayOfMonthView'
       },
@@ -162,6 +186,25 @@ foam.CLASS({
         if ( monthlyChoice != this.MonthlyChoice.EACH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      tableCellFormatter: function(values) {
+        if ( ! values ) return;
+
+        var ordinalNumbers = [];
+        // Sort numbers in ascending order
+        values.sort((a, b) => a - b).map((value) => {
+          if ( value === 1 || value === 21 || value === 31 ) {
+            ordinalNumbers.push(value + 'st');
+          } else if ( value === 2 || value === 22 ) {
+            ordinalNumbers.push(value + 'nd');
+          } else if ( value === 3 || value === 23 ) {
+            ordinalNumbers.push(value + 'rd');
+          } else {
+            ordinalNumbers.push(value + 'th');
+          }
+        });
+        // Add commas, e.g. 1st, 2nd, 3rd, 4th
+        this.style({ 'font-weight': '600' }).add(ordinalNumbers.map(o => o).join(', '));
       }
     },
     {
@@ -183,6 +226,7 @@ foam.CLASS({
       of: 'foam.nanos.cron.SymbolicFrequency',
       name: 'symbolicFrequency',
       label: '',
+      columnLabel: 'Repeat on the',
       gridColumns: 6,
       visibility: function(monthlyChoice, frequency ) {
         if ( frequency != this.TimeUnit.MONTH )
@@ -190,6 +234,10 @@ foam.CLASS({
         if ( monthlyChoice !=  this.MonthlyChoice.ON_THE )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      tableCellFormatter: function(value, obj) {
+        if ( ! value || ! obj ) return;
+        this.style({ 'font-weight': '600' }).add(value.label + ' ' + obj.expandedDayOfWeek.label);
       }
     },
     {
@@ -197,6 +245,7 @@ foam.CLASS({
       of: 'foam.time.DayOfWeek',
       name: 'expandedDayOfWeek',
       label: '',
+      hidden: true,
       gridColumns: 6,
       visibility: function(monthlyChoice, frequency) {
         if ( frequency != this.TimeUnit.MONTH )
@@ -212,6 +261,7 @@ foam.CLASS({
       name: 'ends',
       label: 'Ends',
       gridColumns: 6,
+      hidden: true,
       visibility: function(repeat) {
         if ( repeat < 1 ) {
           return foam.u2.DisplayMode.HIDDEN};
@@ -222,6 +272,7 @@ foam.CLASS({
       class: 'Date',
       name: 'endsOn',
       label: 'End Date',
+      columnLabel: 'Ends',
       gridColumns: 6,
       visibility: function(ends) {
         if ( ends != this.ScheduleEnd.ON )
@@ -232,22 +283,35 @@ foam.CLASS({
         if ( ! endsOn ) return this.INVALID_DATE_ERROR;
         // check against start date
         if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
+      },
+      tableCellFormatter: function(value, obj) {
+        if ( ! value || ! obj  ) return;
+        this.style({ 'font-weight': '600' }).add('On ' + obj.formatDate(value));
       }
     },
     {
       class: 'Int',
       name: 'endsAfter',
-      label: '',
+      label: 'Times',
+      columnLabel: 'Ends',
       gridColumns: 6,
       min: 1,
       visibility: function(ends) {
         if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      tableCellFormatter: function(value) {
+        let ret = 'After ' + value + ' occurrence';
+        this.style({ 'font-weight': '600' }).add(value > 1 ? ret + 's' : ret);
       }
     }
   ],
   methods: [
+    function formatDate(date) {
+      if ( ! date ) return;
+      return  date.getFullYear() + '/' + (date.getMonth() + 1) + '/' +  date.getDate() ;
+    },
     {
       name: 'getNextScheduledTime',
       javaCode: `
