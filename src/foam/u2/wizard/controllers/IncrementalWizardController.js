@@ -43,8 +43,11 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'defaultView',
-      value: {
-        class: 'foam.u2.wizard.views.FocusWizardView'
+      expression: function(showTitle) {
+        return {
+          class: 'foam.u2.wizard.views.FocusWizardView',
+          showTitle: showTitle
+        }
       }
     },
     'currentWizardlet',
@@ -53,6 +56,11 @@ foam.CLASS({
       name: 'backDisabled',
       class: 'Boolean',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle',
+      value: true
     },
     {
       class: 'Boolean',
@@ -115,7 +123,7 @@ foam.CLASS({
           actionBar.push(this.DISCARD);
         }
         actionBar.push(goPrevAction, goNextAction);
-        
+
 
         return actionBar;
       }
