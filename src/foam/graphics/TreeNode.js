@@ -179,7 +179,7 @@ foam.CLASS({
 
       var treeNodeConfig = this.classToTreeNodeConfig[this.data.cls_.id];
 
-      if ( treeNodeConfig && treeNodeConfig.onClickNode ){
+      if ( treeNodeConfig && treeNodeConfig.onClickNode ) {
         onClick = treeNodeConfig.onClickNode;
       }
 
@@ -269,7 +269,7 @@ foam.CLASS({
       if ( this.childNodes.length ) {
         var halfLineLength = 5;
 
-        if ( this.expanded ){
+        if ( this.expanded ) {
           var d = halfLineLength;
           var y = nodePaddingTop + halfLineLength / 2;
         } else {
@@ -323,7 +323,7 @@ foam.CLASS({
       for ( var i = 0; i < this.childNodes.length; i++ ) {
         var n1 = this.childNodes[i];
 
-        for ( var j = i + 1; j < this.childNodes.length; j++ ){
+        for ( var j = i + 1; j < this.childNodes.length; j++ ) {
           var n2 = this.childNodes[j];
 
           var distance = n1.distanceTo(n2);
@@ -353,7 +353,7 @@ foam.CLASS({
         }
       }
 
-      for ( var i = 0; i < this.childNodes.length; i++ ){
+      for ( var i = 0; i < this.childNodes.length; i++ ) {
         if ( this.childNodes[i].layout() ) moved = true;
       }
 
@@ -371,7 +371,7 @@ foam.CLASS({
       return moved;
     },
 
-    function findNode(id){
+    function findNode(id) {
       if ( this.data.id === id ) return this;
 
       for ( var i = 0 ; i < this.childNodes.length ; i++ ) {

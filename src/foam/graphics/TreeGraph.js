@@ -58,10 +58,7 @@
      },
      {
       class: 'Map',
-        name: 'classToTreeNodeConfig',
-      factory: function(){
-        return {};
-      },
+      name: 'classToTreeNodeConfig'
      },
      {
       class: 'Boolean',
@@ -168,7 +165,6 @@
            this.doLayout();
 
            return;
-
          }
 
          if (
@@ -178,12 +174,10 @@
          ){
           this.isCentering = true;
 
-
           this.root.centerX += ( this.canvasMinWidth - this.width )  / 2;
 
           this.width = this.canvasMinWidth;
 
-              
           this.invalidate();
           this.doLayout();
 

@@ -15,10 +15,7 @@
   properties: [
     {
       class: 'Color',
-      name: 'nodeColor',
-      factory: function(){
-        return '#FFFFFF';
-      }
+      name: 'nodeColor'
     },
     {
       class: 'Boolean',
@@ -34,10 +31,7 @@
     },
     {
       class: 'Color',
-      name: 'textColor',
-      factory: function(){
-        return '#000000';
-      }
+      name: 'textColor'
     },
     {
       class: 'String',
