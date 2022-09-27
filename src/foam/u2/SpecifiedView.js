@@ -1,7 +1,38 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'SpecifiedView',
   extends: 'foam.u2.View',
+
+  documentation: `
+    A SpecifiedView allows a journaled ViewSpec to get property values using
+    loaders (for example from context, like a DAO). A slot will render the view
+    once all the properties have been loaded.
+
+    The following example populates a choice view for capabilities:
+    {
+      class: 'foam.u2.wizard.SpecifiedView',
+      realView: {
+        class: 'foam.u2.view.CardSelectionView'
+        // choices: set by loader below
+      },
+      loaders: {
+        choices: {
+          class: 'foam.u2.wizard.data.DAOArrayLoader',
+          daoKey: 'capabilityDAO'
+        }
+      }
+    }
+
+    Actually, DAOArrayLoader does not have a 'daoKey' property. Instead you can
+    use a SpecifiedLoader (same concept as SpecifiedView) to populate the 'dao'
+    property od DAOArrayLoader using ContextLoader.
+  `,
 
   requires: [
     'foam.core.SimpleSlot'
