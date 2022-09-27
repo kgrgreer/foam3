@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'DAOArrayLoader',
   extends: 'foam.u2.wizard.data.ProxyLoader',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -16,13 +20,17 @@ foam.CLASS({
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
-      name: 'predicate'
+      name: 'predicate',
+      factory: function () {
+        return this.TRUE;
+      }
     }
   ],
 
   methods: [
     async function load() {
-
+      const sink = await this.dao.where(this.predicate).select();
+      return sink.array;
     }
   ]
 })

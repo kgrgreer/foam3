@@ -19,13 +19,13 @@ foam.CLASS({
     Example journal config:
     {
       class: 'foam.u2.wizard.data.SpecifiedLoader',
-      spec: {
+      realLoader: {
         class: 'foam.u2.wizard.data.DAOArrayLoader',
         predicate: {
           class: 'foam.mlang.predicate.True'
         }
       },
-      dynamic: {
+      loaders: {
         dao: {
           class: 'ContextLoader',
           path: 'subject.user.capabilities.dao'
@@ -37,20 +37,20 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.util.FObjectSpec',
-      name: 'spec'
+      name: 'realLoader'
     },
     {
       class: 'Map',
-      name: 'dynamic'
+      name: 'loaders'
     }
   ],
   
   methods: [
     async function load () {
-      this.delegate = this.spec$create({}, this.__subContext__);
-      for ( const key of Object.keys(dynamic) ) {
-        const loader = foam.json.parse(dynamic[key], undefined, this.__subContext__);
-        delegate[key] = await loader.load();
+      this.delegate = this.realLoader$create({}, this.__subContext__);
+      for ( const key of Object.keys(this.loaders) ) {
+        const loader = foam.json.parse(this.loaders[key], undefined, this.__subContext__);
+        this.delegate[key] = await loader.load();
       }
       return await this.delegate.load();
     }
