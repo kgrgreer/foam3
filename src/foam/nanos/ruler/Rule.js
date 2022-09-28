@@ -25,6 +25,10 @@ foam.CLASS({
     'userDAO?'
   ],
 
+  requires: [
+    'foam.mlang.predicate.True'
+  ],
+
   javaImports: [
     'foam.core.DirectAgency',
     'foam.dao.DAO',
@@ -155,7 +159,13 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
-      name: 'predicate'
+      name: 'predicate',
+      factory: function() {
+        return this.True.create();
+      },
+      javaFactory: `
+        return foam.mlang.MLang.TRUE;
+      `
     },
     {
       class: 'FObjectProperty',
