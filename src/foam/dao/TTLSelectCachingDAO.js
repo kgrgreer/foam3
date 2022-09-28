@@ -37,7 +37,7 @@ foam.CLASS({
      {
        class: 'Long',
        name: 'maxCacheSize',
-       value: 100
+       value: 20
      },
      {
        name: 'purgeCache',
@@ -66,17 +66,22 @@ foam.CLASS({
       var key  = [sink, skip, limit, order, predicate].toString();
 
       if ( this.cache[key] ) {
-        // console.log('************************ CACHED: ', key);
+        // console.log('************************ TTL CACHED: ', key);
         return Promise.resolve(this.cache[key]);
       }
 
       return new Promise(function (resolve, reject) {
-        self.delegate.select_(x, sink, skip, limit, order, predicate).then(function(s) {
+        self.delegate.select_(x, sink, skip, limit, order, predicate).then(s => {
           self.cache[key] = s;
-          // console.log('************************ CACHING: ', key);
+          // console.log('************************ TTL CACHING: ', key);
           // TODO: check if cache is > maxCacheSize and remove oldest entry if it is
           self.purgeCache();
           resolve(s);
+        },
+        e => {
+          // console.log('************************ TTL ERROR: ', e);
+          self.cache = {};
+          reject(e);
         });
       });
     },
@@ -98,9 +103,10 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( foam.dao.DAO.PURGE_CMD === obj ) {
         this.cache = {};
+        return this.SUPER(x, obj) || true;
       }
 
-      this.SUPER(x, obj);
+      return this.SUPER(x, obj);
     }
   ]
 });
