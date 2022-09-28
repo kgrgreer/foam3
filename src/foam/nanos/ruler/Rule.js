@@ -4,7 +4,7 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'Rule',
   extends: 'foam.nanos.ruler.Ruled',
@@ -152,7 +152,11 @@
       writePermissionRequired: true,
       documentation: 'Defines if the rule is async. Async rule always runs after DAO put/remove, the after flag on the rule will be ignored.'
     },
-    'predicate',
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'predicate'
+    },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.ruler.RuleAction',
