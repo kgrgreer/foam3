@@ -60,6 +60,8 @@ foam.CLASS({
       if ( foam.dao.AnonymousSink.isInstance(sink) )
         return this.SUPER(x, sink, skip, limit, order, predicate);
 
+      if ( predicate && predicate.partialEval ) predicate = predicate.partialEval();
+
       var self = this;
       var key  = [sink, skip, limit, order, predicate].toString();
 
@@ -71,7 +73,7 @@ foam.CLASS({
       return new Promise(function (resolve, reject) {
         self.delegate.select_(x, sink, skip, limit, order, predicate).then(function(s) {
           self.cache[key] = s;
-//          console.log('************************ CACHING: ', key);
+          // console.log('************************ CACHING: ', key);
           // TODO: check if cache is > maxCacheSize and remove oldest entry if it is
           self.purgeCache();
           resolve(s);
