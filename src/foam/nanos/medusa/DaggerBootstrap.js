@@ -21,15 +21,17 @@ foam.CLASS({
     {
       name: 'id',
       class: 'Long',
-      value: 1
+      value: 1,
+      visibility: 'RO'
     },
     {
-      name: 'bootstrapIndex',
+      name: 'bootstrapHashOffset',
       class: 'Int',
       value: 0
     },
     {
-      name: 'bootstrapEntries',
+      documentation: 'DefaultDaggerService only supports 2 links',
+      name: 'bootstrapHashEntries',
       class: 'Int',
       value: 2
     },
@@ -42,6 +44,13 @@ foam.CLASS({
       name: 'algorithm',
       class: 'String',
       value: 'SHA-256'
+    },
+    {
+      documentation:'Index after reconfiguration, to be used as initial global index for next startup',
+      name: 'bootstrapIndex',
+      class: 'Long',
+      value: 0,
+      visibility: 'RO'
     }
   ]
 });

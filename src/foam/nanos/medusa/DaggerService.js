@@ -14,7 +14,8 @@ foam.INTERFACE({
     {
       documentation: 'Request DaggerService to reset/reconfigure itself based on the supplied DaggerBootstrap',
       name: 'reconfigure',
-      args: 'Context x, foam.nanos.medusa.DaggerBootstrap bootstrap'
+      args: 'Context x, foam.nanos.medusa.DaggerBootstrap bootstrap',
+      type: 'foam.nanos.medusa.DaggerBootstrap'
     },
     {
       documentation: `Initial hash to prime the system.`,

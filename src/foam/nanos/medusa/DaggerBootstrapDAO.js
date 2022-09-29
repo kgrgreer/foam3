@@ -19,7 +19,10 @@ foam.CLASS({
       DaggerBootstrap nu = (DaggerBootstrap) getDelegate().put_(x, obj);
       if ( old == null ||
            nu.diff(old).size() > 0 ) {
-        ((DaggerService) x.get("daggerService")).reconfigure(x, nu);
+        DaggerBootstrap reconfigured = ((DaggerService) x.get("daggerService")).reconfigure(x, nu);
+        if ( reconfigured.diff(nu).size() > 0 ) {
+          nu = (DaggerBootstrap) getDelegate().put_(x, reconfigured);
+        }
       }
       return nu;
       `

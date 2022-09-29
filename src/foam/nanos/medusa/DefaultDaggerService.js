@@ -24,7 +24,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
@@ -87,14 +88,14 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'Starting index.',
-      name: 'bootstrapIndex',
+      documentation: 'Offset in bootstrap hashes to prime system',
+      name: 'bootstrapHashOffset',
       class: 'Int',
       value: 0
     },
     {
       documentation: 'Number of manually created entries to prime the system.',
-      name: 'bootstrapEntries',
+      name: 'bootstrapHashEntries',
       class: 'Int',
       value: 2
     },
@@ -126,7 +127,7 @@ foam.CLASS({
     {
       name: 'links',
       class: 'Array',
-      javaFactory: 'return new foam.nanos.medusa.DaggerLink[2];',
+      javaFactory: 'return new foam.nanos.medusa.DaggerLink[getBootstrapHashEntries()];',
       visibility: 'HIDDEN'
     },
     {
@@ -151,9 +152,7 @@ foam.CLASS({
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-      return new PrefixLogger(new Object[] {
-        this.getClass().getSimpleName()
-      }, (Logger) getX().get("logger"));
+      return Loggers.logger(getX(), this);
       `
     }
   ],
@@ -165,6 +164,15 @@ foam.CLASS({
       X x = getX();
       Logger logger = Loggers.logger(x, this);
       logger.info("start");
+
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      ClusterConfig config = support.getConfig(x, support.getConfigId());
+      if ( config == null ||
+           config.getType() == MedusaType.NODE ||
+           config.getZone() > 0L ) {
+        logger.debug("start", "exit");
+      }
+
       DAO dao = (DAO) x.get("daggerBootstrapDAO");
       ArrayList list = (ArrayList) ((ArraySink) dao.orderBy(new foam.mlang.order.Desc(DaggerBootstrap.ID)).limit(1).select(new ArraySink())).getArray();
       DaggerBootstrap bootstrap = null;
@@ -179,38 +187,42 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Update DAG with new root entries. Return new global index',
       name: 'reconfigure',
+      synchronized: true,
       args: 'X x, foam.nanos.medusa.DaggerBootstrap bootstrap',
+      type: 'foam.nanos.medusa.DaggerBootstrap',
       javaCode: `
-      Logger logger = Loggers.logger(x, this);
-      logger.info("reconfigure");
-
-      if ( bootstrap != null ) {
-        this.copyFrom(bootstrap);
-      }
+      Logger logger = Loggers.logger(x, this, "reconfigure");
 
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
            config.getZone() > 0L ) {
-        logger.debug("start", "exit");
-        return;
+        logger.debug("exit");
+        return bootstrap;
       }
 
+      logger.info("start", "index", getIndex(), "bootstrap", bootstrap);
+
+      if ( bootstrap != null ) {
+        this.copyFrom(bootstrap);
+        if ( bootstrap.getBootstrapIndex() > getIndex() ) {
+          setIndex(bootstrap.getBootstrapIndex());
+        } else if ( bootstrap.getBootstrapIndex() < getIndex() ) {
+          bootstrap = (DaggerBootstrap) bootstrap.fclone();
+          bootstrap.setBootstrapIndex(getIndex());
+        }
+      }
+
+      clearProperty("links");
       for ( int i = 0; i < getLinks().length; i++ ) {
         String hash = getBootstrapHash(x, i);
-
-        // legacy data - first two entries must use index 0
-        int index = i;
-        if ( hash.equals(BOOTSTRAP_HASH_DEFAULT) ) index = 0;
-
-        getLinks()[i] = new MedusaEntry.Builder(x).setIndex(index).setHash(hash).build();
+        getLinks()[i] = new MedusaEntry.Builder(x).setIndex(0L).setHash(hash).build();
       }
 
-      DAO dao = getDao();
-
-      for ( int i = 0; i < getBootstrapEntries(); i++ ) {
+      for ( int i = 0; i < getBootstrapHashEntries(); i++ ) {
         MedusaEntry entry = new MedusaEntry();
         entry = link(x, entry);
         try {
@@ -218,12 +230,15 @@ foam.CLASS({
         } catch ( java.security.NoSuchAlgorithmException e ) {
           throw new DaggerException(e.getMessage(), e);
         }
-        entry.setNSpecName("daggerService");
+        entry.setNSpecName("bootstrap");
         entry.setNode(support.getConfigId());
         entry.setPromoted(true);
-        entry = (MedusaEntry) dao.put_(x, entry);
+        entry = (MedusaEntry) getDao().put_(x, entry);
         updateLinks(x, entry);
+        logger.info("entry", i, entry.toSummary());
       }
+      logger.info("end", "index", getIndex(), "bootstrap", bootstrap);
+      return bootstrap;
      `
     },
     {
@@ -253,11 +268,18 @@ foam.CLASS({
           }
         }
 
-        index += getBootstrapIndex(); // add offset
+        index += getBootstrapHashOffset(); // add offset
         try {
           return hashes[index];
         } catch (ArrayIndexOutOfBoundsException e) {
           getLogger().warning("Keystore error", alias, "expected", index, "found", hashes.length);
+          Alarm alarm = new Alarm.Builder(x)
+            .setName("DaggerService Hash Exhaustion")
+            .setIsActive(true)
+            .setReason(AlarmReason.CONFIGURATION)
+            .setClusterable(false)
+            .build();
+          alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
         }
       } catch (java.security.GeneralSecurityException | java.io.IOException e) {
         getLogger().warning("Keystore error", alias, e.getMessage());
@@ -283,7 +305,7 @@ foam.CLASS({
       name: 'link',
       javaCode: `
       DaggerLinks links = getNextLinks(x);
-      ((OMLogger) x.get("OMLogger")).log("Medusa.index");
+      ((OMLogger) x.get("OMLogger")).log("medusa.dagger.index");
       entry.setIndex(links.getGlobalIndex());
       entry.setIndex1(links.getLink1().getIndex());
       entry.setHash1(links.getLink1().getHash());
@@ -314,6 +336,7 @@ foam.CLASS({
         String hash = byte2Hex(md.digest());
         entry.setHash(hash);
         entry.setAlgorithm(getAlgorithm());
+
         return entry;
       } finally {
         pm.log(x);
@@ -330,8 +353,7 @@ foam.CLASS({
           return;
         }
 
-        DAO dao = getDao();
-        MedusaEntry parent1 = (MedusaEntry) dao.find(EQ(MedusaEntry.INDEX, entry.getIndex1()));
+        MedusaEntry parent1 = (MedusaEntry) getDao().find(EQ(MedusaEntry.INDEX, entry.getIndex1()));
         if ( parent1 == null ) {
           if ( entry.getIndex1() <= getLinks().length &&
                entry.getIndex2() <= getLinks().length &&
@@ -343,7 +365,7 @@ foam.CLASS({
           getLogger().error("Hash verification failed", "verify", entry.getIndex(), "parent1 not found", entry.getIndex1(), "entry", entry.toSummary(), entry.getNode());
           throw new DaggerException("Hash verification failed, parent not found on: "+entry.toSummary()+" from: "+entry.getNode());
         }
-        MedusaEntry parent2 = (MedusaEntry) dao.find(EQ(MedusaEntry.INDEX, entry.getIndex2()));
+        MedusaEntry parent2 = (MedusaEntry) getDao().find(EQ(MedusaEntry.INDEX, entry.getIndex2()));
         if ( parent2 == null ) {
           if ( entry.getIndex1() <= getLinks().length &&
                entry.getIndex2() <= getLinks().length &&
@@ -367,7 +389,8 @@ foam.CLASS({
           }
           String calculatedHash = byte2Hex(md.digest());
           if ( ! calculatedHash.equals(entry.getHash()) ) {
-            getLogger().error("Hash verification failed", "verify", entry.getIndex(), "hash", "fail", entry.toSummary());
+            getLogger().error("Hash verification failed", "verify", entry.getIndex(), "hash", "fail", entry.toSummary(), "parent1", parent1.toSummary(), "parent2", parent2.toSummary());
+
             throw new DaggerException("Hash verification failed on: "+entry.toSummary());
           }
         } catch ( java.security.NoSuchAlgorithmException e ) {
