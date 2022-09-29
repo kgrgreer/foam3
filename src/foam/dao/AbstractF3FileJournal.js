@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
+    'foam.util.SafetyUtil',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.File',
@@ -244,7 +245,7 @@ try {
                 x,
                 fmt.builder(),
                 getMultiLineOutput() ? "\\n" : "",
-                foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
+                SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
               getLogger().error("Failed to write put", getFilename(), of.getId(), "id", id, t);
@@ -308,7 +309,7 @@ try {
 
           try {
             writeComment_(x, obj);
-            writeRemove_(x, fmt.builder(), foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
+            writeRemove_(x, fmt.builder(), SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
 
             if ( isLast ) getWriter().flush();
           } catch (Throwable t) {
@@ -552,10 +553,16 @@ try {
       if ( obj != null &&
            obj instanceof FileRollCmd ) {
         FileRollCmd cmd = (FileRollCmd) obj;
-        try {
-          cmd.setRolledFilename(roll(x));
-        } catch (Throwable t) {
-          cmd.setError(t.getMessage());
+        // DAOs have to explicitly pass cmd to Journals, so common
+        // for loops. Test if already handled.
+        if ( SafetyUtil.isEmpty(cmd.getRolledFilename()) &&
+             SafetyUtil.isEmpty(cmd.getError()) ) {
+          try {
+            cmd.setRolledFilename(roll(x));
+            ((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "FileRollCmd", cmd.getRolledFilename());
+          } catch (Throwable t) {
+            cmd.setError(t.getMessage());
+          }
         }
         return cmd;
       }
