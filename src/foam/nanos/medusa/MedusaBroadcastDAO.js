@@ -97,7 +97,7 @@ foam.CLASS({
       documentation: 'Using assembly line, write to all online mediators in zone 0 and same realm,region',
       name: 'cmd_',
       javaCode: `
-      Object cmd = getDelegate().cmd_(x, cmd);
+      Object cmd = getDelegate().cmd_(x, obj);
       if ( cmd != null ) {
         return submit(x, cmd, DOP.CMD);
       }
