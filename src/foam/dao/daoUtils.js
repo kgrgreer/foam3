@@ -132,15 +132,12 @@ foam.CLASS({
     {
       class: 'Proxy',
       of: 'foam.dao.Sink',
-      name: 'delegate',
+      name: 'delegate'
     },
     {
       name: 'innerSub',
       type: 'foam.core.Detachable',
-      postSet: function(_, s) {
-        if (s) this.onDetach(s);
-      },
-      swiftPostSet: 'if let s = newValue { onDetach(s) }',
+      swiftPostSet: 'if let s = newValue { onDetach(s) }'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -183,7 +180,13 @@ if oldValue != nil {
       },
       swiftCode: 'delegate.reset(self)',
     },
+
+    function detach() {
+      if ( this.innerSub ) this.innerSub.detach();
+      this.SUPER();
+    }
   ],
+
   listeners: [
     {
       name: 'update',

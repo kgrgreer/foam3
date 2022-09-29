@@ -530,6 +530,7 @@ foam.POM({
     { name: "crunch/lite/CapabilityRefinement",                                           flags: "js" },
     { name: "crunch/lite/MinMaxCapabilityRefinement",                                     flags: "js" },
     { name: "crunch/lite/RequirementsRuleAction",                                         flags: "js|java" },
+    { name: "crunch/lite/RequirementSpec",                                                flags: "js|java" },
     { name: "crunch/crunchtest/TestCapable",                                              flags: "js|java" },
     { name: "crunch/CapabilityAvailabilityDAO",                                           flags: "js|java" },
     { name: "crunch/example/ExampleData",                                                 flags: "js|java" },

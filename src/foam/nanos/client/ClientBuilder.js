@@ -150,7 +150,7 @@ foam.CLASS({
                           retryBoxMaxAttempts: 0
                         };
                         if ( cls == foam.dao.EasyDAO ) {
-                          defaults.cache              = true;
+                          defaults.cache              = false;
                           defaults.ttlSelectPurgeTime = 15000;    // for select()
                           defaults.ttlPurgeTime       = 15000;    // for find()
                           defaults.daoType            = 'CLIENT';

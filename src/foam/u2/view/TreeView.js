@@ -180,15 +180,16 @@ foam.CLASS({
           .addClass(self.myClass('label')).
           call(this.formatter, [self.data]).
         end().
-        start().
-          addClass(self.myClass('toggle-icon')).
-          show(this.hasChildren$).
-          style({
-            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
-          }).
-          on('click', this.toggleExpanded).
-          tag(this.Image, { glyph: 'next' }).
-        end();
+        add(this.hasChildren$.map(hasChildren => {
+          if ( ! hasChildren ) return self.E();
+          return self.E().
+            addClass(self.myClass('toggle-icon')).
+            style({
+              'transform': self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
+            }).
+            on('click', this.toggleExpanded).
+            tag(this.Image, { glyph: 'next' });
+        }));
 
       this.
         addClass(this.myClass()).
