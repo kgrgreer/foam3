@@ -92,7 +92,7 @@ TODO: handle node roll failure - or timeout
       if ( COMPACTION_CMD.equals(obj) ) {
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ) {
-          Loggers.logger(x, this).warning("Compaction not allowed during replay");
+          Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");
           throw new RuntimeException("Compaction not allowed during Replay");
         }
 
@@ -120,7 +120,7 @@ TODO: handle node roll failure - or timeout
       name: 'execute',
       args: 'X x',
       javaCode: `
-      Logger logger = Loggers.logger(x, this);
+      Logger logger = Loggers.logger(x, this, "execute");
       logger.info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
@@ -140,13 +140,14 @@ TODO: handle node roll failure - or timeout
           }
         }
 
+        // dagger
+        // run dagger before nodes - potentialy easier to roll back on failure.
+        logger.info("dagger");
+        long oldIndex = dagger(x);
+
         // nodes
         logger.info("nodes");
         rollNodes(x);
-
-        // dagger
-        logger.info("dagger");
-        long oldIndex = dagger(x);
 
         // unblock
         logger.info("unblock");
@@ -171,23 +172,31 @@ TODO: handle node roll failure - or timeout
       name: 'rollNodes',
       args: 'X x',
       javaCode: `
-      final Logger logger = Loggers.logger(x, this);
+      final Logger logger = Loggers.logger(x, this, "rollNodes");
       // logger.info("rollNodes");
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
-      final Set replies = new HashSet();
+      final Map failures = new HashMap();
+      final Map replies = new HashMap();
       List<ClusterConfig> nodes = support.getReplayNodes();
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
             DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
             try {
-              replies.add(client.cmd(new FileRollCmd()));
+              FileRollCmd cmd = new FileRollCmd();
+              cmd = (FileRollCmd) client.cmd(new FileRollCmd());
+              replies.put(cfg.getId(), cmd);
+              if ( ! foam.util.SafetyUtil.isEmpty(cmd.getError()) ) {
+                logger.error("rollNodes", "cmd", cfg.getId(), cmd.getError());
+                failures.put(cfg.getId(), cmd);
+              }
             } catch (RuntimeException e) {
-              logger.error("rollNodes", "cmd", e);
+              logger.error("rollNodes", "cmd", cfg.getId(), e.getMessage());
+              failures.put(cfg.getId(), null);
             }
           }
         });
@@ -210,8 +219,11 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      if ( replies.size() < nodes.size() ) {
-        // potential failure.
+      if ( replies.size() < nodes.size() ||
+           failures.size() > 0 ) {
+        // TODO: in a failed state, need to shutdown - all mediators
+        logger.error("compaction, failed. ", failures.size(), "of", nodes.size(), "failed");
+        throw new RuntimeException("Compaction failed");
       }
       logger.debug("rollNodes", "line.shutdown", "continue");
       `
@@ -222,6 +234,7 @@ TODO: handle node roll failure - or timeout
       args: 'X x',
       type: 'Long',
       javaCode: `
+      Logger logger = Loggers.logger(x, this, "dagger");
       DAO dao = (DAO) getX().get("daggerBootstrapDAO");
       ArrayList list = (ArrayList) ((ArraySink) dao.orderBy(new foam.mlang.order.Desc(DaggerBootstrap.ID)).limit(1).select(new ArraySink())).getArray();
       DaggerBootstrap bootstrap = null;
@@ -235,22 +248,77 @@ TODO: handle node roll failure - or timeout
         bootstrap = (DaggerBootstrap) bootstrap.fclone();
       }
 
+      DaggerService service = (DaggerService) x.get("daggerService");
+      long oldIndex = service.getGlobalIndex(x);
+
       // use next hashes.
-      bootstrap.setBootstrapIndex(
-        bootstrap.getBootstrapIndex() +
-        bootstrap.getBootstrapEntries());
+      bootstrap.setBootstrapHashOffset(
+        bootstrap.getBootstrapHashOffset() +
+        bootstrap.getBootstrapHashEntries());
 
       bootstrap.setId(bootstrap.getId() + 1);
       bootstrap = (DaggerBootstrap) dao.put(bootstrap);
 
-      DaggerService service = (DaggerService) x.get("daggerService");
-      long oldIndex = service.getGlobalIndex(x);
-      service.reconfigure(x, bootstrap);
       long newIndex = service.getGlobalIndex(x);
       if ( oldIndex == newIndex ||
-           ! ( newIndex == oldIndex + bootstrap.getBootstrapEntries()) ) {
-        Loggers.logger(x, this).error("dagger", "reconfiguration failed", "old", oldIndex, "new", newIndex);
+           ! ( newIndex == oldIndex + bootstrap.getBootstrapHashEntries()) ) {
+        logger.error("primary, reconfigurate, failed", "old", oldIndex, "new", newIndex);
+        throw new RuntimeException("Compaction failed");
       }
+
+      // update other mediators
+      final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      ClusterConfig[] mediators = support.getSfBroadcastMediators();
+
+      AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+      final Map failures = new HashMap();
+      final Map replies = new HashMap();
+      final DaggerBootstrap bs = bootstrap;
+
+      for ( ClusterConfig cfg : mediators ) {
+        if ( cfg.getId() == myConfig.getId() ) continue;
+        line.enqueue(new AbstractAssembly() {
+          public void executeJob() {
+            DAO client = support.getClientDAO(x, "daggerBootstrapDAO", myConfig, cfg);
+            try {
+// TODO: also need to update replaying.index
+              Object response = client.put(bs);
+              replies.put(cfg.getId(), response);
+            } catch (RuntimeException e) {
+              logger.error("secondary, reconfigure, failed", cfg.getId(), e.getMessage());
+              failures.put(cfg.getId(), e.getMessage());
+            }
+          }
+        });
+      }
+
+      logger.debug("line.shutdown, wait");
+      // NOTE: this will block forever if a mediator does not reply.
+      // line.shutdown();
+      // Perform manual polling for completion.
+      long waited = 0L;
+      long sleep = 1000L;
+      while ( waited < getMaxWait() ) {
+        try {
+          Thread.currentThread().sleep(sleep);
+          waited += sleep;
+        } catch (InterruptedException e) {
+          break;
+        }
+        if ( replies.size() >= mediators.length -1 ) {
+          break;
+        }
+      }
+      // REVIEW: getSfBroacastMediators returns self as well.
+      if ( replies.size() < (mediators.length -1) ||
+           failures.size() > 0 ) {
+        // TODO: in a failed state, need to shutdown - all mediators
+        logger.error("secondary, reconfigure, failed", failures.size(), "of", mediators.length -1, "failed");
+        throw new RuntimeException("Compaction failed");
+      }
+      logger.debug("line.shutdown, continue");
+
       return oldIndex;
       `
     },
@@ -259,31 +327,82 @@ TODO: handle node roll failure - or timeout
       name: 'compaction',
       args: 'X x',
       javaCode: `
-      Logger logger = Loggers.logger(x, this);
+      Logger logger = Loggers.logger(x, this, "compaction");
       DAO dao = (DAO) x.get("medusaEntryDAO");
       dao = dao.orderBy(MedusaEntry.ID);
-      Sink sink = new UniqueSink(x,
+      Sink sink = new CompactibleSink(x,
+                    new CompactionSink(x,
+                    new UniqueSink(x,
                     new NSpecSink(x,
-                      new NodeSink(x)));
-      logger.info("compaction", "start");
+                    new NodeSink(x)))));
+      logger.info("start");
       dao.select(sink);
-      logger.info("compaction", "end");
+      logger.info("end");
       `
     },
     {
       name: 'purge',
       args: 'X x, Long oldIndex',
       javaCode: `
-      Logger logger = Loggers.logger(x, this);
-      ContextAgent agent =
-        new PromotedPurgeAgent.Builder(x)
-          .setMinIndex(0L)
-          .setMaxIndex(oldIndex)
-          .setRetain(0L)
-          .build();
-      logger.info("purge", "start");
-      agent.execute(x);
-      logger.info("purge", "end");
+      Logger logger = Loggers.logger(x, this, "purge");
+      logger.info("oldIndex", oldIndex);
+      final MedusaEntryPurgeCmd cmd = new MedusaEntryPurgeCmd.Builder(x)
+        .setMinIndex(0L)
+        .setMaxIndex(oldIndex)
+        .build();
+
+      ((DAO) x.get("medusaMediatorDAO")).cmd(cmd);
+
+      // update other mediators
+      final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      ClusterConfig[] mediators = support.getSfBroadcastMediators();
+
+      AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+      final Map failures = new HashMap();
+      final Map replies = new HashMap();
+
+      for ( ClusterConfig cfg : mediators ) {
+        if ( cfg.getId() == myConfig.getId() ) continue;
+        line.enqueue(new AbstractAssembly() {
+          public void executeJob() {
+            DAO client = support.getClientDAO(x, "medusaMediatorDAO", myConfig, cfg);
+            try {
+              Object response = client.cmd(cmd);
+              replies.put(cfg.getId(), response);
+            } catch (RuntimeException e) {
+              logger.error("secondary, purge, failed", cfg.getId(), e.getMessage());
+              failures.put(cfg.getId(), e.getMessage());
+            }
+          }
+        });
+      }
+
+      logger.debug("line.shutdown, wait");
+      // NOTE: this will block forever if a mediator does not reply.
+      // line.shutdown();
+      // Perform manual polling for completion.
+      long waited = 0L;
+      long sleep = 1000L;
+      while ( waited < getMaxWait() ) {
+        try {
+          Thread.currentThread().sleep(sleep);
+          waited += sleep;
+        } catch (InterruptedException e) {
+          break;
+        }
+        if ( replies.size() >= mediators.length -1 ) {
+          break;
+        }
+      }
+      // REVIEW: getSfBroacastMediators returns self as well.
+      if ( replies.size() < (mediators.length -1) ||
+           failures.size() > 0 ) {
+        // TODO: in a failed state, need to shutdown - all mediators
+        logger.error("secondary, purge, failed", failures.size(), "of", mediators.length, "failed");
+        throw new RuntimeException("Compaction failed");
+      }
+      logger.debug("line.shutdown, continue");
       `
     }
   ],
@@ -349,19 +468,34 @@ TODO: handle node roll failure - or timeout
           name: 'put',
           javaCode: `
           X x = getX();
+          Logger logger = Loggers.logger(x, this, "put");
           MedusaEntry entry = (MedusaEntry) obj;
-          DAO dao = (DAO) x.get(entry.getNSpecName());
-          if ( dao == null ) {
-            Loggers.logger(x, this).error("NSpec not found", entry.getNSpecName());
-          } else {
-            FObject found = dao.find(entry.getObjectId());
-            if ( found == null ) {
-              if ( entry.getDop().equals(DOP.REMOVE) ) {
-                // ok
-              } else {
-                Loggers.logger(x, this).error("Object not found", entry.getNSpecName(), entry.getObjectId());
-              }
+          if ( entry.getObjectId() == null ) {
+             if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
+               logger.error("Object id null", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+             }
+             return;
+          }
+
+          Object nspec = x.get(entry.getNSpecName());
+           if ( nspec == null ) {
+            logger.warning("NSpec not found", entry.getNSpecName());
+            return;
+          }
+          if ( ! ( nspec instanceof DAO ) ) {
+            logger.warning("NSpec not DAO", entry.getNSpecName());
+            return;
+          }
+
+          FObject found = ((DAO) nspec).find(entry.getObjectId());
+          if ( found == null ) {
+            if ( entry.getDop().equals(DOP.REMOVE) ) {
+              // OK
+              logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
             } else {
+              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+            }
+          } else {
               MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
               String data = entrySupport.data(x, found, null, entry.getDop());
               MedusaEntry me = (MedusaEntry) entry.fclone();
@@ -369,11 +503,31 @@ TODO: handle node roll failure - or timeout
               MedusaEntry.DATA.clear(me);
               MedusaEntry.TRANSIENT_DATA.clear(me);
               MedusaEntry.OBJECT.clear(me);
+              MedusaEntry.HASH.clear(me);
               me.setData(data);
               DaggerService dagger = (DaggerService) x.get("daggerService");
               me = dagger.link(x, me);
               getDelegate().put(me, sub);
-            }
+          }
+          `
+        }
+      ]
+    },
+    {
+      name: 'CompactibleSink',
+      extends: 'foam.dao.ProxySink',
+
+      documentation: 'Skip entries which are not compactible',
+
+      methods: [
+        {
+          name: 'put',
+          javaCode: `
+          MedusaEntry entry = (MedusaEntry) obj;
+          if ( entry.getCompactible() ) {
+            getDelegate().put(obj, sub);
+          } else {
+            Loggers.logger(getX(), this).debug("Not compactible", entry.toSummary());
           }
           `
         }
@@ -381,16 +535,9 @@ TODO: handle node roll failure - or timeout
     },
     {
       name: 'NodeSink',
-      extends: 'foam.dao.ProxySink',
+      extends: 'foam.dao.AbstractSink',
 
       documentation: 'Sends MedusaEntry to nodes',
-
-      javaCode: `
-        public NodeSink(X x, DAO dao) {
-          setX(x);
-          setDao(dao);
-        }
-      `,
 
       properties: [
         {
