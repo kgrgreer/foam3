@@ -95,7 +95,7 @@ This is the heart of Medusa.`,
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-        return Loggers.logger(x, this);
+        return Loggers.logger(getX(), this);
       `
     }
   ],
