@@ -60,6 +60,7 @@ foam.CLASS({
             logger.info("replay complete");
             replaying.setReplaying(false);
             replaying.setEndTime(new java.util.Date());
+            ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
             logger.info("replayComplete", replaying.getReplayIndex(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
             ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 

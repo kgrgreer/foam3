@@ -119,6 +119,7 @@ foam.CLASS({
               if ( replaying.getStartTime() == null ) {
                 replaying.setStartTime(new java.util.Date());
                 replaying.updateIndex(x, dagger.getGlobalIndex(x));
+                ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
               }
               if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
                 dagger.setGlobalIndex(x, details.getMaxIndex());
