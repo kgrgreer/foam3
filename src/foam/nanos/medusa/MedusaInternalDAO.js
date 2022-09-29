@@ -22,6 +22,8 @@ Update: it appears there are multiple DAOs in the context.`,
     'static foam.mlang.MLang.GT',
     'static foam.mlang.MLang.LTE',
     'static foam.mlang.MLang.NOT',
+    'foam.mlang.sink.Count',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers'
   ],
@@ -70,11 +72,15 @@ Update: it appears there are multiple DAOs in the context.`,
           )
         );
 
-        PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
-        dao.select(new SkipTransactionsSink(x, purgeSink));
-        cmd.setPurged(purgeSink.getCount());
-        if ( purgeSink.getCount() > 0 ) {
-          Loggers.logger(x, this, "cmd").info("purged", purgeSink.getCount());
+        Count count = new Count();
+        CompactionSink compactionSink = new CompactionSink(x, new PurgeSink(x, new foam.dao.RemoveSink(x, dao)));
+        Sequence seq = new Sequence.Builder(x)
+          .setArgs(new Sink[] {count, compactionSink})
+          .build();
+        dao.select(seq);
+        cmd.setPurged((Long)count.getValue());
+        if ( ((Long)count.getValue()) > 0 ) {
+          Loggers.logger(x, this, "cmd, MedusaEntryPurgeCmd, purged").info(count.getValue());
         }
         return cmd;
       }
