@@ -93,7 +93,10 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
         class: 'foam.u2.tag.TextArea',
         rows: 4,
         cols: 144
-      }
+      },
+      javaPostSet: `
+      if ( val != null ) setCompactible(true);
+      `
     },
     {
       document: 'Stringified FObject of only storageTransient properties',
@@ -174,18 +177,19 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       visibility: 'RO'
     },
     {
-      documentation: 'Solely for information. Originating Mediator.',
-      name: 'mediator',
-      class: 'String',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
       documentation: 'Set when journal on the Node. Used to distinguish unique entries during consensus determination.',
       name: 'node',
       class: 'String',
       visibility: 'RO',
       includeInDigest: false, // REVIEW: false to deal with node change (at the moment) when sent to STANDBY Region, but believe this a security hole; without node in digest, one could send the same entry quorum times with a different node set. Also see comments in MedusaSetNodeDAO - Joel
+    },
+    {
+      documentation: 'Indicate if entry is eligible for Compaction.  Entries with only transient data are not eligible for compaction.',
+      name: 'compactible',
+      class: 'Boolean',
+      value: false,
+      visibility: 'RO',
+      storageTransient: true // See 'data' postSet
     },
     {
       name: 'created',
