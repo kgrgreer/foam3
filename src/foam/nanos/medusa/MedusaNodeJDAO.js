@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'MedusaNodeJDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Skip writing to underlying JDAO if only transientDate.`,
+  documentation: `Skip writing to underlying JDAO if only transient Data.`,
 
   javaImports: [
     'foam.dao.DAO',
