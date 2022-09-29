@@ -183,7 +183,12 @@ if oldValue != nil {
       },
       swiftCode: 'delegate.reset(self)',
     },
+
+    function detach() {
+      if ( this.innerSub ) this.innerSub.detach();
+    }
   ],
+
   listeners: [
     {
       name: 'update',
