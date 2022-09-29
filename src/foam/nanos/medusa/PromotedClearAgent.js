@@ -21,15 +21,19 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.Sink',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GT',
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
+    'static foam.mlang.MLang.MAX',
     'foam.mlang.sink.Count',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.mlang.sink.Max',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.Timer'
   ],
@@ -89,9 +93,6 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
-      Logger logger = new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -105,15 +106,21 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
-        ClearSink sink = new ClearSink(x, dao);
-        dao.select(sink);
-        if ( sink.getCount() > 0 ) {
-          logger.debug("cleared", sink.getCount());
-          setMinIndex(sink.getMaxIndex());
+        Max max = (Max) MAX(MedusaEntry.INDEX);
+        Count count = new Count();
+        ClearSink clearSink = new ClearSink(x, dao);
+        CompactionSink compactionSink = new CompactionSink(x, clearSink);
+        Sequence seq = new Sequence.Builder(x)
+          .setArgs(new Sink[] {count, max, compactionSink})
+          .build();
+        dao.select(seq);
+        if ( ((Long)count.getValue()) > 0 ) {
+          Loggers.logger(x, this).debug("cleared", count.getValue());
+          setMinIndex((Long)max.getValue());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);
-        logger.error(t);
+        Loggers.logger(x, this).error(t);
       } finally {
         pm.log(x);
       }

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'ClearSink',
   extends: 'foam.dao.AbstractSink',
 
-  documentation: `Clear 'data' from old MedusaEntryDAO entries and cleanup MedusaRegistry`,
+  documentation: `Clear 'data' from old MedusaEntryDAO entries and cleanup MedusaRegistry.  Delete entries which are not compactible.`,
 
   javaImports: [
     'foam.core.FObject',
@@ -38,14 +38,6 @@ foam.CLASS({
       of: 'foam.nanos.medusa.MedusaRegistry',
       javaFactory: 'return (MedusaRegistry) getX().get("medusaRegistry");',
       visibility: 'HIDDEN',
-    },
-    {
-      name: 'count',
-      class: 'Long'
-    },
-    {
-      name: 'maxIndex',
-      class: 'Long'
     }
   ],
 
@@ -55,13 +47,13 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) ((FObject)obj).fclone();
       getRegistry().notify(getX(), entry);
-      MedusaEntry.DATA.clear(entry);
-      MedusaEntry.TRANSIENT_DATA.clear(entry);
-      MedusaEntry.OBJECT.clear(entry);
-      getDao().put(entry);
-      setCount(getCount() + 1);
-      if ( entry.getIndex() > getMaxIndex() ) {
-        setMaxIndex(entry.getIndex());
+      if ( entry.getCompactible() ) {
+        MedusaEntry.DATA.clear(entry);
+        MedusaEntry.TRANSIENT_DATA.clear(entry);
+        MedusaEntry.OBJECT.clear(entry);
+        getDao().put(entry);
+      } else {
+        getDao().remove(entry);
       }
       `
     }

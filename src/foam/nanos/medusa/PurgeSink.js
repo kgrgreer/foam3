@@ -31,10 +31,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.MedusaRegistry',
       javaFactory: 'return (MedusaRegistry) getX().get("medusaRegistry");'
-    },
-    {
-      name: 'count',
-      class: 'Long'
     }
   ],
 
@@ -44,10 +40,8 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) ((FObject)obj).fclone();
       getRegistry().notify(getX(), entry);
-      MedusaEntry.DATA.clear(entry);
-      MedusaEntry.TRANSIENT_DATA.clear(entry);
+      foam.nanos.logger.Loggers.logger(getX(), this).debug("delete", entry.toSummary());
       getDelegate().put(entry, sub);
-      setCount(getCount() + 1);
       `
     }
   ]

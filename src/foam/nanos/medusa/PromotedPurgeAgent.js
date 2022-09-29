@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.Sink',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
@@ -28,6 +29,7 @@ foam.CLASS({
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
@@ -94,7 +96,6 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
-      Logger logger = Loggers.logger(x, this, "execute");
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -102,7 +103,6 @@ foam.CLASS({
       if ( maxIndex == 0 ) {
         maxIndex = replaying.getIndex() - getRetain();
       }
-      logger.debug("purging", "min", getMinIndex(), "max", maxIndex);
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
@@ -112,14 +112,18 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
+        Count count = new Count();
         PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
-        dao.select(purgeSink);
-        if ( purgeSink.getCount() > 0 ) {
-          logger.debug("purged", purgeSink.getCount());
+        Sequence seq = new Sequence.Builder(x)
+          .setArgs(new Sink[] {count, purgeSink})
+          .build();
+        dao.select(seq);
+        if ( count.getValue() > 0 ) {
+          Loggers.logger(x, this).debug("purged", count.getValue());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);
-        logger.error(t);
+        Loggers.logger(x, this).error(t);
       } finally {
         pm.log(x);
       }

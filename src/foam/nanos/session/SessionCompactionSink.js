@@ -5,29 +5,22 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.medusa',
-  name: 'SkipTransactionsSink',
+  package: 'foam.nanos.session',
+  name: 'SessionCompactionSink',
   extends: 'foam.dao.ProxySink',
 
-  documentation: 'Do not delegate MedusaEntries for Transactions',
+  documentation: 'Do not delegate MedusaEntries for Sessions',
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ProxySink'
+    'foam.nanos.medusa.MedusaEntry'
   ],
-
-  javaCode: `
-    public SkipTransactionsSink(X x, ProxySink delegate) {
-      super(x, delegate);
-    }
-  `,
 
   methods: [
     {
       name: 'put',
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
-      if ( ! "localTransactionDAO".equals(entry.getNSpecName()) ) {
+      if ( ! "localSessionDAO".equals(entry.getNSpecName()) ) {
         getDelegate().put(obj, sub);
       }
       `
