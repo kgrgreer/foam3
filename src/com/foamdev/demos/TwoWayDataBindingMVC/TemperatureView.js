@@ -4,14 +4,14 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// Demonstrates how to do two way data-binding in FOAM. 
+// Demonstrates how to do two way data-binding in FOAM.
 // See the same demo implemented with other JS libraries.
 // http://n12v.com/2-way-data-binding/?hn
 
 foam.CLASS({
   package: 'com.foamdev.demos.twoWayDataBindingMVC',
   name: 'TemperatureView',
-  extends: 'foam.u2.View',// it will imports 'data'
+  extends: 'foam.u2.View', // it will imports 'data'
 
   css: `
     .temperature-converter {
@@ -65,10 +65,10 @@ foam.CLASS({
     function render() {
       //TODO it show the UTF-8 code not the character
       this.start('p').addClass('temperature-converter').
-             start('label').addClass('celsius-wrap').add(this.data.C).add('°C').end().
-             start('span').addClass('arrows').add('⇄').end().
-             start('label').addClass('fahrenheit-wrap').add(this.data.F).add('°F').end().
-           end();
+        start('label').addClass('celsius-wrap').add(this.data.C).add('°C').end().
+        start('span').addClass('arrows').add('⇄').end().
+        start('label').addClass('fahrenheit-wrap').add(this.data.F).add('°F').end().
+      end();
     }
   ]
 });
