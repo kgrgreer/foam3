@@ -205,3 +205,18 @@ for ( var i = 0 ; i < a.length ; i++ ) {
 }
 """
 })
+p({
+"class":"foam.nanos.script.Script",
+"id":"Clear Creation Counts",
+"description":"Clear creation counts.",
+"language":0,
+"code":
+"""
+Object.keys(foam.USED).forEach(k => {
+  try {
+    var m = foam.maybeLookup(k);
+    if ( m && m.count_ ) m.count_ = 0;
+  } catch (x) {}
+});
+"""
+})
