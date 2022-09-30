@@ -220,3 +220,19 @@ Object.keys(foam.USED).forEach(k => {
 });
 """
 })
+p({
+"class":"foam.nanos.script.Script",
+"id":"Count DAO Listeners",
+"description":"Show number of listeners for each DAO.",
+"language":0,
+"code":
+"""
+x.nSpecDAO.select(ns => {
+  if ( ns.name.indexOf('DAO') == -1 ) return;
+  try {
+    var count = x[ns.name].cmd(foam.dao.DAO.COUNT_LISTENERS_CMD);
+    if ( count ) console.log(ns.name, count);
+  } catch(x) {}
+});
+"""
+})
