@@ -58,7 +58,7 @@ foam.CLASS({
       min: 0,
       max: 10,
       documentation: `
-        User passwords are hashed and the hash is kept for historical record up to a maximum of 10 previous entries per user. 
+        User passwords are hashed and the hash is kept for historical record up to a maximum of 10 previous entries per user.
         Setting priorPasswordsToCheckCount to a value greater than zero will enable a check on that many previous password entries
         when resetting the users passwords to prevent them from using the same password again.
         `
