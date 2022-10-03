@@ -32,14 +32,15 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.nanos.theme.customisation',
   name: 'ThemeCustomisationView',
   extends: 'foam.u2.View',
 
-  imports: ['subject', 'spThemeDAO', 'theme', 'ctrl'],
+  imports: [ 'subject', 'spThemeDAO', 'theme', 'ctrl' ],
 
-  exports: ['controllerMode', 'data'],
+  exports: [ 'controllerMode', 'data' ],
 
   requires: [
     'foam.u2.Tab',
@@ -51,7 +52,7 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.layout.SectionAxiom',
     'foam.layout.Section',
-    'foam.u2.borders.CardBorder',
+    'foam.u2.borders.CardBorder'
   ],
 
   css: `
@@ -74,9 +75,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'THEME_MSG', message: 'Theme' },
+    { name: 'THEME_MSG',   message: 'Theme' },
     { name: 'UPDATED_MSG', message: 'updated' },
-    { name: 'ERROR_MSG', message: 'Error' },
+    { name: 'ERROR_MSG',   message: 'Error' }
   ],
 
   properties: [
@@ -142,13 +143,14 @@ foam.CLASS({
       .end();
     }
   ],
+
   actions: [
     {
       name: 'save',
       code: async function(X) {
         // Call propview saves for this section and then
         var errors = [];
-        var self = this;
+        var self   = this;
         for ( a of this.propViews_[X.section] ) {
           if ( ! a.value.save ) return;
           try {

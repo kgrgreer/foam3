@@ -40,6 +40,12 @@ foam.INTERFACE({
       documentation: 'Command to request a DAO to clear its cache.  i.e. CachingDAO, FixedSizedDAO',
       type: 'String',
       value: 'PURGE_CMD'
+    },
+    {
+      name: 'COUNT_LISTENERS_CMD',
+      documentation: 'Command to request a DAO to provide number of listeners.',
+      type: 'String',
+      value: 'COUNT_LISTENERS_CMD'
     }
   ],
 

@@ -62,6 +62,10 @@ foam.LIB({
       // Increment number of objects created of this class.
       this.count_++;
 
+      // Can use the following code from console to determine number of instances of each type of object created
+      // Object.keys(foam.USED).forEach(k => { try { var m = foam.maybeLookup(k); console.log(m.id, m.count_); } catch (x) {} });
+
+
       // Properties have their values stored in instance_ instead
       // of on the object directly. This lets us defineProperty on
       // the object itself so that we can add extra behaviour
@@ -950,8 +954,8 @@ foam.CLASS({
       if ( o.__proto__ === Object.prototype || ! o.__proto__ ) {
         for ( var key in o ) {
           var name = key.endsWith('$') ?
-              key.substring(0, key.length - 1) :
-              key ;
+            key.substring(0, key.length - 1) :
+            key ;
 
           var a = this.cls_.getAxiomByName(name);
           if ( a ) {

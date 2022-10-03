@@ -28,6 +28,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
+      // console.log('************ QUERYCache', limit);
       if (
         // Only cache selects that have limit provided
         limit === undefined
@@ -43,11 +44,10 @@ foam.CLASS({
       return new Promise(function(resolve, reject) {
         //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
-        let requestEndIdx = requestStartIdx + limit;
+        let requestEndIdx   = requestStartIdx + limit;
 
         // Ensure we have cache for request
-        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( function() {
-
+        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(function() {
           // Return data from cache
           for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
             sink.put(self.cache[key][idx]);
@@ -81,19 +81,17 @@ foam.CLASS({
     function fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
       // Pre-check cache for elements
       let startIdx = -1;
-      let endIdx = -1;
+      let endIdx   = -1;
       let hasMissingData = false;
 
       if ( this.cache[key] ) {
         // Cycle through exising cached elements to verify all requested are present
         for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
           if ( ! this.cache[key][idx] ) {
-            if ( ! hasMissingData ) {
-              // Found start of missing data within requested block
-              hasMissingData = true;
-              startIdx = idx;
-              break;
-            }
+            // Found start of missing data within requested block
+            hasMissingData = true;
+            startIdx = idx;
+            break;
           }
         }
 
@@ -108,9 +106,9 @@ foam.CLASS({
         }
       } else {
         // No data present load entire block
-        hasMissingData = true;
-        startIdx = requestStartIdx;
-        endIdx = requestEndIdx;
+        hasMissingData  = true;
+        startIdx        = requestStartIdx;
+        endIdx          = requestEndIdx;
         this.cache[key] = [];
       }
 
@@ -129,4 +127,3 @@ foam.CLASS({
     }
   ]
 });
-

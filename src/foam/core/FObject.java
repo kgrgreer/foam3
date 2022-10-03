@@ -298,18 +298,20 @@ public interface FObject
 
   default FObject copyFrom(FObject obj) {
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    PropertyInfo p2 = null;
     for ( PropertyInfo p : props ) {
       try {
         if ( getClass() == obj.getClass() ) {
           if ( p.isSet(obj) ) p.set(this, p.get(obj));
         } else {
-          PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
+          p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
         }
       } catch (ClassCastException ignore) {
-        StdoutLogger.instance().warning("FObject.copyFrom", p.getName(), ignore.getMessage(), ignore);
+        StdoutLogger.instance().warning("FObject.copyFrom", p.getName(), p, p2, obj, ignore.getMessage(), ignore);
+        ignore.printStackTrace();
       }
     }
     return this;

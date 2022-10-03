@@ -225,7 +225,14 @@ foam.CLASS({
       hidden: true
     },
     { class: 'Boolean', name: 'shouldResize' },
-    { class: 'Boolean', name: 'fullScreenLoginImage' }
+    { class: 'Boolean', name: 'fullScreenLoginImage' },
+    {
+      class: 'String',
+      name: 'modelCls_',
+      documentation: `
+        If modelCls_ is provided, the model can be created directly from this instead of mode
+      `
+    }
   ],
 
   messages: [
@@ -236,7 +243,17 @@ foam.CLASS({
   methods: [
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
-      this.param.dao_ = !! this.param.dao_ ? this.param.dao_ : this.loginVariables.dao_;
+      this.param = Object.assign(this.loginVariables, this.param)
+
+      if ( this.modelCls_ ) {
+        try {
+          this.model = (foam.lookup(this.modelCls))?.create(this.param, this);
+          return;
+        } catch (err) {
+          console.warn('Error occurred when looking up modelCls', this.modelCls, err);
+        }
+      }      
+
       // Instantiating model based on mode_
       if ( this.mode_ === this.MODE1 ) {
         this.model = this.SignUp.create(this.param, this);
@@ -274,30 +291,7 @@ foam.CLASS({
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.MODEL).endContext()
-        .br()
-      // first footer
-      .br()
-      .start().addClass(this.myClass('center-footer'))
-        .start().addClass(this.myClass('signupLink'))
-          .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.FOOTER_LINK)
-            .on('click', () => {
-              this.model.footerLink(this.topBarShow_, this.param);
-            })
-          .end()
-        .end()
-      // second footer
-        .start()
-          .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.SUB_FOOTER_LINK)
-            .on('click', () => {
-              this.model.subfooterLink();
-            })
-          .end()
-        .end()
-      .end();
+        
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {

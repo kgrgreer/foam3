@@ -55,7 +55,7 @@ foam.CLASS({
       justify-content: center;
     }
 
-    @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+    @media (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^components-container {
         flex: unset;
       }

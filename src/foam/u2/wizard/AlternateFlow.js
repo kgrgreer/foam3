@@ -12,6 +12,10 @@ foam.CLASS({
     'wizardlets?'
   ],
 
+  requires: [
+    'foam.u2.wizard.WizardPosition'
+  ],
+
   properties: [
     // IDEA: maybe these two properties can come from a mixin
     {
@@ -50,6 +54,11 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle'
+    },
+    {
+      class: 'String',
+      name: 'wizardletId',
+      documentation: 'set this to jump to a specific wizardlet by id'
     }
   ],
 
@@ -77,6 +86,24 @@ foam.CLASS({
           w.data.selectedData = choices;
         }
       }
+    },
+    function handleNext(wizardController) {
+      if ( ! this.wizardletId ) {
+        wizardController.goNext();
+      }
+
+      if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
+        wizardController = wizardController.data;
+
+      const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
+      if ( wi < 0 ) {
+        throw new Error('wizardlet not found with id: ' + this.wizardletId);
+      }
+      const pos = this.WizardPosition.create({
+        wizardletIndex: wi,
+        sectionIndex: 0
+      })
+      wizardController.wizardPosition = pos;
     }
   ]
 })

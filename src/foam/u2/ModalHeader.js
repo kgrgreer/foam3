@@ -31,7 +31,6 @@ foam.CLASS({
       border-bottom: solid 1px #CBCFD4;
     }
     ^title{
-      font-family: /*%FONT1%*/ 'IBM Plex Sans';
       font-style: normal;
       font-weight: 600;
       font-size: 2.4rem;
