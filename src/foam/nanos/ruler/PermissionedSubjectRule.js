@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2021] nanopay Corporation
+ * [2022] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,7 +17,7 @@
 
  foam.CLASS({
   package: 'foam.nanos.ruler',
-  name: 'PermissionedUserRule',
+  name: 'PermissionedSubjectRule',
   extends: 'foam.nanos.ruler.Rule',
 
   documentation: `
@@ -25,13 +25,13 @@
   `,
 
   javaImports: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.Subject'
   ],
 
   methods: [
     {
       name: 'getUser',
-      javaCode: 'return (User) obj;'
+      javaCode: 'return ((Subject)x.get("subject")).getUser();'
     }
   ]
 });
