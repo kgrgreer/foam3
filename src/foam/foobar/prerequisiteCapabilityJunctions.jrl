@@ -1,0 +1,44 @@
+// === BUILD ===
+p({
+    sourceId: 'foam.foobar.tasks.Build',
+    targetId: 'foam.foobar.tasks.GenJS'
+})
+
+p({
+    sourceId: 'foam.foobar.tasks.Build',
+    targetId: 'foam.foobar.tasks.BuildJava'
+})
+
+p({
+    sourceId: 'foam.foobar.tasks.Build',
+    targetId: 'foam.foobar.tasks.DeployJournals'
+})
+
+p({
+    sourceId: 'foam.foobar.tasks.Build',
+    targetId: 'foam.foobar.tasks.CreateLogsFolder'
+})
+
+// === CLEAN BUILD ===
+p({
+    sourceId: 'foam.foobar.tasks.CleanBuild',
+    targetId: 'foam.foobar.tasks.Build',
+    priority: 200
+})
+p({
+    sourceId: 'foam.foobar.tasks.CleanBuild',
+    targetId: 'foam.foobar.tasks.DeleteBuildFolder',
+    priority: 100
+})
+
+// === BUILD JAVA ===
+p({
+    sourceId: 'foam.foobar.tasks.BuildJava',
+    targetId: 'foam.foobar.tasks.GenJava'
+})
+
+// === DEPLOY JOURNALS ===
+p({
+    sourceId: 'foam.foobar.tasks.DeployJournals',
+    targetId: 'foam.foobar.tasks.CleanJournals'
+})

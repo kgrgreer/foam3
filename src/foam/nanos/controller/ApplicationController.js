@@ -818,7 +818,7 @@ foam.CLASS({
     async function checkGeneralCapability() {
       var capDAO = this.__subContext__.capabilityDAO;
       var spid = await capDAO.find(this.user.spid);
-      if ( spid.generalCapability != '' ) {
+      if ( spid && spid.generalCapability != '' ) {
         const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
         var ucj = await ucjCheck();
 
