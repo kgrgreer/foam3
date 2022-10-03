@@ -242,6 +242,7 @@ foam.LIB({
       var scale = desired/gr;
       return [ scale * r, scale * g, scale * b ];
     },
+
     function randomColor( bounds /* { h/s/l: [min, max] } */ ) {
       let hue = bounds?.h ?? [0, 360];
       let sat = bounds?.s ?? [0, 100];

@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'Forgot Password Success View',
 
   imports: [
+    'loginView?',
     'notify',
     'stack'
   ],
@@ -99,7 +100,7 @@ foam.CLASS({
               .add('Back to Sign In')
               .on('click', function() {
                 window.location.href = '#';
-                self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+                self.stack.push({ ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, self);
               })
             .end()
           .end()

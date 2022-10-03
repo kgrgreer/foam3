@@ -65,6 +65,8 @@ foam.CLASS({
 
   /* SET ABOVE MODEL */
   ^ .topBar-logo-Back {
+    display: flex;
+    justify-content: center;
     height: 6vh;
     background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
   }
@@ -76,9 +78,7 @@ foam.CLASS({
     display: block;
   }
   ^ .top-bar-img {
-    padding-left: 1vh;
     height: 4vh;
-    padding-top: 1vh;
   }
 
   /* TITLE TXT ON MODEL */
@@ -151,8 +151,18 @@ foam.CLASS({
   ^image-one {
     width: 28vw;
   }
-  ^wideImage { width: 50vw; }
-  ^fullWidth { width: 100%; }
+  @media (max-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(1) {
+      grid-column: none;
+      display: none;
+    }
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(2) {
+      grid-column: 1 / 13 !important;
+    } 
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
+      padding: 0 4vw;
+    }
+  }
   `,
 
   properties: [
@@ -190,6 +200,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'leftView',
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+    },
+    {
       class: 'String',
       name: 'backLinkTxt_',
       factory: function() {
@@ -210,6 +225,7 @@ foam.CLASS({
       hidden: true
     },
     { class: 'Boolean', name: 'shouldResize' },
+    { class: 'Boolean', name: 'fullScreenLoginImage' },
     {
       class: 'String',
       name: 'modelCls_',
@@ -254,27 +270,31 @@ foam.CLASS({
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
-      let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+      let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
 
       // CREATE MODEL VIEW
       var right = this.E()
       // Header on-top of rendering model
-        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
-          .start('img')
-            .attr('src', logo)
-            .addClass('top-bar-img')
-          .end()
+        .start()
+          .add(
+            this.slot(function(shouldResize) {
+              return self.E().show(shouldResize || self.fullScreenLoginImage || ! self.imgPath )
+              .addClass('topBar-logo-Back')
+              .start('img')
+                .attr('src', logo)
+                .addClass('top-bar-img')
+              .end(); 
+          }))
         .end()
       // Title txt and Model
         .start().addClass('title-top').add(this.model.TITLE).end()
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .enableClass(self.myClass('fullWidth'), self.shouldResize$)
         .startContext({ data: this }).tag(this.MODEL).endContext()
         
 
       // CREATE SPLIT VIEW
-      if ( this.imgPath ) {
+      if ( this.imgPath || this.leftView ) {
         var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
@@ -301,19 +321,24 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and model or just centered model
-        .callIfElse( !! this.imgPath && !! split, () => {
-          split.leftPanel
-            .addClass('cover-img-block1')
-            .start('img')
-              .addClass(self.myClass('image-one'))
-              .attr('src', this.imgPath$)
-              .enableClass(self.myClass('wideImage'), self.shouldResize$)
-            .end()
-            // add a disclaimer under img
-            .start('p')
-              .addClass('disclaimer-login').addClass('disclaimer-login-img')
-              .add(this.model.DISCLAIMER)
-            .end();
+        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+          if ( ! this.leftView ) {
+            split.leftPanel
+              .addClass('cover-img-block1')
+              .start('img')
+                .addClass(self.myClass('image-one'))
+                .attr('src', this.imgPath$)
+              .end()
+              .callIf( !! this.model.disclaimer , () => {
+                // add a disclaimer under img
+                split.leftPanel.start('p')
+                  .addClass('disclaimer-login').addClass('disclaimer-login-img')
+                  .add(this.model.DISCLAIMER)
+                .end();
+              });
+          } else {
+            split.leftPanel.tag(this.leftView);
+          }
           this.add(split);
         }, function() {
           this.add(right);

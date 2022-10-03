@@ -199,6 +199,11 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
+      class: 'String',
+      name: 'loginView',
+      value: 'foam.u2.view.LoginView'
+    },
+    {
       class: 'Image',
       name: 'logo',
       documentation: 'The logo to display in the application.',
