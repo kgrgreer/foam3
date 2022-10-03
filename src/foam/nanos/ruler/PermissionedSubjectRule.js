@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'PermissionedSubjectRule',
   extends: 'foam.nanos.ruler.Rule',
