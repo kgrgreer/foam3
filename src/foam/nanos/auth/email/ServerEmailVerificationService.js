@@ -43,7 +43,7 @@
     {
       name: 'sendCode',
       type: 'Void',
-      args: 'X x, User user',
+      args: 'Context x, User user',
       javaCode: `
         Calendar calendar = Calendar.getInstance();
         calendar.add(java.util.Calendar.MINUTE, this.TIMEOUT);
