@@ -9,10 +9,6 @@ foam.CLASS({
   name: 'FallbackFlowWizardlet',
   extends: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
 
-  imports: [
-    'wizardController'
-  ],
-
   properties: [
     {
       class: 'Int',
@@ -57,10 +53,8 @@ foam.CLASS({
       name: 'fallbackWizardletNext',
       isFramed: true,
       code: async function () {
-        let x = this.__subContext__;
-
         // Only proceed if this wizardlet was landed on
-        if ( x.wizardController.currentWizardlet != this ) return;
+        if ( this.wizardController.currentWizardlet != this ) return;
 
         // Get the next flow and increment the fallback counter
         const flow = this.choices[this.fallbackPosition++];

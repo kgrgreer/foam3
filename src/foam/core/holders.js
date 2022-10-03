@@ -90,3 +90,9 @@ foam.CLASS({
     'value'
   ]
 });
+
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'VoidHolder'
+});

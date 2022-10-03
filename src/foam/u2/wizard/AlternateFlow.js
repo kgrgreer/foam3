@@ -12,6 +12,10 @@ foam.CLASS({
     'wizardlets?'
   ],
 
+  requires: [
+    'foam.u2.wizard.WizardPosition'
+  ],
+
   properties: [
     // IDEA: maybe these two properties can come from a mixin
     {
@@ -83,10 +87,14 @@ foam.CLASS({
         }
       }
     },
+    //
     function handleNext(wizardController) {
       if ( ! this.wizardletId ) {
         wizardController.goNext();
       }
+
+      if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
+        wizardController = wizardController.data;
 
       const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
       if ( wi < 0 ) {

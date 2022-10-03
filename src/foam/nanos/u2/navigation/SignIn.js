@@ -34,11 +34,20 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Welcome!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
-    { name: 'FOOTER_LINK', message: 'Create an account' },
-    { name: 'SUB_FOOTER_LINK', message: 'Forgot password?' },
     { name: 'ERROR_MSG', message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
+  ],
+  
+  sections: [
+    {
+      name: '_defaultSection',
+      title: ''
+    },
+    {
+      name: 'footerSection',
+      title: ''
+    }
   ],
 
   properties: [
@@ -73,8 +82,8 @@ foam.CLASS({
         focused: true
       },
       visibility: function(disableIdentifier_, usernameRequired) {
-        return disableIdentifier_ || usernameRequired ?
-          foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
+               disableIdentifier_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
       validationTextVisible: false
     },
@@ -104,24 +113,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.RetrievePassword'
-          }
-        }));
-      }
-    },
-    {
       name: 'nextStep',
       code: async function(X) {
         if ( this.subject.realUser.twoFactorEnabled ) {
@@ -132,16 +123,28 @@ foam.CLASS({
           }));
         } else {
           if ( ! this.subject.realUser.emailVerified ) {
-            await this.auth.logout();
-            this.stack.push(this.StackBlock.create({
-              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
-            }));
+            this.verifyEmail();
           } else {
             this.loginSuccess = !! this.subject;
             // reload the client on loginsuccess in case login not called from controller
             if ( this.loginSuccess ) await this.ctrl.reloadClient();
           }
         }
+      }
+    },
+    {
+      name: 'verifyEmail',
+      code: async function() {
+        var emailVerificationData = foam.nanos.auth.email.EmailVerificationCode.create({
+          email: this.subject.realUser.email
+        }, this.__subContext__);
+        await this.auth.logout();
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.email.VerificationCodeView',
+            data: emailVerificationData
+          }
+        }));
       }
     }
   ],
@@ -205,6 +208,30 @@ foam.CLASS({
             type: this.LogLevel.ERROR
           }));
         }
+      }
+    },
+    {
+      name: 'footer',
+      label: 'Create an account',
+      section: 'footerSection',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        window.history.replaceState(null, null, window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      label: 'Forgot password?',
+      section: 'footerSection',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.stack.push(X.data.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }));
       }
     }
   ]

@@ -49,9 +49,15 @@ foam.CLASS({
       name: 'email',
       section: 'emailPasswordSection',
       required: true,
-      createVisibility: function(usernameRequired) {
-       return usernameRequired ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      createVisibility: function(usernameRequired, readOnly) {
+       return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
+              readOnly ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'readOnly',
+      hidden: true
     },
     {
       class: 'String',

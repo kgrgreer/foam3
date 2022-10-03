@@ -22,12 +22,16 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.u2.wizard.AlternateFlow',
       name: 'choices'
-    },
-    {
-      name: 'dynamicActions',
-      expression: function (choices) {
-        return choices.map(alternateFlow =>
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      if ( this.choices ) {
+        var choices = this.choices.map(alternateFlow => 
           this.AlternateFlowAction.create({ alternateFlow }));
+        this.dynamicActions = this.dynamicActions.concat(choices);
       }
     }
   ]
