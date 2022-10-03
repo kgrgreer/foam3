@@ -182,3 +182,57 @@ p({
   ps.println("Done!");
   """
 })
+p({
+"class":"foam.nanos.script.Script",
+"id":"Show Creation Counts",
+"description":"Show how many objects have been created of each class.",
+"language":0,
+"code":
+"""
+var a = [];
+Object.keys(foam.USED).forEach(k => {
+  try {
+    var m = foam.maybeLookup(k);
+    if ( m && m.count_ ) a.push(m);
+  } catch (x) {}
+});
+
+a.sort(function (a, b) { return a.count_ - b.count_ });
+
+for ( var i = 0 ; i < a.length ; i++ ) {
+  var m = a[i];
+  console.log(m.id, m.count_);
+}
+"""
+})
+p({
+"class":"foam.nanos.script.Script",
+"id":"Clear Creation Counts",
+"description":"Clear creation counts.",
+"language":0,
+"code":
+"""
+Object.keys(foam.USED).forEach(k => {
+  try {
+    var m = foam.maybeLookup(k);
+    if ( m && m.count_ ) m.count_ = 0;
+  } catch (x) {}
+});
+"""
+})
+p({
+"class":"foam.nanos.script.Script",
+"id":"Count DAO Listeners",
+"description":"Show number of listeners for each DAO.",
+"language":0,
+"code":
+"""
+x.nSpecDAO.select(ns => {
+  if ( ns.name.indexOf('DAO') == -1 ) return;
+  try {
+    var count = x[ns.name].cmd(foam.dao.DAO.COUNT_LISTENERS_CMD);
+    if ( count ) console.log(ns.name, count);
+  } catch(x) {}
+});
+"""
+})

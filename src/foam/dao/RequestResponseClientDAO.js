@@ -94,6 +94,8 @@ Suitable for usage against backends that don't support listen(), such as plain H
     },
 
     function listen_(x, sink, predicate) {
+      // Avoid the proxy implementation inherited from BaseClientDAO
+      // and instead use the default implementation from AbstractDAO.
       return this.__context__.lookup('foam.dao.AbstractDAO').
         prototype.listen_.call(this, x, sink, predicate);
     },
@@ -106,10 +108,15 @@ Suitable for usage against backends that don't support listen(), such as plain H
           this.on.reset.pub();
           return true;
         }
-        if ( foam.dao.DAO.PURGE_CMD !== obj ) {
-          return this.SUPER(x, obj);
+//        ctrl.__subContext__.nSpecDAO.select(ns => { if ( ns.name.indexOf('DAO') == -1 ) return; try { var count = ctrl.__subContext__[ns.name].cmd(foam.dao.DAO.COUNT_LISTENERS_CMD); if ( count ) console.log(ns.name, count); } catch(x) {}});
+        if ( foam.dao.DAO.COUNT_LISTENERS_CMD === obj ) {
+          // pub() returns the number of listeners
+          return this.on.pub('ping');
         }
-        return obj;
+        if ( foam.dao.DAO.PURGE_CMD === obj ) {
+          return obj;
+        }
+        return this.SUPER(x, obj);
       }
     }
   ]
