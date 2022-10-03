@@ -105,7 +105,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'pureLoginFunction', // autoEmailVerified
+      name: 'pureLoginFunction',
+      documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
     }
   ],

@@ -164,7 +164,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'pureLoginFunction', // autoEmailVerified
+      name: 'pureLoginFunction',
+      documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
     }
   ],
@@ -207,10 +208,10 @@ foam.CLASS({
     {
       name: 'defaultUserLanguage',
       code: function() {
-        let l = foam.locale.split("-");
+        let l = foam.locale.split('-');
         let code = l[0];
         let variant = l[1];
-        let language = foam.nanos.auth.Language.create({code: code});
+        let language = foam.nanos.auth.Language.create({ code: code });
         if ( variant ) language.variant = variant;
         return language;
       }
@@ -234,7 +235,6 @@ foam.CLASS({
           signUpToken: this.token_,
           language: this.defaultUserLanguage()
         });
-        if ( this.pureLoginFunction ) createdUser.emailVerified = true;
         this.dao_
           .put(createdUser)
           .then(async user => {
