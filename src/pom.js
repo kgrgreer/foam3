@@ -927,7 +927,6 @@ foam.POM({
     { name: "foam/comics/v2/userfeedback/UserFeedbackStatus",         flags: "js|java" },
     { name: "foam/comics/v2/userfeedback/UserFeedback",               flags: "js|java" },
     { name: "foam/comics/v2/userfeedback/UserFeedbackException",      flags: "js|java" },
-    { name: "foam/layout/Position",                                   flags: "js" },
     { name: "foam/layout/Section",                                    flags: "js" },
     { name: "foam/layout/SectionAxiom",                               flags: "js" },
     { name: "foam/u2/detail/AbstractSectionedDetailView",             flags: "web" },
