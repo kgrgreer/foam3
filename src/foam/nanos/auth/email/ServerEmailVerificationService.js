@@ -10,6 +10,7 @@
   implements: [ 'foam.nanos.auth.email.EmailVerificationService' ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
@@ -32,11 +33,6 @@
   methods: [
     {
       name: 'verifyByCode',
-      type: 'Void',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'email', type: 'String' }
-      ],
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = (User) userDAO.find(EQ(User.EMAIL, email));
@@ -47,10 +43,7 @@
     {
       name: 'sendCode',
       type: 'Void',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'user', type: 'foam.nanos.auth.User' }
-      ],
+      args: 'X x, User user',
       javaCode: `
         Calendar calendar = Calendar.getInstance();
         calendar.add(java.util.Calendar.MINUTE, this.TIMEOUT);
@@ -78,12 +71,6 @@
     },
     {
       name: 'verifyCode',
-      type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'email', type: 'String' },
-        { name: 'verificationCode', type: 'String' }
-      ],
       javaCode: `
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         Calendar c = Calendar.getInstance();

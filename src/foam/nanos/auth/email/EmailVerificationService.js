@@ -12,25 +12,23 @@
   documentation: `
     Email verification service to verify user email by code.
   `,
+
+  requires: [
+    'foam.core.X'
+  ],
+
   methods: [
     {
       name: 'verifyByCode',
       type: 'Void',
       async: true,
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'email', type: 'String' }
-      ]
+      args: 'X x, String email'
     },
     {
       name: 'verifyCode',
       type: 'Boolean',
       async: true,
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'email', type: 'String' },
-        { name: 'verificationCode', type: 'String' }
-      ]
+      args: 'X x, String email, String verificationCode'
     }
   ]
 });
