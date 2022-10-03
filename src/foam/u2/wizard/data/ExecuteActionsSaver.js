@@ -16,8 +16,7 @@
   properties: [
     {
       class: 'StringArray',
-      name: 'actions',
-      factory: () => []
+      name: 'actions'
     }
   ],
 
