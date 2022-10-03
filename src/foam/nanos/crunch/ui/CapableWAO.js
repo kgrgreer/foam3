@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'capable',
+    'capabilityDAO',
     'crunchService'
   ],
 
@@ -19,6 +20,15 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.ui.CapabilityWizardlet'
+  ],
+
+  properties: [
+    {
+      name: 'capability',
+      factory: function() {
+        return this.wizardlet?.capability;
+      }
+    }
   ],
 
   methods: [
@@ -51,9 +61,11 @@ foam.CLASS({
     },
     async function load(wizardlet) {
       if ( wizardlet.loading ) return;
+      if ( ! this.capability )
+        this.capability = await this.capabilityDAO.find(wizardlet.id);
 
       var targetPayload = await this.capable.getCapablePayloadDAO().find(
-        wizardlet.capability.id ) || this.targetPayload;
+        this.capability.id ) || this.targetPayload;
 
       // TODO: investigate nullWAO decorator not working on beforeWizardlet
       if ( wizardlet.data && ! targetPayload ){
@@ -82,7 +94,7 @@ foam.CLASS({
 
       // Set transient 'capability' property if it exists
       var prop = wizardlet.of.getAxiomByName('capability');
-      if ( prop ) prop.set(loadedData, wizardlet.capability);
+      if ( prop ) prop.set(loadedData, this.capability);
 
       // Finally, apply new data to wizardlet
       if ( wizardlet.data ) {
@@ -97,7 +109,7 @@ foam.CLASS({
     },
     function makePayload(wizardlet) {
       return this.CapabilityJunctionPayload.create({
-        capability: wizardlet.capability,
+        capability: this.capability,
         data: wizardlet.data
       });
     }
