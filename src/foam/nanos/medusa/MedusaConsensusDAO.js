@@ -42,6 +42,7 @@ This is the heart of Medusa.`,
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.concurrent.ConcurrentHashMap',
@@ -98,7 +99,18 @@ This is the heart of Medusa.`,
           this.getClass().getSimpleName()
         }, (Logger) getX().get("logger"));
       `
-    }
+    },
+    {
+      name: 'omLogger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.om.OMLogger',
+      visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
+      javaFactory: `
+        return (OMLogger) getX().get("OMLogger");
+      `
+    },
   ],
 
   methods: [
@@ -145,6 +157,7 @@ This is the heart of Medusa.`,
           }
 
           PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.put");
 
           // NOTE: all this business with the nested Maps to avoid
           // a mulitipart id (index,hash) on MedusaEntry, as presently
@@ -167,6 +180,9 @@ This is the heart of Medusa.`,
             existing.setConsensusNodes(nodes.keySet().toArray(new String[0]));
           }
           existing = (MedusaEntry) getDelegate().put_(x, existing);
+
+          if ( nodes.size() >= support.getNodeQuorum() ) getOmLogger().log("MedusaConsensusDAO", "put", "promote reach");
+
           if ( nodes.size() >= support.getNodeQuorum() &&
                existing.getIndex() == replaying.getIndex() + 1 ) {
             existing = promote(x, existing);
@@ -209,6 +225,7 @@ This is the heart of Medusa.`,
 
       try {
         synchronized ( entry.getId().toString().intern() ) {
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
           entry = (MedusaEntry) getDelegate().find_(x, entry.getId());
           if ( entry.getPromoted() ) {
             return entry;

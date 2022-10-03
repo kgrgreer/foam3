@@ -14,6 +14,12 @@ foam.ENUM({
       documentation: `
         The user has proceeded from this particular wizardlet
       `
+    },
+    {
+      name: 'WIZARDLET_LOAD',
+      documentation: `
+        A wizardlet's load() method was called
+      `
     }
   ]
 });

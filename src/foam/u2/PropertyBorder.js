@@ -127,9 +127,15 @@
 
       // TODO: Add simplified "required: true" UI
       // TODO: Required checks on props are ignored if validateObj returns undefined. Bug? - Sarthak
-      var errorSlot = prop.validateObj && prop.validationTextVisible ?
-        data.slot(prop.validateObj) :
+      /* Future Version:
+      var errorSlot = prop.validators && prop.validationTextVisible ?
+        foam.core.Validation.orValidators(data, prop.validators) :
         this.ConstantSlot.create({ value: null });
+        */
+
+        var errorSlot = prop.validateObj && prop.validationTextVisible ?
+          data.slot(prop.validateObj) :
+          this.ConstantSlot.create({ value: null });
 
       var modeSlot = this.prop.createVisibilityFor(
         this.__context__.data$,

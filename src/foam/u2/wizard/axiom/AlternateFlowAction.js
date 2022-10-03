@@ -32,19 +32,13 @@ foam.CLASS({
       value: function (slot, action) {
         const wizardController = slot.data$.get();
         action.alternateFlow.execute(wizardController.data.__subContext__);
-        wizardController.goNext();
+        action.alternateFlow.handleNext(wizardController);
       }
     },
     {
       name: 'buttonStyle',
       expression: function (alternateFlow) {
         return alternateFlow.buttonStyle;
-      }
-    },
-    {
-      name: 'isEnabled',
-      value: function (data$canGoNext, isLoading_) {
-        return data$canGoNext && ! isLoading_;
       }
     }
   ]

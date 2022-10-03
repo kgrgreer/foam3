@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.om.OMLogger',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.Map'
   ],
@@ -188,6 +189,7 @@ foam.CLASS({
       if ( index > getIndex() ) {
         setIndex(index);
       }
+      ((OMLogger) x.get("OMLogger")).log("medusa.replay.index");
       `
     }
   ]

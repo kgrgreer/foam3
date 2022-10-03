@@ -71,7 +71,8 @@ foam.CLASS({
             wizardlet.status === this.CapabilityJunctionStatus.GRANTED ||
             wizardlet.status === this.CapabilityJunctionStatus.PENDING;
 
-          return [wizardlet.capability.id, self.translationService.getTranslation(foam.locale, `${wizardlet.capability.id}.name`,wizardlet.title), isFinal]
+          var capId = wizardlet.capability?.id || wizardlet.id;
+          return [capId, self.translationService.getTranslation(foam.locale, `${capId}.name`,wizardlet.title), isFinal]
         })
       }
     },

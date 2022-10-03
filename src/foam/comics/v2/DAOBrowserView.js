@@ -302,6 +302,9 @@ foam.CLASS({
       this.onDetach(this.cannedPredicate$.sub(() => {
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
+      if ( this.config?.dao ) {
+        this.data$ = this.config.dao$;
+      }
     },
     function render() {
       [ this.EXPORT, this.IMPORT, this.REFRESH_TABLE ].forEach(action => {
@@ -309,7 +312,7 @@ foam.CLASS({
           this.config.DAOActions.push(action);
       });
 
-      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.config.dao });
+      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.data });
       var self = this;
       var filterView, cannedView, summaryView;
       var simpleSearch;
