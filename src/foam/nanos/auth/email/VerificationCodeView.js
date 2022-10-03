@@ -12,7 +12,6 @@
   documentation: 'view to enter email verification code',
 
   imports: [
-    'ctrl',
     'stack'
   ],
 
