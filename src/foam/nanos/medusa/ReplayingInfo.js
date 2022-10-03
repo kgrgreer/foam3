@@ -189,7 +189,7 @@ foam.CLASS({
       if ( index > getIndex() ) {
         setIndex(index);
       }
-      ((OMLogger) x.get("OMLogger")).log("medusa.ReplayingInfo.index.increment");
+      ((OMLogger) x.get("OMLogger")).log("medusa.replay.index");
       `
     }
   ]
