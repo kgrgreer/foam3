@@ -20,9 +20,10 @@ foam.CLASS({
     'auth',
     'ctrl',
     'stack',
-    'translationService',
+    'subject',
     'theme',
-    'subject'
+    'translationService',
+    'window'
   ],
 
   requires: [
@@ -35,7 +36,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
-    { name: 'FOOTER_LINK', message: 'Sign in' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
     { name: 'EMAIL_ERR', message: 'Valid email required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
@@ -47,6 +47,18 @@ foam.CLASS({
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
   ],
+  
+  sections: [
+    {
+      name: '_defaultSection',
+      title: ''
+    },
+    {
+      name: 'footerSection',
+      title: ''
+    }
+  ],
+
 
   properties: [
     {
@@ -166,31 +178,18 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        return;
-      }
-    },
-    {
       name: 'nextStep',
-      code: async function(x) {
-        await this.finalRedirectionCall(x);
+      code: async function() {
+        await this.finalRedirectionCall();
       }
     },
     {
       name: 'finalRedirectionCall',
-      code: async function(x) {
+      code: async function() {
         if ( this.subject.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
           // thus thier user.emailVerified should be true and they can simply login from here.
-          window.history.replaceState(null, null, window.location.origin);
+          this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
           this.stack.push(this.StackBlock.create({
@@ -297,6 +296,22 @@ foam.CLASS({
             this.isLoading_ = false;
           });
       }
+    },
+    {
+      name: 'footer',
+      section: 'footerSection',
+      label: 'Sign in',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.window.history.replaceState(null, null, X.window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      section: 'footerSection',
+      isAvailable: () => false,
+      code: () => {}
     }
   ]
 });
