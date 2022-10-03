@@ -20,9 +20,10 @@ foam.CLASS({
     'auth',
     'ctrl',
     'stack',
-    'translationService',
+    'subject',
     'theme',
-    'subject'
+    'translationService',
+    'window'
   ],
 
   requires: [
@@ -178,17 +179,17 @@ foam.CLASS({
   methods: [
     {
       name: 'nextStep',
-      code: async function(x) {
-        await this.finalRedirectionCall(x);
+      code: async function() {
+        await this.finalRedirectionCall();
       }
     },
     {
       name: 'finalRedirectionCall',
-      code: async function(x) {
+      code: async function() {
         if ( this.subject.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
           // thus thier user.emailVerified should be true and they can simply login from here.
-          window.history.replaceState(null, null, window.location.origin);
+          this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
           this.stack.push(this.StackBlock.create({
@@ -302,7 +303,7 @@ foam.CLASS({
       label: 'Sign in',
       buttonStyle: 'LINK',
       code: function(X) {
-        window.history.replaceState(null, null, window.location.origin);
+        X.window.history.replaceState(null, null, X.window.location.origin);
         X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
