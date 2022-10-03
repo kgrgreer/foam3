@@ -26,5 +26,5 @@ p({
 p({
   class: "foam.nanos.auth.Permission",
   id: "userCapabilityJunctionApprovable.update.*",
-  description: ""
+  description: "Permission to update objects in userCapabilityJunctionApprovableDAO. Stores approvables of ucjs."
 })

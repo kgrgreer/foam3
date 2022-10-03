@@ -472,6 +472,7 @@ foam.POM({
     { name: "ruler/Ruled",                                                                flags: "js|java" },
     { name: "ruler/Rule",                                                                 flags: "js|java" },
     { name: "ruler/PermissionedUserRule",                                                 flags: "js|java" },
+    { name: "ruler/PermissionedSubjectRule",                                              flags: "js|java" },
     { name: "ruler/PermissionedUCJRule",                                                  flags: "js|java" },
     { name: "ruler/RuleAction",                                                           flags: "js|java" },
     { name: "ruler/RuleActionMergeDecorator",                                             flags: "js|java" },
