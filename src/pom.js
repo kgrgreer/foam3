@@ -731,6 +731,7 @@ foam.POM({
     { name: "foam/graphics/CView",                                    flags: "web" },
     { name: "foam/graphics/TreeGraph",                                flags: "web" },
     { name: "foam/graphics/TreeNode",                                 flags: "web" },
+    { name: "foam/graphics/TreeNodeConfig",                           flags: "web" },
     { name: "foam/graphics/ScrollCView",                              flags: "web" },
     { name: "foam/physics/PhysicalCircle",                            flags: "web" },
     { name: "foam/u2/view/SimpleSearch",                              flags: "web" },
