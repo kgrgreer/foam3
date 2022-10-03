@@ -8,27 +8,24 @@
   package: 'foam.nanos.auth.email',
   name: 'EmailVerificationService',
   skeleton: true,
+  client: true,
 
   documentation: `
     Email verification service to verify user email by code.
   `,
-
-  requires: [
-    'foam.core.X'
-  ],
 
   methods: [
     {
       name: 'verifyByCode',
       type: 'Void',
       async: true,
-      args: 'X x, String email'
+      args: 'Context x, String email'
     },
     {
       name: 'verifyCode',
       type: 'Boolean',
       async: true,
-      args: 'X x, String email, String verificationCode'
+      args: 'Context x, String email, String verificationCode'
     }
   ]
 });

@@ -648,7 +648,6 @@ foam.POM({
     { name: "ndiff/NDiffRuntimeDAO",                                                      flags: "js|java" },
     { name: 'auth/email/EmailVerificationCode',                                           flags: 'js|java' },
     { name: 'auth/email/VerificationCodeView',                                            flags: 'js' },
-    { name: 'auth/email/ClientEmailVerificationService',                                  flags: 'js' },
     { name: 'auth/email/EmailVerificationService',                                        flags: 'js|java' },
     { name: 'auth/email/ServerEmailVerificationService',                                  flags: 'js|java' },
     { name: 'auth/email/VerifyEmail',                                                     flags: 'js|java' }
