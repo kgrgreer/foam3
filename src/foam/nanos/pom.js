@@ -160,7 +160,7 @@ foam.POM({
     { name: "auth/token/TokenInvalidException",                                           flags: "js|java" },
     { name: "auth/ChangePasswordView",                                                    flags: "js" },
     { name: "auth/ResetPassword",                                                         flags: "js" },
-    { name: "auth/RetrievePassword",                                                      flags: "js" },
+    { name: "auth/RetrievePassword",                                                      flags: "js|java" },
     { name: "auth/UpdatePassword",                                                        flags: "js" },
     { name: "auth/CreatedByAware",                                                        flags: "js|java" },
     { name: "auth/CreatedByAwareDAO",                                                     flags: "js|java" },
