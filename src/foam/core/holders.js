@@ -90,3 +90,13 @@ foam.CLASS({
     'value'
   ]
 });
+
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'VoidHolder',
+  documentation: `
+    Holder model to be used when there is no value required.
+    For ex, use when a capability needs to display a view but doesn't require data
+  `
+});
