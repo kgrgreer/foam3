@@ -85,7 +85,7 @@ public class HTTPDigestSink extends AbstractSink {
           String emailAddress = ewh.getEmail();
           String name = "EmailWebhook";
           Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
-          if ( alarm == null || ! alarm.getIsActive() ) {
+          if ( alarm == null ) {
             // alarm does not exist, create one
             alarm = new Alarm.Builder(getX())
               .setName(name)
