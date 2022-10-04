@@ -323,7 +323,7 @@ foam.CLASS({
           value += `Your ${ordinal} scheduled deposit is on ${obj.formatDate(nextDates[i])}.`;
           value += '\n';
         }
-        this.style({ 'padding': '2rem', 'font-size': '1.2rem', 'font-weight': '600' }).add(value);
+        this.addClass('note').add(value);
       }
     },
     {
@@ -535,7 +535,8 @@ foam.CLASS({
     },
 
     // Helper function for calculateNextMonth_()
-    // date(Sep 30 2022), nth: first(0), weekDayVal(4), repeat: 2 months
+    // date(Oct 6 2022), nth: first(0), weekDayVal(1), repeat: 2 months
+    // result will be Monday Dec 5 2022
     function getDayOfWeekInMonth(date, nth, weekDayVal) {
       date.setMonth(date.getMonth() + 1);
       let year = date.getFullYear();
@@ -550,7 +551,7 @@ foam.CLASS({
     Helper function for calculateNextMonth_()
     Get last weekday of the month
     e.g., get last weekday Monday of Oct 2022 => Oct 31 2022,
-    weekDayVal(0) : Sunday, weekDayVal(1): Monday
+    weekDayVal(0): Sunday, weekDayVal(1): Monday
     */
     function getLastInMonth_(date, weekDayVal) {
       let year = date.getFullYear();
@@ -563,7 +564,7 @@ foam.CLASS({
       return date;
     },
 
-    // e.g., date(2022-10-03), dateVal(3)
+    // e.g., date(Oct 3 2022), dateVal(3)
     // Return next day of the week having Wednesday for date Oct 3 2022 is: Oct 5 2022
     function getNextDayOfWeek(date, dateVal, weekToSubtract) {
       if ( weekToSubtract ) {

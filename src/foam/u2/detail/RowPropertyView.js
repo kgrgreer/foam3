@@ -19,6 +19,13 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
     }
+    ^ > .note {
+      white-space: pre;
+      padding: 2rem 0rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding-left: 6rem;
+    }
   `,
 
   properties: [
@@ -31,7 +38,7 @@ foam.CLASS({
       this
         .addClass()
         .start()
-          .add(this.prop.columnLabel)
+          .add(this.prop.columnLabel).show(this.prop.columnLabel != '' ? true : false)
         .end()
         .add(this.slot(function (data) {
           const el = this.E();
