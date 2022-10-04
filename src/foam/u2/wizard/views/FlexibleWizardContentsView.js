@@ -41,7 +41,6 @@ foam.CLASS({
       bottom: 0;
       margin-top: 3.2rem;
       padding-top: 3.2rem;
-      border-top: 1px solid /*%GREY4%*/ #777777;
       background-color: /*%WHITE%*/ #FFFFFF;
 
       gap: 0.5rem;

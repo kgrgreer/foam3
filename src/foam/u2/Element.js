@@ -3125,7 +3125,13 @@ foam.CLASS({
 
   documentation: 'View for safely displaying HTML content.',
 
-  css: '^ { padding: 6px 0; }',
+  css: `
+    ^ { padding: 6px 0; }
+    ^ > span > span > .p-semiBold,
+    ^ > span {
+      font-size: 1.2rem;
+    }
+  `,
 
   properties: [
     {
