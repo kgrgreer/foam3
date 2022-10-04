@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
+    'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
@@ -38,8 +39,14 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.InputStream',
     'java.io.InputStreamReader',
+    'java.io.FileInputStream',
+    'java.io.FileOutputStream',
     'java.io.OutputStream',
     'java.io.OutputStreamWriter',
+    'java.nio.file.Files',
+    'java.nio.file.Path',
+    'java.nio.file.StandardCopyOption',
+    'java.nio.file.StandardOpenOption',
     'java.time.format.DateTimeFormatter',
     'java.time.LocalDateTime',
     'java.util.Calendar',
@@ -482,35 +489,48 @@ try {
       Logger logger = Loggers.logger(x, this);
       String filename = getFilename();
       logger.info("roll", filename);
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "roll");
       try {
-        // set filename to something that will fail file reading/writing.
         getWriter().flush();
         getWriter().close();
-
-        setFilename(null);
-
         AbstractF3FileJournal.WRITER.clear(this);
 
-        // rename existing file
+        // set filename to something that will fail file reading/writing.
+        setFilename(null);
+
+        // NOTE: java File rename or move under Linux does not
+        // allow for swapping files.  When file A is renamed to B,
+        // just the inode is updated, the file is unchanged,
+        // and the VM file operations continue to act against
+        // the original inode.
+        // Employing copy and truncate as an alternative.
+
         File existing = x.get(Storage.class).get(filename);
         String backup = filename + "." + nextSuffix(x, filename);
-        File nu = x.get(Storage.class).get(backup);
-        boolean renamed = existing.renameTo(nu);
-        if ( ! renamed ) {
-          throw new RuntimeException("Failed to rename. "+filename);
-        } else {
-          logger.info("roll", "success", filename, backup);
+        File copy = x.get(Storage.class).get(backup);
+
+        // Copy - faster than Files.copy (apparently)
+        try (
+          InputStream is = new FileInputStream(existing);
+          OutputStream os = new FileOutputStream(copy);
+        ) {
+          byte[] buffer = new byte[4096];
+          int length =0;
+          while ( (length = is.read(buffer)) > 0 ) {
+            os.write(buffer, 0, length);
+          }
         }
+        // truncate original
+        Files.write(existing.toPath(), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
 
         setFilename(filename);
+        AbstractF3FileJournal.WRITER.clear(this);
 
-        // test output stream
-        if ( getWriter() == null ) {
-          throw new RuntimeException("Failed to open writer. "+filename);
-        }
+        pm.log(x);
         return backup;
       } catch (IOException e) {
         logger.error("roll", filename, e);
+        pm.error(x, e);
         throw new RuntimeException(e.getMessage());
       }
       `

@@ -29,7 +29,7 @@ foam.CLASS({
         .setFilename("filerollcmdtest")
         .build();
 
-      journal.getWriter().append("old");
+      journal.getWriter().append("one");
       journal.getWriter().newLine();
       journal.getWriter().flush();
 
@@ -44,12 +44,13 @@ foam.CLASS({
       test( file.exists(), "Renamed file exists, "+cmd.getRolledFilename());
       test( file.getName().endsWith("1"), "Renamed file suffix 1");
 
-      journal.getWriter().append("new");
+      journal.getWriter().append("two");
       journal.getWriter().newLine();
       journal.getWriter().flush();
 
       file = x.get(Storage.class).get(journal.getFilename());
       test( file.exists(), "New file exists");
+      test( file.length() > 0, "New file has data");
 
       cmd.setRolledFilename(null);
       cmd = (FileRollCmd) journal.cmd(x, cmd);
@@ -59,12 +60,13 @@ foam.CLASS({
       test( file.exists(), "Renamed file exists, "+cmd.getRolledFilename());
       test( file.getName().endsWith("2"), "Renamed file suffix 2");
 
-      journal.getWriter().append("new");
+      journal.getWriter().append("three");
       journal.getWriter().newLine();
       journal.getWriter().flush();
 
       file = x.get(Storage.class).get(journal.getFilename());
       test( file.exists(), "New file exists");
+      test( file.length() > 0, "New file has data");
       `
     }
   ]
