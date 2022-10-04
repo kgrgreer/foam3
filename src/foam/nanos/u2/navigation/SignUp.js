@@ -19,6 +19,7 @@ foam.CLASS({
     'appConfig',
     'auth',
     'ctrl',
+    'loginView?',
     'stack',
     'subject',
     'theme',
@@ -173,6 +174,12 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'pureLoginFunction',
+      documentation: 'Set to true, if we just want to login without application redirecting.',
+      hidden: true
     }
   ],
 
@@ -201,21 +208,15 @@ foam.CLASS({
     {
       name: 'defaultUserLanguage',
       code: function() {
-        let l = foam.locale.split("-");
+        let l = foam.locale.split('-');
         let code = l[0];
         let variant = l[1];
-        let language = foam.nanos.auth.Language.create({code: code});
+        let language = foam.nanos.auth.Language.create({ code: code });
         if ( variant ) language.variant = variant;
         return language;
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'autoEmailVerified',
-      hidden: true
     }
   ],
-
   actions: [
     {
       name: 'login',
@@ -225,23 +226,22 @@ foam.CLASS({
         return ! errors_ && ! isLoading_;
       },
       isAvailable: function(showAction) { return showAction; },
-      code: function(x, updateUser) {
+      code: function(x) {
         this.isLoading_ = true;
-
+        let createdUser = this.User.create({
+          userName: this.userName,
+          email: this.email,
+          desiredPassword: this.desiredPassword,
+          signUpToken: this.token_,
+          language: this.defaultUserLanguage()
+        });
         this.dao_
-          .put(this.User.create({
-            userName: this.userName,
-            email: this.email,
-            desiredPassword: this.desiredPassword,
-            signUpToken: this.token_,
-            language: this.defaultUserLanguage(),
-            emailVerified: this.autoEmailVerified
-          }))
-          .then(async (user) => {
+          .put(createdUser)
+          .then(async user => {
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.nextStep(x);
+            if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,
@@ -249,43 +249,7 @@ foam.CLASS({
               type: this.LogLevel.INFO,
               transient: true
             }));
-          }).catch((err) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              err: err.data,
-              message: this.ERROR_MSG,
-              type: this.LogLevel.ERROR
-            }));
-          })
-          .finally(() => {
-            this.isLoading_ = false;
-          });
-      }
-    },
-    {
-      name: 'anonymousLogin',
-      code: function(x, updateUser) {
-        this.isLoading_ = true;
-
-        this.dao_
-          .put(this.User.create({
-            userName: this.userName,
-            email: this.email,
-            desiredPassword: this.desiredPassword,
-            signUpToken: this.token_,
-            language: this.defaultUserLanguage(),
-            emailVerified: this.autoEmailVerified
-          }))
-          .then(async (user) => {
-            this.subject.realUser = user;
-            this.subject.user = user;
-
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.SUCCESS_MSG_TITLE,
-              description: this.SUCCESS_MSG,
-              type: this.LogLevel.INFO,
-              transient: true
-            }));
-          }).catch((err) => {
+          }).catch(err => {
             this.ctrl.add(this.NotificationMessage.create({
               err: err.data,
               message: this.ERROR_MSG,
@@ -304,7 +268,7 @@ foam.CLASS({
       buttonStyle: 'LINK',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.stack.push(X.data.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
     {
