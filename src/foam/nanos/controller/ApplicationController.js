@@ -84,6 +84,7 @@ foam.CLASS({
     'layoutInitialized',
     'loginSuccess',
     'loginVariables',
+    'loginView',
     'menuListener',
     'notify',
     'pushMenu',
@@ -204,6 +205,13 @@ foam.CLASS({
           dao_: client$userDAO || null,
           imgPath: ''
         };
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'loginView',
+      expression: function(theme$loginView) {
+        return theme$loginView
       }
     },
     {
@@ -752,7 +760,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
