@@ -90,7 +90,7 @@ public class HTTPDigestSink extends AbstractSink {
             alarm = new Alarm.Builder(getX())
               .setName(name)
               .setSeverity(LogLevel.ERROR)
-              .setNote("Email(s) not sent to: " + emailAddress)
+              .setNote("Email not sent to: " + emailAddress)
               .build();
             alarmDAO.put(alarm);
           } else {
