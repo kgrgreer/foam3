@@ -83,17 +83,22 @@ public class HTTPDigestSink extends AbstractSink {
           EmailWebhook ewh = (EmailWebhook) obj ;
           DAO alarmDAO = (DAO) getX().get("alarmDAO");
           String emailAddress = ewh.getEmail();
-          String name = "Unable to send request information email to : " + emailAddress;
+          String name = "EmailWebhook";
           Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
           if ( alarm == null || ! alarm.getIsActive() ) {
+            // alarm does not exist, create one
             alarm = new Alarm.Builder(getX())
-              .setName(ewh.getFirstName() + " " + ewh.getLastName())
+              .setName(name)
               .setSeverity(LogLevel.ERROR)
-              .setIsActive(true)
-              .setReason(AlarmReason.UNSPECIFIED)
-              .setNote(emailAddress + " user did not receive the email")
+              .setNote("Email(s) not sent to: " + emailAddress)
               .build();
             alarmDAO.put(alarm);
+          } else {
+            // found the alarm, add the email to the note
+            if ( ! alarm.getNote().contains(emailAddress) ) {
+              alarm.setNote(alarm.getNote() + ", " + emailAddress);
+              alarmDAO.put(alarm);
+            }
           }
         }
       } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
@@ -134,8 +139,8 @@ public class HTTPDigestSink extends AbstractSink {
       if ( format_ == Format.JSON ) {
         outputter =
           propertyPredicate_ == null ?
-          new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
-          new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
+            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
+            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
         conn.addRequestProperty("Accept", "application/json");
         conn.addRequestProperty("Content-Type", "application/json");
       } else if ( format_ == Format.XML ) {
