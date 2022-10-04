@@ -91,7 +91,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj ) return;
         let ret = value + ' ' + obj.frequency.label;
-        this.style({ 'font-weight': '600' }).add(value > 1 ? ret + 's' : ret );
+        this.style({ 'font-weight': '600' }).add( value > 1 ? ret + 's' : ret );
       }
     },
     {
@@ -102,7 +102,7 @@ foam.CLASS({
       view: function(_, X) {
         var arr = ['Day', 'Week', 'Month', 'Year'];
         var choices = X.data.typeOfLabel$.map(type => {
-          return (type == 'singular') ? arr.map(v => [v, v]) : arr.map(v => [v, v + 's']);
+          return ( type == 'singular' ) ? arr.map(v => [v, v]) : arr.map(v => [v, v + 's']);
         });
 
         return {
@@ -119,8 +119,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(value) {
         if ( ! value ) return;
-        this.style({ 'font-weight': '600' })
-          .add(value == foam.time.TimeUnit.DAY ? 'Daily' : value.label + 'ly');
+        this.style({ 'font-weight': '600' }).add( value == foam.time.TimeUnit.DAY ? 'Daily' : value.label + 'ly');
       }
     },
     {
@@ -305,12 +304,310 @@ foam.CLASS({
         let ret = 'After ' + value + ' occurrence';
         this.style({ 'font-weight': '600' }).add(value > 1 ? ret + 's' : ret);
       }
+    },
+    {
+      class: 'String',
+      name: 'note',
+      columnLabel: '',
+      tableCellFormatter: function(value, obj) {
+        let nextDates = obj.calculateNextDates_(2);
+        let ordinal;
+
+        for ( var i = 0; i < nextDates.length; i++ ) {
+          if ( nextDates[i] == null ) break;
+          if ( i == 0 ) {
+            ordinal = 'first';
+          } else if ( i == 1 ) {
+            ordinal = 'second';
+          }
+          value += `Your ${ordinal} scheduled deposit is on ${obj.formatDate(nextDates[i])}.`;
+          value += '\n';
+        }
+        this.style({ 'padding': '2rem', 'font-size': '1.2rem', 'font-weight': '600' }).add(value);
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'applyWait',
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'useDateAsMinimumDate',
+      hidden: true
     }
   ],
+
   methods: [
+    // Get formatted Date: e.g., 2022/10/10
     function formatDate(date) {
       if ( ! date ) return;
       return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+    },
+
+    // Get n times next scheduled dates
+    // e.g., if n is 2, Oct 06 2022, Oct 08 2022
+    function calculateNextDates_(n) {
+      if ( n > 100 ) n = 100;
+
+      let ends = this.endsAfter;
+      if (this.ends != this.ScheduleEnd.AFTER || ends > n ) {
+        ends = n;
+      }
+
+      let dates = Array(n).fill(null);
+      let date = this.calculateNextDate_(new Date(), false);
+
+      for ( let i = 0; i < ends; i++ ) {
+        if ( date == null ) break;
+        dates[i] = date;
+        date = this.calculateNextDate_(date, true);
+      }
+      return dates;
+    },
+
+    // Calculate next scheduled date based on daily, weekly, monthly, or yearly
+    function calculateNextDate_(date, useDateAsMinimumDate) {
+      let startDate = this.startDate;
+      let minimumDate;
+
+      if ( useDateAsMinimumDate ) {
+        minimumDate = date;
+      } else {
+        minimumDate = new Date();
+      }
+
+      let endsOn =  this.endsOn ? undefined : this.endsOn;
+      let nextDate = new Date(startDate);
+
+      if ( this.ends == this.ScheduleEnd.AFTER && this.endsAfter == 0 ||
+        this.ends == this.ScheduleEnd.ON && minimumDate > this.endsOn ) return;
+
+      switch (this.frequency.name) {
+        case 'DAY':
+          nextDate = this.calculateNextDay_(nextDate, false, startDate, minimumDate);
+          break;
+        case 'WEEK':
+          nextDate = this.calculateNextWeek_(nextDate, false, startDate, minimumDate);
+          break;
+        case 'MONTH':
+          nextDate = this.calculateNextMonth_(nextDate, false, startDate, minimumDate);
+          break;
+        case 'YEAR':
+          nextDate = this.calculateNextYear_( nextDate, false, startDate, minimumDate);
+          break;
+      }
+
+      if ( nextDate == null || this.ends == this.ScheduleEnd.ON && nextDate > this.endsOn ) {
+        return;
+      }
+      return nextDate;
+    },
+
+    // Get next scheduled date, based on the n repeat Year
+    // e.g., if repeat is 2 and startDate is Oct 06 2022, the next scheduled date is Oct 06, 2024
+    function calculateNextYear_( nextDate, applyWait, startDate, minimumDate) {
+      if ( applyWait ) {
+        nextDate.setFullYear(nextDate.getFullYear() + this.repeat);
+      }
+      if ( nextDate > minimumDate && nextDate > startDate ) {
+        return nextDate;
+      }
+      return this.calculateNextYear_( nextDate, true, startDate, minimumDate);
+    },
+
+    // Get next scheduled date, based on the n repeat Month(s) and monthlyChoice(ON_THE or EACH)
+    function calculateNextMonth_(nextDate, applyWait, startDate, minimumDate) {
+      if ( applyWait ) {
+        // Add n repeat month(s)
+        nextDate = new Date(nextDate.setMonth(nextDate.getMonth() + this.repeat));
+      }
+      const start = this.getFirstDayOfMonth(nextDate);
+      const end = this.getLastDayOfMonth(nextDate);
+
+      // e.g., repeat(2), startDate(Oct 06 2022), dayOfMonth([1, 3, 5])
+      // nextDate will be Dec 1 2022
+      if ( this.monthlyChoice == this.MonthlyChoice.EACH ) { // EACH
+        nextDate = new Date();
+        var days = this.dayOfMonth;
+        for ( var i = 0; i < days.length; i++ ) {
+          let temp = this.getPlusDays(start, (days[i] - 1));
+          if ( temp > minimumDate && temp < nextDate && temp > startDate ||
+            nextDate <= minimumDate || nextDate < startDate ) {
+            nextDate = temp;
+          }
+        }
+      } else {
+        // e.g., repeat(2), startDate(Oct 06 2022), symbolicFrequency(FIRST), dayOfWeek(MONDAY)
+        // nextDate will be Monday Dec 5 2022
+        let weekDayVal;
+        switch (this.symbolicFrequency.name) { // ON_THE
+          case 'FIRST':
+            // e.g., if expandedDayOfWeek is SUNDAY, weekDayVal will be 0
+            weekDayVal = this.getWeekDayVal(this.expandedDayOfWeek.name);
+            nextDate = this.getDayOfWeekInMonth(nextDate, 1, weekDayVal);
+            break;
+          case 'SECOND':
+            weekDayVal = this.getWeekDayVal(this.expandedDayOfWeek.name);
+            nextDate = this.getDayOfWeekInMonth(nextDate, 2, weekDayVal);
+            break;
+          case 'THIRD':
+            weekDayVal = this.getWeekDayVal(this.expandedDayOfWeek.name);
+            nextDate = this.getDayOfWeekInMonth(nextDate, 3, weekDayVal);
+            break;
+          case 'BEFORE_LAST':
+            weekDayVal = this.getWeekDayVal(this.expandedDayOfWeek.name);
+            nextDate = this.getLastInMonth_(nextDate, weekDayVal);
+            nextDate = this.getPlusDays(nextDate, -7);
+            break;
+          case 'LAST':
+            weekDayVal = this.getWeekDayVal(this.expandedDayOfWeek.name);
+            nextDate = this.getLastInMonth_(nextDate, weekDayVal);
+            break;
+        }
+      }
+      if ( nextDate > startDate && nextDate > minimumDate ) {
+        return nextDate;
+      }
+      return this.calculateNextMonth_(start, true, startDate, minimumDate);
+    },
+
+    // Get next scheduled date, based on the n repeat Week(s) and day(s) of the week
+    function calculateNextWeek_(nextDate, applyWait, startDate, minimumDate) {
+      if ( applyWait ) {
+        nextDate.setDate(nextDate.getDate() + (this.repeat * 7));
+      }
+
+      let start = this.getStartOfWeek_(nextDate);
+      let minDate = new Date(start.setDate(start.getDate() - 1));
+      let endOfWeek = this.getEndDate_(minDate);
+
+      let days = this.dayOfWeek;
+      if ( days.length == 0 ) return;
+
+      // e.g. MONDAY will return 1
+      let dateVal = this.getWeekDayVal(days[0].name);
+      nextDate = this.getNextDayOfWeek(minDate, dateVal);
+
+      for ( var i  = 1; i < days.length; i++ ) {
+        dateVal = this.getWeekDayVal(days[i].name);
+        let temp = this.getNextDayOfWeek(minDate, dateVal);
+        if ( temp > minimumDate && temp < nextDate && temp > startDate || nextDate <= minimumDate ) {
+          nextDate = temp;
+        }
+      }
+
+      if ( nextDate > startDate && nextDate > minimumDate && nextDate < endOfWeek ) {
+        return nextDate;
+      } else {
+        return this.calculateNextWeek_(endOfWeek, true, startDate, minimumDate);
+      }
+    },
+
+    // Get next scheduled date, based on the n repeat Day(s)
+    function calculateNextDay_(nextDate, applyWait, startDate, minimumDate) {
+      if ( applyWait ) {
+        nextDate.setDate(nextDate.getDate() + this.repeat);
+      }
+      if ( nextDate > minimumDate && nextDate > startDate ) {
+        return nextDate;
+      }
+      return this.calculateNextDay_(nextDate, true, startDate, minimumDate);
+    },
+
+    // Helper function for calculateNextMonth_()
+    function getFirstDayOfMonth(date) {
+      if ( ! date ) return;
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    },
+
+    // Helper function for calculateNextMonth_()
+    function getLastDayOfMonth(date) {
+      if ( ! date ) return;
+      return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    },
+
+    // Return a copy of date with the specified days added
+    // e.g., 2022-12-31 plus one day would result in 2023-01-01
+    function getPlusDays(date, numOfDaysToAdd) {
+      if ( ! date ) return;
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate() + numOfDaysToAdd);
+    },
+
+    // Helper function for calculateNextMonth_()
+    // date(Sep 30 2022), nth: first(0), weekDayVal(4), repeat: 2 months
+    function getDayOfWeekInMonth(date, nth, weekDayVal) {
+      date.setMonth(date.getMonth() + 1);
+      let year = date.getFullYear();
+      let month = date.getMonth();
+
+      date = new Date(year, month - 1, 7 * (nth - 1) + 1);
+      let nthMonthDate =  new Date(date.setMonth(date.getMonth() + this.repeat));
+      return this.getNextDayOfWeek(nthMonthDate, weekDayVal);
+    },
+
+    /*
+    Helper function for calculateNextMonth_()
+    Get last weekday of the month
+    e.g., get last weekday Monday of Oct 2022 => Oct 31 2022,
+    weekDayVal(0) : Sunday, weekDayVal(1): Monday
+    */
+    function getLastInMonth_(date, weekDayVal) {
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1 + this.repeat;// getMonth() starts with 0
+      date = new Date(year, month, 1);
+      // Subtract dateDiff from the first day of the next month
+      // e.g., date(Jan 1 2023) - dateDiff(6) = Dec 26 2022
+      let dateDiff = ((date.getDay() + (6 - weekDayVal)) % 7) + 1;
+      date.setDate(date.getDate() - dateDiff);
+      return date;
+    },
+
+    // e.g., date(2022-10-03), dateVal(3)
+    // Return next day of the week having Wednesday for date Oct 3 2022 is: Oct 5 2022
+    function getNextDayOfWeek(date, dateVal, weekToSubtract) {
+      if ( weekToSubtract ) {
+        date.setDate(date.getDate() - (7 * weekToSubtract)); // minus #ofweek
+      }
+      let nextDate = new Date(date.getTime());
+      nextDate.setDate(date.getDate() + (7 + dateVal - date.getDay()) % 7);
+      if ( date.getTime() == nextDate.getTime() ) {// if they are the same day.
+        nextDate.setDate(date.getDate() + 7);
+      }
+      return nextDate;
+    },
+
+    // Helper function for calculateNextWeek_() to get Sunday as a start day
+    function getStartOfWeek_(date) {
+      // dateVal: Sunday
+      return this.getNextDayOfWeek(date, 0, 1);
+    },
+
+    // Helper function for calculateNextWeek_() to get Saturday as an end day
+    function  getEndDate_(date) {
+      // dateVal: Saturday
+      return this.getNextDayOfWeek(date, 6);
+    },
+
+    // Return an integer corresponding to the day of the week string:
+    // 'Sunday' for 0, 'Monday' for 1, 'Tuesday' for 2, and so on
+    function getWeekDayVal(day) {
+      switch ( day ) {
+        case 'SUNDAY':
+          return 0;
+        case 'MONDAY':
+          return 1
+        case 'TUESDAY':
+          return 2;
+        case 'WEDNESDAY':
+          return 3;
+        case 'THURSDAY':
+          return 4;
+        case 'FRIDAY':
+          return 5;
+        case 'SATURDAY':
+          return 6;
+      }
     },
     {
       name: 'getNextScheduledTime',
