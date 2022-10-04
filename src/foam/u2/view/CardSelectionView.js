@@ -35,6 +35,15 @@
         return [];
       }
     },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao',
+      postSet: function (_, n) {
+        (async () => {
+          this.choices = (await n.select()).array;
+        })();
+      }
+    },
     [ 'isVertical', true],
     {
       class: 'Int',
