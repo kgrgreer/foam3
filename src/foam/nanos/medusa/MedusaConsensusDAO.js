@@ -119,7 +119,7 @@ This is the heart of Medusa.`,
             getLogger().info("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
           }
         }
-        getLogger().debug("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        // getLogger().debug("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
 
         existing = (MedusaEntry) getDelegate().find_(x, entry.getId());
         if ( existing != null &&
@@ -305,7 +305,7 @@ This is the heart of Medusa.`,
             }
 
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
-            logger.debug("next", nextIndex, "next", next, "replaying", replaying.getReplaying(), replaying.getIndex(), "global", dagger.getGlobalIndex(x));
+            // logger.debug("next", nextIndex, "next", next, "replaying", replaying.getReplaying(), replaying.getIndex(), "global", dagger.getGlobalIndex(x));
             if ( next != null ) {
               if ( next.getPromoted() ) {
                 // After compaction/reconfigure primary replay index
