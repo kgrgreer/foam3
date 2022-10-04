@@ -73,6 +73,53 @@ public class HTTPDigestSink extends AbstractSink {
 
   @Override
   public void put(Object obj, Detachable sub) {
+    try {
+      int responseCode = sendRequest(obj);
+
+      if ( responseCode == HttpServletResponse.SC_OK ) return;
+
+      if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
+        if ( obj instanceof EmailWebhook ) {
+          EmailWebhook ewh = (EmailWebhook) obj ;
+          DAO alarmDAO = (DAO) getX().get("alarmDAO");
+          String emailAddress = ewh.getEmail();
+          String name = "Unable to send request information email to : " + emailAddress;
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+          if ( alarm == null || ! alarm.getIsActive() ) {
+            alarm = new Alarm.Builder(getX())
+              .setName(ewh.getFirstName() + " " + ewh.getLastName())
+              .setSeverity(LogLevel.ERROR)
+              .setIsActive(true)
+              .setReason(AlarmReason.UNSPECIFIED)
+              .setNote(emailAddress + " user did not receive the email")
+              .build();
+            alarmDAO.put(alarm);
+          }
+        }
+      } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
+        // make a new request
+        responseCode = sendRequest(obj);
+
+        if ( responseCode == HttpServletResponse.SC_OK ) return;
+
+        if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
+          // create an alarm
+          Alarm alarm = new Alarm.Builder(getX())
+            .setName("Webhook POST Failed")
+            .setNote("Failed with 500 status code")
+            .build();
+          ((DAO) getX().get("alarmDAO")).put(alarm);
+        }
+      }
+
+      throw new RuntimeException(this.getClass().getSimpleName() + ", Webhook POST failed with " + responseCode);
+
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  private int sendRequest(Object obj) throws Exception {
     HttpURLConnection conn = null;
     try {
       Outputter outputter = null;
@@ -95,6 +142,8 @@ public class HTTPDigestSink extends AbstractSink {
         outputter = new foam.lib.xml.Outputter(OutputterMode.NETWORK);
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
+      } else {
+        throw new RuntimeException(this.getClass().getSimpleName() + ", Unsupported content format");
       }
       // add hashed payload-digest to request headers
       FObject fobj = (FObject) obj;
@@ -106,39 +155,14 @@ public class HTTPDigestSink extends AbstractSink {
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
           writer.write(payload);
           writer.flush();
         }
       }
       ((Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "Sent DUG webhook with digest", url_, payload, digest, conn.getResponseCode());
 
-      // check response code
-      int code = conn.getResponseCode();
-      if ( code != HttpServletResponse.SC_OK ) {
-        if ( code == HttpServletResponse.SC_BAD_REQUEST ) { // error 400
-          if ( fobj instanceof EmailWebhook ) {
-            EmailWebhook ewh = (EmailWebhook) fobj ;
-            DAO alarmDAO = (DAO) getX().get("alarmDAO");
-            String emailAddress = ewh.getEmail();
-            String name = "Unable to send request information email to : " + emailAddress;
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
-            if ( alarm != null && alarm.getIsActive() ) { return; }
-            alarm = new Alarm.Builder(getX())
-              .setName(ewh.getFirstName() + " "+ ewh.getLastName())
-              .setSeverity(LogLevel.ERROR)
-              .setIsActive(true)
-              .setReason(AlarmReason.UNSPECIFIED )
-              .setNote(emailAddress + " user did not receive the email")
-              .build();
-            alarmDAO.put(alarm);
-          } else
-            throw new RuntimeException("Http server did not return 400.");
-        } else
-        throw new RuntimeException("Http server did not return 200. The error code is " + code);
-      }
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+      return conn.getResponseCode();
     } finally {
       if ( conn != null ) {
         conn.disconnect();
