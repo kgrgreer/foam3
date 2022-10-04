@@ -53,6 +53,8 @@ foam.CLASS({
             sink.put(self.cache[key][idx]);
           }
 
+          sink.eof();
+
           resolve(sink);
         });
       });
