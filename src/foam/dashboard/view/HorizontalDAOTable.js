@@ -41,7 +41,7 @@ foam.CLASS({
     'title',
     'actionView',
     'data',
-    ['limit', 3],
+    ['limit', 5],
     {
       class: 'FObjectProperty',
       name: 'size',
@@ -80,11 +80,11 @@ foam.CLASS({
         .add(this.slot(function(currentValues) {
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
-            .forEach(currentValues, function(data) {
-              e.tag(self.citationView, { data : data });
-            })
             .callIf(self.actionView, function() {
               e.tag(self.actionView);
+            })
+            .forEach(currentValues, function(data) {
+              e.tag(self.citationView, { data : data });
             });
         }));
     }
