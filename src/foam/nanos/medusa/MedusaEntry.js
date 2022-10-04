@@ -260,6 +260,40 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       `
     },
     {
+      name: 'toDebugSummary',
+      type: 'String',
+      code: function() {
+        return this.nSpecName + ':' + this.index;
+      },
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNSpecName());
+        sb.append(":");
+        sb.append(getIndex());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash()) ) {
+          sb.append(getHash().substring(0,7));
+        }
+        sb.append(":");
+        sb.append(getIndex1());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash1()) ) {
+          sb.append(getHash().substring(0,7));
+        }
+        sb.append(":");
+        sb.append(getIndex2());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash2()) ) {
+          sb.append(getHash().substring(0,7));
+        }
+        sb.append(":");
+        if ( getObjectId() != null ) {
+          sb.append(getObjectId().toString());
+        }
+        return sb.toString();
+      `
+    },
+    {
       name: 'toString',
       type: 'String',
       javaCode: `return toSummary();`

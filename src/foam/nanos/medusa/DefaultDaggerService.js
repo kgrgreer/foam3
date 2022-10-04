@@ -219,6 +219,7 @@ foam.CLASS({
       clearProperty("links");
       for ( int i = 0; i < getLinks().length; i++ ) {
         String hash = getBootstrapHash(x, i);
+        logger.debug("bootstrap,links", i, hash.substring(0, 7));
         getLinks()[i] = new MedusaEntry.Builder(x).setIndex(0L).setHash(hash).build();
       }
 
@@ -235,7 +236,7 @@ foam.CLASS({
         entry.setPromoted(true);
         entry = (MedusaEntry) getDao().put_(x, entry);
         updateLinks(x, entry);
-        logger.info("entry", i, entry.toSummary());
+        logger.info("entry", i, entry.toDebugSummary(), "["+entry.getData()+"]");
       }
       logger.info("end", "index", getIndex(), "bootstrap", bootstrap);
       return bootstrap;
@@ -389,8 +390,12 @@ foam.CLASS({
           }
           String calculatedHash = byte2Hex(md.digest());
           if ( ! calculatedHash.equals(entry.getHash()) ) {
-            getLogger().error("Hash verification failed", "verify", entry.getIndex(), "hash", "fail", entry.toSummary(), "parent1", parent1.toSummary(), "parent2", parent2.toSummary());
+            getLogger().error("Hash verification failed", "verify", entry.getIndex(), "hash", "fail", entry.toDebugSummary(), "parent1", parent1.toDebugSummary(), "parent2", parent2.toDebugSummary());
 
+            java.util.List<MedusaEntry> entries = (java.util.List) ((foam.dao.ArraySink) ((DAO) x.get("medusaEntryDAO")).where(IN(MedusaEntry.INDEX, new String[] { Long.toString(entry.getIndex1()), Long.toString(entry.getIndex2()) })).select(new foam.dao.ArraySink())).getArray();
+            for ( MedusaEntry e : entries ) {
+              getLogger().debug(e.toDebugSummary());
+            }
             throw new DaggerException("Hash verification failed on: "+entry.toSummary());
           }
         } catch ( java.security.NoSuchAlgorithmException e ) {
