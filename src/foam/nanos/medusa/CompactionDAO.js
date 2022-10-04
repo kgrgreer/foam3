@@ -102,7 +102,6 @@ TODO: handle node roll failure - or timeout
           throw new RuntimeException("Compaction not allowed from Secondaries");
         }
 
-        // TODO: start in own thread
         execute(x);
         return obj;
       }
@@ -125,6 +124,9 @@ TODO: handle node roll failure - or timeout
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
       try {
+        // system check
+        check(x);
+
         // block
         logger.info("block");
         setBlocking(true);
@@ -140,14 +142,13 @@ TODO: handle node roll failure - or timeout
           }
         }
 
-        // dagger
-        // run dagger before nodes - potentialy easier to roll back on failure.
-        logger.info("dagger");
-        long oldIndex = dagger(x);
-
         // nodes
         logger.info("nodes");
         rollNodes(x);
+
+        // dagger
+        logger.info("dagger");
+        long oldIndex = dagger(x);
 
         // unblock
         logger.info("unblock");
@@ -166,6 +167,14 @@ TODO: handle node roll failure - or timeout
       } catch (Throwable t) {
         logger.error(t);
       }
+      `
+    },
+    {
+      documentation: 'System check - make sure all nodes and mediators are online',
+      name: 'check',
+      args: 'X x',
+      javaCode: `
+      final Logger logger = Loggers.logger(x, this, "check");
       `
     },
     {
@@ -193,6 +202,8 @@ TODO: handle node roll failure - or timeout
               if ( ! foam.util.SafetyUtil.isEmpty(cmd.getError()) ) {
                 logger.error("rollNodes", "cmd", cfg.getId(), cmd.getError());
                 failures.put(cfg.getId(), cmd);
+              } else {
+                logger.debug("rollNodes", "cmd", cfg.getId(), cmd.getRolledFilename());
               }
             } catch (RuntimeException e) {
               logger.error("rollNodes", "cmd", cfg.getId(), e.getMessage());
@@ -222,7 +233,7 @@ TODO: handle node roll failure - or timeout
       if ( replies.size() < nodes.size() ||
            failures.size() > 0 ) {
         // TODO: in a failed state, need to shutdown - all mediators
-        logger.error("compaction, failed. ", failures.size(), "of", nodes.size(), "failed");
+        logger.error("compaction, failed. ", failures.size(), "of", nodes.size(), "failed", failures);
         throw new RuntimeException("Compaction failed");
       }
       logger.debug("rollNodes", "line.shutdown", "continue");
@@ -314,7 +325,7 @@ TODO: handle node roll failure - or timeout
       if ( replies.size() < (mediators.length -1) ||
            failures.size() > 0 ) {
         // TODO: in a failed state, need to shutdown - all mediators
-        logger.error("secondary, reconfigure, failed", failures.size(), "of", mediators.length -1, "failed");
+        logger.error("secondary, reconfigure, failed", failures.size(), "of", mediators.length -1, "failed", failures);
         throw new RuntimeException("Compaction failed");
       }
       logger.debug("line.shutdown, continue");
