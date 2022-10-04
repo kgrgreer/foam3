@@ -247,10 +247,10 @@ foam.CLASS({
 
       if ( this.modelCls_ ) {
         try {
-          this.model = (foam.lookup(this.modelCls))?.create(this.param, this);
+          this.model = (foam.lookup(this.modelCls_))?.create(this.param, this);
           return;
         } catch (err) {
-          console.warn('Error occurred when looking up modelCls', this.modelCls, err);
+          console.warn('Error occurred when looking up modelCls_', this.modelCls_, err);
         }
       }      
 
