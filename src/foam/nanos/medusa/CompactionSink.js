@@ -57,7 +57,9 @@ foam.CLASS({
         Logger logger = Loggers.logger(x, this, "getSink");
         DAO dao = (DAO) x.get(entry.getNSpecName());
         if ( dao == null ) {
-          logger.error("NSpec not found", entry.getNSpecName());
+          if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
+            logger.error("NSpec not found", entry.getNSpecName());
+          }
           getSinks().put(entry.getNSpecName(), getDelegate());
         } else {
           ClassInfo of = dao.getOf();
@@ -68,7 +70,7 @@ foam.CLASS({
             sink = (Sink) new SimpleFacetManager().create(className, args, x.put("logger", foam.nanos.logger.NullLogger.instance()));
             getSinks().put(entry.getNSpecName(), sink);
           } catch (Throwable t) {
-            logger.debug("Unable to create", className, t.getMessage());
+            // logger.debug("Unable to create", className, t.getMessage());
             getSinks().put(entry.getNSpecName(), getDelegate());
           }
         }
