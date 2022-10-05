@@ -38,7 +38,7 @@ foam.CLASS({
       this
         .addClass()
         .start()
-          .add(this.prop.columnLabel).show(this.prop.columnLabel != '' ? true : false)
+          .add(this.prop.columnLabel).show(this.prop.columnLabel)
         .end()
         .add(this.slot(function (data) {
           const el = this.E();
