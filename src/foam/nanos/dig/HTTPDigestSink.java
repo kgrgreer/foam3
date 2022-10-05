@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.security.MessageDigest;
 
 import javax.crypto.Mac;
@@ -83,23 +84,20 @@ public class HTTPDigestSink extends AbstractSink {
           EmailWebhook ewh = (EmailWebhook) obj ;
           DAO alarmDAO = (DAO) getX().get("alarmDAO");
           String emailAddress = ewh.getEmail();
+          String note = "[" + emailAddress + ", " + new Date() + "]";
           String name = "EmailWebhook";
           Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+
           if ( alarm == null ) {
-            // alarm does not exist, create one
             alarm = new Alarm.Builder(getX())
               .setName(name)
               .setSeverity(LogLevel.ERROR)
-              .setNote("Email not sent to: " + emailAddress)
+              .setNote("Email not sent to:\n\t" + note)
               .build();
-            alarmDAO.put(alarm);
           } else {
-            // found the alarm, add the email to the note
-            if ( ! alarm.getNote().contains(emailAddress) ) {
-              alarm.setNote(alarm.getNote() + ", " + emailAddress);
-              alarmDAO.put(alarm);
-            }
+            alarm.setNote(alarm.getNote() + "\n\t" + note);
           }
+          alarmDAO.put(alarm);
         }
       } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
         // make a new request
@@ -111,7 +109,7 @@ public class HTTPDigestSink extends AbstractSink {
           // create an alarm
           Alarm alarm = new Alarm.Builder(getX())
             .setName("Webhook POST Failed")
-            .setNote("Failed with 500 status code")
+            .setNote("Failed with 500 status code: [" + obj.getClass().getSimpleName() + "]")
             .build();
           ((DAO) getX().get("alarmDAO")).put(alarm);
         }
