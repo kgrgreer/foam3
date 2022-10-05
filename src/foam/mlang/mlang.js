@@ -1560,7 +1560,7 @@ foam.CLASS({
     {
       name: 'arg2',
       adapt: function(old, nu, prop) {
-        var value = nu;
+        var value = foam.mlang.Constant.isInstance(nu) ? nu : foam.mlang.Constant.create({value: nu || []});
         var arg1  = this.arg1;
 
         // Adapt constant array elements when:
