@@ -43,7 +43,6 @@ import foam.lib.PropertyPredicate;
 import foam.lib.json.OutputterMode;
 import foam.log.LogLevel;
 import foam.nanos.alarming.Alarm;
-import foam.nanos.alarming.AlarmReason;
 import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -57,6 +56,8 @@ public class HTTPDigestSink extends AbstractSink {
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
   protected boolean removeWhitespacesInPayloadDigest_;
+
+  private static final ThreadLocal<Outputter> outputter = new ThreadLocal<>();
 
   public HTTPDigestSink(String url, Format format) {
     this(url, "", null, format, null, false, false);
@@ -125,7 +126,6 @@ public class HTTPDigestSink extends AbstractSink {
   private int sendRequest(Object obj) throws Exception {
     HttpURLConnection conn = null;
     try {
-      Outputter outputter = null;
       conn = (HttpURLConnection) new URL(url_).openConnection();
       conn.setRequestMethod("POST");
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
@@ -135,14 +135,15 @@ public class HTTPDigestSink extends AbstractSink {
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {
-        outputter =
+        outputter.set(
           propertyPredicate_ == null ?
             new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
-            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
+            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_)
+        );
         conn.addRequestProperty("Accept", "application/json");
         conn.addRequestProperty("Content-Type", "application/json");
       } else if ( format_ == Format.XML ) {
-        outputter = new foam.lib.xml.Outputter(OutputterMode.NETWORK);
+        outputter.set(new foam.lib.xml.Outputter(OutputterMode.NETWORK));
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
       } else {
@@ -150,7 +151,7 @@ public class HTTPDigestSink extends AbstractSink {
       }
       // add hashed payload-digest to request headers
       FObject fobj = (FObject) obj;
-      String payload = outputter.stringify(fobj);
+      String payload = outputter.get().stringify(fobj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
 
