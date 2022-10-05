@@ -1657,7 +1657,7 @@ foam.CLASS({
   javaImports: [
     'foam.mlang.ArrayConstant',
     'foam.mlang.Constant',
-    'java.util.List',
+    'java.util.List'
   ],
 
   properties: [
@@ -1666,6 +1666,13 @@ foam.CLASS({
       postSet: function(old, nu) {
         // this is slightly slower when an expression on upperCase_
         this.upperCase_ = nu && foam.core.Enum.isInstance(nu);
+      }
+    },
+    {
+      name: 'arg2',
+      adapt: function(_, nu) {
+        // avoid adapt from Binary
+        return nu;
       }
     },
     {
