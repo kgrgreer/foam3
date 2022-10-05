@@ -93,13 +93,13 @@ TODO: handle node roll failure - or timeout
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ) {
           Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");
-          throw new RuntimeException("Compaction not allowed during Replay");
+          throw new IllegalStateException("Compaction not allowed during Replay");
         }
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
         if ( ! config.getIsPrimary() ) {
-          throw new RuntimeException("Compaction not allowed from Secondaries");
+          throw new IllegalStateException("Compaction not allowed from Secondaries");
         }
 
         execute(x);
@@ -125,7 +125,8 @@ TODO: handle node roll failure - or timeout
 
       try {
         // system check
-        check(x);
+        logger.info("health");
+        health(x);
 
         // block
         logger.info("block");
@@ -133,18 +134,16 @@ TODO: handle node roll failure - or timeout
 
         // wait
         logger.info("in-flight");
-        Object response = getDelegate().cmd(MedusaBroadcast2NodesDAO.IN_FLIGHT_CMD);
-        if ( response != null ) {
-          Long inFlight = (Long) response;
-          if ( inFlight > 0L ) {
-            // TODO: wait
-            logger.warning("in-flight", inFlight);
-          }
+        try {
+          inFlight(x);
+        } catch (Throwable t) {
+          setBlocking(false);
+          throw t;
         }
 
         // nodes
-        logger.info("nodes");
-        rollNodes(x);
+        logger.info("roll");
+        roll(x);
 
         // dagger
         logger.info("dagger");
@@ -166,23 +165,77 @@ TODO: handle node roll failure - or timeout
         logger.info("end");
       } catch (Throwable t) {
         logger.error(t);
+        throw t;
       }
       `
     },
     {
       documentation: 'System check - make sure all nodes and mediators are online',
-      name: 'check',
+      name: 'health',
       args: 'X x',
       javaCode: `
-      final Logger logger = Loggers.logger(x, this, "check");
+      Logger logger = Loggers.logger(x, this, "health");
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      DAO healthDAO = (DAO) x.get("healthDAO");
+
+      List<ClusterConfig> nodes = support.getReplayNodes();
+      for ( ClusterConfig cfg : nodes ) {
+        MedusaHealth health = (MedusaHealth) healthDAO.find(cfg.getId());
+        if ( health == null ||
+             health.getMedusaStatus() != Status.ONLINE ) {
+          logger.warning(cfg.getId(), "OFFLINE");
+          throw new IllegalStateException(cfg.getId()+" OFFLINE");
+        }
+      }
+
+      ClusterConfig[] mediators = support.getSfBroadcastMediators();
+      for ( ClusterConfig cfg : mediators ) {
+        MedusaHealth health = (MedusaHealth) healthDAO.find(cfg.getId());
+        if ( health == null ||
+             health.getMedusaStatus() != Status.ONLINE ) {
+          logger.warning(cfg.getId(), "OFFLINE");
+          throw new IllegalStateException(cfg.getId()+" OFFLINE");
+        }
+      }
+      logger.info("clean");
       `
     },
     {
-      name: 'rollNodes',
+      documentation: 'Wait for in-flight operations on primary to finish',
+      name: 'inFlight',
       args: 'X x',
       javaCode: `
-      final Logger logger = Loggers.logger(x, this, "rollNodes");
-      // logger.info("rollNodes");
+      Logger logger = Loggers.logger(x, this, "in-flight");
+      long startTime = System.currentTimeMillis();
+      while ( System.currentTimeMillis() - startTime < getMaxWait() ) {
+        Object response = getDelegate().cmd(MedusaBroadcast2NodesDAO.IN_FLIGHT_CMD);
+        if ( response != null ) {
+          Long inFlight = (Long) response;
+          if ( inFlight > 0L ) {
+            logger.warning(inFlight, "wait");
+            synchronized (this) {
+              try {
+                Thread.currentThread().sleep(1000);
+              } catch (InterruptedException e) {
+                break;
+              }
+            }
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+      logger.error("compaction,failed,timeout waiting for in-flight");
+      throw new CompactionException("in-flight");
+      `
+    },
+    {
+      name: 'roll',
+      args: 'X x',
+      javaCode: `
+      final Logger logger = Loggers.logger(x, this, "roll");
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
@@ -200,23 +253,22 @@ TODO: handle node roll failure - or timeout
               cmd = (FileRollCmd) client.cmd(new FileRollCmd());
               replies.put(cfg.getId(), cmd);
               if ( ! foam.util.SafetyUtil.isEmpty(cmd.getError()) ) {
-                logger.error("rollNodes", "cmd", cfg.getId(), cmd.getError());
+                logger.error("cmd", cfg.getId(), cmd.getError());
                 failures.put(cfg.getId(), cmd);
               } else {
-                logger.debug("rollNodes", "cmd", cfg.getId(), cmd.getRolledFilename());
+                logger.debug("cmd", cfg.getId(), cmd.getRolledFilename());
               }
             } catch (RuntimeException e) {
-              logger.error("rollNodes", "cmd", cfg.getId(), e.getMessage());
+              logger.error("cmd", cfg.getId(), e.getMessage());
               failures.put(cfg.getId(), null);
             }
           }
         });
       }
 
-      logger.debug("rollNodes", "line.shutdown", "wait");
-      // NOTE: this will block forever if a node does not reply.
-      // line.shutdown();
-      // Perform manual polling for completion.
+      logger.debug("line.shutdown", "wait");
+      // NOTE: line.shutdown() will block forever if a node does not reply.
+      // Instead, perform manual polling for completion.
       long waited = 0L;
       long sleep = 1000L;
       while ( waited < getMaxWait() ) {
@@ -234,9 +286,9 @@ TODO: handle node roll failure - or timeout
            failures.size() > 0 ) {
         // TODO: in a failed state, need to shutdown - all mediators
         logger.error("compaction, failed. ", failures.size(), "of", nodes.size(), "failed", failures);
-        throw new RuntimeException("Compaction failed");
+        throw new CompactionException("roll");
       }
-      logger.debug("rollNodes", "line.shutdown", "continue");
+      logger.debug("line.shutdown", "continue");
       `
     },
     {
@@ -274,7 +326,7 @@ TODO: handle node roll failure - or timeout
       if ( oldIndex == newIndex ||
            ! ( newIndex == oldIndex + bootstrap.getBootstrapHashEntries()) ) {
         logger.error("primary, reconfigurate, failed", "old", oldIndex, "new", newIndex);
-        throw new RuntimeException("Compaction failed");
+        throw new CompactionException("dagger");
       }
 
       // update other mediators
@@ -293,7 +345,6 @@ TODO: handle node roll failure - or timeout
           public void executeJob() {
             DAO client = support.getClientDAO(x, "daggerBootstrapDAO", myConfig, cfg);
             try {
-// TODO: also need to update replaying.index
               Object response = client.put(bs);
               replies.put(cfg.getId(), response);
             } catch (RuntimeException e) {
@@ -305,9 +356,8 @@ TODO: handle node roll failure - or timeout
       }
 
       logger.debug("line.shutdown, wait");
-      // NOTE: this will block forever if a mediator does not reply.
-      // line.shutdown();
-      // Perform manual polling for completion.
+      // NOTE: line.shutdown() will block forever if a mediator does not reply.
+      // Instead perform manual polling for completion.
       long waited = 0L;
       long sleep = 1000L;
       while ( waited < getMaxWait() ) {
@@ -321,12 +371,12 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      // REVIEW: getSfBroacastMediators returns self as well.
+      // getSfBroacastMediators returns self as well, hence the -1
       if ( replies.size() < (mediators.length -1) ||
            failures.size() > 0 ) {
         // TODO: in a failed state, need to shutdown - all mediators
         logger.error("secondary, reconfigure, failed", failures.size(), "of", mediators.length -1, "failed", failures);
-        throw new RuntimeException("Compaction failed");
+        throw new CompactionException("dagger");
       }
       logger.debug("line.shutdown, continue");
 
@@ -390,9 +440,8 @@ TODO: handle node roll failure - or timeout
       }
 
       logger.debug("line.shutdown, wait");
-      // NOTE: this will block forever if a mediator does not reply.
-      // line.shutdown();
-      // Perform manual polling for completion.
+      // NOTE: line.shutdown will block forever if a mediator does not reply.
+      // Instead, perform manual polling for completion.
       long waited = 0L;
       long sleep = 1000L;
       while ( waited < getMaxWait() ) {
@@ -411,7 +460,7 @@ TODO: handle node roll failure - or timeout
            failures.size() > 0 ) {
         // TODO: in a failed state, need to shutdown - all mediators
         logger.error("secondary, purge, failed", failures.size(), "of", mediators.length, "failed");
-        throw new RuntimeException("Compaction failed");
+        throw new CompactionException("purge");
       }
       logger.debug("line.shutdown, continue");
       `

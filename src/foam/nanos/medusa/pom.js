@@ -19,6 +19,7 @@ foam.POM({
     { name: "ClusterException",                                                           flags: "js|java" },
     { name: "ClusterTopology",                                                            flags: "js" },
     { name: "ClusterTopologyView",                                                        flags: "js" },
+    { name: "CompactionException",                                                        flags: "js|java" },
     { name: "CompactionDAO",                                                              flags: "js|java" },
     { name: "CompactionSink",                                                             flags: "js|java" },
     { name: "DaggerBootstrap",                                                            flags: "js|java" },
