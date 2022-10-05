@@ -87,7 +87,7 @@ public class HTTPDigestSink extends AbstractSink {
 
       if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
         String name = "HTTP DIGEST 400 RESPONSE";
-        String note = "[" + id + ", " + className + ", " + new Date() + "]";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
         createAlarm(name, note, LogLevel.WARN);
 
       } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
@@ -102,22 +102,22 @@ public class HTTPDigestSink extends AbstractSink {
 
         if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
           String name = "HTTP DIGEST 500 RESPONSE";
-          String note = "[" + id + ", " + className + ", " + new Date() + "]";
+          String note = "[" + className + ", " + id + ", " + new Date() + "]";
           createAlarm(name, note, LogLevel.WARN);
         }
 
       } else if ( responseCode == HttpServletResponse.SC_GATEWAY_TIMEOUT ) {
         String name = "HTTP DIGEST 504 RESPONSE";
-        String note = "[" + id + ", " + className + ", " + new Date() + "]";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
         createAlarm(name, note, LogLevel.WARN);
       }
 
-      throw new RuntimeException(this.getClass().getSimpleName() + ", HTTP POST request failed with " + responseCode);
+      throw new RuntimeException(this.getClass().getSimpleName() + "[" + className + ", " + id + ", " + responseCode + "]");
 
     } catch (SocketException e) {
       // create an alarm on connection timeout
       String name = "HTTP DIGEST CONNECTION TIMEOUT";
-      String note = "[" + id + ", " + className + ", " + new Date() + "]";
+      String note = "[" + className + ", " + id + ", " + new Date() + "]";
       createAlarm(name, note, LogLevel.WARN);
 
       throw new RuntimeException(e);
