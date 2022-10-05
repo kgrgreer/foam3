@@ -40,6 +40,10 @@ foam.CLASS({
       javaFactory: `
         return new foam.mlang.expr.DateGrouping[0];
       `
+    },
+    {
+      name: 'propName',
+      factory: function(){return 'created';}
     }
   ],
 
@@ -54,7 +58,7 @@ foam.CLASS({
 
         var offset = new Date().getTimezoneOffset() * 60000;
         var diff   = Math.floor((new Date().getTime()-offset)/this.dateGroupingType.conversionFactorMs) -
-                     Math.floor((obj.created.getTime()-offset)/this.dateGroupingType.conversionFactorMs);
+                     Math.floor((obj[this.propName].getTime()-offset)/this.dateGroupingType.conversionFactorMs);
 
         for ( var i = 0 ; i < groups.length ; i++ ) {
           var group = groups[i];

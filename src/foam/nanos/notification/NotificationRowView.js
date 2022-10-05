@@ -20,6 +20,7 @@
     imports: [
       'myNotificationDAO',
       'notificationDAO',
+      'reducedReconciliationReportDAO',
       'notify',
       'stack',
       'subject',
@@ -98,14 +99,12 @@
             .end()
             .tag(this.OverlayActionListView, {
               data: [
-                this.SHOW_DETAILS,
-                this.MARK_AS_READ,
-                this.MARK_AS_UNREAD,
-                this.HIDE_NOTIFICATION_TYPE,
-                this.REMOVE_NOTIFICATION
+                this.SPID,
+                this.CREDIT_AMOUNT,
+                this.PAYMENT_ID
               ],
               obj: this.data,
-              dao: this.notificationDAO,
+              dao: this.reducedReconciliationReportDAO,
               icon: '/images/Icon_More_Resting.svg',
               showDropdownIcon: false,
               buttonStyle: 'TERTIARY'

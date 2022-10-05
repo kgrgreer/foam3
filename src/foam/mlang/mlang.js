@@ -1563,7 +1563,7 @@ foam.CLASS({
         this.valueSet_ = null;
       },
       adapt: function(old, nu, prop) {
-        var value = prop.adaptValue(nu);
+        var value = nu;
         var arg1 = this.arg1;
 
         // Adapt constant array elements when:
@@ -1572,6 +1572,7 @@ foam.CLASS({
         // (3) Arg1 has an adapt().
         if ( foam.mlang.Constant.isInstance(value) && value.value &&
              arg1 && arg1.adapt ) {
+          value = value.shallowClone();
           var arrayValue = value.value;
           for ( var i = 0; i < arrayValue.length; i++ ) {
             arrayValue[i] = arg1.adapt.call(null, old && old[i], arrayValue[i], arg1);
