@@ -174,6 +174,21 @@ public class HTTPDigestSink extends AbstractSink {
     }
   }
 
+  public void createAlarm(String name, String note, LogLevel severity) {
+    DAO alarmDAO = (DAO) getX().get("alarmDAO");
+    Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+    if ( alarm == null ) {
+      alarm = new Alarm.Builder(getX())
+        .setName(name)
+        .setSeverity(LogLevel.ERROR)
+        .setNote(note)
+        .build();
+    } else {
+      alarm.setNote(alarm.getNote() + "\n" + note);
+    }
+    alarmDAO.put(alarm);
+  }
+
   protected String byte2Hex(byte[] bytes) {
     StringBuffer stringBuffer = new StringBuffer();
     String temp = null;
