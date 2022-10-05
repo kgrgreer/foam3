@@ -290,6 +290,8 @@ This is the heart of Medusa.`,
         .setClusterable(false)
         .build();
 
+      long lastLogTime = 0L;
+      long lastLogIndex = 0L;
       try {
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -298,10 +300,14 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( ! replaying.getReplaying() ) {
-              logger.info("next", nextIndex);
-            } else if ( nextIndex % 1000 == 0 ) {
-              logger.debug("next", nextIndex);
+            if ( System.currentTimeMillis() - lastLogTime > getTimerInterval() ) {
+              if ( replaying.getReplaying() ) {
+                logger.info("next", nextIndex, "replaying,true,global", dagger.getGlobalIndex(x));
+              } else if ( nextIndex != lastLogIndex ) {
+                logger.info("next", nextIndex);
+              }
+              lastLogTime = System.currentTimeMillis();
+              lastLogIndex = nextIndex;
             }
 
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
