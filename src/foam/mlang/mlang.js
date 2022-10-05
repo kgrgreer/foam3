@@ -1748,7 +1748,7 @@ return false
     }
   } else if ( rhs instanceof Object[] ) {
     // Checks if rhs array contains the lhs object
-    Object[] values = (Object[])rhs;
+    Object[] values = (Object[]) rhs;
 
     for ( int i = 0 ; i < values.length ; i++ ) {
       if ( ( ( (Comparable) lhs ).compareTo( (Comparable) values[i] ) ) == 0 ) {
@@ -1779,10 +1779,10 @@ return false
         if ( ! value )
           return this.FALSE;
 
-        if ( foam.Array.isInstance(value) && value.length == 1 ) return this.Eq.create({
-          arg1: this.arg1,
-          arg2: value[0]
-        });
+        if ( foam.Array.isInstance(value) ) {
+          if ( value.length == 0 ) return this.FALSE;
+          if ( value.length == 1 ) return this.Eq.create({arg1: this.arg1, arg2: value[0]});
+        }
 
         return this;
       },
