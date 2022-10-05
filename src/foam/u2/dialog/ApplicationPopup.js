@@ -206,6 +206,7 @@ foam.CLASS({
                 return this.E()
                   .enableClass(this.myClass('header-button-placeholder'), anyAvailable)
                   .forEach(leadingActions, function(ar) {
+                    var isLastWizardlet_ = ar.data.currentWizardlet.isLastWizardlet;
                     this
                       .start(ar.action, { label: '', buttonStyle: 'TERTIARY', data$: ar.data$ }).show(!isLastWizardlet_)
                         .addClass(self.myClass('header-action'))
