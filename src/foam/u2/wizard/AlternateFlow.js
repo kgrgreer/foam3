@@ -90,6 +90,7 @@ foam.CLASS({
     function handleNext(wizardController) {
       if ( ! this.wizardletId ) {
         wizardController.goNext();
+        return;
       }
 
       if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
