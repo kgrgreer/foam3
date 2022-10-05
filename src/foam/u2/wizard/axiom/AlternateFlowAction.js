@@ -31,7 +31,7 @@ foam.CLASS({
       name: 'code',
       value: function (slot, action) {
         const wizardController = slot.data$.get();
-        action.alternateFlow.execute(wizardController.data.__subContext__);
+        action.alternateFlow.execute((wizardController.data || wizardController).__subContext__);
         action.alternateFlow.handleNext(wizardController);
       }
     },
