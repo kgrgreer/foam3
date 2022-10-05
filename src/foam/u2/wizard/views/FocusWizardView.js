@@ -21,7 +21,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 65vw;
-      padding: 3.2rem 0;
       flex-grow: 1;
       /**
        * Make this work with conditional titles

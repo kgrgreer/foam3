@@ -86,10 +86,11 @@ foam.CLASS({
                       .end();
                   })
                   .start(item.headingBorder)
-                    .tag(item.view, {data: self.data.value[item.name]})
-                    .startContext({ data: self.data?.value?.[item?.name] })
-                      .tag(item.view)
-                    .endContext()
+                    .tag(item.view, { ...(
+                      self.data.value[item.name] ?
+                      {data: self.data.value[item.name]} :
+                      {}
+                    )})
                   .end()
                 .end();
             })
