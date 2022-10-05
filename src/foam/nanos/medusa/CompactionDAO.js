@@ -232,6 +232,7 @@ TODO: handle node roll failure - or timeout
       `
     },
     {
+      documentation: 'request all nodes roll their ledgers',
       name: 'roll',
       args: 'X x',
       javaCode: `
@@ -384,7 +385,7 @@ TODO: handle node roll failure - or timeout
       `
     },
     {
-      documentation: '',
+      documentation: 'Dump medusa entry data to new ledger file',
       name: 'compaction',
       args: 'X x',
       javaCode: `
@@ -402,6 +403,7 @@ TODO: handle node roll failure - or timeout
       `
     },
     {
+      documentation: 'Clean up memory medusa entry daos after compaction',
       name: 'purge',
       args: 'X x, Long oldIndex',
       javaCode: `
