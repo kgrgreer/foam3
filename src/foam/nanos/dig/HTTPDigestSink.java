@@ -76,43 +76,35 @@ public class HTTPDigestSink extends AbstractSink {
   @Override
   public void put(Object obj, Detachable sub) {
     try {
-      int responseCode = sendRequest(obj);
+      FObject fobj = (FObject) obj;
+
+      int responseCode = sendRequest(fobj);
 
       if ( responseCode == HttpServletResponse.SC_OK ) return;
 
       if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
-        if ( obj instanceof EmailWebhook ) {
-          EmailWebhook ewh = (EmailWebhook) obj ;
-          DAO alarmDAO = (DAO) getX().get("alarmDAO");
-          String emailAddress = ewh.getEmail();
-          String note = "[" + emailAddress + ", " + new Date() + "]";
-          String name = "EmailWebhook";
-          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+        String name = "HTTP DIGEST 400 RESPONSE";
+        Object id = fobj.getProperty("id");
+        String className = fobj.getClass().getSimpleName();
+        String note = "[" + id + ", " + className + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
 
-          if ( alarm == null ) {
-            alarm = new Alarm.Builder(getX())
-              .setName(name)
-              .setSeverity(LogLevel.ERROR)
-              .setNote("Email not sent to:\n\t" + note)
-              .build();
-          } else {
-            alarm.setNote(alarm.getNote() + "\n\t" + note);
-          }
-          alarmDAO.put(alarm);
-        }
       } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {}
+
         // make a new request
-        responseCode = sendRequest(obj);
+        responseCode = sendRequest(fobj);
 
         if ( responseCode == HttpServletResponse.SC_OK ) return;
 
         if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
-          // create an alarm
-          Alarm alarm = new Alarm.Builder(getX())
-            .setName("HTTP POST Request Failed")
-            .setNote("Failed with 500 status code: [" + obj.getClass().getSimpleName() + "]")
-            .build();
-          ((DAO) getX().get("alarmDAO")).put(alarm);
+          String name = "HTTP DIGEST 500 RESPONSE";
+          Object id = fobj.getProperty("id");
+          String className = fobj.getClass().getSimpleName();
+          String note = "[" + id + ", " + className + ", " + new Date() + "]";
+          createAlarm(name, note, LogLevel.WARN);
         }
       }
 
