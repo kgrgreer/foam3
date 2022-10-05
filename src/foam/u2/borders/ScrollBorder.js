@@ -15,6 +15,7 @@ foam.CLASS({
       flex-direction: column;
     }
     ^reverse {
+      width: 100%;
       display: flex;
       flex-direction: column-reverse;
       justify-content: flex-end;

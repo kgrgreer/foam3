@@ -138,8 +138,13 @@ foam.CLASS({
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^inner:not(^fullscreen) {
+      ^:not(^fullscreen) ^inner {
         width: 45vw;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
+      ^:not(^fullscreen) ^inner {
+        width: 35vw;
       }
     }
   `,
