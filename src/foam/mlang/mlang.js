@@ -1568,7 +1568,7 @@ foam.CLASS({
         // (2) Value is truthy (empty arrays can be serialized as undefined);
         // (3) Arg1 has an adapt().
         if ( foam.mlang.Constant.isInstance(value) && value.value && arg1 && arg1.adapt ) {
-          value = value.shallowClone();
+          value = value.clone();
           var arrayValue = value.value;
           for ( var i = 0 ; i < arrayValue.length ; i++ ) {
             arrayValue[i] = arg1.adapt.call(null, old && old[i], arrayValue[i], arg1);
