@@ -100,11 +100,9 @@ public class HTTPDigestSink extends AbstractSink {
 
         if ( responseCode == HttpServletResponse.SC_OK ) return;
 
-        if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
-          String name = "HTTP DIGEST 500 RESPONSE";
-          String note = "[" + className + ", " + id + ", " + new Date() + "]";
-          createAlarm(name, note, LogLevel.WARN);
-        }
+        String name = "HTTP DIGEST " + responseCode + " RESPONSE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
 
       } else if ( responseCode == HttpServletResponse.SC_GATEWAY_TIMEOUT ) {
         String name = "HTTP DIGEST 504 RESPONSE";
