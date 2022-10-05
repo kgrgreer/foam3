@@ -160,7 +160,7 @@ foam.POM({
     { name: "auth/token/TokenInvalidException",                                           flags: "js|java" },
     { name: "auth/ChangePasswordView",                                                    flags: "js" },
     { name: "auth/ResetPassword",                                                         flags: "js" },
-    { name: "auth/RetrievePassword",                                                      flags: "js" },
+    { name: "auth/RetrievePassword",                                                      flags: "js|java" },
     { name: "auth/UpdatePassword",                                                        flags: "js" },
     { name: "auth/CreatedByAware",                                                        flags: "js|java" },
     { name: "auth/CreatedByAwareDAO",                                                     flags: "js|java" },
@@ -472,6 +472,7 @@ foam.POM({
     { name: "ruler/Ruled",                                                                flags: "js|java" },
     { name: "ruler/Rule",                                                                 flags: "js|java" },
     { name: "ruler/PermissionedUserRule",                                                 flags: "js|java" },
+    { name: "ruler/PermissionedSubjectRule",                                              flags: "js|java" },
     { name: "ruler/PermissionedUCJRule",                                                  flags: "js|java" },
     { name: "ruler/RuleAction",                                                           flags: "js|java" },
     { name: "ruler/RuleActionMergeDecorator",                                             flags: "js|java" },
@@ -529,6 +530,7 @@ foam.POM({
     { name: "crunch/lite/CapabilityRefinement",                                           flags: "js" },
     { name: "crunch/lite/MinMaxCapabilityRefinement",                                     flags: "js" },
     { name: "crunch/lite/RequirementsRuleAction",                                         flags: "js|java" },
+    { name: "crunch/lite/RequirementSpec",                                                flags: "js|java" },
     { name: "crunch/crunchtest/TestCapable",                                              flags: "js|java" },
     { name: "crunch/CapabilityAvailabilityDAO",                                           flags: "js|java" },
     { name: "crunch/example/ExampleData",                                                 flags: "js|java" },
@@ -644,6 +646,11 @@ foam.POM({
     { name: "ndiff/NDiff",                                                                flags: "js|java" },
     { name: "ndiff/NDiffDAO",                                                             flags: "js|java" },
     { name: "ndiff/NDiffJournal",                                                         flags: "js|java" },
-    { name: "ndiff/NDiffRuntimeDAO",                                                      flags: "js|java" }
+    { name: "ndiff/NDiffRuntimeDAO",                                                      flags: "js|java" },
+    { name: 'auth/email/EmailVerificationCode',                                           flags: 'js|java' },
+    { name: 'auth/email/VerificationCodeView',                                            flags: 'js' },
+    { name: 'auth/email/EmailVerificationService',                                        flags: 'js|java' },
+    { name: 'auth/email/ServerEmailVerificationService',                                  flags: 'js|java' },
+    { name: 'auth/email/VerifyEmail',                                                     flags: 'js|java' }
   ]
 });

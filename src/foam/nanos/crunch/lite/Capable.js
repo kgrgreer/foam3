@@ -83,7 +83,7 @@ foam.INTERFACE({
         }));
         cls.methods.push(foam.java.Method.create({
           name: 'hasRequirement',
-          documentation: 'Checks if the capble opbject has a capability, does not verify it',
+          documentation: 'Checks if the capble object has a capability, does not verify it',
           type: 'Boolean',
           visibility: 'default',
           args: [

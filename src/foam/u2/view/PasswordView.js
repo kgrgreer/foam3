@@ -86,7 +86,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isAvailable',
       value: true
-    },
+    }
   ],
 
   methods: [

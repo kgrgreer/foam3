@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'renders a password change model',
 
   imports: [
+    'loginView?',
     'stack',
     'theme',
     'user'
@@ -134,7 +135,7 @@ foam.CLASS({
             this.start().addClass(self.myClass('link'))
               .add(self.model.REDIRECTION_TO)
               .on('click', function() {
-                self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
+                self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
               })
             .end();
           })

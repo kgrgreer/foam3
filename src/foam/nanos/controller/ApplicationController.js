@@ -84,6 +84,7 @@ foam.CLASS({
     'layoutInitialized',
     'loginSuccess',
     'loginVariables',
+    'loginView',
     'menuListener',
     'notify',
     'pushMenu',
@@ -205,6 +206,10 @@ foam.CLASS({
           imgPath: ''
         };
       }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'loginView'
     },
     {
       class: 'Enum',
@@ -752,7 +757,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -818,7 +823,7 @@ foam.CLASS({
     async function checkGeneralCapability() {
       var capDAO = this.__subContext__.capabilityDAO;
       var spid = await capDAO.find(this.user.spid);
-      if ( spid.generalCapability != '' ) {
+      if ( spid && spid.generalCapability != '' ) {
         const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
         var ucj = await ucjCheck();
 
@@ -915,6 +920,9 @@ foam.CLASS({
       }
       if ( this.theme.sideNav )
         this.sideNav_ = this.theme.sideNav;
+      
+      if ( this.theme.loginView )
+        this.loginView = this.theme.loginView;
     },
     {
       name: 'updateDisplayWidth',

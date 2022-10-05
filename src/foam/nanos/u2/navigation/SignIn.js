@@ -16,12 +16,15 @@ foam.CLASS({
     'ctrl',
     'currentMenu',
     'loginSuccess',
+    'loginView?',
     'menuDAO',
     'memento_',
+    'menuDAO',
     'pushMenu',
     'stack',
+    'subject',
     'translationService',
-    'subject'
+    'window'
   ],
 
   requires: [
@@ -34,11 +37,20 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Welcome!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
-    { name: 'FOOTER_LINK', message: 'Create an account' },
-    { name: 'SUB_FOOTER_LINK', message: 'Forgot password?' },
     { name: 'ERROR_MSG', message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
+  ],
+  
+  sections: [
+    {
+      name: '_defaultSection',
+      title: ''
+    },
+    {
+      name: 'footerSection',
+      title: ''
+    }
   ],
 
   properties: [
@@ -68,13 +80,16 @@ foam.CLASS({
       name: 'identifier',
       required: true,
       label: 'Email or Username',
+      preSet: function(_, n) {
+        return n.trim();
+      },
       view: {
         class: 'foam.u2.TextField',
         focused: true
       },
       visibility: function(disableIdentifier_, usernameRequired) {
-        return disableIdentifier_ || usernameRequired ?
-          foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
+          disableIdentifier_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
       validationTextVisible: false
     },
@@ -99,34 +114,22 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'pureLoginFunction',
+      documentation: 'Set to true, if we just want to login without application redirecting.',
+      hidden: true
     }
   ],
 
   methods: [
     {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.RetrievePassword'
-          }
-        }));
-      }
-    },
-    {
       name: 'nextStep',
-      code: async function(X) {
+      code: async function() {
         if ( this.subject.realUser.twoFactorEnabled ) {
           this.loginSuccess = false;
-          window.history.replaceState({}, document.title, '/');
+          this.window.history.replaceState({}, document.title, '/');
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
@@ -143,6 +146,16 @@ foam.CLASS({
           }
         }
       }
+    },
+    {
+      name: 'notifyUser',
+      code: function(err, msg, type) {
+        this.ctrl.add(this.NotificationMessage.create({
+          err: err,
+          message: msg,
+          type: type
+        }));
+      }
     }
   ],
 
@@ -154,57 +167,64 @@ foam.CLASS({
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       isAvailable: function(showAction) { return showAction; },
-      code: async function(X) {
-        this.identifier = this.identifier.trim();
+      code: async function(x) {
         if ( this.identifier.length > 0 ) {
           if ( ! this.password ) {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.ERROR_MSG3,
-              type: this.LogLevel.ERROR
-            }));
-
+            this.notifyUser(undefined, this.ERROR_MSG3, this.LogLevel.ERROR);
             return;
           }
-
           try {
-            var logedInUser = await this.auth.login(X, this.identifier, this.password);
+            let logedInUser = await this.auth.login(x, this.identifier, this.password);
             if ( ! logedInUser ) return;
-
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
-                var updatedUser = await this.dao_.put(logedInUser);
+                let updatedUser = await this.dao_.put(logedInUser);
                 this.subject.user = updatedUser;
                 this.subject.realUser = updatedUser;
-                await this.nextStep();
+                if ( ! this.pureLoginFunction ) await this.nextStep();
               } catch ( err ) {
-                this.ctrl.add(this.NotificationMessage.create({
-                  err: err.data,
-                  message: this.ERROR_MSG,
-                  type: this.LogLevel.ERROR
-                }));
+                this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
               }
             } else {
               this.subject.user = logedInUser;
               this.subject.realUser = logedInUser;
-              await this.nextStep();
+              if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
-              if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
+              let e = err && err.data ? err.data.exception : err;
+              if ( this.DuplicateEmailException.isInstance(e) ) {
                 this.usernameRequired = true;
               }
-              this.ctrl.add(this.NotificationMessage.create({
-                err: err.data,
-                message: this.ERROR_MSG,
-                type: this.LogLevel.ERROR
-              }));
-          };
+              this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
+          }
         } else {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.ERROR_MSG2,
-            type: this.LogLevel.ERROR
-          }));
+          this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
+      }
+    },
+    {
+      name: 'footer',
+      label: 'Create an account',
+      section: 'footerSection',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.window.history.replaceState(null, null, X.window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      label: 'Forgot password?',
+      section: 'footerSection',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.stack.push(X.data.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.RetrievePassword'
+          }
+        }));
       }
     }
   ]

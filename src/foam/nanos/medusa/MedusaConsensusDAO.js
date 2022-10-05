@@ -157,6 +157,7 @@ This is the heart of Medusa.`,
           }
 
           PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.put");
 
           // NOTE: all this business with the nested Maps to avoid
           // a mulitipart id (index,hash) on MedusaEntry, as presently
@@ -224,6 +225,7 @@ This is the heart of Medusa.`,
 
       try {
         synchronized ( entry.getId().toString().intern() ) {
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
           entry = (MedusaEntry) getDelegate().find_(x, entry.getId());
           if ( entry.getPromoted() ) {
             return entry;

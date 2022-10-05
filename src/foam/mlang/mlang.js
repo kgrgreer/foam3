@@ -742,8 +742,11 @@ foam.CLASS({
       adapt: function(old, nu, prop) {
         var value = prop.adaptValue(nu);
         var arg1 = this.arg1;
-        if ( foam.mlang.Constant.isInstance(value) && arg1 && arg1.adapt )
-          value.value = this.arg1.adapt.call(null, old, value.value, arg1);
+        if ( foam.mlang.Constant.isInstance(value) && arg1 && arg1.adapt ) {
+          var value = this.arg1.adapt.call(null, old, value.value, arg1);
+          if ( value !== value.value ) return foam.mlang.Constant.create({value: value});
+          return nu;
+        }
 
         return value;
       },
@@ -1862,6 +1865,10 @@ foam.CLASS({
 
   documentation: 'An Expression which always returns the same constant value.',
 
+  axioms: [
+    foam.pattern.Multiton.create({property: 'value'})
+  ],
+
   properties: [
     {
       class: 'Object',
@@ -1873,7 +1880,7 @@ foam.CLASS({
     {
       type: 'FObject',
       name: 'fclone',
-      javaCode: 'return this;'
+      javaCode: 'return this;',
     },
     {
       name: 'f',

@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'loginView?',
     'resetPasswordToken',
     'stack',
     'translationService',
@@ -49,9 +50,15 @@ foam.CLASS({
       name: 'email',
       section: 'emailPasswordSection',
       required: true,
-      createVisibility: function(usernameRequired) {
-       return usernameRequired ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      createVisibility: function(usernameRequired, readOnlyIdentifier) {
+       return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
+        readOnlyIdentifier ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'readOnlyIdentifier',
+      hidden: true
     },
     {
       class: 'String',
@@ -94,7 +101,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
+          this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
         }).catch((err) => {
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
               this.ctrl.add(this.NotificationMessage.create({
