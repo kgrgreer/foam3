@@ -177,7 +177,16 @@ foam.CLASS({
         DAO with only visible capabilities.
       `,
       factory: function() {
-        return this.NullDAO.create();
+        return this.PromisedDAO.create({
+          promise: function () {
+            return new Promise().then( () => this.themeDomainDAO.find(this.window.location.hostname) )
+            .then( (ret) => ret.getCapabilities(this.ctrl.__subContext__).dao.select() )
+            .then( (themeCaps) => {
+              if (themeCaps.array.length != 0) return themeCaps;
+              else return this.featuredCapabilities.select();
+            });
+          }
+        });
       }
     },
     {
@@ -209,6 +218,18 @@ foam.CLASS({
           .where(this.EQ(this.CapabilityCategory.VISIBLE, true));
       }
     },
+    // {
+    //   name: 'visibleCapabilities',
+    //   factory: function() {
+    //     // factories need to be synchronous!
+    //     var themeCaps = await this.themeDomainDAO.find(this.window.location.hostname).then(function(ret) {
+    //       return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
+    //     });
+    //     if ( themeCaps?.array?.length != 0 ) return themeCaps.array;
+    //     var featured = await this.featuredCapabilities.select();
+    //     return featured.array;
+    //   }
+    // },
     {
       name: 'carouselCounter',
       class: 'Int',
@@ -275,8 +296,7 @@ foam.CLASS({
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
-          var caps = await self.getCapabilities();
-          return self.renderFeatured(caps);
+          return self.renderFeatured(this.visibleCapabilityDAO.select());
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
