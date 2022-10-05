@@ -81,6 +81,7 @@ foam.CLASS({
     'crunchController',
     'crunchService',
     'menuDAO',
+    'pushMenu?',
     'registerElement',
     'subject',
     'theme',
@@ -531,6 +532,8 @@ foam.CLASS({
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        // Push default menu if menu changes
+        this.pushMenu?.('');
       }
     }
   ]
