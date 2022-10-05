@@ -47,10 +47,17 @@ foam.CLASS({
         let requestEndIdx   = requestStartIdx + limit;
 
         // Ensure we have cache for request
-        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(function() {
+        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( () => {
+
+          let endIdx = requestEndIdx <= self.cache[key].length ? requestEndIdx : self.cache[key].length;
+
           // Return data from cache
-          for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
-            sink.put(self.cache[key][idx]);
+          for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
+            if ( foam.dao.ArraySink.isInstance(sink) ) {
+              sink.put(self.cache[key][idx]);
+            } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+              sink.projectionWithClass[idx] = self.cache[key][idx];
+            }
           }
 
           sink.eof();
@@ -118,9 +125,19 @@ foam.CLASS({
         //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-          // Update cache with missing data
-          for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
-            self.cache[key][startIdx + idx] = result.array[idx];
+
+          if ( foam.dao.ArraySink.isInstance(sink) ) {
+            // ArraySink
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.array[idx];
+            }
+          } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+            // Projection
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.projectionWithClass.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.projectionWithClass[idx];
+            }
           }
         });
       }
