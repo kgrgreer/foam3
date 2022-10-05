@@ -1570,10 +1570,10 @@ foam.CLASS({
         // (1) Value is a constant (array);
         // (2) Value is truthy (empty arrays can be serialized as undefined);
         // (3) Arg1 has an adapt().
-        if ( foam.mlang.Constant.isInstance(value) && value.value &&
-             arg1 && arg1.adapt ) {
+        if ( foam.mlang.Constant.isInstance(value) && value.value && arg1 && arg1.adapt ) {
+          value = value.shallowClone();
           var arrayValue = value.value;
-          for ( var i = 0; i < arrayValue.length; i++ ) {
+          for ( var i = 0 ; i < arrayValue.length ; i++ ) {
             arrayValue[i] = arg1.adapt.call(null, old && old[i], arrayValue[i], arg1);
           }
         }
@@ -1666,13 +1666,6 @@ foam.CLASS({
       postSet: function(old, nu) {
         // this is slightly slower when an expression on upperCase_
         this.upperCase_ = nu && foam.core.Enum.isInstance(nu);
-      }
-    },
-    {
-      name: 'arg2',
-      adapt: function(_, nu) {
-        // avoid adapt from Binary
-        return nu;
       }
     },
     {
