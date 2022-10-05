@@ -92,7 +92,7 @@ public class HTTPDigestSink extends AbstractSink {
 
       } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
         try {
-          Thread.sleep(2000);
+          Thread.sleep(5000);
         } catch (InterruptedException e) {}
 
         // make a new request
