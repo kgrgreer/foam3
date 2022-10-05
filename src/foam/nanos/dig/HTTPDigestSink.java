@@ -181,10 +181,11 @@ public class HTTPDigestSink extends AbstractSink {
     if ( alarm == null ) {
       alarm = new Alarm.Builder(getX())
         .setName(name)
-        .setSeverity(LogLevel.ERROR)
+        .setSeverity(severity)
         .setNote(note)
         .build();
     } else {
+      alarm = (Alarm) alarm.fclone();
       alarm.setNote(alarm.getNote() + "\n" + note);
     }
     alarmDAO.put(alarm);
