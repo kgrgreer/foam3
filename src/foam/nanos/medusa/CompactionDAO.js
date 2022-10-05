@@ -279,7 +279,7 @@ TODO: handle node roll failure - or timeout
         } catch (InterruptedException e) {
           break;
         }
-        if ( replies.size() >= nodes.size() -1 ) {
+        if ( replies.size() == nodes.size() ) {
           break;
         }
       }
