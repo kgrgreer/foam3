@@ -33,7 +33,7 @@
   methods: [
     async function save() {
       var action = this.AlternateFlowAction.create({ alternateFlow: this.alternateFlow });
-      var x = this.__subContext__.createSubContext({ data: this.wizardController })
+      var x = this.__subContext__.createSubContext({ data: this.wizardController });
       action.maybeCall(x, this.wizardController);
     }
   ]
