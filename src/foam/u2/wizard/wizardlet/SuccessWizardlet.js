@@ -53,8 +53,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isLastWizardlet',
-      value: false
+      name: 'isLastWizardlet'
     }
   ]
 });
