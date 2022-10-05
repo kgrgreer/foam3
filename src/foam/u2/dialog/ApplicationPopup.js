@@ -53,6 +53,8 @@ foam.CLASS({
       flex-direction: column;
       flex: 1;
       padding: 0 4rem;
+      align-self: center;
+      width: 100%;
     }
 
     ^actionBar {
@@ -141,10 +143,16 @@ foam.CLASS({
       ^:not(^fullscreen) ^inner {
         width: 45vw;
       }
+      ^fullscreen ^bodyWrapper {
+        width: 75%;
+      }
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
       ^:not(^fullscreen) ^inner {
         width: 35vw;
+      }
+      ^fullscreen ^bodyWrapper {
+        width: 65%;
       }
     }
   `,
