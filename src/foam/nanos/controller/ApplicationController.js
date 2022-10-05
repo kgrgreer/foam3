@@ -209,10 +209,7 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'loginView',
-      expression: function(theme$loginView) {
-        return theme$loginView
-      }
+      name: 'loginView'
     },
     {
       class: 'Enum',
@@ -923,6 +920,9 @@ foam.CLASS({
       }
       if ( this.theme.sideNav )
         this.sideNav_ = this.theme.sideNav;
+      
+      if ( this.theme.loginView )
+        this.loginView = this.theme.loginView;
     },
     {
       name: 'updateDisplayWidth',
