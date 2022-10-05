@@ -77,6 +77,8 @@ public class HTTPDigestSink extends AbstractSink {
   public void put(Object obj, Detachable sub) {
     try {
       FObject fobj = (FObject) obj;
+      Object id = fobj.getProperty("id");
+      String className = fobj.getClass().getSimpleName();
 
       int responseCode = sendRequest(fobj);
 
@@ -84,8 +86,6 @@ public class HTTPDigestSink extends AbstractSink {
 
       if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
         String name = "HTTP DIGEST 400 RESPONSE";
-        Object id = fobj.getProperty("id");
-        String className = fobj.getClass().getSimpleName();
         String note = "[" + id + ", " + className + ", " + new Date() + "]";
         createAlarm(name, note, LogLevel.WARN);
 
@@ -101,11 +101,14 @@ public class HTTPDigestSink extends AbstractSink {
 
         if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
           String name = "HTTP DIGEST 500 RESPONSE";
-          Object id = fobj.getProperty("id");
-          String className = fobj.getClass().getSimpleName();
           String note = "[" + id + ", " + className + ", " + new Date() + "]";
           createAlarm(name, note, LogLevel.WARN);
         }
+
+      } else if ( responseCode == HttpServletResponse.SC_GATEWAY_TIMEOUT ) {
+        String name = "HTTP DIGEST 504 RESPONSE";
+        String note = "[" + id + ", " + className + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
       }
 
       throw new RuntimeException(this.getClass().getSimpleName() + ", HTTP POST request failed with " + responseCode);
