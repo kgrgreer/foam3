@@ -211,7 +211,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'loginView',
       expression: function(theme$loginView) {
-        return theme$loginView
+        return JSON.parse(theme$loginView);
       }
     },
     {
