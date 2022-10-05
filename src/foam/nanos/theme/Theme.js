@@ -201,7 +201,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'loginView',
-      value: '{ "class": "foam.u2.view.LoginView" }'
+      value: 'foam.u2.view.LoginView'
     },
     {
       class: 'Image',
