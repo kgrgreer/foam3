@@ -302,6 +302,8 @@ foam.CLASS({
       let wizardlet = this.currentWizardlet;
 
       // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
+      // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
+      // (i.e. we're in the loop below instead)
       if ( ! wizardlet.goNextOnSave ) {
         try {
           await wizardlet.save();
