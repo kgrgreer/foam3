@@ -109,14 +109,14 @@ public class HTTPDigestSink extends AbstractSink {
         if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
           // create an alarm
           Alarm alarm = new Alarm.Builder(getX())
-            .setName("Webhook POST Failed")
+            .setName("HTTP POST Request Failed")
             .setNote("Failed with 500 status code: [" + obj.getClass().getSimpleName() + "]")
             .build();
           ((DAO) getX().get("alarmDAO")).put(alarm);
         }
       }
 
-      throw new RuntimeException(this.getClass().getSimpleName() + ", Webhook POST failed with " + responseCode);
+      throw new RuntimeException(this.getClass().getSimpleName() + ", HTTP POST request failed with " + responseCode);
 
     } catch (Throwable t) {
       throw new RuntimeException(t);
