@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -75,11 +76,11 @@ public class HTTPDigestSink extends AbstractSink {
 
   @Override
   public void put(Object obj, Detachable sub) {
-    try {
-      FObject fobj = (FObject) obj;
-      Object id = fobj.getProperty("id");
-      String className = fobj.getClass().getSimpleName();
+    FObject fobj = (FObject) obj;
+    Object id = fobj.getProperty("id");
+    String className = fobj.getClass().getSimpleName();
 
+    try {
       int responseCode = sendRequest(fobj);
 
       if ( responseCode == HttpServletResponse.SC_OK ) return;
@@ -113,6 +114,13 @@ public class HTTPDigestSink extends AbstractSink {
 
       throw new RuntimeException(this.getClass().getSimpleName() + ", HTTP POST request failed with " + responseCode);
 
+    } catch (SocketException e) {
+      // create an alarm on connection timeout
+      String name = "HTTP DIGEST CONNECTION TIMEOUT";
+      String note = "[" + id + ", " + className + ", " + new Date() + "]";
+      createAlarm(name, note, LogLevel.WARN);
+
+      throw new RuntimeException(e);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
