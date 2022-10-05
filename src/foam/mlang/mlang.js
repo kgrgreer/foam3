@@ -1559,12 +1559,9 @@ foam.CLASS({
   properties: [
     {
       name: 'arg2',
-      postSet: function() {
-        this.valueSet_ = null;
-      },
       adapt: function(old, nu, prop) {
-        var value = prop.adaptValue(nu);
-        var arg1 = this.arg1;
+        var value = nu;
+        var arg1  = this.arg1;
 
         // Adapt constant array elements when:
         // (1) Value is a constant (array);
@@ -1596,9 +1593,21 @@ foam.CLASS({
       `
     },
     {
-      // TODO: simpler to make an expression
       name: 'valueSet_',
-      hidden: true
+      documentation: 'arg2 as a JS hash for faster execution',
+      transient: true,
+      hidden: true,
+      expression: function(arg2) {
+        // only called when arg2 is a Constant
+        var rhs = arg2.value;
+        var set = {};
+        for ( var i = 0 ; i < rhs.length ; i++ ) {
+          var s = rhs[i];
+          if ( this.upperCase_ ) s = s.toString().toUpperCase();
+          set[s] = true;
+        }
+        return set;
+      }
     }
   ],
 
@@ -1696,21 +1705,9 @@ foam.CLASS({
         // particular with multi part id support.So this code path is
         // disabled for now.
 
-
         // If arg2 is a constant array, we use valueSet for it.
-        if ( this.Constant.isInstance(this.arg2) ) {
-          if ( ! this.valueSet_ ) {
-            var set = {};
-            for ( var i = 0 ; i < rhs.length ; i++ ) {
-              var s = rhs[i];
-              if ( this.upperCase_ ) s = s.toString().toUpperCase();
-              set[s] = true;
-            }
-            this.valueSet_ = set;
-          }
-
+        if ( this.Constant.isInstance(this.arg2) )
           return !! this.valueSet_[lhs];
-        }
 
         return rhs ? rhs.indexOf(lhs) !== -1 : false;
       },
@@ -1830,6 +1827,10 @@ foam.CLASS({
 
   documentation: 'Predicate returns true iff arg1 is a substring of arg2, or if arg2 is an array, is an element of arg2, case insensitive.',
 
+  properties: [
+    [ 'upperCase_', true ]
+  ],
+
   methods: [
     function f(o) {
       var lhs = this.arg1.f(o);
@@ -1838,20 +1839,12 @@ foam.CLASS({
       if ( lhs.toUpperCase ) lhs = lhs.toString().toUpperCase();
 
       // If arg2 is a constant array, we use valueSet for it.
-      if ( foam.mlang.Constant.isInstance(this.arg2) ) {
-        if ( ! this.valueSet_ ) {
-          var set = {};
-          for ( var i = 0 ; i < rhs.length ; i++ ) {
-            set[rhs[i].toString().toUpperCase()] = true;
-          }
-          this.valueSet_ = set;
-        }
-
+      if ( foam.mlang.Constant.isInstance(this.arg2) )
         return !! this.valueSet_[lhs];
-      } else {
-        if ( ! rhs ) return false;
-        return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
-      }
+
+      if ( ! rhs ) return false;
+
+      return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
     }
   ]
 });
