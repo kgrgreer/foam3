@@ -94,10 +94,6 @@ foam.CLASS({
       justify-content: center;
     }
 
-    ^header-center svg {
-      max-height: 2.4rem;
-    }
-
     ^body {
       flex-grow: 1;
       max-height: 90vh;
@@ -114,7 +110,7 @@ foam.CLASS({
 
     ^logo img, ^logo svg {
       display: flex;
-      max-height: 40px;
+      max-height: 2.4rem;
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
     }
