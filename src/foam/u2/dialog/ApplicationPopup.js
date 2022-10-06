@@ -205,13 +205,15 @@ foam.CLASS({
       this.helpMenu$find.then( menu => {
         self.help_ = menu;
       });
-      this.onDetach(this.displayWidth$.sub(() => {
-        if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.SM.ordinal ) {
+      const updateWidth = () => {
+        if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.MD.ordinal ) {
           this.forceFullscreen = true;
         } else {
           this.forceFullscreen = false;
         }
-      }))
+      }
+      updateWidth();
+      this.onDetach(this.displayWidth$.sub(updateWidth))
       this.addClass()
 
         // These methods come from ControlBorder
