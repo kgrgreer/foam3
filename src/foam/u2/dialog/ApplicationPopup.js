@@ -261,8 +261,9 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('header-center'))
               .start(this.Image, {
-                data$: this.slot(function(theme$topNavLogo) {
-                  return theme$topNavLogo;
+                data$: this.slot(function(theme$loginImage) {
+                  // Temp change for demo, create ImageTokens before merging
+                  return theme$loginImage;
                 }),
                 embedSVG: true
               })
