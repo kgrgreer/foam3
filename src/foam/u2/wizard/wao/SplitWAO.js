@@ -58,15 +58,18 @@ foam.CLASS({
       const saver = foam.json.parse(this.saver, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(saver, this.ProxySaver, this.NullSaver);
       // temp workaround until daosaver is implemented
-      if ( this.NullSaver.isInstance(saver) && this.delegate ) {
-        await this.delegate.save(wizardlet);
-      } else {
-        if ( wizardlet.loading ) return;
-        if ( ! wizardlet.isAvailable ) return;
-        wizardlet.loading = true;
-        await saver.save(wizardlet.data);
+      try {
+        if ( this.NullSaver.isInstance(saver) && this.delegate ) {
+          await this.delegate.save(wizardlet);
+        } else {
+          if ( wizardlet.loading ) return;
+          if ( ! wizardlet.isAvailable ) return;
+          wizardlet.loading = true;
+          await saver.save(wizardlet.data);
+        }
+      } finally {
+        wizardlet.loading = false;
       }
-      wizardlet.loading = false;
     }
   ]
 });

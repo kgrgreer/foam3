@@ -37,9 +37,12 @@ foam.CLASS({
           if ( !( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) ) {
             return;
           }
-          
+
           // not possible to removeAll() because UCJ is lifecycle aware
-          DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
+          // NOTE: put to bareUserCapabilityJunctionDAO to prevent rules on
+          // userCapabilityJunctionDAO from firing which could invoke sudo-ing
+          // as the deleted user then fails.
+          DAO dao = (DAO) x.get("bareUserCapabilityJunctionDAO");
           dao.where(EQ(UserCapabilityJunction.SOURCE_ID, ((User) obj).getId())).select( new AbstractSink() {
             public void put(Object o, Detachable d) {
               UserCapabilityJunction ucj = (UserCapabilityJunction) ( (FObject)o ).fclone();

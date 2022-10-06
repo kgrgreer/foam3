@@ -94,6 +94,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, ''),
           this.EQ(this.Locale.VARIANT, ''))).select(this.addLocale.bind(this));
     },
 
@@ -101,6 +102,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, ''),
           this.EQ(this.Locale.VARIANT, this.variant))).select(this.addLocale.bind(this));
     },
 

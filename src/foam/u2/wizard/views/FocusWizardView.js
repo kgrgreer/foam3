@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'FocusWizardView',
   extends: 'foam.u2.View',
 
-  imports: [ 'popup?' ],
+  imports: [
+    'controlBorder?',
+    'popup?'
+  ],
 
   exports: [ 'showTitle' ],
 
@@ -18,7 +21,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 65vw;
-      min-height: 65vh;
       padding: 3.2rem 0;
       flex-grow: 1;
       /**
@@ -28,8 +30,7 @@ foam.CLASS({
     }
 
     ^:not(^isFullscreen) {
-      margin: 40pt;
-      margin-top: 0;
+      margin: 0 40pt;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -66,10 +67,23 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showTitle'
+    },
+    {
+      class: 'String',
+      name: 'viewTitle',
+      expression: function (data$currentWizardlet) {
+        return data$currentWizardlet.title;
+      }
     }
   ],
 
   methods: [
+    function init() {
+      if ( this.controlBorder && foam.u2.Progressable.isInstance(this.data) ) {
+        this.controlBorder.progressMax$ = this.data$.dot('progressMax');
+        this.controlBorder.progressValue$ = this.data$.dot('progressValue');
+      }
+    },
     function render() {
       const self = this;
       this.addClass()

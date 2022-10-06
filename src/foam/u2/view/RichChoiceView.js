@@ -140,12 +140,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^chevron::before {
-      color: #8D9090;
-      content: '▾';
-      padding-left: 4px;
-    }
-
     ^ {
       display: flex;
       position: relative;
@@ -188,9 +182,9 @@ foam.CLASS({
       justify-content: space-between;
       width: 100%;
 
-      height: /*%INPUTHEIGHT%*/ 34px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
+      height: $inputHeight;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
       border: 1px solid $grey400;
       color: $black;
       background-color: $white;
@@ -201,6 +195,9 @@ foam.CLASS({
       -webkit-appearance: none;
       cursor: pointer;
       font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
@@ -231,9 +228,9 @@ foam.CLASS({
 
       width: 100%;
       border: none;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
     }
 
     ^ .search img {
@@ -260,9 +257,9 @@ foam.CLASS({
       display: flex;
       align-items: center;
       border-left: 1px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
       border-left: 1px solid;
       border-color: $grey400;
       margin-left: 12px;
@@ -524,9 +521,6 @@ foam.CLASS({
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
                   }))
-                .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;

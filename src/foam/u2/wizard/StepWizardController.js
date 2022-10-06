@@ -8,9 +8,11 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'StepWizardController',
 
+  implements: ['foam.u2.Progressable'],
+
   imports: [
     'developerMode',
-    'analyticsAgent?'
+    'handleEvent?'
   ],
 
   requires: [
@@ -19,7 +21,10 @@ foam.CLASS({
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.StepWizardConfig',
-    'foam.u2.wizard.debug.WizardInspector'
+    'foam.u2.wizard.debug.WizardInspector',
+    'foam.u2.wizard.event.WizardEvent',
+    'foam.u2.wizard.event.WizardErrorHint',
+    'foam.u2.wizard.event.WizardEventType'
   ],
 
   properties: [
@@ -59,6 +64,7 @@ foam.CLASS({
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
+        this.progressMax = n?.length;
       }
     },
     {
@@ -86,6 +92,7 @@ foam.CLASS({
           this.wizardlets[o.wizardletIndex].isCurrent = false;
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
+        this.progressValue = n?.wizardletIndex;
       }
     },
 
@@ -312,8 +319,18 @@ foam.CLASS({
           try {
             await wizardlet.save();
           } catch (e) {
-            this.lastException = e;
-            throw e;
+            let { exception, hint } = await wizardlet.handleException(
+              this.WizardEventType.WIZARDLET_SAVE, e
+            );
+
+            if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
+              if ( canLandOn_(this.wizardPosition) ) return false;
+              hint = this.WizardErrorHint.ABORT_FLOW;
+            }
+
+            if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
+              throw this.lastException = exception || e;
+            }
           }
 
           this.onWizardletCompleted(wizardlet);
@@ -322,8 +339,13 @@ foam.CLASS({
           try {
             await wizardlet.load();
           } catch (e) {
-            this.lastException = e;
-            throw e;
+            let { exception, hint } = await wizardlet.handleException(
+              this.WizardEventType.WIZARDLET_LOAD, e
+            );
+            
+            if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+              throw this.lastException = exception || e;
+            }
           }
         }
 
@@ -438,13 +460,11 @@ foam.CLASS({
     },
     function onWizardletCompleted(wizardlet) {
       try {
-        wizardlet.pubAnalyticEvt && this.analyticsAgent?.pub('event', {
-          name: foam.String.constantize(
-              wizardlet.title || wizardlet.id ||
-              (wizardlet.of?.name ?? 'UNKNOWN')
-            ) + '_COMPLETE',
-          tags: ['wizard']
-        })
+        if ( ! this.handleEvent ) return;
+        this.handleEvent(this.WizardEvent.create({
+          wizardlet,
+          eventType: this.WizardEventType.WIZARDLET_SAVE
+        }));
       } catch (e) {
         // report analytics error without interrupting flow
         console.error('analyticsAgent.put failed', e);
