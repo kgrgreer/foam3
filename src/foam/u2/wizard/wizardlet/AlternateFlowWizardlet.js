@@ -17,6 +17,10 @@ foam.CLASS({
     'foam.u2.wizard.axiom.AlternateFlowAction'
   ],
 
+  exports: [
+    'wizardController'
+  ],
+
   properties: [
     {
       class: 'FObjectArray',

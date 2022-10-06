@@ -299,6 +299,21 @@ foam.CLASS({
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
     async function next() {
+      let wizardlet = this.currentWizardlet;
+
+      // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
+      // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
+      // (i.e. we're in the loop below instead)
+      if ( ! wizardlet.goNextOnSave ) {
+        try {
+          await wizardlet.save();
+        } catch (e) {
+          this.lastException = e;
+          throw e;
+        }
+        return false;
+      }
+
       const canLandOn_ = pos => {
         const wizardlet = this.wizardlets[pos.wizardletIndex];
         if ( ! wizardlet.isVisible ) return false;
@@ -307,8 +322,6 @@ foam.CLASS({
         if ( ! section.isAvailable ) return false;
         return true;
       }
-
-      let wizardlet = this.currentWizardlet;
       const iterator = this.wizardPosition.iterate(this.wizardlets);
 
       for ( const pos of iterator ) {

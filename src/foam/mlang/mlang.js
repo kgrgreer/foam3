@@ -1560,7 +1560,7 @@ foam.CLASS({
     {
       name: 'arg2',
       adapt: function(old, nu, prop) {
-        var value = foam.mlang.Constant.isInstance(nu) ? nu : foam.mlang.Constant.create({value: nu || []});
+        var value = prop.adaptValue(nu);
         var arg1  = this.arg1;
 
         // Adapt constant array elements when:
@@ -1857,10 +1857,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'An Expression which always returns the same constant value.',
-
+/*
   axioms: [
     foam.pattern.Multiton.create({property: 'value'})
   ],
+  */
 
   properties: [
     {
