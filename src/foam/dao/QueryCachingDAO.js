@@ -28,7 +28,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
-      // console.log('************ QUERYCache', limit);
+      //console.log('************ QUERYCache', limit);
       if (
         // Only cache selects that have limit provided
         limit === undefined
@@ -42,7 +42,7 @@ foam.CLASS({
       let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        //console.log('******** QUERYCACHE: predicate: ' + predicate + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
         let requestEndIdx   = requestStartIdx + limit;
 
@@ -50,6 +50,8 @@ foam.CLASS({
         self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( () => {
 
           let endIdx = requestEndIdx <= self.cache[key].length ? requestEndIdx : self.cache[key].length;
+
+          //console.log('*** QCD *** size: ' + self.cache[key].length + ' : endIdx: ' + endIdx + ' : for predicate: ' + predicate);
 
           // Return data from cache
           for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
@@ -122,7 +124,7 @@ foam.CLASS({
       }
 
       if ( hasMissingData ) {
-        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
 

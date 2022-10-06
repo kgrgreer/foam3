@@ -25,6 +25,7 @@
       for ( var action of this.actions ) {
         data[action]?.code.call(data)
       }
+      this.delegate.save(data);
     }
   ]
 });

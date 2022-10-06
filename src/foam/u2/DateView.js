@@ -21,7 +21,7 @@ foam.CLASS({
 
   css: `
     ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); margin-left: -8px; }
-    ^ { width: fit-content; }
+    ^ { width: 100%; }
   `,
 
   messages: [

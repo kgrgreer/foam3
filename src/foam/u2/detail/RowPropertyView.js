@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: `
-    View a property's label and value in a single row. The table cell formatter
+    View a property's columnLabel and value in a single row. The table cell formatter
     will be used to render the value.
   `,
 
@@ -18,6 +18,13 @@ foam.CLASS({
     ^ {
       display: flex;
       justify-content: space-between;
+    }
+    ^ > .note {
+      white-space: pre;
+      padding: 2rem 0rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding-left: 6rem;
     }
   `,
 
@@ -31,7 +38,7 @@ foam.CLASS({
       this
         .addClass()
         .start()
-          .add(this.prop.label)
+          .add(this.prop.columnLabel).show(this.prop.columnLabel)
         .end()
         .add(this.slot(function (data) {
           const el = this.E();

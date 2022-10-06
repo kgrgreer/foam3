@@ -1002,6 +1002,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/lib",                                flags: "web" },
     { name: "foam/u2/wizard/data/DAOSaver",                           flags: "web" },
     { name: "foam/u2/wizard/data/ExecuteActionsSaver",                flags: "web" },
+    { name: "foam/u2/wizard/data/AlternateFlowSaver",                 flags: "web" },
     { name: "foam/u2/wizard/data/ErrorSaver",                         flags: "web" },
     { name: "foam/u2/wizard/data/ArrayWrapSaver",                     flags: "web" },
     { name: "foam/u2/wizard/data/WrapSaver",                          flags: "web" },
