@@ -70,21 +70,15 @@
       `
     },
     {
-      name: 'verifyCode',
+      name: 'verifyUserEmail',
       javaCode: `
-        DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
-        Calendar c = Calendar.getInstance();
-
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = (User) userDAO.find(EQ(User.EMAIL, email));
         if ( user ==  null ) throw new UserNotFoundException();
 
-        EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
-          EQ(EmailVerificationCode.EMAIL, email),
-          EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
-          GT(EmailVerificationCode.EXPIRY, c.getTime())
-        ));
-        if ( code != null ) {
+        var res = verifyCode(x, email, verificationCode);
+
+        if ( res ) {
           user = (User) user.fclone();
           user.setEmailVerified(true);
           userDAO.put(user);
@@ -92,6 +86,20 @@
           sendCode(x, user);
           throw new AuthenticationException(this.RESEND_MESSAGE);
         }
+        return res;
+      `
+    },
+    {
+      name: 'verifyCode',
+      javaCode: `
+        DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
+        Calendar c = Calendar.getInstance();
+
+        EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
+          EQ(EmailVerificationCode.EMAIL, email),
+          EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
+          GT(EmailVerificationCode.EXPIRY, c.getTime())
+        ));
         return code != null;
       `
     },

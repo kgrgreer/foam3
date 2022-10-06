@@ -750,7 +750,7 @@ foam.CLASS({
         return new Promise(function(resolve, reject) {
           self.stack.push(self.StackBlock.create({ view: {
             class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.ResetPassword'
+            modelOf: 'foam.nanos.auth.resetPassword.ResetPasswordByToken'
            }}));
           self.loginSuccess$.sub(resolve);
         });
