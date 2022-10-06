@@ -55,6 +55,7 @@ foam.CLASS({
       padding: 0 4rem;
       align-self: center;
       width: 100%;
+      overflow: auto;
     }
 
     ^actionBar {

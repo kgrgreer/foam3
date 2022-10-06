@@ -32,7 +32,7 @@ foam.CLASS({
       padding-top: 0;
     }
     ^entry-container > * {
-      max-width: 400px;
+      width: clamp(200px, 25%, 500px);
       max-height: 200px;
     }
   `,
@@ -81,7 +81,7 @@ foam.CLASS({
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
             .callIf(self.actionView, function() {
-              e.tag(self.actionView);
+              this.tag(self.actionView);
             })
             .forEach(currentValues, function(data) {
               e.tag(self.citationView, { data : data });
