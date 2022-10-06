@@ -16,6 +16,7 @@ p({
     title: 'Done',
     message: 'Scheduled successfully!',
     of: 'foam.nanos.cron.Schedulable',
+    showTitle: false,
     combinedSection: true,
     wao: {
       class: "foam.u2.wizard.wao.PrerequisiteWAO",

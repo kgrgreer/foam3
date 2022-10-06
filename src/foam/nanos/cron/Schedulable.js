@@ -16,8 +16,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.ContextAgent',
-    'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.ServiceProviderAware'
+    'foam.nanos.auth.Authorizable'
   ],
 
   javaImports: [
@@ -150,7 +149,10 @@ foam.CLASS({
       section: 'summary',
       createVisibility: 'HIDDEN',
       gridColumns: 4,
-      order: 1
+      order: 1,
+      factory: function(){
+        return `${this.objectToSchedule.toSummary()} - ${this.nextScheduledDate}`;
+      }
     },
     {
       class: 'Date',

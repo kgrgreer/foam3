@@ -52,6 +52,12 @@
       `,
       name: 'loadIntoPath'
     },
+    {
+      name: 'delegate',
+      factory: function(){
+        return foam.u2.wizard.wao.NullWAO.create();
+      }
+    }
   ],
 
   methods: [
