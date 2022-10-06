@@ -32,7 +32,7 @@ foam.CLASS({
       padding-top: 0;
     }
     ^entry-container > * {
-      max-width: clamp(200px, 25%, 500px);
+      width: clamp(200px, 25%, 500px);
       max-height: 200px;
     }
   `,
