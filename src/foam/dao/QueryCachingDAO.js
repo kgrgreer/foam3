@@ -28,6 +28,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
+      //console.log('************ QUERYCache', limit);
       if (
         // Only cache selects that have limit provided
         limit === undefined
@@ -41,16 +42,24 @@ foam.CLASS({
       let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        //console.log('******** QUERYCACHE: predicate: ' + predicate + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
-        let requestEndIdx = requestStartIdx + limit;
+        let requestEndIdx   = requestStartIdx + limit;
 
         // Ensure we have cache for request
-        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( function() {
+        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( () => {
+
+          let endIdx = requestEndIdx <= self.cache[key].length ? requestEndIdx : self.cache[key].length;
+
+          //console.log('*** QCD *** size: ' + self.cache[key].length + ' : endIdx: ' + endIdx + ' : for predicate: ' + predicate);
 
           // Return data from cache
-          for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
-            sink.put(self.cache[key][idx]);
+          for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
+            if ( foam.dao.ArraySink.isInstance(sink) ) {
+              sink.put(self.cache[key][idx]);
+            } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+              sink.projectionWithClass[idx] = self.cache[key][idx];
+            }
           }
 
           sink.eof();
@@ -83,19 +92,17 @@ foam.CLASS({
     function fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate) {
       // Pre-check cache for elements
       let startIdx = -1;
-      let endIdx = -1;
+      let endIdx   = -1;
       let hasMissingData = false;
 
       if ( this.cache[key] ) {
         // Cycle through exising cached elements to verify all requested are present
         for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
           if ( ! this.cache[key][idx] ) {
-            if ( ! hasMissingData ) {
-              // Found start of missing data within requested block
-              hasMissingData = true;
-              startIdx = idx;
-              break;
-            }
+            // Found start of missing data within requested block
+            hasMissingData = true;
+            startIdx = idx;
+            break;
           }
         }
 
@@ -110,19 +117,29 @@ foam.CLASS({
         }
       } else {
         // No data present load entire block
-        hasMissingData = true;
-        startIdx = requestStartIdx;
-        endIdx = requestEndIdx;
+        hasMissingData  = true;
+        startIdx        = requestStartIdx;
+        endIdx          = requestEndIdx;
         this.cache[key] = [];
       }
 
       if ( hasMissingData ) {
-        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-          // Update cache with missing data
-          for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
-            self.cache[key][startIdx + idx] = result.array[idx];
+
+          if ( foam.dao.ArraySink.isInstance(sink) ) {
+            // ArraySink
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.array[idx];
+            }
+          } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+            // Projection
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.projectionWithClass.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.projectionWithClass[idx];
+            }
           }
         });
       }
@@ -131,4 +148,3 @@ foam.CLASS({
     }
   ]
 });
-
