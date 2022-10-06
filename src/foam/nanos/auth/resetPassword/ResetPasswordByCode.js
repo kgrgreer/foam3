@@ -33,16 +33,16 @@ foam.CLASS({
     {
       name: 'verificationCodeSection',
       title: function() {
-        return this.CODE_SECTION_TITLE
+        return this.CODE_SECTION_TITLE;
       }
     },
     {
       name: 'resetPasswordSection',
       title: function() {
-        return this.RESET_PASSWORD_TITLE
+        return this.RESET_PASSWORD_TITLE;
       },
       subTitle: function() {
-        return this.RESET_PASSWORD_SUBTITLE
+        return this.RESET_PASSWORD_SUBTITLE;
       }
     }
   ],
