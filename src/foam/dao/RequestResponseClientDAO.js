@@ -49,6 +49,7 @@ Suitable for usage against backends that don't support listen(), such as plain H
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
+      if ( predicate ) predicate = predicate.partialEval();
       if ( predicate === foam.mlang.predicate.True.create() ) predicate = null;
       if ( ! skip ) skip = 0;
       if ( ! limit ) limit = Number.MAX_SAFE_INTEGER;
