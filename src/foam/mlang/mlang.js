@@ -1857,10 +1857,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'An Expression which always returns the same constant value.',
-
+/*
   axioms: [
     foam.pattern.Multiton.create({property: 'value'})
   ],
+  */
 
   properties: [
     {
