@@ -32,6 +32,7 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function (_, o, p) {
+        if ( o == null ) return null;
         if ( ! foam.String.isInstance(o) ) return p.adaptValue(o);
 
         const parts = o.split('.');
