@@ -1560,7 +1560,7 @@ foam.CLASS({
     {
       name: 'arg2',
       adapt: function(old, nu, prop) {
-        var value = foam.mlang.Constant.isInstance(nu) ? nu : foam.mlang.Constant.create({value: nu || []});
+        var value = prop.adaptValue(nu);
         var arg1  = this.arg1;
 
         // Adapt constant array elements when:
@@ -1568,7 +1568,7 @@ foam.CLASS({
         // (2) Value is truthy (empty arrays can be serialized as undefined);
         // (3) Arg1 has an adapt().
         if ( foam.mlang.Constant.isInstance(value) && value.value && arg1 && arg1.adapt ) {
-          value = value.shallowClone();
+          value = value.clone();
           var arrayValue = value.value;
           for ( var i = 0 ; i < arrayValue.length ; i++ ) {
             arrayValue[i] = arg1.adapt.call(null, old && old[i], arrayValue[i], arg1);
@@ -1857,10 +1857,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'An Expression which always returns the same constant value.',
-
+/*
   axioms: [
     foam.pattern.Multiton.create({property: 'value'})
   ],
+  */
 
   properties: [
     {

@@ -190,9 +190,9 @@
            */
           addClass(this.myClass('errorText')).
           enableClass(this.myClass('colorText'), colorSlot).
-          // show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
+           show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
           // Using the line below we can reserve error text space instead of shifting layouts
-          show(modeSlot.map(m => m == foam.u2.DisplayMode.RW)).
+          // show(modeSlot.map(m => m == foam.u2.DisplayMode.RW)).
           start({
             class: 'foam.u2.tag.Image',
             data: '/images/inline-error-icon.svg',
