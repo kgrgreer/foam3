@@ -323,9 +323,9 @@ This is the heart of Medusa.`,
                 if ( nextIndex > replaying.getIndex() ) {
                   replaying.updateIndex(x, nextIndex);
                 } else if ( nextIndex < dagger.getGlobalIndex(x) ) {
-                  // no nodes online
-                  logger.info("waiting for bootstrap", "global", dagger.getGlobalIndex(x), "replaying", replaying.getReplaying(), replaying.getIndex(), replaying.getReplayIndex(), "next", nextIndex);
-                 try {
+                  // no nodes online or system is catching up after compaction
+                  logger.info("waiting for data", "global", dagger.getGlobalIndex(x), "replaying", replaying.getReplaying(), replaying.getIndex(), replaying.getReplayIndex(), "next", nextIndex);
+                  try {
                     Thread.currentThread().sleep(1000);
                   } catch (InterruptedException e) {
                     break;
