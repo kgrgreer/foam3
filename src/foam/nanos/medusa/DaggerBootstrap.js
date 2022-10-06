@@ -51,6 +51,24 @@ foam.CLASS({
       class: 'Long',
       value: 0,
       visibility: 'RO'
+    },
+    {
+      documentation: 'Store first byte of each hash retrieved from the system supplied hashes set',
+      class: 'StringArray',
+      name: 'bootstrapHashes',
+      javaFactory: 'return new String[getBootstrapHashEntries()];',
+      // REVIEW: security concern sending first 8 characters of hash?
+      // storageTransient: true,
+      visibility: 'RO'
+    },
+    {
+      documentation: 'Store first byte of each calculated bootstrap hash, so compaction can compare all mediators',
+      class: 'StringArray',
+      name: 'bootstrapDAGHashes',
+      javaFactory: 'return new String[getBootstrapHashEntries()];',
+      // REVIEW: security concern sending first 8 characters of hash?
+      // storageTransient: true,
+      visibility: 'RO'
     }
   ]
 });

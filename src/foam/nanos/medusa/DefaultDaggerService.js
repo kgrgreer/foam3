@@ -219,6 +219,7 @@ foam.CLASS({
       clearProperty("links");
       for ( int i = 0; i < getLinks().length; i++ ) {
         String hash = getBootstrapHash(x, i);
+        bootstrap.getBootstrapHashes()[i] = hash.substring(0, 7);
         logger.debug("bootstrap,links", i, hash.substring(0, 7));
         getLinks()[i] = new MedusaEntry.Builder(x).setIndex(0L).setHash(hash).build();
       }
@@ -236,9 +237,10 @@ foam.CLASS({
         entry.setPromoted(true);
         entry = (MedusaEntry) getDao().put_(x, entry);
         updateLinks(x, entry);
-        logger.info("entry", i, entry.toDebugSummary(), "["+entry.getData()+"]");
+        bootstrap.getBootstrapDAGHashes()[i] = entry.getHash().substring(0, 7);
+        logger.info("entry", i, entry.toDebugSummary());
       }
-      logger.info("end", "index", getIndex(), "bootstrap", bootstrap);
+      logger.info("end", "index", getIndex());
       return bootstrap;
      `
     },
