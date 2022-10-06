@@ -79,6 +79,12 @@ foam.CLASS({
       documentation: 'checks if back link to login page is needed',
       value: true,
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showSubmitAction',
+      value: true,
+      hidden: true
     }
   ],
 
@@ -88,7 +94,9 @@ foam.CLASS({
       label: 'Submit',
       buttonStyle: 'PRIMARY',
       section: 'emailPasswordSection',
-
+      isAvailable: function(showSubmitAction) {
+        return showSubmitAction
+      },
       isEnabled: function(errors_) {
         return ! errors_;
       },
