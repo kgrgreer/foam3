@@ -17,6 +17,7 @@ p({
     message: 'Scheduled successfully!',
     of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
+    isLastWizardlet: true,
     wao: {
       class: "foam.u2.wizard.wao.PrerequisiteWAO",
       of: "foam.nanos.cron.Schedulable",
@@ -57,7 +58,6 @@ p({
   wizardlet: {
     class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
     title: "Review Your Schedule",
-    actionLabel: 'Submit',
     showTitles: false,
     of: 'foam.core.MapHolder',
     items: [
@@ -84,6 +84,19 @@ p({
           class: 'foam.u2.detail.VerticalDetailView'
         },
         title: 'Schedule Details'
+      },
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'note',
+        border: {
+          class: 'foam.u2.borders.NullBorder',
+          cssClasses: ['p']
+        },
+        view: {
+          class: 'foam.u2.HTMLView',
+          data: "<span> Charges will be <span class=\'p-semiBold\' > automatically debited </span> from your account <span class=\'p-semiBold\' > on the scheduled day or the next business day </span> if it falls on a weekend or statutory holiday. Expect an X day delay to see your wallet funding.</span>"
+        },
+        predicate: {"class":"foam.mlang.predicate.True"}
       }
     ],
     wao: {
