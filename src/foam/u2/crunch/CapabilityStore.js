@@ -56,6 +56,7 @@ foam.CLASS({
   requires: [
     'foam.dao.ArrayDAO',
     'foam.dao.NullDAO',
+    'foam.dao.PromisedDAO',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityCategory',
     'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
@@ -177,15 +178,16 @@ foam.CLASS({
         DAO with only visible capabilities.
       `,
       factory: function() {
+        var self = this;
         return this.PromisedDAO.create({
-          promise: function () {
-            return new Promise().then( () => this.themeDomainDAO.find(this.window.location.hostname) )
-            .then( (ret) => ret.getCapabilities(this.ctrl.__subContext__).dao.select() )
-            .then( (themeCaps) => {
-              if (themeCaps.array.length != 0) return themeCaps;
-              else return this.featuredCapabilities.select();
-            });
-          }
+          promise: new Promise(async function(resolve) {
+              var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
+                return ret?.getCapabilities(self.ctrl.__subContext__).dao.select();
+              });
+              if ( themeCaps?.array?.length != 0 ) return themeCaps.array;
+              var featured = await self.featuredCapabilities.select();
+              return featured.array;
+          })
         });
       }
     },
