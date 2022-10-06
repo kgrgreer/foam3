@@ -35,6 +35,8 @@ TODO: handle node roll failure - or timeout
     'foam.dao.ArraySink',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.mlang.sink.Count',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -156,11 +158,11 @@ TODO: handle node roll failure - or timeout
 
         // compaction
         logger.info("compaction");
-        compaction(x);
+        long compactionTime = compaction(x);
 
         // purge
         logger.info("purge");
-        purge(x, oldIndex);
+        purge(x, oldIndex, compactionTime);
 
         logger.info("end");
       } catch (Throwable t) {
@@ -197,7 +199,6 @@ TODO: handle node roll failure - or timeout
           throw new IllegalStateException(cfg.getId()+" OFFLINE");
         }
       }
-      logger.info("clean");
       `
     },
     {
@@ -289,7 +290,6 @@ TODO: handle node roll failure - or timeout
         logger.error("compaction, failed. ", failures.size(), "of", nodes.size(), "failed", failures);
         throw new CompactionException("roll");
       }
-      logger.debug("line.shutdown", "continue");
       `
     },
     {
@@ -379,8 +379,20 @@ TODO: handle node roll failure - or timeout
         logger.error("secondary, reconfigure, failed", failures.size(), "of", mediators.length -1, "failed", failures);
         throw new CompactionException("dagger");
       }
-      logger.debug("line.shutdown, continue");
-
+      // verify all bootstrap hashes are the same.
+      for ( Object reply : replies.values() ) {
+        for ( int i = 0; i < bootstrap.getBootstrapHashes().length; i++ ) {
+          DaggerBootstrap db = (DaggerBootstrap) reply;
+          if ( ! bootstrap.getBootstrapHashes()[i].equals(db.getBootstrapHashes()[i])) {
+            logger.error("bootstrap hash mismatch", "expected", bootstrap.getBootstrapHashes()[i], "found", db.getBootstrapHashes()[i]);
+            throw new CompactionException("dagger validation");
+          }
+          if ( ! bootstrap.getBootstrapDAGHashes()[i].equals(db.getBootstrapDAGHashes()[i])) {
+            logger.error("bootstrap DAG hash mismatch", "expected", bootstrap.getBootstrapDAGHashes()[i], "found", db.getBootstrapDAGHashes()[i]);
+            throw new CompactionException("dagger validation");
+          }
+        }
+      }
       return oldIndex;
       `
     },
@@ -388,24 +400,34 @@ TODO: handle node roll failure - or timeout
       documentation: 'Dump medusa entry data to new ledger file',
       name: 'compaction',
       args: 'X x',
+      type: 'Long',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "compaction");
       DAO dao = (DAO) x.get("medusaEntryDAO");
       dao = dao.orderBy(MedusaEntry.ID);
+      Count count = new Count();
       Sink sink = new CompactibleSink(x,
                     new CompactionSink(x,
                     new UniqueSink(x,
                     new NSpecSink(x,
-                    new NodeSink(x)))));
+                    new Sequence.Builder(x)
+                      .setArgs(new Sink[] {
+                        count,
+                        new NodeSink(x) })
+                      .build()
+                    ))));
+      long startTime = System.currentTimeMillis();
       logger.info("start");
       dao.select(sink);
-      logger.info("end");
+      long compactionTime = System.currentTimeMillis() - startTime;
+      logger.info("end", "time (s)", compactionTime/1000, "compacted", count.getValue());
+      return compactionTime;
       `
     },
     {
       documentation: 'Clean up memory medusa entry daos after compaction',
       name: 'purge',
-      args: 'X x, Long oldIndex',
+      args: 'X x, Long oldIndex, Long compactionTime',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "purge");
       logger.info("oldIndex", oldIndex);
@@ -446,7 +468,8 @@ TODO: handle node roll failure - or timeout
       // Instead, perform manual polling for completion.
       long waited = 0L;
       long sleep = 1000L;
-      while ( waited < getMaxWait() ) {
+      long waitTime = Math.max(getMaxWait(), compactionTime);
+      while ( waited < waitTime ) {
         try {
           Thread.currentThread().sleep(sleep);
           waited += sleep;
@@ -457,14 +480,14 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      // REVIEW: getSfBroacastMediators returns self as well.
+      // NOTE: getSfBroacastMediators returns self as well.
       if ( replies.size() < (mediators.length -1) ||
            failures.size() > 0 ) {
-        // TODO: in a failed state, need to shutdown - all mediators
-        logger.error("secondary, purge, failed", failures.size(), "of", mediators.length, "failed");
+        // REVIEW: purge failure is ok, just means the same data may
+        // written out again if another mediator is primary.
+        logger.warning("secondary, purge, failed", failures.size(), "of", mediators.length, "failed");
         throw new CompactionException("purge");
       }
-      logger.debug("line.shutdown, continue");
       `
     }
   ],
