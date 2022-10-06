@@ -261,7 +261,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       `,
       javaCode: `
       Subject subject = new Subject.Builder(x).setUser(null).build();
-        return x
+        return new OrX(x)
           .put(Session.class, this)
           .put("spid", null)
           .put("subject", subject)
@@ -359,12 +359,12 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           wasAnonymous = sp != null && sp.getAnonymousUser() == subjectUser.getId();
         }
 
-        rtn = new OrX(reset(x));
+        rtn = reset(x);
 
         // Support hierarchical SPID context
         var subX = rtn.cd(user.getSpid());
         if ( subX != null ) {
-          rtn = new OrX(reset(subX));
+          rtn = reset(subX);
         }
 
         Subject subject = null;
