@@ -79,6 +79,10 @@ foam.CLASS({
         this.wizardController.autoPositionUpdates = false;
       }
 
+      if ( ! this.wizardController.wizardlets[0].isVisible ) {
+        await this.wizardController.next();
+      }
+
       this.wizardStackBlock = this.StackBlock.create({
         view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
         parent: this
