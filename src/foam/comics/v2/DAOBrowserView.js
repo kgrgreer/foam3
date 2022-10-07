@@ -312,7 +312,10 @@ foam.CLASS({
           this.config.DAOActions.push(action);
       });
 
-      this.data = foam.dao.QueryCachingDAO.create({ delegate: this.data });
+      if ( ! foam.dao.QueryCachingDAO.isInstance(this.data) ) {
+        this.data = foam.dao.QueryCachingDAO.create({ delegate: this.data });
+      }
+
       var self = this;
       var filterView, cannedView, summaryView;
       var simpleSearch;

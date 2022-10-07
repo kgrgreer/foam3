@@ -68,7 +68,10 @@
           .addClass(this.myClass('flexer'))
           .add(
             self.slot(function(choices) {
-              var toRender = choices.sort().map((choice, index) => {
+              // For default selection e.g. One time deposit
+              self.data = choices[0][0];
+
+              var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
                   return self.choiceIsSelected(data, choices[index]);
                 });
