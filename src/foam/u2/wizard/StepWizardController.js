@@ -298,6 +298,14 @@ foam.CLASS({
         this.visitedWizardlets.indexOf(wizardlet) == -1 ? p
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
+    function canLandOn(pos) {
+      const wizardlet = this.wizardlets[pos.wizardletIndex];
+      if ( ! wizardlet.isVisible ) return false;
+      if ( wizardlet.sections.length < 1 ) return false;
+      const section = wizardlet.sections[pos.sectionIndex];
+      if ( ! section.isAvailable ) return false;
+      return true;
+    },
     async function next() {
       let wizardlet = this.currentWizardlet;
 
@@ -314,14 +322,6 @@ foam.CLASS({
         return false;
       }
 
-      const canLandOn_ = pos => {
-        const wizardlet = this.wizardlets[pos.wizardletIndex];
-        if ( ! wizardlet.isVisible ) return false;
-        if ( wizardlet.sections.length < 1 ) return false;
-        const section = wizardlet.sections[pos.sectionIndex];
-        if ( ! section.isAvailable ) return false;
-        return true;
-      }
       const iterator = this.wizardPosition.iterate(this.wizardlets);
 
       for ( const pos of iterator ) {
@@ -337,7 +337,7 @@ foam.CLASS({
             );
 
             if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
-              if ( canLandOn_(this.wizardPosition) ) return false;
+              if ( this.canLandOn(this.wizardPosition) ) return false;
               hint = this.WizardErrorHint.ABORT_FLOW;
             }
 
@@ -362,7 +362,7 @@ foam.CLASS({
           }
         }
 
-        if ( canLandOn_(pos) ) {
+        if ( this.canLandOn(pos) ) {
           this.wizardPosition = pos;
           return false;
         }
