@@ -122,6 +122,7 @@ TODO: handle node roll failure - or timeout
       args: 'X x',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "execute");
+      long startTime = System.currentTimeMillis();
       logger.info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
@@ -168,6 +169,9 @@ TODO: handle node roll failure - or timeout
       } catch (Throwable t) {
         logger.error(t);
         throw t;
+      } finally {
+        long time = System.currentTimeMillis() - startTime;
+        logger.info("end", "duration", time/1000, "s");
       }
       `
     },
@@ -420,7 +424,7 @@ TODO: handle node roll failure - or timeout
       logger.info("start");
       dao.select(sink);
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("end", "time (s)", compactionTime/1000, "compacted", count.getValue());
+      logger.info("end", "duration", compactionTime/1000, "s, compacted", count.getValue());
       return compactionTime;
       `
     },
@@ -468,7 +472,7 @@ TODO: handle node roll failure - or timeout
       // Instead, perform manual polling for completion.
       long waited = 0L;
       long sleep = 1000L;
-      long waitTime = Math.max(getMaxWait(), compactionTime);
+      long waitTime = Math.max(getMaxWait(), compactionTime * 2);
       while ( waited < waitTime ) {
         try {
           Thread.currentThread().sleep(sleep);
