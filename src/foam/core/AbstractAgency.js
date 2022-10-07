@@ -11,7 +11,7 @@ foam.CLASS({
   implements: [ 'foam.core.Agency' ],
 
   javaImports: [
-    'foam.core.ProxyX',
+    'foam.core.MutableX',
     'foam.core.X',
     'foam.core.XLocator',
     'foam.nanos.logger.Loggers',
@@ -36,7 +36,7 @@ foam.CLASS({
       if ( ! TASK_QUEUE.containsKey(key) ) {
         var task = new TimerTask() {
           public void run() {
-            X oldX = ((ProxyX) XLocator.get()).getX();
+            X oldX = ((MutableX) XLocator.get()).getX();
             XLocator.set(x);
             try { agent.execute(x); }
             catch ( java.lang.Exception e ) {

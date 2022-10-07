@@ -10,16 +10,16 @@ import java.util.Collections;
 import java.util.Map;
 
 /** Proxy for X interface. **/
-public class ProxyX
+public class MutableX
   extends    ContextAwareSupport
   implements X
 {
 
-  public ProxyX() {
+  public MutableX() {
     this(EmptyX.instance());
   }
 
-  public ProxyX(X x) {
+  public MutableX(X x) {
     setX(x);
   }
 
@@ -60,7 +60,9 @@ public class ProxyX
   }
 
   public X put(Object name, Object value) {
-    return getX().put(name, value);
+    setX(getX().put(name, value));
+
+    return this;
   }
 
   public X putFactory(Object name, XFactory factory) {
@@ -93,4 +95,3 @@ public class ProxyX
     return getX().cd(path);
   }
 }
-

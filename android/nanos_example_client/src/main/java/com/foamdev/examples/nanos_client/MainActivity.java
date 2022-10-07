@@ -12,20 +12,20 @@ public class MainActivity extends android.app.ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        foam.core.ProxyX proxyX = new foam.core.ProxyX();
+        foam.core.MutableX MutableX = new foam.core.MutableX();
 
-        proxyX.put("registry", proxyX.create(foam.box.BoxRegistryBox.class));
+        MutableX.put("registry", MutableX.create(foam.box.BoxRegistryBox.class));
 
-        foam.box.ProxyBox me = proxyX.create(foam.box.ProxyBox.class);
+        foam.box.ProxyBox me = MutableX.create(foam.box.ProxyBox.class);
 
-        me.setDelegate((foam.box.Box)proxyX.get("registry"));
+        me.setDelegate((foam.box.Box)MutableX.get("registry"));
 
-        proxyX.put("me", me);
+        MutableX.put("me", me);
 
-        foam.box.HTTPBox box = proxyX.create(foam.box.HTTPBox.class);
+        foam.box.HTTPBox box = MutableX.create(foam.box.HTTPBox.class);
         box.setUrl("http://localhost:8080/nSpecDAO");
 
-        dao = proxyX.create(foam.dao.ClientDAO.class);
+        dao = MutableX.create(foam.dao.ClientDAO.class);
         dao.setDelegate(box);
 
 

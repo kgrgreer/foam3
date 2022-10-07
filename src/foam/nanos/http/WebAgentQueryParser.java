@@ -7,7 +7,7 @@
 package foam.nanos.http;
 
 import foam.core.ClassInfo;
-import foam.core.ProxyX;
+import foam.core.MutableX;
 import foam.core.EmptyX;
 import foam.core.X;
 import foam.lib.parse.ErrorReportingPStream;
@@ -76,7 +76,7 @@ public class WebAgentQueryParser {
     ParserContext psx = new ParserContextImpl();
 
     ((StringPStream) ps).setString(buffer);
-    psx.set("X", x == null ? new ProxyX() : x);
+    psx.set("X", x == null ? new MutableX() : x);
 
     ErrorReportingPStream eps = new ErrorReportingPStream(ps);
     ps = parser_.parse(eps, psx);

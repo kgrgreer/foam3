@@ -10,7 +10,7 @@ import foam.nanos.app.Mode;
 import foam.box.Box;
 import foam.box.SessionServerBox;
 import foam.core.FObject;
-import foam.core.ProxyX;
+import foam.core.MutableX;
 import foam.core.X;
 import foam.lib.json.ExprParser;
 import foam.lib.json.JSONParser;
@@ -151,7 +151,7 @@ public class ServiceWebAgent
     ParserContext psx    = new ParserContextImpl();
 
     ((StringPStream) ps).setString(buffer);
-    psx.set("X", x == null ? new ProxyX() : x);
+    psx.set("X", x == null ? new MutableX() : x);
 
     ErrorReportingPStream eps = new ErrorReportingPStream(ps);
     ps = eps.apply(parser, psx);

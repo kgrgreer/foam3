@@ -10,9 +10,9 @@ package foam.core;
 public class XLocator
 {
 
-  protected static ThreadLocal<ProxyX> x__ = new ThreadLocal<ProxyX>() {
-    protected ProxyX initialValue() {
-      return new ProxyX();
+  protected static ThreadLocal<MutableX> x__ = new ThreadLocal<MutableX>() {
+    protected MutableX initialValue() {
+      return new MutableX();
     }
   };
 

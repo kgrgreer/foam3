@@ -12,7 +12,7 @@ import foam.blob.IdentifiedBlob;
 import foam.blob.InputStreamBlob;
 import foam.core.X;
 import foam.core.XLocator;
-import foam.core.ProxyX;
+import foam.core.MutableX;
 import foam.dao.DAO;
 import static foam.mlang.MLang.EQ;
 import foam.nanos.fs.File;

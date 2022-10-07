@@ -11,7 +11,7 @@ package foam.core;
     put - put to delegate
  **/
 public class OrX
-  extends ProxyX
+  extends MutableX
 {
   /** Store null's as a marker object so that we can distinguish between null and no-binding. **/
   /** Is needed so that inheritance works properly if the child X contains a null binding.    **/

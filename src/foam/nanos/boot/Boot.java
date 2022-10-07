@@ -31,7 +31,7 @@ public class Boot {
   public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
-  protected X                         root_      = new ProxyX();
+  protected X                         root_      = new MutableX();
   protected Map<String, NSpecFactory> factories_ = new HashMap<>();
 
   public Boot() {
@@ -54,7 +54,7 @@ public class Boot {
     root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(datadir));
 
     // Used for all the services that will be required when Booting
-    serviceDAO_ = new JDAO(((foam.core.ProxyX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), "services", cluster);
+    serviceDAO_ = new JDAO(((foam.core.MutableX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), "services", cluster);
     serviceDAO_ = new foam.nanos.auth.PermissionedPropertyDAO(root_, serviceDAO_);
 
     installSystemUser();
@@ -93,7 +93,7 @@ public class Boot {
 
       // Register service
       var serviceName = path[path.length - 1];
-      NSpecFactory factory = new NSpecFactory((ProxyX) x, sp);
+      NSpecFactory factory = new NSpecFactory((MutableX) x, sp);
       factories_.put(sp.getName(), factory);
       logger.info("Registering", sp.getName());
       x.putFactory(serviceName, factory);
@@ -136,8 +136,8 @@ public class Boot {
       }
     }
 
-    // Revert root_ to non ProxyX to avoid letting children add new bindings.
-    root_ = ((ProxyX) root_).getX();
+    // Revert root_ to non MutableX to avoid letting children add new bindings.
+    root_ = ((MutableX) root_).getX();
     XLocator.set(root_);
 
     if ( cluster ) {

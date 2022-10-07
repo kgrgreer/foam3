@@ -20,7 +20,7 @@ public class NSpecFactory
   implements XFactory
 {
   NSpec       spec_;
-  ProxyX      x_;
+  MutableX      x_;
   Thread      creatingThread_ = null;
   Object      ns_             = null;
   ThreadLocal tlService_      = new ThreadLocal() {
@@ -39,7 +39,7 @@ public class NSpecFactory
       }
     };
 
-  public NSpecFactory(ProxyX x, NSpec spec) {
+  public NSpecFactory(MutableX x, NSpec spec) {
     x_    = x;
     spec_ = spec;
   }
@@ -94,7 +94,7 @@ public class NSpecFactory
     Object ns = ns_;
     try {
       while ( ns != null ) {
-        if ( ns instanceof ContextAware && ! ( ns instanceof ProxyX ) ) {
+        if ( ns instanceof ContextAware && ! ( ns instanceof MutableX ) ) {
           ((ContextAware) ns).setX(nx);
         }
         if ( ns instanceof NSpecAware ) {

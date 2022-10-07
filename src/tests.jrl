@@ -99,7 +99,7 @@ p({
   code:"""
 import java.util.HashMap;
 
-import foam.core.ProxyX;
+import foam.core.MutableX;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.EasyDAO;
@@ -114,7 +114,7 @@ import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 
 context = null;
-root_      = new ProxyX();
+root_      = new MutableX();
 factories_ = new HashMap();
 
 context = x;
@@ -140,7 +140,7 @@ obj.EmptyListErps();
             if ( ! "".equals(sc) ) {
               try {
                 print(sc);
-                serviceDAO_ = new JDAO(((foam.core.ProxyX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), sc);
+                serviceDAO_ = new JDAO(((foam.core.MutableX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), sc);
                 break;
               } catch (Exception e) {
                 test(false, sc + " has an error");

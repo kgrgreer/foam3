@@ -13,7 +13,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'foam.core.ProxyX',
+    'foam.core.MutableX',
     'foam.lib.StoragePropertyPredicate',
     'foam.lib.json.ExprParser',
     'foam.lib.json.JSONParser',
@@ -427,7 +427,7 @@ try {
         ParserContext x      = new ParserContextImpl();
 
         ((StringPStream) ps).setString(line);
-        x.set("X", ( getX() == null ) ? new ProxyX() : getX());
+        x.set("X", ( getX() == null ) ? new MutableX() : getX());
 
         ErrorReportingPStream eps = new ErrorReportingPStream(ps);
         ps = eps.apply(parser, x);

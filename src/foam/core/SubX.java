@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SubX extends ProxyX {
+public class SubX extends MutableX {
   /**
    * Lazy root context accessor
    */
@@ -37,7 +37,7 @@ public class SubX extends ProxyX {
   public static final String SERVICE_KEYS = "_SubX_";
 
   public SubX(Supplier<X> root, String parent) {
-    this(root, parent, new ProxyX());
+    this(root, parent, new MutableX());
   }
 
   public SubX(Supplier<X> root, String parent, X delegate) {
@@ -64,7 +64,7 @@ public class SubX extends ProxyX {
 
   @Override
   public X put(Object key, Object value) {
-    if ( getX() instanceof ProxyX ) {
+    if ( getX() instanceof MutableX ) {
       getX().put(key, value);
       serviceKeys_.add(key);
       return this;
@@ -74,7 +74,7 @@ public class SubX extends ProxyX {
 
   @Override
   public X putFactory(Object key, XFactory factory) {
-    if ( getX() instanceof ProxyX ) {
+    if ( getX() instanceof MutableX ) {
       getX().putFactory(key, factory);
       serviceKeys_.add(key);
       return this;
@@ -118,8 +118,8 @@ public class SubX extends ProxyX {
   }
 
   public X freeze() {
-    if ( getX() instanceof ProxyX ) {
-      setX(((ProxyX) getX()).getX());
+    if ( getX() instanceof MutableX ) {
+      setX(((MutableX) getX()).getX());
     }
     return this;
   }
@@ -139,11 +139,11 @@ public class SubX extends ProxyX {
 
   public X fclone() {
     var x = getX();
-    while ( x instanceof ProxyX ) {
-      x = ((ProxyX) x).getX();
+    while ( x instanceof MutableX ) {
+      x = ((MutableX) x).getX();
     }
 
-    return new SubX(root_, parent_, new ProxyX(
+    return new SubX(root_, parent_, new MutableX(
       x.put(SERVICE_KEYS, new HashSet(serviceKeys_))));
   }
 }
