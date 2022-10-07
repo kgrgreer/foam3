@@ -31,7 +31,7 @@ foam.CLASS({
 
     ^ {
       display: grid;
-      height: 100vh;
+      height: 100%;
       grid-template: auto 1fr / auto 1fr;
     }
 
@@ -131,6 +131,10 @@ foam.CLASS({
       .add(this.slot( async function(loginSuccess, topNav) {
         if ( ! loginSuccess || ! topNav ) return null;
         await this.initLayout;
+
+        var resize = new ResizeObserver (this.adjustTopBarHeight);
+        this.onDetach(resize.disconnect());
+
         return this.E()
           .addClass(this.myClass('header'))
           .tag(topNav, {}, self.headerSlot_$)
@@ -162,8 +166,8 @@ foam.CLASS({
     function adjustTopBarHeight() {
       if ( ! this.headerSlot_ ) return;
       let root = this.document.documentElement;
-      this.headerSlot_.el().then(el => { 
-        root?.style.setProperty('--topbar-height', el.offsetHeight + 'px' ); 
+      this.headerSlot_.el().then(el => {
+        root?.style.setProperty('--topbar-height', el.offsetHeight + 'px' );
       })
     }
   ]
