@@ -80,6 +80,7 @@ foam.CLASS({
       var self = this;
       this.window.addEventListener('resize', this.resize);
       this.resize();
+      this.onDetach(() => self.window.removeEventListener('resize', self.resize));
       this.start()
       .addClass(this.myClass())
         .show(this.selectColumnsExpanded$)
