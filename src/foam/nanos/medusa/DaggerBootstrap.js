@@ -25,17 +25,19 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      documentation: 'Offset in bootstrap hashes to prime system',
       name: 'bootstrapHashOffset',
       class: 'Int',
       value: 0
     },
     {
-      documentation: 'DefaultDaggerService only supports 2 links',
+      documentation: 'Number of hash links to prime the system. NOTE: DefaultDaggerService only supports 2 links',
       name: 'bootstrapHashEntries',
       class: 'Int',
       value: 2
     },
     {
+      documentation: `When false don't use a MessageDigest to calculate a hash. Provided for testing purposes only.`,
       name: 'hashingEnabled',
       class: 'Boolean',
       value: true
