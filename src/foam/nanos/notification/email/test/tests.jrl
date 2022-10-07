@@ -2,3 +2,7 @@ p({
   class:"foam.nanos.notification.email.test.EmailMessageRuleTest",
   id:"EmailMessageRuleTest"
 })
+p({
+  class:"foam.nanos.notification.email.test.MockSMTPEmailServiceTest",
+  id:"MockSMTPEmailServiceTest"
+})
