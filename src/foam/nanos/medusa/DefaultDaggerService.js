@@ -88,27 +88,11 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'Offset in bootstrap hashes to prime system',
-      name: 'bootstrapHashOffset',
-      class: 'Int',
-      value: 0
-    },
-    {
-      documentation: 'Number of manually created entries to prime the system.',
-      name: 'bootstrapHashEntries',
-      class: 'Int',
-      value: 2
-    },
-    {
-      documentation: `When false don't use a MessageDigest to calculate a hash. Provided for testing purposes only.`,
-      name: 'hashingEnabled',
-      class: 'Boolean',
-      value: true
-    },
-    {
-      name: 'algorithm',
-      class: 'String',
-      value: 'SHA-256'
+      documentation: 'Bootstrap which configured this service',
+      name: 'bootstrap',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.medusa.DaggerBootstrap',
+      javaFactory: 'return new DaggerBootstrap();'
     },
     {
       documentation: 'Current max promoted index',
@@ -127,7 +111,7 @@ foam.CLASS({
     {
       name: 'links',
       class: 'Array',
-      javaFactory: 'return new foam.nanos.medusa.DaggerLink[getBootstrapHashEntries()];',
+      javaFactory: 'return new foam.nanos.medusa.DaggerLink[getBootstrap().getBootstrapHashEntries()];',
       visibility: 'HIDDEN'
     },
     {
@@ -195,6 +179,11 @@ foam.CLASS({
       javaCode: `
       Logger logger = Loggers.logger(x, this, "reconfigure");
 
+      if ( bootstrap != null ) {
+        setBootstrap(bootstrap);
+      }
+      bootstrap = getBootstrap();
+
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
       if ( config == null ||
@@ -206,14 +195,11 @@ foam.CLASS({
 
       logger.info("start", "index", getIndex(), "bootstrap", bootstrap);
 
-      if ( bootstrap != null ) {
-        this.copyFrom(bootstrap);
-        if ( bootstrap.getBootstrapIndex() > getIndex() ) {
-          setIndex(bootstrap.getBootstrapIndex());
-        } else if ( bootstrap.getBootstrapIndex() < getIndex() ) {
-          bootstrap = (DaggerBootstrap) bootstrap.fclone();
-          bootstrap.setBootstrapIndex(getIndex());
-        }
+      if ( bootstrap.getBootstrapIndex() > getIndex() ) {
+        setIndex(bootstrap.getBootstrapIndex());
+      } else if ( bootstrap.getBootstrapIndex() < getIndex() ) {
+        bootstrap = (DaggerBootstrap) bootstrap.fclone();
+        bootstrap.setBootstrapIndex(getIndex());
       }
 
       clearProperty("links");
@@ -224,11 +210,13 @@ foam.CLASS({
         getLinks()[i] = new MedusaEntry.Builder(x).setIndex(0L).setHash(hash).build();
       }
 
-      for ( int i = 0; i < getBootstrapHashEntries(); i++ ) {
+      for ( int i = 0; i < bootstrap.getBootstrapHashEntries(); i++ ) {
         MedusaEntry entry = new MedusaEntry();
         entry = link(x, entry);
+        logger.info("link", "entry", i, entry.toDebugSummary());
         try {
           entry = hash(x, entry);
+          logger.info("hash", "entry", i, entry.toDebugSummary());
         } catch ( java.security.NoSuchAlgorithmException e ) {
           throw new DaggerException(e.getMessage(), e);
         }
@@ -236,11 +224,23 @@ foam.CLASS({
         entry.setNode(support.getConfigId());
         entry.setPromoted(true);
         entry = (MedusaEntry) getDao().put_(x, entry);
+
+        // NOTE: Normally the primary is coordinating the entry hashes,
+        // and updateLinks is called on promote which occurs in the same
+        // sequential order on all mediators.
+        // During Compaction, each mediator is reconfiguring and calling
+        // updateLinks and it's possible the linksIndex_ is not the same on all
+        // mediators at the time of compaction - the primary may be ahead
+        // for example.
+        // It is critical that the bootstrap entries are created identically
+        // on all mediators, obviously, so explicit control over linksIndex_
+        // is taken.
+        setLinksIndex(i);
         updateLinks(x, entry);
-        bootstrap.getBootstrapDAGHashes()[i] = entry.getHash().substring(0, 7);
         logger.info("entry", i, entry.toDebugSummary());
       }
       logger.info("end", "index", getIndex());
+      setBootstrap(bootstrap);
       return bootstrap;
      `
     },
@@ -271,7 +271,7 @@ foam.CLASS({
           }
         }
 
-        index += getBootstrapHashOffset(); // add offset
+        index += getBootstrap().getBootstrapHashOffset(); // add offset
         try {
           return hashes[index];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -318,17 +318,18 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'This is the only function used by the Nodes to create the hash for the MedusaEntry',
       name: 'hash',
       javaCode: `
       PM pm = PM.create(x, DefaultDaggerService.getOwnClassInfo(), "hash");
-      if ( ! getHashingEnabled() ) {
+      if ( ! getBootstrap().getHashingEnabled() ) {
         entry.setHash(byte2Hex(Long.toString(entry.getIndex()).getBytes(StandardCharsets.UTF_8)));
         entry.setAlgorithm("NONE");
         return entry;
       }
 
       try {
-        MessageDigest md = MessageDigest.getInstance(getAlgorithm());
+        MessageDigest md = MessageDigest.getInstance(getBootstrap().getAlgorithm());
         md.update(Long.toString(entry.getIndex1()).getBytes(StandardCharsets.UTF_8));
         md.update(entry.getHash1().getBytes(StandardCharsets.UTF_8));
         md.update(Long.toString(entry.getIndex2()).getBytes(StandardCharsets.UTF_8));
@@ -338,7 +339,7 @@ foam.CLASS({
         }
         String hash = byte2Hex(md.digest());
         entry.setHash(hash);
-        entry.setAlgorithm(getAlgorithm());
+        entry.setAlgorithm(getBootstrap().getAlgorithm());
 
         return entry;
       } finally {
@@ -352,7 +353,7 @@ foam.CLASS({
       javaCode: `
       PM pm = PM.create(x, DefaultDaggerService.getOwnClassInfo(), "verify");
       try {
-        if ( ! getHashingEnabled() ) {
+        if ( ! getBootstrap().getHashingEnabled() ) {
           return;
         }
 
