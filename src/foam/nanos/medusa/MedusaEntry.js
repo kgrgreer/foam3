@@ -278,13 +278,13 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
         sb.append(getIndex1());
         sb.append(":");
         if ( ! foam.util.SafetyUtil.isEmpty(getHash1()) ) {
-          sb.append(getHash().substring(0,7));
+          sb.append(getHash1().substring(0,7));
         }
         sb.append(":");
         sb.append(getIndex2());
         sb.append(":");
         if ( ! foam.util.SafetyUtil.isEmpty(getHash2()) ) {
-          sb.append(getHash().substring(0,7));
+          sb.append(getHash2().substring(0,7));
         }
         sb.append(":");
         if ( getObjectId() != null ) {
