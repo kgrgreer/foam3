@@ -39,12 +39,11 @@ A Mediator is ONLINE when Replay is complete and the electorate Primary is IN-SE
 A Node is ONLINE when it's initial Replay is complete.</dd>
 </dl>
 
-
 <h1>Viewing Data</h1>
 Medusa entries can view from the Mediators.
 Menu <b>Medusa Entry</b>
 
-<h1>Mediator Failover Scenarios<h1>
+<h1>Mediator Failover Scenarios</h1>
 Graceful and Hard Failover
 
 <h2>Graceful</h2>
@@ -56,9 +55,9 @@ Before an election is called, the Primary blocks incomming requests, allows in-f
 
 When a mediator becomes Primary it blocks incomming requests and verifies the global index.
 
-
 <h1>Compaction</h1>
-<h2>Overview<h2>
+<h2>Overview</h2>
+
 Compaction dumps the current system out to new ledger files, in a effort to recue replay time.  Each DAO operation on the same object generates a unique MedusaEntry containing just the change on the object.  In time there are multiple MedusaEntry's for the same object.  Compaction writes out each object in entirety once, thus reducing the multiple MedusaEntry's to just one.
 
 Compaction can only be run from the Primary mediator.
