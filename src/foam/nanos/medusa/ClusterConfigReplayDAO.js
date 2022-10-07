@@ -163,6 +163,8 @@ foam.CLASS({
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "request", cmd.getDetails());
             cmd = (ReplayCmd) clientDAO.cmd_(x, cmd);
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "response");
+            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            replaying.getReplayDetails().put(config.getId(), cmd);
           }
         }
       }

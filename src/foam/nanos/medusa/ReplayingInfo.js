@@ -167,7 +167,15 @@ foam.CLASS({
       name: 'replayNodes',
       class: 'Map',
       javaFactory: 'return new ConcurrentHashMap();',
-      visibility: 'RO'
+      visibility: 'RO',
+      storageTransient: true
+    },
+    {
+      name: 'replayDetails',
+      class: 'Map',
+      javaFactory: 'return new ConcurrentHashMap();',
+      visibility: 'RO',
+      storageTransient: true
     }
   ],
 
