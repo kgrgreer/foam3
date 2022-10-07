@@ -31,7 +31,7 @@ public class Boot {
   public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
-  protected X                         root_      = new ProxyX();
+  protected X                         root_      = new MutableX();
   protected Map<String, NSpecFactory> factories_ = new HashMap<>();
 
   public Boot() {
