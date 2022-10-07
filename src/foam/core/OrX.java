@@ -11,7 +11,7 @@ package foam.core;
     put - put to delegate
  **/
 public class OrX
-  extends MutableX
+  extends ProxyX
 {
   /** Store null's as a marker object so that we can distinguish between null and no-binding. **/
   /** Is needed so that inheritance works properly if the child X contains a null binding.    **/
@@ -35,6 +35,11 @@ public class OrX
   public X put(Object name, Object value) {
     return new OrX(parent_, getX().put(name, value == null ? NULL : value));
   }
+
+  public X putFactory(Object name, XFactory factory) {
+    return new OrX(parent_, getX().putFactory(name, factory));
+  }
+
 
   public <T> T get(Class<T> key) {
     return (T) get(this, key);
