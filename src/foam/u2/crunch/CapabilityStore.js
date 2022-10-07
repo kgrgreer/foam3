@@ -178,6 +178,16 @@ foam.CLASS({
         DAO with only visible capabilities.
       `,
       factory: function() {
+        return this.NullDAO.create();
+      }
+    },
+    {
+      name: 'newVisibleCapabilityDAO',
+      class: 'foam.dao.DAOProperty',
+      documentation: `
+        DAO with only visible capabilities.
+      `,
+      factory: function() {
         var self = this;
         return this.PromisedDAO.create({
           promise: new Promise(async function(resolve) {
@@ -298,7 +308,7 @@ foam.CLASS({
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
-          return self.renderFeatured(this.visibleCapabilityDAO.select());
+          return self.renderFeatured(await this.newVisibleCapabilityDAO.select());
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
