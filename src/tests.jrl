@@ -99,6 +99,7 @@ p({
   code:"""
 import java.util.HashMap;
 
+import foam.core.MutableX;
 import foam.core.ProxyX;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -114,7 +115,7 @@ import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 
 context = null;
-root_      = new ProxyX();
+root_      = new MutableX();
 factories_ = new HashMap();
 
 context = x;
