@@ -91,3 +91,70 @@ foam.CLASS({
     }
   `
 });
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'SegmentedTabs',
+  extends: 'foam.u2.UnstyledTabs',
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabPrimaryColor',
+      value: '$primary400'
+    }
+  ],
+
+  css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-height: 100%;
+    }
+    ^content{
+      flex: 1;
+      display: flex;
+    }
+    /* hacky as U2 add() adds an extra div, remove with U3 */
+    ^content > * {
+      flex: 1;
+      position: relative;
+    }
+    ^tabRow {
+      flex: 0 1 auto;
+      border-radius: 3px;
+      border: 1px solid $grey100;
+      display: flex;
+      gap: 8px;
+      padding: 3px;
+      white-space: nowrap;
+      justify-content: space-evenly;
+      background-color: $primary50;
+      width: 25rem;
+      align-self: center;
+    }
+    ^tab {
+      border-radius: 3px;
+      align-items: center;
+      background: none;
+      border-radius: 4px;
+      color: $tabPrimaryColor;
+      display: flex;
+      justify-content: center;
+      padding: 7px 12px;
+      flex: 1 1 0;
+      font-weight: 500;
+    }
+    ^tab:hover {
+      background: $tabPrimaryColor$hover;
+      color: $tabPrimaryColor$foreground;
+      cursor: pointer;
+    }
+    ^tab.selected {
+      color: $tabPrimaryColor$foreground;
+      font-weight: 600;
+      background-color: $tabPrimaryColor;
+    }
+  `
+});
