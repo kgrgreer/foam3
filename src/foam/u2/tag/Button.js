@@ -186,8 +186,8 @@ foam.CLASS({
 
     ^secondary-destructive{
       background-color: $white;
-      border: 1px solid $grey400;
-      color: $destructive500;
+      border: 1px solid $destructive500;
+      color: $destructive400;
     }
 
     ^secondary-destructive svg { fill: $destructive500; }
@@ -203,8 +203,8 @@ foam.CLASS({
 
     ^secondary-destructive:disabled {
       background-color: $buttonSecondaryColor$hover;
-      border-color: $buttonSecondaryColor$disabled;
-      color: $red700;
+      border-color: $destructive100;
+      color: $destructive100;
     }
 
     ^secondary-destructive:disabled svg { fill: $destructive50; }
