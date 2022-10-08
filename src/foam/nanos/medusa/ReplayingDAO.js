@@ -81,7 +81,7 @@ foam.CLASS({
                 min = Math.min(min, details.getMinIndex());
               }
             }
-            long time = (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000;
+            long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
             Duration duration = Duration.ofMillis(time);
             logger.info("replayComplete", "replayed", total, "promoted", count.getValue(), "duration", time, "s", total/time, "/s", duration);
 
