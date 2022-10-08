@@ -217,6 +217,7 @@ foam.CLASS({
         try {
           entry = hash(x, entry);
           logger.info("hash", "entry", i, entry.toDebugSummary());
+          bootstrap.getBootstrapDAGHashes()[i] = entry.getHash().substring(0, 7);
         } catch ( java.security.NoSuchAlgorithmException e ) {
           throw new DaggerException(e.getMessage(), e);
         }
