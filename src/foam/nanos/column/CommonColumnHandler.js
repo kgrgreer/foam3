@@ -7,9 +7,13 @@
 foam.CLASS({
   package: 'foam.nanos.column',
   name: 'CommonColumnHandler',
+
   requires: [
     'foam.nanos.column.ColumnConfigToPropertyConverter'
   ],
+
+  axioms: [ foam.pattern.Singleton.create() ],
+
   methods: [
     function returnColumnNameForNLevelName(col, n) {
       if ( ! col.split ) return null;
@@ -128,7 +132,7 @@ foam.CLASS({
       return nestedPropertyName.substr(lastIndex + 1);
     },
     function buildPropNameAndIndexArray(propNames) {
-      // gathering nested properties and indexes of corresponding values in Projection array 
+      // gathering nested properties and indexes of corresponding values in Projection array
       var nestedPropertyNames = [];
       var indexOfValuesForCorrespondingPropertyNames = [];
       for ( var i = 0 ; i < propNames.length ; i++ ) {
