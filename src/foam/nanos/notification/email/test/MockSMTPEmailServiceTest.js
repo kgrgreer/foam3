@@ -16,10 +16,8 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.DirectAgency',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'static foam.mlang.MLang.COUNT',
-    'static foam.mlang.MLang.EQ',
+    'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Sequence',
     'foam.nanos.auth.Subject',
@@ -28,7 +26,9 @@ foam.CLASS({
     'foam.nanos.script.Script',
     'java.util.ArrayList',
     'java.util.Date',
-    'java.util.List'
+    'java.util.List',
+    'static foam.mlang.MLang.COUNT',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'rateLimit',
       class: 'Long',
       value: 2
-    },
+    }
   ],
 
   methods: [
