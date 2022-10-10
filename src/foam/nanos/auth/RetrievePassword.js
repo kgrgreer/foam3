@@ -12,29 +12,29 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'emailVerificationService',
     'loginView?',
     'resetPasswordToken',
     'stack',
-    'translationService',
-    'emailVerificationService'
+    'translationService'
   ],
 
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.DuplicateEmailException'
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserNotFoundException',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   messages: [
     { name: 'TOKEN_INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
-    { name: 'TOKEN_INSTRUC', message: 'Please check your inbox to continue' },
-    { name: 'CODE_INSTRUC_TITLE', message: 'Verification code sent' },
-    { name: 'CODE_INSTRUC', message: 'Please check your inbox for to verify your email' },
-    { name: 'REDIRECTION_TO', message: 'Back to Sign in' },
+    { name: 'TOKEN_INSTRUC',       message: 'Please check your inbox to continue' },
+    { name: 'CODE_INSTRUC_TITLE',  message: 'Verification code sent' },
+    { name: 'CODE_INSTRUC',        message: 'Please check your inbox for to verify your email' },
+    { name: 'REDIRECTION_TO',      message: 'Back to Sign in' },
     { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires username' },
-    { name: 'ERROR_MSG', message: 'Issue resetting your password. Please try again' },
+    { name: 'ERROR_MSG',           message: 'Issue resetting your password. Please try again' }
   ],
 
   sections: [
@@ -45,7 +45,6 @@ foam.CLASS({
       help: 'Enter your account email and we will send you an email with a link to create a new one.'
     }
   ],
-
 
   properties: [
     {
