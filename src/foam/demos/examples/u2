@@ -847,3 +847,25 @@ tag({class: 'FObjectViewExample'});
 
 
 ##   More
+Example of defining tableColumns for use with a TableView.
+--
+foam.CLASS({
+  name: 'TableColumnsExample',
+
+  tableColumns: [ 'a', 'b', 'c' ],
+
+  properties: [ 'id', 'a', 'b', 'c', 'x', 'y', 'z' ]
+});
+s
+var t1 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExample'})});
+tag(t1).style({height: '200px'});
+
+foam.CLASS({
+  name: 'TableColumnsExampleSubClass',
+  extends: 'TableColumnsExample',
+
+  tableColumns: [ 'x', 'y', 'z' ],
+});
+
+var t2 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExampleSubClass'})});
+start(t2).style({height: '200px'});
