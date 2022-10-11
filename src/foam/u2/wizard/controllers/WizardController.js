@@ -35,5 +35,11 @@ foam.CLASS({
         class: 'foam.u2.borders.NullBorder'
       }
     }
+  ],
+
+  methods: [
+    async function setFirstPosition() {
+      // noop
+    }
   ]
 });

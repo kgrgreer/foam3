@@ -136,6 +136,15 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    async function setFirstPosition() {
+      // Auto-next if first wizardlet is invisible
+      if ( ! this.data.canLandOn(this.data.wizardPosition) ) {
+        await this.data.next();
+      }
+    }
+  ],
+
   actions: [
     {
       name: 'saveAndClose',
