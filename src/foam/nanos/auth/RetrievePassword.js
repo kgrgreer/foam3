@@ -21,7 +21,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.auth.DuplicateEmailException'
+    'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserNotFoundException',
     'foam.u2.dialog.NotificationMessage'
