@@ -127,7 +127,7 @@ foam.CLASS({
       border: 1px solid $grey100;
       display: flex;
       gap: 8px;
-      padding: 3px;
+      padding: 0.4rem;
       white-space: nowrap;
       justify-content: space-evenly;
       background-color: $primary50;
