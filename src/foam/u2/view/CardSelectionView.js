@@ -68,6 +68,11 @@
           .addClass(this.myClass('flexer'))
           .add(
             self.slot(function(choices) {
+              // Since the code below requires at least one choice, special case
+              if ( choices.length < 1 ) {
+                return self.E();
+              }
+
               // For default selection e.g. One time deposit
               if ( choices[0] ) self.data = choices[0][0];
 
