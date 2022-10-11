@@ -198,7 +198,7 @@ foam.CLASS({
 
     ^secondary-destructive:active:not(:disabled) {
       background-color: $buttonSecondaryColor$hover;
-      border-color: $red500;
+      border-color: $$destructive500;
     }
 
     ^secondary-destructive:disabled {
