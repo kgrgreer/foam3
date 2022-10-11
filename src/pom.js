@@ -1012,6 +1012,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/SpecifiedLoader",                    flags: "web" },
     { name: "foam/u2/wizard/data/DAOArrayLoader",                     flags: "web" },
     { name: "foam/u2/wizard/data/ContextLoader",                      flags: "web" },
+    { name: "foam/u2/wizard/data/PayloadLoader",                      flags: "web" },
     { name: "foam/u2/wizard/data/FacadeWizardletSaver",               flags: "web" },
     { name: "foam/u2/wizard/event/WizardEvent",                       flags: "web" },
     { name: "foam/u2/wizard/event/WizardEventType",                   flags: "web" },
