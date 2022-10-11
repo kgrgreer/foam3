@@ -363,6 +363,8 @@ foam.POM({
     { name: "notification/email/SMTPEmailService",                                        flags: "js|java" },
     { name: "notification/email/Status",                                                  flags: "js|java" },
     { name: "notification/email/test/EmailMessageRuleTest",                               flags: "js|java" },
+    { name: "notification/email/test/MockSMTPEmailService",                               flags: "js|java" },
+    { name: "notification/email/test/MockSMTPEmailServiceTest",                           flags: "js|java" },
     { name: "notification/email/EmailPropertyService",                                    flags: "js|java" },
     { name: "notification/email/EmailTemplateEngine",                                     flags: "js|java" },
     { name: "notification/email/NullEmailService",                                        flags: "js|java" },

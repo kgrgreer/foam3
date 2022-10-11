@@ -18,7 +18,6 @@ p({
     import foam.dao.DAO;
     import foam.dao.ArraySink;
     import foam.nanos.notification.email.EmailMessage;
-    import foam.nanos.notification.email.SMTPEmailService;
     import foam.nanos.notification.email.Status;
     import static foam.mlang.MLang.*;
 
@@ -26,25 +25,26 @@ p({
     emailMessages = ((ArraySink)
       emailMessageDAO
         .where(EQ(EmailMessage.STATUS, Status.UNSENT))
+        .orderBy(foam.nanos.notification.email.EmailMessage.CREATED)
         .select(new ArraySink()))
         .getArray();
     emailService = x.get("email");
 
-    // SES limit - 14 tps
+    // SES limit - 14/s
     second = 1000;
-    tps = 14;
+    limit = emailService.getRateLimit();
 
     endTime = System.currentTimeMillis() + second;
-    count = 0;
+    count = 1;
     for ( EmailMessage emailMessage : emailMessages ) {
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
       count++;
-      if ( count > tps ) {
+      if ( count > limit ) {
         remaining = endTime - System.currentTimeMillis();
         if ( remaining > 0 ) {
           Thread.sleep(remaining);
         }
-        count = 0;
+        count = 1;
         endTime = System.currentTimeMillis() + second;
       }
     }
