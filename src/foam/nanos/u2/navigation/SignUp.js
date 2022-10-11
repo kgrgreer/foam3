@@ -107,13 +107,12 @@ foam.CLASS({
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         };
       },
-      validateObj: function(email, emailAvailable) {
-        // Empty Check
-        if ( email.length === 0 || ! /\S+@\S+\.\S+/.test(email) ) return this.EMAIL_ERR;
-        // Availability Check
-        if ( ! emailAvailable ) return this.EMAIL_AVAILABILITY_ERR;
-      },
-      required: true
+      // validateObj: function(email, emailAvailable) {
+      //   // Empty Check
+      //   if ( email.length === 0 || ! /\S+@\S+\.\S+/.test(email) ) return this.EMAIL_ERR;
+      //   // Availability Check
+      //   if ( ! emailAvailable ) return this.EMAIL_AVAILABILITY_ERR;
+      // }
     },
     {
       class: 'Boolean',
@@ -137,13 +136,12 @@ foam.CLASS({
           restrictedCharacters: /^[^\s\/]$/
         };
       },
-      validateObj: function(userName, usernameAvailable) {
-        // Empty Check
-        if ( userName.length === 0 ) return this.USERNAME_EMPTY_ERR;
-        // Availability Check
-        if ( ! usernameAvailable ) return this.USERNAME_AVAILABILITY_ERR;
-      },
-      required: true
+      // validateObj: function(userName, usernameAvailable) {
+      //   // Empty Check
+      //   if ( userName.length === 0 ) return this.USERNAME_EMPTY_ERR;
+      //   // Availability Check
+      //   if ( ! usernameAvailable ) return this.USERNAME_AVAILABILITY_ERR;
+      // }
     },
     {
       class: 'Boolean',
@@ -162,11 +160,10 @@ foam.CLASS({
           passwordIcon: true
         }
       },
-      validateObj: function(desiredPassword, passwordAvailable) {
-        if ( ! desiredPassword || desiredPassword.length < 10 ) return this.PASSWORD_ERR;
-        if ( ! passwordAvailable ) return this.WEAK_PASSWORD_ERR;
-      },
-      required: true
+      // validateObj: function(desiredPassword, passwordAvailable) {
+      //   if ( ! desiredPassword || desiredPassword.length < 10 ) return this.PASSWORD_ERR;
+      //   if ( ! passwordAvailable ) return this.WEAK_PASSWORD_ERR;
+      // }
     },
     {
       class: 'Boolean',
