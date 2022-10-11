@@ -16,8 +16,8 @@ foam.CLASS({
   DEPENDING ON MODEL PASSED IN:
 
   MESSAGEs possible for this view:
-  TITLE: if exists will be ontop of model,
-  FOOTER_TXT: if exists will be under model,
+  TITLE: if exists will be ontop of data,
+  FOOTER_TXT: if exists will be under data,
   FOOTER_LINK: if exists will be under FOOTER and the text associated to footerLink(),
   SUB_FOOTER_TXT: needed an additional option for the forgot password,
   SUB_FOOTER_LINK: needed an additional option for the forgot password,
@@ -31,7 +31,7 @@ foam.CLASS({
 
   Property functionality:
   imgPath: if present view uses SplitScreenGridBorder (-USED to toggle splitScreen - picked up from ApplicationController)
-  backLink_: if on model uses string link from model, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
+  backLink_: if on data uses string link from data, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
   `,
 
   imports: [
@@ -63,7 +63,7 @@ foam.CLASS({
     margin: 0 auto;
   }
 
-  /* SET ABOVE MODEL */
+  /* SET ABOVE DATA */
   ^ .topBar-logo-Back {
     display: flex;
     justify-content: center;
@@ -81,14 +81,14 @@ foam.CLASS({
     height: 4vh;
   }
 
-  /* TITLE TXT ON MODEL */
+  /* TITLE TXT ON DATA */
   ^ .title-top {
     font-size: 2.5em;
     padding-top: 2vh;
     font-weight: bold;
   }
 
-  /* ON MODEL */
+  /* ON DATA */
   ^content-form {
     align-self: center;
     width: 75%;
@@ -175,7 +175,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'model',
+      name: 'data',
       factory: () => {
        return {};
       },
@@ -220,7 +220,7 @@ foam.CLASS({
       class: 'String',
       name: 'backLink_',
       factory: function() {
-        return this.model.backLink_ || this.appConfig.externalUrl || undefined;
+        return this.data.backLink_ || this.appConfig.externalUrl || undefined;
       },
       hidden: true
     },
@@ -230,8 +230,15 @@ foam.CLASS({
       class: 'String',
       name: 'modelCls_',
       documentation: `
-        If modelCls_ is provided, the model can be created directly from this instead of mode
-      `
+        If modelCls_ is provided, the data can be created directly from this instead of mode
+      `,
+      factory: function() {
+        if ( this.mode_ === this.MODE1 ) {
+          return this.SignUp.id;
+        } else {
+          return this.SignIn.id;
+        }
+      }
     }
   ],
 
@@ -244,21 +251,14 @@ foam.CLASS({
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
       this.param = Object.assign(this.loginVariables, this.param)
+      try {
+        var cls = foam.lookup(this.modelCls_);
 
-      if ( this.modelCls_ ) {
-        try {
-          this.model = (foam.lookup(this.modelCls_))?.create(this.param, this);
-          return;
-        } catch (err) {
-          console.warn('Error occurred when looking up modelCls_', this.modelCls_, err);
-        }
-      }      
+        if ( this.data &&  cls.isInstance(this.data) ) return;
 
-      // Instantiating model based on mode_
-      if ( this.mode_ === this.MODE1 ) {
-        this.model = this.SignUp.create(this.param, this);
-      } else {
-        this.model = this.SignIn.create(this.param, this);
+        this.data = cls.create(this.param, this);
+      } catch (err) {
+        console.warn('Error occurred when looking up modelCls_', this.modelCls_, err);
       }
     },
 
@@ -272,9 +272,9 @@ foam.CLASS({
       });
       let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
 
-      // CREATE MODEL VIEW
+      // CREATE DATA VIEW
       var right = this.E()
-      // Header on-top of rendering model
+      // Header on-top of rendering data
         .start()
           .add(
             this.slot(function(shouldResize) {
@@ -286,11 +286,11 @@ foam.CLASS({
               .end(); 
           }))
         .end()
-      // Title txt and Model
-        .start().addClass('title-top').add(this.model.TITLE).end()
+      // Title txt and Data
+        .start().addClass('title-top').add(this.data.TITLE).end()
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .startContext({ data: this }).tag(this.MODEL).endContext()
+        .startContext({ data: this }).tag(this.DATA).endContext()
         
 
       // CREATE SPLIT VIEW
@@ -298,7 +298,7 @@ foam.CLASS({
         var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
-        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.model.DISCLAIMER).end();
+        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
       }
 
       // RENDER EVERYTHING ONTO PAGE
@@ -320,7 +320,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-      // deciding to render half screen with img and model or just centered model
+      // deciding to render half screen with img and data or just centered data
         .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
           if ( ! this.leftView ) {
             split.leftPanel
@@ -329,11 +329,11 @@ foam.CLASS({
                 .addClass(self.myClass('image-one'))
                 .attr('src', this.imgPath$)
               .end()
-              .callIf( !! this.model.disclaimer , () => {
+              .callIf( !! this.data.disclaimer , () => {
                 // add a disclaimer under img
                 split.leftPanel.start('p')
                   .addClass('disclaimer-login').addClass('disclaimer-login-img')
-                  .add(this.model.DISCLAIMER)
+                  .add(this.data.DISCLAIMER)
                 .end();
               });
           } else {
@@ -362,7 +362,7 @@ foam.CLASS({
       e.preventDefault();
       var key = e.key || e.keyCode;
       if ( key === 'Enter' || key === 13 ) {
-          this.model.login();
+          this.data.login();
       }
     }
   ]
