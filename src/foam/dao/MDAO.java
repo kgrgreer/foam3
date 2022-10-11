@@ -109,7 +109,7 @@ public class MDAO
 
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
-      state_ = index_.addIndex(state_, index);
+      setState(index_.addIndex(state_, index));
     }
   }
 

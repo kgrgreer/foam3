@@ -101,6 +101,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"SMTPConfig",
+  "description":"deprecated, configuration replace by SMTPEmailService",
   "lazy": false,
   "service":{"class":"foam.nanos.notification.email.SMTPConfig"}
 })
