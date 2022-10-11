@@ -427,6 +427,10 @@ foam.CLASS({
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
 
+        // For testing purposes only. Do not use in code.
+        globalThis.x     = client.__subContext__;
+        globalThis.MLang = foam.mlang.Expressions.create();
+
         await self.fetchTheme();
         foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
