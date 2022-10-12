@@ -129,6 +129,18 @@ foam.CLASS({
                 replaying.setReplayIndex(details.getMaxIndex());
               }
 
+              if ( replaying.getMaxIndex() > 0 ) {
+                replaying.setMaxIndex(Math.min(details.getMaxIndex(), replaying.getMaxIndex()));
+              } else {
+                replaying.setMaxIndex(details.getMaxIndex());
+              }
+
+              if ( replaying.getMinIndex() > 0 ) {
+                replaying.setMinIndex(Math.min(details.getMinIndex(), replaying.getMinIndex()));
+              } else {
+                replaying.setMinIndex(details.getMinIndex());
+              }
+
               // Detect baseline - no data.
               // Have to check almost all nodes.
               int online = 0;
@@ -161,9 +173,11 @@ foam.CLASS({
             cmd.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "request", cmd.getDetails());
+            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            replaying.getReplayDetails().put(config.getId(), cmd);
             cmd = (ReplayCmd) clientDAO.cmd_(x, cmd);
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "response");
-            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            replaying = (ReplayingInfo) x.get("replayingInfo");
             replaying.getReplayDetails().put(config.getId(), cmd);
           }
         }
