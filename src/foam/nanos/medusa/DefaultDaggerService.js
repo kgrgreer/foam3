@@ -35,6 +35,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets',
     'java.security.MessageDigest',
     'java.util.ArrayList',
+    'java.util.Arrays',
     'java.util.List'
   ],
 
@@ -226,7 +227,7 @@ foam.CLASS({
         entry.setPromoted(true);
         entry = (MedusaEntry) getDao().put_(x, entry);
 
-        // NOTE: Normally the primary is coordinating the entry hashes,
+        // NOTE: Normally the Primary is coordinating the entry hashes,
         // and updateLinks is called on promote which occurs in the same
         // sequential order on all mediators.
         // During Compaction, each mediator is reconfiguring and calling
@@ -261,6 +262,7 @@ foam.CLASS({
         String[] hashes = null;
         if ( entry != null ) {
           hashes = entry.split(",");
+          // getLogger().debug("hashes", "keystore", hashes.length, Arrays.toString(hashes));
         } else {
           getLogger().warning("Keystore alias not found", alias, "trying System");
           entry = System.getProperty(
@@ -269,6 +271,7 @@ foam.CLASS({
              );
           if ( entry != null ) {
             hashes = entry.split(",");
+            // getLogger().debug("hashes", "system", hashes.length, Arrays.toString(hashes));
           }
         }
 
@@ -309,7 +312,6 @@ foam.CLASS({
       name: 'link',
       javaCode: `
       DaggerLinks links = getNextLinks(x);
-      ((OMLogger) x.get("OMLogger")).log("medusa.dagger.index");
       entry.setIndex(links.getGlobalIndex());
       entry.setIndex1(links.getLink1().getIndex());
       entry.setHash1(links.getLink1().getHash());
