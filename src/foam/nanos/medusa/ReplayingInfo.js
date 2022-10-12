@@ -56,8 +56,19 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      documentation: 'Number of MedusaEntry which are to be replayed from all the nodes to each mediator.',
       name: 'count',
       class: 'Long',
+      javaGetter: `
+        Long total = 0L;
+        Map replayDetails = getReplayDetails();
+        for ( Object o : replayDetails.values() ) {
+          ReplayCmd cmd = (ReplayCmd) o;
+          ReplayDetailsCmd details = cmd.getDetails();
+          total += details.getCount();
+        }
+        return total;
+      `,
       visibility: 'RO'
     },
     {
@@ -71,31 +82,27 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      name: 'uptime',
-      class: 'String',
-      expression: function(startTime) {
-        var delta = 0;
-        if ( startTime ) {
-          delta = new Date().getTime() - startTime.getTime();
-        }
-        let duration = foam.core.Duration.duration(delta);
-        return duration;
-      }
-    },
-    {
       name: 'timeElapsed',
       class: 'String',
-      label: 'Elapsed',
-      expression: function(index, replayIndex, startTime, endTime) {
-        var delta = 0;
+      expression: function(startTime) {
+        var time = 0;
         if ( startTime ) {
           let end = endTime || new Date();
-          delta = end.getTime() - startTime.getTime();
+          time = end.getTime() - startTime.getTime();
         }
-        let duration = foam.core.Duration.duration(delta);
-        return duration;
+        return foam.core.Duration.duration(time);
       },
-      visibility: 'RO'
+      javaGetter: `
+      var time = 0L;
+      if ( getStartTime() != null ) {
+        var end = getEndTime();
+        if ( end == null ) {
+          end = new java.util.Date();
+        }
+        time = end.getTime() - getStartTime().getTime();
+      }
+      return java.time.Duration.ofMillis(time).toString();
+      `
     },
     {
       name: 'percentComplete',
@@ -125,43 +132,61 @@ foam.CLASS({
       class: 'String',
       label: 'Remaining',
       expression: function(index, replayIndex, startTime, endTime) {
-        var timeElapsed = 1;
+        var timeElapsed = 0;
         if ( startTime ) {
           let end = endTime || new Date();
           timeElapsed = end.getTime() - startTime.getTime();
         }
-        let remaining = ( timeElapsed / index ) * ( replayIndex - index );
-        let duration = foam.core.Duration.duration(remaining);
-        return duration;
+        let remaining = ( timeElapsed / index ) * ( replayIndex - index ) * timeElapsed;
+        return foam.core.Duration.duration(remaining);
       },
       visibility: 'RO',
       javaGetter: `
-      if ( getIndex() == 0 ) {
-        return "0";
-      }
-      var timeElapsed = 1L;
-      if ( getStartTime() != null ) {
-        var end = getEndTime();
-        if ( end == null ) {
-          end = new java.util.Date();
+      long time = 0L;
+      long remaining = 0L;
+      if ( getReplayIndex() > getIndex() ) {
+        if ( getStartTime() != null ) {
+          var end = getEndTime();
+          if ( end == null ) {
+            end = new java.util.Date();
+          }
+          time = end.getTime() - getStartTime().getTime();
         }
-        timeElapsed = end.getTime() - getStartTime().getTime();
+        float index = (float) getIndex();
+        remaining = (long) (( time / index ) * ( getReplayIndex() / index ) * time );
       }
-      return String.valueOf((( timeElapsed / getIndex() ) * ( getReplayIndex() - getIndex() )) / 1000);
+      return java.time.Duration.ofMillis(remaining).toString();
       `
     },
     {
       name: 'replayTps',
-      class: 'String',
+      class: 'Float',
       expression: function(index, replayIndex, startTime, endTime) {
         if ( startTime ) {
           let end = endTime || new Date();
           let tm = (end.getTime() - startTime.getTime()) / 1000;
           let tps = index / tm;
-          return Math.round(tps);
+          // return Math.round(tps);
+          return tps;
         }
-        return 0;
+        return 0.0;
+      },
+      javaGetter: `
+      var tps = 0.0;
+      if ( getStartTime() != null ) {
+        var end = getEndTime();
+        if ( end == null ) {
+          end = new java.util.Date();
+        }
+        var tm = (end.getTime() - getStartTime().getTime()) / 1000;
+        if ( getReplayIndex() > getIndex() ) {
+          tps = getIndex() / tm;
+        } else {
+          tps = getReplayIndex() / tm;
+        }
       }
+      return (float) tps;
+      `
     },
     {
       name: 'replayNodes',

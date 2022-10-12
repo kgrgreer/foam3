@@ -86,7 +86,7 @@ foam.CLASS({
 
           DAO clientDAO = (DAO) getClients().get(details.getRequester());
           if ( clientDAO != null ) {
-            logger.info("cancel previous from", fromConfig.getId());
+            logger.info("cancel previous from", details.getRequester());
             // REVIEW: have replay write to null dao. How to cancel replay?
             // TODO: need the same support cache. For now expect cache to be small.
             clientDAO.cmd_(x, RetryClientSinkDAO.CANCEL_RETRY_CMD);
@@ -114,14 +114,14 @@ foam.CLASS({
                 );
           }
 
-          if ( ((Long) count.getValue()) > 0 &&
-               min.getValue() != null &&
-               details.getMinIndex() >= (Long) min.getValue() ) {
+          // if ( ((Long) count.getValue()) > 0 &&
+          //      min.getValue() != null &&
+          //      details.getMinIndex() >= (Long) min.getValue() ) {
             cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          } else {
+          // } else {
             getJournal().replay(x, new MedusaSetNodeDAO(x, clientDAO).where(p));
             cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          }
+          // }
         } else {
           logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getMaxIndex());
         }
