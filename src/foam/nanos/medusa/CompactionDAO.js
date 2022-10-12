@@ -43,6 +43,7 @@ TODO: handle node roll failure - or timeout
     'foam.util.concurrent.AbstractAssembly',
     'foam.util.concurrent.AssemblyLine',
     'foam.util.concurrent.AsyncAssemblyLine',
+    'java.time.Duration',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.HashSet',
@@ -170,8 +171,7 @@ TODO: handle node roll failure - or timeout
         logger.error(t);
         throw t;
       } finally {
-        long time = System.currentTimeMillis() - startTime;
-        logger.info("end", "duration", time/1000, "s");
+        logger.info("end", "duration", Duration.ofMillis(System.currentTimeMillis() - startTime));
       }
       `
     },
@@ -424,7 +424,7 @@ TODO: handle node roll failure - or timeout
       logger.info("start");
       dao.select(sink);
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("end", "duration", compactionTime/1000, "s, compacted", count.getValue());
+      logger.info("end", "duration", Duration.ofMillis(compactionTime), "compacted", count.getValue());
       return compactionTime;
       `
     },
@@ -440,9 +440,6 @@ TODO: handle node roll failure - or timeout
         .setMaxIndex(oldIndex)
         .build();
 
-      ((DAO) x.get("medusaMediatorDAO")).cmd(cmd);
-
-      // update other mediators
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig[] mediators = support.getSfBroadcastMediators();
@@ -452,16 +449,19 @@ TODO: handle node roll failure - or timeout
       final Map replies = new HashMap();
 
       for ( ClusterConfig cfg : mediators ) {
-        if ( cfg.getId() == myConfig.getId() ) continue;
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
-            DAO client = support.getClientDAO(x, "medusaMediatorDAO", myConfig, cfg);
-            try {
-              Object response = client.cmd(cmd);
-              replies.put(cfg.getId(), response);
-            } catch (RuntimeException e) {
-              logger.error("secondary, purge, failed", cfg.getId(), e.getMessage());
-              failures.put(cfg.getId(), e.getMessage());
+            if ( cfg.getId() == myConfig.getId() ) {
+              replies.put(cfg.getId(), ((DAO) x.get("medusaMediatorDAO")).cmd(cmd));
+            } else {
+              DAO client = support.getClientDAO(x, "medusaMediatorDAO", myConfig, cfg);
+              try {
+                Object response = client.cmd(cmd);
+                replies.put(cfg.getId(), response);
+              } catch (RuntimeException e) {
+                logger.error("secondary, purge, failed", cfg.getId(), e.getMessage());
+                failures.put(cfg.getId(), e.getMessage());
+              }
             }
           }
         });
@@ -480,12 +480,11 @@ TODO: handle node roll failure - or timeout
         } catch (InterruptedException e) {
           break;
         }
-        if ( replies.size() >= mediators.length -1 ) {
+        if ( replies.size() == mediators.length ) {
           break;
         }
       }
-      // NOTE: getSfBroacastMediators returns self as well.
-      if ( replies.size() < (mediators.length -1) ||
+      if ( replies.size() < (mediators.length) ||
            failures.size() > 0 ) {
         // REVIEW: purge failure is ok, just means the same data may
         // written out again if another mediator is primary.
