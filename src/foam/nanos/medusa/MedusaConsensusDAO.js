@@ -226,6 +226,9 @@ This is the heart of Medusa.`,
           if ( ! SafetyUtil.isEmpty(entry.getData()) ) {
             // Only non-transient entries can be used for links,
             // as only non-transient are stored on the nodes.
+
+            // Consider entries we don't want to compact, such
+            // as Session.
             dagger.updateLinks(x, entry);
           }
 
@@ -328,6 +331,7 @@ This is the heart of Medusa.`,
                   try {
                     Thread.currentThread().sleep(1000);
                   } catch (InterruptedException e) {
+                    logger.info("exit", "interrupted");
                     break;
                   }
                 }
@@ -337,7 +341,12 @@ This is the heart of Medusa.`,
               entry = getConsensusEntry(x, next);
 
               if ( entry != null ) {
-                entry = promote(x, entry);
+                try {
+                  entry = promote(x, entry);
+                } catch (DaggerException e) {
+                  // Hash verification failure.
+                  throw e;
+                }
                 nextIndexSince = System.currentTimeMillis();
 
                  if ( alarm != null &&
@@ -362,6 +371,7 @@ This is the heart of Medusa.`,
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
               }
             } catch (InterruptedException e ) {
+              logger.info("exit", "interrupted");
               break;
             }
           }
@@ -377,8 +387,7 @@ This is the heart of Medusa.`,
         alarm.setIsActive(true);
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
-      } finally {
-        logger.warning("exit");
+        logger.error("exit");
       }
      `
     },
@@ -557,8 +566,21 @@ This is the heart of Medusa.`,
             if ( nodes.size() >= support.getNodeQuorum() ) {
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
-                  entry = e;
-                  break;
+                  // test for parents
+                  // NOTE: use internalMedusaDAO, else we'll block on ReplayingDAO.
+                  DAO dao = (DAO) x.get("internalMedusaDAO");
+                  MedusaEntry parent1 = (MedusaEntry) dao.find(e.getIndex1());
+                  MedusaEntry parent2 = (MedusaEntry) dao.find(e.getIndex2());
+                  if ( parent1 != null &&
+                       parent2 != null ) {
+                    entry = e;
+                    break;
+                  } else {
+                    // Previously we would return this entry without
+                    // parent check and it could fail dagger verification
+                    // if parents had not yet been received.
+                    getLogger().warning("getConsensusEntry", e, "entry found but missing parent(s)", e.toSummary());
+                  }
                 }
               } else {
                 getLogger().error("getConsensusEntry", next, "Multiple consensus detected", hashes.size(), next.toSummary(), next.getConsensusCount(), support.getNodeQuorum(), next.getConsensusHashes());
@@ -631,11 +653,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
           }
         }
         if ( entry != null ) {
-          try {
-            entry = getConsensusEntry(x, entry);
-          } catch ( MedusaException e ) {
-            // ignore
-          }
+          entry = getConsensusEntry(x, entry);
           if ( entry != null ) {
             if ( replaying.getReplaying() ) {
               // test if entry depends on any indexes in our skip range.
@@ -697,7 +715,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
               config = (ClusterConfig) config.fclone();
-              config.setErrorMessage("");
+              ClusterConfig.ERROR_MESSAGE.clear(config);
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
               if ( ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
