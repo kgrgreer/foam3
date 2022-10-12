@@ -31,6 +31,7 @@ foam.CLASS({
       name: 'code',
       value: function (slot, action) {
         const wizardController = slot.data$.get();
+        wizardController.currentWizardlet.isInAltFlow = true;
         action.alternateFlow.execute((wizardController.data || wizardController).__subContext__);
         action.alternateFlow.handleNext(wizardController);
       }
