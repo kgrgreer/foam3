@@ -136,11 +136,28 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      name: 'memoryTotal',
+      shortName: 'mm',
+      class: 'Long',
+      units: 'bytes',
+      visibility: 'RO',
+    },
+    {
       name: 'memoryFree',
       shortName: 'mf',
       class: 'Long',
       units: 'bytes',
       visibility: 'RO',
+    },
+    {
+      name: 'memoryUsed',
+      shortName: 'mm',
+      class: 'Long',
+      units: 'bytes',
+      visibility: 'RO',
+      javaGetter: `
+      return getMemoryTotal() - getMemoryFree();
+      `
     },
     {
       name: 'alarms',
@@ -193,6 +210,7 @@ foam.CLASS({
 
     Runtime runtime = Runtime.getRuntime();
     setMemoryMax(runtime.maxMemory());
+    setMemoryTotal(runtime.totalMemory());
     setMemoryFree(runtime.freeMemory());
 
     DAO alarmDAO = (DAO) x.get("alarmDAO");
