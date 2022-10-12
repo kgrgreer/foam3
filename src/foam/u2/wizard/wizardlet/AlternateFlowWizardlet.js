@@ -35,6 +35,13 @@ foam.CLASS({
         Set to true when executing an alternate flow, and back to false
         after save
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'useAltFlowWAO',
+      documentation: `
+        When true wraps WAO in an AlternateFlowWAO
+      `
     }
   ],
 
@@ -46,7 +53,7 @@ foam.CLASS({
           this.AlternateFlowAction.create({ alternateFlow }));
         this.dynamicActions = this.dynamicActions.concat(choices);
       }
-      if ( ! this.AlternateFlowWAO.isInstance(this.wao) ) {
+      if ( this.useAltFlowWAO && ! this.AlternateFlowWAO.isInstance(this.wao) ) {
         this.wao = this.AlternateFlowWAO.create({ delegate: this.wao }, this.__subContext__);
       }
     }
