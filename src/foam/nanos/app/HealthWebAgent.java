@@ -64,7 +64,7 @@ public class HealthWebAgent
     } else if( format == Format.XML ) {
       response.setContentType("application/xml");
       Outputter outputter = new Outputter(out, OutputterMode.NETWORK);
-      outputter.setOuputDefaultValues(true);
+      outputter.setOutputDefaultValues(true);
       out.println(outputter.stringify(health));
     } else {
       response.setContentType("text/plain");
