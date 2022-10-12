@@ -16,6 +16,7 @@ foam.POM({
     { name: "ClusterConfigReplayingInfoDAO",                                              flags: "js|java" },
     { name: "ClusterConfigStatusDAO",                                                     flags: "js|java" },
     { name: "ClusterConfigSupport",                                                       flags: "js|java" },
+    { name: "ClusterConfigSupportDAO",                                                    flags: "js|java" },
     { name: "ClusterException",                                                           flags: "js|java" },
     { name: "ClusterTopology",                                                            flags: "js" },
     { name: "ClusterTopologyView",                                                        flags: "js" },
