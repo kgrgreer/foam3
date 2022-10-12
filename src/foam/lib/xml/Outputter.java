@@ -58,6 +58,14 @@ public class Outputter
     this.writer_ = writer;
   }
 
+  public void setOutputDefaultValues(boolean value) {
+    outputDefaultValues_ = value;
+  }
+
+  public void setOutputShortNames(boolean value) {
+    outputShortNames_ = value;
+  }
+
   protected void initWriter() {
     if ( stringWriter_ == null ) {
       stringWriter_ = new StringWriter();
