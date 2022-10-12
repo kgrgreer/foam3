@@ -83,7 +83,7 @@ foam.CLASS({
     },
     {
       name: 'timeElapsed',
-      class: 'String',
+      class: 'Duration',
       expression: function(startTime) {
         var time = 0;
         if ( startTime ) {
@@ -101,7 +101,7 @@ foam.CLASS({
         }
         time = end.getTime() - getStartTime().getTime();
       }
-      return java.time.Duration.ofMillis(time).toString();
+      return time;
       `
     },
     {
@@ -129,7 +129,7 @@ foam.CLASS({
     },
     {
       name: 'timeRemaining',
-      class: 'String',
+      class: 'Duration',
       label: 'Remaining',
       expression: function(index, replayIndex, startTime, endTime) {
         var timeElapsed = 0;
@@ -155,7 +155,7 @@ foam.CLASS({
         float index = (float) getIndex();
         remaining = (long) (( time / index ) * ( getReplayIndex() / index ) * time );
       }
-      return java.time.Duration.ofMillis(remaining).toString();
+      return remaining;
       `
     },
     {
