@@ -331,22 +331,6 @@ foam.CLASS({
           }
         }, "Save CapabilityPayloadRecord");
       `
-    },
-    {
-      name: 'recordCapabilityPayload',
-      args: 'Context outerX, FObject obj',
-      javaCode: `
-        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
-          try {
-            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
-              .setCapabilityPayload((CapabilityPayload) obj)
-              .build();
-            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
-          } catch ( Throwable t ) {
-            getLogger().warning("Failed to save record", obj, t);
-          }
-        }, "Save CapabilityPayloadRecord");
-      `
     }
   ],
 });
