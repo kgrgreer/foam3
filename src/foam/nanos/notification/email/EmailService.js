@@ -25,6 +25,12 @@ foam.INTERFACE({
           type: 'foam.nanos.notification.email.EmailMessage'
         }
       ]
+    },
+    {
+      name: 'rateLimit',
+      type: 'Long',
+      code: function() { return 0; },
+      javaCode: `return 0L;`
     }
   ]
 });

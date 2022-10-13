@@ -39,7 +39,8 @@ p({
     for ( EmailMessage emailMessage : emailMessages ) {
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
       count++;
-      if ( count > limit ) {
+      if ( limit > 0 &&
+           count > limit ) {
         remaining = endTime - System.currentTimeMillis();
         if ( remaining > 0 ) {
           Thread.sleep(remaining);
