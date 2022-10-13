@@ -21,6 +21,8 @@ foam.CLASS({
   methods: [
     async function execute() {
       this.alternateFlow.execute(this.__context__);
+      if ( this.alternateFlow.wizardletId)
+        this.alternateFlow.handleNext(this.__subContext__.wizardController);
     }
   ]
 });

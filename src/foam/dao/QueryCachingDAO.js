@@ -28,7 +28,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
-      //console.log('************ QUERYCache', limit);
+      // console.log('************ QUERYCache', skip, limit);
       if (
         // Only cache selects that have limit provided
         limit === undefined
@@ -42,23 +42,24 @@ foam.CLASS({
       let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        //console.log('******** QUERYCACHE: predicate: ' + predicate + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        // console.log('******** QUERYCACHE: predicate: ' + predicate + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
         let requestEndIdx   = requestStartIdx + limit;
 
         // Ensure we have cache for request
-        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then( () => {
+        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(() => {
 
           let endIdx = requestEndIdx <= self.cache[key].length ? requestEndIdx : self.cache[key].length;
 
           //console.log('*** QCD *** size: ' + self.cache[key].length + ' : endIdx: ' + endIdx + ' : for predicate: ' + predicate);
+
 
           // Return data from cache
           for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
             if ( foam.dao.ArraySink.isInstance(sink) ) {
               sink.put(self.cache[key][idx]);
             } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
-              sink.projectionWithClass[idx] = self.cache[key][idx];
+              sink.projectionWithClass[idx-requestStartIdx] = self.cache[key][idx];
             }
           }
 
@@ -124,7 +125,7 @@ foam.CLASS({
       }
 
       if ( hasMissingData ) {
-        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        // console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
 

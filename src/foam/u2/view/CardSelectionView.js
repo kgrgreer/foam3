@@ -74,7 +74,7 @@
               }
 
               // For default selection e.g. One time deposit
-              self.data = choices[0][0];
+              if ( choices[0] ) self.data = choices[0][0];
 
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {

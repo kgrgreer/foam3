@@ -141,10 +141,10 @@ foam.CLASS({
           var topView = foam.u2.ViewSpec.createView(topNav, {}, self, self.navCtx_);
           this.headerSlot_$.set(topView);
           var resize = new ResizeObserver (this.adjustTopBarHeight);
+          this.onDetach(resize.disconnect());
           this.headerSlot_?.el().then(el => {
             resize.observe(el);
           })
-
           return self.E()
             .addClass(this.myClass('header'))
             // Fix this
