@@ -79,7 +79,7 @@ foam.CLASS({
         this.wizardController.autoPositionUpdates = false;
       }
 
-      if ( ! this.wizardController.wizardlets[0].isVisible ) {
+      if ( ! this.wizardController.wizardlets[this.wizardController.wizardPosition?.wizardletIndex || 0].isVisible ) {
         await this.wizardController.next();
       }
 
