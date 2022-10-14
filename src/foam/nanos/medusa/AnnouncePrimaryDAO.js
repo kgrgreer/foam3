@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'indexVerificationMaxWait',
       class: 'Long',
-      value: 3600000, // 1 hour - slow nodes up to 10million
+      value: 600000, // 10 minutes.
       units: 'ms'
     }
   ],
