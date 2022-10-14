@@ -19,14 +19,6 @@ foam.CLASS({
       name: 'serviceName',
       class: 'String',
       value: 'medusaMediatorDAO'
-    },
-    // {
-    //   name: 'fromIndex',
-    //   class: 'Long',
-    // },
-    // {
-    //   name: 'toIndex',
-    //   class: 'Long',
-    // }
+    }
   ]
 });
