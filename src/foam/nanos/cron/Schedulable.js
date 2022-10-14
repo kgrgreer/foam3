@@ -114,10 +114,7 @@ foam.CLASS({
 
         const E = foam.mlang.ExpressionsSingleton.create({});
         var idPredicate = E.EQ(this.ScriptEvent.OWNER, this.id);
-        var datePredicate = E.LT(this.ScriptEvent.LAST_RUN, new Date());
-
-        return this.__subContext__[this.eventDaoKey].where(datePredicate)
-                                                    .where(idPredicate);
+        return this.__subContext__[this.eventDaoKey].where(idPredicate);
       },
       view: function(_, X) {
         var dao = X.data.filteredEventDAO;
