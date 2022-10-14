@@ -4011,10 +4011,18 @@ foam.CLASS({
     function CLASS_OF(cls) { return this.IsClassOf.create({ targetClass: cls }); },
     function MQL(mql) { return this.MQLExpr.create({query: mql}); },
     function STRING_LENGTH(a) { return this._unary_("StringLength", a); },
-    function IS_VALID(o) { return this.IsValid.create({arg1: o}); }
+    function IS_VALID(o) { return this.IsValid.create({arg1: o}); },
+    function MONTH(m) {
+      var month = foam.mlang.Month.create({numberOfMonths: m});
+      return month;
+    },
+
+    function DAYS(d) {
+      var day = foam.mlang.Day.create({numberOfDays: d});
+      return day;
+    }
   ]
 });
-
 
 foam.CLASS({
   package: 'foam.mlang',
@@ -4028,6 +4036,101 @@ foam.CLASS({
 
   axioms: [
     foam.pattern.Singleton.create()
+  ]
+});
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Month',
+  extends: 'foam.mlang.AbstractExpr',
+
+  implements: [
+    'foam.core.Serializable'
+  ],
+
+  javaImports:[
+    'java.util.Calendar'
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'numberOfMonths',
+      value:0
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, getNumberOfMonths());
+        cal.add(Calendar.HOUR, 0);
+        cal.add(Calendar.MINUTE, 0);
+        return cal.getTime();
+      `
+    },
+    {
+      name: 'deepClone',
+      type: 'FObject',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() {
+        return 'Month(\'' + this.numberOfMonths + '\')';
+      },
+      javaCode: ' return "Month(\'" + getNumberOfMonths() + "\')"; '
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Day',
+  extends: 'foam.mlang.AbstractExpr',
+
+  javaImports:[
+    'java.util.Calendar'
+  ],
+
+  implements: [
+    'foam.core.Serializable'
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'numberOfDays',
+      value: 0
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, getNumberOfDays());
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        return cal.getTime();
+      `
+    },
+    {
+      name: 'deepClone',
+      type: 'FObject',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() {
+        return 'Day(\'' + this.numberOfDays + '\')';
+      },
+      javaCode: ' return "Day(\'" + getNumberOfDays() + "\')"; '
+    }
   ]
 });
 
