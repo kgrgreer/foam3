@@ -98,7 +98,7 @@ foam.CLASS({
 
       label = this.makeLabel();
       label.text$ = this.health$.map(function(h) {
-        return 'Uptime: '+h.upTime;
+        return 'Uptime: '+foam.core.Duration.duration(h.uptime);
       });
       this.add(label);
 
@@ -119,7 +119,7 @@ foam.CLASS({
 
         label = this.makeLabel();
         label.text$ = this.config$.map(function(c) {
-          return 'Elapsed: '+c.replayingInfo.elapsedTime;
+          return 'Elapsed: '+foam.core.Duration.duration(c.replayingInfo.elapsedTime);
         });
         this.add(label);
 
@@ -128,17 +128,17 @@ foam.CLASS({
         this.add(label);
 
         label = this.makeLabel();
-        label.text$ = this.config$.map(function(c) { return 'Remaining: '+c.replayingInfo.timeRemaining; });
+        label.text$ = this.config$.map(function(c) { return 'Remaining: '+foam.core.Duration.duration(c.replayingInfo.timeRemaining); });
         this.add(label);
 
         label = this.makeLabel();
-        label.text$ = this.config$.map(function(c) { return 'Replay TPS: '+c.replayingInfo.replayTps; });
+        label.text$ = this.config$.map(function(c) { return 'Replay TPS: '+c.replayingInfo.replayTps.toFixed(2); });
         this.add(label);
       }
 
       label = this.makeLabel();
       label.text$ = this.config$.map(function(c) {
-        return 'TPS: '+c.replayingInfo.replayTps;
+        return 'TPS: '+c.replayingInfo.replayTps.toFixed(2);
       }.bind(this));
       this.add(label);
 
@@ -146,8 +146,7 @@ foam.CLASS({
       label.text$ = this.config$.map(function(c) {
         let now = Date.now();
         let delta = now - (c.replayingInfo.lastModified && c.replayingInfo.lastModified.getTime() || now);
-        let duration = foam.core.Duration.duration(delta);
-        return 'Idle: '+duration;
+        return 'Idle: '+foam.core.Duration.duration(delta);
       });
       this.add(label);
 

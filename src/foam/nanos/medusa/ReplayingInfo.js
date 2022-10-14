@@ -84,13 +84,13 @@ foam.CLASS({
     {
       name: 'timeElapsed',
       class: 'Duration',
-      expression: function(startTime) {
+      getter: function() {
         var time = 0;
-        if ( startTime ) {
-          let end = endTime || new Date();
-          time = end.getTime() - startTime.getTime();
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          time = end.getTime() - this.startTime.getTime();
         }
-        return foam.core.Duration.duration(time);
+        return time;
       },
       javaGetter: `
       var time = 0L;
@@ -108,10 +108,10 @@ foam.CLASS({
       name: 'percentComplete',
       label: '% Complete',
       class: 'Float',
-      expression: function(index, replayIndex) {
-        if ( replayIndex > index ) {
-          return index / replayIndex;
-        } else if ( replayIndex > 0 ) {
+      getter: function() {
+        if ( this.replayIndex > this.index ) {
+          return this.index / this.replayIndex;
+        } else if ( this.replayIndex > 0 ) {
           return 1;
         }
         return 0;
@@ -119,7 +119,7 @@ foam.CLASS({
       visibility: 'RO',
       javaGetter: `
       if ( getReplayIndex() > getIndex() ) {
-        return (float) (int) (((float) getIndex() / (float) getReplayIndex()) * 100);
+        return (float) (int) ((getIndex() / (float) getReplayIndex()) * 100);
       } else if ( getReplayIndex() > 0 ) {
         return (float) 100.0;
       } else {
@@ -131,14 +131,13 @@ foam.CLASS({
       name: 'timeRemaining',
       class: 'Duration',
       label: 'Remaining',
-      expression: function(index, replayIndex, startTime, endTime) {
-        var timeElapsed = 0;
-        if ( startTime ) {
-          let end = endTime || new Date();
-          timeElapsed = end.getTime() - startTime.getTime();
+      getter: function() {
+        var time = 0;
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          time = end.getTime() - this.startTime.getTime();
         }
-        let remaining = ( timeElapsed / index ) * ( replayIndex - index ) * timeElapsed;
-        return foam.core.Duration.duration(remaining);
+        return ( this.replayIndex - this.index ) / ( this.index / time );
       },
       visibility: 'RO',
       javaGetter: `
@@ -152,8 +151,7 @@ foam.CLASS({
           }
           time = end.getTime() - getStartTime().getTime();
         }
-        float index = (float) getIndex();
-        remaining = (long) (( time / index ) * ( getReplayIndex() / index ) * time );
+        remaining = (long) ( (getReplayIndex() - getIndex()) / (getIndex() / (float) time) );
       }
       return remaining;
       `
@@ -161,12 +159,15 @@ foam.CLASS({
     {
       name: 'replayTps',
       class: 'Float',
-      expression: function(index, replayIndex, startTime, endTime) {
-        if ( startTime ) {
-          let end = endTime || new Date();
-          let tm = (end.getTime() - startTime.getTime()) / 1000;
-          let tps = index / tm;
-          // return Math.round(tps);
+      getter: function() {
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          let tm = ( end.getTime() - this.startTime.getTime() ) / 1000;
+          if ( this.replayIndex > this.index ) {
+            tps = this.index / tm;
+          } else {
+            tps = this.replayIndex / tm;
+          }
           return tps;
         }
         return 0.0;
@@ -178,7 +179,7 @@ foam.CLASS({
         if ( end == null ) {
           end = new java.util.Date();
         }
-        var tm = (end.getTime() - getStartTime().getTime()) / 1000;
+        var tm = ( end.getTime() - getStartTime().getTime() ) / 1000;
         if ( getReplayIndex() > getIndex() ) {
           tps = getIndex() / tm;
         } else {
