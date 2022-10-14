@@ -191,13 +191,6 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       visibility: 'RO',
       storageTransient: true // See 'data' postSet
     },
-    // { // just an idea at the moment.
-    //   documentation: 'Indicate if entry is eligible for Dagger Linking.  Not all entries are compacted - such as Sessions, so the system cannot link against an entry which will not be compacted.',
-    //   name: 'linkable',
-    //   class: 'Boolean',
-    //   value: true,
-    //   visibility: 'RO'
-    // },
     {
       name: 'created',
       class: 'DateTime',

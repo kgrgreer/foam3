@@ -227,11 +227,7 @@ This is the heart of Medusa.`,
             // Only non-transient entries can be used for links,
             // as only non-transient are stored on the nodes.
 
-            // TODO: Consider entries we don't want to compact, such
-            // as Session.
-            if ( ! "localSessionDAO".equals(entry.getNSpecName()) ) {
-              dagger.updateLinks(x, entry);
-            }
+            dagger.updateLinks(x, entry);
           }
 
           // test to save a synchronized call
