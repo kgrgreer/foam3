@@ -4942,6 +4942,10 @@ foam.CLASS({
   name: 'Month',
   extends: 'foam.mlang.AbstractExpr',
 
+  documentation: `Returns the first day of the month. The property numberOfMonths allows specify how many month ahead
+                    of behind we want the date to be. For example new Month() returns the first day of the current month.
+                    new Month(-1) returns the first day of the previous month`,
+
   implements: [
     'foam.core.Serializable'
   ],
@@ -4994,6 +4998,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'Day',
   extends: 'foam.mlang.AbstractExpr',
+  documentation: `Returns the first minute of the day. The property numberOfDays allows specify how many days ahead
+                      of behind we want the date to be. For example new Day() returns the first minute of 'today'.
+                      new Day(-1) returns the first minute of yesterday`,
 
   javaImports:[
     'java.util.Calendar'
