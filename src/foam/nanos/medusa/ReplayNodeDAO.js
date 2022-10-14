@@ -65,22 +65,6 @@ foam.CLASS({
         details.setMaxIndex(info.getMaxIndex());
         details.setCount(info.getCount());
 
-        // Min min = (Min) MIN(MedusaEntry.INDEX);
-        // Max max = (Max) MAX(MedusaEntry.INDEX);
-        // Count count = new Count();
-        // Sequence seq = new Sequence.Builder(x)
-        //   .setArgs(new Sink[] {count, min, max})
-        //   .build();
-
-        // getDelegate()
-        //   .select(seq);
-
-        // if ( ((Long) count.getValue()) > 0 ) {
-        //   details.setMinIndex((Long)min.getValue());
-        //   details.setMaxIndex((Long)max.getValue());
-        //   details.setCount((Long) count.getValue());
-        // }
-
         ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex(), "count", details.getCount());
 
         return details;
