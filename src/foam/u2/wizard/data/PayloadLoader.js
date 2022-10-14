@@ -22,7 +22,7 @@ foam.CLASS({
       const capable = await this.delegate.load(...a);
       const dao = capable.getCapablePayloadDAO();
 
-      const payload = await dao.find(this.delegateCapabilityId);
+      const payload = await dao.find(this.capabilityId);
     
       return payload.data;
     }
