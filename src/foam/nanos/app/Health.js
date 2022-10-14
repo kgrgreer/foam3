@@ -86,7 +86,10 @@ foam.CLASS({
       name: 'upTime',
       shortName: 'ut',
       class: 'Duration',
-      javaFactory: 'return System.currentTimeMillis() - getBootTime();',
+      getter: function() {
+        return Date.now() - this.bootTime;
+      },
+      javaGetter: 'return System.currentTimeMillis() - getBootTime();',
       visibility: 'RO',
       clusterTransient: true
     },
@@ -107,11 +110,12 @@ foam.CLASS({
     {
       name: 'nextHearbeatIn',
       class: 'Duration',
-      expression: function(heartbeatTime, heartbeatSchedule) {
-        if ( heartbeatTime && heartbeatSchedule && heartbeatSchedule > 0 ) {
-          return (heartbeatTime + heartbeatSchedule) - Date.now();
+      getter: function() {
+        var time = 0;
+        if ( this.heartbeatTime && this.heartbeatSchedule && this.heartbeatSchedule > 0 ) {
+          time = (this.heartbeatTime + this.heartbeatSchedule) - Date.now();
         }
-        return 0;
+        return time;
       },
       javaGetter: `
       if ( getHeartbeatSchedule() > 0L ) {
@@ -156,8 +160,8 @@ foam.CLASS({
       units: 'bytes',
       storageTransient: true,
       visibility: 'RO',
-      expression: function(memoryTotal, memoryFree) {
-        return memoryTotal - memoryFree;
+      getter: function() {
+        return this.memoryTotal - this.memoryFree;
       },
       javaGetter: `
       return getMemoryTotal() - getMemoryFree();
@@ -169,9 +173,9 @@ foam.CLASS({
       class: 'Long',
       storageTransient: true,
       visibility: 'RO',
-      expression: function(memoryTotal, memoryFree) {
-        if ( memoryTotal && memoryTotal > 0 ) {
-          return ( (memoryTotal - memoryFree) / memoryTotal ) * 100.0;
+      getter: function() {
+        if ( this.memoryTotal && this.memoryTotal > 0 ) {
+          return ( (this.memoryTotal - this.memoryFree) / this.memoryTotal ) * 100.0;
         }
         return 0;
       },

@@ -1,19 +1,19 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
   package: 'foam.nanos.medusa',
-  name: 'PromotedPurgeAgent',
+  name: 'PromotedClearAgent',
 
   implements: [
     'foam.core.ContextAgent',
     'foam.nanos.NanoService'
   ],
 
-  documentation: 'Remove promoted entries which will never be referenced again',
+  documentation: 'Clear data from promoted entries which will never be referenced again',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -28,7 +28,9 @@ foam.CLASS({
     'static foam.mlang.MLang.GT',
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
+    'static foam.mlang.MLang.MAX',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Max',
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -48,11 +50,6 @@ foam.CLASS({
       name: 'minIndex',
       class: 'Long',
       value: 2
-    },
-    {
-      documentation: 'do not purge above this index (inclusive)',
-      name: 'maxIndex',
-      class: 'Long'
     },
     {
       documentation: 'Number of entries to retain for potential consensus matching.',
@@ -99,10 +96,7 @@ foam.CLASS({
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-      long maxIndex = getMaxIndex();
-      if ( maxIndex == 0 ) {
-        maxIndex = replaying.getIndex() - getRetain();
-      }
+      long maxIndex = replaying.getIndex() - getRetain();
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
@@ -112,14 +106,17 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
+        Max max = (Max) MAX(MedusaEntry.INDEX);
         Count count = new Count();
-        PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
+        ClearSink clearSink = new ClearSink(x, dao);
+        CompactionSink compactionSink = new CompactionSink(x, clearSink);
         Sequence seq = new Sequence.Builder(x)
-          .setArgs(new Sink[] {count, purgeSink})
+          .setArgs(new Sink[] {count, max, compactionSink})
           .build();
         dao.select(seq);
-        if ( count.getValue() > 0 ) {
-          Loggers.logger(x, this).debug("purged", count.getValue());
+        if ( ((Long)count.getValue()) > 0 ) {
+          Loggers.logger(x, this).debug("cleared", count.getValue());
+          setMinIndex((Long)max.getValue());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);

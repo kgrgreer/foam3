@@ -19,9 +19,12 @@ foam.CLASS({
   javaImports: [
     'foam.core.AgencyTimerTask',
     'foam.dao.DAO',
+    'foam.mlang.sink.Count',
     'foam.nanos.pm.PM',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'java.time.Duration',
+    'java.util.Map',
     'java.util.Timer',
   ],
 
@@ -60,7 +63,28 @@ foam.CLASS({
             logger.info("replay complete");
             replaying.setReplaying(false);
             replaying.setEndTime(new java.util.Date());
-            logger.info("replayComplete", replaying.getReplayIndex(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
+            ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
+            // count medusa entries, how many did we load?
+            Count count = new Count();
+            ((DAO) x.get("medusaEntryDAO")).select(count);
+            // logger.info("replayComplete", "index", replaying.getReplayIndex(), "count", count.getValue(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
+            long total = 0L;
+            long min = 0L;
+            Map replayDetails = replaying.getReplayDetails();
+            for ( Object o : replayDetails.values() ) {
+              ReplayCmd cmd = (ReplayCmd) o;
+              ReplayDetailsCmd details = cmd.getDetails();
+              total += details.getCount();
+              if ( min == 0 ) {
+                min = details.getMinIndex();
+              } else {
+                min = Math.min(min, details.getMinIndex());
+              }
+            }
+            long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
+            Duration duration = Duration.ofMillis(time);
+            logger.info("replayComplete", "replayed", total, "promoted", count.getValue(), "duration", time, "s", total/time, "/s", duration);
+
             ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
             ClusterConfig config = support.getConfig(x, support.getConfigId());

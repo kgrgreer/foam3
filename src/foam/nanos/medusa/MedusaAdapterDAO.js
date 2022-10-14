@@ -169,7 +169,7 @@ and waits on a response.`,
             alarm.setName("MedusaAdapter failed to update");
             alarm.setNote(obj.getClass().getName()+" "+id);
             alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-            throw new MedusaException("Failed to update");
+            throw new MedusaException("MedusaEntry not found, failed to update");
           }
           return nu;
         } else { // if ( DOP.REMOVE == dop ) {
