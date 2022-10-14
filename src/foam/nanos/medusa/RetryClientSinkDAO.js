@@ -26,6 +26,15 @@ foam.CLASS({
     'foam.nanos.pm.PM'
   ],
 
+  constants: [
+    {
+      documentation: 'Cancel/terminate any active retry attempts',
+      name: 'CANCEL_RETRY_CMD',
+      type: 'String',
+      value: 'CANCEL_RETRY_CMD'
+    },
+  ],
+
   properties: [
     {
       name: 'name',
@@ -117,6 +126,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      if ( CANCEL_RETRY_CMD.equals(obj) ) {
+        setMaxRetryAttempts(0);
+        return obj;
+      }
       return submit(x, obj, DOP.CMD);
       `
     },

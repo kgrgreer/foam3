@@ -72,11 +72,14 @@ foam.CLASS({
         if ( replaying.getStartTime() == null ) {
           replaying.setStartTime(new java.util.Date());
         }
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
+
         DAO dao = ((DAO) x.get("medusaNodeDAO"));
         if ( replaying.getEndTime() == null ) {
           replaying.setEndTime(new java.util.Date());
           Max max = (Max) dao.select(MAX(MedusaEntry.INDEX));
           replaying.setReplaying(false);
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
           if ( max != null &&
                max.getValue() != null ) {
             replaying.updateIndex(x, (Long)max.getValue());

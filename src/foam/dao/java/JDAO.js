@@ -162,6 +162,12 @@ In this current implementation setDelegate must be called last.`,
       javaCode: `
         super.select_(x, new foam.dao.RemoveSink(x, this), skip, limit, order, predicate);
       `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      return getJournal().cmd(x, obj);
+      `
     }
   ]
 });

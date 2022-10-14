@@ -35,6 +35,14 @@ foam.INTERFACE({
         { name: 'x',   type: 'Context' },
         { name: 'dao', type: 'foam.dao.DAO' }
       ]
+    },
+    {
+      name: 'cmd',
+      args: [
+        { name: 'x',   type: 'Context' },
+        { name: 'obj', type: 'Object' }
+      ],
+      type: 'Object'
     }
   ]
 });
@@ -47,6 +55,17 @@ foam.CLASS({
 
   implements: [
     'foam.dao.Journal'
+  ],
+
+  methods: [
+    {
+      name: 'cmd',
+      args: 'Context x, Object obj',
+      type: 'Object',
+      javaCode: `
+      return obj;
+      `
+    }
   ]
 });
 
@@ -63,7 +82,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.Journal',
       name: 'delegate',
-      forwards: [ 'put', 'remove', 'replay' ]
+      forwards: [ 'put', 'remove', 'replay', 'cmd' ]
     }
   ]
 });
