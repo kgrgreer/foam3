@@ -37,7 +37,7 @@ foam.CLASS({
       documentation: 'Notify all threads',
       name: 'UNBLOCK_CMD',
       type: 'String',
-      value: 'BLOCKED_CMD'
+      value: 'UNBLOCK_CMD'
     }
   ],
 

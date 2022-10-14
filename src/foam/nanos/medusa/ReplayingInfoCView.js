@@ -82,7 +82,7 @@ foam.CLASS({
                  c.replayingInfo &&
                  c.replayingInfo.replaying &&
                  c.replayingInfo.replayIndex > 0 ) {
-              return c.replayingInfo.timeRemaining;
+              return foam.core.Duration.duration(c.replayingInfo.timeRemaining);
             }
             return '';
           }.bind(this))

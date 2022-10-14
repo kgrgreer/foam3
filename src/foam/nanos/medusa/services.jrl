@@ -55,7 +55,9 @@ p({
           .setDelegate(new foam.nanos.medusa.ClusterConfigStatusDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.RenouncePrimaryDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.AnnouncePrimaryDAO.Builder(x)
-              .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
+              .setDelegate(new foam.nanos.medusa.ClusterConfigSupportDAO.Builder(x)
+                .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
+                .build())
               .build())
             .build())
           .build())
@@ -224,6 +226,27 @@ p({
   "name": "daggerService",
   "serve": false,
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "daggerBootstrapDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("daggerbootstrap")
+      .setDecorator(new foam.nanos.medusa.DaggerBootstrapDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo()))
+        .build())
+      .setCluster(false)
+      .setRuler(false)
+      .setSeqNo(true)
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.DaggerBootstrap.ID));
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.DaggerBootstrap\"}"
 })
 
 // See deployment/mm and mn for type specific setup

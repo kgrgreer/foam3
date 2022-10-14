@@ -111,7 +111,7 @@ foam.CLASS({
                 alarm.setSeverity(foam.log.LogLevel.INFO);
                 alarm.setReason(AlarmReason.TIMEOUT);
                 alarm.setClusterable(false);
-                alarm.setNote(health.toSummary() + " missed " + getMissed() + " heartbeats");
+                alarm.setNote("heartbeats missed "+health.toSummary());
                 alarmDAO.put(alarm);
               }
             } else if ( alarm != null &&
@@ -121,6 +121,7 @@ foam.CLASS({
               alarmDAO.put(alarm);
             }
           }
+
           public void remove(Object obj, Detachable sub) {}
           public void eof() {}
           public void reset(Detachable sub) {}

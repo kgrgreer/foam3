@@ -224,6 +224,7 @@ foam.POM({
     { name: "boot/DAONSpecMenu",                                                          flags: "js|java" },
     { name: "session/LocalSetting",                                                       flags: "js|java" },
     { name: "session/Session",                                                            flags: "js|java" },
+    { name: "session/SessionCompactionSink",                                             flags: "js|java" },
     { name: "session/SessionTimer",                                                       flags: "js" },
     { name: "session/SessionService",                                                     flags: "js|java" },
     { name: "session/SessionNotFoundException",                                           flags: "js|java" },

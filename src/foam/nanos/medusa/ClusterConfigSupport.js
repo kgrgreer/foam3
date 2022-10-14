@@ -41,6 +41,7 @@ configuration for contacting the primary node.`,
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.medusa.ElectoralService',
     'foam.nanos.medusa.ElectoralServiceState',
     'foam.nanos.pm.PM',
@@ -147,11 +148,111 @@ configuration for contacting the primary node.`,
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
+        return Loggers.logger(getX(), this);
       `
     },
+    {
+      name: 'nodeCount',
+      class: 'Int',
+      javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeCount");
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, 0L),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            EQ(ClusterConfig.REGION, config.getRegion()),
+            EQ(ClusterConfig.TYPE, MedusaType.NODE),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.ACCESS_MODE, AccessMode.RW)
+          ))
+        .select(COUNT());
+      pm.log(getX());
+      return (int) count.getValue();
+      `
+    },
+    {
+      // NOTE: replace all the quorum logic with a plug in quorum strategy
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
+      name: 'nodeQuorum',
+      class: 'Int',
+      javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
+      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+      // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      pm.log(getX());
+      return quorum;
+      `
+    },
+    {
+      documentation: 'Mediators to broadcast to. See ClusterConfigStatusDAO',
+      name: 'broadcastMediators',
+      class: 'FObjectArray',
+      of: 'foam.nanos.medusa.ClusterConfig',
+      javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getBroascastMediators");
+      ClusterConfig myConfig = getConfig(getX(), getConfigId());
+      long zone = myConfig.getZone() + 1;
+      if ( myConfig.getType() == MedusaType.NODE ) {
+        zone = myConfig.getZone();
+      }
+      // getLogger().debug("broadcastMediators", "zone", zone);
+      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, zone),
+            OR(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.TYPE, MedusaType.NERF)
+            ),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.REGION, myConfig.getRegion()),
+            EQ(ClusterConfig.REALM, myConfig.getRealm())
+          )
+        )
+        .select(new ArraySink())).getArray();
+      ClusterConfig[] configs = new ClusterConfig[arr.size()];
+      arr.toArray(configs);
+      pm.log(getX());
+      return configs;
+      `
+    },
+    {
+      documentation: 'Mediators to broadcast to',
+      name: 'sfBroadcastMediators',
+      class: 'FObjectArray',
+      of: 'foam.nanos.medusa.ClusterConfig',
+      javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getSfBroascastMediators");
+      ClusterConfig myConfig = getConfig(getX(), getConfigId());
+
+      if ( myConfig.getType() == MedusaType.NODE ) return new ClusterConfig[0];
+
+      long zone = myConfig.getZone();
+      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            OR(
+              EQ(ClusterConfig.ZONE, zone),
+              EQ(ClusterConfig.ZONE, zone+1)
+            ),
+            OR(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.TYPE, MedusaType.NERF)
+            ),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.REGION, myConfig.getRegion()),
+            EQ(ClusterConfig.REALM, myConfig.getRealm())
+          )
+        )
+        .select(new ArraySink())).getArray();
+      ClusterConfig[] configs = new ClusterConfig[arr.size()];
+      arr.toArray(configs);
+      pm.log(getX());
+      return configs;
+      `
+    }
   ],
 
   methods: [
@@ -203,72 +304,6 @@ configuration for contacting the primary node.`,
       } else {
         throw new RuntimeException("Active Region not found.");
       }
-      `
-    },
-    {
-      documentation: 'Mediators to broadcast to. See ClusterConfigStatusDAO',
-      name: 'getBroadcastMediators',
-      type: 'foam.nanos.medusa.ClusterConfig[]',
-      javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getBroascastMediators");
-      ClusterConfig myConfig = getConfig(getX(), getConfigId());
-      long zone = myConfig.getZone() + 1;
-      if ( myConfig.getType() == MedusaType.NODE ) {
-        zone = myConfig.getZone();
-      }
-      // getLogger().debug("broadcastMediators", "zone", zone);
-      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.ZONE, zone),
-            OR(
-              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-              EQ(ClusterConfig.TYPE, MedusaType.NERF)
-            ),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.REGION, myConfig.getRegion()),
-            EQ(ClusterConfig.REALM, myConfig.getRealm())
-          )
-        )
-        .select(new ArraySink())).getArray();
-      ClusterConfig[] configs = new ClusterConfig[arr.size()];
-      arr.toArray(configs);
-      pm.log(getX());
-      return configs;
-      `
-    },
-    {
-      documentation: 'Mediators to broadcast to',
-      name: 'getSfBroadcastMediators',
-      type: 'foam.nanos.medusa.ClusterConfig[]',
-      javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getSfBroascastMediators");
-      ClusterConfig myConfig = getConfig(getX(), getConfigId());
-
-      if ( myConfig.getType() == MedusaType.NODE ) return new ClusterConfig[0];
-
-      long zone = myConfig.getZone();
-      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            OR(
-              EQ(ClusterConfig.ZONE, zone),
-              EQ(ClusterConfig.ZONE, zone+1)
-            ),
-            OR(
-              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-              EQ(ClusterConfig.TYPE, MedusaType.NERF)
-            ),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.REGION, myConfig.getRegion()),
-            EQ(ClusterConfig.REALM, myConfig.getRealm())
-          )
-        )
-        .select(new ArraySink())).getArray();
-      ClusterConfig[] configs = new ClusterConfig[arr.size()];
-      arr.toArray(configs);
-      pm.log(getX());
-      return configs;
       `
     },
     {
@@ -433,19 +468,19 @@ configuration for contacting the primary node.`,
       return 2;
       `
     },
-    {
-      // NOTE: replace all the quorum logic with a plug in quorum strategy
-      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
-      name: 'getNodeQuorum',
-      type: 'Integer',
-      javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
-      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
-      // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
-      pm.log(getX());
-      return quorum;
-      `
-    },
+    // {
+    //   // NOTE: replace all the quorum logic with a plug in quorum strategy
+    //   documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
+    //   name: 'getNodeQuorum',
+    //   type: 'Integer',
+    //   javaCode: `
+    //   PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
+    //   int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+    //   // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+    //   pm.log(getX());
+    //   return quorum;
+    //   `
+    // },
     {
       documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
       name: 'getNodeGroups',
@@ -457,27 +492,27 @@ configuration for contacting the primary node.`,
       return groups;
       `
     },
-    {
-      name: 'getNodeCount',
-      type: 'Integer',
-      javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeCount");
-      ClusterConfig config = getConfig(getX(), getConfigId());
-      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.ZONE, 0L),
-            EQ(ClusterConfig.REALM, config.getRealm()),
-            EQ(ClusterConfig.REGION, config.getRegion()),
-            EQ(ClusterConfig.TYPE, MedusaType.NODE),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.ACCESS_MODE, AccessMode.RW)
-          ))
-        .select(COUNT());
-      pm.log(getX());
-      return (int) count.getValue();
-      `
-    },
+    // {
+    //   name: 'getNodeCount',
+    //   type: 'Integer',
+    //   javaCode: `
+    //   PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeCount");
+    //   ClusterConfig config = getConfig(getX(), getConfigId());
+    //   Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
+    //     .where(
+    //       AND(
+    //         EQ(ClusterConfig.ZONE, 0L),
+    //         EQ(ClusterConfig.REALM, config.getRealm()),
+    //         EQ(ClusterConfig.REGION, config.getRegion()),
+    //         EQ(ClusterConfig.TYPE, MedusaType.NODE),
+    //         EQ(ClusterConfig.ENABLED, true),
+    //         EQ(ClusterConfig.ACCESS_MODE, AccessMode.RW)
+    //       ))
+    //     .select(COUNT());
+    //   pm.log(getX());
+    //   return (int) count.getValue();
+    //   `
+    // },
     {
       documentation: 'Are sufficient nodes enabled and online? Require a quorum count of buckets and a quorum count of nodes in each bucket',
       name: 'getHasNodeQuorum',
@@ -649,12 +684,12 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getConfig");
       try {
-      ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
-      if ( config != null ) {
-        return (ClusterConfig) config.fclone();
-      }
-      getLogger().error("ClusterConfig not found:", id);
-      throw new RuntimeException("ClusterConfig not found: "+id);
+        ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
+        if ( config != null ) {
+          return (ClusterConfig) config.fclone();
+        }
+        getLogger().error("ClusterConfig not found:", id);
+        throw new RuntimeException("ClusterConfig not found: "+id);
       } finally {
         pm.log(x);
       }
