@@ -77,7 +77,7 @@ TODO: handle node roll failure - or timeout
     {
       name: 'maxWait',
       class: 'Long',
-      value: 60000,
+      value: 600000, // 10 minutes
       units: 'ms'
     },
     {
@@ -276,9 +276,10 @@ TODO: handle node roll failure - or timeout
       // NOTE: line.shutdown() will block forever if a node does not reply.
       // Instead, perform manual polling for completion.
       long waited = 0L;
-      long sleep = 1000L;
+      long sleep = 10000L;
       while ( waited < getMaxWait() ) {
         try {
+          logger.info("waiting on node roll completion");
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
