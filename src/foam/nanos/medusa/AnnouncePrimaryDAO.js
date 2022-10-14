@@ -24,8 +24,6 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.MAX',
-    'foam.mlang.sink.Max',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
@@ -114,14 +112,14 @@ foam.CLASS({
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
             DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-            Max max = new Max(0, MedusaEntry.INDEX);
             Long m = 0L;
+            ReplayDetailsCmd details = new ReplayDetailsCmd();
+            details.setRequester(myConfig.getId());
+            details.setResponder(cfg.getId());
             try {
-              max = (Max) client.select(max);
-              if ( max != null ) {
-                m = (Long) max.getValue();
-                replies.add(cfg.getId());
-              }
+              details = (ReplayDetailsCmd) client.cmd_(x, details);
+              m = details.getMaxIndex();
+              replies.add(cfg.getId());
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
               // Fallback for now - it's many seconds stale but better than nothing
