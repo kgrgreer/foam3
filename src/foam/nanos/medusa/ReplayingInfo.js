@@ -59,16 +59,6 @@ foam.CLASS({
       documentation: 'Number of MedusaEntry which are to be replayed from all the nodes to each mediator.',
       name: 'count',
       class: 'Long',
-      javaGetter: `
-        Long total = 0L;
-        Map replayDetails = getReplayDetails();
-        for ( Object o : replayDetails.values() ) {
-          ReplayCmd cmd = (ReplayCmd) o;
-          ReplayDetailsCmd details = cmd.getDetails();
-          total += details.getCount();
-        }
-        return total;
-      `,
       visibility: 'RO'
     },
     {
@@ -188,13 +178,6 @@ foam.CLASS({
       }
       return (float) tps;
       `
-    },
-    {
-      name: 'replayNodes',
-      class: 'Map',
-      javaFactory: 'return new ConcurrentHashMap();',
-      visibility: 'RO',
-      storageTransient: true
     },
     {
       name: 'replayDetails',

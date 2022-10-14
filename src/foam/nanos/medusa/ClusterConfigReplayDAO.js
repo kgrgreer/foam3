@@ -114,7 +114,7 @@ foam.CLASS({
             DaggerService dagger = (DaggerService) x.get("daggerService");
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
             if ( replaying.getReplaying() ) {
-            replaying.getReplayNodes().put(details.getResponder(), details);
+            replaying.getReplayDetails().put(config.getId(), details);
 
               if ( replaying.getStartTime() == null ) {
                 replaying.setStartTime(new java.util.Date());
@@ -140,6 +140,13 @@ foam.CLASS({
               } else {
                 replaying.setMinIndex(details.getMinIndex());
               }
+
+              Long replayed = 0L;
+              for ( Object o : replaying.getReplayDetails().values() ) {
+                ReplayDetailsCmd detail = (ReplayDetailsCmd) o;
+                replayed += detail.getCount();
+              }
+              replaying.setCount(replayed);
 
               // Detect baseline - no data.
               // Have to check almost all nodes.
@@ -173,12 +180,8 @@ foam.CLASS({
             cmd.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "request", cmd.getDetails());
-            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            replaying.getReplayDetails().put(config.getId(), cmd);
             cmd = (ReplayCmd) clientDAO.cmd_(x, cmd);
             getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "response");
-            replaying = (ReplayingInfo) x.get("replayingInfo");
-            replaying.getReplayDetails().put(config.getId(), cmd);
           }
         }
       }

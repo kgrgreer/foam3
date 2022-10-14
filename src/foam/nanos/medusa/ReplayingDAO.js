@@ -67,23 +67,16 @@ foam.CLASS({
             // count medusa entries, how many did we load?
             Count count = new Count();
             ((DAO) x.get("medusaEntryDAO")).select(count);
-            // logger.info("replayComplete", "index", replaying.getReplayIndex(), "count", count.getValue(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
-            long total = 0L;
-            long min = 0L;
+            Long replayed = 0L;
             Map replayDetails = replaying.getReplayDetails();
             for ( Object o : replayDetails.values() ) {
-              ReplayCmd cmd = (ReplayCmd) o;
-              ReplayDetailsCmd details = cmd.getDetails();
-              total += details.getCount();
-              if ( min == 0 ) {
-                min = details.getMinIndex();
-              } else {
-                min = Math.min(min, details.getMinIndex());
-              }
+              ReplayDetailsCmd details = (ReplayDetailsCmd) o;
+              replayed += details.getCount();
             }
+            replaying.setCount(replayed);
             long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
             Duration duration = Duration.ofMillis(time);
-            logger.info("replayComplete", "replayed", total, "promoted", count.getValue(), "duration", time, "s", total/time, "/s", duration);
+            logger.info("replayComplete", "replayed", replayed, "promoted", count.getValue(), "duration", time, "s", replayed/time, "/s", duration);
 
             ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
