@@ -53,7 +53,7 @@ foam.CLASS({
     {
       name: 'indexVerificationMaxWait',
       class: 'Long',
-      value: 60000,
+      value: 3600000, // 1 hour - slow nodes up to 10million
       units: 'ms'
     }
   ],
@@ -145,9 +145,10 @@ foam.CLASS({
       // line.shutdown();
       // Perform manual polling for completion.
       long waited = 0L;
-      long sleep = 1000L;
+      long sleep = 10000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
+          logger.info("waiting on index verification");
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
