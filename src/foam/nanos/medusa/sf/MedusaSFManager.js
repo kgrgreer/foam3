@@ -34,7 +34,7 @@ foam.CLASS({
 
   constants: [
     {
-      class: 'Int',
+      type: 'Integer',
       name: 'MAXIMUM_REPLAY_DAYS',
       value: 365
     }
@@ -75,7 +75,7 @@ foam.CLASS({
       javaSetter: `
         replayStrategyIsSet_ = true;
         if ( val <= 0 ) replayStrategy_ = 0;
-        else if ( val >=  getMAXIMUM_REPLAY_DAYS() ) replayStrategy_ = getMAXIMUM_REPLAY_DAYS();
+        else if ( val >=  MAXIMUM_REPLAY_DAYS ) replayStrategy_ = MAXIMUM_REPLAY_DAYS;
         else replayStrategy_ = val;
       `,
       value: 0
