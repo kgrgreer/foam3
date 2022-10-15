@@ -351,6 +351,8 @@ foam.POM({
     { name: "pool/ThreadPoolAgency",                                                      flags: "js|java" },
     { name: "jetty/JettyThreadPoolConfig",                                                flags: "js|java" },
     { name: "auth/PMAuthService",                                                         flags: "js|java" },
+    { name: "notification/DAONotificationRuleAction",                                     flags: "js|java" },
+     { name: "notification/test/DAONotificationTest",                                     flags: "js|java" },
     { name: "notification/email/EmailConfig",                                             flags: "js|java" },
     { name: "notification/email/EmailFolderAgent",                                        flags: "java" },
     { name: "notification/email/EmailMessage",                                            flags: "js|java" },
