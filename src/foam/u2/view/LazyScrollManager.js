@@ -207,8 +207,14 @@
       function handleIntersect(entries, observer) {
         self.onRowIntersect(entries, self);
       }
-      this.onDetach(resize.disconnect);
-      this.onDetach(this.rowObserver.disconnect);
+      this.onDetach(() => {
+        // might already be disconnected
+        try { resize.disconnect(); } catch(x) {}
+      });
+      this.onDetach(() => {
+        // might already be disconnected
+        try { this.rowObserver.disconnect(); } catch(x) {}
+      });
       this.onDetach(this.rootElement$.sub(this.updateRenderedPages_));
       this.onDetach(this.order$.sub(this.refresh));
       this.onDetach(this.groupBy$.sub(this.refresh));
