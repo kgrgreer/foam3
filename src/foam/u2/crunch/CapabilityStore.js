@@ -56,6 +56,7 @@ foam.CLASS({
   requires: [
     'foam.dao.ArrayDAO',
     'foam.dao.NullDAO',
+    'foam.dao.PromisedDAO',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityCategory',
     'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
@@ -181,6 +182,26 @@ foam.CLASS({
       }
     },
     {
+      name: 'newVisibleCapabilityDAO',
+      class: 'foam.dao.DAOProperty',
+      documentation: `
+        DAO with only visible capabilities.
+      `,
+      factory: function() {
+        var self = this;
+        return this.PromisedDAO.create({
+          promise: new Promise(async function(resolve) {
+              var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
+                return ret?.getCapabilities(self.ctrl.__subContext__).dao.select();
+              });
+              if ( themeCaps?.array?.length != 0 ) return themeCaps.array;
+              var featured = await self.featuredCapabilities.select();
+              return featured.array;
+          })
+        });
+      }
+    },
+    {
       name: 'featuredCapabilities',
       class: 'foam.dao.DAOProperty',
       documentation: `
@@ -209,6 +230,18 @@ foam.CLASS({
           .where(this.EQ(this.CapabilityCategory.VISIBLE, true));
       }
     },
+    // {
+    //   name: 'visibleCapabilities',
+    //   factory: function() {
+    //     // factories need to be synchronous!
+    //     var themeCaps = await this.themeDomainDAO.find(this.window.location.hostname).then(function(ret) {
+    //       return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
+    //     });
+    //     if ( themeCaps?.array?.length != 0 ) return themeCaps.array;
+    //     var featured = await this.featuredCapabilities.select();
+    //     return featured.array;
+    //   }
+    // },
     {
       name: 'carouselCounter',
       class: 'Int',
@@ -247,6 +280,19 @@ foam.CLASS({
         });
       });
     },
+    
+    /**
+     * Fetch capabilities intended to be rendered on the view.
+     */
+    async function getCapabilities() {
+      var themeCaps =  await this.themeDomainDAO.find(this.window.location.hostname).then(function(ret) {
+        return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
+      });
+      if ( themeCaps?.array?.length != 0 ) return themeCaps.array;
+      var featured = await this.featuredCapabilities.select();
+      return featured.array;
+    },
+
     function render() {
       this.SUPER();
       this.onDetach(this.crunchService.sub('grantedJunction', this.onChange));
@@ -262,12 +308,7 @@ foam.CLASS({
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
-          var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
-            return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
-          });
-          if ( themeCaps?.array?.length != 0 ) return self.renderFeatured(themeCaps.array);
-          var featured = await this.featuredCapabilities.select();
-          return self.renderFeatured(featured.array);
+          return self.renderFeatured(await this.newVisibleCapabilityDAO.select());
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
@@ -459,42 +500,23 @@ foam.CLASS({
     },
     function daoUpdate() {
       Promise.resolve()
-        // Get visible categories
-        .then(() => this.visibleCategoryDAO.select())
-        .then(categorySink => categorySink.array.map(cat => cat.id))
-        // Get capabilities within visible categories
-        .then(categories => {
-          return this.capabilityCategoryCapabilityJunctionDAO
-            .where(this.IN(
-              this.CapabilityCategoryCapabilityJunction.SOURCE_ID,
-              categories)).select();
-        })
-        .then(cccjSink => Object.keys(
-          cccjSink.array.map(cccj => cccj.targetId)
-          .reduce((set, capabilityId) => ({ ...set, [capabilityId]: true }), {})))
-        // Get visible capabilities within visible categories
-        .then(visibleList => this.visibleCapabilityDAO
-          .where(this.OR(
-            this.IN(this.Capability.ID, visibleList),
-            this.IN('featured', this.Capability.KEYWORDS)
-          )).select())
-        .then(async sink => {
-          if ( sink.array.length !== 1 )
-            return;
+        .then(() => this.getCapabilities())
+        .then(async capabilties => {
+          if ( capabilties.length !== 1 ) return;
 
-            let cap = sink.array[0];
-            let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
-            if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
-              || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
+          let cap = capabilties[0];
+          let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
+          if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+            || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
-            let x = this.ctrl.__subContext__;
-            let capa = await this.crunchService.updateJunction(x, cap.id, null, this.CapabilityJunctionStatus.GRANTED);
+          let x = this.ctrl.__subContext__;
+          let capa = await this.crunchService.updateJunction(x, cap.id, null, this.CapabilityJunctionStatus.GRANTED);
 
-            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
-              this.openWizard(cap, false);
-            else
-              this.window.location.reload();
-        })
+          if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
+            this.openWizard(cap, false);
+          else
+            this.window.location.reload();
+        });
     },
     async function openWizard(cap, showToast) {
       if ( this.wizardOpened ) return;
