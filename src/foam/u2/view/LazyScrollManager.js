@@ -181,7 +181,7 @@
 
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.updateCount();
     },
 
