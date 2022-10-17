@@ -96,6 +96,7 @@ foam.POM({
     { name: "benchmark/DaggerVerifyBenchmark",                                            flags: "js|java" },
     { name: "benchmark/MedusaPingBenchmark",                                              flags: "js|java" },
     { name: "benchmark/MedusaTestBenchmark",                                              flags: "js|java" },
+    { name: "benchmark/PingCmd",                                                          flags: "js|java" },
     { name: "benchmark/PingDAO",                                                          flags: "js|java" },
     { name: "sf/MedusaSFManager",                                                         flags: "js|java" },
     { name: "sf/SFBroadcastDAO",                                                          flags: "js|java" },
