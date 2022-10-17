@@ -17,8 +17,7 @@ configuration for contacting the primary node.`,
   ],
 
   implements: [
-    'foam.core.ContextAware',
-    'foam.nanos.NanoService'
+    'foam.core.ContextAware'
   ],
 
   javaImports: [
@@ -256,22 +255,6 @@ configuration for contacting the primary node.`,
   ],
 
   methods: [
-    {
-      documentation: 'Start as a NanoService',
-      name: 'start',
-      javaCode: `
-      ReplayingInfo replaying = (ReplayingInfo) getX().get("replayingInfo");
-      DAO dao = (DAO) getX().get("localClusterConfigDAO");
-      ClusterConfig myConfig = (ClusterConfig) dao.find(getConfigId());
-      if ( myConfig != null ) {
-        myConfig = (ClusterConfig) myConfig.fclone();
-        myConfig.setReplayingInfo(replaying);
-        dao.put(myConfig);
-      } else {
-        throw new foam.core.FOAMException("ClusterConfig not found: "+getConfigId());
-      }
-      `
-    },
     {
       documentation: 'Any active region in realm.',
       name: 'getActiveRegion',
