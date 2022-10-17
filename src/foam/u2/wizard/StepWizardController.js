@@ -166,9 +166,11 @@ foam.CLASS({
         wizardPosition, nextScreen,
         currentSection, currentWizardlet,
         currentSection$isValid, currentWizardlet$isValid,
-        config$allowSkipping
+        config$allowSkipping,
+        currentWizardlet$isInAltFlow
       ) {
         if ( config$allowSkipping ) return true;
+        if ( currentWizardlet$isInAltFlow ) return true;
         if (
           ! nextScreen ||
           wizardPosition.wizardletIndex != nextScreen.wizardletIndex

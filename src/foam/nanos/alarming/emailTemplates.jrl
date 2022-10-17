@@ -7,9 +7,9 @@ p({
 status: {{alarm.status}}
 host: {{alarm.host}}
 started: {{alarm.started}}
-cleared: {{alarm.cleared}}
+{% if alarm.cleared %}cleared: {{alarm.cleared}}{% endif %}
 severity: {{alarm.severity}}
 reason: {{alarm.reason}}
-info: {{alarm.note}}
+{% if alarm.note %}info: {{alarm.note}}{% endif %}
   """
 })
