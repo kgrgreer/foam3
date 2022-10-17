@@ -429,9 +429,9 @@ foam.CLASS({
               retPred = ret;
             }
           }
+        } else {
+        if ( predicate.arg1 && predicate.arg1.name == property.name ) retPred = predicate;
         }
-      } else {
-        if ( predicate.arg1 && predicate.arg1.name == prop.name ) retPred = predicate;
       }
       return retPred;
     },

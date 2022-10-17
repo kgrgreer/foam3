@@ -23,7 +23,7 @@
       name: 'resetPassword',
       javaCode: `
         EmailVerificationService service = (EmailVerificationService) x.get("emailVerificationService");
-        if ( service.verifyCode(x, newPasswordObj.getEmail(), newPasswordObj.getResetPasswordCode()) ) {
+        if ( service.verifyCode(x, newPasswordObj.getEmail(), newPasswordObj.getUserName(), newPasswordObj.getResetPasswordCode()) ) {
           String desiredPassword = newPasswordObj.getNewPassword();
 
           User systemUser = ((Subject) getX().get("subject")).getUser();

@@ -363,8 +363,16 @@ foam.CLASS({
       args: 'Context x',
       type: 'int',
       javaCode: `
+      String preferredMediator = System.getProperty("MEDUSA_PREFERRED_MEDIATOR");
+      if ( ! foam.util.SafetyUtil.isEmpty(preferredMediator) ) {
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        if ( support.getConfigId().equals(preferredMediator) ) {
+          return 254;
+        }
+        return 1;
+      }
       return ThreadLocalRandom.current().nextInt(255);
-     `
+      `
     },
     {
       name: 'callReport',

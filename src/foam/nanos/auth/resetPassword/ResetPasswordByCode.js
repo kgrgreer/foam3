@@ -55,6 +55,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'userName',
+      hidden: true
+    },
+    {
+      class: 'String',
       name: 'resetPasswordCode',
       section: 'verificationCodeSection',
       required: true,

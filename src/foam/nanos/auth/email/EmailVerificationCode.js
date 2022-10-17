@@ -60,6 +60,12 @@ foam.CLASS({
       hidden: true
     },
     {
+      class: 'String',
+      name: 'userName',
+      required: true,
+      hidden: true
+    },
+    {
       class: 'DateTime',
       name: 'expiry',
       hidden: true
@@ -72,7 +78,7 @@ foam.CLASS({
       code: async function() {
         var success, err;
         try {
-          success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.verificationCode);
+          success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.userName, this.verificationCode);
         } catch ( error ) {
           err = error;
         }
@@ -96,7 +102,7 @@ foam.CLASS({
       buttonStyle: 'LINK',
       code: async function() {
         try {
-          await this.emailVerificationService.verifyByCode(null, this.email);
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName);
           this.ctrl.add(this.NotificationMessage.create({
             message: this.VERIFICATION_EMAIL_TITLE,
             description: this.VERIFICATION_EMAIL+ ' ' + this.email,

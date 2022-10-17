@@ -22,8 +22,9 @@ foam.CLASS({
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
     'foam.mlang.sink.Count',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
@@ -52,10 +53,7 @@ foam.CLASS({
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getServiceName()
-        }, (Logger) getX().get("logger"));
+        return Loggers.logger(getX(), this, this.getServiceName());
       `
     },
   ],
@@ -97,7 +95,11 @@ foam.CLASS({
       documentation: 'Using assembly line, write to all online mediators in zone 0 and same realm,region',
       name: 'cmd_',
       javaCode: `
-      return submit(x, obj, DOP.CMD);
+      Object cmd = getDelegate().cmd_(x, obj);
+      if ( cmd != null ) {
+        return submit(x, cmd, DOP.CMD);
+      }
+      return cmd;
       `
     },
     {
@@ -134,13 +136,7 @@ foam.CLASS({
              try {
               DAO dao = (DAO) getClients().get(config.getId());
               if ( dao == null ) {
-                  dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                  // dao = new RetryClientSinkDAO.Builder(x)
-                  //         .setName(getServiceName())
-                  //         .setDelegate(dao)
-                  //         .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                  //         .setMaxRetryDelay(support.getMaxRetryDelay())
-                  //         .build();
+                dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
                 getClients().put(config.getId(), dao);
               }
 
@@ -149,6 +145,7 @@ foam.CLASS({
               } else if ( DOP.CMD == dop ) {
                 dao.cmd_(x, obj);
               }
+              ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.node-mediator");
             } catch ( Throwable t ) {
               getLogger().error("agency", "execute", config.getId(), t);
             }

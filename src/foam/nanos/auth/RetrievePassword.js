@@ -111,7 +111,7 @@ foam.CLASS({
         var instructionTitle, instruction;
         try {
           if ( this.resetByCode ) {
-            await this.emailVerificationService.verifyByCode(null, this.email);
+            await this.emailVerificationService.verifyByCode(null, this.email, this.username);
             instructionTitle = this.CODE_INSTRUC_TITLE;
             instruction = this.CODE_INSTRUC;
           } else {

@@ -475,13 +475,14 @@ foam.CLASS({
               var notification = self.Notification.create();
               notification.userId = self.subject && self.subject.realUser ?
                 self.subject.realUser.id : self.user.id;
+              notification.severity = foam.log.LogLevel.INFO;
               if ( script.status === self.ScriptStatus.UNSCHEDULED ) {
                 notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_COMPLETED;
               } else {
                 notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_FAILED;
+                notification.severity = foam.log.LogLevel.WARN;
               }
               notification.toastState = self.ToastState.REQUESTED;
-              notification.severity = foam.log.LogLevel.INFO;
               notification.transient = true;
               self.__subContext__.myNotificationDAO.put(notification);
             }

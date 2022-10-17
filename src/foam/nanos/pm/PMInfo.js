@@ -42,7 +42,7 @@ foam.CLASS({
       class: 'Int',
       name: 'count',
       label: 'Count',
-      tableWidth: 70,
+      tableWidth: 120,
       tableCellFormatter: function(count) {
         this.add(Number(count).toLocaleString());
       }
