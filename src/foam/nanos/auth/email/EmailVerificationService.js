@@ -34,7 +34,7 @@
       name: 'verifyUserEmail',
       type: 'Boolean',
       async: true,
-      args: 'Context x, String email, String verificationCode',
+      args: 'Context x, String email, String userName, String verificationCode',
       documentation: `
         Used for user emailverification
       `
