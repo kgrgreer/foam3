@@ -130,7 +130,7 @@
 
         EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
           EQ(EmailVerificationCode.EMAIL, email),
-          EQ(EmailVerificationCode.EMAIL, userName),
+          EQ(EmailVerificationCode.USER_NAME, userName),
           EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
           GT(EmailVerificationCode.EXPIRY, c.getTime())
         ));
