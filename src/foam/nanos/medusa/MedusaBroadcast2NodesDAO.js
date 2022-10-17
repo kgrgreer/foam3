@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
@@ -74,10 +73,7 @@ foam.CLASS({
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getServiceName()
-        }, (Logger) getX().get("logger"));
+        return Loggers.logger(getX(), this, this.getServiceName());
       `
     },
   ],
@@ -91,13 +87,12 @@ foam.CLASS({
       MedusaEntry entry = (MedusaEntry) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-      OMLogger om = (OMLogger) x.get("OMLogger");
 
       List<Set> buckets = support.getNodeBuckets();
       int index = (int) (entry.getIndex() % buckets.size());
       Set<String> bucket = buckets.get(index);
       for ( String id : bucket ) {
-        om.log("medusa.broadcast.nodes", "request");
+        // om.log("medusa.broadcast.nodes", "request");
         inFlight_.getAndIncrement();
         AssemblyLine queue = (AssemblyLine) getQueues().get(id);
         if ( queue == null ) {
@@ -127,7 +122,7 @@ foam.CLASS({
             // logger.debug("AssemblyLine", "executeUnderLock", id);
             ((DAO) getClients().get(id)).put_(x, entry);
             inFlight_.getAndDecrement();
-            om.log("medusa.broadcast.nodes", "response");
+            ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.mediator-node");
           }
         });
       }

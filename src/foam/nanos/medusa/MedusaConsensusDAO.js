@@ -169,12 +169,12 @@ This is the heart of Medusa.`,
             existing.setConsensusNodes(nodes.keySet().toArray(new String[0]));
           }
           existing = (MedusaEntry) getDelegate().put_(x, existing);
+          pm.log(x);
 
           if ( nodes.size() >= support.getNodeQuorum() &&
                existing.getIndex() == replaying.getIndex() + 1 ) {
             existing = promote(x, existing);
           }
-          pm.log(x);
         }
 
         if ( ! existing.getPromoted() &&
@@ -206,10 +206,9 @@ This is the heart of Medusa.`,
       type: 'foam.nanos.medusa.MedusaEntry',
       javaCode: `
       // NOTE: implementation expects caller to lock on entry index
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "promote");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       DaggerService dagger = (DaggerService) x.get("daggerService");
-
+      PM pm = null;
       try {
         synchronized ( entry.getId().toString().intern() ) {
           ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
@@ -217,6 +216,7 @@ This is the heart of Medusa.`,
           if ( entry.getPromoted() ) {
             return entry;
           }
+          pm = PM.create(x, this.getClass().getSimpleName(), "promote:verify");
           if ( entry.isFrozen() ) {
             entry = (MedusaEntry) entry.fclone();
             ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote.fclone");
@@ -236,6 +236,7 @@ This is the heart of Medusa.`,
             dagger.setGlobalIndex(x, entry.getIndex());
           }
 
+          pm.log(x);
           try {
             entry = mdao(x, entry);
           } catch( IllegalArgumentException e ) {
@@ -248,6 +249,7 @@ This is the heart of Medusa.`,
           entry.setPromoted(true);
           entry = (MedusaEntry) getDelegate().put_(x, entry);
         }
+        pm = PM.create(x, this.getClass().getSimpleName(), "promote:notify");
 
         // Notify any blocked Primary puts
         MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
@@ -260,7 +262,9 @@ This is the heart of Medusa.`,
           ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
       } finally {
-        pm.log(x);
+        if ( pm != null ) {
+          pm.log(x);
+        }
       }
       return entry;
       `
