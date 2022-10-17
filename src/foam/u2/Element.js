@@ -1133,7 +1133,8 @@ foam.CLASS({
       var e = await this.el();
       observer.observe(e, config);
       this.onunload.sub(function(s) {
-        observer.disconnect()
+        // might already be disconnected
+        try { observer.disconnect(); } catch(x) {}
       });
       return this;
     },
@@ -3013,6 +3014,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2',
