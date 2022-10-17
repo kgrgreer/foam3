@@ -284,11 +284,35 @@ foam.CLASS({
               .end(); 
           }))
         .end()
-      // Title txt and Data
+        // Title txt and Data
         .start().addClass('title-top').add(this.data.TITLE).end()
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .startContext({ data: this }).tag(this.DATA).endContext()
+        .startContext({ data: this }).tag(this.DATA).endContext().br()
+        // first footer
+        .br()
+        .start()
+          .startContext({ data: this.data })
+          .addClass(this.myClass('center-footer'))
+          .start()
+            .addClass(this.myClass('signupLink'))
+            .start('span')
+              .addClass('bold-text-with-pad')
+              .add(this.data.FOOTER_TXT)
+            .end()
+            .start('span')
+              .add(this.data.FOOTER)
+            .end()
+          .end()
+            // second footer
+          .start()
+            .start('span').addClass('bold-text-with-pad').add(this.data.SUB_FOOTER_TXT).end()
+            .start('span')
+              .add(this.data.SUB_FOOTER)
+            .end()
+          .end()
+          .endContext()
+        .end();
         
 
       // CREATE SPLIT VIEW
