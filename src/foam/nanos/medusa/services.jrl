@@ -128,7 +128,7 @@ p({
       .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localClusterConfigDAO"))
       .setDecorator(new foam.nanos.medusa.benchmark.PingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.ClusterConfigReplayingInfoDAO.Builder(x).build())
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
       .build())
       .setCluster(false)
       .setRuler(false)

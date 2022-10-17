@@ -139,14 +139,6 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      // deprecated - not needed with MedusaHealth heartbeat
-      name: 'replayingInfo',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ReplayingInfo',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
       name: 'location',
       class: 'String'
     },
@@ -234,24 +226,6 @@ foam.CLASS({
           }
         }.bind(this));
       }
-    },
-    {
-      // deprecated - replaced by heartbeat
-      name: 'version',
-      class: 'String',
-      javaFactory: `
-    String version = this.getClass().getPackage().getImplementationVersion();
-    String revision = this.getClass().getPackage().getSpecificationVersion();
-    StringBuilder sb = new StringBuilder();
-    sb.append(version);
-    if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
-         revision.length() > 2 ) {
-      sb.append("-"+revision.substring(0, 3));
-    }
-    return sb.toString();
-      `,
-      storageTransient: true,
-      clusterTransient: true
     }
   ]
 });

@@ -23,8 +23,6 @@ foam.CLASS({
       name: 'id',
       class: 'String',
       visibility: 'HIDDEN',
-//      class: 'Reference',
-//      of: 'foam.nanos.medusa.ClusterConfig'
     },
     {
       // TODO: protected access to this. See updateIndex for synchronized access.
@@ -127,7 +125,10 @@ foam.CLASS({
           let end = this.endTime || new Date();
           time = end.getTime() - this.startTime.getTime();
         }
-        return ( this.replayIndex - this.index ) / ( this.index / time );
+        if ( time > 0 ) {
+          return ( this.replayIndex - this.index ) / ( this.index / time );
+        }
+        return 0;
       },
       visibility: 'RO',
       javaGetter: `
@@ -141,7 +142,9 @@ foam.CLASS({
           }
           time = end.getTime() - getStartTime().getTime();
         }
-        remaining = (long) ( (getReplayIndex() - getIndex()) / (getIndex() / (float) time) );
+        if ( time > 0 ) {
+          remaining = (long) ( (getReplayIndex() - getIndex()) / (getIndex() / (float) time) );
+        }
       }
       return remaining;
       `
@@ -153,10 +156,12 @@ foam.CLASS({
         if ( this.startTime ) {
           let end = this.endTime || new Date();
           let tm = ( end.getTime() - this.startTime.getTime() ) / 1000;
-          if ( this.replayIndex > this.index ) {
-            tps = this.index / tm;
-          } else {
-            tps = this.replayIndex / tm;
+          if ( tm > 0 ) {
+            if ( this.replayIndex > this.index ) {
+              tps = this.index / tm;
+            } else {
+              tps = this.replayIndex / tm;
+            }
           }
           return tps;
         }
@@ -170,10 +175,12 @@ foam.CLASS({
           end = new java.util.Date();
         }
         var tm = ( end.getTime() - getStartTime().getTime() ) / 1000;
-        if ( getReplayIndex() > getIndex() ) {
-          tps = getIndex() / tm;
-        } else {
-          tps = getReplayIndex() / tm;
+        if ( tm > 0 ) {
+          if ( getReplayIndex() > getIndex() ) {
+            tps = getIndex() / tm;
+          } else {
+            tps = getReplayIndex() / tm;
+          }
         }
       }
       return (float) tps;
