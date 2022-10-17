@@ -122,9 +122,6 @@ foam.CLASS({
               replies.add(cfg.getId());
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
-              // Fallback for now - it's many seconds stale but better than nothing
-              ReplayingInfo replaying = cfg.getReplayingInfo();
-              m = replaying.getIndex();
             }
             logger.info(cfg.getId(), "max", m);
             synchronized ( this ) {

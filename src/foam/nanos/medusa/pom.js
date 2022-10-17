@@ -13,7 +13,6 @@ foam.POM({
     { name: "ClusterConfigMonitorAgent",                                                  flags: "js|java" },
     { name: "ClusterConfigNARegionReplayDAO",                                             flags: "js|java" },
     { name: "ClusterConfigReplayDAO",                                                     flags: "js|java" },
-    { name: "ClusterConfigReplayingInfoDAO",                                              flags: "js|java" },
     { name: "ClusterConfigStatusDAO",                                                     flags: "js|java" },
     { name: "ClusterConfigSupport",                                                       flags: "js|java" },
     { name: "ClusterConfigSupportDAO",                                                    flags: "js|java" },

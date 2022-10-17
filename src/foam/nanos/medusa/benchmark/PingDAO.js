@@ -17,7 +17,7 @@ foam.CLASS({
       javaCode: `
       if ( obj instanceof PingCmd ) {
         PingCmd cmd = (PingCmd) obj;
-        cmd.setRelay(System.currentTimeMillis());
+        cmd.setEcho(System.currentTimeMillis());
         return cmd;
       }
       return getDelegate().cmd_(x, obj);
