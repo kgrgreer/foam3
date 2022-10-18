@@ -79,6 +79,10 @@ foam.CLASS({
         this.wizardController.autoPositionUpdates = false;
       }
 
+      if ( ! this.wizardController.wizardlets[this.wizardController.wizardPosition?.wizardletIndex || 0].isVisible ) {
+        await this.wizardController.next();
+      }
+
       if ( usingFormController ) {
         await controller.setFirstPosition();
       }
