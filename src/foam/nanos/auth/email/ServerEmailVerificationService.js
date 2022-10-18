@@ -126,12 +126,12 @@
     {
       name: 'verifyCode',
       javaCode: `
+        User user = findUser(x, email, userName);
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         Calendar c = Calendar.getInstance();
-
         EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
-          EQ(EmailVerificationCode.EMAIL, email),
-          EQ(EmailVerificationCode.USER_NAME, userName),
+          EQ(EmailVerificationCode.EMAIL, user.getEmail()),
+          EQ(EmailVerificationCode.USER_NAME, user.getUserName()),
           EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
           GT(EmailVerificationCode.EXPIRY, c.getTime())
         ));
