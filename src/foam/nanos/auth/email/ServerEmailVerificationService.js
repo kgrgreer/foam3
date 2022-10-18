@@ -45,7 +45,8 @@
           AND(
             EQ(User.EMAIL, email),
             EQ(User.LOGIN_ENABLED, true)
-          ));
+          ))
+          .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();
         if ( list == null || list.size() == 0 ) {
           throw new UserNotFoundException();
