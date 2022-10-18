@@ -1010,7 +1010,6 @@ foam.POM({
     { name: "foam/u2/wizard/data/PrerequisiteLoader",                 flags: "web" },
     { name: "foam/u2/wizard/data/EasyLoader",                         flags: "web" },
     { name: "foam/u2/wizard/data/CreateLoader",                       flags: "web" },
-    { name: "foam/u2/wizard/data/SpecifiedLoader",                    flags: "web" },
     { name: "foam/u2/wizard/data/DAOArrayLoader",                     flags: "web" },
     { name: "foam/u2/wizard/data/ContextLoader",                      flags: "web" },
     { name: "foam/u2/wizard/data/PutLoader",                          flags: "web" },
