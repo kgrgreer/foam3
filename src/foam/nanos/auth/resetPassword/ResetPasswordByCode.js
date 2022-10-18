@@ -23,27 +23,12 @@ foam.CLASS({
     'foam.u2.FragmentedTextFieldFragment'
   ],
 
-  messages: [
-    { name: 'CODE_SECTION_TITLE', message: 'Please enter your email verification code' },
-    { name: 'RESET_PASSWORD_TITLE', message: 'Reset your password' },
-    { name: 'RESET_PASSWORD_SUBTITLE', message: 'Create a new password for your account' }
-  ],
-
   sections: [
     {
-      name: 'verificationCodeSection',
-      title: function() {
-        return this.CODE_SECTION_TITLE;
-      }
+      name: 'verificationCodeSection'
     },
     {
-      name: 'resetPasswordSection',
-      title: function() {
-        return this.RESET_PASSWORD_TITLE;
-      },
-      subTitle: function() {
-        return this.RESET_PASSWORD_SUBTITLE;
-      }
+      name: 'resetPasswordSection'
     }
   ],
 
