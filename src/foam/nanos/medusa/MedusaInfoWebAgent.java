@@ -59,6 +59,7 @@ public class MedusaInfoWebAgent
         out.println(outputterJson.toString());
       } else { // if( format == Format.XML ) {
         Outputter outputter = new Outputter(out, OutputterMode.NETWORK);
+        outputter.setOutputDefaultValues(true);
         out.println(outputter.stringify(config));
       }
     } else {
