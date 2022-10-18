@@ -143,6 +143,13 @@ foam.CLASS({
       class: 'String'
     },
     {
+      documentation: 'used by info web agent for external monitoring',
+      name: 'replayingInfo',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.medusa.ReplayingInfo',
+      storageTransient: true
+    },
+    {
       documentation: 'Creation date.',
       name: 'created',
       class: 'DateTime',
