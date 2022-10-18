@@ -43,7 +43,15 @@
       factory: function() {
         return this.loginVariables.identifier;
       },
-      createVisibility: 'DISABLED'
+      visibility: function() {
+        return this.emailDisabled ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'emailDisabled',
+      value: false,
+      hidden: true
     },
     {
       class: 'Boolean',

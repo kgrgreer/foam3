@@ -42,3 +42,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.dig.exception.DigSucc
 
 p({class:"foam.i18n.Locale",locale:"en",source:"Currency.delimiter",target:","})
 p({class:"foam.i18n.Locale",locale:"en",source:"Currency.decimalCharacter",target:"."})
+
+
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.RESET_PASSWORD_SECTION.title",target:"Reset your password"})
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.RESET_PASSWORD_SECTION.subTitle",target:"Create a new password for your account"})
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.VERIFICATION_CODE_SECTION.subTitle",target:"Please enter your email verification code"})
