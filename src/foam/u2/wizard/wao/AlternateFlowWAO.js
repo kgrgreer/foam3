@@ -14,14 +14,14 @@
   `,
 
   methods: [
-    function load(wizardlet) {
-      this.delegate.load(wizardlet);
+    async function load(wizardlet) {
+      await this.delegate.load(wizardlet);
     },
-    function save(wizardlet) {
+    async function save(wizardlet) {
       if ( wizardlet.isInAltFlow) {
         wizardlet.isInAltFlow = false;
       } else {
-        this.delegate.save(wizardlet);
+        await this.delegate.save(wizardlet);
       }
 
     }
