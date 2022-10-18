@@ -224,8 +224,7 @@ foam.CLASS({
               return this[property][name].apply(this, arguments);
             } :
             function forward() {
-              if ( this[property] && this[property][name] )
-                return this[property][name].apply(this[property], arguments);
+              return this[property][name].apply(this[property], arguments);
             } ;
       }
     }
