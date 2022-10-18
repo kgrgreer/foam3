@@ -586,7 +586,8 @@ try {
         }
         return cmd;
       }
-      return obj;
+      // retain behaviour of AbstractDAO returning null to indicate not handled.
+      return null;
       `
     }
   ]
