@@ -29,12 +29,14 @@ public class MedusaInfoWebAgent
     Format              format  = (Format) p.get(Format.class);
 
     response.setContentType("text/plain");
-
     ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
     if ( support != null ) {
       response.setStatus(HttpServletResponse.SC_OK);
       ClusterConfig config = (ClusterConfig) ((foam.dao.DAO) x.get("clusterConfigDAO")).find(support.getConfigId()).fclone();
+
+      // Monitoring processes rely on these values
+      config.setReplayingInfo((ReplayingInfo) x.get("replayingInfo"));
 
       config.SESSION_ID.clear(config);
 
