@@ -15,7 +15,6 @@
     'ctrl',
     'emailToken',
     'loginVariables',
-    'notify',
     'userDAO'
   ],
 
@@ -48,6 +47,23 @@
       }
     },
     {
+      class: 'String',
+      name: 'userName',
+      section: 'emailSection',
+      visibility: function(userNameRequired) {
+        return userNameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      validateObj: function(userNameRequired, userName) {
+        return userNameRequired && ! userName ? 'Username is required.' : '';
+      }
+    },
+    {
+      class: 'Boolean',
+      section: 'emailSection',
+      name: 'userNameRequired',
+      hidden: true
+    },
+    {
       class: 'Boolean',
       name: 'emailDisabled',
       value: false,
@@ -74,10 +90,36 @@
       },
       code: async function() {
         var self = this;
-        var user = await this.userDAO.find(this.EQ(this.User.EMAIL, this.email));
-        if ( ! user ) {
-          self.notify('User not found', '', self.LogLevel.ERROR, true);
-          return;
+        var dao = this.userDAO.where(this.EQ(this.User.EMAIL, this.email));
+        var users = (await dao.select()).array;
+        var user;
+        if ( users.length < 1 ) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: 'User not found',
+            description: 'User not found under email ' + self.email,
+            type: this.LogLevel.ERROR,
+            transient: true
+          }));
+          throw new Error('User not found.');
+        } else if ( users.length == 1 ) {
+          user = users[0];
+        } else {
+          if ( this.userName ) {
+            var res = await dao.find(this.EQ(this.User.USER_NAME, this.userName));
+            if ( res ) user = res;
+            else {
+              this.ctrl.add(this.NotificationMessage.create({
+                message: 'User not found',
+                description: 'User not found under username ' + self.userName,
+                type: this.LogLevel.ERROR,
+                transient: true
+              }));
+              throw new Error('User not found.');
+            }
+          } else {
+            this.userNameRequired = true
+            throw new Error('Username is required.');
+          }
         }
 
         try {
