@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-if ( typeof window.localStorage == 'undefined' )
-  window.localStorage = window.sessionStorage;
+if ( typeof globalThis.localStorage == 'undefined' )
+  globalThis.localStorage = globalThis.sessionStorage;
 
 Object.defineProperty(
   Object.prototype,
