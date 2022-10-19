@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.wizard.data.ProxySaver',
 
   requires: [
-    'foam.nanos.crunch.CapabilityJunctionPayload'
+    'foam.nanos.crunch.CapabilityJunctionPayload',
+    'foam.nanos.crunch.CapabilityJunctionStatus'
   ],
 
   properties: [
@@ -33,6 +34,8 @@ foam.CLASS({
         data
       });
 
+      if ( ! data.errors_ ) payload.status = this.CapabilityJunctionStatus.GRANTED;
+
       const newPayload = await dao.put(payload);
 
       // Delegate saver is optional
@@ -44,7 +47,7 @@ foam.CLASS({
           'saver tee. It may be worth asking someone if this is a good idea.'
         );
       }
-    
+
       return await this.delegate.save();
     }
   ]
