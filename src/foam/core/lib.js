@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+if ( typeof window.localStorage == 'undefined' )
+  window.localStorage = window.sessionStorage;
+
 Object.defineProperty(
   Object.prototype,
   '$UID',
