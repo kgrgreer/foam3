@@ -14,6 +14,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'ctrl',
     'showWizardletSectionTitles?'
   ],
 
@@ -131,6 +132,10 @@ foam.CLASS({
   methods: [
     function createView(opt_spec) {
       if ( ! opt_spec ) opt_spec = {};
+
+      // REVIEW: update wizardlet context since the number of available nspecs may change after login/logout.
+      this.wizardlet.setPrivate_('__subContext__', this.ctrl.__subContext__);
+
       var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
       if ( this.customView ) {
