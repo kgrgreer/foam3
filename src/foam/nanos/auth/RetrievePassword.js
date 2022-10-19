@@ -68,6 +68,9 @@ foam.CLASS({
       createVisibility: function(usernameRequired) {
        return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      validateObj: function(usernameRequired, username) {
+        return usernameRequired && ! username ? 'Username is required.' : '';
+      },
       section: 'emailPasswordSection'
     },
     {
