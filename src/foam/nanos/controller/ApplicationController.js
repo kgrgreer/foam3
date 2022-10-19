@@ -603,7 +603,7 @@ foam.CLASS({
       try {
         this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
-        if ( result && result.user ) await this.reloadClient();
+        if ( result && result.user?.id != this.subject.user?.id ) await this.reloadClient();
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
