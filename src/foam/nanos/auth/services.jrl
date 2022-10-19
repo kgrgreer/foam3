@@ -52,3 +52,25 @@ p({
     `,
   "client":"{\"of\":\"foam.nanos.auth.CommonPassword\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "resetPasswordService",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.resetPassword.ResetPasswordServiceSkeleton",
+  "serviceClass": "foam.nanos.auth.resetPassword.ServerResetPasswordService",
+  "client":
+    """
+      {
+        "class": "foam.nanos.auth.resetPassword.ClientResetPasswordService",
+        "delegate": {
+          "class": "foam.box.SessionClientBox",
+          "delegate": {
+            "class": "foam.box.HTTPBox",
+            "url": "service/resetPasswordService"
+          }
+        }
+      }
+    """
+})
