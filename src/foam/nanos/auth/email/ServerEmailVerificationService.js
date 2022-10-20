@@ -135,7 +135,7 @@
       type: 'String',
       javaCode: `
         StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
           code.append(Integer.toString(new Random().nextInt(9)));
         }
         return code.toString();
