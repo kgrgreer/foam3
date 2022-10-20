@@ -222,6 +222,7 @@ foam.CLASS({
 
           char: alt(range('a', 'z'), range('A', 'Z'), range('0', '9'), '-', '^',
             '_', '@', '%', '.'),
+
           number: repeat(range('0', '9'), null, 1)
         };
       }

@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'wizardCloseSub?'
+    'wizardCloseSub?',
+    'notify'
   ],
 
   exports: [
@@ -30,10 +31,14 @@ foam.CLASS({
 
   requires: [
     'foam.core.SimpleSlot',
+    'foam.log.LogLevel',
     'foam.u2.borders.LoadingLevel',
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.wizard.WizardletAware',
     'foam.u2.wizard.WizardletIndicator',
+    'foam.u2.wizard.agents.QuickAgent',
+    'foam.u2.wizard.event.WizardErrorHint',
+    'foam.u2.wizard.event.WizardEventType',
     'foam.u2.wizard.wizardlet.WizardletSection',
     'foam.u2.wizard.wao.WAO',
     'foam.u2.wizard.wao.ProxyWAO',
@@ -48,6 +53,13 @@ foam.CLASS({
       //       this can be decreased to around 100-200ms
       value: 1000,
       documentation: 'How long input must be idle before an auto-save'
+    }
+  ],
+
+  messages: [
+    {
+      name: 'WIZARDLET_UNHANDLED_ERROR',
+      message: 'Unexpected Error'
     }
   ],
 
@@ -129,6 +141,10 @@ foam.CLASS({
         visible (when isVisible is true). This is used for search filtering.
       `,
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'irreversible'
     },
     {
       name: 'isCurrent',
@@ -229,6 +245,41 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.util.FObjectSpec',
+      name: 'exceptionAgent',
+      documentation: `
+        Wizardlet's exception handler. This is an FObjectSpec so that it may
+        be created in the correct subcontext at the time when it is needed.
+      `,
+      factory: function () {
+        const self = this;
+
+        return this.QuickAgent.create({
+          executeFn: async function (x) {
+            // If we fail to save, the default behaviour will be an error
+            // message displayed to the user.
+            if ( x.event == self.WizardEventType.WIZARDLET_SAVE )  {
+              self.notify(
+                self.WIZARDLET_UNHANDLED_ERROR,
+                x.exception.message,
+                self.LogLevel.ERROR,
+                true
+              );
+              return x.createSubContext({
+                hint: self.WizardErrorHint.AWAIT_FURTHER_ACTION,
+              });
+            }
+
+            // If we fail on wizardlet load we have nowhere to display an
+            // error, so the wizard's own error handling will take over
+            return x.createSubContext({
+              hint: self.WizardErrorHint.ABORT_FLOW
+            });
+          }
+        });
+      }
+    },
+    {
       name: 'indicator',
       class: 'Enum',
       of: 'foam.u2.wizard.WizardletIndicator',
@@ -262,10 +313,33 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showTitle',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'pubAnalyticEvt',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'goNextOnSave',
+      value: true,
+      documentation: `
+        If set to false, the wizardController will not attempt to find a next wizardPostiton to go to
+        in its next method.
+        This is useful because it allows us to use an AlternateFlowSaver which executes an AlternateFlow
+        on wizardlet save.
+      `
     }
   ],
 
   methods: [
+    function init() {
+      if ( this.instance_.sections ) {
+        for ( const section of this.sections ) {
+          section.wizardlet = this;
+        }
+      }
+    },
     function validate() {
       return this.isValid;
     },
@@ -288,6 +362,15 @@ foam.CLASS({
     async function load() {
       await this.wao.load(this);
       return this;
+    },
+    async function handleException(event, exception) {
+      return await this.handleException_(
+        this.__subContext__, event, exception
+      );
+    },
+    async function handleException_(x, event, exception) {
+      x = x.createSubContext({ event, exception });
+      return await this.exceptionAgent.execute(x);
     },
     function reportNetworkFailure() {
       this.indicator = this.WizardletIndicator.NETWORK_FAILURE;

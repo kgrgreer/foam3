@@ -91,6 +91,19 @@ foam.CLASS({
       value: true
     },
     {
+      documentation: 'Provider imposed rateLimit (per second), at which point they will throttle or block completely for some time window',
+      class: 'Long',
+      name: 'rateLimit',
+      units: 's',
+      value: 14 // default for smtp.gmail.com
+    },
+    {
+      documentation: 'Associated cron service to be disabled on excessive errors',
+      class: 'String',
+      name: 'cronId',
+      value: 'Email Service'
+    },
+    {
       name: 'session_',
       javaType: 'Session',
       class: 'Object',
@@ -136,7 +149,7 @@ foam.CLASS({
           clearSession_();
 
           DAO cronDAO = (DAO) getX().get("cronDAO");
-          Cron cron = (Cron) cronDAO.find("SMTP Email Service");
+          Cron cron = (Cron) cronDAO.find(getCronId());
           if ( cron != null ) {
             cron = (Cron) cron.fclone();
             cron.setEnabled(false);
@@ -320,11 +333,31 @@ foam.CLASS({
             alarmDAO.put(alarm);
           }
         } catch ( SendFailedException | ParseException e ) {
-          emailMessage.setStatus(Status.FAILED);
-          logger.warning("send failed", e);
-          Alarm alarm = new Alarm(alarmName, e.getMessage());
-          alarm.setClusterable(false);
-          ((DAO) getX().get("alarmDAO")).put(alarm);
+          if ( e.getMessage().contains("Too many login attempts") ) {
+            Alarm alarm = new Alarm.Builder(getX())
+              .setName(this.getClass().getSimpleName()+".transport")
+              .setReason(AlarmReason.CREDENTIALS)
+              .setClusterable(false)
+              .setNote(e.getMessage())
+              .build();
+            ((DAO) getX().get("alarmDAO")).put(alarm);
+            clearSession_();
+
+            DAO cronDAO = (DAO) getX().get("cronDAO");
+            Cron cron = (Cron) cronDAO.find(getCronId());
+            if ( cron != null ) {
+              cron = (Cron) cron.fclone();
+              cron.setEnabled(false);
+              cronDAO.put(cron);
+              logger.warning("SMTP Email Service cron disabled");
+            }
+          } else {
+            emailMessage.setStatus(Status.FAILED);
+            logger.warning("send failed", e);
+            Alarm alarm = new Alarm(alarmName, e.getMessage());
+            alarm.setClusterable(false);
+            ((DAO) getX().get("alarmDAO")).put(alarm);
+          }
         } catch ( MessagingException e ) {
           try {
             getTransport_().close();

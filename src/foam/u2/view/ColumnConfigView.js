@@ -36,17 +36,17 @@ foam.CLASS({
     ^resetButton {
       float: right;
       background: none;
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:hover:not(:disabled) {
       text-decoration: underline;
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:focus {
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:disabled {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
     }
     ^colContainer {
       overflow-x: hidden;
@@ -394,7 +394,7 @@ foam.CLASS({
       name: 'resetColumns',
       label: 'Reset Columns',
       code: function() {
-        localStorage.removeItem(this.data.of.id);
+        foam.localStorage.removeItem(this.data.of.id);
         this.data.selectedColumnNames = undefined;
         this.data.resetColWidths();
         this.data.updateColumns();
@@ -548,7 +548,7 @@ foam.CLASS({
     justify-content: space-between;
   }
   ^some-padding:hover {
-    background-color: /*%PRIMARY5%*/ #E5F1FC;
+    background-color: $primary50;
     border-radius: 4px;
   }
   ^label {

@@ -10,7 +10,7 @@
   implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
   extends: 'foam.u2.wizard.wao.ProxyWAO',
-  
+
   imports: [
     'wizardlets',
     'capabilityToPrerequisite'
@@ -24,7 +24,7 @@
     Data of the min max needs to have only 1 element in the FObjectArray hence the XOR.
     Will use the data of the min max to find the prerequisite selected, and load its data.
   `,
-  
+
   properties: [
     {
       class: 'String',
@@ -51,7 +51,7 @@
         OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
       name: 'loadIntoPath'
-    },
+    }
   ],
 
   methods: [
@@ -91,14 +91,14 @@
           console.error(
             `Cannot apply XOR to MinMaxCapabilityId: ${this.minMaxCapabilityId}`
           );
-  
+
           if ( this.of ) {
             wizardlet.data = this.of.create({}, this);
           }
-          
+
           return;
         }
-  
+
         selectedCapabilityId = minMaxSelectedData[0];
       }
 
@@ -145,9 +145,9 @@
         const fObjectHolder = this.FObjectHolder.create({ fobject: clonedSelectedWizardletData });
 
         wizardlet.data = fObjectHolder;
-  
+
         wizardlet.isLoaded = true;
-  
+
         return fObjectHolder;
       }
 

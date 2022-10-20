@@ -74,7 +74,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: solid 1px #cbcfd4;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
     }
   `,
 
@@ -164,8 +164,10 @@ foam.CLASS({
         .end();
 
       this.isInit = true;
-
-
+      // Load filters on render instead of open
+      // Temp fix till filterController can be refactored to not depend on Search
+      if ( this.firstTime_ )
+        this.initView();
       this.isFiltering();
       this.isInit = false;
       this.checkPresetPredicate();

@@ -12,18 +12,24 @@ foam.CLASS({
     A full-featured popup with the application's branding on it.
   `,
 
-  implements: ['foam.mlang.Expressions'],
+  implements: [
+    'foam.mlang.Expressions',
+    'foam.u2.Progressable'
+  ],
 
   imports: [
     'theme'
   ],
 
   exports: [
-    'as actionProvider'
+    'as controlBorder'
   ],
 
   requires: [
+    'foam.core.Action',
     'foam.u2.ActionReference',
+    'foam.u2.borders.ScrollBorder',
+    'foam.u2.dialog.DialogActionsView',
     'foam.u2.tag.Image'
   ],
 
@@ -35,32 +41,31 @@ foam.CLASS({
     }
 
     ^inner {
+      height: 85vh;
       flex-direction: column;
       overflow: hidden;
     }
 
     ^header {
-      display: flex;
-      justify-content: space-between;
-      flex-basis: 64px;
-      border-bottom: 1px solid /*%GREY4%*/ #777777;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
       padding: 12px;
+    }
+    ^header.showBorder {
+      border-bottom: 1px solid $grey300;
     }
 
     ^header-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 12px;
+      justify-content: flex-start;
     }
 
     ^header-right {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      right: 12px;
+      justify-content: flex-end;
     }
 
     ^header-center {
@@ -68,7 +73,6 @@ foam.CLASS({
       text-align: center;
       align-items: center;
       justify-content: center;
-      flex: 1;
     }
 
     ^body {
@@ -76,13 +80,12 @@ foam.CLASS({
       max-height: 90vh;
       overflow: auto;
       display: flex;
-      justify-content: center;
       align-items: center;
       flex-direction: column;
     }
 
     ^fullscreen ^body {
-      max-height: 100vh;
+      max-height: var(--max-height, 100vh);
     }
 
     ^logo img, ^logo svg {
@@ -99,8 +102,21 @@ foam.CLASS({
     ^footer {
       padding: 1em;
       text-align: center;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       flex-shrink: 0;
+    }
+
+    ^inner-title {
+      display: flex;
+      flex-direction: column;
+      justify-contents: center;
+      padding: 2.4rem 0;
+      text-align: center;
+      transition: all 150ms;
+    }
+
+    ^inner-title-small {
+      padding: 1.2rem 0;
     }
   `,
 
@@ -123,6 +139,23 @@ foam.CLASS({
     {
       class: 'String',
       name: 'footerString'
+    },
+    {
+      class: 'Boolean',
+      name: 'isScrolled'
+    },
+    {
+      class: 'Array',
+      name: 'leadingActions'
+    },
+    {
+      class: 'Array',
+      name: 'primaryActions'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'progressView',
+      value: { class: 'foam.u2.ProgressView' }
     }
   ],
 
@@ -135,6 +168,12 @@ foam.CLASS({
       });
 
       this.addClass()
+
+        // These methods come from ControlBorder
+        .setActionList(this.EQ(this.Action.NAME, "goPrev"), 'leadingActions')
+        .setActionProp(this.EQ(this.Action.NAME, "discard"), 'closeAction')
+        .setActionList(this.TRUE, 'primaryActions')
+
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .start()
           .addClass(this.myClass('background'))
@@ -145,15 +184,16 @@ foam.CLASS({
           .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .start()
             .show(this.showActions$)
+            .enableClass('showBorder', this.progressMax$, true)
             .addClass(this.myClass('header'))
             .start()
               .addClass(this.myClass('header-left'))
-              .add(this.slot(function( customActions ) {
-                if ( ! customActions || customActions.length === 0 ) {
+              .add(this.slot(function( leadingActions ) {
+                if ( ! leadingActions || leadingActions.length === 0 ) {
                   return this.E().enableClass(this.myClass('header-button-placeholder'), self.closeable$);
                 }
                 let slots = [];
-                customActions.forEach(a => {
+                leadingActions.forEach(a => {
                   slots.push(a.action.createIsAvailable$(self.__subContext__, a.data));
                 });
                 let s = foam.core.ArraySlot.create({ slots: slots }, self);
@@ -165,9 +205,10 @@ foam.CLASS({
                 }, s);
                 return this.E()
                   .enableClass(this.myClass('header-button-placeholder'), anyAvailable)
-                  .forEach(customActions, function(ar) {
+                  .forEach(leadingActions, function(ar) {
+                    var isLastWizardlet_ = ar.data.currentWizardlet.isLastWizardlet;
                     this
-                      .start(ar.action, { label: '', buttonStyle: 'TERTIARY', data$: ar.data$ })
+                      .start(ar.action, { label: '', buttonStyle: 'TERTIARY', data$: ar.data$ }).show(!isLastWizardlet_)
                         .addClass(self.myClass('header-action'))
                       .end();
                   });
@@ -205,27 +246,43 @@ foam.CLASS({
               }))
             .end()
           .end()
-          .start()
+          .add(this.slot(function(progressView) {
+            return this.E()
+              .tag(progressView, {
+                max$: self.progressMax$,
+                data$: self.progressValue$
+              });
+          }))
+          .add(this.slot(function(content$childNodes) {
+            if ( ! content$childNodes ) return;
+            let title = '';
+            for ( const child of content$childNodes ) {
+              if ( ! child.viewTitle ) continue;
+              title = child.viewTitle$;
+              break;
+            }
+            if ( ! title ) return this.E();
+            return this.E()
+              .addClass(self.myClass('inner-title'))
+              .addClass('h300')
+              .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
+              .enableClass('h500', this.isScrolled$)
+              .add(title);
+          }))
+          .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
             .addClass(this.myClass('body'))
-            .call(function() { content = this; })
+            .call(function() { content = this.content; })
           .end()
+          .tag(this.DialogActionsView, {
+            data$: this.primaryActions$
+          })
           .start()
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .addClasses([this.myClass('footer'), 'p-legal-light']).show(this.footerString$)
             .add(this.footerString$)
           .end()
         .end();
 
       this.content = content;
-    },
-
-    function addAction(actionRef) {
-      this.customActions$push(actionRef);
-    },
-
-    function removeAction(actionRef) {
-      this.customActions$remove(this.EQ(
-        this.DOT(this.ActionReference.ACTION, foam.core.Action.NAME),
-        actionRef.action.name));
     }
   ]
 });

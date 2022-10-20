@@ -73,6 +73,7 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
+    'buildingStack',
     'crunchController',
     'currentMenu',
     'displayWidth',
@@ -84,6 +85,7 @@ foam.CLASS({
     'layoutInitialized',
     'loginSuccess',
     'loginVariables',
+    'loginView',
     'menuListener',
     'notify',
     'pushMenu',
@@ -99,8 +101,7 @@ foam.CLASS({
     'theme',
     'user',
     'webApp',
-    'wrapCSS as installCSS',
-    'buildingStack'
+    'wrapCSS as installCSS'
   ],
 
   topics: [
@@ -193,8 +194,8 @@ foam.CLASS({
           urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
         } catch { };
-        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
-          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        return urlSession !== "" ? urlSession : foam.localStorage[this.sessionName] ||
+          ( foam.localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
     },
     {
@@ -205,6 +206,10 @@ foam.CLASS({
           imgPath: ''
         };
       }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'loginView'
     },
     {
       class: 'Enum',
@@ -290,11 +295,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        return globalThis.localStorage['isMenuOpen'] === 'true'
-         || ( globalThis.localStorage['isMenuOpen'] = false );
+        return foam.localStorage['isMenuOpen'] === 'true'
+         || ( foam.localStorage['isMenuOpen'] = false );
       },
       postSet: function(_, n) {
-        globalThis.localStorage['isMenuOpen'] = n;
+        foam.localStorage['isMenuOpen'] = n;
       }
     },
     {
@@ -331,6 +336,7 @@ foam.CLASS({
       name: 'theme',
       postSet: function(o, n) {
         if ( o && n && o.equals(n)) return;
+        this.__subContext__.cssTokenOverrideService.maybeReload();
         this.pub('themeChange');
       }
     },
@@ -421,13 +427,17 @@ foam.CLASS({
       this.clientPromise.then(async function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
 
+        // For testing purposes only. Do not use in code.
+        globalThis.x     = client.__subContext__;
+        globalThis.MLang = foam.mlang.Expressions.create();
+
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
+        foam.locale = foam.localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
         await client.translationService.initLatch;
         self.installLanguage();
 
-        self.onDetach(self.__subContext__.cssTokenOverrideService?.sub('cacheUpdated', this.reloadStyles));
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
           var menu = await self.__subContext__.menuDAO.find(self.route);
@@ -522,7 +532,7 @@ foam.CLASS({
       this.client = newClient.create(null, this);
       this.setPrivate_('__subContext__', this.client.__subContext__);
       // TODO: find a better way to resub on client reloads
-      this.onDetach(this.__subContext__.cssTokenOverrideService.sub('cacheUpdated', this.reloadStyles));
+      this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
 
@@ -744,14 +754,14 @@ foam.CLASS({
         return new Promise(function(resolve, reject) {
           self.stack.push(self.StackBlock.create({ view: {
             class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.ResetPassword'
+            modelOf: 'foam.nanos.auth.resetPassword.ResetPasswordByToken'
            }}));
           self.loginSuccess$.sub(resolve);
         });
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -817,7 +827,7 @@ foam.CLASS({
     async function checkGeneralCapability() {
       var capDAO = this.__subContext__.capabilityDAO;
       var spid = await capDAO.find(this.user.spid);
-      if ( spid.generalCapability != '' ) {
+      if ( spid && spid.generalCapability != '' ) {
         const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
         var ucj = await ucjCheck();
 
@@ -837,6 +847,9 @@ foam.CLASS({
               .add(this.GC_ERROR)
               .end());
             return false;
+          } else {
+            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
           }
         }
       }
@@ -900,17 +913,20 @@ foam.CLASS({
 
     function useCustomElements() {
       /** Use custom elements if supplied by the Theme. */
-      if ( ! this.theme ) throw new Error(this.LOOK_AND_FEEL_NOT_FOUND);
+      if ( ! this.theme )
+        throw new Error(this.LOOK_AND_FEEL_NOT_FOUND);
 
-      if ( this.theme.topNavigation ) {
+      if ( this.theme.topNavigation )
         this.topNavigation_ = this.theme.topNavigation;
-      }
 
-      if ( this.theme.footerView ) {
+      if ( this.theme.footerView )
         this.footerView_ = this.theme.footerView;
-      }
+
       if ( this.theme.sideNav )
         this.sideNav_ = this.theme.sideNav;
+
+      if ( this.theme.loginView )
+        this.loginView = this.theme.loginView;
     },
     {
       name: 'updateDisplayWidth',
@@ -927,9 +943,8 @@ foam.CLASS({
       text = this.returnExpandedCSS(text);
       this.styles[eid].text = text;
       const el = this.getElementById(eid);
-      if ( text !== el?.textContent ) {
+      if ( text !== el?.textContent )
         el.textContent = text;
-      }
     },
     {
       name: 'reloadStyles',

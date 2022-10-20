@@ -14,7 +14,12 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.u2.wizard.axiom.AlternateFlowAction'
+    'foam.u2.wizard.axiom.AlternateFlowAction',
+    'foam.u2.wizard.wao.AlternateFlowWAO'
+  ],
+
+  exports: [
+    'wizardController'
   ],
 
   properties: [
@@ -24,10 +29,32 @@ foam.CLASS({
       name: 'choices'
     },
     {
-      name: 'dynamicActions',
-      expression: function (choices) {
-        return choices.map(alternateFlow =>
+      class: 'Boolean',
+      name: 'isInAltFlow',
+      documentation: `
+        Set to true when executing an alternate flow, and back to false
+        after save
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'useAltFlowWAO',
+      documentation: `
+        When true wraps WAO in an AlternateFlowWAO
+      `
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      if ( this.choices ) {
+        var choices = this.choices.map(alternateFlow => 
           this.AlternateFlowAction.create({ alternateFlow }));
+        this.dynamicActions = this.dynamicActions.concat(choices);
+      }
+      if ( this.useAltFlowWAO && ! this.AlternateFlowWAO.isInstance(this.wao) ) {
+        this.wao = this.AlternateFlowWAO.create({ delegate: this.wao }, this.__subContext__);
       }
     }
   ]

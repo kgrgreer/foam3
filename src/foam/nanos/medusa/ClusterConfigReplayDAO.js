@@ -114,11 +114,12 @@ foam.CLASS({
             DaggerService dagger = (DaggerService) x.get("daggerService");
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
             if ( replaying.getReplaying() ) {
-            replaying.getReplayNodes().put(details.getResponder(), details);
+            replaying.getReplayDetails().put(config.getId(), details);
 
               if ( replaying.getStartTime() == null ) {
                 replaying.setStartTime(new java.util.Date());
                 replaying.updateIndex(x, dagger.getGlobalIndex(x));
+                ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
               }
               if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
                 dagger.setGlobalIndex(x, details.getMaxIndex());
@@ -127,6 +128,25 @@ foam.CLASS({
               if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
                 replaying.setReplayIndex(details.getMaxIndex());
               }
+
+              if ( replaying.getMaxIndex() > 0 ) {
+                replaying.setMaxIndex(Math.min(details.getMaxIndex(), replaying.getMaxIndex()));
+              } else {
+                replaying.setMaxIndex(details.getMaxIndex());
+              }
+
+              if ( replaying.getMinIndex() > 0 ) {
+                replaying.setMinIndex(Math.min(details.getMinIndex(), replaying.getMinIndex()));
+              } else {
+                replaying.setMinIndex(details.getMinIndex());
+              }
+
+              Long replayed = 0L;
+              for ( Object o : replaying.getReplayDetails().values() ) {
+                ReplayDetailsCmd detail = (ReplayDetailsCmd) o;
+                replayed += detail.getCount();
+              }
+              replaying.setCount(replayed);
 
               // Detect baseline - no data.
               // Have to check almost all nodes.

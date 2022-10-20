@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'FacadeCapabilityWizardlet',
-  extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   requires: [
     'foam.u2.wizard.wao.SplitWAO',

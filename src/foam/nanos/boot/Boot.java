@@ -31,7 +31,7 @@ public class Boot {
   public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
-  protected X                         root_      = new ProxyX();
+  protected X                         root_      = new MutableX();
   protected Map<String, NSpecFactory> factories_ = new HashMap<>();
 
   public Boot() {
@@ -103,8 +103,6 @@ public class Boot {
       @Override
       public void put(Object obj, Detachable sub) {
         NSpec sp = (NSpec) obj;
-
-        // logger.info("Reloading Service", sp.getName());
         factories_.get(sp.getName()).invalidate(sp);
       }
     }, null);

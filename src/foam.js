@@ -4,10 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 (function() {
   var scripts = '';
-
   var foam = globalThis.foam = Object.assign({
     isServer: false,
     defaultFlags: {
@@ -125,6 +123,22 @@
       }
     },
     language: typeof navigator === 'undefined' ? 'en' : navigator.language,
+    localStorage: (function() {
+      try {
+        var test = '_test';
+        globalThis.localStorage.setItem(test, test);
+        globalThis.localStorage.removeItem(test);
+        return globalThis.localStorage;
+      } catch (e) {
+        var Storage = {
+          getItem:    function(k)    { return this[k] },
+          setItem:    function(k, v) { this[k] = v; },
+          removeItem: function(k)    { delete this[k]; },
+          clear:      function()     { for ( const k in this ) delete this[k];  }
+        };
+        return Object.create(Storage);
+      }
+    })(),
     next$UID: (function() {
       /* Return a unique id. */
       var id = 1;
@@ -145,13 +159,18 @@
 
       m.code();
     },
+    poms: [],
     POM: function(pom) {
       if ( globalThis.document ) {
         var src = document.currentScript.src;
         var i = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
-        console.log(foam.cwd);
       }
+      foam.poms.push({
+        path: foam.sourceFile,
+        location: foam.cwd,
+        pom: pom
+      });
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
           var name = f.name;
@@ -162,7 +181,6 @@
           if ( f.predicate && ! f.predicate() ) return;
 
           foam.currentFlags = f.flags || [];
-
           foam.require(name, ! isProjects, isProjects);
         });
       }

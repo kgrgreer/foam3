@@ -1133,7 +1133,8 @@ foam.CLASS({
       var e = await this.el();
       observer.observe(e, config);
       this.onunload.sub(function(s) {
-        observer.disconnect()
+        // might already be disconnected
+        try { observer.disconnect(); } catch(x) {}
       });
       return this;
     },
@@ -2646,7 +2647,7 @@ foam.CLASS({
   requires: [ 'foam.u2.view.CurrencyView' ],
   properties: [
     [ 'displayWidth', 15 ],
-    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: false } ]
+    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: true } ]
   ]
 });
 
@@ -3014,6 +3015,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'TableColumns',
@@ -3125,7 +3127,13 @@ foam.CLASS({
 
   documentation: 'View for safely displaying HTML content.',
 
-  css: '^ { padding: 6px 0; }',
+  css: `
+    ^ { padding: 6px 0; }
+    ^ > span > span > .p-semiBold,
+    ^ > span {
+      font-size: 1.2rem;
+    }
+  `,
 
   properties: [
     {

@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'renders a password change model',
 
   imports: [
+    'loginView?',
     'stack',
     'theme',
     'user'
@@ -51,10 +52,10 @@ foam.CLASS({
     /* subtitle */
     /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
     ^ ^section .subtitle {
-      color: /*%GREY2%*/ #9ba1a6;
+      color: $grey500;
     }
     ^link {
-      color: /*%PRIMARY3%*/ #604aff;
+      color: $primary400;
       cursor: pointer;
       text-align: center;
       padding-top: 1.5vh;
@@ -134,7 +135,7 @@ foam.CLASS({
             this.start().addClass(self.myClass('link'))
               .add(self.model.REDIRECTION_TO)
               .on('click', function() {
-                self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
+                self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
               })
             .end();
           })

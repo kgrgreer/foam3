@@ -7,6 +7,9 @@
 package foam.nanos.logger;
 
 import foam.core.X;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Support methods for Logger
@@ -21,6 +24,10 @@ public class Loggers {
     return logger(x, caller, false);
   }
 
+  public static Logger logger(X x, Object caller, String... prefixes) {
+    return logger(x, caller, false, prefixes);
+  }
+
   public static Logger logger(X x, boolean includeSubject) {
     return logger(x, null, includeSubject);
   }
@@ -29,16 +36,22 @@ public class Loggers {
    * Return a composition of SubjectLogger and PrefixLogger
    * configured with spid, user, agent, and calling object class name
    */
-  public static Logger logger(X x, Object caller, boolean includeSubject) {
+  public static Logger logger(X x, Object caller, boolean includeSubject, String... prefixes) {
     Logger logger = (Logger) x.get("logger");
     if ( logger == null ) {
       logger = new StdoutLogger(x);
     }
+
+    List<String> p = new ArrayList();
     if ( caller != null ) {
+      p.add(caller.getClass().getSimpleName());
+    }
+    if ( prefixes != null ) {
+      p.addAll(Arrays.asList(prefixes));
+    }
+    if ( p.size() > 0 ) {
       logger = new PrefixLogger(
-                                new Object[] {
-                                  caller.getClass().getSimpleName()
-                                },
+                                p.toArray(new String[0]),
                                 logger
                                 );
     }

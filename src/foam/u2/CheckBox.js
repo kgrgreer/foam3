@@ -27,7 +27,7 @@ foam.CLASS({
       -webkit-appearance: none;
       appearance: none;
       border-radius: 2px;
-      border: solid 2px /*%GREY2%*/ #5a5a5a;
+      border: solid 2px $grey600;
       height: 1.275em;
       margin: 7px 0;
       padding: 0px;
@@ -35,17 +35,17 @@ foam.CLASS({
       width: 1.275em;
     }
     ^:disabled {
-      border-color:  /*%GREY4%*/ #DADDE2;
-      background-color: /*%GREY5%*/ #F5F7FA;
+      border-color: $grey100;
+      background-color: $grey50;
     }
     ^:checked {
-      background-color: /*%PRIMARY3%*/ #406DEA;
-      border-color: /*%PRIMARY3%*/ #406DEA;
+      background-color: $primary400;
+      border-color: $primary400;
       fill: white;
     }
     ^:checked:disabled {
-      border-color:  /*%PRIMARY4%*/ #DADDE2;
-      background-color: /*%PRIMARY4%*/ #DADDE2;
+      border-color: $primary200;
+      background-color: $primary200;
       fill: white;
     }
     ^:checked:after{
@@ -55,7 +55,7 @@ foam.CLASS({
     }
     ^ input:focus + label::before {
       content: ''
-      box-shadow: 0 0 0 3px /*%PRIMARY2%*/ #ffbf47;
+      box-shadow: 0 0 0 3px $primary600;
     }
     ^:hover {
       cursor: pointer

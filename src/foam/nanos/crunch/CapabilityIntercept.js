@@ -98,6 +98,28 @@ foam.CLASS({
           })
         });
       }
+    },
+    {
+      flags: ['web'],
+      name: 'interceptType',
+      expression: function (capabilities, capables) {
+        if ( capabilities.length + capables.length > 1 ) {
+          return this.InterceptType.COMPOSITE;
+        }
+        return capables.length > 0 ?
+          this.InterceptType.CAPABLE : this.InterceptType.UCJ;
+      }
+    },
+    {
+      flags: ['web'],
+      name: 'wizardController'
+    }
+  ],
+
+  enums: [
+    {
+      name: 'InterceptType',
+      values: ['UCJ', 'CAPABLE', 'COMPOSITE']
     }
   ],
 

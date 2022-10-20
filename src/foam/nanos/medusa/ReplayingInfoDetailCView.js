@@ -98,9 +98,7 @@ foam.CLASS({
 
       label = this.makeLabel();
       label.text$ = this.health$.map(function(h) {
-        let delta = new Date().getTime() - h.bootTime;
-        let duration = foam.core.Duration.duration(delta);
-        return 'Uptime: '+duration;
+        return 'Uptime: '+foam.core.Duration.duration(h.uptime);
       });
       this.add(label);
 
@@ -121,10 +119,7 @@ foam.CLASS({
 
         label = this.makeLabel();
         label.text$ = this.config$.map(function(c) {
-          let end = c.replayingInfo.endTime || new Date();
-          let delta = end.getTime() - c.replayingInfo.startTime.getTime();
-          let duration = foam.core.Duration.duration(delta);
-          return 'Elapsed: '+duration;
+          return 'Elapsed: '+foam.core.Duration.duration(c.replayingInfo.elapsedTime);
         });
         this.add(label);
 
@@ -133,24 +128,17 @@ foam.CLASS({
         this.add(label);
 
         label = this.makeLabel();
-        label.text$ = this.config$.map(function(c) { return 'Remaining: '+c.replayingInfo.timeRemaining; });
+        label.text$ = this.config$.map(function(c) { return 'Remaining: '+foam.core.Duration.duration(c.replayingInfo.timeRemaining); });
         this.add(label);
 
         label = this.makeLabel();
-        label.text$ = this.config$.map(function(c) { return 'Replay TPS: '+c.replayingInfo.replayTps; });
+        label.text$ = this.config$.map(function(c) { return 'Replay TPS: '+c.replayingInfo.replayTps.toFixed(2); });
         this.add(label);
       }
 
       label = this.makeLabel();
       label.text$ = this.config$.map(function(c) {
-        let now = Date.now();
-        let idle = now - (c.replayingInfo.lastModified && c.replayingInfo.lastModified.getTime() || now);
-        let tm = (now - this.openTime - idle) / 1000;
-        let diff = c.replayingInfo.index - this.openIndex;
-        if ( diff > 0 ) {
-          return 'TPS: '+ (diff / tm).toFixed(0);
-        }
-        return 'TPS: N/A';
+        return 'TPS: '+c.replayingInfo.replayTps.toFixed(2);
       }.bind(this));
       this.add(label);
 
@@ -158,16 +146,15 @@ foam.CLASS({
       label.text$ = this.config$.map(function(c) {
         let now = Date.now();
         let delta = now - (c.replayingInfo.lastModified && c.replayingInfo.lastModified.getTime() || now);
-        let duration = foam.core.Duration.duration(delta);
-        return 'Idle: '+duration;
+        return 'Idle: '+foam.core.Duration.duration(delta);
       });
       this.add(label);
 
       label = this.makeLabel();
       label.text$ = this.health$.map(function(h) {
         var used = 0;
-        if ( h.memoryMax > 0 ) {
-          used = ((h.memoryMax - h.memoryFree) / h.memoryMax) * 100;
+        if ( h.memoryTotal > 0 ) {
+          used = (h.memoryUsed / h.memoryTotal) * 100;
         }
         if ( used < 70 ) {
           label.color = 'green';
@@ -176,8 +163,8 @@ foam.CLASS({
         } else {
           label.color = 'red';
         }
-        let max = h.memoryMax / (1024*1024*1024);
-        return 'Memory: '+used.toFixed(0)+'% '+max.toFixed(1)+'gb';
+        let u = h.memoryUsed / (1024*1024*1024);
+        return 'Memory: '+used.toFixed(0)+'% '+u.toFixed(1)+'gb';
       });
       this.add(label);
 

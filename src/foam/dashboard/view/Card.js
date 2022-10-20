@@ -68,8 +68,8 @@ foam.CLASS({
   css: `
     ^ {
       border-radius: 10px;
-      background: /*%WHITE%*/ #ffffff;
-      box-shadow: 3px 8px 6px -2px /*%GREY4%*/;;
+      background: $white;
+      box-shadow: 3px 8px 6px -2px $grey300;;
     }
 
     ^header {
@@ -86,7 +86,7 @@ foam.CLASS({
     }
   `,
   methods: [
-    function render() {
+    function init() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
         this.data.update();
       }.bind(this)));
@@ -118,9 +118,7 @@ foam.CLASS({
         end('div').
         start('div').
         addClass(this.myClass('content')).
-        tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, { data: this.cardData }, this, this.__subSubContext__);
-        })).
+          tag('div', null, this.content$).
         end('div');
     }
   ]

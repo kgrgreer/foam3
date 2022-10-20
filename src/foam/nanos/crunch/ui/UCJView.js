@@ -78,8 +78,7 @@ foam.CLASS({
 
   messages: [
     { name: 'BACK_LABEL',      message: 'Back' },
-    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated' },
-    { name: 'SUCCESS_REMOVED', message: 'Data successfuly removed' }
+    { name: 'SUCCESS_UPDATED', message: 'Data successfuly updated' }
   ],
 
   properties: [
@@ -118,8 +117,8 @@ foam.CLASS({
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
+        wizardSubject: subject,
         stack: stack,
-        subject: subject,
         controllerMode:
           this.mode == this.DisplayMode.RW
             ? this.ControllerMode.EDIT
@@ -183,30 +182,36 @@ foam.CLASS({
     },
 
     async function onSave(isValid, ucj) {
-      if ( isValid && ucj.status != this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
-        this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
-        this.stack.back();
-      } else {
-        let { rejectOnInvalidatedSave, approval } = this.config;
-        if ( rejectOnInvalidatedSave && approval ) {
-          let rejectedApproval = approval.clone();
-          rejectedApproval.status = this.ApprovalStatus.REJECTED;
-          rejectedApproval.memo = 'Outdated Approval.';
-          this.approvalRequestDAO.put(rejectedApproval).then(o => {
-            this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
-            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
-            this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
-            this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+      if ( this.config.rejectOnInvalidatedSave && this.config.approval ) {
+        this.onSaveRejectOnInvalidated_(isValid, ucj);
+        return;
+      }
 
-            this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
-            this.pushMenu('approvals', true);
-          }, e => {
-            this.notify(e.message, '', this.LogLevel.ERROR, true);
-          });
-        } else {
-          this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
+      this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
+      this.stack.back();
+    },
+
+    async function onSaveRejectOnInvalidated_(isValid, ucj) {
+      try {
+        if ( isValid && ucj.status !== this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+          this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
           this.stack.back();
+          return;
         }
+
+        const rejectedApproval = this.config.approval.clone();
+        rejectedApproval.status = this.ApprovalStatus.REJECTED;
+        rejectedApproval.memo = 'Outdated Approval.';
+        await this.approvalRequestDAO.put(rejectedApproval);
+        this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+        this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+        this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+        this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+
+        this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
+        this.pushMenu('approvals', true);
+      } catch (e) {
+        this.notify(e.message, '', this.LogLevel.ERROR, true);
       }
     }
   ],

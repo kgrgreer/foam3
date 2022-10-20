@@ -90,11 +90,11 @@ foam.CLASS({
       padding-left: calc(24px + 24px + 4px);
       padding-top: 2px;
       padding-bottom: 8px;
-      color: /*%GREY2%*/ #9ba1a6;
+      color: $grey500;
     }
     ^sub-item:hover {
       cursor: pointer;
-      color: /*%GREY1%*/ #5e6061 !important;
+      color: $grey700 !important;
     }
     ^sub-item:first-child {
       padding-top: 16px;

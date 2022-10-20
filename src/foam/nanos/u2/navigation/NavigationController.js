@@ -31,7 +31,7 @@ foam.CLASS({
 
     ^ {
       display: grid;
-      height: 100vh;
+      height: 100%;
       grid-template: auto 1fr / auto 1fr;
     }
 
@@ -111,6 +111,9 @@ foam.CLASS({
     },
     {
       name: 'headerSlot_'
+    },
+    {
+      name: 'navCtx_'
     }
   ],
   methods: [
@@ -120,27 +123,42 @@ foam.CLASS({
       this.onDetach(this.headerSlot_$.sub(this.adjustTopBarHeight));
       this.onDetach(this.displayWidth$.sub(this.maybeCloseNav));
 
+
       // on initlayout reset context so that navigation views will be created
       // under the correct context
       this.initLayout.then(() => {
         this.__subSubContext__ = ctrl.__subContext__;
+        self.setNavCtx_();
       });
       this.maybeCloseNav();
 
+      this.setNavCtx_();
+
       this.addClass()
-      .add(this.slot( async function(loginSuccess, topNav) {
-        if ( ! loginSuccess || ! topNav ) return null;
-        await this.initLayout;
-        return this.E()
-          .addClass(this.myClass('header'))
-          .tag(topNav, {}, self.headerSlot_$)
-          .show(this.showNav$);
-      }))
+        .add(this.slot( async function(loginSuccess, topNav) {
+          if ( ! loginSuccess || ! topNav ) return null;
+          await this.initLayout;
+          var topView = foam.u2.ViewSpec.createView(topNav, {}, self, self.navCtx_);
+          this.headerSlot_$.set(topView);
+          var resize = new ResizeObserver (this.adjustTopBarHeight);
+          this.onDetach(resize.disconnect());
+          this.headerSlot_?.el().then(el => {
+            resize.observe(el);
+          })
+          return self.E()
+            .addClass(this.myClass('header'))
+            // Fix this
+            // .tag(topNav, {}, self.headerSlot_$)
+            .add(topView)
+            .show(this.showNav$);
+        }))
         .add(this.slot( async function(loginSuccess, sideNav) {
           if ( ! loginSuccess || ! sideNav ) return null;
           await this.initLayout;
+          var sideView = foam.u2.ViewSpec.createView(sideNav, {}, self, self.navCtx_);
           return this.E()
-            .tag(sideNav)
+            // .tag(sideNav)
+            .add(sideView)
             .show(this.showNav$)
             .enableClass(this.myClass('sidebarClosed'), this.isMenuOpen$, true)
             .enableClass(this.myClass('sidebar'), this.isMenuOpen$)
@@ -154,9 +172,18 @@ foam.CLASS({
   ],
 
   listeners: [
+    function setNavCtx_() {
+      // Workaround to register these classes without propogating to the rest of the app
+      var a = this.__subSubContext__.createSubContext({});
+      a.register(foam.u2.view.NavigationButton, 'foam.u2.ActionView');
+      a.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
+      this.navCtx_ = a;
+    },
     function maybeCloseNav() {
-      if ( this.displayWidth.ordinal < this.DisplayWidth.LG.ordinal ) {
+      if ( this.displayWidth.ordinal < this.DisplayWidth.MD.ordinal ) {
         this.isMenuOpen = false;
+      } else {
+        this.isMenuOpen = true;
       }
     },
     function adjustTopBarHeight() {

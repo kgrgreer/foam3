@@ -13,6 +13,7 @@ import foam.box.socket.SocketRouter;
 import foam.core.ContextAgent;
 import foam.core.ContextAware;
 import foam.core.X;
+import foam.core.XLocator;
 import foam.lib.json.JSONParser;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
@@ -102,6 +103,7 @@ public class SocketServerProcessor
           int length = in_.readInt();
           byte[] bytes = readBytes(in_, length);
           String data = new String(bytes, 0, length, StandardCharsets.UTF_8);
+          XLocator.set(getX());
           Message msg = (Message) x.create(JSONParser.class).parseString(data);
           if ( msg == null ) {
             throw new IllegalArgumentException("Failed to parse. from: "+socket_.getRemoteSocketAddress()+", message: "+data);
@@ -150,6 +152,8 @@ public class SocketServerProcessor
             logger_.error("Failed to reply with error.", t, th);
           }
           break;
+        } finally {
+          XLocator.set(null);
         }
       }
     } finally {

@@ -20,7 +20,7 @@ foam.CLASS({
   css: `
     ^ {
       height: 370px;
-      background: /*%WHITE%*/ #ffffff;
+      background: $white;
       position: relative;
       vertical-align: top;
       border-radius: 2px;
@@ -40,7 +40,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .timelineRecord {
       position: relative;

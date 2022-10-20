@@ -33,8 +33,6 @@ foam.CLASS({
 
   css: `
     ^dropdown span, ^dropdown svg {
-      color: /*%GREY2%*/ #6B778C;
-      fill: /*%GREY2%*/ #6B778C;
       font-size: 1.4rem;
       font-weight: 500;
     }
@@ -50,7 +48,7 @@ foam.CLASS({
       factory: function() {
         let language = this.supportedLanguages.find( e => e.toString() === foam.locale )
         language = language === undefined ? this.defaultLanguage : language
-        localStorage.setItem('localeLanguage', language.toString());
+        foam.localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
     },
@@ -63,6 +61,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var self = this;
+      this.__subContext__.register(foam.u2.ActionView, 'foam.u2.ActionView');
       this.supportedLanguages = (await this.languageDAO
         .where(foam.mlang.predicate.Eq.create({
           arg1: foam.nanos.auth.Language.ENABLED,
@@ -79,7 +78,7 @@ foam.CLASS({
             user.language = c.id;
             await self.userDAO.put(user);
             location.reload();
-            localStorage.setItem('localeLanguage', c.toString());
+            foam.localStorage.setItem('localeLanguage', c.toString());
           }
         });
       });
@@ -92,7 +91,7 @@ foam.CLASS({
           label:       label,
           data:        actionArray,
           obj:         self,
-          buttonStyle: 'TERTIARY'
+          buttonStyle: 'UNSTYLED'
         })
           .addClass(this.myClass('dropdown'))
         .end()

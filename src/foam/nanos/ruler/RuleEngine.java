@@ -205,14 +205,19 @@ public class RuleEngine extends ContextAwareSupport {
     }, "Async apply rule id: " + rule.getId()));
   }
 
+  /**
+   * Check if the rule is in an ACTIVE state:
+   * 1) the rule is enabled
+   * 2) the rule lifecycle state is active
+   * 3) the rule has an action.
+   *
+   * @param rule    rule object to check
+   * @return true if the rule is ACTIVE, false otherwise
+   */
   private boolean isRuleActive(Rule rule) {
-    // Check if the rule is in an ACTIVE state
-    boolean isActive = true;
-    if (rule instanceof LifecycleAware) {
-      isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
-    }
-
-    return isActive && rule.getAction() != null;
+    return rule.getEnabled() &&
+           rule.getLifecycleState() == LifecycleState.ACTIVE &&
+           rule.getAction() != null;
   }
 
   private boolean checkPermission(Rule rule, FObject obj) {

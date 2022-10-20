@@ -34,11 +34,6 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^button:hover {
-      background-color: /*%GREY5%*/ #e7eaec;
-      color:  /*%PRIMARY1%*/ #406dea;
-    }
-
     ^label-container {
       display: flex;
       align-items: center;
@@ -51,7 +46,7 @@ foam.CLASS({
       padding: 0 8px;
     }
 
-    ^button.foam-u2-ActionView{
+    button^button{
       padding: 8px;
       width: 100%;
     }
@@ -71,10 +66,6 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
 
-    ^selected > ^heading > ^button {
-      background-color: /*%PRIMARY5%*/ #e5f1fc !important;
-      color:  /*%PRIMARY1%*/ #406dea;
-    }
     ^toggle-icon {
       align-self: center;
       transition: 0.2s linear;
@@ -189,15 +180,16 @@ foam.CLASS({
           .addClass(self.myClass('label')).
           call(this.formatter, [self.data]).
         end().
-        start().
-          addClass(self.myClass('toggle-icon')).
-          show(this.hasChildren$).
-          style({
-            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
-          }).
-          on('click', this.toggleExpanded).
-          tag(this.Image, { glyph: 'next' }).
-        end();
+        add(this.hasChildren$.map(hasChildren => {
+          if ( ! hasChildren ) return self.E();
+          return self.E().
+            addClass(self.myClass('toggle-icon')).
+            style({
+              'transform': self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
+            }).
+            on('click', this.toggleExpanded).
+            tag(this.Image, { glyph: 'next' });
+        }));
 
       this.
         addClass(this.myClass()).
@@ -253,16 +245,9 @@ foam.CLASS({
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
+              enableClass('selected', this.selected_$).
               // make not be a button so that other buttons can be nested              setNodeName('span').
               addClass(this.myClass('button')).
-              style({
-                'fill': this.slot(function(selected, id) {
-                  if ( selected && foam.util.equals(selected.id, id) ) {
-                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
-                  }
-                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
-                }, this.selection$, this.data$.dot('id'))
-              }).
             end().
           endContext().
         end().
@@ -345,7 +330,7 @@ foam.CLASS({
       label: '',
       code: function () {
         if ( this.onClickAddOn )
-          this.onClickAddOn(this.data);
+          this.onClickAddOn(this.data, this.hasChildren);
         this.toggleExpanded();
       }
     },

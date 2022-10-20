@@ -112,14 +112,14 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ {
-      background:/*%WHITE%*/ #ffffff;
+      background:$white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background-color:/*%WHITE%*/ #ffffff; }
+    ^content { padding: 6px; width: 300px; height: 200px; background-color:$white; }
   `,
   methods: [
     function render() {
@@ -847,3 +847,25 @@ tag({class: 'FObjectViewExample'});
 
 
 ##   More
+Example of defining tableColumns for use with a TableView.
+--
+foam.CLASS({
+  name: 'TableColumnsExample',
+
+  tableColumns: [ 'a', 'b', 'c' ],
+
+  properties: [ 'id', 'a', 'b', 'c', 'x', 'y', 'z' ]
+});
+s
+var t1 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExample'})});
+tag(t1).style({height: '200px'});
+
+foam.CLASS({
+  name: 'TableColumnsExampleSubClass',
+  extends: 'TableColumnsExample',
+
+  tableColumns: [ 'x', 'y', 'z' ],
+});
+
+var t2 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExampleSubClass'})});
+start(t2).style({height: '200px'});

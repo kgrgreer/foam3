@@ -112,7 +112,7 @@ foam.CLASS({
     },
     {
       name: 'columns_',
-      documentation: `Internal prop used by the table view to render the columns, 
+      documentation: `Internal prop used by the table view to render the columns,
         should always have the current table columns`,
       factory: function() { return []; }
     },
@@ -124,9 +124,9 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnNames',
-      documentation: `Property responsible for deciding what columns to use when tableView is rendered 
-        Order of precedece: Memento -> localStorage -> default cols. 
-        Gets updated when 'columns' changes and tries to fetch the latest value from localStorage. 
+      documentation: `Property responsible for deciding what columns to use when tableView is rendered
+        Order of precedece: Memento -> localStorage -> default cols.
+        Gets updated when 'columns' changes and tries to fetch the latest value from localStorage.
         Can also be set by any column config view to change the current columns loaded by the table`,
       memorable: true,
       expression: function(columns, of) {
@@ -139,8 +139,8 @@ foam.CLASS({
     },
     {
       name: 'selectedColumnsWidth',
-      documentation: `Manages preferred column widths for a user, responsible for 
-        grabbing widths from LS and passing them to table columns. Updating column 
+      documentation: `Manages preferred column widths for a user, responsible for
+        grabbing widths from LS and passing them to table columns. Updating column
         widths here should propogate changes to the rest of the view and LS`,
       factory: function() {
         var local = {};
@@ -160,7 +160,7 @@ foam.CLASS({
     },
     {
       name: 'columns',
-      documentation:  `Stores an Array of preferred columns defined in the tableColumns 
+      documentation:  `Stores an Array of preferred columns defined in the tableColumns
       axiom on the model, if undefined this acts as an alias for allColumns`,
       expression: function(of, allColumns) {
         if ( ! of ) return [];
@@ -524,11 +524,11 @@ foam.CLASS({
         var actionsMerger = action => { actions[action.name] = action; };
         if ( obj?.cls_ ) {
           // Model actions
-          obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);  
+          obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
         } else {
           console.error('FObject is missing cls_', obj);
         }
-        
+
         // Context menu actions
         this.contextMenuActions.forEach(actionsMerger);
 
@@ -549,8 +549,8 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 5000,
       code: function() {
-        localStorage.removeItem(this.of.id);
-        localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
+        foam.localStorage.removeItem(this.of.id);
+        foam.localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => {
           var name = foam.String.isInstance(c) ? c : c.name;
           var size = this.selectedColumnsWidth[name] == undefined ? undefined : this.selectedColumnsWidth[name];
           return [name, size];

@@ -10,13 +10,20 @@ foam.CLASS({
   extends: 'foam.u2.wizard.controllers.WizardController',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.wizard.DynamicActionWizardlet',
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
+  implements: ['foam.u2.Progressable'],
+
   issues: [
     'should not depend on legacy controller'
+  ],
+
+  messages: [
+    { name: 'ERROR_MSG', message: 'Information was not successfully submitted, please try again later' },
   ],
 
   properties: [
@@ -26,6 +33,11 @@ foam.CLASS({
       postSet: function (_, v) {
         this.currentWizardlet$ = v.currentWizardlet$;
         this.currentSection$ = v.currentSection$;
+        // Remove when legacy controller is removed
+        if ( foam.u2.Progressable.isInstance(v) ) {
+          this.progressMax$ = v.progressMax$;
+          this.progressValue$ = v.progressValue$;
+        }
 
         // Listen for external actions completing the wizard
         this.onDetach(v.status$.sub(() => {
@@ -35,12 +47,26 @@ foam.CLASS({
 
       }
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'defaultView',
+      expression: function(showTitle) {
+        return {
+          class: 'foam.u2.wizard.views.FocusWizardView',
+          showTitle: showTitle
+        }
+      }
+    },
     'currentWizardlet',
     'currentSection',
     {
       name: 'backDisabled',
       class: 'Boolean',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showTitle'
     },
     {
       class: 'Boolean',
@@ -103,9 +129,18 @@ foam.CLASS({
           actionBar.push(this.DISCARD);
         }
         actionBar.push(goPrevAction, goNextAction);
-        
+
 
         return actionBar;
+      }
+    }
+  ],
+
+  methods: [
+    async function setFirstPosition() {
+      // Auto-next if first wizardlet is invisible
+      if ( ! this.data.canLandOn(this.data.wizardPosition) ) {
+        await this.data.next();
       }
     }
   ],
@@ -119,7 +154,11 @@ foam.CLASS({
           this.onClose({});
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG_DRAFT, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         });
       }
     },
@@ -165,7 +204,11 @@ foam.CLASS({
           }
         }).catch(e => {
           console.error(e);
-          x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          try {
+            x.ctrl.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+          } catch (eNotify) {
+            console.error('ctrl.notify failed!', eNotify);
+          }
         }).finally(() => {
           this.isLoading_ = false;
         });

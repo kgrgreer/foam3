@@ -144,6 +144,7 @@ foam.LIB({
 
 foam.LIB({
   name: 'foam.Function',
+
   methods: [
     function isInstance(o) { return typeof o === 'function'; },
     function is(a, b) { return a === b },
@@ -280,7 +281,7 @@ foam.LIB({
     function argsStr(f) {
       var str = f.
         toString().
-        replace(/(\r\n|\n|\r)/gm,'');
+        replace(/(\r\n|\n|\r)/gm, '');
       var isArrowFunction = !/(async )?function/.test(str);
 
       var match = isArrowFunction ?
@@ -304,7 +305,12 @@ foam.LIB({
        * Return a function's arguments as an array.
        * Ex. argNames(function(a,b) {...}) === ['a', 'b']
        **/
-      var args = foam.Function.argsStr(f);
+      if ( ! this.ARG_NAMES ) this.ARG_NAMES = {};
+      var key   = f.toString();
+      var value = this.ARG_NAMES[key];
+      if ( value ) return foam.Array.clone(value);
+
+      var args = foam.Function.argsStr(key);
       args += ',';
 
       var ret = [];
@@ -314,6 +320,7 @@ foam.LIB({
       while ( ( typeMatch = argMatcher.exec(args) ) !== null ) {
         ret.push(typeMatch[2]);
       }
+      this.ARG_NAMES[key] = foam.Array.clone(ret);
       return ret;
     },
 
@@ -1333,13 +1340,13 @@ foam.LIB({
         const expr = foam.css.TokenUtilsBuilder.create();
         // Fake an fobject to get token value in current ctx from mlang
         var ret = result.value(expr).f({cls_: cls, __subContext__: ctx});
-        if ( ret ) 
+        if ( ret )
           ret = foam.CSS.returnTokenValue(ret, cls, ctx);
         return ret || result.fallback || `/* failed mlang token replacement ${tokenString}, ${cls}*/`
       }
       if ( result?.value?.startsWith('$') ) {
         // Using await as this method may be overriden with one that returns a promise
-        var ret = this.getTokenValue(result.value, cls, ctx);
+        var ret = foam.CSS.returnTokenValue(result.value, cls, ctx);
         return ret || result.fallback || `/* failed token replacement ${tokenString}, ${cls}*/`;
       }
       return result?.value ||
@@ -1381,4 +1388,3 @@ foam.LIB({
     }
   ]
 });
-

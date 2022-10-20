@@ -19,10 +19,12 @@ foam.CLASS({
     'appConfig',
     'auth',
     'ctrl',
+    'loginView?',
     'stack',
-    'translationService',
+    'subject',
     'theme',
-    'subject'
+    'translationService',
+    'window'
   ],
 
   requires: [
@@ -35,7 +37,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
-    { name: 'FOOTER_LINK', message: 'Sign in' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
     { name: 'EMAIL_ERR', message: 'Valid email required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
@@ -47,6 +48,19 @@ foam.CLASS({
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
   ],
+  
+  sections: [
+    {
+      name: '_defaultSection',
+      title: ''
+    },
+    {
+      name: 'footerSection',
+      title: '',
+      isAvailable: () => false
+    }
+  ],
+
 
   properties: [
     {
@@ -99,8 +113,7 @@ foam.CLASS({
         if ( email.length === 0 || ! /\S+@\S+\.\S+/.test(email) ) return this.EMAIL_ERR;
         // Availability Check
         if ( ! emailAvailable ) return this.EMAIL_AVAILABILITY_ERR;
-      },
-      required: true
+      }
     },
     {
       class: 'Boolean',
@@ -129,8 +142,7 @@ foam.CLASS({
         if ( userName.length === 0 ) return this.USERNAME_EMPTY_ERR;
         // Availability Check
         if ( ! usernameAvailable ) return this.USERNAME_AVAILABILITY_ERR;
-      },
-      required: true
+      }
     },
     {
       class: 'Boolean',
@@ -152,8 +164,7 @@ foam.CLASS({
       validateObj: function(desiredPassword, passwordAvailable) {
         if ( ! desiredPassword || desiredPassword.length < 10 ) return this.PASSWORD_ERR;
         if ( ! passwordAvailable ) return this.WEAK_PASSWORD_ERR;
-      },
-      required: true
+      }
     },
     {
       class: 'Boolean',
@@ -161,36 +172,29 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: true,
       documentation: 'Optional boolean used to display this model without login action'
+    },
+    {
+      class: 'Boolean',
+      name: 'pureLoginFunction',
+      documentation: 'Set to true, if we just want to login without application redirecting.',
+      hidden: true
     }
   ],
 
   methods: [
     {
-      name: 'footerLink',
-      code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
-        this.stack.push(this.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, parent: this }));
-      }
-    },
-    {
-      name: 'subfooterLink',
-      code: function() {
-        return;
-      }
-    },
-    {
       name: 'nextStep',
-      code: async function(x) {
-        await this.finalRedirectionCall(x);
+      code: async function() {
+        await this.finalRedirectionCall();
       }
     },
     {
       name: 'finalRedirectionCall',
-      code: async function(x) {
+      code: async function() {
         if ( this.subject.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
           // thus thier user.emailVerified should be true and they can simply login from here.
-          window.history.replaceState(null, null, window.location.origin);
+          this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
           this.stack.push(this.StackBlock.create({
@@ -202,16 +206,15 @@ foam.CLASS({
     {
       name: 'defaultUserLanguage',
       code: function() {
-        let l = foam.locale.split("-");
+        let l = foam.locale.split('-');
         let code = l[0];
         let variant = l[1];
-        let language = foam.nanos.auth.Language.create({code: code});
+        let language = foam.nanos.auth.Language.create({ code: code });
         if ( variant ) language.variant = variant;
         return language;
       }
     }
   ],
-
   actions: [
     {
       name: 'login',
@@ -221,22 +224,22 @@ foam.CLASS({
         return ! errors_ && ! isLoading_;
       },
       isAvailable: function(showAction) { return showAction; },
-      code: function(x, updateUser) {
+      code: function(x) {
         this.isLoading_ = true;
-
+        let createdUser = this.User.create({
+          userName: this.userName,
+          email: this.email,
+          desiredPassword: this.desiredPassword,
+          signUpToken: this.token_,
+          language: this.defaultUserLanguage()
+        });
         this.dao_
-          .put(this.User.create({
-            userName: this.userName,
-            email: this.email,
-            desiredPassword: this.desiredPassword,
-            signUpToken: this.token_,
-            language: this.defaultUserLanguage()
-          }))
-          .then(async (user) => {
+          .put(createdUser)
+          .then(async user => {
             this.subject.realUser = user;
             this.subject.user = user;
 
-            await this.nextStep(x);
+            if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
             this.ctrl.add(this.NotificationMessage.create({
               message: this.SUCCESS_MSG_TITLE,
@@ -244,7 +247,7 @@ foam.CLASS({
               type: this.LogLevel.INFO,
               transient: true
             }));
-          }).catch((err) => {
+          }).catch(err => {
             this.ctrl.add(this.NotificationMessage.create({
               err: err.data,
               message: this.ERROR_MSG,
@@ -255,6 +258,22 @@ foam.CLASS({
             this.isLoading_ = false;
           });
       }
+    },
+    {
+      name: 'footer',
+      section: 'footerSection',
+      label: 'Sign in',
+      buttonStyle: 'LINK',
+      code: function(X) {
+        X.window.history.replaceState(null, null, X.window.location.origin);
+        X.stack.push(X.data.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+      }
+    },
+    {
+      name: 'subFooter',
+      section: 'footerSection',
+      isAvailable: () => false,
+      code: () => {}
     }
   ]
 });

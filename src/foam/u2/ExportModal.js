@@ -42,7 +42,7 @@ foam.CLASS({
       border-radius: 0;
       padding: 6px 10px;
       border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color:/*%WHITE%*/ #ffffff;
+      background-color:$white;
       outline: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
       -webkit-appearance: none;
@@ -57,7 +57,6 @@ foam.CLASS({
       border: solid 1px #59A5D5;
     }
     ^ .label{
-      font-family: /*%FONT1%*/ 'IBM Plex Sans';
       font-style: normal;
       font-weight: normal;
       font-size: 1.1rem;

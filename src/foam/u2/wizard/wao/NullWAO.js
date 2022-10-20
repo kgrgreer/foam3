@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'NullWAO',
   implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
+  axioms: [ foam.pattern.Singleton.create() ],
   methods: [
     async function save() {},
     async function load() {},
