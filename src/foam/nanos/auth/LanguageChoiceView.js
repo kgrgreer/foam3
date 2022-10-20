@@ -32,24 +32,9 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   css: `
-    ^container {
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-    ^container:hover {
-      cursor: pointer;
-    }
-    ^container span {
-      font-size: 1.2rem;
-    }
-    ^ .foam-nanos-u2-navigation-TopNavigation-LanguageChoiceView {
-      align-items: center;
-    }
     ^dropdown span, ^dropdown svg {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 500;
-      color: /*%WHITE%*/ #ffffff;
     }
   `,
 
@@ -63,15 +48,20 @@ foam.CLASS({
       factory: function() {
         let language = this.supportedLanguages.find( e => e.toString() === foam.locale )
         language = language === undefined ? this.defaultLanguage : language
-        localStorage.setItem('localeLanguage', language.toString());
+        foam.localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'longName'
     }
   ],
 
   methods: [
     async function render() {
       var self = this;
+      this.__subContext__.register(foam.u2.ActionView, 'foam.u2.ActionView');
       this.supportedLanguages = (await this.languageDAO
         .where(foam.mlang.predicate.Eq.create({
           arg1: foam.nanos.auth.Language.ENABLED,
@@ -88,13 +78,12 @@ foam.CLASS({
             user.language = c.id;
             await self.userDAO.put(user);
             location.reload();
-            // TODO: Figure out a better way to store user preferences
-            localStorage.setItem('localeLanguage', c.toString());
+            foam.localStorage.setItem('localeLanguage', c.toString());
           }
         });
       });
 
-      var label = this.formatLabel(this.lastLanguage);
+      var label = this.formatLabel(this.lastLanguage, ! this.longName);
 
       this
         .addClass(this.myClass())
@@ -109,9 +98,14 @@ foam.CLASS({
       .end();
     },
 
-    async function formatLabel(language) {
+    async function formatLabel(language, shortName) {
       let country = await this.countryDAO.find(language.variant);
-      let label   = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label;
+      if ( shortName ) {
+        return language.code.toUpperCase();
+      } else {
+        label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      }
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }

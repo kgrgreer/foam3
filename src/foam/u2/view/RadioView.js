@@ -39,7 +39,6 @@ foam.CLASS({
     }
     ^ .choice {
       font-size: 1.6rem;
-      margin-bottom: 16px;
       white-space: nowrap;
     }
     ^horizontal-radio {
@@ -47,6 +46,7 @@ foam.CLASS({
       align-items: center;
       display: flex;
       flex-wrap: wrap;
+      gap: 12px;
     }
     ^ span{
       vertical-align: middle;

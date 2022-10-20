@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.List',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CrunchService',
@@ -65,7 +66,7 @@ foam.CLASS({
         return foam.nanos.crunch.ui.CapabilityWizardlet.create({isVisible: false}, this);
       },
       includeInDigest: false,
-    },
+    }
   ],
 
   methods: [
@@ -96,7 +97,7 @@ foam.CLASS({
         // Count junction statuses
         for ( String capId : prereqCapabilityIds ) {
           Capability cap = (Capability) capabilityDAO.find(capId);
-          if ( ! cap.getEnabled() ) continue;
+          if ( cap == null ||  cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
           X junctionSubjectContext = x.put("subject", junctionSubject);
 
@@ -136,7 +137,7 @@ foam.CLASS({
         is less than 'min'
       `,
       javaCode: `
-        if ( ! getEnabled() ) return false;
+        if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
@@ -151,11 +152,11 @@ foam.CLASS({
         int numberGrantedNotReopenable = 0;
         for ( var capId : prereqs ) {
           Capability cap = (Capability) capabilityDAO.find(capId);
+          if ( cap == null ||  cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) throw new RuntimeException("Cannot find prerequisite capability");
           if ( cap.getGrantMode() == CapabilityGrantMode.MANUAL ) {
             numberGrantedNotReopenable++;
             continue;
           }
-          if ( cap == null ) throw new RuntimeException("Cannot find prerequisite capability");
           UserCapabilityJunction prereq = crunchService.getJunction(x, capId);
           if ( prereq != null && ! cap.maybeReopen(x, prereq) )
             numberGrantedNotReopenable++;

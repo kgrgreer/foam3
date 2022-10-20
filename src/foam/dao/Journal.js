@@ -35,6 +35,14 @@ foam.INTERFACE({
         { name: 'x',   type: 'Context' },
         { name: 'dao', type: 'foam.dao.DAO' }
       ]
+    },
+    {
+      name: 'cmd',
+      args: [
+        { name: 'x',   type: 'Context' },
+        { name: 'obj', type: 'Object' }
+      ],
+      type: 'Object'
     }
   ]
 });
@@ -47,9 +55,19 @@ foam.CLASS({
 
   implements: [
     'foam.dao.Journal'
+  ],
+
+  methods: [
+    {
+      name: 'cmd',
+      args: 'Context x, Object obj',
+      type: 'Object',
+      javaCode: `
+      return obj;
+      `
+    }
   ]
 });
-
 
 
 foam.CLASS({
@@ -64,17 +82,20 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.Journal',
       name: 'delegate',
-      forwards: [ 'put', 'remove', 'replay' ]
+      forwards: [ 'put', 'remove', 'replay', 'cmd' ]
     }
   ]
 });
 
 
+// TODO: Move to own file
 if ( foam.isServer ) {
   foam.CLASS({
     package: 'foam.dao',
     name: 'NodeFileJournal',
     extends: 'foam.dao.AbstractJournal',
+
+    flags: ['node'],
 
     properties: [
       {

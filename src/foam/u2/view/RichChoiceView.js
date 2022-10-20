@@ -77,6 +77,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.CitationView',
     'foam.u2.view.RichChoiceViewI18NComparator'
   ],
 
@@ -140,7 +141,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      display: inline-block;
+      display: flex;
       position: relative;
     }
 
@@ -153,8 +154,8 @@ foam.CLASS({
       bottom: -4px;
       left: 0;
       transform: translateY(100%);
-      background: white;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      background: $white;
+      border: 1px solid $grey400;
       max-height: 378px;
       overflow-y: auto;
       box-sizing: border-box;
@@ -162,13 +163,17 @@ foam.CLASS({
       min-width: fit-content;
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      z-index: 1000;
     }
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
       font-size: 1.2rem;
       font-weight: 900;
-      padding: 1px 2px;
+      line-height: 24px;
+      font-size: 1.4rem;
+      color: #333;
+      padding: 6px 16px;
     }
 
     ^selection-view {
@@ -177,23 +182,27 @@ foam.CLASS({
       justify-content: space-between;
       width: 100%;
 
-      height: /*%INPUTHEIGHT%*/ 34px;
-      font-size: 1.4rem;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      border: 1px solid;
-      border-radius: 3px;
-      color: /*%BLACK%*/ #1e1f21;
-      background-color: white;
-      border-color: /*%GREY3%*/ #cbcfd4;
-      box-sizing: border-box;
-      cursor: default;
+      height: $inputHeight;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      border: 1px solid $grey400;
+      color: $black;
+      background-color: $white;
       min-width: 94px;
+
+      width: 100%;
+      border-radius: 4px;
+      -webkit-appearance: none;
+      cursor: pointer;
+      font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
     ^selection-view:hover ^clear-btn {
-      border-color: /*%GREY2%*/ #9ba1a6;
+      border-color: $grey500;
     }
 
     ^:focus {
@@ -202,12 +211,7 @@ foam.CLASS({
 
     ^:focus ^selection-view,
     ^:focus ^selection-view ^clear-btn {
-      border-color: /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^chevron::before {
-      content: '▾';
-      padding-left: 4px;
+      border-color: $primary400;
     }
 
     ^custom-selection-view {
@@ -220,14 +224,17 @@ foam.CLASS({
     }
 
     ^ .search input {
+      border-bottom: none;
+
       width: 100%;
       border: none;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
     }
 
     ^ .search img {
+      top: 8px;
       width: 15px;
       margin-left: 8px;
     }
@@ -235,6 +242,7 @@ foam.CLASS({
     ^ .search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
+      padding: 0rem 1.6rem;
     }
 
     ^ .disabled {
@@ -249,17 +257,17 @@ foam.CLASS({
       display: flex;
       align-items: center;
       border-left: 1px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
       border-left: 1px solid;
-      border-color: /*%GREY3%*/ #cbcfd4;
+      border-color: $grey400;
       margin-left: 12px;
       padding-left: 16px;
     }
 
     ^clear-btn:hover {
-      color: /*%DESTRUCTIVE3%*/ #d9170e;
+      color: $destructive400;
       cursor: pointer;
     }
   `,
@@ -278,7 +286,7 @@ foam.CLASS({
         instantiated with an object from the DAO as the 'data' property.
       `,
       factory: function() {
-        return this.DefaultRowView;
+        return this.CitationView;
       }
     },
     {
@@ -342,7 +350,7 @@ foam.CLASS({
       `,
     },
     {
-      class: 'FObjectProperty',
+      class: 'Class',
       name: 'of',
       documentation: 'The model stored in the DAO. Used intenrally.',
       expression: function(sections) {
@@ -514,9 +522,6 @@ foam.CLASS({
                     });
                   }))
                 .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
-                .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
                   return this.E()
@@ -568,9 +573,7 @@ foam.CLASS({
                                   .enableClass('disabled', section.disabled)
                                   .callIf(! section.disabled, function() {
                                     this.on('click', () => {
-                                      self.fullObject_ = obj;
-                                      self.data = obj.id;
-                                      self.isOpen_ = false;
+                                      self.onSelect(obj);
                                     });
                                   })
                                 .end();
@@ -580,27 +583,43 @@ foam.CLASS({
                       });
                     });
                   }))
-                  .add(this.slot(function(action, actionData) {
-                    if ( action && actionData) {
-                      return this.E()
-                        .start(self.DefaultActionView, { action: action, data: actionData })
-                          .addClass(self.myClass('action'))
-                        .end();
-                    }
-                    if ( action ) {
-                      return this.E()
-                        .start(self.DefaultActionView, { action: action })
-                          .addClass(self.myClass('action'))
-                        .end();
-                    }
-                  }));
-              }))
+                  .add(this.slot(self.addAction));
+              }));
           } else {
-            return self.E().add(fullObject_ ? fullObject_.toSummary() : '');
+            return self.E()
+              .addClass(this.myClass())
+                .start()
+                  .addClass(this.myClass('custom-selection-view'))
+                  .tag(self.selectionView, {
+                    fullObject: fullObject_,
+                    defaultSelectionPrompt$: self.choosePlaceholder$
+                  })
+                .end();
           }
-        }))
+        }));
     },
 
+    function onSelect(obj) {
+      this.fullObject_ = obj;
+      this.data = obj.id;
+      this.isOpen_ = false;
+    },
+
+    function addAction(action, actionData) {
+      var self = this;
+      if ( action && actionData ) {
+        return this.E()
+          .start(self.DefaultActionView, { action: action, data: actionData })
+            .addClass(self.myClass('action'))
+          .end();
+      }
+      if ( action ) {
+        return this.E()
+          .start(self.DefaultActionView, { action: action })
+            .addClass(self.myClass('action'))
+          .end();
+      }
+    },
     function updateMode_(mode) {
       if ( mode !== foam.u2.DisplayMode.RW ) {
         this.isOpen_ = false;
@@ -646,38 +665,6 @@ foam.CLASS({
 
   classes: [
     {
-      name: 'DefaultRowView',
-      extends: 'foam.u2.View',
-
-      documentation: `
-        This is the view that gets rendered for each item in the list.
-      `,
-
-      css: `
-        ^row {
-          background: white;
-          padding: 1px 2px;
-          font-size: 1.2rem;
-        }
-
-        ^row:hover {
-          background: #f4f4f9;
-          cursor: pointer;
-        }
-      `,
-
-      methods: [
-        function render() {
-          var summary = this.data.toSummary();
-          return this
-            .start()
-              .addClasses(['p', this.myClass('row')])
-              .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
-            .end();
-        }
-      ]
-    },
-    {
       name: 'DefaultSelectionView',
       extends: 'foam.u2.Element',
 
@@ -720,7 +707,6 @@ foam.CLASS({
 
       methods: [
         function render() {
-
           this.style({
             'overflow': 'hidden',
             'white-space': 'nowrap',
@@ -750,7 +736,7 @@ foam.CLASS({
         ^ {
           border: 0;
           border-top: 1px solid #f4f4f9;
-          color: /*%PRIMARY3%*/ #406dea;
+          color: $primary400;
           display: flex;
           font-size: 1.2rem;
           justify-content: flex-start;
@@ -759,7 +745,7 @@ foam.CLASS({
         }
 
         ^:hover {
-          color: /*%PRIMARY2%*/ #144794;
+          color: $primary500;
           cursor: pointer;
         }
 

@@ -46,7 +46,6 @@ foam.CLASS({
   sections: [
     {
       name: 'scheduling',
-      isAvailable: function(id) { return !! id; },
       order: 2
     },
     {
@@ -88,20 +87,22 @@ foam.CLASS({
       name: 'scheduledTime',
       documentation: 'Scheduled time to run Cron script.',
       visibility: 'RO',
-      javaFactory: `return getNextScheduledTime(getX());`,
       tableWidth: 170,
-      storageTransient: true,
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'String',
       name: 'daoKey',
-      value: 'cronDAO'
+      value: 'cronJobDAO',
+      transient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'String',
       name: 'eventDaoKey',
-      value: 'cronEventDAO'
+      value: 'cronJobEventDAO',
+      transient: true,
+      visibility: 'HIDDEN',
     }
   ],
 
@@ -120,8 +121,8 @@ foam.CLASS({
           foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
           if ( support != null &&
                ! support.cronEnabled(x, getClusterable()) ) {
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
-            throw new ClientRuntimeException(this.getClass().getSimpleName() + " " + EXECUTION_DISABLED);
+            // ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
+            return false;
           }
         }
         return true;
@@ -142,6 +143,43 @@ return getSchedule().getNextScheduledTime(x,
   new Date(System.currentTimeMillis())
 );
 `
+    },
+    {
+      name: 'runScript',
+      code: `
+        super.runScript();
+        getSchedule().postExecution();
+      `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'disable',
+      isAvailable: function() {
+        return this.enabled;
+      },
+      code: function(X) {
+        var self = this;
+        this.enabled = false;
+        this.__context__['cronDAO'].put(this).then(function(cron) {
+          self.copyFrom(cron);
+        });
+      }
+    },
+    {
+      name: 'enable',
+      isAvailable: function() {
+        return ! this.enabled;
+      },
+      code: function(X) {
+        var self = this;
+        this.enabled = true;
+        this.__context__['cronDAO'].put(this).then(function(cron) {
+          self.copyFrom(cron);
+        });
+      }
     }
   ]
+
 });

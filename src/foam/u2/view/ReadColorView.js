@@ -16,13 +16,13 @@ foam.CLASS({
       align-items: center;
       border-radius: 3px;
       display: flex;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      height: $inputHeight;
       justify-content: center;
       padding: 0 32px;
     }
 
     ^black {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
 
     ^white {

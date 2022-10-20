@@ -12,7 +12,8 @@ foam.CLASS({
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'DAO clusterTopologyDAO as dao'
+    'DAO clusterTopologyDAO as dao',
+    'healthDAO'
   ],
 
   requires: [
@@ -33,6 +34,11 @@ foam.CLASS({
       name: 'config',
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.ClusterConfig'
+    },
+    {
+      name: 'health',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.medusa.MedusaHealth'
     },
     {
       name: 'complete',
@@ -76,7 +82,7 @@ foam.CLASS({
                  c.replayingInfo &&
                  c.replayingInfo.replaying &&
                  c.replayingInfo.replayIndex > 0 ) {
-              return c.replayingInfo.timeRemaining;
+              return foam.core.Duration.duration(c.replayingInfo.timeRemaining);
             }
             return '';
           }.bind(this))
@@ -91,14 +97,8 @@ foam.CLASS({
         return this.Label.create({
           align: 'center',
           y: +5,
-          text$: this.config$.map(function(c) {
-            if ( c.replayingInfo ) {
-              var index = Math.max(c.replayingInfo.index, c.replayingInfo.maxIndex);
-              if ( index > 0 ) {
-                return index;
-              }
-            }
-            return '';
+          text$: this.health$.map(function(h) {
+            return h.index;
           })
         });
       }
@@ -134,6 +134,8 @@ foam.CLASS({
     async function initCView() {
       this.SUPER();
 
+      this.health = await this.healthDAO.find(this.config.id);
+
       this.border = '';
       this.arcWidth = 1;
       this.alpha = 0.5;
@@ -168,6 +170,7 @@ foam.CLASS({
         console.log('ReplayingInfoCView.refresh '+self.children.length);
         if ( self.config ) {
           self.config = await self.dao.find(self.config.id);
+          self.health = await self.healthDAO.find(self.config.id);
 //          self.updateReplaying();
           for ( var i = 0; i < self.children.length; i++ ) {
             let child = self.children[i];

@@ -8,7 +8,6 @@
   package: 'foam.dashboard.view',
   name: 'GroupByCitationView',
   extends: 'foam.dashboard.view.DashboardCitationView',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     A citation view that displays a property value and the number of dao entries that share the same value.
@@ -62,8 +61,6 @@
 
   methods: [
     async function render() {
-      this.initMemento();
-
       var label = this.customizeKey ? await this.customizeKey(this.data[0]) : this.data[0];
       var count = this.data[1];
 
@@ -89,8 +86,6 @@
         config.browseTitle = this.translationService.getTranslation(foam.locale, `${this.redirectMenu.id}.browseTitle`, this.redirectMenu.handler.config.browseTitle);
         config.dao = this.dao;
         
-        this.currentMemento_.head = this.redirectMenu.id;
-
         this.stack.push(this.StackBlock.create({
           view: {
             class: this.DAOBrowseControllerView,

@@ -13,8 +13,11 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.medusa.Clusterable'
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+  mixins: [
+    'foam.nanos.medusa.ClusterableMixin'
   ],
 
   tableColumns: [
@@ -90,7 +93,9 @@ foam.CLASS({
       class: 'String',
       name: 'hostname',
       visibility: 'RO',
-      javaFactory: 'return System.getProperty("hostname", "localhost");'
+      javaFactory: `
+      return System.getProperty("hostname", "localhost");
+      `
     },
     {
       class: 'Enum',
@@ -100,7 +105,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isActive'
+      name: 'isActive',
+      value: true
     },
     {
       class: 'Enum',
@@ -118,7 +124,6 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      label: 'Since',
       visibility: 'RO',
       tableWidth: 150,
       includeInDigest: false,
@@ -130,12 +135,6 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea' },
       createVisibility: 'RW',
       updateVisibility: 'RO'
-    },
-    {
-      class: 'Boolean',
-      name: 'clusterable',
-      value: false,
-      includeInDigest: false
     }
   ],
 

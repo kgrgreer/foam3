@@ -30,6 +30,7 @@
         Object[] objs = (Object[]) ps.value();
         String ret = "";
         ret = "\"" + objs[0].toString() + "\"" + ":" + objs[1].toString();
+        // foam.nanos.logger.StdoutLogger.instance().debug("UnknownKeyValueParser0", ret);
         return ps.setValue(ret);
       }
       });

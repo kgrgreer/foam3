@@ -21,12 +21,36 @@ foam.CLASS({
 
   imports: [ 'theme?' ],
 
+  cssTokens: [
+    {
+      name: 'buttonRadius',
+      value: '4px'
+    },
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'buttonPrimaryColor',
+      value: '$primary400'
+    },
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'buttonSecondaryColor',
+      value: '$white',
+      onLight: '$grey600',
+      disabledModifier: -10,
+      hoverModifier: -5,
+      activeModifier: -15
+    },
+    {
+      name: 'buttonSecondaryBorderColor',
+      value: function(e) { return e.LIGHTEN(e.TOKEN('$buttonSecondaryColor'), -40) }
+    }
+  ],
   css: `
     ^ {
       font: inherit;
       align-items: center;
       border: 1px solid transparent;
-      border-radius: 4px;
+      border-radius: $buttonRadius;
       box-sizing: border-box;
       display: inline-flex;
       gap: 8px;
@@ -34,6 +58,10 @@ foam.CLASS({
       margin: 0;
       outline: none;
       text-align: center;
+    }
+
+    ^:focus-visible {
+      outline: 1px solid $primary700;
     }
 
     ^iconAfter {
@@ -74,171 +102,193 @@ foam.CLASS({
     }
 
     /* Primary */
-    ^primary, ^primary svg {
-      background-color: /*%PRIMARY3%*/ #406dea;
+    ^primary{
+      background-color: $buttonPrimaryColor;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
-      color: /*%WHITE%*/ white;
-      fill: /*%WHITE%*/ white;
+      color: $buttonPrimaryColor$foreground;
+    }
+
+    ^primary svg {
+      fill: $buttonPrimaryColor$foreground;
     }
 
     ^primary:hover:not(:disabled) {
-      background-color: /*%PRIMARY2%*/ #144794;
+      background-color: $buttonPrimaryColor$hover;
     }
 
-    ^primary:focus {
-      background-color: /*%PRIMARY2%*/ #144794;
-      border-color: /*%PRIMARY1%*/ #202341;
+    ^primary:active:not(:disabled) {
+      background-color: $buttonPrimaryColor$active;
+      border-color: $buttonPrimaryColor$hover;
     }
 
     ^primary:disabled {
-      background-color: /*%PRIMARY4%*/ #C6D2FF;
+      background-color: $buttonPrimaryColor$disabled;
+      color: $buttonPrimaryColor$disabled$foreground;
     }
 
     /* Primary destructive */
 
     ^primary-destructive,^primary-destructive svg {
-      background-color: /*%DESTRUCTIVE3%*/ #d9170e;
-      color: /*%WHITE%*/ white;
-      fill: /*%WHITE%*/ white;
+      background-color: $destructive400;
+      color: $white;
+      fill: $white;
     }
 
     ^primary-destructive:hover:not(:disabled) {
-      background-color: /*%DESTRUCTIVE2%*/ #a61414;
+      background-color: $destructive500;
     }
 
-    ^primary-destructive:focus {
-      background-color: /*%DESTRUCTIVE2%*/ #a61414;
-      border: 1px solid /*%DESTRUCTIVE1%*/ #631414;
+    ^primary-destructive:active:not(:disabled) {
+      background-color: $red500;
+      border: 1px solid $red700;
       box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
     }
 
     ^primary-destructive:disabled {
-      background-color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      background-color: $destructive50;
     }
 
 
     /* Secondary */
 
     ^secondary{
-      background-color: /*%WHITE%*/ white;
-      border: 1px solid /*%GREY3%*/ #B2B6BD;
-      color: /*%GREY1%*/ #494F59;
+      background-color: $buttonSecondaryColor;
+      border: 1px solid $buttonSecondaryBorderColor;
+      color: $buttonSecondaryColor$foreground;
     }
 
-    ^secondary svg { fill: /*%GREY1%*/ #494F59; }
+    ^secondary svg { fill: $buttonSecondaryColor$foreground; }
 
-    ^secondary:hover:not(:disabled) {
-      background-color: /*%GREY5%*/ #B2B6BD;
+    ^secondary:hover:not(:disabled):not(:active) {
+      background-color: $buttonSecondaryColor$hover;
+      color: $buttonSecondaryColor$hover$foreground;
     }
 
-    ^secondary:focus {
-      background-color: /*%GREY5%*/ #B2B6BD;
-      border: 1px solid /*%PRIMARY3%*/ #406DEA;
+    ^secondary:hover:not(:disabled):not(:active) svg {
+      fill: $buttonSecondaryColor$hover$foreground;
+    }
+
+    ^secondary:active:not(:disabled) {
+      color: $buttonPrimaryColor;
+      background-color: $buttonSecondaryColor$hover;
+      border: 1px solid $buttonPrimaryColor;
     }
 
     ^secondary:disabled{
-      background-color: /*%GREY5%*/ #F5F7FA;
-      border-color: /*%GREY4%*/ #DADDE2;
-      color: /*%GREY4%*/ #DADDE2;
+      background-color: $buttonSecondaryColor$disabled;
+      border-color: $buttonSecondaryColor$disabled;
+      color: $buttonSecondaryColor$active;
     }
 
-    ^secondary:disabled svg { fill: /*%GREY4%*/ #DADDE2; }
+    ^secondary:disabled svg { fill: $buttonSecondaryColor$disabled; }
 
     /* Secondary destructive */
 
     ^secondary-destructive{
-      background-color: white;
-      border: 1px solid /*%GREY3%*/ #B2B6BD;
-      color: /*%DESTRUCTIVE2%*/ #a61414;
+      background-color: $white;
+      border: 1px solid $destructive500;
+      color: $destructive400;
     }
 
-    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
+    ^secondary-destructive svg { fill: $destructive500; }
 
-    ^secondary-destructive:hover {
-      background-color: /*%GREY5%*/ #B2B6BD;
+    ^secondary-destructive:hover:not(:disabled) {
+      background-color: $buttonSecondaryColor$hover;
     }
 
-    ^secondary-destructive:focus {
-      background-color: /*%GREY5%*/ #B2B6BD;
-      border-color: /*%DESTRUCTIVE2%*/ #a61414;
+    ^secondary-destructive:active:not(:disabled) {
+      background-color: $buttonSecondaryColor$hover;
+      border-color: $destructive500;
     }
 
     ^secondary-destructive:disabled {
-      background-color: /*%GREY5%*/ #F5F7FA;
-      border-color: /*%GREY4%*/ #DADDE2;
-      color: /*%DESTRUCTIVE5%*/ #E5D2D0;
+      background-color: $buttonSecondaryColor$hover;
+      border-color: $destructive100;
+      color: $destructive100;
     }
 
-    ^secondary-destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
+    ^secondary-destructive:disabled svg { fill: $destructive50; }
 
     /* Tertiary */
 
     ^tertiary{
       background: none;
       border: 1px solid transparent;
-      color: /*%GREY1%*/ #5E6061;
+      color: $buttonSecondaryColor$foreground;
     }
 
-    ^tertiary svg { fill: /*%GREY1%*/ #5E6061; }
+    ^tertiary svg { fill: $buttonSecondaryColor$foreground; }
 
     ^tertiary:hover:not(:disabled) {
-      background-color: /*%GREY5%*/ #F5F7FA;
+      background-color: $buttonSecondaryColor$hover;
     }
 
-    ^tertiary:focus,^tertiary:focus svg {
-      background-color: /*%GREY5%*/ #F5F7FA;
-      color: /*%PRIMARY3%*/ #494F59;
-      fill: /*%PRIMARY3%*/ #494F59;
+    ^tertiary:active:not(:disabled) {
+      background-color: $buttonSecondaryColor$hover;
+      color: $buttonPrimaryColor;
     }
 
-    ^tertiary:disabled,^tertiary:disabled svg {
-      color: /*%GREY4%*/ #DADDE2;
-      fill: /*%GREY4%*/ #DADDE2;
+    ^tertiary:active:not(:disabled) svg {
+      fill: $buttonPrimaryColor;
     }
 
+    ^tertiary:disabled {
+      color: $buttonSecondaryColor$active;
+    }
+
+    ^tertiary:disabled svg {
+      fill: $buttonSecondaryColor$active;
+    }
 
     /* Tertiary destructive */
 
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE3%*/ #D9170E;
+      color: $destructive400;
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
+    ^tertiary-destructive svg { fill: $destructive400; }
 
-    ^tertiary-destructive:hover:not(:disabled) {
-      background-color: /*%GREY5%*/ #F5F7FA;
+    ^tertiary-destructive:hover:not(:disabled):not(:active) {
+      background-color: $buttonSecondaryColor$hover;
     }
 
-    ^tertiary-destructive:focus,^tertiary-destructive:focus svg {
-      background-color: /*%GREY5%*/ #F5F7FA;
-      color: /*%DESTRUCTIVE3%*/ #494F59;
-      fill: /*%DESTRUCTIVE3%*/ #494F59;
+    ^tertiary-destructive:active:not(:disabled) {
+      background-color: $buttonSecondaryColor$hover;
+      color: $red400;
     }
 
-    ^tertiary-destructive:disabled,^tertiary-destructive:diabled svg {
-      color: /*%GREY4%*/ #DADDE2;
-      fill: /*%GREY4%*/ #DADDE2;
+    ^tertiary-destructive:active:not(:disabled) svg {
+      fill: $red400;
+    }
+
+    ^tertiary-destructive:disabled {
+      color: $buttonSecondaryColor$disabled;
+    }
+
+    ^tertiary-destructive:diabled svg{
+      fill: $buttonSecondaryColor$disabled;
     }
 
     /* Link */
 
     ^link,^link svg {
       background: none;
-      color: /*%GREY1%*/ #5E6061;
-      fill: /*%GREY1%*/ #5E6061;
+      color: $buttonSecondaryColor$foreground;
+      fill: $buttonSecondaryColor$foreground;
     }
 
-    ^link:hover:not(:disabled),^link:hover svg {
+    ^link:hover:not(:disabled):not(:active),^link:hover:not(:disabled):not(:active) svg {
       text-decoration: underline;
-      color: /*%GREY2%*/ #6B778C;
-      fill: /*%GREY2%*/ #6B778C;
+      color: $buttonSecondaryColor$active$foreground;
+      fill: $buttonSecondaryColor$active$foreground;
     }
 
-    ^link:focus,^link:focus svg {
-      color: /*%PRIMARY3%*/ #406DEA;
-      fill: /*%PRIMARY3%*/ #406DEA;
+    ^link:active:not(:disabled),^link:active:not(:disabled) svg {
+      color: $buttonPrimaryColor;
+      fill: $buttonPrimaryColor;
+      text-decoration: underline;
     }
 
     /* Sizes */
@@ -282,7 +332,7 @@ foam.CLASS({
       height: 100%;
     }
 
-    /* SVGs outside themeGlyphs may have their own heights and widths, 
+    /* SVGs outside themeGlyphs may have their own heights and widths,
     these ensure those are respected rather than imposing new dimensions */
     ^imgSVGIcon {
       display: flex;
@@ -400,6 +450,7 @@ foam.CLASS({
       this.addClass(this.myClass(this.size.label.toLowerCase()));
       this.enableClass(this.myClass('iconOnly'), ! (this.contents || this.label));
       this.enableClass(this.myClass('iconAfter'), this.isIconAfter$);
+      this.enableClass('destructive', this.isDestructive$);
     },
 
     function initCls() {

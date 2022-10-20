@@ -11,5 +11,14 @@ foam.CLASS({
   documentation: `
     Creates a distinction for actions that belong to a wizardlet but should
     display at the bottom of a wizard rather than within the wizardlet.
-  `
+  `,
+  properties: [
+    {
+      name: 'code',
+      value: function (slot) {
+        const wizardController = slot.data$.get();
+        wizardController.goNext();
+      }
+    }
+  ]
 });

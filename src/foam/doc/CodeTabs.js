@@ -8,7 +8,9 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'CodeTabs',
   extends: 'foam.u2.UnstyledTabs',
+
   documentation: 'Multiple code tabs.',
+
   css: `
     ^ {
       background: gray;
@@ -25,12 +27,12 @@ foam.CLASS({
       padding: 8px;
     }
     ^tab.selected {
-      background: white;
+      background:$white;
       position: relative;
       z-index: 1;
     }
     ^bottomEdge {
-      background: white;
+      background:$white;
       height: 2.5px;
       left: 0;
       position: absolute;
@@ -40,11 +42,11 @@ foam.CLASS({
     ^content {
       margin: 4px;
       padding: 6px;
-      background: white;
+      background:$white;
       border: 1px solid black;
       position: relative;
       top: -13px;
       left: -4px;
     }
-  `,
+  `
 });

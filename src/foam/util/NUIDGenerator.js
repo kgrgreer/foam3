@@ -19,34 +19,56 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
-    'static foam.util.UIDSupport.*'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'static foam.util.UIDSupport.*',
+    'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
 
   javaCode: `
-  public NUIDGenerator(X x, String salt) {
+  public NUIDGenerator(X x, String salt, DAO dao, PropertyInfo pInfo) {
     setX(x);
+    setDao(dao);
     setSalt(salt);
+    setPropertyInfo(pInfo);
+    init_();
   }
+
+  AtomicInteger seqNo_ = new AtomicInteger();
+  AtomicBoolean initMaxSeqNo_ = new AtomicBoolean(false);
   `,
 
   properties: [
     {
+      class: 'String',
       name: 'salt',
-      javaPostSet: 'setDao((DAO) getX().get(getSalt()));'
+      javaPostSet: 'if ( getDao() == null ) setDao((DAO) getX().get(getSalt()));'
     },
     {
-      class: 'Object',
-      name: 'dao',
-      javaType: 'foam.dao.DAO',
-      javaPostSet: 'assertLongId();'
+      class: 'foam.dao.DAOProperty',
+      name: 'dao'
     },
     {
-      class: 'Int',
-      name: 'value'
+      class: 'FObjectProperty',
+      name: 'propertyInfo',
+      hidden: true,
+      javaType: 'foam.core.PropertyInfo',
+      javaInfoType: 'foam.core.AbstractObjectPropertyInfo'
     }
   ],
 
   methods: [
+    {
+      name: 'init_',
+      javaCode: 'assertLongId();'
+    },
+    {
+      name: 'getNext',
+      args: [ 'java.lang.Class type' ],
+      type: 'Object',
+      javaCode: 'return getNextLong();'
+    },
     {
       name: 'generate_',
       documentation: `
@@ -58,43 +80,55 @@ foam.CLASS({
       `,
       javaCode: `
         // At least 2 bits sequence number
-        int seqNo = 0;
-        synchronized (this) {
-          seqNo = getLastSeqNo() + 1;
-        }
-        id.append(toHexString(seqNo, 2));
+        initMaxSeqNo();
+        id.append(toHexString(seqNo_.incrementAndGet(), 2));
       `
     },
     {
-      name: 'getLastSeqNo',
-      type: 'Integer',
+      name: 'initMaxSeqNo',
       javaCode: `
-        getDao().select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            var id = (long) ((FObject) obj).getProperty("id");
-            if ( id > 0x1000000 ) {
-              var hex   = undoPermute(Long.toHexString(id));
-              var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
-              if ( getValue() < seqNo ) {
-                setValue(seqNo);
-              }
+        if ( ! initMaxSeqNo_.getAndSet(true) ) {
+          Logger logger = Loggers.logger(getX(), this);
+          logger.info(getSalt(), "max", "find");
+          getDao().select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              var id = (long) getPropertyInfo().get(obj);
+              maybeUpdateSeqNo(id);
             }
-          }
-        });
-        return getValue();
+          });
+          Loggers.logger(getX(), this).info(getSalt(), "max", "found", seqNo_.get());
+        }
       `
     },
     {
       name: 'assertLongId',
       javaThrows: [ 'java.lang.UnsupportedOperationException' ],
       javaCode: `
-        var id = (PropertyInfo) getDao().getOf().getAxiomByName("id");
-        if ( id.getValueClass() != long.class ) {
+        if ( ! ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) ) {
           throw new UnsupportedOperationException(
-            "NUIDGenerator: not support " + getSalt() + " with id of type: " + id.getValueClass().getSimpleName());
+            "NUIDGenerator: not supported on " + getSalt() + " without id property");
+        }
+      `
+    },
+    {
+      name: 'maybeUpdateSeqNo',
+      args: 'Long id',
+      javaCode: `
+        if ( id > 0x1000000 ) {
+          if ( UIDSupport.hash(id) != getHashKey() ) {
+            Loggers.logger(getX(), this).warning(getSalt(), "id:" + id, "hash not matched");
+            return;
+          }
+
+          var hex   = undoPermute(Long.toHexString(id));
+          var mid   = Integer.parseInt(hex.substring(hex.length() - 5, hex.length() - 3), 16);
+          if ( getMachineId() % 0xff == mid ) {
+            var seqNo = Integer.parseInt(hex.substring(0, hex.length() - 5), 16);
+            seqNo_.getAndAccumulate(seqNo, (old, nu) -> Math.max(old, nu));
+          }
         }
       `
     }
   ]
-})
+});

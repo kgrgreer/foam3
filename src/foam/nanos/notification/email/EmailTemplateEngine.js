@@ -15,7 +15,10 @@ foam.CLASS({
     'foam.lib.parse.*',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
-    'foam.nanos.notification.email.DAOResourceLoader',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.notification.email.EmailTemplateSupport',
     'java.util.Map'
   ],
 
@@ -64,12 +67,12 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-              logger.warning("No value provided for variable " + v);
+              ((Logger) x.get("logger")).warning("No value provided for variable", v);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
               alarm.setNote("No value provided for variable " + v);
+              alarm.setClusterable(false);
               ((DAO) x.get("alarmDAO")).put(alarm);
             }
             ((StringBuilder) x.get("sb")).append(value);
@@ -269,10 +272,9 @@ foam.CLASS({
             for ( int i = 0 ; i < val0.length ; i++ ) {
               templateName.append(val0[i]);
             }
-            EmailTemplate extendedEmailTemplate = DAOResourceLoader.findTemplate((X)x.get("x"), templateName.toString());
+            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate((X)x.get("x"), templateName.toString());
             if ( extendedEmailTemplate == null ) {
-              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-              logger.warning("Extended template not found " + templateName);
+              ((Logger) x.get("logger")).warning("Extended template not found", templateName);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
@@ -307,9 +309,17 @@ foam.CLASS({
       ],
       type: 'StringBuilder',
       javaCode: `
-      EmailTemplate template = DAOResourceLoader.findTemplate(x, id);
-      if ( template == null ) throw new RuntimeException("no template found with id " + id);
-      return renderTemplate(x, template.getBody(), values);
+      Logger logger = new PrefixLogger( new Object[] {
+        this.getClass().getSimpleName(),
+        "template",
+        id
+      }, (Logger) x.get("logger"));
+      EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
+      if ( template == null ) {
+        logger.warning("Template not found");
+        throw new RuntimeException("Template not found");
+      }
+      return renderTemplate(x.put("logger", logger), template.getBody(), values);
       `
     },
     {

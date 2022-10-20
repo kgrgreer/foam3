@@ -55,14 +55,12 @@ foam.CLASS({
       var oldCreate = cls.create;
 
       cls.create = function(args) {
-        var instances = this.private_.instances ||
-            ( this.private_.instances = {} );
+        var instances = this.private_.instances || ( this.private_.instances = {} );
         var key = args[property];
 
         // If key isn't provided, try using property.value instead
-        if ( key === undefined ) {
+        if ( key === undefined )
           key = cls.getAxiomByName(property).value;
-        }
 
         return instances[key] ||
           ( instances[key] = oldCreate.apply(this, arguments) );
@@ -70,8 +68,7 @@ foam.CLASS({
     },
 
     function installInProto(p) {
-      // Not needed, but improves performance.
-      p.clone  = function() { return this; };
+      p.shallowClone = p.clone = function() { return this; };
       p.equals = function(o) { return this === o; };
     }
   ]

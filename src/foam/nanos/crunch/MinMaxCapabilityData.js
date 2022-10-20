@@ -30,13 +30,15 @@ foam.CLASS({
     {
       name: 'selectedData',
       class: 'StringArray',
-      factory: function(){
-        return [];
-      },
       javaFactory: 'return new String[0];',
+      adaptArrayElement: function(o, prop) {
+        if ( foam.nanos.crunch.Capability.isInstance(o) ) return o.id;
+        return o;
+      },
       postSet: function (o, n) {
         if ( ! foam.util.equals(o, n) ) {
           this.selectedDataStable = n;
+          this.propertyChange.pub('selectedDataStable', this.selectedDataStable$);
         }
       }
     },

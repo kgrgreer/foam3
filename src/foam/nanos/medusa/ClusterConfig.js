@@ -118,8 +118,7 @@ foam.CLASS({
     },
     {
       name: 'port',
-      class: 'Int',
-      value: 8080
+      class: 'Int'
     },
     {
       name: 'sessionId',
@@ -134,40 +133,20 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      name: 'pingTime',
-      class: 'Long',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
-      name: 'memoryMax',
-      class: 'Long',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
-      name: 'memoryFree',
-      class: 'Long',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
       name: 'errorMessage',
       class: 'String',
       visibility: 'RO',
       storageTransient: true
     },
     {
-      name: 'alarms',
-      class: 'Int',
-      visibility: 'RO',
-      storageTransient: true
+      name: 'location',
+      class: 'String'
     },
     {
+      documentation: 'used by info web agent for external monitoring',
       name: 'replayingInfo',
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.ReplayingInfo',
-      visibility: 'RO',
       storageTransient: true
     },
     {
@@ -217,7 +196,8 @@ foam.CLASS({
       class: 'DateTime',
       visibility: 'RO',
       tableWidth: 150,
-      storageOptional: true
+      storageOptional: true,
+      javaCompare: 'return 0;'
     },
     {
       documentation: `The id of the user who created the transaction.`,
@@ -226,6 +206,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -242,6 +223,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -251,30 +233,6 @@ foam.CLASS({
           }
         }.bind(this));
       }
-    },
-    {
-      name: 'version',
-      class: 'String',
-      javaFactory: `
-    String version = this.getClass().getPackage().getImplementationVersion();
-    String revision = this.getClass().getPackage().getSpecificationVersion();
-    StringBuilder sb = new StringBuilder();
-    sb.append(version);
-    if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
-         revision.length() > 2 ) {
-      sb.append("-"+revision.substring(0, 3));
-    }
-    return sb.toString();
-      `,
-      storageTransient: true,
-      clusterTransient: true
-    },
-    {
-      documentation: 'Report system uptime. See ClusterConfigReplayingInfoDAO',
-      name: 'uptime',
-      class: 'Long',
-      storageTransient: true,
-      clusterTransient: true
     }
   ]
 });

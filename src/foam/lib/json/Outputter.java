@@ -107,8 +107,7 @@ public class Outputter
       writer_.append("\"\"\"");
       writer_.append(escapeMultiline(s));
       writer_.append("\"\"\"");
-    }
-    else {
+    } else {
       writer_.append("\"");
       writer_.append(escape(s));
       writer_.append("\"");
@@ -301,16 +300,15 @@ public class Outputter
   }
 
   protected boolean isArray(Object value) {
-    return value != null &&
-        ( value.getClass() != null ) &&
-        value.getClass().isArray();
+    return value != null && ( value.getClass() != null ) && value.getClass().isArray();
   }
 
   public void outputDateValue(java.util.Date date) {
-    if ( outputReadableDates_ )
+    if ( outputReadableDates_ ) {
       outputString(sdf.get().format(date));
-    else
+    } else {
       outputNumber(date.getTime());
+    }
   }
 
   protected void outputDate(java.util.Date date) {
@@ -338,6 +336,7 @@ public class Outputter
       propertyMap_.put(of, filteredAxioms);
       return filteredAxioms;
     }
+
     return propertyMap_.get(of);
   }
 

@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.notification.email',
   name: 'EmailService',
 
+  proxy: true,
+
   methods: [
     {
       name: 'sendEmail',
@@ -23,6 +25,12 @@ foam.INTERFACE({
           type: 'foam.nanos.notification.email.EmailMessage'
         }
       ]
+    },
+    {
+      name: 'rateLimit',
+      type: 'Long',
+      code: function() { return 0; },
+      javaCode: `return 0L;`
     }
   ]
 });

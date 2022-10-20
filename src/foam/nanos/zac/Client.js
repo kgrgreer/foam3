@@ -86,8 +86,8 @@ foam.CLASS({
         } catch {
         }
 
-        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
-          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        return urlSession !== "" ? urlSession : foam.localStorage[this.sessionName] ||
+          ( foam.localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
     },
     {

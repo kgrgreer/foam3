@@ -7,134 +7,139 @@
 foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'ReplayingDAO',
-  extends: 'foam.dao.ProxyDAO',
+  extends: 'foam.nanos.medusa.BlockingDAO',
 
+  implements: [
+    'foam.core.ContextAgent',
+    'foam.nanos.NanoService'
+  ],
 
   documentation: `All DAO operations will block until Replay is complete.`,
 
   javaImports: [
+    'foam.core.AgencyTimerTask',
     'foam.dao.DAO',
+    'foam.mlang.sink.Count',
     'foam.nanos.pm.PM',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'java.time.Duration',
+    'java.util.Map',
+    'java.util.Timer',
   ],
-
-  javaCode: `
-    private Object replayingLock_ = new Object();
-  `,
 
   properties: [
     {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
+      name: 'timerInterval',
+      class: 'Long',
+      units: 'ms',
+      value: 1000
+    },
+    {
+      name: 'initialTimerDelay',
+      class: 'Long',
+      units: 'ms',
+      value: 60000
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
       visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
+      networkTransient: true
     }
   ],
 
   methods: [
     {
-      name: 'find_',
-      javaCode: `
-      // getLogger().debug("find");
-      blockOnReplay(x);
-      return getDelegate().find_(x, id);
-      `
-    },
-    {
-      name: 'select_',
-      javaCode: `
-      // getLogger().debug("select");
-      blockOnReplay(x);
-      return getDelegate().select_(x, sink, skip, limit, order, predicate);
-      `
-    },
-    {
-      name: 'put_',
-      javaCode: `
-      // getLogger().debug("put");
-      blockOnReplay(x);
-      return getDelegate().put_(x, obj);
-      `
-    },
-    {
-      name: 'remove_',
-      javaCode: `
-      // getLogger().debug("remove");
-      blockOnReplay(x);
-      return getDelegate().remove_(x, obj);
-      `
-    },
-    {
-      name: 'removeAll_',
-      javaCode: `
-      // getLogger().debug("removeAll");
-      blockOnReplay(x);
-      getDelegate().removeAll_(x, skip, limit, order, predicate);
-      `
-    },
-    {
       name: 'cmd_',
       javaCode: `
-      if ( obj instanceof ReplayCompleteCmd ) {
-        getLogger().info("replay complete");
-        synchronized ( replayingLock_ ) {
-
+      if ( obj != null &&
+           obj instanceof ReplayCompleteCmd ) {
+        synchronized (this) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-          replaying.setReplaying(false);
-          replaying.setEndTime(new java.util.Date());
-          getLogger().info("replayComplete", replaying.getReplayIndex(), "duration", (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/ 1000, "s");
-          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+          if ( replaying.getReplaying() ) {
+            Logger logger = Loggers.logger(x, this);
+            logger.info("replay complete");
+            replaying.setReplaying(false);
+            replaying.setEndTime(new java.util.Date());
+            ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
+            // count medusa entries, how many did we load?
+            Count count = new Count();
+            ((DAO) x.get("medusaEntryDAO")).select(count);
+            Long replayed = 0L;
+            Map replayDetails = replaying.getReplayDetails();
+            for ( Object o : replayDetails.values() ) {
+              ReplayDetailsCmd details = (ReplayDetailsCmd) o;
+              replayed += details.getCount();
+            }
+            replaying.setCount(replayed);
+            long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
+            Duration duration = Duration.ofMillis(time);
+            logger.info("replayComplete", "replayed", replayed, "promoted", count.getValue(), "duration", time, "s", replayed/time, "/s", duration);
 
-          DAO dao = (DAO) x.get("localClusterConfigDAO");
-          ClusterConfig config = (ClusterConfig) dao.find(support.getConfigId()).fclone();
-          config.setStatus(Status.ONLINE);
-          dao.put(config);
+            ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
-          getLogger().debug("notifyAll");
-          replayingLock_.notifyAll();
+            ClusterConfig config = support.getConfig(x, support.getConfigId());
+            config.setStatus(Status.ONLINE);
+            ((DAO) x.get("localClusterConfigDAO")).put(config);
+          }
         }
-        return obj;
+        return super.cmd_(x, BlockingDAO.UNBLOCK_CMD);
+      } else {
+        return super.cmd_(x, obj);
       }
-      return getDelegate().cmd_(x, obj);
       `
     },
     {
-      name: 'blockOnReplay',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      name: 'maybeBlock',
       javaCode: `
+      ElectoralService electoral = (ElectoralService) x.get("electoralService");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      if ( ! replaying.getReplaying() ) {
-        return;
-      }
+      boolean block = false;
 
-      synchronized ( replayingLock_ ) {
-        if ( replaying.getReplaying() ) {
-          PM pm = PM.create(x, this.getClass().getSimpleName(), "blockOnReplay", "wait");
-          try {
-            getLogger().debug("wait");
-            replayingLock_.wait();
-            getLogger().debug("wake");
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          } finally {
-            pm.log(x);
-          }
+      if ( replaying.getReplaying() ) {
+        block = true;
+      } else if ( myConfig.getStatus() == Status.OFFLINE &&
+           myConfig.getIsPrimary() ) {
+        block = true;
+      } else if ( electoral.getState() != ElectoralServiceState.IN_SESSION ) {
+        try {
+          support.getPrimary(x);
+        } catch (PrimaryNotFoundException e) {
+          block = true;
         }
       }
+
+      if ( block ) {
+        // Just log when blocking to monitor primary announce/renounce periods.
+        Loggers.logger(x, this).debug("maybeBlock", "replaying", replaying.getReplaying(), "electoral", electoral.getState(), "primary", myConfig.getIsPrimary(), "status", myConfig.getStatus(), "blocked", getBlockedCount());
+      }
+
+      return block;
+      `
+    },
+    {
+      documentation: 'NanoService implementation.',
+      name: 'start',
+      javaCode: `
+      Loggers.logger(getX(), this).info("start");
+      ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
+      Timer timer = new Timer(this.getClass().getSimpleName());
+      setTimer(timer);
+      timer.schedule(
+        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        getInitialTimerDelay(), getTimerInterval());
+      `
+    },
+    {
+      name: 'execute',
+      args: 'Context x',
+      javaCode: `
+      unblock(x);
       `
     }
   ]

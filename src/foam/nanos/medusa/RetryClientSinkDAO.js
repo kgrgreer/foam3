@@ -26,6 +26,15 @@ foam.CLASS({
     'foam.nanos.pm.PM'
   ],
 
+  constants: [
+    {
+      documentation: 'Cancel/terminate any active retry attempts',
+      name: 'CANCEL_RETRY_CMD',
+      type: 'String',
+      value: 'CANCEL_RETRY_CMD'
+    },
+  ],
+
   properties: [
     {
       name: 'name',
@@ -38,7 +47,7 @@ foam.CLASS({
       name: 'maxRetryAttempts',
       class: 'Int',
       documentation: 'Set to -1 to infinitely retry.',
-      value: 20
+      value: -1
     },
     {
       class: 'Int',
@@ -63,6 +72,10 @@ foam.CLASS({
   javaCode: `
     public RetryClientSinkDAO(X x, DAO delegate) {
       super(x, delegate);
+    }
+    public RetryClientSinkDAO(X x, int maxRetryAttempts, DAO delegate) {
+      super(x, delegate);
+      setMaxRetryAttempts(maxRetryAttempts);
     }
   `,
 
@@ -113,6 +126,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      if ( CANCEL_RETRY_CMD.equals(obj) ) {
+        setMaxRetryAttempts(0);
+        return obj;
+      }
       return submit(x, obj, DOP.CMD);
       `
     },
@@ -158,6 +175,13 @@ foam.CLASS({
             throw e;
           } catch ( Throwable t ) {
             getLogger().warning("submit", t.getMessage());
+            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+            if ( isMediator(x) &&
+                 replaying != null &&
+                 replaying.getIndex() > ((MedusaEntry) obj).getIndex() ) {
+              // This entry has been saved quorum times, no need to retry.
+              return obj;
+            }
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
@@ -228,6 +252,18 @@ foam.CLASS({
     {
       name: 'reset',
       javaCode: `//nop`
+    },
+    {
+      name: 'isMediator',
+      args: 'Context x',
+      type: 'boolean',
+      javaCode:`
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        if ( support == null ) return false;
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        if ( myConfig == null ) return false;
+        return myConfig.getType() == MedusaType.MEDIATOR ? true : false;
+      `
     }
   ]
 });

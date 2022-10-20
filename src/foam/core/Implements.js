@@ -57,7 +57,7 @@ foam.CLASS({
     function installInClass(cls) {
       var m = this.__context__.lookup(this.path);
       if ( ! m ) {
-        throw 'No such interface or trait: ' + this.path;
+        throw 'No such interface: ' + this.path;
       }
 
       // Install interface properties unless they're already present.

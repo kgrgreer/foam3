@@ -17,27 +17,36 @@
 
 package foam.nanos.dig;
 
+import static foam.mlang.MLang.EQ;
+
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.SocketException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.security.MessageDigest;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletResponse;
+
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
-import foam.lib.Outputter;
-import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
+import foam.lib.Outputter;
 import foam.lib.PropertyPredicate;
+import foam.lib.json.OutputterMode;
+import foam.log.LogLevel;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
 
 public class HTTPDigestSink extends AbstractSink {
 
@@ -48,6 +57,8 @@ public class HTTPDigestSink extends AbstractSink {
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
   protected boolean removeWhitespacesInPayloadDigest_;
+
+  private static final ThreadLocal<Outputter> outputter = new ThreadLocal<>();
 
   public HTTPDigestSink(String url, Format format) {
     this(url, "", null, format, null, false, false);
@@ -65,32 +76,83 @@ public class HTTPDigestSink extends AbstractSink {
 
   @Override
   public void put(Object obj, Detachable sub) {
+    FObject fobj = (FObject) obj;
+    Object id = fobj.getProperty("id");
+    String className = fobj.getClass().getSimpleName();
+
+    try {
+      int responseCode = sendRequest(fobj);
+
+      if ( responseCode == HttpServletResponse.SC_OK ) return;
+
+      if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
+        String name = "HTTP DIGEST 400 RESPONSE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
+
+      } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {}
+
+        // make a new request
+        responseCode = sendRequest(fobj);
+
+        if ( responseCode == HttpServletResponse.SC_OK ) return;
+
+        String name = "HTTP DIGEST " + responseCode + " RESPONSE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
+
+      } else if ( responseCode == HttpServletResponse.SC_GATEWAY_TIMEOUT ) {
+        String name = "HTTP DIGEST 504 RESPONSE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.WARN);
+      }
+
+      throw new RuntimeException(this.getClass().getSimpleName() + "[" + className + ", " + id + ", " + responseCode + "]");
+
+    } catch (SocketException e) {
+      // create an alarm on connection timeout
+      String name = "HTTP DIGEST CONNECTION TIMEOUT";
+      String note = "[" + className + ", " + id + ", " + new Date() + "]";
+      createAlarm(name, note, LogLevel.WARN);
+
+      throw new RuntimeException(e);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  private int sendRequest(Object obj) throws Exception {
     HttpURLConnection conn = null;
     try {
-      Outputter outputter = null;
       conn = (HttpURLConnection) new URL(url_).openConnection();
       conn.setRequestMethod("POST");
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
         conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
       }
-      
+
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {
-        outputter = 
+        outputter.set(
           propertyPredicate_ == null ?
-          new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
-          new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
+            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
+            new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_)
+        );
         conn.addRequestProperty("Accept", "application/json");
         conn.addRequestProperty("Content-Type", "application/json");
       } else if ( format_ == Format.XML ) {
-        outputter = new foam.lib.xml.Outputter(OutputterMode.NETWORK);
+        outputter.set(new foam.lib.xml.Outputter(OutputterMode.NETWORK));
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
+      } else {
+        throw new RuntimeException(this.getClass().getSimpleName() + ", Unsupported content format");
       }
       // add hashed payload-digest to request headers
       FObject fobj = (FObject) obj;
-      String payload = outputter.stringify(fobj);
+      String payload = outputter.get().stringify(fobj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
 
@@ -98,25 +160,35 @@ public class HTTPDigestSink extends AbstractSink {
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
           writer.write(payload);
           writer.flush();
         }
       }
       ((Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "Sent DUG webhook with digest", url_, payload, digest, conn.getResponseCode());
 
-      // check response code
-      int code = conn.getResponseCode();
-      if ( code != HttpServletResponse.SC_OK ) {
-        throw new RuntimeException("Http server did not return 200.");
-      }
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+      return conn.getResponseCode();
     } finally {
       if ( conn != null ) {
         conn.disconnect();
       }
     }
+  }
+
+  public void createAlarm(String name, String note, LogLevel severity) {
+    DAO alarmDAO = (DAO) getX().get("alarmDAO");
+    Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+    if ( alarm == null ) {
+      alarm = new Alarm.Builder(getX())
+        .setName(name)
+        .setSeverity(severity)
+        .setNote(note)
+        .build();
+    } else {
+      alarm = (Alarm) alarm.fclone();
+      alarm.setNote(alarm.getNote() + "\n" + note);
+    }
+    alarmDAO.put(alarm);
   }
 
   protected String byte2Hex(byte[] bytes) {
@@ -132,7 +204,7 @@ public class HTTPDigestSink extends AbstractSink {
     return stringBuffer.toString();
   }
 
-  protected String getDigest(X x, DUGDigestConfig config, String payload) 
+  protected String getDigest(X x, DUGDigestConfig config, String payload)
     throws Exception {
     try {
       if (removeWhitespacesInPayloadDigest_)
@@ -143,7 +215,7 @@ public class HTTPDigestSink extends AbstractSink {
         // @see https://commons.apache.org/proper/commons-codec/apidocs/src-html/org/apache/commons/codec/digest/HmacUtils.html
         // @see https://sorenpoulsen.com/calculate-hmac-sha256-with-java
         Mac mac = Mac.getInstance(config.getAlgorithm()); // "HmacSHA256"
-        SecretKeySpec secretKeySpec = new SecretKeySpec(config.getSecretKey().getBytes(StandardCharsets.UTF_8), config.getAlgorithm()); 
+        SecretKeySpec secretKeySpec = new SecretKeySpec(config.getSecretKey().getBytes(StandardCharsets.UTF_8), config.getAlgorithm());
         mac.init(secretKeySpec);
         byte[] digest = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
         return byte2Hex(digest);

@@ -26,7 +26,7 @@ foam.CLASS({
     'stack',
     'userDAO',
     'hideSummary',
-    'user'
+    'subject'
   ],
 
   exports: [
@@ -70,7 +70,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .popUpDropDown > div > div:hover {
       background-color: rgba(89, 165, 213, 0.3);
@@ -89,7 +89,7 @@ foam.CLASS({
     }
     ^ .header {
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin: 30px 0 20px 0;
     }
     ^ .title {
@@ -102,7 +102,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       float:left;
       display: inline-block;
       padding-right: 20px;
@@ -120,7 +120,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding-top: 10px;
     }
   `,
@@ -228,7 +228,7 @@ foam.CLASS({
           type: messageType
         });
 
-        this.user.tickets.put(this.data).then(function(a) {
+        this.subject.user.tickets.put(this.data).then(function(a) {
           if ( ! a ) return;
           if ( self.viewData.message === '' ) {
             self.stack.push({ class: 'foam.support.view.TicketView' });
@@ -239,7 +239,7 @@ foam.CLASS({
             if ( ! a ) return;
             if ( ! self.data.emailId ) {
               self.data.emailId = 2;
-              self.user.tickets.put(self.data);
+              self.subject.user.tickets.put(self.data);
             }
 
             self.stack.push({ class: 'foam.support.view.TicketView' });
@@ -293,7 +293,7 @@ foam.CLASS({
         var self = this;
         this.data.status = 'Pending';
 
-        this.user.tickets.put(this.data).then(function(a){
+        this.subject.user.tickets.put(this.data).then(function(a){
           if ( ! a ){
             throw new Error('No ticket created');
           }

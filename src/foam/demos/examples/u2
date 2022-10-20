@@ -112,14 +112,14 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ {
-      background: white;
+      background:$white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background-color:$white; }
   `,
   methods: [
     function render() {
@@ -824,4 +824,48 @@ tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
 this.startContext({data: timer}).add(timer.I);
 
 ##   StackView
+##   FObject View
+FObject View.
+--
+foam.CLASS({
+  name: 'FObjectViewExample',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    { class: 'FObjectProperty', name: 'obj1', factory: function() { return foam.util.Timer.create(); } },
+    { class: 'FObjectProperty', name: 'obj2', view: { class: 'foam.u2.view.FObjectView' }, factory: function() { return foam.util.Timer.create(); } },
+  ],
+
+  methods: [
+    function render() {
+      this.add('OBJ1:',this.OBJ1, 'OBJ2:', this.OBJ2);
+    }
+  ]
+});
+
+tag({class: 'FObjectViewExample'});
+
+
 ##   More
+Example of defining tableColumns for use with a TableView.
+--
+foam.CLASS({
+  name: 'TableColumnsExample',
+
+  tableColumns: [ 'a', 'b', 'c' ],
+
+  properties: [ 'id', 'a', 'b', 'c', 'x', 'y', 'z' ]
+});
+s
+var t1 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExample'})});
+tag(t1).style({height: '200px'});
+
+foam.CLASS({
+  name: 'TableColumnsExampleSubClass',
+  extends: 'TableColumnsExample',
+
+  tableColumns: [ 'x', 'y', 'z' ],
+});
+
+var t2 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExampleSubClass'})});
+start(t2).style({height: '200px'});

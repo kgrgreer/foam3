@@ -45,6 +45,61 @@ foam.CLASS({
         var b = this.sectionIndex;
         return (a + b) * (a + b + 1) / 2 + a;
       }
+    },
+    function getNext(wizardlets) {
+      let wi = this.wizardletIndex;
+
+      // Move to next section if one exists
+      if ( this.sectionIndex < wizardlets[wi].sections.length - 1 ) {
+        return this.cls_.create({
+          wizardletIndex: wi,
+          sectionIndex: this.sectionIndex + 1
+        }, this.__context__)
+      }
+
+      // Move to next wizardlet if one exists,
+      //   but skip wizardlets with no sections
+      wi++;
+      if ( wi < wizardlets.length ) {
+        return this.cls_.create({
+          wizardletIndex: wi,
+          sectionIndex: 0
+        }, this.__context__);
+      }
+
+      return null;
+    },
+    function getPrevious(wizardlets) {
+      let wi = this.wizardletIndex;
+
+      // Move to previous section if one exists
+      if ( this.sectionIndex > 0 ) {
+        return this.cls_.create({
+          wizardletIndex: wi,
+          sectionIndex: this.sectionIndex - 1
+        }, this.__context__)
+      }
+
+      // Move to previous wizardlet if one exists
+      wi--;
+      if ( wi >= 0 ) {
+        return this.cls_.create({
+          wizardletIndex: wi,
+          sectionIndex: 0
+        }, this.__context__);
+      }
+
+      return null;
+    },
+    function* iterate(wizardlets, isBackwards) {
+      const iterFunc = isBackwards ? 'getPrevious' : 'getNext';
+
+      let pos = this;
+      while ( true ) {
+        pos = pos[iterFunc](wizardlets);
+        if ( pos == null ) return;
+        yield pos;
+      }
     }
   ]
 });

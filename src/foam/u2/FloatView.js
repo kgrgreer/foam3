@@ -19,18 +19,12 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'FloatView',
   extends: 'foam.u2.TextField',
+  mixins: ['foam.util.DeFeedback'],
 
   documentation: 'View for editing Float Properties.',
 
-  css: `
-    ^:read-only {
-      border: none;
-      background: rgba(0,0,0,0);
-    }
-  `,
-
   properties: [
-    ['type', 'number'],
+    ['type', 'text'],
     { class: 'Float', name: 'data' },
     { class: 'Boolean', name: 'trimZeros', value: true },
     'precision',
@@ -42,7 +36,9 @@ foam.CLASS({
       documentation: `The amount that the value should increment or decrement by
           when the arrow buttons in the input are clicked.`,
       value: 0.01
-    }
+    },
+    'preventFeedback',
+    'isMerged'
   ],
 
   methods: [
@@ -74,26 +70,16 @@ foam.CLASS({
       // to ensure it's formatted properly.
       this.on('blur', function () {
         var value = self.dataToText(data.get());
-        preventFeedback = true;
+        self.feedback_ = true;
         view.set('0');
         view.set(value);
-        preventFeedback = false;
+        self.feedback_ = false;
       });
 
-      var preventFeedback = false;
-      view.sub(function() {
-        if ( preventFeedback ) return;
-        preventFeedback = true;
-        // check bounds on data update and set to boundary values if out of bounds
-        data.set(self.textToData(foam.Number.clamp(self.min, view.get(), self.max)));
-        preventFeedback = false;
-      });
+      view.sub(self.isMerged ? self.mergedViewListener : self.viewListener);
 
       data.sub(function() {
-        if ( preventFeedback ) return;
-        preventFeedback = true;
         view.set(self.dataToText(data.get()));
-        preventFeedback = false;
       });
     },
 
@@ -118,6 +104,40 @@ foam.CLASS({
 
     function textToData(text) {
       return parseFloat(text) || 0;
+    },
+
+    function viewListenerFn() {
+      var data = this.data$;
+      var view = this.attrSlot(null, this.onKey ? 'input' : null);
+
+      this.deFeedback(() => {
+        const el = this.el_();
+
+        let pos = el.selectionStart;
+        // new text will be selected if it immediately follows the caret/selection
+        let selectNewText = el.selectionEnd == el.value.length;
+
+        // check bounds on data update and set to boundary values if out of bounds
+        data.set(this.textToData(
+          foam.Number.clamp(this.min, view.get(), this.max)));
+
+        // preserve caret location, maybe selecting new text
+        el.selectionStart = Math.min(pos, el.value.length);
+        if ( ! selectNewText ) el.selectionEnd = el.selectionStart;
+      });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'viewListener',
+      code: function() { this.viewListenerFn(); }
+    },
+    {
+      name: 'mergedViewListener',
+      isMerged: true,
+      mergeDelay: 500,
+      code: function() { this.viewListenerFn(); }
     }
   ]
 });

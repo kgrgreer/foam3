@@ -4,8 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// documentation: handles login with SignUp.js and SignIn.js. And a property with img. Will use split border
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'LoginView',
@@ -16,8 +14,8 @@ foam.CLASS({
   DEPENDING ON MODEL PASSED IN:
 
   MESSAGEs possible for this view:
-  TITLE: if exists will be ontop of model,
-  FOOTER_TXT: if exists will be under model,
+  TITLE: if exists will be ontop of data,
+  FOOTER_TXT: if exists will be under data,
   FOOTER_LINK: if exists will be under FOOTER and the text associated to footerLink(),
   SUB_FOOTER_TXT: needed an additional option for the forgot password,
   SUB_FOOTER_LINK: needed an additional option for the forgot password,
@@ -31,7 +29,7 @@ foam.CLASS({
 
   Property functionality:
   imgPath: if present view uses SplitScreenGridBorder (-USED to toggle splitScreen - picked up from ApplicationController)
-  backLink_: if on model uses string link from model, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
+  backLink_: if on data uses string link from data, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
   `,
 
   imports: [
@@ -40,7 +38,8 @@ foam.CLASS({
     'memento',
     'stack',
     'theme',
-    'displayWidth?'
+    'displayWidth?',
+    'loginSuccess'
   ],
 
   requires: [
@@ -62,8 +61,10 @@ foam.CLASS({
     margin: 0 auto;
   }
 
-  /* SET ABOVE MODEL */
+  /* SET ABOVE DATA */
   ^ .topBar-logo-Back {
+    display: flex;
+    justify-content: center;
     height: 6vh;
     background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
   }
@@ -75,25 +76,22 @@ foam.CLASS({
     display: block;
   }
   ^ .top-bar-img {
-    padding-left: 1vh;
     height: 4vh;
-    padding-top: 1vh;
   }
 
-  /* TITLE TXT ON MODEL */
+  /* TITLE TXT ON DATA */
   ^ .title-top {
     font-size: 2.5em;
     padding-top: 2vh;
     font-weight: bold;
   }
 
-  /* ON MODEL */
+  /* ON DATA */
   ^content-form {
     align-self: center;
     width: 75%;
     padding: 2vw;
     box-sizing: border-box;
-    
   }
 
   /* ON ALL FOOTER TEXT */
@@ -101,8 +99,12 @@ foam.CLASS({
     font-weight: bold;
     margin-right: 0.2em;
   }
-  ^ .center-footer {
+  ^center-footer {
     text-align: center;
+  }
+
+  ^center-footer > ^signupLink {
+    margin-bottom: 2rem;
   }
 
   /* TOP-TOP BAR NAV to go with backLink_ */
@@ -147,8 +149,18 @@ foam.CLASS({
   ^image-one {
     width: 28vw;
   }
-  ^wideImage { width: 50vw; }
-  ^fullWidth { width: 100%; }
+  @media (max-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(1) {
+      grid-column: none;
+      display: none;
+    }
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(2) {
+      grid-column: 1 / 13 !important;
+    } 
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
+      padding: 0 4vw;
+    }
+  }
   `,
 
   properties: [
@@ -161,7 +173,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'model',
+      name: 'data',
       factory: () => {
        return {};
       },
@@ -186,6 +198,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'leftView',
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+    },
+    {
       class: 'String',
       name: 'backLinkTxt_',
       factory: function() {
@@ -201,11 +218,26 @@ foam.CLASS({
       class: 'String',
       name: 'backLink_',
       factory: function() {
-        return this.model.backLink_ || this.appConfig.externalUrl || undefined;
+        return this.data.backLink_ || this.appConfig.externalUrl || undefined;
       },
       hidden: true
     },
-    { class: 'Boolean', name: 'shouldResize' }
+    { class: 'Boolean', name: 'shouldResize' },
+    { class: 'Boolean', name: 'fullScreenLoginImage' },
+    {
+      class: 'String',
+      name: 'modelCls_',
+      documentation: `
+        If modelCls_ is provided, the data can be created directly from this instead of mode
+      `,
+      factory: function() {
+        if ( this.mode_ === this.MODE1 ) {
+          return this.SignUp.id;
+        } else {
+          return this.SignIn.id;
+        }
+      }
+    }
   ],
 
   messages: [
@@ -216,12 +248,15 @@ foam.CLASS({
   methods: [
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
-      this.param.dao_ = !! this.param.dao_ ? this.param.dao_ : this.loginVariables.dao_;
-      // Instantiating model based on mode_
-      if ( this.mode_ === this.MODE1 ) {
-        this.model = this.SignUp.create(this.param, this);
-      } else {
-        this.model = this.SignIn.create(this.param, this);
+      this.param = Object.assign(this.loginVariables, this.param)
+      try {
+        var cls = foam.lookup(this.modelCls_);
+
+        if ( this.data &&  cls.isInstance(this.data) ) return;
+
+        this.data = cls.create(this.param, this);
+      } catch (err) {
+        console.warn('Error occurred when looking up modelCls_', this.modelCls_, err);
       }
     },
 
@@ -233,51 +268,63 @@ foam.CLASS({
       this.onDetach(() => {
         this.document.removeEventListener('keyup', this.onKeyPressed);
       });
-      let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+      let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
 
-      // CREATE MODEL VIEW
+      // CREATE DATA VIEW
       var right = this.E()
-      // Header on-top of rendering model
-        .start().hide(this.imgPath$).addClass('topBar-logo-Back')
-          .start('img')
-            .attr('src', logo)
-            .addClass('top-bar-img')
-          .end()
+      // Header on-top of rendering data
+        .start()
+          .add(
+            this.slot(function(shouldResize) {
+              return self.E().show(shouldResize || self.fullScreenLoginImage || ! self.imgPath )
+              .addClass('topBar-logo-Back')
+              .start('img')
+                .attr('src', logo)
+                .addClass('top-bar-img')
+              .end(); 
+          }))
         .end()
-      // Title txt and Model
-        .start().addClass('title-top').add(this.model.TITLE).end()
+        // Title txt and Data
+        .start().addClass('title-top').add(this.data.TITLE).end()
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .enableClass(self.myClass('fullWidth'), self.shouldResize$)
-        .startContext({ data: this }).tag(this.MODEL).endContext()
-        .br()
-      // first footer
-      .br()
-      .start().addClass('center-footer')
-          .start('span').addClass('bold-text-with-pad').add(this.model.FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.FOOTER_LINK)
-            .on('click', () => {
-              this.model.footerLink(this.topBarShow_, this.param);
-            })
-          .end()
-      // second footer
-        .br().br()
-          .start('span').addClass('bold-text-with-pad').add(this.model.SUB_FOOTER_TXT).end()
-          .start('span').addClass('link')
-            .add(this.model.SUB_FOOTER_LINK)
-            .on('click', () => {
-              this.model.subfooterLink();
-            })
-          .end()
-        .end();
+        .startContext({ data: this }).tag(this.DATA).endContext()
+        .callIf(self.data.showAction, function() {
+          this
+            .br()
+            .br()
+            .start()
+              .startContext({ data: self.data })
+              .addClass(self.myClass('center-footer'))
+              // first footer
+              .start()
+                .addClass(self.myClass('signupLink'))
+                .start('span')
+                  .addClass('bold-text-with-pad')
+                  .add(self.data.FOOTER_TXT)
+                .end()
+                .start('span')
+                  .add(self.data.FOOTER)
+                .end()
+              .end()
+                // second footer
+              .start()
+                .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
+                .start('span')
+                  .add(self.data.SUB_FOOTER)
+                .end()
+              .end()
+              .endContext()
+            .end();
+        })
+        
 
       // CREATE SPLIT VIEW
-      if ( this.imgPath ) {
+      if ( this.imgPath || this.leftView ) {
         var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
-        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.model.DISCLAIMER).end();
+        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
       }
 
       // RENDER EVERYTHING ONTO PAGE
@@ -299,20 +346,25 @@ foam.CLASS({
             .end()
           .end()
         .end()
-      // deciding to render half screen with img and model or just centered model
-        .callIfElse( !! this.imgPath && !! split, () => {
-          split.leftPanel
-            .addClass('cover-img-block1')
-            .start('img')
-              .addClass(self.myClass('image-one'))
-              .attr('src', this.imgPath)
-              .enableClass(self.myClass('wideImage'), self.shouldResize$)
-            .end()
-            // add a disclaimer under img
-            .start('p')
-              .addClass('disclaimer-login').addClass('disclaimer-login-img')
-              .add(this.model.DISCLAIMER)
-            .end();
+      // deciding to render half screen with img and data or just centered data
+        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+          if ( ! this.leftView ) {
+            split.leftPanel
+              .addClass('cover-img-block1')
+              .start('img')
+                .addClass(self.myClass('image-one'))
+                .attr('src', this.imgPath$)
+              .end()
+              .callIf( !! this.data.disclaimer , () => {
+                // add a disclaimer under img
+                split.leftPanel.start('p')
+                  .addClass('disclaimer-login').addClass('disclaimer-login-img')
+                  .add(this.data.DISCLAIMER)
+                .end();
+              });
+          } else {
+            split.leftPanel.tag(this.leftView);
+          }
           this.add(split);
         }, function() {
           this.add(right);
@@ -336,7 +388,7 @@ foam.CLASS({
       e.preventDefault();
       var key = e.key || e.keyCode;
       if ( key === 'Enter' || key === 13 ) {
-          this.model.login();
+          this.data.login();
       }
     }
   ]

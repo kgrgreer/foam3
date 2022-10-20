@@ -10,9 +10,9 @@ foam.CLASS({
   extends: 'foam.u2.table.TableComponentView',
 
   imports: [
-    'colWidthUpdated',
+    'colWidthUpdated?',
     'props',
-    'selectedColumnsWidth'
+    'selectedColumnsWidth?'
   ],
 
   messages: [
@@ -43,6 +43,11 @@ foam.CLASS({
     {
       name: 'overrides',
       documentation: 'overrides to be applied on given column'
+    },
+    {
+      class: 'Boolean',
+      name: 'resizeable',
+      value: true
     },
     // Used internally to control dragging funcitonality.
     // All these and the listeners can be removed in
@@ -174,6 +179,7 @@ foam.CLASS({
       name: 'updateWidths',
       isFramed: true,
       code: function(width) {
+        if ( ! this.selectedColumnsWidth$ || ! this.colWidthUpdated$ ) return;
         this.selectedColumnsWidth[this.propName] = width;
         this.colWidthUpdated = ! this.colWidthUpdated;
       }
@@ -184,6 +190,7 @@ foam.CLASS({
       name: 'DragToResize',
       label: '',
       toolTip: 'Drag to resize',
+      isAvailable: function(resizeable) { return resizeable; },
       code: function() {}
     }
   ]

@@ -18,15 +18,7 @@ p({
   }
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "health",
-  "lazy": false,
-  "authenticate": false,
-  "parameters": true,
-  "serviceClass": "foam.nanos.medusa.HealthCheckWebAgent"
-})
-
+// deprecated by HealthWebAgent under service/health
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "info",
@@ -56,16 +48,21 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setAuthorize(false)
+      .setHashed(true)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.ClusterConfigNARegionReplayDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.ClusterConfigReplayDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.ClusterConfigStatusDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.ClusterConfigSupportDAO.Builder(x)
-      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
-      .build())
-      .build())
-      .build())
-      .build())
+        .setDelegate(new foam.nanos.medusa.ClusterConfigReplayDAO.Builder(x)
+          .setDelegate(new foam.nanos.medusa.ClusterConfigStatusDAO.Builder(x)
+            .setDelegate(new foam.nanos.medusa.RenouncePrimaryDAO.Builder(x)
+            .setDelegate(new foam.nanos.medusa.AnnouncePrimaryDAO.Builder(x)
+              .setDelegate(new foam.nanos.medusa.ClusterConfigSupportDAO.Builder(x)
+                .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
+                .build())
+              .build())
+            .build())
+          .build())
+          .build())
+        .build())
       .build();
 
     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
@@ -131,7 +128,7 @@ p({
       .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localClusterConfigDAO"))
       .setDecorator(new foam.nanos.medusa.benchmark.PingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.ClusterConfigReplayingInfoDAO.Builder(x).build())
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.ClusterConfig.getOwnClassInfo()))
       .build())
       .setCluster(false)
       .setRuler(false)
@@ -171,12 +168,32 @@ p({
   "client": "{\"of\":\"foam.nanos.session.Session\"}"
 })
 
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "replayingInfo",
+//   "description": "Medusa replay info for this instance",
+//   "serviceScript": """
+//      return new foam.nanos.medusa.ReplayingInfo();
+//   """
+// })
+
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "replayingInfo",
-  "description": "Medusa replay info for this instance",
+  "name": "medusaReplayIssueDAO",
+  "serve": true,
   "serviceScript": """
-     return new foam.nanos.medusa.ReplayingInfo();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaReplayIssue.getOwnClassInfo())
+      .setFuid(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":"""
+  {
+    "of":"foam.nanos.medusa.MedusaReplayIssue"
+  }
   """
 })
 
@@ -211,6 +228,27 @@ p({
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "daggerBootstrapDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("daggerbootstrap")
+      .setDecorator(new foam.nanos.medusa.DaggerBootstrapDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo()))
+        .build())
+      .setCluster(false)
+      .setRuler(false)
+      .setSeqNo(true)
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.DaggerBootstrap.ID));
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.DaggerBootstrap\"}"
+})
+
 // See deployment/mm and mn for type specific setup
 
 // p({
@@ -222,9 +260,68 @@ p({
 //   """
 // })
 
+// mm specific
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaConsensusMonitor",
+//   "lazy":false,
+//   "service": {
+//     class:"foam.nanos.medusa.MedusaConsensusMonitor"
+//   }
+// })
+
 // p({
 //   "class":"foam.nanos.boot.NSpec",
 //   "name":"clusterConfigMonitor",
 //   "lazy": false,
 //   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+// })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"medusaNodeBootstrapAgent",
+//   "lazy":false,
+//   "service": {
+//     "class": "foam.nanos.medusa.MedusaNodeBootstrapAgent"
+//   }
+// })
+
+// enable for medusa systems
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "medusastatuswatcher",
+//   "lazy": false,
+//   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
+// })
+
+// p({
+//   class:"foam.nanos.boot.NSpec",
+//   name:"Health",
+//   description:"Medusa Health Factory",
+//   authenticate:false,
+//   pm:false,
+//   service:{
+//     class:"foam.nanos.medusa.MedusaHealthFactory"
+//   }
+// })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"healthDAO",
+//   "serve":true,
+//   "serviceScript":
+//   """
+//   return new foam.dao.EasyDAO.Builder(x)
+//     .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
+//     .setDecorator(new foam.nanos.medusa.MedusaHealthStatusDAO.Builder(x)
+//       .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaHealth.getOwnClassInfo())).build())
+//     .setCluster(false)
+//     .build()
+//   """,
+//   "client":
+//   """
+//   {
+//     "of":"foam.nanos.medusa.MedusaHealth"
+//   }
+//   """
 // })

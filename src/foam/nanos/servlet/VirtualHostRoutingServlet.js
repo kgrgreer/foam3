@@ -15,20 +15,20 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil',
     'foam.nanos.app.AppConfig',
     'foam.nanos.jetty.HttpServer',
     'foam.nanos.logger.Logger',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
+    'foam.util.SafetyUtil',
     'java.io.IOException',
     'java.io.PrintWriter',
     'java.util.HashMap',
+    'javax.servlet.http.HttpServletRequest',
     'javax.servlet.ServletConfig',
     'javax.servlet.ServletException',
     'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse',
-    'javax.servlet.http.HttpServletRequest'
+    'javax.servlet.ServletResponse'
   ],
 
   properties: [
@@ -52,8 +52,14 @@ foam.CLASS({
       transient: true,
       javaType: 'ServletConfig',
       name: 'servletConfig'
+    },
+    {
+      class: 'String',
+      name: 'controller',
+      value: 'foam.nanos.controller.ApplicationController'
     }
   ],
+
   methods: [
     {
       name: 'destroy',
@@ -77,10 +83,10 @@ foam.CLASS({
       type: 'Void',
       documentation: `Generates the index file's head content based on theme and prints it to the response writer.`,
       args: [
-        { name: 'x', javaType: 'X'},
-        { name: 'theme', javaType: 'Theme'},
-        { name: 'logger', javaType: 'Logger'},
-        { name: 'out', javaType: 'PrintWriter'},
+        { name: 'x',       javaType: 'X'},
+        { name: 'theme',   javaType: 'Theme'},
+        { name: 'logger',  javaType: 'Logger'},
+        { name: 'out',     javaType: 'PrintWriter'},
         { name: 'request', javaType: 'ServletRequest' }
       ],
       javaCode: `
@@ -92,7 +98,7 @@ foam.CLASS({
       Boolean    customFontsFailed   = false;
 
       out.println("<meta charset=\\"utf-8\\"/>");
-      out.println("<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />");
+      out.println("<meta name=\\"viewport\\" content=\\"viewport-fit=cover, width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\\" />");
       out.print("<title>");
       out.print(theme.getAppName());
       out.println("</title>");
@@ -110,6 +116,7 @@ foam.CLASS({
           customFavIconFailed = true;
         }
       }
+
       // default favicon
       if ( headConfig == null || ! headConfig.containsKey("customFavIcon") || customFavIconFailed ) {
         out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/favicon/apple-touch-icon.png\\">");
@@ -135,44 +142,24 @@ foam.CLASS({
           customScriptsFailed = true;
         }
       }
+
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
-        // jar file deployment
         if ( this.getIsResourceStorage() ) {
+          // jar file deployment
           out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/html2canvas.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.umd.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"/jspdf.plugin.autotable.min.js\\"></script>");
-        }
-        // development
-        else {
+        } else {
+          // development
           if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/nanos/nanos.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/support/support.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso20022/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/iso8583/files.js\\"></script>");
-            out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/flinks/utils/files.js\\"></script>");
-          }
-          else if ( ! SafetyUtil.isEmpty(queryString) ) {
+            out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
+          } else {
             out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
-            out.println(queryString);
+            if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
             out.println("\\"></script>");
           }
-          else {
-            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler\\"></script>");
-          }
-          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/html2canvas/dist/html2canvas.min.js\\"></script>");
-          out.println("<script language=\\"javascript\\" src=\\"../../../../node_modules/jspdf/dist/jspdf.umd.min.js\\"></script>");
-          out.println("<script defer language=\\"javascript\\" src=\\"../../../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js\\"></script>");
         }
-
-        out.println("<script async language=\\"JavaScript\\" src=\\"https://cdn.plaid.com/link/v2/stable/link-initialize.js\\"></script>");
-        out.println("<script defer language=\\"javascript\\" src=\\"https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js\\"></script>");
-
       }
 
       // custom fonts
@@ -199,7 +186,7 @@ foam.CLASS({
     {
       name: 'service',
       type: 'Void',
-      args: [ { name: 'request', javaType: 'ServletRequest' },
+      args: [ { name: 'request',  javaType: 'ServletRequest' },
               { name: 'response', javaType: 'ServletResponse' } ],
       javaThrows: [ 'ServletException', 'IOException' ],
       javaCode: `
@@ -247,7 +234,7 @@ foam.CLASS({
 
         out.println("<!-- Instantiate FOAM Application Controller -->");
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
-        out.print("<foam\\nclass=\\"net.nanopay.ui.Controller\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
+        out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
         out.println("\\">\\n</foam>");
 

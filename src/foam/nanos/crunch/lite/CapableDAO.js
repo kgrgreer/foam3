@@ -33,6 +33,10 @@ foam.CLASS({
       name: 'defaultStatus',
       of: 'foam.nanos.crunch.CapabilityJunctionStatus',
       value: foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED
+    },
+    {
+      class: 'Boolean',
+      name: 'allowActionRequiredPuts'
     }
   ],
 
@@ -42,7 +46,7 @@ foam.CLASS({
       javaCode: `
         FObject currentObjectInDao = getDelegate().find_(x, obj);
         Capable toPutCapableObj =  (Capable) obj;
-        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(x);
+        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(getX());
 
         CapabilityJunctionPayload[] toPutCapablePayloadArray =
           (CapabilityJunctionPayload[]) toPutCapableObj.getCapablePayloads();
@@ -85,6 +89,11 @@ foam.CLASS({
               DAO capabilityDAO = (DAO) x.get("capabilityDAO");
               Capability capability = (Capability) capabilityDAO.find(toPutCapablePayload.getCapability());
 
+              if ( capability == null ) {
+                throw new RuntimeException("capability not found: " +
+                  toPutCapablePayload.getCapability());
+              }
+
               CapabilityJunctionPayload storedCapablePayload = (CapabilityJunctionPayload) storedCapablePayloadDAO.find(capability.getId());
 
               if ( storedCapablePayload != null ){
@@ -97,13 +106,14 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          toPutCapablePayloadDAO.put(currentPayload);
+          toPutCapablePayloadDAO.inX(x).put(currentPayload);
         }
 
         if ( 
           ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.GRANTED) &&
           ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.PENDING) &&
-          ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.REJECTED)
+          ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.REJECTED) &&
+          ! getAllowActionRequiredPuts()
         ) {
           CapabilityIntercept cre = new CapabilityIntercept();
           cre.setDaoKey(getDaoKey());

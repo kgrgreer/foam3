@@ -239,6 +239,11 @@ public class Outputter
     return this;
   }
 
+  public Outputter setOutputDefaultValues(boolean outputDefaultValues) {
+    outputDefaultValues_ = outputDefaultValues;
+    return this;
+  }
+
   @Override
   public void close() throws IOException {
     IOUtils.closeQuietly(stringWriter_);

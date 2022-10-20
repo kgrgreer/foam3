@@ -8,14 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.doc',
   name: 'DocumentationView',
   extends: 'foam.u2.View',
-
-  imports: [
-    'memento'
-  ],
-
-  requires: [
-    'foam.nanos.controller.Memento'
-  ],
+  mixins: ['foam.u2.memento.Memorable'],
 
   css: `
     ^ table { width: 100%; }
@@ -25,16 +18,16 @@ foam.CLASS({
     }
     ^ th {
       font-weight: bold;
-      background-color: #E0E0E0;
+      background-color: $grey400;
     }
     ^ tr:nth-child(even) td:nth-child(odd) {
-      background-color: #F5F5F5;
+      background-color: $grey50;
     }
     ^ tr:nth-child(even) td:nth-child(even) {
-      background-color: #F0F0F0;
+      background-color: $grey300;
     }
     ^ tr:nth-child(odd) td:nth-child(even) {
-      background-color: #F7F7F7;
+      background-color: $grey50;
     }
   `,
 
@@ -42,7 +35,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'docKey',
-      documentation: 'ID of the document to render.'
+      memorable: true,
+      shortName: 'route',
+      documentation: 'ID of the document to render.',
+      postSet: function(o, n) {
+        if ( o == n ) return;
+        this.data = undefined;
+      }
     },
     {
       class: 'String',
@@ -60,16 +59,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      var tmp = this.memento.value.split(this.Memento.SEPARATOR);
-      if ( ! this.docKey ) this.docKey = tmp.length > 1 && tmp[1];
-    },
     function render() {
       var dao = this.__context__[this.daoKey];
       this.addClass();
       if ( ! dao ) {
         this.add('No DAO found for key: ', this.daoKey);
-      } else this.add(this.slot(function(data, error) {
+      } else this.add(this.slot(function(data, error, docKey) {
         if ( ! data && ! error) {
           dao.find(this.docKey).then(function(doc) {
             if ( doc ) this.data = doc;

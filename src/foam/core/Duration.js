@@ -22,22 +22,24 @@ foam.CLASS({
         Use the useShort paramter to configure whether to use the short hand for time units
       `,
       code: function(value, precision = 2, useShort = true) {
+        var negative = value < 0;
+        value = Math.abs(value);
         var ts = ctrl.__subContext__.translationService;
         var values = [];
         // precision should be atleast one
         precision < 1 && ( precision = 1 );
         // initialize array of values and labels
-        foam.util.date.TimeUnit.VALUES.forEach(unit => {
+        foam.time.TimeUnit.VALUES.forEach(unit => {
           var numUnits = Math.floor(value / unit.conversionFactorMs);
-          var label = useShort ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.shorthand`, unit.shorthand) :
-                      numUnits > 1 ? ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.plural`, unit.plural) :
-                      ts.getTranslation(foam.locale, `foam.util.date.TimeUnit.${unit.name}.label`, unit.label);
-          values.push([numUnits, label])
+          var label = useShort ? ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.shorthand`, unit.shorthand) :
+                      numUnits > 1 ? ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.plural`, unit.plural) :
+                      ts.getTranslation(foam.locale, `foam.time.TimeUnit.${unit.name}.label`, unit.label);
+          values.push([numUnits, label]);
           value -= numUnits * unit.conversionFactorMs;
-        })
+        });
 
         var formatted = values.reduce((acc, cur) => {
-          if ( cur[0] > 0 && precision > 0)
+          if ( cur[0] > 0 && precision > 0 )
             acc = acc.concat([cur[0] + cur[1]]);
           // once a nonzero value has been found, keep decrementing
           // precision even if next values are zero

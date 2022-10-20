@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 foam.CLASS({
   package: 'foam.u2.tag',
   name: 'Card',
   extends: 'foam.u2.Element',
 
-  documentation: 'This is a simple div in non-MD. Likely to be overridden ' +
-      'later with Polymer\'s <paper-card> or similar.'
+  documentation: 'This is a simple div in non-MD. Likely to be overridden later with Polymer\'s <paper-card> or similar.'
 });

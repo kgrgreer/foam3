@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
   ],
@@ -32,7 +33,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       File file = (File) obj;
-      if ( ! foam.util.SafetyUtil.isEmpty(file.getDataString()) ) {
+      if ( ! SafetyUtil.isEmpty(file.getDataString()) ) {
         return getDelegate().put_(x, obj);
       }
 
@@ -54,28 +55,27 @@ foam.CLASS({
             type = fileType.toSummary();
             file.setMimeType(type);
           }
-          if ( foam.util.SafetyUtil.isEmpty(type) ) {
-            type = "text";
-            String subType = "html";
-            if ( ! foam.util.SafetyUtil.isEmpty(file.getFilename()) &&
+          // Find MimeType from file extension.
+          if ( SafetyUtil.isEmpty(type) ) {
+            String fileExtention = "";
+            if ( ! SafetyUtil.isEmpty(file.getFilename()) &&
                  file.getFilename().lastIndexOf(".") != -1 &&
                  file.getFilename().lastIndexOf(".") != 0 ) {
-              subType = file.getFilename().substring(file.getFilename().lastIndexOf(".")+1);
+              fileExtention = file.getFilename().substring(file.getFilename().lastIndexOf(".")+1);
             }
 
-            fileType = (FileType) fileTypeDAO.find(
-              AND(
-                EQ(FileType.TYPE, type),
-                EQ(FileType.SUB_TYPE, subType)
-              ));
+            if ( ! SafetyUtil.isEmpty(fileExtention) ) fileType = (FileType) fileTypeDAO.find(EQ(FileType.ABBREVIATION, fileExtention.toUpperCase()));
+
             if ( fileType != null ) {
               file.setMimeType(fileType.toSummary());
             } else {
-              throw new foam.core.FOAMException("File type not supported. "+type+"/"+subType);
+              throw new foam.core.FOAMException(
+                SafetyUtil.isEmpty(fileExtention) ? "Can not find file extention from file: " + file.getFilename() : "File type not supported: " + fileExtention
+              );
             }
           }
           file.setDataString("data:"+file.getMimeType()+";base64," + encodedString);
-          file.setData(null);
+          file.clearData();
           return getDelegate().put_(x, file);
         } catch (Exception e) {
           ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
@@ -93,7 +93,7 @@ foam.CLASS({
         BlobService blobStore = (BlobService) x.get("blobStore");
         IdentifiedBlob result = (IdentifiedBlob) blobStore.put(blob);
         file.setId(result.getId());
-        file.setData(null);
+        file.clearData();
         return getDelegate().put_(x, file);
       } catch (Exception e) {
         ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)

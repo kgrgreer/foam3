@@ -6,11 +6,12 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'CapabilityWizardlet',
-  extends: 'foam.u2.wizard.BaseWizardlet',
+  extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
+  implements: ['foam.u2.wizard.DynamicActionWizardlet'],
 
   requires: [
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.u2.wizard.ProxyWAO',
+    'foam.u2.wizard.wao.ProxyWAO',
     'foam.u2.wizard.WizardletIndicator'
   ],
 
@@ -60,10 +61,29 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       postSet: function (ol, nu) {
+        if ( ! this.saveOnAvailable ) return;
         if ( nu ) this.isAvailablePromise =
           this.isAvailablePromise.then(() => this.save());
         else this.isAvailablePromise =
           this.isAvailablePromise.then(() => this.cancel());
+      }
+    },
+    {
+      name: 'saveOnAvailable',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      name: 'saveOnCurrent',
+      class: 'Boolean'
+    },
+    {
+      name: 'isCurrent',
+      class: 'Boolean',
+      postSet: function (_, n) {
+        if ( n && this.saveOnCurrent ) {
+          this.save();
+        }
       }
     },
     {

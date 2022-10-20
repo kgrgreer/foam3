@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.bench',
   name: 'Benchmark',
-
+  classIsFinal: false,
   implements: [ 'foam.core.ContextAgent' ],
 
   abstract: true,

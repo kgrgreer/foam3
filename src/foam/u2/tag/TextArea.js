@@ -28,8 +28,8 @@ foam.CLASS({
         /* Override a few of the styles in foam.u2.TextInputCSS */
         ^ {
           height: auto;
-          padding-top: %INPUTVERTICALPADDING%;
-          padding-bottom: %INPUTVERTICALPADDING%;
+          padding-top: $inputVerticalPadding;
+          padding-bottom: $inputVerticalPadding;
         }
       `
     }
@@ -51,8 +51,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'onKey',
       attribute: true,
-      documentation: 'When true, $$DOC{ref:".data"} is updated on every ' +
-          'keystroke, rather than on blur.',
+      documentation: 'When true, $$DOC{ref:".data"} is updated on every keystroke, rather than on blur.',
     },
     'placeholder',
     {
@@ -97,6 +96,18 @@ foam.CLASS({
       // TODO: make sure that DOM is updated if values don't change
       this.setAttribute('readonly', mode === foam.u2.DisplayMode.RO);
       this.setAttribute('disabled', mode === foam.u2.DisplayMode.DISABLED);
+    },
+
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      if ( ! this.hasOwnProperty('onKey') ) {
+        this.onKey = p.hasOwnProperty('onKey') ? p.onKey : p.validateObj;
+      }
+
+      if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
+
+      this.ariaLabel = p.label || p.name;
     }
   ]
 });

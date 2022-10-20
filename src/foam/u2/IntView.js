@@ -20,8 +20,6 @@ foam.CLASS({
   name: 'IntView',
   extends: 'foam.u2.TextField',
 
-  css: '^:read-only { border: none; background: rgba(0,0,0,0); }',
-
   properties: [
     [ 'type', 'number' ],
     { class: 'Int', name: 'data' },

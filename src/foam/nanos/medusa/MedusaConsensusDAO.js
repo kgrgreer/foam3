@@ -40,8 +40,9 @@ This is the heart of Medusa.`,
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.nanos.alarming.Alarm',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.concurrent.ConcurrentHashMap',
@@ -55,6 +56,13 @@ This is the heart of Medusa.`,
 
   javaCode: `
     protected Object promoterLock_ = new Object();
+
+    protected ThreadLocal<JSONParser> parser_ = new ThreadLocal<JSONParser>() {
+      @Override
+      protected JSONParser initialValue() {
+        return getX().create(JSONParser.class);
+      }
+    };
   `,
 
   properties: [
@@ -73,6 +81,13 @@ This is the heart of Medusa.`,
       class: 'Long'
     },
     {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -80,9 +95,7 @@ This is the heart of Medusa.`,
       transient: true,
       javaCloneProperty: '//noop',
       javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
+        return Loggers.logger(getX(), this);
       `
     }
   ],
@@ -95,17 +108,18 @@ This is the heart of Medusa.`,
       MedusaEntry existing = null;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      DaggerService dagger = (DaggerService) x.get("daggerService");
       try {
-        // if ( replaying.getReplaying() ) {
-        //   getLogger().debug("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-        //   if ( entry.getIndex() % 10000 == 0 ) {
-        //     getLogger().info("put", replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
-        //   }
-        // }
-        if ( replaying.getIndex() > entry.getIndex() ) {
-          // getLogger().debug("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "discarding");
-          return entry;
+        if ( replaying.getReplaying() ) {
+          if ( replaying.getIndex() > entry.getIndex() ) {
+            // getLogger().debug("put", replaying.getIndex(), entry.toSummary(), "from", entry.getNode(), "discarding");
+            return entry;
+          }
+          if ( entry.getIndex() % 10000 == 0 ) {
+            getLogger().info("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+          }
         }
+        // getLogger().debug("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
 
         existing = (MedusaEntry) getDelegate().find_(x, entry.getId());
         if ( existing != null &&
@@ -131,6 +145,7 @@ This is the heart of Medusa.`,
           }
 
           PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.put");
 
           // NOTE: all this business with the nested Maps to avoid
           // a mulitipart id (index,hash) on MedusaEntry, as presently
@@ -146,6 +161,7 @@ This is the heart of Medusa.`,
           }
           if ( existing.isFrozen() ) {
             existing = (MedusaEntry) existing.fclone();
+            ((OMLogger) x.get("OMLogger")).log("medusa.consensus.put.fclone");
           }
           existing.setConsensusHashes(hashes);
           if ( nodes.size() > existing.getConsensusCount() ) {
@@ -153,11 +169,12 @@ This is the heart of Medusa.`,
             existing.setConsensusNodes(nodes.keySet().toArray(new String[0]));
           }
           existing = (MedusaEntry) getDelegate().put_(x, existing);
+          pm.log(x);
+
           if ( nodes.size() >= support.getNodeQuorum() &&
                existing.getIndex() == replaying.getIndex() + 1 ) {
             existing = promote(x, existing);
           }
-          pm.log(x);
         }
 
         if ( ! existing.getPromoted() &&
@@ -189,27 +206,27 @@ This is the heart of Medusa.`,
       type: 'foam.nanos.medusa.MedusaEntry',
       javaCode: `
       // NOTE: implementation expects caller to lock on entry index
-      PM pm = PM.create(x, this.getClass().getSimpleName(), "promote");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       DaggerService dagger = (DaggerService) x.get("daggerService");
-
+      PM pm = null;
       try {
         synchronized ( entry.getId().toString().intern() ) {
+          ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
           entry = (MedusaEntry) getDelegate().find_(x, entry.getId());
           if ( entry.getPromoted() ) {
             return entry;
           }
+          pm = PM.create(x, this.getClass().getSimpleName(), "promote:verify");
           if ( entry.isFrozen() ) {
             entry = (MedusaEntry) entry.fclone();
+            ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote.fclone");
           }
-
-          // REVIEW: partial cleanup.
-          MedusaEntry.CONSENSUS_HASHES.clear(entry);
 
           dagger.verify(x, entry);
           if ( ! SafetyUtil.isEmpty(entry.getData()) ) {
             // Only non-transient entries can be used for links,
             // as only non-transient are stored on the nodes.
+
             dagger.updateLinks(x, entry);
           }
 
@@ -219,30 +236,35 @@ This is the heart of Medusa.`,
             dagger.setGlobalIndex(x, entry.getIndex());
           }
 
+          pm.log(x);
           try {
             entry = mdao(x, entry);
           } catch( IllegalArgumentException e ) {
             // nop - already reported - occurs when a DAO is removed.
           }
 
+          // REVIEW: partial cleanup.
+          MedusaEntry.CONSENSUS_HASHES.clear(entry);
+
           entry.setPromoted(true);
           entry = (MedusaEntry) getDelegate().put_(x, entry);
         }
+        pm = PM.create(x, this.getClass().getSimpleName(), "promote:notify");
 
         // Notify any blocked Primary puts
         MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
         registry.notify(x, entry);
 
         replaying.updateIndex(x, entry.getIndex());
-        replaying.setNonConsensusIndex(0);
-        replaying.setLastModified(new java.util.Date());
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
           ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
       } finally {
-        pm.log(x);
+        if ( pm != null ) {
+          pm.log(x);
+        }
       }
       return entry;
       `
@@ -254,6 +276,7 @@ This is the heart of Medusa.`,
       getLogger().info("start");
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName());
+      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
@@ -262,89 +285,77 @@ This is the heart of Medusa.`,
     {
       documentation: 'ContextAgent implementation. Handling out of order consensus updates. Check if next (index + 1) has reach consensus and promote.',
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
+      Logger logger = Loggers.logger(x, this, "promoter");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
         .setName("Medusa Consensus")
         .setClusterable(false)
         .build();
+
+      long lastLogTime = 0L;
+      long lastLogIndex = 0L;
       try {
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          DaggerService dagger = (DaggerService) x.get("daggerService");
           PM pm = PM.create(x, "MedusaConsensusDAO", "promoter");
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            if ( nextIndex % 1000 == 0 ) {
-              getLogger().info("promoter", "next", nextIndex);
-            } else if ( ! replaying.getReplaying() ) {
-              getLogger().debug("promoter", "next", nextIndex);
+            if ( System.currentTimeMillis() - lastLogTime > getTimerInterval() ) {
+              if ( replaying.getReplaying() ) {
+                logger.info("next", nextIndex, "replaying,true,global", dagger.getGlobalIndex(x));
+              } else if ( nextIndex != lastLogIndex ) {
+                logger.info("next", nextIndex);
+              }
+              lastLogTime = System.currentTimeMillis();
+              lastLogIndex = nextIndex;
             }
+
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
+            // logger.debug("next", nextIndex, "next", next, "replaying", replaying.getReplaying(), replaying.getIndex(), "global", dagger.getGlobalIndex(x));
             if ( next != null ) {
               if ( next.getPromoted() ) {
+                // After compaction/reconfigure primary replay index
+                // equal to bootstrap entries and needs to walk up
+                // to the first non-bootstrap entry.
+                // DaggerService could update update replay index
+                // but hitherto the DaggerService is not tied to the
+                // Replaying
+                if ( nextIndex > replaying.getIndex() ) {
+                  replaying.updateIndex(x, nextIndex);
+                } else if ( nextIndex < dagger.getGlobalIndex(x) ) {
+                  // no nodes online or system is catching up after compaction
+                  logger.info("waiting for data", "global", dagger.getGlobalIndex(x), "replaying", replaying.getReplaying(), replaying.getIndex(), replaying.getReplayIndex(), "next", nextIndex);
+                  try {
+                    Thread.currentThread().sleep(1000);
+                  } catch (InterruptedException e) {
+                    logger.info("exit", "interrupted");
+                    break;
+                  }
+                }
                 continue;
               }
 
               entry = getConsensusEntry(x, next);
 
               if ( entry != null ) {
-                entry = promote(x, entry);
+                try {
+                  entry = promote(x, entry);
+                } catch (DaggerException e) {
+                  // Hash verification failure.
+                  throw e;
+                }
                 nextIndexSince = System.currentTimeMillis();
 
-                if ( alarm.getIsActive() ) {
+                 if ( alarm != null &&
+                  alarm.getIsActive() ) {
+                  alarm = (Alarm) alarm.fclone();
                   alarm.setIsActive(false);
                   alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                }
-              } else {
-                if ( replaying.getNonConsensusIndex() < nextIndex ) {
-                  replaying.setNonConsensusIndex(nextIndex);
-                  replaying.setLastModified(new java.util.Date());
-                }
-                // TODO: more thought on alarming, and configuration for alarm times. This is really messy.
-                if ( replaying.getReplaying() ) {
-                  if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 60000 ) {
-                    getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
-                    alarm.setIsActive(true);
-                    alarm.setNote("No Consensus: "+next.toSummary());
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                  } else {
-                    if ( alarm.getIsActive() ) {
-                      alarm.setIsActive(false);
-                      alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                    }
-                  }
-                } else if ( System.currentTimeMillis() - replaying.getLastModified().getTime() > 5000 ) {
-                  getLogger().warning("promoter", "no consensus", next.getConsensusCount(), support.getNodeQuorum(), "since", replaying.getLastModified(), "on", next.toSummary());
-                  if ( ! alarm.getIsActive() ) {
-                    alarm.setIsActive(true);
-                    alarm.setNote("No Consensus: "+next.toSummary());
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-
-                    // NOTE: inside the alarm.getIsActive - replay request
-                    // will run once per alarm. So to force replay again,
-                    // clear the alarm.
-                    final ReplayRequestCmd cmd = new ReplayRequestCmd();
-                    cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-                    Agency agency = (Agency) x.get(support.getThreadPoolName());
-                    agency.submit(x, new ContextAgent() {
-                      public void execute(X x) {
-                        ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
-                      }
-                    }, this.getClass().getSimpleName());
-                  }
-                } else {
-                  if ( alarm.getIsActive() ) {
-                    alarm.setIsActive(false);
-                    alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-                  }
                 }
               }
             }
@@ -362,12 +373,13 @@ This is the heart of Medusa.`,
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
               }
             } catch (InterruptedException e ) {
+              logger.info("exit", "interrupted");
               break;
             }
           }
         }
       } catch ( Throwable e ) {
-        getLogger().error("promoter", e.getMessage(), e);
+        logger.error(e.getMessage(), e);
         DAO d = (DAO) x.get("localClusterConfigDAO");
         ClusterConfig config = (ClusterConfig) d.find(support.getConfigId()).fclone();
         config.setErrorMessage(e.getMessage());
@@ -377,8 +389,7 @@ This is the heart of Medusa.`,
         alarm.setIsActive(true);
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
-      } finally {
-        getLogger().warning("promoter", "exit");
+        logger.error("exit");
       }
      `
     },
@@ -405,74 +416,90 @@ This is the heart of Medusa.`,
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ||
              ! config.getIsPrimary() ) {
-            // TODO: cache cls for nspecName
-            DAO dao = support.getMdao(x, entry.getNSpecName());
-            Class cls = null;
-            if ( dao instanceof foam.dao.ProxyDAO ) {
-              cls = ((foam.dao.ProxyDAO) dao).getOf().getObjClass();
-            } else if ( dao instanceof foam.dao.MDAO ) {
-              cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
-            } else {
-              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class");
-              Alarm alarm = new Alarm("Unknown class");
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              throw new MedusaException("Unknown class");
-            }
+          DAO dao = support.getMdao(x, entry.getNSpecName());
           FObject nu = null;
           String data = entry.getData();
           if ( ! SafetyUtil.isEmpty(data) ) {
             try {
-              nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
+              nu = parser_.get().parseString(entry.getData());
             } catch ( RuntimeException e ) {
-              Throwable cause = e.getCause();
+              Throwable cause = e;
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData(), cause.getMessage());
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData());
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
               throw new MedusaException("Failed to parse");
             }
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
               if ( ! old.getClassInfo().isInstance(nu) ) {
-                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+              } else {
+                try {
+                  nu = old.fclone().overlay(nu);
+                } catch ( ClassCastException e ) {
+                  getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                  ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, old, "Class change, old discarded"));
+                }
               }
-              nu = old.fclone().overlay(nu);
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
-            FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
+            FObject tran = null;
+            try {
+              tran = parser_.get().parseString(entry.getTransientData());
+            } catch ( RuntimeException e ) {
+              Throwable cause = e;
+              while ( cause.getCause() != null ) {
+                cause = cause.getCause();
+              }
+              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData(), cause.getMessage());
+              Alarm alarm = new Alarm("Medusa Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
+              throw new MedusaException("Failed to parse.", cause);
+            }
             if ( tran == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
               Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
             } else {
               if ( nu == null ) {
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
                   if ( ! old.getClassInfo().isInstance(nu) ) {
-                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), old.getClass().getSimpleName(), "with", nu.getClass().getSimpleName());
+                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+                  } else {
+                    try {
+                      nu = old.fclone().overlay(nu);
+                    } catch ( ClassCastException e ) {
+                      getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                    }
                   }
-                  nu = old.fclone().overlay(nu);
                 }
               } else {
                 nu = nu.overlay(tran);
@@ -490,7 +517,8 @@ This is the heart of Medusa.`,
             }
 
             // Secondaries will block on registry
-            // NOTE: See PromotedPurgeAgent for Registry cleanup.  These
+            // NOTE: See PromotedPurgeAgent/PromotedClearAgent for
+            // Registry cleanup.  These
             // registry.register requests will remain until a 'waiter', or
             // until purged - which is the case for idle Secondaries and
             // non-active Regions.
@@ -540,8 +568,21 @@ This is the heart of Medusa.`,
             if ( nodes.size() >= support.getNodeQuorum() ) {
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
-                  entry = e;
-                  break;
+                  // test for parents
+                  // NOTE: use internalMedusaDAO, else we'll block on ReplayingDAO.
+                  DAO dao = (DAO) x.get("internalMedusaDAO");
+                  MedusaEntry parent1 = (MedusaEntry) dao.find(e.getIndex1());
+                  MedusaEntry parent2 = (MedusaEntry) dao.find(e.getIndex2());
+                  if ( parent1 != null &&
+                       parent2 != null ) {
+                    entry = e;
+                    break;
+                  } else {
+                    // Previously we would return this entry without
+                    // parent check and it could fail dagger verification
+                    // if parents had not yet been received.
+                    getLogger().warning("getConsensusEntry", e, "entry found but missing parent(s)", e.toSummary());
+                  }
                 }
               } else {
                 getLogger().error("getConsensusEntry", next, "Multiple consensus detected", hashes.size(), next.toSummary(), next.getConsensusCount(), support.getNodeQuorum(), next.getConsensusHashes());
@@ -596,6 +637,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
       // NOTE: use internalMedusaDAO, else we'll block on ReplayingDAO.
       DAO dao = (DAO) x.get("internalMedusaDAO");
       PM pm = PM.create(x, this.getClass().getSimpleName(), "gap");
+      ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap");
       try {
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
@@ -613,11 +655,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
           }
         }
         if ( entry != null ) {
-          try {
-            entry = getConsensusEntry(x, entry);
-          } catch ( MedusaException e ) {
-            // ignore
-          }
+          entry = getConsensusEntry(x, entry);
           if ( entry != null ) {
             if ( replaying.getReplaying() ) {
               // test if entry depends on any indexes in our skip range.
@@ -638,12 +676,11 @@ During replay gaps are treated differently; If the index after the gap is ready 
 
             getLogger().warning("gap", "found", index);
             String alarmName = "Medusa Gap";
-            final Alarm alarm;
-            Alarm a = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmName), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
-            if ( a == null ) {
+            Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(new Alarm(alarmName));
+            if ( alarm == null ) {
               alarm = new Alarm(alarmName);
             } else {
-              alarm = (Alarm) a.fclone();
+              alarm = (Alarm) alarm.fclone();
             }
             alarm.setClusterable(false);
             alarm.setIsActive(true);
@@ -680,7 +717,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               alarm.setIsActive(false);
               alarm.setNote("Index: "+index+"\\n"+"Dependencies: NO");
               config = (ClusterConfig) config.fclone();
-              config.setErrorMessage("");
+              ClusterConfig.ERROR_MESSAGE.clear(config);
               ((DAO) x.get("clusterConfigDAO")).put(config);
             } else {
               if ( ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {

@@ -15,19 +15,17 @@ import static foam.dao.AbstractDAO.decorateSink;
 import java.util.List;
 
 public class OrPlan implements SelectPlan {
-  protected Predicate predicate_;
+  protected Predicate        predicate_;
   protected List<SelectPlan> planList_;
 
   public OrPlan(Predicate predicate, List planList) {
     predicate_ = predicate;
-    planList_ = planList;
+    planList_  = planList;
   }
 
   public long cost() {
     long cost = 0;
-    for ( SelectPlan plan : planList_ ) {
-      cost += plan.cost();
-    }
+    for ( SelectPlan plan : planList_ ) cost += plan.cost();
     return cost;
   }
 
@@ -46,7 +44,7 @@ public class OrPlan implements SelectPlan {
   public String toString() {
     var sb = new StringBuilder();
     sb.append("or(");
-    for ( int i = 0; i < planList_.size(); i++ ) {
+    for ( int i = 0 ; i < planList_.size() ; i++ ) {
       if ( i > 0 ) sb.append(", ");
       sb.append(planList_.get(i).toString());
     }

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'UserCapabilityJunctionWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
+  implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
 
   imports: [

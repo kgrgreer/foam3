@@ -31,8 +31,8 @@ foam.CLASS({
         if ( script.getStatus() == ScriptStatus.SCHEDULED ) {
           if ( script.canRun(x) ) {
             script.setStatus(ScriptStatus.RUNNING);
-            script = (Script) getDelegate().put_(x, script).fclone();
-            runScript(x, script);
+            script = (Script) getDelegate().put_(x, script);
+            runScript(x, (Script) script.fclone());
           } else {
             script.setStatus(ScriptStatus.UNSCHEDULED);
             script = (Script) getDelegate().put_(x, script);
@@ -54,6 +54,7 @@ foam.CLASS({
           ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
+              x = x.put(Script.class, script);
               Logger logger = (Logger) x.get("logger");
               if ( logger == null ) {
                 logger = StdoutLogger.instance();
@@ -68,9 +69,8 @@ foam.CLASS({
               } catch(Throwable t) {
                 script.setStatus(ScriptStatus.ERROR);
                 logger.error("agency", script.getId(), t);
-                t.printStackTrace();
               } finally {
-                getDelegate().put_(x, script);
+                ((DAO) x.get(script.getDaoKey())).put_(x, script);
               }
             }
           }, "Run script: " + script.getId());

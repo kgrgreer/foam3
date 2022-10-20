@@ -28,6 +28,7 @@ the notification will be handled. `,
     'foam.dao.Sink',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
     'java.util.List'
   ],
@@ -53,7 +54,7 @@ the notification will be handled. `,
         return this.delegate.put_(x, obj);
       },
       javaCode: `
-        Logger logger = (Logger) x.get("logger");  
+        Logger logger = Loggers.logger(x, this);
         Notification notification = (Notification) obj;
         Notification template = notification;
 
@@ -64,7 +65,7 @@ the notification will be handled. `,
             .getArray();
 
           if ( templates.size() > 1 ) {
-            logger.error("Multiple Notification templates for " + notification.getTemplate() + " found.");
+            logger.error("Multiple templates found", notification.getTemplate());
             return notification;
           } else if ( templates.size() == 1 ) {
             template = (Notification) ((FObject)templates.get(0)).fclone();
@@ -76,7 +77,10 @@ the notification will be handled. `,
               template.setSpid(notification.getSpid());
             }
             template.setTemplate(notification.getToastMessage());
-
+            if ( template.getEmailArgs() == null ||
+                 template.getEmailArgs().size() == 0 ) {
+              template.setEmailArgs(notification.getEmailArgs());
+            }
             // Notify a user directly
             DAO userDAO = (DAO) x.get("localUserDAO");
             User user = (User) userDAO.find(template.getUserId());
@@ -85,7 +89,7 @@ the notification will be handled. `,
               return notification;
             }
           } else {
-            logger.error("Notification template " + notification.getTemplate() + " not found.");
+            logger.warning("Template not found", notification.getTemplate());
             return notification;
           }
         }

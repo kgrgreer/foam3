@@ -3,23 +3,23 @@ package foam.nanos.ruler;
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.nanos.logger.Logger;
+import foam.util.retry.RetryStrategy;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RetryManager {
-  protected final int      maxRetry_;
-  protected final int      retryDelay_;
-  protected final String   description_;
-  protected CountDownLatch latch_;
-  protected Exception      exception_;
+  protected final RetryStrategy retryStrategy_;
+  protected final String        description_;
+  protected CountDownLatch      latch_;
+  protected Exception           exception_;
 
   class Retry {
     final X            x_;
     final ContextAgent agent_;
-    AtomicInteger      retryCount_ = new AtomicInteger(0);
+    final Timer        timer_ = new Timer();
+    private boolean cancelled_ = false;
 
     public Retry(X x, ContextAgent agent) {
       x_     = x;
@@ -27,7 +27,7 @@ public class RetryManager {
     }
 
     public void start() {
-      if ( retryCount_.getAndIncrement() < maxRetry_ ) {
+      if ( retryStrategy_.canRetry(x_) ) {
         retry();
       } else {
         ((Logger) x_.get("logger")).error(
@@ -37,9 +37,11 @@ public class RetryManager {
     }
 
     private void retry() {
-      new Timer().schedule(new TimerTask() {
+      timer_.schedule(new TimerTask() {
         @Override
         public void run() {
+          if ( cancelled_ ) return;
+
           try {
             agent_.execute(x_);
             while ( latch_.getCount() > 0 ) {
@@ -51,25 +53,27 @@ public class RetryManager {
             latch_.countDown();
           }
         }
-      }, retryDelay_);
+      }, retryStrategy_.getRetryDelay(x_));
+    }
+
+    public void cancel() {
+      cancelled_ = true;
     }
   }
 
-  public RetryManager(String description) {
-    this(5, 10000, description);
-  }
-
-  public RetryManager(int maxRetry, int retryDelay, String description) {
-    maxRetry_ = maxRetry;
-    retryDelay_ = retryDelay;
-    description_ = description;
-    latch_ = new CountDownLatch(maxRetry);
+  public RetryManager(RetryStrategy retryStrategy, String description) {
+    retryStrategy_ = retryStrategy;
+    description_   = description;
+    latch_         = new CountDownLatch(retryStrategy_.getMaxRetry());
   }
 
   public void submit(X x, ContextAgent agent) {
-    new Retry(x, agent).start();
+    var retry = new Retry(x, agent);
+    retry.start();
     try {
       latch_.await();
-    } catch (InterruptedException e) { /*ignored*/ }
+    } catch (InterruptedException e) {
+      retry.cancel();
+    }
   }
 }

@@ -20,7 +20,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'stack',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -32,13 +32,13 @@ foam.CLASS({
       width: 490px;
       height: 142px;
       border-radius: 2px;
-      background-color: white;
+      background-color:$white;
       padding: 20px;
     }
     ^ .foam-u2-ActionView-resendEmail {
       width: 100%;
       height: 40px;
-      background: white;
+      background:$white;
       border: solid 1px #59a5d5;
       display: inline-block;
       color: #59a5d5;
@@ -91,11 +91,11 @@ foam.CLASS({
       code: function(X) {
         var self = this;
 
-        this.emailToken.generateToken(null, this.user).then(function(result) {
+        this.emailToken.generateToken(null, this.subject.user).then(function(result) {
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.notify('Verification Email Sent', 'Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
+          self.notify('Verification Email Sent', 'Verification email sent to ' + self.subject.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
           self.notify(err.message, '', self.LogLevel.ERROR, true);
         });

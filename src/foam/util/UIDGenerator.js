@@ -12,9 +12,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.nanos.logger.Logger',
-    'java.net.InetAddress',
-    'java.net.UnknownHostException',
+    'foam.nanos.logger.Loggers',
     'static foam.util.UIDSupport.*'
   ],
 
@@ -27,23 +25,28 @@ foam.CLASS({
       name: 'machineId',
       class: 'Int',
       javaFactory: `
+        int machineId = 0;
         try {
-          return Integer.parseInt(System.getProperty("MACHINE_ID"));
+          machineId = Integer.parseInt(System.getProperty("MACHINE_ID"));
+          Loggers.logger(getX(), this).debug("machineId", "MACHINE_ID", machineId);
         } catch ( Exception e ) {
+          // NOTE: attempting to use IP address is not realistic from Java,
+          // as InetAddress.getLocalHost and even getByName(hostname) will
+          // return the loopback address (127.0.0.1).
           try {
-            var ipAddress = InetAddress.getLocalHost();
-            var bytes     = ipAddress.getAddress();
-            var length    = bytes.length;
-            return (bytes[length - 1] & 0xff) +
-                  ((bytes[length - 2] & 0xff) << 8);
-          } catch ( UnknownHostException ex ) {
-            System.err.println("Unable to determine machine ID");
-            Logger logger = (Logger) getX().get("logger");
-            if ( logger != null ) logger.error(ex);
+            machineId = System.getProperty("hostname").hashCode() & 0xffff;
+            Loggers.logger(getX(), this).debug("machineId", "hostname", machineId);
+          } catch ( NullPointerException ex ) {
+            machineId = (int) System.currentTimeMillis() & 0xffff;
+            Loggers.logger(getX(), this).warning("machineId", "time", machineId, new Exception("MachineId not determined"));
           }
         }
-        return 0;
+        return machineId;
       `
+    },
+    {
+      name: 'minLength',
+      class: 'Int'
     }
   ],
 
@@ -86,7 +89,7 @@ foam.CLASS({
         { name: 'id', type: 'String' }
       ],
       javaCode: `
-        var targetMod = mod(getSalt());
+        var targetMod = getHashKey();
         // Breaking the multiplication to avoid overflow before mod-ing,
         // (ab mod m) = ((a mod m) * (b mod m)) mod m.
         var idMod     = mod(mod(Long.parseLong(id, 16)) * mod(0x1000));
@@ -122,6 +125,11 @@ foam.CLASS({
           throw e;
         }
       `
+    },
+    {
+      name: 'getHashKey',
+      type: 'Integer',
+      javaCode: 'return mod(getSalt());'
     }
   ]
 })

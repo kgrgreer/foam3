@@ -61,7 +61,7 @@ foam.CLASS({
       if ( old != null &&
            old.getStatus() != nu.getStatus() &&
            nu.getStatus() == Status.ONLINE &&
-           nu.getRealm() == myConfig.getRealm() ) {
+           nu.getRealm().equals(myConfig.getRealm()) ) {
 
         if ( ! (
              myConfig.getType() == MedusaType.MEDIATOR &&

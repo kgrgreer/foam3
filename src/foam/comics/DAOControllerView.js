@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'foam.comics',
   name: 'DAOControllerView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -56,7 +55,7 @@ foam.CLASS({
     }
 
     ^title-container > * {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin: 0;
     }
 
@@ -104,7 +103,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
-      value: { class: 'foam.u2.view.ScrollTableView' }
+      value: { class: 'foam.u2.table.TableView' }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -138,12 +137,11 @@ foam.CLASS({
     function render() {
       var self = this;
       var summaryViewParent;
-      this.initMemento();
 
       var reciprocalSearch = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.ReciprocalSearch',
         data$: this.data.predicate$
-      }, {}, self, self.__subContext__.createSubContext({ memento: this.currentMemento_ }));
+      }, {}, self, self.__subContext__.createSubContext({ memento_: this.memento_ }));
 
       var searchView = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.SimpleSearch',
@@ -181,7 +179,7 @@ foam.CLASS({
             .end()
             .callIfElse(self.data.createLabel, function() {
               this.tag(self.data.primaryAction, {
-                label: self.translationService.getTranslation(foam.locale, `${self.parentNode.createControllerView.menu}.createLabel`, self.data.createLabel),
+                label: self.translationService.getTranslation(foam.locale, `${self.createControllerView.menu}.createLabel`, self.data.createLabel),
                 size: 'LARGE',
                 buttonStyle: foam.u2.ButtonStyle.PRIMARY
               });

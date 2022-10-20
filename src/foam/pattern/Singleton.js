@@ -23,6 +23,10 @@ foam.CLASS({
   A Singleton Axiom, when added to a Class, makes it implement
   the Singleton Pattern, meaning that all calls to create()
   will return the same (single) instance.
+  The Singleton Axiom is not inherited, meaning that subclasses will not
+  also be Singletons. To make subclasses singletons also, re-add the Singleton Axiom.
+  Usage:
+    axioms: [ foam.pattern.Singleton.create() ]
   `,
 
   properties: [
@@ -34,9 +38,8 @@ foam.CLASS({
       /** @param {any} cls */
       var oldCreate = cls.create;
       var newCreate = cls.create = function() {
-        // This happens when a newer Axiom replaces create().
-        // If this happens, don't apply Singleton behaviour.
-        if ( this.create !== newCreate )
+        // Only act as a Singleton for the installed class, not subclasses.
+        if ( this !== cls )
           return oldCreate.apply(this, arguments);
 
         return this.private_.instance_ ||

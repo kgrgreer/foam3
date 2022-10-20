@@ -20,15 +20,15 @@ foam.CLASS({
     'userDAO',
     'ticketDAO',
     'ticketMessageDAO'
-  ],  
+  ],
 
-  css: `
+  css: `
     ^ {
       box-sizing: border-box;
     }
     ^ .bg {
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: $white;
       padding-bottom: 30px;
     }
     ^ .company-name {
@@ -41,7 +41,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding-left: 20px;
       padding-top: 10px;
       padding-right: 0px;
@@ -66,7 +66,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin-left:20px;
       padding: 30px 0 0 60px;
     }
@@ -120,11 +120,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('bg')
-          .start('hr').end() 
+          .start('hr').end()
             .start().addClass('spaceline')
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
-                .start().add(this.requestName$).addClass('company-name').end() 
+                .start().add(this.requestName$).addClass('company-name').end()
                 .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('internal-status')
@@ -132,9 +132,9 @@ foam.CLASS({
                   .end()
                 })
               .end()
-              .start().add(this.message.message).addClass('text').end()   
-          .end()     
-        .end()               
+              .start().add(this.message.message).addClass('text').end()
+          .end()
+        .end();
     }
   ]
 });

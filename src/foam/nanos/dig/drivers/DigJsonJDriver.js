@@ -71,7 +71,13 @@ foam.CLASS({
               new foam.lib.NetworkPropertyPredicate(),
               new foam.lib.PermissionedPropertyPredicate()}));
 
-      outputterJsonJ.setMultiLine(true);
+      HttpParameters p = x.get(HttpParameters.class);
+      if ( p != null &&
+          "false".equals(p.getParameter("multiline")) ) {
+        outputterJsonJ.setMultiLine(false);
+      } else {
+        outputterJsonJ.setMultiLine(true);
+      }
 
       if ( fobjects.size() == 1 )
         outputterJsonJ.outputJSONJFObject((FObject) fobjects.get(0));

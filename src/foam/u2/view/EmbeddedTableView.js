@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'EmbeddedTableView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: ['foam.u2.memento.Memorable'],
 
   requires: [
     'foam.comics.v2.DAOBrowseControllerView',
@@ -55,6 +55,11 @@ foam.CLASS({
       name: 'data'
     },
     {
+      class: 'String',
+      name: 'route',
+      memorable: true
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
@@ -65,44 +70,60 @@ foam.CLASS({
     {
       name: 'click',
       expression: function(config$click) {
-        if ( config$click && typeof config$click === 'function' )
-          return config$click;
+        var self = this;
+        var importedClick;
+        if ( config$click && typeof config$click === 'function' ) {
+          importedClick = config$click;
+        } else {
+          // This function is exported and is not always called with the 'this' being the current view
+          // which is why we need to fetch config from subContext
+          importedClick = function(obj, id) {
+            if ( ! this.stack ) return;
+            this.stack.push(foam.u2.stack.StackBlock.create({
+            view: {
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              config: this.config || this.__subContext__.config,
+              idOfRecord: id
+            }, parent: this.__subContext__.createSubContext({ memento_: self.memento_ }) }, this));
+          };
+        }
         return function(obj, id) {
-          if ( ! this.stack ) return;
-          this.stack.push(foam.u2.stack.StackBlock.create({
-          view: {
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            config: this.__context__.config,
-            idOfRecord: id
-          }, parent: this.__subContext__ }, this));
+          self.route = self.data.of.name + 'view';
+          importedClick.call(this, obj, id);
         };
       }
     }
   ],
   methods: [
     async function render() {
-      this.currentMemento_ = this.memento;
-
       // Default controller config that would be used for nested tables if no menu config can be found.
       // Update this  to be a fallback for menuKeys when we have menuKeys for references, DAOproperties and relationships
       this.config.editPredicate =   foam.mlang.predicate.False.create();
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
 
-      if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
+      if ( this.route == this.data.of.name ) {
         this.openFullTable();
+      } else if ( this.route == this.data.of.name + 'view' && this.memento_.tailStr ) {
+        this.click.call(this, null, null);
       } else {
+        // Required in case of broken URLs
+        if ( ! this.memento_.tailStr )
+          this.route = '';
         var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
         this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-          .start(this.TableView, {
-            data: this.data.limit(this.rowsToDisplay),
-            editColumnsEnabled: false,
-            multiSelectEnabled: false,
-            showPagination: false
-          })
-            .addClass(this.myClass())
-          .end()
+          // Embedded tables don't need to store column names hence the null memento
+          .startContext({ memento_: this.Memento.create({ memento_: null }) })
+            .start(this.TableView, {
+              data: this.data.limit(this.rowsToDisplay),
+              editColumnsEnabled: false,
+              multiSelectEnabled: false,
+              showPagination: false
+            })
+              .addClass(this.myClass())
+            .end()
+          .endContext()
           .startContext({ data: this })
             .start(this.OPEN_TABLE, { label: `${this.VIEW_MORE} (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
               .addClass(this.myClass('button'))
@@ -112,7 +133,7 @@ foam.CLASS({
       }
     },
     function openFullTable() {
-      this.memento.head = `&${this.data.of.name}`;
+      this.route = this.data.of.name;
       this.stack.push(this.StackBlock.create({
         view: {
           class: this.DAOBrowseControllerView,

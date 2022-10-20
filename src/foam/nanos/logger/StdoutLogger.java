@@ -6,6 +6,7 @@
 
 package foam.nanos.logger;
 
+import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import java.io.IOException;
@@ -20,12 +21,16 @@ public class StdoutLogger
   public static StdoutLogger instance() { return instance__; }
 
   public StdoutLogger() {
-    setX(foam.core.XLocator.get());
+    this(foam.core.XLocator.get());
+  }
+
+  public StdoutLogger(X x) {
+    setX(x);
     setDelegate(
-                new foam.nanos.logger.RepeatLogMessageDAO.Builder(getX())
-                .setDelegate(new foam.nanos.logger.LogMessageDAO.Builder(getX())
-                             .setDelegate(new foam.nanos.logger.StdoutLoggerDAO.Builder(getX())
-                                          .setDelegate(new foam.dao.NullDAO(getX(), foam.nanos.logger.LogMessage.getOwnClassInfo()))
+                new foam.nanos.logger.RepeatLogMessageDAO.Builder(x)
+                .setDelegate(new foam.nanos.logger.LogMessageDAO.Builder(x)
+                             .setDelegate(new foam.nanos.logger.StdoutLoggerDAO.Builder(x)
+                                          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.logger.LogMessage.getOwnClassInfo()))
                                           .build())
                              .build())
                 .build());

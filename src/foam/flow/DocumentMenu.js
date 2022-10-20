@@ -32,12 +32,13 @@ foam.CLASS({
         var pDAO = this.PromisedDAO.create();
 
         this.documentDAO
-          .select((doc) => {
+          .select(doc => {
             var menu = this.Menu.create({
-              id:     this.id + this.Memento.SEPARATOR + doc.id,
+              id:     this.id + '/' + doc.id,
               // label:  doc.title,
+              keywords: ["flow", "doc", "document", "help"],
               label:  foam.String.labelize(doc.id),
-              parent: this.id,
+              parent: "flowdoc", //this.id,
               handler: this.DocumentFileMenu.create({
                 docKey: doc.id,
               })

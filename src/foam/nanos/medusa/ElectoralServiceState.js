@@ -15,27 +15,23 @@ foam.ENUM({
   values: [
     {
       documentation: 'Medusa primary mediator has been abandoned and new election needs to be called.',
-      name: 'ADJOURNED',
-      label: 'Adjourned',
-      ordinal: 0
+      name: 'DISMISSED',
+      label: 'Dismissed'
     },
     {
       documentation: 'State of the mediator running the election.',
       name: 'ELECTION',
-      label: 'Election',
-      ordinal: 1
+      label: 'Election'
     },
     {
       documentation: 'State of a mediator voting in an election.',
       name: 'VOTING',
-      label: 'Voting',
-      ordinal: 2
+      label: 'Voting'
     },
     {
       documentation: 'Mediators have decided on a primary and election is complete.',
       name: 'IN_SESSION',
-      label: 'In session',
-      ordinal: 3
+      label: 'In-Session'
     }
   ]
 });

@@ -37,10 +37,10 @@ foam.CLASS({
             this.EQ(foam.nanos.boot.NSpec.SERVE,     true)
           )).select((spec) => {
             var menu = this.Menu.create({
-              id:      'admin.data' + this.Memento.SEPARATOR + spec.id,
+              id:      'admin.data/' + spec.id,
               label:   foam.String.labelize(spec.name),
               parent:  this.id,
-              handler: this.LinkMenu.create({link: '#admin.data' + this.Memento.SEPARATOR + spec.id})
+              handler: this.LinkMenu.create({link: '#admin.data/' + spec.id})
             });
             aDAO.put(menu);
         }).then(() => pDAO.promise.resolve(aDAO));

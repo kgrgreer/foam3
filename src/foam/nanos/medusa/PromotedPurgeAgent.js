@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.Sink',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
@@ -28,8 +29,9 @@ foam.CLASS({
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
     'foam.mlang.sink.Count',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.Timer'
   ],
@@ -48,6 +50,11 @@ foam.CLASS({
       value: 2
     },
     {
+      documentation: 'do not purge above this index (inclusive)',
+      name: 'maxIndex',
+      class: 'Long'
+    },
+    {
       documentation: 'Number of entries to retain for potential consensus matching.',
       name: 'retain',
       class: 'Long',
@@ -62,6 +69,13 @@ foam.CLASS({
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
  ],
 
@@ -71,42 +85,45 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(new ContextAgentTimerTask(getX(), this), getTimerInterval(), getTimerInterval());
+      setTimer(timer);
+      timer.schedule(new ContextAgentTimerTask(getX(), this),
+        getTimerInterval(),
+        getTimerInterval()
+      );
       `
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
-      Logger logger = new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-
+      long maxIndex = getMaxIndex();
+      if ( maxIndex == 0 ) {
+        maxIndex = replaying.getIndex() - getRetain();
+      }
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
           AND(
             GT(MedusaEntry.INDEX, getMinIndex()),
-            LTE(MedusaEntry.INDEX, replaying.getIndex() - getRetain()),
+            LTE(MedusaEntry.INDEX, maxIndex),
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
+        Count count = new Count();
         PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
-        dao.select(purgeSink);
-        if ( purgeSink.getCount() > 0 ) {
-          logger.debug("purged", purgeSink.getCount());
+        Sequence seq = new Sequence.Builder(x)
+          .setArgs(new Sink[] {count, purgeSink})
+          .build();
+        dao.select(seq);
+        if ( count.getValue() > 0 ) {
+          Loggers.logger(x, this).debug("purged", count.getValue());
         }
       } catch ( Throwable t ) {
         pm.error(x, t);
-        logger.error(t);
+        Loggers.logger(x, this).error(t);
       } finally {
         pm.log(x);
       }

@@ -16,16 +16,16 @@ foam.ENUM({
       name: 'XXS',
       documentation: `
         Display for the smaller end of smartphone devices and smartphone portrait screens:
-        Min-width @ 0px, max-width @ 320px and an 8 column grid
+        Min-width @ 0px, max-width @ 320px and an 4 column grid
       `,
       minWidth: 0,
-      cols: 8
+      cols: 4
     },
     {
       name: 'XS',
       documentation: `
         Display for the regular end of smartphone devices
-        Min-width @ 320px, max-width @ 576px, and an 8 column grid
+        Min-width @ 320px, max-width @ 576px, and an 6 column grid
       `,
       minWidth: 320,
       cols: 6

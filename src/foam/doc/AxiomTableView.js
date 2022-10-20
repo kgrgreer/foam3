@@ -8,16 +8,7 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomTableView',
   extends: 'foam.u2.view.UnstyledTableView',
-  properties: [
-    {
-      name: 'editColumnsEnabled',
-      value: false,
-    },
-    {
-      name: 'disableUserSelection',
-      value: true,
-    },
-  ],
+
   css: `
     ^ {
       border-collapse: collapse;
@@ -35,7 +26,7 @@ foam.CLASS({
       background-color: #f6f9f9;
     }
     ^ tbody > tr:nth-child(even) {
-      background-color: #ffffff;
+      background-color: $white;
     }
     ^ td {
       vertical-align: top;
@@ -44,5 +35,28 @@ foam.CLASS({
     ^documentation {
       margin: 3px 10px 2px 0px;
     }
-  `
+  `,
+
+  properties: [
+    {
+      name: 'editColumnsEnabled',
+      value: false
+    },
+    {
+      name: 'disableUserSelection',
+      value: true
+    }
+  ],
+
+  methods: [
+    function render() {
+      /** Temporary implementation while CSS is broken for UnstyledTableView. Remove when fixed. **/
+      this.start('table').
+        start('tr').start('td').attrs({width: '250px'}).add('Class').end().start('td').add('Name').end().end().
+        select(this.data, function(a) {
+          this.start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().end();
+        }).
+      end();
+    }
+  ]
 });

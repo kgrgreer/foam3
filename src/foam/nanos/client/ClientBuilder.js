@@ -67,7 +67,15 @@ foam.CLASS({
             package:    'foam.nanos.client',
             name:       'Client',
             exports:    [],
-            properties: []
+            constants: { eagerClients_: [] },
+            properties: [
+            ],
+            methods: [
+              function init() {
+                // Wake up any eager clients
+                this.EAGER_CLIENTS_.forEach(c => this[c]);
+              }
+            ]
           };
 
           var references = [];
@@ -87,14 +95,14 @@ foam.CLASS({
             });
 
             var version = appConfig.version;
-            if ( 'CLIENT_VERSION' in localStorage ) {
-              var oldVersion = localStorage.CLIENT_VERSION;
+            if ( 'CLIENT_VERSION' in foam.localStorage ) {
+              var oldVersion = foam.localStorage.CLIENT_VERSION;
               if ( version != oldVersion ) {
-                localStorage.CLIENT_VERSION = version;
+                foam.localStorage.CLIENT_VERSION = version;
                 location.reload(true);
               }
             } else {
-              localStorage.CLIENT_VERSION = version;
+              foam.localStorage.CLIENT_VERSION = version;
             }
           });
 
@@ -104,8 +112,10 @@ foam.CLASS({
             query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
           }
 
+          let nspec = foam.nanos.boot.NSpec;
+
           self.nSpecDAO.where(query).select(
-            foam.mlang.Expressions.create().PROJECTION(foam.nanos.boot.NSpec.NAME, foam.nanos.boot.NSpec.CLIENT))
+            foam.mlang.Expressions.create().PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
             .then(p => {
               foam.dao.ArrayDAO.create({array: p.array})
               .select({
@@ -114,9 +124,17 @@ foam.CLASS({
                     var serviceName = spec.name.substring(spec.name.lastIndexOf('.') + 1);
                     client.exports.push(serviceName);
 
-                    var json = JSON.parse(spec.client);
+                    var json;
+                    try {
+                      json = JSON.parse(spec.client);
+                    } catch (err) {
+                      console.error('invalid nspec.client', spec.client, err);
+                    }
 
-                    references = references.concat(foam.json.references(self.__context__, json));
+                    if ( ! spec.lazyClient )
+                      client.constants.eagerClients_.push(spec.name);
+
+                    //references = references.concat(foam.json.references(self.__context__, json));
 
                     client.properties.push({
                       name: spec.name,

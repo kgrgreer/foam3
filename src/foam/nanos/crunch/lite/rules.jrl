@@ -22,11 +22,11 @@ p({
     "daoKey":"capablePayloadDAO",
     "ruleGroup":"crunchLite",
     "operation":3,
-    "after":false,
+    "after":true,
     "action":{
         "class":"foam.nanos.crunch.lite.ruler.ReputDependantPayloads"
     },
-    "enabled":false,
+    "enabled":true,
     "saveHistory":false,
     "lifecycleState":1
 })

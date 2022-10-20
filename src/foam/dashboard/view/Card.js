@@ -28,7 +28,7 @@ foam.CLASS({
         SMALL:   [312, '-'],
         SMEDIUM: [312, 358],
         MEDIUM:  [424, 356],
-        LMEDIUM: [624, 528],
+        LMEDIUM: [570, 450],
         LARGE:   [936, 528],
         XLARGE:  [1580, 698],
       }
@@ -59,14 +59,17 @@ foam.CLASS({
         // 70 is height of header as dictated by the ^header CSS class
         return height - 60;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'cardData'
     }
   ],
   css: `
     ^ {
       border-radius: 10px;
-      background: white;
-      margin: 8px;
-      box-shadow: 3px 8px 6px -2px #cccccc;
+      background: $white;
+      box-shadow: 3px 8px 6px -2px $grey300;;
     }
 
     ^header {
@@ -83,7 +86,7 @@ foam.CLASS({
     }
   `,
   methods: [
-    function render() {
+    function init() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
         this.data.update();
       }.bind(this)));
@@ -94,29 +97,28 @@ foam.CLASS({
       this.
         style({
           width: this.slot(function(data$mode, width) {
-            return data$mode == 'config' ? 'initial' : ( width + 'px' );
+            return data$mode == 'config' ? 'inherit' : ( width + 'px' );
           }),
           height: this.slot(function(data$mode, height) {
-            return data$mode == 'config' ? 'initial' : ( height + 'px' );
+            return data$mode == 'config' ? 'inherit' : ( height + 'px' );
           })
         }).
         addClass(this.myClass()).
         start('div').
         addClass(this.myClass('header')).
+        show(!!this.data.label || !!this.data.configView).
         start().
           style({ float: 'left' }).
           add(this.data.label$).
         end().
         start().
           style({ float: 'right' }).
-          add(this.data.configView$).
+          tag(this.data.configView).
         end().
         end('div').
         start('div').
         addClass(this.myClass('content')).
-        tag(this.slot(function(data$currentView) {
-          return foam.u2.ViewSpec.createView(data$currentView, null, this, this.__subSubContext__);
-        })).
+          tag('div', null, this.content$).
         end('div');
     }
   ]

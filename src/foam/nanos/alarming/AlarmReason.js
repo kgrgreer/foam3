@@ -17,6 +17,8 @@ foam.ENUM({
     { name: 'TRANSACTION', label: 'Transaction has been in an unexpected state for too long' },
     { name: 'NSF', label: 'Not sufficient funds' },
     { name: 'UNSUPPORTED', label: 'Unsupported request' },
-    { name: 'CONFIGURATION', label: 'Invalid Configuration' }
+    { name: 'CONFIGURATION', label: 'Invalid Configuration' },
+    { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' },
+    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' }
   ]
 });

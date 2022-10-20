@@ -11,7 +11,7 @@
 
    documentation: 'Display PM totalTime as a simple colour bar.',
 
-   imports: [ 'maxTotalTime' ],
+   imports: [ 'maxTotalTime?' ],
 
    properties: [
      [ 'totalTime', 100 ],
@@ -21,6 +21,7 @@
      {
        name: 'temperature',
        expression: function(totalTime, maxTotalTime) {
+         if ( ! maxTotalTime ) return 0;
          return totalTime >= maxTotalTime ? 1 : totalTime/maxTotalTime;
        }
      }

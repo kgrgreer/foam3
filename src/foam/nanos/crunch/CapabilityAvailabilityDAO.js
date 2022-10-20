@@ -20,12 +20,15 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
+    'foam.nanos.theme.Theme',
     'foam.core.X',
     'foam.core.Detachable',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    
+    'static foam.mlang.MLang.*'
   ],
 
   documentation: `
@@ -51,8 +54,10 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
+        Theme theme = (Theme) x.get("theme");
         Capability capability = (Capability) getDelegate().find_(x, id);
-        if ( capability == null || ! f(x, capability) ) {
+
+        if ( capability == null || ! f(x, capability) || ( theme != null && theme.isCapabilityRestricted(capability.getId()) ) ) {
           return null;
         }
         return capability;
@@ -61,6 +66,12 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
+        Theme theme = (Theme) x.get("theme");
+        if ( theme != null && theme.getRestrictedCapabilities() != null ) {
+          return getDelegate()
+            .where(NOT(IN(Capability.ID, theme.getRestrictedCapabilities())))
+            .select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
+        }
         return getDelegate().select_(x, sink, skip, limit, order, augmentPredicate(x, predicate));
       `
     },

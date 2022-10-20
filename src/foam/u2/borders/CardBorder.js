@@ -13,12 +13,12 @@ foam.CLASS({
     ^ {
       min-height: 60px;
 
-      background-color: #ffffff;
-      border: solid 1px #e7eaec;
+      background-color: $white;
+      border: solid 1px $grey300;
       border-radius: 5px;
 
       padding: 16px;
-      
+
       transition: all 0.2s linear;
     }
   `,

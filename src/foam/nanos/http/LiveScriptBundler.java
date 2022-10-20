@@ -38,11 +38,11 @@ public class LiveScriptBundler
   protected boolean scheduled_;
 
   // Configuration
-  protected static final String FOAM_BIN_PATH = "./tools/js_build/foam-bin.js";
-  protected static final String JS_BUILD_PATH = "./tools/js_build/build.js";
+  protected static final String JS_BUILD_PATH = "./foam3/tools/genjs.js";
   protected static final String GENJAVA_SRC_PATH = "build/src/java";
   protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
   protected static final String GENJAVA_OUTPUT_PATH = "tools/classes.js";
+  protected String[] binFiles = { "./foam-bin.js" };
 
   // Modified files
   protected StringJoiner modified_;
@@ -58,6 +58,10 @@ public class LiveScriptBundler
 
   public void setX(X x) {
     x_ = x;
+  }
+
+  public void setBinFiles(String[] v) {
+    this.binFiles = v;
   }
 
   public LiveScriptBundler() {
@@ -87,13 +91,9 @@ public class LiveScriptBundler
             return CONTINUE;
           }
 
-          // Find any file named files.js
+          // Find any file named pom.js
           String filename = path.getFileName().toString();
-          if (
-            filename.equals("files.js") ||
-            filename.equals("nanos.js") ||
-            filename.equals("support.js")
-          ) {
+          if ( filename.equals("pom.js") ) {
             // Locate the closest `src` folder if one exists
             for ( int i = path.getNameCount()-1; i >= 0; i-- ) {
               String dirname = path.getName(i).getFileName().toString();
@@ -153,15 +153,18 @@ public class LiveScriptBundler
     try {
       log_("START", "Building javascript... (JS)");
 
-      Process        p  = new ProcessBuilder(JS_BUILD_PATH).start();
+      Process        p  = new ProcessBuilder("node", JS_BUILD_PATH).start();
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String         line;
       while ( (line = br.readLine()) != null ) {
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
-      javascriptBuffer_ = contents;
+      StringBuilder sb = new StringBuilder();
+      for ( String path : binFiles ) {
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
+      }
+      javascriptBuffer_ = sb.toString();
       log_("DONE", "JS");
     } catch (IOException e) {
       log_("ERROR", e.getMessage());
@@ -183,8 +186,11 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
-      javascriptBuffer_ = contents;
+      StringBuilder sb = new StringBuilder();
+      for ( String path : binFiles ) {
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
+      }
+      javascriptBuffer_ = sb.toString();
       log_("DONE", "JS");
     } catch (IOException e) {
       log_("ERROR", e.getMessage());
@@ -204,8 +210,11 @@ public class LiveScriptBundler
         log_("JS", "js> " + line);
       }
 
-      String contents = new String(Files.readAllBytes(Paths.get(FOAM_BIN_PATH)));
-      javascriptBuffer_ = contents;
+      StringBuilder sb = new StringBuilder();
+      for ( String path : binFiles ) {
+        sb.append(new String(Files.readAllBytes(Paths.get(path))));
+      }
+      javascriptBuffer_ = sb.toString();
 
       modified_ = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]");
       modified_.setEmptyValue("{\"modified\":[]");

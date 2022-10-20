@@ -38,9 +38,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(foam.nanos.auth.ServiceProvider.ID, /^[a-z0-9]+$/);
-          },
+          query: 'id~/^[a-z0-9]+$/',
           errorString: 'Invalid character(s) in id.'
         }
       ]
@@ -71,6 +69,13 @@ foam.CLASS({
       class: 'Long',
       name: 'anonymousUser',
       documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'generalCapability',
+      documentation: `Capability that needs to be granted to proceed to the app.
+      Checked for status in ApplicationController.`
     }
   ],
 
@@ -84,7 +89,7 @@ foam.CLASS({
     {
       name: 'setupSpid',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       documentation: `
@@ -163,7 +168,7 @@ foam.CLASS({
     {
       name: 'invalidateDependents',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' },
         { name: 'spid', javaType: 'String' }
       ],

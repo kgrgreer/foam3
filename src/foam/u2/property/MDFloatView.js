@@ -13,7 +13,7 @@ foam.CLASS({
   documentation: 'View for editing Float Properties.',
 
   css: `
-    ^:read-only {
+    ^:read-only:not(:disabled) {
       border: none;
       background: rgba(0,0,0,0);
     }

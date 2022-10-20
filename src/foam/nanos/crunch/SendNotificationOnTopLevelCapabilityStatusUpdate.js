@@ -41,7 +41,7 @@ foam.CLASS({
           var subjectX = x.put("subject", subject);
           var capabilityDAO = ((DAO) subjectX.get("capabilityDAO")).inX(subjectX);
           var cap = (Capability) capabilityDAO.find(junction.getTargetId());
-          if ( cap == null ) return;
+          if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return;
 
           if ( ! cap.getVisibilityPredicate().f(subjectX) ) return;
 

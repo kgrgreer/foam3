@@ -314,8 +314,7 @@ foam.CLASS({
   package: 'foam.parse',
   name: 'Sequence0',
 
-  documentation: `Parses the parser properties sequentially,
-    without returning value`,
+  documentation: 'Parses the parser properties sequentially, without returning value',
 
   properties: [
     {
@@ -350,8 +349,7 @@ foam.CLASS({
   package: 'foam.parse',
   name: 'Sequence1',
 
-  documentation: `Parses the parser properties sequentially, returning
-    the n(th) property value parsed.`,
+  documentation: 'Parses the parser properties sequentially, returning the n(th) property value parsed.',
 
   properties: [
     {
@@ -380,7 +378,7 @@ foam.CLASS({
     function toString() {
       var args = this.args;
       var strs = new Array(args.length);
-      for ( var i = 0; i < args.length; i++ ) {
+      for ( var i = 0 ; i < args.length ; i++ ) {
         strs[i] = args[i].toString();
       }
       return 'seq1(' + this.n + ', ' + strs.join(', ') + ')';
@@ -396,15 +394,19 @@ foam.CLASS({
 
   documentation: 'Refers to an optional parser property.',
 
+  properties: [
+    { name: 'default', value: null }
+  ],
+
   methods: [
     function parse(ps, obj) {
-      return ps.apply(this.p, obj) || ps.setValue(null);
+      return ps.apply(this.p, obj) || ps.setValue(this.default);
     },
 
     function toString() {
       return 'opt(' + this.SUPER() + ')';
     }
-  ],
+  ]
 });
 
 
@@ -414,7 +416,7 @@ foam.CLASS({
 
   documentation: `Matches any char within the parse stream.
     Often used under the else clause of the 'not' parser
-    property. Ex. \`not(',', anyChar())\``,
+    property. Ex. 'not(',', anyChar())'`,
 
   axioms: [ foam.pattern.Singleton.create() ],
 
@@ -496,8 +498,7 @@ foam.CLASS({
   package: 'foam.parse',
   name: 'Range',
 
-  documentation: `Matches against a range of chars specified
-    with from/to. Ex. \`range('0', '9')\` for digits`,
+  documentation: "Matches against a range of chars specified with from/to. Ex. range('0', '9') for digits",
 
   properties: [
     {
@@ -662,7 +663,7 @@ foam.CLASS({
 
   documentation: `Repeats matching to a parser property,
     without returning a value. Useful for whitespace.
-    Ex. \`repeat0(sym('white'))\``,
+    Ex. 'repeat0(sym('white'))'`,
 
   methods: [
     function parse(ps, obj) {
@@ -703,7 +704,7 @@ foam.CLASS({
   documentation: `Ensures the leading char isn't the parser
     property specified. If not, attempts to parse with the
     else clause parser property. Useful for matching all but
-    a particular character. Ex. \`not('"', anyChar())\``,
+    a particular character. Ex. 'not('"', anyChar())'`,
 
   properties: [
     {
@@ -735,6 +736,14 @@ foam.CLASS({
   name: 'ParserWithAction',
   extends: 'foam.parse.ParserDecorator',
 
+  constants: [
+    {
+      type: 'Object',
+      name: 'NO_PARSE',
+      factory: function() { return {}; }
+    }
+  ],
+
   properties: [
     'action'
   ],
@@ -742,9 +751,11 @@ foam.CLASS({
   methods: [
     function parse(ps, obj) {
       ps = ps.apply(this.p, obj);
-      return ps ?
-        ps.setValue(this.action(ps.value)) :
-        undefined;
+      if ( !!! ps ) return undefined;
+      var ret = this.action(ps.value);
+      return ret === foam.parse.ParserWithAction.NO_PARSE ?
+        undefined :
+        ps.setValue(ret);
     }
   ]
 });
@@ -760,7 +771,7 @@ foam.CLASS({
     {
       name: 'name',
       final: true
-    },
+    }
   ],
 
   methods: [
@@ -917,9 +928,10 @@ foam.CLASS({
       });
     },
 
-    function optional(p) {
+    function optional(p, opt_default) {
       return this.Optional.create({
-        p: p
+        p: p,
+        default: opt_default || null
       });
     },
 
@@ -1230,7 +1242,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.parse',
   name: 'ImperativeGrammar',
-  extends: 'foam.parse.Grammar',
+  extends: 'foam.parse.Grammar'
 });
 
 /*

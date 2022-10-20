@@ -530,7 +530,7 @@ if ( eFactory && (
             return;
           }
 
-          var oldValue = this.instance_[name] ;
+          var oldValue = this.instance_[name];
           this.instance_[name] = newValue;
           this.pubPropertyChange_(prop, oldValue, newValue);
         }

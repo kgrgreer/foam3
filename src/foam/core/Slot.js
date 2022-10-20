@@ -20,6 +20,9 @@ foam.CLASS({
   name: 'Slot', // ???: Rename AbstractSlot or make an Interface
 
   requires: [
+    'foam.core.internal.And',
+    'foam.core.internal.Or',
+    'foam.core.internal.Not',
     'foam.core.internal.SubSlot'
   ],
 
@@ -161,6 +164,18 @@ foam.CLASS({
       };
       l();
       return other.sub(l);
+    },
+
+    function and(other) {
+      return this.And.create({ a$: this, b$: other }).output$;
+    },
+
+    function or(other) {
+      return this.Or.create({ a$: this, b$: other }).output$;
+    },
+
+    function not() {
+      return this.Not.create({ a$: this }).output$;
     },
 
     /**
@@ -361,6 +376,55 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'Or',
+
+  properties: [
+    'a',
+    'b',
+    {
+      name: 'output',
+      expression: function (a, b) {
+        return a || b;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'And',
+
+  properties: [
+    'a',
+    'b',
+    {
+      name: 'output',
+      expression: function (a, b) {
+        return a && b;
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'Not',
+
+  properties: [
+    'a',
+    {
+      name: 'output',
+      expression: function(a) {
+        return ! a;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
   package: 'foam.core',
   name: 'ConstantSlot',
 
@@ -480,19 +544,29 @@ foam.CLASS({
     function set() { /* nop */ },
     function subToArgs_(args) {
       this.cleanup();
+      const subs = args.map(a => a.sub(this.invalidate));
 
-      var cleanup = foam.core.FObject.create();
-
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        cleanup.onDetach(args[i].sub(this.invalidate));
-      }
-
-      this.cleanup_ = cleanup;
+      this.cleanup_ = {
+        detach: function() {
+          for ( var i = 0 ; i < subs.length ; i++ ) {
+            subs[i].detach();
+          }
+        }
+      };
+    },
+    function detach() {
+      this.cleanup();
+      this.SUPER();
     }
   ],
 
   listeners: [
-    function cleanup() { this.cleanup_ && this.cleanup_.detach(); },
+    function cleanup() {
+      if ( this.cleanup_ ) {
+        this.cleanup_.detach();
+        this.cleanup_ = null;
+      }
+    },
     function invalidate() { this.clearProperty('value'); }
   ]
 });

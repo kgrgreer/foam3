@@ -8,23 +8,15 @@ foam.INTERFACE({
   package: 'foam.lib.parse',
   name: 'Parser',
 
+  proxy: true,
+
   documentation: 'Parser interface',
 
   methods: [
     {
       name: 'parse',
       type: 'foam.lib.parse.PStream',
-      args: [
-        {
-          name: 'ps',
-          type: 'foam.lib.parse.PStream'
-        },
-        {
-          name: 'x',
-          // ParserContext is not modelled to refer to java type directly
-          javaType: 'foam.lib.parse.ParserContext'
-        }
-      ]
+      args: 'foam.lib.parse.PStream ps, foam.lib.parse.ParserContext x'
     }
   ]
 });

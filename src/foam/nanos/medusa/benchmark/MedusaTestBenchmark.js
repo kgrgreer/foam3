@@ -55,16 +55,17 @@ foam.CLASS({
   methods: [
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
     MedusaTestObject test = new MedusaTestObject();
     test.setDescription("MedusaTestObject");
-    ((DAO) x.get(getServiceName())).put(test);
+    test.setData("MedusaTestObject");
+    test = (MedusaTestObject) ((DAO) x.get(getServiceName())).put(test);
+    // create an update for later compaction testing
+    test = (MedusaTestObject) test.fclone();
+    test.setDescription(test.getDescription()+"-"+test.getDescription());
+    test.setData(test.getData()+"-"+test.getData());
+    test = (MedusaTestObject) ((DAO) x.get(getServiceName())).put(test);
       `
     }
   ]

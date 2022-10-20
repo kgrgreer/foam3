@@ -14,6 +14,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.log.LogLevel',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.notification.Notification',
     'foam.nanos.theme.Theme',
@@ -43,7 +45,8 @@ foam.CLASS({
         return alarm;
       }
 
-      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) &&
+           ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
         return alarm;
       }
 
@@ -66,12 +69,14 @@ foam.CLASS({
       body.append(alarm.getIsActive() ? "Active": "Cleared");
       body.append("\\nseverity: ");
       body.append(alarm.getSeverity().getLabel());
+      body.append("\\nreason: ");
+      body.append(alarm.getReason().getLabel());
       body.append("\\nhost: ");
       body.append(alarm.getHostname());
       body.append("\\nstarted: ");
       body.append(alarm.getCreated().toString());
-      body.append("\\ncleared: ");
       if ( ! alarm.getIsActive() ) {
+        body.append("\\ncleared: ");
         body.append(alarm.getLastModified().toString());
       }
       body.append("\\ninfo: ");
@@ -81,9 +86,12 @@ foam.CLASS({
       args.put("alarm.name", alarm.getName());
       args.put("alarm.status", alarm.getIsActive() ? "Active" : "Cleared");
       args.put("alarm.severity", alarm.getSeverity().getLabel().toUpperCase());
+      args.put("alarm.reason", alarm.getReason().getLabel());
       args.put("alarm.host", alarm.getHostname());
       args.put("alarm.started", alarm.getCreated().toString());
-      args.put("alarm.cleared", alarm.getIsActive() ? "" : alarm.getLastModified().toString());
+      if ( ! alarm.getIsActive() ) {
+        args.put("alarm.cleared", alarm.getLastModified().toString());
+      }
       args.put("alarm.note", alarm.getNote());
 
       // Notifications are ServiceProviderAware

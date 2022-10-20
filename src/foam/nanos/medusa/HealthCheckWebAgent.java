@@ -31,7 +31,6 @@ public class HealthCheckWebAgent
     if ( support != null ) {
       ElectoralService electoral = (ElectoralService) x.get("electoralService");
       ClusterConfig config = (ClusterConfig) ((foam.dao.DAO) x.get("clusterConfigDAO")).find(support.getConfigId());
-      ReplayingInfo info = config.getReplayingInfo();
 
       if ( ! config.getEnabled() ) {
         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -49,8 +48,7 @@ public class HealthCheckWebAgent
             out.println("up");
           } else if ( config.getStatus() != Status.ONLINE &&
                       config.getRegionStatus() == RegionStatus.ACTIVE &&
-                      config.getZone() == 0 &&
-                      info != null ) {
+                      config.getZone() == 0 ) {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             if ( ! foam.util.SafetyUtil.isEmpty(config.getErrorMessage()) ) {
               out.println("failed");

@@ -24,10 +24,15 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',
-    'user'
+    'subject'
+  ],
+
+  exports: [
+    'as script'
   ],
 
   javaImports: [
@@ -315,6 +320,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.id;
+      },
+      javaCode: `
+        return getId();
+      `
+    },
+    {
       name: 'createInterpreter',
       args: [
         { name: 'x', type: 'Context' },
@@ -326,7 +341,8 @@ foam.CLASS({
         Language l = getLanguage();
         if ( l == foam.nanos.script.Language.JSHELL ) {
           JShell jShell = new JShellExecutor().createJShell(ps);
-          Script.X_HOLDER[0] = x.put("out",  ps);
+          Script.X_HOLDER[0] = x.put("out",  ps)
+            .put("currentScript", this);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
           return jShell;
@@ -368,7 +384,7 @@ foam.CLASS({
           this.output += Array.from(arguments).join('') + '\n';
         };
         try {
-          with ({ log: log, print: log, x: this.__context__ })
+          with ({ log: log, print: log, x: this.__subContext__ })
             return Promise.resolve(eval('(async () => {' + this.code + '})()'));
         } catch (err) {
           this.output += err;
@@ -389,17 +405,15 @@ foam.CLASS({
 
         try {
           Thread.currentThread().setPriority(getPriority());
-
+          setLastRun(new Date());
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
             shell.setOut(ps);
             shell.eval(getCode());
           } else if ( l == foam.nanos.script.Language.JSHELL ) {
-            String print = null;
             JShell jShell = (JShell) createInterpreter(x,ps);
-            print = new JShellExecutor().execute(x, jShell, getCode());
-            ps.print(print);
+            new JShellExecutor().execute(x, jShell, getCode(), true);
           } else {
             throw new RuntimeException("Script language not supported");
           }
@@ -413,25 +427,23 @@ foam.CLASS({
           logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
           throw thrown;
         } finally {
-          setLastRun(new Date());
           setLastDuration(pm.getTime());
           ps.flush();
           setOutput(baos.toString());
 
           Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
-          if ( thrown == null ) {
-            ScriptEvent event = new ScriptEvent(x);
-            event.setLastRun(this.getLastRun());
-            event.setLastDuration(this.getLastDuration());
-            event.setOutput(this.getOutput());
-            event.setScriptType(this.getClass().getSimpleName());
-            event.setOwner(this.getId());
-            event.setScriptId(this.getId());
-            event.setHostname(System.getProperty("hostname", "localhost"));
-            event.setClusterable(this.getClusterable());
-            ((DAO) x.get(getEventDaoKey())).put(event);
-          }
+          ScriptEvent event = new ScriptEvent(x);
+          event.setLastRun(this.getLastRun());
+          event.setLastDuration(this.getLastDuration());
+          event.setOutput(this.getOutput());
+          if ( thrown != null ) event.setLastStatus(ScriptStatus.ERROR);
+          event.setScriptType(this.getClass().getSimpleName());
+          event.setOwner(this.getId());
+          event.setScriptId(this.getId());
+          event.setHostname(System.getProperty("hostname", "localhost"));
+          event.setClusterable(this.getClusterable());
+          ((DAO) x.get(getEventDaoKey())).put(event);
         }
     `
     },
@@ -441,9 +453,7 @@ foam.CLASS({
         var self = this;
         var interval = setInterval(function() {
           self.__context__[self.daoKey].find(self.id).then(function(script) {
-            if ( script.status === self.ScriptStatus.UNSCHEDULED
-              || script.status === self.ScriptStatus.ERROR
-            ) {
+            if ( script.status === self.ScriptStatus.UNSCHEDULED || script.status === self.ScriptStatus.ERROR ) {
               self.copyFrom(script);
               clearInterval(interval);
 
@@ -465,13 +475,14 @@ foam.CLASS({
               var notification = self.Notification.create();
               notification.userId = self.subject && self.subject.realUser ?
                 self.subject.realUser.id : self.user.id;
+              notification.severity = foam.log.LogLevel.INFO;
               if ( script.status === self.ScriptStatus.UNSCHEDULED ) {
                 notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_COMPLETED;
               } else {
                 notification.toastMessage = self.cls_.name + ' ' + self.EXECUTION_FAILED;
+                notification.severity = foam.log.LogLevel.WARN;
               }
               notification.toastState = self.ToastState.REQUESTED;
-              notification.severity = foam.log.LogLevel.INFO;
               notification.transient = true;
               self.__subContext__.myNotificationDAO.put(notification);
             }
@@ -511,7 +522,7 @@ foam.CLASS({
           self.__subContext__.myNotificationDAO.put(notification);
           this.__context__[this.daoKey].put(this).then(function(script) {
             self.copyFrom(script);
-            if ( script.status === self.ScriptStatus.SCHEDULED ) {
+            if ( script.status === self.ScriptStatus.SCHEDULED || script.status === self.ScriptStatus.RUNNING ) {
               self.poll();
             }
           }).catch(function(e) {
@@ -528,7 +539,7 @@ foam.CLASS({
         } else {
           var notification = this.Notification.create();
           notification.userId = this.subject && this.subject.realUser ?
-            this.subject.realUser.id : this.user.id;
+            this.subject.realUser.id : this.subject.user.id;
           notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_INVOKED;
           notification.toastState = this.ToastState.REQUESTED;
           notification.severity = foam.log.LogLevel.INFO;
@@ -542,7 +553,7 @@ foam.CLASS({
               this.__context__[this.daoKey].put(this);
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.user.id;
+                this.subject.realUser.id : this.subject.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_COMPLETED;
               notification.toastState = this.ToastState.REQUESTED;
               notification.severity = foam.log.LogLevel.INFO;
@@ -552,7 +563,7 @@ foam.CLASS({
             (e) => {
               var notification = this.Notification.create();
               notification.userId = this.subject && this.subject.realUser ?
-                this.subject.realUser.id : this.user.id;
+                this.subject.realUser.id : this.subject.user.id;
               notification.toastMessage = this.cls_.name + ' ' + this.EXECUTION_FAILED;
               notification.toastSubMessage = e.message || e;
               notification.toastState = this.ToastState.REQUESTED;

@@ -25,26 +25,47 @@ foam.CLASS({
       }
     },
     {
-      name: 'xAxis',
-      postSet: function(_, v) {
-        if ( this.chart ) {
-          this.chart.options.scales.xAxes = [v];
-        }
+      name: 'options',
+      postSet: function() {
+        this.update();
       }
     },
+    {
+      name: 'localOptions',
+      factory: function() {
+        return {
+          responsive: false,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          stacked: false,
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+            }
+          }
+        };
+      }
+    },
+    // {
+    //   name: 'xAxis',
+    //   postSet: function(_, v) {
+    //     if ( this.chart ) {
+    //       this.chart.options.scales.xAxes = [v];
+    //     }
+    //   }
+    // },
     {
       name: 'config',
       factory: function() {
         return {
           type: 'line',
           data: this.data,
-          options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-              xAxes: this.xAxis ? [ this.xAxis ] : []
-            }
-          }
+          options: this.allOptions()
         };
       }
     }
@@ -57,6 +78,9 @@ foam.CLASS({
     },
     function paintSelf(x) {
       this.chart.render();
+    },
+    function allOptions() {
+      return this.options && new Map([...new Map(Object.entries(this.localOptions)), ...new Map(Object.entries(this.options))]) || this.localOptions;
     }
   ],
   listeners: [
@@ -64,12 +88,14 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       on: [
-        'this.propertyChange.data'
+        'this.propertyChange.data',
+        'this.propertyChange.options'
       ],
       code: function() {
         if ( ! this.chart ) return;
 
         this.chart.data = this.data;
+        this.chart.options = this.allOptions();
         this.chart.update();
       }
     }

@@ -51,7 +51,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^tab.selected {
-      border-bottom: 3px solid /*%PRIMARY3%*/ #406dea;
+      border-bottom: 3px solid $primary400;
     }
   `
 });
@@ -62,9 +62,9 @@ foam.CLASS({
   extends: 'foam.u2.UnstyledTabs',
   css: `
     ^tabRow {
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       border-radius: 4px 4px 0 0;
-      border-bottom: 1px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 1px solid $grey100;
       display: flex;
       gap: 12px 24px;
       padding: 12px;
@@ -75,19 +75,86 @@ foam.CLASS({
       align-items: center;
       background: none;
       border-radius: 4px;
-      color: /*%GREY1%*/ #494F59;
+      color: $grey700;
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
     ^tab:hover {
-      background: /*%PRIMARY5%*/ #C6D2FF;
+      background: $primary50;
       cursor: pointer;
     }
     ^tab.selected {
-      background: /*%PRIMARY5%*/ #C6D2FF;
-      color: /*%PRIMARY1%*/ #202341;
+      background: $primary50;
+      color: $primary700;
       font-weight: 600;
+    }
+  `
+});
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'SegmentedTabs',
+  extends: 'foam.u2.UnstyledTabs',
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabPrimaryColor',
+      value: '$primary400'
+    }
+  ],
+
+  css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-height: 100%;
+    }
+    ^content{
+      flex: 1;
+      display: flex;
+    }
+    /* hacky as U2 add() adds an extra div, remove with U3 */
+    ^content > * {
+      flex: 1;
+      position: relative;
+    }
+    ^tabRow {
+      flex: 0 1 auto;
+      border-radius: 3px;
+      border: 1px solid $grey100;
+      display: flex;
+      gap: 8px;
+      padding: 0.4rem;
+      white-space: nowrap;
+      justify-content: space-evenly;
+      background-color: $primary50;
+      width: 25rem;
+      align-self: center;
+    }
+    ^tab {
+      border-radius: 3px;
+      align-items: center;
+      background: none;
+      border-radius: 4px;
+      color: $tabPrimaryColor;
+      display: flex;
+      justify-content: center;
+      padding: 7px 12px;
+      flex: 1 1 0;
+      font-weight: 500;
+    }
+    ^tab:hover {
+      background: $tabPrimaryColor$hover;
+      color: $tabPrimaryColor$foreground;
+      cursor: pointer;
+    }
+    ^tab.selected {
+      color: $tabPrimaryColor$foreground;
+      font-weight: 600;
+      background-color: $tabPrimaryColor;
     }
   `
 });

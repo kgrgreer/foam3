@@ -30,24 +30,23 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.CheckRootIdAgent',
     'foam.u2.crunch.wizardflow.GrantedEditAgent',
     'foam.u2.crunch.wizardflow.CheckPendingAgent',
     'foam.u2.crunch.wizardflow.CheckNoDataAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.LoadCapabilityGraphAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.GraphWizardletsAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
     'foam.u2.crunch.wizardflow.FilterGrantModeAgent',
     'foam.u2.crunch.wizardflow.WizardStateAgent',
     'foam.u2.crunch.wizardflow.RequirementsPreviewAgent',
     'foam.u2.crunch.wizardflow.AutoSaveWizardletsAgent',
-    'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.PutFinalPayloadsAgent',
-    'foam.u2.crunch.wizardflow.DetachAgent',
     'foam.u2.crunch.wizardflow.TestAgent',
     'foam.u2.crunch.wizardflow.LoadTopConfig',
     'foam.u2.crunch.wizardflow.CapableDefaultConfigAgent',
@@ -58,12 +57,22 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
-    'foam.u2.crunch.wizardflow.SpinnerAgent',
-    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
+    'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
+    'foam.u2.wizard.WizardStatus',
+    'foam.u2.wizard.agents.ConfigureFlowAgent',
+    'foam.u2.wizard.agents.DeveloperModeAgent',
+    'foam.u2.wizard.agents.StepWizardAgent',
+    'foam.u2.wizard.agents.CreateControllerAgent',
+    'foam.u2.wizard.agents.DetachAgent',
+    'foam.u2.wizard.agents.SpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.DetachSpinnerAgent',
+    'foam.u2.wizard.agents.NullEventHandlerAgent',
+    'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
-    'foam.u2.borders.MarginBorder',
+    'foam.u2.borders.SpacingBorder',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.dialog.Popup'
   ],
@@ -99,7 +108,8 @@ foam.CLASS({
         // return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
         return false;
       }
-    }
+    },
+    'lastActiveWizard'
   ],
 
   methods: [
@@ -115,6 +125,8 @@ foam.CLASS({
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
+          .add(this.DeveloperModeAgent)
+          .add(this.NullEventHandlerAgent)
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
@@ -135,6 +147,7 @@ foam.CLASS({
           .callIf(this.debugMode, function () {
             this.add(self.DebugAgent)
           })
+          .add(this.CreateControllerAgent)
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
@@ -157,19 +170,50 @@ foam.CLASS({
         form of capabilities that are stored object-locally rather than in
         association with a user.
       `,
-      code: function createCapableWizardSequence(intercept, capable, x) {
+      code: function createCapableWizardSequence(intercept, capable, capabilityId, x) {
         x = x || this.__subContext__;
         x = x.createSubContext({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capable && capable.capabilityIds[0], x)
+        return this.createWizardSequence(capabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .addBefore('LoadTopConfig',this.CheckGrantedAgent)
+          .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
+          .add(this.MaybeDAOPutAgent)
+          ;
+      }
+    },
+    {
+      name: 'createTransientWizardSequence',
+      documentation: `
+        A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
+        To use this sequence, a context agent exporting rootCapabilityId should be inserted
+        before CapabilityAdaptAgent; this capability will be set as the requirement for a
+        new BaseCapable object that will be discarded at the end of the sequence.
+      `,
+      code: function createTransientWizardSequence(x) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+        return this.createWizardSequence('no-capability-id', x)
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
+          .remove('SkipGrantedAgent')
+          .remove('CheckRootIdAgent')
+          .remove('CheckPendingAgent')
+          .remove('CheckNoDataAgent')
+          .remove('AutoSaveWizardletsAgent')
+          .remove('SaveAllAgent')
+          .remove('WizardStateAgent') // does not make sense in transient wizards
+          .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
+          .remove('GrantedEditAgent')
+          .remove('CapabilityStoreAgent')
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
           .add(this.MaybeDAOPutAgent)
           ;
@@ -182,6 +226,7 @@ foam.CLASS({
         .remove('FilterGrantModeAgent')
         .remove('SkipGrantedAgent')
         .remove('RequirementsPreviewAgent')
+        .remove('CreateControllerAgent')
         .remove('StepWizardAgent')
         .remove('MaybeDAOPutAgent')
         .remove('PutFinalPayloadsAgent')
@@ -209,67 +254,114 @@ foam.CLASS({
         ;
     },
 
-    function handleIntercept(intercept) {
+    async function handleIntercept(intercept) {
       var self = this;
 
+      // TODO: determine why this is here
       intercept.capabilities.forEach((c) => {
         self.capabilityCache.set(c, false);
       });
 
-      // Allow zero or more promises to block this method
-      let p = Promise.resolve();
+      // Create context including the intercept object
+      let x = this.__subContext__.createSubContext({ intercept });
 
-      // Intercept view for regular user capability options
-      if ( intercept.capabilities.length > 1 ) {
-        p = p.then(() => {
-          return self.maybeLaunchInterceptView(intercept);
-        });
+      // Try inline intercept
+      if ( await this.maybeInlineIntercept(intercept) ) return;
+
+      if ( intercept.interceptType == intercept.InterceptType.COMPOSITE ) {
+        // TODO: (NP-7813) verify that intercept view still works
+        x = await self.maybeLaunchInterceptView(intercept);
+      } else if ( intercept.interceptType == intercept.InterceptType.UCJ ) {
+        const rootCapability = intercept.capabilities[0];
+        x = await self.createWizardSequence(rootCapability, x).execute();
+      } else if ( intercept.interceptType == intercept.InterceptType.CAPABLE ) {
+        x = await self.launchCapableWizard(intercept, x);
       }
-      else if ( intercept.capabilities.length > 0 ) {
-        p = p.then(() => {
-          return self.createWizardSequence(intercept.capabilities[0])
+      
+      const wizardController = x.wizardController;
+
+      if ( wizardController.status == this.WizardStatus.COMPLETED ) {
+        const returnObject = intercept.returnCapable || intercept.capables[0];
+        intercept.resolve(returnObject);
+        return;
+      }
+
+      if ( wizardController.status == this.WizardStatus.DISCARDED ) {
+        intercept.reject('cancelled by user');
+        return;
+      }
+
+      intercept.resend();
+    },
+
+    async function maybeInlineIntercept(intercept, wizardController) {
+      if ( ! wizardController ) wizardController = this.lastActiveWizard;
+      if ( ! this.canInlineIntercept(intercept, wizardController) ) {
+        return false;
+      }
+      await this.doInlineIntercept(intercept, wizardController);
+      return true;
+    },
+
+    function canInlineIntercept(intercept, wizardController) {
+      // This must be an intercept for Capable objects
+      if ( intercept.interceptType != intercept.InterceptType.CAPABLE ) {
+        return false;
+      }
+
+      // There must be a wizard
+      if ( ! wizardController ) wizardController = this.lastActiveWizard;
+      if ( ! wizardController ) return false;
+
+      // The wizard must be in progress
+      if ( wizardController.status !== this.WizardStatus.IN_PROGRESS ) {
+        return false;
+      }
+    
+      return true;
+    },
+
+    async function doInlineIntercept(intercept, wizardController) {
+      const capabilityIds = [];
+      for ( const capable of intercept.capables ) {
+        capabilityIds.push(...capable.capabilityIds);
+        for ( const capabilityId of capable.capabilityIds ) {
+          let x = wizardController.__subContext__.createSubContext({
+            capable, intercept,
+            rootCapability: capabilityId,
+            wizardlets: []
+          });
+          x = await this.Sequence.create(null, x)
+            .add(this.CapabilityAdaptAgent)
+            .add(this.LoadCapabilitiesAgent)
+            .add(this.LoadCapabilityGraphAgent)
+            .add(this.WAOSettingAgent, {
+              waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
+            })
+            .add(this.GraphWizardletsAgent)
             .execute();
-        });
-      }
 
-      let isCapable = intercept.capables.length > 0;
+          const lastWizardlet = x.wizardlets[x.wizardlets.length - 1];
+          lastWizardlet.wao = this.TopicWAO.create({
+            delegate: lastWizardlet.wao
+          });
 
-      // Wizard for Capable objects and required user capabilities
-      // (note: no intercept view; this case immediately invokes a wizard)
-      if ( isCapable ) {
-        p = p.then(x => {
-          if ( ! x || x.submitted ) {
-            return self.launchCapableWizard(intercept);
-          }
-          return x;
-        });
-      }
+          // When the last wizardlet of the intercept (entry capability) is
+          // saved the Capable will be put in its respective DAO. This also
+          // means the intercept invoker WILL NOT get the return object.
+          lastWizardlet.wao.saved.sub(async () => {
+            const targetDAO = x[intercept.daoKey];
+            await targetDAO.put(capable);
+          });
 
-      p = p.then(x => {
-        var isCompleted = x.submitted || x.cancelled;
+          // Resolve to current object - inline intercepts cannot provide
+          // the return object as the wizard must continue.
+          intercept.resolve(capable);
 
-        if ( isCapable ) {
-          intercept.capables[0].isWizardIncomplete = ! isCompleted;
-          if ( ! isCompleted ) {
-            intercept.resolve(intercept.capables[0]);
-            return;
-          }
-          intercept.returnCapable.isWizardIncomplete = ! isCompleted;
-          intercept.resolve(intercept.returnCapable);
-          return;
+          const wi = wizardController.wizardPosition.wizardletIndex;
+          wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
         }
-        intercept.resend();
-      })
-
-      p.catch(err => {
-        console.error(err); // do not remove
-        if (err.data.id == "foam.core.ClientRuntimeException" && err.data.exception.cause_) {
-          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message)
-        }
-        intercept.reject(err.data);
-      })
-
-      return p;
+      }
     },
 
     function maybeLaunchInterceptView(intercept) {
@@ -321,17 +413,17 @@ foam.CLASS({
     },
 
     // CRUNCH Lite Methods
-    function launchCapableWizard(intercept) {
+    function launchCapableWizard(intercept, x) {
       var p = Promise.resolve(true);
 
       intercept.capables.forEach(capable => {
-        var seq = this.createCapableWizardSequence(intercept, capable);
-        p = p.then(() => {
-          return seq.execute().then(x => {
-            return x;
+        capable.capabilityIds.forEach((c) => {
+          var seq = this.createCapableWizardSequence(intercept, capable, c, x);
+          p = p.then(() => {
+            return seq.execute().then(x => x);
           });
         });
-      })
+      });
 
       return p;
     }

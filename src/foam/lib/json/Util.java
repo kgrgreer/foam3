@@ -51,15 +51,10 @@ public class Util {
           dst.append("\\\"");
           break;
         default:
-          if ( c < ' ' ) {
+          if ( c < ' ' || c > '~' ) {
             start = copy(start, i, src, dst);
-            dst.append("\\u00");
-            char right = (char) (c & 0x0F + '0');
-            char left  = (char) ((c & 0xF0) >> 4 + '0');
-            if ( right > '9' ) right += 'A' - '9' - 1;
-            if ( left > '9'  ) left  += 'A' - '9' - 1;
-            dst.append(left);
-            dst.append(right);
+            dst.append("\\u");
+            dst.append(Integer.toHexString(c | 0x10000).substring(1));
           }
       }
     }

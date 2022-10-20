@@ -109,24 +109,24 @@ public class MDAO
 
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
-      state_ = index_.addIndex(state_, index);
+      setState(index_.addIndex(state_, index));
     }
   }
 
   /** Add an Index which is for a unique value. Use addIndex() if the index is not unique. **/
   public void addUniqueIndex(PropertyInfo... props) {
-    Index i = ValueIndex.instance();
-    for ( PropertyInfo prop : props ) i = new TreeIndex(prop, i);
-    addIndex(i);
+    Index idx = ValueIndex.instance();
+    for ( var i = props.length-1 ; i >= 0 ; i-- ) idx = new TreeIndex(props[i], idx);
+    addIndex(idx);
   }
 
   /** Add an Index which is for a non-unique value. The 'id' property is
    * appended to property list to make it unique.
    **/
   public void addIndex(PropertyInfo... props) {
-    Index i = new TreeIndex((PropertyInfo) this.of_.getAxiomByName("id"));
-    for ( PropertyInfo prop : props ) i = new TreeIndex(prop, i);
-    addIndex(i);
+    Index idx = new TreeIndex((PropertyInfo) this.of_.getAxiomByName("id"));
+    for ( var i = props.length-1 ; i >= 0 ; i-- ) idx = new TreeIndex(props[i], idx);
+    addIndex(idx);
   }
 
   synchronized Object getState() {
@@ -214,7 +214,7 @@ public class MDAO
     if ( simplePredicate instanceof Or ) {
       Sink dependSink = new ArraySink();
       // When we have groupBy, order, skip, limit such requirement, we can't do it separately so I replace a array sink to temporarily holde the whole data
-      //Then after the plan wa slelect we change it to the origin sink
+      // Then after the plan wa slelect we change it to the origin sink
       int length = ((Or) simplePredicate).getArgs().length;
       List<Plan> planList = new ArrayList<>();
       for ( int i = 0 ; i < length ; i++ ) {
@@ -228,9 +228,9 @@ public class MDAO
 
     if ( state != null && simplePredicate != null && simplePredicate != MLang.TRUE && plan.cost() > 10 && plan.cost() >= index_.size(state) ) {
       pm = new PM(this.getClass(), "MDAO:UnindexedSelect:" + getOf().getId());
-      if ( ! unindexed_.contains(getOf().getId())) {
+      if ( ! unindexed_.contains(getOf().getId()) ) {
         if ( ! predicate.equals(simplePredicate) && logger != null ) {
-          logger.debug(String.format("The original predicate was %s but it was simplified to %s.", predicate.toString(), simplePredicate.toString()));
+          logger.warning(String.format("The original predicate was %s but it was simplified to %s.", predicate.toString(), simplePredicate.toString()));
         }
         unindexed_.add(getOf().getId());
         if ( logger != null ) {
@@ -275,6 +275,19 @@ public class MDAO
       }
       return this;
     }
+    if ( cmd instanceof AddIndexCommand ) {
+      AddIndexCommand indexCmd = (AddIndexCommand) cmd;
+      if ( indexCmd.getIndex() != null ) {
+         addIndex((Index) indexCmd.getIndex());
+      } else {
+        if ( indexCmd.getUnique() ) {
+          addUniqueIndex(indexCmd.getProps());
+        } else {
+          addIndex(indexCmd.getProps());
+        }
+      }
+      return true;
+    }
     return super.cmd_(x, cmd);
   }
 
@@ -286,5 +299,9 @@ public class MDAO
     MDAO newMDAO = new MDAO(getOf());
     newMDAO.setState(state);
     return newMDAO;
+  }
+
+  public String toString() {
+    return "MDAO()";
   }
 }

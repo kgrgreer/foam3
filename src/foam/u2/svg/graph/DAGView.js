@@ -10,14 +10,19 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   requires: [
-    'foam.u2.svg.graph.ArrowDisplaceCellsPlacementPlan',
+    'foam.u2.svg.Position',
+    'foam.u2.svg.RelativePosition',
     'foam.u2.svg.arrow.VHVArrowLine',
     'foam.u2.svg.arrow.SimpleArrowHead',
+    'foam.u2.svg.arrow.StraightArrowLine',
     'foam.u2.svg.arrow.SegmentedArrowLine',
+    'foam.u2.svg.graph.ArrowDisplaceCellsPlacementPlan',
+    'foam.u2.svg.interactive.Draggable'
   ],
 
   exports: [
-    'graph'
+    'graph',
+    'svg'
   ],
 
   classes: [
@@ -55,6 +60,16 @@ foam.CLASS({
         ViewSpec for each node rendered in the DAG view. This u2 element should
         render as the same size specified by the cellSize property.
       `
+    },
+    {
+      class: 'Class',
+      name: 'nodeViewClass_',
+      expression: function (nodeView) {
+        if ( typeof nodeView?.create === 'function' ) return nodeView;
+        const cls = nodeView.class;
+        if ( typeof cls?.create === 'function' ) return cls;
+        return foam.lookup(cls);
+      }
     },
     {
       name: 'cellSize',
@@ -118,6 +133,13 @@ foam.CLASS({
     {
       name: 'alreadyRendered_',
       class: 'Map'
+    },
+    {
+      class: 'Map',
+      name: 'nodeDraggables_'
+    },
+    {
+      name: 'svg'
     }
   ],
 
@@ -145,6 +167,7 @@ foam.CLASS({
       }
 
       var g = this.start('svg');
+      this.svg = g;
       g.attrs({
         'xmlns': 'http://www.w3.org/2000/svg',
         'viewBox': '0 0 ' +
@@ -169,6 +192,9 @@ foam.CLASS({
         return;
       }
 
+      // coords[0] += -5 + Math.floor(Math.random() * 10);
+      // coords[1] += -5 + Math.floor(Math.random() * 10);
+
       g
         .callIf(! self.alreadyRendered_[node.id], function () {
           self.alreadyRendered_[node.id] = true;
@@ -180,18 +206,33 @@ foam.CLASS({
             size: self.cellSize
           }
 
-          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
+          if ( self.selectedNodeId && self.nodeViewClass_.hasOwnAxiom("isSelected") ){ 
             args.isSelected$ = self.slot(function(selectedNodeId) {
               return selectedNodeId === node.data.id; 
             })
           }
 
-          if ( self.gridGap && self.nodeView.hasOwnAxiom("gridGap") ){
+          if ( self.gridGap && self.nodeViewClass_.hasOwnAxiom("gridGap") ){
             args.gridGap = self.gridGap
           }
           
           this
-            .tag(self.nodeView, args)
+            .start(self.Draggable, {
+              pos: self.Position.create({
+                x: coords[0],
+                y: coords[1]
+              })
+            })
+              .call(function () {
+                self.nodeDraggables_[node.id] = this;
+              })
+              .attrs({
+                // transform: `translate(${coords[0]},${coords[1]})`,
+                width: self.cellSize[0],
+                height: self.cellSize[1]
+              })
+              .tag(self.nodeView, args)
+            .end()
         })
         // .callIf(parent, function () {
         //   var pcoords = self.placement_.getPlacement(parent);
@@ -225,10 +266,9 @@ foam.CLASS({
       })
     },
     function renderArrows(g, node, parent) {
+      const self = this;
       if ( parent ) {
         let arrows = this.arrows_[parent.id][node.id];
-        let parentPixelCoords = this.placement_.getPlacement(parent);
-        let nodePixelCoords = this.placement_.getPlacement(node);
 
         let enterCell, exitCell;
         (() => {
@@ -244,46 +284,55 @@ foam.CLASS({
           let enterCellLane = this.cellSize[1] * this.cellLaneRatio_(arrow.enterCellLane);
           let exitCellLane = this.cellSize[1] * this.cellLaneRatio_(arrow.exitCellLane);
 
+          const parentDraggable = this.nodeDraggables_[parent.id];
+          const nodeDraggable = this.nodeDraggables_[node.id];
+
           // Start first row after exiting the node
           if ( arrow.hasOwnProperty('topRowLane') ) {
-            anchors.push([
-              parentPixelCoords[0] + exitCellLane,
-              this.placement_.getRowLanePosition(exitCell[1], arrow.topRowLane)
-            ]);
+            anchors.push(self.Position.create({
+              x$: parentDraggable.pos.x$.map(x => x + exitCellLane),
+              y: this.placement_.getRowLanePosition(exitCell[1], arrow.topRowLane)
+            }))
           }
 
           if ( arrow.hasOwnProperty('columnLane') ) {
             // Start column from the row connecting to the parent
-            anchors.push([
-              this.placement_.getColLanePosition(enterCell[0], arrow.columnLane),
-              this.placement_.getRowLanePosition(exitCell[1], arrow.topRowLane)
-            ]);
+            anchors.push(self.Position.create({
+              x: this.placement_.getColLanePosition(enterCell[0], arrow.columnLane),
+              y: this.placement_.getRowLanePosition(exitCell[1], arrow.topRowLane)
+            }))
 
             // Start second row from the column
-            anchors.push([
-              this.placement_.getColLanePosition(enterCell[0], arrow.columnLane),
-              this.placement_.getRowLanePosition(enterCell[1], arrow.bottomRowLane)
-            ]);
+            anchors.push(self.Position.create({
+              x: this.placement_.getColLanePosition(enterCell[0], arrow.columnLane),
+              y: this.placement_.getRowLanePosition(enterCell[1], arrow.bottomRowLane)
+            }))
           }
 
           // Penultimate line meets line connecting to enterCell
           var lane = arrow.hasOwnProperty('bottomRowLane')
             ? arrow.bottomRowLane : arrow.topRowLane ;
-          anchors.push([
-            nodePixelCoords[0] + enterCellLane,
-            this.placement_.getRowLanePosition(enterCell[1], lane)
-          ])
+          anchors.push(self.Position.create({
+            x$: nodeDraggable.pos.x$.map(x => x + enterCellLane),
+            y: this.placement_.getRowLanePosition(enterCell[1], lane)
+          }))
 
           // TODO: calculate cell lane factor
           g.tag(this.SegmentedArrowLine, {
-            startPos: [
-              parentPixelCoords[0] + exitCellLane,
-              parentPixelCoords[1] + this.cellSize[1],
-            ],
-            endPos: [
-              nodePixelCoords[0] + enterCellLane,
-              nodePixelCoords[1],
-            ],
+            startPos: self.RelativePosition.create({
+              reference: self.nodeDraggables_[parent.id].pos,
+              amount: self.Position.create({
+                x: exitCellLane,
+                y: this.cellSize[1]
+              })
+            }),
+            endPos: self.RelativePosition.create({
+              reference: self.nodeDraggables_[node.id].pos,
+              amount: self.Position.create({
+                x: enterCellLane,
+                y: 0
+              })
+            }),
             anchors: anchors,
             testing: {
               node: node,
@@ -294,10 +343,10 @@ foam.CLASS({
           
           if ( this.isArrowheadShown ){
             g.tag(this.SimpleArrowHead, {
-              originPos: [
-                nodePixelCoords[0] + enterCellLane,
-                nodePixelCoords[1],
-              ],
+              pos: self.Position.create({
+                x$: nodeDraggable.pos.x$.map(x => x + enterCellLane),
+                y$: nodeDraggable.pos.y$
+              }),
               angle: 0,
               size: 5
             })

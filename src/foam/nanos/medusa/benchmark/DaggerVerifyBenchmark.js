@@ -68,12 +68,7 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
+      args: 'Context x',
       javaCode: `
     DaggerService dagger = (DaggerService) x.get("daggerService");
     DAO dao = (DAO) x.get("medusaEntryDAO");

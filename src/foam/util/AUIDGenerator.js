@@ -47,9 +47,15 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getNext',
+      args: [ 'java.lang.Class type' ],
+      type: 'Object',
+      javaCode: 'return getNextString();'
+    },
+    {
       name: 'getNextLong',
       javaCode: `
-        throw new UnsupportedOperationException("AUIDGenerator: not support generating long uid.");
+        throw new UnsupportedOperationException("AUIDGenerator: long uid generation not supported.");
       `
     },
     {
@@ -77,8 +83,8 @@ foam.CLASS({
         // 8 bits timestamp
         id.append(toHexString(curSec, 8));
         // At least 2 bits sequence
-        id.append(toHexString(seqNo, 2));
+        id.append(toHexString(seqNo, 2 + Math.max(0, getMinLength() - 15)));
       `
     }
   ]
-})
+});

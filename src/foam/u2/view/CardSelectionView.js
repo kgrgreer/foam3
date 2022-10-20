@@ -43,7 +43,12 @@
       documentation: `
         Used to control the number of cards shown in a row if isVertical is false
       `
-    }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'choiceView',
+      value: { class: 'foam.u2.view.CardSelectView' }
+    },
   ],
 
   methods: [
@@ -54,22 +59,36 @@
           .addClass(this.myClass('flexer'))
           .add(
             self.slot(function(choices) {
-              var toRender = choices.sort().map((choice, index) => {
-                var valueSimpSlot = self.mustSlot(choice);
+              // For default selection e.g. One time deposit
+              if ( choices[0] ) self.data = choices[0][0];
+
+              var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
                   return self.choiceIsSelected(data, choices[index]);
                 });
+
+                var cardSelectViewConfig = {
+                  isSelected$: isSelectedSlot
+                }
+
+                var valueSimpSlot;
+
+                if ( choice instanceof Array ){
+                  valueSimpSlot = self.mustSlot(choice[0]);
+                  cardSelectViewConfig.label = choice[1];
+                } else {
+                  valueSimpSlot = self.mustSlot(choice);
+                  cardSelectViewConfig.of = choice.cls_.id;
+                }
+
+                cardSelectViewConfig.data$ = valueSimpSlot;
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))
                   .style({
                     'width': self.isVertical ? '100%' : `${100 / self.numCols}%`
                   })
-                  .start(self.CardSelectView, {
-                    data$: valueSimpSlot,
-                    isSelected$: isSelectedSlot,
-                    of: choice.cls_.id
-                  })
+                  .start(this.choiceView, cardSelectViewConfig)
                     .call(function () {
                       self.E().onDetach(
                         this.clicked.sub(() => {
@@ -94,7 +113,7 @@
     },
 
     function choiceIsSelected(data, choice) {
-      return foam.util.equals(data, choice);
+      return foam.util.equals(data, choice instanceof Array ? choice[0] : choice);
     },
 
     function mustSlot(v) {

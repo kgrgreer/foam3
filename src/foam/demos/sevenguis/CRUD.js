@@ -53,7 +53,7 @@ foam.CLASS({
 
   css: `
     ^ { padding: 10px; }
-    ^ .detailView { border: none; background: white; }
+    ^ .detailView { border: none; background-color:$white; }
     ^ .content { width: 1000px; }
     ^ .detailPane { width: 45%; display: inline-block; margin-left: 50px; }
     ^ .label { color: #039; font-size: 1.4rem; padding-top: 6px; }

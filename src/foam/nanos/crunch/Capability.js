@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'Capability',
 
   implements: [
-    'foam.nanos.auth.EnabledAware'
+    'foam.nanos.auth.LifecycleAware'
   ],
 
   imports: [
@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -40,7 +41,7 @@ foam.CLASS({
     'name',
     'description',
     'version',
-    'enabled',
+    'lifecycleState',
     'expiry',
     'daoKey'
   ],
@@ -104,6 +105,17 @@ foam.CLASS({
       includeInDigest: false
     },
     {
+      name: 'marketingHeader',
+      class: 'String',
+      documentation: 'This is the header that can be customized for each product experience',
+      displayWidth: 70,
+      section: 'basicInfo',
+      includeInDigest: false,
+      factory: function() {
+        return this.name;
+      }
+    },
+    {
       name: 'description',
       class: 'String',
       documentation: `Description of capability`,
@@ -134,15 +146,6 @@ foam.CLASS({
       name: 'version',
       class: 'String',
       includeInDigest: true,
-    },
-    {
-      name: 'enabled',
-      class: 'Boolean',
-      value: true,
-      view: { class: 'foam.u2.CheckBox', showLabel: false },
-      includeInDigest: true,
-      documentation: `Capability is ignored by system when enabled is false.
-      user will lose permissions implied by this capability and upper level capabilities will ignore this prerequisite`
     },
     {
       name: 'expiry',
@@ -266,6 +269,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'wizardlet',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Defines a wizardlet to display this capability in a wizard. This
         wizardlet will display after this capability's prerequisites.
@@ -290,6 +295,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.crunch.EasyCrunchWizard',
       name: 'wizardConfig',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       documentation: `
         Configuration placed on top level capabilities defining various
         configuration options supported by client capability wizards.
@@ -297,6 +304,12 @@ foam.CLASS({
       includeInDigest: false,
       factory: function() {
         return this.EasyCrunchWizard.create({}, this);
+      },
+      adapt: function(_, n) {
+        if ( foam.lib.json.UnknownFObject.isInstance(n) && n.json ) {
+          n = foam.lookup(n.json.class).create(n.json);
+        }
+        return n
       }
     },
     {
@@ -322,10 +335,46 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isInternalCapability',
-      documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
-      Disables crunchService.isRenewable from propogating anything else in the heirarchy.
+      documentation: `The purpose of this is to enable an agent level capability that is confidential and not accessible from a user.
+      Disables crunchService.isRenewable from propogating anything else in the hierarchy.
       Disables user expiry notifications.
       Disables capability.maybeReOpen()`
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: 'ACTIVE',
+      documentation: `
+        PENDING - Awaiting action, unusable capability.
+        REJECTED - Rejected from system use, unusable capability.
+        DELETED - Marked as deleted from system, unusuable capability.
+        ACTIVE - Capability is active and can be used.
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      visibility: 'HIDDEN',
+      value: true,
+      transient: true,
+      documentation: `Deprecated, use lifecycleState instead.
+        This property only exists for auto migration of legacy data`,
+      javaSetter: `
+        if ( ! val && ! lifecycleStateIsSet_ ){
+          setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
+        }
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'autoGrantPrereqs',
+      value:true,
+      documentation: `
+        If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
+        before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
+        that may not be explicitly put
+      `
     }
   ],
 
@@ -348,7 +397,7 @@ foam.CLASS({
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability`,
       javaCode: `
-        if ( ! this.getEnabled() ) return false;
+        if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
         for ( String grantedPermission : this.getPermissionsGranted() ) {
           if ( new AuthPermission(grantedPermission).implies(new AuthPermission(permission)) ) return true;
         }
@@ -362,7 +411,7 @@ foam.CLASS({
       name: 'implies',
       type: 'Boolean',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',          type: 'Context' },
         { name: 'permission', type: 'String' }
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
@@ -374,10 +423,7 @@ foam.CLASS({
     {
       name: 'prerequisiteImplies',
       type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String permission',
       documentation: `Checks if a permission or capability string is implied by the prerequisites of a capability`,
       javaCode: `
         // temporary prevent infinite loop when checking the permission "predicatedprerequisite.read.*"
@@ -385,12 +431,12 @@ foam.CLASS({
         if ( PredicatedPrerequisiteCapabilityJunctionDAO.PERMISSION.equals(permission) ) return false;
 
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List<Capability> prereqs = crunchService.getCapabilityPath(x, getId(), false, false);
+        List<Capability> prereqs = crunchService.getPrereqObjects(x, getId());
         if ( prereqs != null && prereqs.size() > 0 ) {
           for ( Capability capability : prereqs ) {
             // getCapabilityPath will include the top-level capability in its return list
             if ( getId().equals(capability.getId()) ) continue;
-            if ( capability != null && capability.grantsPermission(permission) ) return true;
+            if ( capability != null && capability.implies(x, permission) ) return true;
           }
         }
         return false;
@@ -404,6 +450,8 @@ foam.CLASS({
       ],
       documentation: 'check if a given capability is deprecated',
       javaCode: `
+      // TODO: This is currently broken and needs to be reworked
+/*
       Sink count = new Count();
       count = this.getDeprecating(x).getJunctionDAO()
         .where(
@@ -411,7 +459,8 @@ foam.CLASS({
         ).select(count);
 
       return ((Count) count).getValue() > 0;
-      `
+*/
+      return false;`
     },
     {
       name: 'isExpired',
@@ -445,34 +494,17 @@ foam.CLASS({
 
         boolean allGranted = true;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        DAO userDAO = (DAO) x.get("userDAO");
-        Subject currentSubject = (Subject) x.get("subject");
-
-        Subject subject = new Subject(x);
-        if ( ucj instanceof AgentCapabilityJunction ) {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-          AgentCapabilityJunction acj = (AgentCapabilityJunction) ucj;
-          subject.setUser((User) userDAO.find(acj.getEffectiveUser())); // "user"
-        } else if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
-          // Call setUser() twice
-          // Because it builds a user path and adds a user to the chain for each setUser()
-          subject.setUser(currentSubject.getRealUser());
-          subject.setUser(currentSubject.getUser());
-        } else {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-        }
 
         var prereqs = crunchService.getPrereqs(x, getId(), ucj);
         CapabilityJunctionStatus prereqChainedStatus = null;
         if ( prereqs != null ) {
           for ( var capId : prereqs ) {
             var cap = (Capability) capabilityDAO.find(capId);
-            if ( cap == null || ! cap.getEnabled() ) continue;
+            if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
-            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
+            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, ucj.getSubject(x));
 
-            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj);
+            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, (Subject)x.get("subject"));
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
             if ( prereqChainedStatus != CapabilityJunctionStatus.GRANTED ) allGranted = false;
           }
@@ -485,12 +517,16 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
-        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'subject', javaType: 'foam.nanos.auth.Subject' }
       ],
       static: true,
       javaType: 'foam.nanos.crunch.CapabilityJunctionStatus',
       javaCode: `
         CapabilityJunctionStatus status = ucj.getStatus();
+
+        if ( prereq.getStatus() == CapabilityJunctionStatus.AVAILABLE && getAutoGrantPrereqs() )
+          prereq = ((CrunchService) x.get("crunchService")).updateUserJunction(x, subject, prereq.getTargetId(), null, null);
 
         boolean reviewRequired = getReviewRequired();
         CapabilityJunctionStatus prereqStatus = prereq.getStatus();
@@ -544,7 +580,7 @@ foam.CLASS({
         are granted but not in an reopenable state
       `,
       javaCode: `
-        if ( ! getEnabled() ) return false;
+        if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
         if ( getIsInternalCapability() ) return false;
         if ( getGrantMode() == CapabilityGrantMode.MANUAL ) return false;
 
@@ -559,7 +595,7 @@ foam.CLASS({
 
         for ( var capId : prereqs ) {
           Capability cap = (Capability) capabilityDAO.find(capId);
-          if ( cap == null ) throw new RuntimeException("Cannot find prerequisite capability");
+          if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) throw new RuntimeException("Cannot find prerequisite capability");
           UserCapabilityJunction prereq = crunchService.getJunction(x, capId);
           if ( cap.maybeReopen(x, prereq) ) return true;
         }

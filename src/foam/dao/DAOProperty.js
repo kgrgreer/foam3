@@ -39,6 +39,14 @@ foam.CLASS({
       name: 'javaInfoType',
       flags: ['java'],
       value: 'foam.core.AbstractDAOPropertyPropertyInfo'
+    },
+    {
+      name: 'adapt',
+      value: function(o, v, prop) {
+        if ( ! v ) return;
+        if ( foam.String.isInstance(v) && this.__subContext__ ) return this.__subContext__[v];
+        return foam.core.FObjectProperty.ADAPT.value.call(this, o, v, prop);
+      }
     }
   ],
 
@@ -51,7 +59,7 @@ foam.CLASS({
 
       Object.defineProperty(proto, name + '$proxy', {
         get: function daoProxyGetter() {
-          var proxy = prop.ProxyDAO.create({delegate: this[name]}, this[name]);
+          var proxy = prop.ProxyDAO.create({ delegate: this[name] }, this[name]);
           this[name + '$proxy'] = proxy;
 
           this.sub('propertyChange', name, function(_, __, ___, s) {

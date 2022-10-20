@@ -55,42 +55,51 @@ public class FObjectParser
 
           try {
             PStream ps1 = ps.apply(delegate, x);
-            Class   c   = ( ps1 != null ) ?
-              Class.forName(ps1.value().toString()) :
-              defaultClass ;
 
-            // return null if class not specified in JSON and no default class available
-            if ( c == null || c == foam.core.FObject.class ) {
-              return null;
+            Class c = null;
+            if ( ps1 != null ) {
+              try {
+                c = Class.forName(ps1.value().toString());
+              } catch (ClassNotFoundException t) { /* NOP */ }
+            } else {
+              c = defaultClass;
             }
-
-            if ( ps1 != null ) ps = ps1;
 
             ParserContext subx = x.sub();
             Parser        subParser;
 
-            if ( c.isEnum() ) {
-              subx.set("enum", c);
-              subParser = EnumParserFactory.getInstance(c);
-            } else {
-              Object obj = ((X) x.get("X")).create(c);
+            if ( c == null ) {
+              if ( ps1 == null ) return null;
+
+              // If the class doesn't exist, try creating an object using the class name
+              Object obj = ((X) x.get("X")).create(ps1.value().toString());
               subx.set("obj", obj);
               subParser = ModelParserFactory.getInstance(obj.getClass());
+            } else {
+              if ( c == foam.core.FObject.class ) return null;
+
+              if ( c.isEnum() ) {
+                subx.set("enum", c);
+                subParser = EnumParserFactory.getInstance(c);
+              } else {
+                Object obj = ((X) x.get("X")).create(c);
+                subx.set("obj", obj);
+                subParser = ModelParserFactory.getInstance(obj.getClass());
+              }
             }
+
+            // Ensure that apply method is not invoked on null value
+            if ( ps1 != null ) ps = ps1;
 
             ps = ps.apply(subParser, subx);
 
             if ( ps != null ) {
               return ps.setValue(subx.get("obj"));
             }
-
             return null;
-          } catch (ClassNotFoundException e) {
-//            System.err.println("********************* " + e);
-            throw new TypeNotPresentException("class", e);
           } catch (Throwable t) {
-            t.printStackTrace();
-            return null;
+            x.set("error", t);
+            throw new RuntimeException(t);
           }
         }
       },
@@ -103,12 +112,6 @@ public class FObjectParser
   }
 
   public PStream parse(PStream ps, ParserContext x) {
-    try {
-      return getDelegate().parse(ps, x);
-    } catch (TypeNotPresentException e) {
-      return null;
-//      return UnknownFObjectParser.instance().parse(ps, x);
-    }
+    return getDelegate().parse(ps, x);
   }
-
 }

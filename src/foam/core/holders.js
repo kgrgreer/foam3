@@ -25,6 +25,12 @@ foam.CLASS({
       name: 'value',
       class: 'String'
     }
+  ],
+
+  methods: [
+    function toString () {
+      return this.value;
+    }
   ]
 });
 
@@ -56,12 +62,41 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['value'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.core.RequiredBooleanHolder.VALUE, true);
-          },
+          query: 'value==true',
           errorMessage: 'WRONG_VALUE'
         }
       ]
     }
   ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'MapHolder',
+
+  properties: [
+    {
+      name: 'value',
+      class: 'Map'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'AnyHolder',
+
+  properties: [
+    'value'
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'VoidHolder',
+  documentation: `
+    Holder model to be used when there is no value required.
+    For ex, use when a capability needs to display a view but doesn't require data
+  `
 });

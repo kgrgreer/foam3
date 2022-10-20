@@ -39,21 +39,41 @@ foam.CLASS({
     'java.nio.file.StandardWatchEventKinds'
   ],
 
+  constants: [
+    {
+      name: 'ONLINE',
+      type: 'String',
+      value: 'ONLINE'
+    },
+    {
+      name: 'OFFLINE',
+      type: 'String',
+      value: 'OFFLINE'
+    },
+    {
+      name: 'SHUTDOWN',
+      type: 'String',
+      value: 'SHUTDOWN'
+    }
+  ],
+
   properties: [
     {
       name: 'watchDir',
       class: 'String',
       javaFactory: 'return System.getProperty("java.io.tmpdir", "/tmp");'
     },
-    {
-      name: 'statusFilename',
-      class: 'String',
-      value: 'OFFLINE'
-    },
-    {
+   {
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
+   },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
  ],
 
@@ -64,6 +84,7 @@ foam.CLASS({
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
         getInitialTimerDelay());
@@ -71,22 +92,30 @@ foam.CLASS({
     },
     {
       name: 'execute',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
         }, (Logger) x.get("logger"));
       logger.info("execute", getWatchDir());
       try {
-        Path existing = Paths.get(getWatchDir(), getStatusFilename());
+        Path existing = Paths.get(getWatchDir(), OFFLINE);
         Files.deleteIfExists(existing);
         existing.toFile().deleteOnExit();
+      } catch ( IOException e) {
+        // Can fail to delete when it was touch by root, for example.
+        logger.warning(e);
+      }
 
+      try {
+        Path existing = Paths.get(getWatchDir(), SHUTDOWN);
+        Files.deleteIfExists(existing);
+        existing.toFile().deleteOnExit();
+      } catch ( IOException e) {
+        logger.warning(e);
+      }
+
+      try {
         WatchService watchService = FileSystems.getDefault().newWatchService();
         Path path = Paths.get(getWatchDir());
         path.register(
@@ -98,14 +127,27 @@ foam.CLASS({
         while ((key = watchService.take()) != null) {
           for (WatchEvent<?> event : key.pollEvents()) {
             if ( event.kind() == StandardWatchEventKinds.ENTRY_CREATE &&
-                 getStatusFilename().equals(event.context().toString()) ) {
+                 ( SHUTDOWN.equals(event.context().toString()) ||
+                   OFFLINE.equals(event.context().toString()) ||
+                   ONLINE.equals(event.context().toString()) ) ) {
               logger.warning("detected", event.context());
 
               ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
               if ( support != null ) {
+                String request = event.context().toString();
+                if ( SHUTDOWN.equals(request) ) {
+                  support.setShutdown(true);
+                  request = OFFLINE;
+                }
                 ClusterConfig config = support.getConfig(x, support.getConfigId());
                 config = (ClusterConfig) config.fclone();
-                config.setStatus(Status.OFFLINE);
+                if ( OFFLINE.equals(request) &&
+                     config.getStatus() != Status.OFFLINE ) {
+                  config.setStatus(Status.OFFLINE);
+                } else if ( ONLINE.equals(request) &&
+                     config.getStatus() != Status.ONLINE ) {
+                  config.setStatus(Status.ONLINE);
+                }
                 ((DAO) x.get("localClusterConfigDAO")).put(config);
                 break;
               }

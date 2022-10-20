@@ -19,7 +19,7 @@ foam.CLASS({
     'group',
     'notificationDAO',
     'stack',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -34,13 +34,13 @@ foam.CLASS({
 
   css: `
      ^ .foam-u2-DAOList > div {
-      background: white;
+      background:$white;
       margin-top:16px;
       min-height: 50px;
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      background-color: $white;
     }
      ^ .notifs {
       margin-left: 32px;
@@ -66,13 +66,13 @@ foam.CLASS({
           this.AND(
             this.EQ(this.Notification.READ, true),
              this.OR(
-              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.USER_ID, this.subject.user.id),
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
+                this.subject.user.disabledTopics))
           )
         ).orderBy(this.DESC(this.Notification.CREATED));
       },
@@ -88,13 +88,13 @@ foam.CLASS({
           this.AND(
             this.EQ(this.Notification.READ, false),
              this.OR(
-              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.USER_ID, this.subject.user.id),
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
+                this.subject.user.disabledTopics))
           )
         ).orderBy(this.DESC(this.Notification.CREATED));
       },

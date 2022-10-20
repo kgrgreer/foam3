@@ -22,11 +22,25 @@
      },
      {
        class: 'String',
-       name: 'name'
+       name: 'description',
+       includeInDigest: true,
+       trim: true
      },
      {
        class: 'String',
-       name: 'description'
+       name: 'data',
+       includeInDigest: true,
+       trim: true
+     },
+     {
+       class: 'String',
+       name: 'clusterTransientData',
+       clusterTransient: true
+     },
+     {
+       class: 'String',
+       name: 'networkTransientData',
+       networkTransient: true
      },
      {
        class: 'String',
@@ -39,51 +53,48 @@
        transient: true
      },
      {
-       class: 'String',
-       name: 'clusterTransientData',
-       clusterTransient: true
+       name: 'clusterTransientFObject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.test.MedusaTestObjectNested',
+       clusterTransient: true,
+       factory: function() {
+         return foam.nanos.medusa.test.MedusaTestObjectNested.create();
+       }
      },
      {
-       class: 'String',
-       name: 'networkTransientData',
-       networkTransient: true
+       name: 'nestedFObject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.test.MedusaTestObjectNested',
+       factory: function() {
+         return foam.nanos.medusa.test.MedusaTestObjectNested.create();
+       }
      },
-     // {
-     //   name: 'specificFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   }
-     // },
-     // {
-     //   name: 'genericFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.core.FObject',
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   },
-     //   view: 'foam.u2.view.AnyView'
-     // },
-     // {
-     //   name: 'storageTransientFobjectWithFactory',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   storageTransient: true,
-     //   factory: function() {
-     //     return foam.nanos.medusa.ClusterCommandHop.create();
-     //   }
-     // },
-     // {
-     //   name: 'storageTransientFobject',
-     //   class: 'FObjectProperty',
-     //   of: 'foam.nanos.medusa.ClusterCommandHop',
-     //   storageTransient: true
-     // },
      {
-       name: 'storageTransientObject',
-       class: 'Object',
-       storageTransient: true
+       name: 'networkTransientFObject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.test.MedusaTestObjectNested',
+       networkTransient: true,
+       factory: function() {2
+         return foam.nanos.medusa.test.MedusaTestObjectNested.create();
+       }
+     },
+     {
+       name: 'storageTransientFObject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.test.MedusaTestObjectNested',
+       storageTransient: true,
+       factory: function() {
+         return foam.nanos.medusa.test.MedusaTestObjectNested.create();
+       }
+     },
+     {
+       name: 'transientFObject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.test.MedusaTestObjectNested',
+       transient: true,
+       factory: function() {
+         return foam.nanos.medusa.test.MedusaTestObjectNested.create();
+       }
      }
    ]
  });

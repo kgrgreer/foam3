@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.nanos.alarming',
   name: 'AlarmAndMonitoring',
@@ -13,6 +19,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'java.util.Date',
+    'java.util.Calendar',
+    'java.util.TimeZone',
     'foam.nanos.analytics.Candlestick',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.AND',
@@ -33,9 +41,16 @@ foam.CLASS({
           if ( config == null || ! config.getEnabled() ) {
             return;
           }
-          DAO omDAO = (DAO) x.get("om1minDAO");
+
+          DAO omDAO = (DAO) ( config.getUseCCOMLogger() ? x.get("localCcom1MinuteDAO") : x.get("om1MinuteDAO") );
+          if ( omDAO == null ) {
+            // Force OM DAO if CCOM DAO is not enabled
+            omDAO = (DAO) x.get("om1MinuteDAO");
+          }
+
           Date currentCloseTime = new Date();
           currentCloseTime.setSeconds(0);
+
           Candlestick receiveResponses = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
             EQ(Candlestick.KEY, config.getPostRequest())
           );
@@ -46,6 +61,8 @@ foam.CLASS({
           Candlestick timeout = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
             EQ(Candlestick.KEY, config.getTimeOutRequest())
           );
+
+          boolean newAlarm = false;
           DAO alarmDAO = (DAO) x.get("alarmDAO");
           Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, config.getName()));
           if ( alarm == null ) {
@@ -53,10 +70,13 @@ foam.CLASS({
               .setName(config.getName())
               .setIsActive(false)
               .build();
+            newAlarm = true;
           } else {
             alarm = (Alarm) alarm.fclone();
           }
+
           boolean updateAlarm = false;
+
           // check to see if the sent candlestick is the latest one
           if ( sentRequest != null && Math.abs(sentRequest.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime() ) {
             updateAlarm = true;
@@ -76,17 +96,33 @@ foam.CLASS({
               updateAlarm = true;
               report.setTimeoutCount(report.getTimeoutCount() + (int) timeout.getCount());
           }
-          if ( ! updateAlarm ) {
+
+          float timeoutCount = timeout != null ? timeout.getCount() : 0;
+          float sentCount = sentRequest != null ? sentRequest.getCount() : 0;
+          float responseCount = receiveResponses != null ? receiveResponses.getCount() : 0;
+
+          if ( ! updateAlarm || (newAlarm && sentCount == responseCount) ) {
             return;
           }
-          if ( report.getTimeoutCount() != 0 && report.getStartCount() != 0  && ((float) report.getTimeoutCount() /(float) report.getStartCount()) > (float) config.getTimeoutValue() / 100 ) {
+
+          if ( timeoutCount > 0 && sentCount > 0  && (timeoutCount / sentCount) > (float) config.getTimeoutValue() / 100 ) {
             if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.TIMEOUT) ) {
               alarm.setReason(AlarmReason.TIMEOUT);
               alarm.setIsActive(true);
             }
-          } else if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
-            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {
-              alarm.setReason(AlarmReason.CONGESTION);
+          } else if (( config.getMonitorType() == MonitorType.CONTROLCHECK ||
+                      config.getMonitorType() == MonitorType.CONGESTION ) &&
+                      sentCount > 0  &&
+                      (responseCount / sentCount) < (float) config.getAlarmValue() / 100 ) {
+            AlarmReason checkReason = config.getMonitorType() == MonitorType.CONTROLCHECK ? AlarmReason.CONTROLCHECK : AlarmReason.CONGESTION;
+
+            if ( ! alarm.getIsActive() || !( alarm.getReason() == checkReason ) ) {
+              alarm.setReason(checkReason);
+              alarm.setIsActive(true);
+            }
+          } else if ( config.getMonitorType() == MonitorType.THRESHOLD && sentCount > config.getAlarmValue() ) {
+            if ( ! alarm.getIsActive() ) {
+              alarm.setReason(AlarmReason.THRESHOLD);
               alarm.setIsActive(true);
             }
           } else {
@@ -98,6 +134,10 @@ foam.CLASS({
               alarm.setIsActive(false);
             }
           }
+
+          // Have to do this manually as not all alarms modify the state and therefore lastModifiedAware decorator will not update lastModified
+          alarm.setLastModified(new Date());
+
           alarmDAO.put(alarm);
         }
       }, "Alarm And Monitoring");

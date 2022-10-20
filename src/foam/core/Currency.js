@@ -129,7 +129,7 @@
     },
     {
       name: 'format',
-      code: function(amount, hideId) {
+      code: function(amount, hideId, hideSymbol) {
         /**
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
@@ -148,15 +148,13 @@
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
 
-        if ( ! hideId ) {
-          if ( this.leftOrRight === 'right' ) {
-            formatted += this.id;
-            formatted += ' ';
-          }
-          if ( this.leftOrRight === 'left' ) {
-            formatted += this.symbol;
-            if ( this.showSpace ) formatted += ' ';
-          }
+        if ( ! hideId && this.leftOrRight === 'right' ) {
+          formatted += this.id;
+          formatted += ' ';
+        }
+        if ( ! hideSymbol && this.leftOrRight === 'left' ) {
+          formatted += this.symbol;
+          if ( this.showSpace ) formatted += ' ';
         }
 
         var delimiter = this.translationService.getTranslation(foam.locale, 'Currency.delimiter', this.delimiter);
@@ -168,15 +166,13 @@
           formatted += amount.substring(amount.length - this.precision);
         }
 
-        if ( ! hideId ) {
-          if ( this.leftOrRight === 'right' ) {
-            if ( this.showSpace ) formatted += ' ';
-            formatted += this.symbol;
-          }
-          if ( this.leftOrRight === 'left' ) {
-            formatted += ' ';
-            formatted += this.id;
-          }
+        if ( ! hideSymbol && this.leftOrRight === 'right' ) {
+          if ( this.showSpace ) formatted += ' ';
+          formatted += this.symbol;
+        }
+        if ( ! hideId && this.leftOrRight === 'left' ) {
+          formatted += ' ';
+          formatted += this.id;
         }
 
         return formatted;
@@ -254,7 +250,7 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return (amount/Math.pow(2, this.precision)).toFixed(this.precision);
+        return (amount/Math.pow(10, this.precision)).toFixed(this.precision);
       },
       args: [
         {

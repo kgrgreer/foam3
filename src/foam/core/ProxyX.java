@@ -60,15 +60,11 @@ public class ProxyX
   }
 
   public X put(Object name, Object value) {
-    setX(getX().put(name, value));
-
-    return this;
+    return new ProxyX(getX().put(name, value));
   }
 
   public X putFactory(Object name, XFactory factory) {
-    setX(getX().putFactory(name, factory));
-
-    return this;
+    return new ProxyX(getX().putFactory(name, factory));
   }
 
   public Object getInstanceOf(Object value, Class type) {
@@ -81,6 +77,14 @@ public class ProxyX
 
   public <T> T create(Class<T> type, Map<String, Object> args) {
     return ((FacetManager) getX().get("facetManager")).create(type, args, this);
+  }
+
+  public Object create(String clsName) {
+    return create(clsName, Collections.<String, Object>emptyMap());
+  }
+
+  public Object create(String clsName, Map<String, Object> args) {
+    return ((FacetManager) getX().get("facetManager")).create(clsName, args, this);
   }
 
   public X cd(String path) {

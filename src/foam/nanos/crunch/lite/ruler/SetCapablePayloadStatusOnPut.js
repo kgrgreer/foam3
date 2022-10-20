@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.core.ContextAwareAgent',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.core.XLocator',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.crunch.Capability',
@@ -24,6 +25,7 @@ foam.CLASS({
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.lite.Capable',
     'foam.nanos.crunch.lite.CapableAdapterDAO',
+    'foam.nanos.session.Session',
 
     'java.util.List',
     'java.util.Arrays',
@@ -36,39 +38,32 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        agency.submit(x, (agencyX) -> {
-          CapableAdapterDAO tempPayloadDAO = (CapableAdapterDAO) agencyX.get("capablePayloadDAO");
-          Capable capableTarget = tempPayloadDAO.getCapable();
-          var payloadDAO = (DAO) capableTarget.getCapablePayloadDAO(agencyX);
+      agency.submit(getX(), new ContextAwareAgent() {
+        @Override
+        public void execute(X x) {
+          var payloadDAO = (DAO) getX().get("capablePayloadDAO");
 
           CapabilityJunctionPayload payload = (CapabilityJunctionPayload) obj;
 
           CapabilityJunctionStatus defaultStatus = PENDING;
 
           try {
-            payload.validate(agencyX);
-          } catch ( IllegalStateException e ) {
+            payload.validate(x);
+          } catch ( Exception e ) {
+            payload.setStatus(ACTION_REQUIRED);
             return;
           }
 
           DAO capabilityDAO = (DAO) x.get("capabilityDAO");
           Capability cap = (Capability) capabilityDAO.find(payload.getCapability());
           var oldStatus = payload.getStatus();
-          var newStatus = cap.getCapableChainedStatus(agencyX, payloadDAO, payload);
+          var newStatus = cap.getCapableChainedStatus(x, payloadDAO, payload);
 
           if ( oldStatus != newStatus )  {
             payload.setStatus(newStatus);
-            // TODO Maybe use projection MLang
-            var crunchService = (CrunchService) agencyX.get("crunchService");
-            var depIds = crunchService.getDependentIds(agencyX, payload.getCapability());
-
-            ((ArraySink) payloadDAO.select(new ArraySink())).getArray().stream()
-            .filter(cp -> Arrays.stream(depIds).anyMatch(((CapabilityJunctionPayload) cp).getCapability()::equals))
-            .forEach(cp -> {
-              payloadDAO.put((CapabilityJunctionPayload) cp);
-            });
           }
-        }, "Set capable payload status on put");
+        }
+      }, "Set capable payload status on put");
       `,
     }
   ]
