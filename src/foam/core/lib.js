@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+if ( typeof globalThis.localStorage == 'undefined' )
+  globalThis.localStorage = globalThis.sessionStorage;
+
 Object.defineProperty(
   Object.prototype,
   '$UID',
