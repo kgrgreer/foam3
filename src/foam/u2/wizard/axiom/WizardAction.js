@@ -19,6 +19,12 @@ foam.CLASS({
         const wizardController = slot.data$.get();
         wizardController.goNext();
       }
+    },
+    {
+      name: 'isEnabled',
+      value: function (data$canGoNext, isLoading_) {
+        return data$canGoNext && ! isLoading_;
+      }
     }
   ]
 });
