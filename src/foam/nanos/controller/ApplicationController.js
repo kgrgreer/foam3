@@ -193,8 +193,8 @@ foam.CLASS({
           urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
         } catch { };
-        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
-          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        return urlSession !== "" ? urlSession : foam.localStorage[this.sessionName] ||
+          ( foam.localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
     },
     {
@@ -290,11 +290,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        return globalThis.localStorage['isMenuOpen'] === 'true'
-         || ( globalThis.localStorage['isMenuOpen'] = false );
+        return foam.localStorage['isMenuOpen'] === 'true'
+         || ( foam.localStorage['isMenuOpen'] = false );
       },
       postSet: function(_, n) {
-        globalThis.localStorage['isMenuOpen'] = n;
+        foam.localStorage['isMenuOpen'] = n;
       }
     },
     {
@@ -422,7 +422,7 @@ foam.CLASS({
         self.setPrivate_('__subContext__', client.__subContext__);
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
+        foam.locale = foam.localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
         await client.translationService.initLatch;
         self.installLanguage();

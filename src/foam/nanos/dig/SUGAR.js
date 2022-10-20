@@ -184,15 +184,15 @@ foam.CLASS({
             var service = this.__context__[serviceKey];
 
             if ( ! service ) return;
-  
+
             if ( ! service.cls_.getAxiomByName('delegate') ) return;
-  
+
             var of = foam.lookup(service.cls_.getAxiomByName('delegate').of);
-  
+
             if ( ! of ) return;
-  
+
             var methods = of.getOwnAxiomsByClass(foam.core.Method);
-            
+
             return methods.map(m => m.name).sort();
           }),
           data$: X.data.method$
@@ -338,7 +338,7 @@ foam.CLASS({
       code: async function() {
         if ( this.sugarURL !== '' ) {
           var req = this.HTTPRequest.create({
-            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.sugarURL + '?data=' + this.postData+ '&sessionId=' + localStorage.defaultSession,
+            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.sugarURL + '?data=' + this.postData+ '&sessionId=' + foam.localStorage.defaultSession,
             method: 'POST',
             contentType: 'url'
           }).send();
