@@ -48,7 +48,7 @@ foam.CLASS({
       factory: function() {
         let language = this.supportedLanguages.find( e => e.toString() === foam.locale )
         language = language === undefined ? this.defaultLanguage : language
-        localStorage.setItem('localeLanguage', language.toString());
+        foam.localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
     },
@@ -78,7 +78,7 @@ foam.CLASS({
             user.language = c.id;
             await self.userDAO.put(user);
             location.reload();
-            localStorage.setItem('localeLanguage', c.toString());
+            foam.localStorage.setItem('localeLanguage', c.toString());
           }
         });
       });
