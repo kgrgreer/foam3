@@ -385,7 +385,7 @@ foam.CLASS({
       name: 'DAOActions',
       documentation: `Array of actions rendered by the DAOBrowserView,
       meant to be used to replace/override export, import and refresh`,
-      adaptArrayElement: function(o) {
+      adaptArrayElement: function(o) {//test
         if ( foam.core.Action.isInstance(o) ) return o;
         var lastIndex = o.lastIndexOf('.');
         var classObj = foam.lookup(o.substring(0, lastIndex));
