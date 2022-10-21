@@ -14,8 +14,13 @@ foam.CLASS({
   `,
 
   imports: [
-    'wizardlets',
-    'rootCapability'
+    'notify',
+    'rootCapability',
+    'wizardlets'
+  ],
+
+  requires: [
+    'foam.log.LogLevel'
   ],
 
   properties: [
@@ -36,18 +41,25 @@ foam.CLASS({
         await this.onSave(state.allValid, state.topLevelUCJ);
       }
     },
-    async function save(state) {
+    async function save(state, n) {
+      if ( ! n ) n = 0;
+      n += 1;
+
       try {
-        await foam.Promise.inOrder(this.wizardlets, async w => {
+        for ( const w of this.wizardlets ) {
           if ( state.allValid ) state.allValid = w.isValid;
           var ucj = await w.save();
           if ( ucj && ucj.targetId == this.rootCapability.id ) state.topLevelUCJ = ucj;
-        });
+        }
       } catch (e) {
         console.error(e);
+        if ( n == 4 ) {
+          this.notify(e.toString(), '', this.LogLevel.ERROR, true);
+          return;
+        }
         await new Promise(resolve => {
           setTimeout(async () => {
-            await this.save(state);
+            await this.save(state, n);
             resolve();
           }, 5000);
         });
