@@ -16,7 +16,7 @@ foam.CLASS({
     {
       class: 'ContextMethod',
       name: 'createSubContext',
-      code: function createSubContext(X, opt_args, opt_name) {
+      code: function createSubContext(X, opt_args, opt_name, opt_mutable) {
         // TODO(adamvy): Revisit this.  Consider adding a MultiContext object which
         // implemented context multiple inheritence property.
         if ( foam.core.FObject.isInstance(opt_args) ) {
@@ -29,7 +29,7 @@ foam.CLASS({
           opt_args = exports[0].getExportMap.call(obj);
         }
 
-        return this.__context__.createSubContext.call(X, opt_args, opt_name);
+        return this.__context__.createSubContext.call(X, opt_args, opt_name, opt_mutable);
       }
     }
   ]
