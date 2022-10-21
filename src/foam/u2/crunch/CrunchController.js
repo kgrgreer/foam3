@@ -301,7 +301,14 @@ foam.CLASS({
       if ( ! this.canInlineIntercept(intercept, wizardController) ) {
         return false;
       }
-      await this.doInlineIntercept(intercept, wizardController);
+      for ( const capable of intercept.capables ) {
+        for ( const capabilityId of capable.capabilityIds ) {
+          await this.doInlineIntercept(
+            wizardController, capable, capabilityId, intercept,
+            { put: true }
+          );
+        }
+      }
       return true;
     },
 
@@ -323,47 +330,48 @@ foam.CLASS({
       return true;
     },
 
-    async function doInlineIntercept(intercept, wizardController) {
-      const capabilityIds = [];
-      for ( const capable of intercept.capables ) {
-        capabilityIds.push(...capable.capabilityIds);
-        for ( const capabilityId of capable.capabilityIds ) {
-          let x = wizardController.__subContext__.createSubContext({
-            capable, intercept,
-            rootCapability: capabilityId,
-            wizardlets: []
-          });
-          x = await this.Sequence.create(null, x)
-            .add(this.CapabilityAdaptAgent)
-            .add(this.LoadCapabilitiesAgent)
-            .add(this.LoadCapabilityGraphAgent)
-            .add(this.WAOSettingAgent, {
-              waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
-            })
-            .add(this.GraphWizardletsAgent)
-            .execute();
+    async function doInlineIntercept(
+      wizardController, capable, capabilityId,
+      opt_intercept, flags
+    ) {
+      let x = wizardController.__subContext__.createSubContext({
+        capable,
+        intercept: opt_intercept,
+        rootCapability: capabilityId,
+        wizardlets: []
+      });
+      x = await this.Sequence.create(null, x)
+        .add(this.CapabilityAdaptAgent)
+        .add(this.LoadCapabilitiesAgent)
+        .add(this.LoadCapabilityGraphAgent)
+        .add(this.WAOSettingAgent, {
+          waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
+        })
+        .add(this.GraphWizardletsAgent)
+        .execute();
 
-          const lastWizardlet = x.wizardlets[x.wizardlets.length - 1];
-          lastWizardlet.wao = this.TopicWAO.create({
-            delegate: lastWizardlet.wao
-          });
+      // When the last wizardlet of the intercept (entry capability) is
+      // saved the Capable will be put in its respective DAO. This also
+      // means the intercept invoker WILL NOT get the return object.
+      if ( flags.put ) {
+        const lastWizardlet = x.wizardlets[x.wizardlets.length - 1];
+        lastWizardlet.wao = this.TopicWAO.create({
+          delegate: lastWizardlet.wao
+        });
 
-          // When the last wizardlet of the intercept (entry capability) is
-          // saved the Capable will be put in its respective DAO. This also
-          // means the intercept invoker WILL NOT get the return object.
-          lastWizardlet.wao.saved.sub(async () => {
-            const targetDAO = x[intercept.daoKey];
-            await targetDAO.put(capable);
-          });
-
-          // Resolve to current object - inline intercepts cannot provide
-          // the return object as the wizard must continue.
-          intercept.resolve(capable);
-
-          const wi = wizardController.wizardPosition.wizardletIndex;
-          wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
-        }
+        lastWizardlet.wao.saved.sub(async () => {
+          const targetDAO = x[opt_intercept.daoKey];
+          await targetDAO.put(capable);
+        });
       }
+
+      // Resolve to current object - inline intercepts cannot provide
+      // the return object as the wizard must continue.
+      if ( opt_intercept ) opt_intercept.resolve(capable);
+
+      const wi = wizardController.activePosition.wizardletIndex;
+      console.log('splicing at wizard position', wi);
+      wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
     },
 
     function maybeLaunchInterceptView(intercept) {
