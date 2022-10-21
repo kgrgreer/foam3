@@ -81,7 +81,7 @@ foam.CLASS({
 
   messages: [
     { name: 'VIEW_ALL', message: 'View all ' },
-    { name: 'ACTIONS', message: 'Actions' }
+    { name: 'ACTIONS',  message: 'Actions' }
   ],
 
   properties: [
@@ -100,7 +100,7 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return foam.comics.v2.DAOControllerConfig.create({ dao: this.data });
+        return this.onDetach(foam.comics.v2.DAOControllerConfig.create({dao: this.data}));
       }
     },
     {
@@ -235,7 +235,7 @@ foam.CLASS({
       var nav = this.showNav ? self.BreadcrumbView : '';
       this.addClass()
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
+      .add(this.slot(function(data, config, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
