@@ -110,7 +110,7 @@
       javaCode: `
         User user = findUser(x, email, userName);
 
-        var res = verifyCode(x, email, userName, verificationCode);
+        var res = verifyCode(x, user, verificationCode);
 
         if ( res ) {
           user = (User) user.fclone();
@@ -127,15 +127,7 @@
       name: 'verifyCode',
       javaCode: `
         User user = findUser(x, email, userName);
-        DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
-        Calendar c = Calendar.getInstance();
-        EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
-          EQ(EmailVerificationCode.EMAIL, user.getEmail()),
-          EQ(EmailVerificationCode.USER_NAME, user.getUserName()),
-          EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
-          GT(EmailVerificationCode.EXPIRY, c.getTime())
-        ));
-        return code != null;
+        return verifyCode(x, user, verificationCode);
       `
     },
     {
@@ -143,11 +135,34 @@
       type: 'String',
       javaCode: `
         StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
           code.append(Integer.toString(new Random().nextInt(9)));
         }
         return code.toString();
       `
+    }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+            public boolean verifyCode(foam.core.X x, User user, String verificationCode) {
+              DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
+              Calendar c = Calendar.getInstance();
+              EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
+                EQ(EmailVerificationCode.EMAIL, user.getEmail()),
+                EQ(EmailVerificationCode.USER_NAME, user.getUserName()),
+                EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
+                GT(EmailVerificationCode.EXPIRY, c.getTime())
+              ));
+              return code != null;     
+            }
+          `
+        }));
+      }
     }
   ]
 });
