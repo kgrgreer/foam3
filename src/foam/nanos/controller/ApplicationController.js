@@ -530,7 +530,25 @@ foam.CLASS({
     async function reloadClient() {
       var newClient = await this.ClientBuilder.create({}, this).promise;
       this.client = newClient.create(null, this);
-      this.setPrivate_('__subContext__', this.client.__subContext__);
+
+      // Replace the content of client builder context on the controller
+      var X = this.__subContext__;
+      while ( X && X.NAME != 'foam.nanos.client.Client' )
+        X = X.__proto__;
+
+      if ( X && ! Object.isFrozen(X) ) {
+        for ( const k in X )
+          if ( X.hasOwnProperty(k) ) delete X[k];
+
+        for ( const k in this.client.__subContext__ )
+          if ( this.client.__subContext__.hasOwnProperty(k) )
+            X[k] = this.client.__subContext__[k];
+      } else {
+        console.warn(
+          'Cannot update client builder context. Reason: context object',
+            X ? 'is frozen.' : 'not found.');
+      }
+
       // TODO: find a better way to resub on client reloads
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);

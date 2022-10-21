@@ -165,7 +165,7 @@ foam.SCRIPT({
      * @param opt_args A map of bindings to set up in the sub context.
      *     Currently unused.
      */
-    createSubContext: function createSubContext(opt_args, opt_name) {
+    createSubContext: function createSubContext(opt_args, opt_name, opt_mutable) {
 
       if ( ! opt_args ) return this;
 
@@ -215,7 +215,8 @@ foam.SCRIPT({
         enumerable: false
       });
 
-      foam.Object.freeze(sub);
+      if ( ! opt_mutable )
+        foam.Object.freeze(sub);
 
       return sub;
     },

@@ -210,7 +210,7 @@ foam.CLASS({
           if ( ! this.hasOwnPrivate_('__subContext__') ) {
             var ctx = this.__context__;
             var m = axiom.getExportMap.call(this);
-            this.setPrivate_('__subContext__', ctx.createSubContext(m));
+            this.setPrivate_('__subContext__', ctx.createSubContext(m, axiom.sourceCls_.id));
           }
 
           return this.getPrivate_('__subContext__');
