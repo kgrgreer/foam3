@@ -39,6 +39,11 @@ public class FScriptParser
     setup(classInfo, props);
   }
 
+  public void addExpressions(List expressions) {
+    this.expressions.addAll(expressions);
+    this.expressions.sort(Comparator.comparing(LiteralIC::getString).reversed());
+  }
+
   public void setup(ClassInfo classInfo, Map<String, PropertyInfo> props) {
     classInfo_ = classInfo;
     expressions = new ArrayList();
@@ -70,7 +75,7 @@ public class FScriptParser
     return getGrammar().parse(ps, x, "");
   }
 
-  private Grammar getGrammar() {
+  protected Grammar getGrammar() {
 
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
