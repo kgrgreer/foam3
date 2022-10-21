@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
 
+  documentation: `
+    A scrolling table view customized for the inline DAOController
+    with canned queries and a searchbar
+  `,
 
   requires: [
     'foam.comics.SearchMode',
@@ -30,11 +34,6 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions'
   ],
-
-  documentation: `
-    A scrolling table view customized for the inline DAOController
-    with canned queries and a searchbar
-  `,
 
   css: `
     ^wrapper {
@@ -119,7 +118,7 @@ foam.CLASS({
 
   messages: [
     { name: 'REFRESH_MSG', message: 'Refresh Requested... ' },
-    { name: 'ACTIONS', message: 'Actions' }
+    { name: 'ACTIONS',     message: 'Actions' }
   ],
 
   imports: [
@@ -152,8 +151,8 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        // TODO: does this need an onDetach?
-        return this.DAOControllerConfig.create({dao: this.data});
+        return this.onDetach(this.DAOControllerConfig.create({dao: this.data}));
+
       }
     },
     {
@@ -241,62 +240,6 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'export',
-      label: 'Export',
-      toolTip: 'Export Table Data',
-      icon: 'images/export-arrow-icon.svg',
-      isAvailable: async function(config) {
-        if ( ! config.exportPredicate.f() ) return false;
-        var records = await this.exportDriverRegistryDAO.select();
-        return records && records.array && records.array.length != 0;
-      },
-      code: function(X) {
-        var adao;
-        if ( this.config?.summaryView?.selectedObjects && ! foam.Object.equals(this.config.summaryView.selectedObjects, {}) ) {
-          adao = foam.dao.ArrayDAO.create({ of: this.data.of });
-          foam.Object.forEach(this.config.summaryView.selectedObjects, function(y) { adao.put(y) })
-        }
-
-        this.add(this.Popup.create(null, X).tag({
-          class: 'foam.u2.ExportModal',
-          exportData: adao ? adao : this.predicatedDAO$proxy,
-          predicate: this.config.filterExportPredicate
-        }));
-      }
-    },
-    {
-      name: 'refreshTable',
-      label: 'Refresh',
-      toolTip: 'Refresh Table',
-      icon: 'images/refresh-icon-black.svg',
-      isAvailable: function(config) {
-        if ( ! config.refreshPredicate.f() ) return false;
-        return true;
-      },
-      code: function(X) {
-        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
-        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
-        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
-      }
-    },
-    {
-      name: 'import',
-      label: 'Import',
-      icon: 'images/import-arrow-icon.svg',
-      availablePermissions: [ "data.import.googleSheets" ],
-      toolTip: 'Import From Google Sheet',
-      isAvailable: function(config) {
-        if ( ! config.importPredicate.f() ) return false;
-        return true;
-      },
-      code: function(X) {
-        this.add(this.Popup.create(null, X).tag(this.importModal));
-      }
-    }
-  ],
-
   methods: [
     function init() {
       // Reset the search filters when a different canned query is selected
@@ -372,7 +315,6 @@ foam.CLASS({
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
-
           return self.E()
             .start(self.Rows)
             .addClass(this.myClass('wrapper'))
@@ -440,6 +382,62 @@ foam.CLASS({
               .end()
             .end();
         }));
+    }
+  ],
+
+  actions: [
+    {
+      name: 'export',
+      label: 'Export',
+      toolTip: 'Export Table Data',
+      icon: 'images/export-arrow-icon.svg',
+      isAvailable: async function(config) {
+        if ( ! config.exportPredicate.f() ) return false;
+        var records = await this.exportDriverRegistryDAO.select();
+        return records && records.array && records.array.length != 0;
+      },
+      code: function(X) {
+        var adao;
+        if ( this.config?.summaryView?.selectedObjects && ! foam.Object.equals(this.config.summaryView.selectedObjects, {}) ) {
+          adao = foam.dao.ArrayDAO.create({ of: this.data.of });
+          foam.Object.forEach(this.config.summaryView.selectedObjects, function(y) { adao.put(y) })
+        }
+
+        this.add(this.Popup.create(null, X).tag({
+          class: 'foam.u2.ExportModal',
+          exportData: adao ? adao : this.predicatedDAO$proxy,
+          predicate: this.config.filterExportPredicate
+        }));
+      }
+    },
+    {
+      name: 'refreshTable',
+      label: 'Refresh',
+      toolTip: 'Refresh Table',
+      icon: 'images/refresh-icon-black.svg',
+      isAvailable: function(config) {
+        if ( ! config.refreshPredicate.f() ) return false;
+        return true;
+      },
+      code: function(X) {
+        this.config.dao.cmd_(X, foam.dao.DAO.PURGE_CMD);
+        this.config.dao.cmd_(X, foam.dao.DAO.RESET_CMD);
+        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
+      }
+    },
+    {
+      name: 'import',
+      label: 'Import',
+      icon: 'images/import-arrow-icon.svg',
+      availablePermissions: [ "data.import.googleSheets" ],
+      toolTip: 'Import From Google Sheet',
+      isAvailable: function(config) {
+        if ( ! config.importPredicate.f() ) return false;
+        return true;
+      },
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag(this.importModal));
+      }
     }
   ]
 });
