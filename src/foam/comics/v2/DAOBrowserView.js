@@ -152,14 +152,15 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create({ dao: this.data });
+        // TODO: does this need an onDetach?
+        return this.DAOControllerConfig.create({dao: this.data});
       }
     },
     {
       class: 'StringArray',
       name: 'searchColumns',
       factory: null,
-      expression: function(config$searchColumns){
+      expression: function(config$searchColumns) {
         return config$searchColumns;
       }
     },
@@ -313,7 +314,7 @@ foam.CLASS({
       });
 
       if ( ! foam.dao.QueryCachingDAO.isInstance(this.data) ) {
-        this.data = foam.dao.QueryCachingDAO.create({ delegate: this.data });
+        this.data = this.onDetach(foam.dao.QueryCachingDAO.create({ delegate: this.data }));
       }
 
       var self = this;
