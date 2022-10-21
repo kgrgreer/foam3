@@ -14,6 +14,22 @@ foam.CLASS({
     rather than storing an instance of an FObject.
   `,
 
+  axioms: [
+    {
+      installInClass: function(cls) {
+        // ???: Should 'x' be used for class lookup instead of 'self'?
+        cls.createFObject = function (spec, args, self, x) {
+          const cls = self.__context__.lookup(spec.class);
+          if ( ! cls ) {
+            foam.assert(false, 'FObjectSpec specifies unknown class: ', spec.class);
+            return cls;
+          }
+          return cls.create({ ...spec, ...(args || {}) }, x);
+        }
+      }
+    }
+  ],
+
   properties: [
     [
       'fromJSON',
@@ -42,12 +58,7 @@ foam.CLASS({
               foam.assert(false, 'Called $create on empty FObjectSpec');
               return;
             }
-            const cls = this.__context__.lookup(spec.class);
-            if ( ! cls ) {
-              foam.assert(false, 'FObjectSpec specifies unknown class: ', spec.class);
-              return cls;
-            }
-            return cls.create({ ...spec, ...(args || {}) }, x);
+            return self.cls_.createFObject(spec, args, this, x);
           }
         }
       })
