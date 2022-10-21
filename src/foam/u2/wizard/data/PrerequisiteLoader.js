@@ -61,7 +61,12 @@ foam.CLASS({
     async function load({ old }) {
       let initialData = this.delegate ? await this.delegate.load({ old }) : old;
 
-      const prereqWizardlet = this.wizardlets.filter( wizardlet => wizardlet.id === this.prerequisiteCapabilityId )[0];
+      const prereqWizardlet = this.wizardlets.find( wizardlet => wizardlet.id === this.prerequisiteCapabilityId );
+
+      if ( ! prereqWizardlet ) {
+        console.error(`prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} not found`);
+        return;
+      }
 
       if ( ! prereqWizardlet.isAvailable ){
         if ( this.loadIntoPath ) {
