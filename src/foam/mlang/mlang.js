@@ -4684,6 +4684,8 @@ foam.CLASS({
             }
           }
         }
+        if ( result == null )
+          return null;
         return getRounding() ? Math.round(result) : result;
       } catch (Throwable t) {
         foam.nanos.logger.Logger logger = foam.nanos.logger.StdoutLogger.instance();
