@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.nanos.crunch.MinMaxCapability',
     'foam.nanos.crunch.ui.CapableWAO',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
+    'foam.u2.wizard.wao.NullWAO',
     'foam.u2.wizard.wao.ProxyWAO'
   ],
 
