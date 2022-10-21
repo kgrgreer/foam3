@@ -299,18 +299,24 @@ foam.CLASS({
       'For internal use only. Is used to implement the Slot.dot() method.',
 
   properties: [
-    'parent', // parent slot, not parent object
-    'name',
+    {
+      // parent slot, not parent object
+      name: 'parent',
+      postSet: function(o, n) {
+        if ( this.name ) this.parentChange();
+      }
+    },
+    {
+      name: 'name',
+      postSet: function(o, n) {
+        if ( this.parent ) this.parentChange();
+      }
+    },
     'value',
     'prevSub'
   ],
 
   methods: [
-    function init() {
-      this.parent.sub(this.parentChange);
-      this.parentChange();
-    },
-
     function get() {
       var o = this.parent.get();
 
@@ -334,7 +340,11 @@ foam.CLASS({
     },
 
     function sub(l) {
-      return this.SUPER('propertyChange', 'value', l);
+      if ( arguments.length == 1 )
+        return this.SUPER('propertyChange', 'value', l);
+
+      // Could happen if any arguments are passed to sub(), like would happen if onDetach() called.
+      return this.SUPER.apply(this, arguments);
     },
 
     function isDefined() {
@@ -363,7 +373,7 @@ foam.CLASS({
         return;
       }
 
-      this.prevSub = o && o.slot && o.slot(this.name).sub(this.valueChange);
+      this.prevSub = o && o.slot && this.onDetach(o.slot(this.name).sub(this.valueChange));
       this.valueChange();
     },
 
